@@ -4,27 +4,37 @@ import RowCalendar from '../Calendar/RowCalendar';
 import ScheduleListView from './ScheduleListView';
 import Month from '../Calendar/Month';
 import Button from '../components/Button';
-import PopoverClass from '../components/Popover';
+import TransparentScreen from '../components/TransparentScreen';
+import InputText from '../components/InputText';
+import Icon from 'react-native-vector-icons/EvilIcons';
 
 
 
 export default class Schedule extends Component {
-    render() {
-        // console.log("Visible:", this.props.visibleSearchPopover);
-        const content = 
-            <View>
-                <TouchableOpacity onPress={this.props.searchClosePopover}>
-                    <Text style={{padding:20}}>Hello</Text>
-                </TouchableOpacity>
+    render() {    
+        const content=(
+            <View style={styles.searchContent}>
+                <InputText 
+                    changeText = {this.props.searchChangeText}
+                    inputText = {this.props.searchValue}
+                    placeholderTextColor = '#718096'
+                    placeholder="Search by scheduled items or dates"
+                />
+                <Icon 
+                    name="close" 
+                    style={{marginLeft:5}} 
+                    onPress={this.props.closeTransparent}
+                />
             </View>
+        )
         return (
-           <ScrollView>
-               <View style={styles.topContainer}>
+           <ScrollView style={{flex:1}}>
+                <View style={styles.topContainer}>
                     <View style={styles.buttonContainer}>
                         <Button 
                             title="Search" 
                             searchPress={this.props.searchPress}
-                        />
+                        />                        
                     </View>
                     <View style={{alignItems:'center', paddingBottom:20}}>
                         <Month 
@@ -37,32 +47,34 @@ export default class Schedule extends Component {
                         <Button title="Go to Today"/>
                     </View>
                     <RowCalendar {...this.props}/>
-               </View>
-                
-               <View style={styles.partition}/>
-               {/* {this.props.visibleSearchPopover === true ? 
-                <PopoverClass {...this.props} content={content}/>
-                :
-                null
-               } */}
-            
-               <Modal
-               transparent={false}
-               onRequestClose={()=>this.props.searchClosePopover}
-               visible={this.props.visibleSearchPopover}
-               >
-                   {content}
-               </Modal>     
+                </View>
+        
+                <View style={styles.partition}/>
 
-               <ScheduleListView currentDate={this.props.currentDate}/>
+                <ScheduleListView 
+                    currentDate={this.props.currentDate}
+                    showScheduleDetails = {this.props.showScheduleDetails}
+                />
+                
+                {this.props.transparent === false ? 
+                    null 
+                    : 
+                    <TransparentScreen  content={content} /> 
+                }
            </ScrollView>
         )
     }
 }
 
 const styles=StyleSheet.create({
+    searchContent:{
+        alignItems:'center',
+        flexDirection:'row',
+        backgroundColor:'white',
+        padding:10,
+    },
     topContainer:{
-        
+      
     },
     buttonContainer:{
 

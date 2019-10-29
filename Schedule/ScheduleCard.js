@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import {Text, View, StyleSheet, ScrollView, TextInput} from 'react-native';
+import {Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import SelectableText from 'react-native-selectable-text';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
-export default function ScheduleCard({appointment}){    
+export default function ScheduleCard({appointment, showScheduleDetails}){    
     const getTime = (appointment) => {
         let timePeriod;
         let time;
@@ -36,9 +36,15 @@ export default function ScheduleCard({appointment}){
                     borderRadius: 10/2,
                 }}
             />
-            <ScrollView horizontal={true} style={styles.infoContainer} contentContainerStyle={{alignItems: 'center',justifyContent:'space-between'}}>
-                <Text style={styles.title}>{appointment.title} - {appointment.responseEntity}</Text>
-                <Text style={styles.time}>{getTime(appointment.startTime)} - {getTime(appointment.endTime)}</Text>             
+
+            <ScrollView horizontal={true} contentContainerStyle={{alignItems: 'center',justifyContent:'space-between'}}>
+                <TouchableOpacity 
+                    style={styles.infoContainer} 
+                    onPress = {id => showScheduleDetails(appointment.id)}
+                >
+                    <Text style={styles.title}>{appointment.title} - {appointment.responseEntity}</Text>
+                    <Text style={styles.time}>{getTime(appointment.startTime)} - {getTime(appointment.endTime)}</Text>
+                </TouchableOpacity>          
             </ScrollView>
         </View>
     )

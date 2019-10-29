@@ -42,8 +42,7 @@ export default class Days extends Component {
                 <View style={styles.blanks} key={`trailblank${i}`} day=''/>
             );
         }
-        console.log('Trail Blanks:',trailblanks );
-
+        
         let daysInMonth = [];
         this.props.currentDays.map((day,index)=>{
             daysInMonth.push(
@@ -90,7 +89,7 @@ export default class Days extends Component {
 
 const styles=StyleSheet.create({
     container:{
-        flex:1,
+        // flex:1,
         borderLeftWidth:1,
         borderBottomWidth:1,
         borderColor:'#EDF2F7',

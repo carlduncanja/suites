@@ -6,7 +6,7 @@ export default class Month extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={{marginRight:20}} onPress={this.props.decreaseMonthChange}>
+                <TouchableOpacity style={{marginRight:20}} onPress={e => this.props.decreaseMonthChange(e,this.props.currentDate)}>
                     <Icon name="arrow-left" size={20} />   
                 </TouchableOpacity>
                

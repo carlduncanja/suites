@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
 export default class CalendarDay extends Component {
     render() {
-        console.log("Props: ", this.props.day);
         return (
             <View style={styles.container}>
                 {this.props.day === this.props.selected.selected ?
@@ -23,17 +22,16 @@ export default class CalendarDay extends Component {
 
 const styles = StyleSheet.create({
     container:{
-        // flex:1,
+        flex:1,
         height:80,
         width: 80,
-        // backgroundColor:'#FFFFFF',
-        backgroundColor:'red',
+        backgroundColor:'#FFFFFF',
         borderTopWidth:1,
         borderRightWidth:1,
         borderColor:'#EDF2F7',
     },
     day:{
-        fontSize:24,
+        fontSize:18,
         paddingLeft:8,  
         paddingTop:8,     
     },

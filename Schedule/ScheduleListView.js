@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 import ScheduleList from './ScheduleList';
+import moment from 'moment';
 
 
 const APPS = require('../assets/db.json').appointments;
@@ -16,28 +17,46 @@ const getAppointments = (date) =>{
 
 export default class ScheduleListView extends Component {
     render() {
-        console.log("Rendered")
+        let date = this.props.currentDate;
+        // console.log("Current Day: ",new Date().toISOString());
+        let current = new Date();
+        let next = current.getDate() + 1;
+        console.log("Current: ", current);
+        console.log("Next: ", new Date(current.setDate(next)));
+
+        let tomorrowDay = parseInt(this.props.currentDate.format("DD")) + 1;
+        let secondDay = parseInt(this.props.currentDate.format("DD")) + 2;
+        let lastDay = parseInt(this.props.currentDate.format("DD")) + 3;
+        // console.log("Last day: ", lastDay);
+
+        let tomorrow = `${this.props.currentDate.format('YYYY-MM')}-${tomorrowDay}`;
+        let second = `${this.props.currentDate.format('YYYY-MM')}-${secondDay}`;
+        let last = `${this.props.currentDate.format('YYYY-MM')}-${lastDay}`;
+       
         return (
             <View style={styles.container}>
                 <View style={styles.dateContainer}>
                     <View style={styles.dateLabelContainer}>
-                        <Text style={styles.dateLabel}>Tommorrow - {this.props.currentDate.add(1,'days').format("MMM D").toString()}</Text>
+                        <Text style={styles.dateLabel}>Tommorrow - {moment(tomorrow).format("MMM D").toString()}</Text>
                     </View>
-                    <ScheduleList appointments={getAppointments(this.props.currentDate.format("YYYY-MM-DD"))}/>                    
+                    <ScheduleList 
+                        appointments={getAppointments(moment(tomorrow).format("YYYY-MM-DD"))} 
+                        showScheduleDetails= {this.props.showScheduleDetails}
+                    />                    
                 </View>
 
                 <View style={styles.dateContainer}>
                     <View style={styles.dateLabelContainer}>
-                        <Text style={styles.dateLabel}>{this.props.currentDate.add(1,'days').format("dddd").toString()} - {this.props.currentDate.format("MMM D").toString()}</Text>
+                        <Text style={styles.dateLabel}>{moment(second).format("dddd").toString()} - {moment(second).format("MMM D").toString()}</Text>
                     </View>
-                    <ScheduleList appointments={getAppointments(this.props.currentDate.format("YYYY-MM-DD"))}/>
+                    <ScheduleList appointments={getAppointments(moment(second).format("YYYY-MM-DD"))} showScheduleDetails = {this.props.showScheduleDetails}/>
                 </View>
 
                 <View style={styles.dateContainer}>
                     <View style={styles.dateLabelContainer}>
-                        <Text style={styles.dateLabel}>{this.props.currentDate.add(1,'days').format("dddd").toString()} - {this.props.currentDate.format("MMM D").toString()}</Text>
+                        <Text style={styles.dateLabel}>{moment(last).format("dddd").toString()} - {moment(last).format("MMM D").toString()}</Text>
                     </View>
-                    <ScheduleList appointments={getAppointments(this.props.currentDate.format("YYYY-MM-DD"))}/>
+                    <ScheduleList appointments={getAppointments(moment(last).format("YYYY-MM-DD"))} showScheduleDetails = {this.props.showScheduleDetails}/>
                 </View>
 
             </View>
