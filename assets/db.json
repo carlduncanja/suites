@@ -8,17 +8,11 @@
             "endTime":"2019-10-30T13:00:00.000Z",
             "level": 1, 
             "location":"Surgery Theatre 6",
-            "surgeons":
-                {
-                    "lead":"Dr. H. Mitsurugi",
-                    "assistant":"Dr. L. Bonneville",
-                    "anaesthesiologist":"Dr. Y. Campbell"
-                },
-            "nurses":
-                {
-                    "nurse1":"J. Morris",
-                    "nurse2":"A. Gaynor"
-                },
+            "leadSurgeon":"Dr. H. Mitsurugi",
+            "assistantSurgeon":"Dr. L. Bonneville",
+            "anaesthesiologist":"Dr. Y. Campbell",
+            "nurse1":"J. Morris",
+            "nurse2":"A. Gaynor",
             "createdBy":"Janet Evina"
         },
         {

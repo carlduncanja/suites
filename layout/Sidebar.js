@@ -26,7 +26,7 @@ const styles=StyleSheet.create({
         flexDirection:'column',
         alignItems:'center',
         height: '100%',
-        paddingTop:6,
+        paddingTop:'10%',
         backgroundColor: '#104587',
     },
     logo:{

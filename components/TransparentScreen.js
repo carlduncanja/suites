@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {Text, View, Button, StyleSheet, TouchableOpacity} from 'react-native'; 
 import Content from '../layout/Content';
-import { TextInput } from 'react-native-gesture-handler';
 
 export default class TransparentScreen extends Component {
     render() {

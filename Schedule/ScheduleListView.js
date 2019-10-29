@@ -5,7 +5,7 @@ import moment from 'moment';
 
 
 const APPS = require('../assets/db.json').appointments;
-const margin = 10
+// const margin = 10
 
 const getAppointments = (date) =>{
     const dateAppointments = [];
@@ -49,14 +49,20 @@ export default class ScheduleListView extends Component {
                     <View style={styles.dateLabelContainer}>
                         <Text style={styles.dateLabel}>{moment(second).format("dddd").toString()} - {moment(second).format("MMM D").toString()}</Text>
                     </View>
-                    <ScheduleList appointments={getAppointments(moment(second).format("YYYY-MM-DD"))} showScheduleDetails = {this.props.showScheduleDetails}/>
+                    <ScheduleList 
+                        appointments={getAppointments(moment(second).format("YYYY-MM-DD"))} 
+                        showScheduleDetails = {this.props.showScheduleDetails}
+                    />
                 </View>
 
                 <View style={styles.dateContainer}>
                     <View style={styles.dateLabelContainer}>
                         <Text style={styles.dateLabel}>{moment(last).format("dddd").toString()} - {moment(last).format("MMM D").toString()}</Text>
                     </View>
-                    <ScheduleList appointments={getAppointments(moment(last).format("YYYY-MM-DD"))} showScheduleDetails = {this.props.showScheduleDetails}/>
+                    <ScheduleList 
+                        appointments={getAppointments(moment(last).format("YYYY-MM-DD"))} 
+                        showScheduleDetails = {this.props.showScheduleDetails}
+                    />
                 </View>
 
             </View>
@@ -66,14 +72,17 @@ export default class ScheduleListView extends Component {
 
 const styles = StyleSheet.create({
     container:{
-        // flex:1,
+        //flex:1,
         flexDirection:'column',
         justifyContent: 'flex-start',
-        margin: margin,
+        marginLeft:'2%',
+        marginRight:'2%',
         backgroundColor:'#F7FAFC',
+        //backgroundColor:'red',
         borderTopLeftRadius: 16,
         borderTopRightRadius:16,
         padding: 20,
+        //height:'100%',
         // height:screenHeight
     },
 

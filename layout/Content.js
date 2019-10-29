@@ -17,6 +17,8 @@ export default class Content extends Component {
             transparent:false,
             searchValue:"",
             showSlider: false,
+            sliderTransparent:false,
+            scheduleDetails:{},
         }
 
         this.decreaseMonthChange = this.decreaseMonthChange.bind(this);
@@ -90,9 +92,11 @@ export default class Content extends Component {
         })
     }
 
-    showScheduleDetails(id){
-        console.log(`Clicked ${id}`);
+    showScheduleDetails(appointment){
+        console.log(`Clicked ${appointment}`);
         this.setState({
+            scheduleDetails:appointment,
+            sliderTransparent:true,
             showSlider:true,
         })
     }

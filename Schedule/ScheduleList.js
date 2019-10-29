@@ -9,7 +9,11 @@ export default class ScheduleList extends Component {
                 key={this.props.key}
                 data={this.props.appointments}
                 renderItem={({ item }) => 
-                    <ScheduleCard appointment={item} showScheduleDetails={this.props.showScheduleDetails}/>}
+                    <ScheduleCard 
+                        appointment={item} 
+                        showScheduleDetails={this.props.showScheduleDetails}
+                    />
+                }
                 keyExtractor={item => item.id}
             />
         )

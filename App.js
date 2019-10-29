@@ -64,15 +64,13 @@ export default class App extends React.Component {
   
 }
 
-const height = Dimensions.get('window').height;
-const navHeight = height-24;
+
 
 
 const styles = StyleSheet.create({
   container: {    
     flex:1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? 24: 0,  
   },
   scroll:{
     flex:1,
@@ -80,10 +78,9 @@ const styles = StyleSheet.create({
   },
   sidebar:{
     flex:1,
-    height: navHeight,
   },
   content:{
-    flex:3,
+    flex:12,
   }
        
 });

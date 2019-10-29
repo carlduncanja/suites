@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import {Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'react-native';
-import SelectableText from 'react-native-selectable-text';
-import { TouchableHighlight } from 'react-native-gesture-handler';
 
 export default function ScheduleCard({appointment, showScheduleDetails}){    
     const getTime = (appointment) => {
@@ -40,12 +38,13 @@ export default function ScheduleCard({appointment, showScheduleDetails}){
             <ScrollView horizontal={true} contentContainerStyle={{alignItems: 'center',justifyContent:'space-between'}}>
                 <TouchableOpacity 
                     style={styles.infoContainer} 
-                    onPress = {id => showScheduleDetails(appointment.id)}
+                    onPress = {id => showScheduleDetails(appointment)}
                 >
                     <Text style={styles.title}>{appointment.title} - {appointment.responseEntity}</Text>
                     <Text style={styles.time}>{getTime(appointment.startTime)} - {getTime(appointment.endTime)}</Text>
                 </TouchableOpacity>          
             </ScrollView>
+            
         </View>
     )
 }
