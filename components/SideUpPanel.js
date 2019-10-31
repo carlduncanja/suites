@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {View, Button, Text, StyleSheet, Dimensions} from 'react-native';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import Divider from './Divider';
-import TransparentScreen from './TransparentScreen';
 
 const {height} = Dimensions.get('window')
 
@@ -12,14 +11,17 @@ export default class SideUpPanel extends Component {
             <View style={styles.container}>
                 <SlidingUpPanel
                     ref={c => (this._panel = c)}
-                    draggableRange={{top: height-10, bottom: (height)/2}}
+                    draggableRange={{top: height-150, bottom: (height)/2}}
                     animatedValue={this._draggedValue}
-                    showBackdrop={false}>
-
+                    showBackdrop={false}
+                    allowDragging = {this.props.draggable}
+                    onDragEnd={(height) => this.props.stopScheduleDrag(height)}
+                    >
+                       
                     <View style={styles.panel}>
                         <View style={styles.panelHeader}>
                             <View style={{alignItems:'center'}}>
-                                <Divider/>
+                                <Divider dividerAction = {this.props.restartDrag}/>
                             </View>
                             
                             <View style={styles.bottom}>
@@ -44,13 +46,14 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
         borderTopLeftRadius:10,
     },
-      panelHeader: {
+    panelHeader: {
         flex:1,
         backgroundColor: '#fff',
         paddingTop: 10,
         borderTopRightRadius: 10,
         borderTopLeftRadius:10,
-      },
-      bottom:{
-      }
+    },
+    bottom:{
+        flex:1,
+    }
 })

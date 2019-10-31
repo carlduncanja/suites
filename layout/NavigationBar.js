@@ -9,6 +9,7 @@ export default class NavigationBar extends Component {
     handlePress=()=>{
         this.props.navigation.navigate('schedule')
     }
+    
     render() {
         return (
             <View style={styles.container}>
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems:'center',
         justifyContent:'flex-start',
-        marginTop:40,
+        marginTop:50,
         width:'100%',
     },
 })

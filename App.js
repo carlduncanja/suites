@@ -10,6 +10,7 @@ export default class App extends React.Component {
     this.state={
       tabSelected:{},
       tabSelectedBool: false,
+      showTransparent: false,
     }
     this.onPressTab = this.onPressTab.bind(this); 
   }
@@ -20,15 +21,13 @@ export default class App extends React.Component {
     this.setState({tabSelected:selectedObject, tabSelectedBool});
   }
 
-  
   render(){
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.scroll} >
           <View style = {styles.sidebar}>
             <Sidebar 
-              tabSelected={this.state.tabSelected}
-              tabSelectedBool={this.state.tabSelectedBool}
+              {...this.state}
               onPressTab = {this.onPressTab}
             />
           </View>

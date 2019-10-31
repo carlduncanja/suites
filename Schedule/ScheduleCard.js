@@ -35,10 +35,10 @@ export default function ScheduleCard({appointment, showScheduleDetails}){
                 }}
             />
 
-            <ScrollView horizontal={true} contentContainerStyle={{alignItems: 'center',justifyContent:'space-between'}}>
+            <ScrollView horizontal={true} contentContainerStyle={{flex:1, alignItems: 'center'}}>
                 <TouchableOpacity 
                     style={styles.infoContainer} 
-                    onPress = {id => showScheduleDetails(appointment)}
+                    onPress = {app => showScheduleDetails(appointment)}
                 >
                     <Text style={styles.title}>{appointment.title} - {appointment.responseEntity}</Text>
                     <Text style={styles.time}>{getTime(appointment.startTime)} - {getTime(appointment.endTime)}</Text>
@@ -64,15 +64,15 @@ const styles=StyleSheet.create({
         borderBottomColor: '#CBD5E0',
         borderBottomWidth: 1,
         justifyContent:'flex-start',
-        alignSelf:'stretch',
-        alignSelf:'stretch',
-        marginTop: 5,
-        paddingBottom: 8,
+        alignSelf:'center',
+        marginTop: 8,
+        paddingBottom: 16,
         overflow:'scroll',
     },
     infoContainer:{
         flex:1,
         flexDirection:'row',
+        justifyContent:"space-between",
         marginLeft: 8,
         paddingRight:0,
     },

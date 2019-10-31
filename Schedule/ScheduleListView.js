@@ -5,6 +5,7 @@ import moment from 'moment';
 
 
 const APPS = require('../assets/db.json').appointments;
+//console.log("JSON: ", APPS);
 // const margin = 10
 
 const getAppointments = (date) =>{
@@ -18,26 +19,19 @@ const getAppointments = (date) =>{
 export default class ScheduleListView extends Component {
     render() {
         let date = this.props.currentDate;
-        // console.log("Current Day: ",new Date().toISOString());
-        let current = new Date();
-        let next = current.getDate() + 1;
-        console.log("Current: ", current);
-        console.log("Next: ", new Date(current.setDate(next)));
-
-        let tomorrowDay = parseInt(this.props.currentDate.format("DD")) + 1;
-        let secondDay = parseInt(this.props.currentDate.format("DD")) + 2;
-        let lastDay = parseInt(this.props.currentDate.format("DD")) + 3;
-        // console.log("Last day: ", lastDay);
-
-        let tomorrow = `${this.props.currentDate.format('YYYY-MM')}-${tomorrowDay}`;
-        let second = `${this.props.currentDate.format('YYYY-MM')}-${secondDay}`;
-        let last = `${this.props.currentDate.format('YYYY-MM')}-${lastDay}`;
+        let currentJSDate = date.toDate()
+       
+        let tomorrow = moment(new Date(currentJSDate.setDate(currentJSDate.getDate() + 1)));
+        let second = moment(new Date(currentJSDate.setDate(currentJSDate.getDate() + 1)));
+        let last = moment(new Date(currentJSDate.setDate(currentJSDate.getDate() + 1)));
        
         return (
             <View style={styles.container}>
                 <View style={styles.dateContainer}>
                     <View style={styles.dateLabelContainer}>
-                        <Text style={styles.dateLabel}>Tommorrow - {moment(tomorrow).format("MMM D").toString()}</Text>
+                        <Text style={styles.dateLabel}>
+                            Tommorrow - {moment(tomorrow).format("MMM D").toString()}
+                        </Text>
                     </View>
                     <ScheduleList 
                         appointments={getAppointments(moment(tomorrow).format("YYYY-MM-DD"))} 
@@ -93,7 +87,7 @@ const styles = StyleSheet.create({
     },
 
     dateLabelContainer:{
-        borderBottomColor: 'black',
+        borderBottomColor: '#718096',
         borderBottomWidth: 1,
         paddingBottom:5,
         marginBottom: 10,

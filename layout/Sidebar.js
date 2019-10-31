@@ -4,12 +4,6 @@ import {Text, View, StyleSheet} from 'react-native';
 
 
 export default class Sidebar extends Component {
-    constructor(props){
-        super(props);
-        this.state={
-            
-        }
-    }
     render() {
         return (
             <View style={styles.container}>

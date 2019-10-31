@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
+import {View, Text, ScrollView, StyleSheet, Dimensions} from 'react-native';
 import moment from 'moment';
 import Schedule from '../Schedule/Schedule';
 import Calendar from '../Calendar/Calendar';
@@ -19,6 +19,8 @@ export default class Content extends Component {
             showSlider: false,
             sliderTransparent:false,
             scheduleDetails:{},
+            slideDraggable:true,
+            maxDragHeight: 0,
         }
 
         this.decreaseMonthChange = this.decreaseMonthChange.bind(this);
@@ -28,6 +30,8 @@ export default class Content extends Component {
         this.searchChangeText = this.searchChangeText.bind(this);
         this.closeTransparent = this.closeTransparent.bind(this);
         this.showScheduleDetails = this.showScheduleDetails.bind(this);
+        this.stopScheduleDrag = this.stopScheduleDrag.bind(this);
+        this.restartDrag = this.restartDrag.bind(this);
     }
 
     decreaseMonthChange(e,date){
@@ -93,15 +97,28 @@ export default class Content extends Component {
     }
 
     showScheduleDetails(appointment){
-        console.log(`Clicked ${appointment}`);
+        let newObject = Object.assign({},appointment);
+        this.state.sliderTransparent === true && this.state.showSlider === true ? 
+            status = false : status = true
         this.setState({
-            scheduleDetails:appointment,
-            sliderTransparent:true,
-            showSlider:true,
+            scheduleDetails:newObject,
+            sliderTransparent:status,
+            showSlider:status,
         })
     }
       
+    stopScheduleDrag(height){
+        height === Dimensions.get('window').height - 150 ? 
+            draggable = false : null
+        this.setState({maxDragHeight: height, slideDraggable:draggable})
+    }
+
+    restartDrag(){      
+        this.setState({slideDraggable:true})
+    }
+
     render() {
+       
         return (
             <View style = {styles.content}>
                 {this.props.name === 'SCHEDULE' ? 
@@ -115,6 +132,8 @@ export default class Content extends Component {
                         searchPress = {this.searchPress}
                         currentDays = {this.getCurrentDays()}
                         showScheduleDetails = {this.showScheduleDetails}
+                        stopScheduleDrag = {this.stopScheduleDrag}
+                        restartDrag = {this.restartDrag}
                     />
                     :
                     this.props.name === 'CASE FILES' ?

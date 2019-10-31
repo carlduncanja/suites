@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, ScrollView } from 'react-native';
 import RowCalendar from '../Calendar/RowCalendar';
 import ScheduleListView from './ScheduleListView';
 import Month from '../Calendar/Month';
@@ -29,55 +29,139 @@ export default class Schedule extends Component {
                 />
             </View>
         )
-        //let surgeonObject = Object.entries(this.props.scheduleDetails.surgeons);
+        
+        function Doctor({  title, name }){
+            return(
+                <View style={styles.doctorContainer}>
+                    <View style={styles.iconContainer}/>
+                    <View style={styles.detailsContainer}>
+                        <Text style={[styles.detailText, {color:'#718096'}]}>{title}</Text>
+                        <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{name}</Text>
+                    </View>
+                </View>
+
+            )
+        }
+
+          {/* <FlatList
+                        data = {DoctorData}
+                        renderItem = {({item}) => 
+                            <Doctor title={item.title} name={item.name}/>
+                        }
+                        keyExtractor={item => item.id}
+                        numColumns={3}
+                        columnWrapperStyle ={{flex:1}}
+                    /> */}
+
+        const DoctorData = [
+            {
+                id: 'doc1',
+                title: 'Lead Surgeon',
+                name: `${this.props.scheduleDetails.leadSurgeon}`
+            },
+            {
+                id: 'doc2',
+                title: 'Assistant Surgeon',
+                name: `${this.props.scheduleDetails.assistantSurgeon}`
+            },
+            {
+                id: 'doc3',
+                title: 'Anaesthesiologist',
+                name: `${this.props.scheduleDetails.anaesthesiologist}`
+            }
+        ]
+       
+        
         const slideContent=(
-            <View style={{padding:'2%', flex:1}}>
+            <ScrollView style={{ padding:'2%',flexDirection:'column'}}>
+               
                 <View style={styles.cardTitle}>
                     <Text style={{fontSize:20, color:'#104587'}}>{this.props.scheduleDetails.title}</Text>
                     <Text style={{fontSize:20, color:'#0CB0E7'}}>{this.props.scheduleDetails.responseEntity}</Text>
                 </View>
-                <View style={styles.cardDescription}>
-                    <Text>{this.props.scheduleDetails.location}</Text>
-                    <Text>{this.props.scheduleDetails.startTime}</Text>
-                    <Text>{this.props.scheduleDetails.endTime}</Text>
+             
+                <View style={{flexDirection:'column'}}>
+                    <View style={styles.cardDescription}>
+                        <Text style={[styles.detailText, {color: '#2D3748'}]}>{this.props.scheduleDetails.location}</Text>
+                        <Text style={[styles.detailText, {color: '#104587'}]}>{this.props.scheduleDetails.startTime}</Text>
+                        <Text style={[styles.detailText, {color: '#104587'}]}>{this.props.scheduleDetails.endTime}</Text>                  
+                    </View>
+
+                    <View style={styles.cardDoctors}>
+                        <View style={styles.doctorContainer}>
+                            <View style={styles.iconContainer}/>
+                            <View style={styles.detailsContainer}>
+                                <Text style={[styles.detailText, {color:'#718096'}]}>Lead Surgeon</Text>
+                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.leadSurgeon}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.doctorContainer}>
+                            <View style={styles.iconContainer}/>
+                                <View style={styles.detailsContainer}>
+                                <Text style={[styles.detailText, {color:'#718096'}]}>Anaesthesiologist</Text>
+                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.anaesthesiologist}</Text>
+                            </View>
+                        </View> 
+
+                    </View> 
+
+                    <View style={styles.secondaryDoctors}>
+                        <View style={styles.doctorContainer}>
+                            <View style={styles.iconContainer}/>
+                            <View style={styles.detailsContainer}>
+                                <Text style={[styles.detailText, {color:'#718096'}]}>Assistant Surgeon</Text>
+                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.assistantSurgeon}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.doctorContainer}>
+                            <View style={styles.iconContainer}/>
+                            <View style={styles.detailsContainer}>
+                                <Text style={[styles.detailText, {color:'#718096'}]}>Nurse 1</Text>
+                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.nurse1}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.doctorContainer}>
+                            <View style={styles.iconContainer}/>
+                            <View style={styles.detailsContainer}>
+                                <Text style={[styles.detailText, {color:'#718096'}]}>Nurse2</Text>
+                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.nurse2}</Text>
+                            </View>
+                        </View>
+                    </View> 
                 </View>
-                <View style={styles.cardDoctors}>
-                    <Text>Lead Surgeon</Text>
-                    <Text>{this.props.scheduleDetails.leadSurgeon}</Text>
-
-                    <Text>Assistant Surgeon</Text>
-                    <Text>{this.props.scheduleDetails.assistantSurgeon}</Text>
-
-                    <Text>Anaesthesiologist</Text>
-                    <Text>{this.props.scheduleDetails.anaesthesiologist}</Text>
-
-                </View>
-            </View>
+ 
+            </ScrollView>
         )
         return (
             <View style={{height:'100%'}}>
                 <ScrollView>
-                    <View style={styles.topContainer}>
-                        <View style={styles.buttonContainer}>
-                            <Button 
-                                title="Search" 
-                                searchPress={this.props.searchPress}
-                            />                        
+                    <View >  
+                        <View style={styles.topContainer}>
+                            <View style={styles.buttonContainer}>
+                                <Button 
+                                    title="Search" 
+                                    searchPress={this.props.searchPress}
+                                />                        
+                            </View>
+                            <View style={{alignItems:'center'}}>
+                                <Month 
+                                    currentDate={this.props.currentDate} 
+                                    decreaseMonthChange = {this.props.decreaseMonthChange}
+                                    increaseMonthChange = {this.props.increaseMonthChange}
+                                />                     
+                            </View>
+                            <View style={styles.buttonContainer}>
+                                <Button title="Go to Today"/>
+                            </View>
                         </View>
-                        <View style={{alignItems:'center'}}>
-                            <Month 
-                                currentDate={this.props.currentDate} 
-                                decreaseMonthChange = {this.props.decreaseMonthChange}
-                                increaseMonthChange = {this.props.increaseMonthChange}
-                            />                     
-                        </View>
-                        <View style={styles.buttonContainer}>
-                            <Button title="Go to Today"/>
-                        </View>
+                        
+                        <RowCalendar {...this.props}/>
+    
                     </View>
 
-                    <RowCalendar {...this.props}/>
-        
                     <View style={styles.partition}/>
                 
                     <ScheduleListView 
@@ -95,12 +179,17 @@ export default class Schedule extends Component {
                 </ScrollView>
 
                 {this.props.sliderTransparent === true ?
-                    <TransparentScreen/> 
+                    <TransparentScreen 
+                        showScheduleDetails = {this.props.showScheduleDetails}/> 
                    :
                     null
                 }
                 {this.props.showSlider === true ?
-                    <SlideUpPanel content={slideContent}/> 
+                    <SlideUpPanel 
+                        restartDrag = {this.props.restartDrag}
+                        content={slideContent} 
+                        stopScheduleDrag = {this.props.stopScheduleDrag}
+                        draggable = {this.props.slideDraggable}/> 
                    :
                     null
 
@@ -135,13 +224,43 @@ const styles=StyleSheet.create({
         borderBottomColor:'#CBD5E0',
         borderBottomWidth: 1,
         paddingBottom:15,
-        alignItems:'center',
+        // alignItems:'center',
         flexDirection:'row',
         justifyContent: 'space-between',
-
     },
     cardDoctors:{
-
+        flexDirection:'row',
+        alignSelf:'flex-start',
+        justifyContent:'space-between',
+        marginLeft:0,
+        backgroundColor:'yellow'
+    },
+    secondaryDoctors:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        marginLeft:0,
+    },
+    doctorContainer:{
+        flexDirection:'row',
+        marginTop: 30,
+        marginLeft:0,
+        //marginHorizontal: 20
+    },
+    iconContainer:{
+        height:40, 
+        width: 40, 
+        borderColor:'#CBD5E0',
+        borderWidth:1, 
+        borderRadius:8
+    },
+    detailsContainer:{
+        flexDirection:'column', 
+        marginLeft:10, 
+        justifyContent:'space-between',
+        alignItems:'flex-start'
+    },
+    detailText:{
+        fontSize:16,
     },
     buttonContainer:{
 
