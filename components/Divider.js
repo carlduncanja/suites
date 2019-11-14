@@ -6,14 +6,16 @@ export default class Divider extends Component {
         return (
             <TouchableOpacity 
                 style={styles.divider}
-                onLongPress = {this.props.dividerAction}/>
+                onLongPress = {this.props.longPressAction}
+                onPress = {this.props.pressAction}
+            />
         )
     }
 }
 
 const styles = StyleSheet.create({
     divider:{
-        backgroundColor:'#A0AEC0',
+        backgroundColor:'#CBD5E0',
         borderRadius:8,
         width: 70,
         height: 6,

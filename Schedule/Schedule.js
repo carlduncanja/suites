@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, ScrollView } from 'react-native';
 import RowCalendar from '../Calendar/RowCalendar';
+import Calendar from '../Calendar/Calendar';
 import ScheduleListView from './ScheduleListView';
 import Month from '../Calendar/Month';
 import Button from '../components/Button';
 import TransparentScreen from '../components/TransparentScreen';
 import SlideUpPanel from '../components/SideUpPanel';
 import InputText from '../components/InputText';
-import Icon from 'react-native-vector-icons/EvilIcons';
-import SideUpPanel from '../components/SideUpPanel';
+import Divider from '../components/Divider';
+import Svg, {Path} from 'react-native-svg';
+import AppointmentCard from './AppointmentCard';
 
 
 
@@ -22,131 +24,29 @@ export default class Schedule extends Component {
                     placeholderTextColor = '#718096'
                     placeholder="Search by scheduled items or dates"
                 />
-                <Icon 
-                    name="close" 
-                    style={{marginLeft:5}} 
-                    onPress={this.props.closeTransparent}
-                />
+
+                <TouchableOpacity onPress={this.props.closeTransparent}>
+                    <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M13.5 2.5L2.5 13.5" stroke="#4A5568" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <Path d="M2.5 2.5L13.5 13.5" stroke="#4A5568" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    </Svg>
+                </TouchableOpacity>
+                
             </View>
         )
-        
-        function Doctor({  title, name }){
-            return(
-                <View style={styles.doctorContainer}>
-                    <View style={styles.iconContainer}/>
-                    <View style={styles.detailsContainer}>
-                        <Text style={[styles.detailText, {color:'#718096'}]}>{title}</Text>
-                        <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{name}</Text>
-                    </View>
-                </View>
-
-            )
-        }
-
-          {/* <FlatList
-                        data = {DoctorData}
-                        renderItem = {({item}) => 
-                            <Doctor title={item.title} name={item.name}/>
-                        }
-                        keyExtractor={item => item.id}
-                        numColumns={3}
-                        columnWrapperStyle ={{flex:1}}
-                    /> */}
-
-        const DoctorData = [
-            {
-                id: 'doc1',
-                title: 'Lead Surgeon',
-                name: `${this.props.scheduleDetails.leadSurgeon}`
-            },
-            {
-                id: 'doc2',
-                title: 'Assistant Surgeon',
-                name: `${this.props.scheduleDetails.assistantSurgeon}`
-            },
-            {
-                id: 'doc3',
-                title: 'Anaesthesiologist',
-                name: `${this.props.scheduleDetails.anaesthesiologist}`
-            }
-        ]
-       
-        
-        const slideContent=(
-            <ScrollView style={{ padding:'2%',flexDirection:'column'}}>
-               
-                <View style={styles.cardTitle}>
-                    <Text style={{fontSize:20, color:'#104587'}}>{this.props.scheduleDetails.title}</Text>
-                    <Text style={{fontSize:20, color:'#0CB0E7'}}>{this.props.scheduleDetails.responseEntity}</Text>
-                </View>
-             
-                <View style={{flexDirection:'column'}}>
-                    <View style={styles.cardDescription}>
-                        <Text style={[styles.detailText, {color: '#2D3748'}]}>{this.props.scheduleDetails.location}</Text>
-                        <Text style={[styles.detailText, {color: '#104587'}]}>{this.props.scheduleDetails.startTime}</Text>
-                        <Text style={[styles.detailText, {color: '#104587'}]}>{this.props.scheduleDetails.endTime}</Text>                  
-                    </View>
-
-                    <View style={styles.cardDoctors}>
-                        <View style={styles.doctorContainer}>
-                            <View style={styles.iconContainer}/>
-                            <View style={styles.detailsContainer}>
-                                <Text style={[styles.detailText, {color:'#718096'}]}>Lead Surgeon</Text>
-                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.leadSurgeon}</Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.doctorContainer}>
-                            <View style={styles.iconContainer}/>
-                                <View style={styles.detailsContainer}>
-                                <Text style={[styles.detailText, {color:'#718096'}]}>Anaesthesiologist</Text>
-                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.anaesthesiologist}</Text>
-                            </View>
-                        </View> 
-
-                    </View> 
-
-                    <View style={styles.secondaryDoctors}>
-                        <View style={styles.doctorContainer}>
-                            <View style={styles.iconContainer}/>
-                            <View style={styles.detailsContainer}>
-                                <Text style={[styles.detailText, {color:'#718096'}]}>Assistant Surgeon</Text>
-                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.assistantSurgeon}</Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.doctorContainer}>
-                            <View style={styles.iconContainer}/>
-                            <View style={styles.detailsContainer}>
-                                <Text style={[styles.detailText, {color:'#718096'}]}>Nurse 1</Text>
-                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.nurse1}</Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.doctorContainer}>
-                            <View style={styles.iconContainer}/>
-                            <View style={styles.detailsContainer}>
-                                <Text style={[styles.detailText, {color:'#718096'}]}>Nurse2</Text>
-                                <Text style={[styles.detailText, {color:'#0CB0E7'}]}>{this.props.scheduleDetails.nurse2}</Text>
-                            </View>
-                        </View>
-                    </View> 
-                </View>
- 
-            </ScrollView>
-        )
+     
         return (
             <View style={{height:'100%'}}>
-                <ScrollView>
-                    <View >  
-                        <View style={styles.topContainer}>
+                <ScrollView >
+                    <View>   
+                        <View style={[styles.topContainer, {paddingTop: this.props.screenDimensions.width > this.props.screenDimensions.height ? 0: '1%'}]}>
                             <View style={styles.buttonContainer}>
                                 <Button 
                                     title="Search" 
                                     searchPress={this.props.searchPress}
                                 />                        
                             </View>
-                            <View style={{alignItems:'center'}}>
+                            <View style={{alignItems:'center' }}>
                                 <Month 
                                     currentDate={this.props.currentDate} 
                                     decreaseMonthChange = {this.props.decreaseMonthChange}
@@ -158,26 +58,57 @@ export default class Schedule extends Component {
                             </View>
                         </View>
                         
-                        <RowCalendar {...this.props}/>
-    
-                    </View>
+                        <View style={{marginLeft: this.props.screenDimensions.width > this.props.screenDimensions.height ? '2%':0, marginBottom: 5}}>
 
-                    <View style={styles.partition}/>
-                
-                    <ScheduleListView 
-                        currentDate={this.props.currentDate}
-                        showSlider = {this.props.showSlider}
-                        showScheduleDetails = {this.props.showScheduleDetails}
-                    />
-             
-                    {this.props.transparent === false ? 
-                        null 
-                        : 
-                        <TransparentScreen  content={content} /> 
+                            {this.props.displayFullCalendar === false ?
+                                <RowCalendar 
+                                    {...this.props}
+                                    currentDay = {this.props.currentDate}
+                                />
+                                :
+                                <Calendar {...this.props}/>
+                            }
+                            
+                        </View>    
+                    </View>
+                    
+                    {this.props.displayFullCalendar === false ?
+                        <View style={{alignSelf: 'center', marginBottom: 20}}>
+                            <Divider pressAction = {this.props.showFullCalendar}/>
+                        </View>
+
+                        :
+                        null
                     }
+                   
+                    
+                    <View 
+                        style=
+                            {{
+                            top: this.props.displayFullCalendar === false && this.props.statusLastRow === false ? 0 
+                                : 
+                                this.props.displayFullCalendar === true && this.props.statusLastRow === false ? -60
+                                    :
+                                    0,
+                            
+                            marginTop : this.props.displayFullCalendar === true && this.props.statusLastRow === true ? 25 : 0
+                            }}
+                        >
+                        <ScheduleListView 
+                            currentDate={this.props.currentDate}
+                            showSlider = {this.props.showSlider}
+                            showScheduleDetails = {this.props.showScheduleDetails}
+                        />
+                    </View>
+                    
                     
                 </ScrollView>
 
+                {this.props.transparent === false ? 
+                    null 
+                    : 
+                    <TransparentScreen  content={content} /> 
+                }
                 {this.props.sliderTransparent === true ?
                     <TransparentScreen 
                         showScheduleDetails = {this.props.showScheduleDetails}/> 
@@ -187,7 +118,11 @@ export default class Schedule extends Component {
                 {this.props.showSlider === true ?
                     <SlideUpPanel 
                         restartDrag = {this.props.restartDrag}
-                        content={slideContent} 
+                        content={<AppointmentCard 
+                            scheduleDetails = {this.props.scheduleDetails}   
+                            showScheduleButtons = {this.props.showScheduleButtons} 
+                            scheduleButtons={this.props.scheduleButtons}/>
+                        } 
                         stopScheduleDrag = {this.props.stopScheduleDrag}
                         draggable = {this.props.slideDraggable}/> 
                    :
@@ -205,67 +140,31 @@ const styles=StyleSheet.create({
     searchContent:{
         alignItems:'center',
         flexDirection:'row',
+        justifyContent:'space-between',
         backgroundColor:'white',
-        padding:10,
+        padding:15,
     },
     topContainer:{
-        marginLeft:'5%',
+        marginLeft:'2%',
         marginRight:'5%',
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-between',
+        //paddingTop:'1%',
+        paddingBottom:35,
     },
-    cardTitle:{
-        flexDirection:'column',
-        paddingBottom:16,
-    },
-    cardDescription:{
-        //flex:1,
-        borderBottomColor:'#CBD5E0',
-        borderBottomWidth: 1,
-        paddingBottom:15,
-        // alignItems:'center',
-        flexDirection:'row',
-        justifyContent: 'space-between',
-    },
-    cardDoctors:{
-        flexDirection:'row',
-        alignSelf:'flex-start',
-        justifyContent:'space-between',
-        marginLeft:0,
-        backgroundColor:'yellow'
-    },
-    secondaryDoctors:{
-        flexDirection:'row',
-        justifyContent:'space-between',
-        marginLeft:0,
-    },
-    doctorContainer:{
-        flexDirection:'row',
-        marginTop: 30,
-        marginLeft:0,
-        //marginHorizontal: 20
-    },
-    iconContainer:{
-        height:40, 
-        width: 40, 
-        borderColor:'#CBD5E0',
-        borderWidth:1, 
-        borderRadius:8
-    },
-    detailsContainer:{
-        flexDirection:'column', 
-        marginLeft:10, 
-        justifyContent:'space-between',
-        alignItems:'flex-start'
-    },
-    detailText:{
-        fontSize:16,
-    },
+    
     buttonContainer:{
 
     },
     partition:{
+        backgroundColor:'#CBD5E0',
+        borderRadius: 8,
+        height: 6,
+        width: 70,
+        alignSelf:'center',
+        marginTop:15,
+        marginBottom: 24,
 
     }
 })

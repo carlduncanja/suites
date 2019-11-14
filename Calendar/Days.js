@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Text, View, StyleSheet } from 'react-native';
 import CalendarDay from './CalendarDay';
+import ActionCalendar from './ActionCalendar';
 import moment from 'moment';
 
 export default class Days extends Component {
@@ -31,7 +32,13 @@ export default class Days extends Component {
         this.firstDayOfMonth() === '0' ? start = 7 : start = this.firstDayOfMonth()
         for (let i = 0; i < start-1; i++) {
             blanks.push(
-                <View style={styles.blanks} key={`blank${i}`} day=''/>
+                <View 
+                    style={[styles.blanks, 
+                        {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 80 }
+                    ]} 
+                    key={`blank${i}`} 
+                    day=''
+                />
             );
         }
 
@@ -39,18 +46,30 @@ export default class Days extends Component {
         let trailblanks = [];
         for (let i = this.lastDayOfMonth(); i < 7; i++) {
             trailblanks.push(
-                <View style={styles.blanks} key={`trailblank${i}`} day=''/>
+                <View 
+                    style={[styles.blanks, 
+                        {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 80 }
+                    ]} 
+                    key={`trailblank${i}`} 
+                    day=''
+                />
             );
         }
         
         let daysInMonth = [];
+            
         this.props.currentDays.map((day,index)=>{
             daysInMonth.push(
                 <CalendarDay 
+                    screenDimensions = {this.props.screenDimensions}
+                    highlightDay = {moment(this.props.currentDate).format("D")}
                     onPressDay={this.props.onPressDay} 
-                    key={`day-${index}`} 
+                    unique={`day-${index}`} 
                     day={day.day}
                     selected = {this.props.selected}
+                    tomorrowView = {this.props.tomorrowView}
+                    nextView = {this.props.nextView}
+                    lastView = {this.props.lastView}
                 />
             )            
         })
@@ -60,28 +79,41 @@ export default class Days extends Component {
         let rows =[];
         let cells=[];
 
-        totalSlots.forEach((row, i) => {
+        totalSlots.forEach((slot, i) => {
             if (i % 7 !== 0) {
-              cells.push(row);
+              cells.push(slot);
             } else {
               rows.push(cells);
               cells = [];
-              cells.push(row);
+              cells.push(slot);
             }
             if (i === totalSlots.length - 1) {
               rows.push(cells);
             }
         });
 
-        let daysinmonth = rows.map((d,i)=>{
+        const sliceEnd = this.props.statusLastRow === false ? rows.length-1 : rows.length;
+
+        let daysinmonth = rows.slice(0,sliceEnd).map((row,index)=>{
             return (
-                <View key={`row${i}`} style={{flexDirection:'row'}}>{d}</View>
+                <View key={`row${index}`} style={{flexDirection:'row'}}>{row}</View>
+            )
+        })
+
+        let lastRow = rows.slice(rows.length-1,rows.length).map((row,index)=>{
+            return (
+                <View key={`row${index}`} style={{flexDirection:'row', opacity:0.1}}>{row}</View>
             )
         })
 
         return (
             <View style={styles.container}>
-              {daysinmonth}
+              {daysinmonth} 
+              <ActionCalendar 
+                lastRow = {lastRow}
+                showLastCalendarRow = {this.props.showLastCalendarRow}
+                statusLastRow = {this.props.statusLastRow}
+            />
             </View>
         )
     }
@@ -89,20 +121,18 @@ export default class Days extends Component {
 
 const styles=StyleSheet.create({
     container:{
-        // flex:1,
-        borderLeftWidth:1,
-        borderBottomWidth:1,
+        //flex:1,
+        borderLeftWidth:0.5,
+        borderBottomWidth:0.5,
         borderColor:'#EDF2F7',
     },
     blanks:{
-        flex:1,
-        height:80,
-        width: 80,
+        //flex:1,
+        height:98,
+        //width: 80,
         backgroundColor:'#FFFFFF',
-        borderTopWidth:1,
-        borderRightWidth:1,
+        borderTopWidth:0.5,
+        borderRightWidth:0.5,
         borderColor:'#EDF2F7',
-        paddingTop:8,
-        // paddingLeft:8,
     }
 })

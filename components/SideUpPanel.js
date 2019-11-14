@@ -11,7 +11,7 @@ export default class SideUpPanel extends Component {
             <View style={styles.container}>
                 <SlidingUpPanel
                     ref={c => (this._panel = c)}
-                    draggableRange={{top: height-150, bottom: (height)/2}}
+                    draggableRange={{top: height-150, bottom: (height)/2-100}}
                     animatedValue={this._draggedValue}
                     showBackdrop={false}
                     allowDragging = {this.props.draggable}
@@ -21,7 +21,7 @@ export default class SideUpPanel extends Component {
                     <View style={styles.panel}>
                         <View style={styles.panelHeader}>
                             <View style={{alignItems:'center'}}>
-                                <Divider dividerAction = {this.props.restartDrag}/>
+                                <Divider longPressAction = {this.props.restartDrag}/>
                             </View>
                             
                             <View style={styles.bottom}>

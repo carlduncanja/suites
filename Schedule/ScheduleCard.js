@@ -65,7 +65,7 @@ const styles=StyleSheet.create({
         borderBottomWidth: 1,
         justifyContent:'flex-start',
         alignSelf:'center',
-        marginTop: 8,
+        marginTop: 16,
         paddingBottom: 16,
         overflow:'scroll',
     },
