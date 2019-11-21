@@ -44,7 +44,7 @@ export default class Calendar extends Component {
                     <View style={styles.labelsContainer}> 
                         {weekdays.map((day,index)=>{
                             return (
-                                <View key={index} style={[styles.labelContainer, {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 80 }]}>
+                                <View key={index} style={[styles.labelContainer, {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }]}>
                                     <Text key={index} style={styles.label}>{day.toUpperCase()}</Text>
                                 </View>
                             )

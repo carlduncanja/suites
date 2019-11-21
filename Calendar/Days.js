@@ -34,7 +34,7 @@ export default class Days extends Component {
             blanks.push(
                 <View 
                     style={[styles.blanks, 
-                        {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 80 }
+                        {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }
                     ]} 
                     key={`blank${i}`} 
                     day=''
@@ -48,7 +48,7 @@ export default class Days extends Component {
             trailblanks.push(
                 <View 
                     style={[styles.blanks, 
-                        {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 80 }
+                        {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }
                     ]} 
                     key={`trailblank${i}`} 
                     day=''

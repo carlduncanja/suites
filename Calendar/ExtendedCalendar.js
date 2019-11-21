@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
     },
     day:{
         fontSize:24,
-        paddingTop:8,     
-        paddingLeft:10,
+        marginTop:19,     
+        paddingLeft:18,
         color:'#718096',    
     },
 })

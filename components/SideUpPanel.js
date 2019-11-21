@@ -20,7 +20,7 @@ export default class SideUpPanel extends Component {
                        
                     <View style={styles.panel}>
                         <View style={styles.panelHeader}>
-                            <View style={{alignItems:'center'}}>
+                            <View style={{alignItems:'center',height:20}}>
                                 <Divider longPressAction = {this.props.restartDrag}/>
                             </View>
                             
@@ -38,7 +38,7 @@ export default class SideUpPanel extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        //flex: 1,
     },
     panel: {
         flex: 1,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, ScrollView } from 'react-native';
+import {View, StyleSheet, ScrollView } from 'react-native';
 import RowCalendar from '../Calendar/RowCalendar';
 import Calendar from '../Calendar/Calendar';
 import ScheduleListView from './ScheduleListView';
@@ -7,43 +7,35 @@ import Month from '../Calendar/Month';
 import Button from '../components/Button';
 import TransparentScreen from '../components/TransparentScreen';
 import SlideUpPanel from '../components/SideUpPanel';
-import InputText from '../components/InputText';
 import Divider from '../components/Divider';
-import Svg, {Path} from 'react-native-svg';
 import AppointmentCard from './AppointmentCard';
+import ExtendedCalendar from '../Calendar/ExtendedCalendar';
+import SearchBar from '../components/SearchBar';
+import SlideLeftPanel from '../components/SlideLeftPanel';
 
 
 
 export default class Schedule extends Component {
     render() {    
-        const content=(
-            <View style={styles.searchContent}>
-                <InputText 
-                    changeText = {this.props.searchChangeText}
-                    inputText = {this.props.searchValue}
-                    placeholderTextColor = '#718096'
-                    placeholder="Search by scheduled items or dates"
-                />
-
-                <TouchableOpacity onPress={this.props.closeTransparent}>
-                    <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <Path d="M13.5 2.5L2.5 13.5" stroke="#4A5568" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                        <Path d="M2.5 2.5L13.5 13.5" stroke="#4A5568" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                    </Svg>
-                </TouchableOpacity>
-                
-            </View>
+        const searchContent=(
+            <SearchBar 
+                placeholderTextColor = '#718096'
+                placeholder="Search by scheduled items or dates"
+                changeText = {this.props.searchChangeText}
+                inputText = {this.props.searchValue}
+                closeSearch = {this.props.closeTransparent}
+            />
         )
-     
+            
         return (
-            <View style={{height:'100%'}}>
-                <ScrollView >
-                    <View>   
+            <View style={{flex:1}}>
+                <ScrollView style={{flex:1}}>
+                    <View style={{flex:1}}>   
                         <View style={[styles.topContainer, {paddingTop: this.props.screenDimensions.width > this.props.screenDimensions.height ? 0: '1%'}]}>
                             <View style={styles.buttonContainer}>
                                 <Button 
                                     title="Search" 
-                                    searchPress={this.props.searchPress}
+                                    buttonPress={this.props.searchPress}
                                 />                        
                             </View>
                             <View style={{alignItems:'center' }}>
@@ -54,7 +46,10 @@ export default class Schedule extends Component {
                                 />                     
                             </View>
                             <View style={styles.buttonContainer}>
-                                <Button title="Go to Today"/>
+                                <Button 
+                                    title= {this.props.displayTodayAppointment === true ? "Go Back" : "Go to Today"}
+                                    buttonPress={this.props.showTodayAppointment}
+                                />
                             </View>
                         </View>
                         
@@ -66,7 +61,10 @@ export default class Schedule extends Component {
                                     currentDay = {this.props.currentDate}
                                 />
                                 :
-                                <Calendar {...this.props}/>
+                                this.props.screenDimensions.width > this.props.screenDimensions.height ?
+                                    <ExtendedCalendar {...this.props}/>
+                                    :
+                                    <Calendar {...this.props}/>
                             }
                             
                         </View>    
@@ -91,41 +89,58 @@ export default class Schedule extends Component {
                                     :
                                     0,
                             
-                            marginTop : this.props.displayFullCalendar === true && this.props.statusLastRow === true ? 25 : 0
-                            }}
+                            marginTop : this.props.displayFullCalendar === true && this.props.statusLastRow === true ? 25 : 0,
+                            height:'100%'}}
                         >
                         <ScheduleListView 
+                            displayTodayAppointment = {this.props.displayTodayAppointment}
                             currentDate={this.props.currentDate}
                             showSlider = {this.props.showSlider}
                             showScheduleDetails = {this.props.showScheduleDetails}
                         />
+
+                        
                     </View>
-                    
+
+                   { this.props.screenDimensions.width > this.props.screenDimensions.height && this.props.showSlider === true?
+                        <SlideLeftPanel content = "Orientation Content" {...this.props}/>
+                       
+                    :
+                    null}
+
                     
                 </ScrollView>
-
+           
                 {this.props.transparent === false ? 
                     null 
                     : 
-                    <TransparentScreen  content={content} /> 
-                }
-                {this.props.sliderTransparent === true ?
-                    <TransparentScreen 
-                        showScheduleDetails = {this.props.showScheduleDetails}/> 
-                   :
-                    null
+                    this.props.searchOpen === true ? 
+
+                        <TransparentScreen  content={searchContent} showScheduleDetails = {this.props.closeTransparent} /> 
+                        :
+                        <TransparentScreen  showScheduleDetails = {this.props.closeTransparent} /> 
+
                 }
                 {this.props.showSlider === true ?
                     <SlideUpPanel 
                         restartDrag = {this.props.restartDrag}
-                        content={<AppointmentCard 
-                            scheduleDetails = {this.props.scheduleDetails}   
-                            showScheduleButtons = {this.props.showScheduleButtons} 
-                            scheduleButtons={this.props.scheduleButtons}/>
+                        content={
+                            <AppointmentCard 
+                                scheduleDetails = {this.props.scheduleDetails}   
+                                showScheduleButtons = {this.props.showScheduleButtons} 
+                                scheduleButtons={this.props.scheduleButtons}
+                                deleteFloatingAction = {this.props.deleteFloatingAction}
+                                completeDeleteFloatingAction = {this.props.completeDeleteFloatingAction}
+                                deleteAppointment = {this.props.deleteAppointment}
+                                completeDeleteAppointment = {this.props.completeDeleteAppointment}
+                                exitDelete = {this.props.exitDelete}
+                                />
                         } 
                         stopScheduleDrag = {this.props.stopScheduleDrag}
                         draggable = {this.props.slideDraggable}/> 
-                   :
+
+                    :
+
                     null
 
                 }

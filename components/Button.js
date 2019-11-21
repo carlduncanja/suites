@@ -6,7 +6,7 @@ export default class Button extends Component {
         return (
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={this.props.searchPress}
+                onPress={this.props.buttonPress}
             >
                 <Text style={styles.buttonText}>{this.props.title}</Text>
             </TouchableOpacity>

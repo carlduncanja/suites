@@ -20,6 +20,7 @@
     "react-native-css-gradient": "^0.4.0",
     "react-native-elements": "^1.2.6",
     "react-native-linear-gradient": "^2.5.6",
+    "react-native-modal-wrapper": "^3.1.1",
     "react-native-popover": "^0.2.0",
     "react-native-popover-view": "^2.0.5",
     "react-native-svg": "^9.13.3",
@@ -29,6 +30,7 @@
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^1.9.4",
     "react-router-dom": "^5.1.2",
+    "react-sliding-panel": "0.0.4",
     "rn-sliding-up-panel": "^2.3.3"
   },
   "devDependencies": {

@@ -3,7 +3,6 @@ import {View, TouchableOpacity, StyleSheet} from 'react-native';
 
 export default class AnimatedDivider extends Component{
     render(){
-        console.log("Status: ", this.props.statusLastRow);
         return(
             <TouchableOpacity 
                 onPress = {this.props.showLastCalendarRow}

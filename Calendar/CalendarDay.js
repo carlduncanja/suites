@@ -5,16 +5,15 @@ import moment from 'moment';
 
 export default class CalendarDay extends Component {
     render() {    
-        //console.log("Key: ", this.props.unique)    
         return (
-            <View style={[styles.container, {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 80 }]} key={this.props.unique}>
+            <View style={[styles.container, {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }]} key={this.props.unique}>
                 {parseInt(this.props.highlightDay) === parseInt(this.props.day) ? 
                     <View>
-                        <View style={{ marginTop: 2}}>
-                            <DayIdentifier color = "#A0AEC0"/>
-                        </View>
                         <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)}>
-                            <Text style={[styles.day, {color:'#2D3748'}]}>{this.props.day}</Text>
+                            <View style={{marginTop:3}}>
+                                <DayIdentifier color = "#A0AEC0"/>
+                            </View>
+                            <Text style={[styles.day, {color:'#2D3748', marginTop: 12}]}>{this.props.day}</Text>
                         </TouchableOpacity>
                     </View>
                    
@@ -22,13 +21,13 @@ export default class CalendarDay extends Component {
 
                     parseInt(this.props.highlightDay) + 1 === parseInt(this.props.day) ?
                         <View style={{flex:1}}>
-                            <View style={{ marginTop: 2}}>
-                                <DayIdentifier color = "#3FC7F4"/>
-                            </View>
-                            <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ alignItems:'flex-start', marginBottom:10}}>
-                                <Text style={[styles.day, {color:'#2D3748'}]}>{this.props.day}</Text>
+                            <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ marginBottom:10}}>
+                                <View style={{ marginTop: 3}}>
+                                    <DayIdentifier color = "#3FC7F4"/>
+                                </View>
+                                <Text style={[styles.day, {color:'#2D3748', marginTop: 12}]}>{this.props.day}</Text>
                             </TouchableOpacity>
-                            <View style={{flexDirection:'row', flex:1, alignItems:'flex-end', marginLeft:11, marginRight:22, flexWrap:'wrap'}}>
+                            <View style={{flexDirection:'row', flex:1, alignItems:'flex-end', marginBottom:15,marginLeft:11, marginRight:22, flexWrap:'wrap'}}>
                                 {this.props.tomorrowView.map((tomorrow)=> tomorrow)}
                             </View>
                         </View>
@@ -37,20 +36,24 @@ export default class CalendarDay extends Component {
 
                         parseInt(this.props.highlightDay) + 2 === parseInt(this.props.day) ?
                             <View style={{flex:1}}> 
-                                <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ alignItems:'flex-start'}}>
+                                <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ alignItems:'flex-start', marginBottom:10}}>
                                     <Text style={[styles.day, {color:'#2D3748'}]}>{this.props.day}</Text>
                                 </TouchableOpacity>
-                                <View style={{flexDirection:'row', flex:1, alignItems:'flex-end', marginBottom: 15, marginLeft:11, marginRight:22, flexWrap:'wrap'}}>{this.props.nextView.map((next)=> next)}</View>
+                                <View style={{flexDirection:'row', flex:1, marginBottom: 15, marginLeft:11, marginRight:22, flexWrap:'wrap'}}>
+                                    {this.props.nextView.map((next)=> next)}
+                                </View>
                             </View>
                                 
                             :
 
                             parseInt(this.props.highlightDay) + 3 === parseInt(this.props.day) ?
                                 <View style={{flex:1}}> 
-                                    <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ alignItems:'flex-start'}}>
+                                    <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ alignItems:'flex-start', marginBottom:10}}>
                                         <Text style={[styles.day, {color:'#2D3748'}]}>{this.props.day}</Text>
                                     </TouchableOpacity>
-                                    <View style={{flexDirection:'row', flex:1, alignItems:'flex-end', marginBottom: 15, marginLeft:11, marginRight:22, flexWrap:'wrap'}}>{this.props.lastView.map((last)=> last)}</View>
+                                    <View style={{flexDirection:'row', flex:1, marginBottom: 15, marginLeft:11, marginRight:22, flexWrap:'wrap'}}>
+                                        {this.props.lastView.map((last)=> last)}
+                                    </View>
                                 </View>
 
                                 :
@@ -84,8 +87,8 @@ const styles = StyleSheet.create({
     },
     day:{
         fontSize:24,
-        paddingTop:8,     
-        paddingLeft:10,
+        marginTop:19,     
+        paddingLeft:18,
         color:'#718096',    
     },
     pressed:{

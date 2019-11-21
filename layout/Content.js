@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import {View, Text, ScrollView, StyleSheet, Dimensions} from 'react-native';
-import moment from 'moment';
 import Schedule from '../Schedule/Schedule';
 import CaseFiles from '../CaseFiles/CaseFiles';
-import Calendar from '../Calendar/Calendar';
-import RowCalendar from '../Calendar/RowCalendar';
 import SlideUpPanel from '../components/SideUpPanel';
+import SlideLeftPanel from '../components/SlideLeftPanel';
 
 export default class Content extends Component {
     constructor(props){
@@ -24,7 +22,7 @@ export default class Content extends Component {
                         <CaseFiles {...this.props}/>
                         :
                         this.props.name === 'PATIENTS' ?
-                            <Calendar {...this.props}/>
+                            <SlideLeftPanel {...this.props}/>
                             :
                             this.props.name === 'INVENTORY' ?
                                 <SlideUpPanel/>

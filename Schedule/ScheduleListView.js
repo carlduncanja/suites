@@ -26,23 +26,36 @@ export default class ScheduleListView extends Component {
        
         return (
             <View style={styles.container}>
-                <DailyAppointmentCard
-                    dailyText = {`Tommorrow - ${moment(tomorrow).format("MMM D").toString()}`}
-                    dailyAppointments = {getAppointments(moment(tomorrow).format("YYYY-MM-DD"))}
-                    showScheduleDetails = {this.props.showScheduleDetails}                
-                />
+                {this.props.displayTodayAppointment === true ? 
+                        <DailyAppointmentCard
+                            dailyText = {`Today - ${this.props.currentDate.format("MMM D").toString()}`}
+                            dailyAppointments = {getAppointments(this.props.currentDate.format("YYYY-MM-DD"))}
+                            showScheduleDetails = {this.props.showScheduleDetails}
+                        />
 
-                <DailyAppointmentCard
-                    dailyText = {`${moment(second).format("dddd").toString()} - ${moment(second).format("MMM D").toString()}`}
-                    dailyAppointments = {getAppointments(moment(second).format("YYYY-MM-DD"))}
-                    showScheduleDetails = {this.props.showScheduleDetails}                
-                />
+                    :
 
-                <DailyAppointmentCard
-                    dailyText = {`${moment(last).format("dddd").toString()} - ${moment(last).format("MMM D").toString()}`}
-                    dailyAppointments = {getAppointments(moment(last).format("YYYY-MM-DD"))}
-                    showScheduleDetails = {this.props.showScheduleDetails}                
-                />
+                    <View>
+                        <DailyAppointmentCard
+                            dailyText = {`Tommorrow - ${moment(tomorrow).format("MMM D").toString()}`}
+                            dailyAppointments = {getAppointments(moment(tomorrow).format("YYYY-MM-DD"))}
+                            showScheduleDetails = {this.props.showScheduleDetails}                
+                        />
+
+                        <DailyAppointmentCard
+                            dailyText = {`${moment(second).format("dddd").toString()} - ${moment(second).format("MMM D").toString()}`}
+                            dailyAppointments = {getAppointments(moment(second).format("YYYY-MM-DD"))}
+                            showScheduleDetails = {this.props.showScheduleDetails}                
+                        />
+
+                        <DailyAppointmentCard
+                            dailyText = {`${moment(last).format("dddd").toString()} - ${moment(last).format("MMM D").toString()}`}
+                            dailyAppointments = {getAppointments(moment(last).format("YYYY-MM-DD"))}
+                            showScheduleDetails = {this.props.showScheduleDetails}                
+                        />
+                    </View>
+                }
+                
             </View>
         )
     }
