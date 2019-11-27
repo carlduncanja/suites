@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import DayIdentifier from '../components/DayIdentifier';
+import DayIdentifier from '../common/DayIdentifier';
 import moment from 'moment';
 
 export default class CalendarDay extends Component {
-    render() {    
+    render() {
         return (
             <View style={[styles.container, {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }]} key={this.props.unique}>
-                {parseInt(this.props.highlightDay) === parseInt(this.props.day) && this.props.currentDate.format("M") === moment(new Date()).format("M")? 
+                {parseInt(this.props.highlightDay) === parseInt(this.props.day) && this.props.currentDate.format("M") === moment(new Date()).format("M")?
                     <View>
                         <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)}>
                             <View style={{marginTop:3}}>
@@ -16,8 +16,8 @@ export default class CalendarDay extends Component {
                             <Text style={[styles.day, {color:'#2D3748', marginTop: 12}]}>{this.props.day}</Text>
                         </TouchableOpacity>
                     </View>
-                   
-                    : 
+
+                    :
 
                     parseInt(this.props.highlightDay) + 1 === parseInt(this.props.day) && this.props.currentDate.format("M") === moment(new Date()).format("M") ?
                         <View style={{flex:1}}>
@@ -31,11 +31,11 @@ export default class CalendarDay extends Component {
                                 {this.props.tomorrowView.map((tomorrow)=> tomorrow)}
                             </View>
                         </View>
-                            
+
                         :
 
                         parseInt(this.props.highlightDay) + 2 === parseInt(this.props.day) && this.props.currentDate.format("M") === moment(new Date()).format("M") ?
-                            <View style={{flex:1}}> 
+                            <View style={{flex:1}}>
                                 <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ alignItems:'flex-start', marginBottom:10}}>
                                     <Text style={[styles.day, {color:'#2D3748'}]}>{this.props.day}</Text>
                                 </TouchableOpacity>
@@ -43,11 +43,11 @@ export default class CalendarDay extends Component {
                                     {this.props.nextView.map((next)=> next)}
                                 </View>
                             </View>
-                                
+
                             :
 
                             parseInt(this.props.highlightDay) + 3 === parseInt(this.props.day) && this.props.currentDate.format("M") === moment(new Date()).format("M") ?
-                                <View style={{flex:1}}> 
+                                <View style={{flex:1}}>
                                     <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ alignItems:'flex-start', marginBottom:10}}>
                                         <Text style={[styles.day, {color:'#2D3748'}]}>{this.props.day}</Text>
                                     </TouchableOpacity>
@@ -87,9 +87,9 @@ const styles = StyleSheet.create({
     },
     day:{
         fontSize:24,
-        marginTop:19,     
+        marginTop:19,
         paddingLeft:18,
-        color:'#718096',    
+        color:'#718096',
     },
     pressed:{
         height: 4,

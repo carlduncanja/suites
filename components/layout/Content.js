@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import {View, Text, ScrollView, StyleSheet, Dimensions} from 'react-native';
 import Schedule from '../Schedule/Schedule';
 import CaseFiles from '../CaseFiles/CaseFiles';
-import SlideUpPanel from '../components/SideUpPanel';
-import SlideLeftPanel from '../components/SlideLeftPanel';
+import SlideUpPanel from '../common/SideUpPanel';
+import SlideLeftPanel from '../common/SlideLeftPanel';
 import LandscapeSchedule from '../Schedule/LandscapeSchedule'
 
 
@@ -17,7 +17,7 @@ export default class Content extends Component {
     render() {
         return (
             <View style = {styles.content}>
-                {this.props.name === 'SCHEDULE' ? 
+                {this.props.name === 'SCHEDULE' ?
                     this.props.screenDimensions.width < this.props.screenDimensions.height ?
                     <Schedule {...this.props} />
                     :
@@ -42,8 +42,8 @@ export default class Content extends Component {
                                             <Text>ALERTS</Text>
                                             :
                                             <Text>HOME</Text>
-                } 
-               
+                }
+
             </View>
         )
     }

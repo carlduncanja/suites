@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import moment from 'moment';
 import Svg, {Path} from 'react-native-svg';
-import FloatingActionButton from '../components/FloatingActionButton';
-import ScheduleFloatingActionButtons from '../components/ScheduleFloatingActionButtons'
-import ActionContainer from '../components/ActionContainer';
+import FloatingActionButton from '../common/FloatingActionButton';
+import ScheduleFloatingActionButtons from '../common/ScheduleFloatingActionButtons'
+import ActionContainer from '../common/ActionContainer';
 
 export default class Schedule extends Component {
     constructor(props){
@@ -27,7 +27,7 @@ export default class Schedule extends Component {
             }else{
                 time = `${(parseInt(hour) - 12).toString()}:${minutes}`
             }
-            
+
         }else{
             timePeriod = "am"
             time = `${(parseInt(hour)).toString()}:${minutes}`
@@ -43,9 +43,9 @@ export default class Schedule extends Component {
                     <Path d="M15 0H1C0.4 0 0 0.4 0 1V15C0 15.6 0.4 16 1 16H15C15.6 16 16 15.6 16 15V1C16 0.4 15.6 0 15 0ZM14 14H2V2H14V14Z" fill={fillColor}/>
                     <Path d="M12 5H4V7H12V5Z" fill={fillColor}/>
                     <Path d="M12 9H4V11H12V9Z" fill={fillColor}/>
-                </Svg> 
+                </Svg>
             )
-            
+
         }
 
         const deleteButton = (strokeColor) => {
@@ -57,7 +57,7 @@ export default class Schedule extends Component {
                     <Path d="M10.5 7.5L5.5 12.5" stroke={strokeColor} stroke-linecap="round" stroke-linejoin="round"/>
                 </Svg>
             )
-            
+
         }
 
         const editButton = (strokeColor) => {
@@ -67,9 +67,9 @@ export default class Schedule extends Component {
                     <Path d="M5.5 14.5L0.5 15.5L1.5 10.5L11.5 0.5L15.5 4.5L5.5 14.5Z" stroke={strokeColor} stroke-linecap="round" stroke-linejoin="round"/>
                 </Svg>
             )
-            
+
         }
-        
+
         const actionButtons = (
             <View style={{flex:1, justifyContent:'space-between'}}>
                 <ScheduleFloatingActionButtons
@@ -80,10 +80,10 @@ export default class Schedule extends Component {
                     deleteAppointment = {this.props.deleteAppointment}
                     completeDeleteAppointment = {this.props.completeDeleteAppointment}
                     exitDelete = {this.props.exitDelete}
-                    
+
                 />
                 {/* <View style={{backgroundColor:'#E2E8F0', borderRadius:2, height:1, width:'100%'}}/>
-                
+
                 <ScheduleFloatingActionButtons
                     buttonSvg = {editButton("#2F855A")}
                     buttonText = "Edit Item"
@@ -102,7 +102,7 @@ export default class Schedule extends Component {
         )
 
         const doctorItemContainer = (title, name, position) =>{
-            return position === 'doctor' ? 
+            return position === 'doctor' ?
             (
                 <View style={styles.doctorContainer}>
                     <View style={styles.iconContainer}>
@@ -138,36 +138,36 @@ export default class Schedule extends Component {
                     </View>
                 </View>
 
-            
+
         }
 
         const personnel = [...this.props.scheduleDetails.surgeons, ...this.props.scheduleDetails.doctors]
-            
+
         return(
             <TouchableOpacity onPress={this.props.closeActionButtons} style={{flex:1}} activeOpacity={1}>
                 <ScrollView style={styles.container}>
-               
+
                     <View style={styles.cardTitle}>
                         <Text style={{fontSize:20, color:'#104587', paddingBottom:5}}>{this.props.scheduleDetails.title}</Text>
                         <Text style={{fontSize:20, color:'#0CB0E7', paddingBottom:5}}>{this.props.scheduleDetails.responseEntity}</Text>
                     </View>
-            
+
                     <View style={styles.doctors}>
-            
+
                         <View style={styles.cardDescription}>
                             <Text style={[styles.detailText, {color: '#2D3748', width:'40%'}]}>{this.props.scheduleDetails.location}</Text>
                             <Text style={[styles.detailText, {color: '#104587', width:'40%'}]}>
                                 {this.getTime(this.props.scheduleDetails.startTime)} - {this.getTime(this.props.scheduleDetails.endTime)}
                             </Text>
-                            <Text style={[styles.detailText, {color: '#104587', width:'40%'}]}>{moment(this.props.scheduleDetails.startTime).format("MMM D, YYYY")}</Text>                  
+                            <Text style={[styles.detailText, {color: '#104587', width:'40%'}]}>{moment(this.props.scheduleDetails.startTime).format("MMM D, YYYY")}</Text>
                         </View>
-    
+
                         <View style={styles.cardDoctors}>
                             {personnel.map((surgeon, index)=>{
                                 return(
                                     doctorItemContainer(surgeon.title, surgeon.name, 'doctor')
                                 )
-                                
+
                             })}
                             <View style={{flexDirection:'row'}}>
                                 {this.props.scheduleDetails.nurses.map((nurse)=>{
@@ -176,31 +176,31 @@ export default class Schedule extends Component {
                                     )
                                 })}
                             </View>
-    
-                        </View> 
+
+                        </View>
                     </View>
- 
-                    <View style={styles.footerContainer}> 
+
+                    <View style={styles.footerContainer}>
                         <Text style={{fontSize: 12, color:'#A0AEC0'}}>Created by {this.props.scheduleDetails.createdBy}</Text>
                         <View style={styles.footer}>
-                        {this.props.scheduleButtons === false ?  
-                                <TouchableOpacity 
-                                    onPress={this.props.showScheduleButtons} 
-                                    style={[styles.buttonController, 
+                        {this.props.scheduleButtons === false ?
+                                <TouchableOpacity
+                                    onPress={this.props.showScheduleButtons}
+                                    style={[styles.buttonController,
                                     {backgroundColor:'white'}]}
                                 >
                                     {buttonsController('#0CB0E7')}
-                                </TouchableOpacity>     
-                                :                                
+                                </TouchableOpacity>
+                                :
                                     <View>
                                         { container }
-                                        <TouchableOpacity 
-                                            onPress={this.props.showScheduleButtons} 
-                                            style={[styles.buttonController, 
+                                        <TouchableOpacity
+                                            onPress={this.props.showScheduleButtons}
+                                            style={[styles.buttonController,
                                             {backgroundColor:'#A0AEC0'}]}
                                         >
                                             {buttonsController('white')}
-                                        </TouchableOpacity> 
+                                        </TouchableOpacity>
                                     </View>
                             }
                         </View>
@@ -209,7 +209,7 @@ export default class Schedule extends Component {
 
                 </ScrollView>
             </TouchableOpacity>
-            
+
 
         )
     }
@@ -217,15 +217,15 @@ export default class Schedule extends Component {
 
 const styles= StyleSheet.create({
     container:{
-        flex:1, 
-        //padding:'2%', 
+        flex:1,
+        //padding:'2%',
         paddingRight:'2%',
         paddingBottom:'2%',
-        paddingLeft:'4%', 
+        paddingLeft:'4%',
         flexDirection:'column'
     },
     doctors:{
-        flexDirection:'column',   
+        flexDirection:'column',
         height:'50%',
     },
     footerContainer:{
@@ -251,7 +251,7 @@ const styles= StyleSheet.create({
         flexDirection:'column',
         marginLeft:0,
         marginTop: 20,
-      
+
     },
     doctorContainer:{
         height:'50%',
@@ -261,17 +261,17 @@ const styles= StyleSheet.create({
         width:'35%',
     },
     iconContainer:{
-        height:40, 
-        width: 40, 
+        height:40,
+        width: 40,
         borderColor:'#CBD5E0',
-        borderWidth:1, 
+        borderWidth:1,
         borderRadius:8,
         justifyContent:'center',
         alignItems:'center'
     },
     detailsContainer:{
-        flexDirection:'column', 
-        marginLeft:20, 
+        flexDirection:'column',
+        marginLeft:20,
         justifyContent:'space-between',
         alignItems:'flex-start'
     },
@@ -279,9 +279,9 @@ const styles= StyleSheet.create({
         fontSize:16,
     },
     buttonController:{
-        height:40, 
-        width:40, 
-        borderRadius:40/2, 
+        height:40,
+        width:40,
+        borderRadius:40/2,
         alignItems:'center',
         justifyContent:'center',
         shadowColor: "#000",
@@ -295,9 +295,9 @@ const styles= StyleSheet.create({
         elevation: 5,
     },
     footer:{
-        flexDirection:'column', 
-        position:'relative', 
-        alignItems:'center', 
+        flexDirection:'column',
+        position:'relative',
+        alignItems:'center',
         justifyContent:'space-between',
         marginRight: 10,
     }

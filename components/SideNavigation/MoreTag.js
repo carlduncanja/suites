@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import ActionContainer from '../components/ActionContainer';
+import ActionContainer from '../common/ActionContainer';
 import Svg,{Path, Rect} from 'react-native-svg';
 
 export default class More extends Component{
@@ -25,7 +25,7 @@ export default class More extends Component{
                     <TouchableOpacity style={styles.navTag} onPress={this.props.openMore} >
                         {icon ("#CBD5E0")}
                         <Text style={styles.navText}>MORE</Text>
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                     :
                     <View>
                         <TouchableOpacity style={[styles.navTag, styles.selectedNavTag, {backgroundColor:'#04346F'}]} onPress={this.openMore}>
@@ -36,11 +36,11 @@ export default class More extends Component{
                             <ActionContainer actionTitle="More Details" content={<Text>Create New List</Text>}/>
                         </View> */}
                     </View>
-                    
+
                 }
-                
+
             </View>
-            
+
         )
     }
 }
@@ -73,13 +73,13 @@ const styles = StyleSheet.create({
        color:'#3182CE',
     },
     overlay:{
-        paddingRight:0, 
-        flex:1, 
+        paddingRight:0,
+        flex:1,
         borderBottomLeftRadius:10,
         borderTopLeftRadius:10,
-        width:'100%', 
+        width:'100%',
         height:'100%',
-        position:"absolute", 
+        position:"absolute",
         backgroundColor:'rgba(0,0,0,0.33)'
     }
 })

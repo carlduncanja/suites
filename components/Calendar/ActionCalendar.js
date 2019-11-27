@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, ScrollView } from 'react-native';
-import AnimatedDivider from '../components/AnimatedDivider';
+import AnimatedDivider from '../common/AnimatedDivider';
 
 export default class ActionCalendar extends Component {
     render(){
@@ -14,9 +14,9 @@ export default class ActionCalendar extends Component {
                     :
                     null
                 }
-                
+
                 <View style={{width: '100%', height:'100%',position:'absolute', marginTop:0, alignItems:'center'}}>
-                    <AnimatedDivider 
+                    <AnimatedDivider
                         showLastCalendarRow = {this.props.showLastCalendarRow}
                         statusLastRow = {this.props.statusLastRow}
                     />
@@ -27,5 +27,5 @@ export default class ActionCalendar extends Component {
 }
 
 const styles = StyleSheet.create({
-   
+
 })

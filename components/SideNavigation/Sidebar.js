@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import NavigationBar from './NavigationBar';
 import {Text, View, StyleSheet} from 'react-native';
 import Svg, {Path, Filter, G, Defs } from 'react-native-svg';
-import TransparentScreen from '../components/TransparentScreen';
+import TransparentScreen from '../common/TransparentScreen';
 
 export default class Sidebar extends Component {
     render() {

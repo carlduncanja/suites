@@ -5,10 +5,10 @@ import Days from './Days';
 import moment from 'moment';
 
 export default class Calendar extends Component {
-       
+
     render() {
         //console.log("Current Date: ", this.props.currentDate)
-        const appointments = require('../assets/db.json').appointments;
+        const appointments = require('../../assets/db.json').appointments;
 
         const filterLevels = (date) => {
             let result = appointments.filter(
@@ -31,17 +31,17 @@ export default class Calendar extends Component {
             return levelView
         }
 
-        
+
         const tomorrowLevels = [];
         const nextLevels = [];
         const lastLevels = [];
-        
+
         filterLevels(parseInt(moment(this.props.currentDate).format("D")) + 1).map((app)=> tomorrowLevels.push(app.level));
         filterLevels(parseInt(moment(this.props.currentDate).format("D")) + 2).map((app)=> nextLevels.push(app.level));
         filterLevels(parseInt(moment(this.props.currentDate).format("D")) + 3).map((app)=> lastLevels.push(app.level))
         return (
             <View style={styles.container}>
-                <View style={styles.labelsContainer}> 
+                <View style={styles.labelsContainer}>
                     {weekdays.map((day,index)=>{
                         return (
                             <View key={index} style={[styles.labelContainer, {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }]}>
@@ -50,9 +50,9 @@ export default class Calendar extends Component {
                         )
                     })}
                 </View>
-    
+
                 <View style={styles.currentContainer}>
-                    <Days 
+                    <Days
                         screenDimensions = {this.props.screenDimensions}
                         showLastCalendarRow = {this.props.showLastCalendarRow}
                         statusLastRow = {this.props.statusLastRow}
@@ -65,7 +65,7 @@ export default class Calendar extends Component {
                         selected={this.props.selected}
                         daySelected={this.props.daySelected}
                     />
-                </View> 
+                </View>
             </View>
         )
     }
@@ -76,7 +76,7 @@ const weekdays=["mon","tue","wed","thu","fri","sat","sun"];
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        flexDirection:'column', 
+        flexDirection:'column',
         marginLeft:12,
         marginRight:12,
     },

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import {Text, View, Button, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native'; 
+import {Text, View, Button, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import Content from '../layout/Content';
 
 export default class TransparentScreen extends Component {
     render() {
         return (
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={styles.overlay}
                 onPress={this.props.showScheduleDetails}>
                 <View style={styles.content}>

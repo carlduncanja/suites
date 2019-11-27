@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, Animated, PanResponder, Platform, ScrollView, View, TouchableOpacity, Text, Dimensions } from 'react-native';
-import Sidebar from './layout/Sidebar';
-import Content from './layout/Content';
+import Sidebar from './components/SideNavigation/Sidebar';
+import Content from './components/layout/Content';
 import moment from 'moment';
 
 export default class App extends React.Component {
@@ -24,7 +24,7 @@ export default class App extends React.Component {
 
       currentDate: moment(new Date()),
       prevMonthDate: moment(`${moment(new Date()).format("YYYY")}-${(parseInt(moment(new Date()).format("MM")) - 1).toString()}-${moment(new Date()).format("DD")}`),
-      nextMonthDate: moment(`${moment(new Date()).format("YYYY")}-${(parseInt(moment(new Date()).format("MM")) + 1).toString()}-${moment(new Date()).format("DD")}`),      
+      nextMonthDate: moment(`${moment(new Date()).format("YYYY")}-${(parseInt(moment(new Date()).format("MM")) + 1).toString()}-${moment(new Date()).format("DD")}`),
       selected: {},
       screenDimensions: {},
       daySelected: false,
@@ -33,7 +33,7 @@ export default class App extends React.Component {
       calendarLayoutMeasure:700,
     }
 
-    this.onPressTab = this.onPressTab.bind(this); 
+    this.onPressTab = this.onPressTab.bind(this);
     this.decreaseMonthChange = this.decreaseMonthChange.bind(this);
     this.increaseMonthChange = this.increaseMonthChange.bind(this);
     this.onPressDay = this.onPressDay.bind(this);
@@ -52,7 +52,7 @@ export default class App extends React.Component {
     this.exitDelete = this.exitDelete.bind(this);
     this.showTodayAppointment = this.showTodayAppointment.bind(this);
     this.openMore = this.openMore.bind(this);
-  
+
     this.closeActionButtons = this.closeActionButtons.bind(this);
     this.calendarLayout = this.calendarLayout.bind(this);
   }
@@ -60,7 +60,7 @@ export default class App extends React.Component {
   getDimensions(event){
     this.setState({
       screenDimensions:{
-        "width":event.nativeEvent.layout.width, 
+        "width":event.nativeEvent.layout.width,
         "height":event.nativeEvent.layout.height
       }
     })
@@ -90,12 +90,12 @@ export default class App extends React.Component {
       selectedObject = {"selected":selected,"status":true};
       daySelected = true;
       }
-      
+
   }else{
       selectedObject = {"selected":selected,"status":true};
       daySelected = true;
-  }      
-      
+  }
+
   this.setState({selected:selectedObject, daySelected});
   }
 
@@ -113,7 +113,7 @@ export default class App extends React.Component {
 
   searchPress(){
       t = this.state.transparent;
-      t === true? newTrans = false: newTrans = true 
+      t === true? newTrans = false: newTrans = true
       this.setState({
           transparent:newTrans,
           searchOpen:true,
@@ -136,7 +136,7 @@ export default class App extends React.Component {
 
   showScheduleDetails(appointment){
       let newObject = Object.assign({},appointment);
-      this.state.sliderTransparent === true && this.state.showSlider === true ? 
+      this.state.sliderTransparent === true && this.state.showSlider === true ?
           status = false : status = true
       this.setState({
           scheduleDetails:newObject,
@@ -145,14 +145,14 @@ export default class App extends React.Component {
           showSlider:status,
       })
   }
-    
+
   stopScheduleDrag(height){
     let draggable;
       height === Dimensions.get('window').height - 150 ? draggable = false : null
       this.setState({slideDraggable:draggable})
   }
 
-  restartDrag(){      
+  restartDrag(){
       this.setState({slideDraggable:true})
   }
 
@@ -160,7 +160,7 @@ export default class App extends React.Component {
     this.state.scheduleButtons === true ?
         this.setState({scheduleButtons:false}) :
         this.setState({scheduleButtons:true})
-   
+
   }
 
   showFullCalendar(){
@@ -169,7 +169,7 @@ export default class App extends React.Component {
   }
 
   showLastCalendarRow(){
-    !this.state.statusLastRow === true ? 
+    !this.state.statusLastRow === true ?
       this.setState({statusLastRow:true})
       :
       this.setState({
@@ -200,7 +200,7 @@ export default class App extends React.Component {
   openMore(){
     this.setState({displayMore:!this.state.displayMore})
   }
- 
+
   closeActionButtons(){
     this.setState({scheduleButtons:false})
   }
@@ -210,14 +210,14 @@ export default class App extends React.Component {
     this.setState({calendarLayoutMeasure:x})
     console.log("Calendar X: ",x)
   }
-  
-  render(){    
-    
+
+  render(){
+
     return (
       <SafeAreaView style={styles.container} onLayout={this.getDimensions}>
         <View style={styles.scroll} >
           <View style = {styles.sidebar}>
-            <Sidebar 
+            <Sidebar
               screenDimensions = {this.state.screenDimensions}
               searchOpen = {this.state.searchOpen}
               transparent = {this.state.transparent}
@@ -230,9 +230,9 @@ export default class App extends React.Component {
             />
           </View>
           <View style = {styles.content}>
-            {this.state.tabSelected.tabSelected === 'schedule' ? 
-              <Content 
-                {...this.state}  
+            {this.state.tabSelected.tabSelected === 'schedule' ?
+              <Content
+                {...this.state}
                 name="SCHEDULE"
                 searchChangeText = {this.searchChangeText}
                 closeTransparent = {this.closeTransparent}
@@ -259,14 +259,14 @@ export default class App extends React.Component {
                 />
               :
               this.state.tabSelected.tabSelected === 'case files' ?
-                <Content 
-                  {...this.state} 
-                  name="CASE FILES" 
+                <Content
+                  {...this.state}
+                  name="CASE FILES"
                 />
                 :
                 this.state.tabSelected.tabSelected === 'patients' ?
-                  <Content 
-                    {...this.state} 
+                  <Content
+                    {...this.state}
                     name="PATIENTS"
                     />
                   :
@@ -289,14 +289,14 @@ export default class App extends React.Component {
       </SafeAreaView>
     );
   }
-  
+
 }
 
 
 
 
 const styles = StyleSheet.create({
-  container: {    
+  container: {
     flex:1,
     backgroundColor: '#fff',
   },
@@ -310,5 +310,5 @@ const styles = StyleSheet.create({
   content:{
     flex:12,
   }
-       
+
 });

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import ActionContainer from '../components/ActionContainer';
+import ActionContainer from '../common/ActionContainer';
 import Svg,{Path, Rect} from 'react-native-svg';
 
 
@@ -16,15 +16,15 @@ export default class NavigationTab extends Component {
                         <Path d="M17 1V4" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                         <Path d="M1 8H23" stroke={strokeColor} stroke-miterlimit="10"/>
                     </Svg>
-                
+
                     :
-                    
+
                     name === 'case files' ?
                         <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <Path d="M1 9H23" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                             <Path d="M21 22H3C2.46957 22 1.96086 21.7893 1.58579 21.4142C1.21071 21.0391 1 20.5304 1 20V2H9L11 5H23V20C23 20.5304 22.7893 21.0391 22.4142 21.4142C22.0391 21.7893 21.5304 22 21 22Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                         </Svg>
-                    
+
                         :
                         name === 'patients' ?
                             <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,7 +32,7 @@ export default class NavigationTab extends Component {
                                 <Path d="M14 20H10V15H8V10C8 8.895 8.895 8 10 8H14C15.105 8 16 8.895 16 10V15H14V20Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                                 <Path d="M12 6C10.895 6 10 5.105 10 4C10 2.895 10.895 2 12 2C13.105 2 14 2.895 14 4C14 5.105 13.105 6 12 6Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                             </Svg>
-                        
+
                             :
 
                             name === 'theatres' ?
@@ -54,7 +54,7 @@ export default class NavigationTab extends Component {
                                         <Path d="M6 19H8" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                                         <Path d="M17 5V8" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                                     </Svg>
-                                
+
                                     :
 
                                     name === 'delivery' ?
@@ -70,7 +70,7 @@ export default class NavigationTab extends Component {
                                             <Path d="M4 5H20" stroke={strokeColor} stroke-miterlimit="10"/>
                                         </Svg>
 
-                                        : 
+                                        :
 
                                         name === 'equipment'?
                                             <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -80,7 +80,7 @@ export default class NavigationTab extends Component {
                                                 <Path d="M4.8152 1V3" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                                                 <Path d="M10.8152 1V3" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                                             </Svg>
-                                        
+
                                             :
 
                                             name === 'alerts' ?
@@ -90,17 +90,17 @@ export default class NavigationTab extends Component {
                                                 </Svg>
 
                                                 :
-                                                
+
                                                 name === 'more' ?
                                                     <Svg width="22" height="4" viewBox="0 0 22 4" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <Path d="M11 4C12.1046 4 13 3.10457 13 2C13 0.89543 12.1046 0 11 0C9.89543 0 9 0.89543 9 2C9 3.10457 9.89543 4 11 4Z" fill={strokeColor}/>
                                                         <Path d="M2 4C3.10457 4 4 3.10457 4 2C4 0.89543 3.10457 0 2 0C0.89543 0 0 0.89543 0 2C0 3.10457 0.89543 4 2 4Z" fill={strokeColor}/>
                                                         <Path d="M20 4C21.1046 4 22 3.10457 22 2C22 0.89543 21.1046 0 20 0C18.8954 0 18 0.89543 18 2C18 3.10457 18.8954 4 20 4Z" fill={strokeColor}/>
                                                     </Svg>
-                                                
+
                                                     :
                                                     null
-                                        
+
             )
         }
 
@@ -108,9 +108,9 @@ export default class NavigationTab extends Component {
             return (
                 <Svg width={12} height={12} viewBox="0 0 12 12" style={{alignSelf:"flex-end"}}>
                             <Path
-                                fill-rule="evenodd" 
-                                clip-rule="evenodd" 
-                                d="M12 12V0C12 6.62742 6.62742 12 0 12H12Z" 
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M12 12V0C12 6.62742 6.62742 12 0 12H12Z"
                                 fill= {fillColor}
                             />
                         </Svg>
@@ -120,10 +120,10 @@ export default class NavigationTab extends Component {
         const svgLeftCorner = (fillColor) => {
             return(
                 <Svg width="12" height="12" viewBox="0 0 12 12" style={{alignSelf:"flex-end"}}>
-                    <Path 
-                        fill-rule="evenodd" 
-                        clip-rule="evenodd" 
-                        d="M12 0H0C6.62742 0 12 5.37258 12 12V0Z" 
+                    <Path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M12 0H0C6.62742 0 12 5.37258 12 12V0Z"
                         fill={fillColor}
                     />
                 </Svg>
@@ -131,8 +131,8 @@ export default class NavigationTab extends Component {
         }
 
         return (
-            <View style={styles.container}>      
-                {this.props.tabSelectedBool === true && this.props.tabSelected.tabSelected === this.props.tabName ?  
+            <View style={styles.container}>
+                {this.props.tabSelectedBool === true && this.props.tabSelected.tabSelected === this.props.tabName ?
                     <View>
                         {
                             this.props.transparent === false ?
@@ -141,10 +141,10 @@ export default class NavigationTab extends Component {
                                     <TouchableOpacity style={[styles.navTag,styles.selectedNavTag]} onPress={e => this.props.onPressTab(e,this.props.tabName)}>
                                         {icon (this.props.tabName, "#3182CE")}
                                         <Text style={[styles.navText,styles.selectedNavText]}>{this.props.tabName.toUpperCase()}</Text>
-                                    </TouchableOpacity> 
+                                    </TouchableOpacity>
                                     {svgLeftCorner("white")}
                                 </View>
-                                                                
+
                                 :
                                 <View>
                                     {/* {svgRightCorner("#ababab")} */}
@@ -156,11 +156,11 @@ export default class NavigationTab extends Component {
                                     </View>
                                     {/* {svgLeftCorner("#ababab")} */}
                                 </View>
-               
+
                         }
-                        
+
                     </View>
-                    
+
                     :
 
                     this.props.transparent === true ?
@@ -175,7 +175,7 @@ export default class NavigationTab extends Component {
                         <TouchableOpacity style={styles.navTag} onPress={e => this.props.onPressTab(e,this.props.tabName)}>
                             {icon (this.props.tabName, "#CBD5E0")}
                             <Text style={styles.navText}>{this.props.tabName.toUpperCase()}</Text>
-                        </TouchableOpacity>         
+                        </TouchableOpacity>
                 }
             </View>
         )
@@ -210,13 +210,13 @@ const styles = StyleSheet.create({
        color:'#3182CE',
     },
     overlay:{
-        paddingRight:0, 
-        flex:1, 
+        paddingRight:0,
+        flex:1,
         borderBottomLeftRadius:10,
         borderTopLeftRadius:10,
-        width:'100%', 
+        width:'100%',
         height:'100%',
-        position:"absolute", 
+        position:"absolute",
         backgroundColor:'rgba(0,0,0,0.33)'
     }
 })

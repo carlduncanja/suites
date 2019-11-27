@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import InputText from '../components/InputText';
+import InputText from './InputText';
 import Svg, {Path} from 'react-native-svg';
 
 export default class SearchBar extends Component {
     render() {
         return (
             <View style={styles.searchContent}>
-                <InputText 
+                <InputText
                     changeText = {this.props.changeText}
                     inputText = {this.props.inputText}
                     placeholderTextColor = {this.props.placeholderTextColor}
