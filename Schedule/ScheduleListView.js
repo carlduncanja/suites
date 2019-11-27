@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import ScheduleList from './ScheduleList';
 import DailyAppointmentCard from './DailyAppointmentCard';
 import moment from 'moment';
+import ActionContainer from '../components/ActionContainer';
 
 
 const APPS = require('../assets/db.json').appointments;
@@ -55,6 +56,9 @@ export default class ScheduleListView extends Component {
                         />
                     </View>
                 }
+                <View style={{position:'absolute', left:50, bottom:50 }}>
+                            <ActionContainer actionTitle="More Details" content={<Text>Create New List</Text>}/>
+                        </View>
                 
             </View>
         )

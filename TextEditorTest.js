@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Keyboard, TouchableWithoutFeedback, Text, KeyboardAvoidingView } from 'react-native';
 import  CNRichTextEditor , { CNToolbar, getInitialObject , getDefaultStyles } from "react-native-cn-richtext-editor";
- 
+import Icon from 'react-native-vector-icons/Octicons';
+
 const defaultStyles = getDefaultStyles();
  
-class Test extends Component {
+class TestEditorTest extends Component {
  
     constructor(props) {
         super(props);
@@ -43,6 +44,7 @@ class Test extends Component {
  
     render() {
         return (
+            
             <KeyboardAvoidingView 
                 behavior="padding" 
                 enabled
@@ -50,12 +52,11 @@ class Test extends Component {
                 style={{
                     flex: 1,
                     paddingTop: 20,
-                    marginBottom:25,
                     backgroundColor:'#eee',
                     flexDirection: 'column', 
                     justifyContent: 'flex-end', 
                 }}
-                >
+            >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} >             
                     <View style={styles.main}>
                         <CNRichTextEditor                   
@@ -69,62 +70,131 @@ class Test extends Component {
                         />                        
                     </View>
                 </TouchableWithoutFeedback>
- 
-                <View style={{
-                    minHeight: 35
-                }}>
- 
+    
+                <View style={{minHeight: 35}}>
+    
                     <CNToolbar
-                        size={28}
-                        bold={<Text style={[styles.toolbarButton, styles.boldButton]}>B</Text>}
-                        italic={<Text style={[styles.toolbarButton, styles.italicButton]}>I</Text>}
-                        underline={<Text style={[styles.toolbarButton, styles.underlineButton]}>U</Text>}
-                        lineThrough={<Text style={[styles.toolbarButton, styles.lineThroughButton]}>S</Text>}
-                        body={<Text style={styles.toolbarButton}>T</Text>}
-                        title={<Text style={styles.toolbarButton}>h1</Text>}
-                        heading={<Text style={styles.toolbarButton}>h3</Text>}
-                        ul={<Text style={styles.toolbarButton}>ul</Text>}
-                        ol={<Text style={styles.toolbarButton}>ol</Text>}
-                        
+                        style={{height: 35}}
+                        iconSetContainerStyle={{
+                            flexGrow: 1,
+                            justifyContent: 'space-evenly',
+                            alignItems: 'center',
+                        }}
+                        size={30}
+                        iconSet={[
+                            {
+                                type: 'tool',
+                                iconArray: [{
+                                    toolTypeText: 'bold',
+                                    buttonTypes: 'style',
+                                    iconComponent:
+                                        <Text style={[styles.toolbarButton,styles.boldButton]}>
+                                        B
+                                        </Text>
+                                }]
+                            },
+                            {
+                                type: 'tool',
+                                iconArray: [{
+                                    toolTypeText: 'italic',
+                                    buttonTypes: 'style',
+                                    iconComponent:
+                                        <Text style={[styles.toolbarButton, styles.italicButton]}>
+                                        I
+                                        </Text>
+                                }]
+                            },
+                            {
+                                type: 'tool',
+                                iconArray: [{
+                                    toolTypeText: 'underline',
+                                    buttonTypes: 'style',
+                                    iconComponent:
+                                        <Text style={[styles.toolbarButton, styles.underlineButton]}>
+                                        U
+                                        </Text>
+                                }]
+                            },
+                            {
+                                type: 'tool',
+                                iconArray: [{
+                                    toolTypeText: 'lineThrough',
+                                    buttonTypes: 'style',
+                                    iconComponent:
+                                        <Text style={[styles.toolbarButton, styles.lineThroughButton]}>
+                                        S
+                                        </Text>
+                                }]
+                            },
+                            {
+                                type: 'tool',
+                                iconArray: [
+                                    {
+                                        toolTypeText: 'ul',
+                                        buttonTypes: 'tag',
+                                        iconComponent:
+                                            <View >
+                                                <Icon name = "list-unordered" size={20}/>
+                                            </View>
+                                    }
+                                ]
+                            },
+                            {
+                                type: 'tool',
+                                iconArray: [
+                                    {
+                                        toolTypeText: 'ol',
+                                        buttonTypes: 'tag',
+                                        iconComponent:
+                                        <View>
+                                            <Icon name = "list-ordered" size={20}/>
+                                        </View>
+                                    }
+                                ]
+                            },
+                        ]}
                         selectedTag={this.state.selectedTag}
                         selectedStyles={this.state.selectedStyles}
-                        onStyleKeyPress={this.onStyleKeyPress} />
-                </View>
-        </KeyboardAvoidingView>
-        );
+                        onStyleKeyPress={this.onStyleKeyPress}
+                    />
+                    </View>
+            </KeyboardAvoidingView>
+            );
+        }
     }
+
  
-}
+    var styles = StyleSheet.create({
+        main: {
+            flex: 1,
+            marginTop: 10,
+            paddingLeft: 30,
+            paddingRight: 30,
+            paddingBottom: 1,
+            alignItems: 'stretch',
+        },
+        toolbarButton: {
+            //fontSize: 20,
+            color:"black",
+            //width: 28,
+            //height: 28,
+            textAlign: 'center'
+        },
+        italicButton: {
+            fontStyle: 'italic',
+            fontFamily:"Times New Roman"
+        },
+        boldButton: {
+            fontWeight: 'bold'
+        },
+        underlineButton: {
+            textDecorationLine: 'underline'
+        },
+        lineThroughButton: {
+            textDecorationLine: 'line-through'
+        },
+    });
+    
  
-var styles = StyleSheet.create({
-    main: {
-        flex: 1,
-        marginTop: 10,
-        marginBottom:10,
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingBottom: 1,
-        alignItems: 'stretch',
-    },
-    toolbarButton: {
-        fontSize: 20,
-        width: 28,
-        height: 28,
-        textAlign: 'center'
-    },
-    italicButton: {
-        fontStyle: 'italic'
-    },
-    boldButton: {
-        fontWeight: 'bold'
-    },
-    underlineButton: {
-        textDecorationLine: 'underline'
-    },
-    lineThroughButton: {
-        textDecorationLine: 'line-through'
-    },
-});
  
- 
-export default Test;
+export default TestEditorTest;

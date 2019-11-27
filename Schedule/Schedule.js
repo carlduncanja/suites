@@ -16,7 +16,7 @@ import SlideLeftPanel from '../components/SlideLeftPanel';
 
 
 export default class Schedule extends Component {
-    render() {    
+    render() { 
         const searchContent=(
             <SearchBar 
                 placeholderTextColor = '#718096'
@@ -26,10 +26,9 @@ export default class Schedule extends Component {
                 closeSearch = {this.props.closeTransparent}
             />
         )
-            
         return (
-            <View style={{flex:1}}>
-                <ScrollView style={{flex:1}}>
+            <View>
+                <ScrollView>
                     <View style={{flex:1}}>   
                         <View style={[styles.topContainer, {paddingTop: this.props.screenDimensions.width > this.props.screenDimensions.height ? 0: '1%'}]}>
                             <View style={styles.buttonContainer}>
@@ -40,7 +39,10 @@ export default class Schedule extends Component {
                             </View>
                             <View style={{alignItems:'center' }}>
                                 <Month 
+                                    calendarLayoutMeasure = {this.props.calendarLayoutMeasure}
                                     currentDate={this.props.currentDate} 
+                                    prevMonthDate={this.props.prevMonthDate}
+                                    nextMonthDate = {this.props.nextMonthDate}
                                     decreaseMonthChange = {this.props.decreaseMonthChange}
                                     increaseMonthChange = {this.props.increaseMonthChange}
                                 />                     
@@ -62,7 +64,9 @@ export default class Schedule extends Component {
                                 />
                                 :
                                 this.props.screenDimensions.width > this.props.screenDimensions.height ?
-                                    <ExtendedCalendar {...this.props}/>
+                                    <ExtendedCalendar 
+                                        {...this.props} 
+                                    />
                                     :
                                     <Calendar {...this.props}/>
                             }
@@ -83,30 +87,33 @@ export default class Schedule extends Component {
                     <View 
                         style=
                             {{
+                            flex:1,
+                            position:'relative',
+                            zIndex:-1,
                             top: this.props.displayFullCalendar === false && this.props.statusLastRow === false ? 0 
                                 : 
                                 this.props.displayFullCalendar === true && this.props.statusLastRow === false ? -60
                                     :
                                     0,
                             
-                            marginTop : this.props.displayFullCalendar === true && this.props.statusLastRow === true ? 25 : 0,
-                            height:'100%'}}
+                            marginTop : this.props.displayFullCalendar === true && this.props.statusLastRow === true ? 10 : 0,
+                            }}
                         >
+                        
                         <ScheduleListView 
                             displayTodayAppointment = {this.props.displayTodayAppointment}
                             currentDate={this.props.currentDate}
                             showSlider = {this.props.showSlider}
                             showScheduleDetails = {this.props.showScheduleDetails}
                         />
-
-                        
+             
                     </View>
 
-                   { this.props.screenDimensions.width > this.props.screenDimensions.height && this.props.showSlider === true?
+                   {/* { this.props.screenDimensions.width > this.props.screenDimensions.height && this.props.showSlider === true?
                         <SlideLeftPanel content = "Orientation Content" {...this.props}/>
                        
                     :
-                    null}
+                    null} */}
 
                     
                 </ScrollView>
@@ -134,6 +141,7 @@ export default class Schedule extends Component {
                                 deleteAppointment = {this.props.deleteAppointment}
                                 completeDeleteAppointment = {this.props.completeDeleteAppointment}
                                 exitDelete = {this.props.exitDelete}
+                                closeActionButtons = {this.props.closeActionButtons}
                                 />
                         } 
                         stopScheduleDrag = {this.props.stopScheduleDrag}
@@ -165,12 +173,8 @@ const styles=StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-between',
-        //paddingTop:'1%',
-        paddingBottom:35,
-    },
-    
-    buttonContainer:{
-
+        paddingBottom:20,
+        marginTop: 18
     },
     partition:{
         backgroundColor:'#CBD5E0',

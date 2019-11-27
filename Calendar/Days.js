@@ -61,6 +61,7 @@ export default class Days extends Component {
         this.props.currentDays.map((day,index)=>{
             daysInMonth.push(
                 <CalendarDay 
+                    currentDate = {this.props.currentDate}
                     screenDimensions = {this.props.screenDimensions}
                     highlightDay = {moment(this.props.currentDate).format("D")}
                     onPressDay={this.props.onPressDay} 

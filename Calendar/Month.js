@@ -5,6 +5,7 @@ import Svg, {Path} from 'react-native-svg';
 
 export default class Month extends Component {
     render() {
+        console.log('Layoute: ', this.props.calendarLayoutMeasure)
         return (
             <View style={styles.container}>
                 <TouchableOpacity style={{marginRight:54}} onPress={e => this.props.decreaseMonthChange(e,this.props.currentDate)}>
@@ -13,9 +14,22 @@ export default class Month extends Component {
                     </Svg>
                 </TouchableOpacity>
                
-                <View style={styles.month}>
-                    <Text style={styles.label}>{this.props.currentDate.format("MMMM")} {this.props.currentDate.format("YYYY")}</Text>
-                </View>
+                {this.props.calendarLayoutMeasure <= 350 ?
+                    <View style={styles.month}>
+                        <Text style={styles.label}>{this.props.prevMonthDate.format("MMMM")} {this.props.prevMonthDate.format("YYYY")}</Text>
+                    </View>
+                    :
+                    this.props.calendarLayoutMeasure >= 1100 ?
+                        <View style={styles.month}>
+                            <Text style={styles.label}>{this.props.nextMonthDate.format("MMMM")} {this.props.nextMonthDate.format("YYYY")}</Text>
+                        </View>
+                        :
+                        <View style={styles.month}>
+                            <Text style={styles.label}>{this.props.currentDate.format("MMMM")} {this.props.currentDate.format("YYYY")}</Text>
+                        </View>
+                }
+              
+                
 
                 <TouchableOpacity style={{marginLeft:54}} onPress={this.props.increaseMonthChange}>
                     <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

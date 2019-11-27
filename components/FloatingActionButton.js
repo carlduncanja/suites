@@ -13,6 +13,7 @@ export default class FloatingActionButton extends Component{
         return(
             <View>
                 {this.props.deleteAppointment === true ?
+
                 <View style={[styles.container, {bottom:this.props.bottomSize}]}>
                     <View style={{flexDirection:'row', alignItems:'center'}}>
                         {this.props.completeDeleteAppointment === true ? 
@@ -66,7 +67,6 @@ const styles = StyleSheet.create({
     container:{
         flexDirection:'column',
         width:130,
-        //alignItems:'center',
         justifyContent:'space-between',
         position:'absolute',
         right: 10,

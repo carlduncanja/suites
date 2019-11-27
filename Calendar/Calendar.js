@@ -7,11 +7,12 @@ import moment from 'moment';
 export default class Calendar extends Component {
        
     render() {
+        //console.log("Current Date: ", this.props.currentDate)
         const appointments = require('../assets/db.json').appointments;
 
         const filterLevels = (date) => {
             let result = appointments.filter(
-                appointment => parseInt(moment(appointment.startTime).format("D")) === date);
+                appointment => parseInt(moment(appointment.startTime).format("D")) === date && moment(appointment.startTime).format("MM") === this.props.currentDate.format("MM") );
             return result;
         }
 
@@ -40,33 +41,31 @@ export default class Calendar extends Component {
         filterLevels(parseInt(moment(this.props.currentDate).format("D")) + 3).map((app)=> lastLevels.push(app.level))
         return (
             <View style={styles.container}>
-                <View style={styles.daysContainer}>
-                    <View style={styles.labelsContainer}> 
-                        {weekdays.map((day,index)=>{
-                            return (
-                                <View key={index} style={[styles.labelContainer, {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }]}>
-                                    <Text key={index} style={styles.label}>{day.toUpperCase()}</Text>
-                                </View>
-                            )
-                        })}
-                    </View>
-        
-                    <View style={styles.currentContainer}>
-                        <Days 
-                            screenDimensions = {this.props.screenDimensions}
-                            showLastCalendarRow = {this.props.showLastCalendarRow}
-                            statusLastRow = {this.props.statusLastRow}
-                            tomorrowView = {levels(tomorrowLevels)}
-                            nextView = {levels(nextLevels)}
-                            lastView = {levels(lastLevels)}
-                            currentDate={this.props.currentDate}
-                            currentDays = {this.props.currentDays}
-                            onPressDay = {this.props.onPressDay}
-                            selected={this.props.selected}
-                            daySelected={this.props.daySelected}
-                        />
-                    </View> 
+                <View style={styles.labelsContainer}> 
+                    {weekdays.map((day,index)=>{
+                        return (
+                            <View key={index} style={[styles.labelContainer, {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }]}>
+                                <Text key={index} style={styles.label}>{day.toUpperCase()}</Text>
+                            </View>
+                        )
+                    })}
                 </View>
+    
+                <View style={styles.currentContainer}>
+                    <Days 
+                        screenDimensions = {this.props.screenDimensions}
+                        showLastCalendarRow = {this.props.showLastCalendarRow}
+                        statusLastRow = {this.props.statusLastRow}
+                        tomorrowView = {levels(tomorrowLevels)}
+                        nextView = {levels(nextLevels)}
+                        lastView = {levels(lastLevels)}
+                        currentDate={this.props.currentDate}
+                        currentDays = {this.props.currentDays}
+                        onPressDay = {this.props.onPressDay}
+                        selected={this.props.selected}
+                        daySelected={this.props.daySelected}
+                    />
+                </View> 
             </View>
         )
     }
@@ -78,11 +77,15 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         flexDirection:'column', 
+        marginLeft:12,
+        marginRight:12,
     },
     daysContainer:{
         flex:1,
+        flexDirection:'column',
         marginLeft:12,
-        marginRight:12
+        marginRight:12,
+        backgroundColor:'red'
     },
     labelsContainer:{
         flexDirection:'row',

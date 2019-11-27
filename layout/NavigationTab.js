@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import ActionContainer from '../components/ActionContainer';
 import Svg,{Path, Rect} from 'react-native-svg';
 
 
@@ -143,18 +144,17 @@ export default class NavigationTab extends Component {
                                     </TouchableOpacity> 
                                     {svgLeftCorner("white")}
                                 </View>
-                                
+                                                                
                                 :
                                 <View>
-                                    {svgRightCorner("#ababab")}
+                                    {/* {svgRightCorner("#ababab")} */}
                                     <View>
-                                        <TouchableOpacity style={[styles.navTag, styles.selectedNavTag]} onPress={e => this.props.onPressTab(e,this.props.tabName)}>
+                                        <TouchableOpacity style={[styles.navTag, styles.selectedNavTag, {backgroundColor:'#04346F'}]} onPress={e => this.props.onPressTab(e,this.props.tabName)}>
                                             {icon (this.props.tabName,"#718096")}
                                             <Text style={[styles.navText, styles.selectedNavText, {color:'#718096'}]}>{this.props.tabName.toUpperCase()}</Text>
                                         </TouchableOpacity>
-                                        <View style={styles.overlay}/>
                                     </View>
-                                    {svgLeftCorner("#ababab")}
+                                    {/* {svgLeftCorner("#ababab")} */}
                                 </View>
                
                         }

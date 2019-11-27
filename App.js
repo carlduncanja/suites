@@ -10,23 +10,27 @@ export default class App extends React.Component {
     this.state={
       tabSelected:{},
       tabSelectedBool: false,
-      currentDate: moment(new Date()),
-      selected: {},
-      screenDimensions: {},
-      daySelected: false,
       searchOpen:false,
       transparent:false,
       searchValue:"",
       showSlider: false,
       scheduleDetails:{},
       slideDraggable:true,
-      maxDragHeight: 0,
       scheduleButtons: false,
-      displayFullCalendar: false,
-      statusLastRow: false,
       deleteAppointment: false,
       completeDeleteAppointment: false,
       displayTodayAppointment: false,
+      displayMore: false,
+
+      currentDate: moment(new Date()),
+      prevMonthDate: moment(`${moment(new Date()).format("YYYY")}-${(parseInt(moment(new Date()).format("MM")) - 1).toString()}-${moment(new Date()).format("DD")}`),
+      nextMonthDate: moment(`${moment(new Date()).format("YYYY")}-${(parseInt(moment(new Date()).format("MM")) + 1).toString()}-${moment(new Date()).format("DD")}`),      
+      selected: {},
+      screenDimensions: {},
+      daySelected: false,
+      displayFullCalendar: false,
+      statusLastRow: false,
+      calendarLayoutMeasure:700,
     }
 
     this.onPressTab = this.onPressTab.bind(this); 
@@ -47,6 +51,10 @@ export default class App extends React.Component {
     this.completeDeleteFloatingAction = this.completeDeleteFloatingAction.bind(this);
     this.exitDelete = this.exitDelete.bind(this);
     this.showTodayAppointment = this.showTodayAppointment.bind(this);
+    this.openMore = this.openMore.bind(this);
+  
+    this.closeActionButtons = this.closeActionButtons.bind(this);
+    this.calendarLayout = this.calendarLayout.bind(this);
   }
 
   getDimensions(event){
@@ -141,7 +149,7 @@ export default class App extends React.Component {
   stopScheduleDrag(height){
     let draggable;
       height === Dimensions.get('window').height - 150 ? draggable = false : null
-      this.setState({maxDragHeight: height, slideDraggable:draggable})
+      this.setState({slideDraggable:draggable})
   }
 
   restartDrag(){      
@@ -173,9 +181,6 @@ export default class App extends React.Component {
   deleteFloatingAction(){
     status = !this.state.deleteAppointment;
     this.setState({deleteAppointment:status})
-    this.timer = setTimeout(() => {
-      this.setState({deleteAppointment:false})
-    },2000)
   }
 
   completeDeleteFloatingAction(){
@@ -184,17 +189,30 @@ export default class App extends React.Component {
   }
 
   exitDelete(){
-    this.setState({completeDeleteAppointment: false, deleteAppointment: false, scheduleButtons: false})
+    this.setState({completeDeleteAppointment: false, scheduleButtons: false})
   }
 
   showTodayAppointment(){
     this.setState({displayTodayAppointment: !this.state.displayTodayAppointment})
     console.log("Current Date: ", this.state.currentDate)
   }
+
+  openMore(){
+    this.setState({displayMore:!this.state.displayMore})
+  }
+ 
+  closeActionButtons(){
+    this.setState({scheduleButtons:false})
+  }
+
+  calendarLayout(event){
+    let x = event.nativeEvent.contentOffset.x;
+    this.setState({calendarLayoutMeasure:x})
+    console.log("Calendar X: ",x)
+  }
   
-  render(){
-    // console.log("Current Week First Day: ", moment().startOf('isoweek').format('D') )
-    // console.log("Current Week Last Day: ", moment().endOf('week').format('D'))
+  render(){    
+    
     return (
       <SafeAreaView style={styles.container} onLayout={this.getDimensions}>
         <View style={styles.scroll} >
@@ -207,6 +225,8 @@ export default class App extends React.Component {
               tabSelected = {this.state.tabSelected}
               tabSelectedBool = {this.state.tabSelectedBool}
               onPressTab = {this.onPressTab}
+              openMore = {this.openMore}
+              displayMore = {this.state.displayMore}
             />
           </View>
           <View style = {styles.content}>
@@ -215,34 +235,33 @@ export default class App extends React.Component {
                 {...this.state}  
                 name="SCHEDULE"
                 searchChangeText = {this.searchChangeText}
-                decreaseMonthChange = {this.decreaseMonthChange}
-                increaseMonthChange = {this.increaseMonthChange}
                 closeTransparent = {this.closeTransparent}
-                onPressDay = {this.onPressDay}
                 searchPress = {this.searchPress}
-                currentDays = {this.getCurrentDays(this.state.currentDate.format("MM"),this.state.currentDate.format("YYYY"))}
-                prevMonthDays = {this.getCurrentDays((parseInt(this.state.currentDate.format("MM")) - 1).toString(), this.state.currentDate.format("YYYY"))}
-                nextMonthDays = {this.getCurrentDays((parseInt(this.state.currentDate.format("MM")) + 1).toString(), this.state.currentDate.format("YYYY"))}
                 showScheduleDetails = {this.showScheduleDetails}
                 showScheduleButtons = {this.showScheduleButtons}
                 stopScheduleDrag = {this.stopScheduleDrag}
                 restartDrag = {this.restartDrag}
-                showFullCalendar = {this.showFullCalendar}
-                showLastCalendarRow = {this.showLastCalendarRow}
                 deleteFloatingAction = {this.deleteFloatingAction}
                 completeDeleteFloatingAction = {this.completeDeleteFloatingAction}
                 exitDelete = {this.exitDelete}
                 showTodayAppointment = {this.showTodayAppointment}
+                closeActionButtons = {this.closeActionButtons}
+
+                decreaseMonthChange = {this.decreaseMonthChange}
+                increaseMonthChange = {this.increaseMonthChange}
+                onPressDay = {this.onPressDay}
+                currentDays = {this.getCurrentDays(this.state.currentDate.format("MM"),this.state.currentDate.format("YYYY"))}
+                prevMonthDays = {this.getCurrentDays((parseInt(this.state.currentDate.format("MM")) - 1).toString(), this.state.currentDate.format("YYYY"))}
+                nextMonthDays = {this.getCurrentDays((parseInt(this.state.currentDate.format("MM")) + 1).toString(), this.state.currentDate.format("YYYY"))}
+                showFullCalendar = {this.showFullCalendar}
+                showLastCalendarRow = {this.showLastCalendarRow}
+                calendarLayout = {this.calendarLayout}
                 />
               :
               this.state.tabSelected.tabSelected === 'case files' ?
                 <Content 
                   {...this.state} 
                   name="CASE FILES" 
-                  onPressDay = {this.onPressDay}
-                  currentDays = {this.getCurrentDays(this.state.currentDate.format("MM"),this.state.currentDate.format("YYYY"))}
-                  prevMonthDays = {this.getCurrentDays((parseInt(this.state.currentDate.format("MM")) - 1).toString(), this.state.currentDate.format("YYYY"))}
-                  nextMonthDays = {this.getCurrentDays((parseInt(this.state.currentDate.format("MM")) + 1).toString(), this.state.currentDate.format("YYYY"))}
                 />
                 :
                 this.state.tabSelected.tabSelected === 'patients' ?

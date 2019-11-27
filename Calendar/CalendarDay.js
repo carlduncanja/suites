@@ -7,7 +7,7 @@ export default class CalendarDay extends Component {
     render() {    
         return (
             <View style={[styles.container, {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }]} key={this.props.unique}>
-                {parseInt(this.props.highlightDay) === parseInt(this.props.day) ? 
+                {parseInt(this.props.highlightDay) === parseInt(this.props.day) && this.props.currentDate.format("M") === moment(new Date()).format("M")? 
                     <View>
                         <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)}>
                             <View style={{marginTop:3}}>
@@ -19,7 +19,7 @@ export default class CalendarDay extends Component {
                    
                     : 
 
-                    parseInt(this.props.highlightDay) + 1 === parseInt(this.props.day) ?
+                    parseInt(this.props.highlightDay) + 1 === parseInt(this.props.day) && this.props.currentDate.format("M") === moment(new Date()).format("M") ?
                         <View style={{flex:1}}>
                             <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ marginBottom:10}}>
                                 <View style={{ marginTop: 3}}>
@@ -34,7 +34,7 @@ export default class CalendarDay extends Component {
                             
                         :
 
-                        parseInt(this.props.highlightDay) + 2 === parseInt(this.props.day) ?
+                        parseInt(this.props.highlightDay) + 2 === parseInt(this.props.day) && this.props.currentDate.format("M") === moment(new Date()).format("M") ?
                             <View style={{flex:1}}> 
                                 <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ alignItems:'flex-start', marginBottom:10}}>
                                     <Text style={[styles.day, {color:'#2D3748'}]}>{this.props.day}</Text>
@@ -46,7 +46,7 @@ export default class CalendarDay extends Component {
                                 
                             :
 
-                            parseInt(this.props.highlightDay) + 3 === parseInt(this.props.day) ?
+                            parseInt(this.props.highlightDay) + 3 === parseInt(this.props.day) && this.props.currentDate.format("M") === moment(new Date()).format("M") ?
                                 <View style={{flex:1}}> 
                                     <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)} style={{ alignItems:'flex-start', marginBottom:10}}>
                                         <Text style={[styles.day, {color:'#2D3748'}]}>{this.props.day}</Text>

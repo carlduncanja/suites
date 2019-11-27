@@ -5,6 +5,7 @@ import CaseFiles from '../CaseFiles/CaseFiles';
 import SlideUpPanel from '../components/SideUpPanel';
 import SlideLeftPanel from '../components/SlideLeftPanel';
 
+
 export default class Content extends Component {
     constructor(props){
         super(props);
@@ -25,7 +26,7 @@ export default class Content extends Component {
                             <SlideLeftPanel {...this.props}/>
                             :
                             this.props.name === 'INVENTORY' ?
-                                <SlideUpPanel/>
+                                <View style={{height:'50%', backgroundColor:'red', zIndex:-1}}/>
                                 :
                                 this.props.name === 'DELIVERY' ?
                                     <Text>DELIVERY</Text>
