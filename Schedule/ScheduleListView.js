@@ -56,9 +56,9 @@ export default class ScheduleListView extends Component {
                         />
                     </View>
                 }
-                <View style={{position:'absolute', left:50, bottom:50 }}>
+                {/* <View style={{position:'absolute', left:50, bottom:50 }}>
                             <ActionContainer actionTitle="More Details" content={<Text>Create New List</Text>}/>
-                        </View>
+                        </View> */}
                 
             </View>
         )

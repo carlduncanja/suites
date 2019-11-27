@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import {View, StyleSheet, ScrollView, Text } from 'react-native';
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import RowCalendar from '../Calendar/RowCalendar';
 import Calendar from '../Calendar/Calendar';
 import ScheduleListView from './ScheduleListView';
@@ -11,20 +11,12 @@ import Divider from '../components/Divider';
 import AppointmentCard from './AppointmentCard';
 import ExtendedCalendar from '../Calendar/ExtendedCalendar';
 import SearchBar from '../components/SearchBar';
-import SlideLeftPanel from '../components/SlideLeftPanel';
 
-
-
-export default class Schedule extends Component {
-    render() { 
+export default class SlidingPanel extends Component{
+    
+    render(){
         const Drawer = require("react-native-drawer-menu").default;
-        const content = (
-            <View>
-                <Text>DRAWER CONTENT</Text>
-                <Button onPress={() => this.drawer.closeDrawer()} title="Close Drawer"/>
-            </View>
-        )
-
+       
         const scheduleContent = (
             <View 
                 style=
@@ -51,25 +43,6 @@ export default class Schedule extends Component {
         
             </View>
         )
-
-        // const styles = {
-        //     drawer: {
-        //       shadowColor: '#000',
-        //       shadowOpacity: 0.4,
-        //       shadowRadius: 10,
-        //       paddingLeft: 49,
-        //       paddingTop:32,
-        //       backgroundColor: '#FFFFFF',
-        //       borderTopLeftRadius:16,
-        //       borderBotttomLeftRadius:16
-        //     },
-        //     mask: {
-        //         backgroundColor:'#E5E5E5'
-        //     }, 
-        //     main: {
-        //     } // style of main board
-        //   };
-        
         const searchContent=(
             <SearchBar 
                 placeholderTextColor = '#718096'
@@ -79,9 +52,32 @@ export default class Schedule extends Component {
                 closeSearch = {this.props.closeTransparent}
             />
         )
-        return (
-            <View>
-                <ScrollView>
+
+        return(
+            <Drawer
+                style={styles.container}
+                drawerWidth={600}
+                drawerContent={
+                    <AppointmentCard 
+                        scheduleDetails = {this.props.scheduleDetails}   
+                        showScheduleButtons = {this.props.showScheduleButtons} 
+                        scheduleButtons={this.props.scheduleButtons}
+                        deleteFloatingAction = {this.props.deleteFloatingAction}
+                        completeDeleteFloatingAction = {this.props.completeDeleteFloatingAction}
+                        deleteAppointment = {this.props.deleteAppointment}
+                        completeDeleteAppointment = {this.props.completeDeleteAppointment}
+                        exitDelete = {this.props.exitDelete}
+                        closeActionButtons = {this.props.closeActionButtons}
+                    />
+                }
+                type={Drawer.types.Overlay}
+                customStyles={{drawer: styles.drawer}}
+                drawerPosition={Drawer.positions.Right}
+                onDrawerOpen={() => {console.log('Drawer is opened');}}
+                onDrawerClose={() => {console.log('Drawer is closed')}}
+                ref = {(ref) => this.drawer = ref}
+                >
+               <ScrollView>
                     <View style={{flex:1}}>   
                         <View style={[styles.topContainer, {paddingTop: this.props.screenDimensions.width > this.props.screenDimensions.height ? 0: '1%'}]}>
                             <View style={styles.buttonContainer}>
@@ -135,48 +131,11 @@ export default class Schedule extends Component {
                         :
                         null
                     }
-   
+                   
                    {scheduleContent}
 
                 </ScrollView>
-           
-                {this.props.transparent === false ? 
-                    null 
-                    : 
-                    this.props.searchOpen === true ? 
-
-                        <TransparentScreen  content={searchContent} showScheduleDetails = {this.props.closeTransparent} /> 
-                        :
-                        <TransparentScreen  showScheduleDetails = {this.props.closeTransparent} /> 
-
-                }
-                {this.props.screenDimensions.width < this.props.screenDimensions.height && this.props.showSlider === true ?
-                    <SlideUpPanel 
-                        restartDrag = {this.props.restartDrag}
-                        content={
-                            <AppointmentCard 
-                                scheduleDetails = {this.props.scheduleDetails}   
-                                showScheduleButtons = {this.props.showScheduleButtons} 
-                                scheduleButtons={this.props.scheduleButtons}
-                                deleteFloatingAction = {this.props.deleteFloatingAction}
-                                completeDeleteFloatingAction = {this.props.completeDeleteFloatingAction}
-                                deleteAppointment = {this.props.deleteAppointment}
-                                completeDeleteAppointment = {this.props.completeDeleteAppointment}
-                                exitDelete = {this.props.exitDelete}
-                                closeActionButtons = {this.props.closeActionButtons}
-                                />
-                        } 
-                        stopScheduleDrag = {this.props.stopScheduleDrag}
-                        draggable = {this.props.slideDraggable}/> 
-
-                    :
-
-                    null
-
-                }
-
-            </View>
-            
+            </Drawer>
         )
     }
 }

@@ -4,6 +4,7 @@ import Schedule from '../Schedule/Schedule';
 import CaseFiles from '../CaseFiles/CaseFiles';
 import SlideUpPanel from '../components/SideUpPanel';
 import SlideLeftPanel from '../components/SlideLeftPanel';
+import LandscapeSchedule from '../Schedule/LandscapeSchedule'
 
 
 export default class Content extends Component {
@@ -17,7 +18,10 @@ export default class Content extends Component {
         return (
             <View style = {styles.content}>
                 {this.props.name === 'SCHEDULE' ? 
+                    this.props.screenDimensions.width < this.props.screenDimensions.height ?
                     <Schedule {...this.props} />
+                    :
+                    <LandscapeSchedule {...this.props}/>
                     :
                     this.props.name === 'CASE FILES' ?
                         <CaseFiles {...this.props}/>

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, ScrollView } from 'react-native';
 import TextEditorTest from '../TextEditorTest';
 import moment from 'moment';
+import SlidingPanel from '../components/SlidingPanel';
+import LandscapeSchedule from '../Schedule/LandscapeSchedule';
 
 export default class CaseFiles extends Component {
     constructor(props){
@@ -11,8 +13,13 @@ export default class CaseFiles extends Component {
     render() {   
         console.log("Dimen: ", this.props.screenDimensions)        
         return(
-           
-            <TextEditorTest {...this.props}/>
+            <View style={{flex:1}}>
+               <SlidingPanel/>
+            </View>
+            
+            
+            
+            
          
            
         )
