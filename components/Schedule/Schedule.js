@@ -19,10 +19,21 @@ import { Overlay } from 'react-native-elements';
 export default class Schedule extends Component {
     getDrawerRef = () => this.getDrawerRef;
 
+    state = {
+        _scrollView: null
+    };
+
+    onGoToTodayClick = () => {
+        if (this.state._scrollView) {
+            this.state._scrollView.scrollTo(0,0,true)
+        }
+        this.props.showTodayAppointment()
+    };
+
     render() {
         const Drawer = require("react-native-drawer-menu").default;
 
-        console.log("Scrren: ", this.props.screenDimensions)
+        console.log("Scrren: ", this.props.screenDimensions);
         const scheduleContent = (
             <View
                 style=
@@ -82,7 +93,8 @@ export default class Schedule extends Component {
                             <View style={styles.buttonContainer}>
                                 <Button
                                     title= {this.props.displayTodayAppointment === true ? "Go Back" : "Go to Today"}
-                                    buttonPress={this.props.showTodayAppointment}
+                                    // buttonPress={this.props.showTodayAppointment}
+                                    buttonPress={this.onGoToTodayClick}
                                 />
                             </View>
                         </View>
@@ -93,6 +105,11 @@ export default class Schedule extends Component {
                                 <RowCalendar
                                     {...this.props}
                                     currentDay = {this.props.currentDate}
+                                    setScrollView = { (scrollViewComponent) => {
+                                        this.setState({
+                                            _scrollView: scrollViewComponent
+                                        })
+                                    }}
                                 />
                                 :
                                 this.props.screenDimensions.width > this.props.screenDimensions.height ?

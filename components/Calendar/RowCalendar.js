@@ -5,8 +5,12 @@ import RowCalendarDays from './RowCalendarDays'
 import moment from 'moment';
 
 export default class RowCalendar extends Component {
+    state = {
+        scrollView: null
+    };
+
     currentWeek(){
-        let startDate = this.props.currentDate.startOf('isoWeek')
+        let startDate = this.props.currentDate.startOf('isoWeek');
         let JSstartDay = startDate.toDate();
         let week = [startDate];
 
@@ -17,21 +21,32 @@ export default class RowCalendar extends Component {
         return week
     }
 
-    
+    componentDidMount() {
+        console.log("refs", this.refs);
+        this.onScrollViewCreated(this.refs.scrollview);
+    }
+
+    //pass the ref for the scroll view to the parent.
+    onScrollViewCreated = (_scrollview) => {
+       if (this.props.setScrollView) this.props.setScrollView(_scrollview)
+    };
+
     render() {
         return (
-            <View style={styles.container}>                
-                <ScrollView  
-                    horizontal={true} 
-                    style={{paddingBottom:10}} 
+            <View style={styles.container}>
+                <ScrollView
+                    horizontal={true}
+                    style={{paddingBottom:10}}
                     // contentOffset={{x:scrollX,y:0}}
+                    ref="scrollview"
                 >
+
                     <View style={styles.carouselDates}>
                         {this.props.currentDays.map((day,index)=>{
                             return (
                                 <RowCalendarDays
-                                    onPressDay={this.props.onPressDay} 
-                                    key={`day-${index}`} 
+                                    onPressDay={this.props.onPressDay}
+                                    key={`day-${index}`}
                                     day={day.day}
                                     weekday={day.dayOfWeek}
                                     selected = {this.props.selected}
@@ -40,7 +55,9 @@ export default class RowCalendar extends Component {
                             )
                         })}
                     </View>
-                </ScrollView> 
+
+
+                </ScrollView>
             </View>
         )
     }
@@ -48,7 +65,7 @@ export default class RowCalendar extends Component {
 
 const styles = StyleSheet.create({
     container:{
-        flexDirection:'column', 
+        flexDirection:'column',
         marginTop:5,
     },
     carouselDates:{
