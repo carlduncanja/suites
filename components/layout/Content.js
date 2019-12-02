@@ -18,10 +18,10 @@ export default class Content extends Component {
         return (
             <View style = {styles.content}>
                 {this.props.name === 'SCHEDULE' ?
-                    this.props.screenDimensions.width < this.props.screenDimensions.height ?
+                    // this.props.screenDimensions.width < this.props.screenDimensions.height ?
                     <Schedule {...this.props} />
-                    :
-                    <LandscapeSchedule {...this.props}/>
+                    // :
+                    // <LandscapeSchedule {...this.props}/>
                     :
                     this.props.name === 'CASE FILES' ?
                         <CaseFiles {...this.props}/>

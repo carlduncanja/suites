@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, StyleSheet, ScrollView, Text } from 'react-native';
+import {View, StyleSheet, ScrollView, Text, Easing, Animated} from 'react-native';
 import RowCalendar from '../Calendar/RowCalendar';
 import Calendar from '../Calendar/Calendar';
 import ScheduleListView from './ScheduleListView';
@@ -13,16 +13,18 @@ import ExtendedCalendar from '../Calendar/ExtendedCalendar';
 import SearchBar from '../common/SearchBar';
 import SlideLeftPanel from '../common/SlideLeftPanel';
 import { Overlay } from 'react-native-elements';
+import Modal from 'react-native-modal';
 
 
 
 export default class Schedule extends Component {
+    constructor(props){
+        super(props);
+    }
     getDrawerRef = () => this.getDrawerRef;
-
     render() {
         const Drawer = require("react-native-drawer-menu").default;
 
-        console.log("Scrren: ", this.props.screenDimensions)
         const scheduleContent = (
             <View
                 style=
@@ -41,6 +43,7 @@ export default class Schedule extends Component {
                 >
 
                 <ScheduleListView
+                    getDrawerRef = {this.getDrawerRef}
                     displayTodayAppointment = {this.props.displayTodayAppointment}
                     currentDate={this.props.currentDate}
                     showSlider = {this.props.showSlider}
@@ -49,6 +52,68 @@ export default class Schedule extends Component {
 
             </View>
         )
+
+        const mainContent = (
+            <ScrollView>
+                <View style={{flex:1}}>
+                    <View style={[styles.topContainer, {paddingTop: this.props.screenDimensions.width > this.props.screenDimensions.height ? 0: '1%'}]}>
+                        <View style={styles.buttonContainer}>
+                            <Button
+                                title="Search"
+                                buttonPress={this.props.searchPress}
+                            />
+                        </View>
+                        <View style={{alignItems:'center' }}>
+                            <Month
+                                calendarLayoutMeasure = {this.props.calendarLayoutMeasure}
+                                currentDate={this.props.currentDate}
+                                prevMonthDate={this.props.prevMonthDate}
+                                nextMonthDate = {this.props.nextMonthDate}
+                                decreaseMonthChange = {this.props.decreaseMonthChange}
+                                increaseMonthChange = {this.props.increaseMonthChange}
+                            />
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <Button
+                                title= {this.props.displayTodayAppointment === true ? "Go Back" : "Go to Today"}
+                                buttonPress={this.props.showTodayAppointment}
+                            />
+                        </View>
+                    </View>
+
+                    <View style={{marginLeft: this.props.screenDimensions.width > this.props.screenDimensions.height ? '2%':0, marginBottom: 5}}>
+
+                        {this.props.displayFullCalendar === false ?
+                            <RowCalendar
+                                {...this.props}
+                                currentDay = {this.props.currentDate}
+                            />
+                            :
+                            this.props.screenDimensions.width > this.props.screenDimensions.height ?
+                                <ExtendedCalendar
+                                    {...this.props}
+                                />
+                                :
+                                <Calendar {...this.props}/>
+                        }
+
+                    </View>
+                </View>
+
+                {this.props.displayFullCalendar === false ?
+                    <View style={{alignSelf: 'center', marginBottom: 20}}>
+                        <Divider pressAction = {this.props.showFullCalendar}/>
+                    </View>
+
+                    :
+                    null
+                }
+
+                {scheduleContent}
+
+            </ScrollView>
+        )
+
         const searchContent=(
             <SearchBar
                 placeholderTextColor = '#718096'
@@ -58,66 +123,92 @@ export default class Schedule extends Component {
                 closeSearch = {this.props.closeTransparent}
             />
         )
+
+        const getDrawerContent = () =>{
+            return Object.keys(this.props.scheduleDetails).length === 0 ?
+                null
+                :
+                <AppointmentCard
+                    scheduleDetails = {this.props.scheduleDetails }
+                    showScheduleButtons = {this.props.showScheduleButtons}
+                    scheduleButtons={this.props.scheduleButtons}
+                    deleteFloatingAction = {this.props.deleteFloatingAction}
+                    completeDeleteFloatingAction = {this.props.completeDeleteFloatingAction}
+                    deleteAppointment = {this.props.deleteAppointment}
+                    completeDeleteAppointment = {this.props.completeDeleteAppointment}
+                    exitDelete = {this.props.exitDelete}
+                    closeActionButtons = {this.props.closeActionButtons}
+                    screenDimensions = {this.props.screenDimensions}
+                />
+        }
+
         return (
-            <View>
-                <ScrollView>
-                    <View style={{flex:1}}>
-                        <View style={[styles.topContainer, {paddingTop: this.props.screenDimensions.width > this.props.screenDimensions.height ? 0: '1%'}]}>
-                            <View style={styles.buttonContainer}>
-                                <Button
-                                    title="Search"
-                                    buttonPress={this.props.searchPress}
-                                />
-                            </View>
-                            <View style={{alignItems:'center' }}>
-                                <Month
-                                    calendarLayoutMeasure = {this.props.calendarLayoutMeasure}
-                                    currentDate={this.props.currentDate}
-                                    prevMonthDate={this.props.prevMonthDate}
-                                    nextMonthDate = {this.props.nextMonthDate}
-                                    decreaseMonthChange = {this.props.decreaseMonthChange}
-                                    increaseMonthChange = {this.props.increaseMonthChange}
-                                />
-                            </View>
-                            <View style={styles.buttonContainer}>
-                                <Button
-                                    title= {this.props.displayTodayAppointment === true ? "Go Back" : "Go to Today"}
-                                    buttonPress={this.props.showTodayAppointment}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={{marginLeft: this.props.screenDimensions.width > this.props.screenDimensions.height ? '2%':0, marginBottom: 5}}>
-
-                            {this.props.displayFullCalendar === false ?
-                                <RowCalendar
-                                    {...this.props}
-                                    currentDay = {this.props.currentDate}
-                                />
+            <View style={{flex:1}}>
+                {this.props.screenDimensions.width > this.props.screenDimensions.height && this.props.showDrawer === true ? 
+                    this.drawer.openDrawer()
+                    :
+                    this.props.screenDimensions.width < this.props.screenDimensions.height && this.props.showSlider === true ?
+                        <View>
+                            {mainContent}
+                            
+                            {this.props.transparent === false ?
+                                null
                                 :
-                                this.props.screenDimensions.width > this.props.screenDimensions.height ?
-                                    <ExtendedCalendar
-                                        {...this.props}
-                                    />
+                                this.props.searchOpen === true ?
+                                    <TransparentScreen  content={searchContent} showScheduleDetails = {this.props.closeTransparent} />
                                     :
-                                    <Calendar {...this.props}/>
+                                    <TransparentScreen  showScheduleDetails = {this.props.closeTransparent} />
                             }
 
+                            <SlideUpPanel
+                                restartDrag = {this.props.restartDrag}
+                                content={
+                                    <AppointmentCard
+                                        scheduleDetails = {this.props.scheduleDetails}
+                                        showScheduleButtons = {this.props.showScheduleButtons}
+                                        scheduleButtons={this.props.scheduleButtons}
+                                        deleteFloatingAction = {this.props.deleteFloatingAction}
+                                        completeDeleteFloatingAction = {this.props.completeDeleteFloatingAction}
+                                        deleteAppointment = {this.props.deleteAppointment}
+                                        completeDeleteAppointment = {this.props.completeDeleteAppointment}
+                                        exitDelete = {this.props.exitDelete}
+                                        closeActionButtons = {this.props.closeActionButtons}
+                                        screenDimensions = {this.props.screenDimensions}
+                                        />
+                                }
+                                stopScheduleDrag = {this.props.stopScheduleDrag}
+                                draggable = {this.props.slideDraggable}
+                            />
                         </View>
-                    </View>
-
-                    {this.props.displayFullCalendar === false ?
-                        <View style={{alignSelf: 'center', marginBottom: 20}}>
-                            <Divider pressAction = {this.props.showFullCalendar}/>
-                        </View>
-
                         :
-                        null
-                    }
-
-                   {scheduleContent}
-
-                </ScrollView>
+                        this.props.screenDimensions.width < this.props.screenDimensions.height ?
+                            <View>
+                                {mainContent}
+                            </View>
+                            :
+                            null
+                        
+                }
+                <Drawer
+                    style={styles.container}
+                    drawerWidth={800}
+                    drawerContent={getDrawerContent()}
+                    type={Drawer.types.Overlay}
+                    customStyles={{drawer: styles.drawer}}
+                    drawerPosition={Drawer.positions.Right}
+                    ref = {ref => {this.drawer = ref}}
+                    onDrawerClose={this.props.closeDrawer}
+                    duration = {400}
+                    //showMask = {false}
+                    >
+                    <View>
+                        {mainContent}
+                    </View>
+                </Drawer>
+         
+                
+        
+                {/* {mainContent}
 
                 {this.props.transparent === false ?
                     null
@@ -152,7 +243,7 @@ export default class Schedule extends Component {
 
                     null
 
-                }
+                } */}
 
             </View>
 
@@ -186,5 +277,18 @@ const styles=StyleSheet.create({
         marginTop:15,
         marginBottom: 24,
 
-    }
+    },
+    drawer: {
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        paddingLeft: 49,
+        paddingTop:32,
+        backgroundColor: '#FFFFFF',
+        borderTopLeftRadius:16,
+        borderBottomLeftRadius:16,
+      },
+      mask: {
+          backgroundColor:'#E5E5E5'
+      },
 })
