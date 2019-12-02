@@ -12,11 +12,16 @@ import AppointmentCard from './AppointmentCard';
 import ExtendedCalendar from '../Calendar/ExtendedCalendar';
 import SearchBar from '../common/SearchBar';
 import SlideLeftPanel from '../common/SlideLeftPanel';
+import { Overlay } from 'react-native-elements';
 
 
 
 export default class Schedule extends Component {
+    getDrawerRef = () => this.getDrawerRef;
+
     render() {
+        const Drawer = require("react-native-drawer-menu").default;
+
         console.log("Scrren: ", this.props.screenDimensions)
         const scheduleContent = (
             <View
@@ -118,7 +123,6 @@ export default class Schedule extends Component {
                     null
                     :
                     this.props.searchOpen === true ?
-
                         <TransparentScreen  content={searchContent} showScheduleDetails = {this.props.closeTransparent} />
                         :
                         <TransparentScreen  showScheduleDetails = {this.props.closeTransparent} />

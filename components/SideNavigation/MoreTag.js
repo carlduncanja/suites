@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import ActionContainer from '../common/ActionContainer';
 import Svg,{Path, Rect} from 'react-native-svg';
+import Modal from 'react-native-modal';
 
 export default class More extends Component{
     constructor(props){
@@ -28,13 +29,18 @@ export default class More extends Component{
                     </TouchableOpacity>
                     :
                     <View>
-                        <TouchableOpacity style={[styles.navTag, styles.selectedNavTag, {backgroundColor:'#04346F'}]} onPress={this.openMore}>
+                        <TouchableOpacity style={[styles.navTag, styles.selectedNavTag, {backgroundColor:'#04346F'}]} onPress={this.props.openMore}>
                             {icon ("#718096")}
                             <Text style={[styles.navText, styles.selectedNavText, {color:'#718096'}]}>MORE</Text>
                         </TouchableOpacity>
-                        {/* <View style={{position:'absolute', left:50, top:0 }}>
-                            <ActionContainer actionTitle="More Details" content={<Text>Create New List</Text>}/>
-                        </View> */}
+
+                        <View style={{position:'absolute', left:45, top:-40}}>
+                            <Modal isVisible={true} style={{minHeight:70}} hasBackdrop={false} coverScreen={false}>
+                                <ActionContainer actionTitle="More Details" content={<Text>Create New List</Text>}/> 
+                            </Modal>
+                            
+                        </View>
+                        
                     </View>
 
                 }
@@ -71,6 +77,10 @@ const styles = StyleSheet.create({
     },
     selectedNavText:{
        color:'#3182CE',
+    },
+    overlayContainer:{
+        height:70,
+        alignSelf:'flex-start'
     },
     overlay:{
         paddingRight:0,
