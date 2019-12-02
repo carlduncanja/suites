@@ -17,14 +17,7 @@ import SlideLeftPanel from '../common/SlideLeftPanel';
 
 export default class Schedule extends Component {
     render() {
-        const Drawer = require("react-native-drawer-menu").default;
-        const content = (
-            <View>
-                <Text>DRAWER CONTENT</Text>
-                <Button onPress={() => this.drawer.closeDrawer()} title="Close Drawer"/>
-            </View>
-        )
-
+        console.log("Scrren: ", this.props.screenDimensions)
         const scheduleContent = (
             <View
                 style=
@@ -51,25 +44,6 @@ export default class Schedule extends Component {
 
             </View>
         )
-
-        // const styles = {
-        //     drawer: {
-        //       shadowColor: '#000',
-        //       shadowOpacity: 0.4,
-        //       shadowRadius: 10,
-        //       paddingLeft: 49,
-        //       paddingTop:32,
-        //       backgroundColor: '#FFFFFF',
-        //       borderTopLeftRadius:16,
-        //       borderBotttomLeftRadius:16
-        //     },
-        //     mask: {
-        //         backgroundColor:'#E5E5E5'
-        //     },
-        //     main: {
-        //     } // style of main board
-        //   };
-
         const searchContent=(
             <SearchBar
                 placeholderTextColor = '#718096'
@@ -164,6 +138,7 @@ export default class Schedule extends Component {
                                 completeDeleteAppointment = {this.props.completeDeleteAppointment}
                                 exitDelete = {this.props.exitDelete}
                                 closeActionButtons = {this.props.closeActionButtons}
+                                screenDimensions = {this.props.screenDimensions}
                                 />
                         }
                         stopScheduleDrag = {this.props.stopScheduleDrag}
@@ -182,21 +157,6 @@ export default class Schedule extends Component {
 }
 
 const styles=StyleSheet.create({
-    drawer: {
-        shadowColor: '#000',
-        shadowOpacity: 0.4,
-        shadowRadius: 10,
-        paddingLeft: 49,
-        paddingTop:32,
-        backgroundColor: '#FFFFFF',
-        borderTopLeftRadius:16,
-        borderBottomLeftRadius:16,
-      },
-      mask: {
-          backgroundColor:'#E5E5E5'
-      },
-      main: {
-      }, // style of main board
     searchContent:{
         alignItems:'center',
         flexDirection:'row',

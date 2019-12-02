@@ -21,7 +21,8 @@ export default class App extends React.Component {
       completeDeleteAppointment: false,
       displayTodayAppointment: false,
       displayMore: false,
-
+      showDrawer: false,
+      
       currentDate: moment(new Date()),
       prevMonthDate: moment(`${moment(new Date()).format("YYYY")}-${(parseInt(moment(new Date()).format("MM")) - 1).toString()}-${moment(new Date()).format("DD")}`),
       nextMonthDate: moment(`${moment(new Date()).format("YYYY")}-${(parseInt(moment(new Date()).format("MM")) + 1).toString()}-${moment(new Date()).format("DD")}`),
@@ -52,7 +53,7 @@ export default class App extends React.Component {
     this.exitDelete = this.exitDelete.bind(this);
     this.showTodayAppointment = this.showTodayAppointment.bind(this);
     this.openMore = this.openMore.bind(this);
-
+    this.closeDrawer = this.closeDrawer.bind(this);
     this.closeActionButtons = this.closeActionButtons.bind(this);
     this.calendarLayout = this.calendarLayout.bind(this);
   }
@@ -135,15 +136,17 @@ export default class App extends React.Component {
   }
 
   showScheduleDetails(appointment){
-      let newObject = Object.assign({},appointment);
-      this.state.sliderTransparent === true && this.state.showSlider === true ?
-          status = false : status = true
-      this.setState({
-          scheduleDetails:newObject,
-          //sliderTransparent:status,
-          transparent:status,
-          showSlider:status,
-      })
+    let newObject = Object.assign({},appointment);
+    this.state.sliderTransparent === true && this.state.showSlider === true ?
+        status = false : status = true
+    this.setState({
+        scheduleDetails:newObject,
+        //sliderTransparent:status,
+        transparent:status,
+        showSlider:status,
+        showDrawer: true,
+    })
+    console.log("Finished Schedule")
   }
 
   stopScheduleDrag(height){
@@ -210,6 +213,13 @@ export default class App extends React.Component {
     this.setState({calendarLayoutMeasure:x})
     console.log("Calendar X: ",x)
   }
+  closeDrawer(){
+    this.setState({
+      showDrawer:false,
+      transparent:false,
+      showSlider:false,
+    })
+  }
 
   render(){
 
@@ -246,6 +256,7 @@ export default class App extends React.Component {
                 exitDelete = {this.exitDelete}
                 showTodayAppointment = {this.showTodayAppointment}
                 closeActionButtons = {this.closeActionButtons}
+                closeDrawer = {this.closeDrawer}
 
                 decreaseMonthChange = {this.decreaseMonthChange}
                 increaseMonthChange = {this.increaseMonthChange}

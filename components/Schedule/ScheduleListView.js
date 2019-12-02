@@ -18,6 +18,7 @@ const getAppointments = (date) =>{
 
 export default class ScheduleListView extends Component {
     render() {
+        
         let date = this.props.currentDate;
         let currentJSDate = date.toDate()
 
@@ -26,6 +27,7 @@ export default class ScheduleListView extends Component {
         let last = moment(new Date(currentJSDate.setDate(currentJSDate.getDate() + 1)));
 
         return (
+            
             <View style={styles.container}>
                 {this.props.displayTodayAppointment === true ?
                         <DailyAppointmentCard
@@ -38,18 +40,21 @@ export default class ScheduleListView extends Component {
 
                     <View>
                         <DailyAppointmentCard
+                            getDrawerRef = {this.props.getDrawerRef}
                             dailyText = {`Tommorrow - ${moment(tomorrow).format("MMM D").toString()}`}
                             dailyAppointments = {getAppointments(moment(tomorrow).format("YYYY-MM-DD"))}
                             showScheduleDetails = {this.props.showScheduleDetails}
                         />
 
                         <DailyAppointmentCard
+                            getDrawerRef = {this.props.getDrawerRef}
                             dailyText = {`${moment(second).format("dddd").toString()} - ${moment(second).format("MMM D").toString()}`}
                             dailyAppointments = {getAppointments(moment(second).format("YYYY-MM-DD"))}
                             showScheduleDetails = {this.props.showScheduleDetails}
                         />
 
                         <DailyAppointmentCard
+                            getDrawerRef = {this.props.getDrawerRef}
                             dailyText = {`${moment(last).format("dddd").toString()} - ${moment(last).format("MMM D").toString()}`}
                             dailyAppointments = {getAppointments(moment(last).format("YYYY-MM-DD"))}
                             showScheduleDetails = {this.props.showScheduleDetails}

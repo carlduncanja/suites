@@ -24,6 +24,7 @@
     "react-native-modal-wrapper": "^3.1.1",
     "react-native-popover": "^0.2.0",
     "react-native-popover-view": "^2.0.5",
+    "react-native-sliding-drawer": "^1.0.1",
     "react-native-svg": "^9.13.3",
     "react-native-vector-icons": "^6.6.0",
     "react-native-viewport-units": "0.0.5",

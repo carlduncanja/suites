@@ -5,7 +5,7 @@ import Svg, {Path} from 'react-native-svg';
 
 export default class Month extends Component {
     render() {
-        console.log('Layoute: ', this.props.calendarLayoutMeasure)
+        
         return (
             <View style={styles.container}>
                 <TouchableOpacity style={{marginRight:54}} onPress={e => this.props.decreaseMonthChange(e,this.props.currentDate)}>

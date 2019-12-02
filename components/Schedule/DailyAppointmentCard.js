@@ -4,6 +4,7 @@ import ScheduleList from './ScheduleList'
 
 export default class DailyAppointmentCard extends Component {
     render(){
+       
         return (
             <View style={styles.dateContainer}>
                 <View style={styles.dateLabelContainer}>
@@ -12,8 +13,10 @@ export default class DailyAppointmentCard extends Component {
                     </Text>
                 </View>
                 <ScheduleList
+                    getDrawerRef = {this.props.getDrawerRef}
                     appointments = {this.props.dailyAppointments}
                     showScheduleDetails = {this.props.showScheduleDetails}
+                    
                 />
             </View>
         )

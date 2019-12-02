@@ -10,6 +10,7 @@ export default class ScheduleList extends Component {
                 data={this.props.appointments}
                 renderItem={({ item }) => 
                     <ScheduleCard 
+                        getDrawerRef = {this.props.getDrawerRef}
                         appointment={item} 
                         showScheduleDetails={this.props.showScheduleDetails}
                     />

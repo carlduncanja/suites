@@ -1,47 +1,77 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, StyleSheet, Text, Button} from 'react-native';
+
 
 export default class SlidingPanel extends Component{
-    
+    constructor(props){
+        super(props);
+        this.state={
+            drawerPress: false,
+        }
+        this.showDrawer = this.showDrawer.bind(this);
+    }
+
+    showDrawer(){
+        this.setState({drawerPress:true})
+        console.log("Press")
+    }
+
     render(){
-        const Drawer = require("react-native-drawer-menu").default;
-        const content = (
+        const Drawer = require("react-native-drawer-menu").default; 
+        const mainContent = (
             <View>
-                <Text>DRAWER CONTENT</Text>
-                <Button onPress={() => this.drawer.closeDrawer()} title="Close Drawer"/>
+                <Text>Open</Text>
+                <Button title="Drawer" onPress={() => this.showDrawer()}/>
+                <Button title="Open Drawer" onPress={() => this.drawer.openDrawer()}/>
             </View>
         )
 
-        const styles = {
-            drawer: {
-              shadowColor: '#000',
-              shadowOpacity: 0.4,
-              shadowRadius: 10,
-              backgroundColor:'purple'
-            },
-            mask: {}, // style of mask if it is enabled
-            main: {} // style of main board
-          };
-        
+        const drawerContent = (
+            <View>
+                <Text>Close</Text>
+                <Button title="Close Drawer" onPress={() => this.drawer.closeDrawer()}/>
+            </View>
+        )
+
         return(
-            <Drawer
-                style={styles.container}
-                drawerWidth={700}
-                drawerContent={content}
-                type={Drawer.types.Overlay}
-                customStyles={{drawer: styles.drawer}}
-                drawerPosition={Drawer.positions.Right}
-                onDrawerOpen={() => {console.log('Drawer is opened');}}
-                onDrawerClose={() => {console.log('Drawer is closed')}}
-                ref = {(ref) => this.drawer = ref}
-                //showMask = {false}
+    
+            <View style={{flex:1}}>
+                {this.state.drawerPress === true ?
+                    this.drawer.openDrawer():
+                    null
+                }
+
+                <Drawer
+                    style={styles.container}
+                    drawerWidth={700}
+                    drawerContent={drawerContent}
+                    type={Drawer.types.Overlay}
+                    customStyles={{drawer: styles.drawer}}
+                    drawerPosition={Drawer.positions.Right}
+                    ref = {(ref) => this.drawer = ref}
                 >
-                <View style={{}}>
-                    <Text>{Object.values(Drawer.positions).join(' ')}</Text>
-                    <Text>{Object.values(Drawer.types).join(' ')}</Text>
-                    <Button onPress={() => this.drawer.openDrawer()} title="Open Drawer"/>
-                </View>
-            </Drawer>
+                    <View style={{}}>
+                        {mainContent}
+                        {/* {this.props.overlayContent} */}
+                    </View>
+                </Drawer>
+            </View>
+            
         )
     }
 }
+const styles=StyleSheet.create({
+    drawer: {
+        shadowColor: '#000',
+        shadowOpacity: 0.4,
+        shadowRadius: 10,
+        paddingLeft: 49,
+        paddingTop:32,
+        backgroundColor: '#FFFFFF',
+        borderTopLeftRadius:16,
+        borderBottomLeftRadius:16,
+    },
+    mask: {
+        backgroundColor:'#E5E5E5'
+    },
+})
