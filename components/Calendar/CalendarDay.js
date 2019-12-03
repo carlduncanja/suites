@@ -27,7 +27,7 @@ export default class CalendarDay extends Component {
                                 </View>
                                 <Text style={[styles.day, {color:'#2D3748', marginTop: 12}]}>{this.props.day}</Text>
                             </TouchableOpacity>
-                            <View style={{flexDirection:'row', flex:1, alignItems:'flex-end', marginBottom:15,marginLeft:11, marginRight:22, flexWrap:'wrap'}}>
+                            <View style={{flexDirection:'row', flex:1, marginLeft:11, marginRight:22, flexWrap:'wrap'}}>
                                 {this.props.tomorrowView.map((tomorrow)=> tomorrow)}
                             </View>
                         </View>

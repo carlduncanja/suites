@@ -36,9 +36,11 @@ export default class Calendar extends Component {
         const nextLevels = [];
         const lastLevels = [];
 
+        console.log("Tomorr: ", filterLevels(parseInt(moment(this.props.currentDate).format("D")) + 1));
         filterLevels(parseInt(moment(this.props.currentDate).format("D")) + 1).map((app)=> tomorrowLevels.push(app.level));
         filterLevels(parseInt(moment(this.props.currentDate).format("D")) + 2).map((app)=> nextLevels.push(app.level));
         filterLevels(parseInt(moment(this.props.currentDate).format("D")) + 3).map((app)=> lastLevels.push(app.level))
+   
         return (
             <View style={styles.container}>
                 <View style={styles.labelsContainer}>

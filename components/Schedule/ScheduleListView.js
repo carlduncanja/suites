@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView} from 'react-native';
 import ScheduleList from './ScheduleList';
 import DailyAppointmentCard from './DailyAppointmentCard';
 import moment from 'moment';
@@ -27,8 +27,7 @@ export default class ScheduleListView extends Component {
         let last = moment(new Date(currentJSDate.setDate(currentJSDate.getDate() + 1)));
 
         return (
-            
-            <View style={styles.container}>
+            <ScrollView style={[styles.container]}>
                 {this.props.displayTodayAppointment === true ?
                         <DailyAppointmentCard
                             dailyText = {`Today - ${this.props.currentDate.format("MMM D").toString()}`}
@@ -65,7 +64,7 @@ export default class ScheduleListView extends Component {
                             <ActionContainer actionTitle="More Details" content={<Text>Create New List</Text>}/>
                         </View> */}
 
-            </View>
+            </ScrollView>
         )
     }
 }
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         flexDirection:'column',
-        justifyContent: 'flex-start',
+        //justifyContent: 'flex-start',
         marginLeft:'2%',
         marginRight:'2%',
         backgroundColor:'#F7FAFC',

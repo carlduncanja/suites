@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
     container:{
         flexDirection:'column',
         width:'100%',
+        height:'9%'
     },
     navTag:{
         flexDirection:'column',
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
         width:'100%',
         paddingBottom:20,
         paddingTop:14,
-        paddingRight:8,
+        paddingRight:8,      
     },
     selectedNavTag:{
         paddingRight:0,

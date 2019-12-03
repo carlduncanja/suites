@@ -39,6 +39,6 @@ const styles = StyleSheet.create({
         justifyContent:'flex-start',
         width:'100%',
         height:'100%',
-        paddingLeft:4
+        paddingLeft:4,
     },
 })
