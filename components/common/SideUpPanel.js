@@ -20,7 +20,6 @@ export default class SideUpPanel extends Component {
                 easing: Easing.linear
             }
         ).start()
-        console.log("SlideUpValue: ", this.slideUpValue);
     }
 
     render() {

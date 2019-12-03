@@ -13,7 +13,6 @@ export default class SlidingPanel extends Component{
 
     showDrawer(){
         this.setState({drawerPress:true})
-        console.log("Press")
     }
 
     render(){

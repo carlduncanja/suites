@@ -58,7 +58,7 @@ export default class CalendarDay extends Component {
 
                                 :
 
-                                this.props.day === this.props.selected.selected ?
+                                this.props.day === this.props.selected.selected && this.props.currentDate.format("M") === moment(new Date()).format("M")?
                                     <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)}>
                                         <View style={styles.pressed}/>
                                         <Text style={[styles.day,{fontWeight:'bold',paddingTop:0}]}>{this.props.day}</Text>

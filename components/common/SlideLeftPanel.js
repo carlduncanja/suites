@@ -22,7 +22,7 @@ export default class SlideLeftPanel extends Component{
     }
   
     render(){
-        console.log("Porps: ", this.props)
+        // console.log("Porps: ", this.props)
         const animatedStyle = {transform: this.state.panAnimatedValue.getTranslateTransform()}
         this._values = {x:0, y:0}
         this.panResponder = PanResponder.create({

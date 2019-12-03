@@ -6,6 +6,10 @@ import SvgIcon from '../../assets/SvgIcon';
 import TransparentScreen from '../common/TransparentScreen';
 
 export default class Sidebar extends Component {
+    constructor(props){
+        super(props);
+        this.state = {}
+    }
     render() {
         return (
             <View style={styles.container}>

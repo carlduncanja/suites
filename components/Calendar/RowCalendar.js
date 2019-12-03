@@ -22,7 +22,7 @@ export default class RowCalendar extends Component {
     }
 
     componentDidMount() {
-        console.log("refs", this.refs);
+        // console.log("refs", this.refs);
         this.onScrollViewCreated(this.refs.scrollview);
     }
 

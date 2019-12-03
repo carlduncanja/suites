@@ -28,7 +28,7 @@ export default class ExtendedCalendar extends Component{
     }
 
     render(){
-        console.log("Prev Month:", prevMonth)
+              
         const prevMonth = moment(`${this.props.currentDate.format("YYYY")}-${(parseInt(this.props.currentDate.format("MM")) - 1).toString()}-${this.props.currentDate.format("DD")}`);
         const nextMonth = moment(`${this.props.currentDate.format("YYYY")}-${(parseInt(this.props.currentDate.format("MM")) + 1).toString()}-${this.props.currentDate.format("DD")}`)
 
