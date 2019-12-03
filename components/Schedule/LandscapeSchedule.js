@@ -13,6 +13,17 @@ import SearchBar from '../common/SearchBar';
 export default class LandscapeSchedule extends Component{
     getDrawerRef = () => this.drawer;
 
+    state = {
+        _scrollView: null
+    };
+
+    onGoToTodayClick = () => {
+        if (this.state._scrollView) {
+            this.state._scrollView.scrollTo(0,0,true)
+        }
+        this.props.showTodayAppointment()
+    };
+
     render(){
 
         const Drawer = require("react-native-drawer-menu").default;
@@ -39,7 +50,6 @@ export default class LandscapeSchedule extends Component{
                     currentDate={this.props.currentDate}
                     showSlider = {this.props.showSlider}
                     showScheduleDetails = {this.props.showScheduleDetails}
-            
                 />
 
             </View>
@@ -69,7 +79,7 @@ export default class LandscapeSchedule extends Component{
                         <View style={styles.buttonContainer}>
                             <Button
                                 title= {this.props.displayTodayAppointment === true ? "Go Back" : "Go to Today"}
-                                buttonPress={this.props.showTodayAppointment}
+                                buttonPress={this.onGoToTodayClick}
                             />
                         </View>
                     </View>
@@ -80,6 +90,11 @@ export default class LandscapeSchedule extends Component{
                             <RowCalendar
                                 {...this.props}
                                 currentDay = {this.props.currentDate}
+                                setScrollView = { (scrollViewComponent) => {
+                                    this.setState({
+                                        _scrollView: scrollViewComponent
+                                    })
+                                }}
                             />
                             :
                             this.props.screenDimensions.width > this.props.screenDimensions.height ?
@@ -101,7 +116,7 @@ export default class LandscapeSchedule extends Component{
                     :
                     null
                 }
-                
+
 
                 {scheduleContent}
 
@@ -163,11 +178,11 @@ export default class LandscapeSchedule extends Component{
                         </View>
 
                     </Drawer>
-                 
-                
-               
+
+
+
             </View>
-            
+
         )
     }
 }

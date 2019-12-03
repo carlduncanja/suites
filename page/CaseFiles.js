@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, ScrollView } from 'react-native';
-import TextEditorTest from '../../TextEditorTest';
+import TextEditorTest from '../TextEditorTest';
 import moment from 'moment';
-import SlidingPanel from '../common/SlidingPanel';
-import LandscapeSchedule from '../Schedule/LandscapeSchedule';
+import SlidingPanel from '../components/common/SlidingPanel';
+import LandscapeSchedule from '../components/Schedule/LandscapeSchedule';
 
 export default class CaseFiles extends Component {
     constructor(props){

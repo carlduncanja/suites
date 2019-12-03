@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import {View, StyleSheet, ScrollView, Text, Easing, Animated} from 'react-native';
-import RowCalendar from '../Calendar/RowCalendar';
-import Calendar from '../Calendar/Calendar';
-import ScheduleListView from './ScheduleListView';
-import Month from '../Calendar/Month';
-import Button from '../common/Button';
-import TransparentScreen from '../common/TransparentScreen';
-import SlideUpPanel from '../common/SideUpPanel';
-import Divider from '../common/Divider';
-import AppointmentCard from './AppointmentCard';
-import ExtendedCalendar from '../Calendar/ExtendedCalendar';
-import SearchBar from '../common/SearchBar';
-import SlideLeftPanel from '../common/SlideLeftPanel';
+import RowCalendar from '../components/Calendar/RowCalendar';
+import Calendar from '../components/Calendar/Calendar';
+import ScheduleListView from '../components/Schedule/ScheduleListView';
+import Month from '../components/Calendar/Month';
+import Button from '../components/common/Button';
+import TransparentScreen from '../components/common/TransparentScreen';
+import SlideUpPanel from '../components/common/SideUpPanel';
+import Divider from '../components/common/Divider';
+import AppointmentCard from '../components/Schedule/AppointmentCard';
+import ExtendedCalendar from '../components/Calendar/ExtendedCalendar';
+import SearchBar from '../components/common/SearchBar';
+import SlideLeftPanel from '../components/common/SlideLeftPanel';
 import { Overlay } from 'react-native-elements';
 import Modal from 'react-native-modal';
 
@@ -22,6 +22,18 @@ export default class Schedule extends Component {
         super(props);
     }
     getDrawerRef = () => this.getDrawerRef;
+
+    state = {
+        _scrollView: null
+    };
+
+    onGoToTodayClick = () => {
+        if (this.state._scrollView) {
+            this.state._scrollView.scrollTo(0,0,true)
+        }
+        this.props.showTodayAppointment()
+    };
+
     render() {
         const Drawer = require("react-native-drawer-menu").default;
 
@@ -76,26 +88,33 @@ export default class Schedule extends Component {
                         <View style={styles.buttonContainer}>
                             <Button
                                 title= {this.props.displayTodayAppointment === true ? "Go Back" : "Go to Today"}
-                                buttonPress={this.props.showTodayAppointment}
+                                // buttonPress={this.props.showTodayAppointment}
+                                buttonPress={this.onGoToTodayClick}
+
                             />
                         </View>
                     </View>
 
                     <View style={{flex:1,marginLeft: this.props.screenDimensions.width > this.props.screenDimensions.height ? '2%':0, marginBottom: 5, alignSelf:"center"}}>
 
-                        {this.props.displayFullCalendar === false ?
-                            <RowCalendar
-                                {...this.props}
-                                currentDay = {this.props.currentDate}
-                            />
-                            :
-                            this.props.screenDimensions.width > this.props.screenDimensions.height ?
-                                <ExtendedCalendar
+                            {this.props.displayFullCalendar === false ?
+                                <RowCalendar
                                     {...this.props}
+                                    currentDay = {this.props.currentDate}
+                                    setScrollView = { (scrollViewComponent) => {
+                                        this.setState({
+                                            _scrollView: scrollViewComponent
+                                        })
+                                    }}
                                 />
                                 :
-                                <Calendar {...this.props}/>
-                        }
+                                this.props.screenDimensions.width > this.props.screenDimensions.height ?
+                                    <ExtendedCalendar
+                                        {...this.props}
+                                    />
+                                    :
+                                    <Calendar {...this.props}/>
+                            }
 
                     </View>
                 </View>
