@@ -8,37 +8,35 @@ const {height} = Dimensions.get('window')
 export default class SideUpPanel extends Component {
     constructor(props){
         super(props);
-
-        this.slideUpValue = new Animated.Value(0);
-    }
-    componentDidMount(){
-        Animated.timing(
-            this.slideUpValue,
-            {
-                toValue:500,
-                duration:500,
-                easing: Easing.linear
-            }
-        ).start()
+        this.state = {
+            bottom:0
+        }
     }
 
+    setHeight(height){
+        this.setState({bottom:height-720})
+    }
+
+    
     render() {
+
         return (
-            <Animated.View style={styles.container}>
+            <View style={styles.container}>
                 <SlidingUpPanel
                     ref={c => (this._panel = c)}
-                    draggableRange={{top: height-150, bottom: 0}}
-                    animatedValue={this.slideUpValue}
+                    draggableRange={{top: this.props.displayFullCalendar === false ? 0 : 300, bottom: this.props.displayFullCalendar === false ? -300 : 0}}
                     showBackdrop={false}
                     allowDragging = {this.props.draggable}
-                    //minimumVelocityThreshold = {-50000}
                     friction = {1000}
-                    onDragEnd={(height) => this.props.stopScheduleDrag(height)}
+                    // onDragEnd={(height) => this.props.stopScheduleDrag(height, this.state.bottom)}
                     >
                        
-                    <View style={styles.panel}>
+                    <View 
+                        style={styles.panel} 
+                        onLayout={(event)=>{this.setHeight(event.nativeEvent.layout.height)}}
+                    >
                         <View style={styles.panelHeader}>
-                            <View style={{alignItems:'center',height:20}}>
+                            <View style={{alignItems:'center',height:30}}>
                                 <Divider longPressAction = {this.props.restartDrag} backgroundColor="white"/>
                             </View>
                             
@@ -49,7 +47,7 @@ export default class SideUpPanel extends Component {
                         
                     </View>
                 </SlidingUpPanel>
-            </Animated.View>
+            </View>
         )
     }
 }
@@ -63,14 +61,14 @@ const styles = StyleSheet.create({
     },
     panelHeader: {
         flex:1,
-        paddingTop: 10,
+        paddingTop:10,
         borderTopRightRadius: 10,
         borderTopLeftRadius:10,
     },
     bottom:{
         flex:1,
         backgroundColor: '#fff',
-        paddingTop:50,
+        paddingTop:30,
         borderTopRightRadius: 10,
         borderTopLeftRadius:10,
         

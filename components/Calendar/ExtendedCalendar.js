@@ -27,11 +27,8 @@ export default class ExtendedCalendar extends Component{
         
     }
 
+   
     render(){
-              
-        const prevMonth = moment(`${this.props.currentDate.format("YYYY")}-${(parseInt(this.props.currentDate.format("MM")) - 1).toString()}-${this.props.currentDate.format("DD")}`);
-        const nextMonth = moment(`${this.props.currentDate.format("YYYY")}-${(parseInt(this.props.currentDate.format("MM")) + 1).toString()}-${this.props.currentDate.format("DD")}`)
-
         return(
             <ScrollView 
                 style={{flexDirection: 'row', paddingLeft:100}} 
@@ -44,10 +41,8 @@ export default class ExtendedCalendar extends Component{
                 {/* Previous Month */}
                 <View style={{opacity: this.props.calendarLayoutMeasure <= 350 ? 1: 0.1}} >
                     <Calendar 
-                        currentDate = {prevMonth}
+                        currentDate = {this.props.prevCurrentDate}
                         screenDimensions = {this.props.screenDimensions}
-                        showLastCalendarRow = {this.props.showLastCalendarRow}
-                        statusLastRow = {this.props.statusLastRow}
                         currentDays = {this.props.prevMonthDays}
                         onPressDay = {this.props.onPressDay}
                         selected = {this.props.selected}
@@ -63,10 +58,8 @@ export default class ExtendedCalendar extends Component{
                 {/* Next Month */}
                 <View style={{left:-50, opacity: this.props.calendarLayoutMeasure >= 1100 ? 1: 0.1, paddingRight:120}}>
                     <Calendar 
-                        currentDate = {nextMonth}
+                        currentDate = {this.props.nextCurrentDate}
                         screenDimensions = {this.props.screenDimensions}
-                        showLastCalendarRow = {this.props.showLastCalendarRow}
-                        statusLastRow = {this.props.statusLastRow}
                         currentDays = {this.props.nextMonthDays}
                         onPressDay = {this.props.onPressDay}
                         selected = {this.props.selected}

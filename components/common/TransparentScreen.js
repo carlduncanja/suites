@@ -6,8 +6,9 @@ export default class TransparentScreen extends Component {
     render() {
         return (
             <TouchableOpacity
-                style={styles.overlay}
-                onPress={this.props.showScheduleDetails}>
+                activeOpacity={1}
+                style={[styles.overlay,{backgroundColor: `rgba(0, 0, 0, 0.3)`}]}
+                onPress={()=>{this.props.showScheduleDetails();this.props.animateSlide()}}>
                 <View style={styles.content}>
                     {this.props.content}
                 </View>
@@ -22,7 +23,7 @@ const styles=StyleSheet.create({
         position:'absolute',
         width:'100%',
         height:'100%',
-        backgroundColor:'rgba(0, 0, 0, 0.33)',
+        //backgroundColor:'rgba(0, 0, 0, 0.33)',
 
     },
     content:{

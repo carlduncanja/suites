@@ -30,21 +30,21 @@ export default class ScheduleCard extends Component{
                     style = {{
                         alignSelf:'center',
                         backgroundColor:statusColor(this.props.appointment.level),
-                        height:10,
-                        width: 10,
+                        height:11,
+                        width: 11,
                         borderRadius: 10/2,
                     }}
                 />
 
-                <ScrollView horizontal={true} contentContainerStyle={{flex:1, alignItems: 'center'}}>
+                <View  style={{flex:1}}>
                     <TouchableOpacity 
                         style={styles.infoContainer} 
-                        onPress = {() => {this.props.showScheduleDetails(this.props.appointment)}}
+                        onPress = {() => {this.props.animateSlide();this.props.showScheduleDetails(this.props.appointment)}}
                     >
                         <Text style={styles.title}>{this.props.appointment.title} - {this.props.appointment.responseEntity}</Text>
                         <Text style={styles.time}>{getTime(this.props.appointment.startTime)} - {getTime(this.props.appointment.endTime)}</Text>
                     </TouchableOpacity>          
-                </ScrollView>
+                </View>
                 
             </View>
     )
@@ -71,8 +71,8 @@ const styles=StyleSheet.create({
         borderBottomWidth: 1,
         justifyContent:'flex-start',
         alignSelf:'center',
-        marginTop: 16,
-        paddingBottom: 16,
+        marginTop: 12,
+        paddingBottom: 12,
         overflow:'scroll',
     },
     infoContainer:{
@@ -83,7 +83,7 @@ const styles=StyleSheet.create({
         paddingRight:0,
     },
     title:{
-        fontSize: 14,
+        fontSize: 16,
         marginRight:40,
     },
     time:{

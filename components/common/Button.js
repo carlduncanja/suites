@@ -16,8 +16,10 @@ export default class Button extends Component {
 
 const styles=StyleSheet.create({
     button:{
-        backgroundColor:'#E2E8F0',
+        backgroundColor:'#F7FAFC',
         borderRadius:4,
+        borderWidth:1,
+        borderColor:'#CBD5E0',
         alignItems:'center',
         justifyContent:'center',
         //padding:10,
@@ -26,6 +28,6 @@ const styles=StyleSheet.create({
 
     },
     buttonText:{
-        color: '#104587',
+        color: '#4A5568',
     },
 })

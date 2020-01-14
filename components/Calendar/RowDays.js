@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
         borderColor:'#EDF2F7',
     },
     day:{
-        paddingRight:40, 
-        paddingLeft: 40, 
+        paddingRight:30, 
+        paddingLeft: 30, 
         paddingBottom:20,
         paddingTop:3,
         borderColor:'#EDF2F7',

@@ -18,30 +18,42 @@ export default class Content extends Component {
         return (
             <View style = {styles.content}>
                 {this.props.name === 'SCHEDULE' ?
-                    // this.props.screenDimensions.width < this.props.screenDimensions.height ?
                     <Schedule {...this.props} />
-                    // :
-                    // <LandscapeSchedule {...this.props}/>
-                    :
-                    this.props.name === 'CASE FILES' ?
-                        <CaseFiles {...this.props}/>
-                        :
-                        this.props.name === 'PATIENTS' ?
-                            <SlideLeftPanel {...this.props}/>
-                            :
-                            this.props.name === 'INVENTORY' ?
-                                <View style={{height:'50%', backgroundColor:'red', zIndex:-1}}/>
-                                :
-                                this.props.name === 'DELIVERY' ?
-                                    <Text>DELIVERY</Text>
-                                    :
-                                    this.props.name === 'EQUIPMENTS' ?
-                                        <Text>DELIVERY</Text>
-                                        :
-                                        this.props.name === 'ALERTS' ?
-                                            <Text>ALERTS</Text>
-                                            :
-                                            <Text>HOME</Text>
+                :
+                this.props.name === 'CASE FILES' ?
+                    <CaseFiles {...this.props}/>
+                :
+                this.props.name === 'THEATRES' ?
+                    <Text>THEATRES</Text>
+                :
+                this.props.name === 'INVENTORY' ?
+                    <Text>INVENTORY</Text>
+                :
+                this.props.name === 'EQUIPMENT' ?
+                    <Text>EQUIPMENT</Text>
+                :
+                this.props.name === 'ORDERS' ?
+                    <Text>ORDERS</Text>
+                :
+                this.props.name === 'SUPPLIERS' ?
+                    <Text>SUPPLIERS</Text>
+                :
+                this.props.name === 'INVOICES' ?
+                    <Text>INVOICES</Text>
+                :
+                this.props.name === 'STORAGE' ?
+                    <Text>STORAGE</Text>
+                :
+                this.props.name === 'PHYSICIANS' ?
+                    <Text>PHYSICIANS</Text>
+                :
+                this.props.name === 'PROCEDURES' ?
+                    <Text>PROCEDURES</Text>
+                :
+                this.props.name === 'ALERTS' ?
+                    <Text>ALERTS</Text>
+                :
+                    null
                 }
 
             </View>

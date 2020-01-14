@@ -6,7 +6,10 @@ export default class AnimatedDivider extends Component{
         return(
             <TouchableOpacity 
                 onPress = {this.props.showLastCalendarRow}
-                style={[styles.divider, {marginTop: this.props.statusLastRow === true ? 12 : 17}]}/>
+                style={{paddingTop:this.props.statusLastRow === true ? 12 : 17}}
+                >
+                <View style={styles.divider}/>
+            </TouchableOpacity>
         )
     }
 }
@@ -17,7 +20,6 @@ const styles = StyleSheet.create({
         height: 6,
         borderRadius: 8,
         backgroundColor: '#CBD5E0',
-        marginTop: 10
     }
     
 })

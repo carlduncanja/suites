@@ -17,6 +17,7 @@ export default class Days extends Component {
         //Sun-0, Mon-1, Tue-2, Wed-3, Thu-4, Fir-5, Sat-6
         let date = this.props.currentDate;
         let firstDay = moment(date).startOf("month").format("d");
+        //console.log("First day: ", moment(date).startOf("month").format("D ddd"))
         return firstDay
     }
 
@@ -25,52 +26,90 @@ export default class Days extends Component {
         return lastDay
     }
     
-
     render() {
+        const appointments = require('../../assets/db.json').appointments;
+
+        const filterLevels = (date, day) => {
+            //console.log("Date: ", day)
+            let result = appointments.filter(
+                appointment => parseInt(moment(appointment.startTime).format("D")) === date && moment(appointment.startTime).format("MM") === day.format("MM") && moment(appointment.startTime).format("YYYY") === day.format("YYYY"));
+            return result;
+        }
+
+        const getLevel = (level) => {
+            level === 1 ? color = '#E53E3E':
+                level === 2 ? color = "#ECC94B":
+                    level === 3 ? color = "#4299E1": color ="#48BB78"
+            return color
+        }
+
+        const levels = (levelArray) =>{
+            let levelView = [];
+            levelArray.map((level, index)=>{
+                levelView.push(
+                    <View 
+                        key ={index}
+                        style={{height: 8, width:8, borderRadius: 8/2, marginRight:4, marginBottom: 2, backgroundColor: getLevel(parseInt(level))}}
+                    />
+                )
+            })
+            return levelView
+        }
        
         let blanks = [];
-        this.firstDayOfMonth() === '0' ? start = 7 : start = this.firstDayOfMonth()
-        for (let i = 0; i < start-1; i++) {
+        this.props.getStartDays.map((day,index)=>{
+            const dayLevels=[]
+            filterLevels(parseInt(moment(day).format("D")) + 1, moment(day)).map((app)=> dayLevels.push(app.level));
             blanks.push(
-                <View 
-                    style={[styles.blanks, 
-                        {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }
-                    ]} 
-                    key={`blank${i}`} 
-                    day=''
+                <CalendarDay 
+                    currentDate = {this.props.currentDate}
+                    screenDimensions = {this.props.screenDimensions}
+                    onPressDay={this.props.onPressDay} 
+                    filterDay = {moment(day)}
+                    day={moment(day)}
+                    selected = {this.props.selected}
+                    dayLevels = {levels(dayLevels)}
+                    key={`blank-${index}`}
                 />
-            );
-        }
+            )
+        })
 
         
         let trailblanks = [];
-        for (let i = this.lastDayOfMonth(); i < 7; i++) {
+        this.props.getEndDays.map((day,index)=>{
+            const dayLevels=[]
+            filterLevels(parseInt(moment(day).format("D")) + 1, moment(day)).map((app)=> dayLevels.push(app.level));
             trailblanks.push(
-                <View 
-                    style={[styles.blanks, 
-                        {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93 }
-                    ]} 
-                    key={`trailblank${i}`} 
-                    day=''
+                <CalendarDay 
+                    currentDate = {this.props.currentDate}
+                    screenDimensions = {this.props.screenDimensions}
+                    onPressDay={this.props.onPressDay} 
+                    filterDay = {moment(day)}
+                    day={moment(day)}
+                    selected = {this.props.selected}
+                    dayLevels = {levels(dayLevels)}
+                    key={`trail-${index}`}
                 />
-            );
-        }
-        
-        let daysInMonth = [];
-            
+            )
+        })
+
+
+        let daysInMonth = []; 
         this.props.currentDays.map((day,index)=>{
+            const filterDay = moment(`${this.props.currentDate.format("YYYY")}-${this.props.currentDate.format("MM")}-${day.format("DD")}`)
+            const dayLevels=[]
+            filterLevels(parseInt(moment(filterDay).format("D")) + 1, this.props.currentDate).map((app)=> dayLevels.push(app.level));
+    
             daysInMonth.push(
                 <CalendarDay 
                     currentDate = {this.props.currentDate}
                     screenDimensions = {this.props.screenDimensions}
-                    highlightDay = {moment(this.props.currentDate).format("D")}
                     onPressDay={this.props.onPressDay} 
-                    unique={`day-${index}`} 
-                    day={day.day}
+                    filterDay = {filterDay}
+                    day={day}
                     selected = {this.props.selected}
-                    tomorrowView = {this.props.tomorrowView}
-                    nextView = {this.props.nextView}
-                    lastView = {this.props.lastView}
+                    dayLevels = {levels(dayLevels)}
+                    key={index}
                 />
             )            
         })
@@ -93,28 +132,15 @@ export default class Days extends Component {
             }
         });
 
-        const sliceEnd = this.props.statusLastRow === false ? rows.length-1 : rows.length;
-
-        let daysinmonth = rows.slice(0,sliceEnd).map((row,index)=>{
+        let daysinmonth = rows.map((row,index)=>{
             return (
                 <View key={`row${index}`} style={{flexDirection:'row'}}>{row}</View>
             )
         })
-
-        let lastRow = rows.slice(rows.length-1,rows.length).map((row,index)=>{
-            return (
-                <View key={`row${index}`} style={{flexDirection:'row', opacity:0.1}}>{row}</View>
-            )
-        })
-
+        this.firstDayOfMonth()
         return (
             <View style={styles.container}>
               {daysinmonth} 
-              <ActionCalendar 
-                lastRow = {lastRow}
-                showLastCalendarRow = {this.props.showLastCalendarRow}
-                statusLastRow = {this.props.statusLastRow}
-            />
             </View>
         )
     }

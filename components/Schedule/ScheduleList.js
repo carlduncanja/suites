@@ -13,6 +13,8 @@ export default class ScheduleList extends Component {
                         getDrawerRef = {this.props.getDrawerRef}
                         appointment={item} 
                         showScheduleDetails={this.props.showScheduleDetails}
+                        animateSlide = {this.props.animateSlide}
+                        // scrollAppointmentDay = {this.props.scrollAppointmentDay}
                     />
                 }
                 keyExtractor={item => item.id}

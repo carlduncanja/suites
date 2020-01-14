@@ -20,7 +20,7 @@ export default class SearchBar extends Component {
                         <Path d="M2.5 2.5L13.5 13.5" stroke="#4A5568" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                     </Svg>
                 </TouchableOpacity>
-        </View>
+            </View>
         )
     }
 }

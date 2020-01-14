@@ -8,17 +8,19 @@ export default class App extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      tabSelected:{},
-      tabSelectedBool: false,
+      tabSelected:{"tabSelected":"schedule", "status":true},
+      tabSelectedBool: true,
       transparent:false,
       displayMore: false,
       screenDimensions: {},
+      showNotification: false,
     }
 
     this.onPressTab = this.onPressTab.bind(this);
     this.getDimensions = this.getDimensions.bind(this);
     this.openMore = this.openMore.bind(this);
-
+    this.closeNavigation = this.closeNavigation.bind(this);
+    this.setTransparent = this.setTransparent.bind(this);
   }
 
   getDimensions(event){
@@ -40,6 +42,15 @@ export default class App extends React.Component {
     this.setState({displayMore:!this.state.displayMore})
   }
 
+  closeNavigation(){
+    this.setState({showNotification: false})
+  }
+
+  setTransparent(status){
+    console.log("Transparent: ",status)
+    this.setState({transparent:status})
+  }
+
   render(){
 
     return (
@@ -59,42 +70,44 @@ export default class App extends React.Component {
             />
           </View>
           <View style = {styles.content}>
-            {this.state.tabSelected.tabSelected === 'schedule' ?
-              <Content
-                {...this.state}
-                name="SCHEDULE"
-                // decreaseMonthChange = {this.decreaseMonthChange}
-                // increaseMonthChange = {this.increaseMonthChange}
-                // currentDays = {this.getCurrentDays(this.state.currentDate.format("MM"),this.state.currentDate.format("YYYY"))}
-                // prevMonthDays = {this.getCurrentDays((parseInt(this.state.currentDate.format("MM")) - 1).toString(), this.state.currentDate.format("YYYY"))}
-                // nextMonthDays = {this.getCurrentDays((parseInt(this.state.currentDate.format("MM")) + 1).toString(), this.state.currentDate.format("YYYY"))}
-                />
+            {
+              this.state.tabSelected.tabSelected === 'schedule' ?
+                <Content {...this.state} name="SCHEDULE" closeNavigation = {this.closeNavigation} setTransparent={this.setTransparent}/>
               :
               this.state.tabSelected.tabSelected === 'case files' ?
-                <Content
-                  {...this.state}
-                  name="CASE FILES"
-                />
-                :
-                this.state.tabSelected.tabSelected === 'patients' ?
-                  <Content
-                    {...this.state}
-                    name="PATIENTS"
-                    />
-                  :
-                  this.state.tabSelected.tabSelected === 'inventory' ?
-                    <Content {...this.state} name="INVENTORY"/>
-                    :
-                    this.state.tabSelected.tabSelected === 'delivery' ?
-                      <Content {...this.state} name="DELIVERY"/>
-                      :
-                      this.state.tabSelected.tabSelected === 'equipments' ?
-                        <Content {...this.state} name="EQUIPMENTS"/>
-                        :
-                        this.state.tabSelected.tabSelected === 'alerts' ?
-                          <Content {...this.state} name="ALERTS"/>
-                          :
-                          <Content {...this.state} name="HOME"/>
+                <Content {...this.state} name="CASE FILES"/>
+              :
+              this.state.tabSelected.tabSelected === 'theatres' ?
+                <Content {...this.state} name="CASE FILES"/>
+              :
+              this.state.tabSelected.tabSelected === 'inventory' ?
+                <Content {...this.state} name="INVENTORY"/>
+              :
+              this.state.tabSelected.tabSelected === 'equipment' ?
+                <Content {...this.state} name="EQUIPMENT"/>
+              :
+              this.state.tabSelected.tabSelected === 'orders' ?
+                <Content {...this.state} name="ORDERS"/>
+              :
+              this.state.tabSelected.tabSelected === 'suppliers' ?
+                <Content {...this.state} name="SUPPLIERS"/>
+              :
+              this.state.tabSelected.tabSelected === 'invoices' ?
+                <Content {...this.state} name="INVOICES"/>
+              :
+              this.state.tabSelected.tabSelected === 'storage' ?
+                <Content {...this.state} name="STORAGE"/>
+              :
+              this.state.tabSelected.tabSelected === 'physicians' ?
+                <Content {...this.state} name="PHYSICIANS"/>
+              :
+              this.state.tabSelected.tabSelected === 'procedures' ?
+                <Content {...this.state} name="PROCEDURES"/>
+              :
+              this.state.tabSelected.tabSelected === 'alerts' ?
+                <Content {...this.state} name="ALERTS"/>
+              :
+              null
             }
           </View>
         </View>
@@ -118,6 +131,7 @@ const styles = StyleSheet.create({
   },
   sidebar:{
     //flex:1,
+    width:'11%'
   },
   content:{
     flex:12,
