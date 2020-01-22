@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import InputText from './InputText';
 import Svg, {Path} from 'react-native-svg';
+import SvgIcon from '../../assets/SvgIcon'
 
 export default class SearchBar extends Component {
     render() {
+        let currentItem = this.props.selectedAppEvents.length === 0 ? 0 : this.props.searchResult
         return (
             <View style={styles.searchContent}>
                 <InputText
@@ -13,13 +15,25 @@ export default class SearchBar extends Component {
                     placeholderTextColor = {this.props.placeholderTextColor}
                     placeholder={this.props.placeholder}
                 />
-
-                <TouchableOpacity onPress={this.props.closeSearch}>
-                    <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <Path d="M13.5 2.5L2.5 13.5" stroke="#4A5568" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                        <Path d="M2.5 2.5L13.5 13.5" stroke="#4A5568" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                    </Svg>
-                </TouchableOpacity>
+                <View style={{flexDirection: 'row'}}>
+                    {this.props.selectedSearchValue === ""? 
+                        null
+                        :
+                        <View style={{flexDirection:'row', paddingRight:15}}>
+                            <Text>{currentItem} of {this.props.selectedAppEvents.length}</Text>
+                            <TouchableOpacity style={{paddingRight:15, paddingLeft:15}} onPress={() => this.props.prevSearchResult()}>
+                                <SvgIcon iconName = "scheduleMonthLeft" strokeColor = "#718096"/>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{paddingLeft:15, paddingRight:15}} onPress = {() => this.props.nextSearchResult()}>
+                                <SvgIcon iconName = "scheduleMonthRight" strokeColor = "#718096"/>
+                            </TouchableOpacity>
+                        </View>
+                    }
+                    
+                    <TouchableOpacity onPress={this.props.closeSearch}>
+                        <SvgIcon iconName = "searchExit" strokeColor = "#718096"/>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }

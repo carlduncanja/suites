@@ -11,14 +11,12 @@ export default class App extends React.Component {
       tabSelected:{"tabSelected":"schedule", "status":true},
       tabSelectedBool: true,
       transparent:false,
-      displayMore: false,
       screenDimensions: {},
       showNotification: false,
     }
 
     this.onPressTab = this.onPressTab.bind(this);
     this.getDimensions = this.getDimensions.bind(this);
-    this.openMore = this.openMore.bind(this);
     this.closeNavigation = this.closeNavigation.bind(this);
     this.setTransparent = this.setTransparent.bind(this);
   }
@@ -38,16 +36,11 @@ export default class App extends React.Component {
     this.setState({tabSelected:selectedObject, tabSelectedBool});
   }
 
-  openMore(){
-    this.setState({displayMore:!this.state.displayMore})
-  }
-
   closeNavigation(){
     this.setState({showNotification: false})
   }
 
   setTransparent(status){
-    console.log("Transparent: ",status)
     this.setState({transparent:status})
   }
 
@@ -65,14 +58,15 @@ export default class App extends React.Component {
               tabSelected = {this.state.tabSelected}
               tabSelectedBool = {this.state.tabSelectedBool}
               onPressTab = {this.onPressTab}
-              openMore = {this.openMore}
-              displayMore = {this.state.displayMore}
             />
           </View>
           <View style = {styles.content}>
             {
               this.state.tabSelected.tabSelected === 'schedule' ?
-                <Content {...this.state} name="SCHEDULE" closeNavigation = {this.closeNavigation} setTransparent={this.setTransparent}/>
+                <Content {...this.state} 
+                  name="SCHEDULE" 
+                  closeNavigation = {this.closeNavigation} 
+                  setTransparent={this.setTransparent}/>
               :
               this.state.tabSelected.tabSelected === 'case files' ?
                 <Content {...this.state} name="CASE FILES"/>

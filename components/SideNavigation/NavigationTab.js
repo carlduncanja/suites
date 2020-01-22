@@ -17,6 +17,9 @@ export default class NavigationTab extends Component {
     render() {
         const icon = (name, strokeColor) => {
             return(
+                name === 'quick menu' ?
+                    <SvgIcon iconName="quickMenu" strokeColor={strokeColor}/>
+                :
                 name === 'schedule'?
                    <SvgIcon iconName="schedule" strokeColor={strokeColor}/>
                 :
@@ -104,14 +107,13 @@ export default class NavigationTab extends Component {
 
                                 :
                                 <View>
-                                    {/* {svgRightCorner("#ababab")} */}
+                                    {svgRightCorner("#b3b3b3")}
                                     <View>
-                                        <TouchableOpacity style={[styles.navTag, styles.selectedNavTag, {backgroundColor:'#04346F'}]} onPress={e => this.props.onPressTab(e,this.props.tabName)}>
-                                            {icon (this.props.tabName,"#718096")}
-                                            <Text style={[styles.navText, styles.selectedNavText, {color:'#718096'}]}>{this.props.tabName.toUpperCase()}</Text>
+                                        <TouchableOpacity style={[styles.navTag, styles.selectedNavTag,{backgroundColor:"#b3b3b3", paddingBottom:12}]} onPress={e => this.props.onPressTab(e,this.props.tabName)}>
+                                            {icon (this.props.tabName,"#3182CE")}
                                         </TouchableOpacity>
                                     </View>
-                                    {/* {svgLeftCorner("#ababab")} */}
+                                    {svgLeftCorner("#b3b3b3")}
                                 </View>
 
                         }

@@ -25,14 +25,13 @@ export default class RowDays extends Component{
         let daysArray = this.props.startDays.concat(this.props.currentDays.concat(this.props.endDays))
         return(
             <ScrollView
-                style = {[styles.container,]}
+                style = {[styles.container]}
                 horizontal={true}
                 ref="scrollview"
                 contentOffset={{x:this.props.calendarOffset, y:0}} 
-                //contentContainerStyle={{paddingRight:'50%'}}
+                contentContainerStyle={{paddingRight:'50%'}}
                 onScroll={(event)=>{
                     this.props.getScrollMeasure(event);
-                    this.props.goToAppointment();
                 }}
                 scrollEventThrottle={6}
                 bounces={false}

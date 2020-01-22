@@ -300,6 +300,16 @@ export default class SvgIcon extends Component{
                         <Path d="M16 10.9814L12 6.98138L17.153 1.82838C18.256 0.725375 20.047 0.722375 21.153 1.82838C22.258 2.93338 22.258 4.72338 21.153 5.82838L16 10.9814Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                     </Svg>
                 :
+                icon === 'quickMenu' ?
+                    <Svg width="24" height="21" viewBox="0 0 24 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M1 7H23" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+                        <Path d="M1 1H23" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+                        <Path d="M1 13H11" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+                        <Path d="M1 19H11" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+                        <Path d="M19 12V20" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+                        <Path d="M23 16H15" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+                    </Svg>
+                :
                 icon === 'doctorArrow' ?
                     <Svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <Path d="M14.5 8.5L4.5 8.5C2.291 8.5 0.5 6.709 0.5 4.5L0.500001 0.499999" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -338,6 +348,13 @@ export default class SvgIcon extends Component{
                     <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <Path d="M13.5 2.5L2.5 13.5" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                         <Path d="M2.5 2.5L13.5 13.5" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    </Svg>
+                :
+                icon === 'searchExit' ?
+                    <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <Path d="M11 5L5 11" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <Path d="M5 5L11 11" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                     </Svg>
                 :
                 icon === 'search' ?

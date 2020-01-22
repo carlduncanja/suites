@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import ScheduleList from './ScheduleList'
+import ScheduleCard from './ScheduleCard';
+
 
 export default class DailyAppointmentCard extends Component {
     render(){
@@ -12,13 +14,24 @@ export default class DailyAppointmentCard extends Component {
                         {this.props.dailyText}
                     </Text>
                 </View>
-                <ScheduleList
-                    // scrollAppointmentDay = {this.props.scrollAppointmentDay}
-                    getDrawerRef = {this.props.getDrawerRef}
+                <FlatList 
+                    key={this.props.keyValue}
+                    data={this.props.dailyAppointments}
+                    renderItem={({ item }) => 
+                        <ScheduleCard 
+                            appointment={item} 
+                            showScheduleDetails={this.props.showScheduleDetails}
+                            animateSlide = {this.props.animateSlide}
+                        />
+                    }
+                    keyExtractor={item => item.id}
+                />
+                {/* <ScheduleList
+                    keyValue = {this.props.keyValue}
                     appointments = {this.props.dailyAppointments}
                     showScheduleDetails = {this.props.showScheduleDetails}
                     animateSlide = {this.props.animateSlide}
-                />
+                /> */}
             </View>
         )
     }

@@ -62,12 +62,18 @@ export default class ScrollableAppointmentCard extends Component {
         const personnel = [...this.props.scheduleDetails.surgeons, ...this.props.scheduleDetails.doctors]
 
         return(
-            <TouchableOpacity onPress={this.props.closeActionButtons} style={{flex:1}} activeOpacity={1}>
+            <TouchableOpacity style={{flex:1}} activeOpacity={1}>
                 <ScrollView style={styles.container} contentContainerStyle={{flex:1, justifyContent: this.props.screenDimensions.width > this.props.screenDimensions.height ? 'space-between': 'flex-start'}}>
 
                     <View>
                         <View style={styles.cardTitle}>
-                            <Text style={{fontSize:16, color:'#104587', marginBottom:10}}>{this.props.scheduleDetails.id}</Text>
+                            <View style={{flexDirection:'row', justifyContent:'space-between', paddingBottom:5}}>
+                                <Text style={{fontSize:16, color:'#104587', marginBottom:10}}>{this.props.scheduleDetails.id}</Text>
+                                <View style={{backgroundColor:'#EEF2F6', paddingTop:4, paddingBottom:4, paddingLeft:8, paddingRight:8, alignItems:'center', justifyContent:'center',borderRadius:12}}>
+                                    <Text style={{color:"#A0AEC0", fontSize:12}}>{this.props.scheduleDetails.progressStatus}</Text>
+                                </View>
+                            </View>
+                            
                             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                                 <Text style={{fontSize:20, color:'#0CB0E7', paddingBottom:5}}>{this.props.scheduleDetails.responseEntity}</Text>
                                 <Text style={{fontSize:20, color:'#104587', paddingBottom:5}}>{this.props.scheduleDetails.title}</Text>

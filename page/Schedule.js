@@ -7,7 +7,6 @@ import Month from '../components/Calendar/Month';
 import Button from '../components/common/Button';
 import TransparentScreen from '../components/common/TransparentScreen';
 import SlideUpPanel from '../components/common/SideUpPanel';
-import Divider from '../components/common/Divider';
 import AppointmentCard from '../components/Schedule/AppointmentCard';
 import ScrollableAppointmentCard from '../components/Schedule/ScrollableAppointmentCard';
 import ExtendedCalendar from '../components/Calendar/ExtendedCalendar';
@@ -15,7 +14,6 @@ import SearchBar from '../components/common/SearchBar';
 import Notification from '../components/common/Notification';
 import moment from 'moment';
 import ExpandCalendarDivider from '../components/common/ExpandCalendarDivider';
-import RowDays from '../components/Calendar/RowDays'
 
 export default class Schedule extends Component {
     constructor(props){
@@ -23,46 +21,37 @@ export default class Schedule extends Component {
         this.state = {
             _scrollView:null,
             _scrollAppointment:null,
-            _scrollToAppointment:null,
-            //_scrollToCalendarDay: null,
-            _scrollTodaySearch:null,
             calendarOffset:0,
+            scheduleOffset:0,
             scrollMeasure:0,
-            scrollCalendar:0,
-            scrollAppointment: false,
+           
             datePositions:[],
             appointmentDates:[],
-            calendarDayPositions:[],
             scrollAppointmentDay:null,
             scrollCalendarDay:null,
             todayY:0,
             goToToday:false,
-            scrollCalenderStatus: false,
-            scrollAppointmentStatus: false,
-            
+           
             displayFullCalendar:false,
-            statusLastRow: false,
             showSlider: false,
             calendarLayoutMeasure:700,
 
             searchValue:"",
             selectedSearchValue: "",
+            searchResultSelect: "",
             scheduleDetails:{},
             searchAppointment: [],
-            searchDates:[],
+            selectedAppEvents:[],
+            selectedDayEvents:[],
             searchAppointmentStatus: false,
             searchOpen:false,
+            searchResult:1,
 
-            scheduleButtons: false,
-            deleteAppointment: false,
-            completeDeleteAppointment: false,
             showDrawer: false,
             slideDraggable:true,
-            
-            transparent:false,
-
+    
             daySelected: false,
-            selected: {"selected":moment(),"status":true},
+            selected: {"selected":moment(),"status":false},
             currentDate: moment(new Date()),
             slideValue:0
         }
@@ -74,30 +63,22 @@ export default class Schedule extends Component {
         this.showFullCalendar = this.showFullCalendar.bind(this);
         this.searchChangeText = this.searchChangeText.bind(this);
         this.closeTransparent = this.closeTransparent.bind(this); 
-        this.showScheduleButtons = this.showScheduleButtons.bind(this);
-        this.deleteFloatingAction = this.deleteFloatingAction.bind(this);
-        this.completeDeleteFloatingAction = this.completeDeleteFloatingAction.bind(this);
-        this.exitDelete = this.exitDelete.bind(this);
-        this.closeActionButtons = this.closeActionButtons.bind(this);
-        this.closeDrawer = this.closeDrawer.bind(this);
         this.restartDrag = this.restartDrag.bind(this);
         this.stopScheduleDrag = this.stopScheduleDrag.bind(this);
         this.onPressDay = this.onPressDay.bind(this);
-        this.showLastCalendarRow = this.showLastCalendarRow.bind(this);
         this.calendarLayout = this.calendarLayout.bind(this);
         this.decreaseMonthChange = this.decreaseMonthChange.bind(this);
         this.increaseMonthChange = this.increaseMonthChange.bind(this);
         this.getCalendarOffset = this.getCalendarOffset.bind(this);
-        this.getScrollMeasure = this.getScrollMeasure.bind(this);
+        this.getOffset = this.getOffset.bind(this)
+        //this.getScrollMeasure = this.getScrollMeasure.bind(this);
         this.getAppointmentScroll = this.getAppointmentScroll.bind(this);
         this.getAppointments = this.getAppointments.bind(this);
-        this.getTodayY = this.getTodayY.bind(this);
-        this.appointmentScroll = this.appointmentScroll.bind(this);
-        this.goToAppointment = this.goToAppointment.bind(this);
-        //this.setAppointmentStatus = this.setAppointmentStatus.bind(this)
+        //this.appointmentScroll = this.appointmentScroll.bind(this);
         this.getPrevMonth = this.getPrevMonth.bind(this);
         this.getNextMonth = this.getNextMonth.bind(this);
-        // this.getLastDay = this.getLastDay.bind(this);
+        this.nextSearchResult = this.nextSearchResult.bind(this);
+        this.prevSearchResult = this.prevSearchResult.bind(this);
                        
         this.animateSlide = this.animateSlide.bind(this);
         this.slideUpAnimValue = new Animated.Value(0);        
@@ -105,34 +86,20 @@ export default class Schedule extends Component {
 
     animateSlide=()=>{
         const slideUpNum = this.state.displayFullCalendar === false ? 600 : 300
-        {this.state.slideValue === 0 ?
             Animated.timing(
                 this.slideUpAnimValue,
                 {
                     toValue:slideUpNum,
-                    duration:500,
+                    duration:800,
                     easing: Easing.cubic
                 },
                 
             ).start() && this.slideUpAnimValue.setValue(slideUpNum)
-            : 
-            Animated.timing(
-                this.slideUpAnimValue,
-                {
-                    toValue:0,
-                    duration:500,
-                    easing: Easing.cubic
-                },
-            ).start(()=>this.setState({showSlider:false, showDrawer:false})) && this.slideUpAnimValue.setValue(0) 
-        }
-        
     }  
-    getTodayY(event){
-        this.setState({todayY: event.nativeEvent.layout.y})
-    }
-    
+        
     clickToday=()=>{
-        this.setState({goToToday:true, scrollAppointment:false},
+        //scrollAppointment:false
+        this.setState({goToToday:true},
             () => { this.onGoToTodayClick()}
         ) 
     }
@@ -140,103 +107,129 @@ export default class Schedule extends Component {
     onGoToTodayClick = () => {
         if (this.state._scrollView ) {
             if(this.state.displayFullCalendar === false){
-                this.state._scrollView.scrollTo({x:this.state.calendarOffset,y:0,animated:true})
+                if(moment().format("YYYY-MM-D") === this.state.currentDate.format("YYYY-MM-D")){
+                    this.state._scrollView.scrollTo({x:this.state.calendarOffset,y:0,animated:true})
+                    this.state._scrollAppointment.scrollTo({x:0,y:this.state.scheduleOffset,animated:true})
+                    this.setState({selected: {"selected":moment(), "status":true}})
+                }else{
+                    this.setState({currentDate:moment()})
+                }
+
             }else{
                 this.setState({displayFullCalendar:false})
-                this.state._scrollAppointment.scrollTo({x:0,y:this.state.todayY,animated:true})
+                this.state._scrollAppointment.scrollTo({x:0,y:this.state.scheduleOffset,animated:true})
             }   
         }
     };
 
    
-    goToAppointment(){
-        this.state.goToToday === true ?
-            this.onGoToAppointment()
-            :
-            this.setState({scrollAppointment:true},
-                ()=>{this.onGoToAppointment()}
-            )
-    }
+    // goToAppointment(){
+    //     this.state.goToToday === true ?
+    //         this.onGoToAppointment()
+    //         :
+    //         this.setState({scrollAppointment:true},
+    //             ()=>{this.onGoToAppointment()}
+    //         )
+    // }
 
-    onGoToAppointment = () => {
-        if (this.state._scrollToAppointment) {
-            this.state.appointmentDates.map((date)=>{
-                //console.log("Scroll Day: ",this.state.scrollAppointmentDay.format("MM D"))
-                if (date.date.format("MM D") === this.state.scrollAppointmentDay.format("MM D")) {
-                    if (this.state.goToToday === true && this.state.scrollAppointment === false){
-                        this.state._scrollToAppointment.scrollTo({x:0,y:this.state.todayY,animated:true}) 
-                        this.setState({goToToday:false})
-                    }
-                    else{
-                        this.state._scrollToAppointment.scrollTo({x:0, y:date.event, animated:true})
-                    }   
-                }
-                null
-            })
-        }
-        // return true
-    }
+    // onGoToAppointment = () => {
+    //     if (this.state._scrollView) {
+    //         this.state.appointmentDates.map((date)=>{
+    //             if (date.date.format("MM D") === this.state.scrollAppointmentDay.format("MM D")) {
+    //                 if (this.state.goToToday === true && this.state.scrollAppointment === false){
+    //                     this.state._scrollView.scrollTo({x:0,y:this.state.todayY,animated:true}) 
+    //                     this.setState({goToToday:false})
+    //                 }
+    //                 else{
+    //                     this.state._scrollView.scrollTo({x:0, y:date.event, animated:true})
+    //                 }   
+    //             }
+    //             null
+    //         })
+    //     }
+    //     // return true
+    // }
 
     getAppointments(obj){
         this.setState({appointmentDates: [...this.state.appointmentDates,obj]}); 
     }
 
-    getCalendarOffset(event){
-        this.setState({calendarOffset: event.nativeEvent.layout.x})
-    }
-
     getAppointmentScroll(obj){
         this.setState({datePositions: [...this.state.datePositions, obj]});
     }
-   
-    getScrollMeasure(event){
-        this.setState({scrollMeasure: event.nativeEvent.contentOffset.x})
-        let dateArray = this.state.datePositions.sort((a,b)=>a.event - b.event);
-        for (var i = 0; i < dateArray.length; i++){
-            if (dateArray[i].event >= event.nativeEvent.contentOffset.x) {
-                this.setState({scrollAppointmentDay: moment(dateArray[i].day)})
-                return true
-            }
-            null
-        }
+
+    getCalendarOffset(event){
+        //console.log("Calendar Offset: ", event)
+        this.setState({calendarOffset: event})
     }
 
-    appointmentScroll(event){
-        this.setState({scrollCalendar: event.nativeEvent.contentOffset.y})
-        const appScrollEvent = event.nativeEvent.contentOffset.y;
-        let appDateArray = this.state.appointmentDates.sort((a,b)=>a.date - b.date);
-        for (var i = 0; i < appDateArray.length; i++){
-            if (appDateArray[i].event >= appScrollEvent){
-                this.setState({scrollCalendarDay: parseInt(appDateArray[i].date.format("DD"))})
-                return true;
-            }
-            null
-        }
+    getOffset(event){
+        this.setState({scheduleOffset: event})
     }
+
+    // getScrollMeasure(event){
+    //     this.setState({scrollMeasure: event.nativeEvent.contentOffset.x})
+    //     let dateArray = this.state.datePositions.sort((a,b)=>a.event - b.event);
+    //     for (var i = 0; i < dateArray.length; i++){
+    //         if (dateArray[i].event >= event.nativeEvent.contentOffset.x) {
+    //             this.setState({scrollAppointmentDay: moment(dateArray[i].day)})
+    //             return true
+    //         }
+    //         null
+    //     }
+    // }
+
+    // appointmentScroll(event){
+    //     //this.setState({scrollCalendar: event.nativeEvent.contentOffset.y})
+    //     const appScrollEvent = event.nativeEvent.contentOffset.y;
+    //     let appDateArray = this.state.appointmentDates.sort((a,b)=>a.date - b.date);
+    //     for (var i = 0; i < appDateArray.length; i++){
+    //         if (appDateArray[i].event >= appScrollEvent){
+    //             this.setState({scrollCalendarDay: parseInt(appDateArray[i].date.format("DD"))})
+    //             return true;
+    //         }
+    //         null
+    //     }
+    // }
+
+    onPressDay(e, selected){
+        selectedObject = {"selected":selected,"status":true};
+        this.onPressDayToAppointment(selectedObject.selected, true)
+        this.setState({selected:selectedObject, daySelected:true});
+    };
 
     onPressDayToAppointment(selected, status){
         if (status === true){
+            if (this.state.displayFullCalendar === false){
+                this.state.datePositions.map((date)=>{ 
+                    if (moment(date.day).format("MM D") === selected.format("MM D")){
+                        //console.log("Selected: ", date)
+                        this.state._scrollView.scrollTo({x:date.event,y:0,animated:true})
+                    }
+                })
+            }
             this.state.appointmentDates.map((date)=>{
                 if (date.date.format("MM D") === selected.format("MM D")) {
                     this.state._scrollAppointment.scrollTo({x:0,y:date.event,animated:true})
                 }
             })
-        }null
+        }
     }
 
     searchPress(){
+
         t = this.state.transparent;
         t === true? newTrans = false: newTrans = true
-        //this.props.setTransparent(newTrans)
+        this.props.setTransparent(newTrans)
         this.setState({
-            transparent:newTrans,
+            //transparent:newTrans,
             searchAppointmentStatus:true,
             searchOpen:true,
         });
     };
     
     undoSearchPress(){
-        this.setState({searchAppointmentStatus: false, selectedSearchValue: "", searchAppointment:[]})   
+        this.setState({searchAppointmentStatus: false, selectedSearchValue: "", searchAppointment:[], searchResultSelect:""})   
     }
 
     searchChangeText(textInput){
@@ -248,8 +241,11 @@ export default class Schedule extends Component {
             appointmentTitles.includes(appointment.title) || appointmentTitles.includes(moment(appointment.startTime).format("MMMM DD, YYYY").toString())?
                 null
                 :
-                appointment.title.includes(textInput) || appointment.title.toLowerCase().includes(textInput.toLowerCase()) || appointment.title.toUpperCase().includes(textInput.toUpperCase())?
-                    appointmentTitles.push(appointment.title)
+                // moment(appointment.startTime).format("YYYY/MM/DD") === this.state.currentDate.format("YYYY/MM/DD") ?
+                    appointment.title.includes(textInput) || appointment.title.toLowerCase().includes(textInput.toLowerCase()) || appointment.title.toUpperCase().includes(textInput.toUpperCase())?
+                        appointmentTitles.push(appointment.title)
+                        // :
+                        // null
                     :
                     moment(appointment.startTime).format("MMMM DD, YYYY").toString().includes(textInput)?
                         appointmentTitles.push(moment(appointment.startTime).format("MMMM DD, YYYY").toString())
@@ -260,47 +256,93 @@ export default class Schedule extends Component {
     };
 
     onSearchSelect(selectedTitle){
-        this.setState({selectedSearchValue: selectedTitle})
+        //console.log("Selected: ", selectedTitle)
+        this.setState({selectedSearchValue: selectedTitle, selectedAppEvents:[], selectedDayEvents:[], searchValue: selectedTitle})
         this.getSearchAppointment(selectedTitle)
     }
 
     getSearchAppointment(select){
         let appointments = require('../assets/db.json').appointments
+        let selectedAppEvents = []
+        let selectedDayEvents = []
         for (i = 0; i < appointments.length; i++){
             if (appointments[i].title === select && moment(appointments[i].startTime).format("M") === this.state.currentDate.format("M")){
                 filterDayEvent = this.state.datePositions.filter(date => moment(date.day).format("YYYY MM D") === moment(appointments[i].startTime).format("YYYY MM D"))
-                this.setSearchAppointment(filterDayEvent[0].event, moment(appointments[i].startTime))
-                return
-            
-            }else if (moment(appointments[i].startTime).format("MMMM DD, YYYY") === select){
-                filterDayEvent = this.state.datePositions.filter(date => moment(date.day).format("YYYY MM D") === moment(select).format("YYYY MM D"))
-                this.setSearchAppointment(filterDayEvent[0].event, moment(appointments[i].startTime))
-                return
+                filterAppEvent = this.state.appointmentDates.filter(date => moment(date.date).format("YYYY MM D") === moment(appointments[i].startTime).format("YYYY MM D"))
+                selectedAppEvents.push(filterAppEvent[0].event)
+                selectedDayEvents.push({"day":moment(appointments[i].startTime), "event":filterDayEvent[0].event})            
             }
         }
+        let newAppArray = [...new Set(selectedAppEvents)]
+        let newDayArray = []
+        selectedDayEvents.map((obj)=>{
+            if (newDayArray.length === 0) {
+                newDayArray.push(obj)
+            }else {
+                if((newDayArray.filter(newObj => newObj.event === obj.event)).length === 0){
+                    newDayArray.push(obj)
+                }
+            }
+        })
+        this.setState({selectedAppEvents: newAppArray, selectedDayEvents:newDayArray})
+        if (newDayArray.length === 0 || newAppArray.length === 0) {
+            null
+        }else{
+            this.setSearchAppointment(newDayArray[0].event, newAppArray[0], newDayArray[0].day )
+        }
+            
+            
+            
        
     }
 
-    setSearchAppointment(filter, selected){
+    nextSearchResult(){
+        searchResult = this.state.searchResult + 1
+        this.setState({searchResult: searchResult})
+        this.setSearchAppointment(this.state.selectedDayEvents[searchResult-1].event, this.state.selectedAppEvents[searchResult-1], this.state.selectedDayEvents[searchResult-1].day )
+    }
+
+    prevSearchResult(){
+        searchResult = this.state.searchResult === 1 ? this.state.searchResult : this.state.searchResult -1
+        this.setState({searchResult: searchResult})
+        this.setSearchAppointment(this.state.selectedDayEvents[searchResult-1].event, this.state.selectedAppEvents[searchResult-1], this.state.selectedDayEvents[searchResult-1].day )
+    }
+
+    setSearchAppointment(filterDay, filterApp, selected){
         this.setState({
             searchAppointmentStatus:false, 
             searchAppointment:[],
-            selectedSearchValue:"",
-            searchOpen:false, 
+            //selectedSearchValue:"",
+            searchResultSelect:selected,
+            //calendarOffset:filterDay,
+            //searchOpen:false, 
             selected: {'selected':selected,'status':true}
         })
-        this.state._scrollView.scrollTo({x:filter,y:0,animated:true})
+
+        if (filterApp === null || filterDay === null){
+            this.state._scrollView.scrollTo({x:0,y:0,animated:true})
+            this.state._scrollAppointment.scrollTo({x:0,y:0, animated:true})
+        }else{
+            this.state._scrollView.scrollTo({x:filterDay,y:0,animated:true})
+            this.state._scrollAppointment.scrollTo({x:0,y:filterApp, animated:true})
+        }
+        
     }
 
   
     decreaseMonthChange(){
         setPrevMonth = this.getPrevMonth()
-        this.setState({currentDate:setPrevMonth})
+        this.setState({currentDate:setPrevMonth, datePositions: [], appointmentDates: [], calendarOffset:0, scheduleOffset:0})
     };
     
     increaseMonthChange(){
+        this.setState({datePositions: [], appointmentDates:[],})
         setNextMonth = this.getNextMonth()
-        this.setState({datePositions: [],currentDate:setNextMonth})
+        this.setState({
+            currentDate:setNextMonth,
+            calendarOffset:0, 
+            scheduleOffset:0
+        })
     };
 
     
@@ -325,85 +367,49 @@ export default class Schedule extends Component {
         }else{
             now.setMonth(now.getMonth()+1)
         }
-        //console.log("Next Month: ", moment(now))
         return moment(now)
     }
 
-    onPressDay(event,selected){
-        selectedObject = {"selected":selected,"status":true};
-        daySelected = true;
-        
-        this.onPressDayToAppointment(selectedObject.selected, daySelected)
-        this.setState({selected:selectedObject, daySelected});
-    };
-
-
+    
     showScheduleDetails(appointment){
         let newObject = Object.assign({},appointment);
-        this.state.showSlider === true ?
-            status = false : status = true
-        
+        this.props.setTransparent(!this.state.showSlider)
         this.setState({
             slideValue: this.state.displayFullCalendar === false ? 600 : 300,
             scheduleDetails:newObject,
-            transparent:status,
-            showSlider:status,
-            showDrawer: status,
+            showSlider:!this.state.showSlider,
+            showDrawer: !this.state.showSlider,
         }, )
-        //this.props.setTransparent(status)
     };
 
     showFullCalendar(){
         let status = !this.state.displayFullCalendar;
         this.setState({displayFullCalendar:status})
     };
-
-    showScheduleButtons(){
-        this.state.scheduleButtons === true ?
-            this.setState({scheduleButtons:false}) :
-            this.setState({scheduleButtons:true})
-    };
     
     closeTransparent(){
-        //this.props.setTransparent(false)
         this.setState({
             slideValue:0,
-            transparent:false,
+            showSlider:false, 
+            showDrawer:false,
             searchOpen: false,
+            //transparent:false
         })
-        this.state.selectedSearchValue === ""  ? this.setState({searchAppointment: []}) : null
+        this.props.setTransparent(false)
+        this.state.selectedSearchValue !== "" ? this.setState({selectedSearchValue:"", searchValue: ""}) : null
+        this.state.selectedSearchValue === ""  ? this.setState({searchAppointment: [], searchResultSelect:""}) : null
+    
     };
 
-    deleteFloatingAction(){
-        status = !this.state.deleteAppointment;
-        this.setState({deleteAppointment:status})
-    };
-
-    completeDeleteFloatingAction(){
-        clearTimeout(this.timer)
-        this.setState({completeDeleteAppointment: true})
-    };
-
-    exitDelete(){
-        this.setState({
-            completeDeleteAppointment: false, 
-            scheduleButtons: false
-        })
-    };
-
-    closeActionButtons(){
-        this.setState({scheduleButtons:false})
-    };
-
-    closeDrawer(){
-        //this.props.setTransparent(false)
-        this.setState({
-          showDrawer:false,
-          transparent:false,
-          showSlider:false,
-          //slideValue:0
-        })
-    };
+    // closeDrawer(){
+    //     this.props.setTransparent(false)
+    //     this.setState({
+    //       showDrawer:false,
+    //       //transparent:false,
+    //       showSlider:false,
+    //       //slideValue:0
+    //     })
+    // };
 
     restartDrag(){
         this.setState({slideDraggable:true})
@@ -412,16 +418,6 @@ export default class Schedule extends Component {
     stopScheduleDrag(height, bottom){
         height === Dimensions.get('window').height - 150 ? this.setState({slideDraggable:false}) : null
         height === -bottom ? this.setState({showSlider:false}) : null
-    };
-
-    showLastCalendarRow(){
-        !this.state.statusLastRow === true ?
-          this.setState({statusLastRow:true})
-          :
-          this.setState({
-            displayFullCalendar:false,
-            statusLastRow: false
-          })
     };
 
     calendarLayout(event){
@@ -453,14 +449,11 @@ export default class Schedule extends Component {
         const dayIndex = parseInt(startDayNum) === 0 ? 7 : parseInt(startDayNum)
        
         if (dayIndex === 1) {
-            //console.log("Start")
             days = []
         }
         else{
             for (i = 1; i < dayIndex-1; i++){
-                const dayNum = (day-1 < 10) ? `0${day-1}` : day-1
-                const dayMoment = moment(`${momentDay.format("YYYY")}-${momentDay.format("MM")}-${dayNum}`).format("YYYY-MM-DD")
-                days.push(dayMoment)
+                days.push(moment(`${momentDay.format("YYYY-MM")}-${day-1}`).format("YYYY-MM-DD"))
                 day--
             }
         }   
@@ -470,36 +463,33 @@ export default class Schedule extends Component {
 
     getEndDays(){
         //get first 5 days of next onth
-        const endDayNum = moment(this.state.currentDate).endOf("month").format("d")
         const now = new Date(this.state.currentDate)
         now.setDate(1)
         now.setMonth(now.getMonth()+1)
         const momentDay = moment(now)
+
         let day = parseInt(moment(now).format("DD"))
         let days = [momentDay.format("YYYY-MM-DD")]
-        //console.log("End Num: ", endDayNum)
+        const endDayNum = moment(this.state.currentDate).endOf("month").format("d")
+
         if (parseInt(endDayNum) === 0){
             days = []
         }else{
             for (i = endDayNum ; i < 6 ; i++){
                 const dayNum = (day+1 < 10) ? `0${day+1}` : day+1
-                const dayMoment = moment(`${momentDay.format("YYYY")}-${momentDay.format("MM")}-${dayNum}`).format("YYYY-MM-DD")
-                days.push(dayMoment)
+                days.push(moment(`${momentDay.format("YYYY-MM")}-${dayNum}`).format("YYYY-MM-DD"))
                 day++
             }
         }
-        //console.log("Days: ", days)
         return days
     }
    
     render() {
-        //console.log("Dates Pos: ", this.state.datePositions)
-        //console.log("Current: ", this.state.currentDate)
         const Drawer = require("react-native-drawer-menu").default;
         const currentYear = this.state.currentDate.format("YYYY")
         const currentMonth = this.state.currentDate.format("MM")
         const currentDay = this.state.currentDate.format("DD")
-        //console.log("Date: ", this.state.currentDate)
+        
 
         const scheduleContent = (
             <View
@@ -522,42 +512,22 @@ export default class Schedule extends Component {
                             _scrollAppointment: scrollViewComponent
                         })
                     }}
-                    setScrollAppointment = { (scrollViewComponent) => {
-                        this.setState({
-                            _scrollToAppointment: scrollViewComponent
-                        })
-                    }}
-                    setScrollTodaySearch = { (scrollViewComponent) => {
-                        this.setState({
-                            _scrollTodaySearch: scrollViewComponent
-                        })
-                    }}
                     startDays = {this.getStartDays()}
                     endDays = {this.getEndDays()}
                     currentDays = {this.getCurrentDays(this.state.currentDate.format("MM"),this.state.currentDate.format("YYYY"))}
-                    scrollAppointmentDay = {this.state.scrollAppointmentDay}
                     animateSlide = {this.animateSlide}
-                    getDrawerRef = {this.getDrawerRef}
-                    displayTodayAppointment = {this.state.displayTodayAppointment}
-                    currentDate={this.state.currentDate}
-                    showSlider = {this.state.showSlider}
                     showScheduleDetails = {this.showScheduleDetails}
                     getAppointments = {this.getAppointments}
-                    scrollMeasure = {this.state.scrollMeasure}
-                    selected = {this.state.selected}
-                    onGoToCalendarDay = {this.onGoToCalendarDay}
-                    getTodayY = {this.getTodayY}
                     appointmentScroll = {this.appointmentScroll}
-                    setAppointmentStatus = {this.setAppointmentStatus}
-                    //searchAppointment = {this.state.searchAppointment}
-                    searchAppointmentStatus = {this.state.searchAppointmentStatus}
-                    goToToday = {this.state.goToToday}
-                    selectedSearchValue={this.state.selectedSearchValue}
+                    getOffset = {this.getOffset}
+                    scheduleOffset = {this.state.scheduleOffset}
+                    currentDate={this.state.currentDate}
+                    selected = {this.state.selected}
                 />
 
             </View>
         )
-
+        
         const mainContent = (
             <ScrollView scrollEnabled={false}> 
                 <View style={{flex:1}}>
@@ -572,7 +542,7 @@ export default class Schedule extends Component {
                     }
                     <View style={[styles.topContainer, {paddingTop: this.props.screenDimensions.width > this.props.screenDimensions.height ? 0: '1%'}]}>
                         <View style={styles.buttonContainer}>
-                            {this.state.searchAppointmentStatus === true && this.state.selectedSearchValue!== ""?
+                            {this.state.searchAppointmentStatus === true && this.state.selectedSearchValue!== "" && this.state.searchResultSelect !== ""?
                                 <Button
                                     title="Undo Search"
                                     buttonPress={this.undoSearchPress}
@@ -610,11 +580,8 @@ export default class Schedule extends Component {
 
                             {this.state.displayFullCalendar === false ?
                                 <RowCalendar
-                                    {...this.props}
-                                    {...this.state}
                                     currentDate = {this.state.currentDate}
                                     selected = {this.state.selected}
-                                    scrollMeasure = {this.state.scrollMeasure}
                                     onPressDay = {this.onPressDay}
                                     startDays = {this.getStartDays()}
                                     endDays = {this.getEndDays()}
@@ -628,12 +595,8 @@ export default class Schedule extends Component {
                                     getCalendarOffset = {this.getCalendarOffset}
                                     getAppointmentScroll = {this.getAppointmentScroll}
                                     getScrollMeasure = {this.getScrollMeasure}
-                                    scrollCalendar = {this.state.scrollCalendar}
-                                    onGoToAppointment = {this.onGoToAppointment}
-                                    onGoToTodayAppointment = {this.onGoToTodayAppointment}
-                                    goToAppointment = {this.goToAppointment}
-                                    goToToday = {this.state.goToToday}
                                     calendarOffset = {this.state.calendarOffset}
+                                    datePositions = {this.state.datePositions}
                                 />
                                 :
                                 this.props.screenDimensions.width > this.props.screenDimensions.height ?
@@ -644,7 +607,6 @@ export default class Schedule extends Component {
                                         nextCurrentDate = {this.getNextMonth(currentYear, currentMonth, currentDay)}
                                         calendarLayout = {this.calendarLayout}
                                         onPressDay = {this.onPressDay}
-                                        showLastCalendarRow = {this.showLastCalendarRow}
 
                                         currentDays = {this.getCurrentDays(this.state.currentDate.format("MM"),this.state.currentDate.format("YYYY"))}
                                         prevMonthDays = { 
@@ -662,13 +624,14 @@ export default class Schedule extends Component {
                                     />
                                     :
                                     <Calendar 
-                                        {...this.props} 
-                                        {...this.state}
                                         currentDays = {this.getCurrentDays(this.state.currentDate.format("MM"),this.state.currentDate.format("YYYY"))}
                                         onPressDay = {this.onPressDay}
-                                        showLastCalendarRow = {this.showLastCalendarRow}
                                         getStartDays = {this.getStartDays()}
                                         getEndDays = {this.getEndDays()}
+                                        screenDimensions = {this.props.screenDimensions}
+                                        currentDate = {this.state.currentDate}
+                                        selected = {this.state.selected}
+                                        daySelected = {this.state.daySelected}
                                     />
                             }
 
@@ -696,10 +659,17 @@ export default class Schedule extends Component {
             <View style={{borderBottomLeftRadius: 8, borderBottomRightRadius: 8}}>
                 <SearchBar
                     placeholderTextColor = '#718096'
-                    placeholder="Search by scheduled items or dates"
+                    placeholder={"Search by scheduled items"}
                     changeText = {this.searchChangeText}
+                    //inputText = {this.state.selectedSearchValue === "" ? this.state.searchValue: this.state.selectedSearchValue}
                     inputText = {this.state.searchValue}
                     closeSearch = {this.closeTransparent}
+                    searchAppointment = {this.state.searchAppointment}
+                    selectedSearchValue = {this.state.selectedSearchValue}
+                    searchResult = {this.state.searchResult}
+                    selectedAppEvents = {this.state.selectedAppEvents}
+                    nextSearchResult = {this.nextSearchResult}
+                    prevSearchResult = {this.prevSearchResult}                    
                 />
                 <View style={{backgroundColor:'#FFFFFF'}}>
                     {this.state.searchAppointment.map((appointmentTitle, index)=>{
@@ -713,7 +683,6 @@ export default class Schedule extends Component {
                             </TouchableOpacity>
                         )
                     })}
-                    
                 </View>
             </View>
             
@@ -725,14 +694,14 @@ export default class Schedule extends Component {
                 :
                 <AppointmentCard
                     scheduleDetails = {this.state.scheduleDetails }
-                    showScheduleButtons = {this.showScheduleButtons}
-                    scheduleButtons={this.state.scheduleButtons}
-                    deleteFloatingAction = {this.deleteFloatingAction}
-                    completeDeleteFloatingAction = {this.completeDeleteFloatingAction}
-                    deleteAppointment = {this.state.deleteAppointment}
-                    completeDeleteAppointment = {this.state.completeDeleteAppointment}
-                    exitDelete = {this.exitDelete}
-                    closeActionButtons = {this.closeActionButtons}
+                    // showScheduleButtons = {this.showScheduleButtons}
+                    //scheduleButtons={this.state.scheduleButtons}
+                    //deleteFloatingAction = {this.deleteFloatingAction}
+                    //completeDeleteFloatingAction = {this.completeDeleteFloatingAction}
+                    //deleteAppointment = {this.state.deleteAppointment}
+                    //completeDeleteAppointment = {this.state.completeDeleteAppointment}
+                    //exitDelete = {this.exitDelete}
+                    //closeActionButtons = {this.closeActionButtons}
                     screenDimensions = {this.props.screenDimensions}
                 />
         }
@@ -750,7 +719,7 @@ export default class Schedule extends Component {
                                 customStyles={{drawer: styles.drawer}}
                                 drawerPosition={Drawer.positions.Right}
                                 ref = {ref => {this.drawer = ref}}
-                                onDrawerClose={this.closeDrawer}
+                                onDrawerClose={this.closeTransparent}
                                 duration = {400}
                                 >
                                 <View>
@@ -781,16 +750,8 @@ export default class Schedule extends Component {
                                             content={
                                                 <ScrollableAppointmentCard
                                                     scheduleDetails = {this.state.scheduleDetails}
-                                                    showScheduleButtons = {this.showScheduleButtons}
-                                                    scheduleButtons={this.state.scheduleButtons}
-                                                    deleteFloatingAction = {this.deleteFloatingAction}
-                                                    completeDeleteFloatingAction = {this.completeDeleteFloatingAction}
-                                                    deleteAppointment = {this.state.deleteAppointment}
-                                                    completeDeleteAppointment = {this.state.completeDeleteAppointment}
-                                                    exitDelete = {this.exitDelete}
-                                                    closeActionButtons = {this.closeActionButtons}
                                                     screenDimensions = {this.props.screenDimensions}
-                                                    transparent = {this.state.transparent}
+                                                    transparent = {this.props.transparent}
                                                 />
                                             }
                                             slideUpAnimValue = {this.slideUpAnimValue}

@@ -22,7 +22,7 @@ export default class AppointmentCard extends Component {
                             <ScrollableAppointmentCard
                                 scheduleDetails = {this.state.scheduleDetails}
                                 showScheduleButtons = {this.showScheduleButtons}
-                                scheduleButtons={this.state.scheduleButtons}
+                                //scheduleButtons={this.state.scheduleButtons}
                                 deleteFloatingAction = {this.deleteFloatingAction}
                                 completeDeleteFloatingAction = {this.completeDeleteFloatingAction}
                                 deleteAppointment = {this.state.deleteAppointment}

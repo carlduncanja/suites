@@ -108,7 +108,8 @@
                     "name": "Ashley Gaynor"
                 }
             ],
-            "createdBy":"Janet Evina"
+            "createdBy":"Janet Evina",
+            "progressStatus":"Not yet started"
         },
         {
             "id":"app5",
@@ -199,7 +200,8 @@
                     "name": "Ashley Gaynor"
                 }
             ],
-            "createdBy":"Janet Evina"
+            "createdBy":"Janet Evina",
+            "progressStatus":"Not yet started"
             
         },
         {
@@ -255,7 +257,8 @@
                     "name": "Ashley Gaynor"
                 }
             ],
-            "createdBy":"Janet Evina"
+            "createdBy":"Janet Evina",
+            "progressStatus":"Not yet started"
         },
         {
             "id":"app15",
@@ -360,7 +363,7 @@
             "startTime":"2020-01-06T12:00:00.000Z",
             "endTime":"2020-01-06T16:00:00.000Z",
             "level": 3
-        },
+        }
         
         
     ],

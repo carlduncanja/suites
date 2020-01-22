@@ -20,7 +20,6 @@ export default class ScheduleListView extends Component {
     constructor(props){
         super(props);
         this.state = {
-            scrollOffset: 0,
         }
     }
 
@@ -34,11 +33,6 @@ export default class ScheduleListView extends Component {
   
     componentDidMount(){
         this.onScrollViewCreated(this.refs.dayScrollView);
-        this.onScrollToAppointmentCreated(this.refs.dayScrollView)
-    }
-
-    onScrollToAppointmentCreated = (_scrollapp) => {
-        if (this.props.setScrollAppointment) this.props.setScrollAppointment(_scrollapp)
     }
 
     onScrollViewCreated = (_scrollview) => {
@@ -46,25 +40,15 @@ export default class ScheduleListView extends Component {
     };
     
 
-    getOffset(event) {
-        this.setState({scrollOffset: event.nativeEvent.layout.y}) 
-    }
-    
+  
     render() {
-        let date = this.props.currentDate;
-        let currentJSDate = date.toDate()
-        let today = moment(new Date (currentJSDate))
-        let tomorrow = moment(new Date(currentJSDate.setDate(currentJSDate.getDate() + 1)));
-     
         return (
             <ScrollView 
                 style={[styles.container]} 
                 ref = "dayScrollView" 
-                //contentOffset={{x:0, y:this.state.scrollOffset}}
-                contentContainerStyle={{paddingBottom:40}}
-                onScroll = {(event)=> {
-                    this.props.appointmentScroll(event); 
-                }}
+                contentOffset={{x:0, y:this.props.scheduleOffset}}
+                contentContainerStyle={{paddingBottom:'50%'}}
+                //onScroll = {(event)=> {this.props.appointmentScroll(event); }}
                 scrollEventThrottle={6}
                 bounces={false}
                 >
@@ -73,23 +57,18 @@ export default class ScheduleListView extends Component {
                         return (
                             <View 
                                 onLayout={(event) => {
-                                    date.day === moment().format("YYYY-MM-DD") ? this.getOffset(event) : null; 
-                                    date.day === today.format("YYYY-MM-DD") ? this.props.getTodayY(event) : null;
+                                    date.day === moment(this.props.selected.selected).format("YYYY-MM-DD") ? this.props.getOffset(event.nativeEvent.layout.y) : null; 
                                     this.props.getAppointments({"date":moment(date.day),"event":event.nativeEvent.layout.y});
                                 }}
                                 key={index}
                                 >
 
                                 <DailyAppointmentCard
-                                    key={index}
+                                    keyValue={index}
                                     animateSlide = {this.props.animateSlide}
-                                    getDrawerRef = {this.props.getDrawerRef}
-                                    dailyText = {
-                                        `${moment(date.day).format("dddd").toString()} - ${moment(date.day).format("MMM D").toString()}`
-                                    }
+                                    dailyText = {`${moment(date.day).format("dddd").toString()} - ${moment(date.day).format("MMM D").toString()}`}
                                     dailyAppointments = {getAppointments(date.day)}
                                     showScheduleDetails = {this.props.showScheduleDetails}
-                                    ref = {date.day === tomorrow.format("YYYY-MM-DD") ? "tomorrow" : null}
                                     status = {date.inMonth}
                                 />
                             </View>

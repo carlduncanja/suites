@@ -5,6 +5,9 @@ import Schedule from '../../page/Schedule';
 
 const sections=
     [
+        {   "title":"quickMenu",
+            "data" : ['quick menu']
+        },
         {
             "title": "appointmentSection",
             "data" : ['schedule','case files','theatres']
@@ -23,21 +26,17 @@ const sections=
         }
     ];
 
-    const tabs = ['schedule','case files','theatres','inventory','equipment','orders','suppliers','invoices','storage','physicians','procedures','alerts']
+    const tabs = ['quick menu', 'schedule','case files','theatres','inventory','equipment','orders','suppliers','invoices','storage','physicians','procedures','alerts']
 
 export default class NavigationBar extends Component {
     constructor(props){
         super(props);
         this.state = {
-            scrollValue: 0,
-            enableScroll: true,
-            tabYValues: [],
-            selectedTab: 'schedule',
-            topTag:'schedule'
+           stickyIndex:1
         }
-        this.setScrollValue = this.setScrollValue.bind(this)
-        this.setTabYValues = this.setTabYValues.bind(this)
+       
     }
+
         
     seperateTabs(){
         const tabs = []
@@ -64,43 +63,20 @@ export default class NavigationBar extends Component {
     handlePress=()=>{
         this.props.navigation.navigate('schedule')
     }
-
-    setScrollValue(value){
-        this.setState({scrollValue:value})
-    }
-
-    setTabYValues(obj){
-        this.setState({tabYValues: [...this.state.tabYValues,obj]})
-    }
-
-    componentDidUpdate(prevProps){
-        if (prevProps.tabSelected.tabSelected !== this.props.tabSelected.tabSelected) {
-            this.setState({enableScroll:true})
-            this.getTopTab()
-        }     
-    }
-
-    getTopTab(){
-        let tabsArray = this.state.tabYValues.sort((a,b)=>a.tabValue - b.tabValue);
-        tabsArray.map((tab)=>{
-            if(this.props.tabSelected.tabSelected === tab.tabName){
-                if (this.state.scrollValue >= tab.tabValue){
-                    this.setState({enableScroll:false})
-                } 
-            }
-        })
-    }
-
-    render() {     
-        return (
+    
+    render() {    
+        // console.log("Index: ", tabs.indexOf(this.props.tabSelected.tabSelected))
+        return (            
             <ScrollView 
-                onScroll = {event => {this.setScrollValue(event.nativeEvent.contentOffset.y); this.getTopTab()}}
+                stickyHeaderIndices={[tabs.indexOf(this.props.tabSelected.tabSelected)]}
+                //invertStickyHeaders={[tabs.indexOf(this.props.tabSelected.tabSelected)]}
                 scrollEventThrottle={2}
-                scrollEnabled={this.state.enableScroll}
+                scrollEnabled={true}
                 showsVerticalScrollIndicator={false}
                 style={[styles.container]} 
                 contentContainerStyle={{alignItems:'center',justifyContent:'flex-start',width:'100%'}}
-            >
+                //bounces={false}
+           >
                 {/* <SectionList
                     style={{width:'100%'}}
                     sections = {sections}
@@ -122,7 +98,7 @@ export default class NavigationBar extends Component {
                         <View style={{width:'100%', alignSelf:'center'}} key={index}>
                             {section.data.map((tab, index)=>{
                                
-                                return(
+                                return( 
                                     <NavigationTab 
                                         section={section.title}
                                         key={index} 
@@ -138,11 +114,11 @@ export default class NavigationBar extends Component {
                 })} */}
 
                 {tabs.map((tab, index)=>{
-                    return (tab === 'theatres' || tab === 'invoices' || tab === 'procedures' || tab === 'alerts' ?
+                    return (tab === 'quick menu' ,tab === 'theatres' || tab === 'invoices' || tab === 'procedures' || tab === 'alerts' ?
 
                         <View 
                             style = {{width:'100%'}} 
-                            onLayout={event => this.setTabYValues({'tabName':tab, 'tabValue':event.nativeEvent.layout.y})}
+                            //onLayout={event => this.setTabYValues({'tabName':tab, 'tabValue':event.nativeEvent.layout.y})}
                             key={index}
                         >
                             <NavigationTab 
@@ -154,7 +130,7 @@ export default class NavigationBar extends Component {
                         :
                         <View 
                             style={{width:'100%'}} 
-                            onLayout={event => this.setTabYValues({'tabName':tab, 'tabValue':event.nativeEvent.layout.y})}
+                            //onLayout={event => this.setTabYValues({'tabName':tab, 'tabValue':event.nativeEvent.layout.y})}
                             key={index}
                         >
                             <NavigationTab 
@@ -165,7 +141,7 @@ export default class NavigationBar extends Component {
                         </View>
                         
                     )
-                })}
+                })} 
                 
             </ScrollView>
         )

@@ -19,7 +19,7 @@ export default class RowCalendarDays extends Component {
                 <TouchableOpacity style={{width:"100%",}} onPress={e => this.props.onPressDay(e,this.props.day)} >
                     {this.props.selected.selected.format("YYYY MM D") === this.props.day.format("YYYY MM D") ?
                         <View style={{alignItems:'center'}}>
-                            <DayIdentifier color="#3FC7F4"/>
+                            {/* <DayIdentifier color="#3FC7F4"/> */}
                             <Text style={[styles.day, {color:'#2D3748', marginTop:13}]}>{this.props.day.format("D")}</Text>
                             <Text style={{color:"#718096", fontWeight:'bold'}}>{this.props.weekday.toUpperCase()}</Text>
                         </View>
@@ -47,7 +47,12 @@ export default class RowCalendarDays extends Component {
                             <View style = {{alignItems:'center'}}>
                                 <Text style={styles.day}>{this.props.day.format("D")}</Text>
                                 <Text style={{color:'#CBD5E0'}}>{this.props.weekday.toUpperCase()}</Text>
-                                <View style={{height:2, alignSelf:'center', width: '100%', backgroundColor:'#CBD5E0', borderRadius:2, marginTop:10}}/>
+                                {this.props.filterStatus === true ?
+                                    <View style={{height:2, alignSelf:'center', width: '100%', backgroundColor:'#CBD5E0', borderRadius:2, marginTop:10}}/>
+                                    :
+                                    null
+                                }
+                                
                             </View>
                         
                     }
