@@ -112,7 +112,8 @@ export default class Schedule extends Component {
                     this.state._scrollAppointment.scrollTo({x:0,y:this.state.scheduleOffset,animated:true})
                     this.setState({selected: {"selected":moment(), "status":true}})
                 }else{
-                    this.setState({currentDate:moment()})
+                    //this.setState({currentDate:moment()})
+                    null
                 }
 
             }else{
@@ -217,7 +218,6 @@ export default class Schedule extends Component {
     }
 
     searchPress(){
-
         t = this.state.transparent;
         t === true? newTrans = false: newTrans = true
         this.props.setTransparent(newTrans)
@@ -241,11 +241,8 @@ export default class Schedule extends Component {
             appointmentTitles.includes(appointment.title) || appointmentTitles.includes(moment(appointment.startTime).format("MMMM DD, YYYY").toString())?
                 null
                 :
-                // moment(appointment.startTime).format("YYYY/MM/DD") === this.state.currentDate.format("YYYY/MM/DD") ?
                     appointment.title.includes(textInput) || appointment.title.toLowerCase().includes(textInput.toLowerCase()) || appointment.title.toUpperCase().includes(textInput.toUpperCase())?
                         appointmentTitles.push(appointment.title)
-                        // :
-                        // null
                     :
                     moment(appointment.startTime).format("MMMM DD, YYYY").toString().includes(textInput)?
                         appointmentTitles.push(moment(appointment.startTime).format("MMMM DD, YYYY").toString())
@@ -256,7 +253,6 @@ export default class Schedule extends Component {
     };
 
     onSearchSelect(selectedTitle){
-        //console.log("Selected: ", selectedTitle)
         this.setState({selectedSearchValue: selectedTitle, selectedAppEvents:[], selectedDayEvents:[], searchValue: selectedTitle})
         this.getSearchAppointment(selectedTitle)
     }
@@ -291,9 +287,7 @@ export default class Schedule extends Component {
             this.setSearchAppointment(newDayArray[0].event, newAppArray[0], newDayArray[0].day )
         }
             
-            
-            
-       
+ 
     }
 
     nextSearchResult(){
@@ -312,10 +306,7 @@ export default class Schedule extends Component {
         this.setState({
             searchAppointmentStatus:false, 
             searchAppointment:[],
-            //selectedSearchValue:"",
             searchResultSelect:selected,
-            //calendarOffset:filterDay,
-            //searchOpen:false, 
             selected: {'selected':selected,'status':true}
         })
 
@@ -438,6 +429,7 @@ export default class Schedule extends Component {
 
     getStartDays(){
         //0-Sun 1-Mon 2-Tues 3-Wed 4-Thur 5-Fri 6-Sat
+        //Previous  Month
         d = new Date(this.state.currentDate)
         d.setDate(1)
         d.setHours(-1)
@@ -463,6 +455,7 @@ export default class Schedule extends Component {
 
     getEndDays(){
         //get first 5 days of next onth
+        //Next Month
         const now = new Date(this.state.currentDate)
         now.setDate(1)
         now.setMonth(now.getMonth()+1)
@@ -546,11 +539,15 @@ export default class Schedule extends Component {
                                 <Button
                                     title="Undo Search"
                                     buttonPress={this.undoSearchPress}
+                                    backgroundColor = "#F7FAFC"
+                                    color = "#4A5568"
                                 />
                                 :
                                 <Button
                                     title="Search"
                                     buttonPress={this.searchPress}
+                                    backgroundColor="#F7FAFC"
+                                    color="#4A5568"
                                 />
                             }
                             
@@ -591,10 +588,8 @@ export default class Schedule extends Component {
                                             _scrollView: scrollViewComponent
                                         })
                                     }}
-                                   
                                     getCalendarOffset = {this.getCalendarOffset}
                                     getAppointmentScroll = {this.getAppointmentScroll}
-                                    getScrollMeasure = {this.getScrollMeasure}
                                     calendarOffset = {this.state.calendarOffset}
                                     datePositions = {this.state.datePositions}
                                 />
@@ -692,7 +687,7 @@ export default class Schedule extends Component {
             return Object.keys(this.state.scheduleDetails).length === 0 ?
                 null
                 :
-                <AppointmentCard
+                <ScrollableAppointmentCard
                     scheduleDetails = {this.state.scheduleDetails }
                     // showScheduleButtons = {this.showScheduleButtons}
                     //scheduleButtons={this.state.scheduleButtons}
@@ -703,6 +698,7 @@ export default class Schedule extends Component {
                     //exitDelete = {this.exitDelete}
                     //closeActionButtons = {this.closeActionButtons}
                     screenDimensions = {this.props.screenDimensions}
+                    transparent = {this.props.transparent}
                 />
         }
         

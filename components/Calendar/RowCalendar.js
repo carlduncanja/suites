@@ -77,13 +77,13 @@ export default class RowCalendar extends Component{
                             }
                             <View style={{paddingRight:40, paddingLeft:40}}>
                                 <RowCalendarDays
-                                currentDate = {this.props.currentDate}
-                                onPressDay={this.props.onPressDay}
-                                key={index}
-                                day={moment(day)}
-                                weekday={moment(day).format("ddd")}
-                                selected = {this.props.selected}
-                                filterStatus = {this.getLevels(day)}
+                                    currentDate = {this.props.currentDate}
+                                    onPressDay={this.props.onPressDay}
+                                    key={index}
+                                    day={moment(day)}
+                                    weekday={moment(day).format("ddd")}
+                                    selected = {this.props.selected}
+                                    filterStatus = {this.getLevels(day)}
                                 />              
                             </View>
                              

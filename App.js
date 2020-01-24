@@ -8,7 +8,7 @@ export default class App extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      tabSelected:{"tabSelected":"schedule", "status":true},
+      tabSelected:{"tabSelected":"case files", "status":true},
       tabSelectedBool: true,
       transparent:false,
       screenDimensions: {},

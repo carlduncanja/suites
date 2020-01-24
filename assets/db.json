@@ -375,6 +375,73 @@
             "title":"Coronary Bypass Graft",
             "status":"Complete"
         }
+    ],
+
+    "caseFiles":[
+        {
+            "patientName":"Julie Brown",
+            "patientId":"#8928547298",
+            "balance":"-$ 115,002.25",
+            "staff":"Dr.Mansingh",
+            "nextVisit":"2019-11-21"
+        },
+        {
+            "patientName":"Julie Brown",
+            "patientId":"#8928547298",
+            "balance":"-$ 115,002.25",
+            "staff":"Dr.Mansingh",
+            "nextVisit":"2019-11-21"
+        },
+        {
+            "patientName":"Julie Brown",
+            "patientId":"#8928547298",
+            "balance":"-$ 115,002.25",
+            "staff":"Dr.Mansingh",
+            "nextVisit":"2019-11-21"
+        },
+        {
+            "patientName":"Julie Brown",
+            "patientId":"#8928547298",
+            "balance":"-$ 115,002.25",
+            "staff":"Dr.Mansingh",
+            "nextVisit":"2019-11-21"
+        },
+        {
+            "patientName":"Julie Brown",
+            "patientId":"#8928547298",
+            "balance":"-$ 115,002.25",
+            "staff":"Dr.Mansingh",
+            "nextVisit":"2019-11-21"
+        },
+        {
+            "patientName":"Julie Brown",
+            "patientId":"#8928547298",
+            "balance":"-$ 115,002.25",
+            "staff":"Dr.Mansingh",
+            "nextVisit":"2019-11-21"
+        },
+        {
+            "patientName":"Julie Brown",
+            "patientId":"#8928547298",
+            "balance":"-$ 115,002.25",
+            "staff":"Dr.Mansingh",
+            "nextVisit":"2019-11-21"
+        },
+        {
+            "patientName":"Julie Brown",
+            "patientId":"#8928547298",
+            "balance":"-$ 115,002.25",
+            "staff":"Dr.Mansingh",
+            "nextVisit":"2019-11-21"
+        },
+        {
+            "patientName":"Julie Brown",
+            "patientId":"#8928547298",
+            "balance":"-$ 115,002.25",
+            "staff":"Dr.Mansingh",
+            "nextVisit":"2019-11-21"
+        }
+
     ]
 
 }
