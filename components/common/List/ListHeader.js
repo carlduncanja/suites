@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import Checkbox from './Checkbox';
+import Checkbox from '../Checkbox';
 
 export default class ListHeader extends Component{
     render(){

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Checkbox from './Checkbox';
+import Checkbox from '../Checkbox';
 import moment from 'moment';
 
 export default class ListItem extends Component{

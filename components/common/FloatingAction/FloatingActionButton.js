@@ -1,11 +1,11 @@
 import React,{Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import SvgIcon from '../../assets/SvgIcon'
+import SvgIcon from '../../../assets/SvgIcon'
 
-export default class FloatingAction extends Component{
+export default class FloatingActionButton extends Component{
     render(){
         return(
-            <TouchableOpacity style={[styles.container,{backgroundColor:this.props.backgroundColor}]}>
+            <TouchableOpacity style={[styles.container,{backgroundColor:this.props.backgroundColor}]} onPress={(event)=>{this.props.onPressFloatingAction(event)}}>
                 <SvgIcon iconName = "actionMenu" fillColor={this.props.fillColor}/>
             </TouchableOpacity>
         )

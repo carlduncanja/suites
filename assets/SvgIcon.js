@@ -109,6 +109,11 @@ export default class SvgIcon extends Component{
                         <Rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill={fillColor} stroke={strokeColor}/>
                     </Svg>
                 :
+                icon === 'dropdown' ?
+                <Svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <Path d="M6.0001 7.40001L0.600098 2.00001L2.0001 0.600006L6.0001 4.60001L10.0001 0.600006L11.4001 2.00001L6.0001 7.40001Z" fill="#718096"/>
+                </Svg>
+                :
                 icon === 'deliverySelected' ?
                     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <Path d="M20 20V23H16V20" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
@@ -398,6 +403,26 @@ export default class SvgIcon extends Component{
                         <Path d="M8 14V16" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
                     </Svg>
                 :
+                icon === 'rightCorner'?
+                <Svg width={12} height={12} viewBox="0 0 12 12" style={{alignSelf:"flex-end"}}>
+                    <Path fill-rule="evenodd" clip-rule="evenodd" d="M12 12V0C12 6.62742 6.62742 12 0 12H12Z" fill= {fillColor}/>
+                </Svg>
+                :
+                icon === 'leftCorner' ?
+                    <Svg width="12" height="12" viewBox="0 0 12 12" style={{alignSelf:"flex-end"}}>
+                        <Path fill-rule="evenodd" clip-rule="evenodd" d="M12 0H0C6.62742 0 12 5.37258 12 12V0Z" fill={fillColor}/>
+                    </Svg>
+                :
+                icon === 'tabLeft' ?
+                    <Svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path fill-rule="evenodd" clip-rule="evenodd" d="M8 8V0C8 4.41828 4.41828 8 0 8H8Z" fill={fillColor}/>
+                    </Svg>
+                :
+                icon === 'tabRight' ?
+                    <Svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path fill-rule="evenodd" clip-rule="evenodd" d="M0 8H8C3.58172 8 0 4.41828 0 0V8Z" fill={fillColor}/>
+                    </Svg>
+                :
                 icon === 'theatresSelected' ?
                     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <Rect x="4" y="21.5" width="16" height="2" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square" stroke-linejoin="round"/>
@@ -478,6 +503,20 @@ export default class SvgIcon extends Component{
                         <Path d="M12 6C10.343 6 9 4.657 9 3C9 1.343 10.343 0 12 0C13.657 0 15 1.343 15 3C15 4.657 13.657 6 12 6Z" fill="#0CB0E7"/>
                         <Path d="M14 21H10C9.448 21 9 20.552 9 20V15H7V9C7 7.895 7.895 7 9 7H15C16.105 7 17 7.895 17 9V15H15V20C15 20.552 14.552 21 14 21Z" fill="#0CB0E7"/>
                         <Path d="M17 17.271V19.29C19.738 19.617 21.284 20.152 21.837 20.507C20.935 21.099 17.573 22 12 22C6.427 22 3.065 21.099 2.163 20.507C2.716 20.152 4.262 19.617 7 19.29V17.271C3.657 17.633 0 18.489 0 20.505C0 23.832 9.996 24 12 24C14.004 24 24 23.832 24 20.505C24 18.489 20.343 17.633 17 17.271Z" fill="#64D8FF"/>
+                    </Svg>
+                :
+                icon === 'archiveCase' ?
+                    <Svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M2.5 0.5H13.5" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <Path d="M11.5 6.5V8.5H4.5V6.5" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <Path d="M15.5 3.5H0.5V14.5H15.5V3.5Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    </Svg>
+                :
+                icon === 'newCase' ?
+                    <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <Path d="M8 4V12" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <Path d="M4 8H12" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                     </Svg>
                 :
                 null

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import ListHeader from '../common/ListHeader';
+import ListHeader from './ListHeader';
 
 export default class List extends Component{
     render(){

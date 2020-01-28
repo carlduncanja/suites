@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import ActionContainer from '../common/ActionContainer';
+import ActionContainer from '../common/FloatingAction/ActionContainer';
 import Svg,{Path, Rect} from 'react-native-svg';
 import Modal from 'react-native-modal';
 

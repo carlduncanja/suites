@@ -2,19 +2,84 @@ import React, { Component } from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import CaseFileListItem from '../components/CaseFiles/CaseFileListItem';
 import RoundedPaginator from '../components/CaseFiles/RoundedPaginator';
-import FloatingAction from '../components/common/FloatingAction';
+import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
 import OverlayMenu from '../components/CaseFiles/OverlayMenu';
 import Search from '../components/common/Search';
-import List from '../components/common/List';
+import List from '../components/common/List/List';
 import PageTitle from '../components/common/PageTitle';
+import Overlay from '../components/common/Overlay/Overlay';
+import SvgIcon from '../assets/SvgIcon'
+import TabContainer from '../components/common/Tabs/TabsContainer'
+import ActionContainer from '../components/common/FloatingAction/ActionContainer'
 
 export default class CaseFiles extends Component {
     constructor(props){
         super(props);
-        this.state={}
+        this.state={
+            toggleFloatingAction:false
+        }
+    }
+
+    
+    onPressFloatingAction(){
+        console.log("pRESSED")
+        this.setState({toggleFloatingAction:!this.state.toggleFloatingAction})
     }
     render() {
         const caseFiles = require('../assets/db.json').caseFiles
+        const detailsFields = 
+        [
+            {
+                "fieldId":"firstname",
+                "fieldName":"First Name",
+                "fieldType":"text"
+
+            },
+            {
+                "fieldId":"lastname",
+                "fieldName":"Last Name",
+                "fieldType":"text"
+
+            },
+            {
+                "fieldId":"gender",
+                "fieldName":"Gender",
+                "fieldType":"text"
+
+            },
+            {
+                "fieldId":"birthdate",
+                "fieldName":"Date of Birth",
+                "fieldType":"text"
+
+            },
+            {
+                "fieldId":"middlename",
+                "fieldName":"Middle Name",
+                "fieldType":"text"
+
+            },
+            {
+                "fieldId":"title",
+                "fieldName":"Title",
+                "fieldType":"text"
+
+            },
+            {
+                "fieldId":"trn",
+                "fieldName":"TRN",
+                "fieldType":"text"
+
+            },
+            {
+                "fieldId":"minor",
+                "fieldName":"Minor",
+                "fieldType":"dropdown",
+                "options":["Yes","No"],
+                "selected":"No"
+
+            }
+        ]
         const listData = (
             <View>
                 {caseFiles.map((caseFile,index)=>{
@@ -26,6 +91,33 @@ export default class CaseFiles extends Component {
                 })}
             </View>
         )
+        const icons=[
+            {
+                "iconName":"Patient",
+                "icon":<SvgIcon iconName="patientButtonOpen"/>
+            },
+            {
+                "iconName":"Medical Team",
+                "icon":<SvgIcon iconName="medicalHistoryButtonClosed"/>
+            },
+            {
+                "iconName":"Procedures",
+                "icon":<SvgIcon iconName="procedureButtonClosed"/>
+            }
+        ]
+        const tabs = ["Details","Insurance","Diagnosis","Patient Risk"]
+        const actions = [
+            {
+                "actionId":"archive",
+                "actionName":"Archive Case",
+                "actionIcon":<SvgIcon iconName="archiveCase" strokeColor="#A0AEC0"/>,
+            },
+            {
+                "actionId":"newCase",
+                "actionName":"New Case",
+                "actionIcon":<SvgIcon iconName="newCase" strokeColor="#A0AEC0"/>,
+            }
+        ]
         return(
             <View style={styles.container}>
                 <View style={{marginBottom:15}}>
@@ -48,9 +140,24 @@ export default class CaseFiles extends Component {
                     <View style={{alignSelf:"center", marginRight:10}}>
                         <RoundedPaginator currentPage={1} totalPages={2}/>
                     </View>
-                    <FloatingAction fillColor="#CCD6E0" backgroundColor="#4299E1"/>
+                    {this.state.toggleFloatingAction ?
+                        <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#A0AEC0" onPressFloatingAction={this.onPressFloatingAction}/>
+                        :
+                        <FloatingActionButton fillColor="#CCD6E0" backgroundColor="#4299E1"/>
+                    }
+                    
                 </View>
-
+                {/* <Overlay 
+                    overlayTitle ="New Case" 
+                    footerTitle="Next" 
+                    fields={detailsFields}
+                    icons={icons}
+                    tabs={tabs}
+                /> */}
+         
+                {/* <ActionContainer actionTitle="Case Actions" actions={actions}/> */}
+        
+                
             </View>
         )
 

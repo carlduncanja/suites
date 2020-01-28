@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {View, Text} from 'react-native';
-import ListItem from '../common/ListItem'
-import ListName from '../common/ListName';
+import ListItem from '../common/List/ListItem'
+import ListName from '../common/List/ListName';
 
 export default class CaseFileListItem extends Component{
     render(){
