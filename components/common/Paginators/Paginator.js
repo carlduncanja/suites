@@ -1,20 +1,20 @@
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import SvgIcon from '../../assets/SvgIcon';
+import SvgIcon from '../../../assets/SvgIcon';
 import Svg from 'react-native-svg';
 
 export default class Paginator extends Component{
     render(){
         return(
             <View style={styles.container}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.props.previousPage()}>
                     <SvgIcon iconName = "paginationPrev" strokeColor="#104587"/>
                 </TouchableOpacity>
                 
                 <View style={styles.numbersContainer}>
                     <Text style={styles.numbers}>{this.props.currentPage} of {this.props.totalPages}</Text>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.props.nextPage()}>
                     <SvgIcon iconName = "paginationNext" strokeColor="#104587"/>
                 </TouchableOpacity>
                 

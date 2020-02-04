@@ -23,7 +23,7 @@ export default class Overlay extends Component{
                         
                     </View>
                     <View style={styles.dataContainer}>
-                        <OverlayDataFields fields={this.props.fields}/>
+                        <OverlayDataFields fields={this.props.fields} numColumns={2}/>
                     </View>
                 </View>
 

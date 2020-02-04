@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import Paginator from '../common/Paginator';
+import Paginator from './Paginator';
 
 export default class RoundedPaginator extends Component{
     render(){

@@ -8,7 +8,7 @@ export default class TabsContainer extends Component{
             <View style={styles.container}>
                 <View style={styles.tabs}>
                     {this.props.tabs.map((tab, index)=>{
-                        return (tab==="Details" ? 
+                        return (tab === this.props.overlaySelectedTab.selectedTab ? 
                             <View key={index}> 
                                 <Tab tab={tab} backgroundColor="#FFFFFF" textColor="#3182CE"/>
                             </View>
@@ -16,11 +16,9 @@ export default class TabsContainer extends Component{
                             <View key={index}>
                                 <Tab tab={tab} textColor="#718096"/>
                             </View>
-                            
                         )
                     })}
                 </View>
-                {/* <View style={styles.base}/> */}
             </View>
         )
     }

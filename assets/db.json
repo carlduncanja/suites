@@ -377,71 +377,799 @@
         }
     ],
 
-    "caseFiles":[
-        {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
-        },
-        {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
-        },
-        {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
-        },
-        {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
-        },
-        {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
-        },
-        {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
-        },
-        {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
-        },
-        {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
-        },
-        {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
-        }
+    "caseFiles":
+    {
+            "floatingActions":
+            [
+                {
+                    "actionId":"archiveCase",
+                    "actionName":"Archive Case"
+                },
+                {
+                    "actionId":"newCase",
+                    "actionName":"New Case"
+                }
+            ],
+            "menuTabs":
+            [
+                {
+                    "tabId":"patientButton",
+                    "tabName":"Patient",
+                    "overlayTab":["Details","Insurance","Diagnosis","Patient Risk"]
+                },
+                {
+                    "tabId":"physiciansButton",
+                    "tabName":"Physicians",
+                    "overlayTab":["Details"]
+                },
+                {
+                    "tabId":"medicalHistoryButton",
+                    "tabName":"Medical History",
+                    "overlayTab":["General","Family History","Lifestyle","Other"]
+                },
+                {
+                    "tabId":"procedureButton",
+                    "tabName":"Procedure",
+                    "overlayTab":["Details"]
+                },
+                {
+                    "tabId":"chargeSheetButton",
+                    "tabName":"Charge Sheet",
+                    "overlayTab":["Consumables","Equipment","Billing","Quotation","Invoices"]
+                }
+            ],
+            "caseInformation":
+            [
+                {
+                    "patientId":"#350219385001",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827402",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#8927465150003",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385004",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827405",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515006",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385007",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827408",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515009",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385010",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827411",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515012",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385013",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827414",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515015",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385016",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827417",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515018",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385019",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827420",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515021",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385022",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827423",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515024",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385025",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827426",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515027",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385028",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827429",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515030",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385031",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827432",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515033",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385034",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827435",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515036",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385037",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827438",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515039",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385040",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827441",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515041",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#350219385042",
+                    "patientName":
+                        {
+                            "first":"Julie",
+                            "middle":"Melissa",
+                            "last":"Brown"
+                        },
+                    "balance":"-$ 115,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#902849827443",
+                    "patientName":
+                        {
+                            "first":"John",
+                            "middle":"Anothony",
+                            "last":"Taylor"
+                        },
+                    "balance":"-$ 11,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                },
+                {
+                    "patientId":"#892746515044",
+                    "patientName":
+                        {
+                            "first":"Meghan",
+                            "middle":"Anna",
+                            "last":"James"
+                        },
+                    "balance":"-$ 203,002.25",
+                    "staff":"Dr. Mansingh",
+                    "nextVisit":"2019-11-21"
+                }
 
-    ]
+            ],
+                
+            "caseDetails":
+            [
+                {
+                    "patientId":"#350219385001",
+                    "overlayCaseInformation" :
+                        {
+                            "personalInformation":
+                                [
+                                    {
+                                        "field":"First Name",
+                                        "value":"Julie",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Middle Name",
+                                        "value":"Melissa",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Surname",
+                                        "value":"Brown",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Height",
+                                        "value":"5'3\"",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Weight",
+                                        "value":145,
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"BMI",
+                                        "value":200,
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Date of Birth",
+                                        "value":"8/12/1998",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"TRN",
+                                        "value":"125 618 921",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Gender",
+                                        "value":"Female",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Ethnicity",
+                                        "value":"Black / Caribbean",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Blood Type",
+                                        "value":"AB",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Next Visit",
+                                        "value":"12/12/2019",
+                                        "type":"optional"
+                                    }
+                                ],
+
+                                "contactInformation": 
+                                    [
+                                        {
+                                            "field":"Cell Phone",
+                                            "value":"876 372 6172",
+                                            "type":"primary"
+                                        },
+                                        {
+                                            "field":"Home Phone",
+                                            "value":"876 992 6172",
+                                            "type":"primary"
+                                        },
+                                        {
+                                            "field":"Work Phone",
+                                            "value":"876 712 8320",
+                                            "type":"primary"
+                                        },
+                                        {
+                                            "field":"Primary Email",
+                                            "value":"julie.brown@gmail.com",
+                                            "type":"primary"
+                                        },
+                                        {
+                                            "field":"Alternative Email",
+                                            "value":"",
+                                            "type":"optional"
+                                        },
+                                        {
+                                            "field":"Work Email",
+                                            "value":"",
+                                            "type":"optional"
+                                        },
+                                        {
+                                            "field":"Address 1",
+                                            "value":"12 Ruthven Road, Kingston 1",
+                                            "type":"optional"
+                                        },
+                                        {
+                                            "field":"Address 2",
+                                            "value":"Apartment 6",
+                                            "type":"optional"
+                                        }
+                                    ],
+
+                                "emergencyContactInfomation":
+                                    [
+                                        {
+                                            "field":"Emergency Contact Name",
+                                            "value":"Juliana Brown (Mother)",
+                                            "type":"optional"
+                                        },
+                                        {
+                                            "field":"Emergency Contact Phone",
+                                            "value":"876 372 6280",
+                                            "type":"primary"
+                                        },
+                                        {
+                                            "field":"Emergency Contact Email",
+                                            "value":"juliana.brown@gmail.com",
+                                            "type":"primary"
+                                        },
+                                        {
+                                            "field":"Emergency Contact Name",
+                                            "value":"Lucas Brown (Father)",
+                                            "type":"optional"
+                                        },
+                                        {
+                                            "field":"Emergency Contact Phone",
+                                            "value":"876 372 7180",
+                                            "type":"primary"
+                                        },
+                                        {
+                                            "field":"Emergency Contact Email",
+                                            "value":"lucas.brown@gmail.com",
+                                            "type":"primary"
+                                        }
+                                    ]
+
+
+                        }
+
+                }
+            ]
+    },
+
+    "detailsFields":[
+        {
+            "fieldId":"firstname",
+            "fieldName":"First Name",
+            "fieldType":"text"
+
+        },
+        {
+            "fieldId":"lastname",
+            "fieldName":"Last Name",
+            "fieldType":"text"
+
+        },
+        {
+            "fieldId":"gender",
+            "fieldName":"Gender",
+            "fieldType":"text"
+
+        },
+        {
+            "fieldId":"birthdate",
+            "fieldName":"Date of Birth",
+            "fieldType":"text"
+
+        },
+        {
+            "fieldId":"middlename",
+            "fieldName":"Middle Name",
+            "fieldType":"text"
+
+        },
+        {
+            "fieldId":"title",
+            "fieldName":"Title",
+            "fieldType":"text"
+
+        },
+        {
+            "fieldId":"trn",
+            "fieldName":"TRN",
+            "fieldType":"text"
+
+        },
+        {
+            "fieldId":"minor",
+            "fieldName":"Minor",
+            "fieldType":"dropdown",
+            "options":["Yes","No"],
+            "selected":"No"
+
+        }
+    ],
+    "caseFileTabs":["Details","Insurance","Diagnosis","Patient Risk"]
 
 }

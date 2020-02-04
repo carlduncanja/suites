@@ -1,16 +1,15 @@
 import React,{Component} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
-import InputText from '../InputText';
-import InputField from '../InputField'
-import DropdownField from '../DropdownField';
+import InputField from '../Input Fields/InputField'
+import DropdownField from '../Input Fields/DropdownField';
 
-export default class OverlayDataCard extends Component{
+export default class OverlayDataFields extends Component{
     render(){
         return(
             <View style={styles.container}>
                 <FlatList
                     data={this.props.fields}
-                    numColumns={2}
+                    numColumns={this.props.numColumns}
                     renderItem={({item})=>
                         item.fieldType === 'text'?
                         <View style={styles.fieldContainer}>

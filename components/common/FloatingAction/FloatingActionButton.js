@@ -5,7 +5,7 @@ import SvgIcon from '../../../assets/SvgIcon'
 export default class FloatingActionButton extends Component{
     render(){
         return(
-            <TouchableOpacity style={[styles.container,{backgroundColor:this.props.backgroundColor}]} onPress={(event)=>{this.props.onPressFloatingAction(event)}}>
+            <TouchableOpacity style={[styles.container,{backgroundColor:this.props.backgroundColor}]} onPress={()=>this.props.toggleActionButton()}>
                 <SvgIcon iconName = "actionMenu" fillColor={this.props.fillColor}/>
             </TouchableOpacity>
         )

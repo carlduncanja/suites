@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import SvgIcon from '../../assets/SvgIcon';
+import SvgIcon from '../../../assets/SvgIcon';
 
 
 export default class DropdownField extends Component{
