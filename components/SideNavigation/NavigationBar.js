@@ -1,160 +1,96 @@
 import React, { Component } from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, SectionList} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, SectionList } from 'react-native';
 import NavigationTab from './NavigationTab';
-import Schedule from '../../page/Schedule';
 
-const sections=
-    [
-        {   "title":"quickMenu",
-            "data" : ['quick menu']
-        },
-        {
-            "title": "appointmentSection",
-            "data" : ['schedule','case files','theatres']
-        },
-        {
-            "title": "inventorySection",
-            "data" : ['inventory','equipment','orders','suppliers','invoices']
-        },
-        {
-            "title": "staffSection",
-            "data" : ['storage','physicians','procedures']
-        },
-        {
-            "title": "alertSection",
-            "data" : ['alerts']
-        }
-    ];
+import SvgIcon from '../../assets/SvgIcon';
 
-    const tabs = ['quick menu', 'schedule','case files','theatres','inventory','equipment','orders','suppliers','invoices','storage','physicians','procedures','alerts']
 
-export default class NavigationBar extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-           stickyIndex:1
-        }
-       
-    }
+import { createNavigator, TabRouter } from 'react-navigation';
 
-        
-    seperateTabs(){
-        const tabs = []
-        const fixed = []
-        const scroll = []
-        sections.map((section)=>{
-            section.tabs.map((tab)=>{
-                tabs.includes(tab)?
-                    null:
-                    tabs.push(tab)
-            })  
-        })
-        const selectedIndex = tabs.indexOf(this.props.tabSelected.tabSelected)
+export const NavigationBar = (props) => {
+    const { routes, index } = props.navigation.state;
+    const descriptor = props.descriptors[routes[index].key];
 
-        for(i = 0; i <= selectedIndex; i ++){
-            fixed.push(tabs[i])
-        }
-        for(i = selectedIndex+1; i < tabs.length; i++){
-            scroll.push(tabs[i])
-        }
-        return [fixed, scroll]
-    }
+    const ActiveScreen = descriptor.getComponent();
 
-    handlePress=()=>{
-        this.props.navigation.navigate('schedule')
-    }
-    
-    render() {    
-        // console.log("Index: ", tabs.indexOf(this.props.tabSelected.tabSelected))
-        return (            
-            <ScrollView 
-                stickyHeaderIndices={[tabs.indexOf(this.props.tabSelected.tabSelected)]}
-                //invertStickyHeaders={[tabs.indexOf(this.props.tabSelected.tabSelected)]}
-                scrollEventThrottle={2}
-                scrollEnabled={true}
-                showsVerticalScrollIndicator={false}
-                style={[styles.container]} 
-                contentContainerStyle={{alignItems:'center',justifyContent:'flex-start',width:'100%'}}
-                //bounces={false}
-           >
-                {/* <SectionList
-                    style={{width:'100%'}}
-                    sections = {sections}
-                    renderItem = {({item})=> 
-                        <NavigationTab 
-                            tabName = {item}
-                            {...this.props}
-                        /> 
-                    }
+    return (
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+            <View style={{ flex: 1, width: '11%' }}>
+                <View style={{ flex: 1 }}>
+                    <View style={styles.viewContainer}>
+                        <View style={[styles.logo,
+                        { paddingBottom: props.screenDimensions.width > props.screenDimensions.height ? 10 : 25 }
+                        ]}>
+                            <SvgIcon iconName="logo" />
+                        </View>
+                        <ScrollView
+                            stickyHeaderIndices={[routes.indexOf(props.tabSelected.tabSelected)]}
+                            //invertStickyHeaders={[tabs.indexOf(props.tabSelected.tabSelected)]}
+                            scrollEventThrottle={2}
+                            scrollEnabled={true}
+                            showsVerticalScrollIndicator={false}
+                            style={[styles.container]}
+                            contentContainerStyle={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}
+                        //bounces={false}
+                        >
 
-                    renderSectionFooter = {(section, index) => 
-                        <View style={{width:'80%', alignSelf:'center', height:1, backgroundColor:'#4879B7', borderRadius:2}}/>
-                    }
-                    keyExtractor = {(tabName, index) => index}
-                /> */}
+                            {routes.map((route, tabIndex) => {
+                                const { routeName, params } = route;
+                                const { icon, tabName } = params || {};
 
-                {/* {sections.map((section, index)=>{
-                    return(
-                        <View style={{width:'100%', alignSelf:'center'}} key={index}>
-                            {section.data.map((tab, index)=>{
-                               
-                                return( 
-                                    <NavigationTab 
-                                        section={section.title}
-                                        key={index} 
-                                        tabName = {tab}
-                                        {...this.props}
-                                    /> 
+                                return (
+                                    <View style={{ width: '100%' }} key={tabIndex}>
+                                        <NavigationTab
+                                            {...props}
+                                            icon={icon}
+                                            tabName={tabName}
+                                        />
+
+                                    </View>
+
+
                                 )
-                                
                             })}
-                            <View style={{width:'80%', alignSelf:'center', height:1, backgroundColor:'#4879B7', borderRadius:2}}/>
-                        </View>
-                    )
-                })} */}
 
-                {tabs.map((tab, index)=>{
-                    return (tab === 'quick menu' ,tab === 'theatres' || tab === 'invoices' || tab === 'procedures' || tab === 'alerts' ?
+                        </ScrollView>
 
-                        <View 
-                            style = {{width:'100%'}} 
-                            //onLayout={event => this.setTabYValues({'tabName':tab, 'tabValue':event.nativeEvent.layout.y})}
-                            key={index}
-                        >
-                            <NavigationTab 
-                                tabName = {tab}
-                                {...this.props}
-                            /> 
-                            <View style={{width:'80%', alignSelf:'center', height:1, backgroundColor:'#4879B7', borderRadius:2}}/>
-                        </View>
-                        :
-                        <View 
-                            style={{width:'100%'}} 
-                            //onLayout={event => this.setTabYValues({'tabName':tab, 'tabValue':event.nativeEvent.layout.y})}
-                            key={index}
-                        >
-                            <NavigationTab 
-                                key={index} 
-                                tabName = {tab}
-                                {...this.props}
-                            /> 
-                        </View>
-                        
-                    )
-                })} 
-                
-            </ScrollView>
-        )
-    }
+                    </View>
+                    <View style={styles.footer} />
+                </View>
+            </View>
+            <View style={styles.content}>
+                <ActiveScreen navigation={descriptor.navigation} {...props} />
+
+            </View>
+        </View>
+    )
 }
 
 
 const styles = StyleSheet.create({
-    container:{
-        flex: 1,  
-        width:'100%',
+    container: {
+        flex: 1,
+        width: '100%',
         flexDirection: 'column',
-        // alignItems:'center',
-        // justifyContent:'flex-start',
     },
+    viewContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: '100%',
+        backgroundColor: '#104587',
+        //flex:1,
+    },
+    logo: {
+        paddingTop: 10
+    },
+    content: {
+        flex: 12,
+    }
 })
+
+export const createSidebarNavigator = (routeConfigMap, sidebarNavigatorConfig) => {
+    const customTabRouter = TabRouter(routeConfigMap, sidebarNavigatorConfig);
+
+    return createNavigator(NavigationBar, customTabRouter, {});
+};
+

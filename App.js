@@ -1,113 +1,51 @@
-import React from 'react';
+import React, { useReducer, useMemo } from 'react';
 import { StyleSheet, SafeAreaView, Animated, PanResponder, Platform, ScrollView, View, TouchableOpacity, Text, Dimensions } from 'react-native';
-import Sidebar from './components/SideNavigation/Sidebar';
 import Content from './components/layout/Content';
 import moment from 'moment';
 
-export default class App extends React.Component {
-  constructor(props){
-    super(props);
-    this.state={
-      tabSelected:{"tabSelected":"case files", "status":true},
-      tabSelectedBool: true,
-      transparent:false,
-      screenDimensions: {},
-      showNotification: false,
-    }
+import Schedule from './page/Schedule';
 
-    this.onPressTab = this.onPressTab.bind(this);
-    this.getDimensions = this.getDimensions.bind(this);
-    this.closeNavigation = this.closeNavigation.bind(this);
-    this.setTransparent = this.setTransparent.bind(this);
+import { appActionTypes } from './actions/appActions';
+
+
+import { appReducer } from './reducers/appReducer';
+import { initialState, SuitesContext } from './SuitesContext';
+import NavigationStack from './components/SideNavigation/NavigationStack';
+
+export default App = () => {
+  const [state, dispatch] = useReducer(appReducer, initialState)
+
+  const contextValue = useMemo(() => {
+    return { state, dispatch };
+  }, [state, dispatch]);
+
+
+  getDimensions = (event) => {
+    dispatch({
+      type: appActionTypes.UPDATEDIMENSIONS, 
+      payload: { width: event.nativeEvent.layout.width, length: event.nativeEvent.layout.height}
+    });
+  };
+
+  onPressTab = (event,selected) => {
+    dispatch({
+      type: appActionTypes.UPDATETABSELECTED,
+      payload:{ tabSelected: selected, status: true}
+    });
   }
 
-  getDimensions(event){
-    this.setState({
-      screenDimensions:{
-        "width":event.nativeEvent.layout.width,
-        "height":event.nativeEvent.layout.height
-      }
-    })
-  }
-
-  onPressTab(event,selected){
-    selectedObject = {"tabSelected":selected,"status":true};
-    tabSelectedBool = true;
-    this.setState({tabSelected:selectedObject, tabSelectedBool});
-  }
-
-  closeNavigation(){
-    this.setState({showNotification: false})
-  }
-
-  setTransparent(status){
-    this.setState({transparent:status})
-  }
-
-  render(){
 
     return (
-      <SafeAreaView style={styles.container} onLayout={this.getDimensions}>
-        <View style={styles.scroll} >
-          <View style = {styles.sidebar}>
-            <Sidebar
-              screenDimensions = {this.state.screenDimensions}
-              searchOpen = {this.state.searchOpen}
-              transparent = {this.state.transparent}
-              showSlider = {this.state.showSlider}
-              tabSelected = {this.state.tabSelected}
-              tabSelectedBool = {this.state.tabSelectedBool}
-              onPressTab = {this.onPressTab}
-            />
-          </View>
-          <View style = {styles.content}>
-            {
-              this.state.tabSelected.tabSelected === 'schedule' ?
-                <Content {...this.state} 
-                  name="SCHEDULE" 
-                  closeNavigation = {this.closeNavigation} 
-                  setTransparent={this.setTransparent}/>
-              :
-              this.state.tabSelected.tabSelected === 'case files' ?
-                <Content {...this.state} name="CASE FILES"/>
-              :
-              this.state.tabSelected.tabSelected === 'theatres' ?
-                <Content {...this.state} name="CASE FILES"/>
-              :
-              this.state.tabSelected.tabSelected === 'inventory' ?
-                <Content {...this.state} name="INVENTORY"/>
-              :
-              this.state.tabSelected.tabSelected === 'equipment' ?
-                <Content {...this.state} name="EQUIPMENT"/>
-              :
-              this.state.tabSelected.tabSelected === 'orders' ?
-                <Content {...this.state} name="ORDERS"/>
-              :
-              this.state.tabSelected.tabSelected === 'suppliers' ?
-                <Content {...this.state} name="SUPPLIERS"/>
-              :
-              this.state.tabSelected.tabSelected === 'invoices' ?
-                <Content {...this.state} name="INVOICES"/>
-              :
-              this.state.tabSelected.tabSelected === 'storage' ?
-                <Content {...this.state} name="STORAGE"/>
-              :
-              this.state.tabSelected.tabSelected === 'physicians' ?
-                <Content {...this.state} name="PHYSICIANS"/>
-              :
-              this.state.tabSelected.tabSelected === 'procedures' ?
-                <Content {...this.state} name="PROCEDURES"/>
-              :
-              this.state.tabSelected.tabSelected === 'alerts' ?
-                <Content {...this.state} name="ALERTS"/>
-              :
-              null
-            }
-          </View>
-        </View>
+      <SuitesContext.Provider value={{state, dispatch}}>
+        <SafeAreaView style={styles.container} onLayout={this.getDimensions}>
+            <NavigationStack
+              screenDimensions = {state.screenDimensions}
+              tabSelected = {state.tabSelected.tabSelected}
+              onPressTab = {onPressTab}
+             />
       </SafeAreaView>
+      </SuitesContext.Provider>
     );
-  }
 
 }
 
@@ -125,10 +63,29 @@ const styles = StyleSheet.create({
   },
   sidebar:{
     //flex:1,
-    width:'11%'
+    width:'7%'
   },
   content:{
     flex:12,
   }
 
 });
+
+
+  // state={
+  //     tabSelected:{"tabSelected":"case files", "status":true},
+  //     tabSelectedBool: true,
+  //     transparent:false,
+  //     screenDimensions: {},
+  //     showNotification: false,
+  //   }
+
+
+
+  // closeNavigation(){
+  //   this.setState({showNotification: false})
+  // }
+
+  // setTransparent(status){
+  //   this.setState({transparent:status})
+  // }
