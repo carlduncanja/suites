@@ -6,9 +6,7 @@ export default class Search extends Component{
     render(){
         return(
             <View style={styles.container}>
-                <InputText 
-                    {...this.props}
-                />
+                <InputText />
             </View>
           
         )

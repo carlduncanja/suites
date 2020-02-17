@@ -1,33 +1,42 @@
-import React, {Component} from 'react';
+import React, {Component, useCallback, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import moment from 'moment';
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class ListItem extends Component{
-    render(){
-        // console.log("Checked: ", this.props.checked, "Selected: ", this.props.selectedCaseFile)
-        return(
-            <TouchableOpacity onPress={()=>this.props.setSelected(this.props.fields.recordId)}>
+const ListItem = (props) => {
+    const suitesState = useContext(SuitesContext).state
+    const suitesMethods = useContext(SuitesContext).methods
+    return ( 
+        <TouchableOpacity onPress={()=>{suitesMethods.handleSelectedListItem(props.fields.recordId); }}>
                 <View style={styles.container}>
-                    <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>this.props.toggleCheckbox(this.props.fields.recordId)}>
-                        {/* <Checkbox/> */}
-                        {this.props.checkbox}
+                    <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>suitesMethods.toggleCheckbox(props.fields.recordId)}>
+                        {props.checkbox}
                     </TouchableOpacity>
                     
                     <View style={{flex:1,flexDirection:"row", marginLeft:10}}>
-                        {this.props.fields.recordInformation.map((field,index)=>{
-                            return(
-                                <View style={styles.item} key={index}>
-                                    {field}
+                        {props.fields.recordInformation.map((field,index)=>{
+                            return typeof field === 'object'? 
+                                <View style={[styles.item]} key={index}>
+                                    {Object.keys(field).map((key,index)=>{
+                                        return key === 'id'?
+                                            <Text style={[styles.itemText,{color:'#718096'}]} key={index}>{field[key]}</Text>
+                                            :
+                                            <Text style={{fontSize:16, color:'#3182CE'}} key={index}>{field[key]}</Text>
+                                    })}
                                 </View>
-                            )
+                            :                            
                             
+                                <View style={styles.item} key={index}>
+                                    <Text style={styles.itemText}>{field}</Text>
+                                </View>
                         })}
                     </View>
                 </View>
             </TouchableOpacity>
-        )
-    }
+    );
 }
+ 
+export default ListItem;
 
 const styles = StyleSheet.create({
     container:{

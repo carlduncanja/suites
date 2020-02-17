@@ -1,16 +1,17 @@
-import React,{Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native'
+import React,{ useContext } from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class PageTitle extends Component{
-    render(){
-        return(
-            <View>
-                <Text style={styles.pageTitle}>{this.props.pageTitle}</Text>
-            </View>
-        )
-    }
+const PageTitle = () => {
+    const pageTitle  = useContext(SuitesContext).state.pageTitle
+    return ( 
+        <View>
+            <Text style={styles.pageTitle}>{pageTitle}</Text>
+        </View>
+    );
 }
-
+ 
+export default PageTitle;
 const styles= StyleSheet.create({
     pageTitle:{
         fontSize:24,

@@ -4,14 +4,21 @@ import FrameItem from '../FrameItems/FrameItem'
 
 export default class FrameContentList extends Component{
     render(){
+        const information = this.props.cardInformation
         return(
             <View style={styles.container}>
-                {this.props.cardInformation.map((itemContent,index)=>{
-                    return(
-                        <View key={index} style={styles.itemContainer}>
-                            <FrameItem itemContent = {itemContent}/>
-                        </View>
-                    )
+                {
+                    information.length === 0 ?
+                    <View style={styles.itemContainer}>
+                        <FrameItem itemContent = "None"/>
+                    </View>
+                    :
+                    information.map((itemContent,index)=>{
+                        return(
+                            <View key={index} style={styles.itemContainer}>
+                                <FrameItem itemContent = {itemContent}/>
+                            </View>
+                        )
                 })}
             </View>
         )

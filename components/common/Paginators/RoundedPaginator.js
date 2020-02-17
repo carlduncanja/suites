@@ -2,15 +2,16 @@ import React,{Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Paginator from './Paginator';
 
-export default class RoundedPaginator extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <Paginator {...this.props}/>
-            </View>
-        )
-    }
+
+const RoundedPaginator = () => {
+    return ( 
+        <View style={styles.container}>
+            <Paginator/>
+        </View>
+    );
 }
+ 
+export default RoundedPaginator;
 
 const styles = StyleSheet.create({
     container:{

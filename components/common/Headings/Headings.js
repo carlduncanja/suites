@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Heading from './Heading';
 import { EditButton,DoneButton } from '../OverlayButtons/OverlayButtonStyles'
+import { SuitesContext } from '../../../contexts/SuitesContext';
+
+
 
 export function EditModeHeading({caseFile}){
     return(
@@ -16,10 +19,11 @@ export function EditModeHeading({caseFile}){
 }
 
 export function ViewModeHeading({headerId, headerName}){
+    const suitesState = useContext(SuitesContext).state
     return(
         <Heading 
-            headerId={headerId}
-            headerName={headerName}
+            headerId={suitesState.overlayHeader.id}
+            headerName={suitesState.overlayHeader.name}
             backgroundColor="#EEF2F6"
             headerIdColor="#104587"
             headerNameColor="#0CB0E7"

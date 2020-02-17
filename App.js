@@ -72,7 +72,7 @@ export default class App extends React.Component {
                 <Content {...this.state} name="CASE FILES"/>
               :
               this.state.tabSelected.tabSelected === 'theatres' ?
-                <Content {...this.state} name="CASE FILES"/>
+                <Content {...this.state} name="THEATRES"/>
               :
               this.state.tabSelected.tabSelected === 'inventory' ?
                 <Content {...this.state} name="INVENTORY"/>

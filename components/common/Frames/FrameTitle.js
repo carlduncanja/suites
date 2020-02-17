@@ -6,7 +6,7 @@ export default class FrameTitle extends Component{
     render(){
         return(
             <View style={[styles.container,{backgroundColor:this.props.backgroundColor, borderColor:this.props.borderColor}]}>
-                <SvgIcon iconName={this.props.iconName}/>
+                <SvgIcon iconName={this.props.iconName} fillColor={this.props.iconFillColor}/>
                 <Text style={[styles.text,{color:this.props.color}]}>{this.props.frameTitle}</Text>
             </View>
         )

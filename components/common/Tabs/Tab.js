@@ -1,30 +1,31 @@
-import React,{Component} from 'react';
+import React,{Component, useContext} from 'react';
 import {View, Text,TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon'
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class Tab extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <View style={styles.corner}>
-                    <SvgIcon iconName="tabLeft" fillColor={this.props.backgroundColor}/>
-                </View>
-                <TouchableOpacity style={[styles.tabContainer,{backgroundColor:this.props.backgroundColor}]}>
-                    <Text style={[styles.text,{color:this.props.textColor}]}>{this.props.tab}</Text>
-                </TouchableOpacity>
-                <View style={styles.corner}>
-                    <SvgIcon iconName="tabRight" fillColor={this.props.backgroundColor}/>
-                </View>
+const Tab = (props) => {
+    const suitesMethods = useContext(SuitesContext).methods
+    return ( 
+        <View style={styles.container}>
+            <View style={styles.corner}>
+                <SvgIcon iconName="tabLeft" fillColor={props.backgroundColor}/>
             </View>
-           
-        )
-    }
+            <TouchableOpacity activeOpacity={1} style={[styles.tabContainer,{backgroundColor:props.backgroundColor}]} onPress={() => suitesMethods.handleOverlayTabChange(props.tab)}>
+                <Text style={[styles.text,{color:props.textColor}]}>{props.tab}</Text>
+            </TouchableOpacity>
+            <View style={styles.corner}>
+                <SvgIcon iconName="tabRight" fillColor={props.backgroundColor}/>
+            </View>
+        </View>
+    );
 }
+ 
+export default Tab;
 
 const styles = StyleSheet.create({
     container:{
         flexDirection:'row',
-        marginRight:20,
+        marginRight:15,
     },
     tabContainer:{
         borderTopLeftRadius: 8,

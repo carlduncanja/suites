@@ -1,28 +1,32 @@
-import React,{Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React,{Component, useContext} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Checkbox from '../Checkbox/Checkbox';
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class ListHeader extends Component{
-    render(){
-        const width = 100/this.props.listHeaders.length
-        return(
-            <View style = {styles.container}>
-                <View style={{justifyContent:'center', alignSelf:'center'}}>
-                    <Checkbox/>
-                </View>
-                <View style={styles.headersContainer}>
-                    {this.props.listHeaders.map((header,index)=>{
-                        return(
-                            <View style={[styles.item,{width:`${width}%`}]} key={index}>
-                                <Text style={styles.headerText}>{header}</Text>
-                            </View>
-                        )
-                    })}
-                </View>
+const ListHeader = () => {
+    const listHeaders = useContext(SuitesContext).state.listHeaders
+    const width = 100/listHeaders.length
+    return ( 
+        <View style = {styles.container}>
+            <TouchableOpacity 
+                style={{justifyContent:'center', alignSelf:'center'}}
+            >
+                <Checkbox/>
+            </TouchableOpacity>
+            <View style={styles.headersContainer}>
+                {listHeaders.map((header,index)=>{
+                    return(
+                        <View style={[styles.item,{width:`${width}%`}]} key={index}>
+                            <Text style={styles.headerText}>{header}</Text>
+                        </View>
+                    )
+                })}
             </View>
-        )
-    }
+        </View>
+    );
 }
+ 
+export default ListHeader;
 
 const styles = StyleSheet.create({
     container:{

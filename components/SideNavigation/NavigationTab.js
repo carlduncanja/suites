@@ -96,25 +96,23 @@ export default class NavigationTab extends Component {
                     <View>
                         {
                             this.props.transparent === false ?
-                                <View>
+                                <TouchableOpacity onPress={e => this.props.onPressTab(e,this.props.tabName)}>
                                     {svgRightCorner("white")}
-                                    <TouchableOpacity style={[styles.navTag,styles.selectedNavTag]} onPress={e => this.props.onPressTab(e,this.props.tabName)}>
+                                    <View style={[styles.navTag,styles.selectedNavTag]} >
                                         {icon (this.props.tabName, "#3182CE")}
                                         <Text style={[styles.navText,styles.selectedNavText]}>{this.props.tabName.toUpperCase()}</Text>
-                                    </TouchableOpacity>
+                                    </View>
                                     {svgLeftCorner("white")}
-                                </View>
+                                </TouchableOpacity>
 
                                 :
-                                <View>
+                                <TouchableOpacity onPress={e => this.props.onPressTab(e,this.props.tabName)}>
                                     {svgRightCorner("#b3b3b3")}
-                                    <View>
-                                        <TouchableOpacity style={[styles.navTag, styles.selectedNavTag,{backgroundColor:"#b3b3b3", paddingBottom:12}]} onPress={e => this.props.onPressTab(e,this.props.tabName)}>
-                                            {icon (this.props.tabName,"#3182CE")}
-                                        </TouchableOpacity>
+                                    <View style={[styles.navTag, styles.selectedNavTag,{backgroundColor:"#b3b3b3", paddingBottom:12}]} >
+                                        {icon (this.props.tabName,"#3182CE")}
                                     </View>
                                     {svgLeftCorner("#b3b3b3")}
-                                </View>
+                                </TouchableOpacity>
 
                         }
 

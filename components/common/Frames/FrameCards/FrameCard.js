@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, StyleSheet} from 'react-native';
-import FrameTitle from './FrameTitle'
-import FrameContentList from './FrameContents/FrameContentList';
+import FrameTitle from '.././FrameTitle'
+import FrameContentList from '../FrameContents/FrameContentList';
 
 export default class FrameCard extends Component{
     render(){
@@ -13,6 +13,7 @@ export default class FrameCard extends Component{
                         borderColor = {this.props.frameBorderColor}
                         backgroundColor={this.props.titleBackgroundColor}
                         iconName={this.props.frameIconName}
+                        iconFillColor = {this.props.iconFillColor}
                         frameTitle={this.props.frameTitle}
                     />
                 </View>

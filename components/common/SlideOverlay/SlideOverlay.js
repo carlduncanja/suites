@@ -1,57 +1,50 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet, FlatList, SectionList} from 'react-native';
-import TabsContainer from '../Tabs/TabsContainer'
+import React, { useContext } from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import SlideContent from './SlideContent'
 import SlideHeader from './SlideHeader';
+import SlideFooter from './SlideFooter';
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-
-export default class SlideOverlay extends Component{
-    getTabs(){
-        filterMenuItem = this.props.menuIcons.filter(item => item.tabName === this.props.selectedMenuTab)
-        tabs = filterMenuItem[0].overlayTab
-        return tabs
-    }
-
-    render(){
-        return(
-            <View style={styles.container}>
-
-                <View style={styles.header}>
-                    <SlideHeader 
-                        headerId = {this.props.headerId}
-                        headerName={this.props.headerName}
-                        tabs = {this.getTabs()}
-                        overlaySelectedTab={this.props.overlaySelectedTab}
-                    />
-                </View>
-
-                <View style={styles.content}>
-                    <SlideContent overlayDetails={this.props.overlayDetails}/>
-                </View>
-
-                <View style={styles.footer}>
-                    {this.props.footer}
-                </View>
+const SlideOverlay = () => {
+    const suitesState = useContext(SuitesContext).state
+    return ( 
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <SlideHeader />
             </View>
-        )
-    }
+
+            <View style={styles.content}>
+               <SlideContent/>
+            </View>
+
+            <View style={styles.footer}>
+                <SlideFooter/>
+                </View> 
+        </View>
+    );
 }
+ 
+export default SlideOverlay;
 
 const styles = StyleSheet.create({
     container:{
-        flex:1
+        flex:1,
     },
     header:{
-        backgroundColor:'#EEF2F6'
+        backgroundColor:'#EEF2F6',
+        borderTopLeftRadius:30,
+        borderTopRightRadius:30
     },
     content:{
         flex:1,
+        margin:30
     },
     footer:{
+        flex:1,
         position:'absolute',
         justifyContent:'flex-end',
         alignSelf:'center',
-        top:0,
-        bottom:20
+        //top:0,
+        bottom:25,
     }
 })

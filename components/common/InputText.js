@@ -1,15 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
+import { SuitesContext } from '../../contexts/SuitesContext';
 
-export default class InputText extends Component {
-    render() {
-        return (
-            <TextInput
-                onChangeText = {this.props.changeText}
-                placeholder={this.props.placeholder}
-                placeholderTextColor = {this.props.placeholderTextColor}
-                value = {this.props.inputText}
-            />
-        )
-    }
+const InputText = () => {
+    const placeholder = useContext(SuitesContext).state.searchPlaceholder
+    return ( 
+        <TextInput
+            // onChangeText = {this.props.changeText}
+            placeholder={placeholder}
+            placeholderTextColor = "#A0AEC0"
+            // value = {this.props.inputText}
+        />
+    );
 }
+ 
+export default InputText;

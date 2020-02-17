@@ -1,16 +1,18 @@
-import React,{Component} from 'react';
+import React,{Component, useContext} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon'
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class FloatingActionButton extends Component{
-    render(){
-        return(
-            <TouchableOpacity style={[styles.container,{backgroundColor:this.props.backgroundColor}]} onPress={()=>this.props.toggleActionButton()}>
-                <SvgIcon iconName = "actionMenu" fillColor={this.props.fillColor}/>
-            </TouchableOpacity>
-        )
-    }
+const FloatingActionButton = (props) => {
+    const suitesMethod = useContext(SuitesContext).methods
+    return ( 
+        <TouchableOpacity style={[styles.container,{backgroundColor:props.backgroundColor}]} onPress={()=>suitesMethod.toggleActionButton()}>
+            <SvgIcon iconName = "actionMenu" fillColor={props.fillColor}/>
+        </TouchableOpacity>
+    );
 }
+ 
+export default FloatingActionButton;
 
 const styles = StyleSheet.create({
     container:{

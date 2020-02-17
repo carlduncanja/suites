@@ -1,16 +1,17 @@
 import React,{Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import SvgIcon from '../../../assets/SvgIcon'
 
-export default class Action extends Component{
-    render(){
-        return(
-            <TouchableOpacity style={styles.container}>
-                <View style={styles.iconContainer}>{this.props.action.actionIcon}</View>
-                <Text style={styles.text}>{this.props.action.actionName}</Text>
-            </TouchableOpacity>
-        )
-    }
+const Action = (props) => {
+    return ( 
+        <TouchableOpacity style={styles.container}>
+            <SvgIcon iconName={props.action.action} strokeColor="#2F855A"/>
+            <Text style={styles.text}>{props.action.actionName}</Text>
+        </TouchableOpacity>
+    );
 }
+ 
+export default Action;
 
 const styles = StyleSheet.create({
     container:{

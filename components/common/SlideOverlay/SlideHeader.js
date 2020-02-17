@@ -7,14 +7,8 @@ export default class SlideHeader extends Component{
     render(){
         return(
             <View>
-                <ViewModeHeading
-                    headerId={this.props.headerId}
-                    headerName={this.props.headerName}
-                />
-                <TabsContainer 
-                    tabs={this.props.tabs} 
-                    overlaySelectedTab={this.props.overlaySelectedTab}
-                />
+                <ViewModeHeading/>
+                <TabsContainer />
             </View>
             
         )

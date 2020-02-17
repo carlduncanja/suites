@@ -1,27 +1,31 @@
-import React, {Component} from 'react';
+import React, {useContext} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../assets/SvgIcon'
+import { SuitesContext } from '../../contexts/SuitesContext';
 
-export default class SelectedMenuIconTab extends Component{
-    render(){
-        return(
-            <View style={styles.iconContainer}>
-                {this.props.menuIcons.map((icon,index)=>{
-                    return (
-                        this.props.selectedMenuTab === icon.tabName ?
-                            <TouchableOpacity key={index} style={styles.icon} onPress={()=>this.props.setSelectedMenuTab(icon.tabName)}>
-                                <SvgIcon iconName={`${icon.tabId}Open`}/>
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity key={index} style={styles.icon} onPress={()=>this.props.setSelectedMenuTab(icon.tabName)}>
-                                <SvgIcon iconName={`${icon.tabId}Closed`}/>
-                            </TouchableOpacity>
-                    )
-                })}
-            </View>
-        )
-    }
+
+const SelectedMenuIconTab = () => {
+    const suitesState = useContext(SuitesContext).state
+    const suitesMethods = useContext(SuitesContext).methods
+    return ( 
+        <View style={styles.iconContainer}>
+            {suitesState.overlayMenu.map((icon,index)=>{
+                return (
+                    suitesState.overlaySelectedMenuName === icon.tabName ?
+                        <TouchableOpacity key={index} style={styles.icon} onPress={()=>suitesMethods.handleSelectedMenuTab(icon.tabName)}>
+                            <SvgIcon iconName={`${icon.tabId}Open`}/>
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity key={index} style={styles.icon} onPress={()=>suitesMethods.handleSelectedMenuTab(icon.tabName)}>
+                            <SvgIcon iconName={`${icon.tabId}Closed`}/>
+                        </TouchableOpacity>
+                )
+            })}
+        </View>
+    );
 }
+ 
+export default SelectedMenuIconTab;
 
 const styles = StyleSheet.create({
     iconContainer:{

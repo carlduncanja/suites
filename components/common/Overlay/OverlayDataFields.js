@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     },
     fieldContainer:{
         flex:1,
-        paddingBottom:30, 
+        paddingBottom:35, 
         paddingTop:20
     }
 })

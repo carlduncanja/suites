@@ -1,51 +1,46 @@
-import React, {Component} from 'react';
+import React, {Component, useContext} from 'react';
 import {View, TouchableOpacity, StyleSheet, Text, FlatList} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import Action from './Action'
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class ActionContainer extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            timePassed: false,
-        }
-    }
-    render(){
-        const separator = () => {
-            return(
-                <View style={{
-                    backgroundColor:"#E3E8EF",
-                    borderRadius:2,
-                    height:1,
-                    width:'100%',
-                    marginTop:10,
-                    marginBottom:10
-                }}/>
-            )
-        }
-
+const ActionContainer = () => {
+    const separator = () => {
         return(
-            <View style={styles.container}>
-                <View style={styles.actionTitleContainer}> 
-                    <Text style={styles.title}>{this.props.actionTitle.toUpperCase()}</Text>
-                </View>
-               <View style={styles.actionsContainer}>
-                   <FlatList
-                        data={this.props.actions}
-                        renderItem={({ item }) => 
-                            <View style={{}}>
-                                <Action action={item}/>
-                            </View>
-                        }
-                        keyExtractor={item => item.actionId}
-                        ItemSeparatorComponent={separator}
-                   />
-               </View>
-               {this.separator}
-            </View>
+            <View style={{
+                backgroundColor:"#E3E8EF",
+                borderRadius:2,
+                height:1,
+                width:'100%',
+                marginTop:10,
+                marginBottom:10
+            }}/>
         )
     }
+
+    const suitesState = useContext(SuitesContext).state
+    return ( 
+        <View style={styles.container}>
+            <View style={styles.actionTitleContainer}> 
+                <Text style={styles.title}>{suitesState.floatingActions.actionTitle.toUpperCase()} ACTIONS</Text>
+            </View>
+            <View style={styles.actionsContainer}>
+                <FlatList
+                    data={suitesState.floatingActions.actions}
+                    renderItem={({ item }) => 
+                        <View>
+                            <Action action={item}/>
+                        </View>
+                    }
+                    keyExtractor={item => item.actionId}
+                    ItemSeparatorComponent={separator}
+                />
+            </View>
+        </View>
+    );
 }
+ 
+export default ActionContainer;
 
 const styles = StyleSheet.create({
     container:{

@@ -39,7 +39,7 @@ export default class ScheduleCard extends Component{
                 <View  style={{flex:1}}>
                     <TouchableOpacity 
                         style={styles.infoContainer} 
-                        onPress = {() => {this.props.animateSlide();this.props.showScheduleDetails(this.props.appointment)}}
+                        onPress = {() => {this.props.animateSlide();this.props.showScheduleDetails(this.props.appointment); console.log("Pressed")}}
                     >
                         <Text style={styles.title}>{this.props.appointment.title} - {this.props.appointment.responseEntity}</Text>
                         <Text style={styles.time}>{getTime(this.props.appointment.startTime)} - {getTime(this.props.appointment.endTime)}</Text>

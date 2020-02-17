@@ -1,40 +1,38 @@
-import React, { Component } from 'react';
+import React, { useContext } from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Paginator from '../Paginators/Paginator';
 import SelectedMenuIconTab from '../../CaseFiles/SelectedMenuIconTab';
 import FloatingActionButton from '../FloatingAction/FloatingActionButton';
+import {SuitesContext} from '../../../contexts/SuitesContext'
 
-export default class OverlayMenuBar extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <View style={styles.menuBar}>
-                    <View>
-                        <SelectedMenuIconTab
-                            menuIcons = {this.props.menuIcons}
-                            selectedMenuTab = {this.props.selectedMenuTab}
-                            setSelectedMenuTab = {this.props.setSelectedMenuTab}
-                        />
-                    </View>
-                    <View style={styles.selectedIconContainer}>
-                        <Text style={styles.selectedText}>{this.props.selectedMenuTab}</Text>
-                    </View>
-                    <View>
-                        <Paginator 
-                            currentPage={this.props.menuCurrentPage} 
-                            totalPages={this.props.menuTotalPages}
-                        />
-                    </View>
+const OverlayMenuBar = (props) => {
+    const suitesState = useContext(SuitesContext).state
+
+    return ( 
+        <View style={styles.container}>
+            <View style={styles.menuBar}>
+                <View>
+                    <SelectedMenuIconTab/>
                 </View>
-                <FloatingActionButton
-                    fillColor={this.props.fillColor}
-                    backgroundColor={this.props.backgroundColor}
-                />
+                <View style={styles.selectedIconContainer}>
+                    <Text style={styles.selectedText}>{suitesState.overlaySelectedMenuName}</Text>
+                </View>
+                <View>
+                    <Paginator 
+                        currentPage={this.props.menuCurrentPage} 
+                        totalPages={this.props.menuTotalPages}
+                    />
+                </View>
             </View>
-            
-        )
-    }
+            <FloatingActionButton
+                fillColor={props.fillColor}
+                backgroundColor={props.backgroundColor}
+            /> 
+        </View>
+    );
 }
+ 
+export default OverlayMenuBar;
 
 const styles = StyleSheet.create({
     container:{

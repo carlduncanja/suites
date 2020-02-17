@@ -1,29 +1,29 @@
-import React,{Component} from 'react';
-import {View, Text, StyleSheet, ScrollView, CheckBox} from 'react-native';
+import React,{ useContext} from 'react';
+import {View, ScrollView} from 'react-native';
 import ListItem from './ListItem';
-import {CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
+import { CheckedBox } from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class ListData extends Component{
-    render(){
-        return(
-            <ScrollView
-                bounces={false}
-                contentContainerStyle={{paddingBottom:300}}
+const ListData = () => {
+    const suitesState = useContext(SuitesContext).state
+    return ( 
+        <ScrollView
+            bounces={false}
+            contentContainerStyle={{paddingBottom:300}}
             >
-                {this.props.listDataItem.slice(this.props.sliceArrayStart, this.props.sliceArrayEnd).map((item,index)=>{
-                    return(
-                        <View key={index}>
-                            <ListItem
-                                fields={item}
-                                setSelected = {this.props.setSelected}
-                                toggleCheckbox = {this.props.toggleCheckbox}
-                                checkbox = {this.props.checked && this.props.selectedCaseFile === item.recordId ? <CheckedBox/> : <Checkbox/>}
-                            />
-                        </View>
-                    )
-                })}
-            </ScrollView>
-        )
-    }
+            {suitesState.listData.slice(suitesState.paginatorValues.sliceArrayStart, suitesState.paginatorValues.sliceArrayEnd).map((item,index)=>{
+                return(
+                    <View key={index}>
+                        <ListItem
+                            fields={item}
+                            checkbox = {suitesState.checkedItem && suitesState.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
+                        />
+                    </View>
+                )
+            })}
+        </ScrollView>
+    );
 }
+ 
+export default ListData;
