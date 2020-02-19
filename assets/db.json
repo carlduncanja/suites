@@ -497,7 +497,7 @@
                 },
                 {
                     "tabId":"procedureButton",
-                    "tabName":"Procedure",
+                    "tabName":"Procedures",
                     "overlayTab":["Details"]
                 },
                 {
@@ -1241,83 +1241,83 @@
                                     }
                                 ],
 
-                                "contactInformation": 
-                                    [
-                                        {
-                                            "field":"Cell Phone",
-                                            "value":"876 372 6172",
-                                            "type":"primary"
-                                        },
-                                        {
-                                            "field":"Home Phone",
-                                            "value":"876 992 6172",
-                                            "type":"primary"
-                                        },
-                                        {
-                                            "field":"Work Phone",
-                                            "value":"876 712 8320",
-                                            "type":"primary"
-                                        },
-                                        {
-                                            "field":"Primary Email",
-                                            "value":"julie.brown@gmail.com",
-                                            "type":"primary"
-                                        },
-                                        {
-                                            "field":"Alternative Email",
-                                            "value":"",
-                                            "type":"optional"
-                                        },
-                                        {
-                                            "field":"Work Email",
-                                            "value":"",
-                                            "type":"optional"
-                                        },
-                                        {
-                                            "field":"Address 1",
-                                            "value":"12 Ruthven Road, Kingston 1",
-                                            "type":"optional"
-                                        },
-                                        {
-                                            "field":"Address 2",
-                                            "value":"Apartment 6",
-                                            "type":"optional"
-                                        }
-                                    ],
+                            "contactInformation": 
+                                [
+                                    {
+                                        "field":"Cell Phone",
+                                        "value":"876 372 6172",
+                                        "type":"primary"
+                                    },
+                                    {
+                                        "field":"Home Phone",
+                                        "value":"876 992 6172",
+                                        "type":"primary"
+                                    },
+                                    {
+                                        "field":"Work Phone",
+                                        "value":"876 712 8320",
+                                        "type":"primary"
+                                    },
+                                    {
+                                        "field":"Primary Email",
+                                        "value":"julie.brown@gmail.com",
+                                        "type":"primary"
+                                    },
+                                    {
+                                        "field":"Alternative Email",
+                                        "value":"",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Work Email",
+                                        "value":"",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Address 1",
+                                        "value":"12 Ruthven Road, Kingston 1",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Address 2",
+                                        "value":"Apartment 6",
+                                        "type":"optional"
+                                    }
+                                ],
 
-                                "emergencyContactInfomation":
-                                    [
-                                        {
-                                            "field":"Emergency Contact Name",
-                                            "value":"Juliana Brown (Mother)",
-                                            "type":"optional"
-                                        },
-                                        {
-                                            "field":"Emergency Contact Phone",
-                                            "value":"876 372 6280",
-                                            "type":"primary"
-                                        },
-                                        {
-                                            "field":"Emergency Contact Email",
-                                            "value":"juliana.brown@gmail.com",
-                                            "type":"primary"
-                                        },
-                                        {
-                                            "field":"Emergency Contact Name",
-                                            "value":"Lucas Brown (Father)",
-                                            "type":"optional"
-                                        },
-                                        {
-                                            "field":"Emergency Contact Phone",
-                                            "value":"876 372 7180",
-                                            "type":"primary"
-                                        },
-                                        {
-                                            "field":"Emergency Contact Email",
-                                            "value":"lucas.brown@gmail.com",
-                                            "type":"primary"
-                                        }
-                                    ]
+                            "emergencyContactInfomation":
+                                [
+                                    {
+                                        "field":"Emergency Contact Name",
+                                        "value":"Juliana Brown (Mother)",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Emergency Contact Phone",
+                                        "value":"876 372 6280",
+                                        "type":"primary"
+                                    },
+                                    {
+                                        "field":"Emergency Contact Email",
+                                        "value":"juliana.brown@gmail.com",
+                                        "type":"primary"
+                                    },
+                                    {
+                                        "field":"Emergency Contact Name",
+                                        "value":"Lucas Brown (Father)",
+                                        "type":"optional"
+                                    },
+                                    {
+                                        "field":"Emergency Contact Phone",
+                                        "value":"876 372 7180",
+                                        "type":"primary"
+                                    },
+                                    {
+                                        "field":"Emergency Contact Email",
+                                        "value":"lucas.brown@gmail.com",
+                                        "type":"primary"
+                                    }
+                                ]
                             
                         },
                         "insurance":
@@ -1347,7 +1347,7 @@
                             "diagnosticEvaluations":[
                                 {
                                     "name":"XrayScan.jpg",
-                                    "image":"Image"
+                                    "image":"../../../../assets/icon.png"
                                 }
                             ],
                             "laboratoryInvestigations":[],
@@ -1522,27 +1522,36 @@
                         [
                             {
                                 "procedureName":"Coronary Bypass Graft",
-                                "location":"Surgery Theatre 6",
-                                "date":"2019-11-12T13:00:00.000Z",
-                                "duration":"3 Hours",
-                                "recovery":
-                                {
-                                    "status":"Yes",
-                                    "location":"Surgery Theatre 6",
-                                    "duration":"12 Hours"
+                                "details":{
+                                    "procedure":
+                                    {
+                                        "location":"Surgery Theatre 6",
+                                        "date":"2019-11-12T13:00:00.000Z",
+                                        "duration":"3 Hours"
+                                    },
+                                    "recovery":
+                                    {
+                                        "status":true,
+                                        "location":"Surgery Theatre 6",
+                                        "duration":"12 Hours"
+                                    }
                                 }
-                            
                             },
                             {   
                                 "procedureName":"Angioplasty",
-                                "location":"Surgery Theatre 6",
-                                "date":"2019-11-12T13:00:00.000Z",
-                                "duration":"3 Hours",
-                                "recovery":
-                                {
-                                    "status":"Yes",
-                                    "location":"Surgery Theatre 6",
-                                    "duration":"12 Hours"
+                                "details":{
+                                    "procedure":
+                                    {
+                                        "location":"Surgery Theatre 6",
+                                        "date":"2019-11-12T13:00:00.000Z",
+                                        "duration":"3 Hours"
+                                    },
+                                    "recovery":
+                                    {
+                                        "status":true,
+                                        "location":"Surgery Theatre 6",
+                                        "duration":"12 Hours"
+                                    }
                                 }
                             }
                         ]
@@ -1551,61 +1560,71 @@
                         "consumables":
                         [
                             {
-                                "name":"Agents",
+                                "id":"CON-AG1",
+                                "itemName":"Agents",
                                 "type":"Anaesthesia",
                                 "quantity":1,
                                 "unitPrice":"$4,128.28"
                             },
                             {
-                                "name":"Atracurium",
+                                "id":"CON-ATR",
+                                "itemName":"Atracurium",
                                 "type":"Anaesthesia",
                                 "quantity":4,
                                 "unitPrice":"$2,291.24"
                             },
                             {
-                                "name":"Atropine",
+                                "id":"CON-ATRP",
+                                "itemName":"Atropine",
                                 "type":"Anaesthesia",
                                 "quantity":1,
                                 "unitPrice":"$454.20"
                             },
                             {
-                                "name":"Bupivacaine 0.25%",
+                                "id":"CON-BUP25",
+                                "itemName":"Bupivacaine 0.25%",
                                 "type":"Anaesthesia",
                                 "quantity":2,
                                 "unitPrice":"$1,382.84"
                             },
                             {
-                                "name":"Cis-Atracurium",
+                                "id":"CON-CISA",
+                                "itemName":"Cis-Atracurium",
                                 "type":"Anaesthesia",
                                 "quantity":3,
                                 "unitPrice":"$3,129.88"
                             },
                             {
-                                "name":"Diclofenac",
+                                "id":"CON-DIC",
+                                "itemName":"Diclofenac",
                                 "type":"Anaesthesia",
                                 "quantity":4,
                                 "unitPrice":"$5,056.92"
                             },
                             {
-                                "name":"Ephedrine",
+                                "id":"CON-EPH",
+                                "itemName":"Ephedrine",
                                 "type":"Anaesthesia",
                                 "quantity":1,
                                 "unitPrice":"$6,893.28"
                             },
                             {
-                                "name":"Fentanyl",
+                                "id":"CON-FEN",
+                                "itemName":"Fentanyl",
                                 "type":"Anaesthesia",
                                 "quantity":2,
                                 "unitPrice":"$8,782.18"
                             },
                             {
-                                "name":"Lignocaine",
+                                "id":"CON-LIG",
+                                "itemName":"Lignocaine",
                                 "type":"Anaesthesia",
                                 "quantity":3,
                                 "unitPrice":"$5,063.28"
                             },
                             {
-                                "name":"Midazolam",
+                                "id":"CON-MID",
+                                "itemName":"Midazolam",
                                 "type":"Anaesthesia",
                                 "quantity":4,
                                 "unitPrice":"$4,128.28"
@@ -1614,19 +1633,22 @@
                         "equipment":
                         [
                             {
-                                "name":"Bags",
+                                "id":"EQ-BAG",
+                                "itemName":"Bags",
                                 "type":"Blood Products",
                                 "quantity":5,
                                 "unitPrice":"$1,382.84"
                             },
                             {
-                                "name":"Scalpel",
+                                "id":"EQ-SCAL",
+                                "itemName":"Scalpel",
                                 "type":"Incision",
                                 "quantity":3,
                                 "unitPrice":"$2,291.24"
                             },
                             {
-                                "name":"Glasses",
+                                "id":"EQ-GLA",
+                                "itemName":"Glasses",
                                 "type":"Vision",
                                 "quantity":1,
                                 "unitPrice":"$3,129.88"
@@ -1730,22 +1752,26 @@
                             {
                                 "quotation":"QU-1240512",
                                 "date":"12/18/2019",
-                                "value":"$320,863.45"
+                                "value":"$320,863.45",
+                                "actions":true
                             },
                             {
                                 "quotation":"QU-1240602",
                                 "date":"12/18/2019",
-                                "value":"$20,863.45"
+                                "value":"$20,863.45",
+                                "actions":true
                             },
                             {
                                 "quotation":"QU-1245612",
                                 "date":"12/18/2019",
-                                "value":"$320,863.45"
+                                "value":"$320,863.45",
+                                "actions":true
                             },
                             {
                                 "quotation":"QU-1240612",
                                 "date":"12/18/2019",
-                                "value":"$30,863.45"
+                                "value":"$30,863.45",
+                                "actions":true
                             }
                         ],
                         "invoices":
@@ -1754,25 +1780,29 @@
                                 "invoiceNumber":"IN-000976",
                                 "status":"Complete",
                                 "date":"13/12/2019",
-                                "value":"$312,000.45"
+                                "value":"$312,000.45",
+                                "actions":true
                             },
                             {
                                 "invoiceNumber":"IN-000972",
                                 "status":"Complete",
                                 "date":"13/12/2019",
-                                "value":"$12,000.45"
+                                "value":"$12,000.45",
+                                "actions":true
                             },
                             {
                                 "invoiceNumber":"IN-000876",
                                 "status":"Complete",
                                 "date":"13/12/2019",
-                                "value":"$31,000.45"
+                                "value":"$31,000.45",
+                                "actions":true
                             },
                             {
                                 "invoiceNumber":"IN-000576",
                                 "status":"Incomplete",
                                 "date":"13/12/2019",
-                                "value":"$22,000.45"
+                                "value":"$22,000.45",
+                                "actions":true
                             }
                         ]
                     }

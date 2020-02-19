@@ -1,20 +1,27 @@
 import React,{Component, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Checkbox from '../Checkbox/Checkbox';
+import { PartialCheckbox } from '../Checkbox/Checkboxes'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const ListHeader = () => {
-    const listHeaders = useContext(SuitesContext).state.listHeaders
-    const width = 100/listHeaders.length
+    const suitesState = useContext(SuitesContext).state
+    const width = 100/suitesState.listHeaders.length
     return ( 
         <View style = {styles.container}>
-            <TouchableOpacity 
-                style={{justifyContent:'center', alignSelf:'center'}}
-            >
-                <Checkbox/>
-            </TouchableOpacity>
+            {
+                suitesState.checkedItemsList.length > 0 ?
+                    <View style={{justifyContent:'center', alignSelf:'center'}}>
+                        <PartialCheckbox/>
+                    </View>
+                    :
+                    <TouchableOpacity style={{justifyContent:'center', alignSelf:'center'}}>
+                        <Checkbox/>
+                    </TouchableOpacity>
+            }
+
             <View style={styles.headersContainer}>
-                {listHeaders.map((header,index)=>{
+                {suitesState.listHeaders.map((header,index)=>{
                     return(
                         <View style={[styles.item,{width:`${width}%`}]} key={index}>
                             <Text style={styles.headerText}>{header}</Text>

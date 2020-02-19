@@ -11,7 +11,7 @@ const Details = () => {
     })    
 
     return ( 
-        <ScrollView style={{marginLeft:20, marginRight:20}}>
+        <ScrollView>
             {
                 sections.map((section,index)=>{
                     return(index === sections.length-1 ?

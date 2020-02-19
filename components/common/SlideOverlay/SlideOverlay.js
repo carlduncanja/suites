@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import SlideContent from './SlideContent'
 import SlideHeader from './SlideHeader';
 import SlideFooter from './SlideFooter';
@@ -17,9 +17,9 @@ const SlideOverlay = () => {
                <SlideContent/>
             </View>
 
-            <View style={styles.footer}>
+            {/* <View style={styles.footer}>
                 <SlideFooter/>
-                </View> 
+            </View>  */}
         </View>
     );
 }
@@ -37,14 +37,16 @@ const styles = StyleSheet.create({
     },
     content:{
         flex:1,
-        margin:30
     },
     footer:{
         flex:1,
         position:'absolute',
         justifyContent:'flex-end',
+        paddingBottom:25,
         alignSelf:'center',
-        //top:0,
-        bottom:25,
+        alignItems:'center',
+        top:0,
+        bottom:0,
+        
     }
 })

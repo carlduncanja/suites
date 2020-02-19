@@ -7,7 +7,7 @@ const ListItem = (props) => {
     const suitesState = useContext(SuitesContext).state
     const suitesMethods = useContext(SuitesContext).methods
     return ( 
-        <TouchableOpacity onPress={()=>{suitesMethods.handleSelectedListItem(props.fields.recordId); }}>
+        <TouchableOpacity onPress={()=>{suitesMethods.handleSelectedListItem(props.fields.recordId);}}>
                 <View style={styles.container}>
                     <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>suitesMethods.toggleCheckbox(props.fields.recordId)}>
                         {props.checkbox}

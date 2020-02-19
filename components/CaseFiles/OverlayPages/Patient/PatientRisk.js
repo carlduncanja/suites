@@ -1,5 +1,5 @@
 import React,{useContext} from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import {Low, Moderate, High, VeryHigh} from '../../RiskFrames/RiskLevels'
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 
@@ -7,7 +7,7 @@ const PateintRisk = () => {
     const suitesState = useContext(SuitesContext).state
     const level = suitesState.overlayTabInfo
     return ( 
-        <View>
+        <ScrollView>
             {
                 level.riskLevel === 1 ?
                     <Low level={level}/>
@@ -20,7 +20,7 @@ const PateintRisk = () => {
                             :
                                 <VeryHigh level={level}/>
             }
-        </View>
+        </ScrollView>
     );
 }
  

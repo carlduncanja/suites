@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect, useReducer} from 'react';
+import React, { useState, createContext, useEffect, useReducer, useRef} from 'react';
 import {Text, StyleSheet, Animated, Dimensions, Easing} from 'react-native';
 import { paginatorReducer, sourceDataReducer, selectedSourceDataReducer, overlayMenuTabDataReducer } from '../reducers/SuitesReducer'
 import moment from 'moment';
@@ -21,8 +21,12 @@ export const SuitesContextProvider = (props) => {
     const [overlaySelectedMenuName, setOverlaySelectedMenuName] = useState(null)
     const [overlaySelectedMenuTab, setOverlaySelectedMenuTab] = useState(null)
     const [overlayCurrentMenuTabs, setOverlayCurrentMenuTabs] = useState(null)
-    const [overlayTabInfo, setOverlayTabInfo] = useState()
+    const [overlayTabInfo, setOverlayTabInfo] = useState({})
     const [overlayMenu, setOverlayMenu] = useState([])
+    const [overlayStatus, setOverlayStatus] = useState(false)
+    const [overlayList, setOverlayList] = useState([])
+    const [overlayListHeaders, setOverlayListHeaders] = useState([])
+    const [slideTopValue, setSlideTopValue] = useState(0);
         
     const [selectedListItemId, setSelectedListItemId] = useState();
     const [overlayHeader, setOverlayHeader] = useState({})
@@ -30,8 +34,7 @@ export const SuitesContextProvider = (props) => {
     const [checkedItem, setCheckedItem] = useState(false);
     const [checkedItemsList, setCheckedItemsList] = useState([]);
 
-    const {height} = Dimensions.get('window')
-    //const [slideUpAnimValue, setSlildeUpAnimValue] = useState(new Animated.Value(0));
+  
     
     const [paginatorValues, dispatchPaginator] = useReducer(paginatorReducer,{
         currentPage:1,
@@ -58,7 +61,7 @@ export const SuitesContextProvider = (props) => {
         let selectedType = `GET_SELECTED_${currentNavPage.toUpperCase()}`
         dispatchSourceReducer({type:`${sourceType}`})   
         dispatchSelectedReducer({type:`${selectedType}`})
-        getList(sourceData,listHeaders)
+        setListData(getList(sourceData,listHeaders))
     },[sourceData])
 
     useEffect(()=>{
@@ -68,15 +71,14 @@ export const SuitesContextProvider = (props) => {
             actions:array[0].actions
         })
     })
-
+    
     useEffect(()=>{
         const menu = require('../assets/db.json').overlayMenuTabs.filter(menu => menu.page === currentNavPage)
         setOverlayMenu(menu[0].menuTabs)
-        setOverlaySelectedMenuName(menu[0].menuTabs[2].tabName)
-        setOverlayCurrentMenuTabs(menu[0].menuTabs[2].overlayTab)
-        setOverlaySelectedMenuTab(menu[0].menuTabs[2].overlayTab[2])
-
-    },[overlayMenu])
+        setOverlaySelectedMenuName(menu[0].menuTabs[0].tabName)
+        setOverlayCurrentMenuTabs(menu[0].menuTabs[0].overlayTab)
+        setOverlaySelectedMenuTab(menu[0].menuTabs[0].overlayTab[0])
+    },[overlayMenu, overlayStatus])
 
     handleOverlayTabChange = (tabName) => {
         setOverlaySelectedMenuTab(tabName)
@@ -86,8 +88,11 @@ export const SuitesContextProvider = (props) => {
     handleSelectedMenuTab = (menuName) => {
         setOverlaySelectedMenuName(menuName)
         const currentMenu = overlayMenu.filter(menuItem => menuItem.tabName === menuName) 
-        setOverlayCurrentMenuTabs(currentMenu[0].overlayTab)
-        setOverlaySelectedMenuTab(currentMenu[0].overlayTab[0])
+        const currentTabs = currentMenu[0].overlayTab
+        const currentSelectedTab = currentTabs[0]
+        setOverlayCurrentMenuTabs(currentTabs)
+        setOverlaySelectedMenuTab(currentSelectedTab)
+        setOverlayTabInfo(selectedItem[transformToCamel(menuName)][transformToCamel(currentSelectedTab)])
     }
 
     getField = (field, data) => {
@@ -120,6 +125,7 @@ export const SuitesContextProvider = (props) => {
                     :
                         newArray.push(getField(newHeader, data))
         })
+
         newObject={
             "recordId":getField("id", data),
             "recordInformation":newArray
@@ -137,7 +143,7 @@ export const SuitesContextProvider = (props) => {
         sourceInformation.map((information)=>{
             list.push(getRecord(information,listHeaders))
         })
-        setListData(list)
+        return list
     }
 
     toggleActionButton = () => {
@@ -146,33 +152,23 @@ export const SuitesContextProvider = (props) => {
 
     getSelectedItem = (selectedId) => {
         const filterFiles = selectedSourceData.filter(item => item.id === selectedId)
-        return filterFiles[0]
+        return filterFiles
     }
 
     handleSelectedListItem = (listItemId) => {
         setOverlayHeader({"id":getPatient(listItemId).id,"name":`${getPatient(listItemId).name.firstName} ${getPatient(listItemId).name.middle} ${getPatient(listItemId).name.surname}`})
         setSelectedListItemId(listItemId)
         let selectedObj = getSelectedItem(listItemId)
-        setSelectedItem(selectedObj)
-        setOverlayTabInfo(selectedObj[transformToCamel(overlaySelectedMenuName)][transformToCamel(overlaySelectedMenuTab)])
+        selectedObj.length > 0 && setOverlayStatus(true)
+        selectedObj.length > 0 && setSelectedItem(selectedObj[0])
+        selectedObj.length > 0 && setOverlayTabInfo(selectedObj[0][transformToCamel(overlaySelectedMenuName)][transformToCamel(overlaySelectedMenuTab)])
     }
 
-    
-
-    const slideUpAnimValue = new Animated.Value(0)
-    animateSlide=()=>{
-        Animated.timing(
-            slideUpAnimValue,
-            {
-                toValue:height-100,
-                duration:500,
-                easing: Easing.cubic
-            },
-            
-        ).start() && setSlildeUpAnimValue(height-200)
-    }  
-
-   
+    setListTabData = (list,headers) => {
+        setOverlayListHeaders(headers)
+        setOverlayList(list)
+        return true
+    }
 
     toggleCheckbox = (listItemId) => {
         setCheckedItem(true)
@@ -180,6 +176,14 @@ export const SuitesContextProvider = (props) => {
             setCheckedItemsList(checkedItemsList.filter(listItem => listItem !== listItemId))
             :
             setCheckedItemsList([...checkedItemsList,listItemId])
+    }
+
+    handleOverlayClose = () => {
+        setOverlayStatus(false)
+    }
+
+    getSlideTop = (event) =>{
+        setSlideTopValue(event.nativeEvent.layout.height)
     }
 
     const state = {
@@ -195,15 +199,18 @@ export const SuitesContextProvider = (props) => {
         listHeaders,
         selectedItem,
         overlaySelectedMenuTab,
-        slideUpAnimValue,
         overlayHeader,
         overlayCurrentMenuTabs,
         overlayMenu,
         overlaySelectedMenuName,
-        overlayTabInfo
+        overlayTabInfo,
+        overlayStatus,
+        slideTopValue,
+        overlayList,
+        overlayListHeaders
 
     }
-    const methods = {toggleActionButton, handleSelectedListItem, handleOverlayTabChange, toggleCheckbox, dispatchPaginator, animateSlide, handleSelectedMenuTab}
+    const methods = {getSlideTop, toggleActionButton, handleOverlayClose, getList, handleSelectedListItem, handleOverlayTabChange, toggleCheckbox, dispatchPaginator, handleSelectedMenuTab, setListTabData}
     return (  
         <SuitesContext.Provider value={{state, methods}}>
             {props.children}

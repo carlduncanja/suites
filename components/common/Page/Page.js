@@ -1,5 +1,5 @@
 import React,{ useContext } from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import PageTitle from './PageTitle';
 import Search from '../Search';
 import List from '../List/List';
@@ -8,15 +8,17 @@ import FloatingActionButton from '../FloatingAction/FloatingActionButton';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import ActionContainer from '../FloatingAction/ActionContainer';
 import OverlaySlidePanel from '../SlideOverlay/OverlaySlidePanel';
-import TransparentScreen from '../TransparentScreen';
+// import TransparentScreen from '../TransparentScreen';
 
 const Page = () => {
     const suitesState = useContext(SuitesContext).state
+    const suitesMethod = useContext(SuitesContext).methods
+
     return ( 
         <View style={{flex:1}}>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <View style={{marginBottom:25}}>
+                    <View style={{marginBottom:25}} onLayout = {(event)=> suitesMethod.getSlideTop(event)}>
                         <PageTitle />
                     </View>
                     <View style={{marginBottom:30}}>
@@ -34,10 +36,7 @@ const Page = () => {
                     </View>
 
                     {suitesState.actionButtonState === false ?
-                       
-                            <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#4299E1"/>
-                     
-                        
+                        <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#4299E1"/>
                         :
                         <View>
                             <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#A0AEC0"/>
@@ -50,10 +49,24 @@ const Page = () => {
                 </View>
             </View>
             
-            {Object.keys(suitesState.selectedItem).length !== 0 && 
-                <View style={{flex:1,position:'absolute',height:'100%', width:'100%'}}>
-                   <TransparentScreen/>
-                   <OverlaySlidePanel/> 
+            {suitesState.overlayStatus && 
+                <View style={{
+                        flex:1,
+                        position:'absolute',
+                        justifyContent:"flex-end",
+                        height:'100%', 
+                        width:'100%',
+                    }}
+                >
+                    <TouchableOpacity 
+                        onPress={()=>suitesMethod.handleOverlayClose()} 
+                        activeOpacity={1}
+                        style={[StyleSheet.absoluteFill, {backgroundColor:'rgba(0,0,0,0.3)'}]}
+                    />
+                    <View style={{bottom:0}}>
+                        <OverlaySlidePanel/> 
+                    </View>
+                    
                 </View>
             }
         </View>

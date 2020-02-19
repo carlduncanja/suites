@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import Page from '../components/common/Page/Page';
+import TestSlideanimation from '../TestSlideanimation';
 import { CaseFileContextProvider } from '../contexts/CaseFileContext';
 import { SuitesContextProvider, SuitesContext } from "../contexts/SuitesContext";
+import Navigation from '../components/TabNavigation/NavigationStack';
 
 const CaseFiles = () => {
     return ( 
@@ -11,6 +13,8 @@ const CaseFiles = () => {
                 <Page/>                
             </CaseFileContextProvider>
         </SuitesContextProvider>
+        
+        
     );
 }
  

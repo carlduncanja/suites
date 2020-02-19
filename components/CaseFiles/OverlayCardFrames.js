@@ -8,6 +8,7 @@ import { SuitesContext } from '../../contexts/SuitesContext';
 
 export function SignsAndSymptoms({cardInformation}) {
     const suitesState = useContext(SuitesContext).state
+    
     return(
         <View style={styles.frameContainer}>
             <FrameCard
@@ -294,7 +295,7 @@ export function OtherNotableConditions(){
     const suitesState = useContext(SuitesContext).state
     return(
         <View style={styles.frameContainer}>
-            <FrameTableCard
+            <FrameCard
                 frameColor = "#DD6B20"
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
@@ -352,6 +353,7 @@ export function TobaccoUse(){
         </View>
     )
 }
+
 
 
 const styles = StyleSheet.create({

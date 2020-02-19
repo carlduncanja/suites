@@ -1,73 +1,71 @@
 import React, { Component, useState, useContext, useEffect } from 'react';
-import {View, Text,StyleSheet, Dimensions, Animated, Easing} from 'react-native';
+import {View, Text,StyleSheet, Dimensions, Animated, Easing, TouchableOpacity, ScrollView} from 'react-native';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import Divider from '../Divider'
 import SlideOverlay from './SlideOverlay';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
-const SlideUpPanel = (props) => {
-    const {height} = Dimensions.get('window')
-    const slideHeight = new Animated.Value(0);
+const {height} = Dimensions.get('window')
 
-    slideHeight.addListener(({value})=>{
-        console.log("Value:", value)
-    })
-
-    useEffect(()=>{
-        //_panel.show({velocity:6})
-        Animated.timing(
-            slideHeight,
-            {
-                toValue:800,
-                duration:900,
-                easing: Easing.cubic
-            }).start()
-    },[])
-
-    return ( 
-        <Animated.View style={[styles.container,{bottom:0}]} >
-            <SlidingUpPanel
-                ref={c => (_panel = c)}
-                //draggableRange={{top:-20, bottom:-height+200}}
-                showBackdrop={false}
-                //animatedValue={slideHeight}
-                allowDragging = {true}
-                //friction = {1000}
-                >
-                <View style={styles.panel}>
-                    <View style={styles.panelHeader}>
-                        <View style={{alignItems:'center',height:30}}>
-                            <Divider longPressAction = {props.restartDrag} backgroundColor="white"/>
+class OverlaySlidePanel extends Component {
+    static contextType = SuitesContext
+    constructor(props){
+        super(props);
+        this.state = {
+        }
+    }
+    
+    componentDidMount(){
+        let top = height-this.context.state.slideTopValue-30;
+        let velocity = top*100
+        this._panel.show({toValue:top, velocity:velocity})
+    }
+    render() { 
+        return ( 
+            <View style={{}}>
+                <SlidingUpPanel 
+                    ref={c => (this._panel = c)}
+                    friction = {100}
+                    draggableRange={{top:height-this.context.state.slideTopValue-30, bottom:130}}
+                    >
+                    {dragHandler => (
+                        <View style={styles.container} >
+                            <View style={styles.dragHandler} {...dragHandler}>
+                                <Divider backgroundColor="#FFFFFF"/>
+                            </View>
+                            <View style={styles.content} contentContainerStyle={{flex:1}}>
+                                <SlideOverlay/>
+                            </View>
                         </View>
-                        
-                        <View style={styles.bottom}>
-                            <SlideOverlay/>
-                        </View>
-                    </View>
-                    
-                </View>
-            </SlidingUpPanel>
-        </Animated.View>
-    );
+                    )}
+                    </SlidingUpPanel>
+            </View>
+        );
+    }
 }
  
-export default SlideUpPanel;
+
+export default OverlaySlidePanel;
 
 const styles = StyleSheet.create({
     container: {
-    },
-    panel: {
         flex: 1,
+        zIndex: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-start'
     },
-    panelHeader: {
-        flex:1,
-        paddingTop:10,
+    dragHandler: {
+        alignSelf: 'stretch',
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    bottom:{
+    content:{
         flex:1,
-        backgroundColor: '#fff',
-        borderTopLeftRadius:30,
-        borderTopRightRadius:30
-  
+        alignSelf: 'stretch',
+        borderTopLeftRadius:10,
+        borderTopRightRadius:10,
+        backgroundColor:"#FFFFFF",
+        paddingBottom:40
     }
 })

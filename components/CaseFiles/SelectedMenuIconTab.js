@@ -24,6 +24,7 @@ const SelectedMenuIconTab = () => {
         </View>
     );
 }
+
  
 export default SelectedMenuIconTab;
 

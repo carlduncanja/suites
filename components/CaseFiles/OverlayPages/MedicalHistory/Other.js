@@ -1,13 +1,12 @@
 import React from 'react';
-import { View } from "react-native";
+import { View, ScrollView } from "react-native";
 import { OtherNotableConditions } from '../../OverlayCardFrames'
-
 
 const Other = () => {
     return ( 
-        <View>
+        <ScrollView>
             <OtherNotableConditions/>
-        </View>
+        </ScrollView>
     );
 }
  

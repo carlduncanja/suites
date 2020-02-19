@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     },
     titleContainer:{
         marginRight:10,
-        width:'32%',
+        //width:'32%',
         alignItems:'flex-start',
         justifyContent:'center'
     },

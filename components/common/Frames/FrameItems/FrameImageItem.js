@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Image} from 'react-native';
 
 export default class FrameImageItem extends Component{
     render(){
@@ -11,7 +11,7 @@ export default class FrameImageItem extends Component{
                     </Text>
                 </View>
                 <View style={styles.image}>
-                    {/* <Image source={require('../../../../assets/testImage1.jpg')}/> */}
+                    <Image source={require('../../../../assets/icon.png')}/>
                 </View>
             </View>
         )
@@ -40,6 +40,8 @@ const styles = StyleSheet.create({
         alignItems:'center',
         backgroundColor:'#E3E8EF',
         borderColor:'#CCD6E0',
+        justifyContent:"center",
+        alignSelf:'center',
         borderWidth:1,
     }
 })
