@@ -27,7 +27,7 @@ export default FrameProcedureCard;
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'#F8FAFB'
+        backgroundColor:'#F8FAFB',
     },
     title:{
         width:'100%'

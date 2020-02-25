@@ -31,11 +31,17 @@ export default FrameTabularContent;
 
 const styles = StyleSheet.create({
     container:{
-        margin:10,
+        padding:15,
+        borderColor:'#CCD6E0',
+        borderWidth:1,
+        borderTopWidth:0,
+        borderBottomLeftRadius:8,
+        borderBottomRightRadius:8
     },
     itemContainer:{
         flexDirection:'row',
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+        marginBottom:10
     }
     
 })

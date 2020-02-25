@@ -6,6 +6,7 @@ import FrameMeasureItem from '../FrameItems/FrameMeasureItem';
 
 const FrameTabularContent = (props) => {
     const item = props.cardInformation
+    //console.log("Keys: ", Object.keys(item))
     return ( 
         <View style={styles.container}>
             <View style={styles.itemContainer}>
@@ -18,7 +19,7 @@ const FrameTabularContent = (props) => {
                                 :
                                 item[key].type === "measure" ?
                                     <View key={index} style={{width:'50%'}}>
-                                        <FrameMeasureItem title={key} value={item[key].value}/>
+                                        <FrameMeasureItem title={"Unit of Measure"} value={item[key].value}/>
                                     </View>
                                     :
 
@@ -39,6 +40,7 @@ export default FrameTabularContent;
 const styles = StyleSheet.create({
     container:{
         margin:10,
+       
     },
     itemContainer:{
         flexDirection:'row',

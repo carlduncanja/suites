@@ -1,39 +1,43 @@
-import React,{Component} from 'react';
+import React,{useContext, useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import OverlayHeader from './OverlayHeader';
 import OverlayFooter from './OverlayFooter'
 import OverlayDataFields from './OverlayDataFields';
 import ProgressContainer from '../Progress/ProgressContainer'
 import TabsContainer from '../Tabs/TabsContainer'
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class Overlay extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <View style={styles.headerContainer}>
-                    <OverlayHeader overlayTitle={this.props.overlayTitle}/>
-                </View>
-
-                <View style={styles.contentContainer}>
-                    <View style={styles.progressContainter}>
-                        <ProgressContainer icons={this.props.icons}/>
-                        <View style={{alignItems:'center'}}>
-                            <TabsContainer tabs={this.props.tabs}/>
-                        </View>
-                        
+const Overlay = () => {
+    const suitesState = useContext(SuitesContext).state
+    const suitesMethod = useContext(SuitesContext).methods
+    return (  
+        <View style={styles.container}>
+            <View style={styles.headerContainer}>
+                <OverlayHeader/>
+            </View> 
+            <View style={styles.contentContainer}>
+                <View style={styles.progressContainter}>
+                    <ProgressContainer/>
+                    <View style={{alignItems:'center'}}>
+                        <TabsContainer 
+                            tabs={suitesState.currentStepTabs}
+                            selectedTab = {suitesState.currentSelectedStepTab}
+                            onPressChange = {suitesMethod.handleNewItemPress}
+                        />
                     </View>
-                    <View style={styles.dataContainer}>
-                        <OverlayDataFields fields={this.props.fields} numColumns={2}/>
-                    </View>
                 </View>
-
-                <View style={styles.footerContainer}>
-                    <OverlayFooter footerTitle={this.props.footerTitle}/>
-                </View> 
+                <View style={styles.dataContainer}>
+                    <OverlayDataFields/>
+                </View>
             </View>
-        )
-    }
+            <View style={styles.footerContainer}>
+                <OverlayFooter/>
+            </View>  
+        </View>
+    );
 }
+ 
+export default Overlay;
 
 const styles = StyleSheet.create({
     container:{

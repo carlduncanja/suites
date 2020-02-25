@@ -4,10 +4,17 @@ import SvgIcon from '../../../assets/SvgIcon'
 
 const Action = (props) => {
     return ( 
-        <TouchableOpacity style={styles.container}>
-            <SvgIcon iconName={props.action.action} strokeColor="#2F855A"/>
-            <Text style={styles.text}>{props.action.actionName}</Text>
-        </TouchableOpacity>
+        props.action.disabled ?
+            <View style={styles.container}>
+                <SvgIcon iconName={props.action.action} strokeColor="#A0AEC0"/>
+                <Text style={[styles.text, styles.disabledText]}>{props.action.actionName}</Text>
+            </View>
+            :
+            <TouchableOpacity style={styles.container}>
+                <SvgIcon iconName={props.action.action} strokeColor="#2F855A"/>
+                <Text style={styles.text}>{props.action.actionName}</Text>
+            </TouchableOpacity>
+
     );
 }
  
@@ -23,5 +30,8 @@ const styles = StyleSheet.create({
     text:{
         marginLeft:15,
         fontSize:16
+    },
+    disabledText:{
+        color:"#A0AEC0",
     }
 })

@@ -1,16 +1,18 @@
 import React, { useContext } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Page from '../components/common/Page/Page';
-import TestSlideanimation from '../TestSlideanimation';
 import { CaseFileContextProvider } from '../contexts/CaseFileContext';
-import { SuitesContextProvider, SuitesContext } from "../contexts/SuitesContext";
-import Navigation from '../components/TabNavigation/NavigationStack';
+import { SuitesContextProvider } from "../contexts/SuitesContext";
+import TestTransformAnimation from "../TestTransformAnimation";
+import Overlay from '../components/common/Overlay/Overlay';
 
 const CaseFiles = () => {
     return ( 
         <SuitesContextProvider>
             <CaseFileContextProvider>
-                <Page/>                
+                <Overlay/>
+                {/* <Page/>                 */}
+                {/* <TestTransformAnimation/> */}
             </CaseFileContextProvider>
         </SuitesContextProvider>
         

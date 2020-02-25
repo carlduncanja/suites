@@ -27,7 +27,7 @@ export default FrameMixedTableCard;
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'#F8FAFB'
+        backgroundColor:'#F8FAFB',
     },
     title:{
         width:'100%'
@@ -37,7 +37,9 @@ const styles = StyleSheet.create({
         padding:15,
         borderWidth:1,
         borderColor:'#CCD6E0',
-        borderTopWidth:0
+        borderTopWidth:0,
+        borderBottomLeftRadius:8,
+        borderBottomRightRadius:8
     },
     titleName:{
         color:"#4E5664",

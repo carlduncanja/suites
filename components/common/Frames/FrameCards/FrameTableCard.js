@@ -27,7 +27,7 @@ export default FrameTableCard;
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'#F8FAFB'
+        backgroundColor:'#F8FAFB',
     },
     title:{
         width:'100%'

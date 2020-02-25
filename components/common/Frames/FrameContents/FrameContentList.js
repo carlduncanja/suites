@@ -30,7 +30,9 @@ const styles = StyleSheet.create({
         padding:16,
         borderWidth:1,
         borderColor:'#CCD6E0',
-        borderTopWidth:0
+        borderTopWidth:0,
+        borderBottomLeftRadius:8,
+        borderBottomRightRadius:8
     },
     itemContainer:{
         paddingBottom:12

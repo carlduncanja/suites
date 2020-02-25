@@ -10,7 +10,11 @@ const Tab = (props) => {
             <View style={styles.corner}>
                 <SvgIcon iconName="tabLeft" fillColor={props.backgroundColor}/>
             </View>
-            <TouchableOpacity activeOpacity={1} style={[styles.tabContainer,{backgroundColor:props.backgroundColor}]} onPress={() => suitesMethods.handleOverlayTabChange(props.tab)}>
+            <TouchableOpacity 
+                activeOpacity={1} 
+                style={[styles.tabContainer,{backgroundColor:props.backgroundColor}]} 
+                onPress={() => props.onPressChange(props.tab)}
+            >
                 <Text style={[styles.text,{color:props.textColor}]}>{props.tab}</Text>
             </TouchableOpacity>
             <View style={styles.corner}>

@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flex:1,
     position:'absolute',
     justifyContent:'flex-end',
-    paddingBottom:25,
+    marginBottom:35,
     alignSelf:'center',
     alignItems:'center',
     top:0,

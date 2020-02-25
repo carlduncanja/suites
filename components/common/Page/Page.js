@@ -8,7 +8,6 @@ import FloatingActionButton from '../FloatingAction/FloatingActionButton';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import ActionContainer from '../FloatingAction/ActionContainer';
 import OverlaySlidePanel from '../SlideOverlay/OverlaySlidePanel';
-// import TransparentScreen from '../TransparentScreen';
 
 const Page = () => {
     const suitesState = useContext(SuitesContext).state

@@ -7,7 +7,7 @@ export const sourceDataReducer = (state, action) =>{
         default:
             return state
     }
-}
+};
 
 export const selectedSourceDataReducer = (state, action) =>{
     switch(action.type){
@@ -16,7 +16,7 @@ export const selectedSourceDataReducer = (state, action) =>{
         default:
             return state
     }
-}
+};
 
 export const paginatorReducer = (state, action) => {
     switch(action.type){

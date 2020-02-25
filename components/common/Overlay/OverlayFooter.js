@@ -1,17 +1,20 @@
-import React,{Component} from 'react';
+import React,{Component, useContext} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon'
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class OverlayFooter extends Component{
-    render(){
-        return(
-            <TouchableOpacity style={styles.container}>
-                <Text style={styles.title}>{this.props.footerTitle.toUpperCase()}</Text>
-                <SvgIcon iconName = "paginationNext" strokeColor="#3182CE"/>
-            </TouchableOpacity>
-        )
-    }
+const OverlayFooter = () => {
+    const suitesState = useContext(SuitesContext).state
+    const suitesMethod = useContext(SuitesContext).methods
+    return (  
+        <TouchableOpacity style={styles.container} onPress={()=>{suitesMethod.handleNewItemTabChange()}}>
+            <Text style={styles.title}>{suitesState.overlayText.toUpperCase()}</Text>
+            <SvgIcon iconName = "paginationNext" strokeColor="#3182CE"/>
+        </TouchableOpacity>
+    );
 }
+ 
+export default OverlayFooter;
 
 const styles = StyleSheet.create({
     container:{

@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     },
     text:{
         fontSize:16, 
-        color:'#1D2129'
+        color:'#1D2129',
+        //fontFamily:'Metropolis'
     }
 })

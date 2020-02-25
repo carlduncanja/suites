@@ -17,7 +17,7 @@ class OverlaySlidePanel extends Component {
     
     componentDidMount(){
         let top = height-this.context.state.slideTopValue-30;
-        let velocity = top*100
+        let velocity = top*1000
         this._panel.show({toValue:top, velocity:velocity})
     }
     render() { 
@@ -25,7 +25,7 @@ class OverlaySlidePanel extends Component {
             <View style={{}}>
                 <SlidingUpPanel 
                     ref={c => (this._panel = c)}
-                    friction = {100}
+                    friction = {1000}
                     draggableRange={{top:height-this.context.state.slideTopValue-30, bottom:130}}
                     >
                     {dragHandler => (

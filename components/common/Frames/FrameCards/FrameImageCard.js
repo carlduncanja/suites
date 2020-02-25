@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import FrameTitle from '.././FrameTitle'
 import FrameContentImage from '../FrameContents/FrameContentImage';
 
@@ -16,9 +16,9 @@ export default class FrameImageCard extends Component{
                         frameTitle={this.props.frameTitle}
                     />
                 </View>
-                <View style={styles.content}>
+                <ScrollView style={styles.content} bounces={false}>
                     <FrameContentImage cardInformation={this.props.cardInformation}/>
-                </View>
+                </ScrollView>
             </View>
         )
     }
@@ -26,12 +26,16 @@ export default class FrameImageCard extends Component{
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'#F8FAFB'
+        backgroundColor:'#F8FAFB',
+        borderBottomWidth:1,
+        borderColor:'#CCD6E0',
+        borderTopWidth:0,
     },
     title:{
         width:'100%'
     },
     content:{
-        width:'100%'
+        width:'100%',
+        height:250
     }
 })

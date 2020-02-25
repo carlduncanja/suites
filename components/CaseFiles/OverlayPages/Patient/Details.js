@@ -11,7 +11,7 @@ const Details = () => {
     })    
 
     return ( 
-        <ScrollView>
+        <View>
             {
                 sections.map((section,index)=>{
                     return(index === sections.length-1 ?
@@ -27,7 +27,7 @@ const Details = () => {
                     )
                 })
             }
-        </ScrollView>
+        </View>
     );
 }
  

@@ -22,26 +22,36 @@ const styles = StyleSheet.create({
     container:{
         borderColor:'#CCD6E0',
         borderWidth:1,
-        backgroundColor:"#FFFFFF",
         borderRadius:4,
+        backgroundColor:'#F8FAFB',
         alignItems:'flex-start',
         justifyContent:'center',
-        padding:5
+        margin:15
     },
     titleContainer:{
         backgroundColor:"#FFFFFF",
-        padding:4
+        flex:1,
+        width:"100%",
+        borderBottomColor:"#CCD6E0",
+        borderBottomWidth:1,
+        borderTopLeftRadius:4,
+        borderTopRightRadius:4,
+        padding:7
     },
     title:{
         fontSize:14, 
         color:'#3182CE'
     },
     image:{
+        flex:1,
+        width:'100%',
         alignItems:'center',
         backgroundColor:'#E3E8EF',
         borderColor:'#CCD6E0',
         justifyContent:"center",
         alignSelf:'center',
-        borderWidth:1,
+        paddingLeft:20,
+        paddingRight:20
+        //borderWidth:1,
     }
 })

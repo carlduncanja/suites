@@ -2,18 +2,18 @@ import React,{Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import InputText from '../InputText';
 
-export default class InputField extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <Text style={styles.fieldText}>{this.props.field}</Text>
+const InputField = (props) => {
+    return (  
+        <View style={styles.container}>
+                <Text style={styles.fieldText}>{props.field}</Text>
                 <View style={styles.inputContainer}>
                     <InputText placeholder="" placeholderTextColor="#323843"/>
                 </View>
             </View>
-        )
-    }
+    );
 }
+ 
+export default InputField;
 
 const styles = StyleSheet.create({
     container:{

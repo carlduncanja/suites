@@ -22,9 +22,9 @@ const RiskLevel = (props) => {
             "name":"Very High",
         },
     ]
-    const Level = (name,backgroundColor,textColor, borderColor) => {
+    const Level = (name,backgroundColor,textColor) => {
         return(
-            <View style={[styles.level,{backgroundColor:backgroundColor, borderColor:borderColor}]}>
+            <View style={[styles.level,{backgroundColor:backgroundColor}]}>
                 <Text style={[styles.levelTitle,{color:textColor}]}>{name}</Text>
             </View>
         )
@@ -39,25 +39,36 @@ const RiskLevel = (props) => {
                 <View style={styles.levelsContainer}>
                     {
                         levels.map((level,index)=>{
-                            return level.level === props.riskLevel ?
-                                <View key = {index} style={{flex:1}}>
-                                    {Level(level.name, props.levelColor,"#FFFFFF", props.cardColor)}
-                                </View>
-                                :
-                                <View key={index} style={{flex:1}}>
-                                    {Level(level.name, "#FFFFFF", "#4E5664", '#CCD6E0')}
-                                </View>
+                            return(
+                                level.level === props.riskLevel ?
+                                    <View key = {index} style={{flex:1, borderWidth:0}}>
+                                        {Level(level.name, props.levelColor,"#FFFFFF")}
+                                    </View>
+                                    :
+                                    <View key={index} style={{flex:1}}>
+                                        {Level(level.name, "#FFFFFF", "#4E5664")}
+                                    </View>
+                            )
+                                
                         })
                     }
                 </View>
+                <View
+                    style={{
+                        backgroundColor:"#CCD6E0",
+                        height:1,
+                        borderRadius:2,
+                        marginTop:35,
+                        marginBottom:35
+                    }}
+                />
                 <View style={styles.notesContainer}>
                     <View style={styles.notesTitleContainer}>
                         <Text style={styles.notesTitle}>Note</Text>
                     </View>
-                    <View style={{marginLeft:5}}>
+                    <View>
                         <FrameItem itemContent={props.itemContent}/>
                     </View>
-                    
                 </View>
             </View>
 
@@ -89,12 +100,13 @@ const styles = StyleSheet.create({
     levelsContainer:{
         flexDirection:"row",
         width:'100%',
-        paddingBottom:25,
-        borderBottomWidth:2,
+        borderWidth:1,
+        borderRightWidth:0,
         borderColor:"#CCD6E0"
     },
     level:{
-        borderWidth:1,
+        borderRightWidth:1,
+        borderColor:"#CCD6E0",
         justifyContent:'center',
         padding:7,
         alignItems: 'center',
@@ -103,7 +115,7 @@ const styles = StyleSheet.create({
         fontSize:16
     },
     notesContainer:{
-        paddingTop:25
+        //paddingTop:25
     },
     notesTitleContainer:{
         marginBottom:5

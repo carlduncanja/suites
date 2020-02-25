@@ -48,6 +48,8 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderColor:'#CCD6E0',
         borderTopWidth:0,
+        borderBottomLeftRadius:8,
+        borderBottomRightRadius:8
     },
     dateContainer:{
         flexDirection:'row'

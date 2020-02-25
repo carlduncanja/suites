@@ -19,9 +19,9 @@ const styles = StyleSheet.create({
     recordTitle:{
         paddingBottom:4,
         color:'#718096',
-        fontSize:14
+        fontSize:14,
     },
     recordValue:{
-        fontSize:16
+        fontSize:16,
     }
 })
