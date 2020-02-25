@@ -5,65 +5,51 @@ export default class TestTransformAnimation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      startValue: new Animated.Value(1),
+      animation: new Animated.Value(0),
       endValue: 2,
       duration: 5000,
     };
   }
 
   componentDidMount() {
-    Animated.timing(this.state.startValue, {
-      toValue: this.state.endValue,
-      duration: this.state.duration,
-      useNativeDriver: true,
-    }).start();
+    Animated.timing(
+      this.state.animation,
+      {
+        toValue: 1,
+        duration: 3000
+      }
+    ).start();
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-          <View style={{
-                backgroundColor:'red', 
-                height:300,
-                width:300,
-                alignItems:'flex-end',
-            }}
-            >
-              <Animated.View
-                    style={[
-                        styles.square,
-                        {
-                        transform: [
-                            {
-                            scaleX: this.state.startValue,
-                            },
-                        ],
-                        },
-                    ]}
-                    >
-                </Animated.View>
+    const animationStyles = {
+      width: this.state.animation.interpolate({
+        inputRange: [0, 0.5, 1],
+        outputRange: [100, 150, 300]
+      })
+    };
 
-          </View>
-        
-          
-        
-      </View>
+    // const animationText = {
+    //   text:this.state.animation.interpolate({
+    //     inputRange: [0, 0.5, 1],
+    //     outputRange: ["100", "150", "300"]
+    //   })
+    // }
+
+    return (
+      <Animated.View style={[objectStyles.object, animationStyles]}>
+        <View style={{justifyContent:'flex-start', alignItems:'flex-start'}}>
+          {/* <Text>{animationText.text}</Text> */}
+        </View>
+      </Animated.View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-  },
-  square: {
-    height: 150,
-    width: 150,
-    backgroundColor: 'blue',
-    // marginRight:0,
-    // position:'absolute',
-    alignSelf:"flex-start"
-  },
-});
+const objectStyles = {
+  object: {
+    backgroundColor: 'orange',
+    width: 100,
+    height: 100
+  }
+}

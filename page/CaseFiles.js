@@ -10,9 +10,8 @@ const CaseFiles = () => {
     return ( 
         <SuitesContextProvider>
             <CaseFileContextProvider>
-                <Overlay/>
-                {/* <Page/>                 */}
-                {/* <TestTransformAnimation/> */}
+                {/* <Overlay/> */}
+                <Page/>                
             </CaseFileContextProvider>
         </SuitesContextProvider>
         

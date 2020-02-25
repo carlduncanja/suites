@@ -8,6 +8,7 @@ import FloatingActionButton from '../FloatingAction/FloatingActionButton';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import ActionContainer from '../FloatingAction/ActionContainer';
 import OverlaySlidePanel from '../SlideOverlay/OverlaySlidePanel';
+import Overlay from '../Overlay/Overlay'
 
 const Page = () => {
     const suitesState = useContext(SuitesContext).state
@@ -39,11 +40,16 @@ const Page = () => {
                         :
                         <View>
                             <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#A0AEC0"/>
-                            <View style={{position:'absolute', bottom:60,right:0}}>
-                                <ActionContainer />
-                            </View>
+                            {/* {suitesState.openAction ? 
+                                <View style={{position:'absolute', width:'100%',height:'100%',bottom:60,right:0, backgroundColor:'red'}}>
+                                    <Overlay/>  
+                                </View>
+                                :  */}
+                                <View style={{position:'absolute', bottom:60,right:0}}>
+                                    <ActionContainer/>
+                                </View>
+                            {/* } */}
                         </View>
-                
                     }
                 </View>
             </View>

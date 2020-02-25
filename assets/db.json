@@ -567,19 +567,11 @@
                             "tabName":"Address",
                             "infoNeeded":[
                                 {
-                                    "field":"Street",
+                                    "field":"Address 1",
                                     "type":"text"
                                 },
                                 {
-                                    "field":"Apartment #",
-                                    "type":"text"
-                                },
-                                {
-                                    "field":"Town",
-                                    "type":"text"
-                                },
-                                {
-                                    "field":"City",
+                                    "field":"Address 2",
                                     "type":"text"
                                 }
                             ]

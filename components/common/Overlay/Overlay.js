@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
         // shadowOpacity: 0.25,
         // shadowRadius: 3.84,    
         // elevation: 5,
+        //flex:1,
         width:'90%',
         height:'55%',
         borderRadius:8,

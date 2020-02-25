@@ -9,18 +9,12 @@ const OverlayDataFields = (props) => {
     const getType = (item,index) =>{
         return (
             item.type === 'text' ?
-                <View style={styles.fieldContainer} key={index}>
-                    <InputField field={item.field}/>
-                </View>
+                <InputField field={item.field}/>
                 :
                 item.type === 'select' ?
-                    <View style={styles.fieldContainer} key={index}>
-                        <DropdownField field={item.field} fieldOptions={item.options} selected={item.options[0]}/> 
-                    </View>
+                    <DropdownField field={item.field} fieldOptions={item.options} selected={item.options[0]}/> 
                     :
-                    <View style={styles.fieldContainer} key={index}>
-                        <InputField field={item.field}/>
-                    </View>
+                    <InputField field={item.field}/>
         )
     }
 
@@ -36,13 +30,18 @@ const OverlayDataFields = (props) => {
                                 <View style={{flexDirection:'row', width:'100%', flexWrap:'wrap'}}>
                                     {item.fields.map((field,index)=>{
                                         return(
-                                            getType(field,index)
+                                            <View style={styles.fieldContainer} key={index}>
+                                                {getType(field)}
+                                            </View>
                                         ) 
                                     })}
                                 </View>
                             </View>
                         :
-                        getType(item, index)
+                        <View style={styles.fieldContainer} key={index}>
+                            {getType(item)}
+                        </View>
+                        
                     )
                 })
             }

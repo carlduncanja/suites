@@ -1,8 +1,10 @@
-import React,{Component} from 'react';
+import React,{Component, useContext} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon'
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const Action = (props) => {
+    const suitesMethod = useContext(SuitesContext).methods
     return ( 
         props.action.disabled ?
             <View style={styles.container}>
@@ -10,7 +12,7 @@ const Action = (props) => {
                 <Text style={[styles.text, styles.disabledText]}>{props.action.actionName}</Text>
             </View>
             :
-            <TouchableOpacity style={styles.container}>
+            <TouchableOpacity style={styles.container} onPress={()=>suitesMethod.transformAction()}>
                 <SvgIcon iconName={props.action.action} strokeColor="#2F855A"/>
                 <Text style={styles.text}>{props.action.actionName}</Text>
             </TouchableOpacity>

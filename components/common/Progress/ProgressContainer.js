@@ -42,22 +42,20 @@ const ProgressContainer = () => {
                                         }
                                     />
                                     {
-                                        (index === 0 || index === 1) &&
+                                        // (index === 0 || index === 1) &&
                                             <View style={{width:endBars-20, marginRight:10, marginLeft:10}} >
                                                 <ProgressBar 
                                                     progressNumber={getNumber(step)}/>
                                             </View> 
                                     }                                    
                                 </View>       
-                            </View>
-                                       
-                         
+                            </View>        
                         )
                     })}
               
-                    <View style={{width:endBars,top:'5%'}}>
+                    {/* <View style={{width:endBars,top:'5%'}}>
                         <ProgressBar progressNumber={1}/>
-                    </View> 
+                    </View>  */}
             </View>            
         </View>
     );

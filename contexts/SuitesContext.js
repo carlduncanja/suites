@@ -13,6 +13,7 @@ export const SuitesContextProvider = (props) => {
     const [listData, setListData] = useState([])
     const [currentNavPage, setCurrentNavPage] = useState("caseFiles")
     const [floatingActions, setFloatingActions] = useState({})
+    const [openAction, setOpenAction] = useState(false)
     const [progressContainerWidth, setProgressContainerWidth] = useState(0)
 
     const [newItemSteps, setNewItemSteps] = useState([])
@@ -236,7 +237,7 @@ export const SuitesContextProvider = (props) => {
     },
 
     handleNewItemTabChange = ()=>{
-        currentTabPosition === currentSelectedStepTabs.length -1 ? 
+        currentTabPosition === currentSelectedStepTabs.length-1 ? 
             handleStepChange() 
             :
             handleTabChange()
@@ -261,16 +262,23 @@ export const SuitesContextProvider = (props) => {
 
     handleStepChange = () =>{
         handleProgressBar()
+        currentStepPosition === newItemSteps.steps.length -1 ?
+            console.log("Go to edit")
+            :
+            setStep()
+ 
+    }
+    setStep = () =>{
         setCurrentStepPosition(currentStepPosition+1)
-        setCurrentStepObject(newItemSteps.steps[currentStepPosition+1])
-        setCurrentStep(newItemSteps.steps[currentStepPosition+1].stepName)
+        setCurrentStepObject(newItemSteps.steps[currentStepPosition+1]) 
+        setCurrentStep(newItemSteps.steps[currentStepPosition+1].stepName) 
         const tabNames = []
         const tabs = newItemSteps.steps[currentStepPosition+1].tabs
         tabs.map(tab=> tabNames.push(tab.tabName))
-        setCurrentTabPosition(0)
-        setCurrentStepTabs(tabNames)
+        setCurrentTabPosition(0) 
+        setCurrentStepTabs(tabNames) 
         setCurrentSelectedStepTab(tabNames[0])
-        setCurrentSelectedStepTabs(tabs)
+        setCurrentSelectedStepTabs(tabs) 
         setCurrentSelectedStepTabObject(tabs[0])
     }
 
@@ -280,6 +288,11 @@ export const SuitesContextProvider = (props) => {
 
     getProgressWidth = (width) =>{
         setProgressContainerWidth(width) 
+    }
+
+    transformAction=()=>{
+        setOpenAction(true)
+        console.log("Open Action")
     }
 
     const state = {
@@ -314,7 +327,8 @@ export const SuitesContextProvider = (props) => {
         currentSelectedStepTabObject,
         overlayText,
         progressList,
-        progressContainerWidth
+        progressContainerWidth,
+        openAction
     }
     const methods = {
         getSlideTop, 
@@ -330,7 +344,8 @@ export const SuitesContextProvider = (props) => {
         transformToCamel,
         handleNewItemTabChange,
         handleNewItemPress,
-        getProgressWidth
+        getProgressWidth,
+        transformAction
     }
     return (  
         <SuitesContext.Provider value={{state, methods}}>
