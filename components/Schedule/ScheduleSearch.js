@@ -1,49 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {View, StyleSheet, ScrollView, Text, Easing, Animated, Dimensions, TouchableOpacity} from 'react-native';
 import SearchBar from './../common/SearchBar';
 import TransparentScreen from '../common/TransparentScreen';
+import { scheduleActions } from '../../reducers/scheduleReducer';
+import { ScheduleContext } from '../../contexts/ScheduleContext';
+import { useCloseTransparent } from '../../hooks/useScheduleService';
+import moment from 'moment';
 
 export default ScheduleSearch = (props) => {
-    [searchValue, setSearchValue] = useState('');
-    [searchAppointment, setSearchAppointment] = useState([]);
-    [searchResult] = useState(1);
     [selectedAppEvents, setSelectedAppEvents] = useState([]);
-    [slideValue, setSlideValue] = useState(0);
-    [showSlider, setShowSlider] = useState(false);
-    [showDrawer, setShowDrawer] = useState(false);
-    [selectedDayEvents] = useState([]);
+    [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
-    closeTransparent = () => {
-        setSlideValue(0);
-        setShowSlider(false);
-        setShowDrawer(false);
-        props.setSearchOpen(false);
-        props.setTransparent(false)
-        props.selectedSearchValue === ""  ? setSearchAppointment([]) : setSearchValue("");
-
-
-
-    //     this.state.selectedSearchValue !== "" ? this.setState({ selectedSearchValue: "", searchValue: "" }) : null
-    //     this.state.selectedSearchValue === "" ? this.setState({ searchAppointment: [], searchResultSelect: "" }) : null
-    
-    }
+    const [state, dispatch] = useContext(ScheduleContext);
 
     onSearchSelect = (selectedTitle) => {
-        props.setSelectedSearchValue(selectedTitle);
-        setSearchValue(selectedTitle);
-
-        // this.setState({selectedSearchValue: selectedTitle, selectedAppEvents:[], selectedDayEvents:[], searchValue: selectedTitle})
-        this.getSearchAppointment(selectedTitle)
+        dispatch({
+            type: scheduleActions.SEARCHSELECT,
+            newState: {
+                selectedSearchValue: selectedTitle,
+                searchValue: selectedTitle
+            }
+        })
+        setSelectedAppEvents([]);
+        setSelectedDayEvents([]);
+        getSearchAppointment(selectedTitle)
     }
-
 
     getSearchAppointment = (select) =>  {
         let appointments = require('./../../assets/db.json').appointments
         let sAppEvents = []
         let selectedDayEvents = []
         for (i = 0; i < appointments.length; i++){
-            if (appointments[i].title === select && moment(appointments[i].startTime).format("M") === props.currentDate.format("M")){
-                filterDayEvent = props.datePositions.filter(date => moment(date.day).format("YYYY MM D") === moment(appointments[i].startTime).format("YYYY MM D"))
+            if (appointments[i].title === select && moment(appointments[i].startTime).format("M") === state.currentDate.format("M")){
+                filterDayEvent = state.datePositions.filter(date => moment(date.day).format("YYYY MM D") === moment(appointments[i].startTime).format("YYYY MM D"))
                 filterAppEvent = props.appointmentDates.filter(date => moment(date.date).format("YYYY MM D") === moment(appointments[i].startTime).format("YYYY MM D"))
                 sAppEvents.push(filterAppEvent[0].event)
                 selectedDayEvents.push({"day":moment(appointments[i].startTime), "event":filterDayEvent[0].event})            
@@ -71,21 +60,22 @@ export default ScheduleSearch = (props) => {
 
     setAppointmentSearch = (filterDay, filterApp, selected) => {
         props.setSearchAppointmentStatus(false);
-        setSearchAppointment([])
-        setSearchResultSelect(selected);
-        setSelected()
-        this.setState({
-            searchAppointmentStatus:false, 
-            searchAppointment:[],
-            searchResultSelect:selected,
+
+        dispatch({
+            type: scheduleActions.SETAPPOINTMENTSEARCH,
+            newState: {
+                searchResultSelect: selected,
+                searchAppointment: [],
+                selected: { selected: selected, status: true }
+            }
         })
 
         if (filterApp === null || filterDay === null){
-            props._scrollView.scrollTo({x:0,y:0,animated:true})
-            props._scrollAppointment.scrollTo({x:0,y:0, animated:true})
+            state._scrollView.scrollTo({x:0,y:0,animated:true})
+            state._scrollAppointment.scrollTo({x:0,y:0, animated:true})
         }else{
-            props._scrollView.scrollTo({x:filterDay,y:0,animated:true})
-            props._scrollAppointment.scrollTo({x:0,y:filterApp, animated:true})
+            state._scrollView.scrollTo({x:filterDay,y:0,animated:true})
+            state._scrollAppointment.scrollTo({x:0,y:filterApp, animated:true})
         }
         
     }
@@ -103,29 +93,34 @@ export default ScheduleSearch = (props) => {
                     !moment(appointment.startTime).format("MMMM DD, YYYY").toString().includes(textInput)&&
                         appointmentTitles.push(moment(appointment.startTime).format("MMMM DD, YYYY").toString())
         })
-        setSearchValue(textInput);
-        setSearchAppointment(appointmentTitles);
+        dispatch({
+            type: scheduleActions.CHANGETEXT,
+            newState: {
+                searchValue: textInput,
+                searchAppointment: appointmentTitles,
+            }
+        })
     };
 
+
     return (
-        <TransparentScreen closeTransparent={this.closeTransparent}>
+        <TransparentScreen closeTransparent={ () => {useCloseTransparent(dispatch, scheduleActions, state.selectedSearchValue)}}>
             <View style={{ borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
             <SearchBar
                 placeholderTextColor='#718096'
                 placeholder={"Search by scheduled items"}
                 changeText={searchChangeText}
-                //inputText = {this.state.selectedSearchValue === "" ? this.state.searchValue: this.state.selectedSearchValue}
-                inputText={searchValue}
-                closeSearch={closeTransparent}
-                searchAppointment={searchAppointment}
-                selectedSearchValue={props.selectedSearchValue}
-                // searchResult={searchResult}
+                inputText = {state.selectedSearchValue === "" ? state.searchValue : state.selectedSearchValue}
+                inputText={state.searchValue}
+                dispatch={dispatch}
+                scheduleActions={scheduleActions}
+                searchAppointment={state.searchAppointment}
+                selectedSearchValue={state.selectedSearchValue}
                 selectedAppEvents={selectedAppEvents}
-                // nextSearchResult={this.nextSearchResult}
-                // prevSearchResult={this.prevSearchResult}
+                selectedDayEvents={selectedDayEvents}
             />
             <View style={{ backgroundColor: '#FFFFFF' }}>
-                {searchAppointment.map((appointmentTitle, index) => {
+                {state.searchAppointment.map((appointmentTitle, index) => {
                     return (
                         <TouchableOpacity
                             key={index}

@@ -6,7 +6,7 @@ export default class Month extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={{marginRight:44, padding:10}} onPress={this.props.decreaseMonthChange}>
+                <TouchableOpacity style={{marginRight:44, padding:10}} onPress={ (e) => {this.props.decreaseMonthChange('prev')}}>
                     <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <Path d="M10.5 0.5L5.5 8L10.5 15.5" stroke="#2D3748" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                     </Svg>
@@ -27,7 +27,7 @@ export default class Month extends Component {
                         </View>
                 }
               
-                <TouchableOpacity style={{marginLeft:44, padding:10}} onPress={this.props.increaseMonthChange}>
+                <TouchableOpacity style={{marginLeft:44, padding:10}} onPress={ (e) => {this.props.increaseMonthChange('next')}}>
                     <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <Path d="M5.5 0.5L10.5 8L5.5 15.5" stroke="#2D3748" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                     </Svg>

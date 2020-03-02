@@ -7,7 +7,7 @@ export default TransparentScreen = (props) => {
             <TouchableOpacity
                 activeOpacity={1}
                 style={[styles.overlay,{backgroundColor: `rgba(0, 0, 0, 0.3)`}]}
-                onPress={()=>{props.closeTransparent()}}>
+                onPress={props.closeTransparent}>
                 <View style={styles.content}>
                     {props.children}
                 </View>

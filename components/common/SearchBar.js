@@ -1,53 +1,60 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, TextInput } from 'react-native';
 import InputText from './InputText';
 import Svg, { Path } from 'react-native-svg';
 import SvgIcon from '../../assets/SvgIcon'
+import { ScheduleContext } from '../../contexts/ScheduleContext';
+import { scheduleActions } from '../../reducers/scheduleReducer';
+import { useCloseTransparent } from '../../hooks/useScheduleService';
 
 export default SearchBar = (props) => {
-    [selectedAppEvents] = useState([]);
-    [searchResult] = useState(1);
+    [searchResult, setSearchResult] = useState(1);
 
+    const [state, dispatch] = useContext(ScheduleContext);
 
-    nextSearchResult = () => {
-        searchResult = this.state.searchResult + 1
-        this.setState({ searchResult: searchResult })
-        this.setSearchAppointment(this.state.selectedDayEvents[searchResult - 1].event, this.state.selectedAppEvents[searchResult - 1], this.state.selectedDayEvents[searchResult - 1].day)
-    }
+    searchResult  = (type) => {
+        type === 'prev' ?  
+            searchResult = searchResult === 1 ? searchResult : searchResult - 1 
+        :
+            searchResult = searchResult + 1;
 
-
-    prevSearchResult = () => {
-        searchResult = searchResult === 1 ? searchResult : searchResult - 1
         setSearchResult(searchResult)
-        this.setSearchAppointment(props.
-        selectedDayEvents[searchResult - 1].event, props.selectedAppEvents[searchResult - 1], props.selectedDayEvents[searchResult - 1].day)
+        
+        dispatch({
+            type: scheduleActions.SEARCHAPPOINTMENT,
+            newState: [
+                props.selectedDayEvents[searchResult - 1].event, 
+                props.selectedAppEvents[searchResult - 1], 
+                props.selectedDayEvents[searchResult - 1].day
+            ]
+        })
     }
 
 
-    let currentItem = selectedAppEvents.length === 0 ? 0 : searchResult;
+    let currentItem = props.selectedAppEvents.length === 0 ? 0 : searchResult;
 
     return (
         <View style={styles.searchContent}>
-            <InputText
-                changeText={props.changeText}
-                inputText={props.inputText}
-                placeholderTextColor={props.placeholderTextColor}
+             <TextInput style={{backgroundColor: 'yellow', height: 20}}
+                onChangeText = {props.changeText}
                 placeholder={props.placeholder}
+                placeholderTextColor = {props.placeholderTextColor}
+                value = {props.inputText}
             />
             <View style={{ flexDirection: 'row' }}>
                 {!props.selectedSearchValue === "" &&
                     <View style={{ flexDirection: 'row', paddingRight: 15 }}>
                         <Text>{currentItem} of {props.selectedAppEvents.length}</Text>
-                        <TouchableOpacity style={{ paddingRight: 15, paddingLeft: 15 }} onPress={() => this.prevSearchResult()}>
+                        <TouchableOpacity style={{ paddingRight: 15, paddingLeft: 15 }} onPress={() => this.searchResult('prev')}>
                             <SvgIcon iconName="scheduleMonthLeft" strokeColor="#718096" />
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ paddingLeft: 15, paddingRight: 15 }} onPress={() => this.nextSearchResult()}>
+                        <TouchableOpacity style={{ paddingLeft: 15, paddingRight: 15 }} onPress={() => this.searchResult('next')}>
                             <SvgIcon iconName="scheduleMonthRight" strokeColor="#718096" />
                         </TouchableOpacity>
                     </View>
                 }
 
-                <TouchableOpacity onPress={props.closeSearch}>
+                <TouchableOpacity onPress={ () => { useCloseTransparent(props.dispatch, props.scheduleActions, props.selectedSearchValue)}}>
                     <SvgIcon iconName="searchExit" strokeColor="#718096" />
                 </TouchableOpacity>
             </View>

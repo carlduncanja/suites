@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
 
-export default class InputText extends Component {
-    render() {
+export default InputText = () => {
         return (
             <TextInput
                 onChangeText = {this.props.changeText}
@@ -11,5 +10,4 @@ export default class InputText extends Component {
                 value = {this.props.inputText}
             />
         )
-    }
 }

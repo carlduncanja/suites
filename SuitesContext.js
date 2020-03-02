@@ -6,6 +6,4 @@ export const initialState = {
 
 }
 
-export const SuitesContext = createContext(initialState)
-
-
+export const SuitesContext = createContext(initialState);

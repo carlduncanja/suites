@@ -1,13 +1,16 @@
-import React, { Component } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View, FlatList, ScrollView, Dimensions} from 'react-native';
 import DailyAppointmentCard from './DailyAppointmentCard';
 import moment from 'moment';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
+import { useStartDays, useCurrentDays, useEndDays, useAnimateSlide } from '../../hooks/useScheduleService';
+import { ScheduleContext } from '../../contexts/ScheduleContext';
+import { scheduleActions } from '../../reducers/scheduleReducer';
 
 
 const APPS = require('../../assets/db.json').appointments;
 
-const getAppointments = (date) =>{
+const getAppointments = (date) => {
     const dateAppointments = [];
     {APPS.map((app)=>{
         app.startTime.substring(0,10) === date ? dateAppointments.push(app) : null}
@@ -16,39 +19,62 @@ const getAppointments = (date) =>{
 }
 
 
-export default class ScheduleListView extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-        }
-    }
+export default ScheduleListView = (props) => {
+    const [state, dispatch] = useContext(ScheduleContext);
+    
+    const startDays = useStartDays(state.currentDate);
+    const currentDays = useCurrentDays(state.currentDate.format("MM"), state.currentDate.format("YYYY"));
+    const endDays = useEndDays(state.currentDate)
 
     getDays = () => {
         let daysInMonth = []
-        this.props.startDays.map((day)=>daysInMonth.push({"day":day,"inMonth":false}))
-        this.props.currentDays.map((day)=>daysInMonth.push({"day":day.format("YYYY-MM-DD"),"inMonth":true}))
-        this.props.endDays.map((day)=>daysInMonth.push({"day":day,"inMonth":false}))
+        startDays.map((day)=>daysInMonth.push({"day":day,"inMonth":false}))
+        currentDays.map((day)=>daysInMonth.push({"day":day.format("YYYY-MM-DD"),"inMonth":true}))
+        endDays.map((day)=>daysInMonth.push({"day":day,"inMonth":false}))
         return daysInMonth
     }
   
-    componentDidMount(){
-        this.onScrollViewCreated(this.refs.dayScrollView);
+    // componentDidMount(){
+    //     this.onScrollViewCreated(this.refs.dayScrollView);
+    // }
+
+    // onScrollViewCreated = (_scrollview) => {
+    //     if (props.setScrollView) props.setScrollView(_scrollview)
+    // };
+    
+      appointmentScroll = (event) => {
+        //this.setState({scrollCalendar: event.nativeEvent.contentOffset.y})
+        const appScrollEvent = event.nativeEvent.contentOffset.y;
+        let appDateArray = state.appointmentDates.sort((a,b)=>a.date - b.date);
+        for (var i = 0; i < appDateArray.length; i++){
+            if (appDateArray[i].event >= appScrollEvent){
+                // this.setState({scrollCalendarDay: parseInt(appDateArray[i].date.format("DD"))})
+                return true;
+            }
+            null
+        }
     }
 
-    onScrollViewCreated = (_scrollview) => {
-        if (this.props.setScrollView) this.props.setScrollView(_scrollview)
+    showScheduleDetails = (appointment) => {
+        let newObject = Object.assign({},appointment);
+
+        this.props.setTransparent(!this.state.showSlider)
+        this.setState({
+            slideValue: displayFullCalendar === false ? 600 : 300,
+            scheduleDetails:newObject,
+            showSlider:!this.state.showSlider,
+            showDrawer: !this.state.showSlider,
+        }, )
     };
-    
 
   
-    render() {
         return (
             <ScrollView 
                 style={[styles.container]} 
-                ref = "dayScrollView" 
-                contentOffset={{x:0, y:this.props.scheduleOffset}}
+                // ref = "dayScrollView" 
+                contentOffset={{x:0, y:state.scheduleOffset}}
                 contentContainerStyle={{paddingBottom:'50%'}}
-                //onScroll = {(event)=> {this.props.appointmentScroll(event); }}
+                //onScroll = {(event)=> {props.appointmentScroll(event); }}
                 scrollEventThrottle={6}
                 bounces={false}
                 >
@@ -57,18 +83,26 @@ export default class ScheduleListView extends Component {
                         return (
                             <View 
                                 onLayout={(event) => {
-                                    date.day === moment(this.props.selected.selected).format("YYYY-MM-DD") ? this.props.getOffset(event.nativeEvent.layout.y) : null; 
-                                    this.props.getAppointments({"date":moment(date.day),"event":event.nativeEvent.layout.y});
+                                    date.day === moment(state.selected.selected).format("YYYY-MM-DD") && 
+                                        dispatch({ 
+                                            type: scheduleActions.SCHEDULEOFFSET,
+                                            newState: event.nativeEvent.layout.y
+                                         });
+
+                                    dispatch({
+                                        type: scheduleActions.APPOINTMENTDATES,
+                                        newState: {"date":moment(date.day),"event":event.nativeEvent.layout.y}
+                                    })
                                 }}
                                 key={index}
                                 >
 
                                 <DailyAppointmentCard
                                     keyValue={index}
-                                    animateSlide = {this.props.animateSlide}
+                                    animateSlide = {useAnimateSlide}
                                     dailyText = {`${moment(date.day).format("dddd").toString()} - ${moment(date.day).format("MMM D").toString()}`}
                                     dailyAppointments = {getAppointments(date.day)}
-                                    showScheduleDetails = {this.props.showScheduleDetails}
+                                    showScheduleDetails = {showScheduleDetails}
                                     status = {date.inMonth}
                                 />
                             </View>
@@ -77,7 +111,6 @@ export default class ScheduleListView extends Component {
                 )}
             </ScrollView>
         )
-    }
 }
 
 const styles = StyleSheet.create({

@@ -5,10 +5,7 @@ import moment from 'moment';
 
 import Schedule from './page/Schedule';
 
-import { appActionTypes } from './actions/appActions';
-
-
-import { appReducer } from './reducers/appReducer';
+import { appActionTypes, appReducer } from './reducers/appReducer';
 import { initialState, SuitesContext } from './SuitesContext';
 import NavigationStack from './components/SideNavigation/NavigationStack';
 
@@ -22,21 +19,23 @@ export default App = () => {
 
   getDimensions = (event) => {
     dispatch({
-      type: appActionTypes.UPDATEDIMENSIONS, 
-      payload: { width: event.nativeEvent.layout.width, length: event.nativeEvent.layout.height}
+      type: appActionTypes.DIMENSIONS, 
+      newState: { width: event.nativeEvent.layout.width, length: event.nativeEvent.layout.height}
     });
   };
 
+  console.log('hiii', state)
+
   onPressTab = (event,selected) => {
     dispatch({
-      type: appActionTypes.UPDATETABSELECTED,
-      payload:{ tabSelected: selected, status: true}
+      type: appActionTypes.TABSELECTED,
+      newState:{ tabSelected: selected, status: true}
     });
   }
 
 
     return (
-      <SuitesContext.Provider value={{state, dispatch}}>
+      <SuitesContext.Provider value={{ state: contextValue.state, dispatch: contextValue.dispatch}}>
         <SafeAreaView style={styles.container} onLayout={this.getDimensions}>
             <NavigationStack
               screenDimensions = {state.screenDimensions}
@@ -48,8 +47,6 @@ export default App = () => {
     );
 
 }
-
-
 
 
 const styles = StyleSheet.create({
@@ -70,22 +67,3 @@ const styles = StyleSheet.create({
   }
 
 });
-
-
-  // state={
-  //     tabSelected:{"tabSelected":"case files", "status":true},
-  //     tabSelectedBool: true,
-  //     transparent:false,
-  //     screenDimensions: {},
-  //     showNotification: false,
-  //   }
-
-
-
-  // closeNavigation(){
-  //   this.setState({showNotification: false})
-  // }
-
-  // setTransparent(status){
-  //   this.setState({transparent:status})
-  // }

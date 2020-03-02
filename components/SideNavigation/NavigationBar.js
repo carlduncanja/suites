@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, SectionList } from 'react-native';
 import NavigationTab from './NavigationTab';
 
@@ -12,6 +12,7 @@ export const NavigationBar = (props) => {
     const descriptor = props.descriptors[routes[index].key];
 
     const ActiveScreen = descriptor.getComponent();
+    const Provider = descriptor.state.params.provider;
 
     return (
         <View style={{ flex: 1, flexDirection: 'row' }}>
@@ -59,7 +60,10 @@ export const NavigationBar = (props) => {
                 </View>
             </View>
             <View style={styles.content}>
-                <ActiveScreen navigation={descriptor.navigation} {...props} />
+
+                <Provider>
+                    <ActiveScreen navigation={descriptor.navigation} {...props} />
+                </Provider>
 
             </View>
         </View>

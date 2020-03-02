@@ -28,7 +28,7 @@ export default class Calendar extends Component {
                         getEndDays = {this.props.getEndDays}
                         onPressDay = {this.props.onPressDay}
                         selected={this.props.selected}
-                        daySelected={this.props.daySelected}
+                        // daySelected={this.props.daySelected}
                     />
                 </View>
             </View>

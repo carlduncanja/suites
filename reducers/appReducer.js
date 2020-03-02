@@ -1,10 +1,13 @@
-import { appActionTypes } from './../actions/appActions';
+export const appActionTypes = {
+    DIMENSIONS: "DIMENSIONS",
+    TABSELECTED: "TABSELECTED"
+}
 
 export const appReducer = (state, action) => {
-    const { type, payload } = action;
+    const { type, newState } = action;
     switch(type) {
-        case appActionTypes.UPDATEDIMENSIONS: return {...state, screenDimensions: payload};
-        case appActionTypes.UPDATETABSELECTED: return {...state, tabSelected: payload};
+        case appActionTypes.DIMENSIONS: return {...state, screenDimensions: newState};
+        case appActionTypes.TABSELECTED: return {...state, tabSelected: newState};
         default:
             return state
     }
