@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Text, View, Button, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import Content from '../layout/Content';
 
-export default class TransparentScreen extends Component {
+export default class TransparentScreenModal extends Component {
     render() {
         return (
             <TouchableOpacity
@@ -19,10 +19,10 @@ export default class TransparentScreen extends Component {
 
 const styles=StyleSheet.create({
     overlay:{
-        flex:1,
-        position:'absolute',
-        width:'100%',
-        height:'100%',
+        //flex:1,
+        //position:'absolute',
+        //width:'100%',
+        //height:'100%',
         //backgroundColor:'rgba(0, 0, 0, 0.33)',
 
     },

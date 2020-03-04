@@ -6,7 +6,6 @@ import SlideFooter from './SlideFooter';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const SlideOverlay = () => {
-    const suitesState = useContext(SuitesContext).state
     return ( 
         <View style={styles.container}>
             <View style={styles.header}>

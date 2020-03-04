@@ -10,11 +10,7 @@ const Quotations = () => {
 
     useEffect(()=>{
         const headers = ["Quotation", "Date", "Value", "Actions"]
-        const dataList = []
-        {suitesState.overlayTabInfo.forEach(info=>
-            dataList.push(info.list)
-        )}
-        const list = suitesMethod.getList(dataList, headers)
+        const list = suitesMethod.getReportList(suitesState.overlayTabInfo, headers)
         suitesMethod.setListTabData(list,headers)
     },[suitesState.overlayTabInfo])
     

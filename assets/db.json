@@ -2096,6 +2096,7 @@
                     [
                         {
                             "list":{
+                                "id":"QU-1240512",
                                 "quotation":"QU-1240512",
                                 "date":"12/18/2019",
                                 "value":"$177,560.35",
@@ -2136,17 +2137,25 @@
                                             "cost":"$16,000.45"
                                         }
                                     ],
-                                    "consumablesTable":[
-                                        {
-                                            "itemName":"Morphine",
-                                            "quantity":2,
-                                            "unitPrice":"$5,056.92",
-                                            "totalPrice":"9,164.96"
-                                        }
-                                    ]   
+                                    "consumablesTable":{
+                                        "headers":[
+                                            "Item Name",
+                                            "Quantity",
+                                            "Unit Price",
+                                            "Total"
+                                        ],
+                                        "data":[
+                                            {
+                                                "itemName":"Morphine",
+                                                "quantity":2,
+                                                "unitPrice":"$4,582.48",
+                                                "total":"9,164.96"
+                                            }
+                                        ]
+                                    }  
                                 },
                                 "billingSummary":{
-                                    "subTotal":"$178,167.21",
+                                    "subtotal":"$178,167.21",
                                     "discount":"-$ 30,0002.25",
                                     "tax":"20%",
                                     "total":"$177,560.35"
@@ -2155,6 +2164,7 @@
                         },
                         {
                             "list":{
+                                "id":"QU-1240602",
                                 "quotation":"QU-1240602",
                                 "date":"12/18/2019",
                                 "value":"$20,863.45",
@@ -2163,6 +2173,7 @@
                         },
                         {
                             "list":{
+                                "id":"QU-1245612",
                                 "quotation":"QU-1245612",
                                 "date":"12/18/2019",
                                 "value":"$320,863.45",
@@ -2171,6 +2182,7 @@
                         },
                         {
                             "list":{
+                                "id":"QU-1240612",
                                 "quotation":"QU-1240612",
                                 "date":"12/18/2019",
                                 "value":"$30,863.45",
@@ -2182,32 +2194,122 @@
                     "invoices":
                     [
                         {
-                            "invoiceNumber":"IN-000976",
-                            "status":"Complete",
-                            "date":"13/12/2019",
-                            "value":"$312,000.45",
-                            "actions":true
+                            "list":{
+                                "id":"IN-000976",
+                                "invoiceNumber":"IN-000976",
+                                "status":"Complete",
+                                "date":"13/12/2019",
+                                "value":"$312,000.45",
+                                "actions":true
+                            },
+                            "preview":{
+                                "billingDetails":{
+                                    "billedTo":{
+                                        "name":"Julie Melissa Brown",
+                                        "addressLine1":"23 Bedford Avenue",
+                                        "addressLine2":"Kingston 8",
+                                        "addressLine3":"JMKIN08"
+                                    },
+                                    "invoiceNo":"000976",
+                                    "purchaseOrderNo":"000976",
+                                    "date":"12/11/2019",
+                                    "total":"$312,000.45"
+                                },
+                                "quotationDetails":{
+                                    "summaryList":[
+                                        {
+                                        "charge":"Dr.Mansingh",
+                                        "cost":"$64,000.45"
+                                        },
+                                        {
+                                            "charge":"Coronory Bypass Graft",
+                                            "cost":"$48,000.45"
+                                        },
+                                        {
+                                            "charge":"Coronory Artery Graft",
+                                            "cost":"$32,000.45"
+                                        },
+                                        {
+                                            "charge":"Blood Gases",
+                                            "cost":"$16,000.45"
+                                        },
+                                        {
+                                            "charge":"X-Ray",
+                                            "cost":"$16,000.45"
+                                        }
+                                    ],
+                                    "consumablesTable":{
+                                        "headers":[
+                                            "Item Name",
+                                            "Quantity",
+                                            "Unit Price",
+                                            "Total"
+                                        ],
+                                        "data":[
+                                            {
+                                                "itemName":"Morphine",
+                                                "quantity":2,
+                                                "unitPrice":"$4,582.48",
+                                                "total":"9,164.96"
+                                            },
+                                            {
+                                                "itemName":"Propotal",
+                                                "quantity":2,
+                                                "unitPrice":"$4,582.48",
+                                                "total":"9,164.96"
+                                            },
+                                            {
+                                                "itemName":"Pethidine",
+                                                "quantity":2,
+                                                "unitPrice":"$4,582.48",
+                                                "total":"9,164.96"
+                                            }
+                                        ]
+                                    }  
+                                },
+                                "billingSummary":{
+                                    "subtotal":"$326,000.45",
+                                    "discount":"-$ 12,0002.25",
+                                    "tax":"20%",
+                                    "total":"$312,000.45"
+                                },
+                                "reportTerms":"Please pay your invoice by 12/30/2019"
+                            }
                         },
                         {
-                            "invoiceNumber":"IN-000972",
-                            "status":"Complete",
-                            "date":"13/12/2019",
-                            "value":"$12,000.45",
-                            "actions":true
+                            "list":{
+                                "id":"IN-000972",
+                                "invoiceNumber":"IN-000972",
+                                "status":"Complete",
+                                "date":"13/12/2019",
+                                "value":"$12,000.45",
+                                "actions":true
+                            },
+                            "preview":{}
                         },
                         {
-                            "invoiceNumber":"IN-000876",
-                            "status":"Complete",
-                            "date":"13/12/2019",
-                            "value":"$31,000.45",
-                            "actions":true
+                            "list":{
+                                "id":"IN-000876",
+                                "invoiceNumber":"IN-000876",
+                                "status":"Complete",
+                                "date":"13/12/2019",
+                                "value":"$31,000.45",
+                                "actions":true
+                            },
+                            "preview":{}
+                            
                         },
                         {
-                            "invoiceNumber":"IN-000576",
-                            "status":"Incomplete",
-                            "date":"13/12/2019",
-                            "value":"$22,000.45",
-                            "actions":true
+                            "list":{
+                                "id":"IN-000576",
+                                "invoiceNumber":"IN-000576",
+                                "status":"Incomplete",
+                                "date":"13/12/2019",
+                                "value":"$22,000.45",
+                                "actions":true
+                            },
+                            "preview":{}
+                            
                         }
                     ]
                     

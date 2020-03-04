@@ -1,42 +1,32 @@
 import React, {Component, useCallback, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import moment from 'moment';
+import { withModal } from 'react-native-modalfy';
 import { SuitesContext } from '../../../contexts/SuitesContext';
+import Item from './Table/Item'
+
+openModal = (props) => {
+    const { modalToOpen1, modalToOpen2, modal } = props
+    //modal.openModal(modalToOpen1)
+    modal.openModal(modalToOpen2)
+}
 
 const ListItem = (props) => {
     const suitesState = useContext(SuitesContext).state
     const suitesMethods = useContext(SuitesContext).methods
+
     return ( 
-        <TouchableOpacity onPress={()=>{suitesMethods.handleSelectedListItem(props.fields.recordId);}}>
-                <View style={styles.container}>
-                    <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>suitesMethods.toggleCheckbox(props.fields.recordId)}>
-                        {props.checkbox}
-                    </TouchableOpacity>
-                    
-                    <View style={{flex:1,flexDirection:"row", marginLeft:10}}>
-                        {props.fields.recordInformation.map((field,index)=>{
-                            return typeof field === 'object'? 
-                                <View style={[styles.item]} key={index}>
-                                    {Object.keys(field).map((key,index)=>{
-                                        return key === 'id'?
-                                            <Text style={[styles.itemText,{color:'#718096'}]} key={index}>{field[key]}</Text>
-                                            :
-                                            <Text style={{fontSize:16, color:'#3182CE'}} key={index}>{field[key]}</Text>
-                                    })}
-                                </View>
-                            :                            
-                            
-                                <View style={styles.item} key={index}>
-                                    <Text style={styles.itemText}>{field}</Text>
-                                </View>
-                        })}
-                    </View>
-                </View>
-            </TouchableOpacity>
+        <TouchableOpacity onPress={()=>{suitesMethods.handleSelectedListItem(props.fields.recordId);this.openModal(props)}}>
+            <View style={styles.container}>
+                <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>suitesMethods.toggleCheckbox(props.fields.recordId)}>
+                    {props.checkbox}
+                </TouchableOpacity>
+                <Item fields = {props.fields}/>
+            </View>
+        </TouchableOpacity>
     );
 }
  
-export default ListItem;
+export default withModal(ListItem);
 
 const styles = StyleSheet.create({
     container:{
@@ -53,7 +43,8 @@ const styles = StyleSheet.create({
         marginBottom:10
     },
     item:{
-        width:'25%',
+        flex:1,
+        // width:'25%',
         alignItems:"flex-start",
         justifyContent:'center',
     },

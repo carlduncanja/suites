@@ -6,9 +6,10 @@ export default class TestTransformAnimation extends Component {
     super(props);
     this.state = {
       animation: new Animated.Value(0),
-      endValue: 2,
-      duration: 5000,
+      width:0,
     };
+
+    this.animSquare = null
   }
 
   componentDidMount() {
@@ -20,26 +21,33 @@ export default class TestTransformAnimation extends Component {
       }
     ).start();
   }
-
+  
   render() {
     const animationStyles = {
       width: this.state.animation.interpolate({
         inputRange: [0, 0.5, 1],
-        outputRange: [100, 150, 300]
-      })
+        outputRange: [100, 150, 250]
+      }),
+      height :this.state.animation.interpolate({
+        inputRange: [0, 0.5, 1],
+        outputRange: [100, 150, 250]
+      }),
     };
 
-    // const animationText = {
-    //   text:this.state.animation.interpolate({
-    //     inputRange: [0, 0.5, 1],
-    //     outputRange: ["100", "150", "300"]
-    //   })
-    // }
+    this.state.animation.addListener((value)=>{
+      value.value === 0 ?
+        this.setState({width:0})
+        :
+        value.value === 1 ?
+          this.setState({width:1})
+          :null
+    })
 
     return (
       <Animated.View style={[objectStyles.object, animationStyles]}>
         <View style={{justifyContent:'flex-start', alignItems:'flex-start'}}>
-          {/* <Text>{animationText.text}</Text> */}
+          {this.state.width === 0? <Text>SMall</Text> : this.state.width === 1 ? <Text>Large</Text> : null}
+           
         </View>
       </Animated.View>
     );

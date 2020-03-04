@@ -10,8 +10,8 @@ const ContentNavigator = ({ navigation, descriptors }) => {
   const ActiveScreen = descriptor.getComponent();
 
   return (
-    <SafeAreaView style={{ flex: 1, flexDirection: 'column'}}>
-        <ScrollView style={{margin:20}} > 
+    <SafeAreaView style={{ flex: 1,flexDirection: 'column'}}>
+        <ScrollView style={{margin:20, marginBottom:0,}} > 
           <ActiveScreen navigation={descriptor.navigation}/>
         </ScrollView>
         
@@ -21,7 +21,6 @@ const ContentNavigator = ({ navigation, descriptors }) => {
             navigation={navigation}
           />
         </View>
-        
     </SafeAreaView>
   );
 };
@@ -38,12 +37,12 @@ const styles = StyleSheet.create({
   footer:{
     flex:1,
     position:'absolute',
-    justifyContent:'flex-end',
+    //justifyContent:'flex-end',
     marginBottom:35,
     alignSelf:'center',
-    alignItems:'center',
-    top:0,
-    bottom:0,
+    //alignItems:'center',
+    //top:0,
+    bottom:50,
     
 }
 })

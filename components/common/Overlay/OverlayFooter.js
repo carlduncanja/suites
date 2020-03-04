@@ -8,7 +8,7 @@ const OverlayFooter = () => {
     const suitesMethod = useContext(SuitesContext).methods
     return (  
         <TouchableOpacity style={styles.container} onPress={()=>{suitesMethod.handleNewItemTabChange()}}>
-            <Text style={styles.title}>{suitesState.overlayText.toUpperCase()}</Text>
+            <Text style={styles.title}>{suitesState.overlayFooterText.toUpperCase()}</Text>
             <SvgIcon iconName = "paginationNext" strokeColor="#3182CE"/>
         </TouchableOpacity>
     );

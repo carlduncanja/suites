@@ -16,7 +16,7 @@ const OverlayListHeader = () => {
             <View style={styles.headersContainer}>
                 {listHeaders.map((header,index)=>{
                     return(
-                        <View style={[styles.item,{width:`${width}%`}]} key={index}>
+                        <View style={[styles.item,{flex:1}]} key={index}>
                             <Text style={styles.headerText}>{header}</Text>
                         </View>
                     )

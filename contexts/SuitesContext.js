@@ -15,6 +15,7 @@ export const SuitesContextProvider = (props) => {
     const [floatingActions, setFloatingActions] = useState({})
     const [openAction, setOpenAction] = useState(false)
     const [progressContainerWidth, setProgressContainerWidth] = useState(0)
+    const [pageMeasure, setPageMeasure] = useState({})
 
     const [newItemSteps, setNewItemSteps] = useState([])
     const [itemTitle, setItemTitle] = useState("")
@@ -27,8 +28,10 @@ export const SuitesContextProvider = (props) => {
     const [currentSelectedStepTabs, setCurrentSelectedStepTabs] = useState([])
     const [currentTabPosition, setCurrentTabPosition] = useState(0)
     const [currentStepPosition, setCurrentStepPosition] = useState(0);
-    const [overlayText, setOverlayText] = useState("NEXT")
+    const [overlayFooterText, setOverlayFooterText] = useState("NEXT")
     const [progressList, setProgressList] = useState([])
+    const [overlayComplete, setOverlayComplete] = useState(false)
+    const [tabsCompletedList, setTabsCompletedList] = useState([currentStepTabs[0]])
 
     const [pageTitle, setPageTitle] = useState('Case Files')
     const [searchPlaceholder, setSearchPlaceholder] = useState("Search by any heading or entry below")
@@ -43,15 +46,20 @@ export const SuitesContextProvider = (props) => {
     const [overlayList, setOverlayList] = useState([])
     const [overlayListHeaders, setOverlayListHeaders] = useState([])
     const [slideTopValue, setSlideTopValue] = useState(0);
+    const [billingSummary, setBillingSummary] = useState({})
+    const [reportPreview, setReportPreview] = useState(false)
+    const [reportTableData, setReportTableData] = useState([])
+    const [reportTableHeader, setReportTableHeader] = useState([])
+    const [billingDetails, setBillingDetails] = useState([])
+    const [summaryList, setSummaryList] = useState([])
+    const [reportTerms, setReportTerms] = useState("")
         
     const [selectedListItemId, setSelectedListItemId] = useState();
     const [overlayHeader, setOverlayHeader] = useState({})
     const [selectedItem, setSelectedItem] = useState({})
     const [checkedItem, setCheckedItem] = useState(false);
     const [checkedItemsList, setCheckedItemsList] = useState([]);
-
   
-    
     const [paginatorValues, dispatchPaginator] = useReducer(paginatorReducer,{
         currentPage:1,
         sliceArrayStart:0,
@@ -176,6 +184,7 @@ export const SuitesContextProvider = (props) => {
                         newArray.push(getField(newHeader, data))
         })
 
+
         newObject={
             "recordId":getField("id", data),
             "recordInformation":newArray
@@ -187,11 +196,22 @@ export const SuitesContextProvider = (props) => {
         let newWord = word.replace(/ /g,"");
         return (newWord.charAt(0).toLowerCase().concat(newWord.substring(1,newWord.length)))
     }
+    transformToSentence = (word) =>{
+        let newWord = word.replace(/([A-Z])/g, " $1")
+        return newWord.charAt(0).toUpperCase() + newWord.slice(1);
+    }
 
     getList = (sourceInformation, listHeaders) =>{
         let list = []
         sourceInformation.map((information)=>{
             list.push(getRecord(information,listHeaders))
+        })
+        return list
+    }
+    getReportList = (sourceInformation, listHeaders) =>{
+        let list = []
+        sourceInformation.forEach((information)=>{
+            list.push(getRecord(information.list,listHeaders))
         })
         return list
     }
@@ -212,6 +232,7 @@ export const SuitesContextProvider = (props) => {
         selectedObj.length > 0 && setOverlayStatus(true)
         selectedObj.length > 0 && setSelectedItem(selectedObj[0])
         selectedObj.length > 0 && setOverlayTabInfo(selectedObj[0][transformToCamel(overlaySelectedMenuName)][transformToCamel(overlaySelectedMenuTab)])
+        
     }
 
     setListTabData = (list,headers) => {
@@ -236,7 +257,12 @@ export const SuitesContextProvider = (props) => {
         setSlideTopValue(event.nativeEvent.layout.height)
     },
 
-    handleNewItemTabChange = ()=>{
+    getPageMeasure = (event) =>{
+        setPageMeasure(event.nativeEvent.layout)
+    }
+
+    handleNewItemTabChange = ()=>{    
+        setTabsCompletedList(currentStepTabs.slice(0,currentTabPosition+1))
         currentTabPosition === currentSelectedStepTabs.length-1 ? 
             handleStepChange() 
             :
@@ -247,26 +273,30 @@ export const SuitesContextProvider = (props) => {
         setCurrentTabPosition(currentTabPosition+1)
         setCurrentSelectedStepTabObject(currentSelectedStepTabs[currentTabPosition+1])
         setCurrentSelectedStepTab(currentSelectedStepTabs[currentTabPosition+1].tabName)
-        handleProgressBar()
+        handleProgressBar(currentTabPosition+1)
     }
 
-    handleProgressBar = () =>{
+    handleProgressBar = (tabPosition) =>{
         const tabLength = currentStepTabs.length
         let progress = 1/tabLength
-        const currentProgress = progressList.filter(obj=>obj.step === currentStep)[0].progress
         const objIndex = progressList.findIndex(obj => obj.step === currentStep)
-        const updatedObj = {...progressList[objIndex], "progress":currentProgress+progress}
+        const updatedObj = {...progressList[objIndex], "progress":tabPosition * progress}
         const updatedList = [...progressList.slice(0,objIndex),updatedObj,...progressList.slice(objIndex+1)]
         setProgressList(updatedList)
     }
 
     handleStepChange = () =>{
-        handleProgressBar()
+        handleProgressBar(currentTabPosition+1)
         currentStepPosition === newItemSteps.steps.length -1 ?
-            console.log("Go to edit")
+            completeStep()
             :
             setStep()
  
+    }
+
+    completeStep = () =>{
+        setOverlayFooterText("CONTINUE") 
+        setOverlayComplete(true)
     }
     setStep = () =>{
         setCurrentStepPosition(currentStepPosition+1)
@@ -283,7 +313,14 @@ export const SuitesContextProvider = (props) => {
     }
 
     handleNewItemPress = (tabName) =>{
-        console.log("Pressed", tabName)
+        const tabPosition = currentSelectedStepTabs.findIndex(tab => tab.tabName === tabName)
+        tabsCompletedList.includes(tabName) && (
+            setCurrentSelectedStepTab(tabName),
+            setCurrentTabPosition(tabPosition),
+            setCurrentSelectedStepTabObject(currentSelectedStepTabs.filter(tab => tab.tabName === tabName)[0]),
+            setTabsCompletedList(tabsCompletedList.splice(0,tabsCompletedList.findIndex(tab => tab === tabName))),
+            handleProgressBar(tabPosition)
+        )
     }
 
     getProgressWidth = (width) =>{
@@ -292,9 +329,24 @@ export const SuitesContextProvider = (props) => {
 
     transformAction=()=>{
         setOpenAction(true)
-        console.log("Open Action")
     }
 
+    openReportAction=(id)=>{
+        setReportPreview(true)
+        const selectedItem = overlayTabInfo.filter(info => id === info.list.id)
+        const preview=selectedItem[0].preview
+        const consumables = preview.quotationDetails.consumablesTable
+        setBillingDetails(preview.billingDetails)
+        setSummaryList(preview.quotationDetails.summaryList)
+        setReportTableData(getList(consumables.data,consumables.headers))
+        setReportTableHeader(consumables.headers)
+        setBillingSummary(preview.billingSummary)
+        setReportTerms(preview.reportTerms)
+    }
+
+    closePreview = ()=>{
+        setReportPreview(false)
+    }
     const state = {
         pageTitle, 
         paginatorValues, 
@@ -325,13 +377,24 @@ export const SuitesContextProvider = (props) => {
         currentSelectedStepTab,
         currentStepTabs,
         currentSelectedStepTabObject,
-        overlayText,
+        overlayFooterText,
         progressList,
         progressContainerWidth,
-        openAction
+        openAction,
+        tabsCompletedList,
+        overlayComplete,
+        reportPreview,
+        reportTableData,
+        reportTableHeader,
+        billingDetails,
+        billingSummary,
+        summaryList,
+        reportTerms,
+        pageMeasure
     }
     const methods = {
         getSlideTop, 
+        getPageMeasure,
         toggleActionButton, 
         handleOverlayClose, 
         getList, 
@@ -345,7 +408,11 @@ export const SuitesContextProvider = (props) => {
         handleNewItemTabChange,
         handleNewItemPress,
         getProgressWidth,
-        transformAction
+        transformAction,
+        openReportAction,
+        getReportList,
+        transformToSentence,
+        closePreview
     }
     return (  
         <SuitesContext.Provider value={{state, methods}}>

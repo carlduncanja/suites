@@ -1,42 +1,40 @@
-import React, { useContext } from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import {StyleSheet, View, Easing} from 'react-native';
 import Page from '../components/common/Page/Page';
 import { CaseFileContextProvider } from '../contexts/CaseFileContext';
 import { SuitesContextProvider } from "../contexts/SuitesContext";
-import TestTransformAnimation from "../TestTransformAnimation";
-import Overlay from '../components/common/Overlay/Overlay';
+import TransparentScreenModal from '../components/common/TransparentScreenModal';
+import OverlaySlidePanelModal from '../components/common/SlideOverlay/OverlaySlidePaneModal';
+import { ModalProvider, createModalStack } from 'react-native-modalfy';
 
 const CaseFiles = () => {
-    return ( 
-        <SuitesContextProvider>
+    const modalConfig = {
+       // TransparentScreenModal : TransparentScreenModal,
+        OverlaySlidePanelModal : OverlaySlidePanelModal
+        // NewItemOverlayModal : NewItemOverlayModal,
+        // ReportPreviewModal : ReportPreview
+    }
+
+    const defaultOptions = {
+        backdropOpacity:0.3,
+        position:'top',
+        containerStyle:{
+            flex: 1,
+        }
+    }
+    const stack = createModalStack(modalConfig, defaultOptions)
+    
+    return (
+        
+            <SuitesContextProvider>
             <CaseFileContextProvider>
-                {/* <Overlay/> */}
-                <Page/>                
+                <ModalProvider stack={stack}>
+                    <Page/>     
+                </ModalProvider>         
             </CaseFileContextProvider>
         </SuitesContextProvider>
-        
         
     );
 }
  
 export default CaseFiles;
-
-const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        flexDirection:'column',
-        marginLeft:5,
-        padding:15,
-        backgroundColor:'#FAFAFA'
-    },
-    footer:{
-        alignSelf:'flex-end', 
-        flexDirection:'row', 
-        position:'absolute', 
-        bottom:0, 
-        marginBottom:20, 
-        right:0, 
-        marginRight:30
-    }
-})
-

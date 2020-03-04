@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from "react-native";
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const BillingHeader = (props) => {
-    let transformToSentence = (word) =>{
-        let newWord = word.replace(/([A-Z])/g, " $1")
-        return newWord.charAt(0).toUpperCase() + newWord.slice(1);
-    }
+    const suitesMethods= useContext(SuitesContext).methods
+    // let transformToSentence = (word) =>{
+    //     let newWord = word.replace(/([A-Z])/g, " $1")
+    //     return newWord.charAt(0).toUpperCase() + newWord.slice(1);
+    // }
     return ( 
         <View style={styles.container}>
             {
                  Object.keys(props.header).map((key,index)=>{
                     return(
                         <View key={index} >
-                            <Text style={styles.title}>{transformToSentence(key)}</Text>
+                            <Text style={styles.title}>{suitesMethods.transformToSentence(key)}</Text>
                             {key === 'total' ?
                                 <View style={{flexDirection:'row'}}>
                                     {props.header[key].discount === true && <Text style={styles.discount}>(discount applied)</Text>} 

@@ -57,9 +57,9 @@ const styles = StyleSheet.create({
         paddingTop:25,
         backgroundColor:'#FFFFFF',
         justifyContent:'flex-start',
-        alignItems:'center',
+        alignItems:'flex-start',
         flexWrap:'wrap',
-        flexDirection:'row'
+        flexDirection:'row',
     },
     fieldContainer:{
         width:'50%',

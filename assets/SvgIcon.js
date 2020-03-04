@@ -75,6 +75,14 @@ export default class SvgIcon extends Component{
                         <Path d="M5.6 6.4L1.6 4L0 5.6L5.6 12L16 1.6L14.4 0L5.6 6.4Z" fill="#48BB78"/>
                     </Svg>
                 :
+                icon === 'caseFilesComplete'?
+                    <Svg width="70" height="60" viewBox="0 0 70 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M24.5 6L18.5 0H3.5C1.8425 0 0.5 1.3425 0.5 3V54C0.5 57.3135 3.1865 60 6.5 60H63.5C66.8135 60 69.5 57.3135 69.5 54V12C69.5 8.6865 66.8135 6 63.5 6H24.5Z" fill="#0CB0E7"/>
+                        <Path fill-rule="evenodd" clip-rule="evenodd" d="M38 39H32C27.8585 39 24.5 42.3585 24.5 46.5C24.5 47.328 25.175 48 26.0105 48H43.9895C44.8235 48 45.5 47.3205 45.5 46.5C45.5 42.3585 42.1415 39 38 39Z" fill="white"/>
+                        <Path d="M35 36C38.3137 36 41 33.3137 41 30C41 26.6863 38.3137 24 35 24C31.6863 24 29 26.6863 29 30C29 33.3137 31.6863 36 35 36Z" fill="white"/>
+                        <Path d="M69.5 15H0.5V3C0.5 1.3425 1.8425 0 3.5 0H18.5L24.5 6H63.5C66.8135 6 69.5 8.6865 69.5 12V15Z" fill="#047FA8"/>
+                    </Svg>
+                :
                 icon === 'patientSelectedNew' ?
                     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <Path d="M12 6C10.343 6 9 4.657 9 3C9 1.343 10.343 0 12 0C13.657 0 15 1.343 15 3C15 4.657 13.657 6 12 6Z" fill="#0CB0E7"/>
@@ -377,6 +385,12 @@ export default class SvgIcon extends Component{
                         <Path d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                         <Path d="M11 5L5 11" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                         <Path d="M5 5L11 11" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    </Svg>
+                :
+                icon === 'exit'?
+                    <Svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M7.5 0.5L0.5 7.5" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <Path d="M0.5 0.5L7.5 7.5" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                     </Svg>
                 :
                 icon === 'search' ?

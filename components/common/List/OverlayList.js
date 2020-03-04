@@ -11,7 +11,7 @@ const OverlayList = () => {
                 <OverlayListHeader />
             </View>
             <View style={styles.data}>
-                <OverlayListData />
+                <OverlayListData/>
             </View>
         </View>
     );

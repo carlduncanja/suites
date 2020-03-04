@@ -52,7 +52,7 @@ export default OverlayMenuItems;
 
 const styles = StyleSheet.create({
     container:{
-        flexDirection:'row'
+        flexDirection:'row',
     },
     menuBar:{
         flexDirection:"row",

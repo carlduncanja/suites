@@ -29,14 +29,14 @@ export default Tab;
 const styles = StyleSheet.create({
     container:{
         flexDirection:'row',
-        marginRight:15,
+        marginRight:0,
     },
     tabContainer:{
         borderTopLeftRadius: 8,
         borderTopRightRadius:8,
         padding:5,
-        paddingLeft:10,
-        paddingRight:10
+        paddingLeft:8,
+        paddingRight:8
     },
     text:{
         fontSize:16,

@@ -7,26 +7,35 @@ const TabsContainer = (props) => {
     const suitesState = useContext(SuitesContext).state
     return ( 
         <View style={styles.container}>
-            <View style={styles.tabs}>
-                {props.tabs.map((tab, index)=>{
-                    return (tab === props.selectedTab ? 
-                        <View key={index}> 
-                            <Tab 
-                                tab={tab} 
-                                onPressChange = {props.onPressChange}
-                                backgroundColor="#FFFFFF" 
-                                textColor="#3182CE"/>
-                        </View>
-                        :
+            {props.tabs.map((tab, index)=>{
+                return (tab === props.selectedTab ? 
+                    <View key={index}> 
+                        <Tab 
+                            tab={tab} 
+                            onPressChange = {props.onPressChange}
+                            backgroundColor="#FFFFFF" 
+                            textColor="#3182CE"
+                        /> 
+                    </View>
+                    :    
+                    props.completedTabs && props.completedTabs.includes(tab) ?
                         <View key={index}>
                             <Tab 
                                 tab={tab} 
                                 onPressChange = {props.onPressChange}
-                                textColor="#718096"/>
+                                textColor="#4E5664"
+                            /> 
                         </View>
-                    )
-                })}
-            </View>
+                    :        
+                    <View key={index}>
+                        <Tab 
+                            tab={tab} 
+                            onPressChange = {props.onPressChange}
+                            textColor="#718096"
+                        /> 
+                    </View>
+                )
+            })}
         </View>
     );
 }
@@ -35,11 +44,9 @@ export default TabsContainer;
 
 const styles = StyleSheet.create({
     container:{
-
-    },
-    tabs:{
+        alignSelf:'flex-start',
         marginLeft:20,
-        flexDirection:'row'
+        flexDirection:'row',
     },
     base:{
         height:10,

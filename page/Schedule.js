@@ -5,7 +5,7 @@ import Calendar from '../components/Calendar/Calendar';
 import ScheduleListView from '../components/Schedule/ScheduleListView';
 import Month from '../components/Calendar/Month';
 import Button from '../components/common/Button';
-import TransparentScreen from '../components/common/TransparentScreen';
+import TransparentScreenModal from '../components/common/TransparentScreenModal';
 import SlideUpPanel from '../components/common/SideUpPanel';
 import AppointmentCard from '../components/Schedule/AppointmentCard';
 import ScrollableAppointmentCard from '../components/Schedule/ScrollableAppointmentCard';
@@ -734,7 +734,7 @@ export default class Schedule extends Component {
                         this.props.screenDimensions.width < this.props.screenDimensions.height && this.state.showSlider === true ?
                             <View style={{flex:1}}>
                                 {mainContent}
-                                <TransparentScreen  
+                                <TransparentScreenModal
                                     showScheduleDetails = {this.closeTransparent} 
                                     animateSlide = {this.animateSlide}
                                 />
@@ -774,7 +774,7 @@ export default class Schedule extends Component {
                 </View>
                 
             {this.state.searchOpen === true? 
-                <TransparentScreen  
+                <TransparentScreenModal
                     content={searchContent} 
                     showScheduleDetails = {this.closeTransparent}
                     animateSlide = {()=> null}

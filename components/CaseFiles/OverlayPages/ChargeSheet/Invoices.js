@@ -10,7 +10,7 @@ const Invoices = () => {
 
     useEffect(()=>{
         const headers = ["Invoice Number", "Status", "Date", "Value", "Actions"]
-        const list = suitesMethod.getList(suitesState.overlayTabInfo, headers)
+        const list = suitesMethod.getReportList(suitesState.overlayTabInfo, headers)
         suitesMethod.setListTabData(list,headers)
     },[suitesState.overlayTabInfo])
     
