@@ -13,7 +13,7 @@ export default ScheduleSearch = (props) => {
 
     const [state, dispatch] = useContext(ScheduleContext);
 
-    onSearchSelect = (selectedTitle) => {
+    const onSearchSelect = (selectedTitle) => {
         dispatch({
             type: scheduleActions.SEARCHSELECT,
             newState: {
@@ -26,7 +26,7 @@ export default ScheduleSearch = (props) => {
         getSearchAppointment(selectedTitle)
     }
 
-    getSearchAppointment = (select) =>  {
+    const getSearchAppointment = (select) =>  {
         let appointments = require('./../../assets/db.json').appointments
         let sAppEvents = []
         let selectedDayEvents = []
@@ -52,13 +52,13 @@ export default ScheduleSearch = (props) => {
         setSelectedAppEvents(newAppArray);
         setSelectedDayEvents(newDayArray);
         if (!newDayArray.length === 0 || !newAppArray.length === 0) {
-            this.setAppointmentSearch(newDayArray[0].event, newAppArray[0], newDayArray[0].day )
+            setAppointmentSearch(newDayArray[0].event, newAppArray[0], newDayArray[0].day )
         }
             
  
     }
 
-    setAppointmentSearch = (filterDay, filterApp, selected) => {
+    const setAppointmentSearch = (filterDay, filterApp, selected) => {
         props.setSearchAppointmentStatus(false);
 
         dispatch({
@@ -104,13 +104,16 @@ export default ScheduleSearch = (props) => {
 
 
     return (
-        <TransparentScreen closeTransparent={ () => {useCloseTransparent(dispatch, scheduleActions, state.selectedSearchValue)}}>
+        <TransparentScreen closeTransparent={useCloseTransparent} 
+        dispatch={dispatch}
+        scheduleActions={scheduleActions}
+        selectedSearchValue={state.selectedSearchValue}
+        >
             <View style={{ borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
             <SearchBar
                 placeholderTextColor='#718096'
                 placeholder={"Search by scheduled items"}
                 changeText={searchChangeText}
-                inputText = {state.selectedSearchValue === "" ? state.searchValue : state.selectedSearchValue}
                 inputText={state.searchValue}
                 dispatch={dispatch}
                 scheduleActions={scheduleActions}
@@ -118,6 +121,7 @@ export default ScheduleSearch = (props) => {
                 selectedSearchValue={state.selectedSearchValue}
                 selectedAppEvents={selectedAppEvents}
                 selectedDayEvents={selectedDayEvents}
+                setAppointmentSearch={setAppointmentSearch}
             />
             <View style={{ backgroundColor: '#FFFFFF' }}>
                 {state.searchAppointment.map((appointmentTitle, index) => {
@@ -125,7 +129,7 @@ export default ScheduleSearch = (props) => {
                         <TouchableOpacity
                             key={index}
                             style={{ paddingTop: 5, paddingBottom: 10, paddingLeft: 25 }}
-                            onPress={() => this.onSearchSelect(appointmentTitle)}
+                            onPress={() => onSearchSelect(appointmentTitle)}
                         >
                             <Text style={{ color: '#3182CE', fontSize: 16 }}>{appointmentTitle}</Text>
                         </TouchableOpacity>

@@ -52,60 +52,44 @@ export default ScheduleCalendar = (props) => {
 
         <View style={{flex:1,marginLeft: props.screenDimensions.width > props.screenDimensions.height ? '2%':0, alignSelf:"center"}}>
 
-        {!state.displayFullCalendar ?
-        // <Text>Hi</Text>
+        {!state.displayFullCalendar &&
             <RowCalendar
-                currentDate = {state.currentDate}
-                selected = {state.selected}
-                onPressDay = {this.onPressDay}
-                // startDays = {props.getStartDays}
-                // endDays = {props.getEndDays}
-                // currentDays = {this.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
-                // setScrollView = { (scrollViewComponent) => {
-                //     this.setState({
-                //         _scrollView: scrollViewComponent
-                //     })
-                // }}
-                // getCalendarOffset = {props.setCalendarOffset}
-                // getAppointmentScroll = {props.setDatePositions}
-                // calendarOffset = {props.calendarOffset}
-                // datePositions = {props.datePositions}
             />
-            :
-            props.screenDimensions.width > props.screenDimensions.height ?
-                <ExtendedCalendar
-                    {...props}
-                    {...this.state}
-                    prevCurrentDate={this.getPrevMonth(currentYear, currentMonth, currentDay)}
-                    nextCurrentDate = {this.getNextMonth(currentYear, currentMonth, currentDay)}
-                    calendarLayout = {this.calendarLayout}
-                    onPressDay = {this.onPressDay}
+        //     :
+        //     props.screenDimensions.width > props.screenDimensions.height ?
+        //         <ExtendedCalendar
+        //             {...props}
+        //             {...this.state}
+        //             prevCurrentDate={this.getPrevMonth(currentYear, currentMonth, currentDay)}
+        //             nextCurrentDate = {this.getNextMonth(currentYear, currentMonth, currentDay)}
+        //             calendarLayout = {this.calendarLayout}
+        //             onPressDay = {this.onPressDay}
 
-                    currentDays = {this.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
-                    prevMonthDays = { 
-                        parseInt(state.currentDate.format("M")) === 1 ?
-                            this.getCurrentDays(state.currentDate.format("MM"), (parseInt(state.currentDate.format("YYYY")) -1).toString())
-                            :
-                            this.getCurrentDays((parseInt(state.currentDate.format("MM")) - 1).toString(), state.currentDate.format("YYYY"))
-                    }
-                    nextMonthDays = {
-                        parseInt(state.currentDate.format("M")) === 12 ?
-                        this.getCurrentDays('01', (parseInt(state.currentDate.format("YYYY")) +1).toString())
-                        :
-                        this.getCurrentDays((parseInt(state.currentDate.format("MM")) + 1).toString(), state.currentDate.format("YYYY"))
-                    }
-                />
-                :
-                <Calendar 
-                    currentDays = {props.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
-                    onPressDay = {this.onPressDay}
-                    getStartDays = {props.getStartDays()}
-                    getEndDays = {props.getEndDays()}
-                    screenDimensions = {props.screenDimensions}
-                    currentDate = {state.currentDate}
-                    selected = {props.selected}
-                    // daySelected = {this.state.daySelected}
-                />
+        //             currentDays = {this.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
+        //             prevMonthDays = { 
+        //                 parseInt(state.currentDate.format("M")) === 1 ?
+        //                     this.getCurrentDays(state.currentDate.format("MM"), (parseInt(state.currentDate.format("YYYY")) -1).toString())
+        //                     :
+        //                     this.getCurrentDays((parseInt(state.currentDate.format("MM")) - 1).toString(), state.currentDate.format("YYYY"))
+        //             }
+        //             nextMonthDays = {
+        //                 parseInt(state.currentDate.format("M")) === 12 ?
+        //                 this.getCurrentDays('01', (parseInt(state.currentDate.format("YYYY")) +1).toString())
+        //                 :
+        //                 this.getCurrentDays((parseInt(state.currentDate.format("MM")) + 1).toString(), state.currentDate.format("YYYY"))
+        //             }
+        //         />
+        //         :
+        //         <Calendar 
+        //             currentDays = {props.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
+        //             onPressDay = {this.onPressDay}
+        //             getStartDays = {props.getStartDays()}
+        //             getEndDays = {props.getEndDays()}
+        //             screenDimensions = {props.screenDimensions}
+        //             currentDate = {state.currentDate}
+        //             selected = {props.selected}
+        //             // daySelected = {this.state.daySelected}
+        //         />
         }
 
 </View>

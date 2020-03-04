@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import SvgIcon from '../../assets/SvgIcon';
 
-export default class Notification extends Component{
-    render(){
+export default Notification = () => {
         return(
             <View style={styles.container}>
                 <View style={styles.description}>
@@ -12,7 +11,7 @@ export default class Notification extends Component{
                             <SvgIcon iconName = "notificationFolder"/>
                             <Text style={{color:"#90CDF4", marginLeft:9, fontSize:14}}>Julie Melissa Brown</Text>
                         </View>
-                        <TouchableOpacity activeOpacity={1} onPress={this.props.closeNavigation} style={{paddingLeft:5, paddingRight:5}}>
+                        <TouchableOpacity activeOpacity={1} onPress={props.closeNavigation(false)} style={{paddingLeft:5, paddingRight:5}}>
                             <SvgIcon iconName="notificationClose"/>
                         </TouchableOpacity>
                         
@@ -29,7 +28,6 @@ export default class Notification extends Component{
                 </TouchableOpacity>
             </View>
         )
-    }
 }
 
 const styles = StyleSheet.create({

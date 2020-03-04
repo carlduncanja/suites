@@ -17,7 +17,7 @@ export default App = () => {
   }, [state, dispatch]);
 
 
-  getDimensions = (event) => {
+  const getDimensions = (event) => {
     dispatch({
       type: appActionTypes.DIMENSIONS, 
       newState: { width: event.nativeEvent.layout.width, length: event.nativeEvent.layout.height}
@@ -26,7 +26,7 @@ export default App = () => {
 
   console.log('hiii', state)
 
-  onPressTab = (event,selected) => {
+  const onPressTab = (event,selected) => {
     dispatch({
       type: appActionTypes.TABSELECTED,
       newState:{ tabSelected: selected, status: true}

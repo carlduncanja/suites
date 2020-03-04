@@ -1,5 +1,5 @@
 export const scheduleActions = {
-    SEARCH: 'SEARCH',
+    SEARCHPRESS: 'SEARCHPRESS',
     UNDOSEARCH: 'UNDOSEARCH',
     MONTHCHANGE: 'MONTHCHANGE',
     SELECTED: 'SELECTED',
@@ -16,7 +16,9 @@ export const scheduleActions = {
     CALENDAROFFSET: 'CALENDAROFFSET',
     SCROLLAPPOINTMENT: 'SCROLLAPPOINTMENT',
     SCHEDULEOFFSET: 'SCHEDULEOFFSET',
-    APPOINTMENTDATES: 'APPOINTMENTDATES'
+    APPOINTMENTDATES: 'APPOINTMENTDATES',
+    SCHEDULEDETAILS: 'SCHEDULEDETAILS',
+    SCROLLVIEW: 'SCROLLVIEW'
 }
 
 export const scheduleReducer = (state, action) => {
@@ -24,7 +26,7 @@ export const scheduleReducer = (state, action) => {
     const { type, newState } = action;
 
     switch (type) {
-        case scheduleActions.SEARCH:
+        case scheduleActions.SEARCHPRESS:
             state = {
                 ...state,
                 transparent: newState.transparent,
@@ -150,6 +152,22 @@ export const scheduleReducer = (state, action) => {
             return {
                 ...state,
                 appointmentDates: [...state.appointmentDates, newState]
+            };
+
+        case scheduleActions.SCHEDULEDETAILS:
+            return {
+                ...state,
+                transparent: newState.transparent,
+                slideValue: newState.slideValue,
+                scheduleDetails: newState.scheduleDetails,
+                showSlider: newState.showSlider,
+                showDrawer: newState.showDrawer
+            };
+
+        case scheduleActions.SCROLLVIEW:
+            return {
+                ...state,
+                _scrollView: newState,
             };
 
         default:

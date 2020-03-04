@@ -28,67 +28,70 @@ export default RowCalendar = (props) => {
     useEffect(() => {
     })
 
-    goToAppointment = () => {
-        state.goToToday  ?
-            this.onGoToAppointment()
-        :
-            dispatch({
-                type: scheduleActions.SCROLLAPPOINTMENT,
-                newState: true
-            })     
+    // const goToAppointment = () => {
+    //     state.goToToday  ?
+    //         this.onGoToAppointment()
+    //     :
+    //         dispatch({
+    //             type: scheduleActions.SCROLLAPPOINTMENT,
+    //             newState: true
+    //         })     
             
-        onGoToAppointment();
-    }
+    //     onGoToAppointment();
+    // }
 
-    onGoToAppointment = () => {
-        if (state._scrollView) {
-            state.appointmentDates.map((date)=>{
-                if (date.date.format("MM D") === scrollAppointmentDay.format("MM D")) {
-                    if (state.goToToday === true && scrollAppointment === false){
-                        state._scrollView.scrollTo({x:0,y:0,animated:true}) 
-                        dispatch({
-                            type: scheduleActions.GOTOTODAY,
-                            newState: false
-                        })
-                    }
-                    else{
-                        state._scrollView.scrollTo({x:0, y:date.event, animated:true})
-                    }   
-                }
-            })
-        }
-        // return true
-    }
-
-    // getAppointments = (obj) => {
-    //     setAppointmentDates([...appointmentDates,obj]);
+    // const onGoToAppointment = () => {
+    //     if (state._scrollView) {
+    //         state.appointmentDates.map((date)=>{
+    //             if (date.date.format("MM D") === scrollAppointmentDay.format("MM D")) {
+    //                 if (state.goToToday === true && scrollAppointment === false){
+    //                     state._scrollView.scrollTo({x:0,y:0,animated:true}) 
+    //                     dispatch({
+    //                         type: scheduleActions.GOTOTODAY,
+    //                         newState: false
+    //                     })
+    //                 }
+    //                 else{
+    //                     state._scrollView.scrollTo({x:0, y:date.event, animated:true})
+    //                 }   
+    //             }
+    //         })
+    //     }
+    //     // return true
     // }
 
 
-    getScrollMeasure = (event) => {
-        setScrollMeasure({scrollMeasure: event.nativeEvent.contentOffset.x})
-        let dateArray = state.datePositions.sort((a,b)=>a.event - b.event);
-        for (var i = 0; i < dateArray.length; i++){
-            if (dateArray[i].event >= event.nativeEvent.contentOffset.x) {
-                setScrollAppointmentDay( moment(dateArray[i].day));
-                return true
-            }
-        }
-    }
+    // const getScrollMeasure = (event) => {
+    //     setScrollMeasure({scrollMeasure: event.nativeEvent.contentOffset.x})
+    //     let dateArray = state.datePositions.sort((a,b)=>a.event - b.event);
+    //     for (var i = 0; i < dateArray.length; i++){
+    //         if (dateArray[i].event >= event.nativeEvent.contentOffset.x) {
+    //             setScrollAppointmentDay( moment(dateArray[i].day));
+    //             return true
+    //         }
+    //     }
+    // }
 
 
-    onScrollViewCreated = (_scrollview) => {
+    const onScrollViewCreated = (_scrollview) => {
        if (props.setScrollView) setScrollView(_scrollview)
     };
 
 
-    generateRowDays = () => {
+    const getLevels = day =>{
+        const appointments = require('../../assets/db.json').appointments;
+        let result = appointments.filter(appointment => moment(appointment.startTime).format("YYYY/MM/DD") === moment(day).format("YYYY/MM/DD"))
+        let status = result.length === 0 ? false : true
+        return status
+    }
+
+    const generateRowDays = () => {
 
         return daysArray.map((day,index)=>{
             return (
                 <View 
                     onLayout={(event)=>{
-                        moment(day).format("YYYY-MM-D") === props.selected.selected.format("YYYY-MM-D") &&
+                        moment(day).format("YYYY-MM-D") === state.selected.selected.format("YYYY-MM-D") &&
                             dispatch({
                                 type: scheduleActions.CALENDAROFFSET,
                                 newState: event.nativeEvent.layout.x
@@ -108,12 +111,13 @@ export default RowCalendar = (props) => {
                     }
                     <View style={{paddingRight:40, paddingLeft:40}}>
                         <RowCalendarDays
-                            // onPressDay={props.onPressDay}
                             key={index}
                             day={moment(day)} 
                             weekday={moment(day).format("ddd")}
                             selected = {state.selected}
-                            filterStatus = {this.getLevels(day)}
+                            filterStatus = {getLevels(day)}
+                            currentDate={state.currentDate}
+                            selected={state.selected}
                         />              
                     </View>
                      
@@ -124,28 +128,20 @@ export default RowCalendar = (props) => {
 
     }
 
-    getLevels = day =>{
-        const appointments = require('../../assets/db.json').appointments;
-        let result = appointments.filter(appointment => moment(appointment.startTime).format("YYYY/MM/DD") === moment(day).format("YYYY/MM/DD"))
-        let status = result.length === 0 ? false : true
-        return status
-    }
-
+  
         
         return(
             <ScrollView
                 style = {[styles.container]}
                 horizontal={true}
                 // ref="scrollview"
-                //contentOffset={this.props.selected.status === false ? {x:this.props.calendarOffset, y:0} : {x:this.getFilterDay(),y:0}} 
                 contentOffset={{x: state.calendarOffset, y:0}}
                 contentContainerStyle={{paddingRight:'50%'}}
-                onScroll={(event)=>{getScrollMeasure(event); goToAppointment();}}
                 scrollEventThrottle={6}
                 bounces={false}
                 
             >
-                {this.generateRowDays()}
+                {generateRowDays()}
             </ScrollView>
            
         )

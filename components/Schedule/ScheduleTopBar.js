@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react';
 import ScheduleSearch from './ScheduleSearch';
-import {View, StyleSheet, ScrollView, Text, Easing, Animated, Dimensions, TouchableOpacity} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import Button from './../common/Button';
-import TransparentScreen from './../common/TransparentScreen';
 import moment from 'moment';
 import Month from './../Calendar/Month';
 import { ScheduleContext } from '../../contexts/ScheduleContext';
@@ -16,33 +15,32 @@ export default ScheduleTopBar = (props) => {
     const [state, dispatch] = useContext(ScheduleContext);
 
 
-    searchPress = () => {
-        console.log(state)
-        state.transparent ? newTrans = false: newTrans = true
+    const searchPress = () => {
+        state.transparent ? newTrans = false : newTrans = true;
         setSearchAppointmentStatus(true);
-        
+
         dispatch({
-            type: scheduleActions.SEARCH, 
-            newState: {transparent: newTrans, searchOpen: true }
+            type: scheduleActions.SEARCHPRESS,
+            newState: { transparent: newTrans, searchOpen: true }
         });
+
+        console.log('bo', state)
     };
 
-    console.log('look', state)
-
-     undoSearchPress = () => {
+    const undoSearchPress = () => {
         setSearchAppointmentStatus(false);
 
         dispatch({
-            type: scheduleActions.UNDOSEARCH, 
+            type: scheduleActions.UNDOSEARCH,
             newState: {
                 selectedSearchValue: '',
                 searchAppointment: [],
                 searchResultSelect: ''
             }
         });
-    } 
+    }
 
-    onGoToTodayClick = () => {
+    const onGoToTodayClick = () => {
         dispatch({
             type: scheduleActions.GOTOTODAY,
             newState: true
@@ -54,14 +52,14 @@ export default ScheduleTopBar = (props) => {
                     state._scrollView.scrollTo({ x: state.calendarOffsetset, y: 0, animated: true })
                     state._scrollAppointment.scrollTo({ x: 0, y: state.scheduleOffset, animated: true })
                     dispatch({
-                        type: scheduleActions.SELECTED, 
+                        type: scheduleActions.SELECTED,
                         newState: { selected: moment(), status: true }
                     })
                 }
 
             } else {
                 dispatch({
-                    type: scheduleActions.FULLCALENDAR, 
+                    type: scheduleActions.FULLCALENDAR,
                     newState: false
                 })
                 state._scrollAppointment.scrollTo({ x: 0, y: state.scheduleOffset, animated: true })
@@ -69,18 +67,18 @@ export default ScheduleTopBar = (props) => {
         }
     };
 
-    getMonth = (type) => {
+    const getMonth = (type) => {
         now = new Date(state.currentDate)
         now.setDate(1)
 
         if (type === "prev") {
-            return this.setMonth(1, 1, 11, now)
+            return setMonth(1, 1, 11, now)
         } else {
-            return this.setMonth(12, -1, 0, now)
+            return setMonth(12, -1, 0, now)
         }
     }
 
-    setMonth = (format, offset, setMonthValue, now) => {
+    const setMonth = (format, offset, setMonthValue, now) => {
         if (parseInt(state.currentDate.format("M")) === format) {
             now.setFullYear(now.getFullYear() - offset)
             now.setMonth(setMonthValue)
@@ -90,11 +88,11 @@ export default ScheduleTopBar = (props) => {
         return moment(now)
     }
 
-    monthChange = (type) => {
+    const monthChange = (type) => {
         month = getMonth(type);
 
         dispatch({
-            type: scheduleActions.MONTHCHANGE, 
+            type: scheduleActions.MONTHCHANGE,
             newState: {
                 currentDate: month,
                 datePositions: [],
@@ -106,66 +104,66 @@ export default ScheduleTopBar = (props) => {
     }
 
     return (
-        <View style={[styles.topContainer, {paddingTop: props.screenDimensions.width > props.screenDimensions.height ? 0: '1%'}]}>
-        <View style={styles.buttonContainer}>
-            {searchAppointmentStatus === true && state.selectedSearchValue!== "" && state.searchResultSelect !== "" ?
-                <Button
-                    title="Undo Search"
-                    buttonPress={this.undoSearchPress}
-                    backgroundColor = "#F7FAFC"
-                    color = "#4A5568"
+        <View style={[styles.topContainer, { paddingTop: props.screenDimensions.width > props.screenDimensions.height ? 0 : '1%' }]}>
+            <View style={styles.buttonContainer}>
+                {searchAppointmentStatus && state.selectedSearchValue !== "" && state.searchResultSelect !== "" ?
+                    <Button
+                        title="Undo Search"
+                        buttonPress={undoSearchPress}
+                        backgroundColor="#F7FAFC"
+                        color="#4A5568"
+                    />
+                    :
+                    <Button
+                        title="Search"
+                        buttonPress={searchPress}
+                        backgroundColor="#F7FAFC"
+                        color="#4A5568"
+                    />
+                }
+
+            </View>
+            <View style={{ alignItems: 'center' }}>
+                <Month
+                    calendarLayoutMeasure={calendarLayoutMeasure}
+                    currentDate={state.currentDate}
+
+                    prevMonthDate={getMonth}
+                    nextMonthDate={getMonth}
+
+                    decreaseMonthChange={monthChange}
+                    increaseMonthChange={monthChange}
                 />
-                :
+            </View>
+            <View style={styles.buttonContainer}>
                 <Button
-                    title="Search"
-                    buttonPress={this.searchPress}
-                    backgroundColor="#F7FAFC"
-                    color="#4A5568"
+                    title={displayTodayAppointment ? "Go Back" : "Go to Today"}
+                    buttonPress={onGoToTodayClick}
+
                 />
-            }
-            
-        </View>
-        <View style={{alignItems:'center' }}>
-            <Month
-                calendarLayoutMeasure = {calendarLayoutMeasure}
-                currentDate={state.currentDate}
-
-                prevMonthDate={getMonth('prev')}
-                nextMonthDate = {getMonth('next')}
-
-                decreaseMonthChange = {monthChange}
-                increaseMonthChange = {monthChange}
-            />
-        </View> 
-        <View style={styles.buttonContainer}>
-            <Button
-                title= {displayTodayAppointment ? "Go Back" : "Go to Today"}
-                buttonPress={onGoToTodayClick}
-
-            />
-        </View> 
-         {state.searchOpen &&
-                <ScheduleSearch 
+            </View>
+            {state.searchOpen &&
+                <ScheduleSearch
                     appointmentDates={state.appointmentDates}
                     setSearchAppointmentStatus={setSearchAppointmentStatus}
-                  
-                />
-            }  
-    </View>
 
-  
-                        )
+                />
+            }
+        </View>
+
+
+    )
 }
 
 
-const styles=StyleSheet.create({
-    topContainer:{
-        marginLeft:'4%',
-        marginRight:'4%',
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between',
-        paddingBottom:20,
+const styles = StyleSheet.create({
+    topContainer: {
+        marginLeft: '4%',
+        marginRight: '4%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingBottom: 20,
         marginTop: 18
     }
 })

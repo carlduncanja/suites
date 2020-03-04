@@ -1,16 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, TextInput } from 'react-native';
-import InputText from './InputText';
-import Svg, { Path } from 'react-native-svg';
 import SvgIcon from '../../assets/SvgIcon'
-import { ScheduleContext } from '../../contexts/ScheduleContext';
-import { scheduleActions } from '../../reducers/scheduleReducer';
 import { useCloseTransparent } from '../../hooks/useScheduleService';
 
 export default SearchBar = (props) => {
     [searchResult, setSearchResult] = useState(1);
-
-    const [state, dispatch] = useContext(ScheduleContext);
 
     searchResult  = (type) => {
         type === 'prev' ?  
@@ -19,15 +13,11 @@ export default SearchBar = (props) => {
             searchResult = searchResult + 1;
 
         setSearchResult(searchResult)
+
+        props.setAppointmentSearch(props.selectedDayEvents[searchResult - 1].event, 
+            props.selectedAppEvents[searchResult - 1], 
+            props.selectedDayEvents[searchResult - 1].day)
         
-        dispatch({
-            type: scheduleActions.SEARCHAPPOINTMENT,
-            newState: [
-                props.selectedDayEvents[searchResult - 1].event, 
-                props.selectedAppEvents[searchResult - 1], 
-                props.selectedDayEvents[searchResult - 1].day
-            ]
-        })
     }
 
 

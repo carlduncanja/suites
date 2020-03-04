@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import {Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 
-export default class ScheduleCard extends Component{    
-    render(){
+export default ScheduleCard = (props) => {    
         const getTime = (appointment) => {
             let timePeriod;
             let time;
@@ -29,7 +28,7 @@ export default class ScheduleCard extends Component{
                 <View 
                     style = {{
                         alignSelf:'center',
-                        backgroundColor:statusColor(this.props.appointment.level),
+                        backgroundColor:statusColor(props.appointment.level),
                         height:11,
                         width: 11,
                         borderRadius: 10/2,
@@ -39,10 +38,10 @@ export default class ScheduleCard extends Component{
                 <View  style={{flex:1}}>
                     <TouchableOpacity 
                         style={styles.infoContainer} 
-                        onPress = {() => {this.props.animateSlide();this.props.showScheduleDetails(this.props.appointment)}}
+                        onPress = {() => {props.animateSlide(props.displayFullCalendar);props.showScheduleDetails(props.appointment)}}
                     >
-                        <Text style={styles.title}>{this.props.appointment.title} - {this.props.appointment.responseEntity}</Text>
-                        <Text style={styles.time}>{getTime(this.props.appointment.startTime)} - {getTime(this.props.appointment.endTime)}</Text>
+                        <Text style={styles.title}>{props.appointment.title} - {props.appointment.responseEntity}</Text>
+                        <Text style={styles.time}>{getTime(props.appointment.startTime)} - {getTime(props.appointment.endTime)}</Text>
                     </TouchableOpacity>          
                 </View>
                 
@@ -50,7 +49,6 @@ export default class ScheduleCard extends Component{
     )
 
 
-    }
     
     
 }

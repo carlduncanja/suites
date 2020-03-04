@@ -4,37 +4,34 @@ import ScheduleList from './ScheduleList'
 import ScheduleCard from './ScheduleCard';
 
 
-export default class DailyAppointmentCard extends Component {
-    render(){
-       
+export default DailyAppointmentCard = (props) => {
         return (
-            <View style={[styles.dateContainer, {opacity:this.props.status === true? 1 :0.4}]}>
+            <View style={[styles.dateContainer, {opacity:props.status === true? 1 :0.4}]}>
                 <View style={styles.dateLabelContainer}>
                     <Text style={styles.dateLabel}>
-                        {this.props.dailyText}
+                        {props.dailyText}
                     </Text>
                 </View>
                 <FlatList 
-                    key={this.props.keyValue}
-                    data={this.props.dailyAppointments}
+                    key={props.keyValue}
+                    data={props.dailyAppointments}
                     renderItem={({ item }) => 
                         <ScheduleCard 
                             appointment={item} 
-                            showScheduleDetails={this.props.showScheduleDetails}
-                            animateSlide = {this.props.animateSlide}
+                            showScheduleDetails={props.showScheduleDetails}
+                            animateSlide = {props.animateSlide}
                         />
                     }
                     keyExtractor={item => item.id}
                 />
                 {/* <ScheduleList
-                    keyValue = {this.props.keyValue}
-                    appointments = {this.props.dailyAppointments}
-                    showScheduleDetails = {this.props.showScheduleDetails}
-                    animateSlide = {this.props.animateSlide}
+                    keyValue = {props.keyValue}
+                    appointments = {props.dailyAppointments}
+                    showScheduleDetails = {props.showScheduleDetails}
+                    animateSlide = {props.animateSlide}
                 /> */}
             </View>
         )
-    }
 }
 
 const styles = StyleSheet.create({

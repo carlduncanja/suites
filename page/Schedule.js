@@ -24,135 +24,24 @@ export default Schedule = (props) => {
     
     const [state, dispatch] = useContext(ScheduleContext);
 
-    animateSlide=()=>{
-        const slideUpNum = !state.displayFullCalendar ? 600 : 300
-        slideUpAnimValue = new Animated.Value(0);
-            Animated.timing(
-                slideUpAnimValue,
-                {
-                    toValue:slideUpNum,
-                    duration:800,
-                    easing: Easing.cubic
-                },
-                
-            ).start() && slideUpAnimValue.setValue(slideUpNum)
-    }  
     
-  
 
-    getOffset = (event) => {
-        setScheduleOffset(event);
-    }
-
-    showScheduleDetails = (appointment) => {
-        let newObject = Object.assign({},appointment);
-        this.props.setTransparent(!this.state.showSlider)
-        this.setState({
-            slideValue: displayFullCalendar === false ? 600 : 300,
-            scheduleDetails:newObject,
-            showSlider:!this.state.showSlider,
-            showDrawer: !this.state.showSlider,
-        }, )
-    };
-
-    showFullCalendar = () => {
+    const showFullCalendar = () => {
         let status = !displayFullCalendar;
         this.setState({displayFullCalendar:status})
     };
-    
-    closeTransparent = () => {
-        setSlideValue(0);
-        setShowSlider(false);
-        setShowDrawer(false);
-        setSearchOpen(false);
-        setTransparent(false)
-        
-        if (selectedSearchValue === "") { 
-            setSearchAppointment([]);
-            setSearchResultSelect("");
-         } else {
-            setSearchValue("");
-            setSelectedSearchValue("")
-         } 
-    
-    }
 
-
-    restartDrag = () => {
+    const restartDrag = () => {
         this.setState({slideDraggable:true})
     };
 
-    stopScheduleDrag = (height, bottom) => {
+    const stopScheduleDrag = (height, bottom) => {
         height === Dimensions.get('window').height - 150 ? this.setState({slideDraggable:false}) : null
         height === -bottom ? this.setState({showSlider:false}) : null
     };
 
 
 
-    getCurrentDays = (inputMonth, inputYear) => {
-        let results=[];
-        let daysInMonth = moment([inputYear, inputMonth -1]).daysInMonth();
-        for (let i =1; i<= daysInMonth; i++){
-            i < 10 ?  day=`0${i}` :  day = i;
-            let str = `${inputYear}-${inputMonth}-${day}`;
-            results.push(moment(str))
-        }
-        return results
-    };
-
-    getStartDays = () => {
-        //0-Sun 1-Mon 2-Tues 3-Wed 4-Thur 5-Fri 6-Sat
-        //Previous  Month
-        d = new Date(currentDate)
-        d.setDate(1)
-        d.setHours(-1)
-        const momentDay = moment(d)
-        
-        let day = parseInt(momentDay.format("DD"))
-        let days = [momentDay.format("YYYY-MM-DD")]
-        const startDayNum = moment(currentDate).startOf("month").format("d")
-        const dayIndex = parseInt(startDayNum) === 0 ? 7 : parseInt(startDayNum)
-       
-        if (dayIndex === 1) {
-            days = []
-        }
-        else{
-            for (i = 1; i < dayIndex-1; i++){
-                days.push(moment(`${momentDay.format("YYYY-MM")}-${day-1}`).format("YYYY-MM-DD"))
-                day--
-            }
-        }   
-        return days.reverse()
-        
-    } 
-
-
-
-
-    getEndDays = () => {
-        //get first 5 days of next onth
-        //Next Month
-        const now = new Date(currentDate)
-        now.setDate(1)
-        now.setMonth(now.getMonth()+1)
-        const momentDay = moment(now)
-
-        let day = parseInt(moment(now).format("DD"))
-        let days = [momentDay.format("YYYY-MM-DD")]
-        const endDayNum = moment(currentDate).endOf("month").format("d")
-
-        if (parseInt(endDayNum) === 0){
-            days = []
-        }else{
-            for (i = endDayNum ; i < 6 ; i++){
-                const dayNum = (day+1 < 10) ? `0${day+1}` : day+1
-                days.push(moment(`${momentDay.format("YYYY-MM")}-${dayNum}`).format("YYYY-MM-DD"))
-                day++
-            }
-        }
-        return days
-    }
-   
 
         const drawer = require("react-native-drawer-menu").default;
         
@@ -171,23 +60,11 @@ export default Schedule = (props) => {
                     }}
                 >
 
-                <ScheduleListView
-                    // setScrollView = { (scrollViewComponent) => {
-                    //     this.setState({
-                    //         _scrollAppointment: scrollViewComponent
-                    //     })
-                    // }}
-                    // startDays = {this.getStartDays()}
-                    // endDays = {this.getEndDays()}
-                    // currentDays = {this.getCurrentDays(currentDate.format("MM"),currentDate.format("YYYY"))}
-                    animateSlide = {this.animateSlide}
-                    // showScheduleDetails = {this.showScheduleDetails}
-                    // getAppointments = {this.getAppointments}
-                    // getOffset = {this.getOffset}
-                />
+                {/* <ScheduleListView /> */}
 
             </View>
         )
+
         
 
         const mainContent = (
@@ -196,7 +73,7 @@ export default Schedule = (props) => {
                     {showNotification &&
                         <View style={{flex:1, position:'absolute',zIndex: 1, right:10, top:10, width:'55%'}}>
                             <Notification
-                                closeNavigation={setShowNotification(false)}
+                                closeNavigation={setShowNotification}
                             />
                         </View>
                     }
