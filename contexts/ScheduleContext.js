@@ -24,7 +24,7 @@ const initialState = {
     appointmentDates: [],
     _scrollView: null,
     _scrollAppointment: null
-}
+};
 
 export const ScheduleContext = createContext(initialState);
 

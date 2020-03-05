@@ -4,32 +4,40 @@ import ActionContainer from '../common/FloatingAction/ActionContainer';
 import Svg, { Path, Rect } from 'react-native-svg';
 import SvgIcon from '../../assets/SvgIcon';
 
-export default NavigationTab = (props) => {
-
+/**
+ * Component for the side navigation tabs
+ */
+export default ({tabName, icon, onTabPress}) => {
     const generateIcon = (iconName, colour) => {
         return <SvgIcon iconName={iconName} strokeColor={colour} />
-    }
+    };
 
-    console.log('hoooo')
-
-    const generateTouchabaleOpacity = (colour) => {
+    const generateTouchableOpacity = (colour) => {
         return (
-            <TouchableOpacity style={styles.navTag} onPress={e => console.log('tabbbb')}>
-                {generateIcon(props.tabSelected,colour)}
-                <Text style={[styles.navText, { color: '#718096' }]}>{props.tabSelected.toUpperCase()}</Text>
+            <TouchableOpacity style={styles.navTag} onPress={onTabPress}>
+                {generateIcon(icon, colour)}
+                <Text
+                    style={
+                        [styles.navText, { color: '#718096' }]
+                    }
+                >
+                    {tabName.toUpperCase()}
+                </Text>
             </TouchableOpacity>
         )
-    }
-   
+    };
+
+    const isTabSelected = tabName === "selectedTab";
+
     return (
         <View
             ref={ref => this.navTagRef = ref}
             style={styles.container}
         >
-            {props.transparent === true ?
-                generateTouchabaleOpacity("#718096")
+            {isTabSelected === true ?
+                generateTouchableOpacity("#718096")
             :
-                generateTouchabaleOpacity("#CBD5E0")
+                generateTouchableOpacity("#CBD5E0")
             }
         </View>
     )
@@ -95,7 +103,7 @@ const styles = StyleSheet.create({
 // </View>
 
 // :
- 
+
 // const svgCorner = (fillColor, side) => {
 
 //     side === "right" ? d = "M12 12V0C12 6.62742 6.62742 12 0 12H12Z" : d = "M12 0H0C6.62742 0 12 5.37258 12 12V0Z";

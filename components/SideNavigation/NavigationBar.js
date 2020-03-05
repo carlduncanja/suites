@@ -8,15 +8,20 @@ import SvgIcon from '../../assets/SvgIcon';
 import { createNavigator, TabRouter } from 'react-navigation';
 
 export const NavigationBar = (props) => {
+
     const { routes, index } = props.navigation.state;
     const descriptor = props.descriptors[routes[index].key];
 
     const ActiveScreen = descriptor.getComponent();
     const Provider = descriptor.state.params.provider;
 
+
+    console.log("ActiveScreen: ", ActiveScreen, index);
+
     return (
         <View style={{ flex: 1, flexDirection: 'row' }}>
-            <View style={{ flex: 1, width: '11%' }}>
+
+            <View style={{ flex: 1, width: '11%' }} >
                 <View style={{ flex: 1 }}>
                     <View style={styles.viewContainer}>
                         <View style={[styles.logo,
@@ -32,44 +37,45 @@ export const NavigationBar = (props) => {
                             showsVerticalScrollIndicator={false}
                             style={[styles.container]}
                             contentContainerStyle={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}
-                        //bounces={false}
+                            //bounces={false}
                         >
 
-                            {routes.map((route, tabIndex) => {
-                                const { routeName, params } = route;
-                                const { icon, tabName } = params || {};
+                            {
+                                // Spread the navigation routes.
+                                routes.map((route, tabIndex) => {
+                                    const { routeName, params } = route;
+                                    const { icon, tabName } = params || {};
 
-                                return (
-                                    <View style={{ width: '100%' }} key={tabIndex}>
-                                        <NavigationTab
-                                            {...props}
-                                            icon={icon}
-                                            tabName={tabName}
-                                        />
-
-                                    </View>
-
-
-                                )
-                            })}
-
+                                    return (
+                                        <View style={{ width: '100%' }} key={tabIndex}>
+                                            <NavigationTab
+                                                icon={icon}
+                                                tabName={tabName}
+                                                onTabPress={(e) =>  {
+                                                    props.navigation.navigate(tabName);
+                                                    // props.onTabPress(e, tabName)
+                                                }}
+                                            />
+                                        </View>
+                                    )
+                                })
+                            }
                         </ScrollView>
 
                     </View>
                     <View style={styles.footer} />
                 </View>
             </View>
-            <View style={styles.content}>
 
+
+            <View style={styles.content}>
                 <Provider>
                     <ActiveScreen navigation={descriptor.navigation} {...props} />
                 </Provider>
-
             </View>
         </View>
     )
-}
-
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -90,7 +96,7 @@ const styles = StyleSheet.create({
     content: {
         flex: 12,
     }
-})
+});
 
 export const createSidebarNavigator = (routeConfigMap, sidebarNavigatorConfig) => {
     const customTabRouter = TabRouter(routeConfigMap, sidebarNavigatorConfig);

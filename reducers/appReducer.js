@@ -1,7 +1,7 @@
 export const appActionTypes = {
     DIMENSIONS: "DIMENSIONS",
     TABSELECTED: "TABSELECTED"
-}
+};
 
 export const appReducer = (state, action) => {
     const { type, newState } = action;
@@ -11,4 +11,4 @@ export const appReducer = (state, action) => {
         default:
             return state
     }
-}
+};

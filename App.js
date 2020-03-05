@@ -9,8 +9,8 @@ import { appActionTypes, appReducer } from './reducers/appReducer';
 import { initialState, SuitesContext } from './SuitesContext';
 import NavigationStack from './components/SideNavigation/NavigationStack';
 
-export default App = () => {
-  const [state, dispatch] = useReducer(appReducer, initialState)
+const App = () => {
+  const [state, dispatch] = useReducer(appReducer, initialState);
 
   const contextValue = useMemo(() => {
     return { state, dispatch };
@@ -19,30 +19,29 @@ export default App = () => {
 
   const getDimensions = (event) => {
     dispatch({
-      type: appActionTypes.DIMENSIONS, 
-      newState: { width: event.nativeEvent.layout.width, length: event.nativeEvent.layout.height}
-    });
-  };
+        type: appActionTypes.DIMENSIONS,
+        newState: { width: event.nativeEvent.layout.width, length: event.nativeEvent.layout.height}
+      });
+    };
 
-  console.log('hiii', state)
-
-  const onPressTab = (event,selected) => {
-    dispatch({
-      type: appActionTypes.TABSELECTED,
-      newState:{ tabSelected: selected, status: true}
-    });
-  }
+    const onTabPress = (event, selected) => {
+      console.log("tab press", selected);
+      dispatch({
+        type: appActionTypes.TABSELECTED,
+        newState:{ tabSelected: selected, status: true}
+      });
+    };
 
 
     return (
       <SuitesContext.Provider value={{ state: contextValue.state, dispatch: contextValue.dispatch}}>
-        <SafeAreaView style={styles.container} onLayout={this.getDimensions}>
-            <NavigationStack
-              screenDimensions = {state.screenDimensions}
-              tabSelected = {state.tabSelected.tabSelected}
-              onPressTab = {onPressTab}
-             />
-      </SafeAreaView>
+          <SafeAreaView style={styles.container} onLayout={this.getDimensions}>
+              <NavigationStack
+                screenDimensions = {state.screenDimensions}
+                tabSelected = {state.tabSelected.tabSelected}
+                onTabPress = {onTabPress}
+               />
+          </SafeAreaView>
       </SuitesContext.Provider>
     );
 
@@ -67,3 +66,5 @@ const styles = StyleSheet.create({
   }
 
 });
+
+export default App
