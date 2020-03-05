@@ -2,7 +2,7 @@ import React from 'react';
 
 import { createNavigator, TabRouter, SafeAreaView } from 'react-navigation';
 
-import NavigationTab from './../components/SideNavigation/NavigationTab';
+import NavigationTab from '../components/SideBar/SideBarTabComponent';
 
 const SidebarTabsNavigator = ({ navigation, descriptors }) => {
   const { routes, index } = navigation.state;

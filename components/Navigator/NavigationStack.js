@@ -1,5 +1,5 @@
 import { createAppContainer } from 'react-navigation';
-import { createSidebarNavigator } from './NavigationBar';
+import { createSidebarNavigator } from './SuiteNavigator';
 
 /* Screens */
 import Schedule from './../../page/Schedule';
@@ -16,7 +16,7 @@ import {ScheduleProvider} from '../../contexts/ScheduleContext';
 const sidebarNavigator = createSidebarNavigator(
   {
     Schedule: {
-      screen: Schedule,
+      screen: TestPage,
       params: {
         icon: 'schedule',
         tabName: 'schedule',

@@ -7,7 +7,7 @@ import Schedule from './page/Schedule';
 
 import { appActionTypes, appReducer } from './reducers/appReducer';
 import { initialState, SuitesContext } from './SuitesContext';
-import NavigationStack from './components/SideNavigation/NavigationStack';
+import NavigationStack from './components/Navigator/NavigationStack';
 
 const App = () => {
   const [state, dispatch] = useReducer(appReducer, initialState);
