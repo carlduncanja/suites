@@ -6,29 +6,31 @@ import NavigationTab from "./SideBarTabComponent";
 
 function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed}) {
 
-
     return (
         <View style={{
             flex: 1,
-            width: '11%',
-            backgroundColor: "red",
+            width: '100%',
             shadowColor: "#000",
             shadowOffset: {
-                width: 3,
-                height: 2,
+                width: 3.5,
+                height: 0,
             },
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
             elevation: 5,
         }} >
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, width: '100%', flexDirection: 'row'}}>
                 <View style={styles.viewContainer}>
-                    <View style={[
-                        styles.logo,
-                        { paddingBottom: screenDimensions.width > screenDimensions.height ? 10 : 25 }
-                    ]}>
+
+                    {/*Logo*/}
+                    <View style={
+                        [ styles.logo,
+                            {paddingBottom: screenDimensions.width > screenDimensions.height ? 10 : 25 }
+                        ]
+                    }>
                         <SvgIcon iconName="logo" />
                     </View>
+
                     <ScrollView
                         stickyHeaderIndices={[selectedIndex]}
                         scrollEventThrottle={2}
@@ -45,11 +47,14 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
 
                                 return (
                                     <View style={{ width: '100%' }} key={tabIndex}>
+
                                         <NavigationTab
                                             icon={icon}
                                             tabName={tabName}
+                                            isTabSelected={tabIndex === selectedIndex}
                                             onTabPress={(e) => onTabPressed(e, routeName)}
                                         />
+
                                     </View>
                                 )
                             })
@@ -57,7 +62,8 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                     </ScrollView>
 
                 </View>
-                <View style={styles.footer} />
+
+                <View style={styles.sideBarEdge} />
             </View>
         </View>
     );
@@ -70,9 +76,10 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     viewContainer: {
+        height: '100%',
+        width: '90%',
         flexDirection: 'column',
         alignItems: 'center',
-        height: '100%',
         backgroundColor: '#104587',
         //flex:1,
     },
@@ -81,6 +88,10 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 12,
+    },
+    sideBarEdge: {
+        width: '10%',
+        backgroundColor: "white"
     }
 });
 

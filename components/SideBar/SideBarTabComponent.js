@@ -4,18 +4,29 @@ import ActionContainer from '../common/FloatingAction/ActionContainer';
 import Svg, { Path, Rect } from 'react-native-svg';
 import SvgIcon from '../../assets/SvgIcon';
 
+
 /**
  * Component for the side navigation tabs
  */
-export default ({tabName, icon, onTabPress}) => {
+export default ({tabName, icon, isTabSelected, onTabPress}) => {
+
     const generateIcon = (iconName, colour) => {
         return <SvgIcon iconName={iconName} strokeColor={colour} />
     };
+
+    const Selector = () => <SvgIcon>
+
+    </SvgIcon>;
+
+
 
     const generateTouchableOpacity = (colour) => {
         return (
             <TouchableOpacity style={styles.navTag} onPress={onTabPress}>
                 {generateIcon(icon, colour)}
+
+
+
                 <Text
                     style={
                         [styles.navText, { color: '#718096' }]
@@ -26,8 +37,6 @@ export default ({tabName, icon, onTabPress}) => {
             </TouchableOpacity>
         )
     };
-
-    const isTabSelected = tabName === "selectedTab";
 
     return (
         <View

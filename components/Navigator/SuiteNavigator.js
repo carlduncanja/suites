@@ -40,16 +40,6 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
                 screenDimensions={screenDimensions}
                 navigation={navigation}
                 onTabPressed={handleOnTabPress}
-                style={{
-                    shadowColor: "#000",
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                }}
             />
 
             <View style={styles.content}>
