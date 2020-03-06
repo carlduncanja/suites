@@ -85,7 +85,6 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
                 }
 
             </TouchableOpacity>
-
         </View>
     )
 }

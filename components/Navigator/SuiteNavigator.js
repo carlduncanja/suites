@@ -33,16 +33,17 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
     };
 
     return (
-        <View style={{ flex: 1, flexDirection: 'row' }}>
+        <View style={styles.container}>
             <SideBarComponent
                 routes={routes}
                 selectedIndex={index}
                 screenDimensions={screenDimensions}
                 navigation={navigation}
                 onTabPressed={handleOnTabPress}
+                style={styles.navBar}
             />
 
-            <View style={styles.content}>
+            <View style={styles.pageContent}>
                 <Provider>
                     <ActiveScreen
                         navigation={descriptor.navigation}
@@ -59,20 +60,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        flexDirection: 'column',
+        flexDirection: 'row',
     },
-    viewContainer: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        height: '100%',
-        backgroundColor: '#104587',
-        //flex:1,
+    navBar: {
+        backgroundColor: 'blue'
     },
-    logo: {
-        paddingTop: 10
-    },
-    content: {
-        flex: 12,
+    pageContent: {
+        flex: 1,
     }
 });
 

@@ -7,8 +7,8 @@ import NavigationTab from "./SideBarTabComponent";
 function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed}) {
     return (
         <View style={{
-            flex: 1,
-            width: '100%',
+            flexDirection: 'row',
+            width: 88,
             shadowColor: "#000",
             shadowOffset: {
                 width: 3.5,
@@ -18,52 +18,48 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
             shadowRadius: 3.84,
             elevation: 5,
         }} >
-            <View style={{ flex: 1, width: '100%', flexDirection: 'row'}}>
-                <View style={styles.viewContainer}>
+            <View style={styles.tabContainer}>
 
-                    {/*Logo*/}
-                    <View style={
-                        [ styles.logo,
-                            {paddingBottom: screenDimensions.width > screenDimensions.height ? 10 : 25 }
-                        ]
-                    }>
-                        <SvgIcon iconName="logo" />
-                    </View>
-
-                    <ScrollView
-                        stickyHeaderIndices={[selectedIndex]}
-                        scrollEventThrottle={2}
-                        scrollEnabled={true}
-                        showsVerticalScrollIndicator={false}
-                        style={[styles.container]}
-                        contentContainerStyle={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}
-                    >
-                        {
-                            // Spread the navigation routes.
-                            routes.map((route, tabIndex) => {
-                                const { routeName , params } = route;
-                                const { icon, tabName } = params || {};
-
-                                return (
-                                    <View style={{ width: '100%' }} key={tabIndex}>
-
-                                        <NavigationTab
-                                            icon={icon}
-                                            tabName={tabName}
-                                            isTabSelected={tabIndex === selectedIndex}
-                                            onTabPress={(e) => onTabPressed(e, routeName)}
-                                        />
-
-                                    </View>
-                                )
-                            })
-                        }
-                    </ScrollView>
-
+                {/*Logo*/}
+                <View style={[ styles.logo,
+                        {paddingBottom: screenDimensions.width > screenDimensions.height ? 10 : 25 }
+                    ]}>
+                    <SvgIcon iconName="logo" />
                 </View>
 
-                <View style={styles.sideBarEdge} />
+                <ScrollView
+                    stickyHeaderIndices={[selectedIndex]}
+                    scrollEventThrottle={2}
+                    scrollEnabled={true}
+                    showsVerticalScrollIndicator={false}
+                    style={[styles.container]}
+                    contentContainerStyle={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}
+                >
+                    {
+                        // Spread the navigation routes.
+                        routes.map((route, tabIndex) => {
+                            const { routeName , params } = route;
+                            const { icon, tabName } = params || {};
+
+                            return (
+                                <View style={{ width: '100%' }} key={tabIndex}>
+
+                                    <NavigationTab
+                                        icon={icon}
+                                        tabName={tabName}
+                                        isTabSelected={tabIndex === selectedIndex}
+                                        onTabPress={(e) => onTabPressed(e, routeName)}
+                                    />
+
+                                </View>
+                            )
+                        })
+                    }
+                </ScrollView>
+
             </View>
+
+            <View style={styles.sideBarEdge} />
         </View>
     );
 }
@@ -71,12 +67,12 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: '100%',
+        width: 80,
         flexDirection: 'column',
     },
-    viewContainer: {
+    tabContainer: {
         height: '100%',
-        width: '90%',
+        width: 80,
         flexDirection: 'column',
         alignItems: 'center',
         backgroundColor: '#104587',
@@ -85,11 +81,8 @@ const styles = StyleSheet.create({
     logo: {
         paddingTop: 10
     },
-    content: {
-        flex: 12,
-    },
     sideBarEdge: {
-        width: '10%',
+        width: 8,
         backgroundColor: "white"
     }
 });
