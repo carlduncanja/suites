@@ -14,40 +14,78 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
         return <SvgIcon iconName={iconName} strokeColor={colour} />
     };
 
-    const Selector = () => <SvgIcon>
-
-    </SvgIcon>;
-
-
-
-    const generateTouchableOpacity = (colour) => {
+    const svgLeftCorner = (fillColor) => {
         return (
-            <TouchableOpacity style={styles.navTag} onPress={onTabPress}>
-                {generateIcon(icon, colour)}
-
-
-
-                <Text
-                    style={
-                        [styles.navText, { color: '#718096' }]
-                    }
-                >
-                    {tabName.toUpperCase()}
-                </Text>
-            </TouchableOpacity>
+            <Svg width="12" height="12" viewBox="0 0 12 12" style={{alignSelf: "flex-end"}}>
+                <Path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M12 0H0C6.62742 0 12 5.37258 12 12V0Z"
+                    fill={fillColor}
+                />
+            </Svg>
         )
     };
 
+    const svgRightCorner = (fillColor) => {
+        return (
+            <Svg width={12} height={12} viewBox="0 0 12 12" style={{alignSelf:"flex-end"}}>
+                <Path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M12 12V0C12 6.62742 6.62742 12 0 12H12Z"
+                    fill= {fillColor}
+                />
+            </Svg>
+        )
+    }
+
+    const iconColor = isTabSelected ? "#718096" : "#CBD5E0";
+
     return (
-        <View
-            ref={ref => this.navTagRef = ref}
-            style={styles.container}
-        >
-            {isTabSelected === true ?
-                generateTouchableOpacity("#718096")
-            :
-                generateTouchableOpacity("#CBD5E0")
-            }
+        <View style={  {...styles.container} }  >
+            <TouchableOpacity style={styles.navTag} onPress={onTabPress}>
+
+                {
+                    isTabSelected && svgRightCorner("white")
+                }
+
+                {
+                   <View style={{
+                       display: 'flex',
+                       alignItems: 'center',
+                       justifyContent: 'center',
+                       height: 40,
+                       width: '100%',
+                       backgroundColor: isTabSelected ? 'white' : 'none',
+                       shadowColor: "#000",
+                       shadowOffset: {
+                           width: 2.5,
+                           height: 3.5,
+                       },
+                       shadowOpacity: 0.5,
+                       shadowRadius: 3.84,
+                       elevation: 5
+                   }}>
+
+                       { generateIcon(icon, iconColor) }
+
+                       {
+                           !isTabSelected &&
+                           <Text style={{...styles.navText,}}>
+                               {tabName.toUpperCase()}
+                           </Text>
+                       }
+
+                   </View>
+                }
+
+                {
+                    isTabSelected && svgLeftCorner("white")
+                }
+
+            </TouchableOpacity>
+
         </View>
     )
 }

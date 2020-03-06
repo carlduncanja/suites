@@ -5,7 +5,6 @@ import SvgIcon from "../../assets/SvgIcon";
 import NavigationTab from "./SideBarTabComponent";
 
 function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed}) {
-
     return (
         <View style={{
             flex: 1,
