@@ -7,6 +7,7 @@ import CaseFiles from '../../page/CaseFiles'
 
 /* Providers*/
 import {ScheduleProvider} from '../../contexts/ScheduleContext';
+import TestPage from "../../page/TestPage";
 
 /***
  *asdf
@@ -24,7 +25,7 @@ const sidebarNavigator = createSidebarNavigator(
       },
     },
     CaseFiles: {
-      screen: CaseFiles,
+      screen: TestPage,
       params: {
         icon: 'caseFiles',
         tabName: 'CaseFile',

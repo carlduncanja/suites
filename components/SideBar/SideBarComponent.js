@@ -4,19 +4,27 @@ import {ScrollView, StyleSheet, View} from "react-native";
 import SvgIcon from "../../assets/SvgIcon";
 import NavigationTab from "./SideBarTabComponent";
 
-function SideBarComponent({routes, navigation, selectedIndex, screenDimensions}) {
-
-
-    const handleTabPress = () => {
-        // TODO navigate to the pressed tab
-    };
+function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed}) {
 
 
     return (
-        <View style={{ flex: 1, width: '11%' }} >
+        <View style={{
+            flex: 1,
+            width: '11%',
+            backgroundColor: "red",
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 3,
+                height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+        }} >
             <View style={{ flex: 1 }}>
                 <View style={styles.viewContainer}>
-                    <View style={[styles.logo,
+                    <View style={[
+                        styles.logo,
                         { paddingBottom: screenDimensions.width > screenDimensions.height ? 10 : 25 }
                     ]}>
                         <SvgIcon iconName="logo" />
@@ -29,7 +37,6 @@ function SideBarComponent({routes, navigation, selectedIndex, screenDimensions})
                         style={[styles.container]}
                         contentContainerStyle={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}
                     >
-
                         {
                             // Spread the navigation routes.
                             routes.map((route, tabIndex) => {
@@ -41,7 +48,7 @@ function SideBarComponent({routes, navigation, selectedIndex, screenDimensions})
                                         <NavigationTab
                                             icon={icon}
                                             tabName={tabName}
-                                            onTabPress={handleTabPress}
+                                            onTabPress={(e) => onTabPressed(e, routeName)}
                                         />
                                     </View>
                                 )

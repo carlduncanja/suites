@@ -26,6 +26,12 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
 
     console.log("ActiveScreen: ", ActiveScreen, index);
 
+    // event handlers;
+    const handleOnTabPress = (e, routeName) => {
+        console.log("tab pressed", routeName);
+        navigation.navigate(routeName)
+    };
+
     return (
         <View style={{ flex: 1, flexDirection: 'row' }}>
             <SideBarComponent
@@ -33,12 +39,23 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
                 selectedIndex={index}
                 screenDimensions={screenDimensions}
                 navigation={navigation}
+                onTabPressed={handleOnTabPress}
+                style={{
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
+                }}
             />
 
             <View style={styles.content}>
                 <Provider>
                     <ActiveScreen
-                        navigation={navigation}
+                        navigation={descriptor.navigation}
                         descriptor={descriptor}
                         screenDimensions={screenDimensions}
                     />

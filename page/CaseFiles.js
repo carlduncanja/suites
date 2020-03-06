@@ -19,15 +19,13 @@ export default class CaseFiles extends Component {
             toggleFloatingAction:false
         }
     }
-
     
     onPressFloatingAction(){
-        console.log("pRESSED")
         this.setState({toggleFloatingAction:!this.state.toggleFloatingAction})
     }
     render() {
         const caseFiles = require('../assets/db.json').caseFiles
-        const detailsFields = 
+        const detailsFields =
         [
             {
                 "fieldId":"firstname",
@@ -86,7 +84,7 @@ export default class CaseFiles extends Component {
                     return(
                         <View key={index} style={{marginBottom:10}}>
                             <CaseFileListItem caseDetails={caseFile}/>
-                        </View> 
+                        </View>
                     )
                 })}
             </View>
@@ -123,20 +121,20 @@ export default class CaseFiles extends Component {
                 <View style={{marginBottom:15}}>
                     <PageTitle pageTitle="Case Files"/>
                 </View>
-                
+
                 <View style={{marginBottom:30}}>
-                    <Search 
+                    <Search
                         placeholder="Search by any heading or entry below"
                         placeholderTextColor = "#A0AEC0"
                     />
                 </View>
-              
-                <List 
+
+                <List
                     data = {listData}
                     listHeaders = {["Patient","Balance","Staff","Next Visit"]}
                 />
-                
-                <View style={styles.footer}> 
+
+                <View style={styles.footer}>
                     <View style={{alignSelf:"center", marginRight:10}}>
                         <RoundedPaginator currentPage={1} totalPages={2}/>
                     </View>
@@ -145,19 +143,19 @@ export default class CaseFiles extends Component {
                         :
                         <FloatingActionButton fillColor="#CCD6E0" backgroundColor="#4299E1"/>
                     }
-                    
+
                 </View>
-                {/* <Overlay 
-                    overlayTitle ="New Case" 
-                    footerTitle="Next" 
+                {/* <Overlay
+                    overlayTitle ="New Case"
+                    footerTitle="Next"
                     fields={detailsFields}
                     icons={icons}
                     tabs={tabs}
                 /> */}
-         
+
                 {/* <ActionContainer actionTitle="Case Actions" actions={actions}/> */}
-        
-                
+
+
             </View>
         )
 
@@ -173,12 +171,12 @@ const styles = StyleSheet.create({
         backgroundColor:'#FAFAFA'
     },
     footer:{
-        alignSelf:'flex-end', 
-        flexDirection:'row', 
-        position:'absolute', 
-        bottom:0, 
-        marginBottom:20, 
-        right:0, 
+        alignSelf:'flex-end',
+        flexDirection:'row',
+        position:'absolute',
+        bottom:0,
+        marginBottom:20,
+        right:0,
         marginRight:30
     }
 })
