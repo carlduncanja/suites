@@ -10,7 +10,7 @@ import CaseFiles from '../../page/CaseFiles'
 
 /* Providers*/
 import {ScheduleProvider} from '../../contexts/ScheduleContext';
-import TestPage from "../../page/TestPage";
+import NotFound from "../../page/NotFound";
 
 /***
  *
@@ -19,7 +19,7 @@ import TestPage from "../../page/TestPage";
 const SuitesNavigationStack = createSidebarNavigator(
   {
     Schedule: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'schedule',
             tabName: 'schedule',
@@ -27,7 +27,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     CaseFiles: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'caseFiles',
             tabName: 'CaseFiles',
@@ -35,7 +35,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Theatre: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'theatres',
             tabName: 'Theathre',
@@ -43,7 +43,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Inventory: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'inventory',
             tabName: 'Inventory',
@@ -51,7 +51,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Equipment: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'equipment',
             tabName: 'Equipment',
@@ -59,7 +59,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Orders: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'orders',
             tabName: 'Orders',
@@ -67,7 +67,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Suppliers: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'delivery',
             tabName: 'Suppliers',
@@ -75,7 +75,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Invoices: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'invoices',
             tabName: 'Invoices',
@@ -83,7 +83,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Storage: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'storage',
             tabName: 'Storage',
@@ -91,7 +91,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Physicians: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'caseFiles',
             tabName: 'Physicians',
@@ -99,7 +99,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Procedures: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'procedures',
             tabName: 'Procedures',
@@ -107,7 +107,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Alerts: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'alerts',
             tabName: 'Alerts',
@@ -115,7 +115,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Help: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'help',
             tabName: 'Help',
@@ -123,7 +123,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Settings: {
-        screen: TestPage,
+        screen: NotFound,
         params: {
             icon: 'settings',
             tabName: 'Settings',
