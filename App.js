@@ -1,13 +1,12 @@
 import React, { useReducer, useMemo } from 'react';
-import { StyleSheet, SafeAreaView, Animated, PanResponder, Platform, ScrollView, View, TouchableOpacity, Text, Dimensions } from 'react-native';
-import Content from './components/layout/Content';
-import moment from 'moment';
-
-import Schedule from './page/Schedule';
+import { StyleSheet, SafeAreaView} from 'react-native';
 
 import { appActionTypes, appReducer } from './reducers/appReducer';
 import { initialState, SuitesContext } from './SuitesContext';
-import NavigationStack from './components/Navigator/NavigationStack';
+
+// import NavigationStack from './components/Navigator/NavigationStack';
+import NavigationStack from './components/navigation/NavigationStack';
+
 
 const App = () => {
   const [state, dispatch] = useReducer(appReducer, initialState);
@@ -45,7 +44,7 @@ const App = () => {
       </SuitesContext.Provider>
     );
 
-}
+};
 
 
 const styles = StyleSheet.create({

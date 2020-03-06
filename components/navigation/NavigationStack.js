@@ -1,8 +1,7 @@
 import { createAppContainer } from 'react-navigation';
-import { createSidebarNavigator } from './NavigationBar';
+import { createSidebarNavigator } from './SuiteNavigator';
 
 import React from "react";
-import {Text, View} from "react-native";
 
 
 /* Screens */
@@ -35,6 +34,102 @@ const SuitesNavigationStack = createSidebarNavigator(
             provider: ScheduleProvider
         },
     },
+    Theatre: {
+        screen: TestPage,
+        params: {
+            icon: 'theatres',
+            tabName: 'Theathre',
+            provider: ScheduleProvider
+        },
+    },
+    Inventory: {
+        screen: TestPage,
+        params: {
+            icon: 'inventory',
+            tabName: 'Inventory',
+            provider: ScheduleProvider
+        },
+    },
+    Equipment: {
+        screen: TestPage,
+        params: {
+            icon: 'equipment',
+            tabName: 'Equipment',
+            provider: ScheduleProvider
+        },
+    },
+    Orders: {
+        screen: TestPage,
+        params: {
+            icon: 'orders',
+            tabName: 'Orders',
+            provider: ScheduleProvider
+        },
+    },
+    Suppliers: {
+        screen: TestPage,
+        params: {
+            icon: 'delivery',
+            tabName: 'Suppliers',
+            provider: ScheduleProvider
+        },
+    },
+    Invoices: {
+        screen: TestPage,
+        params: {
+            icon: 'invoices',
+            tabName: 'Invoices',
+            provider: ScheduleProvider
+        },
+    },
+    Storage: {
+        screen: TestPage,
+        params: {
+            icon: 'storage',
+            tabName: 'Storage',
+            provider: ScheduleProvider
+        },
+    },
+    Physicians: {
+        screen: TestPage,
+        params: {
+            icon: 'caseFiles',
+            tabName: 'Physicians',
+            provider: ScheduleProvider
+        },
+    },
+    Procedures: {
+        screen: TestPage,
+        params: {
+            icon: 'procedures',
+            tabName: 'Procedures',
+            provider: ScheduleProvider
+        },
+    },
+    Alerts: {
+        screen: TestPage,
+        params: {
+            icon: 'alerts',
+            tabName: 'Alerts',
+            provider: ScheduleProvider
+        },
+    },
+    Help: {
+        screen: TestPage,
+        params: {
+            icon: 'help',
+            tabName: 'Help',
+            provider: ScheduleProvider
+        },
+    },
+    Settings: {
+        screen: TestPage,
+        params: {
+            icon: 'settings',
+            tabName: 'Settings',
+            provider: ScheduleProvider
+        },
+    }
   },
   {
     initialRouteName: 'Schedule',
