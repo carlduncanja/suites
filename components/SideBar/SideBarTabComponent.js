@@ -74,7 +74,7 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
                        {
                            <Text style={{
                                ...styles.navText,
-                               display:  isTabSelected ? 'none' : 'inherit'
+                               display:  isTabSelected ? 'none' : 'flex'
                            }}>
                                {tabName.toUpperCase()}
                            </Text>
