@@ -12,12 +12,26 @@ import CaseFiles from '../../page/CaseFiles'
 import {ScheduleProvider} from '../../contexts/ScheduleContext';
 import NotFound from "../../page/NotFound";
 
+
+/* Icons */
+import ScheduleIcon from "../../assets/svg/schedule"
+import CaseFileIcon from "../../assets/svg/caseFile"
+import TheathreIcon from "../../assets/svg/threatre"
+import InventoryIcon from "../../assets/svg/caseFile"
+import EquipmentIcon from "../../assets/svg/equipment"
+import OrdersIcon from "../../assets/svg/equipment"
+import DeliveryIcon from "../../assets/svg/delivery"
+import InvoiceIcon from "../../assets/svg/invoices"
+import StorageIcon from "../../assets/svg/storage"
+import PhysiciansIcon from "../../assets/svg/physicians"
+import ProcedureIcon from "../../assets/svg/procedures"
+
 /***
  *  Top level navigation Stack for Suites Application for the side navigation bar.
  *  https://reactnavigation.org/docs/4.x/app-containers/#props-of-createappcontainer-on-react-native
  *
  *  The params
- *  @icon : Name for the icon component.
+ *  @icon : Icon component for sidebar tab.
  *  @tabName : Name displayed on the sidebar.
  *  @provider : Context provider that is passed in to the component.
  */
@@ -26,7 +40,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Schedule: {
         screen: NotFound,
         params: {
-            icon: 'schedule',
+            icon: ScheduleIcon,
             tabName: 'schedule',
             provider: ScheduleProvider
         },
@@ -34,7 +48,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     CaseFiles: {
         screen: NotFound,
         params: {
-            icon: 'caseFiles',
+            icon: CaseFileIcon,
             tabName: 'CaseFiles',
             provider: ScheduleProvider
         },
@@ -42,7 +56,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Theatre: {
         screen: NotFound,
         params: {
-            icon: 'theatres',
+            icon: TheathreIcon,
             tabName: 'Theathre',
             provider: ScheduleProvider
         },
@@ -50,7 +64,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Inventory: {
         screen: NotFound,
         params: {
-            icon: 'inventory',
+            icon: InventoryIcon,
             tabName: 'Inventory',
             provider: ScheduleProvider
         },
@@ -58,7 +72,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Equipment: {
         screen: NotFound,
         params: {
-            icon: 'equipment',
+            icon: EquipmentIcon,
             tabName: 'Equipment',
             provider: ScheduleProvider
         },
@@ -66,7 +80,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Orders: {
         screen: NotFound,
         params: {
-            icon: 'orders',
+            icon: OrdersIcon,
             tabName: 'Orders',
             provider: ScheduleProvider
         },
@@ -74,7 +88,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Suppliers: {
         screen: NotFound,
         params: {
-            icon: 'delivery',
+            icon: DeliveryIcon,
             tabName: 'Suppliers',
             provider: ScheduleProvider
         },
@@ -82,7 +96,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Invoices: {
         screen: NotFound,
         params: {
-            icon: 'invoices',
+            icon: InvoiceIcon,
             tabName: 'Invoices',
             provider: ScheduleProvider
         },
@@ -90,7 +104,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Storage: {
         screen: NotFound,
         params: {
-            icon: 'storage',
+            icon: StorageIcon,
             tabName: 'Storage',
             provider: ScheduleProvider
         },
@@ -98,7 +112,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Physicians: {
         screen: NotFound,
         params: {
-            icon: 'caseFiles',
+            icon: PhysiciansIcon,
             tabName: 'Physicians',
             provider: ScheduleProvider
         },
@@ -106,7 +120,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Procedures: {
         screen: NotFound,
         params: {
-            icon: 'procedures',
+            icon: ProcedureIcon,
             tabName: 'Procedures',
             provider: ScheduleProvider
         },
@@ -114,7 +128,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Alerts: {
         screen: NotFound,
         params: {
-            icon: 'alerts',
+            icon: CaseFileIcon,
             tabName: 'Alerts',
             provider: ScheduleProvider
         },
@@ -122,7 +136,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Help: {
         screen: NotFound,
         params: {
-            icon: 'help',
+            icon: CaseFileIcon,
             tabName: 'Help',
             provider: ScheduleProvider
         },
@@ -130,7 +144,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Settings: {
         screen: NotFound,
         params: {
-            icon: 'settings',
+            icon: CaseFileIcon,
             tabName: 'Settings',
             provider: ScheduleProvider
         },

@@ -38,9 +38,10 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
                 />
             </Svg>
         )
-    }
+    };
 
     const iconColor = isTabSelected ? "#3182CE" : "#CBD5E0";
+    const TabIcon = icon;
 
     return (
         <View style={  {...styles.container} }  >
@@ -68,7 +69,7 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
                        elevation: 5
                    }}>
 
-                       { generateIcon(icon, iconColor) }
+                       <TabIcon strokeColor={iconColor}/>
 
                        {
                            <Text style={{

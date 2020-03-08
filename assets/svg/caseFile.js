@@ -2,16 +2,15 @@ import React from 'react';
 import Svg, {Path} from "react-native-svg";
 import {View} from "react-native";
 
-const menu = ({strokeColor}) => (<View>
-        <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <Path d="M15 0H1C0.4 0 0 0.4 0 1V15C0 15.6 0.4 16 1 16H15C15.6 16 16 15.6 16 15V1C16 0.4 15.6 0 15 0ZM14 14H2V2H14V14Z" fill={fillColor}/>
-            <Path d="M12 5H4V7H12V5Z" fill={fillColor}/>
-            <Path d="M12 9H4V11H12V9Z" fill={fillColor}/>
+const caseFile = ({strokeColor, fillColor}) => (<View>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M1 9H23" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+            <Path d="M21 22H3C2.46957 22 1.96086 21.7893 1.58579 21.4142C1.21071 21.0391 1 20.5304 1 20V2H9L11 5H23V20C23 20.5304 22.7893 21.0391 22.4142 21.4142C22.0391 21.7893 21.5304 22 21 22Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
         </Svg>
     </View>
 );
 
-menu.propTypes = {};
-menu.defaultProps = {};
+caseFile.propTypes = {};
+caseFile.defaultProps = {};
 
-export default menu;
+export default caseFile;
