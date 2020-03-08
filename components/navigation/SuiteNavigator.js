@@ -9,12 +9,12 @@ import { createNavigator, TabRouter } from 'react-navigation';
 import SideBarComponent from "../SideBar/SideBarComponent";
 
 /**
- * Custom navigators
+ * Custom navigator wrapper for application.
  *
  * https://reactnavigation.org/docs/4.x/custom-navigators/
- * @param props
- * @returns {*}
- * @constructor
+ * @screenDimension :props
+ * @navigation :
+ * @descriptor :
  */
 export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
 
@@ -23,8 +23,6 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
 
     const ActiveScreen = descriptor.getComponent();
     const Provider = descriptor.state.params.provider;
-
-    console.log("ActiveScreen: ", ActiveScreen, index);
 
     // event handlers;
     const handleOnTabPress = (e, routeName) => {
