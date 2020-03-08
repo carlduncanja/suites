@@ -10,7 +10,7 @@ export const useCloseTransparent = (dispatch, scheduleActions, selectedSearchVal
             searchOpen: false,
             transparent: false
         }
-    })
+    });
 
     if (selectedSearchValue === "") {
         dispatch({
@@ -29,7 +29,7 @@ export const useCloseTransparent = (dispatch, scheduleActions, selectedSearchVal
             }
         })
     }
-}
+};
 
 export const useStartDays = (currentDate) => {
     d = new Date(currentDate)
@@ -44,8 +44,7 @@ export const useStartDays = (currentDate) => {
 
     if (dayIndex === 1) {
         days = []
-    }
-    else {
+    } else {
         for (i = 1; i < dayIndex - 1; i++) {
             days.push(moment(`${momentDay.format("YYYY-MM")}-${day - 1}`).format("YYYY-MM-DD"))
             day--
@@ -98,8 +97,6 @@ export const useAnimateSlide = (displayFullCalendar) => {
                 duration: 800,
                 easing: Easing.cubic
             },
-
         ).start() && slideUpAnimValue.setValue(slideUpNum)
     }
-
-}
+};

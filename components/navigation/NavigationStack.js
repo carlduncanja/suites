@@ -38,7 +38,7 @@ import ProcedureIcon from "../../assets/svg/procedures"
 const SuitesNavigationStack = createSidebarNavigator(
   {
     Schedule: {
-        screen: NotFound,
+        screen: Schedule,
         params: {
             icon: ScheduleIcon,
             tabName: 'schedule',
