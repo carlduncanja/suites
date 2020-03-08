@@ -13,8 +13,13 @@ import {ScheduleProvider} from '../../contexts/ScheduleContext';
 import NotFound from "../../page/NotFound";
 
 /***
+ *  Top level navigation Stack for Suites Application for the side navigation bar.
+ *  https://reactnavigation.org/docs/4.x/app-containers/#props-of-createappcontainer-on-react-native
  *
- * https://reactnavigation.org/docs/4.x/app-containers/#props-of-createappcontainer-on-react-native
+ *  The params
+ *  @icon : Name for the icon component.
+ *  @tabName : Name displayed on the sidebar.
+ *  @provider : Context provider that is passed in to the component.
  */
 const SuitesNavigationStack = createSidebarNavigator(
   {
