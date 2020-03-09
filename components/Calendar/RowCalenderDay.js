@@ -13,19 +13,19 @@ import {parse} from 'qs';
  * @returns {*}
  * @constructor
  */
-const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress}) => {
-    const color1 = '#2D3748';
-    const color2 = '#718096';
-    const color3 = '#CBD5E0';
+const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress, isInSelectMonth}) => {
 
-    const opacity = 1;
-    const color = color1;
+    const defaultColor = '#718096';
+    const selectedColor = '#323843';
+
+    const opacity = isInSelectMonth ? 1 : 0.25;
+    const color = isSelected ? selectedColor : defaultColor;
     const marginTop = 13;
-    const fontWeight = 'bold';
+    const fontWeight = isSelected ? 'bold' : 'normal';
 
     return (
         <TouchableOpacity style={[{width: "100%",}, isSelected ? styles.daySelected : {}]} onPress={e => onDayPress}>
-            <View style={[styles.dayWrapper]}>
+            <View style={[styles.dayWrapper, {opacity}]}>
                 {
                     isSelected &&
                     <DayIdentifier color="#3FC7F4"/>
@@ -34,7 +34,7 @@ const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress}) => {
                 <Text style={[styles.day, {color: color, marginTop: marginTop}]}>
                     {moment(day).format("D")}
                 </Text>
-                <Text style={{color: color2, fontWeight: fontWeight}}>
+                <Text style={{color: defaultColor, fontWeight: fontWeight}}>
                     {moment(day).format("ddd").toUpperCase()}
                 </Text>
 
@@ -81,11 +81,11 @@ const styles = StyleSheet.create({
     dayWrapper: {
         alignItems: 'center',
         paddingBottom: 20,
-        paddingTop: 3,
-        borderColor: '#EDF2F7',
-        borderRightWidth: 0.5,
-        borderBottomWidth: 0.5,
-        borderTopWidth: 0.5,
+        // paddingTop: 3,
+        // borderColor: '#EDF2F7',
+        // borderRightWidth: 0.5,
+        // borderBottomWidth: 0.5,
+        // borderTopWidth: 0.5,
     },
     daySelected: {
         shadowColor: "#000",
