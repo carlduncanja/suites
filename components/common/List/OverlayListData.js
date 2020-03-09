@@ -16,6 +16,7 @@ const OverlayListData = () => {
                 return(
                     <View key={index}>
                         <OverlayListItem
+                            modalToOpen="ReportPreviewModal"
                             fields={item}
                             checkbox = {suitesState.checkedItem && suitesState.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
                         />

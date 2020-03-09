@@ -5,9 +5,8 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 import Item from './Table/Item'
 
 openModal = (props) => {
-    const { modalToOpen1, modalToOpen2, modal } = props
-    //modal.openModal(modalToOpen1)
-    modal.openModal(modalToOpen2)
+    const { modalToOpen, modal } = props
+    modal.openModal(modalToOpen)
 }
 
 const ListItem = (props) => {

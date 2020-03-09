@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
 import Svg,{Path, Rect} from 'react-native-svg';
 import Modal from 'react-native-modal';
+import ActionContainerModal from '../common/FloatingAction/ActionContainerModal';
 
 export default class More extends Component{
     constructor(props){
@@ -36,7 +37,7 @@ export default class More extends Component{
 
                         <View style={{position:'absolute', left:45, top:-40}}>
                             <Modal isVisible={true} style={{minHeight:70}} hasBackdrop={false} coverScreen={false}>
-                                <ActionContainer actionTitle="More Details" content={<Text>Create New List</Text>}/> 
+                                <ActionContainerModal actionTitle="More Details" content={<Text>Create New List</Text>}/> 
                             </Modal>
                             
                         </View>

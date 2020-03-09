@@ -7,7 +7,7 @@ const InputText = (props) => {
     return ( 
         <TextInput
             // onChangeText = {this.props.changeText}
-            placeholder={props.placeholder}
+            placeholder={placeholder}
             placeholderTextColor = "#A0AEC0"
             // value = {this.props.inputText}
         />

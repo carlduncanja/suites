@@ -4,6 +4,7 @@ import Svg, {Path} from 'react-native-svg';
 import Action from './Action'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
+
 const ActionContainer = () => {
     const separator = () => {
         return(
@@ -29,7 +30,10 @@ const ActionContainer = () => {
                     data={suitesState.floatingActions.actions}
                     renderItem={({ item }) => 
                         <View>
-                            <Action action={item}/>
+                            <Action
+                                modalToOpen="OverlayModal" 
+                                action={item}
+                            />
                         </View>
                     }
                     keyExtractor={item => item.actionId}
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight:10,
         paddingBottom:8,
-        alignSelf:'flex-start'
+        //alignSelf:'flex-end'
     }, 
     actionTitleContainer:{
         marginTop: 8,

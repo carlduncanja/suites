@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import ActionContainer from '../common/FloatingAction/ActionContainer';
 import Svg,{Path, Rect} from 'react-native-svg';
 import SvgIcon from '../../assets/SvgIcon';
 

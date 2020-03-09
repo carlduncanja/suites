@@ -16,8 +16,7 @@ const ListData = () => {
                 return(
                     <View key={index}>
                         <ListItem
-                            modalToOpen1 = "TransparentScreenModal"
-                            modalToOpen2 = "OverlaySlidePanelModal"
+                            modalToOpen = "OverlaySlidePanelModal"
                             fields={item}
                             checkbox = {suitesState.checkedItem && suitesState.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
                         />

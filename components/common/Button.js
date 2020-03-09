@@ -3,18 +3,11 @@ import {View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { withModal } from 'react-native-modalfy';
 
 class Button extends Component {
-    openModal = () => {
-        console.log("Props:", this.props)
-        const { modalToOpen, modal } = this.props
-        modal.openModal(modalToOpen)
-    }
     render() {
-        // console.log("Modal:", this.props)
         return (
             <TouchableOpacity 
                 style={[styles.button,{backgroundColor:this.props.backgroundColor}]} 
-                // onPress={this.props.buttonPress}
-                onPress = {this.openModal}
+                onPress={this.props.buttonPress}
             >
                 <Text style={{color:this.props.color}}>{this.props.title}</Text>
             </TouchableOpacity>
@@ -22,7 +15,7 @@ class Button extends Component {
     }
 }
 
-export default withModal(Button)
+export default Button
 
 const styles=StyleSheet.create({
     button:{

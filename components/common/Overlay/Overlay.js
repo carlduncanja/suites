@@ -52,7 +52,7 @@ export default Overlay;
 const styles = StyleSheet.create({
     container:{
         //flex:1,
-        width:650,
+        width:600,
         height:700,
         backgroundColor:'#FFFFFF',
         alignSelf:'flex-end',

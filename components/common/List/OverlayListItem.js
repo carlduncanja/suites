@@ -1,8 +1,13 @@
-import React, {Component, useCallback, useContext} from 'react';
+import React, {useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import moment from 'moment';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import SvgIcon from '../../../assets/SvgIcon';
+import { withModal } from 'react-native-modalfy';
+
+openModal = (props) => {
+    const { modalToOpen, modal } = props
+    modal.openModal(modalToOpen)
+}
 
 const OverlayListItem = (props) => {
     const suitesState = useContext(SuitesContext).state
@@ -26,7 +31,10 @@ const OverlayListItem = (props) => {
                                         <TouchableOpacity 
                                             style={[styles.item,{flex:1,}]} 
                                             key={index} 
-                                            onPress={()=>suitesMethods.openReportAction(props.fields.recordId)}> 
+                                            onPress={()=>{
+                                                this.openModal(props);
+                                                suitesMethods.openReportAction(props.fields.recordId)
+                                            }}> 
                                             <SvgIcon iconName = "actions"/>
                                         </TouchableOpacity>
                                         
@@ -49,7 +57,7 @@ const OverlayListItem = (props) => {
     );
 }
  
-export default OverlayListItem;
+export default withModal(OverlayListItem);
 
 const styles = StyleSheet.create({
     container:{

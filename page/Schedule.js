@@ -71,7 +71,7 @@ export default class Schedule extends Component {
         this.increaseMonthChange = this.increaseMonthChange.bind(this);
         this.getCalendarOffset = this.getCalendarOffset.bind(this);
         this.getOffset = this.getOffset.bind(this)
-        //this.getScrollMeasure = this.getScrollMeasure.bind(this);
+        this.getScrollMeasure = this.getScrollMeasure.bind(this);
         this.getAppointmentScroll = this.getAppointmentScroll.bind(this);
         this.getAppointments = this.getAppointments.bind(this);
         //this.appointmentScroll = this.appointmentScroll.bind(this);
@@ -168,17 +168,17 @@ export default class Schedule extends Component {
         this.setState({scheduleOffset: event})
     }
 
-    // getScrollMeasure(event){
-    //     this.setState({scrollMeasure: event.nativeEvent.contentOffset.x})
-    //     let dateArray = this.state.datePositions.sort((a,b)=>a.event - b.event);
-    //     for (var i = 0; i < dateArray.length; i++){
-    //         if (dateArray[i].event >= event.nativeEvent.contentOffset.x) {
-    //             this.setState({scrollAppointmentDay: moment(dateArray[i].day)})
-    //             return true
-    //         }
-    //         null
-    //     }
-    // }
+    getScrollMeasure(event){
+        this.setState({scrollMeasure: event.nativeEvent.contentOffset.x})
+        let dateArray = this.state.datePositions.sort((a,b)=>a.event - b.event);
+        for (var i = 0; i < dateArray.length; i++){
+            if (dateArray[i].event >= event.nativeEvent.contentOffset.x) {
+                this.setState({scrollAppointmentDay: moment(dateArray[i].day)})
+                return true
+            }
+            null
+        }
+    }
 
     // appointmentScroll(event){
     //     //this.setState({scrollCalendar: event.nativeEvent.contentOffset.y})
@@ -432,7 +432,9 @@ export default class Schedule extends Component {
         //Previous  Month
         d = new Date(this.state.currentDate)
         d.setDate(1)
+
         d.setHours(-1)
+        
         const momentDay = moment(d)
         
         let day = parseInt(momentDay.format("DD"))
@@ -578,6 +580,8 @@ export default class Schedule extends Component {
                             {this.state.displayFullCalendar === false ?
                                 <RowCalendar
                                     currentDate = {this.state.currentDate}
+                                    scrollMeasure = {this.state.scrollMeasure}
+                                    scrollAppointmentDay = {this.state.scrollAppointmentDay}
                                     selected = {this.state.selected}
                                     onPressDay = {this.onPressDay}
                                     startDays = {this.getStartDays()}
@@ -592,6 +596,7 @@ export default class Schedule extends Component {
                                     getAppointmentScroll = {this.getAppointmentScroll}
                                     calendarOffset = {this.state.calendarOffset}
                                     datePositions = {this.state.datePositions}
+                                    getScrollMeasure = {this.getScrollMeasure}
                                 />
                                 :
                                 this.props.screenDimensions.width > this.props.screenDimensions.height ?

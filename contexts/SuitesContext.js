@@ -8,35 +8,19 @@ export const SuitesContext = createContext()
 
 export const SuitesContextProvider = (props) => {
     
+    //Suites
     const [sourceData, dispatchSourceReducer] = useReducer(sourceDataReducer,[])
     const [selectedSourceData, dispatchSelectedReducer] = useReducer(selectedSourceDataReducer,[])
-    const [listData, setListData] = useState([])
-    const [currentNavPage, setCurrentNavPage] = useState("caseFiles")
-    const [floatingActions, setFloatingActions] = useState({})
-    const [openAction, setOpenAction] = useState(false)
-    const [progressContainerWidth, setProgressContainerWidth] = useState(0)
     const [pageMeasure, setPageMeasure] = useState({})
-
-    const [newItemSteps, setNewItemSteps] = useState([])
-    const [itemTitle, setItemTitle] = useState("")
-    const [itemSteps, setItemSteps] = useState([])
-    const [currentStepObject, setCurrentStepObject]= useState({})
-    const [currentStepTabs, setCurrentStepTabs] = useState([])
-    const [currentSelectedStepTab, setCurrentSelectedStepTab] = useState("")
-    const [currentSelectedStepTabObject, setCurrentSelectedStepTabObject] = useState({})
-    const [currentStep, setCurrentStep] = useState("")
-    const [currentSelectedStepTabs, setCurrentSelectedStepTabs] = useState([])
-    const [currentTabPosition, setCurrentTabPosition] = useState(0)
-    const [currentStepPosition, setCurrentStepPosition] = useState(0);
-    const [overlayFooterText, setOverlayFooterText] = useState("NEXT")
-    const [progressList, setProgressList] = useState([])
-    const [overlayComplete, setOverlayComplete] = useState(false)
-    const [tabsCompletedList, setTabsCompletedList] = useState([currentStepTabs[0]])
-
-    const [pageTitle, setPageTitle] = useState('Case Files')
     const [searchPlaceholder, setSearchPlaceholder] = useState("Search by any heading or entry below")
+    const [slideTopValue, setSlideTopValue] = useState(0);
+    //List
+    const [listData, setListData] = useState([])
     const [listHeaders, setListHeaders] = useState(["Patient","Balance","Staff","Next Visit"])
-    const [actionButtonState, setActionButtonState] = useState(false);
+    const [checkedItem, setCheckedItem] = useState(false);
+    const [checkedItemsList, setCheckedItemsList] = useState([]);
+    const [selectedListItemId, setSelectedListItemId] = useState();
+    //Ovelay
     const [overlaySelectedMenuName, setOverlaySelectedMenuName] = useState(null)
     const [overlaySelectedMenuTab, setOverlaySelectedMenuTab] = useState(null)
     const [overlayCurrentMenuTabs, setOverlayCurrentMenuTabs] = useState(null)
@@ -45,7 +29,32 @@ export const SuitesContextProvider = (props) => {
     const [overlayStatus, setOverlayStatus] = useState(false)
     const [overlayList, setOverlayList] = useState([])
     const [overlayListHeaders, setOverlayListHeaders] = useState([])
-    const [slideTopValue, setSlideTopValue] = useState(0);
+    const [overlayHeader, setOverlayHeader] = useState({})
+    const [selectedItem, setSelectedItem] = useState({})
+    //FloatingActions
+    const [floatingActions, setFloatingActions] = useState({})
+    const [openAction, setOpenAction] = useState(false)
+    const [actionButtonState, setActionButtonState] = useState(false);
+    //Take out for Nav
+    const [currentNavPage, setCurrentNavPage] = useState("caseFiles");
+    const [pageTitle, setPageTitle] = useState('Case Files')
+    
+    //Case Files
+    const [progressContainerWidth, setProgressContainerWidth] = useState(0)
+    const [progressList, setProgressList] = useState([])
+    const [itemTitle, setItemTitle] = useState("")
+    const [newItemSteps, setNewItemSteps] = useState([])
+    const [itemStepNames, setItemStepNames] = useState([])
+    const [currentStep, setCurrentStep] = useState("")
+    const [currentStepObject, setCurrentStepObject]= useState({})
+    const [currentStepTabs, setCurrentStepTabs] = useState([])
+    const [currentSelectedStepTab, setCurrentSelectedStepTab] = useState("")
+    const [currentSelectedStepTabObject, setCurrentSelectedStepTabObject] = useState({})
+    const [currentSelectedStepTabs, setCurrentSelectedStepTabs] = useState([])
+    const [currentTabPosition, setCurrentTabPosition] = useState(0)
+    const [currentStepPosition, setCurrentStepPosition] = useState(0);  
+    const [overlayComplete, setOverlayComplete] = useState(false)
+    const [tabsCompletedList, setTabsCompletedList] = useState([])
     const [billingSummary, setBillingSummary] = useState({})
     const [reportPreview, setReportPreview] = useState(false)
     const [reportTableData, setReportTableData] = useState([])
@@ -54,12 +63,6 @@ export const SuitesContextProvider = (props) => {
     const [summaryList, setSummaryList] = useState([])
     const [reportTerms, setReportTerms] = useState("")
         
-    const [selectedListItemId, setSelectedListItemId] = useState();
-    const [overlayHeader, setOverlayHeader] = useState({})
-    const [selectedItem, setSelectedItem] = useState({})
-    const [checkedItem, setCheckedItem] = useState(false);
-    const [checkedItemsList, setCheckedItemsList] = useState([]);
-  
     const [paginatorValues, dispatchPaginator] = useReducer(paginatorReducer,{
         currentPage:1,
         sliceArrayStart:0,
@@ -98,6 +101,12 @@ export const SuitesContextProvider = (props) => {
 
     useEffect(()=>{
         const stepsArray = require('../assets/db.json').createItem.filter(item => item.page === currentNavPage)
+        stepsArray.length === 0 ?
+            null:
+            getPageNewItemSteps(stepsArray)
+    }, currentNavPage)
+
+    getPageNewItemSteps=(stepsArray)=>{
         const steps = []
         const tabs = []
         const tabObjects = []
@@ -108,26 +117,32 @@ export const SuitesContextProvider = (props) => {
             tabs.push(tab.tabName)
         )
         steps.forEach(step=>stepsProgress.push({"step":step,"progress":0}))
-        setItemSteps(steps)
+        setItemStepNames(steps)
         setNewItemSteps(stepsArray[0])
         setItemTitle(stepsArray[0].title)
         setCurrentStepObject(stepsArray[0].steps[0])
         setCurrentStep(stepsArray[0].steps[0].stepName)
         setCurrentStepTabs(tabs)
+        setTabsCompletedList(tabs[0])
         setCurrentSelectedStepTab(tabs[0])
         setCurrentSelectedStepTabs(tabObjects)
         setCurrentSelectedStepTabObject(tabObjects[0])
         setProgressList(stepsProgress)
-    }, currentNavPage)
-
-    
+    }
     useEffect(()=>{
         const menu = require('../assets/db.json').overlayMenuTabs.filter(menu => menu.page === currentNavPage)
+        menu.length === 0?
+            null
+            :
+            getMenuItems(menu)
+    },[overlayMenu, overlayStatus])
+
+    getMenuItems = (menu) =>{
         setOverlayMenu(menu[0].menuTabs)
         setOverlaySelectedMenuName(menu[0].menuTabs[0].tabName)
         setOverlayCurrentMenuTabs(menu[0].menuTabs[0].overlayTab)
         setOverlaySelectedMenuTab(menu[0].menuTabs[0].overlayTab[0])
-    },[overlayMenu, overlayStatus])
+    }
 
     handleOverlayTabChange = (tabName) => {
         setOverlaySelectedMenuTab(tabName)
@@ -167,10 +182,7 @@ export const SuitesContextProvider = (props) => {
         return filterPatient[0]
     }
 
-    getAction = (obj) => {
-        return 
-    }
-
+   
     getRecord = (data, listHeaders) =>{
         newArray = []
         listHeaders.map((header)=>{
@@ -217,7 +229,11 @@ export const SuitesContextProvider = (props) => {
     }
 
     toggleActionButton = () => {
+        actionButtonState === false && setSearchPlaceholder("")
         setActionButtonState(!actionButtonState)
+    }
+    closeSlideOverlay = () =>{
+        setOverlayStatus(false)
     }
 
     getSelectedItem = (selectedId) => {
@@ -295,7 +311,7 @@ export const SuitesContextProvider = (props) => {
     }
 
     completeStep = () =>{
-        setOverlayFooterText("CONTINUE") 
+        //setOverlayFooterText("CONTINUE") 
         setOverlayComplete(true)
     }
     setStep = () =>{
@@ -373,11 +389,11 @@ export const SuitesContextProvider = (props) => {
         currentStepObject,
         currentStep,
         itemTitle,
-        itemSteps,
+        itemStepNames,
         currentSelectedStepTab,
         currentStepTabs,
         currentSelectedStepTabObject,
-        overlayFooterText,
+        //overlayFooterText,
         progressList,
         progressContainerWidth,
         openAction,
@@ -412,7 +428,8 @@ export const SuitesContextProvider = (props) => {
         openReportAction,
         getReportList,
         transformToSentence,
-        closePreview
+        closePreview,
+        closeSlideOverlay
     }
     return (  
         <SuitesContext.Provider value={{state, methods}}>

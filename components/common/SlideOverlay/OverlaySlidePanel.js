@@ -4,11 +4,10 @@ import SlidingUpPanel from 'rn-sliding-up-panel';
 import Divider from '../Divider'
 import SlideOverlay from './SlideOverlay';
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import { withModal } from 'react-native-modalfy'
 
 const {width, height} = Dimensions.get('window')
 
-class OverlaySlidePanelModal extends Component {
+class OverlaySlidePanel extends Component {
     static contextType = SuitesContext
     constructor(props){
         super(props);
@@ -22,10 +21,8 @@ class OverlaySlidePanelModal extends Component {
         this._panel.show({toValue:top, velocity:velocity})
     }
     render() { 
-        const { modal: {closeModal, closeModals, currentModal}} = this.props
-        let pageMeasure = this.context.state.pageMeasure
         return ( 
-            <TouchableOpacity style={{flex:1, width:pageMeasure.width}} onPress={()=>closeModals(currentModal)}>
+            <View style={{flex:1, width:'100%'}}>
                 <SlidingUpPanel 
                     showBackdrop={false}
                     ref={c => (this._panel = c)}
@@ -43,13 +40,13 @@ class OverlaySlidePanelModal extends Component {
                         </View>
                     )}
                     </SlidingUpPanel>
-            </TouchableOpacity>
+            </View>
         );
     }
 }
  
 
-export default withModal(OverlaySlidePanelModal);
+export default OverlaySlidePanel;
 
 const styles = StyleSheet.create({
     container: {

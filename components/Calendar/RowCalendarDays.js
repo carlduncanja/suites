@@ -14,9 +14,9 @@ export default class RowCalendarDays extends Component {
         
     render() {
         return (
-            <View style={[styles.container]} >
+            <View >
 
-                <TouchableOpacity style={{width:"100%",}} onPress={e => this.props.onPressDay(e,this.props.day)} >
+                <TouchableOpacity style={{width:"100%"}} onPress={e => this.props.onPressDay(e,this.props.day)} >
                     {this.props.selected.selected.format("YYYY MM D") === this.props.day.format("YYYY MM D") ?
                         <View style={{alignItems:'center'}}>
                             {/* <DayIdentifier color="#3FC7F4"/> */}

@@ -22,7 +22,7 @@ const ProgressContainer = () => {
                     <ProgressBar progressNumber={1}/>
                 </View> 
             
-                {suitesState.itemSteps && suitesState.itemSteps.map((step,index)=>{
+                {suitesState.itemStepNames && suitesState.itemStepNames.map((step,index)=>{
                     return(
                         <View style={styles.icon} key={index}>
                             <Text 

@@ -40,58 +40,70 @@ export default class RowCalendar extends Component{
         return status
     }
 
-    render(){      
+    render(){    
         const daysArray = this.props.startDays.concat(this.props.currentDays.concat(this.props.endDays))
         
         return(
-            <ScrollView
-                style = {[styles.container,]}
-                horizontal={true}
-                ref="scrollview"
-                //contentOffset={this.props.selected.status === false ? {x:this.props.calendarOffset, y:0} : {x:this.getFilterDay(),y:0}} 
-                contentOffset={{x:this.props.calendarOffset, y:0}}
-                contentContainerStyle={{paddingRight:'50%'}}
-                // onScroll={(event)=>{this.props.getScrollMeasure(event); this.props.goToAppointment();}}
-                scrollEventThrottle={6}
-                bounces={false}
-            >
-                {daysArray.map((day,index)=>{
-                    return (
-                        <View 
-                            onLayout={(event)=>{
-                                moment(day).format("YYYY-MM-D") === this.props.selected.selected.format("YYYY-MM-D") ?
-                                    this.props.getCalendarOffset(event.nativeEvent.layout.x)
+            <>
+                {/* <View style={styles.magnify} >
+                   
+                </View> */}
+                <ScrollView
+                    style = {[styles.container,]}
+                    horizontal={true}
+                    ref="scrollview"
+                    //contentOffset={this.props.selected.status === false ? {x:this.props.calendarOffset, y:0} : {x:this.getFilterDay(),y:0}} 
+                    contentOffset={{x:this.props.calendarOffset, y:0}}
+                    contentContainerStyle={{paddingRight:'50%'}}
+                    onScroll={(event)=>
+                        this.props.getScrollMeasure(event)
+                        // this.props.goToAppointment();}
+                    }
+                    scrollEventThrottle={9}
+                    bounces={false}
+                    >
+                    {daysArray.map((day,index)=>{
+                        return (
+                            <View 
+                                onLayout={(event)=>{
+                                    moment(day).format("YYYY-MM-D") === this.props.selected.selected.format("YYYY-MM-D") ?
+                                        this.props.getCalendarOffset(event.nativeEvent.layout.x)
+                                        :
+                                        null
+                                    this.props.getAppointmentScroll({"day":day,"event":event.nativeEvent.layout.x});
+                                    
+                                    
+                                }}
+                                key={index} 
+                                // style={styles.day}
+                                //style={moment(this.props.scrollAppointmentDay).format("YYYY MM D") === moment(day).format("YYYY MM D") ? [styles.day,styles.selectedDay]: styles.day}
+                                ref = {view => this.dayRef = view}
+                            >
+                                {(this.props.selected.selected.format("YYYY MM D") || moment(this.props.scrollAppointmentDay).format("YYYY MM D")) === moment(day).format("YYYY MM D") ?
+                                    <DayIdentifier color="#3FC7F4"/>
                                     :
                                     null
-                                this.props.getAppointmentScroll({"day":day,"event":event.nativeEvent.layout.x});
+                                }
+                          
+                                <View style={{paddingRight:40, paddingLeft:40}}>
+                                    <RowCalendarDays
+                                        currentDate = {this.props.currentDate}
+                                        onPressDay={this.props.onPressDay}
+                                        key={index}
+                                        day={moment(day)}
+                                        weekday={moment(day).format("ddd")}
+                                        selected = {this.props.selected}
+                                        filterStatus = {this.getLevels(day)}
+                                    />              
+                                </View>
                                 
-                                 
-                            }}
-                            key={index} 
-                            style={styles.day}
-                        >
-                            {this.props.selected.selected.format("YYYY MM D") === moment(day).format("YYYY MM D") ?
-                                <DayIdentifier color="#3FC7F4"/>
-                                :
-                                null
-                            }
-                            <View style={{paddingRight:40, paddingLeft:40}}>
-                                <RowCalendarDays
-                                    currentDate = {this.props.currentDate}
-                                    onPressDay={this.props.onPressDay}
-                                    key={index}
-                                    day={moment(day)}
-                                    weekday={moment(day).format("ddd")}
-                                    selected = {this.props.selected}
-                                    filterStatus = {this.getLevels(day)}
-                                />              
                             </View>
-                             
-                        </View>
-                            
-                    )
-                })}
-            </ScrollView>
+                                
+                        )
+                    })}
+                </ScrollView>
+            </>
+           
            
         )
     }
@@ -114,7 +126,23 @@ const styles = StyleSheet.create({
         borderRightWidth:0.5,
         borderBottomWidth:0.5,
         borderTopWidth:0.5,
-
+    },
+    selectedDay:{
+        backgroundColor:'yellow'
+    },
+    magnify:{
+        position:'absolute',
+        marginTop:5,
+        zIndex:1,
+        borderWidth:1,
+        alignItems:'center',
+        width:113,
+        height:100,
+        // paddingRight:40,
+        // paddingLeft:40,
+        borderColor:'red',
+        left:0,
+        top:0,
     }
-   
+    
 })
