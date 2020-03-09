@@ -5,20 +5,21 @@ import moment from 'moment';
 import {parse} from 'qs';
 
 const RowCalendarDays = (props) => {
-
     const generateView = (opacity, color, color2, marginTop, fontWeight) => {
         return <View style={{alignItems: 'center', opacity: opacity}}>
             <Text style={[styles.day, {color: color, marginTop: marginTop}]}>{props.day.format("D")}</Text>
             <Text style={{color: color2, fontWeight: fontWeight}}>{props.weekday.toUpperCase()}</Text>
-            {props.filterStatus &&
-            <View style={{
-                height: 2,
-                alignSelf: 'center',
-                width: '100%',
-                backgroundColor: '#CBD5E0',
-                borderRadius: 2,
-                marginTop: 10
-            }}/>
+            {
+                props.filterStatus &&
+                <View style={{
+                    height: 2,
+                    alignSelf: 'center',
+                    width: '100%',
+                    backgroundColor: '#CBD5E0',
+                    borderRadius: 2,
+                    marginTop: 10
+                }}
+                />
             }
             {
                 <View style={{

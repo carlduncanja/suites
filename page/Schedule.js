@@ -17,6 +17,7 @@ import ExpandCalendarDivider from '../components/common/ExpandCalendarDivider';
 import ScheduleTopBar from '../components/Schedule/ScheduleTopBar';
 import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import {ScheduleContext} from '../contexts/ScheduleContext';
+import RowCalendarDay from "../components/Calendar/RowCalenderDay";
 
 const Schedule = (props) => {
     const [showNotification, setShowNotification] = useState(false);
@@ -68,13 +69,15 @@ const Schedule = (props) => {
     const mainContent = (
         <ScrollView scrollEnabled={false}>
             <View style={{flex: 1}}>
-                {showNotification &&
-                <View style={{flex: 1, position: 'absolute', zIndex: 1, right: 10, top: 10, width: '55%'}}>
-                    <Notification
-                        closeNavigation={setShowNotification}
-                    />
-                </View>
+                {
+                    showNotification &&
+                    <View style={{flex: 1, position: 'absolute', zIndex: 1, right: 10, top: 10, width: '55%'}}>
+                        <Notification
+                            closeNavigation={setShowNotification}
+                        />
+                    </View>
                 }
+
                 <ScheduleTopBar
                     screenDimensions={props.screenDimensions}
                 />
@@ -82,19 +85,20 @@ const Schedule = (props) => {
                 <ScheduleCalendar
                     screenDimensions={props.screenDimensions}
                 />
+
+
             </View>
 
-            {!state.displayFullCalendar ?
-                <View style={{flex: 1, alignSelf: 'center', marginBottom: 4}}>
-                    <ExpandCalendarDivider content="Expand" pressAction={this.showFullCalendar}/>
-                </View>
-                :
-                <View style={{flex: 1, alignSelf: 'center'}}>
-                    <ExpandCalendarDivider content="Collapse" pressAction={this.showFullCalendar}/>
-                </View>
+            {/*{!state.displayFullCalendar ?*/}
+            {/*    <View style={{flex: 1, alignSelf: 'center', marginBottom: 4}}>*/}
+            {/*        <ExpandCalendarDivider content="Expand" pressAction={this.showFullCalendar}/>*/}
+            {/*    </View>*/}
+            {/*    :*/}
+            {/*    <View style={{flex: 1, alignSelf: 'center'}}>*/}
+            {/*        <ExpandCalendarDivider content="Collapse" pressAction={this.showFullCalendar}/>*/}
+            {/*    </View>*/}
 
-            }
-
+            {/*}*/}
 
             {scheduleContent}
 

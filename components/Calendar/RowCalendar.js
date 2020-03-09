@@ -7,177 +7,61 @@ import moment from 'moment';
 import {useStartDays, useCurrentDays, useEndDays} from '../../hooks/useScheduleService';
 import {ScheduleContext} from '../../contexts/ScheduleContext';
 import {scheduleActions} from '../../reducers/scheduleReducer';
+import RowCalendarDay from "./RowCalenderDay";
 
-const RowCalendar = (props) => {
-    const [state, dispatch] = useContext(ScheduleContext);
+/**
+ *
+ * @param month date object
+ * @param selectedDay
+ * @param appointmentDays []
+ * @returns {*}
+ * @constructor
+ */
+const RowCalendar = ({month, selectedDay, appointmentDays, onDayPress}) => {
+    // const [calendarData, setCalendarData] = useState([]);
 
-    const startDays = useStartDays(state.currentDate);
-    const currentDays = useCurrentDays(state.currentDate.format("MM"), state.currentDate.format("YYYY"));
-    const endDays = useEndDays(state.currentDate);
-
-    const [daysArray, setDaysArray] = useState(startDays.concat(currentDays.concat(endDays)));
-    const [scrollMeasure, setScrollMeasure] = useState(0);
-    const [scrollAppointmentDay, setScrollAppointmentDay] = useState(null);
-
-    // let rowDays = [];
-    // componentDidMount() {
-    //     this.onScrollViewCreated(this.refs.scrollview);
-    // }
-
-    // console.log("days array", daysArray);
-    // console.log("start date", startDays);
-    // console.log("start date", endDays);
-    // console.log("state", state);
+    const selectedMonth = moment(month).startOf('month');
+    // const prevMonth = moment(month).startOf('month').subtract(1, "month");
+    // const nextMonth = moment(month).startOf('month').add(1, "month");
 
 
-    //pass the ref for the scroll view to the parent.
-    useEffect(() => {
+    const generateCalendarData = () => {
+        let pevMonthEndDays = useStartDays(month);
+        let nextMonthStartDays = useEndDays(month);
+        let currentMonthDays = useCurrentDays(selectedMonth.month() + 1, selectedMonth.year());
 
-    });
-
-    // const goToAppointment = () => {
-    //     state.goToToday  ?
-    //         this.onGoToAppointment()
-    //     :
-    //         dispatch({
-    //             type: scheduleActions.SCROLLAPPOINTMENT,
-    //             newState: true
-    //         })
-
-    //     onGoToAppointment();
-    // }
-
-    // const onGoToAppointment = () => {
-    //     if (state._scrollView) {
-    //         state.appointmentDates.map((date)=>{
-    //             if (date.date.format("MM D") === scrollAppointmentDay.format("MM D")) {
-    //                 if (state.goToToday === true && scrollAppointment === false){
-    //                     state._scrollView.scrollTo({x:0,y:0,animated:true})
-    //                     dispatch({
-    //                         type: scheduleActions.GOTOTODAY,
-    //                         newState: false
-    //                     })
-    //                 }
-    //                 else{
-    //                     state._scrollView.scrollTo({x:0, y:date.event, animated:true})
-    //                 }
-    //             }
-    //         })
-    //     }
-    //     // return true
-    // }
-
-    // const getScrollMeasure = (event) => {
-    //     setScrollMeasure({scrollMeasure: event.nativeEvent.contentOffset.x})
-    //     let dateArray = state.datePositions.sort((a,b)=>a.event - b.event);
-    //     for (var i = 0; i < dateArray.length; i++){
-    //         if (dateArray[i].event >= event.nativeEvent.contentOffset.x) {
-    //             setScrollAppointmentDay( moment(dateArray[i].day));
-    //             return true
-    //         }
-    //     }
-    // }
+        let dayArray = pevMonthEndDays.concat(currentMonthDays.concat(nextMonthStartDays));
 
 
-    const onScrollViewCreated = (_scrollview) => {
-        if (props.setScrollView) setScrollView(_scrollview)
+        return dayArray.map(item => {
+            const isSameMonth = moment(item).isSame(moment(month), 'month');
+            const formatDate = moment(selectedDay).format("YYYY-MM-DD");
+
+            return {
+                day: moment(item),
+                isSelected: formatDate === item,
+                hasAppointment: appointmentDays.includes(moment(item).toDate().toString()),
+                onDayPress: onDayPress,
+                isInSelectMonth: isSameMonth,
+            }
+        })
     };
-
-
-    // const getLevels = day =>{
-    //     const appointments = require('../../assets/db.json').appointments;
-    //     let result = appointments.filter(appointment => moment(appointment.startTime).format("YYYY/MM/DD") === moment(day).format("YYYY/MM/DD"));
-    //     let status = result.length === 0 ? false : true
-    //     return status
-    // };
-
-    // const generateRowDays = () => {
-    //     return daysArray.map((day,index)=>{
-    //         return (
-    //             <View
-    //                 key={index}
-    //                 style={styles.day}
-    //                 onLayout={(event)=>{
-    //                     moment(day).format("YYYY-MM-D") === state.selected.selected.format("YYYY-MM-D") &&
-    //                         dispatch({
-    //                             type: scheduleActions.CALENDAROFFSET,
-    //                             newState: event.nativeEvent.layout.x
-    //                         });
-    //
-    //                     dispatch({
-    //                         type: scheduleActions.DATEPOSITONS,
-    //                         newState: {"day":day,"event":event.nativeEvent.layout.x}
-    //                     })
-    //                 }}
-    //             >
-    //                 {state.selected.selected.format("YYYY MM D") === moment(day).format("YYYY MM D") &&
-    //                     <DayIdentifier color="#3FC7F4"/>
-    //                 }
-    //                 <View style={{paddingRight:40, paddingLeft:40}}>
-    //                     <RowCalendarDays
-    //                         key={index}
-    //                         day={moment(day)}
-    //                         weekday={moment(day).format("ddd")}
-    //                         selected = {state.selected}
-    //                         filterStatus = {getLevels(day)}
-    //                         currentDate={state.currentDate}
-    //                     />
-    //                 </View>
-    //             </View>
-    //         )
-    //     });
-    // };
 
     return (
         <View style={{display: 'flex', flexDirection: 'column'}}>
-            {/*<ScrollView*/}
-            {/*    style = {[styles.container]}*/}
-            {/*    horizontal={true}*/}
-            {/*    // ref="scrollview"*/}
-            {/*    contentOffset={{x: state.calendarOffset, y:0}}*/}
-            {/*    contentContainerStyle={{paddingRight:'50%'}}*/}
-            {/*    scrollEventThrottle={6}*/}
-            {/*    bounces={false}*/}
-            {/*>*/}
-            {/*    {generateRowDays()}*/}
-            {/*</ScrollView>*/}
-
             <FlatList
-                data={daysArray}
+                data={generateCalendarData()}
                 horizontal={true}
                 keyExtractor={(item, index) => index}
                 renderItem={({item, index}) =>
                     <View
                         key={index}
-                        onLayout={(event) => {
-                            moment(item).format("YYYY-MM-D") === state.selected.selected.format("YYYY-MM-D") &&
-                            dispatch({
-                                type: scheduleActions.CALENDAROFFSET,
-                                newState: event.nativeEvent.layout.x
-                            });
-
-                            dispatch({
-                                type: scheduleActions.DATEPOSITONS,
-                                newState: {"day": item, "event": event.nativeEvent.layout.x}
-                            })
-                        }}
                         style={styles.day}
                     >
-                        {
-                            state.selected.selected.format("YYYY MM D") === moment(item).format("YYYY MM D") &&
-                            <DayIdentifier color="#3FC7F4"/>
-                        }
-
-                        <View style={{paddingRight: 40, paddingLeft: 40}}>
-                            <RowCalendarDays
-                                key={index}
-                                day={moment(item)}
-                                weekday={moment(item).format("ddd")}
-                                selected={state.selected}
-                                // filterStatus = {getLevels(item)}
-                                currentDate={state.currentDate}
-                            />
-                        </View>
+                        <RowCalendarDay
+                            key={index}
+                            {...item}
+                        />
                     </View>
                 }
             />
@@ -197,13 +81,12 @@ const styles = StyleSheet.create({
     },
     day: {
         alignItems: 'center',
-        paddingBottom: 20,
-        paddingTop: 3,
+        width: 96,
+        height: 98,
+        padding: 6,
         borderColor: '#EDF2F7',
         borderRightWidth: 0.5,
         borderBottomWidth: 0.5,
         borderTopWidth: 0.5,
-
     }
-
 });
