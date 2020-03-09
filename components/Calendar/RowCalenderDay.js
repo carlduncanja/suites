@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     },
     dayWrapper: {
         alignItems: 'center',
-        paddingBottom: 20,
+        paddingBottom: 10,
         // paddingTop: 3,
         // borderColor: '#EDF2F7',
         // borderRightWidth: 0.5,
