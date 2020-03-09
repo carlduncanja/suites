@@ -14,37 +14,6 @@ import {parse} from 'qs';
  * @constructor
  */
 const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress}) => {
-
-    // const generateView = (opacity, color, color2, marginTop, fontWeight) => {
-    //     return <View style={{alignItems: 'center', opacity: opacity}}>
-    //         <Text style={[styles.day, {color: color, marginTop: marginTop}]}>{props.day.format("D")}</Text>
-    //         <Text style={{color: color2, fontWeight: fontWeight}}>{props.weekday.toUpperCase()}</Text>
-    //         {
-    //             props.filterStatus &&
-    //             <View
-    //                 style={{
-    //                     height: 2,
-    //                     alignSelf: 'center',
-    //                     width: '100%',
-    //                     backgroundColor: '#CBD5E0',
-    //                     borderRadius: 2,
-    //                     marginTop: 10
-    //                 }}
-    //             />
-    //         }
-    //         {
-    //             <View style={{
-    //                 height: 2,
-    //                 alignSelf: 'center',
-    //                 width: '100%',
-    //                 backgroundColor: '#CBD5E0',
-    //                 borderRadius: 2,
-    //                 marginTop: 10
-    //             }}/>
-    //         }
-    //     </View>
-    // };
-
     const color1 = '#2D3748';
     const color2 = '#718096';
     const color3 = '#CBD5E0';
@@ -55,35 +24,35 @@ const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress}) => {
     const fontWeight = 'bold';
 
     return (
-        <View style={[styles.dayWrapper, isSelected ? styles.daySelected : {} ]}>
-            <TouchableOpacity style={{width: "100%",}} onPress={e => onDayPress}>
-                <View style={{alignItems: 'center', opacity: opacity}}>
+        <TouchableOpacity style={[{width: "100%",}, isSelected ? styles.daySelected : {}]} onPress={e => onDayPress}>
+            <View style={[styles.dayWrapper]}>
+                {
+                    isSelected &&
+                    <DayIdentifier color="#3FC7F4"/>
+                }
 
-                    {
-                        isSelected &&
-                        <DayIdentifier color="#3FC7F4"/>
-                    }
+                <Text style={[styles.day, {color: color, marginTop: marginTop}]}>
+                    {moment(day).format("D")}
+                </Text>
+                <Text style={{color: color2, fontWeight: fontWeight}}>
+                    {moment(day).format("ddd").toUpperCase()}
+                </Text>
 
-                    <Text style={[styles.day, {color: color, marginTop: marginTop}]}>{moment(day).format("D")}</Text>
-                    <Text style={{color: color2, fontWeight: fontWeight}}>{moment(day).format("ddd").toUpperCase()}</Text>
-                    {
-                        hasAppointment &&
-                        <View
-                            style={{
-                                height: 2,
-                                alignSelf: 'center',
-                                width: 24,
-                                backgroundColor: '#CBD5E0',
-                                borderRadius: 2,
-                                marginTop: 10
-                            }}
-                        />
-                    }
-                </View>
-
-
-            </TouchableOpacity>
-        </View>
+                {
+                    hasAppointment &&
+                    <View
+                        style={{
+                            height: 2,
+                            alignSelf: 'center',
+                            width: 24,
+                            backgroundColor: '#CBD5E0',
+                            borderRadius: 2,
+                            marginTop: 10
+                        }}
+                    />
+                }
+            </View>
+        </TouchableOpacity>
     )
 };
 
@@ -107,6 +76,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: 17,
         color: '#718096',
+        shadowOpacity: 0,
     },
     dayWrapper: {
         alignItems: 'center',
@@ -120,14 +90,11 @@ const styles = StyleSheet.create({
     daySelected: {
         shadowColor: "#000",
         shadowOffset: {
-            width: 3.5,
-            height: 1,
+            width: 2,
+            height: 5.5,
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-    },
-    weekday: {
-        color: '#CBD5E0'
     }
 });
