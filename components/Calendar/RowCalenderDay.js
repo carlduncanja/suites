@@ -4,6 +4,15 @@ import DayIdentifier from '../common/DayIdentifier';
 import moment from 'moment';
 import {parse} from 'qs';
 
+/**
+ *
+ * @param day : A date object
+ * @param isSelected
+ * @param hasAppointment
+ * @param onDayPress
+ * @returns {*}
+ * @constructor
+ */
 const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress}) => {
 
     // const generateView = (opacity, color, color2, marginTop, fontWeight) => {
