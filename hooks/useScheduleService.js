@@ -57,10 +57,8 @@ export const useCurrentDays = (inputMonth, inputYear) => {
     let results = [];
     let daysInMonth = moment([inputYear, inputMonth - 1]).daysInMonth();
     for (let i = 1; i <= daysInMonth; i++) {
-        let day;
-        i < 10 ? day = `0${i}` : day = i;
-        let str = `${inputYear}-${inputMonth}-${day}`;
-        results.push(moment(str).format("YYYY-MM-DD"))
+        let date = moment().year(inputYear).month(inputMonth - 1).date(i);
+        results.push(date.format("YYYY-MM-DD"))
     }
     return results
 };
