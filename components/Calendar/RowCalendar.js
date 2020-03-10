@@ -48,8 +48,11 @@ const RowCalendar = ({month, selectedDay, appointmentDays, onDayPress}) => {
     };
 
     return (
-        <View style={{display: 'flex', flexDirection: 'column'}}>
+        <View
+            style={styles.container}
+        >
             <FlatList
+                contentContainerStyle={styles.container}
                 data={generateCalendarData()}
                 horizontal={true}
                 keyExtractor={(item, index) => index}
@@ -73,16 +76,12 @@ export default RowCalendar
 
 const styles = StyleSheet.create({
     container: {
-        //paddingRight:'6.2%',
-        marginTop: 5,
-        flexDirection: 'row',
-        borderLeftWidth: 0.5,
-        borderColor: '#EDF2F7',
+        height: 88,
     },
     day: {
         alignItems: 'center',
         width: 96,
-        height: 98,
+        height: 88,
         padding: 6,
         borderColor: '#EDF2F7',
         borderRightWidth: 0.5,

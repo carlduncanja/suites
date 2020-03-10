@@ -5,7 +5,6 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import RowCalendar from './../Calendar/RowCalendar';
 
 
-
 const ScheduleCalendar = ({month, appointmentDays, selectedDate, screenDimensions, onDaySelected}) => {
 
     const [isExpanded, setExpanded] = useState(false);
@@ -40,57 +39,66 @@ const ScheduleCalendar = ({month, appointmentDays, selectedDate, screenDimension
         <View style={{
             flex: 1,
             marginLeft: screenDimensions.width > screenDimensions.height ? '2%' : 0,
-            alignSelf: "center"
+            alignSelf: 'center',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            //     backgroundColor: 'red',
         }}>
-            {
-                !isExpanded
-                    // Row calender view
-                    ? <RowCalendar
-                        month={month}
-                        selectedDay={selectedDate}
-                        appointmentDays={appointmentDays}
-                        onDayPress={onPressDay}
-                    />
+            <View style={styles.calendarContainer}>
+                {
 
-                    // Full calendar view
-                    : <View/>
+                    !isExpanded
+                        // Row calender view
+                        ? <RowCalendar
+                            month={month}
+                            selectedDay={selectedDate}
+                            appointmentDays={appointmentDays}
+                            onDayPress={onPressDay}
+                        />
 
-                //     :
-                //     props.screenDimensions.width > props.screenDimensions.height ?
-                //         <ExtendedCalendar
-                //             {...props}
-                //             {...this.state}
-                //             prevCurrentDate={this.getPrevMonth(currentYear, currentMonth, currentDay)}
-                //             nextCurrentDate = {this.getNextMonth(currentYear, currentMonth, currentDay)}
-                //             calendarLayout = {this.calendarLayout}
-                //             onPressDay = {this.onPressDay}
+                        // Full calendar view
+                        : <View/>
 
-                //             currentDays = {this.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
-                //             prevMonthDays = {
-                //                 parseInt(state.currentDate.format("M")) === 1 ?
-                //                     this.getCurrentDays(state.currentDate.format("MM"), (parseInt(state.currentDate.format("YYYY")) -1).toString())
-                //                     :
-                //                     this.getCurrentDays((parseInt(state.currentDate.format("MM")) - 1).toString(), state.currentDate.format("YYYY"))
-                //             }
-                //             nextMonthDays = {
-                //                 parseInt(state.currentDate.format("M")) === 12 ?
-                //                 this.getCurrentDays('01', (parseInt(state.currentDate.format("YYYY")) +1).toString())
-                //                 :
-                //                 this.getCurrentDays((parseInt(state.currentDate.format("MM")) + 1).toString(), state.currentDate.format("YYYY"))
-                //             }
-                //         />
-                //         :
-                //         <Calendar
-                //             currentDays = {props.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
-                //             onPressDay = {this.onPressDay}
-                //             getStartDays = {props.getStartDays()}
-                //             getEndDays = {props.getEndDays()}
-                //             screenDimensions = {props.screenDimensions}
-                //             currentDate = {state.currentDate}
-                //             selected = {props.selected}
-                //             // daySelected = {this.state.daySelected}
-                //         />
-            }
+                    //     :
+                    //     props.screenDimensions.width > props.screenDimensions.height ?
+                    //         <ExtendedCalendar
+                    //             {...props}
+                    //             {...this.state}
+                    //             prevCurrentDate={this.getPrevMonth(currentYear, currentMonth, currentDay)}
+                    //             nextCurrentDate = {this.getNextMonth(currentYear, currentMonth, currentDay)}
+                    //             calendarLayout = {this.calendarLayout}
+                    //             onPressDay = {this.onPressDay}
+
+                    //             currentDays = {this.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
+                    //             prevMonthDays = {
+                    //                 parseInt(state.currentDate.format("M")) === 1 ?
+                    //                     this.getCurrentDays(state.currentDate.format("MM"), (parseInt(state.currentDate.format("YYYY")) -1).toString())
+                    //                     :
+                    //                     this.getCurrentDays((parseInt(state.currentDate.format("MM")) - 1).toString(), state.currentDate.format("YYYY"))
+                    //             }
+                    //             nextMonthDays = {
+                    //                 parseInt(state.currentDate.format("M")) === 12 ?
+                    //                 this.getCurrentDays('01', (parseInt(state.currentDate.format("YYYY")) +1).toString())
+                    //                 :
+                    //                 this.getCurrentDays((parseInt(state.currentDate.format("MM")) + 1).toString(), state.currentDate.format("YYYY"))
+                    //             }
+                    //         />
+                    //         :
+                    //         <Calendar
+                    //             currentDays = {props.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
+                    //             onPressDay = {this.onPressDay}
+                    //             getStartDays = {props.getStartDays()}
+                    //             getEndDays = {props.getEndDays()}
+                    //             screenDimensions = {props.screenDimensions}
+                    //             currentDate = {state.currentDate}
+                    //             selected = {props.selected}
+                    //             // daySelected = {this.state.daySelected}
+                    //         />
+
+
+                }
+            </View>
 
 
             <TouchableOpacity
@@ -109,7 +117,12 @@ export default ScheduleCalendar
 
 
 const styles = StyleSheet.create({
+    calendarContainer: {
+        marginBottom: 10,
+        marginTop: 10
+    },
     button: {
+        justifyContent: 'flex-start',
         alignSelf: 'center',
         backgroundColor: "#FFFFFF",
         color: "#4E5664",
