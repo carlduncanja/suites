@@ -1,31 +1,17 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import moment from 'moment';
 
-import {View, StyleSheet, ScrollView, Text, Easing, Animated, Dimensions, TouchableOpacity, Button} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import RowCalendar from './../Calendar/RowCalendar';
-import Calendar from './../Calendar/Calendar';
-import {ScheduleContext} from '../../contexts/ScheduleContext';
-import {scheduleActions} from '../../reducers/scheduleReducer';
-import ExpandCalendarDivider from "../common/ExpandCalendarDivider";
 
 
-const ScheduleCalendar = ({month, appointmentDays}) => {
+
+const ScheduleCalendar = ({month, appointmentDays, selectedDate, screenDimensions, onDaySelected}) => {
 
     const [isExpanded, setExpanded] = useState(false);
 
-
     const onPressDay = (e, selected) => {
-        const selectedObject = {"selected": selected, "status": true};
-
-        onPressDayToAppointment(selectedObject.selected, true);
-
-        dispatch({
-            type: scheduleActions,
-            newState: {
-                selected: selectedObject,
-                daySelected: true
-            }
-        })
+        onDaySelected(selected)
     };
 
     const onPressDayToAppointment = (selected, status) => {
@@ -33,7 +19,6 @@ const ScheduleCalendar = ({month, appointmentDays}) => {
             if (!state.displayFullCalendar) {
                 state.datePositions.map((date) => {
                     if (moment(date.day).format("MM D") === selected.format("MM D")) {
-                        //console.log("Selected: ", date)
                         state._scrollView.scrollTo({x: date.event, y: 0, animated: true})
                     }
                 })
@@ -46,28 +31,25 @@ const ScheduleCalendar = ({month, appointmentDays}) => {
         }
     };
 
-    const onButtonPress = () => {
-
+    const onExpandButtonPress = () => {
+        setExpanded(!isExpanded);
     };
 
 
     return (
         <View style={{
             flex: 1,
-            marginLeft: props.screenDimensions.width > props.screenDimensions.height ? '2%' : 0,
+            marginLeft: screenDimensions.width > screenDimensions.height ? '2%' : 0,
             alignSelf: "center"
         }}>
             {
-
-                isExpanded
-
+                !isExpanded
                     // Row calender view
                     ? <RowCalendar
-                        month={new Date()}
-                        selectedDay={new Date()}
-                        appointmentDays={[new Date().toString(), new Date(2020, 2, 10).toString()]}
-                        onDayPress={() => {
-                        }}
+                        month={month}
+                        selectedDay={selectedDate}
+                        appointmentDays={appointmentDays}
+                        onDayPress={onPressDay}
                     />
 
                     // Full calendar view
@@ -108,13 +90,12 @@ const ScheduleCalendar = ({month, appointmentDays}) => {
                 //             selected = {props.selected}
                 //             // daySelected = {this.state.daySelected}
                 //         />
-
             }
 
 
             <TouchableOpacity
                 style={[styles.button]}
-                onPress={onButtonPress}
+                onPress={onExpandButtonPress}
             >
                 <Text>Expand</Text>
             </TouchableOpacity>
