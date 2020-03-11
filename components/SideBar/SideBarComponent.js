@@ -16,6 +16,7 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
             },
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
+            zIndex: 5,
             elevation: 5,
         }} >
             <View style={styles.tabContainer}>
