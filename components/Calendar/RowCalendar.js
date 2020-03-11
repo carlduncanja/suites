@@ -80,16 +80,7 @@ export default RowCalendar
 
 const styles = StyleSheet.create({
     container: {
-        height: 88,
+        height: 110,
     },
-    day: {
-        alignItems: 'center',
-        width: 96,
-        height: 88,
-        padding: 6,
-        borderColor: '#EDF2F7',
-        borderRightWidth: 0.5,
-        borderBottomWidth: 0.5,
-        borderTopWidth: 0.5,
-    }
+    day: {}
 });
