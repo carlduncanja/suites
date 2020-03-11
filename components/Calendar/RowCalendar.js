@@ -14,6 +14,7 @@ import RowCalendarDay from "./RowCalenderDay";
  * @param month date object
  * @param selectedDay
  * @param appointmentDays []
+ * @param onDayPress
  * @returns {*}
  * @constructor
  */
@@ -41,7 +42,10 @@ const RowCalendar = ({month, selectedDay, appointmentDays, onDayPress}) => {
                 day: moment(item),
                 isSelected: formatDate === item,
                 hasAppointment: appointmentDays.includes(moment(item).toDate().toString()),
-                onDayPress: onDayPress,
+                onDayPress: () => {
+                    console.log("hello");
+                    onDayPress(item)
+                },
                 isInSelectMonth: isSameMonth,
             }
         })
@@ -55,7 +59,7 @@ const RowCalendar = ({month, selectedDay, appointmentDays, onDayPress}) => {
                 contentContainerStyle={styles.container}
                 data={generateCalendarData()}
                 horizontal={true}
-                keyExtractor={(item, index) => index}
+                keyExtractor={(item, index) => index }
                 renderItem={({item, index}) =>
                     <View
                         key={index}

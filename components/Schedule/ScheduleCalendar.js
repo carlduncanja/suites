@@ -9,7 +9,8 @@ const ScheduleCalendar = ({month, appointmentDays, selectedDate, screenDimension
 
     const [isExpanded, setExpanded] = useState(false);
 
-    const onPressDay = (e, selected) => {
+    const onPressDay = (selected) => {
+        console.log("day selected");
         onDaySelected(selected)
     };
 
@@ -119,7 +120,7 @@ export default ScheduleCalendar
 const styles = StyleSheet.create({
     calendarContainer: {
         marginBottom: 10,
-        marginTop: 10
+        marginTop: 24
     },
     button: {
         justifyContent: 'flex-start',
@@ -129,6 +130,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#CCD6E0",
         borderRadius: 4,
+        marginTop: 24,
         padding: 4,
         paddingLeft: 12,
         paddingRight: 12

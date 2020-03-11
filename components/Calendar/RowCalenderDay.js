@@ -10,6 +10,7 @@ import {parse} from 'qs';
  * @param isSelected
  * @param hasAppointment
  * @param onDayPress
+ * @param isInSelectMonth
  * @returns {*}
  * @constructor
  */
@@ -24,7 +25,7 @@ const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress, isInSelect
     const fontWeight = isSelected ? 'bold' : 'normal';
 
     return (
-        <TouchableOpacity style={[{width: "100%",}, isSelected ? styles.daySelected : {}]} onPress={e => onDayPress}>
+        <TouchableOpacity style={[{width: "100%",}, isSelected ? styles.daySelected : {}]} onPress={onDayPress}>
             <View style={[styles.dayWrapper, {opacity}]}>
                 {
                     isSelected &&
