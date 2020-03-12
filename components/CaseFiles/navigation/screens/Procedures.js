@@ -5,7 +5,7 @@ import { Details } from '../../OverlayPages/Procedures'
 const Procedures = () => {
     const suitesState = useContext(SuitesContext).state
     return (
-        suitesState.overlaySelectedMenuTab === 'Details' ?
+        suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Details' ?
             <Details/>
             :
             <Details/>        

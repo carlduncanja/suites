@@ -3,18 +3,19 @@ import {View, Text, StyleSheet,ProgressViewIOS} from 'react-native';
 import ProgressIcon from './ProgressIcon';
 import ProgressBar from './ProgressBar';
 import { SuitesContext } from '../../../contexts/SuitesContext';
+import { transformToCamel } from '../../../hooks/useTextEditHook'
 
 const ProgressContainer = () => {
     const suitesState = useContext(SuitesContext).state
     const suitesMethod = useContext(SuitesContext).methods
     
     getNumber = (step) =>{
-        const stepObj = suitesState.progressList.filter(item => item.step === step)
+        const stepObj = suitesState.progressBar.progressList.filter(item => item.step === step)
         return stepObj[0].progress
         
     }
 
-    const endBars = suitesState.progressContainerWidth/6
+    const endBars = suitesState.progressBar.progressContainerWidth/6
     return (  
         <View style={styles.container}>    
             <View style={[styles.iconsContainer]} onLayout={(event)=>suitesMethod.getProgressWidth(event.nativeEvent.layout.width)}>   
@@ -37,9 +38,9 @@ const ProgressContainer = () => {
                                             "stepComplete"
                                             :
                                             suitesState.currentStep === step ?
-                                                `${suitesMethod.transformToCamel(step)}SelectedNew`
+                                                `${transformToCamel(step)}SelectedNew`
                                                 :
-                                                `${suitesMethod.transformToCamel(step)}DisabledNew`
+                                                `${transformToCamel(step)}DisabledNew`
                                     }
                                 />
                                 {

@@ -21,7 +21,7 @@ const Table = () => {
     return ( 
         <>
             <View style={styles.header}>
-                <Header headers = {suitesState.reportTableHeader}/>
+                <Header headers = {suitesState.report.reportConsumablesListHeaders}/>
             </View>
             {Divider()}
             <View style={{paddingBottom:5}}>

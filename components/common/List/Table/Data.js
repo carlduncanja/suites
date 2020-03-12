@@ -12,7 +12,7 @@ const Data = () => {
             bounces={false}
             //contentContainerStyle={{}}
             >
-            {suitesState.reportTableData.map((item,index)=>{
+            {suitesState.report.reportConsumablesList.map((item,index)=>{
                 return(
                     <View key={index}>
                         <Item fields={item} />

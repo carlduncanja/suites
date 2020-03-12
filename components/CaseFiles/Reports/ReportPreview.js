@@ -34,7 +34,7 @@ const ReportPreview = (props) => {
                 <ReportHeaderSummary/>
                 {Rectangle()}
                 <ReportDetails/>
-                {suitesState.overlaySelectedMenuTab === 'Quotation' ?
+                {suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Quotation' ?
                     <BillingDetails/>
                     :
                     <InvoiceBillingDetails/>

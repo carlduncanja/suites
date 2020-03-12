@@ -23,11 +23,11 @@ const ActionContainer = () => {
     return ( 
         <View style={styles.container}>
             <View style={styles.actionTitleContainer}> 
-                <Text style={styles.title}>{suitesState.floatingActions.actionTitle.toUpperCase()} ACTIONS</Text>
+                <Text style={styles.title}>{suitesState.floatingActions.floatingActionsObject.actionTitle.toUpperCase()} ACTIONS</Text>
             </View>
             <View style={styles.actionsContainer}>
                 <FlatList
-                    data={suitesState.floatingActions.actions}
+                    data={suitesState.floatingActions.floatingActionsObject.actions}
                     renderItem={({ item }) => 
                         <View>
                             <Action

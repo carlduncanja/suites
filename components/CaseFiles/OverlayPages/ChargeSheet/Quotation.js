@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import OverlayList from '../../../common/List/OverlayList'
 import { ScrollView } from 'react-native-gesture-handler';
+import { getReportList } from '../../../../hooks/useListHook'
 
 const Quotations = () => {
     const suitesState = useContext(SuitesContext).state
@@ -10,9 +11,9 @@ const Quotations = () => {
 
     useEffect(()=>{
         const headers = ["Quotation", "Date", "Value", "Actions"]
-        const list = suitesMethod.getReportList(suitesState.overlayTabInfo, headers)
+        const list = getReportList(suitesState.slideOverlay.slideOverlayTabInfo, headers)
         suitesMethod.setListTabData(list,headers)
-    },[suitesState.overlayTabInfo])
+    },[suitesState.slideOverlay.slideOverlayTabInfo])
     
    
     return ( 

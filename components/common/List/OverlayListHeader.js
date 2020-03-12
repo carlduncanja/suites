@@ -4,7 +4,7 @@ import Checkbox from '../Checkbox/Checkbox';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const OverlayListHeader = () => {
-    const listHeaders = useContext(SuitesContext).state.overlayListHeaders
+    const listHeaders = useContext(SuitesContext).state.slideOverlay.slideOverlayListHeaders
     const width = 100/listHeaders.length
     return ( 
         <View style = {styles.container}>

@@ -8,7 +8,7 @@ const ReportDetails = () => {
     return (  
         <View style={styles.container}>
             <View style={styles.summaryDetails}>
-                {suitesState.summaryList.map((detail,index) =>{
+                {suitesState.report.reportInformation.quotationDetails.summaryList.map((detail,index) =>{
                     return( 
                         <View style={[styles.summaryItem,{backgroundColor:index % 2 === 0 ? '#F8FAFB':'#FFFFFF'}]} key={index}>
                             <Text style={styles.detailText}>{detail.charge}</Text>

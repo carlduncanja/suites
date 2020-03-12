@@ -12,13 +12,13 @@ const ListData = () => {
             bounces={false}
             contentContainerStyle={{paddingBottom:300}}
             >
-            {suitesState.listData.slice(suitesState.paginatorValues.sliceArrayStart, suitesState.paginatorValues.sliceArrayEnd).map((item,index)=>{
+            {suitesState.list.listData.slice(suitesState.paginatorValues.sliceArrayStart, suitesState.paginatorValues.sliceArrayEnd).map((item,index)=>{
                 return(
                     <View key={index}>
                         <ListItem
                             modalToOpen = "OverlaySlidePanelModal"
                             fields={item}
-                            checkbox = {suitesState.checkedItem && suitesState.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
+                            checkbox = {suitesState.list.checkedItemStatus && suitesState.list.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
                         />
                     </View>
                 )

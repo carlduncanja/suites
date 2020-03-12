@@ -6,8 +6,8 @@ import Section from '../../../common/SlideOverlay/Section'
 const Details = () => {
     const suitesState = useContext(SuitesContext).state
     const sections = []
-    Object.keys(suitesState.overlayTabInfo).forEach(key=>{
-        sections.push(suitesState.overlayTabInfo[key])
+    Object.keys(suitesState.slideOverlay.slideOverlayTabInfo).forEach(key=>{
+        sections.push(suitesState.slideOverlay.slideOverlayTabInfo[key])
     })    
 
     return ( 

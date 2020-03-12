@@ -1,14 +1,15 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import { PersonalRecord } from '../Information Record/RecordStyles'
+import { PersonalRecord } from '../Information Record/RecordStyles';
+import { transformToSentence } from '../../../hooks/useTextEditHook';
 
 const SectionList = () => {
     const suitesState = useContext(SuitesContext).state
     let sections = []
 
-    Object.keys(suitesState.overlayTabInfo).forEach(key=>{
-        sections.push(suitesState.overlayTabInfo[key])
+    Object.keys(suitesState.slideOverlay.slideOverlayTabInfo).forEach(key=>{
+        sections.push(suitesState.slideOverlay.slideOverlayTabInfo[key])
     })
 
     let Section = (data) =>{
@@ -26,11 +27,7 @@ const SectionList = () => {
         )
     }
 
-    let transformToSentence = (word) =>{
-        let newWord = word.replace(/([A-Z])/g, " $1")
-        return newWord.charAt(0).toUpperCase() + newWord.slice(1);
-    }
-
+  
     return ( 
         <View style={styles.containter}>
             {

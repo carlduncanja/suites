@@ -60,7 +60,7 @@ const Page = () => {
                         <RoundedPaginator />
                     </View>
 
-                    {suitesState.actionButtonState === false ?
+                    {suitesState.floatingActions.actionButtonState === false ?
                         <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#4299E1" modalToOpen="ActionContainerModal"/>
                         :
                         <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#A0AEC0"/>

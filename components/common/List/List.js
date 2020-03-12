@@ -9,7 +9,7 @@ const List = () => {
     return ( 
         <View>
             <View style={styles.header}>
-                <ListHeader headers={suitesState.listHeaders}/>
+                <ListHeader headers={suitesState.list.listHeaders}/>
             </View>
             <View style={styles.data}>
                 <ListData />

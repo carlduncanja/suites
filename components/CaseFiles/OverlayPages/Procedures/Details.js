@@ -5,7 +5,7 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 
 const Details = () => {
     const suitesState = useContext(SuitesContext).state
-    const information = suitesState.overlayTabInfo
+    const information = suitesState.slideOverlay.slideOverlayTabInfo
     return (
         <ScrollView>
             {information.map((item,index)=>{

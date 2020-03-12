@@ -11,8 +11,8 @@ const SlideHeader = () => {
         <View>
             <ViewModeHeading/>
             <TabsContainer 
-                tabs = {suitesState.overlayCurrentMenuTabs}
-                selectedTab = {suitesState.overlaySelectedMenuTab}
+                tabs = {suitesState.overlayMenu.selectedMenuItemTabs}
+                selectedTab = {suitesState.overlayMenu.selectedMenuItemCurrentTab}
                 onPressChange = {suitesMethod.handleOverlayTabChange}
             />
         </View>

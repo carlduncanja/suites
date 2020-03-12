@@ -10,7 +10,7 @@ const InvoiceBillingDetails = () => {
         <View style={styles.container}>
             <View>
                 <Text style={{color:"#718096", fontSize:16, paddingBottom:8}}>Invoice Terms</Text>
-                <Text style={{color:"#323843", fontSize:14}}>{suitesState.reportTerms}</Text>
+                <Text style={{color:"#323843", fontSize:14}}>{suitesState.report.reportInformation.reportTerms}</Text>
             </View>
             <BillingDetails/>
         </View>

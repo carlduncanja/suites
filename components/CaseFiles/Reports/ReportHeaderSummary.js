@@ -4,7 +4,7 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const ReportHeaderSummary = () => {
     const suitesState = useContext(SuitesContext).state
-    const billingDetails = suitesState.billingDetails
+    const billingDetails = suitesState.report.reportInformation.billingDetails
     return (  
         <View style={styles.container}>
             <View style={styles.billing}>
@@ -15,7 +15,7 @@ const ReportHeaderSummary = () => {
                 <Text style={styles.text}>{billingDetails.billedTo.addressLine3}</Text>
             </View>
             <View style={styles.billing}>
-                {suitesState.overlaySelectedMenuTab === 'Quotation' ?
+                {suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Quotation' ?
                     <>
                         <Text style={styles.contentHeader}>For</Text>
                         <Text style={styles.text}>{billingDetails.for}</Text>

@@ -946,18 +946,18 @@
             "id":"#892746515024",
             "name":
             {
-                "first":"Meghan",
+                "firstName":"Meghan",
                 "middle":"Anna",
-                "last":"James"
+                "surname":"James"
             }
         },
         {
             "id":"#350219385025",
             "name":
             {
-                "first":"Julie",
+                "firstName":"Julie",
                 "middle":"Melissa",
-                "last":"Brown"
+                "surname":"Brown"
             }
 
         },
@@ -1192,7 +1192,9 @@
 
         ],
            
-        "caseFilesInformation":[
+        "caseFilesInformation":{
+            "headers":["Patient","Balance","Staff","Next Visit"],
+            "data":[
             {
                 "id":"#350219385001",        
                 "balance":"-$ 115,002.25",
@@ -1391,7 +1393,8 @@
                 "staff":"Dr. Mansingh",
                 "nextVisit":"2019-11-21"
             }
-        ],
+        ]
+    },
             
         "caseDetails":
         [

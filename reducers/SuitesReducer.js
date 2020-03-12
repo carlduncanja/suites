@@ -1,24 +1,5 @@
 import React from 'react';
 
-export const sourceDataReducer = (state, action) =>{
-    switch(action.type){
-        case 'GET_SCHEDULE':
-            return require('../assets/db.json').appointments
-        case 'GET_CASEFILES':
-            return require('../assets/db.json').caseFiles.caseFilesInformation
-        default:
-            return state
-    }
-};
-
-export const selectedSourceDataReducer = (state, action) =>{
-    switch(action.type){
-        case 'GET_SELECTED_CASEFILES':
-            return require('../assets/db.json').caseFiles.caseDetails
-        default:
-            return state
-    }
-};
 
 export const paginatorReducer = (state, action) => {
     switch(action.type){

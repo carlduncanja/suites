@@ -1,47 +1,82 @@
 import React, { useState, createContext, useEffect, useReducer, useRef} from 'react';
-import {Text, StyleSheet, Animated, Dimensions, Easing} from 'react-native';
-import { paginatorReducer, sourceDataReducer, selectedSourceDataReducer, overlayMenuTabDataReducer } from '../reducers/SuitesReducer'
-import moment from 'moment';
-import SvgIcon from '../assets/SvgIcon';
+import { getList, getReportList } from '../hooks/useListHook';
+import { transformToCamel, transformToSentence } from '../hooks/useTextEditHook';
+import { suitesAppReducer, appActions } from '../reducers/suitesAppReducer';
 
 export const SuitesContext = createContext()
 
 export const SuitesContextProvider = (props) => {
-    
     //Suites
-    const [sourceData, dispatchSourceReducer] = useReducer(sourceDataReducer,[])
-    const [selectedSourceData, dispatchSelectedReducer] = useReducer(selectedSourceDataReducer,[])
+    const [selectedSourceData, setSelectedSourceData] = useState([])
     const [pageMeasure, setPageMeasure] = useState({})
     const [searchPlaceholder, setSearchPlaceholder] = useState("Search by any heading or entry below")
     const [slideTopValue, setSlideTopValue] = useState(0);
-    //List
-    const [listData, setListData] = useState([])
-    const [listHeaders, setListHeaders] = useState(["Patient","Balance","Staff","Next Visit"])
-    const [checkedItem, setCheckedItem] = useState(false);
-    const [checkedItemsList, setCheckedItemsList] = useState([]);
-    const [selectedListItemId, setSelectedListItemId] = useState();
-    //Ovelay
-    const [overlaySelectedMenuName, setOverlaySelectedMenuName] = useState(null)
-    const [overlaySelectedMenuTab, setOverlaySelectedMenuTab] = useState(null)
-    const [overlayCurrentMenuTabs, setOverlayCurrentMenuTabs] = useState(null)
-    const [overlayTabInfo, setOverlayTabInfo] = useState({})
-    const [overlayMenu, setOverlayMenu] = useState([])
-    const [overlayStatus, setOverlayStatus] = useState(false)
-    const [overlayList, setOverlayList] = useState([])
-    const [overlayListHeaders, setOverlayListHeaders] = useState([])
-    const [overlayHeader, setOverlayHeader] = useState({})
-    const [selectedItem, setSelectedItem] = useState({})
-    //FloatingActions
-    const [floatingActions, setFloatingActions] = useState({})
-    const [openAction, setOpenAction] = useState(false)
-    const [actionButtonState, setActionButtonState] = useState(false);
+
     //Take out for Nav
     const [currentNavPage, setCurrentNavPage] = useState("caseFiles");
     const [pageTitle, setPageTitle] = useState('Case Files')
     
+    //List
+    const [list, dispatchListReducer] = useReducer(suitesAppReducer, {
+        listData: [],
+        listHeaders: [],
+        checkedItemStatus : false,
+        checkedItemsList : []
+    })
+    //SLIDEOverlay
+
+    const [overlayMenu, dispatchOverlayMenu] = useReducer(suitesAppReducer,{
+        menu : [],
+        selectedMenuItem : "",
+        selectedMenuItemTabs : [],
+        selectedMenuItemCurrentTab : ""
+    })
+
+    const [slideOverlay, dispatchSlideOverlay] = useReducer(suitesAppReducer,{
+        slideOverlayStatus: false,
+        slideOverlayHeader : {},
+        slideOverlayTabInfo : {},
+        slideOverlayList : [],
+        slideOverlayListHeaders : []
+    }) 
+
+    const [selectedListItem, dispatchSelectedListItem] = useReducer(suitesAppReducer,{
+        selectedListItemId : "",
+        selectedListObject : {},
+    })
+
+    //FloatingActions
+    const [floatingActions, dispatchFloatingActions] = useReducer(suitesAppReducer, {
+        floatingActionsObject : {
+            actionTitle:"",
+            actions:[]
+        },
+        actionButtonState : false,
+        openAction : false
+    })
+
+    const [paginatorValues, dispatchPaginator] = useReducer(suitesAppReducer,{
+        currentPage:1,
+        sliceArrayStart:0,
+        sliceArrayEnd:10,
+        totalPages: 0,
+        recordsPerPage:10
+    })
+    
     //Case Files
-    const [progressContainerWidth, setProgressContainerWidth] = useState(0)
-    const [progressList, setProgressList] = useState([])
+
+    const [progressBar, dispatchProgressBar] = useReducer(suitesAppReducer,{
+        progressContainerWidth : 0,
+        progressList : []
+    })
+
+    const [report, dispatchReport] = useReducer(suitesAppReducer,{
+        reportStatus : false,
+        reportInformation : [],
+        reportConsumablesList : [],
+        reportConsumablesListHeaders : []
+    })
+
     const [itemTitle, setItemTitle] = useState("")
     const [newItemSteps, setNewItemSteps] = useState([])
     const [itemStepNames, setItemStepNames] = useState([])
@@ -55,49 +90,60 @@ export const SuitesContextProvider = (props) => {
     const [currentStepPosition, setCurrentStepPosition] = useState(0);  
     const [overlayComplete, setOverlayComplete] = useState(false)
     const [tabsCompletedList, setTabsCompletedList] = useState([])
-    const [billingSummary, setBillingSummary] = useState({})
-    const [reportPreview, setReportPreview] = useState(false)
-    const [reportTableData, setReportTableData] = useState([])
-    const [reportTableHeader, setReportTableHeader] = useState([])
-    const [billingDetails, setBillingDetails] = useState([])
-    const [summaryList, setSummaryList] = useState([])
-    const [reportTerms, setReportTerms] = useState("")
+
         
-    const [paginatorValues, dispatchPaginator] = useReducer(paginatorReducer,{
-        currentPage:1,
-        sliceArrayStart:0,
-        sliceArrayEnd:10,
-        totalPages: 0,
-        recordsPerPage:10
-    })
-
-    const [overlayPaginatorValues, dispatchOverlayPaginator] = useReducer(paginatorReducer, {
-        currentPage:1,
-        sliceArrayStart:0,
-        sliceArrayEnd:20,
-        totalPages:0,
-        recordsPerPage:20
-    })
+    useEffect(()=>{
+        dispatchPaginator({
+            type:appActions.SETTOTALPAGES, 
+            newState: { totalPages : Math.ceil(list.listData.length/paginatorValues.recordsPerPage) }
+        })
+    },[list.listData])
 
     useEffect(()=>{
-        dispatchPaginator({type:'SET_TOTAL_PAGES', listData:listData})
-    })
-
-    useEffect(()=>{
-        let sourceType = `GET_${currentNavPage.toUpperCase()}`
-        let selectedType = `GET_SELECTED_${currentNavPage.toUpperCase()}`
-        dispatchSourceReducer({type:`${sourceType}`})   
-        dispatchSelectedReducer({type:`${selectedType}`})
-        setListData(getList(sourceData,listHeaders))
-    },[sourceData])
+        let data 
+        let headers = []
+        let selected = []
+        if (currentNavPage === 'caseFiles') {
+            data = require('../assets/db.json').caseFiles.caseFilesInformation.data
+            headers = require('../assets/db.json').caseFiles.caseFilesInformation.headers
+            selected = require('../assets/db.json').caseFiles.caseDetails
+        }else if (currentNavPage === 'schedule'){
+            data = require('../assets/db.json').appointments
+        }
+        setSelectedSourceData(selected)
+        dispatchListReducer({
+            type: appActions.SETLISTDATA,
+            newState : {
+                listData: getList(data, headers),
+                listHeaders : headers
+            }
+        })
+        
+    },[list.listData])
 
     useEffect(()=>{
         const array = require('../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === currentNavPage)
-        setFloatingActions({
-            actionTitle:array[0].page,
-            actions:array[0].actions
+        dispatchFloatingActions({
+            type:appActions.SETFLOATINGACTIONS,
+            newState: {
+                actionTitle:array[0].page,
+                actions:array[0].actions
+            }
         })
     }, currentNavPage)
+
+    useEffect(()=>{
+        const menu = require('../assets/db.json').overlayMenuTabs.filter(menu => menu.page === currentNavPage)
+        menu.length > 0 && dispatchOverlayMenu({
+            type: appActions.SETOVERLAYMENU,
+            newState:{
+                menu : menu[0].menuTabs,
+                selectedMenuItem : menu[0].menuTabs[0].tabName,
+                selectedMenuItemTabs : menu[0].menuTabs[0].overlayTab,
+                selectedMenuItemCurrentTab : menu[0].menuTabs[0].overlayTab[0]
+            }
+        })            
+    },[overlayMenu.menu, slideOverlay.slideOverlayStatus])
 
     useEffect(()=>{
         const stepsArray = require('../assets/db.json').createItem.filter(item => item.page === currentNavPage)
@@ -127,113 +173,70 @@ export const SuitesContextProvider = (props) => {
         setCurrentSelectedStepTab(tabs[0])
         setCurrentSelectedStepTabs(tabObjects)
         setCurrentSelectedStepTabObject(tabObjects[0])
-        setProgressList(stepsProgress)
+        dispatchProgressBar({
+            type: appActions.UPDATEPROGRESSBARLIST,
+            newState : {
+                progressList : stepsProgress
+            }
+        })
     }
-    useEffect(()=>{
-        const menu = require('../assets/db.json').overlayMenuTabs.filter(menu => menu.page === currentNavPage)
-        menu.length === 0?
-            null
-            :
-            getMenuItems(menu)
-    },[overlayMenu, overlayStatus])
-
-    getMenuItems = (menu) =>{
-        setOverlayMenu(menu[0].menuTabs)
-        setOverlaySelectedMenuName(menu[0].menuTabs[0].tabName)
-        setOverlayCurrentMenuTabs(menu[0].menuTabs[0].overlayTab)
-        setOverlaySelectedMenuTab(menu[0].menuTabs[0].overlayTab[0])
-    }
+    
 
     handleOverlayTabChange = (tabName) => {
-        setOverlaySelectedMenuTab(tabName)
-        setOverlayTabInfo(selectedItem[transformToCamel(overlaySelectedMenuName)][transformToCamel(tabName)])
+        dispatchOverlayMenu({
+            type: appActions.OVERLAYTABCHANGE,
+            newState : {selectedMenuItemCurrentTab : tabName}
+        })
+        dispatchSlideOverlay({
+            type: appActions.OVERLAYTABCHANGEINFO,
+            newState : {
+                slideOverlayTabInfo : selectedListItem.selectedListObject[transformToCamel(overlayMenu.selectedMenuItem)][transformToCamel(tabName)]
+            }
+        })
     }
 
     handleSelectedMenuTab = (menuName) => {
-        setOverlaySelectedMenuName(menuName)
-        const currentMenu = overlayMenu.filter(menuItem => menuItem.tabName === menuName) 
+        const currentMenu = overlayMenu.menu.filter(menuItem => menuItem.tabName === menuName) 
         const currentTabs = currentMenu[0].overlayTab
         const currentSelectedTab = currentTabs[0]
-        setOverlayCurrentMenuTabs(currentTabs)
-        setOverlaySelectedMenuTab(currentSelectedTab)
-        setOverlayTabInfo(selectedItem[transformToCamel(menuName)][transformToCamel(currentSelectedTab)])
-    }
-
-    getField = (field, data) => {
-        let fieldData = []
-        Object.keys(data).forEach(key=>{
-            key === field ?
-                key === 'actions' ?
-                    fieldData.push({"actions":data[key]})
-                    :
-                    fieldData.push(data[key])
-                :
-                null
+        dispatchOverlayMenu({
+            type: appActions.OVERLAYMENUCHANGE,
+            newState : {
+                selectedMenuItem : menuName,
+                selectedMenuItemTabs : currentTabs,
+                selectedMenuItemCurrentTab : currentSelectedTab
+            }
         })
-        return fieldData[0]
-    }
-
-    getNameObject = (obj) =>{
-        return({"id":obj.id, "name":`${obj.name.firstName} ${obj.name.surname}`})
-    }
-
-    getPatient = (id) =>{
-        let filterPatient = require('../assets/db.json').patients.filter(patient=> patient.id === id)
-        return filterPatient[0]
-    }
-
-   
-    getRecord = (data, listHeaders) =>{
-        newArray = []
-        listHeaders.map((header)=>{
-            newHeader = transformToCamel(header)
-            newHeader === 'patient'?
-                newArray.push(getNameObject(getPatient(data.id)))
-                :
-                newHeader === 'nextVisit' ?
-                    newArray.push(moment(getField(newHeader, data)).format("MMM D, YYYY"))
-                    :
-                        newArray.push(getField(newHeader, data))
+        dispatchSlideOverlay({
+            type: appActions.OVERLAYTABCHANGEINFO,
+            newState : {
+                slideOverlayTabInfo : selectedListItem.selectedListObject[transformToCamel(menuName)][transformToCamel(currentSelectedTab)]
+            }
         })
-
-
-        newObject={
-            "recordId":getField("id", data),
-            "recordInformation":newArray
-        }
-        return newObject
-    }
-
-    transformToCamel = (word) =>{
-        let newWord = word.replace(/ /g,"");
-        return (newWord.charAt(0).toLowerCase().concat(newWord.substring(1,newWord.length)))
-    }
-    transformToSentence = (word) =>{
-        let newWord = word.replace(/([A-Z])/g, " $1")
-        return newWord.charAt(0).toUpperCase() + newWord.slice(1);
-    }
-
-    getList = (sourceInformation, listHeaders) =>{
-        let list = []
-        sourceInformation.map((information)=>{
-            list.push(getRecord(information,listHeaders))
-        })
-        return list
-    }
-    getReportList = (sourceInformation, listHeaders) =>{
-        let list = []
-        sourceInformation.forEach((information)=>{
-            list.push(getRecord(information.list,listHeaders))
-        })
-        return list
     }
 
     toggleActionButton = () => {
-        actionButtonState === false && setSearchPlaceholder("")
-        setActionButtonState(!actionButtonState)
+        floatingActions.actionButtonState === false && setSearchPlaceholder("")
+        dispatchFloatingActions({
+            type:appActions.TOGGLEACTIONBUTTON,
+            newState : !floatingActions.actionButtonState
+        })
     }
+
+    transformAction=()=>{
+        dispatchFloatingActions({
+            type: appActions.TOGGLEOPENACTION,
+            newState : true
+        })
+    }
+
     closeSlideOverlay = () =>{
-        setOverlayStatus(false)
+        dispatchSlideOverlay({
+            type: appActions.CLOSESLIDEOVERLAY,
+            newState : {
+                slideOverlayStatus : false
+            }
+        })
     }
 
     getSelectedItem = (selectedId) => {
@@ -242,31 +245,48 @@ export const SuitesContextProvider = (props) => {
     }
 
     handleSelectedListItem = (listItemId) => {
-        setOverlayHeader({"id":getPatient(listItemId).id,"name":`${getPatient(listItemId).name.firstName} ${getPatient(listItemId).name.middle} ${getPatient(listItemId).name.surname}`})
-        setSelectedListItemId(listItemId)
         let selectedObj = getSelectedItem(listItemId)
-        selectedObj.length > 0 && setOverlayStatus(true)
-        selectedObj.length > 0 && setSelectedItem(selectedObj[0])
-        selectedObj.length > 0 && setOverlayTabInfo(selectedObj[0][transformToCamel(overlaySelectedMenuName)][transformToCamel(overlaySelectedMenuTab)])
-        
+        selectedObj.length > 0 && (
+            dispatchSelectedListItem({
+                type: appActions.SETSELECTEDLISTITEM,
+                newState:{
+                    selectedListItemId : listItemId,
+                    selectedListObject : selectedObj[0]
+                }
+            }),
+            dispatchSlideOverlay({
+                type: appActions.SETSLIDEOVERLAY,
+                newState : {
+                    slideOverlayHeader : {"id":getPatient(listItemId).id,"name":`${getPatient(listItemId).name.firstName} ${getPatient(listItemId).name.middle} ${getPatient(listItemId).name.surname}`},
+                    slideOverlayStatus : true,
+                    slideOverlayTabInfo : selectedObj[0][transformToCamel(overlayMenu.selectedMenuItem)][transformToCamel(overlayMenu.selectedMenuItemCurrentTab)]
+                }
+            })
+        )
     }
 
     setListTabData = (list,headers) => {
-        setOverlayListHeaders(headers)
-        setOverlayList(list)
+        dispatchSlideOverlay({
+            type: appActions.SETSLIDEOVERLAYLIST,
+            newState : {
+                slideOverlayList : list,
+                slideOverlayListHeaders : headers
+            }
+        })
         return true
     }
 
     toggleCheckbox = (listItemId) => {
-        setCheckedItem(true)
-        checkedItemsList.includes(listItemId) ?
-            setCheckedItemsList(checkedItemsList.filter(listItem => listItem !== listItemId))
-            :
-            setCheckedItemsList([...checkedItemsList,listItemId])
-    }
-
-    handleOverlayClose = () => {
-        setOverlayStatus(false)
+        dispatchListReducer({
+            type: appActions.TOGGLECHECKBOX,
+            newState : {
+                checkedItemStatus : true,
+                checkedItemsList : list.checkedItemsList.includes(listItemId) ? 
+                    list.checkedItemsList.filter(listItem => listItem !== listItemId)
+                    :
+                    [...list.checkedItemsList,listItemId]
+            }
+        })
     }
 
     getSlideTop = (event) =>{
@@ -295,10 +315,13 @@ export const SuitesContextProvider = (props) => {
     handleProgressBar = (tabPosition) =>{
         const tabLength = currentStepTabs.length
         let progress = 1/tabLength
-        const objIndex = progressList.findIndex(obj => obj.step === currentStep)
-        const updatedObj = {...progressList[objIndex], "progress":tabPosition * progress}
-        const updatedList = [...progressList.slice(0,objIndex),updatedObj,...progressList.slice(objIndex+1)]
-        setProgressList(updatedList)
+        const objIndex = progressBar.progressList.findIndex(obj => obj.step === currentStep)
+        const updatedObj = {...progressBar.progressList[objIndex], "progress":tabPosition * progress}
+        const updatedList = [...progressBar.progressList.slice(0,objIndex),updatedObj,...progressBar.progressList.slice(objIndex+1)]
+        dispatchProgressBar({
+            type : appActions.UPDATEPROGRESSBARLIST,
+            newState : {progressList:updatedList}
+        })
     }
 
     handleStepChange = () =>{
@@ -311,7 +334,6 @@ export const SuitesContextProvider = (props) => {
     }
 
     completeStep = () =>{
-        //setOverlayFooterText("CONTINUE") 
         setOverlayComplete(true)
     }
     setStep = () =>{
@@ -340,51 +362,48 @@ export const SuitesContextProvider = (props) => {
     }
 
     getProgressWidth = (width) =>{
-        setProgressContainerWidth(width) 
+        dispatchProgressBar({
+            type: appActions.SETPROGRESSWIDTH,
+            newState : {
+                progressContainerWidth : width
+            }
+        })
     }
 
-    transformAction=()=>{
-        setOpenAction(true)
-    }
-
+   
     openReportAction=(id)=>{
-        setReportPreview(true)
-        const selectedItem = overlayTabInfo.filter(info => id === info.list.id)
+        const selectedItem = slideOverlay.slideOverlayTabInfo.filter(info => id === info.list.id)
         const preview=selectedItem[0].preview
         const consumables = preview.quotationDetails.consumablesTable
-        setBillingDetails(preview.billingDetails)
-        setSummaryList(preview.quotationDetails.summaryList)
-        setReportTableData(getList(consumables.data,consumables.headers))
-        setReportTableHeader(consumables.headers)
-        setBillingSummary(preview.billingSummary)
-        setReportTerms(preview.reportTerms)
+        dispatchReport({
+            type: appActions.SETREPORTDETAILS,
+            newState:{
+                reportStatus : true,
+                reportInformation : preview,
+                reportConsumablesList : getList(consumables.data,consumables.headers),
+                reportConsumablesListHeaders : consumables.headers
+            }
+        })
     }
 
     closePreview = ()=>{
-        setReportPreview(false)
+        dispatchReport({
+            type : appActions.TOGGLEREPORT,
+            newState:{
+                reportStatus : false
+            }
+        })
     }
     const state = {
         pageTitle, 
         paginatorValues, 
+        list,
         floatingActions,
+        progressBar,
         searchPlaceholder, 
-        actionButtonState, 
-        selectedListItemId, 
-        checkedItem, 
-        checkedItemsList, 
-        listData, 
-        listHeaders,
-        selectedItem,
-        overlaySelectedMenuTab,
-        overlayHeader,
-        overlayCurrentMenuTabs,
+        slideOverlay,
         overlayMenu,
-        overlaySelectedMenuName,
-        overlayTabInfo,
-        overlayStatus,
         slideTopValue,
-        overlayList,
-        overlayListHeaders,
         newItemSteps,
         currentStepObject,
         currentStep,
@@ -393,26 +412,15 @@ export const SuitesContextProvider = (props) => {
         currentSelectedStepTab,
         currentStepTabs,
         currentSelectedStepTabObject,
-        //overlayFooterText,
-        progressList,
-        progressContainerWidth,
-        openAction,
         tabsCompletedList,
         overlayComplete,
-        reportPreview,
-        reportTableData,
-        reportTableHeader,
-        billingDetails,
-        billingSummary,
-        summaryList,
-        reportTerms,
-        pageMeasure
+        pageMeasure,
+        report
     }
     const methods = {
         getSlideTop, 
         getPageMeasure,
-        toggleActionButton, 
-        handleOverlayClose, 
+        toggleActionButton,  
         getList, 
         handleSelectedListItem, 
         handleOverlayTabChange, 

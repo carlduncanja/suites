@@ -9,9 +9,9 @@ const SelectedMenuIconTab = () => {
     const suitesMethods = useContext(SuitesContext).methods
     return ( 
         <View style={styles.iconContainer}>
-            {suitesState.overlayMenu.map((icon,index)=>{
+            {suitesState.overlayMenu.menu.map((icon,index)=>{
                 return (
-                    suitesState.overlaySelectedMenuName === icon.tabName ?
+                    suitesState.overlayMenu.selectedMenuItem === icon.tabName ?
                         <TouchableOpacity key={index} style={styles.icon} onPress={()=>suitesMethods.handleSelectedMenuTab(icon.tabName)}>
                             <SvgIcon iconName={`${icon.tabId}Open`}/>
                         </TouchableOpacity>

@@ -12,13 +12,13 @@ const OverlayListData = () => {
             bounces={false}
             contentContainerStyle={{paddingBottom:300}}
             >
-            {suitesState.overlayList.slice(suitesState.paginatorValues.sliceArrayStart, suitesState.paginatorValues.sliceArrayEnd).map((item,index)=>{
+            {suitesState.slideOverlay.slideOverlayList.slice(suitesState.paginatorValues.sliceArrayStart, suitesState.paginatorValues.sliceArrayEnd).map((item,index)=>{
                 return(
                     <View key={index}>
                         <OverlayListItem
                             modalToOpen="ReportPreviewModal"
                             fields={item}
-                            checkbox = {suitesState.checkedItem && suitesState.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
+                            checkbox = {suitesState.list.checkedItemStatus && suitesState.list.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
                         />
                     </View>
                 )

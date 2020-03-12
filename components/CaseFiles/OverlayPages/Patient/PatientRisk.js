@@ -5,7 +5,7 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 
 const PateintRisk = () => {
     const suitesState = useContext(SuitesContext).state
-    const level = suitesState.overlayTabInfo
+    const level = suitesState.slideOverlay.slideOverlayTabInfo
     return ( 
         <ScrollView>
             {

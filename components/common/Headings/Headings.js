@@ -22,8 +22,8 @@ export function ViewModeHeading({headerId, headerName}){
     const suitesState = useContext(SuitesContext).state
     return(
         <Heading 
-            headerId={suitesState.overlayHeader.id}
-            headerName={suitesState.overlayHeader.name}
+            headerId={suitesState.slideOverlay.slideOverlayHeader.id}
+            headerName={suitesState.slideOverlay.slideOverlayHeader.name}
             backgroundColor="#EEF2F6"
             headerIdColor="#104587"
             headerNameColor="#0CB0E7"

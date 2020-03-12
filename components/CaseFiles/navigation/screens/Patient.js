@@ -5,13 +5,13 @@ import { Details, Diagnosis, Insurance, PatientRisk} from '../../OverlayPages/Pa
 const Patient = () => {
     const suitesState = useContext(SuitesContext).state
     return (
-        suitesState.overlaySelectedMenuTab === 'Details' ?
+        suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Details' ?
             <Details/>
             :
-            suitesState.overlaySelectedMenuTab === 'Insurance' ?
+            suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Insurance' ?
                 <Insurance/>
                 :
-                suitesState.overlaySelectedMenuTab === 'Diagnosis' ?
+                suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Diagnosis' ?
                     <Diagnosis/>
                     :
                     <PatientRisk/>        

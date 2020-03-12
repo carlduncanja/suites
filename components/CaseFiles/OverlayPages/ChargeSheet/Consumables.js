@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import OverlayList from '../../../common/List/OverlayList'
 import { ScrollView } from 'react-native-gesture-handler';
+import { getList } from '../../../../hooks/useListHook'
 
 const Consumables = () => {
     const suitesState = useContext(SuitesContext).state
@@ -10,7 +11,7 @@ const Consumables = () => {
 
     useEffect(()=>{
         const headers = ["Item Name", "Type", "Quantity", "Unit Price"]
-        const list = suitesMethod.getList(suitesState.overlayTabInfo, headers)
+        const list = getList(suitesState.slideOverlay.slideOverlayTabInfo, headers)
         suitesMethod.setListTabData(list,headers)
     })
     

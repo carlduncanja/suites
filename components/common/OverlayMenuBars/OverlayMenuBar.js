@@ -15,7 +15,7 @@ const OverlayMenuBar = (props) => {
                     <SelectedMenuIconTab/>
                 </View>
                 <View style={styles.selectedIconContainer}>
-                    <Text style={styles.selectedText}>{suitesState.overlaySelectedMenuName}</Text>
+                    <Text style={styles.selectedText}>{suitesState.overlayMenu.selectedMenuItem}</Text>
                 </View>
                 <View>
                     <Paginator 

@@ -16,7 +16,7 @@ export function SignsAndSymptoms({cardInformation}) {
                 titleBackgroundColor = "#EBF8FF"
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Signs and Symptoms"
-                cardInformation = {suitesState.overlayTabInfo.signsAndSymptoms}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.signsAndSymptoms}
                 frameIconName = "signsAndSymptoms"
             />
         </View>
@@ -33,7 +33,7 @@ export function Examinations(){
                 titleBackgroundColor = "#E6FFFA"
                 frameBorderColor = "#4FD1C5"
                 frameTitle = "Examinations"
-                cardInformation = {suitesState.overlayTabInfo.examinations}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.examinations}
                 frameIconName = "examinations"
             />
         </View>
@@ -50,7 +50,7 @@ export function DiagnosticEvaluations(){
                 titleBackgroundColor = "#EBF4FF"
                 frameBorderColor = "#A3BFFA"
                 frameTitle = "Diagnostic Evaluations"
-                cardInformation = {suitesState.overlayTabInfo.diagnosticEvaluations}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.diagnosticEvaluations}
                 frameIconName = "diagnosticEvaluations"
             />
         </View>
@@ -66,7 +66,7 @@ export function LaboratoryInvestigations(){
                 titleBackgroundColor = "#E6FFFA"
                 frameBorderColor = "#4FD1C5"
                 frameTitle = "Laboratory Investigations"
-                cardInformation = {suitesState.overlayTabInfo.laboratoryInvestigations}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.laboratoryInvestigations}
                 frameIconName = "laboratoryInvestigations"
             />
         </View>
@@ -83,7 +83,7 @@ export function ProvisionalDiagnosis(){
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Provisional Diagnosis"
-                cardInformation = {suitesState.overlayTabInfo.provisionalDiagnosis}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.provisionalDiagnosis}
                 frameIconName = "provisionalDiagnosis"
             />
         </View>
@@ -100,7 +100,7 @@ export function FinalDiagnosis(){
                 titleBackgroundColor = "#F0FFF4"
                 frameBorderColor = "#9AE6B4"
                 frameTitle = "Final Diagnosis"
-                cardInformation = {suitesState.overlayTabInfo.finalDiagnosis}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.finalDiagnosis}
                 frameIconName = "finalDiagnosis"
             />
         </View>
@@ -117,7 +117,7 @@ export function MedicationPrescribed(){
                 titleBackgroundColor = "#FFF5F5"
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Medication Prescribed"
-                cardInformation = {suitesState.overlayTabInfo.medicationPrescribed}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.medicationPrescribed}
                 frameIconName = "medicationPrescribed"
             />
         </View>
@@ -134,7 +134,7 @@ export function ImplantedDevices(){
                 titleBackgroundColor = "#EBF8FF"
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Implanted Devices"
-                cardInformation = {suitesState.overlayTabInfo.implantedDevices}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.implantedDevices}
                 frameIconName = "implantedDevices"
             />
         </View>
@@ -151,7 +151,7 @@ export function Physicians(){
                 titleBackgroundColor = "#EBF8FF"
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Physicians"
-                cardInformation = {suitesState.overlayTabInfo.physicians}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.physicians}
                 frameIconName = "medicalStaff"
                 iconFillColor = "#4299E1"
             />
@@ -169,7 +169,7 @@ export function Nurses(){
                 titleBackgroundColor = "#FFF5F5"
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Nurses"
-                cardInformation = {suitesState.overlayTabInfo.nurses}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.nurses}
                 frameIconName = "medicalStaff"
                 iconFillColor = "#F56565"
             />
@@ -187,7 +187,7 @@ export function Allergies(){
                 titleBackgroundColor = "#FAF5FF"
                 frameBorderColor = "#D6BCFA"
                 frameTitle = "Allergies"
-                cardInformation = {suitesState.overlayTabInfo.allergies}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.allergies}
                 frameIconName = "allergies"
             />
         </View>
@@ -204,7 +204,7 @@ export function PreExistingConditions(){
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Pre-Existing Conditions"
-                cardInformation = {suitesState.overlayTabInfo.preExistingConditions}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.preExistingConditions}
                 frameIconName = "preExistingConditions"
             />
         </View> 
@@ -220,7 +220,7 @@ export function Immunisations(){
                 titleBackgroundColor = "#EBF4FF"
                 frameBorderColor = "#A3BFFA"
                 frameTitle = "Immunisations"
-                cardInformation = {suitesState.overlayTabInfo.immunisations}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.immunisations}
                 frameIconName = "immunisations"
             />
         </View> 
@@ -236,7 +236,7 @@ export function Medications(){
                 titleBackgroundColor = "#FFF5F5"
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Medications"
-                cardInformation = {suitesState.overlayTabInfo.medications}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.medications}
                 frameIconName = "medications"
             />
         </View> 
@@ -252,7 +252,7 @@ export function Procedures(){
                 titleBackgroundColor = "#F0FFF4"
                 frameBorderColor = "#9AE6B4"
                 frameTitle = "Procedures"
-                cardInformation = {suitesState.overlayTabInfo.procedures}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.procedures}
                 frameIconName = "overlayProcedures"
             />
         </View> 
@@ -268,7 +268,7 @@ export function MedicalHistoryImplantedDevices(){
                 titleBackgroundColor = "#EBF8FF"
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Implanted Devices"
-                cardInformation = {suitesState.overlayTabInfo.implantedDevices}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.implantedDevices}
                 frameIconName = "implantedDevices"
             />
         </View> 
@@ -284,7 +284,7 @@ export function FamilyPreExistingConditions(){
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Pre-Existing Conditions"
-                cardInformation = {suitesState.overlayTabInfo.preExistingConditions}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.preExistingConditions}
                 frameIconName = "familyPreExistingConditions"
             />
         </View> 
@@ -300,7 +300,7 @@ export function OtherNotableConditions(){
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Other Notable Conditions"
-                cardInformation = {suitesState.overlayTabInfo.otherNotableConditions}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.otherNotableConditions}
                 frameIconName = "otherNotableConditions"
             />
         </View>
@@ -316,7 +316,7 @@ export function DrugUse(){
                 titleBackgroundColor = "#FAF5FF"
                 frameBorderColor = "#D6BCFA"
                 frameTitle = "Drug Use"
-                cardInformation = {suitesState.overlayTabInfo.drug}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.drug}
                 frameIconName = "drugUse"
             />
         </View>
@@ -332,7 +332,7 @@ export function AlcoholUse(){
                 titleBackgroundColor = "#FFF5F5"
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Alcohol Use"
-                cardInformation = {suitesState.overlayTabInfo.alcohol}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.alcohol}
                 frameIconName = "alcoholUse"
             />
         </View>
@@ -347,7 +347,7 @@ export function TobaccoUse(){
                 titleBackgroundColor = "#EEF2F6"
                 frameBorderColor = "#A0AEC0"
                 frameTitle = "Tobacco Use"
-                cardInformation = {suitesState.overlayTabInfo.tobacco}
+                cardInformation = {suitesState.slideOverlay.slideOverlayTabInfo.tobacco}
                 frameIconName = "tobaccoUse"
             />
         </View>

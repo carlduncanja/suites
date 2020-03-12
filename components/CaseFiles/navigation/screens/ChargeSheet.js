@@ -5,16 +5,16 @@ import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../Over
 const MedicalStaff = () => {
     const suitesState = useContext(SuitesContext).state
     return (
-        suitesState.overlaySelectedMenuTab === 'Consumables' ?
+        suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Consumables' ?
             <Consumables/>
             :
-            suitesState.overlaySelectedMenuTab === 'Equipment' ?
+            suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Equipment' ?
                 <Equipment/>
                 :
-                suitesState.overlaySelectedMenuTab === 'Invoices' ?
+                suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Invoices' ?
                     <Invoices/>
                     :
-                    suitesState.overlaySelectedMenuTab === 'Quotation' ?
+                    suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Quotation' ?
                         <Quotation/>
                         :
                         <Billing/>        

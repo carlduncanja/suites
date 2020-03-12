@@ -3,6 +3,8 @@ import { View, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import OverlayList from '../../../common/List/OverlayList'
 import { ScrollView } from 'react-native-gesture-handler';
+import { getReportList } from '../../../../hooks/useListHook'
+
 
 const Invoices = () => {
     const suitesState = useContext(SuitesContext).state
@@ -10,9 +12,9 @@ const Invoices = () => {
 
     useEffect(()=>{
         const headers = ["Invoice Number", "Status", "Date", "Value", "Actions"]
-        const list = suitesMethod.getReportList(suitesState.overlayTabInfo, headers)
+        const list = getReportList(suitesState.slideOverlay.slideOverlayTabInfo, headers)
         suitesMethod.setListTabData(list,headers)
-    },[suitesState.overlayTabInfo])
+    },[suitesState.slideOverlay.slideOverlayTabInfo])
     
    
     return ( 
