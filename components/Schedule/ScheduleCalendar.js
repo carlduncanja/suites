@@ -5,30 +5,24 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import RowCalendar from './../Calendar/RowCalendar';
 
 
-const ScheduleCalendar = ({month, appointmentDays, selectedDate, screenDimensions, onDaySelected}) => {
+/**
+ *
+ * @param month: a date object for the current month
+ * @param appointmentDays: a array of appointment for the selected month
+ * @param days: a array of strings for the days that will be displayed in the calender. NB the days string is the format
+ * "YYYY-MM-DD"
+ * @param selectedDate: a date object for the day that's selected.
+ * @param screenDimensions: a object {width,height} for the device's dimension
+ * @param onDaySelected <fun> : a function that take a date string ("YYYY-MM-DD")  as parameter
+ * @returns {*}
+ * @constructor
+ */
+const ScheduleCalendar = ({month, appointmentDays, days, selectedDate, screenDimensions, onDaySelected}) => {
 
     const [isExpanded, setExpanded] = useState(false);
 
     const onPressDay = (selected) => {
-        console.log("day selected");
         onDaySelected(selected)
-    };
-
-    const onPressDayToAppointment = (selected, status) => {
-        if (status) {
-            if (!state.displayFullCalendar) {
-                state.datePositions.map((date) => {
-                    if (moment(date.day).format("MM D") === selected.format("MM D")) {
-                        state._scrollView.scrollTo({x: date.event, y: 0, animated: true})
-                    }
-                })
-            }
-            state.appointmentDates.map((date) => {
-                if (date.date.format("MM D") === selected.format("MM D")) {
-                    state._scrollAppointment.scrollTo({x: 0, y: date.event, animated: true})
-                }
-            })
-        }
     };
 
     const onExpandButtonPress = () => {
@@ -52,6 +46,7 @@ const ScheduleCalendar = ({month, appointmentDays, selectedDate, screenDimension
                     !isExpanded
                         // Row calender view
                         ? <RowCalendar
+                            days={days}
                             month={month}
                             selectedDay={selectedDate}
                             appointmentDays={appointmentDays}
@@ -108,8 +103,6 @@ const ScheduleCalendar = ({month, appointmentDays, selectedDate, screenDimension
             >
                 <Text>Expand</Text>
             </TouchableOpacity>
-
-
         </View>
     )
 };
@@ -119,7 +112,6 @@ export default ScheduleCalendar
 
 const styles = StyleSheet.create({
     calendarContainer: {
-        marginBottom: 10,
         marginTop: 24
     },
     button: {
@@ -130,7 +122,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#CCD6E0",
         borderRadius: 4,
-        marginTop: 24,
+        marginTop: 12,
         padding: 4,
         paddingLeft: 12,
         paddingRight: 12

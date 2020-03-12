@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useRef} from 'react';
 import {Text, View, StyleSheet, ScrollView, ScrollViewBase, TouchableOpacity, FlatList} from 'react-native';
 import Month from './Month';
 import RowCalendarDays from './RowCalendarDays'
@@ -13,41 +13,39 @@ import RowCalendarDay from "./RowCalenderDay";
  *
  * @param month date object
  * @param selectedDay
+ * @param days array of date string "YYYY-MM-DD"
  * @param appointmentDays []
- * @param onDayPress
+ * @param onDayPress function that takes a date ("YYYY-MM-DD") string as a param.
  * @returns {*}
  * @constructor
  */
-const RowCalendar = ({month, selectedDay, appointmentDays, onDayPress}) => {
-    // const [calendarData, setCalendarData] = useState([]);
+const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) => {
 
-    const selectedMonth = moment(month).startOf('month');
-    // const prevMonth = moment(month).startOf('month').subtract(1, "month");
-    // const nextMonth = moment(month).startOf('month').add(1, "month");
+    const flatListRef = useRef();
 
-
-    const generateCalendarData = () => {
-        let pevMonthEndDays = useStartDays(month);
-        let nextMonthStartDays = useEndDays(month);
-        let currentMonthDays = useCurrentDays(selectedMonth.month() + 1, selectedMonth.year());
-
-        let dayArray = pevMonthEndDays.concat(currentMonthDays.concat(nextMonthStartDays));
-
-
-        return dayArray.map(item => {
+    const generateCalendarData = (days) => {
+        return days.map((item, index) => {
             const isSameMonth = moment(item).isSame(moment(month), 'month');
             const formatDate = moment(selectedDay).format("YYYY-MM-DD");
-
             return {
+                key: index,
                 day: moment(item),
                 isSelected: formatDate === item,
                 hasAppointment: appointmentDays.includes(moment(item).toDate().toString()),
                 onDayPress: () => {
-                    console.log("hello");
-                    onDayPress(item)
+                    onDayPress(item);
+                    scrollToIndex(index);
                 },
                 isInSelectMonth: isSameMonth,
             }
+        })
+    };
+
+    const scrollToIndex = (index) => {
+        if(flatListRef) flatListRef.current.scrollToIndex({
+            index,
+            animated: true,
+            viewOffset: 36,
         })
     };
 
@@ -56,8 +54,9 @@ const RowCalendar = ({month, selectedDay, appointmentDays, onDayPress}) => {
             style={styles.container}
         >
             <FlatList
+                ref={flatListRef}
                 contentContainerStyle={styles.container}
-                data={generateCalendarData()}
+                data={generateCalendarData(days)}
                 horizontal={true}
                 keyExtractor={(item, index) => index }
                 renderItem={({item, index}) =>
