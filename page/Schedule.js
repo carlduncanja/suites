@@ -6,6 +6,58 @@ import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import MonthSelector from "../components/Calendar/MonthSelector";
 import SchedulesList from "../components/Schedule/SchedulesList";
 import {useCurrentDays, useEndDays, useStartDays} from "../hooks/useScheduleService";
+
+
+const currentDate = new Date();
+const appointmentsObj = [
+    {
+        id: "1",
+        scheduleType: 1,
+        title: "Hello",
+        startTime: new Date(),
+        endTime: new Date(),
+        description: "",
+        additionalInfo: "",
+    },
+    {
+        id: "2",
+        scheduleType: 1,
+        title: "Hello",
+        startTime: new Date(),
+        endTime: new Date(),
+        description: "",
+        additionalInfo: "",
+    },
+    {
+        id: "3",
+        scheduleType: 1,
+        title: "Hello",
+        startTime: new Date(),
+        endTime: new Date(),
+        description: "",
+        additionalInfo: "",
+    },
+    {
+        id: "4",
+        scheduleType: 1,
+        title: "Hello",
+        startTime: new Date(),
+        endTime: new Date(),
+        description: "",
+        additionalInfo: "",
+    },
+    {
+        id: "6",
+        scheduleType: 1,
+        title: "Hello",
+        startTime: new Date(2020, 2, 10),
+        endTime: new Date(),
+        description: "",
+        additionalInfo: "",
+    }
+];
+
+
 const Schedule = (props) => {
     // const [showNotification, setShowNotification] = useState(false);
     //
@@ -90,7 +142,6 @@ const Schedule = (props) => {
     //     </ScrollView>
     // );
 
-    const currentDate = new Date();
 
     const getDaysForMonth = (month) => {
         const selectedMonth = moment(month).startOf('month');
@@ -108,7 +159,7 @@ const Schedule = (props) => {
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
     const [selectedDay, setSelectedDay] = useState(currentDate);
     const [daysList, setDaysList] = useState(getDaysForMonth(currentDate));
-    const [appointments, setAppointments] = useState([currentDate, new Date(2002, 2, 10)]);
+    const [appointments, setAppointments] = useState(appointmentsObj);
     const [sectionListIndex, setSectionListIndex] = useState(0);
 
     const getDrawerContent = () => {
@@ -126,6 +177,17 @@ const Schedule = (props) => {
                 screenDimensions={props.screenDimensions}
                 transparent={transparent}
             />
+    };
+
+    /***
+     *
+     *
+     * @returns {[]} and array of day strings in the format "YYYY-MM-DD"
+     */
+    const getAppointmentDays = () => {
+        const appointmentDays = [];
+        appointments.forEach( item => appointmentDays.push( (moment(item.startTime).format("YYYY-MM-DD") )));
+        return appointmentDays;
     };
 
     /**
@@ -168,7 +230,7 @@ const Schedule = (props) => {
                 }}>
                     <ScheduleCalendar
                         onDaySelected={handleOnDaySelected}
-                        appointmentDays={appointments}
+                        appointmentDays={getAppointmentDays()}
                         month={selectedMonth}
                         days={daysList}
                         selectedDate={selectedDay}
@@ -180,44 +242,7 @@ const Schedule = (props) => {
 
                     <SchedulesList
                         days={daysList}
-                        appointments={[
-                            {
-                                id: "1",
-                                scheduleType: 1,
-                                title: "Hello",
-                                startTime: new Date(),
-                                endTime: new Date(),
-                                description: "",
-                                additionalInfo: "",
-                            },
-                            {
-                                id: "2",
-                                scheduleType: 1,
-                                title: "Hello",
-                                startTime: new Date(),
-                                endTime: new Date(),
-                                description: "",
-                                additionalInfo: "",
-                            },
-                            {
-                                id: "3",
-                                scheduleType: 1,
-                                title: "Hello",
-                                startTime: new Date(),
-                                endTime: new Date(),
-                                description: "",
-                                additionalInfo: "",
-                            },
-                            {
-                                id: "4",
-                                scheduleType: 1,
-                                title: "Hello",
-                                startTime: new Date(),
-                                endTime: new Date(),
-                                description: "",
-                                additionalInfo: "",
-                            },
-                        ]}
+                        appointments={appointments}
                         selectedIndex={sectionListIndex}
                     />
 

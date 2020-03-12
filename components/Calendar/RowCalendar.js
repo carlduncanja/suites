@@ -14,7 +14,7 @@ import RowCalendarDay from "./RowCalenderDay";
  * @param month date object
  * @param selectedDay
  * @param days array of date string "YYYY-MM-DD"
- * @param appointmentDays []
+ * @param appointmentDays: and array of date string 'YYYY-MM-DD' for the the days that has appointments
  * @param onDayPress function that takes a date ("YYYY-MM-DD") string as a param.
  * @returns {*}
  * @constructor
@@ -22,6 +22,7 @@ import RowCalendarDay from "./RowCalenderDay";
 const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) => {
 
     const flatListRef = useRef();
+    console.log(appointmentDays);
 
     const generateCalendarData = (days) => {
         return days.map((item, index) => {
@@ -31,7 +32,7 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
                 key: index,
                 day: moment(item),
                 isSelected: formatDate === item,
-                hasAppointment: appointmentDays.includes(moment(item).toDate().toString()),
+                hasAppointment: appointmentDays.includes(moment(item).format("YYYY-MM-DD")),
                 onDayPress: () => {
                     onDayPress(item);
                     scrollToIndex(index);
@@ -58,7 +59,7 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
                 contentContainerStyle={styles.container}
                 data={generateCalendarData(days)}
                 horizontal={true}
-                keyExtractor={(item, index) => index }
+                keyExtractor={(item, index) => index+"" }
                 renderItem={({item, index}) =>
                     <View
                         key={index}
