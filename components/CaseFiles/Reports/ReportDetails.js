@@ -2,13 +2,14 @@ import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import Table from '../../common/List/Table/Table'
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const ReportDetails = () => {
-    const suitesState = useContext(SuitesContext).state
+    const caseState = useContext(CaseFileContext).state
     return (  
         <View style={styles.container}>
             <View style={styles.summaryDetails}>
-                {suitesState.report.reportInformation.quotationDetails.summaryList.map((detail,index) =>{
+                {caseState.report.reportInformation.quotationDetails.summaryList.map((detail,index) =>{
                     return( 
                         <View style={[styles.summaryItem,{backgroundColor:index % 2 === 0 ? '#F8FAFB':'#FFFFFF'}]} key={index}>
                             <Text style={styles.detailText}>{detail.charge}</Text>

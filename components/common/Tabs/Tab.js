@@ -13,9 +13,9 @@ const Tab = (props) => {
             <TouchableOpacity 
                 activeOpacity={1} 
                 style={[styles.tabContainer,{backgroundColor:props.backgroundColor}]} 
-                onPress={() => props.onPressChange(props.tab)}
+                onPress={() => props.onPressChange(props.tabIndex)}
             >
-                <Text style={[styles.text,{color:props.textColor}]}>{props.tab}</Text>
+                <Text style={[styles.text,{color:props.textColor}]}>{props.tabName}</Text>
             </TouchableOpacity>
             <View style={styles.corner}>
                 <SvgIcon iconName="tabRight" fillColor={props.backgroundColor}/>

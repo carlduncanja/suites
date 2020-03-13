@@ -4,14 +4,15 @@ import { FamilyHistory,General,Lifestyle,Other } from '../../OverlayPages/Medica
 
 const MedicalHistory = () => {
     const suitesState = useContext(SuitesContext).state
+    const name = suitesState.overlayMenu.selectedMenuItemTabs[suitesState.overlayMenu.selectedMenuItemCurrentTab]
     return (
-        suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Family History' ?
+        name === 'Family History' ?
             <FamilyHistory/>
             :
-            suitesState.overlayMenu.selectedMenuItemCurrentTab === 'General' ?
+            name === 'General' ?
                 <General/>
                 :
-                suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Lifestyle' ?
+                name === 'Lifestyle' ?
                     <Lifestyle/>
                     :
                     <Other/>        

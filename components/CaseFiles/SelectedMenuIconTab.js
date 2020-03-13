@@ -11,12 +11,12 @@ const SelectedMenuIconTab = () => {
         <View style={styles.iconContainer}>
             {suitesState.overlayMenu.menu.map((icon,index)=>{
                 return (
-                    suitesState.overlayMenu.selectedMenuItem === icon.tabName ?
-                        <TouchableOpacity key={index} style={styles.icon} onPress={()=>suitesMethods.handleSelectedMenuTab(icon.tabName)}>
+                    suitesState.overlayMenu.selectedMenuItem === index ?
+                        <TouchableOpacity key={index} style={styles.icon} onPress={()=>suitesMethods.handleSelectedMenuTab(index)}>
                             <SvgIcon iconName={`${icon.tabId}Open`}/>
                         </TouchableOpacity>
                         :
-                        <TouchableOpacity key={index} style={styles.icon} onPress={()=>suitesMethods.handleSelectedMenuTab(icon.tabName)}>
+                        <TouchableOpacity key={index} style={styles.icon} onPress={()=>suitesMethods.handleSelectedMenuTab(index)}>
                             <SvgIcon iconName={`${icon.tabId}Closed`}/>
                         </TouchableOpacity>
                 )

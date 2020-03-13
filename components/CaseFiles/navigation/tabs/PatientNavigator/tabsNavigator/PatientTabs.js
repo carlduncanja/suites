@@ -24,7 +24,7 @@ const PatientTabs = ({ navigation, descriptors }) => {
                         <TouchableOpacity
                             onPress={() => {
                                 navigation.navigate(routeName);
-                                suitesMethods.handleOverlayTabChange(tabName)
+                                suitesMethods.handleOverlayTabChange(index)
                             }}
                             activeOpacity={1}
                             style={[styles.tabContainer,{backgroundColor:backgroundColor}]}

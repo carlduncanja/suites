@@ -7,7 +7,7 @@ import {SuitesContext} from '../../../contexts/SuitesContext'
 
 const OverlayMenuBar = (props) => {
     const suitesState = useContext(SuitesContext).state
-
+    const menuName = suitesState.overlayMenu.menu[suitesState.overlayMenu.selectedMenuItem].tabName
     return ( 
         <View style={styles.container}>
             <View style={styles.menuBar}>
@@ -15,7 +15,7 @@ const OverlayMenuBar = (props) => {
                     <SelectedMenuIconTab/>
                 </View>
                 <View style={styles.selectedIconContainer}>
-                    <Text style={styles.selectedText}>{suitesState.overlayMenu.selectedMenuItem}</Text>
+                    <Text style={styles.selectedText}>{menuName}</Text>
                 </View>
                 <View>
                     <Paginator 

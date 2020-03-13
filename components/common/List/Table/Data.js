@@ -4,15 +4,16 @@ import Item from './Item';
 // import { CheckedBox } from '../Checkbox/Checkboxes';
 // import Checkbox from '../Checkbox/Checkbox';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
+import { CaseFileContext } from '../../../../contexts/CaseFileContext';
 
 const Data = () => {
-    const suitesState = useContext(SuitesContext).state
+    const caseState = useContext(CaseFileContext).state
     return ( 
         <ScrollView
             bounces={false}
             //contentContainerStyle={{}}
             >
-            {suitesState.report.reportConsumablesList.map((item,index)=>{
+            {caseState.report.reportConsumablesList.map((item,index)=>{
                 return(
                     <View key={index}>
                         <Item fields={item} />

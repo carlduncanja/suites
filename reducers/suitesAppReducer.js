@@ -9,19 +9,12 @@ export const appActions = {
     SETOVERLAYMENU : 'SETOVERLAYMENU',
     OVERLAYTABCHANGE : 'OVERLAYTABCHANGE',
     OVERLAYMENUCHANGE : 'OVERLAYMENUCHANGE',
-    TOGGLESLIDEOVERLAY : 'TOGGLESLIDEOVERLAY',
-    OVERLAYINFOCHANGE : 'OVERLAYINFOCHANGE',
-    SELECTOVERLAYINFO : 'SELECTOVERLAYINFO',
     SETSELECTEDLISTITEM : 'SETSELECTEDLISTITEM',
     CLOSESLIDEOVERLAY : 'CLOSESLIDEOVERLAY',
     SETSLIDEOVERLAY : 'SETSLIDEOVERLAY',
     OVERLAYTABCHANGEINFO : 'OVERLAYTABCHANGEINFO',
     SETSLIDEOVERLAYLIST : 'SETSLIDEOVERLAYLIST',
     TOGGLECHECKBOX : 'TOGGLECHECKBOX',
-    SETREPORTDETAILS : 'SETREPORTDETAILS',
-    TOGGLEREPORT : 'TOGGLEREPORT',
-    SETPROGRESSWIDTH : 'SETPROGRESSWIDTH',
-    UPDATEPROGRESSBARLIST : 'UPDATEPROGRESSBARLIST'
 }
 
 export const suitesAppReducer = (state, action) => {
@@ -49,7 +42,8 @@ export const suitesAppReducer = (state, action) => {
         case appActions.SETTOTALPAGES:
             return {
                 ...state,
-                totalPages: newState.totalPages}
+                totalPages: newState.totalPages
+            }
         
         case appActions.SETLISTDATA:
             return {
@@ -57,6 +51,7 @@ export const suitesAppReducer = (state, action) => {
                 listData: newState.listData,
                 listHeaders : newState.listHeaders
             }
+
         case appActions.SETFLOATINGACTIONS:
             return {
                 ...state, 
@@ -82,19 +77,8 @@ export const suitesAppReducer = (state, action) => {
             return {
                 ...state,
                 menu : newState.menu,
-                selectedMenuItem: newState.selectedMenuItem,
                 selectedMenuItemTabs : newState.selectedMenuItemTabs,
-                selectedMenuItemCurrentTab : newState.selectedMenuItemCurrentTab
             }
-        
-        // case appActions.SELECTOVERLAYINFO :
-        //     return {
-        //         ...state,
-        //         slideOverlaySelectedItemId : newState.slideOverlaySelectedItemId,
-        //         slideSelectedItem : newState.slideSelectedItem,
-        //         slideOverlayHeader : newState.slideOverlayHeader,
-        //         slideOverlayTabInfo : newState.slideOverlayTabInfo
-        //     }
 
         case appActions.OVERLAYTABCHANGE:
             return {
@@ -108,18 +92,6 @@ export const suitesAppReducer = (state, action) => {
                 selectedMenuItem: newState.selectedMenuItem,
                 selectedMenuItemTabs: newState.selectedMenuItemTabs,
                 selectedMenuItemCurrentTab: newState.selectedMenuItemCurrentTab
-            }
-
-        case appActions.TOGGLESLIDEOVERLAY:
-            return {
-                ...state,
-                slideOverlayStatus : !state.slideOverlayStatus
-            }
-        
-        case appActions.OVERLAYINFOCHANGE:
-            return {
-                ...state,
-                slideOverlayTabInfo : newState.slideOverlayTabInfo
             }
         
         case appActions.OVERLAYTABCHANGEINFO:
@@ -162,32 +134,7 @@ export const suitesAppReducer = (state, action) => {
                 checkedItemStatus : newState.checkedItemStatus,
                 checkedItemsList : newState.checkedItemsList
             }
-        
-        case appActions.SETREPORTDETAILS:
-            return {
-                ...state,
-                reportStatus : newState.reportStatus,
-                reportInformation : newState.reportInformation,
-                reportConsumablesList : newState.reportConsumablesList,
-                reportConsumablesListHeaders : newState.reportConsumablesListHeaders
-            }
-        
-        case appActions.TOGGLEREPORT:
-            return{
-                ...state,
-                reportStatus : newState.reportStatus
-            }
-        
-        case appActions.SETPROGRESSWIDTH:
-            return {
-                ...state,
-                progressContainerWidth : newState.progressContainerWidth
-            }
-        
-        case appActions.UPDATEPROGRESSBARLIST:
-            return {
-                ...state,
-                progressList : newState.progressList
-            }
+        default:
+            return state
     }
 }

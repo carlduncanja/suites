@@ -2,24 +2,25 @@ import React,{useContext} from 'react';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../OverlayPages/ChargeSheet'
 
-const MedicalStaff = () => {
+const ChargeSheet = () => {
     const suitesState = useContext(SuitesContext).state
+    const name = suitesState.overlayMenu.selectedMenuItemTabs[suitesState.overlayMenu.selectedMenuItemCurrentTab]
     return (
-        suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Consumables' ?
+        name === 'Consumables' ?
             <Consumables/>
             :
-            suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Equipment' ?
+            name === 'Equipment' ?
                 <Equipment/>
                 :
-                suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Invoices' ?
+                name === 'Invoices' ?
                     <Invoices/>
                     :
-                    suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Quotation' ?
+                    name === 'Quotation' ?
                         <Quotation/>
                         :
                         <Billing/>        
     );
 }
  
-export default MedicalStaff;
+export default ChargeSheet;
 

@@ -2,12 +2,13 @@ import React,{useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import ExitIcon from '../ExitIcon';
 import { SuitesContext } from '../../../contexts/SuitesContext';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const OverlayHeader = () => {
-    const suitesState = useContext(SuitesContext).state
+    const caseState = useContext(CaseFileContext).state
     return (  
         <View style={styles.container}>
-            <Text>{suitesState.itemTitle}</Text>
+            <Text>{caseState.newItemAction.itemTitle}</Text>
             <ExitIcon/>
         </View>
     );

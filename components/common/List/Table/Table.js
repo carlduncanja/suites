@@ -3,6 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import Header from './Header';
 import Data from './Data';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
+import { CaseFileContext } from '../../../../contexts/CaseFileContext';
 
 const Divider = () =>{
     return(
@@ -17,11 +18,11 @@ const Divider = () =>{
     )
 }
 const Table = () => {
-    const suitesState = useContext(SuitesContext).state
+    const caseState = useContext(CaseFileContext).state
     return ( 
         <>
             <View style={styles.header}>
-                <Header headers = {suitesState.report.reportConsumablesListHeaders}/>
+                <Header headers = {caseState.report.reportConsumablesListHeaders}/>
             </View>
             {Divider()}
             <View style={{paddingBottom:5}}>

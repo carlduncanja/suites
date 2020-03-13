@@ -1,10 +1,14 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../contexts/SuitesContext';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const ReportHeaderSummary = () => {
+    const caseState = useContext(CaseFileContext).state
     const suitesState = useContext(SuitesContext).state
-    const billingDetails = suitesState.report.reportInformation.billingDetails
+    const billingDetails = caseState.report.reportInformation.billingDetails
+    const name = suitesState.overlayMenu.selectedMenuItemTabs[suitesState.overlayMenu.selectedMenuItemCurrentTab]
+
     return (  
         <View style={styles.container}>
             <View style={styles.billing}>
@@ -15,7 +19,7 @@ const ReportHeaderSummary = () => {
                 <Text style={styles.text}>{billingDetails.billedTo.addressLine3}</Text>
             </View>
             <View style={styles.billing}>
-                {suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Quotation' ?
+                {name === 'Quotation' ?
                     <>
                         <Text style={styles.contentHeader}>For</Text>
                         <Text style={styles.text}>{billingDetails.for}</Text>

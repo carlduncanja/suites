@@ -7,10 +7,20 @@ import ProgressContainer from '../Progress/ProgressContainer'
 import TabsContainer from '../Tabs/TabsContainer'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import OverlayComplete from './OverlayComplete';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const Overlay = () => {
+    const caseState = useContext(CaseFileContext).state
+    const caseMethods = useContext(CaseFileContext).methods
     const suitesState = useContext(SuitesContext).state
     const suitesMethod = useContext(SuitesContext).methods
+    const tabNames = []
+    useEffect(()=>{
+        caseState.newItemAction.currentStepTabs.map(tab =>{
+            [...tabNames,tab.tabName]
+        })
+    },[caseState.newItemAction.currentStepTabs])
+    
     return (  
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -21,16 +31,16 @@ const Overlay = () => {
                     <ProgressContainer/>
                     <View style={{alignSelf:'center'}}>
                         <TabsContainer 
-                            completedTabs={suitesState.tabsCompletedList}
-                            tabs={suitesState.currentStepTabs}
-                            selectedTab = {suitesState.currentSelectedStepTab}
-                            onPressChange = {suitesMethod.handleNewItemPress}
+                            completedTabs={caseState.newItemAction.tabsCompletedList}
+                            tabs={tabNames}
+                            selectedTab = {caseState.newItemAction.selectedTab}
+                            onPressChange = {caseMethods.handleNewItemPress}
                         />
                     </View>
                     
                 </View>
                 <View style={{flex:1}}>
-                    {suitesState.overlayComplete ?
+                    {caseState.newItemAction.overlayComplete ?
                         <OverlayComplete/>
                         :
                         <OverlayDataFields/>

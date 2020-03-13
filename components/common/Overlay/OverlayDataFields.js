@@ -3,9 +3,14 @@ import {View, Text, StyleSheet, FlatList} from 'react-native';
 import InputField from '../Input Fields/InputField'
 import DropdownField from '../Input Fields/DropdownField';
 import { SuitesContext } from '../../../contexts/SuitesContext';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const OverlayDataFields = (props) => {
     const suitesState = useContext(SuitesContext).state   
+    const caseState = useContext(CaseFileContext).state
+   // console.log("Tab Object: ", suitesState.newItemAction)
+    const tabObject = caseState.newItemAction.currentStepTabs.filter((tab, index) => index === caseState.newItemAction.selectedTab)
+    
     const getType = (item,index) =>{
         return (
             item.type === 'text' ?
@@ -21,8 +26,8 @@ const OverlayDataFields = (props) => {
     return (  
         <View style={styles.container}>
             {
-                suitesState.currentSelectedStepTabObject.infoNeeded &&
-                suitesState.currentSelectedStepTabObject.infoNeeded.map((item,index)=>{
+                tabObject[0].infoNeeded &&
+                tabObject[0].infoNeeded.map((item,index)=>{
                     return (
                         item.section ?
                             <View style={{width:"100%"}} key={index}>

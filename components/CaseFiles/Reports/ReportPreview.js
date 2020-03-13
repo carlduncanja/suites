@@ -25,6 +25,7 @@ const Rectangle = () =>{
 const ReportPreview = (props) => {
     const suitesMethod = useContext(SuitesContext).methods
     const suitesState = useContext(SuitesContext).state
+    const name = suitesState.overlayMenu.selectedMenuItemTabs[suitesState.overlayMenu.selectedMenuItemCurrentTab]
 
     const { modal: {closeModal, closeModals, currentModal}} = props
     return ( 
@@ -34,7 +35,7 @@ const ReportPreview = (props) => {
                 <ReportHeaderSummary/>
                 {Rectangle()}
                 <ReportDetails/>
-                {suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Quotation' ?
+                {name === 'Quotation' ?
                     <BillingDetails/>
                     :
                     <InvoiceBillingDetails/>

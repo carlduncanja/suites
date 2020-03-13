@@ -8,30 +8,18 @@ const TabsContainer = (props) => {
     return ( 
         <View style={styles.container}>
             {props.tabs.map((tab, index)=>{
-                return (tab === props.selectedTab ? 
+                return (
                     <View key={index}> 
                         <Tab 
-                            tab={tab} 
+                            tabName={tab} 
+                            tabIndex = {index}
                             onPressChange = {props.onPressChange}
-                            backgroundColor="#FFFFFF" 
-                            textColor="#3182CE"
-                        /> 
-                    </View>
-                    :    
-                    props.completedTabs && props.completedTabs.includes(tab) ?
-                        <View key={index}>
-                            <Tab 
-                                tab={tab} 
-                                onPressChange = {props.onPressChange}
-                                textColor="#4E5664"
-                            /> 
-                        </View>
-                    :        
-                    <View key={index}>
-                        <Tab 
-                            tab={tab} 
-                            onPressChange = {props.onPressChange}
-                            textColor="#718096"
+                            backgroundColor={index === props.selectedTab ? "#FFFFFF" : null}
+                            textColor={
+                                index === props.selectedTab ? "#3182CE" :
+                                    props.completedTabs && props.completedTabs.includes(index) ? "#4E5664" :
+                                        "#718096"
+                            }   
                         /> 
                     </View>
                 )

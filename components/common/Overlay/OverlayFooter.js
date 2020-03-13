@@ -2,13 +2,16 @@ import React,{Component, useContext} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon'
 import { SuitesContext } from '../../../contexts/SuitesContext';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const OverlayFooter = () => {
+    const caseState = useContext(CaseFileContext).state
+    const caseMethods = useContext(CaseFileContext).methods
     const suitesState = useContext(SuitesContext).state
     const suitesMethod = useContext(SuitesContext).methods
     return (  
-        <TouchableOpacity style={styles.container} onPress={()=>{suitesMethod.handleNewItemTabChange()}}>
-            <Text style={styles.title}>{suitesState.currentStepPosition === suitesState.newItemSteps.steps.length -1 ? "CONTINUE" : "NEXT"}</Text>
+        <TouchableOpacity style={styles.container} onPress={()=>{caseMethods.handleNewItemTabChange()}}>
+            <Text style={styles.title}>{caseState.newItemAction.overlayComplete? "CONTINUE" : "NEXT"}</Text>
             <SvgIcon iconName = "paginationNext" strokeColor="#3182CE"/>
         </TouchableOpacity>
     );

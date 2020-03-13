@@ -23,7 +23,7 @@ const OverlayMenuItems = ({ navigation, descriptors }) => {
                                 onPress={() => {
                                         navigation.navigate(routeName);
                                         setCurrentTabName(tabName);
-                                        suitesMethods.handleSelectedMenuTab(tabName)
+                                        suitesMethods.handleSelectedMenuTab(tabIndex)
                                     }}
                                 style={styles.icon}
                                 key={route.routeName}
