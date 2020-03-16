@@ -9,6 +9,10 @@ import {ScheduleContext} from '../../contexts/ScheduleContext';
 import {scheduleActions} from '../../reducers/scheduleReducer';
 import RowCalendarDay from "./RowCalenderDay";
 
+
+const ROW_ITEM_WIDTH = 96;
+const ROW_ITEM_HEIGHT = 96;
+
 /**
  *
  * @param month date object
@@ -20,9 +24,7 @@ import RowCalendarDay from "./RowCalenderDay";
  * @constructor
  */
 const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) => {
-
     const flatListRef = useRef();
-    console.log(appointmentDays);
 
     const generateCalendarData = (days) => {
         return days.map((item, index) => {
@@ -46,9 +48,13 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
         if(flatListRef) flatListRef.current.scrollToIndex({
             index,
             animated: true,
-            viewOffset: 36,
+            viewOffset: 0,
         })
     };
+
+    const getSelectedIndex = (day, days = []) => days.indexOf(day);
+    const initialIndex = getSelectedIndex(moment(selectedDay).format("YYYY-MM-DD"), days);
+
 
     return (
         <View
@@ -57,6 +63,8 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
             <FlatList
                 ref={flatListRef}
                 contentContainerStyle={styles.container}
+                getItemLayout={ (data, index) => ({length: ROW_ITEM_WIDTH, offset: ROW_ITEM_WIDTH * index - 36, index })}
+                initialScrollIndex={ initialIndex }
                 data={generateCalendarData(days)}
                 horizontal={true}
                 keyExtractor={(item, index) => index+"" }
