@@ -1,22 +1,17 @@
 import React,{Component, useContext} from 'react';
 import {View, Text,TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon'
-import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const Tab = (props) => {
-    const suitesMethods = useContext(SuitesContext).methods
+   
     return ( 
         <View style={styles.container}>
             <View style={styles.corner}>
                 <SvgIcon iconName="tabLeft" fillColor={props.backgroundColor}/>
             </View>
-            <TouchableOpacity 
-                activeOpacity={1} 
-                style={[styles.tabContainer,{backgroundColor:props.backgroundColor}]} 
-                onPress={() => props.onPressChange(props.tabIndex)}
-            >
+            <View style={[styles.tabContainer,{backgroundColor:props.backgroundColor}]}>
                 <Text style={[styles.text,{color:props.textColor}]}>{props.tabName}</Text>
-            </TouchableOpacity>
+            </View>
             <View style={styles.corner}>
                 <SvgIcon iconName="tabRight" fillColor={props.backgroundColor}/>
             </View>

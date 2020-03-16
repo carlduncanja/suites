@@ -3,11 +3,11 @@ import {View, TextInput, StyleSheet} from 'react-native';
 import { SuitesContext } from '../../contexts/SuitesContext';
 
 const InputText = (props) => {
-    const placeholder = useContext(SuitesContext).state.searchPlaceholder
+    const [state] = useContext(SuitesContext)
     return ( 
         <TextInput
             // onChangeText = {this.props.changeText}
-            placeholder={placeholder}
+            placeholder={state.searchPlaceholder}
             placeholderTextColor = "#A0AEC0"
             // value = {this.props.inputText}
         />

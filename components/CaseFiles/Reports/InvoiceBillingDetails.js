@@ -1,17 +1,15 @@
 import React, { useContext, useEffect } from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import BillingDetails from './BillingDetails'
-import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const InvoiceBillingDetails = () => {
-    const caseState = useContext(CaseFileContext).state
-    const suitesMethod = useContext(SuitesContext).methods
+    const [state] = useContext(CaseFileContext)
     return (  
         <View style={styles.container}>
             <View>
                 <Text style={{color:"#718096", fontSize:16, paddingBottom:8}}>Invoice Terms</Text>
-                <Text style={{color:"#323843", fontSize:14}}>{caseState.report.reportInformation.reportTerms}</Text>
+                <Text style={{color:"#323843", fontSize:14}}>{state.report.reportInformation.reportTerms}</Text>
             </View>
             <BillingDetails/>
         </View>

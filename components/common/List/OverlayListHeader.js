@@ -4,8 +4,7 @@ import Checkbox from '../Checkbox/Checkbox';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const OverlayListHeader = () => {
-    const listHeaders = useContext(SuitesContext).state.slideOverlay.slideOverlayListHeaders
-    const width = 100/listHeaders.length
+    const [state] = useContext(SuitesContext)
     return ( 
         <View style = {styles.container}>
             <TouchableOpacity 
@@ -14,7 +13,7 @@ const OverlayListHeader = () => {
                 <Checkbox/>
             </TouchableOpacity>
             <View style={styles.headersContainer}>
-                {listHeaders.map((header,index)=>{
+                {state.slideOverlay.slideOverlayListHeaders.map((header,index)=>{
                     return(
                         <View style={[styles.item,{flex:1}]} key={index}>
                             <Text style={styles.headerText}>{header}</Text>

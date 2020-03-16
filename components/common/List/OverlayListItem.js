@@ -3,6 +3,9 @@ import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import SvgIcon from '../../../assets/SvgIcon';
 import { withModal } from 'react-native-modalfy';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
+import { caseActions } from '../../../reducers/caseFilesReducer';
+import { getList } from '../../../hooks/useListHook';
 
 openModal = (props) => {
     const { modalToOpen, modal } = props
@@ -10,13 +13,42 @@ openModal = (props) => {
 }
 
 const OverlayListItem = (props) => {
-    const suitesState = useContext(SuitesContext).state
-    const suitesMethods = useContext(SuitesContext).methods
-    const width = 100/props.fields.recordInformation.length
+    const [appState, dispatchApp] = useContext(SuitesContext)
+    const [state, dispatch] = useContext(CaseFileContext)
+
+    const toggleCheckbox = (listItemId) => {
+        dispatchApp({
+            type: appActions.TOGGLECHECKBOX,
+            newState : {
+                checkedItemStatus : true,
+                checkedItemsList : appState.list.checkedItemsList.includes(listItemId) ? 
+                    appState.list.checkedItemsList.filter(listItem => listItem !== listItemId)
+                    :
+                    [...appState.list.checkedItemsList,listItemId]
+            }
+        })
+    }
+   
+    const openReportAction=(id)=>{
+        const selectedItem = appState.slideOverlay.slideOverlayTabInfo.filter(info => id === info.list.id)
+        const preview=selectedItem[0].preview
+        const consumables = preview.quotationDetails.consumablesTable
+        
+        dispatch({
+            type: caseActions.SETREPORTDETAILS,
+            newState:{
+                reportStatus : true,
+                reportInformation : preview,
+                reportConsumablesList : getList(consumables.data,consumables.headers),
+                reportConsumablesListHeaders : consumables.headers
+            }
+        })
+    }
+
     return ( 
        
         <View style={styles.container}>
-            <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>suitesMethods.toggleCheckbox(props.fields.recordId)}>
+            <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>toggleCheckbox(props.fields.recordId)}>
                 {props.checkbox}
             </TouchableOpacity>
 
@@ -33,7 +65,7 @@ const OverlayListItem = (props) => {
                                             key={index} 
                                             onPress={()=>{
                                                 this.openModal(props);
-                                                suitesMethods.openReportAction(props.fields.recordId)
+                                                openReportAction(props.fields.recordId)
                                             }}> 
                                             <SvgIcon iconName = "actions"/>
                                         </TouchableOpacity>

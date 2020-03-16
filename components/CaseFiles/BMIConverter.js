@@ -5,13 +5,14 @@ import SvgIcon from "../../assets/SvgIcon";
 
 const width = 20
 const BMIConverter = ({bmiValue, recordTitle}) => {
-    const caseStates = useContext(CaseFileContext).state
+    // const caseStates = useContext(CaseFileContext).state
+    const [state] = useContext(CaseFileContext)
     const separator = () => {
         return(
             <View style={{backgroundColor:"#E3E8EF",width:1}}/>
         )
     }
-    const data = caseStates.bmiScale
+    const data = state.bmiScale
     const indicator = <SvgIcon iconName="bmiIndicator"/>
 
     calcIndicatorPosition = (value) =>{ 
@@ -27,7 +28,7 @@ const BMIConverter = ({bmiValue, recordTitle}) => {
                 {index === 0 ?
                     <View style={[styles.bmiRange,{backgroundColor:item.color, borderBottomLeftRadius:10, borderTopLeftRadius:10}]}/>
                     :
-                    index === caseStates.bmiScale.length -1 ?
+                    index === state.bmiScale.length -1 ?
                             <View style={[styles.bmiRange,{backgroundColor:item.color, borderBottomRightRadius:10, borderTopRightRadius:10}]}/>
                             :
                             <View style={[styles.bmiRange,{backgroundColor:item.color}]}/>

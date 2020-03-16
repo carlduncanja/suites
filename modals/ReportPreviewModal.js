@@ -7,20 +7,19 @@ import { SimpleAnimation } from 'react-native-simple-animations';
 
 const { width } = Dimensions.get("window");
 const ReportPreviewModal = (props) => {
-    const suitesState = useContext(SuitesContext).state
-    const suitesMethod = useContext(SuitesContext).methods
-
+    
     const { modal: {closeModals, currentModal}} = props
     return (  
-        <SimpleAnimation duration={2000} direction="left" fade={false} delay={1000} movementType="slide" easing={Easing.ease}>
-            <TouchableOpacity 
-                onPress={()=>{closeModals(currentModal); }}
-                activeOpacity={1}
-                style={[styles.modalContainer,{width:width}]}>
+            <SimpleAnimation duration={2000} direction="left" fade={false} delay={1000} movementType="slide" easing={Easing.ease}>
+                {/* <TouchableOpacity 
+                    onPress={()=>{closeModals(currentModal); }}
+                    activeOpacity={1}
+                    style={[styles.modalContainer, {width:width}]}>
+                </TouchableOpacity> */}
+                <View style={{flex:1, width:width}}>
                     <ReportPreview/>
-            </TouchableOpacity>
-        </SimpleAnimation>
-        
+                </View>
+            </SimpleAnimation>
     );
 }
  
@@ -28,11 +27,10 @@ export default withModal(ReportPreviewModal);
 
 const styles = StyleSheet.create({
     modalContainer:{
-        //
-        flex:1,
+        //flex:1,
+        backgroundColor:'yellow',
         alignItems:"flex-end",
         justifyContent:'flex-end',
-        backgroundColor:"red"
     },
     positionContainer:{
         

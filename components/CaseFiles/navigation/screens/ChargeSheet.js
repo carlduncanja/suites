@@ -3,8 +3,8 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../OverlayPages/ChargeSheet'
 
 const ChargeSheet = () => {
-    const suitesState = useContext(SuitesContext).state
-    const name = suitesState.overlayMenu.selectedMenuItemTabs[suitesState.overlayMenu.selectedMenuItemCurrentTab]
+    const [state] = useContext(SuitesContext)
+    const name = state.overlayMenu.selectedMenuItemTabs[state.overlayMenu.selectedMenuItemCurrentTab]
     return (
         name === 'Consumables' ?
             <Consumables/>

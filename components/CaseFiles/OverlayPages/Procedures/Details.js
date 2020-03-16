@@ -4,8 +4,8 @@ import FrameProcedureCard from '../../../common/Frames/FrameCards/FrameProcedure
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 
 const Details = () => {
-    const suitesState = useContext(SuitesContext).state
-    const information = suitesState.slideOverlay.slideOverlayTabInfo
+    const [state] = useContext(SuitesContext)
+    const information = state.slideOverlay.slideOverlayTabInfo
     return (
         <ScrollView>
             {information.map((item,index)=>{

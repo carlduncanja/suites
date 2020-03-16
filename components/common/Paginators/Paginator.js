@@ -4,19 +4,19 @@ import SvgIcon from '../../../assets/SvgIcon';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { appActions } from '../../../reducers/suitesAppReducer';
 
-const Paginator = (props) => {
-    const suitesMethod = useContext(SuitesContext).methods
-    const suitesState = useContext(SuitesContext).state
+const Paginator = () => {
+    const [state, dispatch] = useContext(SuitesContext)
+
     return ( 
         <View style={styles.container}>
-            <TouchableOpacity onPress={()=>suitesMethod.dispatchPaginator({type:appActions.GOTOPREVIOUSPAGE})}>
+            <TouchableOpacity onPress={()=>dispatch({type:appActions.GOTOPREVIOUSPAGE})}>
                 <SvgIcon iconName = "paginationPrev" strokeColor="#104587"/>
             </TouchableOpacity>
             
             <View style={styles.numbersContainer}>
-                <Text style={styles.numbers}>{suitesState.paginatorValues.currentPage} of {suitesState.paginatorValues.totalPages}</Text>
+                <Text style={styles.numbers}>{state.paginatorValues.currentPage} of {state.paginatorValues.totalPages}</Text>
             </View>
-            <TouchableOpacity onPress={()=>suitesMethod.dispatchPaginator({type:appActions.GOTONEXTPAGE})}>
+            <TouchableOpacity onPress={()=>dispatch({type:appActions.GOTONEXTPAGE})}>
                 <SvgIcon iconName = "paginationNext" strokeColor="#104587"/>
             </TouchableOpacity>
         </View>

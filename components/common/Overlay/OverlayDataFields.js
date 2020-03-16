@@ -2,14 +2,11 @@ import React,{Component, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import InputField from '../Input Fields/InputField'
 import DropdownField from '../Input Fields/DropdownField';
-import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const OverlayDataFields = (props) => {
-    const suitesState = useContext(SuitesContext).state   
-    const caseState = useContext(CaseFileContext).state
-   // console.log("Tab Object: ", suitesState.newItemAction)
-    const tabObject = caseState.newItemAction.currentStepTabs.filter((tab, index) => index === caseState.newItemAction.selectedTab)
+    const [state] = useContext(CaseFileContext)
+    const tabObject = state.newItemAction.currentStepTabs.filter((tab, index) => index === state.newItemAction.selectedTab)
     
     const getType = (item,index) =>{
         return (

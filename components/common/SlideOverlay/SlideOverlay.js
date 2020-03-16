@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import SlideContent from './SlideContent'
 import SlideHeader from './SlideHeader';
 import SlideFooter from './SlideFooter';
-import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const SlideOverlay = () => {
     return ( 

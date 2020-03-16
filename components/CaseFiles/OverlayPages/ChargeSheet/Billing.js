@@ -6,9 +6,9 @@ import billingHeader from '../../Billing/BillingHeader';
 import BillingHeader from '../../Billing/BillingHeader';
 
 const Billing = () => {
-    const suitesState = useContext(SuitesContext).state
-    const header = suitesState.slideOverlay.slideOverlayTabInfo.header
-    const list = suitesState.slideOverlay.slideOverlayTabInfo.list
+    const [state] = useContext(SuitesContext)
+    const header = state.slideOverlay.slideOverlayTabInfo.header
+    const list = state.slideOverlay.slideOverlayTabInfo.list
     return ( 
         <View>
             <View style={styles.billingHeader}>

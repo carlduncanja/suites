@@ -1,10 +1,8 @@
 import React,{ useContext} from 'react';
 import { View, Text, StyleSheet, SectionList } from 'react-native';
-import { SuitesContext } from '../../../contexts/SuitesContext';
 import Navigation from '../../CaseFiles/navigation/ContentNavigationStack'
 
 const SllideContent = () => {
-    const suitesState = useContext(SuitesContext).state
     return ( 
         <View style={styles.container}>
             <Navigation />

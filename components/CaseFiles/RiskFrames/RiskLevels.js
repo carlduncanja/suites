@@ -1,7 +1,6 @@
 import React,{useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import RiskLevel from './RiskLevel';
-import {SuitesContext} from '../../../contexts/SuitesContext'
 
 export function Low({level}) {
     return(

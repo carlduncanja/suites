@@ -4,10 +4,11 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const ReportHeaderSummary = () => {
-    const caseState = useContext(CaseFileContext).state
-    const suitesState = useContext(SuitesContext).state
-    const billingDetails = caseState.report.reportInformation.billingDetails
-    const name = suitesState.overlayMenu.selectedMenuItemTabs[suitesState.overlayMenu.selectedMenuItemCurrentTab]
+    const [state] = useContext(CaseFileContext)
+    const [appState] = useContext(SuitesContext)
+    const billingDetails = state.report.reportInformation.billingDetails
+    
+    const name = appState.overlayMenu.selectedMenuItemTabs[appState.overlayMenu.selectedMenuItemCurrentTab]
 
     return (  
         <View style={styles.container}>

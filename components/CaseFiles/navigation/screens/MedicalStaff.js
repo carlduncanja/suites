@@ -4,9 +4,9 @@ import { Details } from '../../OverlayPages/MedicalStaff'
 import { View, Text } from 'react-native';
 
 const MedicalStaff = () => {
-    const suitesState = useContext(SuitesContext).state
+    const [state] = useContext(SuitesContext)
     return (
-        suitesState.overlayMenu.selectedMenuItemCurrentTab === 'Details' ?
+        state.overlayMenu.selectedMenuItemCurrentTab === 'Details' ?
             <Details/>
             :
             <Details/>        

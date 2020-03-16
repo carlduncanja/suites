@@ -5,19 +5,27 @@ import ActionContainer from '../components/common/FloatingAction/ActionContainer
 import { withModal } from 'react-native-modalfy';
 
 const ActionContainerModal = (props) => {
-    const suitesState = useContext(SuitesContext).state
-    const suitesMethod = useContext(SuitesContext).methods
+    const [state,dispatch] = useContext(SuitesContext)
+    const toggleActionButton = () => {
+        // state.floatingActions.actionButtonState === false && setSearchPlaceholder("")
+        dispatch({
+            type:appActions.TOGGLEACTIONBUTTON,
+            newState : !state.floatingActions.actionButtonState
+        })
+    }
 
     const { modal: {closeModal, closeModals, currentModal}} = props
     return (  
-        <TouchableOpacity 
-            onPress={()=>{closeModals(currentModal); suitesMethod.toggleActionButton()}}
-            activeOpacity={1}
-            style={[styles.modalContainer,{width:suitesState.pageMeasure.width, height:suitesState.pageMeasure.height}]}>
+        <View style={{width:state.pageMeasure.width, height:state.pageMeasure.height}}>
+            <TouchableOpacity
+                onPress={()=>{closeModals(currentModal);toggleActionButton()}}
+                activeOpacity={1}
+                style={styles.modalContainer}
+            />
             <View style={styles.positionContainer}>
                 <ActionContainer/>
             </View>
-        </TouchableOpacity>
+        </View>
     );
 }
  
@@ -25,6 +33,7 @@ export default withModal(ActionContainerModal);
 
 const styles = StyleSheet.create({
     modalContainer:{
+        flex:1,
         backgroundColor:"rgba(0,0,0,0.3)",
         alignItems:"flex-end",
         justifyContent:'flex-end',

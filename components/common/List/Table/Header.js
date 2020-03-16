@@ -1,9 +1,7 @@
 import React,{Component, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import { SuitesContext } from '../../../../contexts/SuitesContext';
 
 const Header = (props) => {
-    const suitesState = useContext(SuitesContext).state
     return ( 
         <View style={styles.headersContainer}>
             {props.headers.map((header,index)=>{

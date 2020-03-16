@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import {View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
-export default class Button extends Component {
-    render() {
-        return (
-            <TouchableOpacity 
-                style={[styles.button,{backgroundColor:this.props.backgroundColor}]} 
-                onPress={this.props.buttonPress}
-            >
-                <Text style={{color:this.props.color, fontSize:14}}>{this.props.title}</Text>
-            </TouchableOpacity>
-        )
+const Button = (props) =>{
+    const buttonPress = () => {
+        console.log("Button Press")
     }
+    return(
+        <TouchableOpacity 
+            style={[styles.button,{backgroundColor:props.backgroundColor}]} 
+            onPress={()=>buttonPress()}
+        >
+            <Text style={{color:props.color, fontSize:14}}>{props.title}</Text>
+        </TouchableOpacity>
+    )
 }
+
+export default Button
 
 const styles=StyleSheet.create({
     button:{

@@ -3,19 +3,29 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { SuitesContext } from '../contexts/SuitesContext';
 import OverlaySlidePanel from '../components/common/SlideOverlay/OverlaySlidePanel';
 import { withModal } from 'react-native-modalfy'
+import { appActions } from '../reducers/suitesAppReducer';
 
 const OverlaySlidePanelModal = (props) => {
-    const suitesState = useContext(SuitesContext).state
-    const suitesMethod = useContext(SuitesContext).methods
+    const [state, dispatch] = useContext(SuitesContext)
+    const closeSlideOverlay = () =>{
+        dispatch({
+            type: appActions.CLOSESLIDEOVERLAY,
+            newState : {
+                slideOverlayStatus : false
+            }
+        })
+    }
 
     const { modal: {closeModal, closeModals, currentModal}} = props
     return (  
-        <TouchableOpacity 
-            onPress={()=>{closeModals(currentModal); suitesMethod.closeSlideOverlay()}}
-            activeOpacity={1}
-            style={[styles.modalContainer,{width:suitesState.pageMeasure.width, height:suitesState.pageMeasure.height}]}>
+        <View style={{width:state.pageMeasure.width, height:state.pageMeasure.height}}>
+            <TouchableOpacity
+                style={styles.modalContainer}
+                onPress={()=>{closeModals(currentModal);closeSlideOverlay()}}
+                activeOpacity={1}
+            />
             <OverlaySlidePanel/>
-        </TouchableOpacity>
+        </View>
     );
 }
  
@@ -23,12 +33,9 @@ export default withModal(OverlaySlidePanelModal);
 
 const styles = StyleSheet.create({
     modalContainer:{
-        //flex:1,
+        flex:1,
         backgroundColor:"rgba(0,0,0,0.3)",
         alignItems:"flex-end",
         justifyContent:'flex-end',
     },
-    positionContainer:{
-        
-    }
 })

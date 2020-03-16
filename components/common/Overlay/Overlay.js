@@ -1,26 +1,48 @@
-import React,{useContext, useEffect} from 'react';
+import React,{useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import OverlayHeader from './OverlayHeader';
 import OverlayFooter from './OverlayFooter'
 import OverlayDataFields from './OverlayDataFields';
 import ProgressContainer from '../Progress/ProgressContainer'
 import TabsContainer from '../Tabs/TabsContainer'
-import { SuitesContext } from '../../../contexts/SuitesContext';
 import OverlayComplete from './OverlayComplete';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
+import {caseActions} from '../../../reducers/caseFilesReducer'
+import {handleProgressBar} from '../../../helpers/caseFilesHelpers';
 
 const Overlay = () => {
-    const caseState = useContext(CaseFileContext).state
-    const caseMethods = useContext(CaseFileContext).methods
-    const suitesState = useContext(SuitesContext).state
-    const suitesMethod = useContext(SuitesContext).methods
-    const tabNames = []
-    useEffect(()=>{
-        caseState.newItemAction.currentStepTabs.map(tab =>{
-            [...tabNames,tab.tabName]
+    const [state, dispatch] = useContext(CaseFileContext)
+    const [tabNames, setTabNames] = useState([])
+
+    const handleBar = (index) =>{
+        const updatedList = handleProgressBar(index,state.progressBar.progressList,state.newItemAction.selectedStep,state.newItemAction.currentStepTabs.length )
+        dispatch({
+            type : caseActions.UPDATEPROGRESSBARLIST,
+            newState : {progressList:updatedList}
         })
-    },[caseState.newItemAction.currentStepTabs])
+    }
+    const handleNewItemPress = (tabIndex) =>{
+        state.newItemAction.tabsCompletedList.includes(tabIndex) && (
+            dispatch({
+                type : caseActions.NEWITEMPRESS,
+                newState : {
+                    selectedTab : tabIndex,
+                    tabsCompletedList : state.newItemAction.tabsCompletedList.slice(0,tabIndex)
+                }
+            }),
+            handleBar(tabIndex)
+        )
+    }
     
+    useEffect(()=>{
+        let tabNames = []
+        state.newItemAction.currentStepTabs.map(tab =>{
+            tabNames.push(tab.tabName)
+        })
+        setTabNames(tabNames)
+    },[state.newItemAction.currentStepTabs])
+    
+    // console.log("Tabs: ", tabNames)
     return (  
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -31,16 +53,16 @@ const Overlay = () => {
                     <ProgressContainer/>
                     <View style={{alignSelf:'center'}}>
                         <TabsContainer 
-                            completedTabs={caseState.newItemAction.tabsCompletedList}
+                            completedTabs={state.newItemAction.tabsCompletedList}
                             tabs={tabNames}
-                            selectedTab = {caseState.newItemAction.selectedTab}
-                            onPressChange = {caseMethods.handleNewItemPress}
+                            selectedTab = {state.newItemAction.selectedTab}
+                            onPressChange = {handleNewItemPress}
                         />
                     </View>
                     
                 </View>
                 <View style={{flex:1}}>
-                    {caseState.newItemAction.overlayComplete ?
+                    {state.newItemAction.overlayComplete ?
                         <OverlayComplete/>
                         :
                         <OverlayDataFields/>

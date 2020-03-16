@@ -3,10 +3,10 @@ import {View, Text, StyleSheet} from 'react-native';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const PageTitle = () => {
-    const pageTitle  = useContext(SuitesContext).state.pageTitle
+    const [state]  = useContext(SuitesContext)
     return ( 
         <View>
-            <Text style={styles.pageTitle}>{pageTitle}</Text>
+            <Text style={styles.pageTitle}>{state.pageTitle}</Text>
         </View>
     );
 }

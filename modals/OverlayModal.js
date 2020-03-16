@@ -5,20 +5,20 @@ import Overlay from '../components/common/Overlay/Overlay';
 import { withModal } from 'react-native-modalfy'
 
 const OverlayModal = (props) => {
-    const suitesState = useContext(SuitesContext).state
-    const suitesMethod = useContext(SuitesContext).methods
+    const [state] = useContext(SuitesContext)
 
-    const { modal: {closeModal, closeModals, currentModal}} = props
-    return (  
-        <TouchableOpacity 
-            onPress={()=>{closeModals(currentModal); }}
-            activeOpacity={1}
-            style={[styles.modalContainer,{width:suitesState.pageMeasure.width}]}>
+    const { modal: {closeModal, closeModals, currentModal, closeAllModals }} = props
+    return ( 
+        <View style={{width:state.pageMeasure.width, height: state.pageMeasure.height}}>
+            <TouchableOpacity
+                onPress={()=>{closeModals(currentModal)}}
+                activeOpacity={1}
+                style={[styles.modalContainer]}
+            />
             <View style={styles.positionContainer}>
                 <Overlay/>
             </View>
-            
-        </TouchableOpacity>
+        </View> 
     );
 }
  

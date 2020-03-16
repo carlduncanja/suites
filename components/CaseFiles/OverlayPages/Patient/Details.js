@@ -4,10 +4,10 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import Section from '../../../common/SlideOverlay/Section'
 
 const Details = () => {
-    const suitesState = useContext(SuitesContext).state
+    const [state] = useContext(SuitesContext)
     const sections = []
-    Object.keys(suitesState.slideOverlay.slideOverlayTabInfo).forEach(key=>{
-        sections.push(suitesState.slideOverlay.slideOverlayTabInfo[key])
+    Object.keys(state.slideOverlay.slideOverlayTabInfo).forEach(key=>{
+        sections.push(state.slideOverlay.slideOverlayTabInfo[key])
     })    
 
     return ( 

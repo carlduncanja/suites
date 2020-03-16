@@ -1,19 +1,17 @@
 import React,{Component, useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Tab from './Tab'
-import { SuitesContext } from '../../../contexts/SuitesContext';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const TabsContainer = (props) => {
-    const suitesState = useContext(SuitesContext).state
     return ( 
         <View style={styles.container}>
             {props.tabs.map((tab, index)=>{
                 return (
                     <View key={index}> 
+                    <TouchableOpacity onPress = {()=>props.onPressChange(index)} activeOpacity={1}>
                         <Tab 
                             tabName={tab} 
-                            tabIndex = {index}
-                            onPressChange = {props.onPressChange}
                             backgroundColor={index === props.selectedTab ? "#FFFFFF" : null}
                             textColor={
                                 index === props.selectedTab ? "#3182CE" :
@@ -21,6 +19,8 @@ const TabsContainer = (props) => {
                                         "#718096"
                             }   
                         /> 
+                    </TouchableOpacity>
+                        
                     </View>
                 )
             })}

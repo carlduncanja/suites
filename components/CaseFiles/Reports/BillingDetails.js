@@ -1,13 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 import { View, Text, StyleSheet } from "react-native";
-import { SuitesContext } from '../../../contexts/SuitesContext';
 import { transformToSentence } from '../../../hooks/useTextEditHook'
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const BillingDetails = () => {
-    const caseState = useContext(CaseFileContext).state
-    const suitesMethod = useContext(SuitesContext).methods
-    const billingSummary = caseState.report.reportInformation.billingSummary
+    const [state] = useContext(CaseFileContext)
+    const billingSummary = state.report.reportInformation.billingSummary
     return (  
         <View style={styles.container}>
             {

@@ -1,11 +1,8 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import SvgIcon from '../../assets/SvgIcon';
-import { SuitesContext } from '../../contexts/SuitesContext';
 
 const Dropdown = (props) => {
-    const suitesState = useContext(SuitesContext).state;
-    const suitesMethods = useContext(SuitesContext).methods
     return ( 
         <View style={styles.dropContainer}>
             <View style={styles.container}>

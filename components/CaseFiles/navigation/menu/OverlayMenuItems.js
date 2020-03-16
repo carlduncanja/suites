@@ -3,11 +3,33 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../../../assets/SvgIcon'
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import FloatingActionButton from '../../../common/FloatingAction/FloatingActionButton'
+import { appActions } from '../../../../reducers/suitesAppReducer';
+import { transformToCamel } from '../../../../hooks/useTextEditHook'
 
 const OverlayMenuItems = ({ navigation, descriptors }) => {
     const { routes, index } = navigation.state;
-    const suitesMethods = useContext(SuitesContext).methods
+    const [state, dispatch] = useContext(SuitesContext)
     const [currentTabName, setCurrentTabName] = useState("Patient")
+
+    const handleSelectedMenuTab = (menuIndex) => {
+        const currentTabs = state.overlayMenu.menu[menuIndex].overlayTab
+        const selectedMenuName = state.overlayMenu.menu.filter((menuItem,index)=>index === menuIndex)
+        const selectedTabName = currentTabs[0]
+        dispatch({
+            type: appActions.OVERLAYMENUCHANGE,
+            newState : {
+                selectedMenuItem : menuIndex,
+                selectedMenuItemTabs : currentTabs,
+                selectedMenuItemCurrentTab : 0
+            }
+        })
+        dispatch({
+            type: appActions.OVERLAYTABCHANGEINFO,
+            newState : {
+                slideOverlayTabInfo : state.selectedListItem.selectedListObject[transformToCamel(selectedMenuName[0].tabName)][transformToCamel(selectedTabName)]
+            }
+        })
+    }
   
     return (
         <View style={styles.container}>
@@ -21,10 +43,10 @@ const OverlayMenuItems = ({ navigation, descriptors }) => {
                         return (
                             <TouchableOpacity
                                 onPress={() => {
-                                        navigation.navigate(routeName);
-                                        setCurrentTabName(tabName);
-                                        suitesMethods.handleSelectedMenuTab(tabIndex)
-                                    }}
+                                    navigation.navigate(routeName);
+                                    setCurrentTabName(tabName);
+                                    handleSelectedMenuTab(tabIndex)
+                                }}
                                 style={styles.icon}
                                 key={route.routeName}
                             >

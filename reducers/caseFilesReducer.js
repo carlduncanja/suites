@@ -7,76 +7,116 @@ export const caseActions = {
     NEWITEMTABCHANGE : 'NEWITEMTABCHANGE',
     COMPLETESTEPS : 'COMPLETESTEPS',
     HANDLESTEPCHANGE : 'HANDLESTEPCHANGE',
-    NEWITEMPRESS : 'NEWITEMPRESS'
+    NEWITEMPRESS : 'NEWITEMPRESS',
+    HANDLESTEPITEMPRESS : 'HANDLESTEPITEMPRESS'
 }
 
 export const caseFilesReducer = (state, action) =>{
     const { type, newState } = action
     switch (type){
-        case caseActions.SETPROGRESSWIDTH:
-            return {
-                ...state,
-                progressContainerWidth : newState.progressContainerWidth
-            }
+        // case caseActions.SETPROGRESSWIDTH:
+        //     let progressBar = {
+        //         ...state.progressBar,
+        //         progressContainerWidth : newState.progressContainerWidth
+        //     }
+        //     return {...state,progressBar}
 
         case caseActions.UPDATEPROGRESSBARLIST:
             return {
                 ...state,
-                progressList : newState.progressList
+                progressBar:{
+                    ...state.progressBar,
+                    progressList : newState.progressList
+                }
             }
     
         case caseActions.SETREPORTDETAILS:
             return {
                 ...state,
-                reportStatus : newState.reportStatus,
-                reportInformation : newState.reportInformation,
-                reportConsumablesList : newState.reportConsumablesList,
-                reportConsumablesListHeaders : newState.reportConsumablesListHeaders
+                report:{
+                    reportStatus : newState.reportStatus,
+                    reportInformation : newState.reportInformation,
+                    reportConsumablesList : newState.reportConsumablesList,
+                    reportConsumablesListHeaders : newState.reportConsumablesListHeaders
+                }
             }
 
         case caseActions.SETNEWITEMACTION:
             return {
                 ...state,
-                itemTitle : newState.itemTitle, 
-                itemSteps : newState.itemSteps, 
-                currentStepTabs : newState.currentStepTabs,
+                newItemAction:{
+                    ...state.newItemAction,
+                    itemTitle : newState.itemTitle, 
+                    itemSteps : newState.itemSteps, 
+                    currentStepTabs : newState.currentStepTabs,
+                }
             }
         
         case caseActions.TOGGLEREPORT:
-            return{
+            return {
                 ...state,
-                reportStatus : newState.reportStatus
+                report : {
+                    ...state.report,
+                    reportStatus : newState.reportStatus
+                }
             }
     
         case caseActions.NEWITEMTABCHANGE:
             return {
                 ...state,
-                tabsCompletedList : newState.tabsCompletedList,
-                selectedTab : newState.selectedTab
+                newItemAction:{
+                    ...state.newItemAction,
+                    tabsCompletedList : newState.tabsCompletedList,
+                    selectedTab : newState.selectedTab
+                }
             }
-        
+
         case caseActions.COMPLETESTEPS:
             return {
                 ...state,
-                overlayComplete : newState.overlayComplete
+                newItemAction:{
+                    ...state.newItemAction,
+                    overlayComplete : newState.overlayComplete,
+                    stepsCompletedList : newState.stepsCompletedList
+                }
             }
         
         case caseActions.HANDLESTEPCHANGE:
             return {
                 ...state,
-                currentStep : newState.currentStep,
-                currentStepTabs : newState.currentStepTabs,
-                selectedTab : newState.selectedTab,
-                selectedStep: newState.selectedStep
+                newItemAction:{
+                    ...state.newItemAction,
+                    currentStep : newState.currentStep,
+                    currentStepTabs : newState.currentStepTabs,
+                    selectedTab : newState.selectedTab,
+                    selectedStep: newState.selectedStep,
+                    stepsCompletedList : newState.stepsCompletedList
+                }
             }
-        
+
         case caseActions.NEWITEMPRESS:
             return {
                 ...state,
-                selectedTab : newState.selectedTab,
-                tabsCompletedList : newState.tabsCompletedList
+                newItemAction:{
+                    ...state.newItemAction,
+                    selectedTab : newState.selectedTab,
+                    tabsCompletedList : newState.tabsCompletedList
+                }
             }
         
+        case caseActions.HANDLESTEPITEMPRESS:
+            return {
+                ...state,
+                newItemAction:{
+                    ...state.newItemAction,
+                    stepsCompletedList : newState.stepsCompletedList,
+                    selectedStep : newState.selectedStep,
+                    selectedTab : newState.selectedTab,
+                    currentStepTabs : newState.currentStepTabs,
+                    overlayComplete : newState.overlayComplete
+                }
+            }
+
         default:
             return state
         

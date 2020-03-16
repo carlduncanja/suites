@@ -5,11 +5,11 @@ import { PersonalRecord } from '../Information Record/RecordStyles';
 import { transformToSentence } from '../../../hooks/useTextEditHook';
 
 const SectionList = () => {
-    const suitesState = useContext(SuitesContext).state
+    const [state] = useContext(SuitesContext)
     let sections = []
 
-    Object.keys(suitesState.slideOverlay.slideOverlayTabInfo).forEach(key=>{
-        sections.push(suitesState.slideOverlay.slideOverlayTabInfo[key])
+    Object.keys(state.slideOverlay.slideOverlayTabInfo).forEach(key=>{
+        sections.push(state.slideOverlay.slideOverlayTabInfo[key])
     })
 
     let Section = (data) =>{

@@ -1,11 +1,9 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from "react-native";
-import { SuitesContext } from '../../../contexts/SuitesContext';
+// import { SuitesContext } from '../../../contexts/SuitesContext';
 import { transformToSentence } from '../../../hooks/useTextEditHook'
 
 const BillingHeader = (props) => {
-    const suitesMethods= useContext(SuitesContext).methods
-
     return ( 
         <View style={styles.container}>
             {

@@ -3,8 +3,8 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { FamilyHistory,General,Lifestyle,Other } from '../../OverlayPages/MedicalHistory'
 
 const MedicalHistory = () => {
-    const suitesState = useContext(SuitesContext).state
-    const name = suitesState.overlayMenu.selectedMenuItemTabs[suitesState.overlayMenu.selectedMenuItemCurrentTab]
+    const [state] = useContext(SuitesContext)
+    const name = state.overlayMenu.selectedMenuItemTabs[state.overlayMenu.selectedMenuItemCurrentTab]
     return (
         name === 'Family History' ?
             <FamilyHistory/>

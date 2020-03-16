@@ -6,19 +6,19 @@ import Checkbox from '../Checkbox/Checkbox';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const OverlayListData = () => {
-    const suitesState = useContext(SuitesContext).state
+    const [state] = useContext(SuitesContext)
     return ( 
         <ScrollView
             bounces={false}
             contentContainerStyle={{paddingBottom:300}}
             >
-            {suitesState.slideOverlay.slideOverlayList.slice(suitesState.paginatorValues.sliceArrayStart, suitesState.paginatorValues.sliceArrayEnd).map((item,index)=>{
+            {state.slideOverlay.slideOverlayList.slice(state.paginatorValues.sliceArrayStart, state.paginatorValues.sliceArrayEnd).map((item,index)=>{
                 return(
                     <View key={index}>
                         <OverlayListItem
                             modalToOpen="ReportPreviewModal"
                             fields={item}
-                            checkbox = {suitesState.list.checkedItemStatus && suitesState.list.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
+                            checkbox = {state.list.checkedItemStatus && state.list.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
                         />
                     </View>
                 )

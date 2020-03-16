@@ -19,15 +19,15 @@ const ActionContainer = () => {
         )
     }
 
-    const suitesState = useContext(SuitesContext).state
+    const [state] = useContext(SuitesContext)
     return ( 
         <View style={styles.container}>
             <View style={styles.actionTitleContainer}> 
-                <Text style={styles.title}>{suitesState.floatingActions.floatingActionsObject.actionTitle.toUpperCase()} ACTIONS</Text>
+                <Text style={styles.title}>{state.floatingActions.floatingActionsObject.actionTitle.toUpperCase()} ACTIONS</Text>
             </View>
             <View style={styles.actionsContainer}>
                 <FlatList
-                    data={suitesState.floatingActions.floatingActionsObject.actions}
+                    data={state.floatingActions.floatingActionsObject.actions}
                     renderItem={({ item }) => 
                         <View>
                             <Action

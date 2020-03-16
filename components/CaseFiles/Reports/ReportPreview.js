@@ -8,6 +8,8 @@ import InvoiceBillingDetails from './InvoiceBillingDetails'
 import SvgIcon from '../../../assets/SvgIcon';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { withModal } from 'react-native-modalfy';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
+import {caseActions} from '../../../reducers/caseFilesReducer'
 
 const Rectangle = () =>{
     return(
@@ -23,10 +25,17 @@ const Rectangle = () =>{
 }
 
 const ReportPreview = (props) => {
-    const suitesMethod = useContext(SuitesContext).methods
-    const suitesState = useContext(SuitesContext).state
-    const name = suitesState.overlayMenu.selectedMenuItemTabs[suitesState.overlayMenu.selectedMenuItemCurrentTab]
-
+    const [appState] = useContext(SuitesContext)
+    const [state, dispatch] = useContext(CaseFileContext)
+    const name = appState.overlayMenu.selectedMenuItemTabs[appState.overlayMenu.selectedMenuItemCurrentTab]
+    const closePreview = ()=>{
+        dispatch({
+            type : caseActions.TOGGLEREPORT,
+            newState:{
+                reportStatus : false
+            }
+        })
+    }
     const { modal: {closeModal, closeModals, currentModal}} = props
     return ( 
         <View style={{flex:1, backgroundColor:'#FFFFFF'}}>
@@ -41,7 +50,10 @@ const ReportPreview = (props) => {
                     <InvoiceBillingDetails/>
                 }
             </View>
-            <TouchableOpacity style={styles.button} onPress={()=>{suitesMethod.closePreview();closeModals(currentModal)}} activeOpacity={1}>
+            <TouchableOpacity style={styles.button} onPress={()=>{
+                closePreview();
+                closeModals(currentModal)}}
+                 activeOpacity={1}>
                 <Text style={[styles.buttonText,{marginRight:10}]}>Close Preview</Text>
                 <SvgIcon iconName="exit" strokeColor="#FFFFFF"/>
             </TouchableOpacity>

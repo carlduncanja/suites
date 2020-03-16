@@ -6,11 +6,11 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 import Header from './Table/Header';
 
 const ListHeader = (props) => {
-    const suitesState = useContext(SuitesContext).state
+    const [state] = useContext(SuitesContext)
     return ( 
         <View style = {styles.container}>
             {
-                suitesState.list.checkedItemsList.length > 0 ?
+                state.list.checkedItemsList.length > 0 ?
                     <View style={styles.checkboxContainer}>
                         <PartialCheckbox/>
                     </View>

@@ -15,124 +15,190 @@ export const appActions = {
     OVERLAYTABCHANGEINFO : 'OVERLAYTABCHANGEINFO',
     SETSLIDEOVERLAYLIST : 'SETSLIDEOVERLAYLIST',
     TOGGLECHECKBOX : 'TOGGLECHECKBOX',
+    SETPAGEMEASURES : 'SETPAGEMEASURES',
+    SETSLIDEVALUE : 'SETSLIDEVALUE'
 }
 
 export const suitesAppReducer = (state, action) => {
     const { type, newState } = action
     switch (type){
         case appActions.GOTOPREVIOUSPAGE:
-            return state.currentPage !== 1 ?
+            return state.paginatorValues.currentPage !== 1 ?
             {
                 ...state,
-                currentPage: state.currentPage - 1,
-                sliceArrayStart: state.sliceArrayStart - state.recordsPerPage,
-                sliceArrayEnd: state.sliceArrayEnd - state.recordsPerPage
+                paginatorValues:{
+                    ...state.paginatorValues,
+                    currentPage: state.paginatorValues.currentPage - 1,
+                    sliceArrayStart: state.paginatorValues.sliceArrayStart - state.paginatorValues.recordsPerPage,
+                    sliceArrayEnd: state.paginatorValues.sliceArrayEnd - state.paginatorValues.recordsPerPage
+                }
             }
             :
             {...state}
 
         case appActions.GOTONEXTPAGE:
-            return state.currentPage !== state.totalPages && {
+            return state.paginatorValues.currentPage !== state.paginatorValues.totalPages ? {
                 ...state,
-                currentPage: state.currentPage + 1,
-                sliceArrayStart: state.sliceArrayStart + state.recordsPerPage,
-                sliceArrayEnd: state.sliceArrayEnd + state.recordsPerPage
+                paginatorValues:{
+                    ...state.paginatorValues,
+                    currentPage: state.paginatorValues.currentPage + 1,
+                    sliceArrayStart: state.paginatorValues.sliceArrayStart + state.paginatorValues.recordsPerPage,
+                    sliceArrayEnd: state.paginatorValues.sliceArrayEnd + state.paginatorValues.recordsPerPage
+                }
+            }:
+            {
+                ...state
             }
         
         case appActions.SETTOTALPAGES:
             return {
                 ...state,
-                totalPages: newState.totalPages
+                paginatorValues:{
+                    ...state.paginatorValues,
+                    totalPages: newState.totalPages
+                }
             }
         
         case appActions.SETLISTDATA:
             return {
                 ...state,
-                listData: newState.listData,
-                listHeaders : newState.listHeaders
+                list :{
+                    ...state.list,
+                    listData: newState.listData,
+                    listHeaders : newState.listHeaders,
+                    selectedSourceData : newState.selectedSourceData
+                }  
             }
 
         case appActions.SETFLOATINGACTIONS:
             return {
                 ...state, 
-                floatingActionsObject : {
-                    actionTitle : newState.actionTitle,
-                    actions : newState.actions
-                }  
+                floatingActions:{
+                    ...state.floatingActions,
+                    floatingActionsObject : {
+                        actionTitle : newState.actionTitle,
+                        actions : newState.actions
+                    }  
+                } 
             }
 
         case appActions.TOGGLEACTIONBUTTON:
             return {
                 ...state,
-                actionButtonState : newState.actionButtonState
+                floatingActions:{
+                    ...state.floatingActions,
+                    actionButtonState : newState
+                }
             }
-
+        
         case appActions.TOGGLEOPENACTION:
             return {
                 ...state,
-                openAction : newState.openAction
+                floatingActions:{
+                    ...state.floatingActions,
+                    openAction : newState.openAction
+                }
             }
         
         case appActions.SETOVERLAYMENU:
             return {
                 ...state,
-                menu : newState.menu,
-                selectedMenuItemTabs : newState.selectedMenuItemTabs,
+                overlayMenu:{
+                    ...state.overlayMenu,
+                    menu : newState.menu,
+                    selectedMenuItemTabs : newState.selectedMenuItemTabs,
+                }  
             }
 
         case appActions.OVERLAYTABCHANGE:
             return {
                 ...state,
-                selectedMenuItemCurrentTab : newState.selectedMenuItemCurrentTab
+                overlayMenu:{
+                    ...state.overlayMenu,
+                    selectedMenuItemCurrentTab : newState.selectedMenuItemCurrentTab
+                } 
             }
         
         case appActions.OVERLAYMENUCHANGE:
             return {
                 ...state,
-                selectedMenuItem: newState.selectedMenuItem,
-                selectedMenuItemTabs: newState.selectedMenuItemTabs,
-                selectedMenuItemCurrentTab: newState.selectedMenuItemCurrentTab
+                overlayMenu:{
+                    ...state.overlayMenu,
+                    selectedMenuItem: newState.selectedMenuItem,
+                    selectedMenuItemTabs: newState.selectedMenuItemTabs,
+                    selectedMenuItemCurrentTab: newState.selectedMenuItemCurrentTab
+                }
             }
         
         case appActions.OVERLAYTABCHANGEINFO:
             return {
                 ...state,
-                slideOverlayTabInfo : newState.slideOverlayTabInfo
+                slideOverlay:{
+                    ...state.slideOverlay,
+                    slideOverlayTabInfo : newState.slideOverlayTabInfo
+                }
             }
 
         case appActions.SETSELECTEDLISTITEM:
             return{
                 ...state,
-                selectedListItemId : newState.selecteselectedListItemId,
-                selectedListObject : newState.selectedListObject
+                selectedListItem : {
+                    ...state.selectedListItem,
+                    selectedListItemId : newState.selecteselectedListItemId,
+                    selectedListObject : newState.selectedListObject
+                }
             }
 
         case appActions.CLOSESLIDEOVERLAY:
             return {
                 ...state,
-                slideOverlayStatus : newState.slideOverlayStatus
+                slideOverlay :{
+                    ...state.slideOverlay,
+                    slideOverlayStatus : newState.slideOverlayStatus
+                }
             }
         
         case appActions.SETSLIDEOVERLAY:
             return {
                 ...state,
-                slideOverlayHeader : newState.slideOverlayHeader,
-                slideOverlayStatus : newState.slideOverlayStatus,
-                slideOverlayTabInfo : newState.slideOverlayTabInfo
+                slideOverlay:{
+                    ...state.slideOverlay,
+                    slideOverlayHeader : newState.slideOverlayHeader,
+                    slideOverlayStatus : newState.slideOverlayStatus,
+                    slideOverlayTabInfo : newState.slideOverlayTabInfo
+                }
             }
         
         case appActions.SETSLIDEOVERLAYLIST:
             return {
                 ...state, 
-                slideOverlayList : newState.slideOverlayList,
-                slideOverlayListHeaders : newState.slideOverlayListHeaders
+                slideOverlay:{
+                    ...state.slideOverlay,
+                    slideOverlayList : newState.slideOverlayList,
+                    slideOverlayListHeaders : newState.slideOverlayListHeaders
+                }
             }
         
         case appActions.TOGGLECHECKBOX:
             return {
                 ...state,
-                checkedItemStatus : newState.checkedItemStatus,
-                checkedItemsList : newState.checkedItemsList
+                list : {
+                    ...state.list,
+                    checkedItemStatus : newState.checkedItemStatus,
+                    checkedItemsList : newState.checkedItemsList
+                }  
+            }
+        
+        case appActions.SETPAGEMEASURES:
+            return {
+                ...state,
+                pageMeasure:newState
+            }
+        
+        case appActions.SETPAGEMEASURES:
+            return {
+                ...state,
+                slideTopValue:newState
             }
         default:
             return state

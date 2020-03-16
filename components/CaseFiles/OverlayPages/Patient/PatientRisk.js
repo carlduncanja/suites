@@ -4,8 +4,8 @@ import {Low, Moderate, High, VeryHigh} from '../../RiskFrames/RiskLevels'
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 
 const PateintRisk = () => {
-    const suitesState = useContext(SuitesContext).state
-    const level = suitesState.slideOverlay.slideOverlayTabInfo
+    const [state] = useContext(SuitesContext)
+    const level = state.slideOverlay.slideOverlayTabInfo
     return ( 
         <ScrollView>
             {

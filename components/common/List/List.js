@@ -5,11 +5,11 @@ import ListData from './ListData';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const List = () => {
-    const suitesState = useContext(SuitesContext).state
+    const [state] = useContext(SuitesContext)
     return ( 
         <View>
             <View style={styles.header}>
-                <ListHeader headers={suitesState.list.listHeaders}/>
+                <ListHeader headers={state.list.listHeaders}/>
             </View>
             <View style={styles.data}>
                 <ListData />

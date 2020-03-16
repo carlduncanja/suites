@@ -6,19 +6,19 @@ import Checkbox from '../Checkbox/Checkbox';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const ListData = () => {
-    const suitesState = useContext(SuitesContext).state
+    const [state] = useContext(SuitesContext)
     return ( 
         <ScrollView
             bounces={false}
             contentContainerStyle={{paddingBottom:300}}
             >
-            {suitesState.list.listData.slice(suitesState.paginatorValues.sliceArrayStart, suitesState.paginatorValues.sliceArrayEnd).map((item,index)=>{
+            {state.list.listData.slice(state.paginatorValues.sliceArrayStart, state.paginatorValues.sliceArrayEnd).map((item,index)=>{
                 return(
                     <View key={index}>
                         <ListItem
                             modalToOpen = "OverlaySlidePanelModal"
                             fields={item}
-                            checkbox = {suitesState.list.checkedItemStatus && suitesState.list.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
+                            checkbox = {state.list.checkedItemStatus && state.list.checkedItemsList.includes(item.recordId) ? <CheckedBox/> : <Checkbox/>}
                         />
                     </View>
                 )

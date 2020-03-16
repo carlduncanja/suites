@@ -9,6 +9,7 @@ const {width, height} = Dimensions.get('window')
 
 class OverlaySlidePanel extends Component {
     static contextType = SuitesContext
+    
     constructor(props){
         super(props);
         this.state = {
@@ -16,10 +17,11 @@ class OverlaySlidePanel extends Component {
     }
     
     componentDidMount(){
-        let top = height-this.context.state.slideTopValue-30;
+        let top = height-this.context[0].slideTopValue-40;
         let velocity = top*1000
         this._panel.show({toValue:top, velocity:velocity})
     }
+
     render() { 
         return ( 
             <View style={{flex:1, width:'100%'}}>
@@ -27,7 +29,7 @@ class OverlaySlidePanel extends Component {
                     showBackdrop={false}
                     ref={c => (this._panel = c)}
                     //friction = {1000}
-                    draggableRange={{top:height-this.context.state.slideTopValue-30, bottom:130}}
+                    draggableRange={{top:height-this.context[0].slideTopValue-40, bottom:130}}
                     >
                     {dragHandler => (
                         <View style={styles.container} >
