@@ -1,17 +1,29 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, ScrollView, Text, Easing, Animated, Dimensions, TouchableOpacity} from 'react-native';
+import React, {useState, useContext, useEffect, useRef} from 'react';
+import {View, StyleSheet, Dimensions, TouchableWithoutFeedback} from 'react-native';
+import Animated from 'react-native-reanimated'
+import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../components/common/Button';
 import moment from 'moment';
 import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import MonthSelector from "../components/Calendar/MonthSelector";
 import SchedulesList from "../components/Schedule/SchedulesList";
 import {useCurrentDays, useEndDays, useStartDays} from "../hooks/useScheduleService";
+import ScheduleContent from "../components/Schedule/ScheduleContent";
 
 
 const currentDate = new Date();
 const appointmentsObj = [
     {
-        id: "1",
+        id: "3502193851",
+        scheduleType: 1,
+        title: "Hello 2",
+        startTime: new Date(),
+        endTime: new Date(),
+        description: "",
+        additionalInfo: "",
+    },
+    {
+        id: "3502193852",
         scheduleType: 1,
         title: "Hello",
         startTime: new Date(),
@@ -20,7 +32,7 @@ const appointmentsObj = [
         additionalInfo: "",
     },
     {
-        id: "2",
+        id: "3502193853",
         scheduleType: 1,
         title: "Hello",
         startTime: new Date(),
@@ -29,7 +41,7 @@ const appointmentsObj = [
         additionalInfo: "",
     },
     {
-        id: "3",
+        id: "3502193854",
         scheduleType: 1,
         title: "Hello",
         startTime: new Date(),
@@ -38,16 +50,7 @@ const appointmentsObj = [
         additionalInfo: "",
     },
     {
-        id: "4",
-        scheduleType: 1,
-        title: "Hello",
-        startTime: new Date(),
-        endTime: new Date(),
-        description: "",
-        additionalInfo: "",
-    },
-    {
-        id: "6",
+        id: "3502193856",
         scheduleType: 1,
         title: "Hello",
         startTime: new Date(2020, 2, 10),
@@ -142,6 +145,35 @@ const Schedule = (props) => {
     //     </ScrollView>
     // );
 
+    // const getDrawerContent = () => {
+    //     return Object.keys(scheduleDetails).length != 0 &&
+    //         <ScrollableAppointmentCard
+    //             scheduleDetails={scheduleDetails}
+    //             // showScheduleButtons = {this.showScheduleButtons}
+    //             //scheduleButtons={this.state.scheduleButtons}
+    //             //deleteFloatingAction = {this.deleteFloatingAction}
+    //             //completeDeleteFloatingAction = {this.completeDeleteFloatingAction}
+    //             //deleteAppointment = {this.state.deleteAppointment}
+    //             //completeDeleteAppointment = {this.state.completeDeleteAppointment}
+    //             //exitDelete = {this.exitDelete}
+    //             //closeActionButtons = {this.closeActionButtons}
+    //             screenDimensions={props.screenDimensions}
+    //             transparent={transparent}
+    //         />
+    // };
+
+    const [dimensions, setDimensions] = useState(Dimensions.get('window'));
+
+    const onChange = (dimensions) => {
+        setDimensions(dimensions);
+    };
+
+    useEffect(() => {
+        Dimensions.addEventListener("change", onChange);
+        return () => {
+            Dimensions.removeEventListener("change", onChange);
+        };
+    });
 
     const getDaysForMonth = (month) => {
         const selectedMonth = moment(month).startOf('month');
@@ -153,30 +185,46 @@ const Schedule = (props) => {
         return pevMonthEndDays.concat(currentMonthDays.concat(nextMonthStartDays));
     };
 
-    const getSelectedIndex = (day, days=[]) => days.indexOf(day);
+    const getSelectedIndex = (day, days = []) => days.indexOf(day);
 
+    const bottomSheetRef = useRef();
+    const schedulesListRef = useRef();
 
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
     const [selectedDay, setSelectedDay] = useState(currentDate);
     const [daysList, setDaysList] = useState(getDaysForMonth(currentDate));
     const [appointments, setAppointments] = useState(appointmentsObj);
-    const [sectionListIndex, setSectionListIndex] = useState(0);
+    const [selectedAppointment, setSelectedAppointment] = useState();
+    const [sectionListIndex, setSectionListIndex] = useState(getSelectedIndex( moment(selectedDay).format("YYYY-MM-DD"), daysList));
+    const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
-    const getDrawerContent = () => {
-        return Object.keys(scheduleDetails).length != 0 &&
-            <ScrollableAppointmentCard
-                scheduleDetails={scheduleDetails}
-                // showScheduleButtons = {this.showScheduleButtons}
-                //scheduleButtons={this.state.scheduleButtons}
-                //deleteFloatingAction = {this.deleteFloatingAction}
-                //completeDeleteFloatingAction = {this.completeDeleteFloatingAction}
-                //deleteAppointment = {this.state.deleteAppointment}
-                //completeDeleteAppointment = {this.state.completeDeleteAppointment}
-                //exitDelete = {this.exitDelete}
-                //closeActionButtons = {this.closeActionButtons}
-                screenDimensions={props.screenDimensions}
-                transparent={transparent}
-            />
+
+    // animated states
+    const [fall] = useState(new Animated.Value(1));
+
+    const renderShadow = () => {
+        const animatedShadowOpacity = Animated.interpolate(fall, {
+            inputRange: [0, 1],
+            outputRange: [0.5, 0],
+        });
+
+        return (
+            <TouchableWithoutFeedback
+                onPress={() => {
+                    bottomSheetRef.current.snapTo(2);
+                }}
+            >
+                <Animated.View
+                    pointerEvents={ isBottomSheetVisible ? 'auto': 'none'}
+                    style={[
+                        styles.shadowContainer,
+                        {
+                            opacity: animatedShadowOpacity,
+                        },
+                    ]}
+                />
+            </TouchableWithoutFeedback>
+        )
     };
 
     /***
@@ -186,7 +234,7 @@ const Schedule = (props) => {
      */
     const getAppointmentDays = () => {
         const appointmentDays = [];
-        appointments.forEach( item => appointmentDays.push( (moment(item.startTime).format("YYYY-MM-DD") )));
+        appointments.forEach(item => appointmentDays.push((moment(item.startTime).format("YYYY-MM-DD"))));
         return appointmentDays;
     };
 
@@ -196,65 +244,123 @@ const Schedule = (props) => {
      */
     const handleOnDaySelected = (date) => {
         setSelectedDay(date);
-
         const indexOfSelected = getSelectedIndex(date, daysList);
-        setSectionListIndex(indexOfSelected)
+        setSectionListIndex(indexOfSelected);
     };
-
 
     const handleOnMonthUpdated = (date) => {
         setSelectedMonth(date);
         setDaysList(getDaysForMonth(date));
     };
 
-    return (
-        <View style={styles.scheduleContainer}>
+    const handleAppointmentPress = (appointment) => {
+        setSelectedAppointment(appointment);
+        if (bottomSheetRef) bottomSheetRef.current.snapTo(0);
+    };
 
-            <View style={styles.scheduleTop}>
+    const getSnapPoints = () => {
+        // return [ dimensions.height || 500 * .5,  0]
+        return [600, 500, 0]
 
-                <Button/>
+    };
 
-                <MonthSelector
-                    selectedMonth={selectedMonth}
-                    onMonthUpdated={handleOnMonthUpdated}
-                />
-
-                <Button/>
-
-            </View>
-
-            <View style={styles.scheduleCalendar}>
-                <View style={{
-                    flexDirection: 'row',
-                    alignSelf: 'flex-start'
-                }}>
-                    <ScheduleCalendar
-                        onDaySelected={handleOnDaySelected}
-                        appointmentDays={getAppointmentDays()}
-                        month={selectedMonth}
-                        days={daysList}
-                        selectedDate={selectedDay}
-                        screenDimensions={props.screenDimensions}
-                    />
-                </View>
-
-                <View style={styles.scheduleContent}>
-
-                    <SchedulesList
-                        days={daysList}
-                        appointments={appointments}
-                        selectedIndex={sectionListIndex}
-                    />
-
-                </View>
-            </View>
+    const renderScheduleContent = (selectedSchedule) => () => {
+        return  <View style={{
+            height: '100%',
+            width: '100%',
+            backgroundColor: 'white',
+            zIndex: 5
+        }}>
+            <ScheduleContent
+                scheduleItem={selectedSchedule}
+                screenDimensions={dimensions}
+            />
         </View>
+    };
+
+    return (
+        <View style={styles.container}>
+            <Animated.View
+                style={{
+                    ...styles.scheduleContainer
+                }}>
+
+
+                <View style={styles.scheduleTop}>
+
+                    <Button/>
+
+                    <MonthSelector
+                        selectedMonth={selectedMonth}
+                        onMonthUpdated={handleOnMonthUpdated}
+                    />
+
+                    <Button/>
+
+                </View>
+
+                <View style={styles.scheduleCalendar}>
+                    <View style={{
+                        flexDirection: 'row',
+                        alignSelf: 'flex-start'
+                    }}>
+                        <ScheduleCalendar
+                            onDaySelected={handleOnDaySelected}
+                            appointmentDays={getAppointmentDays()}
+                            month={selectedMonth}
+                            days={daysList}
+                            selectedDate={selectedDay}
+                            screenDimensions={props.screenDimensions}
+                        />
+                    </View>
+                    <View style={styles.scheduleContent}>
+                        <SchedulesList
+                            days={daysList}
+                            appointments={appointments}
+                            selectedIndex={sectionListIndex}
+                            onAppointmentPress={handleAppointmentPress}
+                        />
+                    </View>
+                </View>
+
+            </Animated.View>
+
+            {renderShadow()}
+
+            <BottomSheet
+                ref={bottomSheetRef}
+                snapPoints={getSnapPoints()}
+                initialSnap={2}
+                callbackNode={fall}
+                borderRadius={14}
+                renderContent={renderScheduleContent(selectedAppointment)}
+                onCloseEnd={() => setBottomSheetVisible(false)}
+                onOpenEnd={() => setBottomSheetVisible(true)}
+                renderHeader={() =>
+                    <View
+                        style={{
+                            height: 8,
+                            alignSelf: 'center',
+                            width: 50,
+                            backgroundColor: 'white',
+                            borderRadius: 4,
+                            marginBottom: 14
+                        }}
+                    />
+                }
+            />
+        </View>
+
     )
 };
 
 export default Schedule
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+
     scheduleContainer: {
         flex: 1,
         flexDirection: 'column',
@@ -280,6 +386,12 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 32,
         paddingTop: 24
+    },
+
+    // Shadow
+    shadowContainer: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: '#000',
     },
 
     searchContent: {

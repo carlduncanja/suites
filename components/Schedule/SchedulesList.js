@@ -7,22 +7,14 @@ import ScheduleItem from "./ScheduleItem";
  *
  * @param days: array of date string ("YYYY-MM-DD")
  * @param appointments: and array of appointment
+ * @param onAppointmentPress
  * @param selectedIndex: a number representing the index of the date that's selected
  * @returns {*}
  * @constructor
  */
-function SchedulesList({days, appointments, selectedIndex}) {
+function SchedulesList({days, appointments, onAppointmentPress, selectedIndex }) {
 
     const sectionListRef = useRef();
-
-    useEffect(() => {
-        if (sectionListRef) sectionListRef.current.scrollToLocation({
-            animated: true,
-            sectionIndex: selectedIndex,
-            itemIndex: 0,
-        })
-    }, [selectedIndex]);
-
 
     const getSectionListData = (days, appointments = []) => {
         let appointmentList = [...appointments];
@@ -53,12 +45,22 @@ function SchedulesList({days, appointments, selectedIndex}) {
         }));
     };
 
+    useEffect(() => {
+        if (sectionListRef) sectionListRef.current.scrollToLocation({
+            animated: true,
+            sectionIndex: selectedIndex,
+            itemIndex: 0,
+        })
+    }, [selectedIndex]);
+
     return (
         <View style={styles.container}>
             <SectionList
                 ref={sectionListRef}
                 keyExtractor={item => item.id + Math.random()}
+                getItemLayout={(data, index) => ({length: 100, offset: index * 60, index})}
                 sections={getSectionListData(days, appointments)}
+                stickySectionHeadersEnabled={true}
                 ItemSeparatorComponent={() => <View style={styles.separatorStyle}/> }
                 renderSectionHeader={({section: {title}}) => (
                     <View style={styles.dateLabelContainer}>
@@ -71,9 +73,9 @@ function SchedulesList({days, appointments, selectedIndex}) {
                     return <ScheduleItem
                         startTime={item.startTime}
                         endTime={item.endTime}
-                        title={"Hello"}
-                        onScheduleClick={() => {}}
-                        type={1}
+                        title={item.title}
+                        onScheduleClick={() => onAppointmentPress(item)}
+                        type={item.type}
                     />
                 }}
             />
