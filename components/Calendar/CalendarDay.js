@@ -1,97 +1,91 @@
-import React, { Component } from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {Component} from 'react';
+import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import DayIdentifier from '../common/DayIdentifier';
 import moment from 'moment';
 
-export default class CalendarDay extends Component {
-    render() {
-        return (
-            <View style={[
-                styles.container,{
-                    width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98: 93,
-                    
-                    }
-                ]} >
-                
-                {this.props.day.format("YYYY MM D") === this.props.selected.selected.format("YYYY MM D")  ?
-                    <View>
-                        <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)}>
-                            <View style={{marginTop:3, alignItems:'center'}}>
-                                <DayIdentifier color = "#3FC7F4"/>
-                            </View>
-                            <Text style={[styles.day, {color:'#2D3748', fontWeight: 'bold', marginTop: 12}]}>{this.props.day.format("D")}</Text>
-                        </TouchableOpacity>
-                        <View style={styles.dayLevel}>
-                            {this.props.dayLevels.map((day)=> day)}
-                        </View>
-                    </View>
+/**
+ *
+ * @param day : A date object
+ * @param isSelected: boolean
+ * @param hasAppointment: boolean
+ * @param onDayPress: a function that takes a date ("YYYY-MM-DD") string as a parameter
+ * @param isInSelectMonth; boolean representing if the day is in selected month
+ * @param appointmentColors and array of colors.
+ * @returns {*}
+ * @constructor
+ */
+const RowCalendarDay = ({day, isSelected, appointmentColors, onDayPress, isInSelectMonth}) => {
 
-                    :
-                    this.props.day.format("MM") !== this.props.currentDate.format("MM") ?
-                        <View style={{ opacity: 0.4 }}>
-                            <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)}>
-                                {this.props.day.format("YYYY MM D") === this.props.selected.selected.format("YYYY MM D") ?
-                                    <View>
-                                        <View style={{marginTop:3, alignItems:'center'}}>
-                                            <DayIdentifier color = "#3FC7F4"/>
-                                        </View>
-                                        <Text style={[styles.day, {color:'#2D3748', fontWeight: 'bold', marginTop: 12}]}>{this.props.day.format("D")}</Text>
-                                    </View>
-                                    :
-                                    <Text style={styles.day}>{this.props.day.format("D")}</Text>
-                                }
-                            </TouchableOpacity>
-                            <View style={styles.dayLevel}>
-                                {this.props.dayLevels.map((day)=> day)}
-                            </View>
-                        </View>
+    const defaultColor = '#718096';
+    const selectedColor = '#323843';
 
-                    :
+    const opacity = isInSelectMonth || isSelected ? 1 : 0.25;
+    const color = isSelected ? selectedColor : defaultColor;
+    const marginTop = 13;
 
-                    <View>
-                        <TouchableOpacity onPress={e => this.props.onPressDay(e,this.props.day)}>
-                            <Text style={styles.day}>{this.props.day.format("D")}</Text>
-                        </TouchableOpacity>
-                        <View style={styles.dayLevel}>
-                            {this.props.dayLevels.map((day)=> day)}
-                        </View>
+
+    const appointmentsList = (appointments) => appointments
+        .slice(0, 10)
+        .map((item, index) =>
+            <View key={index}
+                  style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 10,
+                      margin: 2,
+                      backgroundColor: item
+                  }}
+            />);
+
+    return (
+        <TouchableOpacity style={[styles.container,]} onPress={onDayPress}>
+            <View style={[styles.dayWrapper, {opacity}]}>
+                {isSelected && <DayIdentifier color="#3FC7F4"/>}
+                <Text style={[styles.day, {color: color, marginTop: marginTop}]}>
+                    {moment(day).format("D")}
+                </Text>
+                {
+                    <View style={styles.appointmentsList}>
+                        {
+                            appointmentsList(appointmentColors)
+                        }
                     </View>
                 }
             </View>
-        )
-    }
-}
+        </TouchableOpacity>
+    )
+};
+
+export default RowCalendarDay
 
 const styles = StyleSheet.create({
-    container:{
-        //flex:1,
-        height:98,
-        //width: 80,
-        backgroundColor:'#FFFFFF',
-        borderTopWidth:0.5,
-        borderRightWidth:0.5,
-        borderColor:'#EDF2F7',
+    container: {
+        // padding: 6,
+        width: 96,
+        height: 110,
     },
-    day:{
-        fontSize:24,
-        marginTop:19,
-        paddingLeft:18,
-        color:'#718096',
+    day: {
+        fontSize: 28,
+        alignSelf: 'flex-start',
+        color: '#718096',
     },
-    pressed:{
-        height: 4,
-        backgroundColor: '#3FC7F4',
-        borderRadius: 8,
-        width:'90%',
-        alignSelf:'center',
-        marginTop:3,
+    dayWrapper: {
+        width: 92,
+        height: 98,
+        padding: 5,
+        alignItems: 'flex-start',
+        backgroundColor: '#FFFFFF',
+        borderColor: '#EDF2F7',
+        borderRightWidth: 0.5,
+        borderBottomWidth: 0.5,
+        borderTopWidth: 0.5,
     },
-    dayLevel:{
-        flexDirection:'row', 
-        flex:1, 
-        marginTop:5,
-        marginLeft:11, 
-        marginRight:18, 
-        flexWrap:'wrap'
+    appointmentsList: {
+        marginTop: 4,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        flexWrap: 'wrap',
+        alignSelf: 'flex-start',
+
     }
-})
+});
