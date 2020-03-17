@@ -1,52 +1,67 @@
-import React, { Component } from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, { Component, useState } from 'react';
+import {View, StyleSheet, TouchableOpacity, Text, TextInput} from 'react-native';
 import InputText from './InputText';
-import Svg, {Path} from 'react-native-svg';
 import SvgIcon from '../../assets/SvgIcon'
 
-export default class SearchBar extends Component {
-    render() {
-        //let currentItem = this.props.selectedAppEvents.length === 0 ? 0 : this.props.searchResult
-        return (
-            <View style={styles.searchBar}>
-                <View style={[styles.container, styles.searchContent]}>
-                    <View style={{flexDirection:'row'}}> 
+const SearchBar = ({changeText, inputText, matchesFound, onPressNextResult, onPressPreviousResult, onPressNewSerch, onPressSubmit}) =>{
+    return(
+        <View style={styles.searchBar}>
+            <View style={[styles.container, styles.searchContent]}>
+                <View style={{flexDirection:'row'}}>
+                    <View style={{paddingRight:15}}>
                         <SvgIcon iconName="search" strokeColor="#A0AEC0"/>
-                        <InputText
-                            changeText = {this.props.changeText}
-                            inputText = {this.props.inputText}
-                            placeholderTextColor = "#A0AEC0"
-                            placeholder="Coronary Bypass Graft"
-                        />
                     </View>
-                    <View style={{flexDirection:'row'}}>
-                        <Text style={{color:'#3182CE', fontSize:12, paddingRight:8}}>3 matches found</Text>
-                        {/* <Text style={{color:'#3182CE', fontSize:12, paddingRight:8}}>{this.props.selectedAppEvents.length} matches found</Text> */}
-                        <TouchableOpacity activeOpacity={1}>
-                            <SvgIcon iconName="searchExit" strokeColor="#718096"/>
-                        </TouchableOpacity>
-                        
-                    </View>
+                    <InputText
+                        changeText = {changeText}
+                        inputText = {inputText}
+                        placeholderTextColor = "#A0AEC0"
+                        placeholder=""
+                    />
                 </View>
+                <View style={{flexDirection:'row'}}>
+                    <Text style={{color:'#3182CE', fontSize:12, paddingRight:8}}>{matchesFound} matches found</Text>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress = {() => onPressNewSerch()}
+                    >
+                        <SvgIcon iconName="searchExit" strokeColor="#718096"/>
+                    </TouchableOpacity>
 
-                <View style={[styles.container,styles.control]}>
-                    <TouchableOpacity style={{padding:8, paddingLeft:6}} onPress={() => this.props.prevSearchResult()}>
-                        <SvgIcon iconName = "scheduleMonthLeft" strokeColor = "#718096"/>
-                    </TouchableOpacity>
-                    <View style={{borderWidth:1, borderColor:'#E3E8EF'}}/>
-                    <TouchableOpacity style={{padding:8, paddingRight:6}} onPress = {() => this.props.nextSearchResult()}>
-                        <SvgIcon iconName = "scheduleMonthRight" strokeColor = "#718096"/>
-                    </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity activeOpacity={1} style={[styles.container,{marginLeft:10, paddingLeft:12, paddingRight:12}]}>
-                    <Text style={{color:'#0CB0E7', fontSize:16}}>Done</Text>
-                </TouchableOpacity>
-                
             </View>
-        )
-    }
+
+            <View style={[styles.container,styles.control]}>
+                <TouchableOpacity
+                    activeOpacity = {1}
+                    style={{padding:8, paddingLeft:6}}
+                    onPress={() => onPressPreviousResult()}
+                >
+                    <SvgIcon iconName = "scheduleMonthLeft" strokeColor = "#718096"/>
+                </TouchableOpacity>
+
+                <View style={{borderWidth:1, borderColor:'#E3E8EF'}}/>
+
+                <TouchableOpacity
+                    activeOpacity = {1}
+                    style={{padding:8, paddingRight:6}}
+                    onPress = {() => onPressNextResult()}
+                >
+                    <SvgIcon iconName = "scheduleMonthRight" strokeColor = "#718096"/>
+                </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+                activeOpacity={1}
+                style={[styles.container,{marginLeft:10, paddingLeft:12, paddingRight:12}]}
+                onPress = {() => onPressSubmit()}
+            >
+                <Text style={{color:'#0CB0E7', fontSize:16}}>Done</Text>
+            </TouchableOpacity>
+
+        </View>
+    )
 }
+export default SearchBar
 
 const styles=StyleSheet.create({
     searchBar:{
