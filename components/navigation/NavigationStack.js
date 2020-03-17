@@ -25,6 +25,7 @@ import InvoiceIcon from "../../assets/svg/invoices"
 import StorageIcon from "../../assets/svg/storage"
 import PhysiciansIcon from "../../assets/svg/physicians"
 import ProcedureIcon from "../../assets/svg/procedures"
+import {CaseFileContextProvider} from "../../contexts/CaseFileContext";
 
 /***
  *  Top level navigation Stack for Suites Application for the side navigation bar.
@@ -46,11 +47,11 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     CaseFiles: {
-        screen: NotFound,
+        screen: CaseFiles,
         params: {
             icon: CaseFileIcon,
             tabName: 'CaseFiles',
-            provider: ScheduleProvider
+            provider: CaseFileContextProvider
         },
     },
     Theatre: {

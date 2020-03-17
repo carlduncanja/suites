@@ -4,7 +4,6 @@ import {StyleSheet, SafeAreaView} from 'react-native';
 import {appActionTypes, appReducer} from './reducers/appReducer';
 import {initialState, SuitesContext} from './SuitesContext';
 
-import Sidebar from './components/SideNavigation/Sidebar';
 import {SuitesContextProvider} from './contexts/SuitesContext';
 import {CaseFileContextProvider} from './contexts/CaseFileContext';
 import {ModalProvider, createModalStack} from 'react-native-modalfy';
@@ -62,7 +61,7 @@ const App = () => {
     return (
         <SuitesContext.Provider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
             <ModalProvider stack={stack}>
-                <SafeAreaView style={styles.container} onLayout={this.getDimensions}>
+                <SafeAreaView style={styles.container} onLayout={getDimensions}>
                     <NavigationStack
                         screenDimensions={state.screenDimensions}
                         tabSelected={state.tabSelected.tabSelected}

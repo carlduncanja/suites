@@ -15,13 +15,13 @@ const Page = () => {
 
     useEffect(()=>{
         dispatch({
-            type:appActions.SETTOTALPAGES, 
+            type:appActions.SETTOTALPAGES,
             newState: { totalPages : Math.ceil(state.list.listData.length/state.paginatorValues.recordsPerPage) }
         })
     },[state.list.listData])
 
     useEffect(()=>{
-        let data 
+        let data
         let headers = []
         let selected = []
         if (state.currentNavPage === 'caseFiles') {
@@ -40,7 +40,7 @@ const Page = () => {
                 selectedSourceData : selected
             }
         })
-        
+
     },[state.list.listData])
 
     useEffect(()=>{
@@ -53,7 +53,7 @@ const Page = () => {
             }
         })
     }, state.currentNavPage)
-    
+
     useEffect(()=>{
         const menu = require('../../../assets/db.json').overlayMenuTabs.filter(menu => menu.page === state.currentNavPage)
         menu.length > 0 && dispatch({
@@ -62,7 +62,7 @@ const Page = () => {
                 menu : menu[0].menuTabs,
                 selectedMenuItemTabs : menu[0].menuTabs[0].overlayTab,
             }
-        })            
+        })
     },[state.overlayMenu.menu, state.slideOverlay.slideOverlayStatus])
 
     const getPageMeasure = (event) => {
@@ -106,8 +106,8 @@ const Page = () => {
           outputRange: [0, 50, 100,300,400,500,600]
         }),
     };
- 
-    return ( 
+
+    return (
         <View style={{flex:1}} onLayout={(event)=> getPageMeasure(event)}>
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -122,12 +122,12 @@ const Page = () => {
                 <View style={styles.list}>
                     <List/>
                 </View>
-            
+
                 <View style={styles.footer}>
                     <View style={{alignSelf:"center", marginRight:10}}>
                         <RoundedPaginator />
                     </View>
-                
+
                     {state.floatingActions.actionButtonState === false ?
                         <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#4299E1" modalToOpen="ActionContainerModal"/>
                         :
@@ -138,7 +138,7 @@ const Page = () => {
         </View>
     );
 }
- 
+
 export default Page;
 
 const styles = StyleSheet.create({
@@ -156,12 +156,12 @@ const styles = StyleSheet.create({
     },
     footer:{
         flex:1,
-        alignSelf:'flex-end', 
-        flexDirection:'row', 
-        position:'absolute', 
-        bottom:0, 
-        marginBottom:20, 
-        right:0, 
+        alignSelf:'flex-end',
+        flexDirection:'row',
+        position:'absolute',
+        bottom:0,
+        marginBottom:20,
+        right:0,
         marginRight:30,
     },
-})
+});
