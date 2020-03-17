@@ -1,16 +1,32 @@
-import React,{Component} from 'react';
+import React,{Component, useContext} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon'
+import { SuitesContext } from '../../../contexts/SuitesContext';
+import { withModal } from 'react-native-modalfy';
+import { appActions } from '../../../reducers/suitesAppReducer'
 
-export default class FloatingActionButton extends Component{
-    render(){
-        return(
-            <TouchableOpacity style={[styles.container,{backgroundColor:this.props.backgroundColor}]} onPress={(event)=>{this.props.onPressFloatingAction(event)}}>
-                <SvgIcon iconName = "actionMenu" fillColor={this.props.fillColor}/>
-            </TouchableOpacity>
-        )
-    }
+openModal = (props) => {
+    const { modalToOpen, modal } = props
+    modal.openModal(modalToOpen)
 }
+
+const FloatingActionButton = (props) => {
+    const [state,dispatch] = useContext(SuitesContext)
+    const toggleActionButton = () => {
+        // floatingActions.actionButtonState === false && setSearchPlaceholder("")
+        dispatch({
+            type:appActions.TOGGLEACTIONBUTTON,
+            newState : !state.floatingActions.actionButtonState
+        })
+    }
+    return ( 
+        <TouchableOpacity style={[styles.container,{backgroundColor:props.backgroundColor}]} onPress={()=>{toggleActionButton();this.openModal(props)}}>
+            <SvgIcon iconName = "actionMenu" fillColor={props.fillColor}/>
+        </TouchableOpacity>
+    );
+}
+ 
+export default withModal(FloatingActionButton);
 
 const styles = StyleSheet.create({
     container:{

@@ -3,7 +3,6 @@
     "name": "Suites Test",
     "slug": "SuitesTest",
     "privacy": "public",
-    "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android",

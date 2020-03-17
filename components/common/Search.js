@@ -1,14 +1,12 @@
 import React,{Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import InputText from '../common/InputText';
+import InputText from './InputText';
 
 export default class Search extends Component{
     render(){
         return(
             <View style={styles.container}>
-                <InputText 
-                    {...this.props}
-                />
+                <InputText />
             </View>
           
         )

@@ -60,6 +60,8 @@ const SearchBar = ({changeText, inputText, matchesFound, onPressNextResult, onPr
             
         </View>
     )
+        
+    
 }
 export default SearchBar
 

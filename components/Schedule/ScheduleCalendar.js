@@ -1,100 +1,136 @@
-import React, {useContext} from 'react';
+import React, {useState} from 'react';
 import moment from 'moment';
-
-import {View, StyleSheet, ScrollView, Text, Easing, Animated, Dimensions, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import RowCalendar from './../Calendar/RowCalendar';
-import Calendar from './../Calendar/Calendar';
-import {ScheduleContext} from '../../contexts/ScheduleContext';
-import {scheduleActions} from '../../reducers/scheduleReducer';
+import DayOfMonth from "../Calendar/DayOfMonth";
+import Calendar from "../Calendar/Calendar";
 
 
-const ScheduleCalendar = (props) => {
+/**
+ *
+ * @param month: a date object for the current month
+ * @param appointmentDays: a array of appointment for the selected month
+ * @param days: a array of strings for the days that will be displayed in the calender. NB the days string is the format
+ * "YYYY-MM-DD"
+ * @param selectedDate: a date object for the day that's selected.
+ * @param screenDimensions: a object {width,height} for the device's dimension
+ * @param onDaySelected <fun> : a function that take a date string ("YYYY-MM-DD")  as parameter
+ * @returns {*}
+ * @constructor
+ */
+const ScheduleCalendar = ({month, appointmentDays, days, selectedDate, screenDimensions, onDaySelected}) => {
 
-    const [state, dispatch] = useContext(ScheduleContext);
+    const [isExpanded, setExpanded] = useState(false);
 
-    const onPressDay = (e, selected) => {
-        const selectedObject = {"selected": selected, "status": true};
-
-        this.onPressDayToAppointment(selectedObject.selected, true)
-
-        dispatch({
-            type: scheduleActions,
-            newState: {
-                selected: selectedObject,
-                daySelected: true
-            }
-        })
+    const onPressDay = (selected) => {
+        onDaySelected(selected)
     };
 
-
-    const onPressDayToAppointment = (selected, status) => {
-        if (status) {
-            if (!state.displayFullCalendar) {
-                state.datePositions.map((date) => {
-                    if (moment(date.day).format("MM D") === selected.format("MM D")) {
-                        //console.log("Selected: ", date)
-                        state._scrollView.scrollTo({x: date.event, y: 0, animated: true})
-                    }
-                })
-            }
-            state.appointmentDates.map((date) => {
-                if (date.date.format("MM D") === selected.format("MM D")) {
-                    state._scrollAppointment.scrollTo({x: 0, y: date.event, animated: true})
-                }
-            })
-        }
+    const onExpandButtonPress = () => {
+        setExpanded(!isExpanded);
     };
 
 
     return (
-
         <View style={{
             flex: 1,
-            marginLeft: props.screenDimensions.width > props.screenDimensions.height ? '2%' : 0,
-            alignSelf: "center"
+            marginLeft: screenDimensions.width > screenDimensions.height ? '2%' : 0,
+            alignSelf: 'center',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            //     backgroundColor: 'red',
         }}>
+            <View style={styles.calendarContainer}>
+                {
 
-            {
-                !state.displayFullCalendar &&
-                <RowCalendar/>
-                //     :
-                //     props.screenDimensions.width > props.screenDimensions.height ?
-                //         <ExtendedCalendar
-                //             {...props}
-                //             {...this.state}
-                //             prevCurrentDate={this.getPrevMonth(currentYear, currentMonth, currentDay)}
-                //             nextCurrentDate = {this.getNextMonth(currentYear, currentMonth, currentDay)}
-                //             calendarLayout = {this.calendarLayout}
-                //             onPressDay = {this.onPressDay}
+                    !isExpanded
+                        // Row calender view
+                        ? <RowCalendar
+                            days={days}
+                            month={month}
+                            selectedDay={selectedDate}
+                            appointmentDays={appointmentDays}
+                            onDayPress={onPressDay}
+                        />
 
-                //             currentDays = {this.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
-                //             prevMonthDays = {
-                //                 parseInt(state.currentDate.format("M")) === 1 ?
-                //                     this.getCurrentDays(state.currentDate.format("MM"), (parseInt(state.currentDate.format("YYYY")) -1).toString())
-                //                     :
-                //                     this.getCurrentDays((parseInt(state.currentDate.format("MM")) - 1).toString(), state.currentDate.format("YYYY"))
-                //             }
-                //             nextMonthDays = {
-                //                 parseInt(state.currentDate.format("M")) === 12 ?
-                //                 this.getCurrentDays('01', (parseInt(state.currentDate.format("YYYY")) +1).toString())
-                //                 :
-                //                 this.getCurrentDays((parseInt(state.currentDate.format("MM")) + 1).toString(), state.currentDate.format("YYYY"))
-                //             }
-                //         />
-                //         :
-                //         <Calendar
-                //             currentDays = {props.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
-                //             onPressDay = {this.onPressDay}
-                //             getStartDays = {props.getStartDays()}
-                //             getEndDays = {props.getEndDays()}
-                //             screenDimensions = {props.screenDimensions}
-                //             currentDate = {state.currentDate}
-                //             selected = {props.selected}
-                //             // daySelected = {this.state.daySelected}
-                //         />
-            }
+                        // Full calendar view
+                        : <View/>
+                        // <DayOfMonth
+                        //     appointmentColors={['red', 'blue', 'green']}
+                        //
+                        // />
+                    // <Calendar/>
+
+                    //     :
+                    //     props.screenDimensions.width > props.screenDimensions.height ?
+                    //         <ExtendedCalendar
+                    //             {...props}
+                    //             {...this.state}
+                    //             prevCurrentDate={this.getPrevMonth(currentYear, currentMonth, currentDay)}
+                    //             nextCurrentDate = {this.getNextMonth(currentYear, currentMonth, currentDay)}
+                    //             calendarLayout = {this.calendarLayout}
+                    //             onPressDay = {this.onPressDay}
+                    //
+                    //             currentDays = {this.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
+                    //             prevMonthDays = {
+                    //                 parseInt(state.currentDate.format("M")) === 1 ?
+                    //                     this.getCurrentDays(state.currentDate.format("MM"), (parseInt(state.currentDate.format("YYYY")) -1).toString())
+                    //                     :
+                    //                     this.getCurrentDays((parseInt(state.currentDate.format("MM")) - 1).toString(), state.currentDate.format("YYYY"))
+                    //             }
+                    //             nextMonthDays = {
+                    //                 parseInt(state.currentDate.format("M")) === 12 ?
+                    //                 this.getCurrentDays('01', (parseInt(state.currentDate.format("YYYY")) +1).toString())
+                    //                 :
+                    //                 this.getCurrentDays((parseInt(state.currentDate.format("MM")) + 1).toString(), state.currentDate.format("YYYY"))
+                    //             }
+                    //         />
+                    //         :
+                    //         <Calendar
+                    //             currentDays = {props.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
+                    //             onPressDay = {this.onPressDay}
+                    //             getStartDays = {props.getStartDays()}
+                    //             getEndDays = {props.getEndDays()}
+                    //             screenDimensions = {props.screenDimensions}
+                    //             currentDate = {state.currentDate}
+                    //             selected = {props.selected}
+                    //             // daySelected = {this.state.daySelected}
+                    //         />
+
+
+                }
+            </View>
+
+
+            <TouchableOpacity
+                style={[styles.button]}
+                onPress={onExpandButtonPress}
+            >
+                <Text>Expand</Text>
+            </TouchableOpacity>
         </View>
     )
 };
 
 export default ScheduleCalendar
+
+
+const styles = StyleSheet.create({
+    calendarContainer: {
+        marginTop: 24
+    },
+    button: {
+        justifyContent: 'flex-start',
+        alignSelf: 'center',
+        backgroundColor: "#FFFFFF",
+        color: "#4E5664",
+        borderWidth: 1,
+        borderColor: "#CCD6E0",
+        borderRadius: 4,
+        marginTop: 12,
+        padding: 4,
+        paddingLeft: 12,
+        paddingRight: 12
+    }
+});

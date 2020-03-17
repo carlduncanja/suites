@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
+import { SuitesContext } from '../../contexts/SuitesContext';
 
 const InputText = (props) =>{
     return(

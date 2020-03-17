@@ -34,10 +34,10 @@ export const useCloseTransparent = (dispatch, scheduleActions, selectedSearchVal
 export const useStartDays = (currentDate) => {
     d = new Date(currentDate)
     d.setDate(1)
-    d.setHours(-1)
-    const momentDay = moment(d)
+    d.setHours(-1);
+    const momentDay = moment(d); /// first day
 
-    let day = parseInt(momentDay.format("DD"))
+    let day = parseInt(momentDay.format("DD"));
     let days = [momentDay.format("YYYY-MM-DD")]
     const startDayNum = moment(currentDate).startOf("month").format("d")
     const dayIndex = parseInt(startDayNum) === 0 ? 7 : parseInt(startDayNum)
@@ -45,21 +45,20 @@ export const useStartDays = (currentDate) => {
     if (dayIndex === 1) {
         days = []
     } else {
-        for (i = 1; i < dayIndex - 1; i++) {
-            days.push(moment(`${momentDay.format("YYYY-MM")}-${day - 1}`).format("YYYY-MM-DD"))
+        for (let i = 1; i < dayIndex - 1; i++) {
+            days.push(moment(`${momentDay.format("YYYY-MM")}-${day - 1}`).format("YYYY-MM-DD"));
             day--
         }
     }
     return days.reverse()
-}
+};
 
 export const useCurrentDays = (inputMonth, inputYear) => {
     let results = [];
     let daysInMonth = moment([inputYear, inputMonth - 1]).daysInMonth();
     for (let i = 1; i <= daysInMonth; i++) {
-        i < 10 ? day = `0${i}` : day = i;
-        let str = `${inputYear}-${inputMonth}-${day}`;
-        results.push(moment(str))
+        let date = moment().year(inputYear).month(inputMonth - 1).date(i);
+        results.push(date.format("YYYY-MM-DD"))
     }
     return results
 };

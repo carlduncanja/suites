@@ -1,16 +1,16 @@
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext} from 'react';
 import ScheduleSearch from './ScheduleSearch';
-import { View, StyleSheet, Text } from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import Button from './../common/Button';
 import moment from 'moment';
 import Month from './../Calendar/Month';
-import { ScheduleContext } from '../../contexts/ScheduleContext';
-import { scheduleActions } from '../../reducers/scheduleReducer';
+import {ScheduleContext} from '../../contexts/ScheduleContext';
+import {scheduleActions} from '../../reducers/scheduleReducer';
 
-export default ScheduleTopBar = (props) => {
-    [searchAppointmentStatus, setSearchAppointmentStatus] = useState(true);
-    [displayTodayAppointment] = useState(true);
-    [calendarLayoutMeasure] = useState(700);
+const ScheduleTopBar = (props) => {
+    const [searchAppointmentStatus, setSearchAppointmentStatus] = useState(true);
+    const [displayTodayAppointment] = useState(true);
+    const [calendarLayoutMeasure] = useState(700);
 
     const [state, dispatch] = useContext(ScheduleContext);
 
@@ -21,7 +21,7 @@ export default ScheduleTopBar = (props) => {
 
         dispatch({
             type: scheduleActions.SEARCHPRESS,
-            newState: { transparent: newTrans, searchOpen: true }
+            newState: {transparent: newTrans, searchOpen: true}
         });
 
         console.log('bo', state)
@@ -38,22 +38,22 @@ export default ScheduleTopBar = (props) => {
                 searchResultSelect: ''
             }
         });
-    }
+    };
 
     const onGoToTodayClick = () => {
         dispatch({
             type: scheduleActions.GOTOTODAY,
             newState: true
-        })
+        });
 
         if (state._scrollView) {
             if (!state.displayFullCalendar) {
                 if (moment().format("YYYY-MM-D") === state.currentDate.format("YYYY-MM-D")) {
-                    state._scrollView.scrollTo({ x: state.calendarOffsetset, y: 0, animated: true })
-                    state._scrollAppointment.scrollTo({ x: 0, y: state.scheduleOffset, animated: true })
+                    state._scrollView.scrollTo({x: state.calendarOffsetset, y: 0, animated: true})
+                    state._scrollAppointment.scrollTo({x: 0, y: state.scheduleOffset, animated: true})
                     dispatch({
                         type: scheduleActions.SELECTED,
-                        newState: { selected: moment(), status: true }
+                        newState: {selected: moment(), status: true}
                     })
                 }
 
@@ -61,22 +61,22 @@ export default ScheduleTopBar = (props) => {
                 dispatch({
                     type: scheduleActions.FULLCALENDAR,
                     newState: false
-                })
-                state._scrollAppointment.scrollTo({ x: 0, y: state.scheduleOffset, animated: true })
+                });
+                state._scrollAppointment.scrollTo({x: 0, y: state.scheduleOffset, animated: true})
             }
         }
     };
 
     const getMonth = (type) => {
-        now = new Date(state.currentDate)
-        now.setDate(1)
+        const now = new Date(state.currentDate);
+        now.setDate(1);
 
         if (type === "prev") {
             return setMonth(1, 1, 11, now)
         } else {
             return setMonth(12, -1, 0, now)
         }
-    }
+    };
 
     const setMonth = (format, offset, setMonthValue, now) => {
         if (parseInt(state.currentDate.format("M")) === format) {
@@ -86,10 +86,10 @@ export default ScheduleTopBar = (props) => {
             now.setMonth(now.getMonth() - offset)
         }
         return moment(now)
-    }
+    };
 
     const monthChange = (type) => {
-        month = getMonth(type);
+        const month = getMonth(type);
 
         dispatch({
             type: scheduleActions.MONTHCHANGE,
@@ -161,12 +161,11 @@ export default ScheduleTopBar = (props) => {
                 </View>
             </View>
 
-        
         </View>
-
-
     )
-}
+};
+
+export default ScheduleTopBar
 
 
 const styles = StyleSheet.create({
