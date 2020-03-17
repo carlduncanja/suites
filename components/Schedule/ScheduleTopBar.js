@@ -110,9 +110,9 @@ export default ScheduleTopBar = (props) => {
                     <ScheduleSearch
                         appointmentDates={state.appointmentDates}
                         setSearchAppointmentStatus={setSearchAppointmentStatus}
-                    /> 
+                    />
                 </View>
-            }   
+            }
 
             <View style={styles.contentContainer}>
                  <View style={styles.buttonContainer}>
@@ -161,7 +161,7 @@ export default ScheduleTopBar = (props) => {
                 </View>
             </View>
 
-        
+
         </View>
 
 

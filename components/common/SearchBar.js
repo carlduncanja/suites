@@ -7,7 +7,7 @@ const SearchBar = ({changeText, inputText, matchesFound, onPressNextResult, onPr
     return(
         <View style={styles.searchBar}>
             <View style={[styles.container, styles.searchContent]}>
-                <View style={{flexDirection:'row'}}> 
+                <View style={{flexDirection:'row'}}>
                     <View style={{paddingRight:15}}>
                         <SvgIcon iconName="search" strokeColor="#A0AEC0"/>
                     </View>
@@ -20,20 +20,20 @@ const SearchBar = ({changeText, inputText, matchesFound, onPressNextResult, onPr
                 </View>
                 <View style={{flexDirection:'row'}}>
                     <Text style={{color:'#3182CE', fontSize:12, paddingRight:8}}>{matchesFound} matches found</Text>
-                    <TouchableOpacity 
-                        activeOpacity={1} 
+                    <TouchableOpacity
+                        activeOpacity={1}
                         onPress = {() => onPressNewSerch()}
                     >
                         <SvgIcon iconName="searchExit" strokeColor="#718096"/>
                     </TouchableOpacity>
-                    
+
                 </View>
             </View>
 
             <View style={[styles.container,styles.control]}>
-                <TouchableOpacity 
+                <TouchableOpacity
                     activeOpacity = {1}
-                    style={{padding:8, paddingLeft:6}} 
+                    style={{padding:8, paddingLeft:6}}
                     onPress={() => onPressPreviousResult()}
                 >
                     <SvgIcon iconName = "scheduleMonthLeft" strokeColor = "#718096"/>
@@ -41,23 +41,23 @@ const SearchBar = ({changeText, inputText, matchesFound, onPressNextResult, onPr
 
                 <View style={{borderWidth:1, borderColor:'#E3E8EF'}}/>
 
-                <TouchableOpacity 
+                <TouchableOpacity
                     activeOpacity = {1}
-                    style={{padding:8, paddingRight:6}} 
+                    style={{padding:8, paddingRight:6}}
                     onPress = {() => onPressNextResult()}
                 >
                     <SvgIcon iconName = "scheduleMonthRight" strokeColor = "#718096"/>
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity 
-                activeOpacity={1} 
+            <TouchableOpacity
+                activeOpacity={1}
                 style={[styles.container,{marginLeft:10, paddingLeft:12, paddingRight:12}]}
                 onPress = {() => onPressSubmit()}
             >
                 <Text style={{color:'#0CB0E7', fontSize:16}}>Done</Text>
             </TouchableOpacity>
-            
+
         </View>
     )
 }

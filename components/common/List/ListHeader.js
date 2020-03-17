@@ -1,49 +1,42 @@
-import React,{Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import Checkbox from '../Checkbox';
+import React,{Component, useContext} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import Checkbox from '../Checkbox/Checkbox';
+import { PartialCheckbox } from '../Checkbox/Checkboxes'
+import { SuitesContext } from '../../../contexts/SuitesContext';
+import Header from './Table/Header';
 
-export default class ListHeader extends Component{
-    render(){
-        const width = 100/this.props.listHeaders.length
-        return(
-            <View style = {styles.container}>
-                <View style={{justifyContent:'center', alignSelf:'center'}}>
-                    <Checkbox/>
-                </View>
-                <View style={styles.headersContainer}>
-                    {this.props.listHeaders.map((header,index)=>{
-                        return(
-                            <View style={[styles.item,{width:`${width}%`}]} key={index}>
-                                <Text style={styles.headerText}>{header}</Text>
-                            </View>
-                        )
-                    })}
-                </View>
-            </View>
-        )
-    }
+const ListHeader = (props) => {
+    const [state] = useContext(SuitesContext)
+    return ( 
+        <View style = {styles.container}>
+            {
+                state.list.checkedItemsList.length > 0 ?
+                    <View style={styles.checkboxContainer}>
+                        <PartialCheckbox/>
+                    </View>
+                    :
+                    <TouchableOpacity style={styles.checkboxContainer}>
+                        <Checkbox/>
+                    </TouchableOpacity>
+            }
+           <Header headers={props.headers}/>
+        </View>
+    );
 }
+ 
+export default ListHeader;
 
 const styles = StyleSheet.create({
     container:{
         flexDirection:'row',
-        flexWrap:'wrap',
+        //flexWrap:'wrap',
         alignItems:'flex-start',
-        justifyContent:'center',
+        //justifyContent:'center',
         padding:10,
-        width:'100%'
+        //width:'100%'
     },
-    headersContainer:{
-        flex:1,
-        marginLeft:10,
-        flexDirection:'row',
+    checkboxContainer:{
+        justifyContent:'center', 
+        alignSelf:'center'
     },
-    item:{
-        alignItems:'flex-start',
-        justifyContent:'center',
-    },
-    headerText:{
-        fontSize:12,
-        color:'#718096'
-    }
 })

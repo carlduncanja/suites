@@ -38,7 +38,7 @@ export default ScheduleSearch = (props) => {
                 filterDayEvent = state.datePositions.filter(date => moment(date.day).format("YYYY MM D") === moment(appointments[i].startTime).format("YYYY MM D"))
                 filterAppEvent = props.appointmentDates.filter(date => moment(date.date).format("YYYY MM D") === moment(appointments[i].startTime).format("YYYY MM D"))
                 sAppEvents.push(filterAppEvent[0].event)
-                selectedDayEvents.push({"day":moment(appointments[i].startTime), "event":filterDayEvent[0].event})            
+                selectedDayEvents.push({"day":moment(appointments[i].startTime), "event":filterDayEvent[0].event})
             }
         }
         let newAppArray = [...new Set(sAppEvents)]
@@ -56,8 +56,8 @@ export default ScheduleSearch = (props) => {
         setSelectedDayEvents(newDayArray);
         if (!newDayArray.length === 0 || !newAppArray.length === 0) {
             setAppointmentSearch(newDayArray[0].event, newAppArray[0], newDayArray[0].day )
-        }    
- 
+        }
+
     }
 
     const setAppointmentSearch = (filterDay, filterApp, selected) => {
@@ -79,7 +79,7 @@ export default ScheduleSearch = (props) => {
             state._scrollView.scrollTo({x:filterDay,y:0,animated:true})
             state._scrollAppointment.scrollTo({x:0,y:filterApp, animated:true})
         }
-        
+
     }
 
     // const searchChangeText = (textInput) => {
@@ -140,7 +140,7 @@ export default ScheduleSearch = (props) => {
     }
 
     return (
-        // <TransparentScreen closeTransparent={useCloseTransparent} 
+        // <TransparentScreen closeTransparent={useCloseTransparent}
         // dispatch={dispatch}
         // scheduleActions={scheduleActions}
         // selectedSearchValue={state.selectedSearchValue}
@@ -183,6 +183,6 @@ export default ScheduleSearch = (props) => {
                 </View>
             </View>
         // </TransparentScreen>
-       
+
     )
 }

@@ -2,10 +2,6 @@ import React, { Component } from 'react'
 import {View, Text, ScrollView, StyleSheet, Dimensions} from 'react-native';
 import Schedule from '../../page/Schedule';
 import CaseFiles from '../../page/CaseFiles';
-import SlideUpPanel from '../common/SideUpPanel';
-import SlideLeftPanel from '../common/SlideLeftPanel';
-import LandscapeSchedule from '../Schedule/LandscapeSchedule'
-
 
 export default class Content extends Component {
     constructor(props){

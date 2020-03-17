@@ -1,0 +1,66 @@
+import React, { useContext } from 'react';
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import { SuitesContext } from '../../../contexts/SuitesContext';
+import { PersonalRecord } from '../Information Record/RecordStyles';
+import { transformToSentence } from '../../../hooks/useTextEditHook';
+
+const SectionList = () => {
+    const [state] = useContext(SuitesContext)
+    let sections = []
+
+    Object.keys(state.slideOverlay.slideOverlayTabInfo).forEach(key=>{
+        sections.push(state.slideOverlay.slideOverlayTabInfo[key])
+    })
+
+    let Section = (data) =>{
+        return(
+            Object.keys(data).map((key,index) => {
+                return(
+                    <View key={index} style={styles.record}>
+                        <PersonalRecord
+                            recordTitle = {transformToSentence(key)}
+                            recordValue = {data[key]}
+                        />
+                    </View>
+                )
+            })
+        )
+    }
+
+  
+    return ( 
+        <View style={styles.containter}>
+            {
+                sections.map((section, index)=>{
+                    return (index === sections.length-1 ?
+                        Section(section)
+                        :
+                        <View key = {index}>
+                            {Section(section)}
+                            <View style={styles.separator}/>
+                        </View>
+  
+                    )
+                    
+                })
+            }
+        </View>
+    );
+}
+ 
+export default SectionList;
+
+const styles= StyleSheet.create({
+    container:{
+    },
+    record:{
+        padding:10,
+    },
+    separator:{
+        height:1,
+        backgroundColor:'#CCD6E0',
+        borderRadius:2,
+        marginTop:10,
+        //marginBottom:10
+    }
+})

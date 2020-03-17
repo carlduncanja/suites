@@ -1,56 +1,47 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import {View, Button, Text, StyleSheet, Dimensions, Animated, Easing} from 'react-native';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import Divider from './Divider';
 
 const {height} = Dimensions.get('window')
 
-export default class SideUpPanel extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            bottom:0
-        }
+const SlideUpPanel = (props) => {
+    const [bottom, setBottom] = useState(0)
+
+    setHeight = (height)=>{
+        setBottom(height-720)
     }
-
-    setHeight(height){
-        this.setState({bottom:height-720})
-    }
-
-    
-    render() {
-
-        return (
-            <View style={styles.container}>
-                <SlidingUpPanel
-                    ref={c => (this._panel = c)}
-                    draggableRange={{top: this.props.displayFullCalendar === false ? 0 : 300, bottom: this.props.displayFullCalendar === false ? -300 : 0}}
-                    showBackdrop={false}
-                    allowDragging = {this.props.draggable}
-                    friction = {1000}
-                    // onDragEnd={(height) => this.props.stopScheduleDrag(height, this.state.bottom)}
-                    >
-                       
-                    <View 
-                        style={styles.panel} 
-                        onLayout={(event)=>{this.setHeight(event.nativeEvent.layout.height)}}
-                    >
-                        <View style={styles.panelHeader}>
-                            <View style={{alignItems:'center',height:30}}>
-                                <Divider longPressAction = {this.props.restartDrag} backgroundColor="white"/>
-                            </View>
-                            
-                            <View style={styles.bottom}>
-                                {this.props.content} 
-                            </View>
+    return ( 
+        <View style={styles.container}>
+            <SlidingUpPanel
+                ref={c => (this._panel = c)}
+                draggableRange={{top: props.displayFullCalendar === false ? 0 : 300, bottom: props.displayFullCalendar === false ? -300 : 0}}
+                showBackdrop={false}
+                allowDragging = {props.draggable}
+                friction = {1000}
+                >
+                    
+                <View 
+                    style={styles.panel} 
+                    onLayout={(event)=>{setHeight(event.nativeEvent.layout.height)}}
+                >
+                    <View style={styles.panelHeader}>
+                        <View style={{alignItems:'center',height:30}}>
+                            <Divider longPressAction = {props.restartDrag} backgroundColor="white"/>
                         </View>
                         
+                        <View style={styles.bottom}>
+                            {props.content} 
+                        </View>
                     </View>
-                </SlidingUpPanel>
-            </View>
-        )
-    }
+                    
+                </View>
+            </SlidingUpPanel>
+        </View>
+    );
 }
+ 
+export default SlideUpPanel;
 
 const styles = StyleSheet.create({
     container: {

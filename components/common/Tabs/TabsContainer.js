@@ -1,38 +1,40 @@
-import React,{Component} from 'react';
+import React,{Component, useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Tab from './Tab'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default class TabsContainer extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <View style={styles.tabs}>
-                    {this.props.tabs.map((tab, index)=>{
-                        return (tab==="Details" ? 
-                            <View key={index}> 
-                                <Tab tab={tab} backgroundColor="#FFFFFF" textColor="#3182CE"/>
-                            </View>
-                            :
-                            <View key={index}>
-                                <Tab tab={tab} textColor="#718096"/>
-                            </View>
-                            
-                        )
-                    })}
-                </View>
-                {/* <View style={styles.base}/> */}
-            </View>
-        )
-    }
+const TabsContainer = (props) => {
+    return ( 
+        <View style={styles.container}>
+            {props.tabs.map((tab, index)=>{
+                return (
+                    <View key={index}> 
+                    <TouchableOpacity onPress = {()=>props.onPressChange(index)} activeOpacity={1}>
+                        <Tab 
+                            tabName={tab} 
+                            backgroundColor={index === props.selectedTab ? "#FFFFFF" : null}
+                            textColor={
+                                index === props.selectedTab ? "#3182CE" :
+                                    props.completedTabs && props.completedTabs.includes(index) ? "#4E5664" :
+                                        "#718096"
+                            }   
+                        /> 
+                    </TouchableOpacity>
+                        
+                    </View>
+                )
+            })}
+        </View>
+    );
 }
+ 
+export default TabsContainer;
 
 const styles = StyleSheet.create({
     container:{
-
-    },
-    tabs:{
+        alignSelf:'flex-start',
         marginLeft:20,
-        flexDirection:'row'
+        flexDirection:'row',
     },
     base:{
         height:10,

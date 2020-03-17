@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Text, View, StyleSheet } from 'react-native';
-import CalendarDay from './CalendarDay';
+import DayOfMonth from './DayOfMonth';
 import ActionCalendar from './ActionCalendar';
 import moment from 'moment';
 
@@ -8,11 +8,11 @@ export default class Days extends Component {
     constructor(props){
         super(props);
         this.state={
-        
+
         }
         this.firstDayOfMonth = this.firstDayOfMonth.bind(this);
     }
-    
+
     firstDayOfMonth(){
         //Sun-0, Mon-1, Tue-2, Wed-3, Thu-4, Fir-5, Sat-6
         let date = this.props.currentDate;
@@ -25,7 +25,7 @@ export default class Days extends Component {
         let lastDay = moment(this.props.currentDate).endOf("month").format("d");
         return lastDay
     }
-    
+
     render() {
         const appointments = require('../../assets/db.json').appointments;
 
@@ -47,7 +47,7 @@ export default class Days extends Component {
             let levelView = [];
             levelArray.map((level, index)=>{
                 levelView.push(
-                    <View 
+                    <View
                         key ={index}
                         style={{height: 8, width:8, borderRadius: 8/2, marginRight:4, marginBottom: 2, backgroundColor: getLevel(parseInt(level))}}
                     />
@@ -55,16 +55,16 @@ export default class Days extends Component {
             })
             return levelView
         }
-       
+
         let blanks = [];
         this.props.getStartDays.map((day,index)=>{
             const dayLevels=[]
             filterLevels(parseInt(moment(day).format("D")) + 1, moment(day)).map((app)=> dayLevels.push(app.level));
             blanks.push(
-                <CalendarDay 
+                <DayOfMonth
                     currentDate = {this.props.currentDate}
                     screenDimensions = {this.props.screenDimensions}
-                    onPressDay={this.props.onPressDay} 
+                    onPressDay={this.props.onPressDay}
                     filterDay = {moment(day)}
                     day={moment(day)}
                     selected = {this.props.selected}
@@ -74,16 +74,16 @@ export default class Days extends Component {
             )
         })
 
-        
+
         let trailblanks = [];
         this.props.getEndDays.map((day,index)=>{
             const dayLevels=[]
             filterLevels(parseInt(moment(day).format("D")) + 1, moment(day)).map((app)=> dayLevels.push(app.level));
             trailblanks.push(
-                <CalendarDay 
+                <DayOfMonth
                     currentDate = {this.props.currentDate}
                     screenDimensions = {this.props.screenDimensions}
-                    onPressDay={this.props.onPressDay} 
+                    onPressDay={this.props.onPressDay}
                     filterDay = {moment(day)}
                     day={moment(day)}
                     selected = {this.props.selected}
@@ -94,27 +94,27 @@ export default class Days extends Component {
         })
 
 
-        let daysInMonth = []; 
+        let daysInMonth = [];
         this.props.currentDays.map((day,index)=>{
             const filterDay = moment(`${this.props.currentDate.format("YYYY")}-${this.props.currentDate.format("MM")}-${day.format("DD")}`)
             const dayLevels=[]
             filterLevels(parseInt(moment(filterDay).format("D")) + 1, this.props.currentDate).map((app)=> dayLevels.push(app.level));
-    
+
             daysInMonth.push(
-                <CalendarDay 
+                <DayOfMonth
                     currentDate = {this.props.currentDate}
                     screenDimensions = {this.props.screenDimensions}
-                    onPressDay={this.props.onPressDay} 
+                    onPressDay={this.props.onPressDay}
                     filterDay = {filterDay}
                     day={day}
                     selected = {this.props.selected}
                     dayLevels = {levels(dayLevels)}
                     key={index}
                 />
-            )            
+            )
         })
 
-        
+
         let totalSlots = [...blanks,...daysInMonth, ...trailblanks];
         let rows =[];
         let cells=[];
@@ -140,7 +140,7 @@ export default class Days extends Component {
         this.firstDayOfMonth()
         return (
             <View style={styles.container}>
-              {daysinmonth} 
+              {daysinmonth}
             </View>
         )
     }

@@ -199,6 +199,31 @@ export const scheduleReducer = (state, action) => {
                 searchValue : newState
             }
 
+        case scheduleActions.GOTONEXTSEARCHRESULT:
+            return {
+                ...state,
+                currentSearchPosition : newState
+            }
+
+        case scheduleActions.GOTOPREVIOUSSEARCHRESULT:
+            return {
+                ...state,
+                currentSearchPosition : newState
+            }
+
+        case scheduleActions.SETNEWSEARCH:
+            return {
+                ...state,
+                searchValue : newState.searchValue,
+                searchMatchesFound : newState.searchMatchesFound
+            }
+
+        case scheduleActions.GETSEARCHRESULT:
+            return {
+                ...state,
+                searchValue : newState
+            }
+
         default:
             return state
     }
