@@ -1,8 +1,16 @@
 import React, { useContext } from 'react';
 import { ScrollView, View, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
-import Section from '../../../common/SlideOverlay/Section'
+import Section from '../../../common/SlideOverlay/Section';
+import SectionEdit from '../../../common/SlideOverlay/SectionEdit';
 
+const setSection = (section) =>{
+    const [state] = useContext(SuitesContext)
+    return state.editMode.status === false ? 
+        <Section data={section}/>
+        :
+        <SectionEdit data = {section}/>
+}
 const Details = () => {
     const [state] = useContext(SuitesContext)
     const sections = []
@@ -16,11 +24,11 @@ const Details = () => {
                 sections.map((section,index)=>{
                     return(index === sections.length-1 ?
                         <View key={index}>
-                            <Section data={section}/>
+                           {setSection(section)}
                         </View>
                         :
                         <View key={index}>
-                            <Section data={section}/>
+                            {setSection(section)}
                             <View style={styles.separator}/>
                         </View>
                         

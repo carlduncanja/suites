@@ -5,7 +5,9 @@ import OverlayButton from '../OverlayButtons/OverlayButton';
 export default class Heading extends Component{
     render(){
         return(
-            <View style={[styles.container,{backgroundColor:this.props.backgroundColor}]}>
+            <View style={[styles.container,
+            // {backgroundColor:this.props.backgroundColor}
+            ]}>
                 <Text style={{fontSize:16, marginBottom:5, color:this.props.headerIdColor}}>
                     {this.props.headerId}
                 </Text>

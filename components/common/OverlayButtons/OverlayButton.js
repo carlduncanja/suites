@@ -1,10 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import {View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { appActions } from '../../../reducers/suitesAppReducer';
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const Button = (props) =>{
+    const [state, dispatch] = useContext(SuitesContext)
     const buttonPress = () => {
-        console.log("Button Press")
+        dispatch({
+            type : appActions.SETEDITMODE,
+            newState : { status : !state.editMode.status}
+        })
     }
+    
     return(
         <TouchableOpacity 
             style={[styles.button,{backgroundColor:props.backgroundColor}]} 

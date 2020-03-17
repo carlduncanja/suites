@@ -3,11 +3,13 @@ import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import SlideContent from './SlideContent'
 import SlideHeader from './SlideHeader';
 import SlideFooter from './SlideFooter';
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const SlideOverlay = () => {
+    const [state] = useContext(SuitesContext)
     return ( 
         <View style={styles.container}>
-            <View style={styles.header}>
+            <View style={[styles.header]}>
                 <SlideHeader />
             </View>
 
@@ -29,9 +31,9 @@ const styles = StyleSheet.create({
         flex:1,
     },
     header:{
-        backgroundColor:'#EEF2F6',
-        borderTopLeftRadius:30,
-        borderTopRightRadius:30
+        // backgroundColor:'#EEF2F6',
+        // borderTopLeftRadius:30,
+        // borderTopRightRadius:30
     },
     content:{
         flex:1,

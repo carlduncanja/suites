@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createNavigator, TabRouter, SafeAreaView, ScrollView } from 'react-navigation';
 import OverlayMenuItems from './OverlayMenuItems';
+import { SuitesContext } from '../../../../contexts/SuitesContext';
 
 const ContentNavigator = ({ navigation, descriptors }) => {
   const { routes, index } = navigation.state;
   const descriptor = descriptors[routes[index].key];
+  const [state] = useContext(SuitesContext)
 
   const ActiveScreen = descriptor.getComponent();
 
@@ -16,10 +18,14 @@ const ContentNavigator = ({ navigation, descriptors }) => {
         </ScrollView>
         
         <View style={styles.footer}>
-          <OverlayMenuItems
-            descriptors={descriptors}
-            navigation={navigation}
-          />
+          {
+            state.editMode.status === false &&
+              <OverlayMenuItems
+              descriptors={descriptors}
+              navigation={navigation}
+            />
+          }
+          
         </View>
     </SafeAreaView>
   );

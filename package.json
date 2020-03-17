@@ -15,6 +15,7 @@
     "moment": "^2.24.0",
     "react": "16.8.3",
     "react-dom": "16.8.3",
+    "react-hook-form": "^5.1.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
     "react-native-calendar": "^0.13.1",
     "react-native-chooser": "^1.7.0",

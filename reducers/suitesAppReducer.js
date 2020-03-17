@@ -16,7 +16,9 @@ export const appActions = {
     SETSLIDEOVERLAYLIST : 'SETSLIDEOVERLAYLIST',
     TOGGLECHECKBOX : 'TOGGLECHECKBOX',
     SETPAGEMEASURES : 'SETPAGEMEASURES',
-    SETSLIDEVALUE : 'SETSLIDEVALUE'
+    SETSLIDEVALUE : 'SETSLIDEVALUE',
+    SETEDITMODE : 'SETEDITMODE',
+    UPDATEEDITMODE : 'UPDATEEDITMODE'
 }
 
 export const suitesAppReducer = (state, action) => {
@@ -199,6 +201,24 @@ export const suitesAppReducer = (state, action) => {
             return {
                 ...state,
                 slideTopValue:newState
+            }
+        
+        case appActions.SETEDITMODE:
+            return {
+                ...state,
+                editMode: {
+                    ...state.editMode,
+                    status : newState.status
+                }
+            }
+        
+        case appActions.UPDATEEDITMODE:
+            return {
+                ...state,
+                editMode : {
+                    ...state.editMode,
+                    currentEditTab: newState.currentEditTab
+                }
             }
         default:
             return state

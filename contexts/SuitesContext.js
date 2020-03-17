@@ -1,7 +1,5 @@
-import React, { useState, createContext, useEffect, useReducer, useRef} from 'react';
-import { getList, getReportList } from '../hooks/useListHook';
-import { transformToCamel, transformToSentence } from '../hooks/useTextEditHook';
-import { suitesAppReducer, appActions } from '../reducers/suitesAppReducer';
+import React, {createContext, useReducer} from 'react';
+import { suitesAppReducer } from '../reducers/suitesAppReducer';
 
 export const SuitesContext = createContext()
 
@@ -50,6 +48,12 @@ const paginatorValues = {
     totalPages: 0,
     recordsPerPage:10
 }
+
+const editMode = {
+    status: false,
+    currentEditTab:0,
+}
+
 const state = {
     pageTitle, 
     paginatorValues, 
@@ -61,7 +65,8 @@ const state = {
     slideTopValue,
     pageMeasure,
     currentNavPage,
-    selectedListItem
+    selectedListItem,
+    editMode
 }
 
 export const SuitesContextProvider = (props) => {

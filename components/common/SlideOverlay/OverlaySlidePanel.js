@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         borderTopLeftRadius:10,
         borderTopRightRadius:10,
-        backgroundColor:"#FFFFFF",
+        // backgroundColor:"#FFFFFF",
         //paddingBottom:40
     }
 })

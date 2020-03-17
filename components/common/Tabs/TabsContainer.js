@@ -16,7 +16,10 @@ const TabsContainer = (props) => {
                             textColor={
                                 index === props.selectedTab ? "#3182CE" :
                                     props.completedTabs && props.completedTabs.includes(index) ? "#4E5664" :
-                                        "#718096"
+                                        props.editModeState ? 
+                                            '#BEE3F8'
+                                            :
+                                            "#718096"
                             }   
                         /> 
                     </TouchableOpacity>

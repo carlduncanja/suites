@@ -9,7 +9,7 @@ export function EditModeHeading(){
         <Heading 
             headerId={state.slideOverlay.slideOverlayHeader.id}
             headerName={state.slideOverlay.slideOverlayHeader.name}
-            backgroundColor="#83AED1"
+            //backgroundColor="#83AED1"
             headerIdColor="#104587"
             headerNameColor="#FFFFFF"
             editMessage="now in edit mode"
@@ -24,7 +24,7 @@ export function ViewModeHeading(){
         <Heading 
             headerId={state.slideOverlay.slideOverlayHeader.id}
             headerName={state.slideOverlay.slideOverlayHeader.name}
-            backgroundColor="#EEF2F6"
+            //backgroundColor="#EEF2F6"
             headerIdColor="#104587"
             headerNameColor="#0CB0E7"
             button={<EditButton/>}
