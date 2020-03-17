@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import ScheduleSearch from './ScheduleSearch';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import Button from './../common/Button';
 import moment from 'moment';
 import Month from './../Calendar/Month';
@@ -105,50 +105,63 @@ export default ScheduleTopBar = (props) => {
 
     return (
         <View style={[styles.topContainer, { paddingTop: props.screenDimensions.width > props.screenDimensions.height ? 0 : '1%' }]}>
-            <View style={styles.buttonContainer}>
-                {searchAppointmentStatus && state.selectedSearchValue !== "" && state.searchResultSelect !== "" ?
-                    <Button
-                        title="Undo Search"
-                        buttonPress={undoSearchPress}
-                        backgroundColor="#F7FAFC"
-                        color="#4A5568"
-                    />
-                    :
-                    <Button
-                        title="Search"
-                        buttonPress={searchPress}
-                        backgroundColor="#F7FAFC"
-                        color="#4A5568"
-                    />
-                }
-
-            </View>
-            <View style={{ alignItems: 'center' }}>
-                <Month
-                    calendarLayoutMeasure={calendarLayoutMeasure}
-                    currentDate={state.currentDate}
-
-                    prevMonthDate={getMonth}
-                    nextMonthDate={getMonth}
-
-                    decreaseMonthChange={monthChange}
-                    increaseMonthChange={monthChange}
-                />
-            </View>
-            <View style={styles.buttonContainer}>
-                <Button
-                    title={displayTodayAppointment ? "Go Back" : "Go to Today"}
-                    buttonPress={onGoToTodayClick}
-
-                />
-            </View>
             {state.searchOpen &&
-                <ScheduleSearch
-                    appointmentDates={state.appointmentDates}
-                    setSearchAppointmentStatus={setSearchAppointmentStatus}
+                <View style={{backgroundColor:'red', position:'absolute', top:0, width:'100%', zIndex:1}}>
+                    <ScheduleSearch
+                        appointmentDates={state.appointmentDates}
+                        setSearchAppointmentStatus={setSearchAppointmentStatus}
+                    /> 
+                </View>
+            }   
 
-                />
-            }
+            <View style={styles.contentContainer}>
+                 <View style={styles.buttonContainer}>
+                        <Button
+                            title="Search"
+                            buttonPress={searchPress}
+                            backgroundColor="#F7FAFC"
+                            color="#4A5568"
+                        />
+                    {/* {searchAppointmentStatus && state.selectedSearchValue !== "" && state.searchResultSelect !== "" ?
+                        <Button
+                            title="Undo Search"
+                            buttonPress={undoSearchPress}
+                            backgroundColor="#F7FAFC"
+                            color="#4A5568"
+                        />
+                        :
+                        <Button
+                            title="Search"
+                            buttonPress={searchPress}
+                            backgroundColor="#F7FAFC"
+                            color="#4A5568"
+                        />
+                    } */}
+                </View>
+
+                <View style={{ alignItems: 'center' }}>
+                    <Month
+                        calendarLayoutMeasure={calendarLayoutMeasure}
+                        currentDate={state.currentDate}
+
+                        prevMonthDate={getMonth}
+                        nextMonthDate={getMonth}
+
+                        decreaseMonthChange={monthChange}
+                        increaseMonthChange={monthChange}
+                    />
+                </View>
+
+                <View style={styles.buttonContainer}>
+                    <Button
+                        title={displayTodayAppointment ? "Go Back" : "Go to Today"}
+                        buttonPress={onGoToTodayClick}
+
+                    />
+                </View>
+            </View>
+
+        
         </View>
 
 
@@ -158,12 +171,14 @@ export default ScheduleTopBar = (props) => {
 
 const styles = StyleSheet.create({
     topContainer: {
+        paddingBottom: 20,
+    },
+    contentContainer:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
         marginLeft: '4%',
         marginRight: '4%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingBottom: 20,
-        marginTop: 18
+        marginTop: 18,
     }
 })

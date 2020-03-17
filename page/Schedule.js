@@ -18,6 +18,7 @@ import ScheduleTopBar from '../components/Schedule/ScheduleTopBar';
 import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import {ScheduleContext} from '../contexts/ScheduleContext';
 
+
 const Schedule = (props) => {
     const [showNotification, setShowNotification] = useState(false);
 

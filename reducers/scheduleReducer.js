@@ -18,7 +18,11 @@ export const scheduleActions = {
     SCHEDULEOFFSET: 'SCHEDULEOFFSET',
     APPOINTMENTDATES: 'APPOINTMENTDATES',
     SCHEDULEDETAILS: 'SCHEDULEDETAILS',
-    SCROLLVIEW: 'SCROLLVIEW'
+    SCROLLVIEW: 'SCROLLVIEW',
+    GOTONEXTSEARCHRESULT : 'GOTONEXTSEARCHRESULT',
+    GOTOPREVIOUSSEARCHRESULT : 'GOTOPREVIOUSSEARCHRESULT',
+    SETNEWSEARCH : 'SETNEWSEARCH',
+    GETSEARCHRESULT : 'GETSEARCHRESULT'
 }
 
 export const scheduleReducer = (state, action) => {
@@ -169,6 +173,31 @@ export const scheduleReducer = (state, action) => {
                 ...state,
                 _scrollView: newState,
             };
+        
+        case scheduleActions.GOTONEXTSEARCHRESULT:
+            return {
+                ...state,
+                currentSearchPosition : newState
+            }
+
+        case scheduleActions.GOTOPREVIOUSSEARCHRESULT:
+            return {
+                ...state,
+                currentSearchPosition : newState
+            }
+        
+        case scheduleActions.SETNEWSEARCH:
+            return {
+                ...state,
+                searchValue : newState.searchValue,
+                searchMatchesFound : newState.searchMatchesFound
+            }
+
+        case scheduleActions.GETSEARCHRESULT:
+            return {
+                ...state,
+                searchValue : newState
+            }
 
         default:
             return state
