@@ -1,12 +1,6 @@
-import React, {useState, useEffect, useContext, useRef} from 'react';
-import {Text, View, StyleSheet, ScrollView, ScrollViewBase, TouchableOpacity, FlatList} from 'react-native';
-import Month from './Month';
-import RowCalendarDays from './RowCalendarDays'
-import DayIdentifier from '../common/DayIdentifier';
+import React, {useRef} from 'react';
+import {View, StyleSheet, FlatList} from 'react-native';
 import moment from 'moment';
-import {useStartDays, useCurrentDays, useEndDays} from '../../hooks/useScheduleService';
-import {ScheduleContext} from '../../contexts/ScheduleContext';
-import {scheduleActions} from '../../reducers/scheduleReducer';
 import RowCalendarDay from "./RowCalenderDay";
 
 

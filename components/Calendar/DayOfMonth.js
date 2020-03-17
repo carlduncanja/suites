@@ -14,7 +14,7 @@ import moment from 'moment';
  * @returns {*}
  * @constructor
  */
-const RowCalendarDay = ({day, isSelected, appointmentColors, onDayPress, isInSelectMonth}) => {
+const DayOfMonth = ({day, isSelected, appointmentColors, onDayPress, isInSelectMonth}) => {
 
     const defaultColor = '#718096';
     const selectedColor = '#323843';
@@ -56,7 +56,7 @@ const RowCalendarDay = ({day, isSelected, appointmentColors, onDayPress, isInSel
     )
 };
 
-export default RowCalendarDay
+export default DayOfMonth
 
 const styles = StyleSheet.create({
     container: {

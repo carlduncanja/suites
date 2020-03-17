@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import moment from 'moment';
-
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import RowCalendar from './../Calendar/RowCalendar';
+import DayOfMonth from "../Calendar/DayOfMonth";
+import Calendar from "../Calendar/Calendar";
 
 
 /**
@@ -55,6 +56,11 @@ const ScheduleCalendar = ({month, appointmentDays, days, selectedDate, screenDim
 
                         // Full calendar view
                         : <View/>
+                        // <DayOfMonth
+                        //     appointmentColors={['red', 'blue', 'green']}
+                        //
+                        // />
+                    // <Calendar/>
 
                     //     :
                     //     props.screenDimensions.width > props.screenDimensions.height ?
@@ -65,7 +71,7 @@ const ScheduleCalendar = ({month, appointmentDays, days, selectedDate, screenDim
                     //             nextCurrentDate = {this.getNextMonth(currentYear, currentMonth, currentDay)}
                     //             calendarLayout = {this.calendarLayout}
                     //             onPressDay = {this.onPressDay}
-
+                    //
                     //             currentDays = {this.getCurrentDays(state.currentDate.format("MM"),state.currentDate.format("YYYY"))}
                     //             prevMonthDays = {
                     //                 parseInt(state.currentDate.format("M")) === 1 ?
