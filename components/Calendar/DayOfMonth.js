@@ -60,9 +60,7 @@ export default DayOfMonth
 
 const styles = StyleSheet.create({
     container: {
-        // padding: 6,
-        width: 96,
-        height: 110,
+        alignSelf:'flex-start'
     },
     day: {
         fontSize: 28,
@@ -77,6 +75,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderColor: '#EDF2F7',
         borderRightWidth: 0.5,
+        borderLeftWidth: 0.5,
         borderBottomWidth: 0.5,
         borderTopWidth: 0.5,
     },
