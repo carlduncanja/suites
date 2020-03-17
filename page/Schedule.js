@@ -195,7 +195,7 @@ const Schedule = (props) => {
     const [daysList, setDaysList] = useState(getDaysForMonth(currentDate));
     const [appointments, setAppointments] = useState(appointmentsObj);
     const [selectedAppointment, setSelectedAppointment] = useState();
-    const [sectionListIndex, setSectionListIndex] = useState(getSelectedIndex( moment(selectedDay).format("YYYY-MM-DD"), daysList));
+    const [sectionListIndex, setSectionListIndex] = useState(/*getSelectedIndex( moment(selectedDay).format("YYYY-MM-DD"), daysList)*/);
     const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
 
