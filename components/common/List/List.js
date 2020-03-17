@@ -1,27 +1,27 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, { useContext } from 'react';
+import {View, StyleSheet} from 'react-native';
 import ListHeader from './ListHeader';
+import ListData from './ListData';
+import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export default class List extends Component{
-    render(){
-        return(
-            <View>
-                <View style={styles.header}>
-                    <ListHeader listHeaders = {this.props.listHeaders}/>
-                </View>
-                <View style={styles.data}>
-                    {this.props.data}
-                </View>
+const List = () => {
+    const [state] = useContext(SuitesContext)
+    return ( 
+        <View>
+            <View style={styles.header}>
+                <ListHeader headers={state.list.listHeaders}/>
             </View>
-        )
-    }
+            <View style={styles.data}>
+                <ListData />
+            </View>
+        </View>
+    );
 }
-
+ 
+export default List;
 const styles = StyleSheet.create({
     header:{
         marginBottom:25,
     },
-    data:{
-        //flex:1
-    }
+    data:{}
 })

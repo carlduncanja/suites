@@ -1,16 +1,18 @@
 import React,{Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon';
 
-export default class ProgressIcon extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <View>{this.props.icon}</View>
-            </View>
-        )
-    }
+const ProgressIcon = (props) => {
+    return (  
+        <View style={styles.container}>
+            <SvgIcon
+                iconName = {props.icon}
+            />
+        </View>
+    );
 }
+ 
+export default ProgressIcon;
 
 const styles = StyleSheet.create({
     container:{

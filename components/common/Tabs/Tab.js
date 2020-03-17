@@ -1,37 +1,37 @@
-import React,{Component} from 'react';
+import React,{Component, useContext} from 'react';
 import {View, Text,TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon'
 
-export default class Tab extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <View style={styles.corner}>
-                    <SvgIcon iconName="tabLeft" fillColor={this.props.backgroundColor}/>
-                </View>
-                <TouchableOpacity style={[styles.tabContainer,{backgroundColor:this.props.backgroundColor}]}>
-                    <Text style={[styles.text,{color:this.props.textColor}]}>{this.props.tab}</Text>
-                </TouchableOpacity>
-                <View style={styles.corner}>
-                    <SvgIcon iconName="tabRight" fillColor={this.props.backgroundColor}/>
-                </View>
+const Tab = (props) => {
+   
+    return ( 
+        <View style={styles.container}>
+            <View style={styles.corner}>
+                <SvgIcon iconName="tabLeft" fillColor={props.backgroundColor}/>
             </View>
-           
-        )
-    }
+            <View style={[styles.tabContainer,{backgroundColor:props.backgroundColor}]}>
+                <Text style={[styles.text,{color:props.textColor}]}>{props.tabName}</Text>
+            </View>
+            <View style={styles.corner}>
+                <SvgIcon iconName="tabRight" fillColor={props.backgroundColor}/>
+            </View>
+        </View>
+    );
 }
+ 
+export default Tab;
 
 const styles = StyleSheet.create({
     container:{
         flexDirection:'row',
-        marginRight:20,
+        marginRight:0,
     },
     tabContainer:{
         borderTopLeftRadius: 8,
         borderTopRightRadius:8,
         padding:5,
-        paddingLeft:10,
-        paddingRight:10
+        paddingLeft:8,
+        paddingRight:8
     },
     text:{
         fontSize:16,

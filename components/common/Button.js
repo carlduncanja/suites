@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { withModal } from 'react-native-modalfy';
 
-export default class Button extends Component {
+class Button extends Component {
     render() {
         return (
             <TouchableOpacity 
@@ -13,6 +14,8 @@ export default class Button extends Component {
         )
     }
 }
+
+export default Button
 
 const styles=StyleSheet.create({
     button:{

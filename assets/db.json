@@ -377,71 +377,1965 @@
         }
     ],
 
-    "caseFiles":[
+    "floatingActions":[
         {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
+            "page":"schedule",
+            "actions":[]
         },
         {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
+            "page":"caseFiles",
+            "actions":[
+                {
+                    "actionId":"archiveCase",
+                    "action":"archiveItem",
+                    "actionName":"Archive Case",
+                    "disabled":true
+                },
+                {
+                    "actionId":"newCase",
+                    "action":"newItem",
+                    "actionName":"New Case",
+                    "disabled":false
+                }
+            ]
         },
         {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
+            "page":"inventory",
+            "actions":[
+                {
+                    "actionId":"delete",
+                    "actionName":"Hold to Delete"
+                },
+                {
+                    "actionId":"changeGroup",
+                    "actionName":"Change Group"
+                },
+                {
+                    "actionId":"editGroup",
+                    "actionName":"Edit Group"
+                },
+                {
+                    "actionId":"itemTransfer",
+                    "actionName":"Item Transfer"
+                },
+                {
+                    "actionId":"addItem",
+                    "actionName":"Add Item"
+                },
+                {
+                    "actionId":"addLocation",
+                    "actionName":"Add Location"
+                }
+            ]
         },
         {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
+            "page":"storage",
+            "actions":[
+                {
+                    "actionId":"delete",
+                    "actionName":"Hold to Delete"
+                },
+                {
+                    "actionId":"addLocation",
+                    "actionName":"Add Location"
+                }
+            ]
+
         },
         {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
+            "page":"physicians",
+            "actions":[
+                {
+                    "actionId":"delete",
+                    "actionName":"Hold to Delete"
+                },
+                {
+                    "actionId":"assignCase",
+                    "actionName":"Assign Case"
+                },
+                {
+                    "actionId":"addPhysician",
+                    "actionName":"Add Physician"
+                },
+                {
+                    "actionId":"addWorkItem",
+                    "actionName":"Add Work Item"
+                }
+            ]
         },
         {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
+            "page":"procedures",
+            "actions":[
+                {
+                    "actionId":"delete",
+                    "actionName":"Hold to Delete"
+                },
+                {
+                    "actionId":"createCopy",
+                    "actionName":"Create Copy"
+                },
+                {
+                    "actionId":"newProcedure",
+                    "actionName":"New Procedure"
+                }
+            ]
+        }
+    ],
+
+    "createItem":[
+        {
+            "page":"caseFiles",
+            "title":"New Case",
+            "steps":[
+                {
+                    "stepName":"Patient",
+                    "tabs":[
+                        {
+                            "tabName":"Details",
+                            "infoNeeded":[
+                                {
+                                    "field":"First Name",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Middle Name",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Last Name",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Title",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Gender",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"TRN",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Date of Birth",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Minor ?",
+                                    "type":"select",
+                                    "options":["Yes","No"]
+                                }
+
+                            ]
+                        },
+                        {
+                            "tabName":"Contact",
+                            "infoNeeded":[
+                                {
+                                    "field":"Cell",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Work",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Personal Email",
+                                    "type":"text"
+                                },
+                                {
+                                    "section":"Emergency Contact",
+                                    "fields":[
+                                        {
+                                            "field":"Name",
+                                            "type":"text"
+                                        },
+                                        {
+                                            "field":"Relationship",
+                                            "type":"text"
+                                        },
+                                        {
+                                            "field":"Cell",
+                                            "type":"text"
+                                        },
+                                        {
+                                            "field":"Home",
+                                            "type":"text"
+                                        }
+                                    ] 
+                                }
+                            ]
+                        },
+                        {
+                            "tabName":"Address",
+                            "infoNeeded":[
+                                {
+                                    "field":"Address 1",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Address 2",
+                                    "type":"text"
+                                }
+                            ]
+                        },
+                        {
+                            "tabName":"Insurance Coverage",
+                            "infoNeeded":[
+                                {
+                                    "field":"Primary Insurer",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Policy Number",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Coverage Limit",
+                                    "type":"text"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "stepName":"Medical Team",
+                    "tabs":[
+                        {
+                            "tabName":"Assignment 1",
+                            "infoNeeded":[
+                                {
+                                    "field":"Type",
+                                    "type":"select",
+                                    "options":["Physician", "Nurse"]
+                                },
+                                {
+                                    "section":"Physician",
+                                    "fields":[
+                                        {
+                                            "field":"Select",
+                                            "type":"autofill"
+                                        }
+                                    ]
+                                }
+                            ]
+
+                        },
+                        {
+                            "tabName":"Assignment 2",
+                            "infoNeeded":[
+                                {
+                                    "field":"Type",
+                                    "type":"select",
+                                    "options":["Physician", "Nurse"]
+                                },
+                                {
+                                    "section":"Nurse",
+                                    "fields":[
+                                        {
+                                            "field":"Select",
+                                            "type":"autofill"
+                                        }
+                                    ]
+                                }
+                            ]
+
+                        }
+                    ]
+                },
+                {
+                    "stepName":"Procedures",
+                    "tabs":[
+                        {
+                            "tabName":"Procedure 1",
+                            "infoNeeded":[
+                                {
+                                    "field":"Procedure",
+                                    "type":"select",
+                                    "options":["Coronary Bypass Graft","Balloon Endoscopy","Sentinel Lymph Node Biopsy"]
+                                },
+                                {
+                                    "field":"Location",
+                                    "type":"select",
+                                    "options":["Surgery Theatre 6","Surgery Theatre 5","Surgery Theatre 3","Surgery Theatre 1"]
+                                },
+                                {
+                                    "field":"Duration",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Category",
+                                    "type":"text"
+                                }
+                            ]
+                        },
+                        {
+                            "tabName":"Procedure 2",
+                            "infoNeeded":[
+                                {
+                                    "field":"Procedure",
+                                    "type":"select",
+                                    "options":["Coronary Bypass Graft","Balloon Endoscopy","Sentinel Lymph Node Biopsy"]
+                                },
+                                {
+                                    "field":"Location",
+                                    "type":"select",
+                                    "options":["Surgery Theatre 6","Surgery Theatre 5","Surgery Theatre 3","Surgery Theatre 1"]
+                                },
+                                {
+                                    "field":"Duration",
+                                    "type":"text"
+                                },
+                                {
+                                    "field":"Category",
+                                    "type":"text"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+
+    "overlayMenuTabs":[
+        {
+            "page":"caseFiles",
+            "menuTabs":[
+                {
+                    "tabId":"patientButton",
+                    "tabName":"Patient",
+                    "overlayTab":["Details","Insurance","Diagnosis","Patient Risk"]
+                },
+                {
+                    "tabId":"medicalStaffButton",
+                    "tabName":"Medical Staff",
+                    "overlayTab":["Details"]
+                },
+                {
+                    "tabId":"medicalHistoryButton",
+                    "tabName":"Medical History",
+                    "overlayTab":["General","Family History","Lifestyle","Other"]
+                },
+                {
+                    "tabId":"procedureButton",
+                    "tabName":"Procedures",
+                    "overlayTab":["Details"]
+                },
+                {
+                    "tabId":"chargeSheetButton",
+                    "tabName":"Charge Sheet",
+                    "overlayTab":["Consumables","Equipment","Billing","Quotation","Invoices"]
+                }
+            ]
+            
+        }
+    ],
+
+    "patients":[
+        {
+            "id":"#350219385001",
+            "name": 
+                {
+                    "firstName":"Julie",
+                    "middle":"Melissa",
+                    "surname":"Brown"
+                }
         },
         {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
+            "id":"#902849827402",
+            "name":
+                {
+                    "firstName":"John",
+                    "middle":"Anothony",
+                    "surname":"Taylor"
+                }
+            
         },
         {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
+            "id":"#8927465150003",
+            "name":
+                {
+                    "firstName":"Meghan",
+                    "middle":"Anna",
+                    "surname":"James"
+                }
         },
         {
-            "patientName":"Julie Brown",
-            "patientId":"#8928547298",
-            "balance":"-$ 115,002.25",
-            "staff":"Dr.Mansingh",
-            "nextVisit":"2019-11-21"
+            "id":"#350219385004",
+            "name":
+                {
+                    "firstName":"Julie",
+                    "middle":"Melissa",
+                    "surname":"Brown"
+                }
+        },
+        {
+            "id":"#902849827405",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515006",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }
+        },
+        {
+            "id":"#350219385007",
+            "name":
+            {
+                "firstName":"Julie",
+                "middle":"Melissa",
+                "surname":"Brown"
+            }
+        },
+        {
+            "id":"#902849827408",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515009",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }
+        },
+        {
+            "id":"#350219385010",
+            "name":
+            {
+                "firstName":"Julie",
+                "middle":"Melissa",
+                "surname":"Brown"
+            }
+        },
+        {
+            "id":"#902849827411",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515012",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }
+        },
+        {
+            "id":"#350219385013",
+            "name":
+            {
+                "firstName":"Julie",
+                "middle":"Melissa",
+                "surname":"Brown"
+            }
+        },
+        {
+            "id":"#902849827414",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515015",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }
+        },
+        {
+            "id":"#350219385016",
+            "name":
+            {
+                "firstName":"Julie",
+                "middle":"Melissa",
+                "surname":"Brown"
+            }
+        },
+        {
+            "id":"#902849827417",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515018",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }
+        },
+        {
+            "id":"#350219385019",
+            "name":
+            {
+                "firstName":"Julie",
+                "middle":"Melissa",
+                "surname":"Brown"
+            }
+        },
+        {
+            "id":"#902849827420",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515021",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }
+        },
+        {
+            "id":"#350219385022",
+            "name":
+            {
+                "firstName":"Julie",
+                "middle":"Melissa",
+                "surname":"Brown"
+            }
+        },
+        {
+            "id":"#902849827423",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515024",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }
+        },
+        {
+            "id":"#350219385025",
+            "name":
+            {
+                "firstName":"Julie",
+                "middle":"Melissa",
+                "surname":"Brown"
+            }
+
+        },
+        {
+            "id":"#902849827426",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515027",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }      
+        },
+        {
+            "id":"#350219385028",
+            "name":
+            {
+                "firstName":"Julie",
+                "middle":"Melissa",
+                "surname":"Brown"
+            }
+        },
+        {
+            "id":"#902849827429",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515030",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }
+        },
+        {
+            "id":"#350219385031",
+            "name":
+            {
+                "firstName":"Julie",
+                "middle":"Melissa",
+                "surname":"Brown"
+            }
+        },
+        {
+            "id":"#902849827432",
+            "name":
+            {
+                "firstName":"John",
+                "middle":"Anothony",
+                "surname":"Taylor"
+            }
+        },
+        {
+            "id":"#892746515033",
+            "name":
+            {
+                "firstName":"Meghan",
+                "middle":"Anna",
+                "surname":"James"
+            }
+        }
+    ],
+    
+    "medicalStaff":
+    {
+        "physicians":
+        [
+            {
+                "id":"DR-01",
+                "name":"Dr. Mansingh"
+            },
+            {
+                "id":"DR-02",
+                "name":"Dr. M. Walsh"
+            }
+        ],
+
+        "nurses":
+        [
+            {
+                "id":"NR-01",
+                "name":"J.Abrahams"
+            },
+            {
+                "id":"NR-02",
+                "name":"M.Cartwright"
+            }
+        ]
+    },
+
+    "consumables":
+    [
+        {
+            "id":"CON-AG",
+            "name":"Agents",
+            "type":"Anaesthesia",
+            "unitPrice":"$4,128.28"
+        },
+        {
+            "id":"CON-ATRM",
+            "name":"Atracurium",
+            "type":"Anaesthesia",
+            "unitPrice":"$2,291.24"
+        },
+        {
+            "id":"CON-ATP",
+            "name":"Atropine",
+            "type":"Anaesthesia",
+            "unitPrice":"$454.20"
+        },
+        {
+            "id":"CON-BUP",
+            "name":"Bupivacaine 0.25%",
+            "type":"Anaesthesia",
+            "unitPrice":"$1,382.84"
+        },
+        {
+            "id":"CON-CIS",
+            "name":"Cis-Atracurium",
+            "type":"Anaesthesia",
+            "unitPrice":"$3,129.88"
+        },
+        {
+            "id":"CON-DIC",
+            "name":"Diclofenac",
+            "type":"Anaesthesia",
+            "unitPrice":"$5,056.92"
+        },
+        {
+            "id":"CON-EPH",
+            "name":"Ephedrine",
+            "type":"Anaesthesia",
+            "unitPrice":"$6,893.28"
+        },
+        {
+            "id":"CON-FEN",
+            "name":"Fentanyl",
+            "type":"Anaesthesia",
+            "unitPrice":"$8,782.18"
+        },
+        {
+            "id":"CON-LIG",
+            "name":"Lignocaine",
+            "type":"Anaesthesia",
+            "unitPrice":"$5,063.28"
+        },
+        {
+            "id":"CON-MID",
+            "name":"Midazolam",
+            "type":"Anaesthesia",
+            "unitPrice":"$4,128.28"
+        }
+    ],
+
+    "equipment":
+    [
+        {
+            "id":"EQ-BAG",
+            "name":"Bags",
+            "type":"Blood Products",
+            "unitPrice":"$1,382.84"
+        },
+        {
+            "id":"EQ-GEN",
+            "name":"Scalpel",
+            "type":"Incision",
+            "unitPrice":"$2,291.24"
+        },
+        {
+            "id":"EQ-AUG",
+            "name":"Glasses",
+            "type":"Vision",
+            "unitPrice":"$3,129.88"
+        } 
+    ],
+
+    "insurers":
+    [
+        {
+            "id":"SGR",
+            "name":"Sagicor life"
+        },
+        {
+            "id":"JN",
+            "name":"Jamaica National Life Insurance"
         }
 
-    ]
+    ],
+
+    "caseFiles":
+    {
+        "bmiScale":[
+            {
+                "color":"#4299E1",
+                "startValue":0,
+                "endValue":18.4
+            },
+            {
+                "color":"#48BB78",
+                "startValue":18.5,
+                "endValue":24.9
+            },
+            {
+                "color":"#ED8936",
+                "startValue":25,
+                "endValue":29.9
+            },
+            {
+                "color":"#E53E3E",
+                "startValue":30,
+                "endValue":34.9
+            },
+            {
+                "color":"#805AD5",
+                "startValue":35,
+                "endValue":100
+            }
+
+        ],
+           
+        "caseFilesInformation":{
+            "headers":["Patient","Balance","Staff","Next Visit"],
+            "data":[
+            {
+                "id":"#350219385001",        
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827402",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#8927465150003",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385004",
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827405",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515006",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385007",
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827408",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515009",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385010",
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827411",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515012",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385013",                    
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827414",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515015",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385016",
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827417",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515018",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385019",
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827420",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515021",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385022",
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827423",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515024",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385025",
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827426",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515027",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385028",
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827429",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515030",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#350219385031",
+                "balance":"-$ 115,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#902849827432",
+                "balance":"-$ 11,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            },
+            {
+                "id":"#892746515033",
+                "balance":"-$ 203,002.25",
+                "staff":"Dr. Mansingh",
+                "nextVisit":"2019-11-21"
+            }
+        ]
+    },
+            
+        "caseDetails":
+        [
+            {
+                "id":"#350219385001",
+                "patient":{
+                    "personalDetails":{
+                        "demographicInformation":{
+                            "firstName":{
+                                "value":"Julie",
+                                "action":false
+                            },
+                            "middleName":{
+                                "value":"Melissa",
+                                "action":false
+                            },
+                            "surname":{
+                                "value":"Brown",
+                                "action":false
+                            },
+                            "height":{
+                                "value":"5'3\"",
+                                "action":false
+                            },
+                            "weight":{
+                                "value":145,
+                                "action":false
+                            },
+                            "BMI":{
+                                "value":20,
+                                "action":false
+                            },
+                            "dateOfBirth":{
+                                "value":"8/12/1998",
+                                "action":false
+                            },
+                            "TRN":{
+                                "value":"125 618 921",
+                                "action":false
+                            },
+                            "gender":{
+                                "value":"Female",
+                                "action":false
+                            },
+                            "ethnicity":{
+                                "value":"Black / Caribbean",
+                                "action":false
+                            },
+                            "bloodType":{
+                                "value":"AB",
+                                "action":false
+                            },
+                            "nextVisit":{
+                                "value":"12/12/2019",
+                                "action":false
+                            }
+                        },
+                        "contactInformation":{
+                            "cellPhone":{
+                                "value":"876 372 6172",
+                                "action":true
+                            },
+                            "homePhone":{
+                                "value":"876 992 6178",
+                                "action":true
+                            },
+                            "workPhone":{
+                                "value":"876 712 8320",
+                                "action":true
+                            },
+                            "primaryEmail":{
+                                "value":"julie.brown@gmail.com",
+                                "action":true
+                            },
+                            "alternativeEmail":{
+                                "value":"",
+                                "action":true
+                            },
+                            "workEmail":{
+                                "value":"",
+                                "action":true
+                            },
+                            "addressLine1":{
+                                "value":"12 Ruthven Road, Kingston 1",
+                                "action":true
+                            },
+                            "addressLine2":{
+                                "value":"Apartment 6",
+                                "action":true
+                            }
+                        },
+                        "emergencyContactInformation":[
+                            {
+                                "emergencyContactName":{
+                                    "value":"Juliana Brown (Mother)",
+                                    "action":false
+                                },
+                                "emergencyContactPhone":{
+                                    "value":8763726280,
+                                    "action":true
+                                },
+                                "emergencyContactEmail":{
+                                    "value":"juliana.brown@gmail.com",
+                                    "action":true
+                                }
+                            },
+                            {
+                                "emergencyContactName":{
+                                    "value":"Lucas Brown (Father)",
+                                    "action":false
+                                },
+                                "emergencyContactPhone":{
+                                    "value":8764630813,
+                                    "action":true
+                                },
+                                "emergencyContactEmail":{
+                                    "value":"lucas.brown@gmail.com",
+                                    "action":true
+                                }
+                            }
+                        ]
+                    },
+                    "details":
+                    {
+                        "personalInformation":
+                            [
+                                {
+                                    "field":"First Name",
+                                    "value":"Julie",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Middle Name",
+                                    "value":"Melissa",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Surname",
+                                    "value":"Brown",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Height",
+                                    "value":"5'3\"",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Weight",
+                                    "value":145,
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"BMI",
+                                    "value":20,
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Date of Birth",
+                                    "value":"8/12/1998",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"TRN",
+                                    "value":"125 618 921",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Gender",
+                                    "value":"Female",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Ethnicity",
+                                    "value":"Black / Caribbean",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Blood Type",
+                                    "value":"AB",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Next Visit",
+                                    "value":"12/12/2019",
+                                    "type":"optional"
+                                }
+                            ],
+
+                        "contactInformation": 
+                            [
+                                {
+                                    "field":"Cell Phone",
+                                    "value":"876 372 6172",
+                                    "type":"primary"
+                                },
+                                {
+                                    "field":"Home Phone",
+                                    "value":"876 992 6172",
+                                    "type":"primary"
+                                },
+                                {
+                                    "field":"Work Phone",
+                                    "value":"876 712 8320",
+                                    "type":"primary"
+                                },
+                                {
+                                    "field":"Primary Email",
+                                    "value":"julie.brown@gmail.com",
+                                    "type":"primary"
+                                },
+                                {
+                                    "field":"Alternative Email",
+                                    "value":"",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Work Email",
+                                    "value":"",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Address Line 1",
+                                    "value":"12 Ruthven Road, Kingston 1",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Address Line 2",
+                                    "value":"Apartment 6",
+                                    "type":"optional"
+                                }
+                            ],
+
+                        "emergencyContactInfomation":
+                            [
+                                {
+                                    "field":"Emergency Contact Name",
+                                    "value":"Juliana Brown (Mother)",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Emergency Contact Phone",
+                                    "value":"876 372 6280",
+                                    "type":"primary"
+                                },
+                                {
+                                    "field":"Emergency Contact Email",
+                                    "value":"juliana.brown@gmail.com",
+                                    "type":"primary"
+                                },
+                                {
+                                    "field":"Emergency Contact Name",
+                                    "value":"Lucas Brown (Father)",
+                                    "type":"optional"
+                                },
+                                {
+                                    "field":"Emergency Contact Phone",
+                                    "value":"876 372 7180",
+                                    "type":"primary"
+                                },
+                                {
+                                    "field":"Emergency Contact Email",
+                                    "value":"lucas.brown@gmail.com",
+                                    "type":"primary"
+                                }
+                            ]
+                        
+                    },
+                    "insurance":
+                    {
+                        "insurers":
+                        {
+                            "primaryInsurer":"Sagicor Life"
+                        },
+                        "coverage":
+                        {
+                            "coverageLimit":"$45,000.00",
+                            "policyNumber":"7311239-122"
+                        }
+
+                    },
+                    "diagnosis":
+                    {
+                        "signsAndSymptoms":
+                        [
+                            "High blood pressure: Over 130",
+                            "Severe pain around the wrist"
+                        ],
+                        "examinations":
+                        [
+                            "The patient complains of chest pains. Based on apparent swelling, the patient may be showing signs of Coronary Heart Disease."
+                        ],
+                        "diagnosticEvaluations":[
+                            {
+                                "name":"XrayScan.jpg",
+                                "image":"icon.png"
+                            },
+                            {
+                                "name":"XrayScan87429.jpg",
+                                "image":"icon.png"
+                            },
+                            {
+                                "name":"XrayScan78264.jpg",
+                                "image":"icon.png"
+                            }
+                        ],
+                        "laboratoryInvestigations":[],
+                        "provisionalDiagnosis":[],
+                        "finalDiagnosis":[],
+                        "medicationPrescribed":[],
+                        "implantedDevices":[]
+                    },
+                    "patientRisk":
+                    {
+                        "riskLevel":3,
+                        "note":"There may be additional cardiovascular blockages."
+                    }
+                },
+                "medicalStaff":{
+                    "details":
+                    {
+                        "physicians":
+                            [
+                                "Dr. Mansingh",
+                                "Dr. M. Walsh"
+                            ],
+                        "nurses":
+                            [
+                                "J.Abrahams",
+                                "M.Cartwright"
+                            ]
+                    }
+                },
+                "medicalHistory":{
+                    "general":
+                    {
+                        "allergies":["Peanuts", "Pollen","Shellfish"],
+                        "preExistingConditions":["Asthma"],
+                        "immunisations":["Influenza"],
+                        "medications":[],
+                        "procedures":[],
+                        "implantedDevices":[]
+                    },
+                    "familyHistory":
+                    {
+                        "preExistingConditions":[
+                            {
+                                "relative":"Grandmother",
+                                "condition":"Asthma"
+                            },
+                            {
+                                "relative":"Mother",
+                                "condition":"Diabetes"
+                            }
+                        ]
+                    },
+                    "lifestyle":
+                    {
+                        "drug":
+                        {
+                            "name":"Percoset",
+                            "details":{
+                                "frequency":{
+                                    "value":"irregular",
+                                    "type":"select"
+                                },
+                                "amount":{
+                                    "value":5,
+                                    "type":"text"
+                                },
+                                "unit":{
+                                    "value":"bottle",
+                                    "type":"select"
+                                },
+                                "unitOfMeasure":
+                                {
+                                    "value":{
+                                        "amount":10,
+                                        "unit":"oz"
+                                    },
+                                    "type":"measure"
+                                },
+                                "usage":{
+                                    "value":"currently using",
+                                    "type":"text"
+                                },
+                                
+                                "since":{
+                                    "value":"12/01/2018",
+                                    "type":"text"
+                                }
+                            }
+                        },
+                        "alcohol":
+                        {
+                            "name":"Beer",
+                            "details":{
+                                "frequency":{
+                                    "value":"irregular",
+                                    "type":"select"
+                                },
+                                "amount":{
+                                    "value":5,
+                                    "type":"text"
+                                },
+                                "unit":{
+                                    "value":"bottle",
+                                    "type":"select"
+                                },
+                                "unitOfMeasure":
+                                {
+                                    "value":{
+                                        "amount":100,
+                                        "unit":"oz"
+                                    },
+                                    "type":"measure"
+                                },
+                                "usage":{
+                                    "value":"currently using",
+                                    "type":"text"
+                                },
+                                
+                                "since":{
+                                    "value":"12/01/2018",
+                                    "type":"text"
+                                }
+                            }
+                        },
+                        "tobacco":
+                        {
+                            "name":"Snuff",
+                            "details":{
+                                "frequency":{
+                                    "value":"irregular",
+                                    "type":"select"
+                                },
+                                "amount":{
+                                    "value":5,
+                                    "type":"text"
+                                },
+                                "unit":{
+                                    "value":"bottle",
+                                    "type":"select"
+                                },
+                                "unitOfMeasure":
+                                {
+                                    "value":{
+                                        "amount":10,
+                                        "unit":"mg"
+                                    },
+                                    "type":"measure"
+                                },
+                                "usage":{
+                                    "value":"currently using",
+                                    "type":"text"
+                                },
+                                
+                                "since":{
+                                    "value":"12/01/2018",
+                                    "type":"text"
+                                }
+                            }
+                        }
+                    },
+                    "other":
+                    {
+                        "otherNotableConditions":
+                        [
+                            "The patient is an ex-heroin addict and has been sober for roughly for 6 months."
+                        ]
+
+                    }
+                },
+                "procedures":{
+                    "details":
+                    [
+                        {
+                            "procedureName":"Coronary Bypass Graft",
+                            "details":{
+                                "procedure":
+                                {
+                                    "location":"Surgery Theatre 6",
+                                    "date":"2019-11-12T13:00:00.000Z",
+                                    "duration":"3 Hours"
+                                },
+                                "recovery":
+                                {
+                                    "status":true,
+                                    "location":"Surgery Theatre 6",
+                                    "duration":"12 Hours"
+                                }
+                            }
+                        },
+                        {   
+                            "procedureName":"Angioplasty",
+                            "details":{
+                                "procedure":
+                                {
+                                    "location":"Surgery Theatre 6",
+                                    "date":"2019-11-12T13:00:00.000Z",
+                                    "duration":"3 Hours"
+                                },
+                                "recovery":
+                                {
+                                    "status":true,
+                                    "location":"Surgery Theatre 6",
+                                    "duration":"12 Hours"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "chargeSheet":{
+                    "consumables":
+                    [
+                        {
+                            "id":"CON-AG1",
+                            "itemName":"Agents",
+                            "type":"Anaesthesia",
+                            "quantity":1,
+                            "unitPrice":"$4,128.28"
+                        },
+                        {
+                            "id":"CON-ATR",
+                            "itemName":"Atracurium",
+                            "type":"Anaesthesia",
+                            "quantity":4,
+                            "unitPrice":"$2,291.24"
+                        },
+                        {
+                            "id":"CON-ATRP",
+                            "itemName":"Atropine",
+                            "type":"Anaesthesia",
+                            "quantity":1,
+                            "unitPrice":"$454.20"
+                        },
+                        {
+                            "id":"CON-BUP25",
+                            "itemName":"Bupivacaine 0.25%",
+                            "type":"Anaesthesia",
+                            "quantity":2,
+                            "unitPrice":"$1,382.84"
+                        },
+                        {
+                            "id":"CON-CISA",
+                            "itemName":"Cis-Atracurium",
+                            "type":"Anaesthesia",
+                            "quantity":3,
+                            "unitPrice":"$3,129.88"
+                        },
+                        {
+                            "id":"CON-DIC",
+                            "itemName":"Diclofenac",
+                            "type":"Anaesthesia",
+                            "quantity":4,
+                            "unitPrice":"$5,056.92"
+                        },
+                        {
+                            "id":"CON-EPH",
+                            "itemName":"Ephedrine",
+                            "type":"Anaesthesia",
+                            "quantity":1,
+                            "unitPrice":"$6,893.28"
+                        },
+                        {
+                            "id":"CON-FEN",
+                            "itemName":"Fentanyl",
+                            "type":"Anaesthesia",
+                            "quantity":2,
+                            "unitPrice":"$8,782.18"
+                        },
+                        {
+                            "id":"CON-LIG",
+                            "itemName":"Lignocaine",
+                            "type":"Anaesthesia",
+                            "quantity":3,
+                            "unitPrice":"$5,063.28"
+                        },
+                        {
+                            "id":"CON-MID",
+                            "itemName":"Midazolam",
+                            "type":"Anaesthesia",
+                            "quantity":4,
+                            "unitPrice":"$4,128.28"
+                        }
+                    ],
+                    "equipment":
+                    [
+                        {
+                            "id":"EQ-BAG",
+                            "itemName":"Bags",
+                            "type":"Blood Products",
+                            "quantity":5,
+                            "unitPrice":"$1,382.84"
+                        },
+                        {
+                            "id":"EQ-SCAL",
+                            "itemName":"Scalpel",
+                            "type":"Incision",
+                            "quantity":3,
+                            "unitPrice":"$2,291.24"
+                        },
+                        {
+                            "id":"EQ-GLA",
+                            "itemName":"Glasses",
+                            "type":"Vision",
+                            "quantity":1,
+                            "unitPrice":"$3,129.88"
+                        } 
+                    ],
+                    "billing":
+                    {
+                        "header":{
+                            "lastModififed":"12/11/2019",
+                            "total":{
+                                "value":"$102,002.25",
+                                "discount":true
+                            }
+                        },
+                        "list":{
+                            "physicians":[
+                                {
+                                    "charge":"Dr.Mansingh",
+                                    "cost":"$64,000.45"
+                                }
+                            ],
+                            "procedure":[
+                                {
+                                    "charge":"Coronory Bypass Graft",
+                                    "cost":"$48,000.45"
+                                },
+                                {
+                                    "charge":"Coronory Artery Graft",
+                                    "cost":"$32,000.45"
+                                }
+                            ],
+                            "equipment":[
+                                {
+                                    "charge":"Blood Gases",
+                                    "cost":"$16,000.45"
+                                }
+                            ],
+                            "labWork":[
+                                {
+                                    "charge":"Blood Gases",
+                                    "cost":"$16,000.45"
+                                },
+                                {
+                                    "charge":"X-Ray",
+                                    "cost":"$16,000.45"
+                                }
+                            ],
+                            "consumables":[
+                                {
+                                    "charge":"Gowning & Protection",
+                                    "details":[
+                                        {
+                                            "item":"Lab Chole",
+                                            "quantity":1,
+                                            "cost":"$5,056.92"
+                                        },
+                                        {
+                                            "item":"GU Tower",
+                                            "quantity":2,
+                                            "cost":"$5,056.92"
+                                        } 
+                                    ]
+                                    
+                                },
+                                {
+                                    "charge":"Gowning & Protection",
+                                    "details":[
+                                        {
+                                            "item":"Agents",
+                                            "quantity":2,
+                                            "cost":"$5,056.92"
+                                        },
+                                        {
+                                            "item":"Atracurium",
+                                            "quantity":3,
+                                            "cost":"$4,128.28"
+                                        },
+                                        {
+                                            "item":"Bupivacaine 0.25 / 0.5 / 0.75%",
+                                            "quantity":2,
+                                            "cost":"$454.20"
+                                        }
+                                    ]
+                                    
+                                },
+                                {
+                                    "charge":"Sterile Gowns",
+                                    "details":[
+                                        {
+                                            "item":"Diclofenac",
+                                            "quantity":4,
+                                            "cost":"$3,219.88"
+                                        }
+                                    ]
+                                    
+                                }
+
+                            ]
+                        }
+                    },
+                    "quotation":
+                    [
+                        {
+                            "list":{
+                                "id":"QU-1240512",
+                                "quotation":"QU-1240512",
+                                "date":"12/18/2019",
+                                "value":"$177,560.35",
+                                "actions":true
+                            },
+                            "preview":{
+                                "billingDetails":{
+                                    "billedTo":{
+                                        "name":"Julie Melissa Brown",
+                                        "addressLine1":"23 Bedford Avenue",
+                                        "addressLine2":"Kingston 8",
+                                        "addressLine3":"JMKIN08"
+                                    },
+                                    "for":"Medical Services",
+                                    "date":"12/11/2019",
+                                    "total":"$177,560.35"
+                                },
+                                "quotationDetails":{
+                                    "summaryList":[
+                                        {
+                                        "charge":"Dr.Mansingh",
+                                        "cost":"$64,000.45"
+                                        },
+                                        {
+                                            "charge":"Coronory Bypass Graft",
+                                            "cost":"$48,000.45"
+                                        },
+                                        {
+                                            "charge":"Coronory Artery Graft",
+                                            "cost":"$32,000.45"
+                                        },
+                                        {
+                                            "charge":"Blood Gases",
+                                            "cost":"$16,000.45"
+                                        },
+                                        {
+                                            "charge":"X-Ray",
+                                            "cost":"$16,000.45"
+                                        }
+                                    ],
+                                    "consumablesTable":{
+                                        "headers":[
+                                            "Item Name",
+                                            "Quantity",
+                                            "Unit Price",
+                                            "Total"
+                                        ],
+                                        "data":[
+                                            {
+                                                "itemName":"Morphine",
+                                                "quantity":2,
+                                                "unitPrice":"$4,582.48",
+                                                "total":"9,164.96"
+                                            }
+                                        ]
+                                    }  
+                                },
+                                "billingSummary":{
+                                    "subtotal":"$178,167.21",
+                                    "discount":"-$ 30,0002.25",
+                                    "tax":"20%",
+                                    "total":"$177,560.35"
+                                }
+                            }
+                        },
+                        {
+                            "list":{
+                                "id":"QU-1240602",
+                                "quotation":"QU-1240602",
+                                "date":"12/18/2019",
+                                "value":"$20,863.45",
+                                "actions":true
+                            }
+                        },
+                        {
+                            "list":{
+                                "id":"QU-1245612",
+                                "quotation":"QU-1245612",
+                                "date":"12/18/2019",
+                                "value":"$320,863.45",
+                                "actions":true
+                            }
+                        },
+                        {
+                            "list":{
+                                "id":"QU-1240612",
+                                "quotation":"QU-1240612",
+                                "date":"12/18/2019",
+                                "value":"$30,863.45",
+                                "actions":true
+                            }
+                            
+                        }
+                    ],
+                    "invoices":
+                    [
+                        {
+                            "list":{
+                                "id":"IN-000976",
+                                "invoiceNumber":"IN-000976",
+                                "status":"Complete",
+                                "date":"13/12/2019",
+                                "value":"$312,000.45",
+                                "actions":true
+                            },
+                            "preview":{
+                                "billingDetails":{
+                                    "billedTo":{
+                                        "name":"Julie Melissa Brown",
+                                        "addressLine1":"23 Bedford Avenue",
+                                        "addressLine2":"Kingston 8",
+                                        "addressLine3":"JMKIN08"
+                                    },
+                                    "invoiceNo":"000976",
+                                    "purchaseOrderNo":"000976",
+                                    "date":"12/11/2019",
+                                    "total":"$312,000.45"
+                                },
+                                "quotationDetails":{
+                                    "summaryList":[
+                                        {
+                                        "charge":"Dr.Mansingh",
+                                        "cost":"$64,000.45"
+                                        },
+                                        {
+                                            "charge":"Coronory Bypass Graft",
+                                            "cost":"$48,000.45"
+                                        },
+                                        {
+                                            "charge":"Coronory Artery Graft",
+                                            "cost":"$32,000.45"
+                                        },
+                                        {
+                                            "charge":"Blood Gases",
+                                            "cost":"$16,000.45"
+                                        },
+                                        {
+                                            "charge":"X-Ray",
+                                            "cost":"$16,000.45"
+                                        }
+                                    ],
+                                    "consumablesTable":{
+                                        "headers":[
+                                            "Item Name",
+                                            "Quantity",
+                                            "Unit Price",
+                                            "Total"
+                                        ],
+                                        "data":[
+                                            {
+                                                "itemName":"Morphine",
+                                                "quantity":2,
+                                                "unitPrice":"$4,582.48",
+                                                "total":"9,164.96"
+                                            },
+                                            {
+                                                "itemName":"Propotal",
+                                                "quantity":2,
+                                                "unitPrice":"$4,582.48",
+                                                "total":"9,164.96"
+                                            },
+                                            {
+                                                "itemName":"Pethidine",
+                                                "quantity":2,
+                                                "unitPrice":"$4,582.48",
+                                                "total":"9,164.96"
+                                            }
+                                        ]
+                                    }  
+                                },
+                                "billingSummary":{
+                                    "subtotal":"$326,000.45",
+                                    "discount":"-$ 12,0002.25",
+                                    "tax":"20%",
+                                    "total":"$312,000.45"
+                                },
+                                "reportTerms":"Please pay your invoice by 12/30/2019"
+                            }
+                        },
+                        {
+                            "list":{
+                                "id":"IN-000972",
+                                "invoiceNumber":"IN-000972",
+                                "status":"Complete",
+                                "date":"13/12/2019",
+                                "value":"$12,000.45",
+                                "actions":true
+                            },
+                            "preview":{}
+                        },
+                        {
+                            "list":{
+                                "id":"IN-000876",
+                                "invoiceNumber":"IN-000876",
+                                "status":"Complete",
+                                "date":"13/12/2019",
+                                "value":"$31,000.45",
+                                "actions":true
+                            },
+                            "preview":{}
+                            
+                        },
+                        {
+                            "list":{
+                                "id":"IN-000576",
+                                "invoiceNumber":"IN-000576",
+                                "status":"Incomplete",
+                                "date":"13/12/2019",
+                                "value":"$22,000.45",
+                                "actions":true
+                            },
+                            "preview":{}
+                            
+                        }
+                    ]
+                    
+                }
+            }
+        ]
+    },
+
+    "companyInformation":{
+        "contact":{
+            "number":"876-324-9087",
+            "emailAddress":"thesuites@gmail.com",
+            "website":"thesuites.com"
+        },
+        "address":{
+            "line1":"12 Ruthven Road",
+            "line2":"Halfway Tree Road",
+            "line3":"Kingston 10"
+        }
+    }
 
 }
