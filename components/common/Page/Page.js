@@ -108,7 +108,10 @@ const Page = () => {
     };
 
     return (
-        <View style={{flex:1}} onLayout={(event)=> getPageMeasure(event)}>
+        <View
+            style={{flex:1}}
+            onLayout={(event)=> getPageMeasure(event)}
+        >
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={{marginBottom:25}} onLayout = {(event)=> getSlideTop(event)}>
@@ -137,7 +140,7 @@ const Page = () => {
             </View>
         </View>
     );
-}
+};
 
 export default Page;
 

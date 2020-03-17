@@ -59,7 +59,7 @@ const App = () => {
 
 
     return (
-        <SuitesContext.Provider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
+        <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
             <ModalProvider stack={stack}>
                 <SafeAreaView style={styles.container} onLayout={getDimensions}>
                     <NavigationStack
@@ -69,7 +69,7 @@ const App = () => {
                     />
                 </SafeAreaView>
             </ModalProvider>
-        </SuitesContext.Provider>
+        </SuitesContextProvider>
     );
 
 };
