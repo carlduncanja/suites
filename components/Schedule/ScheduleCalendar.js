@@ -9,7 +9,7 @@ import Calendar from "../Calendar/Calendar";
 /**
  *
  * @param month: a date object for the current month
- * @param appointmentDays: a array of appointment for the selected month
+ * @param appointments: a array of appointment for the selected month
  * @param days: a array of strings for the days that will be displayed in the calender. NB the days string is the format
  * "YYYY-MM-DD"
  * @param selectedDate: a date object for the day that's selected.
@@ -18,9 +18,9 @@ import Calendar from "../Calendar/Calendar";
  * @returns {*}
  * @constructor
  */
-const ScheduleCalendar = ({month, appointmentDays, days, selectedDate, screenDimensions, onDaySelected}) => {
+const ScheduleCalendar = ({month,appointments, days, selectedDate, screenDimensions, onDaySelected}) => {
 
-    const [isExpanded, setExpanded] = useState(false);
+    const [isExpanded, setExpanded] = useState(true);
 
     const onPressDay = (selected) => {
         onDaySelected(selected)
@@ -29,6 +29,18 @@ const ScheduleCalendar = ({month, appointmentDays, days, selectedDate, screenDim
     const onExpandButtonPress = () => {
         setExpanded(!isExpanded);
     };
+
+    /***
+     *
+     *
+     * @returns {[]} and array of day strings in the format "YYYY-MM-DD"
+     */
+    const getAppointmentDays = (appointments) => {
+        const appointmentDays = [];
+        appointments.forEach(item => appointmentDays.push((moment(item.startTime).format("YYYY-MM-DD"))));
+        return appointmentDays;
+    };
+
 
 
     return (
@@ -50,17 +62,18 @@ const ScheduleCalendar = ({month, appointmentDays, days, selectedDate, screenDim
                             days={days}
                             month={month}
                             selectedDay={selectedDate}
-                            appointmentDays={appointmentDays}
+                            appointmentDays={getAppointmentDays(appointments)}
                             onDayPress={onPressDay}
                         />
 
                         // Full calendar view
-                        : <View/>
-                        // <DayOfMonth
-                        //     appointmentColors={['red', 'blue', 'green']}
-                        //
-                        // />
-                    // <Calendar/>
+                        : <Calendar
+                            screenDimensions={screenDimensions}
+                            month={month}
+                            selectedDay={selectedDate}
+                            appointments={appointments}
+                            onDayPress={onPressDay}
+                        />
 
                     //     :
                     //     props.screenDimensions.width > props.screenDimensions.height ?

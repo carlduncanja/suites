@@ -10,10 +10,11 @@ import DayOfMonth from "./DayOfMonth";
  * @param month
  * @param appointments
  * @param selectedDay
+ * @param onDayPress
  * @returns {*}
  * @constructor
  */
-function DaysOfMonth({month, appointments, selectedDay}) {
+function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
 
 
     /**
@@ -38,25 +39,39 @@ function DaysOfMonth({month, appointments, selectedDay}) {
         return weekDays;
     };
 
+    const groupAppointmentsByDays = (appointments) => {
+        const appointmentDays = {};
+        appointments.forEach(item => {
+            const date = moment(item.startTime).format("YYYY-MM-DD");
+            if (!appointmentDays[date]) appointmentDays[date] = [];
+            appointmentDays[date].push("blue") // TODO push appointment color from appointment object i.e item.type.color
+        });
 
-    const renderWeek = (weekdays = [], selectedDay, month) => {
+        return appointmentDays
+    };
 
-        console.log("week", weekdays);
+
+    /**
+     *
+     * @param weekdays: array of date strings ("YYYY-MM-DD")
+     * @param selectedDay: date object
+     * @param month: date object
+     * @param groupAppointments
+     * @returns {*[]}
+     */
+    const renderWeek = (weekdays = [], selectedDay, month, groupAppointments) => {
 
         return weekdays.map((day, index) => {
-
-            const appointmentsForDay = []; // todo filter appointments
+            const appointmentsColors = groupAppointments[day] || [];
             const isSelectedDay = day === moment(selectedDay).format("YYYY-MM-DD");
-            const isInSelectedMonth = moment(selectedDay).isSame(moment(day), 'month');
+            const isInSelectedMonth = moment(selectedDay).isSame(moment(month), 'month');
 
-            return <DayOfMonth
-                key={index}
+            return <DayOfMonth key={index}
                 day={day}
                 isSelected={isSelectedDay}
-                appointmentColors={appointmentsForDay}
+                appointmentColors={appointmentsColors}
                 isInSelectMonth={isInSelectedMonth}
-                onDayPress={() => {
-                }}
+                onDayPress={_ => onDayPress(day)}
             />
         })
     };
@@ -64,7 +79,7 @@ function DaysOfMonth({month, appointments, selectedDay}) {
     const days = getDaysForMonth(month);
     const weekDays = createWeekDaysMap(days);
 
-    console.log("weeks days", weekDays);
+    const groupAppointments = groupAppointmentsByDays(appointments);
 
     return (
         <View style={styles.container}>
@@ -72,7 +87,7 @@ function DaysOfMonth({month, appointments, selectedDay}) {
             {
                 Object.keys(weekDays).map((week, index) => {
                     return <View key={index} style={styles.week}>
-                        {renderWeek(weekDays[week], selectedDay, month)}
+                        {renderWeek(weekDays[week], selectedDay, month, groupAppointments)}
                     </View>
                 })
             }

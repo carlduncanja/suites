@@ -227,16 +227,6 @@ const Schedule = (props) => {
         )
     };
 
-    /***
-     *
-     *
-     * @returns {[]} and array of day strings in the format "YYYY-MM-DD"
-     */
-    const getAppointmentDays = () => {
-        const appointmentDays = [];
-        appointments.forEach(item => appointmentDays.push((moment(item.startTime).format("YYYY-MM-DD"))));
-        return appointmentDays;
-    };
 
     /**
      *
@@ -306,7 +296,7 @@ const Schedule = (props) => {
                     }}>
                         <ScheduleCalendar
                             onDaySelected={handleOnDaySelected}
-                            appointmentDays={getAppointmentDays()}
+                            appointments={appointments}
                             month={selectedMonth}
                             days={daysList}
                             selectedDate={selectedDay}

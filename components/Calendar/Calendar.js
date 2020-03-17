@@ -3,8 +3,18 @@ import {StyleSheet, View, Text} from 'react-native';
 import Month from './Month';
 import Days from './Days';
 import moment from 'moment';
+import DaysOfMonth from "./DaysOfMonth";
 
-export default (props) => {
+/**
+ *
+ * @param screenDimensions
+ * @param appointments: array of appointments objects
+ * @param selectedDay: date object
+ * @param month: date object
+ * @param onDayPress: a function that ta
+ * @returns {*}
+ */
+export default ({screenDimensions, appointments, selectedDay, month, onDayPress}) => {
     return (
         <View style={styles.container}>
             <View style={styles.labelsContainer}>
@@ -14,7 +24,7 @@ export default (props) => {
                               style={
                                   [
                                       styles.labelContainer,
-                                      // {width: this.props.screenDimensions.width > this.props.screenDimensions.height ? 98 : 93}
+                                      {width: screenDimensions.width > screenDimensions.height ? 98 : 93}
                                   ]
                               }>
                             <Text key={index} style={styles.label}>{day.toUpperCase()}</Text>
@@ -23,18 +33,14 @@ export default (props) => {
                 })}
             </View>
 
-            {/*<View style={styles.currentContainer}>*/}
-            {/*    <Days*/}
-            {/*        screenDimensions = {this.props.screenDimensions}*/}
-            {/*        currentDate={this.props.currentDate}*/}
-            {/*        getStartDays = {this.props.getStartDays}*/}
-            {/*        currentDays = {this.props.currentDays}*/}
-            {/*        getEndDays = {this.props.getEndDays}*/}
-            {/*        onPressDay = {this.props.onPressDay}*/}
-            {/*        selected={this.props.selected}*/}
-            {/*        daySelected={this.props.daySelected}*/}
-            {/*    />*/}
-            {/*</View>*/}
+            <View style={styles.daysContainer}>
+                <DaysOfMonth
+                    selectedDay={selectedDay}
+                    month={month}
+                    appointments={appointments}
+                    onDayPress={onDayPress}
+                />
+            </View>
         </View>
     )
 
@@ -44,17 +50,15 @@ const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        alignSelf: 'flex-start',
         flexDirection: 'column',
-        marginLeft: 12,
-        marginRight: 12,
+        // marginLeft: 12,
+        // marginRight: 12,
     },
     daysContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
-        marginRight: 12,
-        backgroundColor: 'red'
+        justifyContent: 'center',
+        flexDirection: 'row',
+        // backgroundColor: 'blue'
     },
     labelsContainer: {
         flexDirection: 'row',
