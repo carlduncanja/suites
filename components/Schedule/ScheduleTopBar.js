@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import ScheduleSearch from './ScheduleSearch';
-import { View, StyleSheet, Text } from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import Button from './../common/Button';
 import moment from 'moment';
 import Month from './../Calendar/Month';
