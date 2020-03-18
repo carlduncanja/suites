@@ -64,6 +64,7 @@ const ScheduleCalendar = ({month,appointments, days, selectedDate, screenDimensi
                             selectedDay={selectedDate}
                             appointmentDays={getAppointmentDays(appointments)}
                             onDayPress={onPressDay}
+                            
                         />
 
                         // Full calendar view

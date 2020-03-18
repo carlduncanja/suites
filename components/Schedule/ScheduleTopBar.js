@@ -115,7 +115,7 @@ export default ScheduleTopBar = (props) => {
             }
 
             <View style={styles.contentContainer}>
-                 <View style={styles.buttonContainer}>
+                 <View style={{backgroundColor:"red"}}>
                         <Button
                             title="Search"
                             buttonPress={searchPress}
@@ -180,5 +180,6 @@ const styles = StyleSheet.create({
         marginLeft: '4%',
         marginRight: '4%',
         marginTop: 18,
+        backgroundColor:'yellow'
     }
 })

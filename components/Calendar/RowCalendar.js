@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useEffect} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import moment from 'moment';
 import RowCalendarDay from "./RowCalenderDay";
@@ -45,10 +45,17 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
             viewOffset: 0,
         })
     };
+    
+    //Go To Today 
+    useEffect(()=>{
+        let todayDay = moment(new Date()).format("YYYY-MM-DD").toString()
+        let dateSelected = moment(selectedDay).format("YYYY-MM-DD").toString()
+        let index = getSelectedIndex(todayDay, days)
+        if (dateSelected === todayDay) scrollToIndex(index)
+    },[selectedDay])
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialIndex = getSelectedIndex(moment(selectedDay).format("YYYY-MM-DD"), days);
-
 
     return (
         <View

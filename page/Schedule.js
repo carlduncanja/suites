@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
-import {View, StyleSheet, Dimensions, TouchableWithoutFeedback} from 'react-native';
+import {View, StyleSheet, Dimensions, TouchableWithoutFeedback, Text} from 'react-native';
 import Animated from 'react-native-reanimated'
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../components/common/Button';
@@ -9,6 +9,10 @@ import MonthSelector from "../components/Calendar/MonthSelector";
 import SchedulesList from "../components/Schedule/SchedulesList";
 import {useCurrentDays, useEndDays, useStartDays} from "../hooks/useScheduleService";
 import ScheduleContent from "../components/Schedule/ScheduleContent";
+import {ScheduleContext} from '../contexts/ScheduleContext';
+import {scheduleActions} from '../reducers/scheduleReducer';
+import SearchBar from '../components/common/SearchBar'
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 
 const currentDate = new Date();
@@ -162,6 +166,7 @@ const Schedule = (props) => {
     //         />
     // };
 
+    const [state, dispatch] = useContext(ScheduleContext);
     const [dimensions, setDimensions] = useState(Dimensions.get('window'));
 
     const onChange = (dimensions) => {
@@ -186,18 +191,25 @@ const Schedule = (props) => {
     };
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
+    const intialDaysList = getDaysForMonth(currentDate)
+    const initalIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), intialDaysList)
 
     const bottomSheetRef = useRef();
     const schedulesListRef = useRef();
 
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
     const [selectedDay, setSelectedDay] = useState(currentDate);
-    const [daysList, setDaysList] = useState(getDaysForMonth(currentDate));
+    const [daysList, setDaysList] = useState(intialDaysList);
     const [appointments, setAppointments] = useState(appointmentsObj);
     const [selectedAppointment, setSelectedAppointment] = useState();
-    const [sectionListIndex, setSectionListIndex] = useState(/*getSelectedIndex( moment(selectedDay).format("YYYY-MM-DD"), daysList)*/);
+    const [sectionListIndex, setSectionListIndex] = useState(initalIndex);
     const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
-
+    const [displayTodayAppointment, setDisplayTodayAppointment] = useState(false)
+    const [textInput, setTextInput] = useState("")
+    const [currentSearchPosition, setCurrentSearchPosition] = useState(0)
+    const [searchOpen, setSearchOpen] = useState(false)
+    // const matchesFound = state.searchMatchesFound.length
+    const matchesFound = 3
 
     // animated states
     const [fall] = useState(new Animated.Value(1));
@@ -215,7 +227,7 @@ const Schedule = (props) => {
                 }}
             >
                 <Animated.View
-                    pointerEvents={ isBottomSheetVisible ? 'auto': 'none'}
+                    pointerEvents={isBottomSheetVisible ? 'auto' : 'none'}
                     style={[
                         styles.shadowContainer,
                         {
@@ -238,6 +250,13 @@ const Schedule = (props) => {
         setSectionListIndex(indexOfSelected);
     };
 
+    const handleOnGoToToday = () => {
+        let date = moment(new Date()).format("YYYY-MM-DD").toString()
+        setSectionListIndex(getSelectedIndex(date, daysList))
+        setSelectedDay(date)
+        // setDisplayTodayAppointment(!displayTodayAppointment)
+    }
+
     const handleOnMonthUpdated = (date) => {
         setSelectedMonth(date);
         setDaysList(getDaysForMonth(date));
@@ -255,7 +274,7 @@ const Schedule = (props) => {
     };
 
     const renderScheduleContent = (selectedSchedule) => () => {
-        return  <View style={{
+        return <View style={{
             height: '100%',
             width: '100%',
             backgroundColor: 'white',
@@ -268,6 +287,46 @@ const Schedule = (props) => {
         </View>
     };
 
+    const searchPress = () => {
+        setSearchOpen(true)
+    };
+
+    const onGoToTodayClick = () => {
+        setDisplayTodayAppointment(!displayTodayAppointment)
+    }
+
+    const searchChangeText = (textInput) => {
+        setTextInput(textInput)
+    }
+
+    const pressNextSearchResult = () => {
+        currentSearchPosition < matchesFound &&
+        setCurrentSearchPosition(currentSearchPosition + 1)
+    }
+
+    const pressPreviousSearchResult = () => {
+        currentSearchPosition > 0 &&
+        setCurrentSearchPosition(currentSearchPosition - 1)
+    }
+
+    const pressNewSearch = () => {
+        setTextInput("")
+        dispatch({
+            type: 'SETNEWSEARCH',
+            newState: {
+                searchValue: "",
+                searchMatchesFound: []
+            }
+        })
+    }
+
+    const pressSubmit = () => {
+        dispatch({
+            type: 'GETSEARCHRESULT',
+            newState: textInput
+        })
+    }
+
     return (
         <View style={styles.container}>
             <Animated.View
@@ -275,44 +334,70 @@ const Schedule = (props) => {
                     ...styles.scheduleContainer
                 }}>
 
-
-                <View style={styles.scheduleTop}>
-
-                    <Button/>
-
-                    <MonthSelector
-                        selectedMonth={selectedMonth}
-                        onMonthUpdated={handleOnMonthUpdated}
+                {searchOpen &&
+                <View style={{position: 'absolute', top: 0, width: '100%', zIndex: 1}}>
+                    <SearchBar
+                        changeText={searchChangeText}
+                        inputText={textInput}
+                        matchesFound={matchesFound}
+                        onPressNextResult={pressNextSearchResult}
+                        onPressPreviousResult={pressPreviousSearchResult}
+                        onPressNewSerch={pressNewSearch}
+                        onPressSubmit={pressSubmit}
                     />
-
-                    <Button/>
-
                 </View>
+                }
 
-                <View style={styles.scheduleCalendar}>
-                    <View style={{
-                        flexDirection: 'row',
-                        alignSelf: 'flex-start'
-                    }}>
-                        <ScheduleCalendar
-                            onDaySelected={handleOnDaySelected}
-                            appointments={appointments}
-                            month={selectedMonth}
-                            days={daysList}
-                            selectedDate={selectedDay}
-                            screenDimensions={props.screenDimensions}
-                        />
-                    </View>
-                    <View style={styles.scheduleContent}>
-                        <SchedulesList
-                            days={daysList}
-                            appointments={appointments}
-                            selectedIndex={sectionListIndex}
-                            onAppointmentPress={handleAppointmentPress}
-                        />
-                    </View>
-                </View>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        searchOpen === true && setSearchOpen(false)
+                    }}
+                >
+                    <View style={{flex: 1}}>
+                        <View style={styles.scheduleTop}>
+                            <Button
+                                title="Search"
+                                buttonPress={searchPress}
+                                backgroundColor="#F7FAFC"
+                                color="#4A5568"
+                            />
 
+                            <MonthSelector
+                                selectedMonth={selectedMonth}
+                                onMonthUpdated={handleOnMonthUpdated}
+                            />
+
+                            <Button
+                                title={"Go to Today"}
+                                buttonPress={handleOnGoToToday}
+                            />
+
+                        </View>
+
+                        <View style={styles.scheduleCalendar}>
+                            <View style={{
+                                flexDirection: 'row',
+                                alignSelf: 'flex-start'
+                            }}>
+                                <ScheduleCalendar
+                                    onDaySelected={handleOnDaySelected}
+                                    appointments={appointments}
+                                    month={selectedMonth}
+                                    days={daysList}
+                                    selectedDate={selectedDay}
+                                    screenDimensions={props.screenDimensions}
+                                />
+                            </View>
+                            <View style={styles.scheduleContent}>
+                                <SchedulesList
+                                    days={daysList}
+                                    appointments={appointments}
+                                    selectedIndex={sectionListIndex}
+                                    onAppointmentPress={handleAppointmentPress}
+                                />
+                            </View>
+                        </View>
+                </TouchableWithoutFeedback>
             </Animated.View>
 
             {renderShadow()}
@@ -341,86 +426,86 @@ const Schedule = (props) => {
             />
         </View>
 
-    )
+)
 };
 
 export default Schedule
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
-    },
+    flex: 1
+},
 
     scheduleContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'flex-start'
-    },
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
+},
     scheduleTop: {
-        paddingLeft: 32,
-        paddingRight: 32,
-        marginTop: 32,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
+    paddingLeft: 32,
+    paddingRight: 32,
+    marginTop: 32,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+},
     scheduleCalendar: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-    },
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+},
     scheduleContent: {
-        flex: 1,
-        flexDirection: 'column',
-        alignSelf: 'flex-start',
-        width: '100%',
-        padding: 32,
-        paddingTop: 24
-    },
+    flex: 1,
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
+    width: '100%',
+    padding: 32,
+    paddingTop: 24
+},
 
     // Shadow
     shadowContainer: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#000',
-    },
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#000',
+},
 
     searchContent: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        backgroundColor: 'white',
-        padding: 15,
-    },
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    padding: 15,
+},
     topContainer: {
-        marginLeft: '4%',
-        marginRight: '4%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingBottom: 20,
-        marginTop: 18
-    },
+    marginLeft: '4%',
+    marginRight: '4%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 20,
+    marginTop: 18
+},
     partition: {
-        backgroundColor: '#CBD5E0',
-        borderRadius: 8,
-        height: 6,
-        width: 70,
-        alignSelf: 'center',
-        marginTop: 15,
-        marginBottom: 24,
+    backgroundColor: '#CBD5E0',
+    borderRadius: 8,
+    height: 6,
+    width: 70,
+    alignSelf: 'center',
+    marginTop: 15,
+    marginBottom: 24,
 
-    },
+},
     drawer: {
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        paddingLeft: 49,
-        paddingTop: 32,
-        backgroundColor: '#FFFFFF',
-        borderTopLeftRadius: 16,
-        borderBottomLeftRadius: 16,
-    },
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    paddingLeft: 49,
+    paddingTop: 32,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+},
     mask: {
-        backgroundColor: '#E5E5E5',
-    },
+    backgroundColor: '#E5E5E5',
+},
 });

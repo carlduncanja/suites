@@ -19,7 +19,6 @@ const initialState = {
     showSlider: false,
     slideValue: 0,
     searchMatchesFound : [],
-    currentSearchPosition : 0,
     showDrawer: false,
     daySelected: false,
     goToToday: false,
