@@ -22,21 +22,22 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
         // find the appointments for the day and group them.
         return days.map((sectionDay => {
             const title = moment(sectionDay).format("dddd - MMM D");
+
             let appointmentForDay = [];
+            let index = appointmentList.length - 1;
 
-            const updatedList = [...appointmentList]; // temp appointment list
 
-            for (let i = 0; i < appointmentList.length; i++) {
+            while (index >= 0) {
 
-                let appDay = moment(appointmentList[i].startTime);
+                let appDay = moment(appointmentList[index].startTime);
                 const isSameDay = appDay.isSame(moment(sectionDay), 'day');
-
                 if (isSameDay) {
-                    appointmentForDay.push(appointmentList[i]);
-                    updatedList.splice(i, 1); // remove item found to decrease the list
+                    const day = appointmentList.splice(index, 1); // remove item found to decrease the list
+                    appointmentForDay.push(day.pop());
                 }
+
+                --index
             }
-            appointmentList = updatedList; // update the appointment list with the decreased list
 
             return {
                 title,
@@ -58,7 +59,7 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
             <SectionList
                 ref={sectionListRef}
                 keyExtractor={item => item.id + Math.random()}
-                // getItemLayout={(data, index) => ({length: 100, offset: index * 40, index})}
+                getItemLayout={(data, index) => ({length: 100, offset: index * 40, index})}
                 onScrollToIndexFailed={() => {
 
                 }}
