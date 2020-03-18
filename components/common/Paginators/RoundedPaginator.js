@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Paginator from './Paginator';
 
-
+ 
 const RoundedPaginator = () => {
     return ( 
         <View style={styles.container}>

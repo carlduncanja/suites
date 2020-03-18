@@ -7,15 +7,14 @@ import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import { caseActions } from '../../../reducers/caseFilesReducer'
 import { appActions } from '../../../reducers/suitesAppReducer'
 
-openModal = (props) => {
-    const { modalToOpen, modal } = props
-    modal.openModal(modalToOpen)
-}
-
 const Action = (props) => {
     const [appState, dispatchApp] = useContext(SuitesContext)
     const [state, dispatch ] = useContext(CaseFileContext)
 
+    const openModal = () =>{
+        const {modal, modalToOpen} = props
+        modal.openModal(modalToOpen)
+    }
     getNewItemOverlaySteps = ()=>{
         const stepsArray = require('../../../assets/db.json').createItem.filter(item => item.page === "caseFiles")
         const steps = stepsArray[0].steps
@@ -52,7 +51,8 @@ const Action = (props) => {
             <TouchableOpacity 
                 style={styles.container} 
                 onPress={()=>{
-                    this.openModal(props);
+                    openModal()
+                    // this.openModal(props);
                     getNewItemOverlaySteps();
                     dispatchApp({
                         type: appActions.TOGGLEOPENACTION,

@@ -1,17 +1,21 @@
-import React,{Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
 import InputText from './InputText';
 
-export default class Search extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <InputText />
-            </View>
-          
-        )
-    }
+const Search = ({placeholderText, changeText, inputText}) =>{
+    return (
+        <View style={styles.container}>
+            <InputText 
+                onChangeText = {(text)=>{changeText(text)}}
+                placeholder={placeholderText}
+                placeholderTextColor = {"#A0AEC0"}
+                value = {inputText}
+            />
+        </View>
+    )
 }
+
+export default Search
 
 const styles = StyleSheet.create({
     container:{

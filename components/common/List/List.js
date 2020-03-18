@@ -3,8 +3,8 @@ import {View, StyleSheet} from 'react-native';
 import ListHeader from './ListHeader';
 import ListData from './ListData';
 import { SuitesContext } from '../../../contexts/SuitesContext';
-
-const List = () => {
+ 
+const List = () => { 
     const [state] = useContext(SuitesContext)
     return ( 
         <View>

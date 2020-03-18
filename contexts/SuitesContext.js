@@ -10,7 +10,6 @@ const searchPlaceholder = "Search by any heading or entry below"
 const slideTopValue = 0
         //Take out for Nav
 const currentNavPage = "caseFiles";
-const pageTitle  = 'Case Files'
 const list = {
     listData: [],
     listHeaders: [],
@@ -51,7 +50,6 @@ const paginatorValues = {
     recordsPerPage:10
 }
 const state = {
-    pageTitle, 
     paginatorValues, 
     list,
     floatingActions,

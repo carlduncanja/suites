@@ -8,43 +8,23 @@ import RoundedPaginator from '../Paginators/RoundedPaginator';
 import FloatingActionButton from '../FloatingAction/FloatingActionButton';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { appActions } from '../../../reducers/suitesAppReducer';
-import { getList } from '../../../hooks/useListHook'
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
+import { transformToCamel } from '../../../hooks/useTextEditHook';
 
-const Page = () => {
+
+const Page = ({pageTitle, placeholderText, changeText, inputText, routeName}) => {
+
     const [state,dispatch] = useContext(SuitesContext)
 
-    useEffect(()=>{
+    const toggleActionButton = () => {
         dispatch({
-            type:appActions.SETTOTALPAGES,
-            newState: { totalPages : Math.ceil(state.list.listData.length/state.paginatorValues.recordsPerPage) }
+            type:appActions.TOGGLEACTIONBUTTON,
+            newState : !state.floatingActions.actionButtonState
         })
-    },[state.list.listData])
+    }
 
     useEffect(()=>{
-        let data
-        let headers = []
-        let selected = []
-        if (state.currentNavPage === 'caseFiles') {
-            data = require('../../../assets/db.json').caseFiles.caseFilesInformation.data
-            headers = require('../../../assets/db.json').caseFiles.caseFilesInformation.headers
-            selected = require('../../../assets/db.json').caseFiles.caseDetails
-        }else if (state.currentNavPage === 'schedule'){
-            data = require('../../../assets/db.json').appointments
-        }
-
-        dispatch({
-            type: appActions.SETLISTDATA,
-            newState : {
-                listData: getList(data, headers),
-                listHeaders : headers,
-                selectedSourceData : selected
-            }
-        })
-
-    },[state.list.listData])
-
-    useEffect(()=>{
-        const array = require('../../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === state.currentNavPage)
+        const array = require('../../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
         dispatch({
             type:appActions.SETFLOATINGACTIONS,
             newState: {
@@ -52,10 +32,10 @@ const Page = () => {
                 actions:array[0].actions
             }
         })
-    }, state.currentNavPage)
+    }, routeName)
 
     useEffect(()=>{
-        const menu = require('../../../assets/db.json').overlayMenuTabs.filter(menu => menu.page === state.currentNavPage)
+        const menu = require('../../../assets/db.json').overlayMenuTabs.filter(menu => menu.page === transformToCamel(routeName))
         menu.length > 0 && dispatch({
             type: appActions.SETOVERLAYMENU,
             newState:{
@@ -115,15 +95,22 @@ const Page = () => {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={{marginBottom:25}} onLayout = {(event)=> getSlideTop(event)}>
-                        <PageTitle />
+                        <PageTitle 
+                            pageTitle = {pageTitle}
+                        />
                     </View>
                     <View style={{marginBottom:30}}>
-                        <Search/>
+                        <Search 
+                            placeholderText = {placeholderText}
+                            changeText = {changeText}
+                            inputText = {inputText}
+                        />
                     </View>
                 </View>
 
-                <View style={styles.list}>
-                    <List/>
+                <View style={styles.list}> 
+                    <List
+                    />
                 </View>
 
                 <View style={styles.footer}>
@@ -132,9 +119,9 @@ const Page = () => {
                     </View>
 
                     {state.floatingActions.actionButtonState === false ?
-                        <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#4299E1" modalToOpen="ActionContainerModal"/>
+                        <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#4299E1" modalToOpen="ActionContainerModal" toggleActionButton = {toggleActionButton}/>
                         :
-                        <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#A0AEC0"/>
+                        <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#A0AEC0" toggleActionButton = {toggleActionButton}/>
                     }
                 </View>
             </View>

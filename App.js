@@ -6,11 +6,11 @@ import {initialState, SuitesContext} from './SuitesContext';
 
 import {SuitesContextProvider} from './contexts/SuitesContext';
 import {CaseFileContextProvider} from './contexts/CaseFileContext';
-import {ModalProvider, createModalStack} from 'react-native-modalfy';
-import OverlaySlidePanelModal from './modals/OverlaySlidePanelModal';
-import OverlayModal from './modals/OverlayModal';
-import ActionContainerModal from './modals/ActionContainerModal';
-import ReportPreviewModal from './modals/ReportPreviewModal';
+// import {ModalProvider, createModalStack} from 'react-native-modalfy';
+// import OverlaySlidePanelModal from './modals/OverlaySlidePanelModal';
+// import OverlayModal from './modals/OverlayModal';
+// import ActionContainerModal from './modals/ActionContainerModal';
+// import ReportPreviewModal from './modals/ReportPreviewModal';
 import Content from './components/layout/Content';
 
 // import NavigationStack from './components/Navigator/NavigationStack';
@@ -40,27 +40,27 @@ const App = () => {
         });
     };
 
-    const modalConfig = {
-        OverlaySlidePanelModal: OverlaySlidePanelModal,
-        OverlayModal: OverlayModal,
-        ActionContainerModal: ActionContainerModal,
-        ReportPreviewModal: ReportPreviewModal
-    }
+    // const modalConfig = {
+    //     OverlaySlidePanelModal: OverlaySlidePanelModal,
+    //     OverlayModal: OverlayModal,
+    //     ActionContainerModal: ActionContainerModal,
+    //     ReportPreviewModal: ReportPreviewModal
+    // }
 
-    const defaultOptions = {
-        backdropOpacity: 0,
-        position: 'bottom',
-        containerStyle: {
-            flex: 1,
-            alignItems: 'flex-end',
-        }
-    }
-    const stack = createModalStack(modalConfig, defaultOptions)
+    // const defaultOptions = {
+    //     backdropOpacity: 0,
+    //     position: 'bottom',
+    //     containerStyle: {
+    //         flex: 1,
+    //         alignItems: 'flex-end',
+    //     }
+    // }
+    // const stack = createModalStack(modalConfig, defaultOptions)
 
 
     return (
         <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
-            <ModalProvider stack={stack}>
+            {/* <ModalProvider stack={stack}> */}
                 <SafeAreaView style={styles.container} onLayout={getDimensions}>
                     <NavigationStack
                         screenDimensions={state.screenDimensions}
@@ -68,7 +68,7 @@ const App = () => {
                         onTabPress={onTabPress}
                     />
                 </SafeAreaView>
-            </ModalProvider>
+            {/* </ModalProvider> */}
         </SuitesContextProvider>
     );
 

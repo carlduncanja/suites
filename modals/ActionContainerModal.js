@@ -3,6 +3,8 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { SuitesContext } from '../contexts/SuitesContext';
 import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 import { withModal } from 'react-native-modalfy';
+import { CaseFileContext } from '../contexts/CaseFileContext';
+import { appActions } from '../reducers/suitesAppReducer';
 
 const ActionContainerModal = (props) => {
     const [state,dispatch] = useContext(SuitesContext)

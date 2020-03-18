@@ -3,6 +3,7 @@ import {View, TouchableOpacity, StyleSheet, Text, FlatList} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import Action from './Action'
 import { SuitesContext } from '../../../contexts/SuitesContext';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 
 const ActionContainer = () => {
@@ -29,12 +30,10 @@ const ActionContainer = () => {
                 <FlatList
                     data={state.floatingActions.floatingActionsObject.actions}
                     renderItem={({ item }) => 
-                        <View>
-                            <Action
-                                modalToOpen="OverlayModal" 
-                                action={item}
-                            />
-                        </View>
+                        <Action
+                            modalToOpen="OverlayModal" 
+                            action = {item}
+                        />
                     }
                     keyExtractor={item => item.actionId}
                     ItemSeparatorComponent={separator}

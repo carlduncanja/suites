@@ -1,12 +1,18 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, SectionList } from 'react-native';
+import { getList } from  '../../hooks/useListHook';
 import NavigationTab from '../SideBar/SideBarTabComponent';
-
+import { SuitesContext } from '../../contexts/SuitesContext';
+import { appActions } from '../../reducers/suitesAppReducer';
 import SvgIcon from '../../assets/SvgIcon';
-
-
+import {ModalProvider, createModalStack} from 'react-native-modalfy';
 import { createNavigator, TabRouter } from 'react-navigation';
 import SideBarComponent from "../SideBar/SideBarComponent";
+
+import OverlaySlidePanelModal from '../../modals/OverlaySlidePanelModal';
+import OverlayModal from '../../modals/OverlayModal';
+import ActionContainerModal from '../../modals/ActionContainerModal';
+import ReportPreviewModal from '../../modals/ReportPreviewModal';
 
 /**
  * Custom navigator wrapper for application.
@@ -24,9 +30,41 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
     const ActiveScreen = descriptor.getComponent();
     const Provider = descriptor.state.params.provider;
 
+    const modalConfig = {
+        OverlaySlidePanelModal: OverlaySlidePanelModal,
+        OverlayModal: OverlayModal,
+        ActionContainerModal: ActionContainerModal,
+        ReportPreviewModal: ReportPreviewModal
+    }
+
+    const defaultOptions = {
+        backdropOpacity: 0,
+        position: 'bottom',
+        containerStyle: {
+            flex: 1,
+            alignItems: 'flex-end',
+        }
+    }
+    const stack = createModalStack(modalConfig, defaultOptions)
+
+    const [state,dispatch] = useContext(SuitesContext)
+
     // event handlers;
     const handleOnTabPress = (e, routeName) => {
         console.log("tab pressed", routeName);
+        //Dummy data
+        const listData = require('../../assets/db.json').caseFiles.caseFilesInformation.data
+        const listHeaders  = require('../../assets/db.json').caseFiles.caseFilesInformation.headers
+        const selectedData = require('../../assets/db.json').caseFiles.caseDetails
+        
+        dispatch({
+            type: appActions.SETLISTDATA,
+            newState : {
+                listData: getList(listData, listHeaders),
+                listHeaders : listHeaders,
+                selectedSourceData : selectedData
+            }
+        })
         navigation.navigate(routeName)
     };
 
@@ -43,11 +81,13 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
 
             <View style={styles.pageContent}>
                 <Provider>
-                    <ActiveScreen
-                        navigation={descriptor.navigation}
-                        descriptor={descriptor}
-                        screenDimensions={screenDimensions}
-                    />
+                    <ModalProvider stack={stack}>
+                        <ActiveScreen
+                            navigation={descriptor.navigation}
+                            descriptor={descriptor}
+                            screenDimensions={screenDimensions}
+                        />
+                    </ModalProvider>
                 </Provider>
             </View>
         </View>

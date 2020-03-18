@@ -1,11 +1,20 @@
-import React, { useContext, useEffect } from 'react';
-import {StyleSheet, View, Easing} from 'react-native';
+import React, { useState, useEffect } from 'react';
 import Page from '../components/common/Page/Page';
-import { CaseFileContextProvider } from '../contexts/CaseFileContext';
 
-const CaseFiles = () => {
+const CaseFiles = (props) => {
+    const [textInput, setTextInput] = useState("") 
+    const changeText = (text) =>{
+        setTextInput(text)
+    }
+    const routeName = props.navigation.state.routeName
     return (
-        <Page/>
+        <Page
+            pageTitle = {routeName}
+            placeholderText = {"Search by any heading or entry below"}
+            changeText = {changeText}
+            inputText = {textInput}
+            routeName = {routeName}
+        />
     );
 }
 

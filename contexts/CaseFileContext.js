@@ -2,6 +2,9 @@ import React, { useState, createContext, useContext, useReducer, useEffect } fro
 import { caseFilesReducer, caseActions } from '../reducers/caseFilesReducer';
 import { getList, getReportList } from '../hooks/useListHook';
 
+
+export const CaseFileContext = createContext()
+
 const bmiScale = require('../assets/db.json').caseFiles.bmiScale
 const progressBar = {
     progressList : []
@@ -24,8 +27,6 @@ const newItemAction  = {
     stepsCompletedList : []
 }
 const state = {bmiScale, progressBar, report, newItemAction}
-
-export const CaseFileContext = createContext(state)
 
 export const CaseFileContextProvider = (props) => {
     return (  

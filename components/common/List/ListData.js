@@ -6,7 +6,7 @@ import Checkbox from '../Checkbox/Checkbox';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
 const ListData = () => {
-    const [state] = useContext(SuitesContext)
+    const [state] = useContext(SuitesContext) 
     return ( 
         <ScrollView
             bounces={false}
