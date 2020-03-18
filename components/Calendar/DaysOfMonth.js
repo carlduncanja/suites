@@ -64,7 +64,7 @@ function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
         return weekdays.map((day, index) => {
             const appointmentsColors = groupAppointments[day] || [];
             const isSelectedDay = day === moment(selectedDay).format("YYYY-MM-DD");
-            const isInSelectedMonth = moment(selectedDay).isSame(moment(month), 'month');
+            const isInSelectedMonth = moment(day).isSame(moment(month), 'month');
 
             return <DayOfMonth key={index}
                 day={day}
