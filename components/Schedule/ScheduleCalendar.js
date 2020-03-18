@@ -20,7 +20,7 @@ import Calendar from "../Calendar/Calendar";
  */
 const ScheduleCalendar = ({month,appointments, days, selectedDate, screenDimensions, onDaySelected}) => {
 
-    const [isExpanded, setExpanded] = useState(true);
+    const [isExpanded, setExpanded] = useState(false);
 
     const onPressDay = (selected) => {
         onDaySelected(selected)
@@ -64,7 +64,7 @@ const ScheduleCalendar = ({month,appointments, days, selectedDate, screenDimensi
                             selectedDay={selectedDate}
                             appointmentDays={getAppointmentDays(appointments)}
                             onDayPress={onPressDay}
-                            
+
                         />
 
                         // Full calendar view

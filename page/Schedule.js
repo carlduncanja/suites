@@ -19,46 +19,71 @@ const currentDate = new Date();
 const appointmentsObj = [
     {
         id: "3502193851",
-        scheduleType: 1,
-        title: "Hello 2",
-        startTime: new Date(),
-        endTime: new Date(),
+        scheduleType: {
+            "_id": 3,
+            "name": "Equipment",
+            "color": "red",
+            "description": "Equipments"
+        },
+        title: "Cardiac Catheterization - Dr. H. Buckley",
+        startTime: new Date(2020, 2, 8, 9),
+        endTime: new Date(2020, 2, 8, 10),
         description: "",
         additionalInfo: "",
     },
     {
         id: "3502193852",
-        scheduleType: 1,
-        title: "Hello",
-        startTime: new Date(),
-        endTime: new Date(),
+        scheduleType: {
+            "_id": 3,
+            "name": "Equipment",
+            "color": "red",
+            "description": "Equipments"
+        },
+        title: "Coronary Bypass Graft - Dr. H. Buckley",
+        startTime: new Date(2020, 2, 8, 7),
+        endTime: new Date(2020, 2, 8, 8),
         description: "",
         additionalInfo: "",
     },
     {
         id: "3502193853",
-        scheduleType: 1,
-        title: "Hello",
-        startTime: new Date(),
-        endTime: new Date(),
+        scheduleType: {
+            "_id": 2,
+            "name": "Restock",
+            "color": "yellow",
+            "description": "Equipments"
+        },
+        title: "Restock Gauze - Surgery Theater 6",
+        startTime: new Date(2020, 2, 8, 10),
+        endTime: new Date(2020, 2, 8, 11),
         description: "",
         additionalInfo: "",
     },
     {
         id: "3502193854",
-        scheduleType: 1,
-        title: "Hello",
-        startTime: new Date(),
-        endTime: new Date(),
+        scheduleType: {
+            "_id": 1,
+            "name": "Equipment",
+            "color": "blue",
+            "description": ""
+        },
+        title: "MRI Machine #3 - Dr. J. Sullivan",
+        startTime: new Date(2020, 2, 11, 10),
+        endTime: new Date(2020, 2, 11, 11),
         description: "",
         additionalInfo: "",
     },
     {
         id: "3502193856",
-        scheduleType: 1,
-        title: "Hello",
-        startTime: new Date(2020, 2, 10),
-        endTime: new Date(),
+        scheduleType: {
+            "_id": 3,
+            "name": "Surgery",
+            "color": "red",
+            "description": ""
+        },
+        title: "Biopsy, Breast (Breast Biopsy) - Dr. H. Carrington",
+        startTime: new Date(2020, 2, 10, 7),
+        endTime: new Date(2020, 2, 10, 8),
         description: "",
         additionalInfo: "",
     }
@@ -234,74 +259,92 @@ const Schedule = (props) => {
                     ...styles.scheduleContainer
                 }}>
 
-                {searchOpen &&
-                <View style={{position: 'absolute', top: 0, width: '100%', zIndex: 1}}>
-                    <SearchBar
-                        changeText={searchChangeText}
-                        inputText={textInput}
-                        matchesFound={matchesFound}
-                        onPressNextResult={pressNextSearchResult}
-                        onPressPreviousResult={pressPreviousSearchResult}
-                        onPressNewSerch={pressNewSearch}
-                        onPressSubmit={pressSubmit}
-                    />
-                </View>
-                }
-
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        searchOpen === true && setSearchOpen(false)
-                    }}
-                >
-                    <View style={{flex: 1}}>
-                        <View style={styles.scheduleTop}>
-                            <Button
-                                title="Search"
-                                buttonPress={searchPress}
-                                backgroundColor="#F7FAFC"
-                                color="#4A5568"
-                            />
-
-                            <MonthSelector
-                                selectedMonth={selectedMonth}
-                                onMonthUpdated={handleOnMonthUpdated}
-                            />
-
-                            <Button
-                                title={"Go to Today"}
-                                buttonPress={handleOnGoToToday}
-                            />
-
-                        </View>
-
-                        <View style={styles.scheduleCalendar}>
-                            <View style={{
-                                flexDirection: 'row',
-                                alignSelf: 'flex-start'
+                {
+                    searchOpen && <View style={styles.searchContainer}>
+                        <TouchableWithoutFeedback
+                            onPress={() => {
+                                setSearchOpen(false)
                             }}>
-                                <ScheduleCalendar
-                                    onDaySelected={handleOnDaySelected}
-                                    appointments={appointments}
-                                    month={selectedMonth}
-                                    days={daysList}
-                                    selectedDate={selectedDay}
-                                    screenDimensions={props.screenDimensions}
-                                />
-                            </View>
-                            <View style={styles.scheduleContent}>
-                                <SchedulesList
-                                    days={daysList}
-                                    appointments={appointments}
-                                    selectedIndex={sectionListIndex}
-                                    onAppointmentPress={handleAppointmentPress}
-                                />
-                            </View>
+                            <View
+                                pointerEvents={searchOpen ? 'auto' : 'none'}
+                                style={[
+                                    styles.shadowContainer,
+                                    {
+                                        opacity: .5,
+                                    },
+                                ]}
+                            />
+                        </TouchableWithoutFeedback>
+
+                        <View style={{
+                            position: 'absolute',
+                            width: '100%',
+                            top: 0
+                        }}>
+                            <SearchBar
+                                changeText={searchChangeText}
+                                inputText={textInput}
+                                matchesFound={matchesFound}
+                                onPressNextResult={pressNextSearchResult}
+                                onPressPreviousResult={pressPreviousSearchResult}
+                                onPressNewSerch={pressNewSearch}
+                                onPressSubmit={pressSubmit}
+                            />
                         </View>
                     </View>
-                </TouchableWithoutFeedback>
+                }
+
+
+                <View style={{flex: 1}}>
+                    <View style={styles.scheduleTop}>
+                        <Button
+                            title="Search"
+                            buttonPress={searchPress}
+                            backgroundColor="#F7FAFC"
+                            color="#4A5568"
+                        />
+
+                        <MonthSelector
+                            selectedMonth={selectedMonth}
+                            onMonthUpdated={handleOnMonthUpdated}
+                        />
+
+                        <Button
+                            title={"Go to Today"}
+                            buttonPress={handleOnGoToToday}
+                        />
+
+                    </View>
+
+                    <View style={styles.scheduleCalendar}>
+                        <View style={{
+                            flexDirection: 'row',
+                            alignSelf: 'flex-start'
+                        }}>
+                            <ScheduleCalendar
+                                onDaySelected={handleOnDaySelected}
+                                appointments={appointments}
+                                month={selectedMonth}
+                                days={daysList}
+                                selectedDate={selectedDay}
+                                screenDimensions={props.screenDimensions}
+                            />
+                        </View>
+                        <View style={styles.scheduleContent}>
+                            <SchedulesList
+                                days={daysList}
+                                appointments={appointments}
+                                selectedIndex={sectionListIndex}
+                                onAppointmentPress={handleAppointmentPress}
+                            />
+                        </View>
+                    </View>
+                </View>
+
             </Animated.View>
 
             {renderShadow()}
+
 
             <BottomSheet
                 ref={bottomSheetRef}
@@ -361,6 +404,10 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 32,
         paddingTop: 24
+    },
+    searchContainer: {
+        ...StyleSheet.absoluteFillObject,
+        zIndex: 5
     },
 
     // Shadow
