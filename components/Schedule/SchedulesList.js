@@ -12,7 +12,7 @@ import ScheduleItem from "./ScheduleItem";
  * @returns {*}
  * @constructor
  */
-function SchedulesList({days, appointments, onAppointmentPress, selectedIndex }) {
+function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) {
 
     const sectionListRef = useRef();
 
@@ -58,10 +58,13 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex })
             <SectionList
                 ref={sectionListRef}
                 keyExtractor={item => item.id + Math.random()}
-                getItemLayout={(data, index) => ({length: 100, offset: index * 60, index})}
+                // getItemLayout={(data, index) => ({length: 100, offset: index * 40, index})}
+                onScrollToIndexFailed={() => {
+
+                }}
                 sections={getSectionListData(days, appointments)}
                 stickySectionHeadersEnabled={true}
-                ItemSeparatorComponent={() => <View style={styles.separatorStyle}/> }
+                ItemSeparatorComponent={() => <View style={styles.separatorStyle}/>}
                 renderSectionHeader={({section: {title}}) => (
                     <View style={styles.dateLabelContainer}>
                         <Text style={styles.dateLabel}>

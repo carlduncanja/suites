@@ -261,6 +261,8 @@ const Schedule = (props) => {
 
                 {
                     searchOpen && <View style={styles.searchContainer}>
+
+                        {/* Background Shadow View*/}
                         <TouchableWithoutFeedback
                             onPress={() => {
                                 setSearchOpen(false)
