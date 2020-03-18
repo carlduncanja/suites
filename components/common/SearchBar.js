@@ -7,18 +7,21 @@ const SearchBar = ({changeText, inputText, matchesFound, onPressNextResult, onPr
     return(
         <View style={styles.searchBar}>
             <View style={[styles.container, styles.searchContent]}>
-                <View style={{flexDirection:'row'}}>
-                    <View style={{paddingRight:15}}>
+                <View style={{flexDirection:'row',flex:1}}>
+                    <View style={{paddingRight:15, alignSelf:'flex-start'}}>
                         <SvgIcon iconName="search" strokeColor="#A0AEC0"/>
                     </View>
-                    <InputText
+                    <View style={{flex:1}}>
+                        <InputText
                         changeText = {changeText}
                         inputText = {inputText}
                         placeholderTextColor = "#A0AEC0"
                         placeholder=""
                     />
+                    </View>
+                    
                 </View>
-                <View style={{flexDirection:'row'}}>
+                <View style={{flexDirection:'row', alignSelf:'flex-start'}}>
                     <Text style={{color:'#3182CE', fontSize:12, paddingRight:8}}>{matchesFound} matches found</Text>
                     <TouchableOpacity
                         activeOpacity={1}
@@ -91,8 +94,8 @@ const styles=StyleSheet.create({
     },
     searchContent:{
         flex:1,
-        alignItems:'center',
-        justifyContent:'space-between'
+        //alignItems:'center',
+        //justifyContent:'space-between'
     },
     control:{
         backgroundColor:'#FFFFFF',
