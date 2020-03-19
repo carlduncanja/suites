@@ -47,15 +47,15 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
         }));
     };
 
-    useEffect(() => {
-        console.log("Selected Index:", selectedIndex)
+    const scroll = () =>{
         if (sectionListRef) sectionListRef.current.scrollToLocation({
             animated: true,
             sectionIndex: selectedIndex,
             itemIndex: 0,
-            //viewOffset:5,
-            //viewPosition:0
-        })
+        })   
+    }
+    useEffect(() => {
+        scroll()
     }, [selectedIndex]);
 
     return (
@@ -63,6 +63,7 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
             <SectionList
                 ref={sectionListRef}
                 keyExtractor={item => item.id + Math.random()}
+                onLayout={()=>setTimeout(()=>scroll(),250)}
                 //getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
                 getItemLayout={sectionListGetItemLayout({
                     getItemHeight: (rowData, sectionIndex, rowIndex) => 24,

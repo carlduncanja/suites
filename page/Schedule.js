@@ -141,7 +141,7 @@ const Schedule = (props) => {
     const [daysList, setDaysList] = useState(intialDaysList);
     const [appointments, setAppointments] = useState(appointmentsObj);
     const [selectedAppointment, setSelectedAppointment] = useState();
-    const [sectionListIndex, setSectionListIndex] = useState(0);
+    const [sectionListIndex, setSectionListIndex] = useState(initalIndex);
     const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
     const [displayTodayAppointment, setDisplayTodayAppointment] = useState(false);
     const [textInput, setTextInput] = useState("");
@@ -152,6 +152,7 @@ const Schedule = (props) => {
 
     // animated states
     const [fall] = useState(new Animated.Value(1));
+
 
     const renderShadow = () => {
         const animatedShadowOpacity = Animated.interpolate(fall, {
