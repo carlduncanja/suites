@@ -42,9 +42,12 @@ function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
     const groupAppointmentsByDays = (appointments) => {
         const appointmentDays = {};
         appointments.forEach(item => {
+            const defaultColor = "gray";
+            const color = item.scheduleType && item.scheduleType.color;
+
             const date = moment(item.startTime).format("YYYY-MM-DD");
             if (!appointmentDays[date]) appointmentDays[date] = [];
-            appointmentDays[date].push("blue") // TODO push appointment color from appointment object i.e item.type.color
+            appointmentDays[date].push(color || defaultColor)
         });
 
         return appointmentDays
