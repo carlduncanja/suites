@@ -69,7 +69,7 @@ const SchedulesList = React.forwardRef(({days, appointments, onAppointmentPress,
                         endTime={item.endTime}
                         title={item.title}
                         onScheduleClick={() => onAppointmentPress(item)}
-                        type={item.type}
+                        color={item.scheduleType && item.scheduleType.color || 'gray'}
                     />
                 }}
             />

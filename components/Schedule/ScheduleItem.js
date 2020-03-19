@@ -22,7 +22,7 @@ export const SCHEDULE_TYPES = {
  * @returns {*}
  * @constructor
  */
-const ScheduleItem = ({type, title, startTime, endTime, onScheduleClick}) => {
+const ScheduleItem = ({color, title, startTime, endTime, onScheduleClick}) => {
 
     const getTime = (appointmentTime) => {
         return moment(appointmentTime).format("h : mm a")
@@ -33,7 +33,7 @@ const ScheduleItem = ({type, title, startTime, endTime, onScheduleClick}) => {
             <View
                 style={{
                     alignSelf: 'center',
-                    backgroundColor: statusColor(type),
+                    backgroundColor: color || 'gray',
                     height: 11,
                     width: 11,
                     borderRadius: 10 / 2,
@@ -56,14 +56,6 @@ const ScheduleItem = ({type, title, startTime, endTime, onScheduleClick}) => {
 };
 
 export default ScheduleItem
-
-const statusColor = (status) => {
-    status === 1 ? color = '#E53E3E' :
-        status === 2 ? color = "#ECC94B" :
-            status === 3 ? color = "#4299E1" : color = "#48BB78"
-
-    return color
-};
 
 const styles = StyleSheet.create({
     card: {
