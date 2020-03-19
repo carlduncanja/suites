@@ -36,7 +36,15 @@ const ScheduleItem = ({color, title, startTime, endTime, onScheduleClick}) => {
                     backgroundColor: color || 'gray',
                     height: 11,
                     width: 11,
-                    borderRadius: 10 / 2,
+                    borderRadius: 11,
+                    shadowColor: color || 'gray',
+                    shadowOffset: {
+                        width: 1,
+                        height: 1,
+                    },
+                    shadowOpacity: 0.35,
+                    shadowRadius: 1.84,
+                    elevation: 5,
                 }}
             />
             <TouchableOpacity
@@ -60,6 +68,7 @@ export default ScheduleItem
 const styles = StyleSheet.create({
     card: {
         // flex: 1,
+        paddingLeft: 2,
         height: 24,
         width: '100%',
         flexDirection: 'row',
