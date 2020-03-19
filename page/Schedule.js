@@ -130,18 +130,17 @@ const Schedule = (props) => {
     };
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
-    const intialDaysList = getDaysForMonth(currentDate)
-    const initalIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), intialDaysList);
+    const initialDaysList = getDaysForMonth(currentDate)
+    const initialIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), initialDaysList);
 
     const bottomSheetRef = useRef();
     const schedulesListRef = useRef();
 
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
     const [selectedDay, setSelectedDay] = useState(currentDate);
-    const [daysList, setDaysList] = useState(intialDaysList);
+    const [daysList, setDaysList] = useState(initialDaysList);
     const [appointments, setAppointments] = useState(appointmentsObj);
     const [selectedAppointment, setSelectedAppointment] = useState();
-    const [sectionListIndex, setSectionListIndex] = useState(initalIndex);
     const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
     const [displayTodayAppointment, setDisplayTodayAppointment] = useState(false);
     const [textInput, setTextInput] = useState("");
@@ -178,6 +177,14 @@ const Schedule = (props) => {
         )
     };
 
+    const scrollScheduleListIndex = (index) => {
+        if (schedulesListRef) schedulesListRef.current.scrollToLocation({
+            animated: true,
+            sectionIndex: index,
+            itemIndex: 0,
+        })
+    };
+
 
     /**
      *
@@ -186,7 +193,10 @@ const Schedule = (props) => {
     const handleOnDaySelected = (date) => {
         setSelectedDay(date);
         const indexOfSelected = getSelectedIndex(date, daysList);
-        setSectionListIndex(indexOfSelected);
+        // setSectionListIndex(indexOfSelected);
+
+        scrollScheduleListIndex(indexOfSelected);
+
     };
 
     const handleOnGoToToday = () => {
@@ -197,7 +207,9 @@ const Schedule = (props) => {
         setSelectedMonth(currentDate);
 
         setSelectedDay(date);
-        setSectionListIndex(getSelectedIndex(date, daysList));
+        // setSectionListIndex();
+
+        scrollScheduleListIndex(getSelectedIndex(date, daysList));
     };
 
     const handleOnMonthUpdated = (date) => {
@@ -348,9 +360,10 @@ const Schedule = (props) => {
                         </View>
                         <View style={styles.scheduleContent}>
                             <SchedulesList
+                                ref={schedulesListRef}
                                 days={daysList}
                                 appointments={appointments}
-                                selectedIndex={sectionListIndex}
+                                selectedIndex={initialIndex}
                                 onAppointmentPress={handleAppointmentPress}
                             />
                         </View>

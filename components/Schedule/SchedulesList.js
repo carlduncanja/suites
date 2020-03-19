@@ -14,8 +14,6 @@ import ScheduleItem from "./ScheduleItem";
  */
 const SchedulesList = React.forwardRef(({days, appointments, onAppointmentPress, selectedIndex}, ref) => {
 
-    const sectionListRef = useRef();
-
     const getSectionListData = (days, appointments = []) => {
         let appointmentList = [...appointments];
 
@@ -28,7 +26,6 @@ const SchedulesList = React.forwardRef(({days, appointments, onAppointmentPress,
 
 
             while (index >= 0) {
-
                 let appDay = moment(appointmentList[index].startTime);
                 const isSameDay = appDay.isSame(moment(sectionDay), 'day');
                 if (isSameDay) {
@@ -46,21 +43,13 @@ const SchedulesList = React.forwardRef(({days, appointments, onAppointmentPress,
         }));
     };
 
-    useEffect(() => {
-        if (sectionListRef) sectionListRef.current.scrollToLocation({
-            animated: true,
-            sectionIndex: selectedIndex,
-            itemIndex: 0,
-        })
-    }, [selectedIndex]);
-
     return (
         <View style={styles.container}>
             <SectionList
-                ref={sectionListRef}
+                ref={ref}
+                // initialScrollIndex={13}
                 keyExtractor={item => item.id + Math.random()}
-                initialScrollIndex={24}
-                getItemLayout={(data, index) => ({length: 100, offset: index * 24 + data.length * 20, index})}
+                getItemLayout={(data, index) => ({length: 24, offset: index * 24 + data.length * 20, index})}
                 onScrollToIndexFailed={() => {
                     console.log("scroll failed")
                 }}
