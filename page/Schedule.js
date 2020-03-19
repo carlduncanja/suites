@@ -82,8 +82,22 @@ const appointmentsObj = [
             "description": ""
         },
         title: "Biopsy, Breast (Breast Biopsy) - Dr. H. Carrington",
-        startTime: new Date(2020, 2, 10, 7),
-        endTime: new Date(2020, 2, 10, 8),
+        startTime: new Date(2020, 2, 11, 9),
+        endTime: new Date(2020, 2, 11, 10),
+        description: "",
+        additionalInfo: "",
+    },
+    {
+        id: "3502193859",
+        scheduleType: {
+            "_id": 3,
+            "name": "Surgery",
+            "color": "red",
+            "description": ""
+        },
+        title: "Biopsy, Breast (Breast Biopsy) - Dr. H. Carrington",
+        startTime: new Date(2020, 2, 10, 9),
+        endTime: new Date(2020, 2, 10, 10),
         description: "",
         additionalInfo: "",
     }
@@ -127,14 +141,14 @@ const Schedule = (props) => {
     const [daysList, setDaysList] = useState(intialDaysList);
     const [appointments, setAppointments] = useState(appointmentsObj);
     const [selectedAppointment, setSelectedAppointment] = useState();
-    const [sectionListIndex, setSectionListIndex] = useState(initalIndex);
+    const [sectionListIndex, setSectionListIndex] = useState(0);
     const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
-    const [displayTodayAppointment, setDisplayTodayAppointment] = useState(false)
-    const [textInput, setTextInput] = useState("")
-    const [currentSearchPosition, setCurrentSearchPosition] = useState(0)
-    const [searchOpen, setSearchOpen] = useState(false)
+    const [displayTodayAppointment, setDisplayTodayAppointment] = useState(false);
+    const [textInput, setTextInput] = useState("");
+    const [currentSearchPosition, setCurrentSearchPosition] = useState(0);
+    const [searchOpen, setSearchOpen] = useState(false);
     // const matchesFound = state.searchMatchesFound.length
-    const matchesFound = 3
+    const matchesFound = 3;
 
     // animated states
     const [fall] = useState(new Animated.Value(1));
@@ -176,11 +190,15 @@ const Schedule = (props) => {
     };
 
     const handleOnGoToToday = () => {
-        let date = moment(new Date()).format("YYYY-MM-DD").toString()
-        setSectionListIndex(getSelectedIndex(date, daysList))
-        setSelectedDay(date)
-        // setDisplayTodayAppointment(!displayTodayAppointment)
-    }
+        const currentDate = new Date();
+        let date = moment(currentDate).format("YYYY-MM-DD").toString();
+
+        setDaysList(getDaysForMonth(currentDate));
+        setSelectedMonth(currentDate);
+
+        setSelectedDay(date);
+        setSectionListIndex(getSelectedIndex(date, daysList));
+    };
 
     const handleOnMonthUpdated = (date) => {
         setSelectedMonth(date);
@@ -214,10 +232,6 @@ const Schedule = (props) => {
 
     const searchPress = () => {
         setSearchOpen(true)
-    };
-
-    const onGoToTodayClick = () => {
-        setDisplayTodayAppointment(!displayTodayAppointment)
     };
 
     const searchChangeText = (textInput) => {
