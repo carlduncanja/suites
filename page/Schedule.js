@@ -131,7 +131,7 @@ const Schedule = (props) => {
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const intialDaysList = getDaysForMonth(currentDate)
-    const initalIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), intialDaysList)
+    const initalIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), intialDaysList);
 
     const bottomSheetRef = useRef();
     const schedulesListRef = useRef();
@@ -141,7 +141,7 @@ const Schedule = (props) => {
     const [daysList, setDaysList] = useState(intialDaysList);
     const [appointments, setAppointments] = useState(appointmentsObj);
     const [selectedAppointment, setSelectedAppointment] = useState();
-    const [sectionListIndex, setSectionListIndex] = useState(0);
+    const [sectionListIndex, setSectionListIndex] = useState(initalIndex);
     const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
     const [displayTodayAppointment, setDisplayTodayAppointment] = useState(false);
     const [textInput, setTextInput] = useState("");

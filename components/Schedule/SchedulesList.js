@@ -12,7 +12,7 @@ import ScheduleItem from "./ScheduleItem";
  * @returns {*}
  * @constructor
  */
-function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) {
+const SchedulesList = React.forwardRef(({days, appointments, onAppointmentPress, selectedIndex}, ref) => {
 
     const sectionListRef = useRef();
 
@@ -59,9 +59,10 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
             <SectionList
                 ref={sectionListRef}
                 keyExtractor={item => item.id + Math.random()}
-                getItemLayout={(data, index) => ({length: 100, offset: index * 40, index})}
+                initialScrollIndex={24}
+                getItemLayout={(data, index) => ({length: 100, offset: index * 24 + data.length * 20, index})}
                 onScrollToIndexFailed={() => {
-
+                    console.log("scroll failed")
                 }}
                 sections={getSectionListData(days, appointments)}
                 stickySectionHeadersEnabled={true}
@@ -86,7 +87,7 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
 
         </View>
     );
-}
+});
 
 SchedulesList.propTypes = {};
 SchedulesList.defaultProps = {};
