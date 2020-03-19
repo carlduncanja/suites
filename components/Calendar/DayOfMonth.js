@@ -29,9 +29,9 @@ const DayOfMonth = ({day, isSelected, appointmentColors, onDayPress, isInSelectM
         .map((item, index) =>
             <View key={index}
                   style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: 10,
+                      width: 7,
+                      height: 7,
+                      borderRadius: 7,
                       margin: 2,
                       backgroundColor: item
                   }}
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
         color: '#718096',
     },
     dayWrapper: {
-        width: 92,
-        height: 98,
+        width: 84,
+        height: 90,
         padding: 5,
         alignItems: 'flex-start',
         backgroundColor: '#FFFFFF',
