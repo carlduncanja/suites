@@ -192,12 +192,13 @@ const Schedule = (props) => {
     const handleOnGoToToday = () => {
         const currentDate = new Date();
         let date = moment(currentDate).format("YYYY-MM-DD").toString();
+        let currentDaysList = getDaysForMonth(currentDate)
 
         setDaysList(getDaysForMonth(currentDate));
         setSelectedMonth(currentDate);
 
         setSelectedDay(date);
-        setSectionListIndex(getSelectedIndex(date, daysList));
+        setSectionListIndex(getSelectedIndex(date, currentDaysList));
     };
 
     const handleOnMonthUpdated = (date) => {
@@ -352,6 +353,8 @@ const Schedule = (props) => {
                                 appointments={appointments}
                                 selectedIndex={sectionListIndex}
                                 onAppointmentPress={handleAppointmentPress}
+                                selectedDay = {selectedDay}
+                                daysList = {daysList}
                             />
                         </View>
                     </View>

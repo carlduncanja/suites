@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {SectionList, StyleSheet, Text, View} from "react-native";
 import moment from "moment";
 import ScheduleItem from "./ScheduleItem";
+import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
 
 /**
  *
@@ -47,10 +48,13 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
     };
 
     useEffect(() => {
+        console.log("Selected Index:", selectedIndex)
         if (sectionListRef) sectionListRef.current.scrollToLocation({
             animated: true,
             sectionIndex: selectedIndex,
             itemIndex: 0,
+            //viewOffset:5,
+            //viewPosition:0
         })
     }, [selectedIndex]);
 
@@ -59,7 +63,14 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
             <SectionList
                 ref={sectionListRef}
                 keyExtractor={item => item.id + Math.random()}
-                getItemLayout={(data, index) => ({length: 100, offset: index * 40, index})}
+                //getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
+                getItemLayout={sectionListGetItemLayout({
+                    getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
+                    getSeparatorHeight: () => 25,
+                    getSectionHeaderHeight: () => 60,
+                    getSectionFooterHeight: () => 0,
+                    listHeaderHeight: 0
+                })}
                 onScrollToIndexFailed={() => {
 
                 }}
@@ -122,6 +133,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         marginBottom: 10,
         paddingTop: 24,
+        height:50
     },
     dateLabel: {
         fontWeight: 'bold',
