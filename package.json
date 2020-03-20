@@ -33,6 +33,7 @@
     "react-native-popover-menu": "^1.0.0",
     "react-native-popover-view": "^2.0.5",
     "react-native-popup-menu": "^0.15.6",
+    "react-native-section-list-get-item-layout": "^2.2.3",
     "react-native-simple-animations": "^0.2.2",
     "react-native-sliding-drawer": "^1.0.1",
     "react-native-svg": "~9.11.1",

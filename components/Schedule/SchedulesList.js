@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {SectionList, StyleSheet, Text, View} from "react-native";
 import moment from "moment";
 import ScheduleItem from "./ScheduleItem";
+import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
 
 /**
  *
@@ -12,7 +13,12 @@ import ScheduleItem from "./ScheduleItem";
  * @returns {*}
  * @constructor
  */
-const SchedulesList = React.forwardRef(({days, appointments, onAppointmentPress, selectedIndex}, ref) => {
+function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) {
+
+    const sectionListRef = useRef();
+
+    console.log("selected index",selectedIndex);
+
 
     const getSectionListData = (days, appointments = []) => {
         let appointmentList = [...appointments];
@@ -26,6 +32,7 @@ const SchedulesList = React.forwardRef(({days, appointments, onAppointmentPress,
 
 
             while (index >= 0) {
+
                 let appDay = moment(appointmentList[index].startTime);
                 const isSameDay = appDay.isSame(moment(sectionDay), 'day');
                 if (isSameDay) {
@@ -43,15 +50,34 @@ const SchedulesList = React.forwardRef(({days, appointments, onAppointmentPress,
         }));
     };
 
+    const scroll = (animated= true) =>{
+        if (sectionListRef) sectionListRef.current.scrollToLocation({
+            animated: animated,
+            sectionIndex: selectedIndex,
+            itemIndex: 0,
+        })
+    }
+    useEffect(() => {
+        scroll()
+    }, [selectedIndex]);
+
     return (
         <View style={styles.container}>
             <SectionList
-                ref={ref}
-                // initialScrollIndex={13}
+                ref={sectionListRef}
+                // initialScrollIndex={selectedIndex}
                 keyExtractor={item => item.id + Math.random()}
-                getItemLayout={(data, index) => ({length: 24, offset: index * 24 + data.length * 20, index})}
+                onLayout={()=>setTimeout(()=>scroll(false),250)}
+                // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
+                getItemLayout={sectionListGetItemLayout({
+                    getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
+                    getSeparatorHeight: () => 24,
+                    getSectionHeaderHeight: () => 60,
+                    getSectionFooterHeight: () => 0,
+                    listHeaderHeight: 0
+                })}
                 onScrollToIndexFailed={() => {
-                    console.log("scroll failed")
+
                 }}
                 sections={getSectionListData(days, appointments)}
                 stickySectionHeadersEnabled={true}
@@ -69,14 +95,14 @@ const SchedulesList = React.forwardRef(({days, appointments, onAppointmentPress,
                         endTime={item.endTime}
                         title={item.title}
                         onScheduleClick={() => onAppointmentPress(item)}
-                        color={item.scheduleType && item.scheduleType.color || 'gray'}
+                        type={item.type}
                     />
                 }}
             />
 
         </View>
     );
-});
+}
 
 SchedulesList.propTypes = {};
 SchedulesList.defaultProps = {};
@@ -112,6 +138,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         marginBottom: 10,
         paddingTop: 24,
+        height:50
     },
     dateLabel: {
         fontWeight: 'bold',
