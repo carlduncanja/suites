@@ -5,7 +5,7 @@ import moment from 'moment';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
 import { useStartDays, useCurrentDays, useEndDays, useAnimateSlide } from '../../hooks/useScheduleService';
 import { ScheduleContext } from '../../contexts/ScheduleContext';
-import { scheduleActions } from '../../reducers/scheduleReducer';
+import { scheduleActions } from '../../redux/reducers/scheduleReducer';
 
 
 const APPS = require('../../../assets/db.json').appointments;

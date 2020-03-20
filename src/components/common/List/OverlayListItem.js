@@ -4,7 +4,7 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 import SvgIcon from '../../../../assets/SvgIcon';
 import { withModal } from 'react-native-modalfy';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
-import { caseActions } from '../../../reducers/caseFilesReducer';
+import { caseActions } from '../../../redux/reducers/caseFilesReducer';
 import { getList } from '../../../hooks/useListHook';
 
 openModal = (props) => {

@@ -10,7 +10,7 @@ import SchedulesList from "../components/Schedule/SchedulesList";
 import {useCurrentDays, useEndDays, useStartDays} from "../hooks/useScheduleService";
 import ScheduleContent from "../components/Schedule/ScheduleContent";
 import {ScheduleContext} from '../contexts/ScheduleContext';
-import {scheduleActions} from '../reducers/scheduleReducer';
+import {scheduleActions} from '../redux/reducers/scheduleReducer';
 import SearchBar from '../components/common/SearchBar'
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {getSchedules} from "../api/network";

@@ -1,21 +1,20 @@
 import React, {useReducer, useMemo} from 'react';
+
+import {Provider} from 'react-redux'
+import DefaultReduxState from './src/redux/reducers/initialState'
+
+
 import {StyleSheet, SafeAreaView} from 'react-native';
 
-import {appActionTypes, appReducer} from './src/reducers/appReducer';
+import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
 import {initialState, SuitesContext} from './src/SuitesContext';
 
 import {SuitesContextProvider} from './src/contexts/SuitesContext';
-import {CaseFileContextProvider} from './src/contexts/CaseFileContext';
-// import {ModalProvider, createModalStack} from 'react-native-modalfy';
-// import OverlaySlidePanelModal from './modals/OverlaySlidePanelModal';
-// import OverlayModal from './modals/OverlayModal';
-// import ActionContainerModal from './modals/ActionContainerModal';
-// import ReportPreviewModal from './modals/ReportPreviewModal';
-import Content from './src/components/layout/Content';
-
-// import NavigationStack from './components/Navigator/NavigationStack';
 import NavigationStack from './src/components/navigation/NavigationStack';
+import configureStore from "./src/redux/configureStore";
 
+
+const store = configureStore({});
 
 const App = () => {
     const [state, dispatch] = useReducer(appReducer, initialState);
@@ -40,27 +39,10 @@ const App = () => {
         });
     };
 
-    // const modalConfig = {
-    //     OverlaySlidePanelModal: OverlaySlidePanelModal,
-    //     OverlayModal: OverlayModal,
-    //     ActionContainerModal: ActionContainerModal,
-    //     ReportPreviewModal: ReportPreviewModal
-    // }
-
-    // const defaultOptions = {
-    //     backdropOpacity: 0,
-    //     position: 'bottom',
-    //     containerStyle: {
-    //         flex: 1,
-    //         alignItems: 'flex-end',
-    //     }
-    // }
-    // const stack = createModalStack(modalConfig, defaultOptions)
-
 
     return (
-        <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
-            {/* <ModalProvider stack={stack}> */}
+        <Provider store={store}>
+            <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
                 <SafeAreaView style={styles.container} onLayout={getDimensions}>
                     <NavigationStack
                         screenDimensions={state.screenDimensions}
@@ -68,10 +50,9 @@ const App = () => {
                         onTabPress={onTabPress}
                     />
                 </SafeAreaView>
-            {/* </ModalProvider> */}
-        </SuitesContextProvider>
+            </SuitesContextProvider>
+        </Provider>
     );
-
 };
 
 

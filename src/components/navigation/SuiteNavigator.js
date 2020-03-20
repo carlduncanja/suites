@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, SectionList } fro
 import { getList } from '../../hooks/useListHook';
 import NavigationTab from '../SideBar/SideBarTabComponent';
 import { SuitesContext } from '../../contexts/SuitesContext';
-import { appActions } from '../../reducers/suitesAppReducer';
+import { appActions } from '../../redux/reducers/suitesAppReducer';
 import SvgIcon from '../../../assets/SvgIcon';
 import {ModalProvider, createModalStack} from 'react-native-modalfy';
 import { createNavigator, TabRouter } from 'react-navigation';

@@ -4,7 +4,7 @@ import ProgressIcon from './ProgressIcon';
 import ProgressBar from './ProgressBar';
 import { transformToCamel } from '../../../hooks/useTextEditHook'
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
-import { caseActions } from '../../../reducers/caseFilesReducer' 
+import { caseActions } from '../../../redux/reducers/caseFilesReducer'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {handleNewItemProgressBar} from '../../../helpers/caseFilesHelpers';
 
@@ -51,23 +51,23 @@ const ProgressContainer = () => {
         })
     }
 
-    return (  
-        <View style={styles.container}>    
-            <View style={[styles.iconsContainer]} onLayout={(event)=>getProgressWidth(event.nativeEvent.layout.width)}>   
+    return (
+        <View style={styles.container}>
+            <View style={[styles.iconsContainer]} onLayout={(event)=>getProgressWidth(event.nativeEvent.layout.width)}>
                 <View style={{width:endBars,top:"5%", marginRight:10}}>
                     <ProgressBar progressNumber={1}/>
-                </View> 
+                </View>
                 {itemSteps.map((step,index)=>{
                     return (
                         <TouchableOpacity style={styles.icon} key={index} onPress = {()=>handleItemStepPress(index)}>
-                            <Text 
+                            <Text
                                 style={{paddingBottom:10,
                                 color:state.newItemAction.selectedStep === index ?'#3182CE': '#A0AEC0'}}>
                                 {step.stepName}
                             </Text>
                             <View style={{flexDirection:'row'}}>
                                 {/* {console.log("CompletedList: ", state.newItemAction.stepsCompletedList)} */}
-                                <ProgressIcon 
+                                <ProgressIcon
                                     icon={
                                         getCompleteBar(index) === true ?
                                             "stepComplete"
@@ -81,18 +81,18 @@ const ProgressContainer = () => {
                                 {
                                      <View style={{width:endBars-20, marginRight:10, marginLeft:10}} >
                                         <ProgressBar progressNumber={getNumber(index)}/>
-                                    </View> 
+                                    </View>
                                 }
                             </View>
 
                         </TouchableOpacity>
                     )
                 })}
-            </View>            
+            </View>
         </View>
     );
 }
- 
+
 export default ProgressContainer;
 
 const styles = StyleSheet.create({

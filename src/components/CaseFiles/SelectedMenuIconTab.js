@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../../assets/SvgIcon'
 import { SuitesContext } from '../../contexts/SuitesContext';
-import { appActions } from '../../reducers/suitesAppReducer';
+import { appActions } from '../../redux/reducers/suitesAppReducer';
 
 
 const SelectedMenuIconTab = () => {

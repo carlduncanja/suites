@@ -7,7 +7,7 @@ import ProgressContainer from '../Progress/ProgressContainer'
 import TabsContainer from '../Tabs/TabsContainer'
 import OverlayComplete from './OverlayComplete';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
-import {caseActions} from '../../../reducers/caseFilesReducer'
+import {caseActions} from '../../../redux/reducers/caseFilesReducer'
 import {handleProgressBar} from '../../../helpers/caseFilesHelpers';
 
 const Overlay = () => {
@@ -33,7 +33,7 @@ const Overlay = () => {
             handleBar(tabIndex)
         )
     }
-    
+
     useEffect(()=>{
         let tabNames = []
         state.newItemAction.currentStepTabs.map(tab =>{
@@ -41,25 +41,25 @@ const Overlay = () => {
         })
         setTabNames(tabNames)
     },[state.newItemAction.currentStepTabs])
-    
+
     // console.log("Tabs: ", tabNames)
-    return (  
+    return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
                 <OverlayHeader/>
-            </View> 
+            </View>
             <View style={{flex:1}}>
                 <View style={{backgroundColor:'#EEF2F6'}}>
                     <ProgressContainer/>
                     <View style={{alignSelf:'center'}}>
-                        <TabsContainer 
+                        <TabsContainer
                             completedTabs={state.newItemAction.tabsCompletedList}
                             tabs={tabNames}
                             selectedTab = {state.newItemAction.selectedTab}
                             onPressChange = {handleNewItemPress}
                         />
                     </View>
-                    
+
                 </View>
                 <View style={{flex:1}}>
                     {state.newItemAction.overlayComplete ?
@@ -68,17 +68,17 @@ const Overlay = () => {
                         <OverlayDataFields/>
                     }
                 </View>
-                
+
             </View>
 
             <View style={styles.footerContainer}>
                 <OverlayFooter/>
-            </View> 
-            
+            </View>
+
         </View>
     );
 }
- 
+
 export default Overlay;
 
 const styles = StyleSheet.create({
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         borderRadius:8,
         borderWidth:1,
         borderColor:'#EEF2F6',
-        
+
     },
     headerContainer:{
         borderBottomColor:'#CCD6E0',

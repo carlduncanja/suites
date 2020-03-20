@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { SuitesContext } from '../contexts/SuitesContext';
 import OverlaySlidePanel from '../components/common/SlideOverlay/OverlaySlidePanel';
 import { withModal } from 'react-native-modalfy'
-import { appActions } from '../reducers/suitesAppReducer';
+import { appActions } from '../redux/reducers/suitesAppReducer';
 
 const OverlaySlidePanelModal = (props) => {
     const [state, dispatch] = useContext(SuitesContext)

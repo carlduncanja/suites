@@ -2,7 +2,7 @@ import { transformToCamel } from './useTextEditHook';
 import { getList } from './useListHook'
 import { useContext } from 'react';
 import { SuitesContext } from '../contexts/SuitesContext';
-import { appActions } from '../reducers/suitesAppReducer';
+import { appActions } from '../redux/reducers/suitesAppReducer';
 
 const listData = require('../../assets/db.json').caseFiles.caseFilesInformation.data
 const listHeaders  = require('../../assets/db.json').caseFiles.caseFilesInformation.headers

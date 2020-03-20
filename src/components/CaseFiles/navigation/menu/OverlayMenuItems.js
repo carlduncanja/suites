@@ -3,7 +3,7 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../../../../assets/SvgIcon'
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import FloatingActionButton from '../../../common/FloatingAction/FloatingActionButton'
-import { appActions } from '../../../../reducers/suitesAppReducer';
+import { appActions } from '../../../../redux/reducers/suitesAppReducer';
 import { transformToCamel } from '../../../../hooks/useTextEditHook'
 
 const OverlayMenuItems = ({ navigation, descriptors }) => {

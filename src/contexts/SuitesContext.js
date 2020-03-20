@@ -1,7 +1,7 @@
 import React, { useState, createContext, useEffect, useReducer, useRef} from 'react';
 import { getList, getReportList } from '../hooks/useListHook';
 import { transformToCamel, transformToSentence } from '../hooks/useTextEditHook';
-import { suitesAppReducer, appActions } from '../reducers/suitesAppReducer';
+import { suitesAppReducer, appActions } from '../redux/reducers/suitesAppReducer';
 
 export const SuitesContext = createContext()
 
@@ -19,9 +19,9 @@ const list = {
 }
 const overlayMenu = {
     menu : [],
-    selectedMenuItem : 0, 
-    selectedMenuItemTabs : [], 
-    selectedMenuItemCurrentTab : 0 
+    selectedMenuItem : 0,
+    selectedMenuItemTabs : [],
+    selectedMenuItemCurrentTab : 0
 }
 const slideOverlay = {
     slideOverlayStatus: false,
@@ -50,10 +50,10 @@ const paginatorValues = {
     recordsPerPage:10
 }
 const state = {
-    paginatorValues, 
+    paginatorValues,
     list,
     floatingActions,
-    searchPlaceholder, 
+    searchPlaceholder,
     slideOverlay,
     overlayMenu,
     slideTopValue,
@@ -63,10 +63,9 @@ const state = {
 }
 
 export const SuitesContextProvider = (props) => {
-    return (  
+    return (
         <SuitesContext.Provider value={useReducer(suitesAppReducer,state)}>
             {props.children}
         </SuitesContext.Provider>
     );
 }
- 

@@ -7,7 +7,7 @@ import List from '../List/List';
 import RoundedPaginator from '../Paginators/RoundedPaginator';
 import FloatingActionButton from '../FloatingAction/FloatingActionButton';
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import { appActions } from '../../../reducers/suitesAppReducer';
+import { appActions } from '../../../redux/reducers/suitesAppReducer';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import { transformToCamel } from '../../../hooks/useTextEditHook';
 

@@ -2,7 +2,7 @@ import React,{Component, useContext} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../../assets/SvgIcon'
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
-import {caseActions} from '../../../reducers/caseFilesReducer';
+import {caseActions} from '../../../redux/reducers/caseFilesReducer';
 import {handleProgressBar} from '../../../helpers/caseFilesHelpers'
 
 const OverlayFooter = () => {
