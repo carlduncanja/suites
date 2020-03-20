@@ -95,7 +95,7 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
                         endTime={item.endTime}
                         title={item.title}
                         onScheduleClick={() => onAppointmentPress(item)}
-                        type={item.type}
+                        color={item.scheduleType && item.scheduleType.color || 'gray' }
                     />
                 }}
             />
