@@ -13,6 +13,8 @@ import {ScheduleContext} from '../contexts/ScheduleContext';
 import {scheduleActions} from '../reducers/scheduleReducer';
 import SearchBar from '../components/common/SearchBar'
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {getSchedules} from "../api/network";
+import {getDaysForMonth} from "../utils";
 
 
 const currentDate = new Date();
@@ -105,41 +107,22 @@ const appointmentsObj = [
 
 
 const Schedule = (props) => {
-    const [state, dispatch] = useContext(ScheduleContext);
-    const [dimensions, setDimensions] = useState(Dimensions.get('window'));
-
-    const onChange = (dimensions) => {
-        setDimensions(dimensions);
-    };
-
-    useEffect(() => {
-        Dimensions.addEventListener("change", onChange);
-        return () => {
-            Dimensions.removeEventListener("change", onChange);
-        };
-    });
-
-    const getDaysForMonth = (month) => {
-        const selectedMonth = moment(month).startOf('month');
-
-        let pevMonthEndDays = useStartDays(month);
-        let nextMonthStartDays = useEndDays(month);
-        let currentMonthDays = useCurrentDays(selectedMonth.month() + 1, selectedMonth.year());
-
-        return pevMonthEndDays.concat(currentMonthDays.concat(nextMonthStartDays));
-    };
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialDaysList = getDaysForMonth(currentDate);
     const initialIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), initialDaysList);
+    const matchesFound = 3;
 
     const bottomSheetRef = useRef();
-    const schedulesListRef = useRef();
+
+    // States
+    const [state, dispatch] = useContext(ScheduleContext);
+    const [dimensions, setDimensions] = useState(Dimensions.get('window'));
 
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
     const [selectedDay, setSelectedDay] = useState(currentDate);
     const [daysList, setDaysList] = useState(initialDaysList);
-    const [appointments, setAppointments] = useState(appointmentsObj);
+    const [appointments, setAppointments] = useState([]);
     const [selectedAppointment, setSelectedAppointment] = useState();
     const [sectionListIndex, setSectionListIndex] = useState(initialIndex);
     const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
@@ -148,11 +131,30 @@ const Schedule = (props) => {
     const [currentSearchPosition, setCurrentSearchPosition] = useState(0);
     const [searchOpen, setSearchOpen] = useState(false);
     // const matchesFound = state.searchMatchesFound.length
-    const matchesFound = 3;
 
     // animated states
     const [fall] = useState(new Animated.Value(1));
 
+    // Effect
+    useEffect(() => {
+        Dimensions.addEventListener("change", onChange);
+        return () => {
+            Dimensions.removeEventListener("change", onChange);
+        };
+    });
+
+    useEffect( () => {
+
+        getSchedules()
+            .then(data => setAppointments(data))
+            .catch()
+
+
+    }, []);
+
+    const onChange = (dimensions) => {
+        setDimensions(dimensions);
+    };
 
     const renderShadow = () => {
         const animatedShadowOpacity = Animated.interpolate(fall, {
