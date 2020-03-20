@@ -1,20 +1,20 @@
 import React, {useReducer, useMemo} from 'react';
 import {StyleSheet, SafeAreaView} from 'react-native';
 
-import {appActionTypes, appReducer} from './reducers/appReducer';
-import {initialState, SuitesContext} from './SuitesContext';
+import {appActionTypes, appReducer} from './src/reducers/appReducer';
+import {initialState, SuitesContext} from './src/SuitesContext';
 
-import {SuitesContextProvider} from './contexts/SuitesContext';
-import {CaseFileContextProvider} from './contexts/CaseFileContext';
+import {SuitesContextProvider} from './src/contexts/SuitesContext';
+import {CaseFileContextProvider} from './src/contexts/CaseFileContext';
 // import {ModalProvider, createModalStack} from 'react-native-modalfy';
 // import OverlaySlidePanelModal from './modals/OverlaySlidePanelModal';
 // import OverlayModal from './modals/OverlayModal';
 // import ActionContainerModal from './modals/ActionContainerModal';
 // import ReportPreviewModal from './modals/ReportPreviewModal';
-import Content from './components/layout/Content';
+import Content from './src/components/layout/Content';
 
 // import NavigationStack from './components/Navigator/NavigationStack';
-import NavigationStack from './components/navigation/NavigationStack';
+import NavigationStack from './src/components/navigation/NavigationStack';
 
 
 const App = () => {
