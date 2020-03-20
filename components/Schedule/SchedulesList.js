@@ -17,6 +17,9 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
 
     const sectionListRef = useRef();
 
+    console.log("selected index",selectedIndex);
+
+
     const getSectionListData = (days, appointments = []) => {
         let appointmentList = [...appointments];
 
@@ -52,7 +55,7 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
             animated: true,
             sectionIndex: selectedIndex,
             itemIndex: 0,
-        })   
+        })
     }
     useEffect(() => {
         scroll()
@@ -63,11 +66,12 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
             <SectionList
                 ref={sectionListRef}
                 keyExtractor={item => item.id + Math.random()}
-                onLayout={()=>setTimeout(()=>scroll(),250)}
-                //getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
+                // onLayout={()=>setTimeout(()=>scroll(),250)}
+                // initialScrollIndex={selectedIndex}
+                // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
                 getItemLayout={sectionListGetItemLayout({
                     getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
-                    getSeparatorHeight: () => 25,
+                    getSeparatorHeight: () => 24,
                     getSectionHeaderHeight: () => 60,
                     getSectionFooterHeight: () => 0,
                     listHeaderHeight: 0
