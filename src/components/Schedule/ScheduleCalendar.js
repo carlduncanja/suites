@@ -119,9 +119,8 @@ const ScheduleCalendar = ({month,appointments, days, selectedDate, screenDimensi
 
             <TouchableOpacity
                 style={[styles.button]}
-                onPress={onExpandButtonPress}
-            >
-                <Text>Expand</Text>
+                onPress={onExpandButtonPress}>
+                <Text> { isExpanded ? "Collapse" : "Expand" }</Text>
             </TouchableOpacity>
         </View>
     )
