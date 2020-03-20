@@ -50,9 +50,9 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
         }));
     };
 
-    const scroll = () =>{
+    const scroll = (animated= true) =>{
         if (sectionListRef) sectionListRef.current.scrollToLocation({
-            animated: true,
+            animated: animated,
             sectionIndex: selectedIndex,
             itemIndex: 0,
         })
@@ -65,9 +65,9 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
         <View style={styles.container}>
             <SectionList
                 ref={sectionListRef}
-                keyExtractor={item => item.id + Math.random()}
-                // onLayout={()=>setTimeout(()=>scroll(),250)}
                 // initialScrollIndex={selectedIndex}
+                keyExtractor={item => item.id + Math.random()}
+                onLayout={()=>setTimeout(()=>scroll(false),250)}
                 // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
                 getItemLayout={sectionListGetItemLayout({
                     getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
