@@ -143,15 +143,6 @@ const Schedule = (props) => {
         };
     });
 
-    useEffect( () => {
-
-        getSchedules()
-            .then(data => setAppointments(data))
-            .catch()
-
-
-    }, []);
-
     const onChange = (dimensions) => {
         setDimensions(dimensions);
     };
@@ -352,12 +343,10 @@ const Schedule = (props) => {
                         </View>
                         <View style={styles.scheduleContent}>
                             <SchedulesList
-                                days={daysList}
-                                appointments={appointments}
                                 selectedIndex={sectionListIndex}
                                 onAppointmentPress={handleAppointmentPress}
-                                selectedDay = {selectedDay}
-                                daysList = {daysList}
+                                selectedDay={selectedDay}
+                                month={selectedMonth}
                             />
                         </View>
                     </View>
