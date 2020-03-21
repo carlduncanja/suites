@@ -38,24 +38,31 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
         })
     };
 
-    const scrollToIndex = (index) => {
-        if(flatListRef) flatListRef.current.scrollToIndex({
+    const scrollToIndex = (index, animated = true) => {
+        if (!flatListRef) return;
+
+        console.log("scolling to index", index);
+
+        flatListRef.current.scrollToIndex({
             index,
-            animated: true,
+            animated,
             viewOffset: 0,
         })
     };
-    
-    //Go To Today 
-    useEffect(()=>{
-        let todayDay = moment(new Date()).format("YYYY-MM-DD").toString()
-        let dateSelected = moment(selectedDay).format("YYYY-MM-DD").toString()
-        let index = getSelectedIndex(todayDay, days)
-        if (dateSelected === todayDay) scrollToIndex(index)
-    },[selectedDay])
 
-    const getSelectedIndex = (day, days = []) => days.indexOf(day);
-    const initialIndex = getSelectedIndex(moment(selectedDay).format("YYYY-MM-DD"), days);
+    //Go To Today
+    useEffect(() => {
+        let dateSelected = moment(selectedDay).format("YYYY-MM-DD");
+        let index = getIndexForSelectedDay(dateSelected, days);
+        scrollToIndex(index);
+    }, [selectedDay, month]);
+
+    const getIndexForSelectedDay = (day, days = []) => {
+        const daysIndex = days.indexOf(day);
+        return daysIndex > 0 ? daysIndex : 0 // day index should not be less than 0
+    };
+
+    const initialIndex = getIndexForSelectedDay(moment(selectedDay).format("YYYY-MM-DD"), days);
 
     return (
         <View
@@ -64,11 +71,11 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
             <FlatList
                 ref={flatListRef}
                 contentContainerStyle={styles.container}
-                getItemLayout={ (data, index) => ({length: ROW_ITEM_WIDTH, offset: ROW_ITEM_WIDTH * index - 36, index })}
-                initialScrollIndex={ initialIndex }
+                getItemLayout={(data, index) => ({length: ROW_ITEM_WIDTH, offset: ROW_ITEM_WIDTH * index - 36, index})}
+                initialScrollIndex={initialIndex}
                 data={generateCalendarData(days)}
                 horizontal={true}
-                keyExtractor={(item, index) => index+"" }
+                keyExtractor={(item, index) => index + ""}
                 renderItem={({item, index}) =>
                     <View
                         key={index}
