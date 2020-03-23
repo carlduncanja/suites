@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
-import {View, StyleSheet, Dimensions, TouchableWithoutFeedback, Easing} from 'react-native';
+import {View, StyleSheet, Dimensions, TouchableWithoutFeedback, Text} from 'react-native';
 import Animated from 'react-native-reanimated'
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../components/common/Button';
@@ -12,9 +12,6 @@ import ScheduleContent from "../components/Schedule/ScheduleContent";
 import {ScheduleContext} from '../contexts/ScheduleContext';
 import {scheduleActions} from '../reducers/scheduleReducer';
 import SearchBar from '../components/common/SearchBar'
-import {TouchableOpacity} from 'react-native-gesture-handler';
-
-
 
 const currentDate = new Date();
 const appointmentsObj = [
@@ -131,18 +128,18 @@ const Schedule = (props) => {
     };
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
-    const initialDaysList = getDaysForMonth(currentDate);
-    const initialIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), initialDaysList);
+    const intialDaysList = getDaysForMonth(currentDate)
+    const initalIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), intialDaysList)
 
     const bottomSheetRef = useRef();
     const schedulesListRef = useRef();
 
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
     const [selectedDay, setSelectedDay] = useState(currentDate);
-    const [daysList, setDaysList] = useState(initialDaysList);
+    const [daysList, setDaysList] = useState(intialDaysList);
     const [appointments, setAppointments] = useState(appointmentsObj);
     const [selectedAppointment, setSelectedAppointment] = useState();
-    const [sectionListIndex, setSectionListIndex] = useState(initialIndex);
+    const [sectionListIndex, setSectionListIndex] = useState(initalIndex);
     const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
     const [displayTodayAppointment, setDisplayTodayAppointment] = useState(false);
     const [textInput, setTextInput] = useState("");
@@ -153,7 +150,7 @@ const Schedule = (props) => {
 
     // animated states
     const [fall] = useState(new Animated.Value(1));
-    const [slideDown] = useState(new Animated.Value(1))
+
 
     const renderShadow = () => {
         const animatedShadowOpacity = Animated.interpolate(fall, {
@@ -179,6 +176,7 @@ const Schedule = (props) => {
             </TouchableWithoutFeedback>
         )
     };
+
 
     /**
      *
@@ -293,11 +291,11 @@ const Schedule = (props) => {
                                 ]}
                             />
                         </TouchableWithoutFeedback>
-
+                        
                         <View style={{
                             position: 'absolute',
                             width: '100%',
-                            top:0,
+                            top: 0
                         }}>
                             <SearchBar
                                 changeText={searchChangeText}
@@ -308,7 +306,6 @@ const Schedule = (props) => {
                                 onPressNewSerch={pressNewSearch}
                                 onPressSubmit={pressSubmit}
                             />
-                            
                         </View>
                     </View>
                 }
@@ -355,7 +352,8 @@ const Schedule = (props) => {
                                 appointments={appointments}
                                 selectedIndex={sectionListIndex}
                                 onAppointmentPress={handleAppointmentPress}
-                                selectedMonth = {selectedMonth}
+                                selectedDay = {selectedDay}
+                                daysList = {daysList}
                             />
                         </View>
                     </View>

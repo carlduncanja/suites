@@ -59,34 +59,6 @@ const Page = ({pageTitle, placeholderText, changeText, inputText, routeName}) =>
         })
     }
 
-    const [actionAnimValue] = useState(new Animated.Value(0))
-
-    actionAnimValue.addListener((value)=>{
-        // console.log("Value:", value.value)
-    })
-
-    useEffect(()=>{
-        Animated.timing(
-            actionAnimValue,
-            {
-              toValue: 1,
-              duration: 150,
-              //easing:Easing.cubic
-            }
-          ).start();
-    })
-
-    const actionAnimStyles = {
-        width: actionAnimValue.interpolate({
-          inputRange: [0, 0.5, 1,1.5,2,2.5,3],
-          outputRange: [0, 100, 200,300,400,500,600]
-        }),
-        height :actionAnimValue.interpolate({
-        inputRange: [0, 0.5, 1,1.5,2,2.5,3],
-          outputRange: [0, 50, 100,300,400,500,600]
-        }),
-    };
-
     return (
         <View
             style={{flex:1}}

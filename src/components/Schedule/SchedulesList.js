@@ -13,11 +13,11 @@ import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
  * @returns {*}
  * @constructor
  */
-function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) {
+function SchedulesList({days, appointments, onAppointmentPress, selectedIndex, selectedMonth}) {
 
     const sectionListRef = useRef();
 
-    console.log("selected index",selectedIndex);
+    // console.log("selected index",selectedIndex);
 
 
     const getSectionListData = (days, appointments = []) => {
@@ -57,9 +57,10 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex}) 
             itemIndex: 0,
         })
     }
+
     useEffect(() => {
         scroll()
-    }, [selectedIndex]);
+    }, [selectedIndex,selectedMonth ]);
 
     return (
         <View style={styles.container}>
