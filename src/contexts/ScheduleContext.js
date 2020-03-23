@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import moment from 'moment';
-import { scheduleReducer } from '../reducers/scheduleReducer';
+import { scheduleReducer } from '../redux/reducers/scheduleReducer';
 
 const initialState = {
     displayFullCalendar: false,

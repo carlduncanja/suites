@@ -4,8 +4,8 @@ import SvgIcon from '../../../../assets/SvgIcon'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { withModal } from 'react-native-modalfy'
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
-import { caseActions } from '../../../reducers/caseFilesReducer'
-import { appActions } from '../../../reducers/suitesAppReducer'
+import { caseActions } from '../../../redux/reducers/caseFilesReducer'
+import { appActions } from '../../../redux/reducers/suitesAppReducer'
 
 const Action = (props) => {
     const [appState, dispatchApp] = useContext(SuitesContext)

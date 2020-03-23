@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { withModal } from 'react-native-modalfy';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import Item from './Table/Item'
-import { appActions } from '../../../reducers/suitesAppReducer'
+import { appActions } from '../../../redux/reducers/suitesAppReducer'
 import { transformToCamel } from '../../../hooks/useTextEditHook';
 
 openModal = (props) => {
@@ -24,7 +24,7 @@ const ListItem = (props) => {
             type: appActions.TOGGLECHECKBOX,
             newState : {
                 checkedItemStatus : true,
-                checkedItemsList : state.list.checkedItemsList.includes(listItemId) ? 
+                checkedItemsList : state.list.checkedItemsList.includes(listItemId) ?
                     state.list.checkedItemsList.filter(listItem => listItem !== listItemId)
                     :
                     [...state.list.checkedItemsList,listItemId]
@@ -55,7 +55,7 @@ const ListItem = (props) => {
         )
     }
 
-    return ( 
+    return (
         <TouchableOpacity onPress={()=>{handleSelectedListItem(props.fields.recordId);this.openModal(props)}}>
             <View style={styles.container}>
                 <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>toggleCheckbox(props.fields.recordId)}>
@@ -66,7 +66,7 @@ const ListItem = (props) => {
         </TouchableOpacity>
     );
 }
- 
+
 export default withModal(ListItem);
 
 const styles = StyleSheet.create({

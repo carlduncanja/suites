@@ -1,24 +1,41 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+import PropTypes from 'prop-types';
 import {SectionList, StyleSheet, Text, View} from "react-native";
+
 import moment from "moment";
 import ScheduleItem from "./ScheduleItem";
 import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
+import {connect} from "react-redux";
+import {setAppointments} from "../../redux/actions/appointmentActions"
+import {getSchedules} from "../../api/network";
+import {getDaysForMonth} from "../../utils";
+
 
 /**
  *
  * @param days: array of date string ("YYYY-MM-DD")
  * @param appointments: and array of appointment
  * @param onAppointmentPress
- * @param selectedIndex: a number representing the index of the date that's selected
+ * @param setAppointments
  * @returns {*}
  * @constructor
  */
-function SchedulesList({days, appointments, onAppointmentPress, selectedIndex, selectedMonth}) {
+function SchedulesList({appointments, selectedDay, month, onAppointmentPress, setAppointments}) {
 
+    const daysList = getDaysForMonth(month);
     const sectionListRef = useRef();
+    const [isRefreshing, setRefreshing] = useState(false);
 
-    // console.log("selected index",selectedIndex);
 
+    useEffect(() => {
+        const dayIndex = getSectionIndexForSelectedDay();
+        scrollToIndex(dayIndex, true);
+    }, [selectedDay, month]);
+
+    const getSectionIndexForSelectedDay = () => {
+        const selectedDayString = moment(selectedDay).format("YYYY-MM-DD");
+        return daysList.indexOf(selectedDayString);
+    };
 
     const getSectionListData = (days, appointments = []) => {
         let appointmentList = [...appointments];
@@ -50,25 +67,43 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex, s
         }));
     };
 
-    const scroll = (animated= true) =>{
-        if (sectionListRef) sectionListRef.current.scrollToLocation({
+    const scrollToIndex = (index, animated) => {
+        if (!sectionListRef) return;
+        sectionListRef.current.scrollToLocation({
             animated: animated,
-            sectionIndex: selectedIndex,
+            sectionIndex: index,
             itemIndex: 0,
         })
-    }
+    };
 
-    useEffect(() => {
-        scroll()
-    }, [selectedIndex,selectedMonth ]);
+    const onRefresh = () => {
+        // fetch the schedule
+        setRefreshing(true);
+        getSchedules()
+            .then(data => {
+                setAppointments(data);
+
+                const dayIndex = getSectionIndexForSelectedDay();
+                setTimeout(() => scrollToIndex(dayIndex, true), 250);
+
+            })
+            .catch(error => {
+                // TODO display toast or error to telling the user that something went wrong trying to fetch the data.
+                console.log("Failed to get Appointments", error);
+            })
+            .finally(() => {
+                setRefreshing(false)
+            })
+    };
 
     return (
         <View style={styles.container}>
             <SectionList
                 ref={sectionListRef}
-                // initialScrollIndex={selectedIndex}
+                onRefresh={onRefresh}
+                refreshing={isRefreshing}
                 keyExtractor={item => item.id + Math.random()}
-                onLayout={()=>setTimeout(()=>scroll(false),250)}
+                onLayout={() => setTimeout(() => scrollToIndex(getSectionIndexForSelectedDay(), false), 250)}
                 // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
                 getItemLayout={sectionListGetItemLayout({
                     getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
@@ -80,7 +115,7 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex, s
                 onScrollToIndexFailed={() => {
 
                 }}
-                sections={getSectionListData(days, appointments)}
+                sections={getSectionListData(daysList, appointments)}
                 stickySectionHeadersEnabled={true}
                 ItemSeparatorComponent={() => <View style={styles.separatorStyle}/>}
                 renderSectionHeader={({section: {title}}) => (
@@ -96,19 +131,35 @@ function SchedulesList({days, appointments, onAppointmentPress, selectedIndex, s
                         endTime={item.endTime}
                         title={item.title}
                         onScheduleClick={() => onAppointmentPress(item)}
-                        color={item.scheduleType && item.scheduleType.color || 'gray' }
+                        color={item.scheduleType && item.scheduleType.color || 'gray'}
                     />
                 }}
             />
-
         </View>
     );
 }
 
-SchedulesList.propTypes = {};
+SchedulesList.propTypes = {
+    days: PropTypes.array,
+    appointments: PropTypes.array,
+    onAppointmentPress: PropTypes.func,
+    selectedIndex: PropTypes.number,
+    setAppointments: PropTypes.func
+};
+
 SchedulesList.defaultProps = {};
 
-export default SchedulesList;
+const mapStateToProps = (state) => {
+    return {
+        appointments: state.appointments
+    }
+};
+
+const mapDispatchToProps = {
+    setAppointments
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SchedulesList);
 
 
 const styles = StyleSheet.create({
@@ -139,7 +190,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         marginBottom: 10,
         paddingTop: 24,
-        height:50
+        height: 50
     },
     dateLabel: {
         fontWeight: 'bold',

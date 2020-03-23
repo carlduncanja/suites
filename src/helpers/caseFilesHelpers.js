@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { caseActions } from '../reducers/caseFilesReducer'
+import { caseActions } from '../redux/reducers/caseFilesReducer'
 import { CaseFileContext } from '../contexts/CaseFileContext';
 
 

@@ -1,5 +1,5 @@
 import React, { useState, createContext, useContext, useReducer, useEffect } from 'react';
-import { caseFilesReducer, caseActions } from '../reducers/caseFilesReducer';
+import { caseFilesReducer, caseActions } from '../redux/reducers/caseFilesReducer';
 import { getList, getReportList } from '../hooks/useListHook';
 
 

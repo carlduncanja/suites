@@ -5,7 +5,7 @@ import Button from '../common/Button';
 import moment from 'moment';
 import Month from '../Calendar/Month';
 import { ScheduleContext } from '../../contexts/ScheduleContext';
-import { scheduleActions } from '../../reducers/scheduleReducer';
+import { scheduleActions } from '../../redux/reducers/scheduleReducer';
 
 export default ScheduleTopBar = (props) => {
     [searchAppointmentStatus, setSearchAppointmentStatus] = useState(true);

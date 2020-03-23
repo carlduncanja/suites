@@ -9,7 +9,7 @@ export const caseActions = {
     HANDLESTEPCHANGE : 'HANDLESTEPCHANGE',
     NEWITEMPRESS : 'NEWITEMPRESS',
     HANDLESTEPITEMPRESS : 'HANDLESTEPITEMPRESS'
-}
+};
 
 export const caseFilesReducer = (state, action) =>{
     const { type, newState } = action
@@ -29,7 +29,7 @@ export const caseFilesReducer = (state, action) =>{
                     progressList : newState.progressList
                 }
             }
-    
+
         case caseActions.SETREPORTDETAILS:
             return {
                 ...state,
@@ -46,12 +46,12 @@ export const caseFilesReducer = (state, action) =>{
                 ...state,
                 newItemAction:{
                     ...state.newItemAction,
-                    itemTitle : newState.itemTitle, 
-                    itemSteps : newState.itemSteps, 
+                    itemTitle : newState.itemTitle,
+                    itemSteps : newState.itemSteps,
                     currentStepTabs : newState.currentStepTabs,
                 }
             }
-        
+
         case caseActions.TOGGLEREPORT:
             return {
                 ...state,
@@ -60,7 +60,7 @@ export const caseFilesReducer = (state, action) =>{
                     reportStatus : newState.reportStatus
                 }
             }
-    
+
         case caseActions.NEWITEMTABCHANGE:
             return {
                 ...state,
@@ -80,7 +80,7 @@ export const caseFilesReducer = (state, action) =>{
                     stepsCompletedList : newState.stepsCompletedList
                 }
             }
-        
+
         case caseActions.HANDLESTEPCHANGE:
             return {
                 ...state,
@@ -103,7 +103,7 @@ export const caseFilesReducer = (state, action) =>{
                     tabsCompletedList : newState.tabsCompletedList
                 }
             }
-        
+
         case caseActions.HANDLESTEPITEMPRESS:
             return {
                 ...state,
@@ -119,7 +119,7 @@ export const caseFilesReducer = (state, action) =>{
 
         default:
             return state
-        
+
     }
 
 

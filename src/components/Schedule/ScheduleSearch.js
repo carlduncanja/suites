@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import {View, StyleSheet, ScrollView, Text, Easing, Animated, Dimensions, TouchableOpacity} from 'react-native';
 import SearchBar from '../common/SearchBar';
 import TransparentScreen from '../common/TransparentScreen';
-import { scheduleActions } from '../../reducers/scheduleReducer';
+import { scheduleActions } from '../../redux/reducers/scheduleReducer';
 import { ScheduleContext } from '../../contexts/ScheduleContext';
 import { useCloseTransparent } from '../../hooks/useScheduleService';
 import moment from 'moment';

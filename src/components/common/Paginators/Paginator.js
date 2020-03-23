@@ -2,7 +2,7 @@ import React, {Component, useContext} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../../assets/SvgIcon';
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import { appActions } from '../../../reducers/suitesAppReducer';
+import { appActions } from '../../../redux/reducers/suitesAppReducer';
 
 const Paginator = () => {
     const [state, dispatch] = useContext(SuitesContext)

@@ -4,7 +4,7 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import OverlayList from '../../../common/List/OverlayList'
 import { ScrollView } from 'react-native-gesture-handler';
 import { getList } from '../../../../hooks/useListHook'
-import { appActions } from '../../../../reducers/suitesAppReducer';
+import { appActions } from '../../../../redux/reducers/suitesAppReducer';
 
 const Equipment = () => {
     

@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import SvgIcon from '../../../../assets/SvgIcon'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { withModal } from 'react-native-modalfy';
-import { appActions } from '../../../reducers/suitesAppReducer'
+import { appActions } from '../../../redux/reducers/suitesAppReducer'
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const FloatingActionButton = ({backgroundColor, fillColor, modal, modalToOpen,toggleActionButton}) => {

@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
-import {View, StyleSheet, Dimensions, TouchableWithoutFeedback, Easing} from 'react-native';
+import {View, StyleSheet, Dimensions, TouchableWithoutFeedback, Text, ActivityIndicator} from 'react-native';
 import Animated from 'react-native-reanimated'
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../components/common/Button';
@@ -10,109 +10,54 @@ import SchedulesList from "../components/Schedule/SchedulesList";
 import {useCurrentDays, useEndDays, useStartDays} from "../hooks/useScheduleService";
 import ScheduleContent from "../components/Schedule/ScheduleContent";
 import {ScheduleContext} from '../contexts/ScheduleContext';
-import {scheduleActions} from '../reducers/scheduleReducer';
+import {scheduleActions} from '../redux/reducers/scheduleReducer';
 import SearchBar from '../components/common/SearchBar'
 import {TouchableOpacity} from 'react-native-gesture-handler';
-
+import {getSchedules} from "../api/network";
+import {getDaysForMonth} from "../utils";
+import {connect} from 'react-redux'
+import {setAppointments} from "../redux/actions/appointmentActions"
+import {colors} from '../styles'
 
 
 const currentDate = new Date();
-const appointmentsObj = [
-    {
-        id: "3502193851",
-        scheduleType: {
-            "_id": 3,
-            "name": "Equipment",
-            "color": "red",
-            "description": "Equipments"
-        },
-        title: "Cardiac Catheterization - Dr. H. Buckley",
-        startTime: new Date(2020, 2, 8, 9),
-        endTime: new Date(2020, 2, 8, 10),
-        description: "",
-        additionalInfo: "",
-    },
-    {
-        id: "3502193852",
-        scheduleType: {
-            "_id": 3,
-            "name": "Equipment",
-            "color": "red",
-            "description": "Equipments"
-        },
-        title: "Coronary Bypass Graft - Dr. H. Buckley",
-        startTime: new Date(2020, 2, 8, 7),
-        endTime: new Date(2020, 2, 8, 8),
-        description: "",
-        additionalInfo: "",
-    },
-    {
-        id: "3502193853",
-        scheduleType: {
-            "_id": 2,
-            "name": "Restock",
-            "color": "yellow",
-            "description": "Equipments"
-        },
-        title: "Restock Gauze - Surgery Theater 6",
-        startTime: new Date(2020, 2, 8, 10),
-        endTime: new Date(2020, 2, 8, 11),
-        description: "",
-        additionalInfo: "",
-    },
-    {
-        id: "3502193854",
-        scheduleType: {
-            "_id": 1,
-            "name": "Equipment",
-            "color": "blue",
-            "description": ""
-        },
-        title: "MRI Machine #3 - Dr. J. Sullivan",
-        startTime: new Date(2020, 2, 11, 10),
-        endTime: new Date(2020, 2, 11, 11),
-        description: "",
-        additionalInfo: "",
-    },
-    {
-        id: "3502193856",
-        scheduleType: {
-            "_id": 3,
-            "name": "Surgery",
-            "color": "red",
-            "description": ""
-        },
-        title: "Biopsy, Breast (Breast Biopsy) - Dr. H. Carrington",
-        startTime: new Date(2020, 2, 11, 9),
-        endTime: new Date(2020, 2, 11, 10),
-        description: "",
-        additionalInfo: "",
-    },
-    {
-        id: "3502193859",
-        scheduleType: {
-            "_id": 3,
-            "name": "Surgery",
-            "color": "red",
-            "description": ""
-        },
-        title: "Biopsy, Breast (Breast Biopsy) - Dr. H. Carrington",
-        startTime: new Date(2020, 2, 10, 9),
-        endTime: new Date(2020, 2, 10, 10),
-        description: "",
-        additionalInfo: "",
-    }
-];
-
 
 const Schedule = (props) => {
+
+    const {
+
+        // Redux Props
+        appointments,
+        setAppointments
+    } = props;
+
+
+    const getSelectedIndex = (day, days = []) => days.indexOf(day);
+    const initialDaysList = getDaysForMonth(currentDate);
+    const initialIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), initialDaysList);
+    const matchesFound = 3;
+
+    const bottomSheetRef = useRef();
+
+    //########### States
     const [state, dispatch] = useContext(ScheduleContext);
     const [dimensions, setDimensions] = useState(Dimensions.get('window'));
 
-    const onChange = (dimensions) => {
-        setDimensions(dimensions);
-    };
+    const [selectedMonth, setSelectedMonth] = useState(currentDate);
+    const [selectedDay, setSelectedDay] = useState(currentDate);
+    const [daysList, setDaysList] = useState(initialDaysList);
+    const [selectedAppointment, setSelectedAppointment] = useState();
+    const [sectionListIndex, setSectionListIndex] = useState(initialIndex);
+    const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
+    const [textInput, setTextInput] = useState("");
+    const [currentSearchPosition, setCurrentSearchPosition] = useState(0);
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [isFetchingAppointment, setFetchingAppointments] = useState(false);
 
+    // animated states
+    const [fall] = useState(new Animated.Value(1));
+
+    //########### Event Listeners
     useEffect(() => {
         Dimensions.addEventListener("change", onChange);
         return () => {
@@ -120,40 +65,27 @@ const Schedule = (props) => {
         };
     });
 
-    const getDaysForMonth = (month) => {
-        const selectedMonth = moment(month).startOf('month');
+    useEffect(() => {
+        if (!appointments.length) {
+            setFetchingAppointments(true);
+            getSchedules()
+                .then(data => {
+                    setAppointments(data);
+                })
+                .catch(error => {
+                    console.log("failed to get appointments", error);
+                })
+                .finally(_ => {
+                    setFetchingAppointments(false)
+                })
+        }
+    }, []);
 
-        let pevMonthEndDays = useStartDays(month);
-        let nextMonthStartDays = useEndDays(month);
-        let currentMonthDays = useCurrentDays(selectedMonth.month() + 1, selectedMonth.year());
 
-        return pevMonthEndDays.concat(currentMonthDays.concat(nextMonthStartDays));
+    //########### Functions
+    const onChange = (dimensions) => {
+        setDimensions(dimensions);
     };
-
-    const getSelectedIndex = (day, days = []) => days.indexOf(day);
-    const initialDaysList = getDaysForMonth(currentDate);
-    const initialIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), initialDaysList);
-
-    const bottomSheetRef = useRef();
-    const schedulesListRef = useRef();
-
-    const [selectedMonth, setSelectedMonth] = useState(currentDate);
-    const [selectedDay, setSelectedDay] = useState(currentDate);
-    const [daysList, setDaysList] = useState(initialDaysList);
-    const [appointments, setAppointments] = useState(appointmentsObj);
-    const [selectedAppointment, setSelectedAppointment] = useState();
-    const [sectionListIndex, setSectionListIndex] = useState(initialIndex);
-    const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
-    const [displayTodayAppointment, setDisplayTodayAppointment] = useState(false);
-    const [textInput, setTextInput] = useState("");
-    const [currentSearchPosition, setCurrentSearchPosition] = useState(0);
-    const [searchOpen, setSearchOpen] = useState(false);
-    // const matchesFound = state.searchMatchesFound.length
-    const matchesFound = 3;
-
-    // animated states
-    const [fall] = useState(new Animated.Value(1));
-    const [slideDown] = useState(new Animated.Value(1))
 
     const renderShadow = () => {
         const animatedShadowOpacity = Animated.interpolate(fall, {
@@ -181,7 +113,6 @@ const Schedule = (props) => {
     };
 
     /**
-     *
      * @param date string "YYYY-MM-DD" for the selected day.
      */
     const handleOnDaySelected = (date) => {
@@ -193,7 +124,7 @@ const Schedule = (props) => {
     const handleOnGoToToday = () => {
         const currentDate = new Date();
         let date = moment(currentDate).format("YYYY-MM-DD").toString();
-        let currentDaysList = getDaysForMonth(currentDate)
+        let currentDaysList = getDaysForMonth(currentDate);
 
         setDaysList(getDaysForMonth(currentDate));
         setSelectedMonth(currentDate);
@@ -215,7 +146,6 @@ const Schedule = (props) => {
     const getSnapPoints = () => {
         // return [ dimensions.height || 500 * .5,  0]
         return [600, 500, 0]
-
     };
 
     const renderScheduleContent = (selectedSchedule) => () => {
@@ -297,7 +227,7 @@ const Schedule = (props) => {
                         <View style={{
                             position: 'absolute',
                             width: '100%',
-                            top:0,
+                            top: 0
                         }}>
                             <SearchBar
                                 changeText={searchChangeText}
@@ -308,7 +238,6 @@ const Schedule = (props) => {
                                 onPressNewSerch={pressNewSearch}
                                 onPressSubmit={pressSubmit}
                             />
-                            
                         </View>
                     </View>
                 }
@@ -349,15 +278,20 @@ const Schedule = (props) => {
                                 screenDimensions={props.screenDimensions}
                             />
                         </View>
-                        <View style={styles.scheduleContent}>
-                            <SchedulesList
-                                days={daysList}
-                                appointments={appointments}
-                                selectedIndex={sectionListIndex}
-                                onAppointmentPress={handleAppointmentPress}
-                                selectedMonth = {selectedMonth}
-                            />
-                        </View>
+                        {
+                            isFetchingAppointment
+                                ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
+                                    <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
+                                </View>
+                                : <View style={styles.scheduleContent}>
+                                    <SchedulesList
+                                        selectedIndex={sectionListIndex}
+                                        onAppointmentPress={handleAppointmentPress}
+                                        selectedDay={selectedDay}
+                                        month={selectedMonth}
+                                    />
+                                </View>
+                        }
                     </View>
                 </View>
 
@@ -392,7 +326,16 @@ const Schedule = (props) => {
     )
 };
 
-export default Schedule
+const mapStateToProps = (state) => ({
+    appointments: state.appointments
+});
+
+const mapDispatcherToProp = {
+    setAppointments
+};
+
+
+export default connect(mapStateToProps, mapDispatcherToProp)(Schedule)
 
 const styles = StyleSheet.create({
     container: {

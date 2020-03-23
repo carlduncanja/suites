@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { ViewModeHeading } from '../Headings/Headings'
 import TabsContainer from '../Tabs/TabsContainer'
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import { appActions } from '../../../reducers/suitesAppReducer';
+import { appActions } from '../../../redux/reducers/suitesAppReducer';
 import { transformToCamel } from '../../../hooks/useTextEditHook'
 
 const SlideHeader = () => {
