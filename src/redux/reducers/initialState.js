@@ -1,3 +1,4 @@
 export default {
-    appointments: []
+    appointments: [],
+    caseFiles : []
 }

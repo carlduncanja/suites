@@ -41,7 +41,7 @@ const ScheduleCalendar = ({month,appointments, days, selectedDate, screenDimensi
         return appointmentDays;
     };
 
-
+    // console.log("Appointment: ", appointments)
 
     return (
         <View style={{

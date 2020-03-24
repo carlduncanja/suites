@@ -12,8 +12,7 @@ import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import { transformToCamel } from '../../../hooks/useTextEditHook';
 
 
-const Page = ({pageTitle, placeholderText, changeText, inputText, routeName}) => {
-
+const Page = ({pageTitle, placeholderText, changeText, inputText, routeName, listData, listHeaders}) => {
     const [state,dispatch] = useContext(SuitesContext)
 
     const toggleActionButton = () => {
@@ -23,16 +22,16 @@ const Page = ({pageTitle, placeholderText, changeText, inputText, routeName}) =>
         })
     }
 
-    useEffect(()=>{
-        const array = require('../../../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
-        dispatch({
-            type:appActions.SETFLOATINGACTIONS,
-            newState: {
-                actionTitle:array[0].page,
-                actions:array[0].actions
-            }
-        })
-    }, routeName)
+    // useEffect(()=>{
+    //     const array = require('../../../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
+    //     dispatch({
+    //         type:appActions.SETFLOATINGACTIONS,
+    //         newState: {
+    //             actionTitle:array[0].page,
+    //             actions:array[0].actions
+    //         }
+    //     })
+    // }, routeName)
 
     useEffect(()=>{
         const menu = require('../../../../assets/db.json').overlayMenuTabs.filter(menu => menu.page === transformToCamel(routeName))
@@ -82,6 +81,9 @@ const Page = ({pageTitle, placeholderText, changeText, inputText, routeName}) =>
 
                 <View style={styles.list}>
                     <List
+                        listData = {listData}
+                        listHeaders = {listHeaders}
+                        routeName = {routeName}
                     />
                 </View>
 

@@ -26,15 +26,15 @@ const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress, isInSelect
 
     return (
         <TouchableOpacity style={[ styles.container,]} onPress={onDayPress}>
-            <View style={[styles.dayWrapper, {opacity}, isSelected ? styles.daySelected : {}]}>
+            <View style={[styles.dayWrapper, {}, isSelected ? styles.daySelected : {}]}>
                 {
                     isSelected &&
                     <DayIdentifier color="#3FC7F4"/>
                 }
-                <Text style={[styles.day, {color: color, marginTop: marginTop}]}>
+                <Text style={[styles.day, {color: color, opacity,marginTop: marginTop}]}>
                     {moment(day).format("D")}
                 </Text>
-                <Text style={{color: defaultColor, fontWeight: fontWeight}}>
+                <Text style={{color: defaultColor, opacity,fontWeight: fontWeight}}>
                     {moment(day).format("ddd").toUpperCase()}
                 </Text>
 
@@ -47,7 +47,8 @@ const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress, isInSelect
                             width: 24,
                             backgroundColor: '#CBD5E0',
                             borderRadius: 2,
-                            marginTop: 13
+                            marginTop: 13,
+                            opacity
                         }}
                     />
                 }
@@ -71,19 +72,22 @@ const styles = StyleSheet.create({
         color: '#718096',
     },
     dayWrapper: {
-        width: 92,
+        width: 96,
         height: 98,
         alignItems: 'center',
         padding:3,
         // paddingBottom: 24,
-        paddingTop: 3,
+        //paddingTop: 3,
         backgroundColor: '#FFFFFF',
-        borderColor: '#EDF2F7',
+        borderColor: '#E3E8EF',
         borderRightWidth: 0.5,
         borderBottomWidth: 0.5,
         borderTopWidth: 0.5,
     },
     daySelected: {
+        width:92,
+        backgroundColor:'green',
+        alignSelf:'center',
         shadowColor: "#000",
         backgroundColor: "#FFFFFF",
         shadowOffset: {

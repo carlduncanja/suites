@@ -26,7 +26,6 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
     const sectionListRef = useRef();
     const [isRefreshing, setRefreshing] = useState(false);
 
-
     useEffect(() => {
         const dayIndex = getSectionIndexForSelectedDay();
         scrollToIndex(dayIndex, true);
@@ -67,6 +66,10 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
         }));
     };
 
+    const isInMonth = (day) => {
+        return moment(new Date(day)).format("MM") === moment(month).format("MM") ? 1 : 0.6
+    }
+
     const scrollToIndex = (index, animated) => {
         if (!sectionListRef) return;
         sectionListRef.current.scrollToLocation({
@@ -103,7 +106,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                 onRefresh={onRefresh}
                 refreshing={isRefreshing}
                 keyExtractor={item => item.id + Math.random()}
-                onLayout={() => setTimeout(() => scrollToIndex(getSectionIndexForSelectedDay(), false), 250)}
+                //onLayout={() => scrollToIndex(getSectionIndexForSelectedDay(), false)}
                 // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
                 getItemLayout={sectionListGetItemLayout({
                     getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
@@ -119,7 +122,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                 stickySectionHeadersEnabled={true}
                 ItemSeparatorComponent={() => <View style={styles.separatorStyle}/>}
                 renderSectionHeader={({section: {title}}) => (
-                    <View style={styles.dateLabelContainer}>
+                    <View style={[styles.dateLabelContainer,{opacity: isInMonth(title)}]}>
                         <Text style={styles.dateLabel}>
                             {title}
                         </Text>
@@ -132,6 +135,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                         title={item.title}
                         onScheduleClick={() => onAppointmentPress(item)}
                         color={item.scheduleType && item.scheduleType.color || 'gray'}
+                        isInMonthOpacity = {isInMonth(item.startTime)} 
                     />
                 }}
             />
@@ -166,9 +170,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: 'rgba(247, 250, 252, 1)',
+        // backgroundColor: 'rgba(247, 250, 252, 1)',
+        backgroundColor:"#FFFFFF",
         borderWidth: 1,
-        borderColor: '#CBD5E0',
+        borderColor: '#E9E9E9',
         borderRadius: 16,
         paddingRight: 24,
         paddingLeft: 24,
@@ -184,13 +189,14 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     dateLabelContainer: {
-        backgroundColor: 'rgba(247, 250, 252, 1)',
+        // backgroundColor: 'rgba(247, 250, 252, 1)',
+        backgroundColor:'#FFFFFF',
         borderBottomColor: '#718096',
         borderBottomWidth: 1,
         paddingBottom: 5,
         marginBottom: 10,
         paddingTop: 24,
-        height: 50
+        height: 50,
     },
     dateLabel: {
         fontWeight: 'bold',

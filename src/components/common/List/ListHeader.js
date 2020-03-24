@@ -5,7 +5,7 @@ import { PartialCheckbox } from '../Checkbox/Checkboxes'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import Header from './Table/Header';
 
-const ListHeader = (props) => {
+const ListHeader = ({checkedItemList, listHeaders}) => {
     const [state] = useContext(SuitesContext)
     return ( 
         <View style = {styles.container}>
@@ -19,7 +19,7 @@ const ListHeader = (props) => {
                         <Checkbox/>
                     </TouchableOpacity>
             }
-           <Header headers={props.headers}/>
+           <Header headers={listHeaders}/>
         </View>
     );
 }

@@ -4,15 +4,15 @@ import ListHeader from './ListHeader';
 import ListData from './ListData';
 import { SuitesContext } from '../../../contexts/SuitesContext';
  
-const List = () => { 
+const List = ({listData, listHeaders, routeName}) => { 
     const [state] = useContext(SuitesContext)
     return ( 
         <View>
             <View style={styles.header}>
-                <ListHeader headers={state.list.listHeaders}/>
+                <ListHeader listHeaders={listHeaders}/>
             </View>
             <View style={styles.data}>
-                <ListData />
+                <ListData listData = {listData} routeName = {routeName}/>
             </View>
         </View>
     );

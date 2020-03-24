@@ -245,22 +245,28 @@ const Schedule = (props) => {
 
                 <View style={{flex: 1}}>
                     <View style={styles.scheduleTop}>
-                        <Button
-                            title="Search"
-                            buttonPress={searchPress}
-                            backgroundColor="#F7FAFC"
-                            color="#4A5568"
-                        />
+                        <View style={styles.buttonContainer}>
+                            <Button
+                                title="Search"
+                                buttonPress={searchPress}
+                                color="#4E5664"
+                            />
+                        </View>
+                        
 
                         <MonthSelector
                             selectedMonth={selectedMonth}
                             onMonthUpdated={handleOnMonthUpdated}
                         />
-
-                        <Button
-                            title={"Go to Today"}
-                            buttonPress={handleOnGoToToday}
-                        />
+                        
+                        <View style={styles.buttonContainer}>
+                            <Button
+                                title={"Go to Today"}
+                                buttonPress={handleOnGoToToday}
+                                color="#4E5664"
+                            />
+                        </View>
+                        
 
                     </View>
 
@@ -339,7 +345,8 @@ export default connect(mapStateToProps, mapDispatcherToProp)(Schedule)
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor:'#FAFAFA'
     },
 
     scheduleContainer: {
@@ -352,7 +359,8 @@ const styles = StyleSheet.create({
         paddingRight: 32,
         marginTop: 32,
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems:"center"
     },
     scheduleCalendar: {
         flex: 1,
@@ -366,7 +374,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         width: '100%',
         padding: 32,
-        paddingTop: 24
+        paddingTop: 24,
     },
     searchContainer: {
         ...StyleSheet.absoluteFillObject,
@@ -418,4 +426,14 @@ const styles = StyleSheet.create({
     mask: {
         backgroundColor: '#E5E5E5',
     },
+    buttonContainer:{
+        height:24,
+        width:91,
+        borderColor:'#CCD6E0',
+        borderRadius:4,
+        borderWidth:1,
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:"#FFFFFF"
+    }
 });

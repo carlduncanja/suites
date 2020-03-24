@@ -2,6 +2,20 @@ import axios from "./index"
 
 const appointments = [
     {
+        id: "35021393859",
+        scheduleType: {
+            "_id": 3,
+            "name": "Equipment",
+            "color": "red",
+            "description": "Equipments"
+        },
+        title: "Cardiac Catheterization - Dr. H. Buckley",
+        startTime: new Date(2020, 1, 26, 9),
+        endTime: new Date(2020, 1, 26, 10),
+        description: "",
+        additionalInfo: "",
+    },
+    {
         id: "35021393851",
         scheduleType: {
             "_id": 3,
@@ -168,14 +182,61 @@ const appointments = [
         endTime: new Date(2020, 2, 20, 11),
         description: "",
         additionalInfo: "",
-    }
+    },
+    {
+        id: "3502193953",
+        scheduleType: {
+            "_id": 2,
+            "name": "Restock",
+            "color": "yellow",
+            "description": "Equipments"
+        },
+        title: "Restock Gauze - Surgery Theater 6",
+        startTime: new Date(2020, 2, 20, 11),
+        endTime: new Date(2020, 2, 20, 12),
+        description: "",
+        additionalInfo: "",
+    },
+    {
+        id: "3502194854",
+        scheduleType: {
+            "_id": 1,
+            "name": "Equipment",
+            "color": "blue",
+            "description": ""
+        },
+        title: "MRI Machine #3 - Dr. J. Sullivan",
+        startTime: new Date(2020, 2, 20, 8),
+        endTime: new Date(2020, 2, 20, 9),
+        description: "",
+        additionalInfo: "",
+    },
+    {
+        id: "3502193954",
+        scheduleType: {
+            "_id": 1,
+            "name": "Equipment",
+            "color": "blue",
+            "description": ""
+        },
+        title: "MRI Machine #3 - Dr. J. Sullivan",
+        startTime: new Date(2020, 2, 20, 10),
+        endTime: new Date(2020, 2, 20, 12),
+        description: "",
+        additionalInfo: "",
+    },
 ];
 
-export const getSchedules = async () => {
+const caseFiles = require("../../assets/db.json").caseFiles.caseFilesInformation.data
 
+export const getSchedules = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return appointments
-
-
     //return axios.get('/schedules')
 };
+
+export const getCaseFiles = async () => {
+    await new Promise(r => setTimeout(r,2000));
+    return caseFiles
+    //return axios.get('/caseFiles')
+}

@@ -6,8 +6,6 @@ import { appActions } from '../../../redux/reducers/suitesAppReducer';
 
 const Paginator = () => {
     const [state, dispatch] = useContext(SuitesContext)
-    const totalPages = Math.ceil(state.list.listData.length/state.paginatorValues.recordsPerPage)
-
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={()=>dispatch({type:appActions.GOTOPREVIOUSPAGE})}>
@@ -15,7 +13,7 @@ const Paginator = () => {
             </TouchableOpacity>
 
             <View style={styles.numbersContainer}>
-                <Text style={styles.numbers}>{state.paginatorValues.currentPage} of {totalPages}</Text>
+                <Text style={styles.numbers}>{state.paginatorValues.currentPage} of {state.paginatorValues.totalPages}</Text>
             </View>
             <TouchableOpacity onPress={()=>dispatch({type:appActions.GOTONEXTPAGE})}>
                 <SvgIcon iconName = "paginationNext" strokeColor="#104587"/>

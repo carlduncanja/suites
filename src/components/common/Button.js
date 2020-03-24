@@ -20,14 +20,14 @@ export default Button
 const styles=StyleSheet.create({
     button:{
         //backgroundColor:'#F7FAFC',
-        borderRadius:4,
-        borderWidth:1,
-        borderColor:'#CBD5E0',
+        //borderRadius:4,
+        //borderWidth:1,
+        // borderColor:'#CBD5E0',
         alignItems:'center',
         justifyContent:'center',
         //padding:10,
         alignSelf:'center',
-        padding:5,
+        //padding:5,
         //width:91,
         //height:24,
 

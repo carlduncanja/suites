@@ -33,15 +33,16 @@ const DayOfMonth = ({day, isSelected, appointmentColors, onDayPress, isInSelectM
                       height: 7,
                       borderRadius: 7,
                       margin: 2,
-                      backgroundColor: item
+                      backgroundColor: item,
+                      opacity
                   }}
             />);
 
     return (
         <TouchableOpacity style={[styles.container,]} onPress={onDayPress}>
-            <View style={[styles.dayWrapper, {opacity}]}>
+            <View style={[styles.dayWrapper, {}]}>
                 {isSelected && <DayIdentifier color="#3FC7F4"/>}
-                <Text style={[styles.day, {color: color, marginTop: marginTop}]}>
+                <Text style={[styles.day, {color: color,opacity, marginTop: marginTop}]}>
                     {moment(day).format("D")}
                 </Text>
                 {

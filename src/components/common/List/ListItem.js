@@ -6,15 +6,12 @@ import Item from './Table/Item'
 import { appActions } from '../../../redux/reducers/suitesAppReducer'
 import { transformToCamel } from '../../../hooks/useTextEditHook';
 
-openModal = (props) => {
-    const { modalToOpen, modal } = props
-    modal.openModal(modalToOpen)
-}
-
 const ListItem = (props) => {
+    const { modalToOpen, modal, checkbox, listItem, routeName} = props
     const [state,dispatch] = useContext(SuitesContext)
 
     const getSelectedItem = (selectedId) => {
+        //fetch data from database
         const filterFiles = state.list.selectedSourceData.filter(item => item.id === selectedId)
         return filterFiles
     }
@@ -56,12 +53,12 @@ const ListItem = (props) => {
     }
 
     return (
-        <TouchableOpacity onPress={()=>{handleSelectedListItem(props.fields.recordId);this.openModal(props)}}>
+        <TouchableOpacity onPress={()=>{handleSelectedListItem(listItem.id);modal.openModal(modalToOpen)}}>
             <View style={styles.container}>
-                <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>toggleCheckbox(props.fields.recordId)}>
-                    {props.checkbox}
+                <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>toggleCheckbox(listItem.id)}>
+                    {checkbox}
                 </TouchableOpacity>
-                <Item fields = {props.fields}/>
+                    <Item listItem = {listItem} routeName = {routeName}/>
             </View>
         </TouchableOpacity>
     );
@@ -74,8 +71,10 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         flexWrap:'wrap',
         alignItems:'flex-start',
-        justifyContent:'center',
+        //justifyContent:'center',
         padding:10,
+        paddingBottom:12,
+        paddingTop:12,
         backgroundColor:'#FFFFFF',
         borderRadius:8,
         borderWidth:1,
@@ -83,14 +82,4 @@ const styles = StyleSheet.create({
         width:'100%',
         marginBottom:10
     },
-    item:{
-        flex:1,
-        // width:'25%',
-        alignItems:"flex-start",
-        justifyContent:'center',
-    },
-    itemText:{
-        fontSize:14,
-        color:"#4E5664",
-    }
 })

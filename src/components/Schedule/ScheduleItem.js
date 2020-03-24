@@ -19,17 +19,18 @@ export const SCHEDULE_TYPES = {
  * @param startTime dateObject
  * @param endTime dateObject
  * @param onScheduleClick function that returns and event
+ * @param isInMonthOpacity: number 
  * @returns {*}
  * @constructor
  */
-const ScheduleItem = ({color, title, startTime, endTime, onScheduleClick}) => {
+const ScheduleItem = ({color, title, startTime, endTime, onScheduleClick, isInMonthOpacity}) => {
 
     const getTime = (appointmentTime) => {
         return moment(appointmentTime).format("h : mm a")
     };
 
     return (
-        <View style={styles.card}>
+        <View style={[styles.card,{opacity:isInMonthOpacity}]}>
             <View
                 style={{
                     alignSelf: 'center',
@@ -45,10 +46,11 @@ const ScheduleItem = ({color, title, startTime, endTime, onScheduleClick}) => {
                     shadowOpacity: 0.35,
                     shadowRadius: 1.84,
                     elevation: 5,
+                    opacity : isInMonthOpacity
                 }}
             />
             <TouchableOpacity
-                style={styles.infoContainer}
+                style={[styles.infoContainer,{}]}
                 onPress={onScheduleClick}
             >
                 <Text style={styles.title}>

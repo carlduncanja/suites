@@ -52,19 +52,6 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
     // event handlers;
     const handleOnTabPress = (e, routeName) => {
         console.log("tab pressed", routeName);
-        //Dummy data
-        const listData = require('../../../assets/db.json').caseFiles.caseFilesInformation.data
-        const listHeaders  = require('../../../assets/db.json').caseFiles.caseFilesInformation.headers
-        const selectedData = require('../../../assets/db.json').caseFiles.caseDetails
-
-        dispatch({
-            type: appActions.SETLISTDATA,
-            newState : {
-                listData: getList(listData, listHeaders),
-                listHeaders : listHeaders,
-                selectedSourceData : selectedData
-            }
-        })
         navigation.navigate(routeName)
     };
 

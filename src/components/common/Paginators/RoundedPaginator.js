@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import Paginator from './Paginator';
 
  
-const RoundedPaginator = () => {
+const RoundedPaginator = ({totalItems}) => {
     return ( 
         <View style={styles.container}>
             <Paginator/>
