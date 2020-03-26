@@ -1,6 +1,6 @@
 import React, {Component, useCallback, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import CaseFilesListItem from '../ListItems/CaseFilesListItem';
+import CaseFilesListItem from './ListItems/CaseFilesListItem';
 
 const Item = ({listItem, routeName}) => {
     return ( 

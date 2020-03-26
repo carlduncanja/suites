@@ -1,5 +1,5 @@
 import React,{ useContext, useEffect, useState } from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Animated, Easing,} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Animated, Easing,ActivityIndicator} from 'react-native';
 import { ModalProvider, createModalStack } from "react-native-modalfy";
 import PageTitle from './PageTitle';
 import Search from '../Search';
@@ -10,9 +10,21 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 import { appActions } from '../../../redux/reducers/suitesAppReducer';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import { transformToCamel } from '../../../hooks/useTextEditHook';
+import {colors} from '../../../styles'
 
+/**
+ * @param placeholderText string
+ * @param changeText function
+ * @param inputText string
+ * @param routeName string
+ * @param listData array of objects
+ * @param listHeaders array of strings
+ * @param isFetchingData bool
+ * @returns {*}
+ * @constructor
+ */
 
-const Page = ({pageTitle, placeholderText, changeText, inputText, routeName, listData, listHeaders}) => {
+const Page = ({ placeholderText, changeText, inputText, routeName, listData, listHeaders, isFetchingData}) => {
     const [state,dispatch] = useContext(SuitesContext)
 
     const toggleActionButton = () => {
@@ -22,16 +34,16 @@ const Page = ({pageTitle, placeholderText, changeText, inputText, routeName, lis
         })
     }
 
-    // useEffect(()=>{
-    //     const array = require('../../../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
-    //     dispatch({
-    //         type:appActions.SETFLOATINGACTIONS,
-    //         newState: {
-    //             actionTitle:array[0].page,
-    //             actions:array[0].actions
-    //         }
-    //     })
-    // }, routeName)
+    useEffect(()=>{
+        const array = require('../../../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
+        dispatch({
+            type:appActions.SETFLOATINGACTIONS,
+            newState: {
+                actionTitle:array[0].page,
+                actions:array[0].actions
+            }
+        })
+    }, routeName)
 
     useEffect(()=>{
         const menu = require('../../../../assets/db.json').overlayMenuTabs.filter(menu => menu.page === transformToCamel(routeName))
@@ -67,7 +79,7 @@ const Page = ({pageTitle, placeholderText, changeText, inputText, routeName, lis
                 <View style={styles.header}>
                     <View style={{marginBottom:25}} onLayout = {(event)=> getSlideTop(event)}>
                         <PageTitle
-                            pageTitle = {pageTitle}
+                            pageTitle = {routeName}
                         />
                     </View>
                     <View style={{marginBottom:30}}>
@@ -80,11 +92,18 @@ const Page = ({pageTitle, placeholderText, changeText, inputText, routeName, lis
                 </View>
 
                 <View style={styles.list}>
-                    <List
-                        listData = {listData}
-                        listHeaders = {listHeaders}
-                        routeName = {routeName}
-                    />
+                    {isFetchingData ?
+                        <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
+                            <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
+                        </View>
+                        :
+                        <List
+                            listData = {listData}
+                            listHeaders = {listHeaders}
+                            routeName = {routeName}
+                        />
+                    }
+                    
                 </View>
 
                 <View style={styles.footer}>

@@ -1,25 +1,35 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, ActivityIndicator } from 'react-native'
 import Page from '../components/common/Page/Page';
 import { connect } from 'react-redux';
 import {setCaseFiles} from "../redux/actions/caseFilesActions";
 import {getCaseFiles} from "../api/network";
-import {colors} from '../styles'
 import { SuitesContext } from '../contexts/SuitesContext';
-import {appActions} from '../redux/reducers/suitesAppReducer'
+import {appActions} from '../redux/reducers/suitesAppReducer';
+import { transformToCamel } from '../hooks/useTextEditHook';
 
-const listData = require('../../assets/db.json').caseFiles.caseFilesInformation.data
 const listHeaders = require('../../assets/db.json').caseFiles.caseFilesInformation.headers
 
 const CaseFiles = (props) => {
+     // Redux props
+    const { caseFiles,setCaseFiles,navigation} = props
+
     const [textInput, setTextInput] = useState("") 
     const [isFetchingCaseFiles, setFetchingCaseFiles] = useState(false)
     const [state, dispatch] = useContext(SuitesContext)
     const changeText = (text) =>{setTextInput(text)}
-    // Redux props
-    const { caseFiles,setCaseFiles,navigation} = props
-   
     const routeName = navigation.state.routeName
+    
+    useEffect(()=>{
+        const floatingActions = require('../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
+        dispatch({
+            type:appActions.SETFLOATINGACTIONS,
+            newState: {
+                actionTitle:floatingActions[0].actionTitle,
+                actions:floatingActions[0].actions
+            }
+        })
+    })
+        
     useEffect(() => {
         if (!caseFiles.length) {
             setFetchingCaseFiles(true);
@@ -29,7 +39,7 @@ const CaseFiles = (props) => {
                     dispatch({
                         type: appActions.SETTOTALPAGES,
                         newState: {totalPages : Math.ceil(data.length/state.paginatorValues.recordsPerPage)}
-                    })
+                    });
                 })
                 .catch(error => {
                     console.log("failed to get case files", error);
@@ -41,20 +51,15 @@ const CaseFiles = (props) => {
     }, []);
 
     return (
-        isFetchingCaseFiles ?
-            <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-            </View>
-            :
-            <Page
-                pageTitle = {routeName}
-                placeholderText = {"Search by any heading or entry below"}
-                changeText = {changeText}
-                inputText = {textInput}
-                routeName = {routeName}
-                listData = {caseFiles}
-                listHeaders = {listHeaders}
-            />
+        <Page
+            isFetchingData = {isFetchingCaseFiles}
+            placeholderText = {"Search by any heading or entry below"}
+            changeText = {changeText}
+            inputText = {textInput}
+            routeName = {routeName}
+            listData = {caseFiles}
+            listHeaders = {listHeaders}
+        />
     );
 }
 

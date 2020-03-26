@@ -22,7 +22,8 @@ export const scheduleActions = {
     GOTONEXTSEARCHRESULT : 'GOTONEXTSEARCHRESULT',
     GOTOPREVIOUSSEARCHRESULT : 'GOTOPREVIOUSSEARCHRESULT',
     SETNEWSEARCH : 'SETNEWSEARCH',
-    GETSEARCHRESULT : 'GETSEARCHRESULT'
+    GETSEARCHRESULT : 'GETSEARCHRESULT',
+    SEARCHSELECTEDRESULT : 'SEARCHSELECTEDRESULT'
 }
 
 export const scheduleReducer = (state, action) => {
@@ -185,6 +186,12 @@ export const scheduleReducer = (state, action) => {
             return {
                 ...state,
                 searchValue : newState
+            }
+        
+        case scheduleActions.SEARCHSELECTEDRESULT:
+            return {
+                ...state,
+                searchSelectedResult : newState.searchSelectedResult
             }
 
         default:

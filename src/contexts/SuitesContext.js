@@ -10,6 +10,7 @@ const searchPlaceholder = "Search by any heading or entry below"
 const slideTopValue = 0
         //Take out for Nav
 const currentNavPage = "caseFiles";
+
 const list = {
     listData: [],
     listHeaders: [],
@@ -28,7 +29,8 @@ const slideOverlay = {
     slideOverlayHeader : {},
     slideOverlayTabInfo : {},
     slideOverlayList : [],
-    slideOverlayListHeaders : []
+    slideOverlayListHeaders : [],
+    slideOverlayButtonEdit : false
 }
 const selectedListItem = {
     selectedListItemId : "",
@@ -59,7 +61,7 @@ const state = {
     slideTopValue,
     pageMeasure,
     currentNavPage,
-    selectedListItem
+    selectedListItem,
 }
 
 export const SuitesContextProvider = (props) => {

@@ -1,26 +1,30 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createNavigator, TabRouter, SafeAreaView, ScrollView } from 'react-navigation';
 import OverlayMenuItems from './OverlayMenuItems';
+import { SuitesContext } from '../../../../contexts/SuitesContext';
 
 const ContentNavigator = ({ navigation, descriptors }) => {
   const { routes, index } = navigation.state;
   const descriptor = descriptors[routes[index].key];
 
   const ActiveScreen = descriptor.getComponent();
-
+  const [state] = useContext(SuitesContext)
   return (
     <SafeAreaView style={{ flex: 1,flexDirection: 'column'}}>
         <ScrollView style={{margin:20, marginBottom:0,}} > 
           <ActiveScreen navigation={descriptor.navigation}/>
         </ScrollView>
         
-        <View style={styles.footer}>
-          <OverlayMenuItems
-            descriptors={descriptors}
-            navigation={navigation}
-          />
-        </View>
+        { state.slideOverlay.slideOverlayButtonEdit === false &&
+          <View style={styles.footer}>
+            <OverlayMenuItems
+              descriptors={descriptors}
+              navigation={navigation}
+            />
+          </View>
+        }
+        
     </SafeAreaView>
   );
 };

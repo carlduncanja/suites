@@ -5,7 +5,7 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 
 export function EditModeHeading(){
     const [state] = useContext(SuitesContext)
-    return(
+    return( 
         <Heading 
             headerId={state.slideOverlay.slideOverlayHeader.id}
             headerName={state.slideOverlay.slideOverlayHeader.name}

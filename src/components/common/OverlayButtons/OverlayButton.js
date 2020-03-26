@@ -1,8 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import {View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { SuitesContext } from '../../../contexts/SuitesContext';
+import { appActions } from '../../../redux/reducers/suitesAppReducer';
 
 const Button = (props) =>{
+    const [state,dispatch] = useContext(SuitesContext)
+
     const buttonPress = () => {
+        dispatch({
+            type : appActions.SETOVERLAYEDITSTATE,
+            newState : {
+                slideOverlayButtonEdit : !state.slideOverlay.slideOverlayButtonEdit
+            }
+        })
         console.log("Button Press")
     }
     return(

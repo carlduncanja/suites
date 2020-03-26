@@ -2,7 +2,7 @@ import React, {Component, useCallback, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { withModal } from 'react-native-modalfy';
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import Item from './Table/Item'
+import Item from './Item'
 import { appActions } from '../../../redux/reducers/suitesAppReducer'
 import { transformToCamel } from '../../../hooks/useTextEditHook';
 
@@ -12,7 +12,8 @@ const ListItem = (props) => {
 
     const getSelectedItem = (selectedId) => {
         //fetch data from database
-        const filterFiles = state.list.selectedSourceData.filter(item => item.id === selectedId)
+        const selectedSource = require("../../../../assets/db.json").caseFiles.caseDetails
+        const filterFiles = selectedSource.filter(item => item.id === selectedId)
         return filterFiles
     }
 
@@ -29,22 +30,22 @@ const ListItem = (props) => {
         })
     }
 
-    const handleSelectedListItem = (listItemId) => {
+    const handleSelectedListItem = (listItem) => {
         const menuName = state.overlayMenu.menu[state.overlayMenu.selectedMenuItem].tabName
         const menuTab = state.overlayMenu.selectedMenuItemTabs[state.overlayMenu.selectedMenuItemCurrentTab]
-        let selectedObj = getSelectedItem(listItemId)
+        let selectedObj = getSelectedItem(listItem.id)
         selectedObj.length > 0 && (
             dispatch({
                 type: appActions.SETSELECTEDLISTITEM,
                 newState:{
-                    selectedListItemId : listItemId,
+                    selectedListItemId : listItem.id,
                     selectedListObject : selectedObj[0]
                 }
             }),
             dispatch({
                 type: appActions.SETSLIDEOVERLAY,
                 newState : {
-                    slideOverlayHeader : {"id":getPatient(listItemId).id,"name":`${getPatient(listItemId).name.firstName} ${getPatient(listItemId).name.middle} ${getPatient(listItemId).name.surname}`},
+                    slideOverlayHeader : {"id":listItem.id,"name":listItem.name},
                     slideOverlayStatus : true,
                     slideOverlayTabInfo : selectedObj[0][transformToCamel(menuName)][transformToCamel(menuTab)]
                 }
@@ -53,7 +54,7 @@ const ListItem = (props) => {
     }
 
     return (
-        <TouchableOpacity onPress={()=>{handleSelectedListItem(listItem.id);modal.openModal(modalToOpen)}}>
+        <TouchableOpacity onPress={()=>{handleSelectedListItem(listItem);modal.openModal(modalToOpen)}}>
             <View style={styles.container}>
                 <TouchableOpacity style={{alignSelf:'center', justifyContent:'center'}} onPress={()=>toggleCheckbox(listItem.id)}>
                     {checkbox}

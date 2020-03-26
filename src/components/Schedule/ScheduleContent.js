@@ -100,7 +100,7 @@ function ScheduleContent({scheduleItem : scheduleDetails = {}, screenDimensions}
                                     <Text style={{
                                         fontSize: 16,
                                         color: '#104587',
-                                        marginBottom: 10
+                                        marginBottom: 10,
                                     }}>#{scheduleDetails.id}</Text>
                                     <View style={{
                                         backgroundColor: '#EEF2F6',

@@ -20,6 +20,7 @@ import {getDaysForMonth} from "../../utils";
  * @returns {*}
  * @constructor
  */
+
 function SchedulesList({appointments, selectedDay, month, onAppointmentPress, setAppointments}) {
 
     const daysList = getDaysForMonth(month);

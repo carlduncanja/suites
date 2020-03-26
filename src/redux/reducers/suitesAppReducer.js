@@ -16,7 +16,8 @@ export const appActions = {
     SETSLIDEOVERLAYLIST : 'SETSLIDEOVERLAYLIST',
     TOGGLECHECKBOX : 'TOGGLECHECKBOX',
     SETPAGEMEASURES : 'SETPAGEMEASURES',
-    SETSLIDEVALUE : 'SETSLIDEVALUE'
+    SETSLIDEVALUE : 'SETSLIDEVALUE',
+    SETOVERLAYEDITSTATE : 'SETOVERLAYEDITSTATE',
 }
 
 export const suitesAppReducer = (state, action) => {
@@ -179,6 +180,15 @@ export const suitesAppReducer = (state, action) => {
                 }
             }
         
+        case appActions.SETOVERLAYEDITSTATE : 
+            return {
+                ...state, 
+                slideOverlay:{
+                    ...state.slideOverlay,
+                    slideOverlayButtonEdit : newState.slideOverlayButtonEdit,
+                }
+            }
+        
         case appActions.TOGGLECHECKBOX:
             return {
                 ...state,
@@ -200,6 +210,7 @@ export const suitesAppReducer = (state, action) => {
                 ...state,
                 slideTopValue:newState
             }
+        
         default:
             return state
     }

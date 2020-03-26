@@ -1,11 +1,11 @@
 import React,{Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';    
 import OverlayButton from '../OverlayButtons/OverlayButton';
 
 export default class Heading extends Component{
     render(){
         return(
-            <View style={[styles.container,{backgroundColor:this.props.backgroundColor}]}>
+            <View style={[styles.container,{}]}>
                 <Text style={{fontSize:16, marginBottom:5, color:this.props.headerIdColor}}>
                     {this.props.headerId}
                 </Text>
@@ -23,8 +23,8 @@ export default class Heading extends Component{
 
 const styles = StyleSheet.create({
     container:{
-        borderTopLeftRadius:16,
-        borderTopRightRadius:16,
+        // borderTopLeftRadius:30,
+        // borderTopRightRadius:30,
         flexDirection:'column',
         padding:20,
         paddingBottom:25,

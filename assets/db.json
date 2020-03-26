@@ -384,6 +384,7 @@
         },
         {
             "page":"caseFiles",
+            "actionTitle":"Case",
             "actions":[
                 {
                     "actionId":"archiveCase",

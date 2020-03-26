@@ -11,13 +11,14 @@ import {useCurrentDays, useEndDays, useStartDays} from "../hooks/useScheduleServ
 import ScheduleContent from "../components/Schedule/ScheduleContent";
 import {ScheduleContext} from '../contexts/ScheduleContext';
 import {scheduleActions} from '../redux/reducers/scheduleReducer';
-import SearchBar from '../components/common/SearchBar'
+import SearchBar from '../components/common/Search/SearchBar'
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {getSchedules} from "../api/network";
 import {getDaysForMonth} from "../utils";
 import {connect} from 'react-redux'
 import {setAppointments} from "../redux/actions/appointmentActions"
 import {colors} from '../styles'
+import { SuitesContext } from '../contexts/SuitesContext';
 
 
 const currentDate = new Date();
@@ -35,7 +36,12 @@ const Schedule = (props) => {
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialDaysList = getDaysForMonth(currentDate);
     const initialIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), initialDaysList);
-    const matchesFound = 3;
+    const matchesFound = [
+        "Coronary Bypass Graft",
+        "Cardioplastic Surgery",
+        "Colon Screening",
+        "Restock Cotton Swabs"
+    ];
 
     const bottomSheetRef = useRef();
 
@@ -102,7 +108,7 @@ const Schedule = (props) => {
                 <Animated.View
                     pointerEvents={isBottomSheetVisible ? 'auto' : 'none'}
                     style={[
-                        styles.shadowContainer,
+                        styles.shadowContainer ,
                         {
                             opacity: animatedShadowOpacity,
                         },
@@ -143,6 +149,12 @@ const Schedule = (props) => {
         if (bottomSheetRef) bottomSheetRef.current.snapTo(0);
     };
 
+    // useEffect(()=>{
+    //     if (state.searchSelectedResult !== "" && searchOpen){
+    //         if (bottomSheetRef) bottomSheetRef.current.snapTo(0) 
+    //     }
+    // },[state.searchSelectedResult,searchOpen])
+
     const getSnapPoints = () => {
         // return [ dimensions.height || 500 * .5,  0]
         return [600, 500, 0]
@@ -162,9 +174,23 @@ const Schedule = (props) => {
         </View>
     };
 
+    // const renderSearchContent = (selectedSearch) => () => {
+    //     return <View style={{
+    //         height: '100%',
+    //         width: '100%',
+    //         backgroundColor: 'white',
+    //         zIndex: 5
+    //     }}>
+    //         <Text>{selectedSearch}</Text>
+    //     </View>
+    // };
+
     const searchPress = () => {
         setSearchOpen(true)
     };
+    const closeSearch = () =>{
+        setSearchOpen(false)
+    }
 
     const searchChangeText = (textInput) => {
         setTextInput(textInput)
@@ -210,9 +236,11 @@ const Schedule = (props) => {
 
                         {/* Background Shadow View*/}
                         <TouchableWithoutFeedback
-                            onPress={() => {
-                                setSearchOpen(false)
-                            }}>
+                            // onPress={() => {
+                            //     setSearchOpen(false);
+                            //     bottomSheetRef.current.snapTo(2);
+                            // }}
+                            >
                             <View
                                 pointerEvents={searchOpen ? 'auto' : 'none'}
                                 style={[
@@ -227,9 +255,11 @@ const Schedule = (props) => {
                         <View style={{
                             position: 'absolute',
                             width: '100%',
+                            height:'100%',
                             top: 0
                         }}>
                             <SearchBar
+                                closeSearch = {closeSearch}
                                 changeText={searchChangeText}
                                 inputText={textInput}
                                 matchesFound={matchesFound}
@@ -378,7 +408,7 @@ const styles = StyleSheet.create({
     },
     searchContainer: {
         ...StyleSheet.absoluteFillObject,
-        zIndex: 5
+        zIndex: 5,
     },
 
     // Shadow

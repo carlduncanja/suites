@@ -11,7 +11,7 @@ import {useCurrentDays, useEndDays, useStartDays} from "../hooks/useScheduleServ
 import ScheduleContent from "../components/Schedule/ScheduleContent";
 import {ScheduleContext} from '../contexts/ScheduleContext';
 import {scheduleActions} from '../reducers/scheduleReducer';
-import SearchBar from '../components/common/SearchBar'
+import SearchBar from '../src/components/common/Search/SearchBar'
 
 const currentDate = new Date();
 const appointmentsObj = [

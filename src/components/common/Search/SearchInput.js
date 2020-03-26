@@ -1,9 +1,9 @@
 import React, { Component, useState } from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, TextInput} from 'react-native';
-import InputText from './InputText';
-import SvgIcon from '../../../assets/SvgIcon'
+import InputText from '../InputText';
+import SvgIcon from '../../../../assets/SvgIcon'
 
-const SearchBar = ({changeText, inputText, matchesFound, onPressNextResult, onPressPreviousResult, onPressNewSerch, onPressSubmit}) =>{
+const SearchInput = ({changeText, inputText, matchesFound, onPressNextResult, onPressPreviousResult, onPressNewSerch, onPressSubmit}) =>{
     return(
         <View style={styles.searchBar}>
             <View style={[styles.container, styles.searchContent]}>
@@ -64,7 +64,7 @@ const SearchBar = ({changeText, inputText, matchesFound, onPressNextResult, onPr
         </View>
     )
 }
-export default SearchBar
+export default SearchInput
 
 const styles=StyleSheet.create({
     searchBar:{

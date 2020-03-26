@@ -24,7 +24,9 @@ const initialState = {
     goToToday: false,
     appointmentDates: [],
     _scrollView: null,
-    _scrollAppointment: null
+    _scrollAppointment: null,
+    searchSelectedResult  : ''
+
 };
 
 export const ScheduleContext = createContext(initialState);
