@@ -39,11 +39,11 @@ const Schedule = (props) => {
         "Coronary Bypass Graft",
         "Cardioplastic Surgery",
         "Colon Screening",
-        new Date(2020, 3, 9, 10),
+        new Date(2020, 2, 11, 9),
         "Restock Cotton Swabs",
         "MRI Machine #3",
         "Restock Surgical Masks",
-        new Date(2020, 3, 6, 10),
+        new Date(2020, 2, 20, 9),
         new Date(2020, 3, 8, 10),
         "Restock Gauze"
     ];

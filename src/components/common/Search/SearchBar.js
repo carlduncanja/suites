@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect, useRef, useContext } from 'react';
-import {View, StyleSheet, TouchableOpacity, Text, TextInput, Animated, SectionList, Dimensions} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text, Animated, SectionList} from 'react-native';
 import SearchInput from './SearchInput'
 import { scheduleActions } from '../../../redux/reducers/scheduleReducer';
 import { ScheduleContext } from '../../../contexts/ScheduleContext';
@@ -32,10 +32,7 @@ const SearchBar = (props) =>{
         return [600, 100, 0]
     };
 
-    const getSectionListData = (appointments = []) => {
-        let appointmentList = [...appointments]
-        let selectedResults = appointmentList.filter(appointment => appointment.title.includes(selectedSuggestion))
-
+    const getDataForAppTitle = (selectedResults) => {
         return selectedResults.map(result => {
             const title = moment(result.startTime).format("dddd - MMM D");
             let appointmentForDay = [];
@@ -51,50 +48,90 @@ const SearchBar = (props) =>{
                 }
                 --index
             }
-
-            // console.log("APP FOR DAY: ", title, appointmentForDay)
             return {
                 title,
                 data: appointmentForDay,
             }
         })
+    }
+
+    const getDataForAppDate = (selectedResults) => {
+        return selectedResults.length > 0 ? 
+            [
+                {
+                    title : moment(selectedSuggestion).format("MMMM DD, YYYY"),
+                    data : selectedResults
+                }
+            ]
+            :
+            []
+    }
+
+    const getSectionListData = (appointments = []) => {
+        let appointmentList = [...appointments]
+        let selectedResults = appointmentList.filter(appointment => appointment.title.includes(selectedSuggestion))
+        let selectedDateResults = appointmentList.filter(appointment => moment(appointment.startTime).format("YYYY-MM-DD") === moment(selectedSuggestion).format("YYYY-MM-DD"))
+        let DATA = selectedSuggestion === "" ? [] : typeof selectedSuggestion === 'string' ? getDataForAppTitle(selectedResults) : getDataForAppDate(selectedDateResults)
+        return (
+            <View style={styles.sectionContainer}>
+                {DATA.length === 0 ?
+                    <View>
+                        <View style={[styles.dateLabelContainer]}>
+                            <Text style={styles.dateLabel}>
+                                {
+                                    typeof selectedSuggestion === 'string' ?
+                                        selectedSuggestion
+                                        :
+                                        moment(selectedSuggestion).format("MMMM DD, YYYY")
+                                }
+                            </Text>
+                        </View>
+                        <View style={{margin:10}}>
+                            <Text style={{fontSize:18,color:'#CBD5E0',fontStyle:'italic',fontWeight:'600'}}>No results found</Text>
+                        </View>
+                    </View>
+                    
+                    :
+                    <SectionList
+                        keyExtractor={item => Math.random()}
+                        sections = {DATA}
+                        stickySectionHeadersEnabled={true}
+                        ItemSeparatorComponent={() => <View style={styles.separatorStyle}/>}
+                        renderSectionHeader={({section: {title}}) => (
+                            <View style={[styles.dateLabelContainer]}>
+                                <Text style={styles.dateLabel}>
+                                    {title}
+                                </Text>
+                            </View>
+                        )}
+                        renderItem={({item}) => {
+                            return (
+                                <ScheduleItem
+                                    startTime={item.startTime}
+                                    endTime={item.endTime}
+                                    title={item.title}
+                                    onScheduleClick={() => handleClick()}
+                                    color={item.scheduleType && item.scheduleType.color || 'gray'}
+                                    isInMonthOpacity = {1} 
+                                />
+                            )
+                        }}
+                    /> 
+                }
+            </View>  
+        )
     };
 
     const handleClick = () =>{}
 
     const renderSearchContent = () => () => {
-        const DATA = selectedSuggestion !== "" ? getSectionListData(appointments) : []
         return <View style={{
             height: '100%',
             width: '100%',
             backgroundColor: 'white',
             zIndex: 5
         }}>
-            <View style={styles.sectionContainer}>
-                <SectionList
-                    keyExtractor={item => Math.random()}
-                    sections = {DATA}
-                    stickySectionHeadersEnabled={true}
-                    ItemSeparatorComponent={() => <View style={styles.separatorStyle}/>}
-                    renderSectionHeader={({section: {title}}) => (
-                        <View style={[styles.dateLabelContainer]}>
-                            <Text style={styles.dateLabel}>
-                                {title}
-                            </Text>
-                        </View>
-                    )}
-                    renderItem={({item}) => {
-                        return <ScheduleItem
-                            startTime={item.startTime}
-                            endTime={item.endTime}
-                            title={item.title}
-                            onScheduleClick={() => handleClick()}
-                            color={item.scheduleType && item.scheduleType.color || 'gray'}
-                            isInMonthOpacity = {1} 
-                        />
-                    }}
-                /> 
-            </View>
+            {getSectionListData(appointments)}
         </View>
     };
 
@@ -241,13 +278,6 @@ const styles=StyleSheet.create({
         justifyContent:'center',
     },
     sectionContainer: {
-        // flex: 1,
-        // flexDirection: 'column',
-        // backgroundColor: 'rgba(247, 250, 252, 1)',
-        // backgroundColor:"#FFFFFF",
-        // borderWidth: 1,
-        // borderColor: '#E9E9E9',
-        // borderRadius: 16,
         paddingRight: 24,
         paddingLeft: 24,
     },
