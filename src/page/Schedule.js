@@ -26,7 +26,6 @@ const currentDate = new Date();
 const Schedule = (props) => {
 
     const {
-
         // Redux Props
         appointments,
         setAppointments
@@ -40,7 +39,13 @@ const Schedule = (props) => {
         "Coronary Bypass Graft",
         "Cardioplastic Surgery",
         "Colon Screening",
-        "Restock Cotton Swabs"
+        new Date(2020, 3, 9, 10),
+        "Restock Cotton Swabs",
+        "MRI Machine #3",
+        "Restock Surgical Masks",
+        new Date(2020, 3, 6, 10),
+        new Date(2020, 3, 8, 10),
+        "Restock Gauze"
     ];
 
     const bottomSheetRef = useRef();
@@ -267,6 +272,7 @@ const Schedule = (props) => {
                                 onPressPreviousResult={pressPreviousSearchResult}
                                 onPressNewSerch={pressNewSearch}
                                 onPressSubmit={pressSubmit}
+                                appointments={appointments}
                             />
                         </View>
                     </View>

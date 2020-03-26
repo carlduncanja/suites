@@ -150,8 +150,8 @@ const appointments = [
             "description": ""
         },
         title: "MRI Machine #3 - Dr. J. Sullivan",
-        startTime: new Date(2020, 2, 20, 10),
-        endTime: new Date(2020, 2, 20, 11),
+        startTime: new Date(2020, 2, 20, 13),
+        endTime: new Date(2020, 2, 20, 14),
         description: "",
         additionalInfo: "",
     },
@@ -206,8 +206,8 @@ const appointments = [
             "description": ""
         },
         title: "MRI Machine #3 - Dr. J. Sullivan",
-        startTime: new Date(2020, 2, 20, 8),
-        endTime: new Date(2020, 2, 20, 9),
+        startTime: new Date(2020, 2, 20, 9),
+        endTime: new Date(2020, 2, 20, 10),
         description: "",
         additionalInfo: "",
     },

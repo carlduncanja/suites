@@ -18,7 +18,7 @@ const SearchInput = ({changeText, inputText, matchesFound, onPressNextResult, on
                         placeholderTextColor = "#A0AEC0"
                         placeholder=""
                     />
-                    </View>
+                    </View> 
 
                 </View>
                 <View style={{flexDirection:'row', alignSelf:'flex-start'}}>
