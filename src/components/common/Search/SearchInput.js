@@ -3,6 +3,18 @@ import {View, StyleSheet, TouchableOpacity, Text, TextInput} from 'react-native'
 import InputText from '../InputText';
 import SvgIcon from '../../../../assets/SvgIcon'
 
+/**
+ *
+ * @param changeText
+ * @param inputText
+ * @param matchesFound
+ * @param onPressNextResult
+ * @param onPressPreviousResult
+ * @param onPressNewSerch
+ * @param onPressSubmit
+ * @returns {*}
+ * @constructor
+ */
 const SearchInput = ({changeText, inputText, matchesFound, onPressNextResult, onPressPreviousResult, onPressNewSerch, onPressSubmit}) =>{
     return(
         <View style={styles.searchBar}>
@@ -18,7 +30,7 @@ const SearchInput = ({changeText, inputText, matchesFound, onPressNextResult, on
                         placeholderTextColor = "#A0AEC0"
                         placeholder=""
                     />
-                    </View> 
+                    </View>
 
                 </View>
                 <View style={{flexDirection:'row', alignSelf:'flex-start'}}>

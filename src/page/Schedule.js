@@ -7,18 +7,14 @@ import moment from 'moment';
 import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import MonthSelector from "../components/Calendar/MonthSelector";
 import SchedulesList from "../components/Schedule/SchedulesList";
-import {useCurrentDays, useEndDays, useStartDays} from "../hooks/useScheduleService";
 import ScheduleContent from "../components/Schedule/ScheduleContent";
 import {ScheduleContext} from '../contexts/ScheduleContext';
-import {scheduleActions} from '../redux/reducers/scheduleReducer';
-import SearchBar from '../components/common/Search/SearchBar'
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {getSchedules} from "../api/network";
 import {getDaysForMonth} from "../utils";
 import {connect} from 'react-redux'
 import {setAppointments} from "../redux/actions/appointmentActions"
 import {colors} from '../styles'
-import { SuitesContext } from '../contexts/SuitesContext';
+import ScheduleSearchContainer from "../components/common/Search/ScheduleSearchContainer";
 
 
 const currentDate = new Date();
@@ -31,42 +27,32 @@ const Schedule = (props) => {
         setAppointments
     } = props;
 
-
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialDaysList = getDaysForMonth(currentDate);
     const initialIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), initialDaysList);
-    const matchesFound = [
-        "Coronary Bypass Graft",
-        "Cardioplastic Surgery",
-        "Colon Screening",
-        new Date(2020, 2, 11, 9),
-        "Restock Cotton Swabs",
-        "MRI Machine #3",
-        "Restock Surgical Masks",
-        new Date(2020, 2, 20, 9),
-        new Date(2020, 3, 8, 10),
-        "Restock Gauze"
-    ];
 
     const bottomSheetRef = useRef();
 
     //########### States
     const [state, dispatch] = useContext(ScheduleContext);
     const [dimensions, setDimensions] = useState(Dimensions.get('window'));
+    const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
+    // calendar states
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
     const [selectedDay, setSelectedDay] = useState(currentDate);
     const [daysList, setDaysList] = useState(initialDaysList);
+
+    // appointment states
     const [selectedAppointment, setSelectedAppointment] = useState();
     const [sectionListIndex, setSectionListIndex] = useState(initialIndex);
-    const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
-    const [textInput, setTextInput] = useState("");
-    const [currentSearchPosition, setCurrentSearchPosition] = useState(0);
-    const [searchOpen, setSearchOpen] = useState(false);
     const [isFetchingAppointment, setFetchingAppointments] = useState(false);
 
+    // search states
+    const [searchOpen, setSearchOpen] = useState(false);
+
     // animated states
-    const [fall] = useState(new Animated.Value(1));
+    const [fall] = useState(new Animated.Value(1)); // used to animate show for bottom sheet.
 
     //########### Event Listeners
     useEffect(() => {
@@ -92,7 +78,6 @@ const Schedule = (props) => {
         }
     }, []);
 
-
     //########### Functions
     const onChange = (dimensions) => {
         setDimensions(dimensions);
@@ -113,7 +98,7 @@ const Schedule = (props) => {
                 <Animated.View
                     pointerEvents={isBottomSheetVisible ? 'auto' : 'none'}
                     style={[
-                        styles.shadowContainer ,
+                        styles.shadowContainer,
                         {
                             opacity: animatedShadowOpacity,
                         },
@@ -123,7 +108,7 @@ const Schedule = (props) => {
         )
     };
 
-    /**
+    /*
      * @param date string "YYYY-MM-DD" for the selected day.
      */
     const handleOnDaySelected = (date) => {
@@ -154,11 +139,6 @@ const Schedule = (props) => {
         if (bottomSheetRef) bottomSheetRef.current.snapTo(0);
     };
 
-    // useEffect(()=>{
-    //     if (state.searchSelectedResult !== "" && searchOpen){
-    //         if (bottomSheetRef) bottomSheetRef.current.snapTo(0) 
-    //     }
-    // },[state.searchSelectedResult,searchOpen])
 
     const getSnapPoints = () => {
         // return [ dimensions.height || 500 * .5,  0]
@@ -179,54 +159,13 @@ const Schedule = (props) => {
         </View>
     };
 
-    // const renderSearchContent = (selectedSearch) => () => {
-    //     return <View style={{
-    //         height: '100%',
-    //         width: '100%',
-    //         backgroundColor: 'white',
-    //         zIndex: 5
-    //     }}>
-    //         <Text>{selectedSearch}</Text>
-    //     </View>
-    // };
 
     const searchPress = () => {
         setSearchOpen(true)
     };
-    const closeSearch = () =>{
+
+    const closeSearch = () => {
         setSearchOpen(false)
-    }
-
-    const searchChangeText = (textInput) => {
-        setTextInput(textInput)
-    };
-
-    const pressNextSearchResult = () => {
-        currentSearchPosition < matchesFound &&
-        setCurrentSearchPosition(currentSearchPosition + 1)
-    };
-
-    const pressPreviousSearchResult = () => {
-        currentSearchPosition > 0 &&
-        setCurrentSearchPosition(currentSearchPosition - 1)
-    };
-
-    const pressNewSearch = () => {
-        setTextInput("");
-        dispatch({
-            type: 'SETNEWSEARCH',
-            newState: {
-                searchValue: "",
-                searchMatchesFound: []
-            }
-        })
-    };
-
-    const pressSubmit = () => {
-        dispatch({
-            type: 'GETSEARCHRESULT',
-            newState: textInput
-        })
     };
 
     return (
@@ -236,47 +175,14 @@ const Schedule = (props) => {
                     ...styles.scheduleContainer
                 }}>
 
-                {
-                    searchOpen && <View style={styles.searchContainer}>
-
-                        {/* Background Shadow View*/}
-                        <TouchableWithoutFeedback
-                            // onPress={() => {
-                            //     setSearchOpen(false);
-                            //     bottomSheetRef.current.snapTo(2);
-                            // }}
-                            >
-                            <View
-                                pointerEvents={searchOpen ? 'auto' : 'none'}
-                                style={[
-                                    styles.shadowContainer,
-                                    {
-                                        opacity: .5,
-                                    },
-                                ]}
-                            />
-                        </TouchableWithoutFeedback>
-
-                        <View style={{
-                            position: 'absolute',
-                            width: '100%',
-                            height:'100%',
-                            top: 0
-                        }}>
-                            <SearchBar
-                                closeSearch = {closeSearch}
-                                changeText={searchChangeText}
-                                inputText={textInput}
-                                matchesFound={matchesFound}
-                                onPressNextResult={pressNextSearchResult}
-                                onPressPreviousResult={pressPreviousSearchResult}
-                                onPressNewSerch={pressNewSearch}
-                                onPressSubmit={pressSubmit}
-                                appointments={appointments}
-                            />
-                        </View>
-                    </View>
-                }
+                <ScheduleSearchContainer
+                    isOpen={searchOpen}
+                    onSearchResultSelected={(appointment) => {
+                        closeSearch();
+                        handleAppointmentPress(appointment)
+                    }}
+                    onSearchClose={closeSearch}
+                />
 
 
                 <View style={{flex: 1}}>
@@ -288,13 +194,13 @@ const Schedule = (props) => {
                                 color="#4E5664"
                             />
                         </View>
-                        
+
 
                         <MonthSelector
                             selectedMonth={selectedMonth}
                             onMonthUpdated={handleOnMonthUpdated}
                         />
-                        
+
                         <View style={styles.buttonContainer}>
                             <Button
                                 title={"Go to Today"}
@@ -302,7 +208,7 @@ const Schedule = (props) => {
                                 color="#4E5664"
                             />
                         </View>
-                        
+
 
                     </View>
 
@@ -382,7 +288,7 @@ export default connect(mapStateToProps, mapDispatcherToProp)(Schedule)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor:'#FAFAFA'
+        backgroundColor: '#FAFAFA'
     },
 
     scheduleContainer: {
@@ -396,7 +302,7 @@ const styles = StyleSheet.create({
         marginTop: 32,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems:"center"
+        alignItems: "center"
     },
     scheduleCalendar: {
         flex: 1,
@@ -462,14 +368,14 @@ const styles = StyleSheet.create({
     mask: {
         backgroundColor: '#E5E5E5',
     },
-    buttonContainer:{
-        height:24,
-        width:91,
-        borderColor:'#CCD6E0',
-        borderRadius:4,
-        borderWidth:1,
-        alignItems:'center',
-        justifyContent:'center',
-        backgroundColor:"#FFFFFF"
+    buttonContainer: {
+        height: 24,
+        width: 91,
+        borderColor: '#CCD6E0',
+        borderRadius: 4,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: "#FFFFFF"
     }
 });
