@@ -329,13 +329,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
     },
 
-    searchContent: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        backgroundColor: 'white',
-        padding: 15,
-    },
     topContainer: {
         marginLeft: '4%',
         marginRight: '4%',
