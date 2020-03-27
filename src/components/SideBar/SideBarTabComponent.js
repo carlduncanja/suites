@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {Component} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
-import Svg, { Path, Rect } from 'react-native-svg';
+import Svg, {Path, Rect} from 'react-native-svg';
 import SvgIcon from '../../../assets/SvgIcon';
 
 
@@ -11,7 +11,7 @@ import SvgIcon from '../../../assets/SvgIcon';
 export default ({tabName, icon, isTabSelected, onTabPress}) => {
 
     const generateIcon = (iconName, colour) => {
-        return <SvgIcon iconName={iconName} strokeColor={colour} />
+        return <SvgIcon iconName={iconName} strokeColor={colour}/>
     };
 
     const svgLeftCorner = (fillColor) => {
@@ -29,12 +29,12 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
 
     const svgRightCorner = (fillColor) => {
         return (
-            <Svg width={12} height={12} viewBox="0 0 12 12" style={{alignSelf:"flex-end"}}>
+            <Svg width={12} height={12} viewBox="0 0 12 12" style={{alignSelf: "flex-end"}}>
                 <Path
                     fill-rule="evenodd"
                     clip-rule="evenodd"
                     d="M12 12V0C12 6.62742 6.62742 12 0 12H12Z"
-                    fill= {fillColor}
+                    fill={fillColor}
                 />
             </Svg>
         )
@@ -44,7 +44,7 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
     const TabIcon = icon;
 
     return (
-        <View style={  {...styles.container} }  >
+        <View style={{...styles.container}}>
             <TouchableOpacity style={styles.navTag} onPress={onTabPress}>
 
                 {
@@ -52,35 +52,26 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
                 }
 
                 {
-                   <View style={{
-                       display: 'flex',
-                       alignItems: 'center',
-                       justifyContent: 'center',
-                       height: 60,
-                       width: '100%',
-                       backgroundColor: isTabSelected ? 'white' : 'none',
-                       shadowColor: "#000",
-                       shadowOffset: {
-                           width: 1,
-                           height: 4,
-                       },
-                       shadowOpacity: 0.5,
-                       shadowRadius: 2,
-                       elevation: 5
-                   }}>
+                    <View style={
+                        [
+                            styles.iconContainer,
+                            {backgroundColor: isTabSelected ? 'white' : 'none'},
+                            isTabSelected ? styles.shadow : {}
+                        ]
+                    }>
 
-                       <TabIcon strokeColor={iconColor}/>
+                        <TabIcon strokeColor={iconColor}/>
 
-                       {
-                           <Text style={{
-                               ...styles.navText,
-                               display:  isTabSelected ? 'none' : 'flex'
-                           }}>
-                               {tabName.toUpperCase()}
-                           </Text>
-                       }
+                        {
+                            <Text style={{
+                                ...styles.navText,
+                                display: isTabSelected ? 'none' : 'flex'
+                            }}>
+                                {tabName.toUpperCase()}
+                            </Text>
+                        }
 
-                   </View>
+                    </View>
                 }
 
                 {
@@ -108,4 +99,22 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         color: '#fff',
     },
+    iconContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 60,
+        width: '100%',
+    },
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 1,
+            height: 4,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 5
+    },
+
 });

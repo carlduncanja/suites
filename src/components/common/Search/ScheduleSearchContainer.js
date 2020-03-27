@@ -58,6 +58,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
 
         const search = _.debounce(sendQuery, 300);
 
+        // saving function
         setSearchQuery(prevSearch => {
             if (prevSearch.cancel) {
                 prevSearch.cancel();
@@ -126,6 +127,14 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
 
     };
 
+    const formatResult = (result) => {
+        return result.map(item => {
+            const title = item.title;
+            const time = "  9 am - 10pm"
+
+            return title + time;
+        });
+    };
 
     return (
         isOpen
@@ -153,7 +162,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
                         closeSearch={handleOnSearchClose}
                         changeText={searchChangeText}
                         inputText={searchInput}
-                        matchesFound={searchResults.map(item => item.title)}
+                        matchesFound={formatResult(searchResults)}
                         onPressNextResult={pressNextSearchResult}
                         onPressPreviousResult={pressPreviousSearchResult}
                         onPressNewSerch={pressNewSearch}
