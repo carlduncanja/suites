@@ -50,7 +50,11 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
     const searchChangeText = (textInput) => {
         setSearchInput(textInput);
 
-        if (!searchInput) return;
+        if (!searchInput) {
+            setSearchResult([]);
+            // TODO cancel all request
+            return;
+        }
 
         const search = _.debounce(sendQuery, 300);
 
@@ -73,7 +77,6 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
     const sendQuery = async value => {
         const results = await searchSchedule(value);
 
-        console.log("Search Results", results);
         // TODO implement and handle api call cancellation logic
 
         setSearchResult(results)
@@ -108,9 +111,19 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
     };
 
     const handleOnSearchResultSelected = (selectedIndex) => {
-        const selectedAppointment = searchResults.indexOf(selectedIndex);
-
+        const selectedAppointment = searchResults[selectedIndex];
         onSearchResultSelected(selectedAppointment);
+    };
+
+    const handleOnSearchClose = () => {
+        onSearchClose();
+
+        // reset states
+        setSearchInput("");
+        setSearchResult([])
+        // TODO cancel any ongoing search request
+        // TODO animate closing
+
     };
 
 
@@ -137,7 +150,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
                     top: 0,
                 }}>
                     <SearchBar
-                        closeSearch={onSearchClose}
+                        closeSearch={handleOnSearchClose}
                         changeText={searchChangeText}
                         inputText={searchInput}
                         matchesFound={searchResults.map(item => item.title)}
