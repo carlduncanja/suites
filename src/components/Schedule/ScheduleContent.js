@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import moment from "moment";
 
@@ -9,12 +9,13 @@ import moment from "moment";
  * @returns {*}
  * @constructor
  */
-function ScheduleContent({scheduleItem : scheduleDetails = {}, screenDimensions}) {
+function ScheduleContent({scheduleItem: scheduleDetails = {}, screenDimensions}) {
 
     const {
         id = "",
         responseEntity = "",
         title = "",
+        subTitle = "",
         location = "",
         surgeons = {},
         doctors = {},
@@ -23,6 +24,8 @@ function ScheduleContent({scheduleItem : scheduleDetails = {}, screenDimensions}
         endTime = new Date()
     } = scheduleDetails;
 
+    const [isFetchingDetails, setFetchingDetails] = useState();
+
     /**
      * @param scheduleDate - date object
      */
@@ -30,7 +33,6 @@ function ScheduleContent({scheduleItem : scheduleDetails = {}, screenDimensions}
         let date = moment(scheduleDate);
         return date.format("h:mm a");
     };
-
 
     const formatDate = (scheduleDate) => {
         let date = moment(scheduleDate);
@@ -49,6 +51,21 @@ function ScheduleContent({scheduleItem : scheduleDetails = {}, screenDimensions}
         } else {
             return "Ended"
         }
+    };
+
+    const caseProcedureAppointmentView = (caseProcedure) => {
+        return <View>
+
+        </View>
+    };
+
+    const restockingAppointmentView = (restocking) => {
+    };
+
+    const equipmentAppointmentView = () => {
+    };
+
+    const deliveryAppointmentView = () => {
     };
 
 
@@ -83,110 +100,116 @@ function ScheduleContent({scheduleItem : scheduleDetails = {}, screenDimensions}
     //const personnel = [...scheduleDetails.surgeons, ...scheduleDetails.doctors];
 
     return (
-            // !scheduleDetails
-            // ? <View/>
-            // :
-                <TouchableOpacity style={{flex: 1}} activeOpacity={1}>
-                    <ScrollView
-                        style={styles.container}
-                        contentContainerStyle={{
-                            // justifyContent: screenDimensions.width > screenDimensions.height ? 'space-between' : 'flex-start'
-                        }}
-                    >
+        // !scheduleDetails
+        // ? <View/>
+        // :
+        <TouchableOpacity style={{flex: 1}} activeOpacity={1}>
+            <ScrollView
+                style={styles.container}
+                contentContainerStyle={{
+                    // justifyContent: screenDimensions.width > screenDimensions.height ? 'space-between' : 'flex-start'
+                }}
+            >
 
-                        <View>
-                            <View style={styles.cardTitle}>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
-                                    <Text style={{
-                                        fontSize: 16,
-                                        color: '#104587',
-                                        marginBottom: 10,
-                                    }}>#{scheduleDetails.id}</Text>
-                                    <View style={{
-                                        backgroundColor: '#EEF2F6',
-                                        paddingTop: 4,
-                                        paddingBottom: 4,
-                                        paddingLeft: 8,
-                                        paddingRight: 8,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        borderRadius: 12
-                                    }}>
-                                        <Text style={{
-                                            color: "#A0AEC0",
-                                            fontSize: 12
-                                        }}>{getProgressStatus(startTime, endTime)}</Text>
-                                    </View>
-                                </View>
-
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                                    <Text style={{
-                                        fontSize: 20,
-                                        color: '#0CB0E7',
-                                        paddingBottom: 5
-                                    }}>{scheduleDetails.responseEntity}</Text>
-                                    <Text style={{
-                                        fontSize: 20,
-                                        color: '#104587',
-                                        paddingBottom: 5
-                                    }}>{scheduleDetails.title}</Text>
-                                </View>
-                            </View>
-
-                            <View style={[styles.doctors]}>
-
-                                <View style={styles.cardDescription}>
-
-                                    <View style={{flexDirection: 'column'}}>
-                                        <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Theatre</Text>
-                                        <Text style={[styles.detailText]}>{scheduleDetails.location}</Text>
-                                    </View>
-
-                                    <View style={{flexDirection: 'row'}}>
-
-                                        <View style={{flexDirection: 'column', marginRight: 15}}>
-                                            <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>
-                                                Date
-                                            </Text>
-                                            <Text style={[styles.detailText]}>
-                                                {formatDate(scheduleDetails.startTime)}
-                                            </Text>
-                                        </View>
-
-                                        <View style={{flexDirection: 'column'}}>
-                                            <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>
-                                                Time
-                                            </Text>
-                                            <Text style={[styles.detailText]}>
-                                                {getTime(scheduleDetails.startTime)} - {getTime(scheduleDetails.endTime)}
-                                            </Text>
-                                        </View>
-
-                                    </View>
-
-                                </View>
-
-                                {/*<View style={styles.cardDoctors}>*/}
-                                {/*    <View style={[styles.box, {justifyContent: 'space-between'}]}>*/}
-                                {/*        {personnel.map((surgeon, index) => {*/}
-                                {/*            return (*/}
-                                {/*                doctorItemContainer(surgeon.title, surgeon.name, 'doctor', index)*/}
-                                {/*            )*/}
-                                {/*        })}*/}
-                                {/*    </View>*/}
-                                {/*    <View style={styles.box}>*/}
-                                {/*        {scheduleDetails.nurses.map((nurse, index) => {*/}
-                                {/*            return (*/}
-                                {/*                doctorItemContainer(nurse.title, nurse.name, 'nurse', index)*/}
-                                {/*            )*/}
-                                {/*        })}*/}
-                                {/*    </View>*/}
-                                {/*</View>*/}
-
+                <View>
+                    <View style={styles.cardTitle}>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
+                            <Text style={{
+                                fontSize: 16,
+                                color: '#104587',
+                                marginBottom: 10,
+                            }}>#{scheduleDetails.id}</Text>
+                            <View style={{
+                                backgroundColor: '#EEF2F6',
+                                paddingTop: 4,
+                                paddingBottom: 4,
+                                paddingLeft: 8,
+                                paddingRight: 8,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: 12
+                            }}>
+                                <Text style={{
+                                    color: "#A0AEC0",
+                                    fontSize: 12
+                                }}>{getProgressStatus(startTime, endTime)}</Text>
                             </View>
                         </View>
-                    </ScrollView>
-                </TouchableOpacity>
+
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Text style={{
+                                fontSize: 20,
+                                color: '#0CB0E7',
+                                paddingBottom: 5
+                            }}>{scheduleDetails.responseEntity}</Text>
+                            <Text style={{
+                                fontSize: 20,
+                                color: '#104587',
+                                paddingBottom: 5
+                            }}>{scheduleDetails.title}</Text>
+                        </View>
+                    </View>
+
+                    <View style={[styles.doctors]}>
+
+                        <View style={styles.cardDescription}>
+
+                            <View style={{flexDirection: 'column'}}>
+                                <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Theatre</Text>
+                                <Text style={[styles.detailText]}>{scheduleDetails.location}</Text>
+                            </View>
+
+                            <View style={{flexDirection: 'row'}}>
+
+                                <View style={{flexDirection: 'column', marginRight: 15}}>
+                                    <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>
+                                        Date
+                                    </Text>
+                                    <Text style={[styles.detailText]}>
+                                        {formatDate(startTime)}
+                                    </Text>
+                                </View>
+
+                                <View style={{flexDirection: 'column'}}>
+                                    <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>
+                                        Time
+                                    </Text>
+                                    <Text style={[styles.detailText]}>
+                                        {getTime(startTime)} - {getTime(endTime)}
+                                    </Text>
+                                </View>
+
+                            </View>
+
+                        </View>
+
+
+                        {/* Additional Information */}
+
+                        {/*<View style={styles.cardDoctors}>*/}
+                        {/*    <View style={[styles.box, {justifyContent: 'space-between'}]}>*/}
+                        {/*        {personnel.map((surgeon, index) => {*/}
+                        {/*            return (*/}
+                        {/*                doctorItemContainer(surgeon.title, surgeon.name, 'doctor', index)*/}
+                        {/*            )*/}
+                        {/*        })}*/}
+                        {/*    </View>*/}
+                        {/*    <View style={styles.box}>*/}
+                        {/*        {scheduleDetails.nurses.map((nurse, index) => {*/}
+                        {/*            return (*/}
+                        {/*                doctorItemContainer(nurse.title, nurse.name, 'nurse', index)*/}
+                        {/*            )*/}
+                        {/*        })}*/}
+                        {/*    </View>*/}
+                        {/*</View>*/}
+
+
+
+
+                    </View>
+                </View>
+            </ScrollView>
+        </TouchableOpacity>
 
     )
 }
