@@ -52,7 +52,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
 
         if (!searchInput) return;
 
-        const search = _.debounce(sendQuery, 500);
+        const search = _.debounce(sendQuery, 300);
 
         setSearchQuery(prevSearch => {
             if (prevSearch.cancel) {
