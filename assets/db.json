@@ -78,14 +78,14 @@
             "responseEntity": "Julie Melissa Brown",
             "startTime":"2019-12-31T09:00:00.000Z",
             "endTime":"2019-12-31T13:00:00.000Z",
-            "level": 1, 
-            "location":"Surgery Theatre 6",            
+            "level": 1,
+            "location":"Surgery Theatre 6",
            "surgeons":[
                 {
                    "title" : "Lead Surgeon",
                    "name" : "Dr. Hiram Mitsurugi"
                 },
-                {    
+                {
                     "title" : "Assistant Surgeon",
                     "name" : "Dr. Letischa Bonneville"
                 }
@@ -118,7 +118,7 @@
             "startTime":"2019-12-31T10:00:00.000Z",
             "endTime":"2019-12-31T11:00:00.000Z",
             "level": 3
-            
+
         },
         {
             "id":"app6",
@@ -127,7 +127,7 @@
             "startTime":"2019-12-31T12:00:00.000Z",
             "endTime":"2019-12-31T16:00:00.000Z",
             "level": 1
-            
+
         },
         {
             "id":"app7",
@@ -136,7 +136,7 @@
             "startTime":"2019-12-31T12:00:00.000Z",
             "endTime":"2019-12-31T16:00:00.000Z",
             "level": 4
-            
+
         },
         {
             "id":"app8",
@@ -145,7 +145,7 @@
             "startTime":"2019-12-31T12:30:00.000Z",
             "endTime":"2019-12-31T13:00:00.000Z",
             "level": 2
-            
+
         },
         {
             "id":"app9",
@@ -162,7 +162,7 @@
             "startTime":"2019-12-31T09:00:00.000Z",
             "endTime":"2019-12-31T13:00:00.000Z",
             "level": 1
-            
+
         },
         {
             "id":"app11",
@@ -171,13 +171,13 @@
             "startTime":"2020-01-01T12:00:00.000Z",
             "endTime":"2020-01-01T16:00:00.000Z",
             "level": 1,
-            "location":"Surgery Theatre 6",            
+            "location":"Surgery Theatre 6",
             "surgeons":[
                 {
                    "title" : "Lead Surgeon",
                    "name" : "Dr. Hiram Mitsurugi"
                 },
-                {    
+                {
                     "title" : "Assistant Surgeon",
                     "name" : "Dr. Letischa Bonneville"
                 }
@@ -202,7 +202,7 @@
             ],
             "createdBy":"Janet Evina",
             "progressStatus":"Not yet started"
-            
+
         },
         {
             "id":"app12",
@@ -211,7 +211,7 @@
             "startTime":"2020-01-01T12:30:00.000Z",
             "endTime":"2020-01-01T13:00:00.000Z",
             "level": 2
-            
+
         },
         {
             "id":"app13",
@@ -228,13 +228,13 @@
             "startTime":"2020-01-02T09:00:00.000Z",
             "endTime":"2020-01-02T13:00:00.000Z",
             "level": 1,
-            "location":"Surgery Theatre 6",            
+            "location":"Surgery Theatre 6",
             "surgeons":[
                 {
                    "title" : "Lead Surgeon",
                    "name" : "Dr. Hiram Mitsurugi"
                 },
-                {    
+                {
                     "title" : "Assistant Surgeon",
                     "name" : "Dr. Letischa Bonneville"
                 }
@@ -364,8 +364,8 @@
             "endTime":"2020-01-06T16:00:00.000Z",
             "level": 3
         }
-        
-        
+
+
     ],
 
     "notifications":[
@@ -564,7 +564,7 @@
                                             "field":"Home",
                                             "type":"text"
                                         }
-                                    ] 
+                                    ]
                                 }
                             ]
                         },
@@ -730,14 +730,14 @@
                     "overlayTab":["Consumables","Equipment","Billing","Quotation","Invoices"]
                 }
             ]
-            
+
         }
     ],
 
     "patients":[
         {
             "id":"#350219385001",
-            "name": 
+            "name":
                 {
                     "firstName":"Julie",
                     "middle":"Melissa",
@@ -752,7 +752,7 @@
                     "middle":"Anothony",
                     "surname":"Taylor"
                 }
-            
+
         },
         {
             "id":"#8927465150003",
@@ -978,7 +978,7 @@
                 "firstName":"Meghan",
                 "middle":"Anna",
                 "surname":"James"
-            }      
+            }
         },
         {
             "id":"#350219385028",
@@ -1035,7 +1035,7 @@
             }
         }
     ],
-    
+
     "medicalStaff":
     {
         "physicians":
@@ -1146,7 +1146,7 @@
             "name":"Glasses",
             "type":"Vision",
             "unitPrice":"$3,129.88"
-        } 
+        }
     ],
 
     "insurers":
@@ -1192,7 +1192,7 @@
             }
 
         ],
-           
+
         "caseFilesInformation":{
             "headers":["Patient","Balance","Staff","Next Visit"],
             "data":[
@@ -1281,8 +1281,8 @@
                 "nextVisit":"2019-11-21"
             },
             {
-                "id":"#350219385013",     
-                "name":"Julie Brown",       
+                "id":"#350219385013",
+                "name":"Julie Brown",
                 "balance":"-$ 115,002.25",
                 "staff":"Dr. Mansingh",
                 "nextVisit":"2019-11-21"
@@ -1387,7 +1387,7 @@
             }
         ]
     },
-            
+
         "caseDetails":
         [
             {
@@ -1509,8 +1509,7 @@
                             }
                         ]
                     },
-                    "details":
-                    {
+                    "details": {
                         "personalInformation":
                             [
                                 {
@@ -1574,8 +1573,7 @@
                                     "type":"optional"
                                 }
                             ],
-
-                        "contactInformation": 
+                        "contactInformation":
                             [
                                 {
                                     "field":"Cell Phone",
@@ -1618,7 +1616,6 @@
                                     "type":"optional"
                                 }
                             ],
-
                         "emergencyContactInfomation":
                             [
                                 {
@@ -1652,10 +1649,8 @@
                                     "type":"primary"
                                 }
                             ]
-                        
                     },
-                    "insurance":
-                    {
+                    "insurance": {
                         "insurers":
                         {
                             "primaryInsurer":"Sagicor Life"
@@ -1667,8 +1662,7 @@
                         }
 
                     },
-                    "diagnosis":
-                    {
+                    "diagnosis": {
                         "signsAndSymptoms":
                         [
                             "High blood pressure: Over 130",
@@ -1772,7 +1766,7 @@
                                     "value":"currently using",
                                     "type":"text"
                                 },
-                                
+
                                 "since":{
                                     "value":"12/01/2018",
                                     "type":"text"
@@ -1807,7 +1801,7 @@
                                     "value":"currently using",
                                     "type":"text"
                                 },
-                                
+
                                 "since":{
                                     "value":"12/01/2018",
                                     "type":"text"
@@ -1842,7 +1836,7 @@
                                     "value":"currently using",
                                     "type":"text"
                                 },
-                                
+
                                 "since":{
                                     "value":"12/01/2018",
                                     "type":"text"
@@ -1879,7 +1873,7 @@
                                 }
                             }
                         },
-                        {   
+                        {
                             "procedureName":"Angioplasty",
                             "details":{
                                 "procedure":
@@ -1994,7 +1988,7 @@
                             "type":"Vision",
                             "quantity":1,
                             "unitPrice":"$3,129.88"
-                        } 
+                        }
                     ],
                     "billing":
                     {
@@ -2051,9 +2045,9 @@
                                             "item":"GU Tower",
                                             "quantity":2,
                                             "cost":"$5,056.92"
-                                        } 
+                                        }
                                     ]
-                                    
+
                                 },
                                 {
                                     "charge":"Gowning & Protection",
@@ -2074,7 +2068,7 @@
                                             "cost":"$454.20"
                                         }
                                     ]
-                                    
+
                                 },
                                 {
                                     "charge":"Sterile Gowns",
@@ -2085,7 +2079,7 @@
                                             "cost":"$3,219.88"
                                         }
                                     ]
-                                    
+
                                 }
 
                             ]
@@ -2151,7 +2145,7 @@
                                                 "total":"9,164.96"
                                             }
                                         ]
-                                    }  
+                                    }
                                 },
                                 "billingSummary":{
                                     "subtotal":"$178,167.21",
@@ -2187,7 +2181,7 @@
                                 "value":"$30,863.45",
                                 "actions":true
                             }
-                            
+
                         }
                     ],
                     "invoices":
@@ -2264,7 +2258,7 @@
                                                 "total":"9,164.96"
                                             }
                                         ]
-                                    }  
+                                    }
                                 },
                                 "billingSummary":{
                                     "subtotal":"$326,000.45",
@@ -2296,7 +2290,7 @@
                                 "actions":true
                             },
                             "preview":{}
-                            
+
                         },
                         {
                             "list":{
@@ -2308,10 +2302,10 @@
                                 "actions":true
                             },
                             "preview":{}
-                            
+
                         }
                     ]
-                    
+
                 }
             }
         ]

@@ -227,6 +227,7 @@ const appointments = [
         additionalInfo: "",
     },
 ];
+
 const caseFiles = require("../../assets/db.json").caseFiles.caseFilesInformation.data;
 
 
