@@ -1,3 +1,8 @@
+/**
+ *  Mocked data for suites casefiles endpoints
+ */
+
+
 export default [
     {
         "id": "#350219385001",
@@ -201,6 +206,11 @@ export default [
     }
 ];
 
+
+/**
+ *
+ * @type {{PROCEDURES: string, IMPLANTED_DEVICES: string, IMMUNISATIONS: string, MEDICATIONS: string, PRE_EXISTING_CONDITIONS: string, ALLERGIES: string}}
+ */
 const medicalHistoryTypes = {
     ALLERGIES: "allergies",
     PRE_EXISTING_CONDITIONS: "preExistingConditions",
@@ -211,13 +221,17 @@ const medicalHistoryTypes = {
 };
 
 
+/**
+ *
+ * @type {{alcohol: [string], tobacco: [string], drug: [string]}}
+ */
 const lifeStyleTypes = {
     drug: ['Percoset'],
     alcohol: ['Beer'],
     tobacco: ['snuff'],
 };
 
-export const caseFiles = [
+const caseFiles = [
     {
         id: String,
         patient: {
@@ -391,3 +405,5 @@ export const caseFiles = [
         ]
     }
 ];
+
+export default caseFiles;
