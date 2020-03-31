@@ -13,6 +13,12 @@ export const getSchedules = async () => {
     //return axios.get('/schedules')
 };
 
+export const getScheduleById = async (id) => {
+    await new Promise(r => setTimeout(r, 2000));
+    return appointments.find( item => item.id === id);
+    //return axios.get('/schedules')
+};
+
 export const searchSchedule = async (query) => {
     if (!query) return []; //  don't search for empty string;
 
