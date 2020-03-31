@@ -224,3 +224,369 @@ export default [
         additionalInfo: "",
     },
 ];
+
+export const appointments = [
+    {
+        "_id": "5e7c4a2e215cafd77c20b83a",
+        "scheduleItemID": "5e78fee26badbc11d73509f3",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda1",
+            "name": "Restock",
+            "color": "yellow"
+        },
+        "title": "Restock Syringes",
+        "subject": "Surgery Theatre 6",
+        "startTime": "2020-02-26T09:00:00.000Z",
+        "endTime": "2020-02-26T10:00:00.000Z",
+        "scheduleItem": {
+            "_id": "5e78fee26badbc11d73509f3",
+            "name": "Syringes",
+            "assignedTo": "5e74576d1d266ba865edef03",
+            "critical": 50,
+            "ideal": 400,
+            "inStock": 240,
+            "description": "",
+            "lastReceived": "2020-02-22T13:47:44.830Z",
+            "unitPrice": 4000.43,
+            "supplier": "5e78f051ab9befc9c5d7fe0a",
+            "assignmentType": "5e742d76abcfd493bf99033a"
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b83c",
+        "scheduleItemID": "5e78fee26badbc11d73509f4",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda1",
+            "name": "Restock",
+            "color": "yellow"
+        },
+        "title": "Restock Suture Kit Case 3",
+        "subject": "Surgery Theathre 6",
+        "startTime": "2020-03-10T08:00:00.000Z",
+        "endTime": "2020-03-10T09:00:00.000Z",
+        "scheduleItem": {
+            "_id": "5e78fee26badbc11d73509f4",
+            "name": "Suture Kit Case 3",
+            "assignedTo": "5e7434035134c953fbac2dc4",
+            "critical": 50,
+            "ideal": 400,
+            "inStock": 240,
+            "description": "",
+            "lastReceived": "2020-02-22T13:47:44.830Z",
+            "unitPrice": 4000.43,
+            "supplier": "5e78f051ab9befc9c5d7fe0a",
+            "assignmentType": "5e742d76abcfd493bf99033b"
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b83e",
+        "scheduleItemID": "5e745cd7c3f41bbb5fe05d66",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda2",
+            "name": "Surgery",
+            "color": "red"
+        },
+        "title": "Biotherapy (Biological Therapy)",
+        "subject": "Dr. H. Mansingh",
+        "startTime": "2020-03-11T09:00:00.000Z",
+        "endTime": "2020-03-11T10:00:00.000Z",
+        "scheduleItem": {
+            "equipments": [
+                {
+                    "_id": "5e74f3b9e657a54f55db8032",
+                    "equipmentID": "MR/0011",
+                    "name": "MRI Machine 2",
+                    "availableOn": "2020-03-21T05:00:00.000Z",
+                    "description": "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
+                    "assignedTo": "5e7434035134c953fbac2dc4",
+                    "usage": 12,
+                    "categories": [
+                        "5e743173e06173d14f9d793a",
+                        "5e743173e06173d14f9d7938"
+                    ],
+                    "supplier": "5e7430cd1a7c737511eef7e4",
+                    "status": "5e742efa82607fc30fa16fa1",
+                    "type": "5e742e0dd71d39bd8a589b87",
+                    "assignmentType": "5e742d76abcfd493bf99033b"
+                }
+            ],
+            "supportedRooms": [],
+            "_id": "5e745cd7c3f41bbb5fe05d66",
+            "name": "Biotherapy (Biological Therapy)",
+            "physician": null,
+            "duration": 3,
+            "description": "",
+            "needsRecovery": true,
+            "custom": true
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b83d",
+        "scheduleItemID": "5e78fee26badbc11d73509f5",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda1",
+            "name": "Restock",
+            "color": "yellow"
+        },
+        "title": "Restock Gauze Case 1",
+        "subject": "Surgery Theathre 4",
+        "startTime": "2020-03-11T12:00:00.000Z",
+        "endTime": "2020-03-11T13:00:00.000Z",
+        "scheduleItem": {
+            "_id": "5e78fee26badbc11d73509f5",
+            "name": "Gauze Case 1",
+            "assignedTo": "5e7434035134c953fbac2dc4",
+            "critical": 50,
+            "ideal": 400,
+            "inStock": 240,
+            "description": "",
+            "lastReceived": "2020-02-22T13:47:44.830Z",
+            "unitPrice": 4000.43,
+            "supplier": "5e78f051ab9befc9c5d7fe0a",
+            "assignmentType": "5e742d76abcfd493bf99033b"
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b83f",
+        "scheduleItemID": "5e745cd7c3f41bbb5fe05d67",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda2",
+            "name": "Surgery",
+            "color": "red"
+        },
+        "title": "Adenosine Stress Test For Heart Disease",
+        "subject": "Dr. H. Mansingh",
+        "startTime": "2020-03-20T06:00:00.000Z",
+        "endTime": "2020-03-20T07:00:00.000Z",
+        "scheduleItem": {
+            "equipments": [
+                {
+                    "_id": "5e74f3b9e657a54f55db8031",
+                    "equipmentID": "ST/0011",
+                    "name": "Stethoscope 2",
+                    "availableOn": "2019-11-10T05:00:00.000Z",
+                    "description": "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
+                    "assignedTo": "5e74576d1d266ba865edef03",
+                    "usage": 12,
+                    "categories": [
+                        "5e743173e06173d14f9d793a",
+                        "5e743173e06173d14f9d7939"
+                    ],
+                    "supplier": "5e7430cd1a7c737511eef7e4",
+                    "status": "5e742efa82607fc30fa16fa0",
+                    "type": "5e742e0dd71d39bd8a589b86",
+                    "assignmentType": "5e742d76abcfd493bf99033a"
+                }
+            ],
+            "supportedRooms": [],
+            "_id": "5e745cd7c3f41bbb5fe05d67",
+            "name": "Adenosine Stress Test For Heart Disease",
+            "physician": null,
+            "duration": 3,
+            "description": "",
+            "needsRecovery": true,
+            "custom": true
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b840",
+        "scheduleItemID": "5e745cd7c3f41bbb5fe05d68",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda2",
+            "name": "Surgery",
+            "color": "red"
+        },
+        "title": "Amniocentesis",
+        "subject": "Dr. H. Mansingh",
+        "startTime": "2020-03-20T08:00:00.000Z",
+        "endTime": "2020-03-20T09:00:00.000Z",
+        "scheduleItem": {
+            "equipments": [
+                {
+                    "_id": "5e74f3b9e657a54f55db8033",
+                    "equipmentID": "WC/0011",
+                    "name": "WheelChair 2",
+                    "availableOn": "2019-11-10T05:00:00.000Z",
+                    "description": "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
+                    "assignedTo": "5e7434035134c953fbac2dc4",
+                    "usage": 12,
+                    "categories": [
+                        "5e743173e06173d14f9d7939",
+                        "5e743173e06173d14f9d7938"
+                    ],
+                    "supplier": "5e7430cd1a7c737511eef7e4",
+                    "status": "5e742efa82607fc30fa16fa2",
+                    "type": "5e742e0dd71d39bd8a589b88",
+                    "assignmentType": "5e742d76abcfd493bf99033b"
+                }
+            ],
+            "supportedRooms": [],
+            "_id": "5e745cd7c3f41bbb5fe05d68",
+            "name": "Amniocentesis",
+            "physician": null,
+            "duration": 3,
+            "description": "",
+            "needsRecovery": true,
+            "custom": true
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b841",
+        "scheduleItemID": "5e78f002be2c0f5ca51e307c",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda3",
+            "name": "Delivery",
+            "color": "green"
+        },
+        "title": "Disposables Delivery",
+        "subject": "J&N Medical Suppliers",
+        "startTime": "2020-03-20T09:00:00.000Z",
+        "endTime": "2020-03-20T11:00:00.000Z",
+        "scheduleItem": {
+            "_id": "5e78f002be2c0f5ca51e307c",
+            "name": "Disposables Delivery",
+            "purchaseOrderId": "PO-0000023",
+            "invoiceNo": "IN-0000023",
+            "orderDate": "2020-01-19T15:10:46.161Z",
+            "deliveredOn": "2020-02-19T15:10:46.161Z",
+            "nextDeliveryDate": "2020-03-21T15:10:46.161Z",
+            "__v": 0
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b83b",
+        "scheduleItemID": "5e74f3b9e657a54f55db8031",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda0",
+            "name": "Equipment",
+            "color": "blue"
+        },
+        "title": "Stethoscope 2",
+        "subject": "Dr. H. Mansingh",
+        "startTime": "2020-03-30T15:01:24.654Z",
+        "endTime": "2020-03-30T15:01:24.654Z",
+        "scheduleItem": {
+            "_id": "5e74f3b9e657a54f55db8031",
+            "equipmentID": "ST/0011",
+            "name": "Stethoscope 2",
+            "availableOn": "2019-11-10T05:00:00.000Z",
+            "description": "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
+            "assignedTo": "5e74576d1d266ba865edef03",
+            "usage": 12,
+            "categories": [
+                "5e743173e06173d14f9d793a",
+                "5e743173e06173d14f9d7939"
+            ],
+            "supplier": "5e7430cd1a7c737511eef7e4",
+            "status": "5e742efa82607fc30fa16fa0",
+            "type": "5e742e0dd71d39bd8a589b86",
+            "assignmentType": "5e742d76abcfd493bf99033a"
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b842",
+        "scheduleItemID": "5e74f3b9e657a54f55db8032",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda0",
+            "name": "Equipment",
+            "color": "blue"
+        },
+        "title": "MRI Machine 2",
+        "subject": "Surgical Theatre 2",
+        "startTime": "2020-04-02T09:00:00.000Z",
+        "endTime": "2020-04-02T10:00:00.000Z",
+        "scheduleItem": {
+            "_id": "5e74f3b9e657a54f55db8032",
+            "equipmentID": "MR/0011",
+            "name": "MRI Machine 2",
+            "availableOn": "2020-03-21T05:00:00.000Z",
+            "description": "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
+            "assignedTo": "5e7434035134c953fbac2dc4",
+            "usage": 12,
+            "categories": [
+                "5e743173e06173d14f9d793a",
+                "5e743173e06173d14f9d7938"
+            ],
+            "supplier": "5e7430cd1a7c737511eef7e4",
+            "status": "5e742efa82607fc30fa16fa1",
+            "type": "5e742e0dd71d39bd8a589b87",
+            "assignmentType": "5e742d76abcfd493bf99033b"
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b845",
+        "scheduleItemID": "5e74f3b9e657a54f55db8033",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda0",
+            "name": "Equipment",
+            "color": "blue"
+        },
+        "title": "WheelChair 2",
+        "subject": "Surgery Theathre 2",
+        "startTime": "2020-04-05T09:00:00.000Z",
+        "endTime": "2020-04-05T10:00:00.000Z",
+        "scheduleItem": {
+            "_id": "5e74f3b9e657a54f55db8033",
+            "equipmentID": "WC/0011",
+            "name": "WheelChair 2",
+            "availableOn": "2019-11-10T05:00:00.000Z",
+            "description": "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
+            "assignedTo": "5e7434035134c953fbac2dc4",
+            "usage": 12,
+            "categories": [
+                "5e743173e06173d14f9d7939",
+                "5e743173e06173d14f9d7938"
+            ],
+            "supplier": "5e7430cd1a7c737511eef7e4",
+            "status": "5e742efa82607fc30fa16fa2",
+            "type": "5e742e0dd71d39bd8a589b88",
+            "assignmentType": "5e742d76abcfd493bf99033b"
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b844",
+        "scheduleItemID": "5e78f002be2c0f5ca51e307e",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda3",
+            "name": "Delivery",
+            "color": "green"
+        },
+        "title": "Stethoscope Delivery",
+        "subject": "J&N Medical Suppliers",
+        "startTime": "2020-04-10T09:00:00.000Z",
+        "endTime": "2020-04-10T13:00:00.000Z",
+        "scheduleItem": {
+            "_id": "5e78f002be2c0f5ca51e307e",
+            "name": "Stethoscope Delivery",
+            "purchaseOrderId": "PO-0000025",
+            "invoiceNo": "IN-0000025",
+            "orderDate": "2020-01-19T15:10:46.161Z",
+            "deliveredOn": "2020-02-19T15:10:46.161Z",
+            "nextDeliveryDate": "2020-03-25T15:10:46.161Z",
+            "__v": 0
+        }
+    },
+    {
+        "_id": "5e7c4a2e215cafd77c20b843",
+        "scheduleItemID": "5e78f002be2c0f5ca51e307d",
+        "scheduleType": {
+            "_id": "5e74252587c52c172df7dda3",
+            "name": "Delivery",
+            "color": "green"
+        },
+        "title": "Consumables Delivery",
+        "subject": "J&N Medical Suppliers",
+        "startTime": "2020-04-10T14:00:00.000Z",
+        "endTime": "2020-04-10T17:00:00.000Z",
+        "scheduleItem": {
+            "_id": "5e78f002be2c0f5ca51e307d",
+            "name": "Consumables Delivery",
+            "purchaseOrderId": "PO-0000024",
+            "invoiceNo": "IN-0000024",
+            "orderDate": "2020-01-19T15:10:46.161Z",
+            "deliveredOn": "2020-02-19T15:10:46.161Z",
+            "nextDeliveryDate": "2020-03-23T15:10:46.161Z",
+            "__v": 0
+        }
+    }
+];
