@@ -106,7 +106,9 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                 ref={sectionListRef}
                 onRefresh={onRefresh}
                 refreshing={isRefreshing}
-                keyExtractor={item => item._id + Math.random()}
+                keyExtractor={item => {
+                    return item.id + new Date().toString() + Math.random()
+                }}
                 //onLayout={() => scrollToIndex(getSectionIndexForSelectedDay(), false)}
                 // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
                 getItemLayout={sectionListGetItemLayout({
@@ -131,6 +133,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                 )}
                 renderItem={({item}) => {
                     return <ScheduleItem
+                        key={item.id}
                         startTime={item.startTime}
                         endTime={item.endTime}
                         title={ `${item.title} - ${item.subject}` }

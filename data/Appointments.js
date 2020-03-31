@@ -2,7 +2,7 @@ export default [
     {
         id: "35021393859",
         scheduleType: {
-            "_id": 3,
+            "id": 3,
             "name": "Equipment",
             "color": "red",
             "description": "Equipments"
@@ -16,7 +16,7 @@ export default [
     {
         id: "35021393851",
         scheduleType: {
-            "_id": 3,
+            "id": 3,
             "name": "Equipment",
             "color": "red",
             "description": "Equipments"
@@ -30,7 +30,7 @@ export default [
     {
         id: "35021393851",
         scheduleType: {
-            "_id": 3,
+            "id": 3,
             "name": "Equipment",
             "color": "red",
             "description": "Equipments"
@@ -44,7 +44,7 @@ export default [
     {
         id: "3502193852",
         scheduleType: {
-            "_id": 3,
+            "id": 3,
             "name": "Equipment",
             "color": "red",
             "description": "Equipments"
@@ -58,7 +58,7 @@ export default [
     {
         id: "3502193853",
         scheduleType: {
-            "_id": 2,
+            "id": 2,
             "name": "Restock",
             "color": "yellow",
             "description": "Equipments"
@@ -72,7 +72,7 @@ export default [
     {
         id: "3502193854",
         scheduleType: {
-            "_id": 1,
+            "id": 1,
             "name": "Equipment",
             "color": "blue",
             "description": ""
@@ -86,7 +86,7 @@ export default [
     {
         id: "3502193856",
         scheduleType: {
-            "_id": 3,
+            "id": 3,
             "name": "Surgery",
             "color": "red",
             "description": ""
@@ -100,7 +100,7 @@ export default [
     {
         id: "3502193859",
         scheduleType: {
-            "_id": 3,
+            "id": 3,
             "name": "Surgery",
             "color": "red",
             "description": ""
@@ -114,7 +114,7 @@ export default [
     {
         id: "3502193859",
         scheduleType: {
-            "_id": 3,
+            "id": 3,
             "name": "Surgery",
             "color": "red",
             "description": ""
@@ -128,7 +128,7 @@ export default [
     {
         id: "3502193854",
         scheduleType: {
-            "_id": 1,
+            "id": 1,
             "name": "Equipment",
             "color": "blue",
             "description": ""
@@ -142,7 +142,7 @@ export default [
     {
         id: "3502193854",
         scheduleType: {
-            "_id": 1,
+            "id": 1,
             "name": "Equipment",
             "color": "blue",
             "description": ""
@@ -156,7 +156,7 @@ export default [
     {
         id: "3502193854",
         scheduleType: {
-            "_id": 1,
+            "id": 1,
             "name": "Equipment",
             "color": "blue",
             "description": ""
@@ -170,7 +170,7 @@ export default [
     {
         id: "3502193853",
         scheduleType: {
-            "_id": 2,
+            "id": 2,
             "name": "Restock",
             "color": "yellow",
             "description": "Equipments"
@@ -184,7 +184,7 @@ export default [
     {
         id: "3502193953",
         scheduleType: {
-            "_id": 2,
+            "id": 2,
             "name": "Restock",
             "color": "yellow",
             "description": "Equipments"
@@ -198,7 +198,7 @@ export default [
     {
         id: "3502194854",
         scheduleType: {
-            "_id": 1,
+            "id": 1,
             "name": "Equipment",
             "color": "blue",
             "description": ""
@@ -212,7 +212,7 @@ export default [
     {
         id: "3502193954",
         scheduleType: {
-            "_id": 1,
+            "id": 1,
             "name": "Equipment",
             "color": "blue",
             "description": ""
@@ -227,10 +227,10 @@ export default [
 
 export const appointments = [
     {
-        "_id": "5e7c4a2e215cafd77c20b83a",
+        "id": "5e7c4a2e215cafd77c20b83a",
         "scheduleItemID": "5e78fee26badbc11d73509f3",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda1",
+            "id": "5e74252587c52c172df7dda1",
             "name": "Restock",
             "color": "yellow"
         },
@@ -239,7 +239,7 @@ export const appointments = [
         "startTime": "2020-02-26T09:00:00.000Z",
         "endTime": "2020-02-26T10:00:00.000Z",
         "scheduleItem": {
-            "_id": "5e78fee26badbc11d73509f3",
+            "id": "5e78fee26badbc11d73509f3",
             "name": "Syringes",
             "assignedTo": "5e74576d1d266ba865edef03",
             "critical": 50,
@@ -253,10 +253,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b83c",
+        "id": "5e7c4a2e215cafd77c20b83c",
         "scheduleItemID": "5e78fee26badbc11d73509f4",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda1",
+            "id": "5e74252587c52c172df7dda1",
             "name": "Restock",
             "color": "yellow"
         },
@@ -265,7 +265,7 @@ export const appointments = [
         "startTime": "2020-03-10T08:00:00.000Z",
         "endTime": "2020-03-10T09:00:00.000Z",
         "scheduleItem": {
-            "_id": "5e78fee26badbc11d73509f4",
+            "id": "5e78fee26badbc11d73509f4",
             "name": "Suture Kit Case 3",
             "assignedTo": "5e7434035134c953fbac2dc4",
             "critical": 50,
@@ -279,10 +279,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b83e",
+        "id": "5e7c4a2e215cafd77c20b83e",
         "scheduleItemID": "5e745cd7c3f41bbb5fe05d66",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda2",
+            "id": "5e74252587c52c172df7dda2",
             "name": "Surgery",
             "color": "red"
         },
@@ -293,7 +293,7 @@ export const appointments = [
         "scheduleItem": {
             "equipments": [
                 {
-                    "_id": "5e74f3b9e657a54f55db8032",
+                    "id": "5e74f3b9e657a54f55db8032",
                     "equipmentID": "MR/0011",
                     "name": "MRI Machine 2",
                     "availableOn": "2020-03-21T05:00:00.000Z",
@@ -311,7 +311,7 @@ export const appointments = [
                 }
             ],
             "supportedRooms": [],
-            "_id": "5e745cd7c3f41bbb5fe05d66",
+            "id": "5e745cd7c3f41bbb5fe05d66",
             "name": "Biotherapy (Biological Therapy)",
             "physician": null,
             "duration": 3,
@@ -321,10 +321,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b83d",
+        "id": "5e7c4a2e215cafd77c20b83d",
         "scheduleItemID": "5e78fee26badbc11d73509f5",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda1",
+            "id": "5e74252587c52c172df7dda1",
             "name": "Restock",
             "color": "yellow"
         },
@@ -333,7 +333,7 @@ export const appointments = [
         "startTime": "2020-03-11T12:00:00.000Z",
         "endTime": "2020-03-11T13:00:00.000Z",
         "scheduleItem": {
-            "_id": "5e78fee26badbc11d73509f5",
+            "id": "5e78fee26badbc11d73509f5",
             "name": "Gauze Case 1",
             "assignedTo": "5e7434035134c953fbac2dc4",
             "critical": 50,
@@ -347,10 +347,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b83f",
+        "id": "5e7c4a2e215cafd77c20b83f",
         "scheduleItemID": "5e745cd7c3f41bbb5fe05d67",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda2",
+            "id": "5e74252587c52c172df7dda2",
             "name": "Surgery",
             "color": "red"
         },
@@ -361,7 +361,7 @@ export const appointments = [
         "scheduleItem": {
             "equipments": [
                 {
-                    "_id": "5e74f3b9e657a54f55db8031",
+                    "id": "5e74f3b9e657a54f55db8031",
                     "equipmentID": "ST/0011",
                     "name": "Stethoscope 2",
                     "availableOn": "2019-11-10T05:00:00.000Z",
@@ -379,7 +379,7 @@ export const appointments = [
                 }
             ],
             "supportedRooms": [],
-            "_id": "5e745cd7c3f41bbb5fe05d67",
+            "id": "5e745cd7c3f41bbb5fe05d67",
             "name": "Adenosine Stress Test For Heart Disease",
             "physician": null,
             "duration": 3,
@@ -389,10 +389,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b840",
+        "id": "5e7c4a2e215cafd77c20b840",
         "scheduleItemID": "5e745cd7c3f41bbb5fe05d68",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda2",
+            "id": "5e74252587c52c172df7dda2",
             "name": "Surgery",
             "color": "red"
         },
@@ -403,7 +403,7 @@ export const appointments = [
         "scheduleItem": {
             "equipments": [
                 {
-                    "_id": "5e74f3b9e657a54f55db8033",
+                    "id": "5e74f3b9e657a54f55db8033",
                     "equipmentID": "WC/0011",
                     "name": "WheelChair 2",
                     "availableOn": "2019-11-10T05:00:00.000Z",
@@ -421,7 +421,7 @@ export const appointments = [
                 }
             ],
             "supportedRooms": [],
-            "_id": "5e745cd7c3f41bbb5fe05d68",
+            "id": "5e745cd7c3f41bbb5fe05d68",
             "name": "Amniocentesis",
             "physician": null,
             "duration": 3,
@@ -431,10 +431,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b841",
+        "id": "5e7c4a2e215cafd77c20b841",
         "scheduleItemID": "5e78f002be2c0f5ca51e307c",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda3",
+            "id": "5e74252587c52c172df7dda3",
             "name": "Delivery",
             "color": "green"
         },
@@ -443,7 +443,7 @@ export const appointments = [
         "startTime": "2020-03-20T09:00:00.000Z",
         "endTime": "2020-03-20T11:00:00.000Z",
         "scheduleItem": {
-            "_id": "5e78f002be2c0f5ca51e307c",
+            "id": "5e78f002be2c0f5ca51e307c",
             "name": "Disposables Delivery",
             "purchaseOrderId": "PO-0000023",
             "invoiceNo": "IN-0000023",
@@ -454,10 +454,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b83b",
+        "id": "5e7c4a2e215cafd77c20b83b",
         "scheduleItemID": "5e74f3b9e657a54f55db8031",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda0",
+            "id": "5e74252587c52c172df7dda0",
             "name": "Equipment",
             "color": "blue"
         },
@@ -466,7 +466,7 @@ export const appointments = [
         "startTime": "2020-03-30T15:01:24.654Z",
         "endTime": "2020-03-30T15:01:24.654Z",
         "scheduleItem": {
-            "_id": "5e74f3b9e657a54f55db8031",
+            "id": "5e74f3b9e657a54f55db8031",
             "equipmentID": "ST/0011",
             "name": "Stethoscope 2",
             "availableOn": "2019-11-10T05:00:00.000Z",
@@ -484,10 +484,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b842",
+        "id": "5e7c4a2e215cafd77c20b842",
         "scheduleItemID": "5e74f3b9e657a54f55db8032",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda0",
+            "id": "5e74252587c52c172df7dda0",
             "name": "Equipment",
             "color": "blue"
         },
@@ -496,7 +496,7 @@ export const appointments = [
         "startTime": "2020-04-02T09:00:00.000Z",
         "endTime": "2020-04-02T10:00:00.000Z",
         "scheduleItem": {
-            "_id": "5e74f3b9e657a54f55db8032",
+            "id": "5e74f3b9e657a54f55db8032",
             "equipmentID": "MR/0011",
             "name": "MRI Machine 2",
             "availableOn": "2020-03-21T05:00:00.000Z",
@@ -514,10 +514,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b845",
+        "id": "5e7c4a2e215cafd77c20b845",
         "scheduleItemID": "5e74f3b9e657a54f55db8033",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda0",
+            "id": "5e74252587c52c172df7dda0",
             "name": "Equipment",
             "color": "blue"
         },
@@ -526,7 +526,7 @@ export const appointments = [
         "startTime": "2020-04-05T09:00:00.000Z",
         "endTime": "2020-04-05T10:00:00.000Z",
         "scheduleItem": {
-            "_id": "5e74f3b9e657a54f55db8033",
+            "id": "5e74f3b9e657a54f55db8033",
             "equipmentID": "WC/0011",
             "name": "WheelChair 2",
             "availableOn": "2019-11-10T05:00:00.000Z",
@@ -544,10 +544,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b844",
+        "id": "5e7c4a2e215cafd77c20b844",
         "scheduleItemID": "5e78f002be2c0f5ca51e307e",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda3",
+            "id": "5e74252587c52c172df7dda3",
             "name": "Delivery",
             "color": "green"
         },
@@ -556,7 +556,7 @@ export const appointments = [
         "startTime": "2020-04-10T09:00:00.000Z",
         "endTime": "2020-04-10T13:00:00.000Z",
         "scheduleItem": {
-            "_id": "5e78f002be2c0f5ca51e307e",
+            "id": "5e78f002be2c0f5ca51e307e",
             "name": "Stethoscope Delivery",
             "purchaseOrderId": "PO-0000025",
             "invoiceNo": "IN-0000025",
@@ -567,10 +567,10 @@ export const appointments = [
         }
     },
     {
-        "_id": "5e7c4a2e215cafd77c20b843",
+        "id": "5e7c4a2e215cafd77c20b843",
         "scheduleItemID": "5e78f002be2c0f5ca51e307d",
         "scheduleType": {
-            "_id": "5e74252587c52c172df7dda3",
+            "id": "5e74252587c52c172df7dda3",
             "name": "Delivery",
             "color": "green"
         },
@@ -579,7 +579,7 @@ export const appointments = [
         "startTime": "2020-04-10T14:00:00.000Z",
         "endTime": "2020-04-10T17:00:00.000Z",
         "scheduleItem": {
-            "_id": "5e78f002be2c0f5ca51e307d",
+            "id": "5e78f002be2c0f5ca51e307d",
             "name": "Consumables Delivery",
             "purchaseOrderId": "PO-0000024",
             "invoiceNo": "IN-0000024",
