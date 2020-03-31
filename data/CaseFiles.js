@@ -377,6 +377,7 @@ const caseFiles = [
             ]
         },
         chargeSheet: {
+            inventory: [],
             equipment: [],
             consumables: [],
             invoices: []
@@ -384,7 +385,9 @@ const caseFiles = [
         diagnosis: [{}],
         caseProcedures: [
             {
-                location: {},
+                location: {
+                    name: ""
+                },
                 appointment: {},
 
                 //.... List procedure fields
