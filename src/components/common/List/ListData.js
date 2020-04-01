@@ -8,7 +8,7 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 const ListData = ({listData, routeName}) => {
     const [state] = useContext(SuitesContext) 
     return ( 
-        <ScrollView
+        <ScrollView 
             bounces={false}
             contentContainerStyle={{paddingBottom:300}}
             >

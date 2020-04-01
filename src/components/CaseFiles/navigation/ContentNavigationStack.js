@@ -8,6 +8,7 @@ const sidebarNavigator = createSidebarNavigator(
     Patient: {
       screen: Patient,
       params: {
+        tabId : 'patient',
         tabName: 'Patient',
         icon: 'patientButton'
       },
@@ -15,6 +16,7 @@ const sidebarNavigator = createSidebarNavigator(
     Staff: {
       screen: MedicalStaff,
       params: {
+        tabId : 'medicalStaff',
         tabName: 'Medical Staff',
         icon: 'medicalStaffButton'
       },
@@ -22,6 +24,7 @@ const sidebarNavigator = createSidebarNavigator(
     History: {
       screen: MedicalHistory,
       params: {
+        tabId : 'medical',
         tabName: 'Medical History',
         icon: 'medicalHistoryButton'
       },
@@ -29,6 +32,7 @@ const sidebarNavigator = createSidebarNavigator(
     Procedures : {
       screen: Procedures,
         params: {
+          tabId : 'caseProcedures',
           tabName: 'Procedures',
           icon: 'procedureButton',
         }
@@ -36,6 +40,7 @@ const sidebarNavigator = createSidebarNavigator(
     Charge: {
       screen: ChargeSheet,
       params: {
+        tabId:'chargeSheet',
         tabName: 'Charge Sheet',
         icon: 'chargeSheetButton'
       },

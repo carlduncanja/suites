@@ -6,7 +6,7 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
  
 const List = ({listData, listHeaders, routeName}) => { 
     const [state] = useContext(SuitesContext)
-    return ( 
+    return (  
         <View>
             <View style={styles.header}>
                 <ListHeader listHeaders={listHeaders}/>

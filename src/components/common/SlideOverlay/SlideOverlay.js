@@ -10,7 +10,7 @@ const SlideOverlay = () => {
     return ( 
         <View style={styles.container}>
             <View style={styles.header}>
-                <SlideHeader />
+                <SlideHeader/>
             </View>
 
             <View style={styles.content}>

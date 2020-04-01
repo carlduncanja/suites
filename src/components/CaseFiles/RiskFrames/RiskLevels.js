@@ -11,7 +11,7 @@ export function Low({level}) {
                 levelColor="#4299E1"
                 cardColor="#3182CE"
                 riskLevel={level.riskLevel}
-                itemContent = {level.note}
+                itemContent = {level.notes}
             />
         </View>
     )
@@ -26,7 +26,7 @@ export function Moderate({level}) {
                 levelColor="#ED8936"
                 cardColor="#DD6B20"
                 riskLevel={level.riskLevel}
-                itemContent = {level.note}
+                itemContent = {level.notes}
             />
         </View>
     )
@@ -41,7 +41,7 @@ export function High({level}) {
                 levelColor="#F56565"
                 cardColor="#E53E3E"
                 riskLevel={level.riskLevel}
-                itemContent = {level.note}
+                itemContent = {level.notes}
             />
         </View>
     )
@@ -56,7 +56,7 @@ export function VeryHigh({level}) {
                 levelColor="#9F7AEA"
                 cardColor="#805AD5"
                 riskLevel={level.riskLevel}
-                itemContent = {level.note}
+                itemContent = {level.notes}
             />
         </View>
     )

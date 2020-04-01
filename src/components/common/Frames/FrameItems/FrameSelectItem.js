@@ -2,14 +2,14 @@ import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import Dropdown from '../../Dropdown';
 
-const FrameSelectItem = (props) => {
+const FrameSelectItem = ({title, value}) => {
     return ( 
         <View style={styles.container}>
             <View style={styles.titleContainer}>
-                <Text style={styles.title}>{props.title.charAt(0).toUpperCase().concat(props.title.substring(1, props.title.length))}</Text>
+                <Text style={styles.title}>{title}</Text>
             </View>
             <View style={styles.valueContainer}>
-                <Dropdown selectedValue={props.value}/>
+                <Dropdown selectedValue={value}/>
             </View>
         </View>
     );
@@ -25,9 +25,9 @@ const styles = StyleSheet.create({
     },
     titleContainer:{
         marginRight:10,
-        width:'32%',
+        // width:'32%',
         alignItems:'flex-start',
-        justifyContent:'center'
+        justifyContent:'center',
     },
     title:{
         color:'#718096',

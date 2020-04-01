@@ -3,12 +3,12 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import FrameProcedureCard from '../../../common/Frames/FrameCards/FrameProcedureCard';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 
-const Details = () => {
+const Details = ({tabDetails}) => {
     const [state] = useContext(SuitesContext)
     const information = state.slideOverlay.slideOverlayTabInfo
-    return (
+    return ( 
         <ScrollView>
-            {information.map((item,index)=>{
+            {tabDetails.map((item,index)=>{
                 return(
                     <View key={index} style={styles.procedureContainer}>
                         <FrameProcedureCard information = {item}/>

@@ -11,33 +11,48 @@ const OverlayMenuItems = ({ navigation, descriptors }) => {
     const [state, dispatch] = useContext(SuitesContext)
     const [currentTabName, setCurrentTabName] = useState("Patient")
 
-    const handleSelectedMenuTab = (menuIndex) => {
-        const currentTabs = state.overlayMenu.menu[menuIndex].overlayTab
-        const selectedMenuName = state.overlayMenu.menu.filter((menuItem,index)=>index === menuIndex)
-        const selectedTabName = currentTabs[0]
+    // const handleSelectedMenuTab = (menuIndex) => {
+    //     const currentTabs = state.overlayMenu.menu[menuIndex].overlayTab
+    //     const selectedMenuName = state.overlayMenu.menu.filter((menuItem,index)=>index === menuIndex)
+    //     const selectedTabName = currentTabs[0]
+    //     dispatch({
+    //         type: appActions.OVERLAYMENUCHANGE,
+    //         newState : {
+    //             selectedMenuItem : menuIndex,
+    //             selectedMenuItemTabs : currentTabs,
+    //             selectedMenuItemCurrentTab : 0
+    //         }
+    //     })
+    //     dispatch({
+    //         type: appActions.OVERLAYTABCHANGEINFO,
+    //         newState : {
+    //             slideOverlayTabInfo : state.selectedListItem.selectedListObject[transformToCamel(selectedMenuName[0].tabName)][transformToCamel(selectedTabName)]
+    //         }
+    //     })
+    // }
+
+    const handleSelectedMenuTab = (currentMenuItem) =>{
+        const selectedMenu = state.overlayMenu.menu.filter(item => item.tabName === currentMenuItem)
+        const currentTabs = selectedMenu[0].overlayTab
+        const selectedTab = currentTabs[0]
+        // console.log("Current Tab: ", selectedTab)
         dispatch({
             type: appActions.OVERLAYMENUCHANGE,
             newState : {
-                selectedMenuItem : menuIndex,
+                selectedMenuItem : currentMenuItem,
                 selectedMenuItemTabs : currentTabs,
-                selectedMenuItemCurrentTab : 0
-            }
-        })
-        dispatch({
-            type: appActions.OVERLAYTABCHANGEINFO,
-            newState : {
-                slideOverlayTabInfo : state.selectedListItem.selectedListObject[transformToCamel(selectedMenuName[0].tabName)][transformToCamel(selectedTabName)]
+                selectedMenuItemCurrentTab : selectedTab
             }
         })
     }
-
+    
     return (
         <View style={styles.container}>
             <View style={styles.menuBar}>
                 <View style={styles.iconContainer}>
                     {routes.map((route, tabIndex) => {
                         const { routeName, params } = route;
-                        const { icon, tabName,  } = params || {};
+                        const { icon, tabName, tabId } = params || {};
                         const color = tabIndex === index ? 'Open' : 'Closed';
 
                         return (
@@ -45,7 +60,7 @@ const OverlayMenuItems = ({ navigation, descriptors }) => {
                                 onPress={() => {
                                     navigation.navigate(routeName);
                                     setCurrentTabName(tabName);
-                                    handleSelectedMenuTab(tabIndex)
+                                    handleSelectedMenuTab(tabName)
                                 }}
                                 style={styles.icon}
                                 key={route.routeName}

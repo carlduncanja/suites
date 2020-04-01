@@ -5,27 +5,26 @@ import TabsContainer from '../Tabs/TabsContainer'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { appActions } from '../../../redux/reducers/suitesAppReducer';
 import { transformToCamel } from '../../../hooks/useTextEditHook'
-
+ 
 const SlideHeader = () => {
     const [state, dispatch] = useContext(SuitesContext)
     const controlTabChange = (tabIndex) => {
         if (state.slideOverlay.slideOverlayButtonEdit === false) handleOverlayTabChange(tabIndex)
     }
-    const handleOverlayTabChange = (tabIndex) => {   
-        
-        const filterMenu = state.overlayMenu.menu.filter((menuItem,index)=>index === state.overlayMenu.selectedMenuItem)
-        const selectedMenuName = filterMenu[0].tabName
-        const tabName = state.overlayMenu.selectedMenuItemTabs[tabIndex]
+    const handleOverlayTabChange = (tab) => {   
+        // const filterMenu = state.overlayMenu.menu.filter((menuItem,index)=>index === state.overlayMenu.selectedMenuItem)
+        // const selectedMenuName = filterMenu[0].tabName
+        // const tabName = state.overlayMenu.selectedMenuItemTabs[tabIndex]
         dispatch({
             type: appActions.OVERLAYTABCHANGE,
-            newState : {selectedMenuItemCurrentTab : tabIndex}
+            newState : {selectedMenuItemCurrentTab : tab}
         })
-        dispatch({
-            type: appActions.OVERLAYTABCHANGEINFO,
-            newState : {
-                slideOverlayTabInfo : state.selectedListItem.selectedListObject[transformToCamel(selectedMenuName)][transformToCamel(tabName)]
-            }
-        })
+        // dispatch({
+        //     type: appActions.OVERLAYTABCHANGEINFO,
+        //     newState : {
+        //         slideOverlayTabInfo : state.selectedListItem.selectedListObject[transformToCamel(selectedMenuName)][transformToCamel(tabName)]
+        //     }
+        // })
     }
    
     return (  
@@ -34,7 +33,7 @@ const SlideHeader = () => {
             borderTopLeftRadius:30,
             borderTopRightRadius:30
         }}>
-            {
+            { 
                 state.slideOverlay.slideOverlayButtonEdit ?
                     <EditModeHeading/>
                     :

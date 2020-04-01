@@ -22,7 +22,7 @@ import {colors} from '../../../styles'
  * @param isFetchingData bool
  * @returns {*}
  * @constructor
- */
+ */ 
 
 const Page = ({ placeholderText, changeText, inputText, routeName, listData, listHeaders, isFetchingData}) => {
     const [state,dispatch] = useContext(SuitesContext)

@@ -12,13 +12,272 @@ export default [
         "nextVisit": "2019-11-21",
 
         "caseFileDetails": {
-            patient: {},
-            medicalStaff: {},
-            medialHistory: {},
-            procedures: {},
-            chargeSheet: {},
+            // patient: {},
+            // medicalStaff: {},
+            // medialHistory: {},
+            // procedures: {},
+            // chargeSheet: {},
+            // diagnosis: [
+            //     {}
+            // ]
+            title: "Julie Melissa Brown",
+            patient: {
+                firstName: "Julie",
+                middleName: "Mellisa",
+                lastName: "Brown",
+                height: "5'3",
+                dob: new Date(1990, 2, 14),
+                trn: 123876012,
+                Gender: "Male",
+                ethnicity: "Black",
+                BloodType: "AB",
+                weight: 120,
+                bmi: 21,
+                insurance: [
+                    {
+                        name: "Sagicor Life",
+                        coverageLimit: 45000.00,
+                        policyNumber: 7311239 - 122,
+                    }
+                ],
+                contactInfo: [
+                    {
+                        phones: [],
+                        emails: []
+                    }
+                ],
+                emergencyContacts: [
+                    {
+                        name: "Juliana Brown",
+                        phone: 8763726280,
+                        emails: "juliana.brown@gmail.com",
+                        relationShip: "Mother"
+                    },
+                    {
+                        name: "Lucas Brown",
+                        phone: 8763727180,
+                        emails: "lucas.brown@gmail.com",
+                        relationShip: "Father"
+                    }
+                ],
+                addresses: [
+                    {
+                        addressLine1: "12 Ruthven Road, Kingston 1",
+                        addressLine2: "Apartment 6"
+                    }
+                ]
+            },
+            medicalStaff: [
+                {
+                    type: "Nurse",
+                    staff: {
+                        firstName: "Janet",
+                        lastName: "Abraham",
+                        // ... Additional Info
+                    }
+                },
+                {
+                    type: "Nurse",
+                    staff: {
+                        firstName: "Monifa",
+                        lastName: "Cartwright",
+                        // ... Additional Info
+                    }
+                },
+                {
+                    type: "Physician",
+                    staff: {
+                        firstName: "Hans",
+                        lastName: "Mansingh",
+                        // ... Additional Info
+                    }
+                },
+                {
+                    type: "Physician",
+                    staff: {
+                        firstName: "M",
+                        lastName: "Walsh",
+                        // ... Additional Info
+                    }
+                }
+            ],
+            medical: {
+                medicalHistory: [
+                    {
+                        types: "allergies",
+                        description: "peanut"
+                    },
+                    {
+                        types: "allergies",
+                        description: "pollen"
+                    },
+                    {
+                        types: "allergies",
+                        description: "shellfish"
+                    },
+                    {
+                        types: "preExistingConditions",
+                        description: "Asthma"
+                    }
+                ],
+                familyHistory: [
+                    {
+                        types: "preExistingConditions",
+                        relative: "GrandMother",
+                        condition: "Asthma"
+                    },
+                    {
+                        types: "preExistingConditions",
+                        relative: "Mother",
+                        condition: "Diabetes"
+                    }
+                ],
+                lifeStyleHistory: [
+                    {
+                        categories: "drug",
+                        name: 'percoset',
+                        frequency: "irregular",
+                        amount: 5,
+                        unit: 'bottle',
+                        unitOfMeasure: 'oz',
+                        measurement: 0,
+                        usage: "currently using",
+                        startDate: new Date(2020, 1, 1)
+                    },
+                    {
+                        categories: "alcohol",
+                        name: 'beer',
+                        frequency: "irregular",
+                        amount: 5,
+                        unit: 'bottle',
+                        unitOfMeasure: 'oz',
+                        measurement: 0,
+                        usage: "currently using",
+                        startDate: new Date(2020, 1, 1)
+                    },
+                    {
+                        categories: "tobacco",
+                        name: 'snuff',
+                        frequency: "irregular",
+                        amount: 5,
+                        unit: 'pack',
+                        unitOfMeasure: 'oz',
+                        measurement: 0,
+                        usage: "currently using",
+                        startDate: new Date(2020, 1, 1)
+                    }
+                ]
+            },
+            chargeSheet: {
+                inventory: [],
+                equipment: [],
+                consumables: [],
+                invoices: []
+            },
             diagnosis: [
-                {}
+                {
+                    type:"signsAndSymptoms",
+                    diagnosisData : "High blood pressure: Over 130"
+                },
+                {
+                    type:"signsAndSymptoms",
+                    diagnosisData : "Severe pain around the wrist"
+                },
+                {
+                    type:"examination",
+                    diagnosisData : "The patient complains of chest pains. Based on apparent swelling, the patient may be showing signs of Coronary Heart Disease."
+                },
+                {
+                    type:"diagnosticEvaluations",
+                    diagnosisData : {
+                        "name":"XrayScan.jpg",
+                        "image":"icon.png"
+                    },
+                },
+                {
+                    type:"diagnosticEvaluations",
+                    diagnosisData : {
+                        "name":"XrayScan87429.jpg",
+                        "image":"icon.png"
+                    },
+                },
+                {
+                    type:"laboratoryInvestigations",
+                    diagnosisData : ""
+                },
+                {
+                    type:"provisionalDiagnosis",
+                    diagnosisData : ""
+                },
+                {
+                    type:"finalDiagnosis",
+                    diagnosisData : ""
+                },
+                {
+                    type:"medicationPrescribed",
+                    diagnosisData : ""
+                },
+                {
+                    type:"implantedDevices",
+                    diagnosisData : ""
+                },
+            ],
+            caseProcedures: [
+                {
+                    title:"Coronary Byapass Graft",
+                    location: {
+                        name: "Surgery Theatre 6"
+                    },
+                    appointment: {
+                        startTime : new Date (2019, 10, 12, 13),
+                        duration : "3 Hours" 
+                    },
+    
+                    //.... List procedure fields
+                    equipment: [],
+    
+                    hasRecovery: true,
+                    recovery: {
+                        location: {
+                            "name": "Surgery Theatre 6"
+                        },
+                        appointment: {
+                            startTime : new Date (2019, 10, 12, 16),
+                            duration : "12 Hours" 
+                        }
+                    }
+                },
+
+                {
+                    title : "Coronary Bypass Graft",
+                    location: {
+                        name: "Angioplasty"
+                    },
+                    appointment: {
+                        startTime : new Date (2020, 5, 12, 13),
+                        duration : "3 Hours" 
+                    },
+    
+                    //.... List procedure fields
+                    equipment: [],
+    
+                    hasRecovery: true,
+                    recovery: {
+                        location: {
+                            "name": "Angioplasty"
+                        },
+                        appointment: {
+                            startTime : new Date (2020, 5, 12, 16),
+                            duration : "12 Hours" 
+                        }
+                    }
+                }
+            ],
+            patientRisks: [
+                {
+                    riskLevel: "moderate",
+                    notes: "There may be additional cardiovascular blockages"
+                }
             ]
         }
     },
@@ -206,6 +465,21 @@ export default [
     }
 ];
 
+/**
+ * 
+ * @type {{SIGNS_AND_SYMPTOMS: string, EXAMINATION: string, DIAGNOSTIC_EVALUATIONS: string, LABORATORY_INVESTIGATIONS: string, PROVISIONAL_DIAGNOSIS: string, FINAL_DIAGNOSIS: string, MEDICATION_PRESCRIBED: string, IMPLANTED_DEVICES: string}}
+ */
+
+ const diagnosisTypes = {
+    SIGNS_AND_SYMPTOMS : "signsAndSymptoms",
+    EXAMINATION: 'examination',
+    DIAGNOSTIC_EVALUATIONS: 'diagnosticEvaluations',
+    LABORATORY_INVESTIGATIONS: 'laboratoryInvestigations',
+    PROVISIONAL_DIAGNOSIS: 'provisionalDiagnosis',
+    FINAL_DIAGNOSIS:'finalDiagnosis',
+    MEDICATION_PRESCRIBED:'medicationPrescribed',
+    IMPLANTED_DEVICES:'implantedDevices'
+ }
 
 /**
  *
@@ -409,4 +683,4 @@ const caseFiles = [
     }
 ];
 
-export default caseFiles;
+// export default caseFiles;

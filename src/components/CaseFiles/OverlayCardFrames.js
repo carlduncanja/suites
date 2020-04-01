@@ -5,9 +5,11 @@ import FrameImageCard from '../common/Frames/FrameCards/FrameImageCard';
 import FrameTableCard from '../common/Frames/FrameCards/FrameTableCard';
 import FrameMixedTableCard from '../common/Frames/FrameCards/FrameMixedTableCard';
 import { SuitesContext } from '../../contexts/SuitesContext';
+import FrameLifestyleCard from '../common/Frames/FrameCards/FrameLifestyleCard';
 
 export function SignsAndSymptoms({cardInformation}) {
     const [state] = useContext(SuitesContext)
+    // console.log("Card Information:", cardInformation) 
     return(
         <View style={styles.frameContainer}>
             <FrameCard
@@ -15,7 +17,7 @@ export function SignsAndSymptoms({cardInformation}) {
                 titleBackgroundColor = "#EBF8FF"
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Signs and Symptoms"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.signsAndSymptoms}
+                cardInformation = {cardInformation}
                 frameIconName = "signsAndSymptoms"
             />
         </View>
@@ -23,7 +25,7 @@ export function SignsAndSymptoms({cardInformation}) {
     
 }
 
-export function Examinations(){
+export function Examinations({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -32,7 +34,7 @@ export function Examinations(){
                 titleBackgroundColor = "#E6FFFA"
                 frameBorderColor = "#4FD1C5"
                 frameTitle = "Examinations"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.examinations}
+                cardInformation = {cardInformation}
                 frameIconName = "examinations"
             />
         </View>
@@ -40,7 +42,7 @@ export function Examinations(){
     )
 }
 
-export function DiagnosticEvaluations(){
+export function DiagnosticEvaluations({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -49,14 +51,14 @@ export function DiagnosticEvaluations(){
                 titleBackgroundColor = "#EBF4FF"
                 frameBorderColor = "#A3BFFA"
                 frameTitle = "Diagnostic Evaluations"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.diagnosticEvaluations}
+                cardInformation = {cardInformation}
                 frameIconName = "diagnosticEvaluations"
             />
         </View>
     )
 }
 
-export function LaboratoryInvestigations(){
+export function LaboratoryInvestigations({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -65,7 +67,7 @@ export function LaboratoryInvestigations(){
                 titleBackgroundColor = "#E6FFFA"
                 frameBorderColor = "#4FD1C5"
                 frameTitle = "Laboratory Investigations"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.laboratoryInvestigations}
+                cardInformation = {cardInformation}
                 frameIconName = "laboratoryInvestigations"
             />
         </View>
@@ -73,7 +75,7 @@ export function LaboratoryInvestigations(){
     )
 }
 
-export function ProvisionalDiagnosis(){
+export function ProvisionalDiagnosis({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -82,7 +84,7 @@ export function ProvisionalDiagnosis(){
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Provisional Diagnosis"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.provisionalDiagnosis}
+                cardInformation = {cardInformation}
                 frameIconName = "provisionalDiagnosis"
             />
         </View>
@@ -90,7 +92,7 @@ export function ProvisionalDiagnosis(){
     )
 }
 
-export function FinalDiagnosis(){
+export function FinalDiagnosis({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -99,7 +101,7 @@ export function FinalDiagnosis(){
                 titleBackgroundColor = "#F0FFF4"
                 frameBorderColor = "#9AE6B4"
                 frameTitle = "Final Diagnosis"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.finalDiagnosis}
+                cardInformation = {cardInformation}
                 frameIconName = "finalDiagnosis"
             />
         </View>
@@ -107,7 +109,7 @@ export function FinalDiagnosis(){
     )
 }
 
-export function MedicationPrescribed(){
+export function MedicationPrescribed({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -116,7 +118,7 @@ export function MedicationPrescribed(){
                 titleBackgroundColor = "#FFF5F5"
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Medication Prescribed"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.medicationPrescribed}
+                cardInformation = {cardInformation}
                 frameIconName = "medicationPrescribed"
             />
         </View>
@@ -124,7 +126,7 @@ export function MedicationPrescribed(){
     )
 }
 
-export function ImplantedDevices(){
+export function ImplantedDevices({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -133,7 +135,7 @@ export function ImplantedDevices(){
                 titleBackgroundColor = "#EBF8FF"
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Implanted Devices"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.implantedDevices}
+                cardInformation = {cardInformation}
                 frameIconName = "implantedDevices"
             />
         </View>
@@ -141,7 +143,7 @@ export function ImplantedDevices(){
     )
 }
 
-export function Physicians(){
+export function Physicians({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -150,7 +152,7 @@ export function Physicians(){
                 titleBackgroundColor = "#EBF8FF"
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Physicians"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.physicians}
+                cardInformation = {cardInformation}
                 frameIconName = "medicalStaff"
                 iconFillColor = "#4299E1"
             />
@@ -159,7 +161,7 @@ export function Physicians(){
     )
 }
 
-export function Nurses(){
+export function Nurses({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -168,7 +170,7 @@ export function Nurses(){
                 titleBackgroundColor = "#FFF5F5"
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Nurses"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.nurses}
+                cardInformation = {cardInformation}
                 frameIconName = "medicalStaff"
                 iconFillColor = "#F56565"
             />
@@ -177,7 +179,7 @@ export function Nurses(){
     )
 }
 
-export function Allergies(){
+export function Allergies({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -186,7 +188,7 @@ export function Allergies(){
                 titleBackgroundColor = "#FAF5FF"
                 frameBorderColor = "#D6BCFA"
                 frameTitle = "Allergies"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.allergies}
+                cardInformation = {cardInformation}
                 frameIconName = "allergies"
             />
         </View>
@@ -194,7 +196,7 @@ export function Allergies(){
     )
 }
 
-export function PreExistingConditions(){
+export function PreExistingConditions({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -203,14 +205,14 @@ export function PreExistingConditions(){
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Pre-Existing Conditions"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.preExistingConditions}
+                cardInformation = {cardInformation}
                 frameIconName = "preExistingConditions"
             />
         </View> 
     )
 }
 
-export function Immunisations(){
+export function Immunisations({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -219,14 +221,14 @@ export function Immunisations(){
                 titleBackgroundColor = "#EBF4FF"
                 frameBorderColor = "#A3BFFA"
                 frameTitle = "Immunisations"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.immunisations}
+                cardInformation = {cardInformation}
                 frameIconName = "immunisations"
             />
         </View> 
     )
 }
 
-export function Medications(){
+export function Medications({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -235,14 +237,14 @@ export function Medications(){
                 titleBackgroundColor = "#FFF5F5"
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Medications"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.medications}
+                cardInformation = {cardInformation}
                 frameIconName = "medications"
             />
         </View> 
     )
 }
 
-export function Procedures(){
+export function Procedures({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -251,14 +253,14 @@ export function Procedures(){
                 titleBackgroundColor = "#F0FFF4"
                 frameBorderColor = "#9AE6B4"
                 frameTitle = "Procedures"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.procedures}
+                cardInformation = {cardInformation}
                 frameIconName = "overlayProcedures"
             />
         </View> 
     )
 }
 
-export function MedicalHistoryImplantedDevices(){
+export function MedicalHistoryImplantedDevices({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -267,14 +269,14 @@ export function MedicalHistoryImplantedDevices(){
                 titleBackgroundColor = "#EBF8FF"
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Implanted Devices"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.implantedDevices}
+                cardInformation = {cardInformation}
                 frameIconName = "implantedDevices"
             />
         </View> 
     )
 }
 
-export function FamilyPreExistingConditions(){
+export function FamilyPreExistingConditions({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -283,14 +285,14 @@ export function FamilyPreExistingConditions(){
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Pre-Existing Conditions"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.preExistingConditions}
+                cardInformation = {cardInformation}
                 frameIconName = "familyPreExistingConditions"
             />
         </View> 
     )
 }
 
-export function OtherNotableConditions(){
+export function OtherNotableConditions({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -299,54 +301,54 @@ export function OtherNotableConditions(){
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Other Notable Conditions"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.otherNotableConditions}
+                cardInformation = {cardInformation}
                 frameIconName = "otherNotableConditions"
             />
         </View>
     )
 }
 
-export function DrugUse(){
+export function DrugUse({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
-            <FrameMixedTableCard
+            <FrameLifestyleCard
                 frameColor = "#805AD5"
                 titleBackgroundColor = "#FAF5FF"
                 frameBorderColor = "#D6BCFA"
                 frameTitle = "Drug Use"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.drug}
+                cardInformation = {cardInformation}
                 frameIconName = "drugUse"
             />
         </View>
     )
 }
 
-export function AlcoholUse(){
+export function AlcoholUse({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
-            <FrameMixedTableCard
+            <FrameLifestyleCard
                 frameColor = "#E53E3E"
                 titleBackgroundColor = "#FFF5F5"
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Alcohol Use"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.alcohol}
+                cardInformation = {cardInformation}
                 frameIconName = "alcoholUse"
             />
         </View>
     )
 }
-export function TobaccoUse(){
+export function TobaccoUse({cardInformation}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
-            <FrameMixedTableCard
+            <FrameLifestyleCard
                 frameColor = "#4E5664"
                 titleBackgroundColor = "#EEF2F6"
                 frameBorderColor = "#A0AEC0"
                 frameTitle = "Tobacco Use"
-                cardInformation = {state.slideOverlay.slideOverlayTabInfo.tobacco}
+                cardInformation = {cardInformation}
                 frameIconName = "tobaccoUse"
             />
         </View>

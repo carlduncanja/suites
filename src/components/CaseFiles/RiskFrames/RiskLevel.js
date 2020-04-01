@@ -6,19 +6,19 @@ import SvgIcon from '../../../../assets/SvgIcon'
 const RiskLevel = (props) => {
     const levels = [
         {
-            "level":1,
+            "level":"low",
             "name":"Low",
         },
         {
-            "level":2,
+            "level":"moderate",
             "name":"Moderate",
         },
         {
-            "level":3,
+            "level":"high",
             "name":"High",
         },
         {
-            "level":4,
+            "level":"veryHigh",
             "name":"Very High",
         },
     ]

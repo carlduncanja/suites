@@ -30,27 +30,38 @@ const ListItem = (props) => {
         })
     }
 
+    // const handleSelectedListItem = (listItem) => {
+    //     const menuName = state.overlayMenu.menu[state.overlayMenu.selectedMenuItem].tabName
+    //     const menuTab = state.overlayMenu.selectedMenuItemTabs[state.overlayMenu.selectedMenuItemCurrentTab]
+    //     let selectedObj = getSelectedItem(listItem.id)
+    //     selectedObj.length > 0 && (
+    //         dispatch({
+    //             type: appActions.SETSELECTEDLISTITEM,
+    //             newState:{
+    //                 selectedListItemId : listItem.id,
+    //                 selectedListObject : selectedObj[0]
+    //             }
+    //         }),
+    //         dispatch({
+    //             type: appActions.SETSLIDEOVERLAY,
+    //             newState : {
+    //                 slideOverlayHeader : {"id":listItem.id,"name":listItem.name},
+    //                 slideOverlayStatus : true,
+    //                 slideOverlayTabInfo : selectedObj[0][transformToCamel(menuName)][transformToCamel(menuTab)]
+    //             }
+    //         })
+    //     )
+    // }
+
     const handleSelectedListItem = (listItem) => {
-        const menuName = state.overlayMenu.menu[state.overlayMenu.selectedMenuItem].tabName
-        const menuTab = state.overlayMenu.selectedMenuItemTabs[state.overlayMenu.selectedMenuItemCurrentTab]
-        let selectedObj = getSelectedItem(listItem.id)
-        selectedObj.length > 0 && (
-            dispatch({
-                type: appActions.SETSELECTEDLISTITEM,
-                newState:{
-                    selectedListItemId : listItem.id,
-                    selectedListObject : selectedObj[0]
-                }
-            }),
-            dispatch({
-                type: appActions.SETSLIDEOVERLAY,
-                newState : {
-                    slideOverlayHeader : {"id":listItem.id,"name":listItem.name},
-                    slideOverlayStatus : true,
-                    slideOverlayTabInfo : selectedObj[0][transformToCamel(menuName)][transformToCamel(menuTab)]
-                }
-            })
-        )
+        let selectedObj = listItem.caseFileDetails
+        dispatch({
+            type: appActions.SETSELECTEDLISTITEM,
+            newState:{
+                selectedListItemId : listItem.id,
+                selectedListObject : selectedObj
+            }
+        })
     }
 
     return (

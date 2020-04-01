@@ -4,18 +4,24 @@ import { Details, Diagnosis, Insurance, PatientRisk} from '../../OverlayPages/Pa
 
 const Patient = () => {
     const [state] = useContext(SuitesContext)
-    const name = state.overlayMenu.selectedMenuItemTabs[state.overlayMenu.selectedMenuItemCurrentTab]
+    const selected = state.selectedListItem.selectedListObject
+    const patientDetails = selected.patient
+    const insuranceDetails = patientDetails.insurance
+    const diagnosisDetails = selected.diagnosis
+    const patientRisks = selected.patientRisks
+    const name = state.overlayMenu.selectedMenuItemCurrentTab
+
     return (
         name === 'Details' ?
-            <Details/>
+            <Details tabDetails = {patientDetails}/>
             :
             name === 'Insurance' ?
-                <Insurance/>
+                <Insurance tabDetails = {insuranceDetails}/>
                 :
                 name === 'Diagnosis' ?
-                    <Diagnosis/>
+                    <Diagnosis tabDetails = {diagnosisDetails}/>
                     :
-                    <PatientRisk/>        
+                    <PatientRisk tabDetails = {patientRisks}/>        
     );
 }
  

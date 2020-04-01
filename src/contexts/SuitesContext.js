@@ -22,11 +22,11 @@ const overlayMenu = {
     menu : [],
     selectedMenuItem : 0,
     selectedMenuItemTabs : [],
-    selectedMenuItemCurrentTab : 0
+    selectedMenuItemCurrentTab : "Details"
 }
 const slideOverlay = {
     slideOverlayStatus: false,
-    slideOverlayHeader : {},
+    slideOverlayHeader : {}, 
     slideOverlayTabInfo : {},
     slideOverlayList : [],
     slideOverlayListHeaders : [],

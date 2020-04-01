@@ -9,13 +9,13 @@ const TabsContainer = (props) => {
             {props.tabs.map((tab, index)=>{
                 return (
                     <View key={index}> 
-                    <TouchableOpacity onPress = {()=>props.onPressChange(index)} activeOpacity={1}>
+                    <TouchableOpacity onPress = {()=>props.onPressChange(tab)} activeOpacity={1}>
                         <Tab 
                             tabName={tab} 
-                            backgroundColor={index === props.selectedTab ? "#FFFFFF" : null}
+                            backgroundColor={tab === props.selectedTab ? "#FFFFFF" : null}
                             textColor={
-                                index === props.selectedTab ? "#3182CE" :
-                                    props.completedTabs && props.completedTabs.includes(index) ? "#4E5664" :
+                                tab === props.selectedTab ? "#3182CE" :
+                                    props.completedTabs && props.completedTabs.includes(tab) ? "#4E5664" :
                                         "#718096"
                             }   
                         /> 
