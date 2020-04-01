@@ -51,7 +51,7 @@ function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerso
         }
     };
 
-    const lineItem = (title, subject, isBold) => <View style={[styles.doctorContainer,]}>
+    const lineItem = (title, subject, isBold) => <View>
         <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
             <Text
                 style={
@@ -139,14 +139,14 @@ function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerso
 
                             <View style={styles.box}>
                                 {lineItem(pickupPerson, "Pickup Person")}
+                                <View style={{marginTop: 20}}/>
                                 {lineItem(purchaseOrderId, "Purchase Order")}
                             </View>
 
 
                             <View style={styles.deliveryNotes}>
                                 <Text>
-                                    Jamaica Hospital Suppliers has reported a delay in delivery over the past week, due
-                                    to some staff being laid off.
+                                    {notes}
                                 </Text>
                             </View>
 
@@ -250,9 +250,7 @@ const styles = StyleSheet.create({
     box: {
         borderColor: "#E2E8F0",
         borderRadius: 8,
-        paddingTop: 16,
-        paddingLeft: 16,
-        paddingRight: 16,
+        padding: 16,
         borderWidth: 1,
         marginTop: 10,
         marginBottom: 20,

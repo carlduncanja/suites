@@ -130,6 +130,7 @@ function ScheduleOverlayContainer({appointment = {}, screenDimensions}) {
                 return <DeliveryScheduleContent
                     appointmentDetails={appointmentDetails}
                     pickupPerson={"Olivia Grant"}
+                    notes={"Jamaica Hospital Suppliers has reported a delay in delivery over the past week, due to some staff being laid off."}
                     purchaseOrder={
                         {id: "PO-0000023", cost: "120,000.00"}
                     }
