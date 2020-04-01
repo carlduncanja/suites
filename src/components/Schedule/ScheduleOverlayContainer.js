@@ -149,9 +149,7 @@ function ScheduleOverlayContainer({appointment = {}, screenDimensions}) {
                     storageLocation={"OR1: Cabinet 3"}
                 />
             }
-            case scheduleTypes.EQUIPMENT: {
-                break
-            }
+            case scheduleTypes.EQUIPMENT:
             default: {
                 // TODO make no appointment found view
                 return <DefaultScheduleContent
