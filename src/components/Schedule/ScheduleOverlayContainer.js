@@ -5,6 +5,7 @@ import ProcedureScheduleContent from "./ProcdureScheduleContent";
 import DefaultScheduleContent from "../Schedule/DefaultScheduleContent";
 import {colors} from "../../styles"
 import DeliveryScheduleContent from "./DeliveryScheduleContent";
+import RestockScheduleContent from "./RestockScheduleContent";
 
 
 const surgeryAppointment = {
@@ -135,7 +136,18 @@ function ScheduleOverlayContainer({appointment = {}, screenDimensions}) {
                 />
             }
             case scheduleTypes.RESTOCK: {
-                break
+
+                const itemName = appointment.title.replace('Restock ', '');
+                // TODO prepare data when models are finalized.
+
+                return <RestockScheduleContent
+                    appointmentDetails={appointment}
+                    amountInStock={200}
+                    capacity={600}
+                    amountRequested={200}
+                    inventoryItem={{name: itemName}}
+                    storageLocation={"OR1: Cabinet 3"}
+                />
             }
             case scheduleTypes.EQUIPMENT: {
                 break
