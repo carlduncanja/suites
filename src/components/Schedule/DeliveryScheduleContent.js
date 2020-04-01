@@ -1,22 +1,28 @@
-import React from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useState} from 'react';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View, Button} from "react-native";
 import moment from "moment";
+import SvgIcon from "../../../assets/SvgIcon";
 
 /**
- * Default View for Appointments.
+ * Visual component for rendering details of a delivery appointments.
  * @param scheduleItem
  * @returns {*}
  * @constructor
  */
-function DefaultScheduleContent({scheduleDetails = {}}) {
+function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerson, notes}) {
     const {
         id = "",
         title = "",
-        subject = "",
         location = "",
         startTime = new Date(),
         endTime = new Date()
-    } = scheduleDetails;
+    } = appointmentDetails;
+
+    const {
+        id: purchaseOrderId,
+        cost
+    } = purchaseOrder;
+
 
     /**
      * @param scheduleDate - date object
@@ -45,14 +51,36 @@ function DefaultScheduleContent({scheduleDetails = {}}) {
         }
     };
 
+    const lineItem = (title, subject, isBold) => <View style={[styles.doctorContainer,]}>
+        <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
+            <Text
+                style={
+                    [
+                        styles.detailText,
+                        {
+                            color: '#3182CE',
+                            marginRight: 16,
+                            fontWeight: isBold ? 'bold' : 'normal'
+                        }
+                    ]
+                }
+            > {title} </Text>
+
+            <Text style={[styles.detailText, {color: '#718096'}]}>{subject}</Text>
+        </View>
+    </View>;
+
+
     return (
         <TouchableOpacity style={{flex: 1}} activeOpacity={1}>
             <ScrollView style={styles.container}>
+
                 <View>
                     <View style={styles.cardTitle}>
+
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
                             <Text style={styles.idText}>
-                                #{id}
+                                ${cost}
                             </Text>
                             <View style={styles.statusWrapper}>
                                 <Text style={{
@@ -66,22 +94,24 @@ function DefaultScheduleContent({scheduleDetails = {}}) {
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <Text style={styles.subjectText}>
-                                {subject}
+                                {title}
                             </Text>
                             <Text style={{
                                 fontSize: 20,
                                 color: '#104587',
                                 paddingBottom: 5
-                            }}>{title}</Text>
+                            }}> Reschedule Delivery </Text>
                         </View>
                     </View>
 
                     <View style={[styles.doctors]}>
+
                         <View style={styles.cardDescription}>
                             <View style={{flexDirection: 'column'}}>
-                                <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Theatre</Text>
+                                <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Drop-Off Point</Text>
                                 <Text style={[styles.detailText]}>{location}</Text>
                             </View>
+
                             <View style={{flexDirection: 'row'}}>
 
                                 <View style={{flexDirection: 'column', marginRight: 15}}>
@@ -103,6 +133,42 @@ function DefaultScheduleContent({scheduleDetails = {}}) {
                                 </View>
                             </View>
                         </View>
+
+                        {/* Additional Information */}
+                        <View style={styles.infoSection}>
+
+                            <View style={styles.box}>
+                                {lineItem(pickupPerson, "Pickup Person")}
+                                {lineItem(purchaseOrderId, "Purchase Order")}
+                            </View>
+
+
+                            <View style={styles.deliveryNotes}>
+                                <Text>
+                                    Jamaica Hospital Suppliers has reported a delay in delivery over the past week, due
+                                    to some staff being laid off.
+                                </Text>
+                            </View>
+
+                            <View style={{
+                                marginTop: 20,
+                                alignSelf: 'flex-end',
+                                backgroundColor: '#4299E1',
+                                borderRadius: 8
+                            }}>
+                                <Button
+                                    color={'white'}
+                                    title={"Review Order"}
+                                    backgroundColor={"#4299E1"}
+                                    onPress={() => {
+                                    }}
+                                />
+                            </View>
+
+
+                        </View>
+
+
                     </View>
                 </View>
             </ScrollView>
@@ -174,10 +240,12 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         marginTop: 20,
     },
-    doctorContainer: {
-        alignItems: 'flex-start',
-        flexDirection: 'row',
-        paddingBottom: 20,
+    deliveryNotes: {
+        marginTop: 20,
+        borderColor: '#718096',
+        borderRadius: 8,
+        borderWidth: 1,
+        padding: 16,
     },
     box: {
         borderColor: "#E2E8F0",
@@ -209,32 +277,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#4E5664'
     },
-    buttonController: {
-        height: 40,
-        width: 40,
-        borderRadius: 40 / 2,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
     footer: {
         flexDirection: 'column',
         position: 'relative',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginRight: 10,
-
     }
 });
 
-DefaultScheduleContent.propTypes = {};
-DefaultScheduleContent.defaultProps = {};
+DeliveryScheduleContent.propTypes = {};
+DeliveryScheduleContent.defaultProps = {};
 
-export default DefaultScheduleContent;
+export default DeliveryScheduleContent;

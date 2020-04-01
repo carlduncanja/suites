@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet,ActivityIndicator, Text, TouchableOpacity, View} from "react-native";
+import {StyleSheet, ActivityIndicator, Text, TouchableOpacity, View} from "react-native";
 import {getScheduleById, getSchedules} from "../../api/network";
 import ProcedureScheduleContent from "./ProcdureScheduleContent";
 import DefaultScheduleContent from "../Schedule/DefaultScheduleContent";
 import {colors} from "../../styles"
+import DeliveryScheduleContent from "./DeliveryScheduleContent";
 
 
 const surgeryAppointment = {
@@ -125,7 +126,13 @@ function ScheduleOverlayContainer({appointment = {}, screenDimensions}) {
                 />
             }
             case scheduleTypes.DELIVERY: {
-                break
+                return <DeliveryScheduleContent
+                    appointmentDetails={appointmentDetails}
+                    pickupPerson={"Olivia Grant"}
+                    purchaseOrder={
+                        {id: "PO-0000023", cost: "120,000.00"}
+                    }
+                />
             }
             case scheduleTypes.RESTOCK: {
                 break
@@ -141,34 +148,6 @@ function ScheduleOverlayContainer({appointment = {}, screenDimensions}) {
             }
         }
     };
-
-    // const doctorItemContainer = (title, name, position, index) => {
-    //     return (
-    //         <View style={[styles.doctorContainer,]} key={index}>
-    //             {position === 'doctor' && title !== 'Lead Surgeon' ?
-    //                 <View style={{marginRight: 10}}>
-    //                     <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
-    //                 </View>
-    //                 :
-    //                 null
-    //             }
-    //             <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
-    //                 {position === 'doctor' && title === 'Lead Surgeon' ?
-    //                     <Text style={[styles.detailText, {
-    //                         color: '#3182CE',
-    //                         marginRight: 16,
-    //                         fontWeight: 'bold'
-    //                     }]}>{name}</Text>
-    //                     :
-    //                     <Text style={[styles.detailText, {color: '#3182CE', marginRight: 16}]}>{name}</Text>
-    //                 }
-    //
-    //                 <Text style={[styles.detailText, {color: '#718096'}]}>{title}</Text>
-    //             </View>
-    //
-    //         </View>
-    //     )
-    // };
     return (
         <View style={styles.container}>
             {
