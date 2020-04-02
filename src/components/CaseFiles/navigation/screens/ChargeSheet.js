@@ -4,21 +4,29 @@ import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../Over
 
 const ChargeSheet = () => {
     const [state] = useContext(SuitesContext)
-    const name = state.overlayMenu.selectedMenuItemTabs[state.overlayMenu.selectedMenuItemCurrentTab]
+    const name = state.overlayMenu.selectedMenuItemCurrentTab
+    const chargeSheet = state.selectedListItem.selectedListObject.caseFileDetails.chargeSheet
+
+    const consumables = chargeSheet.consumables
+    const equipment = chargeSheet.equipment
+    const quotation = chargeSheet.quotation
+    const invoices = chargeSheet.invoices
+    const inventory = chargeSheet.inventory
+
     return (
         name === 'Consumables' ?
-            <Consumables/>
+            <Consumables tabDetails = {consumables}/>
             :
             name === 'Equipment' ?
-                <Equipment/>
+                <Equipment tabDetails = {equipment}/>
                 :
                 name === 'Invoices' ?
-                    <Invoices/>
+                    <Invoices tabDetails = {invoices}/>
                     :
                     name === 'Quotation' ?
-                        <Quotation/>
+                        <Quotation tabDetails = {quotation}/>
                         :
-                        <Billing/>        
+                        <Billing tabDetails = {[]}/>        
     );
 }
  

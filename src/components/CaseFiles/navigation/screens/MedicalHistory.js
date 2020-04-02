@@ -5,7 +5,7 @@ import { FamilyHistory,General,Lifestyle,Other } from '../../OverlayPages/Medica
 const MedicalHistory = () => {
     const [state] = useContext(SuitesContext)
     const name = state.overlayMenu.selectedMenuItemCurrentTab
-    const selected = state.selectedListItem.selectedListObject.medical
+    const selected = state.selectedListItem.selectedListObject.caseFileDetails.medical
     const general = selected.medicalHistory
     const family = selected.familyHistory
     const lifestyle = selected.lifeStyleHistory

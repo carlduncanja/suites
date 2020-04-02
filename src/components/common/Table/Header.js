@@ -1,10 +1,18 @@
 import React,{Component, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
+import Checkbox from '../Checkbox/Checkbox';
 
-const Header = (props) => {
+const Header = ({headers, hasCheckbox, toggleCheckbox}) => { 
     return ( 
         <View style={styles.headersContainer}>
-            {props.headers.map((header,index)=>{
+            <View style={{marginRight:20}}>
+                {hasCheckbox && 
+                    <Checkbox/>
+                }
+            </View>
+            
+            {headers.map((header,index)=>{
                 return(
                     <View style={styles.item} key={index}>
                         <Text style={styles.headerText}>{header}</Text>

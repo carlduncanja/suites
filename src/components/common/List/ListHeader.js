@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Checkbox from '../Checkbox/Checkbox';
 import { PartialCheckbox } from '../Checkbox/Checkboxes'
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import Header from './Table/Header';
+import Header from '../Table/Header';
 
 const ListHeader = ({checkedItemList, listHeaders}) => {
     const [state] = useContext(SuitesContext)

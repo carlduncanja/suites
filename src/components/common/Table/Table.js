@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import {View, StyleSheet} from 'react-native';
 import Header from './Header';
 import Data from './Data';
-import { CaseFileContext } from '../../../../contexts/CaseFileContext';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const Divider = () =>{
     return(
@@ -16,18 +16,26 @@ const Divider = () =>{
         />
     )
 }
-const Table = () => {
+const Table = ({ data, listItemFormat, headerItemFormat}) => {
     const [state] = useContext(CaseFileContext)
     return ( 
         <>
             <View style={styles.header}>
-                <Header headers = {state.report.reportConsumablesListHeaders}/>
+                {headerItemFormat()}
+                {/* <Header 
+                    headers = {headers}
+                    hasCheckbox = {hasCheckbox}
+                    toggleCheckbox = {toggleCheckbox}
+                /> */}
             </View>
             {Divider()}
             <View style={{paddingBottom:5}}>
-                <Data/>
+                <Data
+                    listItemFormat = {listItemFormat}
+                    data = {data}
+                />
             </View>
-            {Divider()}
+            {/* {Divider()} */}
         </>
     );
 }

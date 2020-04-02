@@ -54,7 +54,7 @@ const ListItem = (props) => {
     // }
 
     const handleSelectedListItem = (listItem) => {
-        let selectedObj = listItem.caseFileDetails
+        let selectedObj = listItem
         dispatch({
             type: appActions.SETSELECTEDLISTITEM,
             newState:{

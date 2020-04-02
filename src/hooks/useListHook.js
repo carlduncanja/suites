@@ -21,21 +21,17 @@ getRecord = (data, listHeaders) =>{
     newArray = []
     listHeaders.map((header)=>{
         newHeader = transformToCamel(header)
-        newHeader === 'patient'?
-            newArray.push(getNameObject(getPatient(data.id)))
-            :
-            newHeader === 'nextVisit' ?
-                newArray.push(moment(getField(newHeader, data)).format("MMM D, YYYY"))
-                :
-                    newArray.push(getField(newHeader, data))
+        newArray.push(getField(newHeader, data))
+        // newHeader === 'patient'?
+        //     newArray.push(getNameObject(getPatient(data.id)))
+        //     :
+        //     newHeader === 'nextVisit' ?
+        //         newArray.push(moment(getField(newHeader, data)).format("MMM D, YYYY"))
+        //         :
+                    
     })
-
-
-    newObject={
-        "recordId":getField("id", data),
-        "recordInformation":newArray
-    }
-    return newObject
+    
+    return newArray
 }
 
 getField = (field, data) => {

@@ -8,7 +8,7 @@ export function EditModeHeading(){
     return( 
         <Heading 
             headerId={state.selectedListItem.selectedListItemId}
-            headerName={state.selectedListItem.selectedListObject.title}
+            headerName={state.selectedListItem.selectedListObject.caseFileDetails.title}
             backgroundColor="#83AED1"
             headerIdColor="#104587"
             headerNameColor="#FFFFFF"
@@ -23,7 +23,7 @@ export function ViewModeHeading(){
     return(
         <Heading 
             headerId={state.selectedListItem.selectedListItemId}
-            headerName={state.selectedListItem.selectedListObject.title}
+            headerName={state.selectedListItem.selectedListObject.caseFileDetails.title}
             backgroundColor="#EEF2F6"
             headerIdColor="#104587"
             headerNameColor="#0CB0E7"

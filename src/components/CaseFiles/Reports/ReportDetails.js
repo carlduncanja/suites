@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from "react-native";
-import Table from '../../common/List/Table/Table'
+import Table from '../../common/Table/Table'
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const ReportDetails = () => {

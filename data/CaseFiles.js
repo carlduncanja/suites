@@ -33,6 +33,12 @@ export default [
                 BloodType: "AB",
                 weight: 120,
                 bmi: 21,
+                addresses: [
+                    {
+                        addressLine1: "12 Ruthven Road, Kingston 1",
+                        addressLine2: "Apartment 6"
+                    }
+                ],
                 insurance: [
                     {
                         name: "Sagicor Life",
@@ -42,8 +48,20 @@ export default [
                 ],
                 contactInfo: [
                     {
-                        phones: [],
-                        emails: []
+                        phones: [
+                            {
+                                "cellNumber": 8763726172,
+                                "homeNumber": 8769926172,
+                                "workNumber": 8767128320
+                            }
+                        ],
+                        emails: [
+                            {
+                                "primary":"julie.brown@yahoo.com",
+                                "alternate":"julie345@gmail.com",
+                                "work":""
+                            }
+                        ]
                     }
                 ],
                 emergencyContacts: [
@@ -51,21 +69,15 @@ export default [
                         name: "Juliana Brown",
                         phone: 8763726280,
                         emails: "juliana.brown@gmail.com",
-                        relationShip: "Mother"
+                        relationship: "Mother"
                     },
                     {
                         name: "Lucas Brown",
                         phone: 8763727180,
                         emails: "lucas.brown@gmail.com",
-                        relationShip: "Father"
+                        relationship: "Father"
                     }
                 ],
-                addresses: [
-                    {
-                        addressLine1: "12 Ruthven Road, Kingston 1",
-                        addressLine2: "Apartment 6"
-                    }
-                ]
             },
             medicalStaff: [
                 {
@@ -90,6 +102,8 @@ export default [
                         firstName: "Hans",
                         lastName: "Mansingh",
                         // ... Additional Info
+                        //Tentative
+                        cost : 64000.45
                     }
                 },
                 {
@@ -98,6 +112,8 @@ export default [
                         firstName: "M",
                         lastName: "Walsh",
                         // ... Additional Info
+                        //Tentative
+                        cost : 58000.90
                     }
                 }
             ],
@@ -170,9 +186,151 @@ export default [
             },
             chargeSheet: {
                 inventory: [],
-                equipment: [],
-                consumables: [],
-                invoices: []
+                equipment: [
+                    {
+                        "itemName":"Bags",
+                        "type":"Blood Products",
+                        "quantity":5,
+                        "unitPrice":"$1,382.84"
+                    },
+                    {
+                        "itemName":"Scalpel",
+                        "type":"Incision",
+                        "quantity":3,
+                        "unitPrice":"$2,291.24"
+                    },
+                    {
+                        "itemName":"Glasses",
+                        "type":"Vision",
+                        "quantity":1,
+                        "unitPrice":"$3,129.88"
+                    }
+                ],
+                consumables: [
+                    {
+                        "type":"Anaesthesia",
+                        "itemName":"Agents",
+                        "quantity":1,
+                        "unitPrice":"$4,128.28"
+                    },
+                    {
+                        "type":"Anaesthesia",
+                        "quantity":4,
+                        "unitPrice":"$2,291.24",
+                        "itemName":"Atracurium",
+                    },
+                    {
+                        "itemName":"Atropine",
+                        "type":"Anaesthesia",
+                        "quantity":1,
+                        "unitPrice":"$454.20"
+                    },
+                ],
+                invoices: [
+                    {
+                        "invoiceNumber":"IN-000976",
+                        "status":"Complete",
+                        "date":"13/12/2019",
+                        "value":"$312,000.45",
+                        "invoiceDetails":{}
+                    },
+                    {
+                        "invoiceNumber":"IN-000972",
+                        "status":"Complete",
+                        "date":"13/12/2019",
+                        "value":"$12,000.45",
+                        "invoiceDetails":{}
+                    },
+                    {
+                        "invoiceNumber":"IN-000576",
+                        "status":"Incomplete",
+                        "date":"13/12/2019",
+                        "value":"$22,000.45",
+                        "invoiceDetails":{}
+                    }
+                ],
+                quotation:[
+                    {
+                        "quotationNumber":"QU-1240512",
+                        "date":"12/18/2019",
+                        "value":"$177,560.35",
+                        "quotationDetails":{
+
+                        },
+                        // "preview":{
+                        //     "billingDetails":{
+                        //         "billedTo":{
+                        //             "name":"Julie Melissa Brown",
+                        //             "addressLine1":"23 Bedford Avenue",
+                        //             "addressLine2":"Kingston 8",
+                        //             "addressLine3":"JMKIN08"
+                        //         },
+                        //         "for":"Medical Services",
+                        //         "date":"12/11/2019",
+                        //         "total":"$177,560.35"
+                        //     },
+                        //     "quotationDetails":{
+                        //         "summaryList":[
+                        //             {
+                        //             "charge":"Dr.Mansingh",
+                        //             "cost":"$64,000.45"
+                        //             },
+                        //             {
+                        //                 "charge":"Coronory Bypass Graft",
+                        //                 "cost":"$48,000.45"
+                        //             },
+                        //             {
+                        //                 "charge":"Coronory Artery Graft",
+                        //                 "cost":"$32,000.45"
+                        //             },
+                        //             {
+                        //                 "charge":"Blood Gases",
+                        //                 "cost":"$16,000.45"
+                        //             },
+                        //             {
+                        //                 "charge":"X-Ray",
+                        //                 "cost":"$16,000.45"
+                        //             }
+                        //         ],
+                        //         "consumablesTable":{
+                        //             "headers":[
+                        //                 "Item Name",
+                        //                 "Quantity",
+                        //                 "Unit Price",
+                        //                 "Total"
+                        //             ],
+                        //             "data":[
+                        //                 {
+                        //                     "itemName":"Morphine",
+                        //                     "quantity":2,
+                        //                     "unitPrice":"$4,582.48",
+                        //                     "total":"9,164.96"
+                        //                 }
+                        //             ]
+                        //         }
+                        //     },
+                        //     "billingSummary":{
+                        //         "subtotal":"$178,167.21",
+                        //         "discount":"-$ 30,0002.25",
+                        //         "tax":"20%",
+                        //         "total":"$177,560.35"
+                        //     }
+                        // }
+                    },
+                    {
+                        "quotationNumber":"QU-1240602",
+                        "date":"12/18/2019",
+                        "value":"$20,863.45",
+                        "quotationDetails":{}
+                        
+                    },
+                    {
+                        "quotationNumber":"QU-1245612",
+                        "date":"12/18/2019",
+                        "value":"$320,863.45",
+                        "quotationDetails":{}
+                    },
+                ]
             },
             diagnosis: [
                 {
@@ -232,10 +390,32 @@ export default [
                         startTime : new Date (2019, 10, 12, 13),
                         duration : "3 Hours" 
                     },
-    
+                    
                     //.... List procedure fields
-                    equipment: [],
+                    equipment: [
+                        {
+                            "item":"Augmentin",
+                            "type":"Antibiotics",
+                            "quatity":1
+                        },
+                        {
+                            "item":"Atracurium",
+                            "type":"Anesthetic",
+                            "quatity":1
+                        },
+                        {
+                            "item":"Gentamicin",
+                            "type":"Antibiotics",
+                            "quatity":1
+                        }
+                    ],
     
+                    //Tentative
+                    cost: 48000.45,
+                    labWork : [],
+                    consumables: [],
+                    lastModified: new Date(),
+
                     hasRecovery: true,
                     recovery: {
                         location: {
@@ -259,8 +439,30 @@ export default [
                     },
     
                     //.... List procedure fields
-                    equipment: [],
-    
+                    equipment: [
+                        {
+                            "item":"Augmentin",
+                            "type":"Antibiotics",
+                            "quatity":1
+                        },
+                        {
+                            "item":"Atracurium",
+                            "type":"Anesthetic",
+                            "quatity":1
+                        },
+                        {
+                            "item":"Gentamicin",
+                            "type":"Antibiotics",
+                            "quatity":1
+                        }
+                    ],
+                    //Tentative
+                    cost:78200.73,
+                    labWork:[],
+                    consumables:[],
+                    lastModified: new Date(),
+
+
                     hasRecovery: true,
                     recovery: {
                         location: {
