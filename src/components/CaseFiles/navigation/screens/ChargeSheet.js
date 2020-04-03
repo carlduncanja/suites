@@ -8,9 +8,13 @@ const ChargeSheet = () => {
     const name = state.overlayMenu.selectedMenuItemCurrentTab
     const selectedDetails = state.selectedListItem.selectedListObject.caseFileDetails
     const chargeSheet = selectedDetails.chargeSheet
+    const procedures = selectedDetails.caseProcedures
 
-    const consumables = chargeSheet.consumables
-    const equipment = chargeSheet.equipment
+    const consumables = []
+    const equipments = []
+    procedures.map(procedure => procedure.consumables.map(consumable => consumables.push(consumable)))
+    procedures.map(procedure => procedure.equipments.map(equipment => equipments.push(equipment)))
+
     const quotation = chargeSheet.quotation
     const invoices = chargeSheet.invoices
     const inventory = chargeSheet.inventory
@@ -20,7 +24,7 @@ const ChargeSheet = () => {
             <Consumables tabDetails = {consumables}/>
             :
             name === 'Equipment' ?
-                <Equipment tabDetails = {equipment}/>
+                <Equipment tabDetails = {equipments}/>
                 :
                 name === 'Invoices' ?
                     <Invoices tabDetails = {invoices}/>

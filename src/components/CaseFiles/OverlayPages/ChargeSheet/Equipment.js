@@ -21,7 +21,7 @@ const Equipment = ({tabDetails}) => {
                 </TouchableOpacity>
                 <View style={styles.dataContainer}>
                     <View style={styles.item}>
-                        <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.itemName}</Text>
+                        <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.item}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-start'}]}>
                         <Text style={styles.itemText}>{item.type}</Text>
