@@ -191,19 +191,19 @@ export default [
                         "itemName":"Bags",
                         "type":"Blood Products",
                         "quantity":5,
-                        "unitPrice":"$1,382.84"
+                        "unitPrice":1382.84
                     },
                     {
                         "itemName":"Scalpel",
                         "type":"Incision",
                         "quantity":3,
-                        "unitPrice":"$2,291.24"
+                        "unitPrice":2291.24
                     },
                     {
                         "itemName":"Glasses",
                         "type":"Vision",
                         "quantity":1,
-                        "unitPrice":"$3,129.88"
+                        "unitPrice":3129.88
                     }
                 ],
                 consumables: [
@@ -255,7 +255,21 @@ export default [
                         "date":"12/18/2019",
                         "value":"$177,560.35",
                         "quotationDetails":{
-
+                            billingDetails:{
+                                billedTo:
+                                {
+                                    name: "Julie Melissa Brown",
+                                    "addressLine1":"23 Bedford Avenue",
+                                    "addressLine2":"Kingston 8",
+                                    "addressLine3":"JMKIN08"
+                                },
+                                billedFor:"Medical Services",
+                                billingDate: new Date(2019,11,18),
+                                billingExpenses:{
+                                    discount: 0.1,
+                                    tax: 0.2
+                                }
+                            }
                         },
                         // "preview":{
                         //     "billingDetails":{
@@ -265,7 +279,7 @@ export default [
                         //             "addressLine2":"Kingston 8",
                         //             "addressLine3":"JMKIN08"
                         //         },
-                        //         "for":"Medical Services",
+                        //         "for":
                         //         "date":"12/11/2019",
                         //         "total":"$177,560.35"
                         //     },
@@ -392,29 +406,73 @@ export default [
                     },
                     
                     //.... List procedure fields
-                    equipment: [
+                    equipments: [
                         {
-                            "item":"Augmentin",
-                            "type":"Antibiotics",
-                            "quatity":1
+                            item:"Augmentin",
+                            type:"Antibiotics",
+                            quantity:1,
+                            unitPrice:672.90
                         },
                         {
-                            "item":"Atracurium",
-                            "type":"Anesthetic",
-                            "quatity":1
+                            item:"Atracurium",
+                            type:"Anesthetic",
+                            quantity:1,
+                            unitPrice:8913.10
                         },
                         {
-                            "item":"Gentamicin",
-                            "type":"Antibiotics",
-                            "quatity":1
+                            item:"Gentamicin",
+                            type:"Antibiotics",
+                            quantity:1,
+                            unitPrice:900.89
                         }
                     ],
-    
                     //Tentative
                     cost: 48000.45,
-                    labWork : [],
-                    consumables: [],
-                    lastModified: new Date(),
+                    consumables: [
+                        {
+                            item:"Lab Chole",
+                            type:"Anaesthesia",
+                            quantity:2,
+                            unitPrice:2045.69,
+                        },
+                        {
+                            item:"Bags",
+                            type:"Anaesthesia",
+                            quantity: 1,
+                            unitPrice: 109.87,
+                        },
+                        {
+                            item:"GU Tower",
+                            type:"Anaesthesia",
+                            quantity: 2,
+                            unitPrice: 671.80,
+                        },
+                        {
+                            item:"Atracium",
+                            type:"Anaesthesia",
+                            quantity: 4,
+                            unitPrice: 2914.09,
+                        },
+                        {
+                            item:"Bags",
+                            type:"Anaesthesia",
+                            quantity: 1,
+                            unitPrice: 109.87,
+                        },
+                        {
+                            item:"GU Tower",
+                            type:"Anaesthesia",
+                            quantity: 2,
+                            unitPrice: 671.80,
+                        },
+                        {
+                            item:"Gloves",
+                            type:"Anaesthesia",
+                            quantity: 4,
+                            unitPrice: 2914.09,
+                        }
+                    ],
+                    lastModified: new Date(2019,10,12),
 
                     hasRecovery: true,
                     recovery: {
@@ -429,9 +487,9 @@ export default [
                 },
 
                 {
-                    title : "Coronary Bypass Graft",
+                    title : "Angioplasty",
                     location: {
-                        name: "Angioplasty"
+                        name: "Surgery Theatre 5"
                     },
                     appointment: {
                         startTime : new Date (2020, 5, 12, 13),
@@ -439,28 +497,55 @@ export default [
                     },
     
                     //.... List procedure fields
-                    equipment: [
+                    equipments: [
                         {
-                            "item":"Augmentin",
-                            "type":"Antibiotics",
-                            "quatity":1
+                            item:"Augmentin",
+                            type:"Antibiotics",
+                            quantity:1,
+                            unitPrice:672.90
                         },
                         {
-                            "item":"Atracurium",
-                            "type":"Anesthetic",
-                            "quatity":1
+                            item:"Atracurium",
+                            type:"Anesthetic",
+                            quantity:2,
+                            unitPrice:8913.10
                         },
                         {
-                            "item":"Gentamicin",
-                            "type":"Antibiotics",
-                            "quatity":1
+                            item:"Gentamicin",
+                            type:"Antibiotics",
+                            quantity:3,
+                            unitPrice:900.89
                         }
                     ],
                     //Tentative
                     cost:78200.73,
-                    labWork:[],
-                    consumables:[],
-                    lastModified: new Date(),
+                    consumables: [
+                        {
+                            item:"Lab Chole",
+                            type:"Anaesthesia",
+                            quantity:2,
+                            unitPrice:2045.69,
+                        },
+                        {
+                            item:"Bags",
+                            type:"Anaesthesia",
+                            quantity:1,
+                            unitPrice:109.87,
+                        },
+                        {
+                            item:"GU Tower",
+                            type:"Anaesthesia",
+                            quantity:2,
+                            unitPrice:671.80,
+                        },
+                        {
+                            item:"Atracium",
+                            type:"Anaesthesia",
+                            quantity:4,
+                            unitPrice:2914.09,
+                        }
+                    ],
+                    lastModified: new Date(2020,9,10),
 
 
                     hasRecovery: true,

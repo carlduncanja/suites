@@ -16,7 +16,16 @@ const Divider = () =>{
         />
     )
 }
-const Table = ({ data, listItemFormat, headerItemFormat}) => {
+const Table = (props) => {
+    const {
+        data,
+        listItemFormat,
+        headerItemFormat,
+        currentListMax,
+        currentListMin,
+        // toggleCheckbox
+    } = props 
+
     const [state] = useContext(CaseFileContext)
     return ( 
         <>
@@ -33,6 +42,9 @@ const Table = ({ data, listItemFormat, headerItemFormat}) => {
                 <Data
                     listItemFormat = {listItemFormat}
                     data = {data}
+                    currentListMin = {currentListMin}
+                    currentListMax = {currentListMax}
+                    // toggleCheckbox = {toggleCheckbox}
                 />
             </View>
             {/* {Divider()} */}

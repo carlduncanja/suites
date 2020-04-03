@@ -1,10 +1,12 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {Component, useState} from 'react';
+import {View, Text, StyleSheet, Modal} from 'react-native';
 import FrameTableItem from '../FrameItems/FrameTableItem';
 import FrameCheckboxItem from '../FrameItems/FrameCheckboxItem';
 import moment from "moment";
+import Button from '../../Button';
+import { withModal } from 'react-native-modalfy';
 
-const FrameProcedureContent = (props) => {
+const FrameProcedureContent = ({details,onOpenPickList}) => { 
 
     const appointment = (appointment,location) => {
         return (
@@ -24,16 +26,25 @@ const FrameProcedureContent = (props) => {
             </View>
         )
     }
-    console.log("Information", props.details)
+
     return ( 
         <View style={styles.container}>
-            <View>
-                {appointment(props.details.appointment, props.details.location)}
+            <View style={{paddingBottom:10, borderBottomColor:"#CCD6E0", borderBottomWidth:1}}>
+                {appointment(details.appointment, details.location)}
                 <View style={styles.recovery}>
-                    <FrameCheckboxItem title = "Recovery" status = {props.details.hasRecovery}/>
+                    <FrameCheckboxItem title = "Recovery" status = {details.hasRecovery}/>
                 </View>
-                {props.details.hasRecovery && appointment(props.details.recovery.appointment,props.details.recovery.location)}
-
+                {details.hasRecovery && appointment(details.recovery.appointment,details.recovery.location)}
+            </View>
+            <View style={{alignItems:"flex-end", marginTop:10}}>
+                <View style={{padding:8, borderRadius:8, backgroundColor:"#E3E8EF"}}>
+                    <Button
+                        backgroundColor = "#E3E8EF"
+                        color = "#718096"
+                        title = "View Picklist"
+                        buttonPress = {()=>onOpenPickList(details)}
+                    />
+                </View>
             </View>
             {/* {Object.keys(props.details).map((key, index) =>{
                 return(

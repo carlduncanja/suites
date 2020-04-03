@@ -653,8 +653,8 @@ export default class SvgIcon extends Component{
                 :
                 icon === 'overlayProcedures' ?
                     <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <Path d="M11.4002 8.99997L6.7002 5.89997L10.0002 1.19997C10.9002 -3.39746e-05 12.6002 -0.400034 13.9002 0.499966C15.2002 1.39997 15.6002 3.19997 14.7002 4.49997L11.4002 8.99997Z" fill="#48BB78"/>
-                        <Path d="M8.5 9.5L5.6 7.5L0 15.4L8 13L7.5 11L8.5 9.5Z" fill="#48BB78"/>
+                        <Path d="M11.4002 8.99997L6.7002 5.89997L10.0002 1.19997C10.9002 -3.39746e-05 12.6002 -0.400034 13.9002 0.499966C15.2002 1.39997 15.6002 3.19997 14.7002 4.49997L11.4002 8.99997Z" fill="#718096"/>
+                        <Path d="M8.5 9.5L5.6 7.5L0 15.4L8 13L7.5 11L8.5 9.5Z" fill="#718096"/>
                     </Svg>                
                 :
                 icon === 'familyPreExistingConditions' ?
@@ -679,6 +679,17 @@ export default class SvgIcon extends Component{
                         <Path d="M8 8V14C10.1217 14 12.1566 13.1571 13.6569 11.6569C15.1571 10.1566 16 8.12173 16 6V0C13.8783 0 11.8434 0.842855 10.3431 2.34315C8.84285 3.84344 8 5.87827 8 8Z" fill="#718096"/>
                         <Path d="M0 5V8C0 9.5913 0.632141 11.1174 1.75736 12.2426C2.88258 13.3679 4.4087 14 6 14V11C6 9.4087 5.36786 7.88258 4.24264 6.75736C3.11742 5.63214 1.5913 5 0 5H0Z" fill="#718096"/>
                     </Svg>                
+                :
+                icon === 'hideProcedure' ?
+                    <Svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M1 1H7" stroke="#3182CE" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    </Svg>
+                :
+                icon === 'showProcedure' ?
+                    <Svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M6 3V9" stroke="#3182CE" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <Path d="M3 6H9" stroke="#3182CE" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    </Svg>
                 :
                 null
         }

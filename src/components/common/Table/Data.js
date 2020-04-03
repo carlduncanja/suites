@@ -1,21 +1,32 @@
 import React,{ useContext} from 'react';
 import {View, ScrollView} from 'react-native';
-import DataItem from './DataItem';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
-const Data = ({ data, listItemFormat }) => {
+const Data = (props) => {
+    const {
+        data,
+        listItemFormat,
+        currentListMax,
+        currentListMin,
+        toggleCheckbox
+    } = props 
+
     const [state] = useContext(CaseFileContext)
+    let sliceMin = currentListMin ? currentListMin : 0
+    let sliceMax = currentListMax ? currentListMax : data.length
     return ( 
         <ScrollView
             bounces={false}
             >
-            {data.map((item,index)=>{
+
+            {data.slice(sliceMin,sliceMax).map((item,index)=>{
                 return(
                     <View key={index}>
-                        {listItemFormat(item)}
+                        {listItemFormat(item,index)}
                     </View>
-                )
-            })}
+                    )
+                })
+            }
         </ScrollView>
     );
 }

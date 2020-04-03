@@ -6,6 +6,7 @@ import {getCaseFiles} from "../api/network";
 import { SuitesContext } from '../contexts/SuitesContext';
 import {appActions} from '../redux/reducers/suitesAppReducer';
 import { transformToCamel } from '../hooks/useTextEditHook';
+import { useNextPaginator, usePreviousPaginator } from '../hooks/usePaginator';
 
 const listHeaders = require('../../assets/db.json').caseFiles.caseFilesInformation.headers
 
@@ -18,7 +19,13 @@ const CaseFiles = (props) => {
     const [state, dispatch] = useContext(SuitesContext)
     const changeText = (text) =>{setTextInput(text)}
     const routeName = navigation.state.routeName
-    
+
+    const [totalPages, setTotalPages] = useState(0);
+    const recordsPerPage = 10;
+    const [currentPagePosition, setCurrentPagePosition] = useState(1)
+    const [currentPageListMin, setCurrentPageListMin] = useState(0) 
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage) 
+
     useEffect(()=>{
         const floatingActions = require('../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
         dispatch({
@@ -36,10 +43,11 @@ const CaseFiles = (props) => {
             getCaseFiles()
                 .then(data => {
                     setCaseFiles(data);
-                    dispatch({
-                        type: appActions.SETTOTALPAGES,
-                        newState: {totalPages : Math.ceil(data.length/state.paginatorValues.recordsPerPage)}
-                    });
+                    setTotalPages(Math.ceil(data.length/recordsPerPage))
+                    // dispatch({
+                    //     type: appActions.SETTOTALPAGES,
+                    //     newState: {totalPages : Math.ceil(data.length/state.paginatorValues.recordsPerPage)}
+                    // });
                 })
                 .catch(error => {
                     console.log("failed to get case files", error);
@@ -50,6 +58,22 @@ const CaseFiles = (props) => {
         }
     }, []);
 
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages){
+            let {currentPage,currentListMin,currentListMax} = useNextPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax)
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin)
+            setCurrentPageListMax(currentListMax)
+        }
+    }
+
+    const goToPreviousPage = () =>{
+        let {currentPage,currentListMin,currentListMax} = usePreviousPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax)
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin)
+        setCurrentPageListMax(currentListMax)
+    }
+
     return (
         <Page
             isFetchingData = {isFetchingCaseFiles}
@@ -59,6 +83,12 @@ const CaseFiles = (props) => {
             routeName = {routeName}
             listData = {caseFiles}
             listHeaders = {listHeaders}
+            totalPages = {totalPages}
+            currentPagePosition = {currentPagePosition}
+            currentPageListMin = {currentPageListMin}
+            currentPageListMax = {currentPageListMax}
+            goToNextPage = {goToNextPage}
+            goToPreviousPage = {goToPreviousPage}
         />
     );
 }

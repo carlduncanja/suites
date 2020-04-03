@@ -2,9 +2,9 @@ import React, {Component, useCallback, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import CaseFilesListItem from './ListItems/CaseFilesListItem';
 
-const Item = ({listItem, routeName}) => {
+const Item = ({listItem, routeName}) => { 
     return ( 
-        <View style={{flex:1,flexDirection:"row", marginLeft:10}}>
+        <View style={{flex:1,flexDirection:"row", marginLeft:10, alignItems:'center'}}>
             {routeName === 'CaseFiles' ?
                 <CaseFilesListItem listItem = {listItem}/>
                 :

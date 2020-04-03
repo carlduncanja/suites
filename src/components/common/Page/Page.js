@@ -20,12 +20,34 @@ import {colors} from '../../../styles'
  * @param listData array of objects
  * @param listHeaders array of strings
  * @param isFetchingData bool
+ * @param totalPages number
+ * @param currentPagePosition number
+ * @param currentPageListMin number
+ * @param currentPageListMax number
+ * @param goToNextPage function
+ * @param goToPreviousPage
  * @returns {*}
  * @constructor
- */ 
+ */  
 
-const Page = ({ placeholderText, changeText, inputText, routeName, listData, listHeaders, isFetchingData}) => {
+const Page = (props) => {
     const [state,dispatch] = useContext(SuitesContext)
+
+    const {
+        placeholderText, 
+        changeText, 
+        inputText, 
+        routeName, 
+        listData, 
+        listHeaders, 
+        isFetchingData,
+        totalPages,
+        currentPagePosition,
+        currentPageListMin,
+        currentPageListMax,
+        goToNextPage,
+        goToPreviousPage
+    } = props
 
     const toggleActionButton = () => {
         dispatch({
@@ -101,6 +123,8 @@ const Page = ({ placeholderText, changeText, inputText, routeName, listData, lis
                             listData = {listData}
                             listHeaders = {listHeaders}
                             routeName = {routeName}
+                            currentPageListMin = {currentPageListMin}
+                            currentPageListMax = {currentPageListMax}
                         />
                     }
                     
@@ -108,7 +132,12 @@ const Page = ({ placeholderText, changeText, inputText, routeName, listData, lis
 
                 <View style={styles.footer}>
                     <View style={{alignSelf:"center", marginRight:10}}>
-                        <RoundedPaginator />
+                        <RoundedPaginator 
+                            totalPages = {totalPages}
+                            currentPage = {currentPagePosition}
+                            goToNextPage = {goToNextPage}
+                            goToPreviousPage = {goToPreviousPage}
+                        />
                     </View>
 
                     {state.floatingActions.actionButtonState === false ?

@@ -10,7 +10,7 @@ const ListHeader = ({checkedItemList, listHeaders}) => {
     return ( 
         <View style = {styles.container}>
             {
-                state.list.checkedItemsList.length > 0 ?
+                checkedItemList.length > 0 ?
                     <View style={styles.checkboxContainer}>
                         <PartialCheckbox/>
                     </View>

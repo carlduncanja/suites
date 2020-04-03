@@ -1,21 +1,23 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import Table from '../../../common/Table/Table';
 import SvgIcon from '../../../../../assets/SvgIcon'
 import Checkbox from '../../../common/Checkbox/Checkbox';
-
+import { useCheckBox } from '../../../../hooks/useCheckBox';
+import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
 
 const headers = ["Quotation", "Date", "Value", "Actions"]
 const itemWidth = `${100/headers.length}%`
 
 const Quotations = ({tabDetails}) => {
+    const [checkBoxList, setCheckBoxList] = useState([])
     
     const headerItem = () =>{
         return(
             <View style={styles.headersContainer}>
                 <View style={{marginRight:20}}>
-                    <Checkbox/>
+                    {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
                 </View>
             
                 <View style={styles.headerItem}>
@@ -34,12 +36,12 @@ const Quotations = ({tabDetails}) => {
         )
     }
 
-    const listItem = (item) => {
+    const listItem = (item,id) => {
         return(
             <View style={styles.container}>
-                <View style={{marginRight:20}}>
-                    <Checkbox/>
-                </View>
+                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(id)}>
+                    { checkBoxList.includes(id) ? <CheckedBox/> : <Checkbox/> }
+                </TouchableOpacity>
                 <View style={styles.dataContainer}>
                     <View style={styles.item}>
                         <Text style={[styles.itemText]}>{item.quotationNumber}</Text>
@@ -64,6 +66,12 @@ const Quotations = ({tabDetails}) => {
             </View>
         )
     }
+   
+    const toggleCheckbox = (itemId) =>{
+        let checkedList = useCheckBox(itemId,checkBoxList)
+        setCheckBoxList(checkedList)
+    }
+   
     // const [state,dispatch] = useContext(SuitesContext)
     // const setListTabData = (list,headers) => {
     //     dispatch({
