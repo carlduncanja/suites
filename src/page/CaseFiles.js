@@ -6,9 +6,27 @@ import {getCaseFiles} from "../api/network";
 import { SuitesContext } from '../contexts/SuitesContext';
 import {appActions} from '../redux/reducers/suitesAppReducer';
 import { transformToCamel } from '../hooks/useTextEditHook';
-import { useNextPaginator, usePreviousPaginator } from '../hooks/usePaginator';
+import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
+import { View, Text, StyleSheet } from 'react-native';
 
-const listHeaders = require('../../assets/db.json').caseFiles.caseFilesInformation.headers
+const listHeaders = [
+    {
+        name :"Patient",
+        alignment : "flex-start"
+    },
+    {
+        name :"Balance",
+        alignment :  "flex-start"
+    },
+    {
+        name :"Staff",
+        alignment :  "flex-start"
+    },
+    {
+        name :"Next Visit",
+        alignment :  "flex-start"
+    }
+]
 
 const CaseFiles = (props) => {
      // Redux props
@@ -74,6 +92,26 @@ const CaseFiles = (props) => {
         setCurrentPageListMax(currentListMax)
     }
 
+    const listItemFormat = (listItem) =>{
+        return(
+            <>
+                <View style={styles.item}>
+                    <Text style={{color:"#718096", fontSize:12}}>{listItem.id}</Text>
+                    <Text style={{color:"#3182CE", fontSize:16}}>{listItem.name}</Text>
+                </View>
+                <View style={styles.item}>
+                    <Text style={styles.itemText}>{listItem.balance}</Text>  
+                </View>
+                <View style={styles.item}>
+                    <Text style={styles.itemText}>{listItem.staff}</Text>  
+                </View>
+                <View style={styles.item}>
+                    <Text style={styles.itemText}>{listItem.nextVisit}</Text>  
+                </View>
+            </>
+        )
+    }
+
     return (
         <Page
             isFetchingData = {isFetchingCaseFiles}
@@ -89,6 +127,7 @@ const CaseFiles = (props) => {
             currentPageListMax = {currentPageListMax}
             goToNextPage = {goToNextPage}
             goToPreviousPage = {goToPreviousPage}
+            listItemFormat = {listItemFormat}
         />
     );
 }
@@ -103,3 +142,16 @@ const mapDispatcherToProp = {
 
 
 export default connect(mapStateToProps, mapDispatcherToProp) (CaseFiles);
+
+const styles = StyleSheet.create({
+    item:{
+        flex:1,
+        //flexDirection:'row',
+        alignItems:"flex-start",
+        //justifyContent:'center',
+    },
+    itemText:{
+        fontSize:14,
+        color:"#4E5664",
+    }
+})

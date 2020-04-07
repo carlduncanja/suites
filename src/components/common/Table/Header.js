@@ -3,19 +3,25 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import { CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
 
-const Header = ({headers, hasCheckbox, toggleCheckbox}) => { 
+const Header = ({headers, toggleHeaderCheckbox, checkBoxList, dataLength}) => { 
     return ( 
         <View style={styles.headersContainer}>
-            <View style={{marginRight:20}}>
-                {hasCheckbox && 
-                    <Checkbox/>
-                }
-            </View>
+            {
+                checkBoxList && 
+                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleHeaderCheckbox()}>
+                    {
+                        checkBoxList.length > 0 || checkBoxList.length === dataLength ? 
+                            <PartialCheckbox/> 
+                            : 
+                            <Checkbox/>
+                        }
+                </TouchableOpacity>
+            }
             
             {headers.map((header,index)=>{
                 return(
-                    <View style={styles.item} key={index}>
-                        <Text style={styles.headerText}>{header}</Text>
+                    <View style={[styles.item,{alignItems:header.alignment}]} key={index}>
+                        <Text style={styles.headerText}>{header.name}</Text>
                     </View>
                 )
             })}

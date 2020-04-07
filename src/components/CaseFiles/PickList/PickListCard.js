@@ -4,7 +4,7 @@ import SvgIcon from "../../../../assets/SvgIcon";
 import Button from "../../common/Button";
 import Table from "../../common/Table/Table"
 import Paginator from '../../common/Paginators/Paginator';
-import {useNextPaginator,usePreviousPaginator} from '../../../hooks/usePaginator';
+import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesHelpers';
 
 const PickListCard = ({closeModal, data, onPressTab, selectedTab}) =>{
     const recordsPerPage = 6

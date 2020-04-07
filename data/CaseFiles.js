@@ -228,122 +228,164 @@ export default [
                 ],
                 invoices: [
                     {
-                        "invoiceNumber":"IN-000976",
+                        "invoiceNumber":"000976",
                         "status":"Complete",
-                        "date":"13/12/2019",
-                        "value":"$312,000.45",
-                        "invoiceDetails":{}
+                        // "date":"13/12/2019",
+                        // "value":"$312,000.45",
+                        "reportDetails":{
+                            billingDetails:{
+                                billedTo:{
+                                    name: "Julie Melissa Brown",
+                                    addressLine1:"23 Bedford Avenue",
+                                    addressLine2:"Kingston 8",
+                                    addressLine3:"JMKIN08"
+                                },
+                                purchaseOrderNo: "000976",
+                                reportDate: new Date(2019,11,18),
+                            },
+                            reportExpenses:{
+                                procedures:[
+                                    {
+                                        charge: "Coronory Artery Graft",
+                                        cost: 64000.45
+                                    },
+                                    {
+                                        charge: "Coronory Bypass Graft",
+                                        cost: 48000.45
+                                    },
+                                ],
+                                physicians:[
+                                    {
+                                        charge: "Dr.Mansingh",
+                                        cost: 64000.45
+                                    },
+                                ],
+                                labWork:[
+                                    {
+                                        charge: "Blood Gases",
+                                        cost: 16000.45
+                                    },
+                                    {
+                                        charge: "X-Ray",
+                                        cost: 16000.45
+                                    }
+                                ],
+                                equipments:[
+
+                                ],
+                                consumables:[
+                                    {
+                                        itemName:"Morphine",
+                                        quantity:2,
+                                        unitPrice:4582.48
+                                    },
+                                    {
+                                        itemName:"Morphine",
+                                        quantity:2,
+                                        unitPrice:4582.48
+                                    },
+                                    {
+                                        itemName:"Propotal",
+                                        quantity:4,
+                                        unitPrice: 4582.48,
+                                    },
+                                    {
+                                        itemName:"Pethidine",
+                                        quantity:1,
+                                        unitPrice:4582.48,
+                                    }
+                                ],
+                                discount: 0.1,
+                                tax: 0.2
+                            }
+                            
+
+                        }
                     },
-                    {
-                        "invoiceNumber":"IN-000972",
-                        "status":"Complete",
-                        "date":"13/12/2019",
-                        "value":"$12,000.45",
-                        "invoiceDetails":{}
-                    },
-                    {
-                        "invoiceNumber":"IN-000576",
-                        "status":"Incomplete",
-                        "date":"13/12/2019",
-                        "value":"$22,000.45",
-                        "invoiceDetails":{}
-                    }
+                    // {
+                    //     "invoiceNumber":"IN-000972",
+                    //     "status":"Complete",
+                    //     "date":"13/12/2019",
+                    //     "value":"$12,000.45",
+                    //     "invoiceDetails":{}
+                    // },
+                    // {
+                    //     "invoiceNumber":"IN-000576",
+                    //     "status":"Incomplete",
+                    //     "date":"13/12/2019",
+                    //     "value":"$22,000.45",
+                    //     "invoiceDetails":{}
+                    // }
                 ],
                 quotation:[
                     {
                         "quotationNumber":"QU-1240512",
-                        "date":"12/18/2019",
-                        "value":"$177,560.35",
-                        "quotationDetails":{
+                        "reportDetails":{
                             billingDetails:{
-                                billedTo:
-                                {
+                                billedTo:{
                                     name: "Julie Melissa Brown",
-                                    "addressLine1":"23 Bedford Avenue",
-                                    "addressLine2":"Kingston 8",
-                                    "addressLine3":"JMKIN08"
+                                    addressLine1:"23 Bedford Avenue",
+                                    addressLine2:"Kingston 8",
+                                    addressLine3:"JMKIN08"
                                 },
                                 billedFor:"Medical Services",
-                                billingDate: new Date(2019,11,18),
-                                billingExpenses:{
-                                    discount: 0.1,
-                                    tax: 0.2
-                                }
+                                reportDate: new Date(2019,11,18),
+                            },
+                            reportExpenses:{
+                                procedures:[
+                                    {
+                                        charge: "Coronory Artery Graft",
+                                        cost: 64000.45
+                                    },
+                                    {
+                                        charge: "Coronory Bypass Graft",
+                                        cost: 48000.45
+                                    },
+                                ],
+                                physicians:[
+                                    {
+                                        charge: "Dr.Mansingh",
+                                        cost: 64000.45
+                                    },
+                                ],
+                                labWork:[
+                                    {
+                                        charge: "Blood Gases",
+                                        cost: 16000.45
+                                    },
+                                    {
+                                        charge: "X-Ray",
+                                        cost: 16000.45
+                                    }
+                                ],
+                                equipments:[
+
+                                ],
+                                consumables:[
+                                    {
+                                        itemName:"Morphine",
+                                        quantity:2,
+                                        unitPrice:4582.48
+                                    }
+                                ],
+                                discount: 0.1,
+                                tax: 0.2
                             }
                         },
-                        // "preview":{
-                        //     "billingDetails":{
-                        //         "billedTo":{
-                        //             "name":"Julie Melissa Brown",
-                        //             "addressLine1":"23 Bedford Avenue",
-                        //             "addressLine2":"Kingston 8",
-                        //             "addressLine3":"JMKIN08"
-                        //         },
-                        //         "for":
-                        //         "date":"12/11/2019",
-                        //         "total":"$177,560.35"
-                        //     },
-                        //     "quotationDetails":{
-                        //         "summaryList":[
-                        //             {
-                        //             "charge":"Dr.Mansingh",
-                        //             "cost":"$64,000.45"
-                        //             },
-                        //             {
-                        //                 "charge":"Coronory Bypass Graft",
-                        //                 "cost":"$48,000.45"
-                        //             },
-                        //             {
-                        //                 "charge":"Coronory Artery Graft",
-                        //                 "cost":"$32,000.45"
-                        //             },
-                        //             {
-                        //                 "charge":"Blood Gases",
-                        //                 "cost":"$16,000.45"
-                        //             },
-                        //             {
-                        //                 "charge":"X-Ray",
-                        //                 "cost":"$16,000.45"
-                        //             }
-                        //         ],
-                        //         "consumablesTable":{
-                        //             "headers":[
-                        //                 "Item Name",
-                        //                 "Quantity",
-                        //                 "Unit Price",
-                        //                 "Total"
-                        //             ],
-                        //             "data":[
-                        //                 {
-                        //                     "itemName":"Morphine",
-                        //                     "quantity":2,
-                        //                     "unitPrice":"$4,582.48",
-                        //                     "total":"9,164.96"
-                        //                 }
-                        //             ]
-                        //         }
-                        //     },
-                        //     "billingSummary":{
-                        //         "subtotal":"$178,167.21",
-                        //         "discount":"-$ 30,0002.25",
-                        //         "tax":"20%",
-                        //         "total":"$177,560.35"
-                        //     }
-                        // }
                     },
-                    {
-                        "quotationNumber":"QU-1240602",
-                        "date":"12/18/2019",
-                        "value":"$20,863.45",
-                        "quotationDetails":{}
+                    // {
+                    //     "quotationNumber":"QU-1240602",
+                    //     "date":"12/18/2019",
+                    //     "value":"$20,863.45",
+                    //     "quotationDetails":{}
                         
-                    },
-                    {
-                        "quotationNumber":"QU-1245612",
-                        "date":"12/18/2019",
-                        "value":"$320,863.45",
-                        "quotationDetails":{}
-                    },
+                    // },
+                    // {
+                    //     "quotationNumber":"QU-1245612",
+                    //     "date":"12/18/2019",
+                    //     "value":"$320,863.45",
+                    //     "quotationDetails":{}
+                    // },
                 ]
             },
             diagnosis: [

@@ -1,6 +1,7 @@
 import React,{ useContext} from 'react';
 import {View, ScrollView} from 'react-native';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
+import Item from './Item';
 
 const Data = (props) => {
     const {
@@ -8,7 +9,6 @@ const Data = (props) => {
         listItemFormat,
         currentListMax,
         currentListMin,
-        toggleCheckbox
     } = props 
 
     const [state] = useContext(CaseFileContext)

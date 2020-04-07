@@ -2,7 +2,8 @@ import React,{useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import BillingCaseProcedure from './BillingCaseProcedure';
 import moment from 'moment';
-import SvgIcon from '../../../../assets/SvgIcon'
+import SvgIcon from '../../../../assets/SvgIcon';
+import { formatAmount } from '../../../helpers/caseFilesHelpers';
 
 
 const BillingCaseCard = ({tabDetails}) => {
@@ -23,10 +24,10 @@ const BillingCaseCard = ({tabDetails}) => {
 
     const [openDetailsArrayState, setOpenDetailsArrayState] = useState(getProcedureStatusArray())
 
-    const formatAmount = (amount) => {
-        let newAmountString = (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
-        return `$ ${newAmountString}`
-    }
+    // const formatAmount = (amount) => {
+    //     let newAmountString = (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+    //     return `$ ${newAmountString}`
+    // }
 
     const getStatus = (index) =>{
        let currentArray = openDetailsArrayState.filter( item => item.index === index)

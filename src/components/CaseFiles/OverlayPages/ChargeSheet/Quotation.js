@@ -1,62 +1,127 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from "react-native";
-import { SuitesContext } from '../../../../contexts/SuitesContext';
 import Table from '../../../common/Table/Table';
 import SvgIcon from '../../../../../assets/SvgIcon'
 import Checkbox from '../../../common/Checkbox/Checkbox';
-import { useCheckBox } from '../../../../hooks/useCheckBox';
+import { useCheckBox, formatAmount, calcBillingValues } from '../../../../helpers/caseFilesHelpers';
 import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
+import moment from 'moment';
+import { withModal } from 'react-native-modalfy';
+import { CaseFileContext } from '../../../../contexts/CaseFileContext';
+import { caseActions } from '../../../../redux/reducers/caseFilesReducer';
 
-const headers = ["Quotation", "Date", "Value", "Actions"]
-const itemWidth = `${100/headers.length}%`
 
-const Quotations = ({tabDetails}) => {
+const Quotations = ({tabDetails, modal}) => {
     const [checkBoxList, setCheckBoxList] = useState([])
-    
-    const headerItem = () =>{
-        return(
-            <View style={styles.headersContainer}>
-                <View style={{marginRight:20}}>
-                    {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
-                </View>
-            
-                <View style={styles.headerItem}>
-                    <Text style={styles.headerText}>Quotation</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'flex-start'}]}>
-                    <Text style={styles.headerText}>Date</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'center'}]}>
-                    <Text style={styles.headerText}>Value</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
-                    <Text style={styles.headerText}>Actions</Text>
-                </View>
-            </View>
-        )
+    const [state, dispatch] = useContext(CaseFileContext)
+
+    //difference
+    const headers = [
+        {
+            name: "Quotation",
+            alignment : "flex-start"
+        },
+        {
+            name: "Date",
+            alignment : "flex-start"
+        },
+        {
+            name: "Value",
+            alignment : "center"
+        },
+        {
+            name: "Actions",
+            alignment : "flex-end"
+        }
+    ]
+
+    const openModal = () =>{
+        modal.openModal("ReportPreviewModal")
     }
 
-    const listItem = (item,id) => {
+    // const headerItem = () =>{
+    //     return(
+    //         <View style={styles.headersContainer}>
+    //             <View style={{marginRight:20}}>
+    //                 {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
+    //             </View>
+            
+    //             <View style={styles.headerItem}>
+    //                 <Text style={styles.headerText}>Quotation</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'flex-start'}]}>
+    //                 <Text style={styles.headerText}>Date</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'center'}]}>
+    //                 <Text style={styles.headerText}>Value</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
+    //                 <Text style={styles.headerText}>Actions</Text>
+    //             </View>
+    //         </View>
+    //     )
+    // }
+
+ 
+    const listItem = (item) => {
+        const reportId = item.quotationNumber
+        const reportExpenses = item.reportDetails.reportExpenses
+        const billingDetails = item.reportDetails.billingDetails
+        let date = moment(billingDetails.reportDate).format("DD/MM/YYYY")
+
+        const reportList = [...reportExpenses.physicians,...reportExpenses.procedures,...reportExpenses.labWork]
+        const reportTable = [...reportExpenses.consumables, ...reportExpenses.equipments]
+        const tax = reportExpenses.tax
+        const discountPercent = reportExpenses.discount
+
+        let subTotal = 0
+        let taxValue = `${tax * 100}%`
+
+        reportList.forEach(item => subTotal+= item.cost)
+        reportTable.forEach(item => subTotal += (item.unitPrice * item.quantity))
+        
+        let {discount, total} = calcBillingValues(subTotal, tax, discountPercent)
+
+        const billingSummary = {
+            subtotal:subTotal,
+            tax : taxValue,
+            discount : discount,
+            total :total
+        }
+        
+        //difference
         return(
             <View style={styles.container}>
-                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(id)}>
-                    { checkBoxList.includes(id) ? <CheckedBox/> : <Checkbox/> }
+                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(item)}>
+                    { checkBoxList.includes(item) ? <CheckedBox/> : <Checkbox/> }
                 </TouchableOpacity>
                 <View style={styles.dataContainer}>
                     <View style={styles.item}>
                         <Text style={[styles.itemText]}>{item.quotationNumber}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-start'}]}>
-                        <Text style={styles.itemText}>{item.date}</Text>
+                        <Text style={styles.itemText}>{date}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'center'}]}>
-                        <Text style={styles.itemText}>{item.value}</Text>
+                        <Text style={styles.itemText}>{formatAmount(total)}</Text>
                     </View>
-                    <View style={[styles.item,{alignItems:'flex-end', marginRight:20}]}>
+                    <View style={[styles.item,{alignItems:'flex-end', marginRight:10}]}>
                         <TouchableOpacity
                             style={{}}
                             onPress={()=>{
-                                // this.openModal(props);
+
+                                dispatch({
+                                    type : caseActions.SETREPORTDETAILS,
+                                    newState:{
+                                        reportStatus :true,
+                                        reportId : reportId,
+                                        billingDetails : billingDetails,
+                                        reportList : reportList,
+                                        reportTable : reportTable,
+                                        billingSummary :billingSummary
+                                    }
+                                })
+                                openModal();
                                 // openReportAction(props.fields.recordId)
                             }}>
                             <SvgIcon iconName = "actions"/>
@@ -71,48 +136,37 @@ const Quotations = ({tabDetails}) => {
         let checkedList = useCheckBox(itemId,checkBoxList)
         setCheckBoxList(checkedList)
     }
-   
-    // const [state,dispatch] = useContext(SuitesContext)
-    // const setListTabData = (list,headers) => {
-    //     dispatch({
-    //         type: appActions.SETSLIDEOVERLAYLIST,
-    //         newState : {
-    //             slideOverlayList : list,
-    //             slideOverlayListHeaders : headers
-    //         }
-    //     })
-    //     return true
-    // }
 
-    // useEffect(()=>{
-    //     const headers = ["Quotation", "Date", "Value", "Actions"]
-    //     const list = getReportList(state.slideOverlay.slideOverlayTabInfo, headers)
-    //     setListTabData(list,headers)
-    // },[state.slideOverlay.slideOverlayTabInfo])
-    
+    const toggleHeaderCheckbox = () =>{
+        checkBoxList.length > 0 ?
+            setCheckBoxList([])
+            :
+            setCheckBoxList(tabDetails)
+    }
    
     return (  
         <ScrollView>
             <Table
                 data = {tabDetails}
                 listItemFormat = {listItem}
-                headerItemFormat = {headerItem}
+                headers = {headers}
+                toggleHeaderCheckbox = {toggleHeaderCheckbox} 
+                checkBoxList = {checkBoxList}
+                dataLength = {tabDetails.length}
             />
         </ScrollView>
     );
 }
  
-export default Quotations;
+export default withModal(Quotations);
 
 const styles = StyleSheet.create({
     container:{
         flex:1,
         flexDirection:'row',
-        //alignItems:'flex-start',
-        //justifyContent:'center',
         padding:10,
         backgroundColor:'#FFFFFF',
-        width:'100%',
+        alignItems:'center',
         marginBottom:10
     },
     dataContainer:{
@@ -122,7 +176,7 @@ const styles = StyleSheet.create({
         justifyContent:"space-between"
     },
     item:{
-        width:itemWidth,
+        flex:1,
         // alignItems:"flex-start",
         // justifyContent:'center',
     },

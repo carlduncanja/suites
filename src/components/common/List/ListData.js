@@ -3,10 +3,21 @@ import {View, ScrollView} from 'react-native';
 import ListItem from './ListItem';
 import { CheckedBox } from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
-import { SuitesContext } from '../../../contexts/SuitesContext';
 
-const ListData = ({listData, routeName, currentPageListMin, currentPageListMax, toggleCheckBox, checkBoxList}) => {
-    const [state] = useContext(SuitesContext) 
+
+/**
+ * @param listData arrray of objects
+ * @param currentPageListMin number
+ * @param currentPageListMax number
+ * @param toggleCheckBox function
+ * @param checkBoxList array of objects
+ * @param listItemFormat object
+ * @return {*} 
+ * @constructor 
+ */
+
+const ListData = ({listData, currentPageListMin, currentPageListMax, toggleCheckBox, checkBoxList, listItemFormat}) => {
+   
     return ( 
         <ScrollView 
             bounces={false}
@@ -16,11 +27,11 @@ const ListData = ({listData, routeName, currentPageListMin, currentPageListMax, 
                return(
                     <View key={index}>
                         <ListItem
-                            routeName = {routeName}
                             modalToOpen = "OverlaySlidePanelModal"
                             listItem={item}
-                            checkbox = {checkBoxList.includes(item.id) ? <CheckedBox/> : <Checkbox/>}
+                            checkbox = {checkBoxList.includes(item) ? <CheckedBox/> : <Checkbox/>}
                             toggleCheckBox = {toggleCheckBox}
+                            listItemFormat = {listItemFormat}
                         />
                     </View>
                 )

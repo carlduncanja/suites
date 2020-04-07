@@ -3,16 +3,32 @@ import {View, StyleSheet} from 'react-native';
 import ListHeader from './ListHeader';
 import ListData from './ListData';
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import {useCheckBox} from '../../../hooks/useCheckBox';
+import {useCheckBox} from '../../../helpers/caseFilesHelpers';
+
+/**
+ * @param listData array of objects
+ * @param listHeaders array of objects
+ * @param currentPageListMax number
+ * @param currentPageListMin number
+ * @param listItemFormat object
+ * @return {*}  
+ */
  
-const List = ({listData, listHeaders, routeName, currentPageListMin, currentPageListMax}) => { 
+const List = ({listData, listHeaders, currentPageListMin, currentPageListMax, listItemFormat}) => { 
     const [state] = useContext(SuitesContext)
 
     const [checkBoxList, setCheckBoxList] = useState([])
 
-    const toggleCheckBox = (itemId) =>{
-        let checkedItemsList = useCheckBox(itemId,checkBoxList)
+    const toggleCheckBox = (item) =>{
+        let checkedItemsList = useCheckBox(item,checkBoxList)
         setCheckBoxList(checkedItemsList)
+    }
+
+    const toggleHeaderCheckbox = () => {
+        checkBoxList.length > 0 ?
+            setCheckBoxList([])
+            :
+            setCheckBoxList(listData)
     }
 
     return (  
@@ -21,16 +37,18 @@ const List = ({listData, listHeaders, routeName, currentPageListMin, currentPage
                 <ListHeader 
                     listHeaders={listHeaders}
                     checkedItemList = {checkBoxList}
+                    toggleHeaderCheckbox = {toggleHeaderCheckbox}
+                    dataLength = {listData.length}
                 /> 
             </View>
             <View style={styles.data}>
                 <ListData 
                     listData = {listData} 
-                    routeName = {routeName}
                     currentPageListMin = {currentPageListMin}
                     currentPageListMax = {currentPageListMax}
                     toggleCheckBox = {toggleCheckBox}
                     checkBoxList = {checkBoxList}
+                    listItemFormat = {listItemFormat}
                 />
             </View>
         </View>
@@ -38,6 +56,7 @@ const List = ({listData, listHeaders, routeName, currentPageListMin, currentPage
 }
  
 export default List;
+
 const styles = StyleSheet.create({
     header:{
         marginBottom:25,

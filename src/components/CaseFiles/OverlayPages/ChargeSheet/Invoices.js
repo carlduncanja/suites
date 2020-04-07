@@ -3,21 +3,77 @@ import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-nati
 import Table from '../../../common/Table/Table';
 import SvgIcon from '../../../../../assets/SvgIcon'
 import Checkbox from '../../../common/Checkbox/Checkbox';
-import { useCheckBox } from '../../../../hooks/useCheckBox';
+import { useCheckBox, formatAmount, calcBillingValues } from '../../../../helpers/caseFilesHelpers';
 import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
+import { caseActions } from '../../../../redux/reducers/caseFilesReducer';
+import { CaseFileContext } from '../../../../contexts/CaseFileContext';
+import { withModal } from 'react-native-modalfy';
+import moment from 'moment';
 
 
-const headers = ["Invoice Number", "Status", "Date", "Value", "Actions"]
-const itemWidth =  `${100/headers.length}%`
-
-const Invoices = ({tabDetails}) => {
+const Invoices = ({tabDetails, modal}) => {
     const [checkBoxList, setCheckBoxList] = useState([])
+    const [state, dispatch] = useContext(CaseFileContext)
 
-    const listItem = (item,id) => {
+    const headers = [
+        {
+            name :"Invoice Number",
+            alignment : "flex-start"
+        },
+        {
+            name :"Status",
+            alignment : "flex-start"
+        },
+        {
+            name :"Date",
+            alignment : "flex-start"
+        },
+        {
+            name :"Value",
+            alignment : "center"
+        },
+        {
+            name :"Actions",
+            alignment : "flex-end"
+        },
+            
+    ]
+    
+    const openModal = () =>{
+        modal.openModal("ReportPreviewModal")
+    }
+
+    const listItem = (item) => {
+        const reportId = item.invoiceNumber
+        const reportExpenses = item.reportDetails.reportExpenses
+        const billingDetails = item.reportDetails.billingDetails
+        let date = moment(billingDetails.reportDate).format("DD/MM/YYYY")
+
+        const reportList = [...reportExpenses.physicians,...reportExpenses.procedures,...reportExpenses.labWork]
+        const reportTable = [...reportExpenses.consumables, ...reportExpenses.equipments]
+        const tax = reportExpenses.tax
+        const discountPercent = reportExpenses.discount
+
+        let subTotal = 0
+        let taxValue = `${tax * 100}%`
+
+        reportList.forEach(item => subTotal+= item.cost)
+        reportTable.forEach(item => subTotal += (item.unitPrice * item.quantity))
+        
+        let {discount, total} = calcBillingValues(subTotal, tax, discountPercent)
+
+        const billingSummary = {
+            subtotal:subTotal,
+            tax : taxValue,
+            discount : discount,
+            total :total
+        }
+        
+
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(id)}>
-                    { checkBoxList.includes(id) ? <CheckedBox/> : <Checkbox/> }
+                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(item)}>
+                    { checkBoxList.includes(item) ? <CheckedBox/> : <Checkbox/> }
                 </TouchableOpacity>
                 <View style={styles.dataContainer}>
                     <View style={styles.item}>
@@ -27,15 +83,27 @@ const Invoices = ({tabDetails}) => {
                         <Text style={[styles.itemText,{color: item.status === 'Complete' ? "#319795" : "#DD6B20"}]}>{item.status}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-start'}]}>
-                        <Text style={styles.itemText}>{item.date}</Text>
+                        <Text style={styles.itemText}>{date}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'center'}]}>
-                        <Text style={styles.itemText}>{item.value}</Text>
+                        <Text style={styles.itemText}>{formatAmount(total)}</Text>
                     </View>
-                    <View style={[styles.item,{alignItems:'flex-end', marginRight:20}]}>
+                    <View style={[styles.item,{alignItems:'flex-end', marginRight:10}]}>
                         <TouchableOpacity
                             style={{}}
                             onPress={()=>{
+                                dispatch({
+                                    type : caseActions.SETREPORTDETAILS,
+                                    newState:{
+                                        reportStatus :true,
+                                        reportId : reportId,
+                                        billingDetails : billingDetails,
+                                        reportList : reportList,
+                                        reportTable : reportTable,
+                                        billingSummary :billingSummary
+                                    }
+                                })
+                                openModal();
                                 // this.openModal(props);
                                 // openReportAction(props.fields.recordId)
                             }}>
@@ -47,30 +115,30 @@ const Invoices = ({tabDetails}) => {
         )
     }
 
-    const headerItem = () => {
-        return (
-            <View style={styles.headersContainer}>
-                <View style={{marginRight:20}}>
-                    {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
-                </View>
+    // const headerItem = () => {
+    //     return (
+    //         <View style={styles.headersContainer}>
+    //             <View style={{marginRight:20}}>
+    //                 {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
+    //             </View>
             
-                <View style={styles.headerItem}>
-                    <Text style={styles.headerText}>Invoice Number</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'flex-start'}]}>
-                    <Text style={styles.headerText}>Status</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'flex-start'}]}>
-                    <Text style={styles.headerText}>Date</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'center'}]}>
-                    <Text style={styles.headerText}>Value</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
-                    <Text style={styles.headerText}>Actions</Text>
-                </View>
-            </View>
-        )}
+    //             <View style={styles.headerItem}>
+    //                 <Text style={styles.headerText}>Invoice Number</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'flex-start'}]}>
+    //                 <Text style={styles.headerText}>Status</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'flex-start'}]}>
+    //                 <Text style={styles.headerText}>Date</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'center'}]}>
+    //                 <Text style={styles.headerText}>Value</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
+    //                 <Text style={styles.headerText}>Actions</Text>
+    //             </View>
+    //         </View>
+    //     )}
     // const [state, dispatch] = useContext(SuitesContext)
     // const setListTabData = (list,headers) => {
     //     dispatch({
@@ -89,9 +157,16 @@ const Invoices = ({tabDetails}) => {
     //     setListTabData(list,headers)
     // },[state.slideOverlay.slideOverlayTabInfo])
     
-    const toggleCheckbox = (itemId) =>{
-        let checkedList = useCheckBox(itemId,checkBoxList)
+    const toggleCheckbox = (item) =>{
+        let checkedList = useCheckBox(item,checkBoxList)
         setCheckBoxList(checkedList)
+    }
+
+    const toggleHeaderCheckbox = () =>{
+        checkBoxList.length > 0 ?
+            setCheckBoxList([])
+            :
+            setCheckBoxList(tabDetails)
     }
     
     return ( 
@@ -99,23 +174,24 @@ const Invoices = ({tabDetails}) => {
             <Table
                 data = {tabDetails}
                 listItemFormat = {listItem}
-                headerItemFormat = {headerItem}
+                headers = {headers}
+                toggleHeaderCheckbox = {toggleHeaderCheckbox} 
+                checkBoxList = {checkBoxList}
+                dataLength = {tabDetails.length}
             />
         </ScrollView>
     );
 }
  
-export default Invoices;
+export default withModal(Invoices) ;
 
 const styles = StyleSheet.create({
     container:{
         flex:1,
         flexDirection:'row',
-        //alignItems:'flex-start',
-        //justifyContent:'center',
         padding:10,
         backgroundColor:'#FFFFFF',
-        width:'100%',
+        alignItems:'center',
         marginBottom:10
     },
     dataContainer:{
@@ -125,7 +201,7 @@ const styles = StyleSheet.create({
         justifyContent:"space-between"
     },
     item:{
-        width:itemWidth,
+        flex:1
         // alignItems:"flex-start",
         // justifyContent:'center',
     },

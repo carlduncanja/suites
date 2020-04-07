@@ -5,7 +5,7 @@ import Data from './Data';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const Divider = () =>{
-    return(
+    return( 
         <View
             style={{
                 height:1,
@@ -16,13 +16,17 @@ const Divider = () =>{
         />
     )
 }
-const Table = (props) => {
+const Table = (props) => { 
     const {
         data,
         listItemFormat,
-        headerItemFormat,
         currentListMax,
         currentListMin,
+        listItemArray,
+        headers,
+        toggleHeaderCheckbox,
+        checkBoxList,
+        dataLength
         // toggleCheckbox
     } = props 
 
@@ -30,12 +34,14 @@ const Table = (props) => {
     return ( 
         <>
             <View style={styles.header}>
-                {headerItemFormat()}
-                {/* <Header 
+                {/* {headerItemFormat()} */}
+                <Header 
                     headers = {headers}
-                    hasCheckbox = {hasCheckbox}
-                    toggleCheckbox = {toggleCheckbox}
-                /> */}
+                    toggleHeaderCheckbox = {toggleHeaderCheckbox}
+                    checkBoxList = {checkBoxList}
+                    dataLength = {dataLength}
+                    // toggleCheckbox = {toggleCheckbox}
+                />
             </View>
             {Divider()}
             <View style={{paddingBottom:5}}>
@@ -44,6 +50,7 @@ const Table = (props) => {
                     data = {data}
                     currentListMin = {currentListMin}
                     currentListMax = {currentListMax}
+                    // dataLength = {dataLength}
                     // toggleCheckbox = {toggleCheckbox}
                 />
             </View>

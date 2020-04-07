@@ -4,20 +4,37 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import Table from '../../../common/Table/Table';
 import Checkbox from '../../../common/Checkbox/Checkbox';
 import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
-import { useCheckBox } from '../../../../hooks/useCheckBox'
+import { useCheckBox } from '../../../../helpers/caseFilesHelpers'
 
-const headers = ["Item Name", "Type", "Quantity", "Unit Price"]
+const headers = [
+    {
+        name :"Item Name",
+        alignment: "flex-start"
+    },
+    {
+        name :"Type",
+        alignment: "center"
+    },
+    {
+        name :"Quantity",
+        alignment: "center"
+    },
+    {
+        name :"Unit Price",
+        alignment: "flex-end"
+    }
+]
 const itemWidth = `${100/headers.length}%`
 
 const Consumables = ({tabDetails}) => {
     const [state, dispatch] = useContext(SuitesContext)
     const [checkBoxList, setCheckBoxList] = useState([])
     
-    const listItem = (item, id) => {
+    const listItem = (item) => {
         return(
             <View style={styles.container}>
-                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(id)}>
-                    { checkBoxList.includes(id) ? <CheckedBox/> : <Checkbox/> }
+                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(item)}>
+                    { checkBoxList.includes(item) ? <CheckedBox/> : <Checkbox/> }
                 </TouchableOpacity>
                 <View style={styles.dataContainer}>
                     <View style={styles.item}>
@@ -37,33 +54,40 @@ const Consumables = ({tabDetails}) => {
         )
     }
 
-    const headerItem = () => {
-        return(
-            <View style={styles.headersContainer}>
-                <View style={{marginRight:20}}>
-                    {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
-                </View>
+    // const headerItem = () => {
+    //     return(
+    //         <View style={styles.headersContainer}>
+    //             <View style={{marginRight:20}}>
+    //                 {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
+    //             </View>
             
-                <View style={styles.headerItem}>
-                    <Text style={styles.headerText}>Item Name</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'center'}]}>
-                    <Text style={styles.headerText}>Type</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'center'}]}>
-                    <Text style={styles.headerText}>Quantity</Text>
-                </View>
-                <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
-                    <Text style={styles.headerText}>Unit Price</Text>
-                </View>
-        </View>
-        )
+    //             <View style={styles.headerItem}>
+    //                 <Text style={styles.headerText}>Item Name</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'center'}]}>
+    //                 <Text style={styles.headerText}>Type</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'center'}]}>
+    //                 <Text style={styles.headerText}>Quantity</Text>
+    //             </View>
+    //             <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
+    //                 <Text style={styles.headerText}>Unit Price</Text>
+    //             </View>
+    //     </View>
+    //     )
         
-    }
+    // }
    
-    const toggleCheckbox = (itemId) =>{
-        let checkedList = useCheckBox(itemId,checkBoxList)
+    const toggleCheckbox = (item) =>{
+        let checkedList = useCheckBox(item,checkBoxList)
         setCheckBoxList(checkedList)
+    }
+    
+    const toggleHeaderCheckbox = () =>{
+        checkBoxList.length > 0 ?
+            setCheckBoxList([])
+            :
+            setCheckBoxList(tabDetails)
     }
 
     // const setListTabData = (list,headers) => {
@@ -90,8 +114,10 @@ const Consumables = ({tabDetails}) => {
             <Table
                 data = {tabDetails}
                 listItemFormat = {listItem}
-                headerItemFormat = {headerItem}
-                // toggleCheckbox = {toggleCheckbox}
+                headers = {headers}
+                toggleHeaderCheckbox = {toggleHeaderCheckbox} 
+                checkBoxList = {checkBoxList}
+                dataLength = {tabDetails.length}
             />
         </ScrollView>
     );
@@ -103,11 +129,9 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         flexDirection:'row',
-        //alignItems:'flex-start',
-        //justifyContent:'center',
         padding:10,
         backgroundColor:'#FFFFFF',
-        width:'100%',
+        alignItems:'center',
         marginBottom:10
     },
     dataContainer:{
@@ -117,9 +141,7 @@ const styles = StyleSheet.create({
         justifyContent:"space-between"
     },
     item:{
-        width:itemWidth,
-        // alignItems:"flex-start",
-        // justifyContent:'center',
+        flex:1,
     },
     itemText:{
         fontSize:16,

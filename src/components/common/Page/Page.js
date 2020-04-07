@@ -26,6 +26,7 @@ import {colors} from '../../../styles'
  * @param currentPageListMax number
  * @param goToNextPage function
  * @param goToPreviousPage
+ * @param listItemFormat object
  * @returns {*}
  * @constructor
  */  
@@ -46,7 +47,8 @@ const Page = (props) => {
         currentPageListMin,
         currentPageListMax,
         goToNextPage,
-        goToPreviousPage
+        goToPreviousPage,
+        listItemFormat
     } = props
 
     const toggleActionButton = () => {
@@ -125,6 +127,7 @@ const Page = (props) => {
                             routeName = {routeName}
                             currentPageListMin = {currentPageListMin}
                             currentPageListMax = {currentPageListMax}
+                            listItemFormat = {listItemFormat}
                         />
                     }
                     

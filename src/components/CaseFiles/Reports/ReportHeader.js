@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
-import SvgIcon from '../../../../assets/SvgIcon'
+import SvgIcon from '../../../../assets/SvgIcon' 
 import HeaderItem from "./HeaderItem";
 
 

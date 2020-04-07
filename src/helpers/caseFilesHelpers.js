@@ -21,3 +21,43 @@ export const handleNewItemProgressBar = (tabIndex, progressList) =>{
     const updatedList = [...progressList.slice(0,objIndex),...newProgress]
     return updatedList
 }
+
+export const useNextPaginator = (currentPage, recordsPerPage, currentListMin, currentListMax ) => {
+    return (
+        {
+            "currentPage":currentPage +1,
+            "currentListMin" : currentListMin + recordsPerPage,
+            "currentListMax": currentListMax + recordsPerPage
+        }
+    )
+}
+
+export const usePreviousPaginator = (currentPage, recordsPerPage, currentListMin, currentListMax ) => {
+    return (
+        {
+            "currentPage":currentPage -1,
+            "currentListMin" : currentListMin - recordsPerPage,
+            "currentListMax": currentListMax - recordsPerPage
+        }
+    )
+}
+
+export const useCheckBox = (item, checkBoxList) => {
+    return checkBoxList.includes(item) ?
+        checkBoxList.filter(listItem => listItem !== item)
+        :
+        [...checkBoxList,item]
+}
+
+export const formatAmount = (amount) => {
+    let newAmountString = (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+    return `$ ${newAmountString}`
+}
+
+export const calcBillingValues = (subTotal, tax, discountPercent) =>{
+    let discount = subTotal * discountPercent
+    let discountedValue = subTotal - discount
+    let total = discountedValue * (1 + tax)
+
+    return {discount, total}
+}

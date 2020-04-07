@@ -17,7 +17,6 @@ const ChargeSheet = () => {
 
     const quotation = chargeSheet.quotation
     const invoices = chargeSheet.invoices
-    const inventory = chargeSheet.inventory
 
     return (
         name === 'Consumables' ?
