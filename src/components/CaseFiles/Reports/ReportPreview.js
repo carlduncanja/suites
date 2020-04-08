@@ -4,8 +4,6 @@ import ReportHeader from './ReportHeader'
 import ReportHeaderSummary from './ReportHeaderSummary';
 import ReportDetails from './ReportDetails';
 import BillingSummary from './BillingSummary';
-import { SuitesContext } from '../../../contexts/SuitesContext';
-import { withModal } from 'react-native-modalfy';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import {caseActions} from '../../../redux/reducers/caseFilesReducer'
 import { formatAmount } from '../../../helpers/caseFilesHelpers';
@@ -23,7 +21,7 @@ const Rectangle = () =>{
     )
 }
 
-const ReportPreview = (props) => {
+const ReportPreview = () => {
 
     const headers = [
             {
@@ -44,7 +42,6 @@ const ReportPreview = (props) => {
             }
     ]
 
-    const [appState] = useContext(SuitesContext)
     const [state, dispatch] = useContext(CaseFileContext)
 
     const report = state.report
@@ -71,12 +68,13 @@ const ReportPreview = (props) => {
         )
     }
   
-    const { modal: {closeModal, closeModals, currentModal}} = props
-    
     return (
         <View style={{flex:1, backgroundColor:'#FFFFFF'}}>
+
             <ReportHeader/>
+
             <View style={{padding:25}}>
+
                 <ReportHeaderSummary
                     billedTo = {billingDetails.billedTo}
                     billedFor = {billingDetails.billedFor}
@@ -84,15 +82,19 @@ const ReportPreview = (props) => {
                     invoiceNo = {report.reportId}
                     purchaseOrderNo = {billingDetails.purchaseOrderNo}
                 />
+
                 {Rectangle()}
+
                 <ReportDetails
                     reportList = {report.reportList}
                     reportTable = {report.reportTable}
                     listItemFormat = {listItemFormat}
                     tableHeaders = {headers}
                 />
+
                 {Rectangle()}
             </View>
+
             <View style={{width:250, alignSelf:'flex-end'}}>
                 <BillingSummary
                     subtotal = {formatAmount(billingSummary.subtotal)}
@@ -106,7 +108,7 @@ const ReportPreview = (props) => {
     );
 }
 
-export default withModal(ReportPreview);
+export default ReportPreview;
 
 const styles = StyleSheet.create({
     textContainer:{

@@ -1,10 +1,8 @@
 import React, { useContext } from 'react';
 import { ScrollView, View, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
-import Section from '../../../common/SlideOverlay/Section'
 import BMIConverter from '../../BMIConverter'; 
 import moment from 'moment';
-import {transformToSentence} from '../../../../hooks/useTextEditHook';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../../components/common/Information Record/RecordStyles';
 
 let itemWidth = `${100/3}%`
@@ -267,22 +265,6 @@ const Details = ({tabDetails}) => {
             {ContactData()}
             {Divider()}
             {EmergencyData()}
-            {/* {
-                sections.map((section,index)=>{
-                    return(index === sections.length-1 ?
-                        <View key={index}>
-                            <Section data={section}/>
-                        </View>
-                        :
-                        <View key={index}>
-                            <Section data={section}/>
-                            <View style={styles.separator}/>
-                        </View>
-                        
-                    )
-                })
-            } */}
-
         </ScrollView>
     );
 }

@@ -1,16 +1,16 @@
 import React,{Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-export default class Record extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <Text style={styles.recordTitle}>{this.props.recordTitle}</Text>
-                <Text style={[styles.recordValue,{color:this.props.valueColor}]}>{this.props.recordValue}</Text>
-            </View>
-        )
-    }
+const Record = ({recordTitle, recordValue, valueFontSize, titleFontSize, titleColor, valueColor}) => {
+    return (
+        <View style={styles.container}>
+            <Text style={[styles.recordTitle,{color:titleColor, fontSize:titleFontSize}]}>{recordTitle}</Text>
+            <Text style={{color:valueColor, fontSize: valueFontSize}}>{recordValue}</Text>
+        </View>
+    )
 }
+
+export default Record 
 
 const styles = StyleSheet.create({
     container:{
@@ -18,10 +18,6 @@ const styles = StyleSheet.create({
     },
     recordTitle:{
         paddingBottom:4,
-        color:'#718096',
-        fontSize:14,
     },
-    recordValue:{
-        fontSize:16,
-    }
+    
 })

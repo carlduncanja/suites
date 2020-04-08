@@ -43,7 +43,7 @@ export default [
                     {
                         name: "Sagicor Life",
                         coverageLimit: 45000.00,
-                        policyNumber: 7311239 - 122,
+                        policyNumber: "7311239 - 122",
                     }
                 ],
                 contactInfo: [
