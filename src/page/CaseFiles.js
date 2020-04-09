@@ -5,10 +5,11 @@ import {setCaseFiles} from "../redux/actions/caseFilesActions";
 import {getCaseFiles} from "../api/network";
 import {SuitesContext} from '../contexts/SuitesContext';
 import {appActions} from '../redux/reducers/suitesAppReducer';
-import {transformToCamel} from '../hooks/useTextEditHook';
-import {useNextPaginator, usePreviousPaginator} from '../helpers/caseFilesHelpers';
-import {View, Text, StyleSheet} from 'react-native';
+import { transformToCamel } from '../hooks/useTextEditHook';
+import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
 import ListItem from "../components/common/List/ListItem";
+import { View, Text, StyleSheet } from 'react-native';
+import TestTransformAnimation from '../TestTransformAnimation';
 
 const listHeaders = [
     {
@@ -63,6 +64,22 @@ const CaseFiles = (props) => {
             fetchCaseFilesData()
         }
     }, []);
+
+    const floatingActions = [
+        {
+            "actionId":"archiveCase",
+            "action":"archiveItem",
+            "actionName":"Archive Case",
+            "disabled":true
+        },
+        {
+            "actionId":"newCase",
+            "action":"newItem",
+            "actionName":"New Case",
+            "disabled":false
+        }
+
+    ]
 
 
     useEffect(() => {

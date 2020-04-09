@@ -41,10 +41,8 @@ const ListItem = ({
 
 export default ListItem
 
-
 ListItem.propTypes = {};
 ListItem.defaultProps = {};
-
 
 const styles = StyleSheet.create({
     container: {

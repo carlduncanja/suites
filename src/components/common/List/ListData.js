@@ -4,7 +4,7 @@ import ListItem from './ListItem';
 import {CheckedBox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
 
-
+ 
 /**
  * @param listData arrray of objects
  * @param currentPageListMin number
@@ -27,7 +27,8 @@ const ListData = ({listData, currentPageListMin, currentPageListMax, toggleCheck
                return(
                     <View key={index}>
                         <ListItem
-                            modalToOpen = "OverlaySlidePanelModal"
+                            // OverlaySlidePanelModal
+                            modalToOpen = "BottomSheetModal"
                             listItem={item}
                             checkbox = {checkBoxList.includes(item) ? <CheckedBox/> : <Checkbox/>}
                             toggleCheckBox = {toggleCheckBox}

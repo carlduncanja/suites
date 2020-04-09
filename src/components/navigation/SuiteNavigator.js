@@ -14,6 +14,7 @@ import OverlayModal from '../../modals/OverlayModal';
 import ActionContainerModal from '../../modals/ActionContainerModal';
 import ReportPreviewModal from '../../modals/ReportPreviewModal';
 import PickListModal from '../../modals/PickListModal';
+import BottomSheetModal from '../../modals/BottomSheetModal';
 
 /**
  * Custom navigator wrapper for application.
@@ -36,7 +37,8 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
         OverlayModal: OverlayModal,
         ActionContainerModal: ActionContainerModal,
         ReportPreviewModal: ReportPreviewModal,
-        PickListModal : PickListModal
+        PickListModal : PickListModal,
+        BottomSheetModal : BottomSheetModal,
     }
 
     const defaultOptions = {

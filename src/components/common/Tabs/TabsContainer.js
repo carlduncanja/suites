@@ -1,21 +1,20 @@
 import React,{Component, useContext} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Tab from './Tab'
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const TabsContainer = (props) => {
+const TabsContainer = ({tabs, onPressChange, selectedTab, completedTabs}) => {
     return ( 
         <View style={styles.container}>
-            {props.tabs.map((tab, index)=>{
+            {tabs.map((tab, index)=>{
                 return (
                     <View key={index}> 
-                    <TouchableOpacity onPress = {()=>props.onPressChange(tab)} activeOpacity={1}>
+                    <TouchableOpacity onPress = {()=>{onPressChange(tab)}} activeOpacity={1}>
                         <Tab 
                             tabName={tab} 
-                            backgroundColor={tab === props.selectedTab ? "#FFFFFF" : null}
+                            backgroundColor={tab === selectedTab ? "#FFFFFF" : null}
                             textColor={
-                                tab === props.selectedTab ? "#3182CE" :
-                                    props.completedTabs && props.completedTabs.includes(tab) ? "#4E5664" :
+                                tab === selectedTab ? "#3182CE" :
+                                    completedTabs && completedTabs.includes(tab) ? "#4E5664" :
                                         "#718096"
                             }   
                         /> 

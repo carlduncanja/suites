@@ -58,7 +58,18 @@ const Page = (props) => {
             type: appActions.TOGGLEACTIONBUTTON,
             newState: !state.floatingActions.actionButtonState
         })
-    };
+    }
+
+    useEffect(()=>{
+        const menu = require('../../../../assets/db.json').overlayMenuTabs.filter(menu => menu.page === transformToCamel(routeName))
+        menu.length > 0 && dispatch({
+            type: appActions.SETOVERLAYMENU,
+            newState:{
+                menu : menu[0].menuTabs,
+                selectedMenuItemTabs : menu[0].menuTabs[0].overlayTab,
+            }
+        })
+    },[state.overlayMenu.menu, state.slideOverlay.slideOverlayStatus])
 
     const getPageMeasure = (event) => {
         dispatch({

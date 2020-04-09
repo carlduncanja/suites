@@ -6,8 +6,9 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 import { appActions } from '../../../redux/reducers/suitesAppReducer';
 import { transformToCamel } from '../../../hooks/useTextEditHook'
  
-const SlideHeader = () => {
+const SlideHeader = () => { 
     const [state, dispatch] = useContext(SuitesContext)
+
     const controlTabChange = (tabIndex) => {
         if (state.slideOverlay.slideOverlayButtonEdit === false) handleOverlayTabChange(tabIndex)
     }
@@ -39,7 +40,7 @@ const SlideHeader = () => {
                     :
                     <ViewModeHeading/>
             }
-           
+
             <TabsContainer 
                 tabs = {state.overlayMenu.selectedMenuItemTabs}
                 selectedTab = {state.overlayMenu.selectedMenuItemCurrentTab}
