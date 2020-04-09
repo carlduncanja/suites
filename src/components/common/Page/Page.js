@@ -48,7 +48,9 @@ const Page = (props) => {
         goToNextPage,
         goToPreviousPage,
         listItemFormat,
-        onRefresh
+        onRefresh,
+        onSelectAll,
+        itemsSelected
     } = props;
 
     const toggleActionButton = () => {
@@ -102,8 +104,10 @@ const Page = (props) => {
                             : <List
                                 listData={listData}
                                 listHeaders={listHeaders}
+                                itemsSelected={itemsSelected}
                                 onRefresh={onRefresh}
                                 routeName={routeName}
+                                onSelectAll={onSelectAll}
                                 currentPageListMin={currentPageListMin}
                                 currentPageListMax={currentPageListMax}
                                 listItemFormat={listItemFormat}

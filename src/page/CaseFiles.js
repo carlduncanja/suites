@@ -195,7 +195,7 @@ const CaseFiles = (props) => {
             listData={caseFilesToDisplay}
 
             listHeaders={listHeaders}
-            itemSelected={selectedCaseIds}
+            itemsSelected={selectedCaseIds}
             onSelectAll={handleOnSelectAll}
             totalPages={totalPages}
             currentPagePosition={currentPagePosition}

@@ -12,6 +12,7 @@ import {useCheckBox} from '../../../helpers/caseFilesHelpers';
  * @param currentPageListMin number
  * @param listItemFormat object
  * @param onRefresh
+ * @param itemsSelected
  * @param refreshing
  * @param keyExtractor
  * @return {*}
@@ -23,6 +24,7 @@ const List = ({
                   currentPageListMax,
                   listItemFormat,
                   onRefresh,
+                  itemsSelected,
                   refreshing,
                   keyExtractor = (item) => item.id + new Date().getTime()
               }) => {
@@ -49,6 +51,10 @@ const List = ({
                     checkedItemList={checkBoxList}
                     toggleHeaderCheckbox={toggleHeaderCheckbox}
                     dataLength={listData.length}
+
+                    // checked={}
+                    // indeterminate={}
+
                 />
             </View>
             <View style={styles.data}>
