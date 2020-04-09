@@ -14,7 +14,6 @@ const BottomSheetModal = (props) => {
     const initialSnap = 2
 
     const { modal: {closeModal, closeModals, currentModal, closeAllModals, params }} = props
-    // console.log("Param:", params)
 
     useEffect(()=>{
         // setTimeout(()=>{
@@ -42,7 +41,7 @@ const BottomSheetModal = (props) => {
             backgroundColor: 'white',
             zIndex: 5
         }}>
-            <SlideOverlay/>
+            <SlideOverlay selectedItem = { params.item} />
         </View>
     }; 
 
@@ -102,7 +101,7 @@ const BottomSheetModal = (props) => {
     );
 }
  
-export default withModal(BottomSheetModal);
+export default BottomSheetModal ;
 
 const styles = StyleSheet.create({
     modalContainer:{

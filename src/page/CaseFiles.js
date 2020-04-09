@@ -10,6 +10,7 @@ import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelp
 import ListItem from "../components/common/List/ListItem";
 import { View, Text, StyleSheet } from 'react-native';
 import TestTransformAnimation from '../TestTransformAnimation';
+import { withModal } from 'react-native-modalfy';
 
 const listHeaders = [
     {
@@ -41,7 +42,8 @@ const CaseFiles = (props) => {
         // Redux props
         caseFiles,
         setCaseFiles,
-        navigation
+        navigation,
+        modal
     } = props;
 
     //######## States
@@ -114,7 +116,17 @@ const CaseFiles = (props) => {
     };
 
     const handleOnItemPress = (item) => {
-        // TODO open modal.
+        // TODO open modal. with props instead of state
+        dispatch({
+            type : appActions.SETSELECTEDLISTITEM,
+            newState : {
+                selectedListItemId : item.id,
+                selectedListObject : item
+            }
+        })
+
+        modal.openModal('BottomSheetModal',{ item })
+    
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
@@ -131,11 +143,14 @@ const CaseFiles = (props) => {
     };
 
     const handleOnSelectAll = () => {
-        const indeterminate = selectedCaseIds.length >= 0 && selectedCaseIds !== caseFiles.length;
-
+        const indeterminate = selectedCaseIds.length >= 0 && selectedCaseIds.length !== caseFiles.length;
+        // console.log("Indeterminate: ", indeterminate)
         if (indeterminate) {
+            const selectedAllIds = [...caseFiles.map( caseItem => caseItem.id )]
+            setSelectedCaseIds(selectedAllIds)
             // todo insert all id's
         } else {
+            setSelectedCaseIds([])
             // todo remove all i
         }
 
@@ -197,7 +212,9 @@ const CaseFiles = (props) => {
     let caseFilesToDisplay = [...caseFiles];
     const start = (currentPagePosition - 1) * currentPageListMax;
     const end = start + currentPageListMax;
-    caseFilesToDisplay = caseFilesToDisplay.slice(start, end);
+    // console.log("Start end: ", currentPageListMin, currentPageListMax)
+    // caseFilesToDisplay = caseFilesToDisplay.slice(start, end);
+    caseFilesToDisplay = caseFilesToDisplay.slice(currentPageListMin, currentPageListMax);
 
 
     return (
@@ -234,7 +251,7 @@ const mapDispatcherToProp = {
     setCaseFiles
 };
 
-export default connect(mapStateToProps, mapDispatcherToProp)(CaseFiles);
+export default connect(mapStateToProps, mapDispatcherToProp)(withModal(CaseFiles));
 
 const styles = StyleSheet.create({
     item: {

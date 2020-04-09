@@ -8,53 +8,48 @@ import {useCheckBox} from '../../../helpers/caseFilesHelpers';
 /**
  * @param listData array of objects
  * @param listHeaders array of objects
- * @param currentPageListMax number
- * @param currentPageListMin number
  * @param listItemFormat object
  * @param onRefresh
  * @param itemsSelected
  * @param refreshing
  * @param keyExtractor
- * @return {*}
+ * @returns {*} 
  */
 const List = ({
                   listData,
                   listHeaders,
-                  currentPageListMin,
-                  currentPageListMax,
+                  itemsSelected,
                   listItemFormat,
                   onRefresh,
-                  itemsSelected,
                   refreshing,
+                  onSelectAll,
                   keyExtractor = (item) => item.id + new Date().getTime()
               }) => {
     const [state] = useContext(SuitesContext);
 
-    const [checkBoxList, setCheckBoxList] = useState([]);
+    // const [checkBoxList, setCheckBoxList] = useState([]);
 
-    const toggleCheckBox = (item) => {
-        let checkedItemsList = useCheckBox(item, checkBoxList);
-        setCheckBoxList(checkedItemsList)
-    };
+    // const toggleCheckBox = (item) => {
+    //     let checkedItemsList = useCheckBox(item, checkBoxList);
+    //     setCheckBoxList(checkedItemsList)
+    // };
 
-    const toggleHeaderCheckbox = () => {
-        checkBoxList.length > 0
-            ? setCheckBoxList([])
-            : setCheckBoxList(listData)
-    };
+    // const toggleHeaderCheckbox = () => {
+    //     checkBoxList.length > 0
+    //         ? setCheckBoxList([])
+    //         : setCheckBoxList(listData)
+    // };
+
+    const isIndeterminate = itemsSelected.length > 0 
 
     return (
         <View>
             <View style={styles.header}>
                 <ListHeader
                     listHeaders={listHeaders}
-                    checkedItemList={checkBoxList}
-                    toggleHeaderCheckbox={toggleHeaderCheckbox}
-                    dataLength={listData.length}
-
+                    toggleHeaderCheckbox={onSelectAll}
                     // checked={}
-                    // indeterminate={}
-
+                    isIndeterminate={isIndeterminate}
                 />
             </View>
             <View style={styles.data}>

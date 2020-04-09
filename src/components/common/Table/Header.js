@@ -2,11 +2,12 @@ import React,{Component, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import { CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
+import CheckBoxComponent from "../Checkbox";
 
-const Header = ({headers, toggleHeaderCheckbox, checkBoxList, dataLength}) => { 
+const Header = ({headers, toggleHeaderCheckbox, isIndeterminate}) => { 
     return ( 
-        <View style={styles.headersContainer}>
-            {
+        <View style={styles.headersContainer}> 
+            {/* {
                 checkBoxList && 
                 <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleHeaderCheckbox()}>
                     {
@@ -17,7 +18,14 @@ const Header = ({headers, toggleHeaderCheckbox, checkBoxList, dataLength}) => {
                         }
                 </TouchableOpacity>
             }
-            
+             */}
+
+            <View style={{marginRight:20}}>
+                <CheckBoxComponent
+                    isIndeterminate={isIndeterminate}
+                    onPress={toggleHeaderCheckbox}
+                />
+            </View>
             {headers.map((header,index)=>{
                 return(
                     <View style={[styles.item,{alignItems:header.alignment}]} key={index}>

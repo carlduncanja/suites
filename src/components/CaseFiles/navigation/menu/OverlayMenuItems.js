@@ -9,7 +9,7 @@ import { transformToCamel } from '../../../../hooks/useTextEditHook'
 const OverlayMenuItems = ({ navigation, descriptors }) => {
     const { routes, index } = navigation.state;
     const [state, dispatch] = useContext(SuitesContext)
-    const [currentTabName, setCurrentTabName] = useState("Patient")
+    const [currentTabName, setCurrentTabName] = useState("Patient") 
 
     // const handleSelectedMenuTab = (menuIndex) => {
     //     const currentTabs = state.overlayMenu.menu[menuIndex].overlayTab

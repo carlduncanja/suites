@@ -32,7 +32,7 @@ import {colors} from '../../../styles'
  */
 const Page = (props) => {
     const [state, dispatch] = useContext(SuitesContext);
-
+ 
     const {
         placeholderText,
         changeText,
@@ -117,10 +117,10 @@ const Page = (props) => {
                                 listHeaders={listHeaders}
                                 itemsSelected={itemsSelected}
                                 onRefresh={onRefresh}
-                                routeName={routeName}
+                                // routeName={routeName}
                                 onSelectAll={onSelectAll}
-                                currentPageListMin={currentPageListMin}
-                                currentPageListMax={currentPageListMax}
+                                // currentPageListMin={currentPageListMin}
+                                // currentPageListMax={currentPageListMax}
                                 listItemFormat={listItemFormat}
                                 refreshing={isFetchingData}
                             />

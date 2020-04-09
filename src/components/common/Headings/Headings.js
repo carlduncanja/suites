@@ -3,12 +3,12 @@ import Heading from './Heading';
 import { EditButton,DoneButton } from '../OverlayButtons/OverlayButtonStyles'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
-export function EditModeHeading(){ 
+export function EditModeHeading({id,title}){ 
     const [state] = useContext(SuitesContext)
     return( 
         <Heading 
-            headerId={state.selectedListItem.selectedListItemId}
-            headerName={state.selectedListItem.selectedListObject.caseFileDetails.title}
+            headerId={id}
+            headerName={title}
             backgroundColor="#83AED1"
             headerIdColor="#104587"
             headerNameColor="#FFFFFF"
@@ -18,12 +18,12 @@ export function EditModeHeading(){
     )
 }
 
-export function ViewModeHeading(){
+export function ViewModeHeading({id,title}){
     const [state] = useContext(SuitesContext)
     return(
         <Heading 
-            headerId={state.selectedListItem.selectedListItemId}
-            headerName={state.selectedListItem.selectedListObject.caseFileDetails.title}
+            headerId={id}
+            headerName={title}
             backgroundColor="#EEF2F6"
             headerIdColor="#104587"
             headerNameColor="#0CB0E7"

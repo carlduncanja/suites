@@ -4,7 +4,7 @@ import { createNavigator, TabRouter, SafeAreaView, ScrollView } from 'react-navi
 import OverlayMenuItems from './OverlayMenuItems';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 
-const ContentNavigator = ({ navigation, descriptors }) => {
+const ContentNavigator = ({ navigation, descriptors,  }) => {
   const { routes, index } = navigation.state;
   const descriptor = descriptors[routes[index].key];
 
