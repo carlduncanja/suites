@@ -8,6 +8,7 @@ import {appActions} from '../redux/reducers/suitesAppReducer';
 import { transformToCamel } from '../hooks/useTextEditHook';
 import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
 import { View, Text, StyleSheet } from 'react-native';
+import TestTransformAnimation from '../TestTransformAnimation';
 
 const listHeaders = [
     {
@@ -44,6 +45,22 @@ const CaseFiles = (props) => {
     const [currentPageListMin, setCurrentPageListMin] = useState(0) 
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage) 
 
+    const floatingActions = [
+        {
+            "actionId":"archiveCase",
+            "action":"archiveItem",
+            "actionName":"Archive Case",
+            "disabled":true
+        },
+        {
+            "actionId":"newCase",
+            "action":"newItem",
+            "actionName":"New Case",
+            "disabled":false
+        }
+        
+    ]
+
     useEffect(()=>{
         const floatingActions = require('../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
         dispatch({
@@ -53,7 +70,9 @@ const CaseFiles = (props) => {
                 actions:floatingActions[0].actions
             }
         })
-    })
+    },[])
+
+
         
     useEffect(() => {
         if (!caseFiles.length) {

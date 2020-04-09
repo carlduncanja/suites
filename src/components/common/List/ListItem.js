@@ -1,8 +1,9 @@
 import React, {useContext} from 'react';
 import {View, StyleSheet, TouchableOpacity } from 'react-native';
-import { withModal } from 'react-native-modalfy';
+import { withModal, useModal } from 'react-native-modalfy';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { appActions } from '../../../redux/reducers/suitesAppReducer'
+import SlideOverlay from '../SlideOverlay/SlideOverlay';
 
 /**
  * @param modalToOpen string
@@ -15,7 +16,8 @@ import { appActions } from '../../../redux/reducers/suitesAppReducer'
  */
 const ListItem = (props) => {
 
-    const { modalToOpen, modal, checkbox, listItem, toggleCheckBox, listItemFormat} = props
+    const { modalToOpen, checkbox, listItem, toggleCheckBox, listItemFormat} = props
+    const { openModal } = useModal()
 
     const [state,dispatch] = useContext(SuitesContext)
 
@@ -29,10 +31,12 @@ const ListItem = (props) => {
                 selectedListObject : selectedObj
             }
         })
+        const params = { modalContent: listItem }
+        openModal(modalToOpen, params)
     }
 
     return (
-        <TouchableOpacity onPress={()=>{handleSelectedListItem(listItem);modal.openModal(modalToOpen)}}>
+        <TouchableOpacity onPress={()=> handleSelectedListItem(listItem) }>
             <View style={styles.container}>
                 <TouchableOpacity style={{alignSelf:'center', justifyContent:'center', padding:10}} onPress={()=>toggleCheckBox(listItem)}>
                     {checkbox}
@@ -43,7 +47,7 @@ const ListItem = (props) => {
     );
 }
 
-export default withModal(ListItem);
+export default ListItem;
 
 const styles = StyleSheet.create({
     container:{

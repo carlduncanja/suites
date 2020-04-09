@@ -59,17 +59,6 @@ const Page = (props) => {
     }
 
     useEffect(()=>{
-        const array = require('../../../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
-        dispatch({
-            type:appActions.SETFLOATINGACTIONS,
-            newState: {
-                actionTitle:array[0].page,
-                actions:array[0].actions
-            }
-        })
-    }, routeName)
-
-    useEffect(()=>{
         const menu = require('../../../../assets/db.json').overlayMenuTabs.filter(menu => menu.page === transformToCamel(routeName))
         menu.length > 0 && dispatch({
             type: appActions.SETOVERLAYMENU,

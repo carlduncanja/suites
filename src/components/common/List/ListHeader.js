@@ -11,8 +11,11 @@ import Header from '../Table/Header';
  * @constructor
  */
 
+ //Pass length instead of entire list/ boolean
+ //ToggleCheckbox - select page items 
+
 const ListHeader = ({checkedItemList, listHeaders, toggleHeaderCheckbox, dataLength}) => {
-   
+    
     return ( 
         <View style = {styles.container}>
            <Header 
