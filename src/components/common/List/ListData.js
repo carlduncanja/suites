@@ -1,7 +1,7 @@
-import React,{ useContext} from 'react';
-import {View, ScrollView} from 'react-native';
+import React, {useContext} from 'react';
+import {View, ScrollView, FlatList, Text, StyleSheet} from 'react-native';
 import ListItem from './ListItem';
-import { CheckedBox } from '../Checkbox/Checkboxes';
+import {CheckedBox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
 
 
@@ -12,14 +12,14 @@ import Checkbox from '../Checkbox/Checkbox';
  * @param toggleCheckBox function
  * @param checkBoxList array of objects
  * @param listItemFormat object
- * @return {*} 
- * @constructor 
+ * @return {*}
+ * @constructor
  */
 
 const ListData = ({listData, currentPageListMin, currentPageListMax, toggleCheckBox, checkBoxList, listItemFormat}) => {
-   
-    return ( 
-        <ScrollView 
+
+    return (
+        <ScrollView
             bounces={false}
             contentContainerStyle={{paddingBottom:300}}
             >
@@ -39,5 +39,5 @@ const ListData = ({listData, currentPageListMin, currentPageListMax, toggleCheck
         </ScrollView>
     );
 }
- 
+
 export default ListData;

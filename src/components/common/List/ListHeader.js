@@ -7,15 +7,15 @@ import Header from '../Table/Header';
  * @param listHeaders array of objects
  * @param toggleHeaderCheckbox function
  * @param numbers
- * @return {*} 
+ * @return {*}
  * @constructor
  */
 
 const ListHeader = ({checkedItemList, listHeaders, toggleHeaderCheckbox, dataLength}) => {
-   
-    return ( 
+
+    return (
         <View style = {styles.container}>
-           <Header 
+           <Header
                 headers={listHeaders}
                 toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 checkBoxList = {checkedItemList}
@@ -23,8 +23,8 @@ const ListHeader = ({checkedItemList, listHeaders, toggleHeaderCheckbox, dataLen
             />
         </View>
     );
-}
- 
+};
+
 export default ListHeader;
 
 const styles = StyleSheet.create({
@@ -32,6 +32,8 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'flex-start',
         padding:10,
+        paddingLeft: 0,
+        paddingRight: 0
     },
-    
-})
+
+});

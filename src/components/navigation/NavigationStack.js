@@ -152,7 +152,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     }
   },
   {
-    initialRouteName: 'Schedule',
+    initialRouteName: 'CaseFiles',
   },
 );
 
