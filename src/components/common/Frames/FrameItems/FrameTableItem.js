@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 
-const FrameTableItem = (props) => {
+const FrameTableItem = (props) => { 
     return ( 
         <View style={styles.container}>
             <View style={styles.titleContainer}>

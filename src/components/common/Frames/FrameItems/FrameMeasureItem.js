@@ -2,16 +2,16 @@ import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import Dropdown from '../../Dropdown';
 
-const FrameSelectItem = (props) => {
-    return ( 
+const FrameSelectItem = ({title, value, unit}) => {
+    return (  
         <View style={styles.container}>
             <View style={styles.titleContainer}>
-                <Text style={styles.title}>{props.title.charAt(0).toUpperCase().concat(props.title.substring(1, props.title.length))}</Text>
+                <Text style={styles.title}>{title}</Text>
             </View>
             <View style={styles.valueContainer}>
-                <Text style={[styles.measure, styles.value]}>{props.value.amount}</Text>
+                <Text style={[styles.measure, styles.value]}>{value}</Text>
                 <View style = {styles.unitContainer}>
-                    <Text style={styles.measure}>{props.value.unit}</Text>
+                    <Text style={styles.measure}>{unit}</Text>
                 </View>
 
             </View>
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     },
     titleContainer:{
         marginRight:10,
-        width:'32%',
+        // width:'32%',
         alignItems:'flex-start',
         justifyContent:'center'
     },

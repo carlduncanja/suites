@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import {View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { withModal } from 'react-native-modalfy';
 
-class Button extends Component {
-    render() {
-        return (
-            <TouchableOpacity 
-                style={[styles.button,{backgroundColor:this.props.backgroundColor}]} 
-                onPress={this.props.buttonPress}
-            >
-                <Text style={{color:this.props.color}}>{this.props.title}</Text>
-            </TouchableOpacity>
-        )
-    }
+const Button = ({backgroundColor, buttonPress, color, title}) =>{
+    return (
+        <TouchableOpacity 
+            style={[styles.button,{backgroundColor:backgroundColor}]} 
+            onPress={buttonPress}
+        >
+            <Text style={{color:color}}>{title}</Text>
+        </TouchableOpacity>
+    )
 }
 
 export default Button

@@ -17,7 +17,7 @@ export default class TestTransformAnimation extends Component {
       this.state.animation,
       {
         toValue: 1,
-        duration: 3000
+        duration: 500
       }
     ).start();
   }
@@ -25,12 +25,12 @@ export default class TestTransformAnimation extends Component {
   render() {
     const animationStyles = {
       width: this.state.animation.interpolate({
-        inputRange: [0, 0.5, 1],
-        outputRange: [100, 150, 250]
+        inputRange: [0, 0.2,0.5, 1],
+        outputRange: [100, 150, 200,250]
       }),
       height :this.state.animation.interpolate({
-        inputRange: [0, 0.5, 1],
-        outputRange: [100, 150, 250]
+        inputRange: [0, 0.2,0.5, 1],
+        outputRange: [100, 150, 200, 250]
       }),
     };
 
@@ -56,8 +56,12 @@ export default class TestTransformAnimation extends Component {
 
 const objectStyles = {
   object: {
+    position:'absolute',
+    alignSelf:"flex-end",
     backgroundColor: 'orange',
     width: 100,
-    height: 100
+    height: 100,
+    marginRight:20,
+    bottom:0
   }
 }

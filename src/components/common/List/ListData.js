@@ -1,25 +1,38 @@
-import React,{ useContext} from 'react';
-import {View, ScrollView} from 'react-native';
+import React, {useContext} from 'react';
+import {View, ScrollView, FlatList, Text, StyleSheet} from 'react-native';
 import ListItem from './ListItem';
-import { CheckedBox } from '../Checkbox/Checkboxes';
+import {CheckedBox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
-import { SuitesContext } from '../../../contexts/SuitesContext';
 
-const ListData = ({listData, routeName}) => {
-    const [state] = useContext(SuitesContext) 
-    return ( 
+ 
+/**
+ * @param listData arrray of objects
+ * @param currentPageListMin number
+ * @param currentPageListMax number
+ * @param toggleCheckBox function
+ * @param checkBoxList array of objects
+ * @param listItemFormat object
+ * @return {*}
+ * @constructor
+ */
+
+const ListData = ({listData, currentPageListMin, currentPageListMax, toggleCheckBox, checkBoxList, listItemFormat}) => {
+
+    return (
         <ScrollView
             bounces={false}
             contentContainerStyle={{paddingBottom:300}}
             >
-            {listData.slice(state.paginatorValues.sliceArrayStart, state.paginatorValues.sliceArrayEnd).map((item,index)=>{
+            {listData.slice(currentPageListMin, currentPageListMax).map((item,index)=>{
                return(
                     <View key={index}>
                         <ListItem
-                            routeName = {routeName}
-                            modalToOpen = "OverlaySlidePanelModal"
+                            // OverlaySlidePanelModal
+                            modalToOpen = "BottomSheetModal"
                             listItem={item}
-                            checkbox = {state.list.checkedItemStatus && state.list.checkedItemsList.includes(item.id) ? <CheckedBox/> : <Checkbox/>}
+                            checkbox = {checkBoxList.includes(item) ? <CheckedBox/> : <Checkbox/>}
+                            toggleCheckBox = {toggleCheckBox}
+                            listItemFormat = {listItemFormat}
                         />
                     </View>
                 )
@@ -27,5 +40,5 @@ const ListData = ({listData, routeName}) => {
         </ScrollView>
     );
 }
- 
+
 export default ListData;

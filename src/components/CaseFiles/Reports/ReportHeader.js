@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
-import SvgIcon from '../../../../assets/SvgIcon'
+import SvgIcon from '../../../../assets/SvgIcon' 
 import HeaderItem from "./HeaderItem";
 
 
@@ -9,7 +9,7 @@ const ReportHeader = () => {
     return (
         <View style={styles.headersContainer}>
             <View style={styles.logoContainer}>
-                <SvgIcon iconName = "logo"/>
+                <SvgIcon iconName = "logo"/> 
             </View>
             <View style={styles.informationContainer}>
                 {Object.keys(header).map((key,index)=>{

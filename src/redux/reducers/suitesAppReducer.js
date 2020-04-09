@@ -145,7 +145,7 @@ export const suitesAppReducer = (state, action) => {
                 ...state,
                 selectedListItem : {
                     ...state.selectedListItem,
-                    selectedListItemId : newState.selecteselectedListItemId,
+                    selectedListItemId : newState.selectedListItemId,
                     selectedListObject : newState.selectedListObject
                 }
             }

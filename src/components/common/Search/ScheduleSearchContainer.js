@@ -134,7 +134,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
 
             return title + time;
         });
-    };
+    }; 
 
     return (
         isOpen

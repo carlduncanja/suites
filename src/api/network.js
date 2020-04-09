@@ -3,7 +3,7 @@ import axios from "./index"
 // ################# Mock Data
 import {appointments} from "../../data/Appointments"
 
-const caseFiles = require("../../assets/db.json").caseFiles.caseFilesInformation.data;
+import caseFiles from "../../data/CaseFiles";
 
 
 // ################# Schedule Endpoints

@@ -1,15 +1,54 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {Component, useState} from 'react';
+import {View, Text, StyleSheet, Modal} from 'react-native';
 import FrameTableItem from '../FrameItems/FrameTableItem';
 import FrameCheckboxItem from '../FrameItems/FrameCheckboxItem';
 import moment from "moment";
+import Button from '../../Button';
+import { withModal } from 'react-native-modalfy';
 
-const FrameProcedureContent = (props) => {
+const FrameProcedureContent = ({details,onOpenPickList}) => { 
+
+    const appointment = (appointment,location) => {
+        return (
+            <View>
+                <FrameTableItem title = "Location" value={location.name}/>
+                <View style={styles.dateContainer}>
+                    <View style={{flex:1}}>
+                        <FrameTableItem title = "Date" value = {moment(appointment.startTime).format("MMM/D/YYYY")}/>
+                    </View>
+                    <View style={{flex:1}}>
+                        <FrameTableItem title = "" value = {moment(appointment.startTime).format("h:mm A")}/>
+                    </View>
+                    <View style={{flex:1}}>
+                        <FrameTableItem title = "Duration" value = {appointment.duration}/>
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
     return ( 
         <View style={styles.container}>
-            {Object.keys(props.details).map((key, index) =>{
+            <View style={{paddingBottom:10, borderBottomColor:"#CCD6E0", borderBottomWidth:1}}>
+                {appointment(details.appointment, details.location)}
+                <View style={styles.recovery}>
+                    <FrameCheckboxItem title = "Recovery" status = {details.hasRecovery}/>
+                </View>
+                {details.hasRecovery && appointment(details.recovery.appointment,details.recovery.location)}
+            </View>
+            <View style={{alignItems:"flex-end", marginTop:10}}>
+                <View style={{padding:8, borderRadius:8, backgroundColor:"#E3E8EF"}}>
+                    <Button
+                        backgroundColor = "#E3E8EF"
+                        color = "#718096"
+                        title = "View Picklist"
+                        buttonPress = {()=>onOpenPickList(details)}
+                    />
+                </View>
+            </View>
+            {/* {Object.keys(props.details).map((key, index) =>{
                 return(
-                    <View key={index}>
+                    <View key={index}> 
                         {
                             key === 'recovery' &&
                             <View style={styles.recovery}>
@@ -17,13 +56,13 @@ const FrameProcedureContent = (props) => {
                             </View>
                         }
                         <View>
-                            <FrameTableItem title = "Location" value={props.details[key].location}/>
+                            <FrameTableItem title = "Location" value={props.details[key].location.name}/>
                             <View style={styles.dateContainer}>
                                 <View style={{flex:1}}>
-                                    <FrameTableItem title = "Date" value = {moment(props.details[key].date).format("MMM/D/YYYY")}/>
+                                    <FrameTableItem title = "Date" value = {moment(props.details[key].appointment.startTime).format("MMM/D/YYYY")}/>
                                 </View>
                                 <View style={{flex:1}}>
-                                    <FrameTableItem title = "" value = {moment(props.details[key].date).format("h:mm A")}/>
+                                    <FrameTableItem title = "" value = {moment(props.details[key].appointment.startTime).format("h:mm A")}/>
                                 </View>
                                 <View style={{flex:1}}>
                                     <FrameTableItem title = "Duration" value = {props.details[key].duration}/>
@@ -32,7 +71,7 @@ const FrameProcedureContent = (props) => {
                         </View>
                     </View>
                 )
-            })}
+            })} */}
 
             
              

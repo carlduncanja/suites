@@ -2,12 +2,12 @@ import React,{ useContext} from 'react';
 import { View, Text, StyleSheet, SectionList } from 'react-native';
 import Navigation from '../../CaseFiles/navigation/ContentNavigationStack'
 
-const SllideContent = () => {
+const SllideContent = ({selectedItem}) => {
     return ( 
         <View style={styles.container}>
             <Navigation />
         </View>
-    );
+    ); 
 }
  
 export default SllideContent;

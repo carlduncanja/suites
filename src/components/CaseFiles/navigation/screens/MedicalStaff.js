@@ -5,11 +5,14 @@ import { View, Text } from 'react-native';
 
 const MedicalStaff = () => {
     const [state] = useContext(SuitesContext)
+    const name = state.overlayMenu.selectedMenuItemCurrentTab
+    const selected = state.selectedListItem.selectedListObject.caseFileDetails
+    const details = selected.medicalStaff
     return (
-        state.overlayMenu.selectedMenuItemCurrentTab === 'Details' ?
-            <Details/>
+        name === 'Details' ?
+            <Details tabDetails = {details}/>
             :
-            <Details/>        
+            <Details tabDetails = {details}/>        
     );
 }
  

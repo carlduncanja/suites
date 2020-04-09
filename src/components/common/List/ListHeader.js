@@ -1,42 +1,41 @@
-import React,{Component, useContext} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import Checkbox from '../Checkbox/Checkbox';
-import { PartialCheckbox } from '../Checkbox/Checkboxes'
-import { SuitesContext } from '../../../contexts/SuitesContext';
-import Header from './Table/Header';
+import React,{} from 'react';
+import {View, StyleSheet} from 'react-native';
+import Header from '../Table/Header';
 
-const ListHeader = ({checkedItemList, listHeaders}) => {
-    const [state] = useContext(SuitesContext)
-    return ( 
+/**
+ * @param checkedItemList array of objects
+ * @param listHeaders array of objects 
+ * @param toggleHeaderCheckbox function 
+ * @param numbers
+ * @return {*}
+ * @constructor
+ */
+
+ //Pass length instead of entire list/ boolean
+ //ToggleCheckbox - select page items
+
+const ListHeader = ({listHeaders, toggleHeaderCheckbox, isIndeterminate}) => {
+
+    return (
         <View style = {styles.container}>
-            {
-                state.list.checkedItemsList.length > 0 ?
-                    <View style={styles.checkboxContainer}>
-                        <PartialCheckbox/>
-                    </View>
-                    :
-                    <TouchableOpacity style={styles.checkboxContainer}>
-                        <Checkbox/>
-                    </TouchableOpacity>
-            }
-           <Header headers={listHeaders}/>
+           <Header
+                headers={listHeaders}
+                toggleHeaderCheckbox = {toggleHeaderCheckbox}
+                isIndeterminate = {isIndeterminate}
+            />
         </View>
     );
-}
- 
+};
+
 export default ListHeader;
 
 const styles = StyleSheet.create({
     container:{
         flexDirection:'row',
-        //flexWrap:'wrap',
         alignItems:'flex-start',
-        //justifyContent:'center',
         padding:10,
-        //width:'100%'
+        paddingLeft: 0,
+        paddingRight: 0
     },
-    checkboxContainer:{
-        justifyContent:'center', 
-        alignSelf:'center'
-    },
-})
+
+});

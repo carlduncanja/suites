@@ -5,19 +5,19 @@ import FrameProcedureContent from '../FrameContents/FrameProcedureContent';
 
 const FrameProcedureCard = (props) => {
     return ( 
-        <View style={styles.container}>
+        <View style={styles.container}> 
             <View style={styles.title}>
                 <FrameTitle
-                    color="#319795"
-                    borderColor = "#81E6D9"
-                    backgroundColor="#E6FFFA"
+                    color="#718096" 
+                    borderColor = "#E3E8EF"
+                    backgroundColor="#F8FAFB"
                     iconName="overlayProcedures"
-                    frameTitle={props.information.procedureName}
+                    frameTitle={props.information.title}
                 />
             </View>
 
             <View style={styles.content}>
-                <FrameProcedureContent details = {props.information.details}/>
+                <FrameProcedureContent details = {props.information} onOpenPickList={props.onOpenPickList}/>
             </View> 
         </View>
     );

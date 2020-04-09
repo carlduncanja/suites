@@ -1,36 +1,41 @@
 import React,{Component} from 'react';
 import {View, Text, FlatList, StyleSheet} from 'react-native';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../Information Record/RecordStyles';
-import BMIConverter from '../../CaseFiles/BMIConverter';
+import BMIConverter from '../../CaseFiles/BMIConverter'; 
+import moment from 'moment';
 
-const Section = (props) => {
+const Section = ({data}) => {
     return ( 
         <View style={{flexDirection:'row', width:"100%", flexWrap:'wrap'}}>
             {
-                props.data.map((item, index)=>{
-                    return ( item.field === 'Address Line 1' ?
+                Object.keys(data).map((itemKey, index)=>{
+                    return ( itemKey === 'Address Line 1' ?
                         <View key = {index} style={{paddingTop:20, width:"66%"}}>
                             <PersonalRecord
-                                recordTitle={item.field}
-                                recordValue={item.value === "" ? "--" : item.value}
+                                recordTitle={itemKey}
+                                recordValue={data[itemKey] === "" ? "--" : data[itemKey]}
                             />
-                        </View>
+                        </View> 
                         :
                         <View key = {index} style={{paddingTop:20, width:"33%"}}>
                         {
-                            item.field === 'BMI' ?
-                                <BMIConverter bmiValue={item.value} recordTitle={item.field}/>
+                            itemKey === 'BMI' ?
+                                <BMIConverter bmiValue={data[itemKey]} recordTitle={itemKey}/>
                             :
-                            item.type === "optional" ? 
+                            // item.type === "optional" ? 
                                 <PersonalRecord
-                                    recordTitle={item.field}
-                                    recordValue={item.value === "" ? "--" : item.value}
+                                    recordTitle={itemKey}
+                                    recordValue={
+                                        data[itemKey] instanceof Date ? 
+                                           moment(data[itemKey]).format("YYYY/MM/D") :
+                                        data[itemKey] === "" ? "--" : data[itemKey]
+                                    }
                                 />
-                                :
-                                <ContactRecord
-                                    recordTitle={item.field}
-                                    recordValue={item.value}
-                                />
+                                // :
+                                // <ContactRecord
+                                //     recordTitle={item.field}
+                                //     recordValue={item.value}
+                                // />
                         }
                     </View>
                     )

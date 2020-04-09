@@ -4,12 +4,10 @@ import SvgIcon from '../../../assets/SvgIcon';
 
 const Dropdown = (props) => {
     return (
-        <View style={styles.dropContainer}>
-            <View style={styles.container}>
-                <Text style={styles.selectedText}>{props.selectedValue}</Text>
-                <View>
-                    <SvgIcon iconName="dropdown"/>
-                </View>
+        <View style={styles.container}>
+            <Text style={styles.selectedText}>{props.selectedValue}</Text>
+            <View>
+                <SvgIcon iconName="dropdown"/>
             </View>
         </View>
     );
@@ -18,9 +16,6 @@ const Dropdown = (props) => {
 export default Dropdown;
 
 const styles = StyleSheet.create({
-    dropContainer:{
-
-    },
     container:{
         backgroundColor:'#FFFFFF',
         //borderWidth:1,

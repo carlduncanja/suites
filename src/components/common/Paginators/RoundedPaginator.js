@@ -3,10 +3,15 @@ import {View, Text, StyleSheet} from 'react-native';
 import Paginator from './Paginator';
 
  
-const RoundedPaginator = ({totalItems}) => {
+const RoundedPaginator = ({totalPages,currentPage,goToNextPage,goToPreviousPage}) => {
     return ( 
         <View style={styles.container}>
-            <Paginator/>
+            <Paginator
+                totalPages = {totalPages}
+                currentPage = {currentPage}
+                goToNextPage = {goToNextPage}
+                goToPreviousPage = {goToPreviousPage}
+            />
         </View>
     );
 }

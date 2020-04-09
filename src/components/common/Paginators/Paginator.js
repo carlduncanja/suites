@@ -4,18 +4,18 @@ import SvgIcon from '../../../../assets/SvgIcon';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { appActions } from '../../../redux/reducers/suitesAppReducer';
 
-const Paginator = () => {
+const Paginator = ({currentPage, totalPages, goToNextPage, goToPreviousPage}) => {
     const [state, dispatch] = useContext(SuitesContext)
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={()=>dispatch({type:appActions.GOTOPREVIOUSPAGE})}>
+            <TouchableOpacity onPress={()=>goToPreviousPage()}>
                 <SvgIcon iconName = "paginationPrev" strokeColor="#104587"/>
             </TouchableOpacity>
 
             <View style={styles.numbersContainer}>
-                <Text style={styles.numbers}>{state.paginatorValues.currentPage} of {state.paginatorValues.totalPages}</Text>
+                <Text style={styles.numbers}>{currentPage} of {totalPages}</Text>
             </View>
-            <TouchableOpacity onPress={()=>dispatch({type:appActions.GOTONEXTPAGE})}>
+            <TouchableOpacity onPress={()=>goToNextPage()}>
                 <SvgIcon iconName = "paginationNext" strokeColor="#104587"/>
             </TouchableOpacity>
         </View>

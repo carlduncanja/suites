@@ -12,10 +12,13 @@ const progressBar = {
 
 const report = {
     reportStatus : false,
-    reportInformation : [],
-    reportConsumablesList : [],
-    reportConsumablesListHeaders : []
+    reportId: "",
+    billingDetails : {},
+    reportList : [],
+    reportTable : [],
+    billingSummary :{}
 }
+
 const newItemAction  = {
     itemTitle : "", //title of container
     itemSteps : [], // steps

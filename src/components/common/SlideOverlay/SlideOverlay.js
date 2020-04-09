@@ -5,16 +5,19 @@ import SlideHeader from './SlideHeader';
 import SlideFooter from './SlideFooter';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 
-const SlideOverlay = () => {
-    const [state] = useContext(SuitesContext)
+const SlideOverlay = ({selectedItem}) => {
+
     return ( 
         <View style={styles.container}>
             <View style={styles.header}>
-                <SlideHeader />
+                <SlideHeader
+                    id = {selectedItem.id}
+                    title = {selectedItem.caseFileDetails.title}
+                />
             </View>
 
             <View style={styles.content}>
-               <SlideContent/>
+               <SlideContent selectedItem = {selectedItem} />
             </View>
 
             {/* <View style={styles.footer}>

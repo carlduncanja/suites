@@ -1,24 +1,30 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from "react-native";
-import Table from '../../common/List/Table/Table'
+import Table from '../../common/Table/Table'
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
+import { formatAmount } from '../../../helpers/caseFilesHelpers';
 
-const ReportDetails = () => {
+const ReportDetails = ({reportList, reportTable, listItemFormat, tableHeaders}) => {
     const [state] = useContext(CaseFileContext)
+    
     return (  
         <View style={styles.container}>
             <View style={styles.summaryDetails}>
-                {state.report.reportInformation.quotationDetails.summaryList.map((detail,index) =>{
+                {reportList.map((detail,index) =>{
                     return( 
                         <View style={[styles.summaryItem,{backgroundColor:index % 2 === 0 ? '#F8FAFB':'#FFFFFF'}]} key={index}>
                             <Text style={styles.detailText}>{detail.charge}</Text>
-                            <Text style={styles.detailText}>{detail.cost}</Text>
+                            <Text style={styles.detailText}>{formatAmount(detail.cost)}</Text>
                         </View>
                     )
                 })}
             </View>
             <View style={styles.consumablesDetails}>
-                <Table/>
+                <Table
+                    data = {reportTable}
+                    listItemFormat = {listItemFormat}
+                    headers = {tableHeaders}
+                />
             </View>
         </View>
     );

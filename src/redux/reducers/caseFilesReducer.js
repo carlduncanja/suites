@@ -35,9 +35,11 @@ export const caseFilesReducer = (state, action) =>{
                 ...state,
                 report:{
                     reportStatus : newState.reportStatus,
-                    reportInformation : newState.reportInformation,
-                    reportConsumablesList : newState.reportConsumablesList,
-                    reportConsumablesListHeaders : newState.reportConsumablesListHeaders
+                    reportId : newState.reportId,
+                    billingDetails : newState.billingDetails,
+                    reportList : newState.reportList,
+                    reportTable : newState.reportTable,
+                    billingSummary :newState.billingSummary
                 }
             }
 

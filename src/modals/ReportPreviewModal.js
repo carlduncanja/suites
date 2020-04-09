@@ -1,24 +1,29 @@
 import React, { useContext } from 'react';
-import { View, StyleSheet, TouchableOpacity, Dimensions, Easing } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Dimensions, Easing, Text } from "react-native";
 import { SuitesContext } from '../contexts/SuitesContext';
 import ReportPreview from '../components/CaseFiles/Reports/ReportPreview';
 import { withModal } from 'react-native-modalfy';
 import { SimpleAnimation } from 'react-native-simple-animations';
+import SvgIcon from '../../assets/SvgIcon'
 
 const { width } = Dimensions.get("window");
+
 const ReportPreviewModal = (props) => {
     
     const { modal: {closeModals, currentModal}} = props
     return (  
             <SimpleAnimation duration={2000} direction="left" fade={false} delay={1000} movementType="slide" easing={Easing.ease}>
-                {/* <TouchableOpacity 
-                    onPress={()=>{closeModals(currentModal); }}
-                    activeOpacity={1}
-                    style={[styles.modalContainer, {width:width}]}>
-                </TouchableOpacity> */}
                 <View style={{flex:1, width:width}}>
                     <ReportPreview/>
                 </View>
+                <TouchableOpacity style={styles.button} onPress={()=>{
+                    closeModals(currentModal)}}
+                    activeOpacity={1}
+                >
+                    <Text style={[styles.buttonText,{marginRight:10}]}>Close Preview</Text>
+                    <SvgIcon iconName="exit" strokeColor="#FFFFFF"/>
+                </TouchableOpacity> 
+
             </SimpleAnimation>
     );
 }
@@ -34,5 +39,22 @@ const styles = StyleSheet.create({
     },
     positionContainer:{
         
-    }
+    },
+    button:{
+        justifyContent:'flex-end',
+        alignItems:'center',
+        alignSelf:"center",
+        backgroundColor:'#4E5664',
+        borderRadius:29,
+        padding:8,
+        paddingLeft:12,
+        paddingRight:12,
+        position:'absolute',
+        bottom:15,
+        flexDirection:'row'
+    },
+    buttonText:{
+        color:'#FFFFFF',
+        fontSize:16
+    },
 })
