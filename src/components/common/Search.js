@@ -5,15 +5,15 @@ import InputText from './InputText';
 const Search = ({placeholderText, changeText, inputText}) =>{
     return (
         <View style={styles.container}>
-            <InputText 
-                onChangeText = {(text)=>{changeText(text)}}
+            <InputText
+                onChangeText={changeText}
                 placeholder={placeholderText}
                 placeholderTextColor = {"#A0AEC0"}
                 value = {inputText}
             />
         </View>
     )
-}
+};
 
 export default Search
 
@@ -25,4 +25,4 @@ const styles = StyleSheet.create({
         backgroundColor:'#FFFFFF',
         padding:10,
     }
-})
+});
