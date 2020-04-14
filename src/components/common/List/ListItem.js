@@ -25,7 +25,7 @@ const ListItem = ({
     return (
         <TouchableOpacity onPress={onItemPress}>
             <View style={styles.container}>
-                <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10}}>
+                <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
                     <CheckBoxComponent
                         isCheck={isChecked}
                         onPress={onCheckBoxPress}
