@@ -1,34 +1,35 @@
-import React,{Component, useContext, useEffect} from 'react';
+import React, {Component, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import { CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
+import {CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
 import CheckBoxComponent from "../Checkbox";
 
-const Header = ({headers, toggleHeaderCheckbox, isIndeterminate}) => { 
-    return ( 
-        <View style={styles.headersContainer}> 
+const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked}) => {
+    return (
+        <View style={styles.headersContainer}>
             {/* {
-                checkBoxList && 
+                checkBoxList &&
                 <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleHeaderCheckbox()}>
                     {
-                        checkBoxList.length > 0 || checkBoxList.length === dataLength ? 
-                            <PartialCheckbox/> 
-                            : 
+                        checkBoxList.length > 0 || checkBoxList.length === dataLength ?
+                            <PartialCheckbox/>
+                            :
                             <Checkbox/>
                         }
                 </TouchableOpacity>
             }
              */}
 
-            <View style={{marginRight:20}}>
+            <View style={{marginRight: 20}}>
                 <CheckBoxComponent
                     isIndeterminate={isIndeterminate}
+                    isCheck={checked}
                     onPress={toggleHeaderCheckbox}
                 />
             </View>
-            {headers.map((header,index)=>{
-                return(
-                    <View style={[styles.item,{alignItems:header.alignment}]} key={index}>
+            {headers.map((header, index) => {
+                return (
+                    <View style={[styles.item, {alignItems: header.alignment}]} key={index}>
                         <Text style={styles.headerText}>{header.name}</Text>
                     </View>
                 )
@@ -36,23 +37,23 @@ const Header = ({headers, toggleHeaderCheckbox, isIndeterminate}) => {
         </View>
     );
 }
- 
+
 export default Header;
 
 const styles = StyleSheet.create({
-    headersContainer:{
+    headersContainer: {
         //flex:1,
-        marginLeft:10,
-        flexDirection:'row',
+        marginLeft: 10,
+        flexDirection: 'row',
         //width:'100%'
     },
-    item:{
-        flex:1,
-        alignItems:'flex-start',
-        justifyContent:'center',
+    item: {
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'center',
     },
-    headerText:{
-        fontSize:12,
-        color:'#718096'
+    headerText: {
+        fontSize: 12,
+        color: '#718096'
     }
 })
