@@ -7,7 +7,6 @@ import moment from 'moment';
 import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import MonthSelector from "../components/Calendar/MonthSelector";
 import SchedulesList from "../components/Schedule/SchedulesList";
-import ScheduleContent from "../components/Schedule/ScheduleContent";
 import {ScheduleContext} from '../contexts/ScheduleContext';
 import {getSchedules} from "../api/network";
 import {getDaysForMonth} from "../utils";
@@ -15,12 +14,12 @@ import {connect} from 'react-redux'
 import {setAppointments} from "../redux/actions/appointmentActions"
 import {colors} from '../styles'
 import ScheduleSearchContainer from "../components/common/Search/ScheduleSearchContainer";
+import ScheduleOverlayContainer from "../components/Schedule/ScheduleOverlayContainer";
 
 
 const currentDate = new Date();
 
 const Schedule = (props) => {
-
     const {
         // Redux Props
         appointments,
@@ -145,17 +144,21 @@ const Schedule = (props) => {
         return [600, 500, 0]
     };
 
-    const renderScheduleContent = (selectedSchedule) => () => {
+    const renderScheduleBottomSheet = (selectedSchedule) => () => {
         return <View style={{
             height: '100%',
             width: '100%',
             backgroundColor: 'white',
             zIndex: 5
         }}>
-            <ScheduleContent
-                scheduleItem={selectedSchedule}
-                screenDimensions={dimensions}
-            />
+            {
+                selectedSchedule
+                    ? <ScheduleOverlayContainer
+                        appointment={selectedSchedule}
+                        screenDimensions={dimensions}
+                    />
+                    : <View/>
+            }
         </View>
     };
 
@@ -254,7 +257,7 @@ const Schedule = (props) => {
                 initialSnap={2}
                 callbackNode={fall}
                 borderRadius={14}
-                renderContent={renderScheduleContent(selectedAppointment)}
+                renderContent={renderScheduleBottomSheet(selectedAppointment)}
                 onCloseEnd={() => setBottomSheetVisible(false)}
                 onOpenEnd={() => setBottomSheetVisible(true)}
                 renderHeader={() =>
@@ -270,6 +273,8 @@ const Schedule = (props) => {
                     />
                 }
             />
+
+
         </View>
     )
 };
@@ -281,7 +286,6 @@ const mapStateToProps = (state) => ({
 const mapDispatcherToProp = {
     setAppointments
 };
-
 
 export default connect(mapStateToProps, mapDispatcherToProp)(Schedule)
 

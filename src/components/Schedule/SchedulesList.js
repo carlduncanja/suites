@@ -38,7 +38,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
     };
 
     const getSectionListData = (days, appointments = []) => {
-        let appointmentList = [...appointments];
+        let appointmentList = [...appointments].reverse();
 
         // find the appointments for the day and group them.
         return days.map((sectionDay => {
@@ -69,7 +69,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
 
     const isInMonth = (day) => {
         return moment(new Date(day)).format("MM") === moment(month).format("MM") ? 1 : 0.6
-    }
+    };
 
     const scrollToIndex = (index, animated) => {
         if (!sectionListRef) return;
@@ -106,7 +106,9 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                 ref={sectionListRef}
                 onRefresh={onRefresh}
                 refreshing={isRefreshing}
-                keyExtractor={item => item.id + Math.random()}
+                keyExtractor={item => {
+                    return item.id + new Date().toString() + Math.random()
+                }}
                 //onLayout={() => scrollToIndex(getSectionIndexForSelectedDay(), false)}
                 // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
                 getItemLayout={sectionListGetItemLayout({
@@ -131,12 +133,13 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                 )}
                 renderItem={({item}) => {
                     return <ScheduleItem
+                        key={item.id}
                         startTime={item.startTime}
                         endTime={item.endTime}
-                        title={item.title}
+                        title={ `${item.title} - ${item.subject}` }
                         onScheduleClick={() => onAppointmentPress(item)}
                         color={item.scheduleType && item.scheduleType.color || 'gray'}
-                        isInMonthOpacity = {isInMonth(item.startTime)} 
+                        isInMonthOpacity = {isInMonth(item.startTime)}
                     />
                 }}
             />

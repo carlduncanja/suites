@@ -1,30 +1,29 @@
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import moment from "moment";
+import SvgIcon from "../../../assets/SvgIcon";
 
 /**
- *
+ * Visual compent for rendering procedure appointments.
  * @param scheduleItem
  * @param screenDimensions
  * @returns {*}
  * @constructor
  */
-function ScheduleContent({scheduleItem: scheduleDetails = {}, screenDimensions}) {
-
+function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadPhysicianId}) {
     const {
         id = "",
         responseEntity = "",
         title = "",
-        subTitle = "",
+        subject = "",
         location = "",
         surgeons = {},
         doctors = {},
         progressStatus = "",
         startTime = new Date(),
         endTime = new Date()
-    } = scheduleDetails;
+    } = appointmentDetails;
 
-    const [isFetchingDetails, setFetchingDetails] = useState();
 
     /**
      * @param scheduleDate - date object
@@ -53,100 +52,94 @@ function ScheduleContent({scheduleItem: scheduleDetails = {}, screenDimensions})
         }
     };
 
-    const caseProcedureAppointmentView = (caseProcedure) => {
-        return <View>
+    const staffItem = (key, name, position, isBold, isSupporting) => <View
+        style={[styles.doctorContainer,]}
+        key={key}
+    >
+        {
+            isSupporting
+                ? <View style={{marginRight: 10}}><SvgIcon iconName="doctorArrow" strokeColor="#718096"/></View>
+                : null
+        }
+        <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
+            <Text
+                style={
+                    [
+                        styles.detailText,
+                        {
+                            color: '#3182CE',
+                            marginRight: 16,
+                            fontWeight: isBold ? 'bold' : 'normal'
+                        }
+                    ]
+                }
+            > {name} </Text>
 
+            <Text style={[styles.detailText, {color: '#718096'}]}>{position}</Text>
+        </View>
+    </View>;
+
+    const renderPhysicians = (physicians, leadPhysicianId) => {
+        const leadPhysician = physicians.find(item => item._id === leadPhysicianId);
+        const supportingPhysicians = physicians.filter(item => item._id !== leadPhysician);
+
+        return (
+            <View style={styles.box}>
+                {staffItem("lead", `Dr ${leadPhysician.firstName} ${leadPhysician.lastName}`, leadPhysician.position, true, false)}
+                {
+                    supportingPhysicians.map((item, index) => {
+                        const name = `Dr ${item.firstName} ${item.lastName}`;
+                        const position = item.position;
+
+                        return staffItem(index, name, position, false, true);
+                    })
+                }
+            </View>
+        )
+    };
+
+    const renderNurses = (nurses) => {
+        return <View style={styles.box}>
+            {
+                nurses.map((item, index) => {
+                    const name = `${item.firstName} ${item.lastName}`;
+                    const position = `Nurse ${index + 1}`;
+                    return staffItem(index, name, position, false, false)
+                })
+            }
         </View>
     };
 
-    const restockingAppointmentView = (restocking) => {
-    };
-
-    const equipmentAppointmentView = () => {
-    };
-
-    const deliveryAppointmentView = () => {
-    };
-
-
-    // const doctorItemContainer = (title, name, position, index) => {
-    //     return (
-    //         <View style={[styles.doctorContainer,]} key={index}>
-    //             {position === 'doctor' && title !== 'Lead Surgeon' ?
-    //                 <View style={{marginRight: 10}}>
-    //                     <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
-    //                 </View>
-    //                 :
-    //                 null
-    //             }
-    //             <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
-    //                 {position === 'doctor' && title === 'Lead Surgeon' ?
-    //                     <Text style={[styles.detailText, {
-    //                         color: '#3182CE',
-    //                         marginRight: 16,
-    //                         fontWeight: 'bold'
-    //                     }]}>{name}</Text>
-    //                     :
-    //                     <Text style={[styles.detailText, {color: '#3182CE', marginRight: 16}]}>{name}</Text>
-    //                 }
-    //
-    //                 <Text style={[styles.detailText, {color: '#718096'}]}>{title}</Text>
-    //             </View>
-    //
-    //         </View>
-    //     )
-    // };
-
-    //const personnel = [...scheduleDetails.surgeons, ...scheduleDetails.doctors];
-
     return (
-        // !scheduleDetails
-        // ? <View/>
-        // :
         <TouchableOpacity style={{flex: 1}} activeOpacity={1}>
-            <ScrollView
-                style={styles.container}
-                contentContainerStyle={{
-                    // justifyContent: screenDimensions.width > screenDimensions.height ? 'space-between' : 'flex-start'
-                }}
-            >
+            <ScrollView style={styles.container}>
 
                 <View>
                     <View style={styles.cardTitle}>
+
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
-                            <Text style={{
-                                fontSize: 16,
-                                color: '#104587',
-                                marginBottom: 10,
-                            }}>#{scheduleDetails.id}</Text>
-                            <View style={{
-                                backgroundColor: '#EEF2F6',
-                                paddingTop: 4,
-                                paddingBottom: 4,
-                                paddingLeft: 8,
-                                paddingRight: 8,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderRadius: 12
-                            }}>
+                            <Text style={styles.idText}>
+                                #{id}
+                            </Text>
+                            <View style={styles.statusWrapper}>
                                 <Text style={{
                                     color: "#A0AEC0",
                                     fontSize: 12
-                                }}>{getProgressStatus(startTime, endTime)}</Text>
+                                }}>
+                                    {getProgressStatus(startTime, endTime)}
+                                </Text>
                             </View>
                         </View>
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <Text style={{
-                                fontSize: 20,
-                                color: '#0CB0E7',
-                                paddingBottom: 5
-                            }}>{scheduleDetails.responseEntity}</Text>
+                            <Text style={styles.subjectText}>
+                                {subject}
+                            </Text>
                             <Text style={{
                                 fontSize: 20,
                                 color: '#104587',
                                 paddingBottom: 5
-                            }}>{scheduleDetails.title}</Text>
+                            }}>{title}</Text>
                         </View>
                     </View>
 
@@ -156,7 +149,7 @@ function ScheduleContent({scheduleItem: scheduleDetails = {}, screenDimensions})
 
                             <View style={{flexDirection: 'column'}}>
                                 <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Theatre</Text>
-                                <Text style={[styles.detailText]}>{scheduleDetails.location}</Text>
+                                <Text style={[styles.detailText]}>{location}</Text>
                             </View>
 
                             <View style={{flexDirection: 'row'}}>
@@ -178,33 +171,15 @@ function ScheduleContent({scheduleItem: scheduleDetails = {}, screenDimensions})
                                         {getTime(startTime)} - {getTime(endTime)}
                                     </Text>
                                 </View>
-
                             </View>
-
                         </View>
-
 
                         {/* Additional Information */}
 
-                        {/*<View style={styles.cardDoctors}>*/}
-                        {/*    <View style={[styles.box, {justifyContent: 'space-between'}]}>*/}
-                        {/*        {personnel.map((surgeon, index) => {*/}
-                        {/*            return (*/}
-                        {/*                doctorItemContainer(surgeon.title, surgeon.name, 'doctor', index)*/}
-                        {/*            )*/}
-                        {/*        })}*/}
-                        {/*    </View>*/}
-                        {/*    <View style={styles.box}>*/}
-                        {/*        {scheduleDetails.nurses.map((nurse, index) => {*/}
-                        {/*            return (*/}
-                        {/*                doctorItemContainer(nurse.title, nurse.name, 'nurse', index)*/}
-                        {/*            )*/}
-                        {/*        })}*/}
-                        {/*    </View>*/}
-                        {/*</View>*/}
-
-
-
+                        <View style={styles.cardDoctors}>
+                            {renderPhysicians(physicians, leadPhysicianId)}
+                            {renderNurses(nurses)}
+                        </View>
 
                     </View>
                 </View>
@@ -222,6 +197,26 @@ const styles = StyleSheet.create({
         paddingRight: '4%',
         paddingLeft: '4%',
         flexDirection: 'column',
+    },
+    idText: {
+        fontSize: 16,
+        color: '#104587',
+        marginBottom: 10,
+    },
+    subjectText: {
+        fontSize: 20,
+        color: '#0CB0E7',
+        paddingBottom: 5
+    },
+    statusWrapper: {
+        backgroundColor: '#EEF2F6',
+        paddingTop: 4,
+        paddingBottom: 4,
+        paddingLeft: 8,
+        paddingRight: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 12
     },
     cardTitle: {
         flexDirection: 'column',
@@ -317,7 +312,7 @@ const styles = StyleSheet.create({
     }
 });
 
-ScheduleContent.propTypes = {};
-ScheduleContent.defaultProps = {};
+ProcedureScheduleContent.propTypes = {};
+ProcedureScheduleContent.defaultProps = {};
 
-export default ScheduleContent;
+export default ProcedureScheduleContent;
