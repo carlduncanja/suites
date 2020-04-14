@@ -11,6 +11,12 @@ import ListItem from "../components/common/List/ListItem";
 import { View, Text, StyleSheet } from 'react-native';
 import TestTransformAnimation from '../TestTransformAnimation';
 import { withModal } from 'react-native-modalfy';
+import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
+import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
+import FloatingActionComponent from '../components/common/FloatingAction/FloatingActionComponent';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import SvgIcon from '../../assets/SvgIcon'
+import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 
 const listHeaders = [
     {
@@ -59,6 +65,14 @@ const CaseFiles = (props) => {
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
 
+    //floatingAction
+    const [actionButtonState, setActionButtonState] = useState(false)
+    const svg = {
+        newItem : <SvgIcon iconName = "newItem" strokeColor = "#38A169"/>,
+        newItemDisabled : <SvgIcon iconName = "newItem" strokeColor = "#A0AEC0"/>,
+        archive : <SvgIcon iconName = "archiveItem" strokeColor = "#104587"/>,
+        archiveDisabled : <SvgIcon iconName = "archiveItem" strokeColor = "#A0AEC0"/>,
+    }
 
     //######## Life Cycle Methods
     useEffect(() => {
@@ -82,18 +96,6 @@ const CaseFiles = (props) => {
         }
 
     ]
-
-
-    useEffect(() => {
-        const floatingActions = require('../../assets/db.json').floatingActions.filter(actionsObj => actionsObj.page === transformToCamel(routeName))
-        dispatch({
-            type: appActions.SETFLOATINGACTIONS,
-            newState: {
-                actionTitle: floatingActions[0].actionTitle,
-                actions: floatingActions[0].actions
-            }
-        })
-    }, []);
 
     //######## Event Handlers
 
@@ -160,6 +162,15 @@ const CaseFiles = (props) => {
         fetchCaseFilesData()
     };
 
+    const toggleActionButton = () => {
+        setActionButtonState(!actionButtonState)
+        modal.openModal("ActionContainerModal",{ floatingActions, title : "CASE ACTIONS" })
+        // dispatch({
+        //     type: appActions.TOGGLEACTIONBUTTON,
+        //     newState: !state.floatingActions.actionButtonState
+        // })
+    }
+
     //######## Helper Functions
 
     const changeText = (text) => {
@@ -207,7 +218,7 @@ const CaseFiles = (props) => {
         </View>
     </>;
 
-
+   
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
     const start = (currentPagePosition - 1) * currentPageListMax;
@@ -218,28 +229,49 @@ const CaseFiles = (props) => {
 
 
     return (
-        <Page
-            isFetchingData={isFetchingCaseFiles}
-            onRefresh={handleDataRefresh}
-            placeholderText={"Search by any heading or entry below"}
+        <View style={{flex:1}}>
 
-            changeText={changeText}
-            inputText={textInput}
-            routeName={routeName}
-            listData={caseFilesToDisplay}
+            <Page
+                isFetchingData={isFetchingCaseFiles}
+                onRefresh={handleDataRefresh}
+                placeholderText={"Search by any heading or entry below"}
 
-            listHeaders={listHeaders}
-            itemsSelected={selectedCaseIds}
-            onSelectAll={handleOnSelectAll}
-            totalPages={totalPages}
-            currentPagePosition={currentPagePosition}
-            currentPageListMin={currentPageListMin}
-            currentPageListMax={currentPageListMax}
+                changeText={changeText}
+                inputText={textInput}
+                routeName={routeName}
+                listData={caseFilesToDisplay}
 
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            listItemFormat={renderFn}
-        />
+                listHeaders={listHeaders}
+                itemsSelected={selectedCaseIds}
+                onSelectAll={handleOnSelectAll}
+                totalPages={totalPages}
+                currentPagePosition={currentPagePosition}
+                currentPageListMin={currentPageListMin}
+                currentPageListMax={currentPageListMax}
+
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                listItemFormat={renderFn}
+            />
+
+
+            <View style={styles.footer}>
+                <View style={{alignSelf: "center", marginRight: 10}}>
+                    <RoundedPaginator
+                        totalPages={totalPages}
+                        currentPage={currentPagePosition}
+                        goToNextPage={goToNextPage}
+                        goToPreviousPage={goToPreviousPage}
+                    />
+                </View>
+
+                <FloatingActionButton
+                    isDisabled = {actionButtonState}
+                    toggleActionButton = {toggleActionButton}
+                />
+            </View>
+        </View>
+        
     );
 };
 
@@ -263,5 +295,15 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 14,
         color: "#4E5664",
-    }
+    },
+    footer: {
+        flex: 1,
+        alignSelf: 'flex-end',
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 20,
+        right: 0,
+        marginRight: 30,
+    },
 });

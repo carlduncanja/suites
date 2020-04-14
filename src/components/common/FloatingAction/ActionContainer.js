@@ -6,7 +6,7 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 
-const ActionContainer = () => {
+const ActionContainer = ({title, floatingActions}) => {
     const separator = () => {
         return(
             <View style={{
@@ -24,11 +24,12 @@ const ActionContainer = () => {
     return ( 
         <View style={styles.container}>
             <View style={styles.actionTitleContainer}> 
-                <Text style={styles.title}>{state.floatingActions.floatingActionsObject.actionTitle.toUpperCase()} ACTIONS</Text>
+                <Text style={styles.title}>{title}</Text>
             </View>
+            
             <View style={styles.actionsContainer}>
                 <FlatList
-                    data={state.floatingActions.floatingActionsObject.actions}
+                    data={floatingActions}
                     renderItem={({ item }) => 
                         <Action
                             modalToOpen="OverlayModal" 
