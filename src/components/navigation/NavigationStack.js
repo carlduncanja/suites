@@ -8,6 +8,9 @@ import React from "react";
 import Schedule from '../../page/Schedule';
 import CaseFiles from '../../page/CaseFiles'
 import Theatres from "../../page/Theatres";
+import Inventory from "../../page/Inventory";
+import Storage from "../../page/Storage";
+
 
 /* Providers*/
 import {ScheduleProvider} from '../../contexts/ScheduleContext';
@@ -64,7 +67,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Inventory: {
-        screen: NotFound,
+        screen: Inventory,
         params: {
             icon: InventoryIcon,
             tabName: 'Inventory',
@@ -104,7 +107,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Storage: {
-        screen: NotFound,
+        screen: Storage,
         params: {
             icon: StorageIcon,
             tabName: 'Storage',
@@ -153,7 +156,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     }
   },
   {
-    initialRouteName: 'Theatre',
+    initialRouteName: 'Inventory',
   },
 );
 
