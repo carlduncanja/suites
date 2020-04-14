@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { caseActions } from '../redux/reducers/caseFilesReducer'
 import { CaseFileContext } from '../contexts/CaseFileContext';
 
+// ################# Progress Bar 
 
 export const handleProgressBar = (tabIndex, progressList, selectedStep, tabsLength ) =>{
     let progress = 1/tabsLength
@@ -21,6 +22,8 @@ export const handleNewItemProgressBar = (tabIndex, progressList) =>{
     const updatedList = [...progressList.slice(0,objIndex),...newProgress]
     return updatedList
 }
+
+// ################# Pagination
 
 export const useNextPaginator = (currentPage, recordsPerPage, currentListMin, currentListMax ) => {
     return (
@@ -42,12 +45,33 @@ export const usePreviousPaginator = (currentPage, recordsPerPage, currentListMin
     )
 }
 
+// ################# Checkbox
+
 export const useCheckBox = (item, checkBoxList) => {
     return checkBoxList.includes(item) ?
         checkBoxList.filter(listItem => listItem !== item)
         :
         [...checkBoxList,item]
 }
+
+export const checkboxItemPress = (item, id, checkBoxList) => {
+    let updatedList = [...checkBoxList];
+    return updatedList.includes(id) ?
+        updatedList.filter(id => id !== item.id)
+        :
+        [...updatedList, item.id]
+}
+
+export const selectAll = (data, checkBoxList) => {
+    const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== data.length;
+        return indeterminate ?
+            [...data.map( item => item.id )]
+            :
+            []
+}
+
+
+// ################# Number formatters
 
 export const formatAmount = (amount) => {
     let newAmountString = (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')

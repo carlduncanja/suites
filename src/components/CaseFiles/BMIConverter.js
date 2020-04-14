@@ -7,6 +7,7 @@ const width = 20
 const BMIConverter = ({bmiValue, recordTitle}) => {
     // const caseStates = useContext(CaseFileContext).state
     const [state] = useContext(CaseFileContext)
+
     const separator = () => {
         return(
             <View style={{backgroundColor:"#E3E8EF",width:1}}/>
@@ -34,11 +35,9 @@ const BMIConverter = ({bmiValue, recordTitle}) => {
                             <View style={[styles.bmiRange,{backgroundColor:item.color}]}/>
                 }
             </View>
-
-
         )
-
     }
+    
     return (
         <View>
             <Text style={{paddingBottom:4}}>{recordTitle}</Text>

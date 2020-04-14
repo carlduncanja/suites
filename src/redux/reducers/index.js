@@ -2,6 +2,9 @@ import {combineReducers} from "redux";
 
 import appointments from "./appointmentReducer";
 import caseFiles from "./caseReducer";
+import procedures from './proceduresReducer';
+import physicians from './physiciansReducer';
+import storage from './storageReducer';
 // import app from "./appReducer"
 // import casesFiles from "./caseFilesReducer"
 // import suites from './suitesAppReducer'
@@ -11,7 +14,10 @@ export const RESET_STATE = "RESET_STATE";
 
 const appReducer = combineReducers({
     appointments,
-    caseFiles
+    caseFiles,
+    procedures,
+    physicians,
+    storage,
 });
 
 /**

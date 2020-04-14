@@ -6,7 +6,10 @@ import React from "react";
 
 /* Screens */
 import Schedule from '../../page/Schedule';
-import CaseFiles from '../../page/CaseFiles'
+import CaseFiles from '../../page/CaseFiles';
+import Procedures from '../../page/Procedures'; 
+import Physicians from '../../page/Physicians';
+import StorageLocations from '../../page/StorageLocations';
 
 /* Providers*/
 import {ScheduleProvider} from '../../contexts/ScheduleContext';
@@ -103,7 +106,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Storage: {
-        screen: NotFound,
+        screen: StorageLocations,
         params: {
             icon: StorageIcon,
             tabName: 'Storage',
@@ -111,7 +114,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Physicians: {
-        screen: NotFound,
+        screen: Physicians,
         params: {
             icon: PhysiciansIcon,
             tabName: 'Physicians',
@@ -119,7 +122,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Procedures: {
-        screen: NotFound,
+        screen: Procedures,
         params: {
             icon: ProcedureIcon,
             tabName: 'Procedures',

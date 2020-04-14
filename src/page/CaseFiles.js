@@ -244,13 +244,7 @@ const CaseFiles = (props) => {
                 listHeaders={listHeaders}
                 itemsSelected={selectedCaseIds}
                 onSelectAll={handleOnSelectAll}
-                totalPages={totalPages}
-                currentPagePosition={currentPagePosition}
-                currentPageListMin={currentPageListMin}
-                currentPageListMax={currentPageListMax}
 
-                goToNextPage={goToNextPage}
-                goToPreviousPage={goToPreviousPage}
                 listItemFormat={renderFn}
             />
 
