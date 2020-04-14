@@ -16,7 +16,8 @@ const ActionContainerModal = (props) => {
         })
     }
 
-    const { modal: {closeModal, closeModals, currentModal}} = props
+    const { modal: {closeModal, closeModals, currentModal, params : {floatingActions, title }}} = props
+
     return (  
         <View style={{width:state.pageMeasure.width, height:state.pageMeasure.height}}>
             <TouchableOpacity
@@ -25,13 +26,16 @@ const ActionContainerModal = (props) => {
                 style={styles.modalContainer}
             />
             <View style={styles.positionContainer}>
-                <ActionContainer/>
+                <ActionContainer
+                    title = {title}
+                    floatingActions = {floatingActions}
+                />
             </View>
         </View>
     );
 }
  
-export default withModal(ActionContainerModal);
+export default ActionContainerModal;
 
 const styles = StyleSheet.create({
     modalContainer:{

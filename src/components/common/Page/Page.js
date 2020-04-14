@@ -41,24 +41,24 @@ const Page = (props) => {
         listData,
         listHeaders,
         isFetchingData,
-        totalPages,
-        currentPagePosition,
-        currentPageListMin,
-        currentPageListMax,
-        goToNextPage,
-        goToPreviousPage,
+        // totalPages,
+        // currentPagePosition,
+        // currentPageListMin,
+        // currentPageListMax,
+        // goToNextPage,
+        // goToPreviousPage,
         listItemFormat,
         onRefresh,
         onSelectAll,
         itemsSelected
     } = props;
 
-    const toggleActionButton = () => {
-        dispatch({
-            type: appActions.TOGGLEACTIONBUTTON,
-            newState: !state.floatingActions.actionButtonState
-        })
-    }
+    // const toggleActionButton = () => {
+    //     dispatch({
+    //         type: appActions.TOGGLEACTIONBUTTON,
+    //         newState: !state.floatingActions.actionButtonState
+    //     })
+    // }
 
     useEffect(()=>{
         const menu = require('../../../../assets/db.json').overlayMenuTabs.filter(menu => menu.page === transformToCamel(routeName))
@@ -127,7 +127,7 @@ const Page = (props) => {
                     }
                 </View>
 
-                <View style={styles.footer}>
+                {/* <View style={styles.footer}>
                     <View style={{alignSelf: "center", marginRight: 10}}>
                         <RoundedPaginator
                             totalPages={totalPages}
@@ -146,7 +146,7 @@ const Page = (props) => {
                             <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#A0AEC0"
                                                   toggleActionButton={toggleActionButton}/>
                     }
-                </View>
+                </View> */}
 
             </View>
         </View>
