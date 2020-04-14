@@ -7,6 +7,7 @@ import React from "react";
 /* Screens */
 import Schedule from '../../page/Schedule';
 import CaseFiles from '../../page/CaseFiles'
+import Theatres from "../../page/Theatres";
 
 /* Providers*/
 import {ScheduleProvider} from '../../contexts/ScheduleContext';
@@ -55,10 +56,10 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Theatre: {
-        screen: NotFound,
+        screen: Theatres,
         params: {
             icon: TheathreIcon,
-            tabName: 'Theathre',
+            tabName: 'Theatre',
             provider: ScheduleProvider
         },
     },
