@@ -11,6 +11,10 @@ import {appActions} from '../../../redux/reducers/suitesAppReducer';
 import {CaseFileContext} from '../../../contexts/CaseFileContext';
 import {transformToCamel} from '../../../hooks/useTextEditHook';
 import {colors} from '../../../styles'
+import PropTypes from 'prop-types';
+
+
+
 
 /**
  * @param placeholderText string
@@ -32,7 +36,7 @@ import {colors} from '../../../styles'
  */
 const Page = (props) => {
     const [state, dispatch] = useContext(SuitesContext);
- 
+
     const {
         placeholderText,
         changeText,
@@ -154,6 +158,22 @@ const Page = (props) => {
 };
 
 export default Page;
+
+Page.propTypes = {
+    placeholderText: PropTypes.string,
+    changeText: PropTypes.any,
+    inputText: PropTypes.any,
+    routeName: PropTypes.any,
+    listData: PropTypes.any,
+    listHeaders: PropTypes.any,
+    isFetchingData: PropTypes.any,
+    listItemFormat: PropTypes.any,
+    onRefresh: PropTypes.any,
+    onSelectAll: PropTypes.any,
+    itemsSelected: PropTypes.any
+};
+Page.defaultProps = {};
+
 
 const styles = StyleSheet.create({
     container: {
