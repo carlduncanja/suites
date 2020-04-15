@@ -30,7 +30,8 @@ function LevelIndicator({max, min, ideal, critical, level}) {
         else if (level < ideal && level > critical) return idealColor2;
         else if (level <= critical) return criticalColor;
         else if (!ideal && level > max * .5) return idealColor;
-        else if (!critical && level < max * .5) return criticalColor;
+        else if (!critical && level < max * .25) return criticalColor;
+        else if (!critical && level < max * .5) return idealColor2;
         else return idealColor2
     };
 
