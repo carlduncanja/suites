@@ -36,42 +36,49 @@ const testData = [
         id: "1",
         name: "Operating Room 1",
         status: "In Use",
+        available: false,
         isRecovery: true,
     },
     {
         id: "2",
         name: "Operating Room 2",
         status: "Available",
+        available: true,
         isRecovery: "",
     },
     {
         id: "3",
         name: "Operating Room 3",
         status: "Available",
+        available: true,
         isRecovery: "",
     },
     {
         id: "4",
         name: "Operating Room 4",
         status: "Available",
+        available: true,
         isRecovery: "",
     },
     {
         id: "5",
         name: "Operating Room 5",
         status: "In Use",
+        available: false,
         isRecovery: false,
     },
     {
         id: "6",
         name: "Operating Room 5",
         status: "In Use",
+        available: false,
         isRecovery: false,
     },
     {
         id: "7",
         name: "Operating Room 5",
         status: "In Use",
+        available: false,
         isRecovery: false,
     },
 
@@ -170,13 +177,15 @@ function Theatres(props) {
 
 
     const renderItem = (item) => {
+        const availableColor = "#38A169";
+        const inUseColor = "#DD6B20";
 
         const formattedItem = {
             name: item.name,
-            recoveryStatus: "test",
-            recoveryStatusColor: "green",
-            status: item.status,
-            statusColor: "green"
+            recoveryStatus: item.isRecovery && !item.available ? "yes" : !item.available ? 'No' : '--' ,
+            recoveryStatusColor: item.isRecovery && !item.available ? availableColor: '#4E5664',
+            status: item.available ? "Available" : "In-Use",
+            statusColor: item.available ? availableColor : inUseColor
         };
 
         const onActionClick = () => {
@@ -226,6 +235,10 @@ const styles = StyleSheet.create({
     item: {
         flex: 1,
         flexDirection: 'row',
+    },
+    itemText: {
+        fontSize: 14,
+        color: "#4E5664",
     },
 });
 
