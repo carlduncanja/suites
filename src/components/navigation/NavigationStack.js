@@ -10,6 +10,8 @@ import CaseFiles from '../../page/CaseFiles'
 import Theatres from "../../page/Theatres";
 import Inventory from "../../page/Inventory";
 import Storage from "../../page/Storage";
+import Procedures from '../../page/Procedures';
+import Physicians from '../../page/Physicians';
 
 
 /* Providers*/
@@ -115,7 +117,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Physicians: {
-        screen: NotFound,
+        screen: Physicians,
         params: {
             icon: PhysiciansIcon,
             tabName: 'Physicians',
@@ -123,7 +125,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Procedures: {
-        screen: NotFound,
+        screen: Procedures,
         params: {
             icon: ProcedureIcon,
             tabName: 'Procedures',
@@ -156,7 +158,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     }
   },
   {
-    initialRouteName: 'Storage',
+    initialRouteName: 'CaseFiles',
   },
 );
 
