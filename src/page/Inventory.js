@@ -15,15 +15,15 @@ const listHeaders = [
     },
     {
         name: "In Stock",
-        alignment: "flex-start"
+        alignment: "center"
     },
     {
         name: "Levels",
-        alignment: "flex-start"
+        alignment: "center"
     },
     {
         name: "Locations",
-        alignment: "flex-start"
+        alignment: "center"
     },
     {
         name: "Actions",
@@ -35,43 +35,73 @@ const testData = [
     {
         id: "1",
         name: "Agents",
-        stock: 200,
-        levels: [],
-        locations: 4
+        stock: 238,
+        levels: {
+            max: 400,
+            min: 0,
+            critical: 100,
+            ideal: 300,
+        },
+        locations: 4,
     },
     {
         id: "2",
         name: "Suture Kit",
-        stock: 200,
-        levels: [],
+        stock: 22,
+        levels: {
+            max: 200,
+            min: 0,
+            critical: 50,
+            ideal: 100,
+        },
         locations: 1
     },
     {
         id: "3",
         name: "Gauze",
-        stock: 200,
-        levels: [],
+        stock: 632,
+        levels: {
+            max: 700,
+            min: 0,
+            critical: 100,
+            ideal: 350,
+        },
         locations: 2
     },
     {
         id: "4",
         name: "Atracurium",
-        stock: 200,
-        levels: [],
+        stock: 642,
+        levels: {
+            max: 700,
+            min: 0,
+            critical: 100,
+            ideal: 350,
+        },
         locations: 7
     },
     {
         id: "5",
         name: "Atropine",
-        stock: 200,
-        levels: [],
+        stock: 72,
+        levels: {
+            max: 250,
+            min: 0,
+            critical: 100,
+            ideal: 350,
+        },
         locations: 3
     },
     {
         id: "6",
         name: "Bupivacaine 0.25 %",
-        stock: 200,
-        levels: [],
+        stock: 68,
+        levels: {
+            max: 250,
+            min: 0,
+            critical: 100,
+            ideal: 200
+        },
         locations: 1
     },
 ];
@@ -130,29 +160,37 @@ function Inventory(props) {
 
     // ##### Helper functions
 
-    const inventoryItem = ({name, stock, locations, minLevel, maxLevel}, onActionPress) => <>
+    const inventoryItem = ({name, stock, locations, levels}, onActionPress) => <>
         <View style={[styles.item, {justifyContent: 'flex-start'}]}>
             <Text style={{color: "#3182CE", fontSize: 16}}>
                 {name}
             </Text>
         </View>
         <View style={[
-            styles.item, {justifyContent: "flex-start"}
+            styles.item, {justifyContent: "center"}
         ]}>
             <Text style={[styles.itemText]}>
                 {stock}
             </Text>
         </View>
-        <View style={[styles.item, {justifyContent: "flex-start"}]}>
+        <View style={[styles.item, {justifyContent: "center"}]}>
             {/*   LEVELS    */}
-            <LevelIndicator/>
+            <LevelIndicator
+                max={levels.max}
+                min={0}
+                level={stock}
+                ideal={levels.ideal}
+                critical={levels.critical}
+            />
         </View>
         <View style={[
-            styles.item, {justifyContent: "flex-start"}
+            styles.item, {justifyContent: "center"}
         ]}>
-            <Text style={[styles.itemText]}>
-                {locations}
-            </Text>
+            <View style={styles.locationBox}>
+                <Text style={[styles.itemText]}>
+                    {locations}
+                </Text>
+            </View>
         </View>
         <View style={[styles.item, {justifyContent: "center"}]}>
             <IconButton
@@ -168,9 +206,8 @@ function Inventory(props) {
         const formattedItem = {
             name: item.name,
             stock: item.stock,
-            locations: item.location,
-            minLevel: 0,
-            maxLevel: 200,
+            locations: item.locations,
+            levels: item.levels
         };
 
         const onActionClick = () => {
@@ -221,6 +258,23 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     },
+    locationBox: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 28,
+        height: 24,
+        borderRadius: 4,
+        shadowColor: "#000",
+        backgroundColor: "#FFFFFF",
+        shadowOffset: {
+            width: .5,
+            height: .5,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+        elevation: 3,
+        zIndex:3,
+    }
 });
 
 export default Inventory;

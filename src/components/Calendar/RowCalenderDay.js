@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
     },
     daySelected: {
         width:92,
-        backgroundColor:'green',
         alignSelf:'center',
         shadowColor: "#000",
         backgroundColor: "#FFFFFF",
