@@ -1,4 +1,8 @@
-import axios from "./index"
+import suitesAxiosInstance from "./index"
+
+import {
+    theatresEndpoint
+} from "../const/suitesEndpoints";
 
 // ################# Mock Data
 import {appointments} from "../../data/Appointments"
@@ -6,6 +10,7 @@ import caseFiles from "../../data/CaseFiles";
 import procedures from "../../data/Procedures";
 import physicians from "../../data/Physicians";
 import storage from "../../data/Storage";
+import {handleError, handleResponse} from "./apiUtils";
 
 
 // ################# Schedule Endpoints
@@ -17,7 +22,7 @@ export const getSchedules = async () => {
 
 export const getScheduleById = async (id) => {
     await new Promise(r => setTimeout(r, 2000));
-    return appointments.find( item => item.id === id);
+    return appointments.find(item => item.id === id);
     //return axios.get('/schedules')
 };
 
@@ -36,6 +41,13 @@ export const searchSchedule = async (query) => {
     //         query
     //     }
     // })
+};
+
+// ################# Theatres Endpoint
+export const getTheatres = async () => {
+    return suitesAxiosInstance.get(theatresEndpoint)
+        .then(handleResponse)
+        .catch(handleError);
 };
 
 // ################# Case Files Endpoint

@@ -158,7 +158,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     }
   },
   {
-    initialRouteName: 'CaseFiles',
+    initialRouteName: 'Theatre',
   },
 );
 

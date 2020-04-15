@@ -23,7 +23,7 @@ const List = ({
                   onRefresh,
                   refreshing,
                   onSelectAll,
-                  keyExtractor = (item) => item.id + new Date().getTime()
+                  keyExtractor = (item) => (item.id || item._id) + new Date().getTime()
               }) => {
 
     const isIndeterminate = itemsSelected.length > 0 && itemsSelected.length !== listData.length;

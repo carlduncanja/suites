@@ -1,10 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from "react-native";
 import Page from "../components/common/Page/Page";
 import IconButton from "../components/common/Buttons/IconButton";
 import ActionIcon from "../../assets/svg/ActionIcon";
 import ListItem from "../components/common/List/ListItem";
+import {getTheatres} from "../api/network";
+import {setTheatres} from "../redux/actions/theatresActions";
+import {connect} from 'react-redux'
 
 
 const listHeaders = [
@@ -88,7 +91,8 @@ const testData = [
 function Theatres(props) {
 
     const {
-        theatres = testData,
+        theatres = [],
+        setTheatres
     } = props;
 
     const pageTitle = "Theatres";
@@ -99,6 +103,13 @@ function Theatres(props) {
     const [isFetchingData, setFetchingData] = useState(false);
     const [selectedIds, setSelectedIds] = useState([]);
 
+
+    // ##### Lifecycle Methods functions
+
+    // on mount
+    useEffect(() => {
+        if (!theatres.length) fetchTheatres()
+    }, []);
 
     // ##### Handler functions
 
@@ -113,11 +124,11 @@ function Theatres(props) {
     };
 
     const onRefresh = () => {
+        fetchTheatres()
     };
 
     const onSelectAll = () => {
         const indeterminate = selectedIds.length >= 0 && selectedIds.length !== testData.length;
-        // console.log("Indeterminate: ", indeterminate)
         if (indeterminate) {
             const selectedAllIds = [...theatres.map(caseItem => caseItem.id)];
             setSelectedIds(selectedAllIds)
@@ -138,7 +149,6 @@ function Theatres(props) {
 
         setSelectedIds(updatedCases);
     };
-
 
     // ##### Helper functions
     const theatreItem = ({name, recoveryStatus, recoveryStatusColor, status, statusColor}, onActionPress, actionIcon = actionIcon) => <>
@@ -175,15 +185,14 @@ function Theatres(props) {
         </View>
     </>;
 
-
     const renderItem = (item) => {
         const availableColor = "#38A169";
         const inUseColor = "#DD6B20";
 
         const formattedItem = {
             name: item.name,
-            recoveryStatus: item.isRecovery && !item.available ? "yes" : !item.available ? 'No' : '--' ,
-            recoveryStatusColor: item.isRecovery && !item.available ? availableColor: '#4E5664',
+            recoveryStatus: item.isRecovery && !item.available ? "yes" : !item.available ? 'No' : '--',
+            recoveryStatusColor: item.isRecovery && !item.available ? availableColor : '#4E5664',
             status: item.available ? "Available" : "In-Use",
             statusColor: item.available ? availableColor : inUseColor
         };
@@ -202,6 +211,22 @@ function Theatres(props) {
             onItemPress={onItemPress(item)}
             itemView={itemView}
         />
+    };
+
+    const fetchTheatres = () => {
+        setFetchingData(true);
+        getTheatres()
+            .then(data => {
+                console.log("get theatres", data);
+                setTheatres(data)
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to fetch theatres", error);
+            })
+            .finally(_ => {
+                setFetchingData(false)
+            })
     };
 
     return (
@@ -226,7 +251,6 @@ function Theatres(props) {
 Theatres.propTypes = {};
 Theatres.defaultProps = {};
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -242,4 +266,16 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Theatres;
+const mapStateToProps = (state) => {
+    const theatres = state.theatres;
+
+    return {
+        theatres
+    }
+};
+
+const mapDispatchToProps = {
+    setTheatres
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Theatres);
