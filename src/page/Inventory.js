@@ -137,7 +137,7 @@ function Inventory(props) {
         const indeterminate = selectedIds.length >= 0 && selectedIds.length !== testData.length;
         // console.log("Indeterminate: ", indeterminate)
         if (indeterminate) {
-            const selectedAllIds = [...inventory.map(caseItem => caseItem.id)];
+            const selectedAllIds = [...inventory.map(item => item.id)];
             setSelectedIds(selectedAllIds)
         } else {
             setSelectedIds([])
