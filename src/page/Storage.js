@@ -6,6 +6,7 @@ import IconButton from "../components/common/Buttons/IconButton";
 import ActionIcon from "../../assets/svg/ActionIcon";
 import ListItem from "../components/common/List/ListItem";
 import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
+import {numberFormatter} from "../utils/formatter";
 
 
 const listHeaders = [
@@ -131,7 +132,7 @@ function Storage(props) {
             styles.item, {justifyContent: "center"}
         ]}>
             <Text style={[styles.itemText]}>
-                {stock}
+                {numberFormatter(stock)}
             </Text>
         </View>
         <View style={[
