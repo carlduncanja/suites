@@ -20,7 +20,7 @@ const listHeaders = [
     },
     {
         name: "Capacity",
-        alignment: "flex-start"
+        alignment: "center"
     }
 ];
 
