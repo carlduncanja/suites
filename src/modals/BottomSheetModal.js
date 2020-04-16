@@ -41,7 +41,14 @@ const BottomSheetModal = (props) => {
             backgroundColor: 'white',
             zIndex: 5
         }}>
-            <SlideOverlay selectedItem = { params.item} />
+            <SlideOverlay 
+                overlayContent = {params.content}
+                overlayId = {params.overlayId}
+                overlayTitle = {params.overlayTitle}
+                initialCurrentTabs = {params.initialCurrentTabs}
+                initialSelectedTab = {params.initialSelectedTab}
+                onTabPressChange = {params.controlTabChange}
+            />
         </View>
     }; 
 

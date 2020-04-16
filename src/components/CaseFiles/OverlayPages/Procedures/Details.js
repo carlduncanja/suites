@@ -3,83 +3,86 @@ import { View, Text, StyleSheet, ScrollView, Modal, TouchableHighlight } from "r
 import FrameProcedureCard from '../../../common/Frames/FrameCards/FrameProcedureCard';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import PickListCard from '../../PickList/PickListCard';
+import { withModal } from 'react-native-modalfy';
 
-const Details = ({tabDetails}) => {
-    const [state] = useContext(SuitesContext)
-    const [modalVisible, setModalVisible] = useState(false)
-    const [selectedModalInformation, setSelectedModalInformation] = useState([])
-    const [modalInformation, setModalInformation] = useState([])
-    const [selectedTab,setSelectedTab] = useState("Consumables")
+const Details = ({tabDetails, modal}) => {
 
-    const onOpenPickList = (details) =>{
-        setModalVisible(true)
-        setModalInformation(details)
-        setSelectedModalInformation(details.consumables)
+    const listItemFormat = (item) => {
+        return (
+            <View style={[styles.listDataContainer,{marginBottom:10}]}>
+                <View style={{}}>
+                    <Text style={[styles.dataText,{color:"#3182CE"}]}>{item.item}</Text>
+                </View>
+                <View style={{alignItems:'flex-end', marginRight:5}}>
+                    <Text style={[styles.dataText,{color:"#4A5568"}]}>{item.quantity}</Text>
+                </View>
+            </View>
+        )
+        
     }
 
-    const setModalData = (currentPickData) => {
-        currentPickData === "Equipment" ?
-            setSelectedModalInformation(modalInformation.equipments)
-            :
-            setSelectedModalInformation(modalInformation.consumables)
-        setSelectedTab(currentPickData)
+    const tabs = ["Consumables", "Equipment"]
+    const initialTab = tabs[0]
+
+    const onOpenPickList = (details) => {
+
+        const tabDetails = [
+            {
+                name : "Consumables",
+                tabData : details.consumables,
+                headers : [
+                    {
+                        name : "Consumables",
+                        alignment : "flex-start"
+                    },
+                    {
+                        name : "Amount",
+                        alignment : "flex-end"
+                    }
+                ]
+            },
+            {
+                name : "Equipment",
+                tabData : details.equipments,
+                headers : [
+                    {
+                        name : "Equipment",
+                        alignment : "flex-start"
+                    },
+                    {
+                        name : "Amount",
+                        alignment : "flex-end"
+                    }
+                ]
+            }
+        ]
+
+        modal.openModal('PickListModal',{ 
+            initialTab ,
+            tabDetails,
+            listItemFormat,
+            tabs
+        })
     }
 
-    const closeModal = () =>{setModalVisible(false)}
-
-    const information = state.slideOverlay.slideOverlayTabInfo
     return ( 
         <ScrollView style={{flex:1}}>
             {tabDetails.map((item,index)=>{
                 return(
                     <View key={index} style={styles.procedureContainer}>
-                        <FrameProcedureCard information = {item} onOpenPickList={onOpenPickList}/>
+                        <FrameProcedureCard 
+                            information = {item} 
+                            onOpenPickList={onOpenPickList}
+                        />
                     </View>
                 )
             })}
-            {
-            modalVisible &&
-            <View style={[styles.pickListContainer,{}]}>
-                <View style={{ height:450, width:500, backgroundColor:"#FFFFFF", alignSelf:'center',borderRadius:8 }}>
-                    <PickListCard 
-                        closeModal = {closeModal}
-                        data = {selectedModalInformation}
-                        onPressTab = {setModalData}
-                        selectedTab = {selectedTab}
-                    /> 
-                </View>
-                {/* <TouchableHighlight>
-                    <View
-                        pointerEvents={modalVisible ? 'auto' : 'none'}
-                        style={[
-                            styles.shadowContainer,
-                            {
-                                opacity: .5,
-                            },
-                        ]}
-                    />
-                    <Modal
-                        animationType = "slide"
-                        transparent = {true}
-                        visible = {modalVisible}
-                        onRequestClose = {()=>closeModal()}
-                    >
-                        <View style={{backgroundColor:'red', height:500, width:500, alignSelf:'center',justifyContent:'center'}}>
-                            <PickListCard 
-                                closeModal = {closeModal}
-                            /> 
-                        </View>
-                        
-                    </Modal>
-                </TouchableHighlight> */}
-            </View>
-            }
         </ScrollView>
         
     );
 }
  
-export default Details;
+export default withModal(Details) ;
 
 const styles = StyleSheet.create({
     procedureContainer:{

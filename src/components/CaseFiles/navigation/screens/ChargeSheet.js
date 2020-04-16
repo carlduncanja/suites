@@ -3,12 +3,12 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
 
-const ChargeSheet = () => {
+const ChargeSheet = ({item, selectedTab}) => {
     const [state] = useContext(SuitesContext)
-    const name = state.overlayMenu.selectedMenuItemCurrentTab
-    const selectedDetails = state.selectedListItem.selectedListObject.caseFileDetails
-    const chargeSheet = selectedDetails.chargeSheet
-    const procedures = selectedDetails.caseProcedures
+    const name = selectedTab
+
+    const chargeSheet = item.caseFileDetails.chargeSheet
+    const procedures = item.caseFileDetails.caseProcedures
 
     const consumables = []
     const equipments = []
@@ -31,7 +31,7 @@ const ChargeSheet = () => {
                     name === 'Quotation' ?
                         <Quotation tabDetails = {quotation}/>
                         :
-                        <BillingCaseCard tabDetails = {selectedDetails}/>        
+                        <BillingCaseCard tabDetails = {item.caseFileDetails}/>        
     );
 }
  

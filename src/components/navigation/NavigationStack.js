@@ -12,6 +12,8 @@ import Inventory from "../../page/Inventory";
 import Storage from "../../page/Storage";
 import Procedures from '../../page/Procedures';
 import Physicians from '../../page/Physicians';
+import StorageLocations from '../../page/StorageLocations';
+import Equipment from '../../page/Equipment';
 
 
 /* Providers*/
@@ -77,7 +79,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Equipment: {
-        screen: NotFound,
+        screen: Equipment,
         params: {
             icon: EquipmentIcon,
             tabName: 'Equipment',

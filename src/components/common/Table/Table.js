@@ -26,7 +26,8 @@ const Table = (props) => {
         headers,
         toggleHeaderCheckbox,
         checkBoxList,
-        dataLength
+        dataLength,
+        isCheckbox
         // toggleCheckbox
     } = props 
 
@@ -40,6 +41,7 @@ const Table = (props) => {
                     toggleHeaderCheckbox = {toggleHeaderCheckbox}
                     checkBoxList = {checkBoxList}
                     dataLength = {dataLength}
+                    isCheckbox = {isCheckbox}
                     // toggleCheckbox = {toggleCheckbox}
                 />
             </View>

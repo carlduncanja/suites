@@ -1,23 +1,14 @@
-import React,{Component, useContext} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React,{ useContext} from 'react';
+import { View } from 'react-native';
 import { ViewModeHeading, EditModeHeading } from '../Headings/Headings'
 import TabsContainer from '../Tabs/TabsContainer'
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import { appActions } from '../../../redux/reducers/suitesAppReducer';
-import { transformToCamel } from '../../../hooks/useTextEditHook'
  
-const SlideHeader = ({id, title}) => { 
+const SlideHeader = ({id, title, initialSelectedTab, initialCurrentTabs, onTabPressChange}) => { 
     const [state, dispatch] = useContext(SuitesContext)
-
-    const controlTabChange = (tabIndex) => {
-        if (state.slideOverlay.slideOverlayButtonEdit === false) handleOverlayTabChange(tabIndex)
-    }
-    const handleOverlayTabChange = (tab) => {   
-        dispatch({
-            type: appActions.OVERLAYTABCHANGE,
-            newState : {selectedMenuItemCurrentTab : tab}
-        })
-    }
+    
+    const tabs = state.overlayMenu.currentTabs.length === 0 ? initialCurrentTabs : state.overlayMenu.currentTabs
+    const selectedTab = state.overlayMenu.selectedTab === "" ? initialSelectedTab : state.overlayMenu.selectedTab
    
     return (  
         <View style = {{
@@ -39,9 +30,9 @@ const SlideHeader = ({id, title}) => {
             }
 
             <TabsContainer 
-                tabs = {state.overlayMenu.selectedMenuItemTabs}
-                selectedTab = {state.overlayMenu.selectedMenuItemCurrentTab}
-                onPressChange = {controlTabChange}
+                tabs = {tabs}
+                selectedTab = {selectedTab}
+                onPressChange = {onTabPressChange}
             />
         </View>
     );

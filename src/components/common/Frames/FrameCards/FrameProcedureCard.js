@@ -8,7 +8,7 @@ const FrameProcedureCard = (props) => {
         <View style={styles.container}> 
             <View style={styles.title}>
                 <FrameTitle
-                    color="#718096" 
+                    color="#718096"  
                     borderColor = "#E3E8EF"
                     backgroundColor="#F8FAFB"
                     iconName="overlayProcedures"

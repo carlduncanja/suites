@@ -6,7 +6,7 @@ import moment from "moment";
 import Button from '../../Button';
 import { withModal } from 'react-native-modalfy';
 
-const FrameProcedureContent = ({details,onOpenPickList}) => { 
+const FrameProcedureContent = ({details,onOpenPickList}) => {  
 
     const appointment = (appointment,location) => {
         return (

@@ -1,4 +1,5 @@
 import suitesAxiosInstance from "./index"
+import {handleError, handleResponse} from "./apiUtils";
 
 import {
     inventoriesEndpoint,
@@ -11,7 +12,7 @@ import caseFiles from "../../data/CaseFiles";
 import procedures from "../../data/Procedures";
 import physicians from "../../data/Physicians";
 import storage from "../../data/Storage";
-import {handleError, handleResponse} from "./apiUtils";
+import equipment from "../../data/Equipment";
 
 
 // ################# Schedule Endpoints
@@ -76,13 +77,22 @@ export const getProcedures = async () => {
 export const getPhysicians = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return physicians
-    //return axios.get('/procedures')
+    //return axios.get('/physicians')
 };
 
 // ################# Storage Endpoints
 export const getStorage = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return storage
-    //return axios.get('/procedures')
+    //return axios.get('/storage')
 };
+
+// ################# Equipment Endpoint
+export const getEquipment = async () => {
+    await new Promise(r => setTimeout(r, 2000));
+    return equipment
+    //return axios.get('/equipment')
+};
+
+
 

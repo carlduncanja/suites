@@ -5,5 +5,6 @@ export default {
     physicians : [],
     storage : [],
     theatres: [],
-    inventory : []
+    inventory : [],
+    equipment : []
 }
