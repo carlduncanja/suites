@@ -4,16 +4,20 @@ import { createNavigator, TabRouter, SafeAreaView, ScrollView } from 'react-navi
 import OverlayMenuItems from './OverlayMenuItems';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 
-const ContentNavigator = ({ navigation, descriptors,  }) => {
+const ContentNavigator = (props) => {
+  const { navigation, descriptors, item, handleOverlayMenuPress, selectedTab } = props
   const { routes, index } = navigation.state;
-  const descriptor = descriptors[routes[index].key];
 
+  const descriptor = descriptors[routes[index].key];
   const ActiveScreen = descriptor.getComponent();
+
   const [state] = useContext(SuitesContext)
+  const selectedOverlayTab = state.overlayMenu.selectedTab === "" ? selectedTab : state.overlayMenu.selectedTab
+  
   return (
     <SafeAreaView style={{ flex: 1,flexDirection: 'column'}}>
         <ScrollView style={{margin:20, marginBottom:0,}} > 
-          <ActiveScreen navigation={descriptor.navigation}/>
+          <ActiveScreen navigation={descriptor.navigation} item = {item} selectedTab = {selectedOverlayTab}/>
         </ScrollView>
         
         { state.slideOverlay.slideOverlayButtonEdit === false &&
@@ -21,6 +25,7 @@ const ContentNavigator = ({ navigation, descriptors,  }) => {
             <OverlayMenuItems
               descriptors={descriptors}
               navigation={navigation}
+              handleOverlayMenuPress = {handleOverlayMenuPress}
             />
           </View>
         }

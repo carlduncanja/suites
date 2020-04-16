@@ -19,11 +19,9 @@ const list = {
     selectedSourceData : []
 }
 const overlayMenu = {
-    menu : [],
-    selectedMenuItem : 0,
-    selectedMenuItemTabs : [],
-    selectedMenuItemCurrentTab : "Details"
-}
+    selectedTab : "",
+    currentTabs : []
+} 
 const slideOverlay = {
     slideOverlayStatus: false,
     slideOverlayHeader : {}, 

@@ -1,22 +1,22 @@
 import React, {useState, useEffect, useContext} from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
 import Page from '../components/common/Page/Page';
+import ListItem from "../components/common/List/ListItem";
+import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
+import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
+import Navigation from '../components/CaseFiles/navigation/ContentNavigationStack';
+
 import {connect} from 'react-redux';
 import {setCaseFiles} from "../redux/actions/caseFilesActions";
 import {getCaseFiles} from "../api/network";
+
+import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
+import SvgIcon from '../../assets/SvgIcon';
 import {SuitesContext} from '../contexts/SuitesContext';
 import {appActions} from '../redux/reducers/suitesAppReducer';
-import { transformToCamel } from '../hooks/useTextEditHook';
-import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
-import ListItem from "../components/common/List/ListItem";
-import { View, Text, StyleSheet } from 'react-native';
-import TestTransformAnimation from '../TestTransformAnimation';
+
 import { withModal } from 'react-native-modalfy';
-import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
-import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
-import FloatingActionComponent from '../components/common/FloatingAction/FloatingActionComponent';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import SvgIcon from '../../assets/SvgIcon'
-import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 
 const listHeaders = [
     {
@@ -41,6 +41,44 @@ const CaseFiles = (props) => {
     //######## const
 
     const recordsPerPage = 10;
+    const floatingActions = [
+        {
+            "actionId":"archiveCase",
+            "action":"archiveItem",
+            "actionName":"Archive Case",
+            "disabled":true
+        },
+        {
+            "actionId":"newCase",
+            "action":"newItem",
+            "actionName":"New Case",
+            "disabled":false
+        }
+
+    ]
+
+    const overlayMenu = [
+        {
+            "menuItemName":"Patient",
+            "overlayTabs":["Details","Insurance","Diagnosis","Patient Risk"]
+        },
+        {
+            "menuItemName":"Medical Staff",
+            "overlayTabs":["Details"]
+        },
+        {
+            "menuItemName":"Medical History",
+            "overlayTabs":["General","Family History","Lifestyle","Other"]
+        },
+        {
+            "menuItemName":"Procedures",
+            "overlayTabs":["Details"]
+        },
+        {
+            "menuItemName":"Charge Sheet",
+            "overlayTabs":["Consumables","Equipment","Billing","Quotation","Invoices"]
+        }
+    ]
 
     //######## Props
 
@@ -67,6 +105,12 @@ const CaseFiles = (props) => {
 
     //floatingAction
     const [actionButtonState, setActionButtonState] = useState(false)
+
+    //overlayMenu
+    const initialCurrentTabs = overlayMenu[0].overlayTabs
+    const initialSelectedTab = initialCurrentTabs[0]
+    
+
     const svg = {
         newItem : <SvgIcon iconName = "newItem" strokeColor = "#38A169"/>,
         newItemDisabled : <SvgIcon iconName = "newItem" strokeColor = "#A0AEC0"/>,
@@ -80,22 +124,6 @@ const CaseFiles = (props) => {
             fetchCaseFilesData()
         }
     }, []);
-
-    const floatingActions = [
-        {
-            "actionId":"archiveCase",
-            "action":"archiveItem",
-            "actionName":"Archive Case",
-            "disabled":true
-        },
-        {
-            "actionId":"newCase",
-            "action":"newItem",
-            "actionName":"New Case",
-            "disabled":false
-        }
-
-    ]
 
     //######## Event Handlers
 
@@ -117,19 +145,55 @@ const CaseFiles = (props) => {
         setCurrentPageListMax(currentListMax);
     };
 
+    const overlayContent = (item) => <Navigation 
+        item = {item} 
+        overlayMenu = {overlayMenu}
+        handleOverlayMenuPress = {handleOverlayMenuPress}
+        selectedTab = {initialSelectedTab}
+    />
+
     const handleOnItemPress = (item) => {
         // TODO open modal. with props instead of state
-        dispatch({
-            type : appActions.SETSELECTEDLISTITEM,
-            newState : {
-                selectedListItemId : item.id,
-                selectedListObject : item
-            }
+        const overlayId = item.id
+        const overlayTitle = item.caseFileDetails.title
+        
+        modal.openModal('BottomSheetModal',{ 
+            content : overlayContent(item), 
+            overlayId, 
+            overlayTitle, 
+            initialCurrentTabs, 
+            initialSelectedTab,
+            controlTabChange
         })
-
-        modal.openModal('BottomSheetModal',{ item })
     
     };
+
+    const handleOverlayMenuPress = (selectedMenuItem) => {
+        const selectedMenu = overlayMenu.filter(item => item.menuItemName === selectedMenuItem)
+        const currentTabs = selectedMenu[0].overlayTabs
+        const selectedTab = currentTabs[0]
+        dispatch({
+            type : appActions.OVERLAYMENUCHANGE,
+            newState: {
+                currentTabs : currentTabs,
+                selectedTab : selectedTab
+            }
+        })
+        // setCurrentTabs(currentTabs)
+        // setSelectedTab(selectedTab)
+    }
+
+    const controlTabChange = (tab) => {
+        if (state.slideOverlay.slideOverlayButtonEdit === false){
+            dispatch({
+                type : appActions.OVERLAYTABCHANGE,
+                newState :{
+                    selectedTab: tab
+                }
+            })
+            // setSelectedTab(tab)
+        }
+    }
 
     const handleOnCheckBoxPress = (caseItem) => () => {
         const {id} = caseItem;

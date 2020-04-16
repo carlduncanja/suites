@@ -3,5 +3,6 @@ export default {
     caseFiles : [],
     procedures : [],
     physicians : [],
-    storage : []
+    storage : [],
+    equipment : []
 }

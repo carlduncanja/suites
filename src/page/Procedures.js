@@ -26,11 +26,11 @@ const Procedures = (props) =>{
         },
         {   
             name : "Physician",
-            alignment : "flex-start"
+            alignment : "flex-end"
         },
         {   
             name : "Duration",
-            alignment : "flex-start"
+            alignment : "center"
         }
     ];
     const floatingActions = []

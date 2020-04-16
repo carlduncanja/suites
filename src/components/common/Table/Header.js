@@ -4,7 +4,7 @@ import { CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
 import CheckBoxComponent from "../Checkbox";
 
-const Header = ({headers, toggleHeaderCheckbox, isIndeterminate}) => { 
+const Header = ({headers, isCheckbox, toggleHeaderCheckbox, isIndeterminate}) => { 
     return ( 
         <View style={styles.headersContainer}> 
             {/* {
@@ -19,13 +19,16 @@ const Header = ({headers, toggleHeaderCheckbox, isIndeterminate}) => {
                 </TouchableOpacity>
             }
              */}
-
-            <View style={{marginRight:20}}>
-                <CheckBoxComponent
-                    isIndeterminate={isIndeterminate}
-                    onPress={toggleHeaderCheckbox}
-                />
-            </View>
+            {
+                isCheckbox &&
+                    <View style={{marginRight:20}}>
+                        <CheckBoxComponent
+                        isIndeterminate={isIndeterminate}
+                        onPress={toggleHeaderCheckbox}
+                    />
+                </View>
+            }
+            
             {headers.map((header,index)=>{
                 return(
                     <View style={[styles.item,{alignItems:header.alignment}]} key={index}>

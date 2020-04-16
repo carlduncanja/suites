@@ -6,42 +6,28 @@ import Table from "../../common/Table/Table"
 import Paginator from '../../common/Paginators/Paginator';
 import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesHelpers';
 
-const PickListCard = ({closeModal, data, onPressTab, selectedTab}) =>{
+const PickListCard = ({closeModal, data, initialTab, listItemFormat, tabs}) =>{ 
     const recordsPerPage = 6
-    const dataLength = data.length
-    const totalPages = Math.ceil(dataLength/recordsPerPage)
-    const tabs = ["Consumables", "Equipment"]
 
+    const dataToDisplay = (tab) => {
+        const filterData = data.filter(item => item.name === tab)
+        return filterData[0].tabData
+    }
+    const getHeaders = (tab) => {
+        const filterData = data.filter(item => item.name === tab) 
+        return filterData[0].headers
+    }
+    
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
 
-    const listItem = (item) => {
-        return (
-            <View style={[styles.listDataContainer,{marginBottom:10}]}>
-                <View style={{}}>
-                    <Text style={[styles.dataText,{color:"#3182CE"}]}>{item.item}</Text>
-                </View>
-                <View style={{alignItems:'flex-end', marginRight:5}}>
-                    <Text style={[styles.dataText,{color:"#4A5568"}]}>{item.quantity}</Text>
-                </View>
-            </View>
-        )
-        
-    }
+    const [selectedTab, setSelectedTab] = useState(initialTab)
+    const [displayData, setDisplayData] = useState(dataToDisplay(initialTab))
+    const [headers, setHeaders] = useState(getHeaders(initialTab))
 
-    const headerItem = () =>{
-        return (
-            <View style={styles.listDataContainer}>
-                <View style={{}}>
-                    <Text style={styles.headerText}>{selectedTab}</Text>
-                </View>
-                <View style={{alignItems:'flex-end'}}>
-                    <Text style={styles.headerText}>Amount</Text>
-                </View>
-            </View>
-        )
-    }
+    const dataLength = displayData.length
+    const totalPages = Math.ceil(dataLength/recordsPerPage)
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages){
@@ -61,15 +47,21 @@ const PickListCard = ({closeModal, data, onPressTab, selectedTab}) =>{
         } 
     };
 
+    const onPressTab = (tab) => {
+        setSelectedTab(tab)
+        setDisplayData(dataToDisplay(tab))
+        setHeaders(getHeaders(tab))
+    }
+
     return(
         <View style={styles.container}>
             <View style={styles.headerContainer}>
                 <Text>Picklist</Text>
-                <TouchableOpacity onPress={closeModal} style={{alignItems:'flex-end'}}>
+                <TouchableOpacity onPress={()=>closeModal()} style={{alignItems:'flex-end'}}>
                     <SvgIcon iconName = "searchExit" strokeColor="#718096"/>
                 </TouchableOpacity>
             </View>
-           
+
             <View style={styles.tabContainer}>
                 {
                     tabs.map((tab,index)=>{
@@ -86,18 +78,19 @@ const PickListCard = ({closeModal, data, onPressTab, selectedTab}) =>{
                     })
                 }
             </View>
-
+            
             <View style={styles.list}>
                 <Table
-                    data = {data}
+                    data = {displayData}
                     currentListMin = {currentPageListMin}
                     currentListMax = {currentPageListMax}
-                    listItemFormat = {listItem}
-                    headerItemFormat = {headerItem}
+                    listItemFormat = {listItemFormat}
+                    headers = {headers}
+                    isCheckbox = {false}
                 />
             </View>
-            
-            <View style={{flex:1,alignItems:'flex-end', justifyContent:'flex-end'}}>
+
+            <View style={{alignItems:'flex-end', justifyContent:'flex-end'}}>
                 <View style={styles.paginationContainer}>
                     <Paginator
                         currentPage = {currentPagePosition}
@@ -107,7 +100,7 @@ const PickListCard = ({closeModal, data, onPressTab, selectedTab}) =>{
                     />
                 </View>
             </View>
-            
+   
         </View>
     )
 }
@@ -116,9 +109,10 @@ export default PickListCard
 
 const styles = StyleSheet.create({
     container:{
-        flex:1,
+        // flex:1,
         backgroundColor:'#FFFFFF',
         borderRadius:8,
+        width:400,
     },
     headerContainer:{
         flexDirection:'row',

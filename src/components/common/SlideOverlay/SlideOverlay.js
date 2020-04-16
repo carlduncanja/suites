@@ -2,27 +2,25 @@ import React, { useContext } from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import SlideContent from './SlideContent'
 import SlideHeader from './SlideHeader';
-import SlideFooter from './SlideFooter';
-import { SuitesContext } from '../../../contexts/SuitesContext';
-
-const SlideOverlay = ({selectedItem}) => {
-
+ 
+const SlideOverlay = ({overlayContent, overlayId, overlayTitle, onTabPressChange, initialCurrentTabs, initialSelectedTab}) => {
     return ( 
         <View style={styles.container}>
             <View style={styles.header}>
                 <SlideHeader
-                    id = {selectedItem.id}
-                    title = {selectedItem.caseFileDetails.title}
+                    id = {overlayId}
+                    title = {overlayTitle}
+                    initialSelectedTab = {initialSelectedTab}
+                    initialCurrentTabs = {initialCurrentTabs}
+                    onTabPressChange = {onTabPressChange}
                 />
             </View>
 
             <View style={styles.content}>
-               <SlideContent selectedItem = {selectedItem} />
+                <SlideContent 
+                    overlayContent = {overlayContent} 
+                />
             </View>
-
-            {/* <View style={styles.footer}>
-                <SlideFooter/>
-            </View>  */}
         </View>
     );
 }

@@ -1,15 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Animated, Easing, ActivityIndicator} from 'react-native';
-import {ModalProvider, createModalStack} from "react-native-modalfy";
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
 import PageTitle from './PageTitle';
 import Search from '../Search';
 import List from '../List/List';
-import RoundedPaginator from '../Paginators/RoundedPaginator';
-import FloatingActionButton from '../FloatingAction/FloatingActionButton';
 import {SuitesContext} from '../../../contexts/SuitesContext';
 import {appActions} from '../../../redux/reducers/suitesAppReducer';
-import {CaseFileContext} from '../../../contexts/CaseFileContext';
-import {transformToCamel} from '../../../hooks/useTextEditHook';
 import {colors} from '../../../styles'
 
 /**
@@ -20,12 +15,6 @@ import {colors} from '../../../styles'
  * @param listData array of objects
  * @param listHeaders array of strings
  * @param isFetchingData bool
- * @param totalPages number
- * @param currentPagePosition number
- * @param currentPageListMin number
- * @param currentPageListMax number
- * @param goToNextPage function
- * @param goToPreviousPage
  * @param listItemFormat object
  * @returns {*}
  * @constructor
@@ -41,35 +30,11 @@ const Page = (props) => {
         listData,
         listHeaders,
         isFetchingData,
-        // totalPages,
-        // currentPagePosition,
-        // currentPageListMin,
-        // currentPageListMax,
-        // goToNextPage,
-        // goToPreviousPage,
         listItemFormat,
         onRefresh,
         onSelectAll,
         itemsSelected
     } = props;
-
-    // const toggleActionButton = () => {
-    //     dispatch({
-    //         type: appActions.TOGGLEACTIONBUTTON,
-    //         newState: !state.floatingActions.actionButtonState
-    //     })
-    // }
-
-    useEffect(()=>{
-        const menu = require('../../../../assets/db.json').overlayMenuTabs.filter(menu => menu.page === transformToCamel(routeName))
-        menu.length > 0 && dispatch({
-            type: appActions.SETOVERLAYMENU,
-            newState:{
-                menu : menu[0].menuTabs,
-                selectedMenuItemTabs : menu[0].menuTabs[0].overlayTab,
-            }
-        })
-    },[state.overlayMenu.menu, state.slideOverlay.slideOverlayStatus])
 
     const getPageMeasure = (event) => {
         dispatch({
@@ -126,27 +91,6 @@ const Page = (props) => {
                             />
                     }
                 </View>
-
-                {/* <View style={styles.footer}>
-                    <View style={{alignSelf: "center", marginRight: 10}}>
-                        <RoundedPaginator
-                            totalPages={totalPages}
-                            currentPage={currentPagePosition}
-                            goToNextPage={goToNextPage}
-                            goToPreviousPage={goToPreviousPage}
-                        />
-                    </View>
-
-                    {
-                        state.floatingActions.actionButtonState === false ?
-                            <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#4299E1"
-                                                  modalToOpen="ActionContainerModal"
-                                                  toggleActionButton={toggleActionButton}/>
-                            :
-                            <FloatingActionButton fillColor="#FFFFFF" backgroundColor="#A0AEC0"
-                                                  toggleActionButton={toggleActionButton}/>
-                    }
-                </View> */}
 
             </View>
         </View>

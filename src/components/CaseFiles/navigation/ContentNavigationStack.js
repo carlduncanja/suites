@@ -3,14 +3,30 @@ import { createAppContainer } from 'react-navigation';
 import { createSidebarNavigator } from './menu';
 import {Patient, MedicalStaff,MedicalHistory,Procedures,ChargeSheet} from './screens';
 
-const sidebarNavigator = createSidebarNavigator(
+import PatientSelectedIcon from '../../../../assets/svg/overlayPatientSelected';
+import PatientDisabledIcon from '../../../../assets/svg/overlayPatientDisabled';
+
+import ProcedureSelectedIcon from '../../../../assets/svg/overlayProcedureSelected';
+import ProcedureDisabledIcon from '../../../../assets/svg/overlayProcedureDisabled';
+
+import MedicalSelectedIcon from '../../../../assets/svg/overlayMedicalHistorySelected';
+import MedicalDisabledIcon from '../../../../assets/svg/overlayMedicalHistoryDisabled';
+
+import StaffSelectedIcon from '../../../../assets/svg/overlayMedicalStaffSelected';
+import StaffDisabledIcon from '../../../../assets/svg/overlayMedicalStaffDisabled';
+
+import ChargeSheetSelectedIcon from '../../../../assets/svg/overlayChargeSheetSelected';
+import ChargeSheetDisabledIcon from '../../../../assets/svg/overlayChargeSheetDisabled';
+
+const sidebarNavigator = createSidebarNavigator( 
   {
     Patient: {
       screen: Patient,
       params: {
         tabId : 'patient',
         tabName: 'Patient',
-        icon: 'patientButton'
+        selectedIcon: <PatientSelectedIcon/>,
+        disabledIcon: <PatientDisabledIcon/>
       },
     },
     Staff: {
@@ -18,7 +34,8 @@ const sidebarNavigator = createSidebarNavigator(
       params: {
         tabId : 'medicalStaff',
         tabName: 'Medical Staff',
-        icon: 'medicalStaffButton'
+        selectedIcon: <StaffSelectedIcon/>,
+        disabledIcon: <StaffDisabledIcon/>
       },
     },
     History: {
@@ -26,7 +43,8 @@ const sidebarNavigator = createSidebarNavigator(
       params: {
         tabId : 'medical',
         tabName: 'Medical History',
-        icon: 'medicalHistoryButton'
+        selectedIcon: <MedicalSelectedIcon/>,
+        disabledIcon: <MedicalDisabledIcon/>
       },
     },
     Procedures : {
@@ -34,7 +52,8 @@ const sidebarNavigator = createSidebarNavigator(
         params: {
           tabId : 'caseProcedures',
           tabName: 'Procedures',
-          icon: 'procedureButton',
+          selectedIcon: <ProcedureSelectedIcon/>,
+          disabledIcon: <ProcedureDisabledIcon/>
         }
     },
     Charge: {
@@ -42,7 +61,8 @@ const sidebarNavigator = createSidebarNavigator(
       params: {
         tabId:'chargeSheet',
         tabName: 'Charge Sheet',
-        icon: 'chargeSheetButton'
+        selectedIcon: <ChargeSheetSelectedIcon/>,
+        disabledIcon: <ChargeSheetDisabledIcon/>
       },
     },
   },

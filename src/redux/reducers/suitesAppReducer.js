@@ -116,7 +116,7 @@ export const suitesAppReducer = (state, action) => {
                 ...state,
                 overlayMenu:{
                     ...state.overlayMenu,
-                    selectedMenuItemCurrentTab : newState.selectedMenuItemCurrentTab
+                    selectedTab : newState.selectedTab
                 } 
             }
         
@@ -125,9 +125,8 @@ export const suitesAppReducer = (state, action) => {
                 ...state,
                 overlayMenu:{
                     ...state.overlayMenu,
-                    selectedMenuItem: newState.selectedMenuItem,
-                    selectedMenuItemTabs: newState.selectedMenuItemTabs,
-                    selectedMenuItemCurrentTab: newState.selectedMenuItemCurrentTab
+                    currentTabs: newState.currentTabs,
+                    selectedTab: newState.selectedTab,
                 }
             }
         

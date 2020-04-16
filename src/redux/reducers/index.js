@@ -5,6 +5,7 @@ import caseFiles from "./caseReducer";
 import procedures from './proceduresReducer';
 import physicians from './physiciansReducer';
 import storage from './storageReducer';
+import equipment from './equipmentReducer';
 // import app from "./appReducer"
 // import casesFiles from "./caseFilesReducer"
 // import suites from './suitesAppReducer'
@@ -18,6 +19,7 @@ const appReducer = combineReducers({
     procedures,
     physicians,
     storage,
+    equipment,
 });
 
 /**

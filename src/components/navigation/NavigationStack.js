@@ -10,6 +10,7 @@ import CaseFiles from '../../page/CaseFiles';
 import Procedures from '../../page/Procedures'; 
 import Physicians from '../../page/Physicians';
 import StorageLocations from '../../page/StorageLocations';
+import Equipment from '../../page/Equipment';
 
 /* Providers*/
 import {ScheduleProvider} from '../../contexts/ScheduleContext';
@@ -74,7 +75,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Equipment: {
-        screen: NotFound,
+        screen: Equipment,
         params: {
             icon: EquipmentIcon,
             tabName: 'Equipment',

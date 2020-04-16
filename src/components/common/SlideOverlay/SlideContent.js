@@ -1,16 +1,15 @@
 import React,{ useContext} from 'react';
 import { View, Text, StyleSheet, SectionList } from 'react-native';
-import Navigation from '../../CaseFiles/navigation/ContentNavigationStack'
 
-const SllideContent = ({selectedItem}) => {
+const SlideContent = ({overlayContent}) => {
     return ( 
-        <View style={styles.container}>
-            <Navigation />
+        <View style={styles.container}> 
+            {overlayContent}
         </View>
     ); 
 }
  
-export default SllideContent;
+export default SlideContent;
 
 const styles = StyleSheet.create({
     container:{
