@@ -13,7 +13,7 @@ import {useCheckBox} from '../../../helpers/caseFilesHelpers';
  * @param itemsSelected
  * @param refreshing
  * @param keyExtractor
- * @returns {*} 
+ * @returns {*}
  */
 const List = ({
                   listData,
@@ -25,22 +25,8 @@ const List = ({
                   onSelectAll,
                   keyExtractor = (item) => item.id + new Date().getTime()
               }) => {
-    const [state] = useContext(SuitesContext);
 
-    // const [checkBoxList, setCheckBoxList] = useState([]);
-
-    // const toggleCheckBox = (item) => {
-    //     let checkedItemsList = useCheckBox(item, checkBoxList);
-    //     setCheckBoxList(checkedItemsList)
-    // };
-
-    // const toggleHeaderCheckbox = () => {
-    //     checkBoxList.length > 0
-    //         ? setCheckBoxList([])
-    //         : setCheckBoxList(listData)
-    // };
-
-    const isIndeterminate = itemsSelected.length > 0 
+    const isIndeterminate = itemsSelected.length > 0 && itemsSelected.length !== listData.length;
 
     return (
         <View>
@@ -48,7 +34,7 @@ const List = ({
                 <ListHeader
                     listHeaders={listHeaders}
                     toggleHeaderCheckbox={onSelectAll}
-                    // checked={}
+                    checked={itemsSelected.length > 0}
                     isIndeterminate={isIndeterminate}
                 />
             </View>
@@ -59,7 +45,7 @@ const List = ({
                     keyExtractor={keyExtractor}
                     onRefresh={onRefresh}
                     refreshing={refreshing}
-                    contentContainerStyle={{paddingBottom:150}}
+                    contentContainerStyle={{paddingBottom: 150}}
                 />
             </View>
         </View>
@@ -72,6 +58,5 @@ const styles = StyleSheet.create({
     header: {
         marginBottom: 25,
     },
-    data: {
-    }
+    data: {}
 });

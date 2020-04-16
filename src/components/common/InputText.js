@@ -4,12 +4,12 @@ import {View, TextInput, StyleSheet} from 'react-native';
 const InputText = (props) =>{
     return(
         <TextInput
-            onChangeText = {(text)=>{props.changeText(text)}}
+            onChangeText = {props.onChangeText}
             placeholder={props.placeholder}
             placeholderTextColor = {props.placeholderTextColor}
             value = {props.inputText}
         />
     )
-}
+};
 
 export default InputText

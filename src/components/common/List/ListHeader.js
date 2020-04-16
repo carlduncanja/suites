@@ -4,8 +4,8 @@ import Header from '../Table/Header';
 
 /**
  * @param checkedItemList array of objects
- * @param listHeaders array of objects 
- * @param toggleHeaderCheckbox function 
+ * @param listHeaders array of objects
+ * @param toggleHeaderCheckbox function
  * @param numbers
  * @return {*}
  * @constructor
@@ -14,12 +14,13 @@ import Header from '../Table/Header';
  //Pass length instead of entire list/ boolean
  //ToggleCheckbox - select page items
 
-const ListHeader = ({listHeaders, toggleHeaderCheckbox, isIndeterminate}) => {
+const ListHeader = ({listHeaders, toggleHeaderCheckbox, isIndeterminate, checked}) => {
 
     return (
         <View style = {styles.container}>
            <Header
                 headers={listHeaders}
+                checked={checked}
                 toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 isIndeterminate = {isIndeterminate}
             />

@@ -1,19 +1,19 @@
-import React,{Component, useContext, useEffect} from 'react';
+import React, {Component, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import { CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
+import {CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
 import CheckBoxComponent from "../Checkbox";
 
-const Header = ({headers, isCheckbox, toggleHeaderCheckbox, isIndeterminate}) => { 
-    return ( 
-        <View style={styles.headersContainer}> 
+const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked, isCheckbox}) => {
+    return (
+        <View style={styles.headersContainer}>
             {/* {
-                checkBoxList && 
+                checkBoxList &&
                 <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleHeaderCheckbox()}>
                     {
-                        checkBoxList.length > 0 || checkBoxList.length === dataLength ? 
-                            <PartialCheckbox/> 
-                            : 
+                        checkBoxList.length > 0 || checkBoxList.length === dataLength ?
+                            <PartialCheckbox/>
+                            :
                             <Checkbox/>
                         }
                 </TouchableOpacity>
@@ -25,6 +25,7 @@ const Header = ({headers, isCheckbox, toggleHeaderCheckbox, isIndeterminate}) =>
                         <CheckBoxComponent
                         isIndeterminate={isIndeterminate}
                         onPress={toggleHeaderCheckbox}
+                        isCheck={checked}
                     />
                 </View>
             }
@@ -39,23 +40,23 @@ const Header = ({headers, isCheckbox, toggleHeaderCheckbox, isIndeterminate}) =>
         </View>
     );
 }
- 
+
 export default Header;
 
 const styles = StyleSheet.create({
-    headersContainer:{
+    headersContainer: {
         //flex:1,
-        marginLeft:10,
-        flexDirection:'row',
+        marginLeft: 10,
+        flexDirection: 'row',
         //width:'100%'
     },
-    item:{
-        flex:1,
-        alignItems:'flex-start',
-        justifyContent:'center',
+    item: {
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'center',
     },
-    headerText:{
-        fontSize:12,
-        color:'#718096'
+    headerText: {
+        fontSize: 12,
+        color: '#718096'
     }
 })

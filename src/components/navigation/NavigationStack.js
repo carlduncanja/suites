@@ -6,11 +6,15 @@ import React from "react";
 
 /* Screens */
 import Schedule from '../../page/Schedule';
-import CaseFiles from '../../page/CaseFiles';
-import Procedures from '../../page/Procedures'; 
+import CaseFiles from '../../page/CaseFiles'
+import Theatres from "../../page/Theatres";
+import Inventory from "../../page/Inventory";
+import Storage from "../../page/Storage";
+import Procedures from '../../page/Procedures';
 import Physicians from '../../page/Physicians';
 import StorageLocations from '../../page/StorageLocations';
 import Equipment from '../../page/Equipment';
+
 
 /* Providers*/
 import {ScheduleProvider} from '../../contexts/ScheduleContext';
@@ -59,15 +63,15 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Theatre: {
-        screen: NotFound,
+        screen: Theatres,
         params: {
             icon: TheathreIcon,
-            tabName: 'Theathre',
+            tabName: 'Theatre',
             provider: ScheduleProvider
         },
     },
     Inventory: {
-        screen: NotFound,
+        screen: Inventory,
         params: {
             icon: InventoryIcon,
             tabName: 'Inventory',
@@ -107,7 +111,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Storage: {
-        screen: StorageLocations,
+        screen: Storage,
         params: {
             icon: StorageIcon,
             tabName: 'Storage',
