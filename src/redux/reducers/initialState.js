@@ -4,5 +4,6 @@ export default {
     procedures : [],
     physicians : [],
     storage : [],
-    theatres: []
+    theatres: [],
+    inventory : []
 }

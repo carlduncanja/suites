@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from "react-native";
 import Page from "../components/common/Page/Page";
@@ -8,6 +8,10 @@ import ListItem from "../components/common/List/ListItem";
 import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
 import {numberFormatter} from "../utils/formatter";
 
+
+import {setInventory} from "../redux/actions/InventorActions";
+import {connect} from "react-redux";
+import {getInventories} from "../api/network";
 
 const listHeaders = [
     {
@@ -110,7 +114,8 @@ const testData = [
 function Inventory(props) {
 
     const {
-        inventory = testData
+        inventory,
+        setInventory
     } = props;
 
     const pageTitle = "Inventory";
@@ -121,6 +126,11 @@ function Inventory(props) {
     const [isFetchingData, setFetchingData] = useState(false);
     const [selectedIds, setSelectedIds] = useState([]);
 
+    // ##### Lifecycle Methods
+
+    useEffect(() => {
+        if (!inventory.length) fetchInventory();
+    }, []);
 
     // ##### Handler functions
 
@@ -132,6 +142,7 @@ function Inventory(props) {
     };
 
     const onRefresh = () => {
+        fetchInventory()
     };
 
     const onSelectAll = () => {
@@ -201,7 +212,6 @@ function Inventory(props) {
         </View>
     </>;
 
-
     const renderItem = (item) => {
 
         const formattedItem = {
@@ -225,6 +235,22 @@ function Inventory(props) {
             onItemPress={onItemPress(item)}
             itemView={itemView}
         />
+    };
+
+    const fetchInventory = () => {
+        setFetchingData(true);
+        getInventories()
+            .then(data => {
+                console.log("inventory", data);
+                setInventory(data);
+            })
+            .catch(error => {
+                // todo handle error
+                console.log("Failed to fetch inventory", error);
+            })
+            .finally(_ => {
+                setFetchingData(false);
+            })
     };
 
     return (
@@ -259,6 +285,10 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     },
+    itemText: {
+        fontSize: 14,
+        color: "#4E5664",
+    },
     locationBox: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -274,8 +304,53 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 2,
         elevation: 3,
-        zIndex:3,
+        zIndex: 3,
     }
 });
 
-export default Inventory;
+
+const mapStateToProps = (state) => {
+
+    const getLevels = (inventoryLocations = []) => {
+        const levels = {
+            max: 0,
+            min: 0,
+            critical: 0,
+            ideal: 0,
+        };
+        inventoryLocations.forEach(location => {
+            // TODO calculate level from location.
+        });
+        return levels;
+    };
+
+    console.log("redux inventory", state.inventory);
+
+    // REMAPPING INVENTORY ITEMS
+    const inventory = state.inventory.map(item => {
+
+        const {inventoryLocation = []} = item;
+        const stock = 0;
+        const locations = inventoryLocation.length;
+        const levels = getLevels(inventoryLocation);
+
+        return {
+            ...item,
+            stock,
+            locations,
+            levels
+        }
+    });
+
+    console.log("redux inventory, after mapping",inventory);
+
+
+    return {
+        inventory
+    }
+};
+const mapDispatchToProps = {
+   setInventory
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Inventory);

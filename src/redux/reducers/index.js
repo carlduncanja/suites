@@ -5,7 +5,8 @@ import caseFiles from "./caseReducer";
 import procedures from './proceduresReducer';
 import physicians from './physiciansReducer';
 import storage from './storageReducer';
-import theatres from './theatresReducer'
+import theatres from './theatresReducer';
+import inventory from "./inventoryReducer";
 // import app from "./appReducer"
 // import casesFiles from "./caseFilesReducer"
 // import suites from './suitesAppReducer'
@@ -19,7 +20,8 @@ const appReducer = combineReducers({
     procedures,
     physicians,
     storage,
-    theatres
+    theatres,
+    inventory
 });
 
 /**

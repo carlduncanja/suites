@@ -1,6 +1,7 @@
 import suitesAxiosInstance from "./index"
 
 import {
+    inventoriesEndpoint,
     theatresEndpoint
 } from "../const/suitesEndpoints";
 
@@ -43,35 +44,42 @@ export const searchSchedule = async (query) => {
     // })
 };
 
-// ################# Theatres Endpoint
+// ################# Theatres Endpoints
 export const getTheatres = async () => {
     return suitesAxiosInstance.get(theatresEndpoint)
         .then(handleResponse)
         .catch(handleError);
 };
 
-// ################# Case Files Endpoint
+// ################# Inventory Endpoints
+export const getInventories = async () => {
+    return suitesAxiosInstance.get(inventoriesEndpoint)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+// ################# Case Files Endpoints
 export const getCaseFiles = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return caseFiles
     //return axios.get('/casefiles')
 };
 
-// ################# Procedures Endpoint
+// ################# Procedures Endpoints
 export const getProcedures = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return procedures
     //return axios.get('/procedures')
 };
 
-// ################# Physicians Endpoint
+// ################# Physicians Endpoints
 export const getPhysicians = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return physicians
     //return axios.get('/procedures')
 };
 
-// ################# Storage Endpoint
+// ################# Storage Endpoints
 export const getStorage = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return storage
