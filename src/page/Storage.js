@@ -88,7 +88,7 @@ function Storage(props) {
     const onRefresh = () => {
     };
     const onSelectAll = () => {
-        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== testData.length;
+        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== storageLocations.length;
         // console.log("Indeterminate: ", indeterminate)
         if (indeterminate) {
             const selectedAllIds = [...storageLocations.map(item => item.id)];

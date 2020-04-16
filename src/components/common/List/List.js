@@ -12,6 +12,8 @@ import {useCheckBox} from '../../../helpers/caseFilesHelpers';
  * @param onRefresh
  * @param itemsSelected
  * @param refreshing
+ * @param onSelectAll
+ * @param isCheckbox
  * @param keyExtractor
  * @returns {*}
  */
@@ -23,6 +25,7 @@ const List = ({
                   onRefresh,
                   refreshing,
                   onSelectAll,
+                  isCheckbox,
                   keyExtractor = (item) => (item.id || item._id) + new Date().getTime()
               }) => {
 
@@ -35,6 +38,7 @@ const List = ({
                     listHeaders={listHeaders}
                     toggleHeaderCheckbox={onSelectAll}
                     checked={itemsSelected.length > 0}
+                    isCheckbox={isCheckbox}
                     isIndeterminate={isIndeterminate}
                 />
             </View>

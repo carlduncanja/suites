@@ -146,7 +146,7 @@ function Inventory(props) {
     };
 
     const onSelectAll = () => {
-        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== testData.length;
+        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== inventory.length;
         // console.log("Indeterminate: ", indeterminate)
         if (indeterminate) {
             const selectedAllIds = [...inventory.map(item => item.id)];
@@ -241,7 +241,6 @@ function Inventory(props) {
         setFetchingData(true);
         getInventories()
             .then(data => {
-                console.log("inventory", data);
                 setInventory(data);
             })
             .catch(error => {
@@ -324,8 +323,6 @@ const mapStateToProps = (state) => {
         return levels;
     };
 
-    console.log("redux inventory", state.inventory);
-
     // REMAPPING INVENTORY ITEMS
     const inventory = state.inventory.map(item => {
 
@@ -336,14 +333,12 @@ const mapStateToProps = (state) => {
 
         return {
             ...item,
+            id: item._id,
             stock,
             locations,
             levels
         }
     });
-
-    console.log("redux inventory, after mapping",inventory);
-
 
     return {
         inventory

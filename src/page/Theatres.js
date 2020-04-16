@@ -128,7 +128,7 @@ function Theatres(props) {
     };
 
     const onSelectAll = () => {
-        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== testData.length;
+        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== theatres.length;
         if (indeterminate) {
             const selectedAllIds = [...theatres.map(caseItem => caseItem.id)];
             setSelectedIds(selectedAllIds)
@@ -267,7 +267,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-    const theatres = state.theatres;
+    const theatres = state.theatres.map( item => {
+
+        return {
+            ...item,
+            id: item._id
+        }
+    });
 
     return {
         theatres

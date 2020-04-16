@@ -14,13 +14,14 @@ import Header from '../Table/Header';
  //Pass length instead of entire list/ boolean
  //ToggleCheckbox - select page items
 
-const ListHeader = ({listHeaders, toggleHeaderCheckbox, isIndeterminate, checked}) => {
+const ListHeader = ({listHeaders, toggleHeaderCheckbox, isIndeterminate, checked, isCheckbox}) => {
 
     return (
         <View style = {styles.container}>
            <Header
                 headers={listHeaders}
                 checked={checked}
+                isCheckbox={isCheckbox}
                 toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 isIndeterminate = {isIndeterminate}
             />
