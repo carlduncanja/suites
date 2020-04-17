@@ -8,6 +8,7 @@ import ListItem from "../components/common/List/ListItem";
 import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
 import {numberFormatter} from "../utils/formatter";
 import {useModal} from "react-native-modalfy";
+import StorageBottomSheetContainer from "../components/Storage/StorageBottomSheetContainer";
 
 
 const listHeaders = [
@@ -89,6 +90,7 @@ function Storage(props) {
 
     const onRefresh = () => {
     };
+
     const onSelectAll = () => {
         const indeterminate = selectedIds.length >= 0 && selectedIds.length !== storageLocations.length;
         // console.log("Indeterminate: ", indeterminate)
@@ -115,7 +117,7 @@ function Storage(props) {
 
     const onItemPress = (item) => () => {
         modal.openModal('BottomSheetModal', {
-            content: <View/>
+            content: <StorageBottomSheetContainer storage={item}/>
         })
     };
 
