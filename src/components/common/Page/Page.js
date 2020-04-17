@@ -86,6 +86,7 @@ const Page = (props) => {
                                 listHeaders={listHeaders}
                                 itemsSelected={itemsSelected}
                                 onRefresh={onRefresh}
+                                isCheckbox={true}
                                 // routeName={routeName}
                                 onSelectAll={onSelectAll}
                                 // currentPageListMin={currentPageListMin}

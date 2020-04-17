@@ -1,4 +1,10 @@
-import axios from "./index"
+import suitesAxiosInstance from "./index"
+import {handleError, handleResponse} from "./apiUtils";
+
+import {
+    inventoriesEndpoint,
+    theatresEndpoint
+} from "../const/suitesEndpoints";
 
 // ################# Mock Data
 import {appointments} from "../../data/Appointments"
@@ -18,7 +24,7 @@ export const getSchedules = async () => {
 
 export const getScheduleById = async (id) => {
     await new Promise(r => setTimeout(r, 2000));
-    return appointments.find( item => item.id === id);
+    return appointments.find(item => item.id === id);
     //return axios.get('/schedules')
 };
 
@@ -39,28 +45,42 @@ export const searchSchedule = async (query) => {
     // })
 };
 
-// ################# Case Files Endpoint
+// ################# Theatres Endpoints
+export const getTheatres = async () => {
+    return suitesAxiosInstance.get(theatresEndpoint)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+// ################# Inventory Endpoints
+export const getInventories = async () => {
+    return suitesAxiosInstance.get(inventoriesEndpoint)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+// ################# Case Files Endpoints
 export const getCaseFiles = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return caseFiles
     //return axios.get('/casefiles')
 };
 
-// ################# Procedures Endpoint
+// ################# Procedures Endpoints
 export const getProcedures = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return procedures
     //return axios.get('/procedures')
 };
 
-// ################# Physicians Endpoint
+// ################# Physicians Endpoints
 export const getPhysicians = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return physicians
     //return axios.get('/physicians')
 };
 
-// ################# Storage Endpoint
+// ################# Storage Endpoints
 export const getStorage = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return storage

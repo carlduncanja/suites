@@ -7,18 +7,6 @@ import CheckBoxComponent from "../Checkbox";
 const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked, isCheckbox}) => {
     return (
         <View style={styles.headersContainer}>
-            {/* {
-                checkBoxList &&
-                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleHeaderCheckbox()}>
-                    {
-                        checkBoxList.length > 0 || checkBoxList.length === dataLength ?
-                            <PartialCheckbox/>
-                            :
-                            <Checkbox/>
-                        }
-                </TouchableOpacity>
-            }
-             */}
             {
                 isCheckbox &&
                     <View style={{marginRight:20}}>
@@ -29,7 +17,7 @@ const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked, isChec
                     />
                 </View>
             }
-            
+
             {headers.map((header,index)=>{
                 return(
                     <View style={[styles.item,{alignItems:header.alignment}]} key={index}>
