@@ -13,6 +13,7 @@ import {setInventory} from "../redux/actions/InventorActions";
 import {connect} from "react-redux";
 import {getInventories} from "../api/network";
 import {useModal} from "react-native-modalfy";
+import InventoryBottomSheetContainer from "../components/Inventory/InventoryBottomSheetContainer";
 
 const listHeaders = [
     {
@@ -141,7 +142,7 @@ function Inventory(props) {
 
     const onItemPress = (item) => () => {
         modal.openModal('BottomSheetModal', {
-            content: <View/>
+            content: <InventoryBottomSheetContainer inventory={item}/>
         })
     };
 
