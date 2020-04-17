@@ -1,13 +1,43 @@
 import React, { useContext } from 'react';
-import { ScrollView, View, StyleSheet } from "react-native";
+import { ScrollView, View, StyleSheet, TouchableOpacity } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import BMIConverter from '../../BMIConverter'; 
 import moment from 'moment';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../../components/common/Information Record/RecordStyles';
+import { withModal } from 'react-native-modalfy';
+import PatientBMIChart from '../../PatientBMIChart';
 
 let itemWidth = `${100/3}%`
-const Details = ({tabDetails}) => {
+const Details = ({tabDetails, modal}) => {
     const [state] = useContext(SuitesContext)
+
+    const bmiScale = [ 
+        {
+            "color":"#4299E1",
+            "startValue":0,
+            "endValue":18.4
+        },
+        {
+            "color":"#48BB78",
+            "startValue":18.5,
+            "endValue":24.9
+        },
+        {
+            "color":"#ED8936",
+            "startValue":25,
+            "endValue":29.9
+        },
+        {
+            "color":"#E53E3E",
+            "startValue":30,
+            "endValue":34.9
+        },
+        {
+            "color":"#805AD5",
+            "startValue":35,
+            "endValue":100
+        }
+    ]
 
     const Divider = () =>{
         return(
@@ -22,6 +52,15 @@ const Details = ({tabDetails}) => {
                 }}
             />
         )
+    }
+
+    const handleBMIPress = (value) => {
+        modal.openModal('OverlayInfoModal',{
+            overlayContent : <PatientBMIChart
+                value = {value}
+                bmiScale = {bmiScale}
+            />
+        })
     }
 
     const seperateNumber = (number) =>{
@@ -90,12 +129,17 @@ const Details = ({tabDetails}) => {
                             recordValue={checkData(demoObject.weight)}
                         />
                     </View>
-                    <View style={styles.rowItem}>
+                    <TouchableOpacity 
+                        style={styles.rowItem} 
+                        activeOpactiy = {1}
+                        onPress = {()=>handleBMIPress(demoObject.bmi)}
+                    >
                         <BMIConverter
                             recordTitle={"BMI"}
                             bmiValue={demoObject.bmi}
+                            bmiScale = {bmiScale}
                         />
-                    </View>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.rowContainer}>
                     <View style={styles.rowItem}>
@@ -269,7 +313,7 @@ const Details = ({tabDetails}) => {
     );
 }
  
-export default Details;
+export default withModal(Details) ;
 
 const styles= StyleSheet.create({
     separator:{

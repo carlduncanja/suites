@@ -3,16 +3,17 @@ import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import SlideContent from './SlideContent'
 import SlideHeader from './SlideHeader';
  
-const SlideOverlay = ({overlayContent, overlayId, overlayTitle, onTabPressChange, initialCurrentTabs, initialSelectedTab}) => {
-    return ( 
+const SlideOverlay = ({overlayContent, isEditMode, overlayId, overlayTitle, onTabPressChange, currentTabs, selectedTab}) => {
+    return (  
         <View style={styles.container}>
             <View style={styles.header}>
                 <SlideHeader
                     id = {overlayId}
                     title = {overlayTitle}
-                    initialSelectedTab = {initialSelectedTab}
-                    initialCurrentTabs = {initialCurrentTabs}
+                    selectedTab = {selectedTab}
+                    currentTabs = {currentTabs}
                     onTabPressChange = {onTabPressChange}
+                    isEditMode = {isEditMode}
                 />
             </View>
 

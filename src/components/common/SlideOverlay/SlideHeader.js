@@ -4,20 +4,15 @@ import { ViewModeHeading, EditModeHeading } from '../Headings/Headings'
 import TabsContainer from '../Tabs/TabsContainer'
 import { SuitesContext } from '../../../contexts/SuitesContext';
  
-const SlideHeader = ({id, title, initialSelectedTab, initialCurrentTabs, onTabPressChange}) => { 
+const SlideHeader = ({id, title, selectedTab, currentTabs, onTabPressChange, isEditMode}) => { 
     const [state, dispatch] = useContext(SuitesContext)
     
-    const tabs = state.overlayMenu.currentTabs.length === 0 ? initialCurrentTabs : state.overlayMenu.currentTabs
-    const selectedTab = state.overlayMenu.selectedTab === "" ? initialSelectedTab : state.overlayMenu.selectedTab
-   
     return (  
         <View style = {{
-            backgroundColor: state.slideOverlay.slideOverlayButtonEdit ? "#83AED1" : "#EEF2F6",
-            borderTopLeftRadius:30, 
-            borderTopRightRadius:30
+            backgroundColor : isEditMode ?"#83AED1" :"#EEF2F6" 
         }}>
             { 
-                state.slideOverlay.slideOverlayButtonEdit ?
+                isEditMode ?
                     <EditModeHeading
                         id = {id}
                         title = {title}
@@ -30,7 +25,7 @@ const SlideHeader = ({id, title, initialSelectedTab, initialCurrentTabs, onTabPr
             }
 
             <TabsContainer 
-                tabs = {tabs}
+                tabs = {currentTabs}
                 selectedTab = {selectedTab}
                 onPressChange = {onTabPressChange}
             />

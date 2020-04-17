@@ -17,6 +17,7 @@ import {SuitesContext} from '../contexts/SuitesContext';
 import {appActions} from '../redux/reducers/suitesAppReducer';
 
 import { withModal } from 'react-native-modalfy';
+import CaseFileBottomSheet from '../components/CaseFiles/CaseFileBottomSheet';
 
 const listHeaders = [
     {
@@ -106,11 +107,6 @@ const CaseFiles = (props) => {
     //floatingAction
     const [actionButtonState, setActionButtonState] = useState(false)
 
-    //overlayMenu
-    const initialCurrentTabs = overlayMenu[0].overlayTabs
-    const initialSelectedTab = initialCurrentTabs[0]
-    
-
     const svg = {
         newItem : <SvgIcon iconName = "newItem" strokeColor = "#38A169"/>,
         newItemDisabled : <SvgIcon iconName = "newItem" strokeColor = "#A0AEC0"/>,
@@ -145,55 +141,12 @@ const CaseFiles = (props) => {
         setCurrentPageListMax(currentListMax);
     };
 
-    const overlayContent = (item) => <Navigation 
-        item = {item} 
-        overlayMenu = {overlayMenu}
-        handleOverlayMenuPress = {handleOverlayMenuPress}
-        selectedTab = {initialSelectedTab}
-    />
-
     const handleOnItemPress = (item) => {
-        // TODO open modal. with props instead of state
-        const overlayId = item.id
-        const overlayTitle = item.caseFileDetails.title
-        
         modal.openModal('BottomSheetModal',{ 
-            content : overlayContent(item), 
-            overlayId, 
-            overlayTitle, 
-            initialCurrentTabs, 
-            initialSelectedTab,
-            controlTabChange
+            content : <CaseFileBottomSheet item = {item} overlayMenu = {overlayMenu}/>
         })
     
     };
-
-    const handleOverlayMenuPress = (selectedMenuItem) => {
-        const selectedMenu = overlayMenu.filter(item => item.menuItemName === selectedMenuItem)
-        const currentTabs = selectedMenu[0].overlayTabs
-        const selectedTab = currentTabs[0]
-        dispatch({
-            type : appActions.OVERLAYMENUCHANGE,
-            newState: {
-                currentTabs : currentTabs,
-                selectedTab : selectedTab
-            }
-        })
-        // setCurrentTabs(currentTabs)
-        // setSelectedTab(selectedTab)
-    }
-
-    const controlTabChange = (tab) => {
-        if (state.slideOverlay.slideOverlayButtonEdit === false){
-            dispatch({
-                type : appActions.OVERLAYTABCHANGE,
-                newState :{
-                    selectedTab: tab
-                }
-            })
-            // setSelectedTab(tab)
-        }
-    }
 
     const handleOnCheckBoxPress = (caseItem) => () => {
         const {id} = caseItem;

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity ,TouchableWithoutFeedback} fro
 import { SuitesContext } from '../contexts/SuitesContext';
 import PickListCard from '../components/CaseFiles/PickList/PickListCard';
 
-const PickListModal = (props) => {
+const OverlayInfoModal = (props) => {
     const [state] = useContext(SuitesContext)
     const [isPickListVisible, setIsPickListVisible] = useState(true)
     const { modal: {closeModal, closeModals, currentModal, closeAllModals, params }} = props
@@ -39,19 +39,13 @@ const PickListModal = (props) => {
         <View style={[styles.container,{width:state.pageMeasure.width, height: state.pageMeasure.height}]}>
             {renderShadow()}
             <View style={{height:500, width:500, alignItems:'center',justifyContent:'center'}}>
-                <PickListCard
-                    data = {params.tabDetails}
-                    initialTab = {params.initialTab}
-                    listItemFormat = {params.listItemFormat}
-                    tabs = {params.tabs}
-                    closeModal = {closePickListModal}
-                />
+                {params.overlayContent}
             </View>
         </View> 
     );
 }
  
-export default PickListModal;
+export default OverlayInfoModal;
 
 const styles = StyleSheet.create({
     container:{

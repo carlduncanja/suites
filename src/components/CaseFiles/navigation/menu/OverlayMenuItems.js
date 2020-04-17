@@ -9,7 +9,7 @@ import { transformToCamel } from '../../../../hooks/useTextEditHook'
 const OverlayMenuItems = ({ navigation, handleOverlayMenuPress}) => {
     const { routes, index } = navigation.state;
     const [state, dispatch] = useContext(SuitesContext)
-    const [currentTabName, setCurrentTabName] = useState("Patient") 
+    const [currentTabName, setCurrentTabName] = useState("Patient")  
 
     return (
         <View style={styles.container}>

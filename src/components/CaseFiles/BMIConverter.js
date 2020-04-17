@@ -4,7 +4,7 @@ import { CaseFileContext } from '../../contexts/CaseFileContext';
 import SvgIcon from "../../../assets/SvgIcon";
 
 const width = 20
-const BMIConverter = ({bmiValue, recordTitle}) => {
+const BMIConverter = ({bmiValue, recordTitle, bmiScale}) => {
     // const caseStates = useContext(CaseFileContext).state
     const [state] = useContext(CaseFileContext)
 
@@ -13,7 +13,7 @@ const BMIConverter = ({bmiValue, recordTitle}) => {
             <View style={{backgroundColor:"#E3E8EF",width:1}}/>
         )
     }
-    const data = state.bmiScale
+    const data = bmiScale
     const indicator = <SvgIcon iconName="bmiIndicator"/>
 
     calcIndicatorPosition = (value) =>{

@@ -6,28 +6,15 @@ import Table from "../../common/Table/Table"
 import Paginator from '../../common/Paginators/Paginator';
 import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesHelpers';
 
-const PickListCard = ({closeModal, data, initialTab, listItemFormat, tabs}) =>{ 
+const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, headers, isCheckBox ,onPressTab}) =>{ 
+    
     const recordsPerPage = 6
-
-    const dataToDisplay = (tab) => {
-        const filterData = data.filter(item => item.name === tab)
-        return filterData[0].tabData
-    }
-    const getHeaders = (tab) => {
-        const filterData = data.filter(item => item.name === tab) 
-        return filterData[0].headers
-    }
+    const dataLength = data.length
+    const totalPages = Math.ceil(dataLength/recordsPerPage)
     
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
-
-    const [selectedTab, setSelectedTab] = useState(initialTab)
-    const [displayData, setDisplayData] = useState(dataToDisplay(initialTab))
-    const [headers, setHeaders] = useState(getHeaders(initialTab))
-
-    const dataLength = displayData.length
-    const totalPages = Math.ceil(dataLength/recordsPerPage)
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages){
@@ -47,12 +34,6 @@ const PickListCard = ({closeModal, data, initialTab, listItemFormat, tabs}) =>{
         } 
     };
 
-    const onPressTab = (tab) => {
-        setSelectedTab(tab)
-        setDisplayData(dataToDisplay(tab))
-        setHeaders(getHeaders(tab))
-    }
-
     return(
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -61,7 +42,7 @@ const PickListCard = ({closeModal, data, initialTab, listItemFormat, tabs}) =>{
                     <SvgIcon iconName = "searchExit" strokeColor="#718096"/>
                 </TouchableOpacity>
             </View>
-
+            
             <View style={styles.tabContainer}>
                 {
                     tabs.map((tab,index)=>{
@@ -77,16 +58,16 @@ const PickListCard = ({closeModal, data, initialTab, listItemFormat, tabs}) =>{
                         )
                     })
                 }
-            </View>
-            
+            </View> 
+
             <View style={styles.list}>
                 <Table
-                    data = {displayData}
+                    data = {data}
                     currentListMin = {currentPageListMin}
                     currentListMax = {currentPageListMax}
                     listItemFormat = {listItemFormat}
                     headers = {headers}
-                    isCheckbox = {false}
+                    isCheckbox = {isCheckBox}
                 />
             </View>
 

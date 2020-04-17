@@ -13,7 +13,7 @@ import OverlaySlidePanelModal from '../../modals/OverlaySlidePanelModal';
 import OverlayModal from '../../modals/OverlayModal';
 import ActionContainerModal from '../../modals/ActionContainerModal';
 import ReportPreviewModal from '../../modals/ReportPreviewModal';
-import PickListModal from '../../modals/PickListModal';
+import OverlayInfoModal from '../../modals/OverlayInfoModal';
 import BottomSheetModal from '../../modals/BottomSheetModal';
 
 /**
@@ -37,7 +37,7 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
         OverlayModal: OverlayModal,
         ActionContainerModal: ActionContainerModal,
         ReportPreviewModal: ReportPreviewModal,
-        PickListModal : PickListModal,
+        OverlayInfoModal : OverlayInfoModal,
         BottomSheetModal : BottomSheetModal,
     }
 
