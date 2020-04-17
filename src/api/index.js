@@ -5,7 +5,7 @@ const BASE_URL = "https://suite-api.azurewebsites.net/api"; //process.env.SUITES
 
 const baseInstance = axios.create({
     baseURL: BASE_URL,
-    timeout: 1000,
+    timeout: 5000,
     headers: {'X-Custom-Header': 'foobar'}
 });
 
