@@ -1,38 +1,45 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Animated, Button, TouchableWithoutFeedback, Dimensions } from "react-native";
-import { SuitesContext } from '../contexts/SuitesContext';
-import { withModal } from 'react-native-modalfy';
+import React, {useContext, useRef, useState, useEffect} from 'react';
+import {
+    View,
+    TouchableWithoutFeedback,
+    StyleSheet,
+    Dimensions
+} from "react-native";
+import Animated from 'react-native-reanimated'
+import {SuitesContext} from '../contexts/SuitesContext';
 import BottomSheet from 'reanimated-bottom-sheet'
-import SlideOverlay from '../components/common/SlideOverlay/SlideOverlay'; 
 
 const BottomSheetModal = (props) => {
-    const [state] = useContext(SuitesContext)
+    const [state] = useContext(SuitesContext);
 
     const bottomSheetRef = useRef();
-    const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
     const [fall] = useState(new Animated.Value(1));
-    const initialSnap = 2
+    const initialSnap = 2;
 
-    const { modal: {closeModal, closeModals, currentModal, closeAllModals, params }} = props
+    const {modal: {closeModal, closeModals, currentModal, closeAllModals, params}} = props;
 
-    useEffect(()=>{
-        // setTimeout(()=>{
-            if (bottomSheetRef) bottomSheetRef.current.snapTo(0);
-        // },500)
-    },[])
+    useEffect(() => {
+        if (bottomSheetRef) bottomSheetRef.current.snapTo(0);
+    }, []);
 
     const getSnapPoints = () => {
         // return [ dimensions.height || 500 * .5,  0]
-        const {height} = Dimensions.get("window")
-        return [height - 100 ,height-200, 0]
+        const {height} = Dimensions.get("window");
+        return [height - 100, height - 200, 0]
     };
 
-    const handleClose = () => {
+    const closeBottomSheet = () => {
         bottomSheetRef.current.snapTo(initialSnap);
-        setTimeout(()=>{
-            closeAllModals(currentModal)
-        },500)
-    }
+    };
+
+    const onCloseEnd = () => {
+        console.log("on close end");
+        closeModal()
+    };
+
+    const onOpenEnd = () => {
+
+    };
 
     const renderContent = () => () => {
         return <View style={{
@@ -42,7 +49,7 @@ const BottomSheetModal = (props) => {
             zIndex: 5
         }}>
             {params.content}
-            {/* <SlideOverlay 
+            {/* <SlideOverlay
                 overlayContent = {params.content}
                 overlayId = {params.overlayId}
                 overlayTitle = {params.overlayTitle}
@@ -51,37 +58,34 @@ const BottomSheetModal = (props) => {
                 onTabPressChange = {params.controlTabChange}
             /> */}
         </View>
-    }; 
+    };
 
-    const renderShadow = () =>{
+    const renderShadow = () => {
         const animatedShadowOpacity = fall.interpolate({
-            inputRange : [0,0.5,1],
-            outputRange : [1,0.3,0.5]
-        })
+            inputRange: [0, 0.5, 1],
+            outputRange: [0.7, 0.5, 0]
+        });
 
         return (
             <TouchableWithoutFeedback
-                onPress={() => {handleClose()}}
+                onPress={closeBottomSheet}
             >
                 <Animated.View
-                    pointerEvents={isBottomSheetVisible ? 'auto' : 'none'}
+                    pointerEvents={'auto'}
                     style={[
                         styles.shadowContainer,
                         {
                             opacity: animatedShadowOpacity,
-                            
                         },
                     ]}
                 />
             </TouchableWithoutFeedback>
         )
-    }
+    };
 
-    return ( 
-        <View style={{width:state.pageMeasure.width, height: state.pageMeasure.height}}>
-
+    return (
+        <View style={{width: state.pageMeasure.width, height: state.pageMeasure.height}}>
             {renderShadow()}
-            
             <BottomSheet
                 ref={bottomSheetRef}
                 snapPoints={getSnapPoints()}
@@ -89,8 +93,8 @@ const BottomSheetModal = (props) => {
                 callbackNode={fall}
                 borderRadius={14}
                 renderContent={renderContent()}
-                onCloseEnd={() => setBottomSheetVisible(false)}
-                onOpenEnd={() => setBottomSheetVisible(true)}
+                onCloseEnd={onCloseEnd}
+                onOpenEnd={onOpenEnd}
                 renderHeader={() =>
                     <View
                         style={{
@@ -105,24 +109,23 @@ const BottomSheetModal = (props) => {
                 }
             />
         </View>
-            
     );
-}
- 
-export default BottomSheetModal ;
+};
+
+export default BottomSheetModal;
 
 const styles = StyleSheet.create({
-    modalContainer:{
-        flex:1,
-        backgroundColor:'#000',
-        opacity:0.3
+    modalContainer: {
+        flex: 1,
+        backgroundColor: '#000',
+        opacity: 0.3
         // alignItems:"flex-end",
         // justifyContent:'flex-end',
 
     },
-    shadowContainer:{
+    shadowContainer: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: '#000',
     }
-    
-})
+
+});
