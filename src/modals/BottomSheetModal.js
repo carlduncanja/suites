@@ -10,14 +10,25 @@ import {SuitesContext} from '../contexts/SuitesContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 
 const BottomSheetModal = (props) => {
+    const {
+        modal: {
+            closeModal,
+            closeModals,
+            currentModal,
+            closeAllModals,
+            params
+        }
+    } = props;
+
     const [state] = useContext(SuitesContext);
     const dimensions = Dimensions.get("window");
 
     const bottomSheetRef = useRef();
     const [fall] = useState(new Animated.Value(1));
-    const initialSnap = 2;
 
-    const {modal: {closeModal, closeModals, currentModal, closeAllModals, params}} = props;
+    const initialSnap = params.initialSnap || 2;
+    const snapPoints = params.snapPoints || [dimensions.height - 100, dimensions.height - 200, 0];
+
 
     useEffect(() => {
         if (bottomSheetRef) bottomSheetRef.current.snapTo(0);
@@ -102,7 +113,7 @@ const BottomSheetModal = (props) => {
                 <BottomSheet
                     pointerEvents={'none'}
                     ref={bottomSheetRef}
-                    snapPoints={getSnapPoints()}
+                    snapPoints={snapPoints}
                     initialSnap={initialSnap}
                     callbackNode={fall}
                     borderRadius={14}

@@ -1,7 +1,6 @@
-import React, {useState, useContext, useEffect, useRef} from 'react';
-import {View, StyleSheet, Dimensions, TouchableWithoutFeedback, Text, ActivityIndicator} from 'react-native';
+import React, {useState, useContext, useEffect} from 'react';
+import {View, StyleSheet, Dimensions, ActivityIndicator} from 'react-native';
 import Animated from 'react-native-reanimated'
-import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../components/common/Button';
 import moment from 'moment';
 import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
@@ -15,6 +14,7 @@ import {setAppointments} from "../redux/actions/appointmentActions"
 import {colors} from '../styles'
 import ScheduleSearchContainer from "../components/common/Search/ScheduleSearchContainer";
 import ScheduleOverlayContainer from "../components/Schedule/ScheduleOverlayContainer";
+import {useModal} from "react-native-modalfy";
 
 
 const currentDate = new Date();
@@ -25,17 +25,15 @@ const Schedule = (props) => {
         appointments,
         setAppointments
     } = props;
+    const modal = useModal();
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialDaysList = getDaysForMonth(currentDate);
     const initialIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), initialDaysList);
 
-    const bottomSheetRef = useRef();
-
     //########### States
     const [state, dispatch] = useContext(ScheduleContext);
     const [dimensions, setDimensions] = useState(Dimensions.get('window'));
-    const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
     // calendar states
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
@@ -51,7 +49,6 @@ const Schedule = (props) => {
     const [searchOpen, setSearchOpen] = useState(false);
 
     // animated states
-    const [fall] = useState(new Animated.Value(1)); // used to animate show for bottom sheet.
 
     //########### Event Listeners
     useEffect(() => {
@@ -82,31 +79,6 @@ const Schedule = (props) => {
         setDimensions(dimensions);
     };
 
-    const renderShadow = () => {
-        const animatedShadowOpacity = Animated.interpolate(fall, {
-            inputRange: [0, 1],
-            outputRange: [0.5, 0],
-        });
-
-        return (
-            <TouchableWithoutFeedback
-                onPress={() => {
-                    bottomSheetRef.current.snapTo(2);
-                }}
-            >
-                <Animated.View
-                    pointerEvents={isBottomSheetVisible ? 'auto' : 'none'}
-                    style={[
-                        styles.shadowContainer,
-                        {
-                            opacity: animatedShadowOpacity,
-                        },
-                    ]}
-                />
-            </TouchableWithoutFeedback>
-        )
-    };
-
     /*
      * @param date string "YYYY-MM-DD" for the selected day.
      */
@@ -134,32 +106,14 @@ const Schedule = (props) => {
     };
 
     const handleAppointmentPress = (appointment) => {
-        setSelectedAppointment(appointment);
-        if (bottomSheetRef) bottomSheetRef.current.snapTo(0);
-    };
-
-
-    const getSnapPoints = () => {
-        // return [ dimensions.height || 500 * .5,  0]
-        return [600, 500, 0]
-    };
-
-    const renderScheduleBottomSheet = (selectedSchedule) => () => {
-        return <View style={{
-            height: '100%',
-            width: '100%',
-            backgroundColor: 'white',
-            zIndex: 5
-        }}>
-            {
-                selectedSchedule
-                    ? <ScheduleOverlayContainer
-                        appointment={selectedSchedule}
-                        screenDimensions={dimensions}
-                    />
-                    : <View/>
-            }
-        </View>
+        modal.openModal('BottomSheetModal', {
+            content: <ScheduleOverlayContainer
+                appointment={appointment}
+                screenDimensions={dimensions}
+            />,
+            initialSnap: 2,
+            snapPoints: [600, 500, 0]
+        })
     };
 
 
@@ -247,34 +201,6 @@ const Schedule = (props) => {
                 </View>
 
             </Animated.View>
-
-            {renderShadow()}
-
-
-            <BottomSheet
-                ref={bottomSheetRef}
-                snapPoints={getSnapPoints()}
-                initialSnap={2}
-                callbackNode={fall}
-                borderRadius={14}
-                renderContent={renderScheduleBottomSheet(selectedAppointment)}
-                onCloseEnd={() => setBottomSheetVisible(false)}
-                onOpenEnd={() => setBottomSheetVisible(true)}
-                renderHeader={() =>
-                    <View
-                        style={{
-                            height: 8,
-                            alignSelf: 'center',
-                            width: 50,
-                            backgroundColor: 'white',
-                            borderRadius: 4,
-                            marginBottom: 14
-                        }}
-                    />
-                }
-            />
-
-
         </View>
     )
 };
