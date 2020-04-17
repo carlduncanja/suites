@@ -166,7 +166,7 @@ function Theatres(props) {
                 width: 1,
                 height: 24,
                 backgroundColor: "#E3E8EF",
-                marginRight: 20
+                marginLeft: 20
             }}/>
         </View>
         <View style={[
