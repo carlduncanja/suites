@@ -11,6 +11,7 @@ import BottomSheet from 'reanimated-bottom-sheet'
 
 const BottomSheetModal = (props) => {
     const [state] = useContext(SuitesContext);
+    const dimensions = Dimensions.get("window");
 
     const bottomSheetRef = useRef();
     const [fall] = useState(new Animated.Value(1));
@@ -46,7 +47,7 @@ const BottomSheetModal = (props) => {
             height: '100%',
             width: '100%',
             backgroundColor: 'white',
-            zIndex: 5
+            zIndex: 2
         }}>
             {params.content}
             {/* <SlideOverlay
@@ -63,7 +64,7 @@ const BottomSheetModal = (props) => {
     const renderShadow = () => {
         const animatedShadowOpacity = fall.interpolate({
             inputRange: [0, 0.5, 1],
-            outputRange: [0.7, 0.5, 0]
+            outputRange: [0.3, 0.2, 0]
         });
 
         return (
@@ -84,30 +85,44 @@ const BottomSheetModal = (props) => {
     };
 
     return (
-        <View style={{width: state.pageMeasure.width, height: state.pageMeasure.height}}>
+        <View style={[styles.modalContainer, {width: dimensions.width, height: state.pageMeasure.height}]}>
             {renderShadow()}
-            <BottomSheet
-                ref={bottomSheetRef}
-                snapPoints={getSnapPoints()}
-                initialSnap={initialSnap}
-                callbackNode={fall}
-                borderRadius={14}
-                renderContent={renderContent()}
-                onCloseEnd={onCloseEnd}
-                onOpenEnd={onOpenEnd}
-                renderHeader={() =>
-                    <View
-                        style={{
-                            height: 8,
-                            alignSelf: 'center',
-                            width: 50,
-                            backgroundColor: 'white',
-                            borderRadius: 4,
-                            marginBottom: 14
-                        }}
-                    />
+
+            <View style={[
+                styles.bottomSheetContainer,
+                {
+                    flex: 1,
+                    width: state.pageMeasure.width,
                 }
-            />
+            ]}>
+                <TouchableWithoutFeedback onPress={closeBottomSheet}>
+                    <View style={{...StyleSheet.absoluteFillObject,}}/>
+                </TouchableWithoutFeedback>
+
+                <BottomSheet
+                    pointerEvents={'none'}
+                    ref={bottomSheetRef}
+                    snapPoints={getSnapPoints()}
+                    initialSnap={initialSnap}
+                    callbackNode={fall}
+                    borderRadius={14}
+                    renderContent={renderContent()}
+                    onCloseEnd={onCloseEnd}
+                    onOpenEnd={onOpenEnd}
+                    renderHeader={() =>
+                        <View
+                            style={{
+                                height: 8,
+                                alignSelf: 'center',
+                                width: 50,
+                                backgroundColor: 'white',
+                                borderRadius: 4,
+                                marginBottom: 14
+                            }}
+                        />
+                    }
+                />
+            </View>
         </View>
     );
 };
@@ -117,15 +132,18 @@ export default BottomSheetModal;
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        backgroundColor: '#000',
-        opacity: 0.3
-        // alignItems:"flex-end",
+        alignItems: "flex-end",
         // justifyContent:'flex-end',
-
     },
     shadowContainer: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: '#000',
+        // flex: 1
+        width: '100%',
+        height: '100%'
+    },
+    bottomSheetContainer: {
+        alignItems: 'flex-end'
     }
 
 });
