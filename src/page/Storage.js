@@ -7,6 +7,7 @@ import ActionIcon from "../../assets/svg/ActionIcon";
 import ListItem from "../components/common/List/ListItem";
 import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
 import {numberFormatter} from "../utils/formatter";
+import {useModal} from "react-native-modalfy";
 
 
 const listHeaders = [
@@ -71,6 +72,7 @@ function Storage(props) {
     } = props;
 
     const pageTitle = "Storage";
+    const modal = useModal();
 
 
     // ##### States
@@ -111,7 +113,10 @@ function Storage(props) {
         setSelectedIds(updatedCases);
     };
 
-    const onItemPress = (item) => {
+    const onItemPress = (item) => () => {
+        modal.openModal('BottomSheetModal', {
+            content: <View/>
+        })
     };
 
 

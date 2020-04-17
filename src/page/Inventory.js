@@ -12,6 +12,7 @@ import {numberFormatter} from "../utils/formatter";
 import {setInventory} from "../redux/actions/InventorActions";
 import {connect} from "react-redux";
 import {getInventories} from "../api/network";
+import {useModal} from "react-native-modalfy";
 
 const listHeaders = [
     {
@@ -119,6 +120,7 @@ function Inventory(props) {
     } = props;
 
     const pageTitle = "Inventory";
+    const modal = useModal();
 
     // ##### States
 
@@ -137,8 +139,10 @@ function Inventory(props) {
     const onSearchChange = () => {
     };
 
-    const onItemPress = () => {
-
+    const onItemPress = (item) => () => {
+        modal.openModal('BottomSheetModal', {
+            content: <View/>
+        })
     };
 
     const onRefresh = () => {

@@ -8,6 +8,8 @@ import ListItem from "../components/common/List/ListItem";
 import {getTheatres} from "../api/network";
 import {setTheatres} from "../redux/actions/theatresActions";
 import {connect} from 'react-redux'
+import {useModal} from "react-native-modalfy";
+import CaseFileBottomSheet from "../components/CaseFiles/CaseFileBottomSheet";
 
 
 const listHeaders = [
@@ -96,6 +98,7 @@ function Theatres(props) {
     } = props;
 
     const pageTitle = "Theatres";
+    const modal = useModal();
 
     // ##### States
 
@@ -116,7 +119,10 @@ function Theatres(props) {
     const onSearchChange = () => {
     };
 
-    const onItemPress = () => {
+    const onItemPress = (item) => () => {
+        modal.openModal('BottomSheetModal', {
+            content: <View/>
+        })
     };
 
     const onSearchInputChange = (input) => {
@@ -267,7 +273,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-    const theatres = state.theatres.map( item => {
+    const theatres = state.theatres.map(item => {
 
         return {
             ...item,
