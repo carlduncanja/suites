@@ -18,6 +18,10 @@ function StorageBottomSheetContainer({storage}) {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
+    const onEditPress = () => {
+        setEditMode(!isEditMode);
+    };
+
     // ##### Helper functions
 
     const overlayContent = <View style={{flex: 1, backgroundColor: 'green'}}/>;
@@ -34,6 +38,7 @@ function StorageBottomSheetContainer({storage}) {
                 selectedTab={currentTab}
                 isEditMode={isEditMode}
                 overlayContent={overlayContent}
+                onEditPress={onEditPress}
             />
         </View>
     );
