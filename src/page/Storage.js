@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from "react-native";
 import Page from "../components/common/Page/Page";
@@ -9,6 +9,9 @@ import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
 import {numberFormatter} from "../utils/formatter";
 import {useModal} from "react-native-modalfy";
 import StorageBottomSheetContainer from "../components/Storage/StorageBottomSheetContainer";
+import {getStorage} from "../api/network";
+import {setStorage} from "../redux/actions/storageActions";
+import {connect} from "react-redux";
 
 
 const listHeaders = [
@@ -69,7 +72,9 @@ const testData = [
 
 function Storage(props) {
     const {
-        storageLocations = testData
+
+        storageLocations = testData,
+        setStorage,
     } = props;
 
     const pageTitle = "Storage";
@@ -83,12 +88,22 @@ function Storage(props) {
     const [selectedIds, setSelectedIds] = useState([]);
 
 
-    // ##### Handler functions
+    // ############# Life Cycle Methods
 
-    const onSearchChange = () => {
-    };
+    useEffect(() => {
+        if (!storageLocations.length) {
+            fetchStorageData()
+        }
+    }, []);
+
+    // ############# Event Handlers
 
     const onRefresh = () => {
+        fetchStorageData()
+    };
+
+    const onSearchChange = () => {
+
     };
 
     const onSelectAll = () => {
@@ -156,6 +171,21 @@ function Storage(props) {
         </View>
     </>;
 
+    const fetchStorageData = () => {
+        setFetchingData(true)
+        getStorage()
+            .then(data => {
+                setStorage(data);
+                setTotalPages(Math.ceil(data.length / recordsPerPage))
+            })
+            .catch(error => {
+                console.log("failed to get storage", error);
+            })
+            .finally(_ => {
+                setFetchingData(false)
+            })
+    };
+
 
     const renderItem = (item) => {
 
@@ -217,5 +247,12 @@ const styles = StyleSheet.create({
         color: "#4E5664",
     },
 });
+const mapStateToProps = (state) => ({
+    storageLocations: state.storage
+});
 
-export default Storage;
+const mapDispatcherToProp = {
+    setStorage
+};
+
+export default connect(mapStateToProps, mapDispatcherToProp)(Storage);

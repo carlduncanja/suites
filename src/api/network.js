@@ -2,7 +2,7 @@ import suitesAxiosInstance from "./index"
 import {handleError, handleResponse} from "./apiUtils";
 
 import {
-    inventoriesEndpoint,
+    inventoriesEndpoint, storageLocationsEndpoint,
     theatresEndpoint
 } from "../const/suitesEndpoints";
 
@@ -82,9 +82,9 @@ export const getPhysicians = async () => {
 
 // ################# Storage Endpoints
 export const getStorage = async () => {
-    await new Promise(r => setTimeout(r, 2000));
-    return storage
-    //return axios.get('/storage')
+    return suitesAxiosInstance.get(storageLocationsEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
 };
 
 // ################# Equipment Endpoint
