@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import SvgIcon from "../../../../assets/SvgIcon";
-import Button from "../../common/Button";
+import Button from "../../common/Buttons/Button";
 import Table from "../../common/Table/Table"
 import Paginator from '../../common/Paginators/Paginator';
 import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesHelpers';
 
-const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, headers, isCheckBox ,onPressTab}) =>{ 
-    
+const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, headers, isCheckBox ,onPressTab}) =>{
+
     const recordsPerPage = 6
     const dataLength = data.length
     const totalPages = Math.ceil(dataLength/recordsPerPage)
-    
+
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
@@ -31,7 +31,7 @@ const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, head
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax)
-        } 
+        }
     };
 
     return(
@@ -42,7 +42,7 @@ const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, head
                     <SvgIcon iconName = "searchExit" strokeColor="#718096"/>
                 </TouchableOpacity>
             </View>
-            
+
             <View style={styles.tabContainer}>
                 {
                     tabs.map((tab,index)=>{
@@ -58,7 +58,7 @@ const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, head
                         )
                     })
                 }
-            </View> 
+            </View>
 
             <View style={styles.list}>
                 <Table
@@ -81,7 +81,7 @@ const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, head
                     />
                 </View>
             </View>
-   
+
         </View>
     )
 }

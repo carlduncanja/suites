@@ -1,7 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, ActivityIndicator} from 'react-native';
 import Animated from 'react-native-reanimated'
-import Button from '../components/common/Button';
+import Button from '../components/common/Buttons/Button';
 import moment from 'moment';
 import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import MonthSelector from "../components/Calendar/MonthSelector";
