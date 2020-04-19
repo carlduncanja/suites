@@ -2,23 +2,20 @@ import React, {Component, useContext, useEffect} from 'react';
 import {View, TouchableOpacity, StyleSheet, Text, FlatList} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import Action from './Action'
-import { SuitesContext } from '../../../contexts/SuitesContext';
-import { CaseFileContext } from '../../../contexts/CaseFileContext';
+import {SuitesContext} from '../../../contexts/SuitesContext';
+import {CaseFileContext} from '../../../contexts/CaseFileContext';
 
 
 const ActionContainer = ({title, floatingActions}) => {
-
-    const [state] = useContext(SuitesContext);
-
     const separator = () => {
-        return(
+        return (
             <View style={{
-                backgroundColor:"#E3E8EF",
-                borderRadius:2,
-                height:1,
-                width:'100%',
-                marginTop:10,
-                marginBottom:10
+                backgroundColor: "#E3E8EF",
+                borderRadius: 2,
+                height: 1,
+                width: '100%',
+                marginTop: 10,
+                marginBottom: 10
             }}/>
         )
     };
@@ -32,13 +29,8 @@ const ActionContainer = ({title, floatingActions}) => {
             <View style={styles.actionsContainer}>
                 <FlatList
                     data={floatingActions}
-                    renderItem={({ item }) =>
-                        <Action
-                            modalToOpen="OverlayModal"
-                            action = {item}
-                        />
-                    }
-                    keyExtractor={item => item.actionId}
+                    renderItem={({item}) => item}
+                    keyExtractor={(item, index) => ""+index}
                     ItemSeparatorComponent={separator}
                 />
             </View>
@@ -49,12 +41,12 @@ const ActionContainer = ({title, floatingActions}) => {
 export default ActionContainer;
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         //flex:1,
-        backgroundColor:'#FFFFFF',
+        backgroundColor: '#FFFFFF',
         width: 218,
         //height: 70,
-        borderRadius:8,
+        borderRadius: 8,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -64,24 +56,24 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
         paddingLeft: 10,
-        paddingRight:10,
-        paddingBottom:8,
+        paddingRight: 10,
+        paddingBottom: 8,
         //alignSelf:'flex-end'
     },
-    actionTitleContainer:{
+    actionTitleContainer: {
         marginTop: 8,
-        alignSelf:'flex-start',
+        alignSelf: 'flex-start',
     },
-    title:{
+    title: {
         fontSize: 10,
-        color:'#A0AEC0',
+        color: '#A0AEC0',
         //fontFamily: 'Metropolis',
     },
-    actionsContainer:{
+    actionsContainer: {
         //flex:1,
-        justifyContent:'space-between',
-        marginTop:12,
-        flexDirection:'column',
-
+        justifyContent: 'space-between',
+        marginTop: 12,
+        marginBottom: 10,
+        flexDirection: 'column',
     }
-})
+});

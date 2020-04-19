@@ -15,6 +15,11 @@ import {connect} from "react-redux";
 import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
 import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
 import {useNextPaginator, usePreviousPaginator} from "../helpers/caseFilesHelpers";
+import ActionContainer from "../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../components/common/ActionItem";
+import WasteIcon from "../../assets/svg/wasteIcon";
+import AddIcon from "../../assets/svg/addIcon";
+import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 
 
 const listHeaders = [
@@ -105,10 +110,6 @@ function Storage(props) {
         }
     }, []);
 
-    const floatingActions = ["Delete",
-
-    ];
-
 
     // ############# Event Handlers
 
@@ -170,7 +171,11 @@ function Storage(props) {
 
     const toggleActionButton = () => {
         setFloatingAction(!isFloatingActionDisabled);
-        modal.openModal("ActionContainerModal",{ floatingActions, title : "STORAGE ACTIONS" })
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "STORAGE ACTIONS"
+            })
     };
 
 
@@ -223,7 +228,6 @@ function Storage(props) {
             })
     };
 
-
     const renderItem = (item) => {
 
         const formattedItem = {
@@ -244,6 +248,25 @@ function Storage(props) {
             onCheckBoxPress={onCheckBoxPress(item)}
             onItemPress={onItemPress(item)}
             itemView={itemView}
+        />
+    };
+
+    const getFabActions = () => {
+
+        const deleteAction =
+            <LongPressWithFeedback pressTimer={700} onLongPress={() => {
+            }}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={false} touchable={false}/>
+            </LongPressWithFeedback>;
+        const createAction = <ActionItem title={"New Location"} icon={<AddIcon/>} onPress={() => {
+        }}/>;
+
+        return <ActionContainer
+            floatingActions={[
+                deleteAction,
+                createAction
+            ]}
+            title={"STORAGE ACTIONS"}
         />
     };
 
@@ -277,8 +300,8 @@ function Storage(props) {
                 </View>
 
                 <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
+                    isDisabled={isFloatingActionDisabled}
+                    toggleActionButton={toggleActionButton}
                 />
             </View>
         </View>

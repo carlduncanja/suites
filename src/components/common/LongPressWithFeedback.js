@@ -85,9 +85,7 @@ function LongPressWithFeedback(props) {
         >
             <View style={styles.container} onLayout={getButtonWidthLayout}>
                 <Animated.View style={[styles.bgFill, getProgressStyles()]}/>
-                {
-                    props.children
-                }
+                {props.children}
             </View>
         </TouchableWithoutFeedback>
     );

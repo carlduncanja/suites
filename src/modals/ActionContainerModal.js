@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity} from "react-native";
+import {View, StyleSheet, TouchableOpacity, Text} from "react-native";
 import {SuitesContext} from '../contexts/SuitesContext';
 import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 import {withModal} from 'react-native-modalfy';
@@ -21,7 +21,7 @@ const ActionContainerModal = (props) => {
             closeModal,
             closeModals,
             currentModal,
-            params: { floatingActions, title }
+            params: {actions, title}
         }
     } = props;
 
@@ -36,10 +36,9 @@ const ActionContainerModal = (props) => {
                 style={styles.modalContainer}
             />
             <View style={styles.positionContainer}>
-                <ActionContainer
-                    title={title}
-                    floatingActions={floatingActions}
-                />
+                {
+                    actions
+                }
             </View>
         </View>
     );
