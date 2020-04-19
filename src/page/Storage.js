@@ -256,7 +256,8 @@ function Storage(props) {
         const deleteAction =
             <LongPressWithFeedback pressTimer={700} onLongPress={() => {
             }}>
-                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={false} touchable={false}/>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
+                }} touchable={false}/>
             </LongPressWithFeedback>;
         const createAction = <ActionItem title={"New Location"} icon={<AddIcon/>} onPress={() => {
         }}/>;
