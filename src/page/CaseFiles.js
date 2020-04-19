@@ -55,8 +55,7 @@ const CaseFiles = (props) => {
             "actionName":"New Case",
             "disabled":false
         }
-
-    ]
+    ];
 
     const overlayMenu = [
         {
@@ -142,10 +141,10 @@ const CaseFiles = (props) => {
     };
 
     const handleOnItemPress = (item) => {
-        modal.openModal('BottomSheetModal',{ 
+        modal.openModal('BottomSheetModal',{
             content : <CaseFileBottomSheet item = {item} overlayMenu = {overlayMenu}/>
         })
-    
+
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
@@ -235,7 +234,7 @@ const CaseFiles = (props) => {
         </View>
     </>;
 
-   
+
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
     const start = (currentPagePosition - 1) * currentPageListMax;
@@ -282,7 +281,7 @@ const CaseFiles = (props) => {
                 />
             </View>
         </View>
-        
+
     );
 };
 

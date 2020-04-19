@@ -7,6 +7,9 @@ import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 
 const ActionContainer = ({title, floatingActions}) => {
+
+    const [state] = useContext(SuitesContext);
+
     const separator = () => {
         return(
             <View style={{
@@ -18,21 +21,20 @@ const ActionContainer = ({title, floatingActions}) => {
                 marginBottom:10
             }}/>
         )
-    }
+    };
 
-    const [state] = useContext(SuitesContext)
-    return ( 
+    return (
         <View style={styles.container}>
-            <View style={styles.actionTitleContainer}> 
+            <View style={styles.actionTitleContainer}>
                 <Text style={styles.title}>{title}</Text>
             </View>
-            
+
             <View style={styles.actionsContainer}>
                 <FlatList
                     data={floatingActions}
-                    renderItem={({ item }) => 
+                    renderItem={({ item }) =>
                         <Action
-                            modalToOpen="OverlayModal" 
+                            modalToOpen="OverlayModal"
                             action = {item}
                         />
                     }
@@ -43,29 +45,29 @@ const ActionContainer = ({title, floatingActions}) => {
         </View>
     );
 }
- 
+
 export default ActionContainer;
 
 const styles = StyleSheet.create({
     container:{
         //flex:1,
-        backgroundColor:'#FFFFFF', 
-        width: 218, 
-        //height: 70, 
-        borderRadius:8, 
+        backgroundColor:'#FFFFFF',
+        width: 218,
+        //height: 70,
+        borderRadius:8,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
             height: 2,
         },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,    
+        shadowRadius: 3.84,
         elevation: 5,
         paddingLeft: 10,
         paddingRight:10,
         paddingBottom:8,
         //alignSelf:'flex-end'
-    }, 
+    },
     actionTitleContainer:{
         marginTop: 8,
         alignSelf:'flex-start',

@@ -12,6 +12,9 @@ import StorageBottomSheetContainer from "../components/Storage/StorageBottomShee
 import {getStorage} from "../api/network";
 import {setStorage} from "../redux/actions/storageActions";
 import {connect} from "react-redux";
+import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
+import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
+import {useNextPaginator, usePreviousPaginator} from "../helpers/caseFilesHelpers";
 
 
 const listHeaders = [
@@ -72,20 +75,26 @@ const testData = [
 
 function Storage(props) {
     const {
-
         storageLocations = testData,
         setStorage,
     } = props;
 
     const pageTitle = "Storage";
+    const recordsPerPage = 10;
     const modal = useModal();
 
-
     // ##### States
+    const [isFetchingData, setFetchingData] = useState(false);
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [searchValue, setSearchValue] = useState("");
-    const [isFetchingData, setFetchingData] = useState(false);
     const [selectedIds, setSelectedIds] = useState([]);
+
+    // pagination
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
 
     // ############# Life Cycle Methods
@@ -96,6 +105,11 @@ function Storage(props) {
         }
     }, []);
 
+    const floatingActions = ["Delete",
+
+    ];
+
+
     // ############# Event Handlers
 
     const onRefresh = () => {
@@ -104,6 +118,24 @@ function Storage(props) {
 
     const onSearchChange = () => {
 
+    };
+
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPagePosition === 1) return;
+
+        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
     };
 
     const onSelectAll = () => {
@@ -134,6 +166,11 @@ function Storage(props) {
         modal.openModal('BottomSheetModal', {
             content: <StorageBottomSheetContainer storage={item}/>
         })
+    };
+
+    const toggleActionButton = () => {
+        setFloatingAction(!isFloatingActionDisabled);
+        modal.openModal("ActionContainerModal",{ floatingActions, title : "STORAGE ACTIONS" })
     };
 
 
@@ -172,7 +209,7 @@ function Storage(props) {
     </>;
 
     const fetchStorageData = () => {
-        setFetchingData(true)
+        setFetchingData(true);
         getStorage()
             .then(data => {
                 setStorage(data);
@@ -210,12 +247,15 @@ function Storage(props) {
         />
     };
 
+    let storageToDisplay = [...storageLocations];
+    storageToDisplay = storageToDisplay.slice(currentPageListMin, currentPageListMax);
+
     return (
         <View style={styles.container}>
             <Page
                 placeholderText={"Search by heading or entry below."}
                 routeName={pageTitle}
-                listData={storageLocations}
+                listData={storageToDisplay}
                 inputText={searchValue}
                 itemsSelected={selectedIds}
                 listItemFormat={renderItem}
@@ -225,6 +265,22 @@ function Storage(props) {
                 isFetchingData={isFetchingData}
                 onSelectAll={onSelectAll}
             />
+
+            <View style={styles.footer}>
+                <View style={{alignSelf: "center", marginRight: 10}}>
+                    <RoundedPaginator
+                        totalPages={totalPages}
+                        currentPage={currentPagePosition}
+                        goToNextPage={goToNextPage}
+                        goToPreviousPage={goToPreviousPage}
+                    />
+                </View>
+
+                <FloatingActionButton
+                    isDisabled = {isFloatingActionDisabled}
+                    toggleActionButton = {toggleActionButton}
+                />
+            </View>
         </View>
     );
 }
@@ -245,6 +301,15 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 14,
         color: "#4E5664",
+    },
+    footer: {
+        flex: 1,
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        marginBottom: 20,
+        marginRight: 30,
     },
 });
 const mapStateToProps = (state) => ({
