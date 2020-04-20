@@ -145,6 +145,7 @@ function Inventory(props) {
 
     useEffect(() => {
         if (!inventory.length) fetchInventory();
+        setTotalPages(Math.ceil(inventory.length / recordsPerPage));
     }, []);
 
     // ##### Handler functions

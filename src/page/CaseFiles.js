@@ -118,6 +118,9 @@ const CaseFiles = (props) => {
         if (!caseFiles.length) {
             fetchCaseFilesData()
         }
+
+        setTotalPages(Math.ceil(caseFiles.length / recordsPerPage))
+
     }, []);
 
     //######## Event Handlers

@@ -105,9 +105,8 @@ function Storage(props) {
     // ############# Life Cycle Methods
 
     useEffect(() => {
-        if (!storageLocations.length) {
-            fetchStorageData()
-        }
+        if (!storageLocations.length) fetchStorageData();
+        setTotalPages(Math.ceil(storageLocations.length / recordsPerPage));
     }, []);
 
 
