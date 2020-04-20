@@ -4,9 +4,9 @@ import Svg, {Path} from 'react-native-svg';
 import Action from './Action'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
+ 
 
-
-const ActionContainer = ({title, floatingActions}) => {
+const ActionContainer = ({title, floatingActions, handleActionPress}) => {
     const separator = () => {
         return(
             <View style={{
@@ -32,11 +32,12 @@ const ActionContainer = ({title, floatingActions}) => {
                     data={floatingActions}
                     renderItem={({ item }) => 
                         <Action
-                            modalToOpen="OverlayModal" 
-                            action = {item}
+                            actionName = {item.actionName}
+                            actionIcon = {item.actionIcon}
+                            handleActionPress = {handleActionPress}
                         />
                     }
-                    keyExtractor={item => item.actionId}
+                    keyExtractor={item => item.name + Math.random().toString()}
                     ItemSeparatorComponent={separator}
                 />
             </View>

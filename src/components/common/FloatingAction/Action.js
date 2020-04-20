@@ -7,61 +7,62 @@ import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import { caseActions } from '../../../redux/reducers/caseFilesReducer'
 import { appActions } from '../../../redux/reducers/suitesAppReducer'
 
-const Action = (props) => {
+const Action = ({actionName, actionIcon, handleActionPress}) => {
     const [appState, dispatchApp] = useContext(SuitesContext)
     const [state, dispatch ] = useContext(CaseFileContext)
 
-    const openModal = () =>{
-        const {modal, modalToOpen} = props
-        modal.openModal(modalToOpen)
-    }
-    getNewItemOverlaySteps = ()=>{
-        const stepsArray = require('../../../../assets/db.json').createItem.filter(item => item.page === "caseFiles")
-        const steps = stepsArray[0].steps
-        let tabObjects = []
-        let stepsProgress = []
-        stepsArray.length > 0 &&
-        (
-            steps[0].tabs.map(tab=> tabObjects.push(tab)),
-            steps.forEach((step, index)=>stepsProgress.push({"step":index,"progress":0})),
-            dispatch({
-                type: caseActions.SETNEWITEMACTION,
-                newState : {
-                    itemTitle : stepsArray[0].title,
-                    itemSteps : stepsArray[0].steps,
-                    currentStepTabs : steps[0].tabs,
-                }
-            }),
-            dispatch({
-                type: caseActions.UPDATEPROGRESSBARLIST,
-                newState : {
-                    progressList : stepsProgress
-                }
-            })
-        )
-    }
+    // const openModal = () =>{
+    //     const {modal, modalToOpen} = props
+    //     modal.openModal(modalToOpen)
+    // }
+    // getNewItemOverlaySteps = ()=>{
+    //     const stepsArray = require('../../../../assets/db.json').createItem.filter(item => item.page === "caseFiles")
+    //     const steps = stepsArray[0].steps
+    //     let tabObjects = []
+    //     let stepsProgress = []
+    //     stepsArray.length > 0 &&
+    //     (
+    //         steps[0].tabs.map(tab=> tabObjects.push(tab)),
+    //         steps.forEach((step, index)=>stepsProgress.push({"step":index,"progress":0})),
+    //         dispatch({
+    //             type: caseActions.SETNEWITEMACTION,
+    //             newState : {
+    //                 itemTitle : stepsArray[0].title,
+    //                 itemSteps : stepsArray[0].steps,
+    //                 currentStepTabs : steps[0].tabs,
+    //             }
+    //         }),
+    //         dispatch({
+    //             type: caseActions.UPDATEPROGRESSBARLIST,
+    //             newState : {
+    //                 progressList : stepsProgress
+    //             }
+    //         })
+    //     )
+    // }
 
     return (
-        props.action.disabled ?
-            <View style={styles.container}>
-                <SvgIcon iconName={props.action.action} strokeColor="#A0AEC0"/>
-                <Text style={[styles.text, styles.disabledText]}>{props.action.actionName}</Text>
-            </View>
-            :
+        // props.action.disabled ?
+            // <View style={styles.container}>
+            //     <SvgIcon iconName={props.action.action} strokeColor="#A0AEC0"/>
+            //     <Text style={[styles.text, styles.disabledText]}>{props.action.actionName}</Text>
+            // </View>
+            // :
             <TouchableOpacity
                 style={styles.container}
                 onPress={()=>{
-                    openModal()
+                    handleActionPress(actionName)
+                    // openModal()
                     // this.openModal(props);
-                    getNewItemOverlaySteps();
-                    dispatchApp({
-                        type: appActions.TOGGLEOPENACTION,
-                        newState : true
-                    })
+                    // getNewItemOverlaySteps();
+                    // dispatchApp({
+                    //     type: appActions.TOGGLEOPENACTION,
+                    //     newState : true
+                    // })
                 }}
             >
-                <SvgIcon iconName={props.action.action} strokeColor="#2F855A"/>
-                <Text style={styles.text}>{props.action.actionName}</Text>
+                {actionIcon}
+                <Text style={styles.text}>{actionName}</Text>
             </TouchableOpacity>
 
     );

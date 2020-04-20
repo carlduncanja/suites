@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet,Text } from 'react-native'
 import FloatingActionButton from './FloatingActionButton';
+import { withModal } from 'react-native-modalfy';
 
-const FloatingActionComponent = ({isDisabled, toggleActionButton}) => {
+const FloatingActionComponent = ({actionContent, modal}) => {
+
+    const [isDisabled, setIsDisabled] = useState(false)
+
+    const toggleActionButton = () => {
+        setIsDisabled(!isDisabled)
+        modal.openModal("ActionContainerModal",{ actionContent })
+    }
+
     return (
         <View>
             <FloatingActionButton
@@ -13,7 +22,7 @@ const FloatingActionComponent = ({isDisabled, toggleActionButton}) => {
     )
 }
 
-export default FloatingActionComponent
+export default withModal(FloatingActionComponent) 
 
 const styles = StyleSheet.create({
 

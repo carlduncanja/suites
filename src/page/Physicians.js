@@ -140,9 +140,10 @@ const Physicians = (props) => {
     }
 
     const physiciansItem = (item) => <>
+
         <View style={[styles.item,{}]}>
-            <Text style={[styles.itemText,{fontSize: 12, color: "#718096"}]}>{item.id}</Text>
-            <Text style={[styles.itemText,{fontSize: 16, color: "#3182CE"}]}>{item.name}</Text>
+            <Text style={[styles.itemText,{fontSize: 12, color: "#718096"}]}>{`#${item.id}`}</Text>
+            <Text style={[styles.itemText,{fontSize: 16, color: "#3182CE"}]}>{`Dr. ${item.surname}`}</Text>
         </View>
         <View style={[styles.item,{alignItems:'center'}]}>
             <Text style={[styles.itemText,{fontSize: 16, color: '#4E5664'}]}>{item.type}</Text>
@@ -196,11 +197,25 @@ const Physicians = (props) => {
 
         </View>
     )
-}
+};
 
-const mapStateToProps = (state) => ({
-    physicians: state.physicians
-});
+const mapStateToProps = (state) => {
+
+    const physicians = state.physicians.map( item => {
+        return {
+            ...item,
+            id : item.trn,
+            type : 'Neurosurgeon',
+            // type : item.field.name
+            status : 'Active'
+        }
+    })
+
+    return {
+        physicians
+    }
+    // physicians: state.physicians
+};
 
 const mapDispatcherToProp = {
     setPhysicians

@@ -2,12 +2,10 @@ import React,{Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../../../assets/SvgIcon';
 
-const ProgressIcon = (props) => {
+const ProgressIcon = ({icon}) => { 
     return (
         <View style={styles.container}>
-            <SvgIcon
-                iconName = {props.icon}
-            />
+            {icon}
         </View>
     );
 }

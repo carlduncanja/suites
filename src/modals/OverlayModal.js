@@ -7,7 +7,7 @@ import { withModal } from 'react-native-modalfy'
 const OverlayModal = (props) => {
     const [state] = useContext(SuitesContext)
 
-    const { modal: {closeModal, closeModals, currentModal, closeAllModals }} = props
+    const { modal: {closeModal, closeModals, currentModal, closeAllModals, params }} = props
     return ( 
         <View style={{width:state.pageMeasure.width, height: state.pageMeasure.height}}>
             <TouchableOpacity
@@ -16,13 +16,14 @@ const OverlayModal = (props) => {
                 style={[styles.modalContainer]}
             />
             <View style={styles.positionContainer}>
-                <Overlay/>
+                {/* <Overlay/> */}
+                { params.content }
             </View>
         </View> 
     );
 }
  
-export default withModal(OverlayModal);
+export default OverlayModal;
 
 const styles = StyleSheet.create({
     modalContainer:{

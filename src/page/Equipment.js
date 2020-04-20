@@ -16,6 +16,8 @@ import { getEquipment } from "../api/network";
 import { withModal } from 'react-native-modalfy';
 import moment from "moment";
 
+import equipmentTest from '../../data/Equipment';
+
 const Equipment = (props) => {
 
     // ############# Const data
@@ -206,9 +208,14 @@ const Equipment = (props) => {
     )
 }
 
-const mapStateToProps = (state) => ({
-    equipment: state.equipment
-});
+const mapStateToProps = (state) => {
+    const equipment = equipmentTest.map( item =>{
+        return {
+            ...item
+        }
+    })
+    return { equipment }
+};
 
 const mapDispatcherToProp = {
     setEquipment

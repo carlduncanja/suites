@@ -4,8 +4,11 @@ import { View, Text, StyleSheet } from 'react-native';
 import Page from '../components/common/Page/Page';
 import ListItem from "../components/common/List/ListItem";
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
-import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
-import Navigation from '../components/CaseFiles/navigation/ContentNavigationStack';
+// import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
+// import FloatingActionComponent from '../components/common/FloatingAction/FloatingActionComponent';
+// import Navigation from '../components/CaseFiles/navigation/ContentNavigationStack';
+// import ActionContainer from '../components/common/FloatingAction/ActionContainer';
+import CaseActions from '../components/CaseFiles/CaseActions';
 
 import {connect} from 'react-redux';
 import {setCaseFiles} from "../redux/actions/caseFilesActions";
@@ -42,21 +45,6 @@ const CaseFiles = (props) => {
     //######## const
 
     const recordsPerPage = 10;
-    const floatingActions = [
-        {
-            "actionId":"archiveCase",
-            "action":"archiveItem",
-            "actionName":"Archive Case",
-            "disabled":true
-        },
-        {
-            "actionId":"newCase",
-            "action":"newItem",
-            "actionName":"New Case",
-            "disabled":false
-        }
-
-    ]
 
     const overlayMenu = [
         {
@@ -81,6 +69,7 @@ const CaseFiles = (props) => {
         }
     ]
 
+
     //######## Props
 
     const {
@@ -103,16 +92,6 @@ const CaseFiles = (props) => {
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
-
-    //floatingAction
-    const [actionButtonState, setActionButtonState] = useState(false)
-
-    const svg = {
-        newItem : <SvgIcon iconName = "newItem" strokeColor = "#38A169"/>,
-        newItemDisabled : <SvgIcon iconName = "newItem" strokeColor = "#A0AEC0"/>,
-        archive : <SvgIcon iconName = "archiveItem" strokeColor = "#104587"/>,
-        archiveDisabled : <SvgIcon iconName = "archiveItem" strokeColor = "#A0AEC0"/>,
-    }
 
     //######## Life Cycle Methods
     useEffect(() => {
@@ -179,14 +158,7 @@ const CaseFiles = (props) => {
         fetchCaseFilesData()
     };
 
-    const toggleActionButton = () => {
-        setActionButtonState(!actionButtonState)
-        modal.openModal("ActionContainerModal",{ floatingActions, title : "CASE ACTIONS" })
-        // dispatch({
-        //     type: appActions.TOGGLEACTIONBUTTON,
-        //     newState: !state.floatingActions.actionButtonState
-        // })
-    }
+    
 
     //######## Helper Functions
 
@@ -235,13 +207,10 @@ const CaseFiles = (props) => {
         </View>
     </>;
 
+    
    
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
-    const start = (currentPagePosition - 1) * currentPageListMax;
-    const end = start + currentPageListMax;
-    // console.log("Start end: ", currentPageListMin, currentPageListMax)
-    // caseFilesToDisplay = caseFilesToDisplay.slice(start, end);
     caseFilesToDisplay = caseFilesToDisplay.slice(currentPageListMin, currentPageListMax);
 
 
@@ -276,10 +245,11 @@ const CaseFiles = (props) => {
                     />
                 </View>
 
-                <FloatingActionButton
-                    isDisabled = {actionButtonState}
-                    toggleActionButton = {toggleActionButton}
-                />
+                {/* <FloatingActionComponent
+                    actionContent = {actionContent}
+                /> */}
+                <CaseActions/>
+        
             </View>
         </View>
         

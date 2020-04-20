@@ -1,13 +1,12 @@
 import React,{useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import ExitIcon from '../ExitIcon';
-import { CaseFileContext } from '../../../contexts/CaseFileContext';
+import { CaseFileContext } from '../../../contexts/CaseFileContext'; 
 
-const OverlayHeader = () => {
-    const [state] = useContext(CaseFileContext)
+const OverlayHeader = ({title}) => {
     return (  
         <View style={styles.container}>
-            <Text>{state.newItemAction.itemTitle}</Text>
+            <Text>{title}</Text>
             <ExitIcon/>
         </View>
     );

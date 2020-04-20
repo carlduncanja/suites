@@ -16,7 +16,7 @@ const ActionContainerModal = (props) => {
         })
     }
 
-    const { modal: {closeModal, closeModals, currentModal, params : {floatingActions, title }}} = props
+    const { modal: {closeModal, closeModals, currentModal, params : {actionContent }}} = props
 
     return (  
         <View style={{width:state.pageMeasure.width, height:state.pageMeasure.height}}>
@@ -26,10 +26,11 @@ const ActionContainerModal = (props) => {
                 style={styles.modalContainer}
             />
             <View style={styles.positionContainer}>
-                <ActionContainer
+                {actionContent}
+                {/* <ActionContainer
                     title = {title}
                     floatingActions = {floatingActions}
-                />
+                /> */}
             </View>
         </View>
     );

@@ -13,7 +13,7 @@ import {setProcedures} from "../redux/actions/proceduresActions";
 import {getProcedures} from "../api/network";
 
 import { withModal } from 'react-native-modalfy';
-
+import proceduresTest from '../../data/Procedures'
 
 const Procedures = (props) =>{
 
@@ -185,9 +185,14 @@ const Procedures = (props) =>{
     )
 }
 
-const mapStateToProps = (state) => ({
-    procedures: state.procedures
-});
+const mapStateToProps = (state) => {
+    const procedures = proceduresTest.map(item => {
+        return {
+            ...item
+        }
+    })
+    return { procedures }
+};
 
 const mapDispatcherToProp = {
     setProcedures

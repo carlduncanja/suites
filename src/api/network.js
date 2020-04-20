@@ -3,7 +3,11 @@ import {handleError, handleResponse} from "./apiUtils";
 
 import {
     inventoriesEndpoint,
-    theatresEndpoint
+    theatresEndpoint,
+    physiciansEndpoint,
+    proceduresEndpoint,
+    caseFilesEndpoint,
+    equipmentsEndpoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -63,20 +67,26 @@ export const getInventories = async () => {
 export const getCaseFiles = async () => {
     await new Promise(r => setTimeout(r, 2000));
     return caseFiles
-    //return axios.get('/casefiles')
+    // return suitesAxiosInstance.get(caseFilesEndpoint)
+    //     .then(handleResponse)
+    //     .catch(handleError)
 };
 
 // ################# Procedures Endpoints
 export const getProcedures = async () => {
-    await new Promise(r => setTimeout(r, 2000));
-    return procedures
-    //return axios.get('/procedures')
+    // await new Promise(r => setTimeout(r, 2000));
+    // return procedures
+    return suitesAxiosInstance.get(proceduresEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
 };
 
 // ################# Physicians Endpoints
 export const getPhysicians = async () => {
-    await new Promise(r => setTimeout(r, 2000));
-    return physicians
+    // await new Promise(r => setTimeout(r, 2000));
+    return suitesAxiosInstance.get(physiciansEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
     //return axios.get('/physicians')
 };
 
@@ -89,9 +99,11 @@ export const getStorage = async () => {
 
 // ################# Equipment Endpoint
 export const getEquipment = async () => {
-    await new Promise(r => setTimeout(r, 2000));
-    return equipment
-    //return axios.get('/equipment')
+    // await new Promise(r => setTimeout(r, 2000));
+    // return equipment
+    return suitesAxiosInstance.get(equipmentsEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
 };
 
 

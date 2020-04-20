@@ -10,69 +10,80 @@ import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import {caseActions} from '../../../redux/reducers/caseFilesReducer'
 import {handleProgressBar} from '../../../helpers/caseFilesHelpers';
 
-const Overlay = () => {
+const Overlay = ({title, footerTitle, handleFooterPress, hasTabsHeaderContent, tabsHeaderContent, handleTabPress, selectedTab, tabs, completedTabs }) => {
     const [state, dispatch] = useContext(CaseFileContext)
     const [tabNames, setTabNames] = useState([])
 
-    const handleBar = (index) =>{
-        const updatedList = handleProgressBar(index,state.progressBar.progressList,state.newItemAction.selectedStep,state.newItemAction.currentStepTabs.length )
-        dispatch({
-            type : caseActions.UPDATEPROGRESSBARLIST,
-            newState : {progressList:updatedList}
-        })
-    }
-    const handleNewItemPress = (tabIndex) =>{
-        state.newItemAction.tabsCompletedList.includes(tabIndex) && (
-            dispatch({
-                type : caseActions.NEWITEMPRESS,
-                newState : {
-                    selectedTab : tabIndex,
-                    tabsCompletedList : state.newItemAction.tabsCompletedList.slice(0,tabIndex)
-                }
-            }),
-            handleBar(tabIndex)
-        )
-    }
+    // const handleBar = (index) =>{
+    //     const updatedList = handleProgressBar(index,state.progressBar.progressList,state.newItemAction.selectedStep,state.newItemAction.currentStepTabs.length )
+    //     dispatch({
+    //         type : caseActions.UPDATEPROGRESSBARLIST,
+    //         newState : {progressList:updatedList}
+    //     })
+    // }
+    // const handleNewItemPress = (tabIndex) =>{
+    //     state.newItemAction.tabsCompletedList.includes(tabIndex) && (
+    //         dispatch({
+    //             type : caseActions.NEWITEMPRESS,
+    //             newState : {
+    //                 selectedTab : tabIndex,
+    //                 tabsCompletedList : state.newItemAction.tabsCompletedList.slice(0,tabIndex)
+    //             }
+    //         }),
+    //         handleBar(tabIndex)
+    //     )
+    // }
 
-    useEffect(()=>{
-        let tabNames = []
-        state.newItemAction.currentStepTabs.map(tab =>{
-            tabNames.push(tab.tabName)
-        })
-        setTabNames(tabNames)
-    },[state.newItemAction.currentStepTabs])
+    // useEffect(()=>{
+    //     let tabNames = []
+    //     state.newItemAction.currentStepTabs.map(tab =>{
+    //         tabNames.push(tab.tabName)
+    //     })
+    //     setTabNames(tabNames)
+    // },[state.newItemAction.currentStepTabs])
 
     // console.log("Tabs: ", tabNames)
     return (
-        <View style={styles.container}>
+        <View style={{}}>
             <View style={styles.headerContainer}>
-                <OverlayHeader/>
+                <OverlayHeader
+                    title = {title}
+                />
             </View>
-            <View style={{flex:1}}>
-                <View style={{backgroundColor:'#EEF2F6'}}>
-                    <ProgressContainer/>
+
+            <View style={{}}>
+                <View style={{
+                    backgroundColor:'#EEF2F6'
+                }}>
+                    {
+                        hasTabsHeaderContent && tabsHeaderContent
+                    }
+
                     <View style={{alignSelf:'center'}}>
                         <TabsContainer
-                            completedTabs={state.newItemAction.tabsCompletedList}
-                            tabs={tabNames}
-                            selectedTab = {state.newItemAction.selectedTab}
-                            onPressChange = {handleNewItemPress}
+                            completedTabs={completedTabs}
+                            tabs={tabs}
+                            selectedTab = {selectedTab}
+                            onPressChange = {handleTabPress}
                         />
                     </View>
 
                 </View>
-                <View style={{flex:1}}>
+                {/* <View style={{flex:1}}>
                     {state.newItemAction.overlayComplete ?
                         <OverlayComplete/>
                         :
                         <OverlayDataFields/>
                     }
-                </View>
+                </View> */}
 
             </View>
 
             <View style={styles.footerContainer}>
-                <OverlayFooter/>
+                <OverlayFooter
+                    footerTitle = {footerTitle}
+                    handleFooterPress = {handleFooterPress}
+                />
             </View>
 
         </View>
@@ -83,9 +94,9 @@ export default Overlay;
 
 const styles = StyleSheet.create({
     container:{
-        //flex:1,
-        width:600,
-        height:700,
+        flex:1,
+        // width:600,
+        // height:700,
         backgroundColor:'#FFFFFF',
         alignSelf:'flex-end',
         borderRadius:8,
