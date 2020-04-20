@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text} from "react-native";
+import {View, StyleSheet, Text, FlatList} from "react-native";
 import Page from "../components/common/Page/Page";
 import IconButton from "../components/common/Buttons/IconButton";
 import ActionIcon from "../../assets/svg/ActionIcon";
@@ -17,6 +17,8 @@ import InventoryBottomSheetContainer from "../components/Inventory/InventoryBott
 import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
 import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
 import {useNextPaginator, usePreviousPaginator} from "../helpers/caseFilesHelpers";
+import CheckBoxComponent from "../components/common/Checkbox";
+import SvgIcon from "../../assets/SvgIcon";
 
 const listHeaders = [
     {
@@ -214,7 +216,6 @@ function Inventory(props) {
         setSelectedIds(updatedCases);
     };
 
-
     // ##### Helper functions
 
     const inventoryItem = ({name, stock, locations, levels}, onActionPress) => <>
@@ -257,6 +258,52 @@ function Inventory(props) {
         </View>
     </>;
 
+    const secondaryItem = ({locationName, stock, levels}, isChecked, onActionPress) => <View
+        style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
+            <CheckBoxComponent
+                isCheck={isChecked}
+                onPress={onCheckBoxPress}
+            />
+        </View>
+        <View style={[styles.item, {justifyContent: 'flex-start'}]}>
+            <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
+            <Text style={{color: "#3182CE", fontSize: 16, marginLeft: 10}}>
+                {locationName}
+            </Text>
+        </View>
+        <View style={[
+            styles.item, {justifyContent: "center"}
+        ]}>
+            <Text style={[styles.itemText]}>
+                {numberFormatter(stock)}
+            </Text>
+        </View>
+        <View style={[styles.item, {justifyContent: "center"}]}>
+            {/*   LEVELS    */}
+            <LevelIndicator
+                max={levels.max}
+                min={0}
+                level={stock}
+                ideal={levels.ideal}
+                critical={levels.critical}
+            />
+        </View>
+        <View style={[
+            styles.item, {justifyContent: "center"}
+        ]}>
+            <Text style={[styles.itemText]}>
+                ...
+            </Text>
+        </View>
+        <View style={[styles.item, {justifyContent: "center"}]}>
+            <IconButton
+                Icon={<ActionIcon/>}
+                onPress={onActionPress}
+            />
+        </View>
+    </View>;
+
     const renderItem = (item) => {
 
         const formattedItem = {
@@ -282,11 +329,50 @@ function Inventory(props) {
         />
     };
 
+    const secondaryRender = () => {
+
+        return <FlatList
+            data={[
+                {
+                    id: "1",
+                    locationName: "OR1: Cabinet 6",
+                    stock: 138,
+                    levels: {
+                        max: 400,
+                        min: 0,
+                        critical: 100,
+                        ideal: 300,
+                    },
+                },
+                {
+                    id: "2",
+                    locationName: "OR1: Cabinet 8",
+                    stock: 22,
+                    levels: {
+                        max: 200,
+                        min: 0,
+                        critical: 50,
+                        ideal: 100,
+                    },
+                    locations: 1
+                },
+            ]}
+            renderItem={({item}) => {
+                return secondaryItem(item, () => {
+                })
+            }}
+            ItemSeparatorComponent={() =>
+                <View style={{flex: 1, margin: 10, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
+            }
+        />
+    };
+
     const fetchInventory = () => {
         setFetchingData(true);
         getInventories()
             .then(data => {
                 setInventory(data);
+                setTotalPages(Math.ceil(data.length / recordsPerPage));
             })
             .catch(error => {
                 // todo handle error
