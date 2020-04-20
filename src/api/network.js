@@ -8,7 +8,7 @@ import {
     proceduresEndpoint,
     caseFilesEndpoint,
     equipmentsEndpoint,
-    storageLocationsEndpoint,
+    storageLocationsEndpoint, theatreEndpoint,
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -56,6 +56,13 @@ export const getTheatres = async () => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+export const getTheatreById = async (id) => {
+    return suitesAxiosInstance.get(theatreEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 
 // ################# Inventory Endpoints
 export const getInventories = async () => {

@@ -25,7 +25,7 @@ const SlideOverlay = ({overlayContent, isEditMode, overlayId, overlayTitle, onTa
             </View>
         </View>
     );
-}
+};
 
 export default SlideOverlay;
 
