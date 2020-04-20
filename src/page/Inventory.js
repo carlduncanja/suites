@@ -14,6 +14,9 @@ import {connect} from "react-redux";
 import {getInventories} from "../api/network";
 import {useModal} from "react-native-modalfy";
 import InventoryBottomSheetContainer from "../components/Inventory/InventoryBottomSheetContainer";
+import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
+import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
+import {useNextPaginator, usePreviousPaginator} from "../helpers/caseFilesHelpers";
 
 const listHeaders = [
     {
@@ -122,12 +125,21 @@ function Inventory(props) {
 
     const pageTitle = "Inventory";
     const modal = useModal();
+    const recordsPerPage = 10;
 
     // ##### States
 
-    const [searchValue, setSearchValue] = useState("");
     const [isFetchingData, setFetchingData] = useState(false);
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+
+    const [searchValue, setSearchValue] = useState("");
     const [selectedIds, setSelectedIds] = useState([]);
+
+    // pagination
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
     // ##### Lifecycle Methods
 
@@ -159,6 +171,33 @@ function Inventory(props) {
         } else {
             setSelectedIds([])
         }
+    };
+
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPagePosition === 1) return;
+
+        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+    };
+
+    const toggleActionButton = () => {
+        setFloatingAction(!isFloatingActionDisabled);
+        modal.openModal("ActionContainerModal",
+            {
+                actions: <View/>,
+                title: "INVENTORY ACTIONS"
+            })
     };
 
     const onCheckBoxPress = (item) => () => {
@@ -257,12 +296,15 @@ function Inventory(props) {
             })
     };
 
+    let inventoryToDisplay = [...inventory];
+    inventoryToDisplay = inventoryToDisplay.slice(currentPageListMin, currentPageListMax);
+
     return (
         <View style={styles.container}>
             <Page
                 placeholderText={"Search by heading or entry below."}
                 routeName={pageTitle}
-                listData={inventory}
+                listData={inventoryToDisplay}
                 listItemFormat={renderItem}
                 inputText={searchValue}
                 itemsSelected={selectedIds}
@@ -272,6 +314,22 @@ function Inventory(props) {
                 isFetchingData={isFetchingData}
                 onSelectAll={onSelectAll}
             />
+
+            <View style={styles.footer}>
+                <View style={{alignSelf: "center", marginRight: 10}}>
+                    <RoundedPaginator
+                        totalPages={totalPages}
+                        currentPage={currentPagePosition}
+                        goToNextPage={goToNextPage}
+                        goToPreviousPage={goToPreviousPage}
+                    />
+                </View>
+
+                <FloatingActionButton
+                    isDisabled={isFloatingActionDisabled}
+                    toggleActionButton={toggleActionButton}
+                />
+            </View>
         </View>
     );
 }
@@ -309,7 +367,16 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 3,
         zIndex: 3,
-    }
+    },
+    footer: {
+        flex: 1,
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        marginBottom: 20,
+        marginRight: 30,
+    },
 });
 
 
@@ -350,7 +417,7 @@ const mapStateToProps = (state) => {
     }
 };
 const mapDispatchToProps = {
-   setInventory
+    setInventory
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Inventory);
