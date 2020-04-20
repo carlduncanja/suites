@@ -7,7 +7,8 @@ import {
     physiciansEndpoint,
     proceduresEndpoint,
     caseFilesEndpoint,
-    equipmentsEndpoint
+    equipmentsEndpoint,
+    storageLocationsEndpoint,
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -92,9 +93,9 @@ export const getPhysicians = async () => {
 
 // ################# Storage Endpoints
 export const getStorage = async () => {
-    await new Promise(r => setTimeout(r, 2000));
-    return storage
-    //return axios.get('/storage')
+    return suitesAxiosInstance.get(storageLocationsEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
 };
 
 // ################# Equipment Endpoint

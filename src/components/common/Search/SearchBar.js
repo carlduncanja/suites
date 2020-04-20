@@ -4,7 +4,7 @@ import SearchInput from './SearchInput'
 import {scheduleActions} from '../../../redux/reducers/scheduleReducer';
 import {ScheduleContext} from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
-import Button from '../Button';
+import Button from '../Buttons/Button';
 import moment from 'moment';
 import ScheduleItem from '../../Schedule/ScheduleItem'
 

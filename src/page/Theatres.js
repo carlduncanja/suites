@@ -10,6 +10,7 @@ import {setTheatres} from "../redux/actions/theatresActions";
 import {connect} from 'react-redux'
 import {useModal} from "react-native-modalfy";
 import CaseFileBottomSheet from "../components/CaseFiles/CaseFileBottomSheet";
+import TheatresBottomSheetContainer from "../components/Theatres/TheatresBottomSheetContainer";
 
 
 const listHeaders = [
@@ -121,7 +122,7 @@ function Theatres(props) {
 
     const onItemPress = (item) => () => {
         modal.openModal('BottomSheetModal', {
-            content: <View/>
+            content: <TheatresBottomSheetContainer theatre={item}/>
         })
     };
 
@@ -166,7 +167,7 @@ function Theatres(props) {
                 width: 1,
                 height: 24,
                 backgroundColor: "#E3E8EF",
-                marginRight: 20
+                marginLeft: 20
             }}/>
         </View>
         <View style={[

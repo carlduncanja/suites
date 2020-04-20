@@ -4,7 +4,7 @@ import RowCalendar from '../Calendar/RowCalendar';
 import Calendar from '../Calendar/Calendar';
 import ScheduleListView from './ScheduleListView';
 import Month from '../Calendar/Month';
-import Button from '../common/Button';
+import Button from '../common/Buttons/Button';
 import Divider from '../common/Divider';
 import AppointmentCard from './AppointmentCard';
 import ExtendedCalendar from '../Calendar/ExtendedCalendar';

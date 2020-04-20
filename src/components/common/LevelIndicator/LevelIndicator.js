@@ -111,6 +111,8 @@ LevelIndicator.propTypes = {
     ideal: PropTypes.number,
     critical: PropTypes.number,
 };
-LevelIndicator.defaultProps = {};
+LevelIndicator.defaultProps = {
+    level: 0,
+};
 
 export default LevelIndicator;

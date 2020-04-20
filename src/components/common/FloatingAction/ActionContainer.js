@@ -6,27 +6,27 @@ import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
  
 
+
 const ActionContainer = ({title, floatingActions, handleActionPress}) => {
     const separator = () => {
-        return(
+        return (
             <View style={{
-                backgroundColor:"#E3E8EF",
-                borderRadius:2,
-                height:1,
-                width:'100%',
-                marginTop:10,
-                marginBottom:10
+                backgroundColor: "#E3E8EF",
+                borderRadius: 2,
+                height: 1,
+                width: '100%',
+                marginTop: 10,
+                marginBottom: 10
             }}/>
         )
-    }
+    };
 
-    const [state] = useContext(SuitesContext)
-    return ( 
+    return (
         <View style={styles.container}>
-            <View style={styles.actionTitleContainer}> 
+            <View style={styles.actionTitleContainer}>
                 <Text style={styles.title}>{title}</Text>
             </View>
-            
+
             <View style={styles.actionsContainer}>
                 <FlatList
                     data={floatingActions}
@@ -44,43 +44,43 @@ const ActionContainer = ({title, floatingActions, handleActionPress}) => {
         </View>
     );
 }
- 
+
 export default ActionContainer;
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         //flex:1,
-        backgroundColor:'#FFFFFF', 
-        width: 218, 
-        //height: 70, 
-        borderRadius:8, 
+        backgroundColor: '#FFFFFF',
+        width: 218,
+        //height: 70,
+        borderRadius: 8,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
             height: 2,
         },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,    
+        shadowRadius: 3.84,
         elevation: 5,
         paddingLeft: 10,
-        paddingRight:10,
-        paddingBottom:8,
+        paddingRight: 10,
+        paddingBottom: 8,
         //alignSelf:'flex-end'
-    }, 
-    actionTitleContainer:{
-        marginTop: 8,
-        alignSelf:'flex-start',
     },
-    title:{
+    actionTitleContainer: {
+        marginTop: 8,
+        alignSelf: 'flex-start',
+    },
+    title: {
         fontSize: 10,
-        color:'#A0AEC0',
+        color: '#A0AEC0',
         //fontFamily: 'Metropolis',
     },
-    actionsContainer:{
+    actionsContainer: {
         //flex:1,
-        justifyContent:'space-between',
-        marginTop:12,
-        flexDirection:'column',
-
+        justifyContent: 'space-between',
+        marginTop: 12,
+        marginBottom: 10,
+        flexDirection: 'column',
     }
-})
+});

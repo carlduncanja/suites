@@ -3,10 +3,10 @@ import {View, Text, StyleSheet, Modal} from 'react-native';
 import FrameTableItem from '../FrameItems/FrameTableItem';
 import FrameCheckboxItem from '../FrameItems/FrameCheckboxItem';
 import moment from "moment";
-import Button from '../../Button';
+import Button from '../../Buttons/Button';
 import { withModal } from 'react-native-modalfy';
 
-const FrameProcedureContent = ({details,onOpenPickList}) => {  
+const FrameProcedureContent = ({details,onOpenPickList}) => {
 
     const appointment = (appointment,location) => {
         return (
@@ -27,7 +27,7 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
         )
     }
 
-    return ( 
+    return (
         <View style={styles.container}>
             <View style={{paddingBottom:10, borderBottomColor:"#CCD6E0", borderBottomWidth:1}}>
                 {appointment(details.appointment, details.location)}
@@ -48,7 +48,7 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
             </View>
             {/* {Object.keys(props.details).map((key, index) =>{
                 return(
-                    <View key={index}> 
+                    <View key={index}>
                         {
                             key === 'recovery' &&
                             <View style={styles.recovery}>
@@ -73,12 +73,12 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
                 )
             })} */}
 
-            
-             
+
+
         </View>
     );
 }
- 
+
 export default FrameProcedureContent;
 
 const styles = StyleSheet.create({
@@ -93,5 +93,5 @@ const styles = StyleSheet.create({
     dateContainer:{
         flexDirection:'row'
     },
-    
+
 })

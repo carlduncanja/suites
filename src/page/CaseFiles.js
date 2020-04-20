@@ -45,6 +45,20 @@ const CaseFiles = (props) => {
     //######## const
 
     const recordsPerPage = 10;
+    // const floatingActions = [
+    //     {
+    //         "actionId":"archiveCase",
+    //         "action":"archiveItem",
+    //         "actionName":"Archive Case",
+    //         "disabled":true
+    //     },
+    //     {
+    //         "actionId":"newCase",
+    //         "action":"newItem",
+    //         "actionName":"New Case",
+    //         "disabled":false
+    //     }
+    // ];
 
     const overlayMenu = [
         {
@@ -98,6 +112,9 @@ const CaseFiles = (props) => {
         if (!caseFiles.length) {
             fetchCaseFilesData()
         }
+
+        setTotalPages(Math.ceil(caseFiles.length / recordsPerPage))
+
     }, []);
 
     //######## Event Handlers
@@ -121,10 +138,10 @@ const CaseFiles = (props) => {
     };
 
     const handleOnItemPress = (item) => {
-        modal.openModal('BottomSheetModal',{ 
+        modal.openModal('BottomSheetModal',{
             content : <CaseFileBottomSheet item = {item} overlayMenu = {overlayMenu}/>
         })
-    
+
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
@@ -207,8 +224,6 @@ const CaseFiles = (props) => {
         </View>
     </>;
 
-    
-   
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
     caseFilesToDisplay = caseFilesToDisplay.slice(currentPageListMin, currentPageListMax);
@@ -252,7 +267,7 @@ const CaseFiles = (props) => {
         
             </View>
         </View>
-        
+
     );
 };
 
