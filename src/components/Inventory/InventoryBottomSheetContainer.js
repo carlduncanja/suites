@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import {View} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
+import InventoryGeneralTabContent from "./OverlayTabs/InventoryGeneralTabContent";
 
 function InventoryBottomSheetContainer({inventory}) {
-    const currentTabs = ["Transfer", "Consumables", "Equipment"];
+    const currentTabs = ["General", "Storage Locations", "Transfer", "Supplier"];
 
     // ##### States
 
@@ -20,9 +21,23 @@ function InventoryBottomSheetContainer({inventory}) {
 
     // ##### Helper functions
 
-    const overlayContent = <View style={{flex: 1, backgroundColor: 'green'}}/>;
-
     const {_id, name} = selectedInventoryItem;
+
+    const getOverlayScreen = (selectedOverlay) => {
+
+        switch (selectedOverlay) {
+            case "General":
+                return <InventoryGeneralTabContent/>;
+            case "Storage Locations":
+                return <View/>;
+            case "Transfer":
+                return <View/>;
+            case "Supplier":
+                return <View/>;
+            default :
+                return <View/>
+        }
+    };
 
     return (
         <View style={{flex: 1}}>
@@ -33,7 +48,7 @@ function InventoryBottomSheetContainer({inventory}) {
                 currentTabs={currentTabs}
                 selectedTab={currentTab}
                 isEditMode={isEditMode}
-                overlayContent={overlayContent}
+                overlayContent={getOverlayScreen(currentTab)}
             />
         </View>
     );

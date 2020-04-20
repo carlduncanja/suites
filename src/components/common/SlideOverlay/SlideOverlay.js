@@ -19,9 +19,9 @@ const SlideOverlay = ({overlayContent, isEditMode, overlayId, overlayTitle, onTa
             </View>
 
             <View style={styles.content}>
-                <SlideContent
-                    overlayContent = {overlayContent}
-                />
+                {
+                    overlayContent
+                }
             </View>
         </View>
     );
