@@ -257,11 +257,15 @@ function Storage(props) {
     const getFabActions = () => {
 
         const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {
-            }}>
-                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
-                }} touchable={false}/>
-            </LongPressWithFeedback>;
+            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+                <LongPressWithFeedback pressTimer={1200} onLongPress={() => {
+                }}>
+                    <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
+                    }} touchable={false}/>
+                </LongPressWithFeedback>
+            </View>;
+
+
         const createAction = <ActionItem title={"New Location"} icon={<AddIcon/>} onPress={
             openCreateStorageModel
         }/>;
