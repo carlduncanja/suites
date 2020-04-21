@@ -9,7 +9,7 @@ import {
 } from "react-native";
 // import Animated from "react-native-reanimated";
 
-const COLORS = ['rgba(255,255,255,1)', 'rgba(0,0,0,0.16)'];
+const COLORS = ['rgba(255,255,255,1)', 'rgba(227, 232, 239, 1)'];
 
 /**
  * Long Press Listener component with visual feed back.
