@@ -20,7 +20,7 @@ import ActionItem from "../components/common/ActionItem";
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
-import CreateStorage from "../components/Storage/CreateStorage";
+import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
 
 
 const listHeaders = [
@@ -276,8 +276,20 @@ function Storage(props) {
     };
 
     const openCreateStorageModel = () => {
-        modal.closeModal('ActionContainerModal');
-        modal.openModal('OverlayModal', {content: <CreateStorage/>})
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <CreateStorageDialogContainer onCancel={() => setFloatingAction(false)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
     };
 
     let storageToDisplay = [...storageLocations];
