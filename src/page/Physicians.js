@@ -6,6 +6,7 @@ import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
 import PhysicianActionIcon from '../../assets/svg/physicianListAction';
+import PhysicianBottomSheet from '../components/Physicians/PhysicianBottomSheet';
 
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
 
@@ -82,7 +83,9 @@ const Physicians = (props) => {
     }
 
     const handleOnItemPress = (item) => {
-
+        modal.openModal('BottomSheetModal',{
+            content : <PhysicianBottomSheet physician = {item} />
+        })
     }
 
     const goToNextPage = () => {
