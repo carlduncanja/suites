@@ -20,6 +20,7 @@ import ActionItem from "../components/common/ActionItem";
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
+import CreateStorage from "../components/Storage/CreateStorage";
 
 
 const listHeaders = [
@@ -169,11 +170,14 @@ function Storage(props) {
     };
 
     const toggleActionButton = () => {
-        setFloatingAction(!isFloatingActionDisabled);
+        setFloatingAction(true);
         modal.openModal("ActionContainerModal",
             {
                 actions: getFabActions(),
-                title: "STORAGE ACTIONS"
+                title: "STORAGE ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
             })
     };
 
@@ -258,8 +262,9 @@ function Storage(props) {
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
                 }} touchable={false}/>
             </LongPressWithFeedback>;
-        const createAction = <ActionItem title={"New Location"} icon={<AddIcon/>} onPress={() => {
-        }}/>;
+        const createAction = <ActionItem title={"New Location"} icon={<AddIcon/>} onPress={
+            openCreateStorageModel
+        }/>;
 
         return <ActionContainer
             floatingActions={[
@@ -268,6 +273,11 @@ function Storage(props) {
             ]}
             title={"STORAGE ACTIONS"}
         />
+    };
+
+    const openCreateStorageModel = () => {
+        modal.closeModal('ActionContainerModal');
+        modal.openModal('OverlayModal', {content: <CreateStorage/>})
     };
 
     let storageToDisplay = [...storageLocations];

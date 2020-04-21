@@ -7,48 +7,49 @@ import {CaseFileContext} from '../contexts/CaseFileContext';
 import {appActions} from '../redux/reducers/suitesAppReducer';
 
 const ActionContainerModal = (props) => {
-    const [state, dispatch] = useContext(SuitesContext)
-    const toggleActionButton = () => {
-        // state.floatingActions.actionButtonState === false && setSearchPlaceholder("")
-        dispatch({
-            type: appActions.TOGGLEACTIONBUTTON,
-            newState: !state.floatingActions.actionButtonState
-        })
-    };
+    const [state, dispatch] = useContext(SuitesContext);
 
-    const { modal: {closeModal, closeModals, currentModal, params : {actionContent }}} = props
-    // const {
-    //     modal: {
-    //         closeModal,
-    //         closeModals,
-    //         currentModal,
-    //         params: {actions, title}
-    //     }
-    // } = props;
+    const {
+        modal: {
+            closeModal,
+            closeModals,
+            currentModal,
+            getParams
+        }
+    } = props;
+
+    const params = getParams({
+        actions: <View/>,
+        onClose: () => {
+        }
+    });
+
+    console.log(params);
+
+    const {actions, onClose} = getParams({
+        actions: <View/>,
+        onClose: () => {
+        }
+    });
 
     return (
         <View style={{width: state.pageMeasure.width, height: state.pageMeasure.height}}>
             <TouchableOpacity
                 onPress={() => {
                     closeModals(currentModal);
-                    toggleActionButton()
+                    if (onClose) onClose()
                 }}
                 activeOpacity={1}
                 style={styles.modalContainer}
             />
             <View style={styles.positionContainer}>
-                {actionContent}
-                {/* <ActionContainer
-                    title = {title}
-                    floatingActions = {floatingActions}
-                /> */}
-                {/* {
+                {
                     actions
-                } */}
+                }
             </View>
         </View>
     );
-}
+};
 
 export default ActionContainerModal;
 

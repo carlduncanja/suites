@@ -4,10 +4,10 @@ import Svg, {Path} from 'react-native-svg';
 import Action from './Action'
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
- 
 
 
-const ActionContainer = ({title, floatingActions, handleActionPress}) => {
+
+const ActionContainer = ({title, floatingActions}) => {
     const separator = () => {
         return (
             <View style={{
@@ -30,20 +30,14 @@ const ActionContainer = ({title, floatingActions, handleActionPress}) => {
             <View style={styles.actionsContainer}>
                 <FlatList
                     data={floatingActions}
-                    renderItem={({ item }) => 
-                        <Action
-                            actionName = {item.actionName}
-                            actionIcon = {item.actionIcon}
-                            handleActionPress = {handleActionPress}
-                        />
-                    }
-                    keyExtractor={item => item.name + Math.random().toString()}
+                    renderItem={({item}) => item}
+                    keyExtractor={(item, index) => ""+index}
                     ItemSeparatorComponent={separator}
                 />
             </View>
         </View>
     );
-}
+};
 
 export default ActionContainer;
 

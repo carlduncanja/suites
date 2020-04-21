@@ -8,7 +8,7 @@ const OverlayModal = (props) => {
     const [state] = useContext(SuitesContext)
 
     const { modal: {closeModal, closeModals, currentModal, closeAllModals, params }} = props
-    return ( 
+    return (
         <View style={{width:state.pageMeasure.width, height: state.pageMeasure.height}}>
             <TouchableOpacity
                 onPress={()=>{closeModals(currentModal)}}
@@ -19,10 +19,10 @@ const OverlayModal = (props) => {
                 {/* <Overlay/> */}
                 { params.content }
             </View>
-        </View> 
+        </View>
     );
-}
- 
+};
+
 export default OverlayModal;
 
 const styles = StyleSheet.create({
