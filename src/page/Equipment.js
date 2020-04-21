@@ -5,6 +5,7 @@ import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
+import EquipmentBottomSheet from '../components/Equipment/EquipmentBottomSheet';
 
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
 import EquipmentListIcon from '../../assets/svg/equipmentListAction';
@@ -87,7 +88,9 @@ const Equipment = (props) => {
     }
 
     const handleOnItemPress = (item) => {
-
+        modal.openModal('BottomSheetModal',{
+            content : <EquipmentBottomSheet equipment = {item}/>
+        })
     }
 
     const goToNextPage = () => {

@@ -39,3 +39,4 @@ export function ContactRecord({recordTitle, recordValue, valueFontSize, titleFon
         />
     )
 }
+

@@ -5,6 +5,7 @@ import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
+import ProceduresBottomSheet from '../components/Procedures/ProceduresBottomSheet';
 
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
 
@@ -76,7 +77,9 @@ const Procedures = (props) =>{
     }
 
     const handleOnItemPress = (item) => {
-
+        modal.openModal('BottomSheetModal',{
+            content : <ProceduresBottomSheet procedure = {item} />
+        })
     }
 
     const goToNextPage = () => {
