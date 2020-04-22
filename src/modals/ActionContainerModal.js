@@ -5,6 +5,7 @@ import ActionContainer from '../components/common/FloatingAction/ActionContainer
 import {withModal} from 'react-native-modalfy';
 import {CaseFileContext} from '../contexts/CaseFileContext';
 import {appActions} from '../redux/reducers/suitesAppReducer';
+import KeyboardShift from "../components/KeyboardShift";
 
 const ActionContainerModal = (props) => {
     const [state, dispatch] = useContext(SuitesContext);
@@ -42,11 +43,16 @@ const ActionContainerModal = (props) => {
                 activeOpacity={1}
                 style={styles.modalContainer}
             />
-            <View style={styles.positionContainer}>
+            <KeyboardShift>
                 {
-                    actions
+                    () =>
+                        <View style={styles.positionContainer}>
+                            {
+                                actions
+                            }
+                        </View>
                 }
-            </View>
+            </KeyboardShift>
         </View>
     );
 };

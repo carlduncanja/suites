@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, TouchableOpacity} from "react-native";
+import {View, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Platform} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
+import KeyboardShift from "../../KeyboardShift";
 
 /**
  * Dialog component used in overlay modal.
@@ -22,6 +23,7 @@ function OverlayDialog(props) {
 
 
     return (
+
         <View style={styles.container}>
             <View style={styles.headingContainer}>
                 <Text>{title}</Text>
@@ -41,6 +43,7 @@ function OverlayDialog(props) {
                 </View>
             </TouchableOpacity>
         </View>
+
     );
 }
 
@@ -81,6 +84,7 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 57,
         borderTopWidth: 1,
+        color: "#3182CE",
         borderTopColor: '#E3E8EF',
         justifyContent: 'center',
         alignItems: 'center',

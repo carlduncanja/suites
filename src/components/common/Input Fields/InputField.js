@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import InputText from '../InputText';
 
 const InputField = (props) => {
-    return (  
+    return (
         <View style={styles.container}>
                 <Text style={styles.fieldText}>{props.field}</Text>
                 <View style={styles.inputContainer}>
@@ -11,8 +11,8 @@ const InputField = (props) => {
                 </View>
             </View>
     );
-}
- 
+};
+
 export default InputField;
 
 const styles = StyleSheet.create({
