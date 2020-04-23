@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import Record from '../common/Information Record/Record';
-import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
-import ColumnSection from '../common/ColumnSection';
-import ColumnSectionsList from '../common/ColumnsSectionsList';
+import Record from '../../common/Information Record/Record';
+import ResponsiveRecord from '../../common/Information Record/ResponsiveRecord';
+import ColumnSection from '../../common/ColumnSection';
+import FloatingActionButton from "../../common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../../common/FloatingAction/ActionContainer";
 
-const Configuration = ({procedure}) => {
+import { withModal } from "react-native-modalfy";
+
+const Configuration = ({procedure, modal}) => {
+
+    const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
     const { name, duration, recovery, custom, physician, description} = procedure   
     const procedureName = <Record 
@@ -42,8 +47,29 @@ const Configuration = ({procedure}) => {
         assignedRecord
     ]
 
+    const toggleActionButton = () =>{
+        setIsFloatingActionDisabled(true);
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFloatingActions(),
+                title: "PROCEDURE ACTIONS",
+                onClose: () => {
+                    setIsFloatingActionDisabled(false)
+                }
+            })
+    }
+
+    getFloatingActions = () =>{
+        return <ActionContainer
+            floatingActions={[
+
+            ]}
+            title={"PROCEDURE ACTIONS"}
+        />
+    }
+
     return (
-        <View style={styles.container}>
+        <>
             <View style={styles.description}>
                 <Text style={{fontSize:16, color:'#718096', paddingBottom:10}}>Description</Text>
                 {
@@ -63,20 +89,35 @@ const Configuration = ({procedure}) => {
             <View style={{marginTop:15}}>
                 <Text style={{color:'#718096', fontSize:16 }}>This Procedure is available at these Locations</Text>
             </View>
-        </View>
+            <View style={styles.footer}>
+                <FloatingActionButton
+                    isDisabled = {isFloatingActionDisabled}
+                    toggleActionButton = {toggleActionButton}
+                />
+            </View>
+        </>
     )
 }
 
-export default Configuration
+export default withModal(Configuration)
 
 const styles = StyleSheet.create({
     container:{
-
+        backgroundColor:'red'
     },
     description:{
         width: '60%',
         paddingBottom:30,
     },
     detailsContainer:{
+    },
+    footer:{
+        flex: 1,
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        marginBottom: 20,
+        marginRight: 30,
     }
 })

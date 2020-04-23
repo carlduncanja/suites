@@ -1,10 +1,10 @@
 import React,{ useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import EmergencyContact from '../common/EmergencyContact';
-import Contact from '../common/Contact';
-import ColumnSectionsList from '../common/ColumnsSectionsList';
-import Record from '../common/Information Record/Record';
-import ColumnSection from "../common/ColumnSection";
+import EmergencyContact from '../../common/EmergencyContact';
+import Contact from '../../common/Contact';
+import ColumnSectionsList from '../../common/ColumnsSectionsList';
+import Record from '../../common/Information Record/Record';
+import ColumnSection from "../../common/ColumnSection";
 import moment from "moment";
 
 const Details = ({physician}) => {

@@ -2,13 +2,13 @@ import suitesAxiosInstance from "./index"
 import {handleError, handleResponse} from "./apiUtils";
 
 import {
-    inventoriesEndpoint,
-    theatresEndpoint,
-    physiciansEndpoint,
-    proceduresEndpoint,
+    inventoriesEndpoint,inventoryEndpoint,
+    theatresEndpoint,theatreEndpoint,
+    physiciansEndpoint,physicianEndpoint,
+    proceduresEndpoint,procedureEndpoint,
     caseFilesEndpoint,
-    equipmentsEndpoint,
-    storageLocationsEndpoint, theatreEndpoint, inventoryEndpoint,
+    equipmentsEndpoint,equipmentEndpoint,
+    storageLocationsEndpoint, 
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -89,20 +89,28 @@ export const getCaseFiles = async () => {
 
 // ################# Procedures Endpoints
 export const getProcedures = async () => {
-    // await new Promise(r => setTimeout(r, 2000));
-    // return procedures
     return suitesAxiosInstance.get(proceduresEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
+};
+
+export const getProceduresById = async (id) => {
+    return suitesAxiosInstance.get(procedureEndpoint(id))
         .then(handleResponse)
         .catch(handleError)
 };
 
 // ################# Physicians Endpoints
 export const getPhysicians = async () => {
-    // await new Promise(r => setTimeout(r, 2000));
     return suitesAxiosInstance.get(physiciansEndpoint)
         .then(handleResponse)
         .catch(handleError)
-    //return axios.get('/physicians')
+};
+
+export const getPhysiciansById = async (id) => {
+    return suitesAxiosInstance.get(physicianEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError)
 };
 
 // ################# Storage Endpoints
@@ -114,9 +122,13 @@ export const getStorage = async () => {
 
 // ################# Equipment Endpoint
 export const getEquipment = async () => {
-    // await new Promise(r => setTimeout(r, 2000));
-    // return equipment
     return suitesAxiosInstance.get(equipmentsEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
+};
+
+export const getEquipmentById = async (id) => {
+    return suitesAxiosInstance.get(equipmentEndpoint(id))
         .then(handleResponse)
         .catch(handleError)
 };

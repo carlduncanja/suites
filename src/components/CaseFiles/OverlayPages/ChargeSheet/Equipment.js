@@ -5,119 +5,54 @@ import Table from '../../../common/Table/Table';
 import Checkbox from '../../../common/Checkbox/Checkbox';
 import { useCheckBox } from '../../../../helpers/caseFilesHelpers';
 import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
+import Item from '../../../common/Table/Item';
 
-const headers = [
-    {
-        name :"Item Name",
-        alignment: "flex-start"
-    },
-    {
-        name :"Type",
-        alignment: "center"
-    },
-    {
-        name :"Quantity",
-        alignment: "center"
-    },
-    {
-        name :"Unit Price",
-        alignment: "flex-end"
-    }
-]
-const itemWidth = `${100/headers.length}%`
+const Equipment = ({tabDetails, headers, listItemFormat}) => {
 
-const Equipment = ({tabDetails}) => {
-    const [state, dispatch] = useContext(SuitesContext)
     const [checkBoxList, setCheckBoxList] = useState([])
 
-    const listItem = (item) => {
-        return(
-            <View style={styles.container}>
-                <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(item)}>
-                    { checkBoxList.includes(item) ? <CheckedBox/> : <Checkbox/> }
-                </TouchableOpacity>
-                <View style={styles.dataContainer}>
-                    <View style={styles.item}>
-                        <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.item}</Text>
-                    </View>
-                    <View style={[styles.item,{alignItems:'flex-start'}]}>
-                        <Text style={styles.itemText}>{item.type}</Text>
-                    </View>
-                    <View style={[styles.item,{alignItems:'center'}]}>
-                        <Text style={styles.itemText}>{item.quantity}</Text>
-                    </View>
-                    <View style={[styles.item,{alignItems:'flex-end'}]}>
-                        <Text style={styles.itemText}>{item.unitPrice}</Text>
-                    </View>
-                </View>
-            </View>
-        )
+    const toggleCheckbox = (item) => () => {
+        let updatedCases = [...checkBoxList];
+
+        if (updatedCases.includes(item)) {
+            updatedCases = updatedCases.filter(caseItem => caseItem !== item)
+        } else {
+            updatedCases.push(item);
+        }
+        setCheckBoxList(updatedCases);
     }
-
-    // const headerItem = () => {
-    //     return(
-    //         <View style={styles.headersContainer}>
-    //             <View style={{marginRight:20}}>
-    //                 {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
-    //             </View>
-            
-    //             <View style={styles.headerItem}>
-    //                 <Text style={styles.headerText}>Item Name</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'center'}]}>
-    //                 <Text style={styles.headerText}>Type</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'center'}]}>
-    //                 <Text style={styles.headerText}>Quantity</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
-    //                 <Text style={styles.headerText}>Unit Price</Text>
-    //             </View>
-    //     </View>
-    //     )
-        
-    // }
-
-    const toggleCheckbox = (item) =>{
-        let checkedList = useCheckBox(item,checkBoxList)
-        setCheckBoxList(checkedList)
-    }
-
-    const toggleHeaderCheckbox = () =>{
-        checkBoxList.length > 0 ?
-            setCheckBoxList([])
-            :
-            setCheckBoxList(tabDetails)
-    }
-
-    // const setListTabData = (list,headers) => {
-    //     dispatch({
-    //         type: appActions.SETSLIDEOVERLAYLIST,
-    //         newState : {
-    //             slideOverlayList : list,
-    //             slideOverlayListHeaders : headers
-    //         }
-    //     })
-    //     return true
-    // }
-
-    // useEffect(()=>{
-    //     const headers = ["Item Name", "Type", "Quantity", "Unit Price"]
-    //     const list = getList(state.slideOverlay.slideOverlayTabInfo, headers)
-    //     setListTabData(list,headers)
-    // },[state.slideOverlay.slideOverlayTabInfo])
     
+    const toggleHeaderCheckbox = () =>{
+        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
+        
+        if (indeterminate) {
+            const selectedAllIds = [...tabDetails.map( item => item )]
+            setCheckBoxList(selectedAllIds)
+        } else {
+            setCheckBoxList([])
+        }
+    }
+
+    const renderListFn = (item) =>{
+        return <Item
+            hasCheckBox={true}
+            isChecked={checkBoxList.includes(item)}
+            onCheckBoxPress={toggleCheckbox(item)}
+            onItemPress={() => {}}
+            itemView={listItemFormat(item)}
+        />
+    }
    
     return ( 
         <ScrollView>
             <Table
+                isCheckbox = {true}
                 data = {tabDetails}
-                listItemFormat = {listItem}
-                // headerItemFormat = {headerItem}
+                listItemFormat = {renderListFn}
                 headers = {headers}
                 toggleHeaderCheckbox = {toggleHeaderCheckbox} 
-                checkBoxList = {checkBoxList}
-                dataLength = {tabDetails.length}
+                itemSelected = {checkBoxList}
+                // dataLength = {tabDetails.length}
             />
         </ScrollView>
     );

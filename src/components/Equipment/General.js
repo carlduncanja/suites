@@ -4,8 +4,22 @@ import Record from '../common/Information Record/Record';
 import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
 import ColumnSection from '../common/ColumnSection';
 import ColumnSectionsList from '../common/ColumnsSectionsList';
+import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import LongPressWithFeedback from "../common/LongPressWithFeedback";
+import ActionItem from "../common/ActionItem";
 
-const General = ({details}) => {
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import AddIcon from "../../../assets/svg/addIcon";
+import AssignIcon from "../../../assets/svg/assignIcon";
+import EditIcon from "../../../assets/svg/editIcon";
+
+
+import { withModal } from "react-native-modalfy";
+
+const General = ({details, modal}) => {
+
+    const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
     const supplierId = <Record 
         recordTitle = {"Supplier ID"}
@@ -58,8 +72,41 @@ const General = ({details}) => {
         category
     ]
 
+    const toggleActionButton = () =>{
+        setIsFloatingActionDisabled(true);
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFloatingActions(),
+                title: "EQUIPMENT ACTIONS",
+                onClose: () => {
+                    setIsFloatingActionDisabled(false)
+                }
+            })
+    }
+
+    getFloatingActions = () =>{
+        const deleteAction =
+            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+            </LongPressWithFeedback>;
+        const assignEquipment = <ActionItem title={"Assign Equipment"} icon={<AssignIcon/>} onPress={()=>{}}/>;
+        const editGroup = <ActionItem title={"Edit Group"} icon={<EditIcon/>} onPress={()=>{}}/>;
+        const createEquipment = <ActionItem title={"Add Equipment"} icon={<AddIcon/>} onPress={()=>{}}/>;
+
+        return <ActionContainer
+            floatingActions={[
+                deleteAction,
+                assignEquipment,
+                editGroup,
+                createEquipment
+            ]}
+            title={"EQUIPMENT ACTIONS"}
+        />
+    }
+
+
     return (
-        <View style={styles.container}>
+        <>
             <View style={styles.description}>
                 <Text>Description</Text>
                 <Text>{details.description}</Text>
@@ -78,11 +125,18 @@ const General = ({details}) => {
                     ]}
                 />
             </View>
-        </View>
+            
+            <View style={styles.footer}>
+                <FloatingActionButton
+                    isDisabled = {isFloatingActionDisabled}
+                    toggleActionButton = {toggleActionButton}
+                />
+            </View> 
+        </>
     )
 }
 
-export default General
+export default withModal(General)
 
 const styles = StyleSheet.create({
     container:{
@@ -93,5 +147,14 @@ const styles = StyleSheet.create({
         paddingBottom:20
     },
     detailsContainer:{
+    },
+    footer:{
+        flex: 1,
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        marginBottom: 20,
+        marginRight: 30,
     }
 })

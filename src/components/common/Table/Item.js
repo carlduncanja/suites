@@ -1,26 +1,56 @@
-import React,{ useState } from "react";
-import { View, Text, StyleSheet,TouchableOpacity } from "react-native";
+import React, {useContext} from 'react';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {withModal} from 'react-native-modalfy';
+import CheckBoxComponent from "../Checkbox";
+
 
 /**
- * @param listItemArray array of object properties
+ *
+ * @param itemView
+ * @param hasCheckBox
+ * @param isChecked
+ * @param onCheckBoxPress
+ * @param onItemPress
+ * @returns {*}
+ * @constructor
  */
 
-const Item = (listItemArray) =>{
-    return(
-        <View> 
-            {listItemArray.map((item,index)=>{
-                return(
-                    <View style={{}} key={index}>
-                        <Text>{item}</Text>
-                    </View>
-                )
-            })}
-        </View>
-    )
-}
+const Item = ({
+    itemView,
+    hasCheckBox,
+    isChecked,
+    onCheckBoxPress,
+    onItemPress
+}) => {
+
+    return (
+        <TouchableOpacity onPress={onItemPress}>
+            <View style={styles.container}>
+                <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
+                    <CheckBoxComponent
+                        isCheck={isChecked}
+                        onPress={onCheckBoxPress}
+                    />
+                </View>
+                {
+                    itemView
+                }
+            </View>
+        </TouchableOpacity>
+    );
+};
 
 export default Item
 
-const styles = StyleSheet.create({
+Item.propTypes = {};
+Item.defaultProps = {};
 
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingBottom: 8,
+        paddingTop: 8,
+        width: '100%',
+    },
 })

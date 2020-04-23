@@ -17,21 +17,20 @@ const Divider = () =>{
     )
 }
 const Table = (props) => { 
+
     const {
         data,
         listItemFormat,
-        currentListMax,
-        currentListMin,
-        listItemArray,
         headers,
-        toggleHeaderCheckbox,
-        checkBoxList,
-        dataLength,
-        isCheckbox
-        // toggleCheckbox
+        isCheckbox,
+        toggleHeaderCheckbox = isCheckbox ? toggleHeaderCheckbox : ()=>{},
+        itemSelected = isCheckbox ? itemSelected : [],
+       
     } = props 
 
-    const [state] = useContext(CaseFileContext)
+    // const toggleHeaderCheckbox = isCheckbox ? toggleHeaderCheckbox : ()=>{};
+    // const itemSelected = isCheckbox ? itemSelected : [];
+    const isIndeterminate = itemSelected.length > 0 && itemSelected.length !== data.length;
     return ( 
         <>
             <View style={styles.header}>
@@ -39,10 +38,9 @@ const Table = (props) => {
                 <Header 
                     headers = {headers}
                     toggleHeaderCheckbox = {toggleHeaderCheckbox}
-                    checkBoxList = {checkBoxList}
-                    dataLength = {dataLength}
+                    isIndeterminate = {isIndeterminate}
+                    checked = {itemSelected.length > 0}
                     isCheckbox = {isCheckbox}
-                    // toggleCheckbox = {toggleCheckbox}
                 />
             </View>
             {Divider()}
@@ -50,8 +48,8 @@ const Table = (props) => {
                 <Data
                     listItemFormat = {listItemFormat}
                     data = {data}
-                    currentListMin = {currentListMin}
-                    currentListMax = {currentListMax}
+                    // currentListMin = {currentListMin}
+                    // currentListMax = {currentListMax}
                     // dataLength = {dataLength}
                     // toggleCheckbox = {toggleCheckbox}
                 />
