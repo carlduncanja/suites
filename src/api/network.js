@@ -120,6 +120,13 @@ export const getStorage = async () => {
         .catch(handleError)
 };
 
+export const createStorageLocation = async (storageForCreation) => {
+    return suitesAxiosInstance
+        .post(storageLocationsEndpoint, storageForCreation)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 // ################# Equipment Endpoint
 export const getEquipment = async () => {
     return suitesAxiosInstance.get(equipmentsEndpoint)

@@ -24,13 +24,15 @@ const SlideHeader = ({id, title, selectedTab, currentTabs, onTabPressChange, isE
                     />
             }
 
-            <TabsContainer
-                tabs={currentTabs}
-                selectedTab={selectedTab}
-                onPressChange={onTabPressChange}
-            />
+            <View style={{marginLeft: 20}}>
+                <TabsContainer
+                    tabs={currentTabs}
+                    selectedTab={selectedTab}
+                    onPressChange={onTabPressChange}
+                />
+            </View>
         </View>
     );
-}
+};
 
 export default SlideHeader;

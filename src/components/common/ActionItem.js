@@ -61,6 +61,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         minWidth: 200,
+        padding: 6,
+        borderRadius: 6
     },
     bgFill: {
         position: 'absolute',

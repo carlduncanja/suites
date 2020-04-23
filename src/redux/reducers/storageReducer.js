@@ -1,5 +1,5 @@
 import initialState from "./initialState";
-import { SET_STORAGE } from "../actions/storageActions";
+import {ADD_STORAGE, SET_STORAGE} from "../actions/storageActions";
 
 export default (state = initialState.storage, action) => {
 
@@ -9,6 +9,10 @@ export default (state = initialState.storage, action) => {
         case SET_STORAGE: {
             const {data} = payload;
             return [...data]
+        }
+        case ADD_STORAGE: {
+            const {data} = payload;
+            return [...state, data]
         }
         default:
             return state
