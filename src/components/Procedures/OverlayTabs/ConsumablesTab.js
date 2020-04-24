@@ -61,7 +61,7 @@ const ConsumablesTab = ({modal, consumablesData}) => {
         <View style={[styles.item,{alignItems:'flex-end'}]}>
             <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
         </View>
-            
+             
     </>
 
     const data = consumablesData.map(item => {

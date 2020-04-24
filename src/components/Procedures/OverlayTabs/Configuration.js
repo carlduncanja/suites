@@ -18,11 +18,13 @@ const Configuration = ({procedure, modal}) => {
         hasRecovery, 
         custom, 
         physician={}, 
-        description} = procedure 
+        description
+    } = procedure 
 
     const {
         firstName = "", 
-        surname = ""} =  physician
+        surname = ""
+    } =  physician
     
     const recovery = hasRecovery ? "Yes" : "No"
     const customStatus  = "Yes"

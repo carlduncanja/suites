@@ -6,7 +6,7 @@ import {
     theatresEndpoint,theatreEndpoint,
     physiciansEndpoint,physicianEndpoint,
     proceduresEndpoint,procedureEndpoint,
-    caseFilesEndpoint,
+    caseFilesEndpoint,caseFileEndpoint,
     equipmentsEndpoint,equipmentEndpoint,equipmentTypesEndpoint,
     storageLocationsEndpoint, 
 } from "../const/suitesEndpoints";
@@ -80,11 +80,15 @@ export const getInventoryById = async (id) => {
 
 // ################# Case Files Endpoints
 export const getCaseFiles = async () => {
-    await new Promise(r => setTimeout(r, 2000));
-    return caseFiles
-    // return suitesAxiosInstance.get(caseFilesEndpoint)
-    //     .then(handleResponse)
-    //     .catch(handleError)
+    return suitesAxiosInstance.get(caseFilesEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
+};
+
+export const getCaseFileById = async (id) => {
+    return suitesAxiosInstance.get(caseFileEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError)
 };
 
 // ################# Procedures Endpoints

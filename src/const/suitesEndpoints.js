@@ -18,7 +18,7 @@ export const equipmentEndpoint = (id) => `/equipments/${id}`;
 export const equipmentTypesEndpoint = "/equipment-types"
 
 export const caseFilesEndpoint = "/cases";
-export const caseFileEndpoint = (id) => `{{base-url}}/cases/${id}`;
+export const caseFileEndpoint = (id) => `/cases/${id}`;
 // ##### STORAGE
 export const storageLocationsEndpoint = "/storage-locations";
 export const storageLocationEndpoint = (id) => `/storage-locations/${id}`;

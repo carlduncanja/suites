@@ -5,22 +5,23 @@ import Page from '../components/common/Page/Page';
 import ListItem from "../components/common/List/ListItem";
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 // import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
-// import FloatingActionComponent from '../components/common/FloatingAction/FloatingActionComponent';
-// import Navigation from '../components/CaseFiles/navigation/ContentNavigationStack';
-// import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 import CaseActions from '../components/CaseFiles/CaseActions';
+import CaseFileBottomSheet from '../components/CaseFiles/CaseFileBottomSheet';
 
 import {connect} from 'react-redux';
-import {setCaseFiles} from "../redux/actions/caseFilesActions";
-import {getCaseFiles} from "../api/network";
+import { setCaseFiles } from "../redux/actions/caseFilesActions";
+import { getCaseFiles } from "../api/network";
 
 import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
-import SvgIcon from '../../assets/SvgIcon';
+import { currencyFormatter } from '../utils/formatter';
+// import SvgIcon from '../../assets/SvgIcon';
 import {SuitesContext} from '../contexts/SuitesContext';
-import {appActions} from '../redux/reducers/suitesAppReducer';
+// import {appActions} from '../redux/reducers/suitesAppReducer';
 
 import { withModal } from 'react-native-modalfy';
-import CaseFileBottomSheet from '../components/CaseFiles/CaseFileBottomSheet';
+import moment from 'moment';
+import caseFiles from "../../data/CaseFiles";
+
 
 const listHeaders = [
     {
@@ -45,20 +46,6 @@ const CaseFiles = (props) => {
     //######## const
 
     const recordsPerPage = 10;
-    // const floatingActions = [
-    //     {
-    //         "actionId":"archiveCase",
-    //         "action":"archiveItem",
-    //         "actionName":"Archive Case",
-    //         "disabled":true
-    //     },
-    //     {
-    //         "actionId":"newCase",
-    //         "action":"newItem",
-    //         "actionName":"New Case",
-    //         "disabled":false
-    //     }
-    // ];
 
     const overlayMenu = [
         {
@@ -82,7 +69,6 @@ const CaseFiles = (props) => {
             "overlayTabs":["Consumables","Equipment","Billing","Quotation","Invoices"]
         }
     ]
-
 
     //######## Props
 
@@ -112,9 +98,7 @@ const CaseFiles = (props) => {
         if (!caseFiles.length) {
             fetchCaseFilesData()
         }
-
         setTotalPages(Math.ceil(caseFiles.length / recordsPerPage))
-
     }, []);
 
     //######## Event Handlers
@@ -139,9 +123,8 @@ const CaseFiles = (props) => {
 
     const handleOnItemPress = (item) => {
         modal.openModal('BottomSheetModal',{
-            content : <CaseFileBottomSheet item = {item} overlayMenu = {overlayMenu}/>
+            content : <CaseFileBottomSheet caseItem = {item} overlayMenu = {overlayMenu}/>
         })
-
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
@@ -175,8 +158,6 @@ const CaseFiles = (props) => {
         fetchCaseFilesData()
     };
 
-    
-
     //######## Helper Functions
 
     const changeText = (text) => {
@@ -208,21 +189,33 @@ const CaseFiles = (props) => {
         />
     };
 
-    const caseItem = (item) => <>
-        <View style={styles.item}>
-            <Text style={{color: "#718096", fontSize: 12}}>{item.id}</Text>
-            <Text style={{color: "#3182CE", fontSize: 16}}>{item.name}</Text>
-        </View>
-        <View style={styles.item}>
-            <Text style={styles.itemText}>{item.balance}</Text>
-        </View>
-        <View style={styles.item}>
-            <Text style={styles.itemText}>{item.staff}</Text>
-        </View>
-        <View style={styles.item}>
-            <Text style={styles.itemText}>{item.nextVisit}</Text>
-        </View>
-    </>;
+    const caseItem = (item) => {
+        const {
+            id, 
+            name, 
+            balance = 382782.02,
+            leadPhysician = "Dr. Mansingh",
+            nextVisit = new Date(2020,10,12)
+        } = item
+
+        return (
+            <>
+                <View style={styles.item}>
+                    <Text style={{color: "#718096", fontSize: 12}}>#{id}</Text>
+                    <Text style={{color: "#3182CE", fontSize: 16}}>{name}</Text>
+                </View>
+                <View style={styles.item}>
+                    <Text style={styles.itemText}>$ {currencyFormatter(balance)}</Text>
+                </View>
+                <View style={styles.item}>
+                    <Text style={styles.itemText}>{leadPhysician}</Text>
+                </View>
+                <View style={styles.item}>
+                    <Text style={styles.itemText}>{moment(nextVisit).format("MMM DD, YYYY")}</Text>
+                </View>
+            </>
+        )
+    }
 
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
@@ -272,7 +265,7 @@ const CaseFiles = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-    caseFiles: state.caseFiles
+    caseFiles: caseFiles
 });
 
 const mapDispatcherToProp = {
