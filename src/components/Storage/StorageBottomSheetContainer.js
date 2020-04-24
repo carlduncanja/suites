@@ -37,7 +37,7 @@ function StorageBottomSheetContainer({storage}) {
             default :
                 return <View/>
         }
-    }
+    };
 
     const overlayContent = <View style={{flex: 1, padding:30}}>
         {getTabContent(currentTab)}

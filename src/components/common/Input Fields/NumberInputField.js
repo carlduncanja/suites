@@ -17,7 +17,7 @@ function NumberInputField({label, onChangeText, value, placeholder}) {
                     style={styles.inputField}
                     value={value}
                     onChangeText={value => {
-                        if (/^\d+$/g.test(value)) {
+                        if (/^\d+$/g.test(value) || !value) {
                             onChangeText(value)
                         }
                     }}

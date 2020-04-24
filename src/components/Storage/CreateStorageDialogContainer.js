@@ -87,10 +87,15 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                         </View>
 
                         <View style={styles.inputWrapper}>
-                            <NumberInputField
+                            <InputField2
                                 label={"Capacity"}
-                                onChangeText={onFieldChange('capacity')}
+                                onChangeText={(value) => {
+                                    if (/^\d+$/g.test(value) || !value) {
+                                        onFieldChange('capacity')(value)
+                                    }
+                                }}
                                 value={fields['capacity']}
+                                keyboardType={'number-pad'}
                             />
                         </View>
                     </View>
