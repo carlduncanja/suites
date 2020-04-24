@@ -2,6 +2,7 @@ import React, {Component, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import moment from "moment";
+import { formatDate } from '../../utils/formatter';
 
 /**
  *
@@ -22,8 +23,8 @@ const MonthSelector = ({selectedMonth, onMonthUpdated}) => {
         const newMonth = moment(selectedMonth).subtract(1, "month");
         onMonthUpdated(newMonth);
     };
-
-    const MONTH = moment(selectedMonth).format("MMMM YYYY");
+    
+    const MONTH = formatDate(selectedMonth,"MMMM YYYY");
 
     return (
         <View style={styles.container}>

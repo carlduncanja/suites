@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import moment from "moment";
+import { formatDate } from '../../utils/formatter';
 
 
 export const SCHEDULE_TYPES = {
@@ -26,7 +27,7 @@ export const SCHEDULE_TYPES = {
 const ScheduleItem = ({color, title, startTime, endTime, onScheduleClick, isInMonthOpacity}) => {
 
     const getTime = (appointmentTime) => {
-        return moment(appointmentTime).format("h : mm a")
+        return formatDate(appointmentTime,"h : mm a")
     };
 
     return (

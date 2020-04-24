@@ -20,6 +20,7 @@ import {SuitesContext} from '../contexts/SuitesContext';
 
 import { withModal } from 'react-native-modalfy';
 import moment from 'moment';
+import { formatDate } from '../utils/formatter';
 import caseFiles from "../../data/CaseFiles";
 
 
@@ -211,7 +212,7 @@ const CaseFiles = (props) => {
                     <Text style={styles.itemText}>{leadPhysician}</Text>
                 </View>
                 <View style={styles.item}>
-                    <Text style={styles.itemText}>{moment(nextVisit).format("MMM DD, YYYY")}</Text>
+                    <Text style={styles.itemText}>{formatDate(nextVisit,"MMM DD, YYYY")}</Text>
                 </View>
             </>
         )

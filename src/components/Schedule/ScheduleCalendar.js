@@ -4,6 +4,7 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import RowCalendar from '../Calendar/RowCalendar';
 import DayOfMonth from "../Calendar/DayOfMonth";
 import Calendar from "../Calendar/Calendar";
+import { formatDate } from '../../utils/formatter';
 
 
 /**
@@ -37,7 +38,7 @@ const ScheduleCalendar = ({month,appointments, days, selectedDate, screenDimensi
      */
     const getAppointmentDays = (appointments) => {
         const appointmentDays = [];
-        appointments.forEach(item => appointmentDays.push((moment(item.startTime).format("YYYY-MM-DD"))));
+        appointments.forEach(item => appointmentDays.push((formatDate(item.startTime,"YYYY-MM-DD"))));
         return appointmentDays;
     };
 

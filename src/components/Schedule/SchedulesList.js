@@ -9,6 +9,7 @@ import {connect} from "react-redux";
 import {setAppointments} from "../../redux/actions/appointmentActions"
 import {getSchedules} from "../../api/network";
 import {getDaysForMonth} from "../../utils";
+import {formatDate} from "../../utils/formatter";
 
 
 /**
@@ -42,7 +43,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
 
         // find the appointments for the day and group them.
         return days.map((sectionDay => {
-            const title = moment(sectionDay).format("dddd - MMM D");
+            const title = formatDate(sectionDay,"dddd - MMM D");
 
             let appointmentForDay = [];
             let index = appointmentList.length - 1;
@@ -68,7 +69,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
     };
 
     const isInMonth = (day) => {
-        return moment(new Date(day)).format("MM") === moment(month).format("MM") ? 1 : 0.6
+        return formatDate(new Date(day),"MM") === formatDate(month,"MM") ? 1 : 0.6
     };
 
     const scrollToIndex = (index, animated) => {

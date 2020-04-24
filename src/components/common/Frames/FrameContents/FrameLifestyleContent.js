@@ -4,6 +4,7 @@ import FrameTableItem from '../FrameItems/FrameTableItem';
 import FrameSelectItem from '../FrameItems/FrameSelectItem';
 import FrameMeasureItem from '../FrameItems/FrameMeasureItem';
 import moment from 'moment';
+import { formatDate } from '../../../../utils/formatter';
 
 const FrameLifestyleContent = ({cardInformation}) => {
 
@@ -32,7 +33,7 @@ const FrameLifestyleContent = ({cardInformation}) => {
                     <FrameTableItem title="Usage" value={cardInformation.usage}/>
                 </View>
                 <View style={styles.itemContainer}> 
-                    <FrameTableItem title="Since" value={moment(cardInformation.startTime).format("DD/MM/YYYY")}/>
+                    <FrameTableItem title="Since" value={formatDate(cardInformation.startTime,"DD/MM/YYYY")}/>
                 </View>
             </View>
 

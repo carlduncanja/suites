@@ -5,6 +5,7 @@ import FrameCheckboxItem from '../FrameItems/FrameCheckboxItem';
 import moment from "moment";
 import Button from '../../Buttons/Button';
 import { withModal } from 'react-native-modalfy';
+import { formatDate } from '../../../../utils/formatter';
 
 const FrameProcedureContent = ({details,onOpenPickList}) => {
 
@@ -14,10 +15,10 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
                 <FrameTableItem title = "Location" value={location.name}/>
                 <View style={styles.dateContainer}>
                     <View style={{flex:1}}>
-                        <FrameTableItem title = "Date" value = {moment(appointment.startTime).format("MMM/D/YYYY")}/>
+                        <FrameTableItem title = "Date" value = {formatDate(appointment.startTime,"MMM/D/YYYY")}/>
                     </View>
                     <View style={{flex:1}}>
-                        <FrameTableItem title = "" value = {moment(appointment.startTime).format("h:mm A")}/>
+                        <FrameTableItem title = "" value = {formatDate(appointment.startTime,"h:mm A")}/>
                     </View>
                     <View style={{flex:1}}>
                         <FrameTableItem title = "Duration" value = {appointment.duration}/>

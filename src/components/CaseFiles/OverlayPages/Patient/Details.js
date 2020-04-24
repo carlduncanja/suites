@@ -6,6 +6,7 @@ import moment from 'moment';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../../components/common/Information Record/RecordStyles';
 import { withModal } from 'react-native-modalfy';
 import PatientBMIChart from '../../PatientBMIChart';
+import { formatDate } from '../../../../utils/formatter';
 
 let itemWidth = `${100/3}%`
 const Details = ({tabDetails, modal}) => {
@@ -90,7 +91,7 @@ const Details = ({tabDetails, modal}) => {
             return age
         }
 
-        let dateOfBirth = `${moment(demoObject.dob).format("D/MM/YYYY")} (${getAge(demoObject.dob)})`
+        let dateOfBirth = `${formatDate(demoObject.dob,"D/MM/YYYY")} (${getAge(demoObject.dob)})`
 
         return(
             <View style={{}}>

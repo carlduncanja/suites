@@ -6,6 +6,7 @@ import { scheduleActions } from '../../redux/reducers/scheduleReducer';
 import { ScheduleContext } from '../../contexts/ScheduleContext';
 import { useCloseTransparent } from '../../hooks/useScheduleService';
 import moment from 'moment';
+import { formatDate } from "../../utils/formatter";
 
 export default ScheduleSearch = (props) => {
     [selectedAppEvents, setSelectedAppEvents] = useState([]);
@@ -34,9 +35,10 @@ export default ScheduleSearch = (props) => {
         let sAppEvents = []
         let selectedDayEvents = []
         for (i = 0; i < appointments.length; i++){
-            if (appointments[i].title === select && moment(appointments[i].startTime).format("M") === state.currentDate.format("M")){
-                filterDayEvent = state.datePositions.filter(date => moment(date.day).format("YYYY MM D") === moment(appointments[i].startTime).format("YYYY MM D"))
-                filterAppEvent = props.appointmentDates.filter(date => moment(date.date).format("YYYY MM D") === moment(appointments[i].startTime).format("YYYY MM D"))
+            if (appointments[i].title === select && formatDate(appointments[i].startTime,"M") === state.currentDate.format("M")){
+                filterDayEvent = state.datePositions.filter(date => formatDate(date.day,"YYYY MM D") === formatDate(appointments[i].startTime,"YYYY MM D"))
+                filterAppEvent = props.appointmentDates.filter(date => formatDate(date.day,"YYYY MM D") === formatDate(appointments[i].startTime,"YYYY MM D"))
+                
                 sAppEvents.push(filterAppEvent[0].event)
                 selectedDayEvents.push({"day":moment(appointments[i].startTime), "event":filterDayEvent[0].event})
             }
