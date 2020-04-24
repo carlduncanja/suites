@@ -26,7 +26,9 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
 
-    const [fields, setFields] = useState({});
+    const [fields, setFields] = useState({
+        capacity: '0'
+    });
 
     // useEffect(() => {
     // }, []);
@@ -83,6 +85,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                             <InputField2 label={"Location Name"}
                                          onChangeText={onFieldChange('name')}
                                          value={fields['name']}
+                                         onClear={() => onFieldChange('name')('')}
                             />
                         </View>
 
@@ -96,13 +99,17 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                                 }}
                                 value={fields['capacity']}
                                 keyboardType={'number-pad'}
+                                onClear={() => onFieldChange('name')('')}
                             />
                         </View>
                     </View>
 
                     <View style={styles.row}>
                         <View style={styles.inputWrapper}>
-                            <InputField2 label={"Theatre"} onChangeText={onFieldChange('theatre')}/>
+                            <InputField2
+                                label={"Theatre"}
+                                onChangeText={onFieldChange('theatre')}
+                            />
                         </View>
                         <View style={styles.inputWrapper}/>
                     </View>
