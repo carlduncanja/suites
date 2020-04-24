@@ -23,7 +23,7 @@ const appReducer = combineReducers({
     storage,
     theatres,
     equipment,
-    inventory
+    inventory,
 });
 
 /**

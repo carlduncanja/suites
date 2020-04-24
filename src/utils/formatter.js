@@ -25,3 +25,8 @@ export let numberLetterFormatter = (num) => {
 export let formatDate = (date, format = "MMM D, YYYY") => {
     return date ? moment(date).format(format) : "";
 };
+
+export let transformToSentence = (word) => {
+    let newWord = word.replace(/([A-Z])/g, " $1")
+    return newWord.charAt(0).toUpperCase() + newWord.slice(1);
+}

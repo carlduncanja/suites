@@ -6,9 +6,10 @@ import ColumnSectionsList from '../../common/ColumnsSectionsList';
 import Record from '../../common/Information Record/Record';
 import ColumnSection from "../../common/ColumnSection";
 import moment from "moment";
+import { transformToSentence } from '../../../utils/formatter';
+import ResponsiveRecord from "../../common/Information Record/ResponsiveRecord";
 
 const Details = ({physician}) => {
-    console.log("Details:", physician)
     const { 
         firstName, 
         middleName, 
@@ -19,11 +20,50 @@ const Details = ({physician}) => {
         emails,
         address,
         phones,
+        emergencyContact
     } = physician
+
+    const phoneObject = {}
+    const emailObject = {}
+    const addressObject = {}
+    
+    phones.map( phone => {
+        if ( phone.type === 'cell'){
+           Object.assign(phoneObject, {cell:phone.phone})
+        }else if ( phone.type === 'work'){
+            Object.assign(phoneObject, {work:phone.phone})
+        }else if ( phone.type === 'home'){
+            Object.assign(phoneObject, {home:phone.phone})
+        }else {
+            Object.assign(phoneObject, {})
+        }
+
+    })
+
+    emails.map( email => {
+        if ( email.type === 'primary'){
+           Object.assign(emailObject, {primary:email.email})
+        }else if ( email.type === 'work'){
+            Object.assign(emailObject, {work:email.email})
+        }else if ( email.type === 'alternate'){
+            Object.assign(emailObject, {home:email.email})
+        }else {
+            Object.assign(emailObject, {})
+        }
+
+    })
+    
+    address.map( addressObj => {
+        Object.assign(addressObject, {
+            address1 : addressObj.line1,
+            address2 : addressObj.line2 
+        })
+    })
 
     const calcAge = (dob) =>{
         return age
     }
+
     const demoData = [
         firstNameRecord = <Record
             recordTitle = "First Name"
@@ -43,7 +83,7 @@ const Details = ({physician}) => {
         />,
         genderRecord = <Record
             recordTitle = "Gender"
-            recordValue = {gender}
+            recordValue = {transformToSentence(gender)}
         />,
         dobRecord = <Record
             recordTitle = "Date Of Birth"
@@ -55,57 +95,131 @@ const Details = ({physician}) => {
         />
     ]
 
-    const contacts = [
-        {
-            phone : {
-                cell : phones.cell,
-                home : "876 343 3876",
-                work : "876 876 7577",
-                handlePress :  () => {}
-            },
-            email : {
-                primary : emails.primary,
-                alternate : "theDoctor@gmail.com",
-                work : "medicalDoctors@gmail.com",
-                handlePress : () => {}
-            },
-            address : {
-                address1 : "29 Barbican Road, Kingston",
-                address2 : "Apartment 10" 
-            }
-        }
+    const contactData = [
+        <ResponsiveRecord
+            recordTitle = "Cell"
+            recordValue = {phoneObject.cell}
+            handleRecordPress = {()=>{}}
+        />,
+        <ResponsiveRecord
+            recordTitle = "Home Phone Number"
+            recordValue = {phoneObject.home}
+            handleRecordPress = {()=>{}}
+        />,
+        <ResponsiveRecord
+            recordTitle = "Work Phone Number"
+            recordValue = {phoneObject.work}
+            handleRecordPress = {()=>{}}
+        />,
+        <ResponsiveRecord
+            recordTitle = "Primary Email"
+            recordValue = {emailObject.primary}
+            handleRecordPress = {()=>{}}
+        />,
+        <ResponsiveRecord
+            recordTitle = "Alternate Emial"
+            recordValue = {emailObject.alternate}
+            handleRecordPress = {()=>{}}
+        />,
+        <Record
+            recordTitle = "Work Email"
+            recordValue = {emailObject.work}
+        />,
+        <Record
+            recordTitle = "Address 1"
+            recordValue = {addressObject.address1}
+        />,
+        <Record
+            recordTitle = "Address 2"
+            recordValue = {addressObject.address2}
+        />
     ]
 
-    const emergencyContacts = [
-        {
-            name: "Donna Lee (Mother)",
-            number : "876 728 8783",
-            email : "donnalEE@gmail.com",
-            handlePress : ()=>{}
+    const emergencyContacts = emergencyContact.map((contact,index) => {
+        return (
+            <View key = {index}>
+                <ColumnSection
+                    data = {[
+                        <Record
+                            recordTitle = {`Emergency Name ${index + 1}`}
+                            recordValue = {`${contact.name} (${contact.relation})`}
+                        />,
+                        <ResponsiveRecord
+                            recordTitle = {`Emergency Number ${index + 1}`}
+                            recordValue = {contact.phone}
+                            handleRecordPress = {()=>{}}
+                        />,
+                        <ResponsiveRecord
+                            recordTitle = {`Emergency Email ${index + 1}`}
+                            recordValue = {contact.email}
+                            handleRecordPress = {()=>{}}
+                        />
+                    ]}
+                    numOfColumns = {3}
+                />
+            </View>
+        
+        )
+    })
 
-        },
-        {
-            name: "Martin Lee (Father)",
-            number : "876 137 9209",
-            email : "lee_Martin@gmail.com",
-            handlePress : () => {}
-        }
-    ]
+    // const contacts = [
+    //     {
+    //         phone : {
+    //             ...phoneObject,
+    //             handlePress :  () => {}
+    //         },
+    //         email : {
+    //             ...emailObject,
+    //             handlePress : () => {}
+    //         },
+    //         address : {
+    //             ...addressObject
+    //         }
+    //     }
+    // ]
+
+    // const eContact = emergencyContact.map( contact => {
+    //     return {
+    //         name : `${contact.name} ${contact.relation}`,
+    //         number : contact.phone,
+    //         email : contact.email
+    //     }
+    // })
+
+    // const emergencyContacts = [
+        
+    //     {
+    //         name: "Donna Lee (Mother)",
+    //         number : "876 728 8783",
+    //         email : "donnalEE@gmail.com",
+    //         handlePress : ()=>{}
+
+    //     },
+    //     {
+    //         name: "Martin Lee (Father)",
+    //         number : "876 137 9209",
+    //         email : "lee_Martin@gmail.com",
+    //         handlePress : () => {}
+    //     }
+    // ]
 
     const sections = [
         <ColumnSection
             data = {demoData}
             numOfColumns = {3}
         />,
-        <Contact contacts = {contacts}/>,
-        <EmergencyContact contacts = {emergencyContacts}/>
+        <ColumnSection
+            data = {contactData}
+            numOfColumns = {3}
+        />,
+        emergencyContacts
     ]
     return (
-        <View>
+        <>
             <ColumnSectionsList
                 sections = {sections}
             />
-        </View>
+        </>
     )
 }
 

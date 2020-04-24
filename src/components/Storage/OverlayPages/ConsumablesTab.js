@@ -1,23 +1,25 @@
 import React,{  } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Equipment from '../CaseFiles/OverlayPages/ChargeSheet/Equipment';
+import { View, StyleSheet, Text } from "react-native";
+import Consumables from '../../CaseFiles/OverlayPages/ChargeSheet/Consumables';
+import { currencyFormatter } from '../../../utils/formatter';
+
 
 const testData = [
     {
-        itemName : 'Bag',
+        itemName : 'Agents',
         type : 'Anaesthesia',
-        onHand : 100,
+        onHand : 150,
         unitPrice : 4120.76
     },
     {
         itemName : 'Atracurium',
         type : 'Anaesthesia',
-        onHand : 50,
+        onHand : 25,
         unitPrice : 8924.09
     }
 
 ]
-const EquipmentTab = () => {
+const ConsumablesTab = () => {
 
     const headers = [
         {
@@ -49,7 +51,7 @@ const EquipmentTab = () => {
             <Text style={styles.itemText}>{item.onHand}</Text>
         </View>
         <View style={[styles.item,{alignItems:'flex-end'}]}>
-            <Text style={styles.itemText}>{item.unitPrice}</Text>
+            <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
         </View>
             
     </>
@@ -66,7 +68,7 @@ const EquipmentTab = () => {
 
 
     return (
-        <Equipment
+        <Consumables
             tabDetails = {data}
             headers = {headers}
             listItemFormat = {listItem}
@@ -74,7 +76,7 @@ const EquipmentTab = () => {
     )
 }
 
-export default EquipmentTab
+export default ConsumablesTab
 
 const styles = StyleSheet.create({
     item:{

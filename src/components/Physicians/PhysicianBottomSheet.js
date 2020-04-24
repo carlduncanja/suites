@@ -5,12 +5,13 @@ import Details from './OverlayTabs/Details';
 import CaseFilesTab from './OverlayTabs/CaseFilesTab';
 import CustomProceduresTab from './OverlayTabs/CustomProceduresTab';
 import {colors} from "../../styles";
-import {getPhysiciansById} from "../../api/network";
+
+import { getPhysicianById } from "../../api/network";
 
 
 function PhysicianBottomSheet({physician}) {
     const currentTabs = ["Details", "Case Files", "Custom Procedures", "Schedule"];
-    const {id, firstName, surname} = physician;
+    const {_id, firstName, surname} = physician;
     const name = `Dr. ${firstName} ${surname}`
 
     // ##### States
@@ -22,7 +23,7 @@ function PhysicianBottomSheet({physician}) {
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        fetchPhysician(id)
+        fetchPhysician(_id)
     }, []);
 
     // ##### Event Handlers
@@ -34,13 +35,14 @@ function PhysicianBottomSheet({physician}) {
     // ##### Helper functions
 
     const getTabContent = (selectedTab) => {
+        const { cases = [], procedures = [] } = selectedPhysician
         switch (selectedTab) {
             case "Details":
                 return <Details physician = {selectedPhysician}/>;
             case "Case Files":
-                return <CaseFilesTab/>;
+                return <CaseFilesTab cases = {cases}/>;
             case "Custom Procedures":
-                return <CustomProceduresTab/>;
+                return <CustomProceduresTab procedures = {procedures}/>;
             case "Schedule":
                 return <View/>;
             default :
@@ -54,9 +56,10 @@ function PhysicianBottomSheet({physician}) {
 
     const fetchPhysician = (id) => {
         setFetching(true);
-        getPhysiciansById(id)
+        getPhysicianById(id)
             .then(data => {
-                setPhysician(data)
+                setSelectedPhysician(data)
+                // setPhysician(data)
             })
             .catch(error => {
                 console.log("Failed to get physician", error)
@@ -76,7 +79,7 @@ function PhysicianBottomSheet({physician}) {
                     </View>
                     :
                     <SlideOverlay
-                        overlayId={id}
+                        overlayId={_id}
                         overlayTitle={name}
                         onTabPressChange={onTabPress}
                         currentTabs={currentTabs}

@@ -53,9 +53,8 @@ const Procedures = (props) =>{
     // ############# Lifecycle methods
 
     useEffect(() => {
-        if (!procedures.length) {
-            fetchProceduresData()
-        }
+        if (!procedures.length) fetchProceduresData()
+        setTotalPages(Math.ceil(procedures.length / recordsPerPage))
     }, []);
 
     // ############# Event Handlers
@@ -113,6 +112,7 @@ const Procedures = (props) =>{
             .then(data => {
                 setProcedures(data);
                 setTotalPages(Math.ceil(data.length / recordsPerPage))
+
             })
             .catch(error => {
                 console.log("failed to get procedures", error);
@@ -132,18 +132,23 @@ const Procedures = (props) =>{
         />
     }
 
-    const procedureItem = (item) => <>
-        <View style={[styles.item,{paddingRight:10, borderRightColor:"#E3E8EF", borderRightWidth:1, marginRight:20, width:'50%'}]}>
-            <Text style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
-        </View>
-        <View style={[styles.item, {flex:1}]}>
-            <Text style={[styles.itemText, {color:"#3182CE"}]}>{item.physician}</Text>
-        </View>
-        <View style={[styles.item, {flex:1}]}>
-            <Text style={[styles.itemText, {color:"#3182CE"}]}>{`${item.duration} hours`}</Text>
-        </View>
-    </>
-
+    const procedureItem = (item) => {
+        const physician = `Dr. ${item.physician.firstName} ${item.physician.surname}`;
+        return (
+            <>
+                <View style={[styles.item,{paddingRight:10, borderRightColor:"#E3E8EF", borderRightWidth:1, marginRight:20, width:'50%'}]}>
+                    <Text style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
+                </View>
+                <View style={[styles.item, {flex:1}]}>
+                    <Text style={[styles.itemText, {color:"#3182CE"}]}>{physician}</Text>
+                </View>
+                <View style={[styles.item, {flex:1}]}>
+                    <Text style={[styles.itemText, {color:"#3182CE"}]}>{`${item.duration} hours`}</Text>
+                </View>
+            </>
+        )
+        
+    }
     // ############# Prepare list data
 
     let proceduresToDisplay = [...procedures];
@@ -188,14 +193,15 @@ const Procedures = (props) =>{
     )
 }
 
-const mapStateToProps = (state) => {
-    const procedures = proceduresTest.map(item => {
-        return {
-            ...item
-        }
-    })
-    return { procedures }
-};
+const mapStateToProps = (state) =>({ 
+    // const procedures = state.procedures.map(item => {
+    //     return {
+    //         ...item
+    //     }
+    // })
+    // return { procedures }
+    procedures : state.procedures
+});
 
 const mapDispatcherToProp = {
     setProcedures

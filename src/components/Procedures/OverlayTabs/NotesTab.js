@@ -7,8 +7,8 @@ import ActionContainer from "../../common/FloatingAction/ActionContainer";
 
 import { withModal } from "react-native-modalfy";
 
-const NotesTab = ({modal}) => {
-    const notes = []
+const NotesTab = ({modal, notesData}) => {
+    // const { notes } = notesData
 
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
@@ -40,7 +40,7 @@ const NotesTab = ({modal}) => {
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Notes"
-                cardInformation = {notes}
+                cardInformation = {[notesData]}
                 frameIconName = ""
                 iconFillColor = "#ED8936"
             />

@@ -4,6 +4,7 @@ import Equipment from '../../CaseFiles/OverlayPages/ChargeSheet/Equipment';
 
 import FloatingActionButton from "../../common/FloatingAction/FloatingActionButton";
 import ActionContainer from "../../common/FloatingAction/ActionContainer";
+import { currencyFormatter } from '../../../utils/formatter'
 
 import { withModal } from "react-native-modalfy";
 
@@ -22,7 +23,7 @@ const testData = [
     }
 
 ]
-const EquipmentTab = ({modal}) => {
+const EquipmentTab = ({modal, equipmentsData}) => {
 
     const headers = [
         {
@@ -39,6 +40,8 @@ const EquipmentTab = ({modal}) => {
         }
     ]
 
+    // const { equipments = [] } = equipmentsData
+
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
 
@@ -50,18 +53,18 @@ const EquipmentTab = ({modal}) => {
             <Text style={styles.itemText}>{item.type}</Text>
         </View>
         <View style={[styles.item,{alignItems:'flex-end'}]}>
-            <Text style={styles.itemText}>{item.unitPrice}</Text>
+            <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
         </View>
             
     </>
 
 
-    const data = testData.map(item => {
+    const data = equipmentsData.map(item => {
 
         return {
-            item :  item.itemName,
-            type : item.type,
-            unitPrice : item.unitPrice
+            item :  item.equipment.name,
+            type : item.equipment.type.name,
+            unitPrice : item.equipment.type.unitPrice
         }
     });
 
@@ -104,7 +107,7 @@ const EquipmentTab = ({modal}) => {
     )
 }
 
-export default withModal(EquipmentTab)
+export default withModal(EquipmentTab) 
 
 const styles = StyleSheet.create({
     item:{

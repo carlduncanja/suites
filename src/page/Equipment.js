@@ -12,7 +12,7 @@ import EquipmentListIcon from '../../assets/svg/equipmentListAction';
 
 import {connect} from 'react-redux';
 import { setEquipment } from "../redux/actions/equipmentActions";
-import { getEquipment } from "../api/network";
+import { getEquipment, getEquipmentTypes } from "../api/network";
 
 import { withModal } from 'react-native-modalfy';
 import moment from "moment";
@@ -60,6 +60,7 @@ const Equipment = (props) => {
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
     const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([])
+    const [equipmentTypes, setEquipmentTypes] = useState([])
 
     // ############# Lifecycle methods
 
@@ -67,6 +68,7 @@ const Equipment = (props) => {
         if (!equipment.length) {
             fetchEquipmentData()
         }
+        setTotalPages(Math.ceil(equipment.length / recordsPerPage))
     }, []);
 
     // ############# Event Handlers
@@ -117,9 +119,15 @@ const Equipment = (props) => {
     }
 
     // ############# Helper functions
-
     const fetchEquipmentData = () => {
         setFetchingData(true)
+        getEquipmentTypes()
+            .then(data => {
+                setEquipmentTypes(data)
+            })
+            .catch(error => {
+                console.log("Failed to get equipment types", error)
+            })
         getEquipment()
             .then(data => {
                 setEquipment(data);
@@ -134,12 +142,22 @@ const Equipment = (props) => {
     };
 
     const renderEquipmentFn = (item) => {
+
+        const filterEquiments = equipment.filter( eqItem => eqItem.type === item._id)
+        const filterStatus = filterEquiments.filter( eqItem => eqItem.status === 'Available')
+        const viewItem = {
+            name : item.name,
+            quantity : filterEquiments.length,
+            status : filterStatus.length === 1 ? "Available" : filterStatus.length > 1 ? "Multiple" : "Unavailable",
+            nextAvailable : new Date(2020,12,12)
+        }
+
         return <ListItem
             hasCheckBox={true}
             isChecked={selectedEquipmentIds.includes(item.id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item)}
-            itemView={equipmentItem(item)}
+            itemView={equipmentItem(viewItem)}
         />
     }
 
@@ -170,7 +188,7 @@ const Equipment = (props) => {
 
     // ############# Prepare list data
 
-    let equipmentToDisplay = [...equipment];
+    let equipmentToDisplay = [...equipmentTypes];
     equipmentToDisplay = equipmentToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return(
@@ -212,7 +230,7 @@ const Equipment = (props) => {
 }
 
 const mapStateToProps = (state) => {
-    const equipment = equipmentTest.map( item =>{
+    const equipment = state.equipment.map( item =>{
         return {
             ...item
         }

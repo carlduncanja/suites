@@ -4,9 +4,10 @@ import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import General from '../Equipment/General';
 import moment from 'moment';
 import {colors} from "../../styles";
-import {getEquipmentById} from "../../api/network";
+import { getEquipmentById } from "../../api/network";
 
 function EquipmentBottomSheet({equipment}) {
+
     const testData = {
         description : "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
         assigned: "Dr.Mansingh",

@@ -48,7 +48,7 @@ const testData = [
     }
 ]
 
-const CaseFilesTab = ({modal}) => {
+const CaseFilesTab = ({modal, cases}) => {
 
     const recordsPerPage = 10;
     
@@ -61,13 +61,13 @@ const CaseFilesTab = ({modal}) => {
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
     const [isIndeterminate, setIsIndeterminate] = useState(false)
 
-    const data = testData.map( item =>{
+    const data = cases.map( item =>{
         return {
-            id : item.patientId,
-            name : item.patientName,
-            balance : item.balance,
-            status : item.status,
-            nextVisit : item.nextVisit
+            id : item.patient,
+            name : item.name,
+            balance : 2560.90,
+            status : "Closed",
+            nextVisit : new Date(2019, 10, 21)
         }
     })
 

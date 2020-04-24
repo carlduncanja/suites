@@ -6,3 +6,5 @@ export const setProcedures = (procedures) => ({
         data: procedures
     }
 });
+
+

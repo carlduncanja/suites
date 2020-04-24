@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
+import { currencyFormatter } from '../../../../utils/formatter';
 
 const ChargeSheet = ({item, selectedTab}) => {
     const [state] = useContext(SuitesContext)
@@ -49,7 +50,7 @@ const ChargeSheet = ({item, selectedTab}) => {
             <Text style={styles.itemText}>{item.quantity}</Text>
         </View>
         <View style={[styles.item,{alignItems:'flex-end'}]}>
-            <Text style={styles.itemText}>{item.unitPrice}</Text>
+            <Text style={styles.itemText}>{currencyFormatter(item.unitPrice)}</Text>
         </View>
             
     </>
