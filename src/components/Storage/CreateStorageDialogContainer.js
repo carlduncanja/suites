@@ -26,11 +26,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
 
-    const [fields, setFields] = useState({
-        name: "",
-        capacity: "",
-        theatre: ""
-    });
+    const [fields, setFields] = useState({});
 
     // useEffect(() => {
     // }, []);
@@ -53,13 +49,13 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
 
 
     const createStorageCall = () => {
-        createStorageLocation()
+        createStorageLocation(fields)
             .then(data => {
                 addStorageLocation(data);
             })
             .catch(error => {
                 // todo handle error
-                console.log("failed to create storage location")
+                console.log("failed to create storage location", error)
             })
             .finally(_ => {
                 modal.closeAllModals()
