@@ -22,19 +22,19 @@ const Physicians = (props) => {
 
     const recordsPerPage = 10;
     const listHeaders = [
-        {   
+        {
             name : "Name",
             alignment : "flex-start"
         },
-        {   
+        {
             name : "Type",
             alignment : "center"
         },
-        {   
+        {
             name : "Status",
             alignment : "center"
         },
-        {   
+        {
             name : "Actions",
             alignment : "center"
         }
@@ -115,7 +115,7 @@ const Physicians = (props) => {
     // ############# Helper functions
 
     const fetchPhysiciansData = () => {
-        setFetchingData(true)
+        setFetchingData(true);
         getPhysicians()
             .then(data => {
                 setPhysicians(data);
@@ -168,7 +168,7 @@ const Physicians = (props) => {
 
     let physiciansToDisplay = [...physicians];
     physiciansToDisplay = physiciansToDisplay.slice(currentPageListMin, currentPageListMax);
-   
+
     return(
         <View style={{flex:1}}>
             <Page
@@ -183,7 +183,7 @@ const Physicians = (props) => {
                 listHeaders={listHeaders}
                 itemsSelected={selectedPhysiciansId}
                 onSelectAll={handleOnSelectAll}
-                
+
                 listItemFormat={renderPhysiciansFn}
             />
 

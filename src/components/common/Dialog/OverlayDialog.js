@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Platform} from "react-native";
+import {View, StyleSheet, Text, TouchableOpacity} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
-import KeyboardShift from "../../KeyboardShift";
 
 /**
  * Dialog component used in overlay modal.

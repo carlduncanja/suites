@@ -37,22 +37,18 @@ const ActionContainerModal = (props) => {
         <View style={{width: state.pageMeasure.width, height: state.pageMeasure.height}}>
             <TouchableOpacity
                 onPress={() => {
+                    console.log("hello");
                     closeModals(currentModal);
                     if (onClose) onClose()
                 }}
                 activeOpacity={1}
                 style={styles.modalContainer}
             />
-            <KeyboardShift>
+            <View style={styles.positionContainer}>
                 {
-                    () =>
-                        <View style={styles.positionContainer}>
-                            {
-                                actions
-                            }
-                        </View>
+                    actions
                 }
-            </KeyboardShift>
+            </View>
         </View>
     );
 };

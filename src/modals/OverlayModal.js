@@ -3,6 +3,7 @@ import {View, StyleSheet, TouchableOpacity} from "react-native";
 import {SuitesContext} from '../contexts/SuitesContext';
 import Overlay from '../components/common/Overlay/Overlay';
 import {withModal} from 'react-native-modalfy'
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 const OverlayModal = (props) => {
     const [state] = useContext(SuitesContext);
@@ -20,25 +21,28 @@ const OverlayModal = (props) => {
 
     const {
         content = <View/>,
-        onClose = () => {}
+        onClose = () => {
+        }
     } = params;
 
 
     return (
-        <View style={{width: state.pageMeasure.width, height: state.pageMeasure.height}}>
-            <TouchableOpacity
-                onPress={() => {
-                    closeModals(currentModal);
-                    onClose();
-                }}
-                activeOpacity={1}
-                style={[styles.modalContainer]}
-            />
-            <View style={styles.positionContainer}>
-                {/* <Overlay/> */}
-                {content}
+        <KeyboardAwareScrollView>
+            <View style={{width: state.pageMeasure.width, height: state.pageMeasure.height}}>
+                <TouchableOpacity
+                    onPress={() => {
+                        closeModals(currentModal);
+                        onClose();
+                    }}
+                    activeOpacity={1}
+                    style={[styles.modalContainer]}
+                />
+                <View style={styles.positionContainer}>
+                    {/* <Overlay/> */}
+                    {content}
+                </View>
             </View>
-        </View>
+        </KeyboardAwareScrollView>
     );
 };
 
