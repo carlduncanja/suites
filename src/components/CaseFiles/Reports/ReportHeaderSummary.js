@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import moment from "moment";
+import { formatDate } from '../../../utils/formatter';
 
 const ReportHeaderSummary = (props) => {
 
@@ -54,7 +55,7 @@ const ReportHeaderSummary = (props) => {
             <View style={[styles.billing,{alignItems:"flex-end", justifyContent:'space-between'}]}>
                 <>
                     <Text style={styles.contentHeader}>Date</Text>
-                    <Text style={styles.text}>{moment(reportDate).format("DD/MM/YYYY")}</Text>
+                    <Text style={styles.text}>{formatDate(reportDate,"DD/MM/YYYY")}</Text>
                 </>
                 <>
                     <Text style={styles.contentHeader}>Total</Text>

@@ -3,8 +3,12 @@ import Svg, {Path, Rect} from "react-native-svg";
 import {View} from "react-native";
 
 const physicians = ({strokeColor, fillColor}) => (<View>
-        <Svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <Path d="M19.1667 5.83333H14.1667V0.833333C14.1667 0.333333 13.8333 0 13.3333 0H6.66667C6.16667 0 5.83333 0.333333 5.83333 0.833333V5.83333H0.833333C0.333333 5.83333 0 6.16667 0 6.66667V13.3333C0 13.8333 0.333333 14.1667 0.833333 14.1667H5.83333V19.1667C5.83333 19.6667 6.16667 20 6.66667 20H13.3333C13.8333 20 14.1667 19.6667 14.1667 19.1667V14.1667H19.1667C19.6667 14.1667 20 13.8333 20 13.3333V6.66667C20 6.16667 19.6667 5.83333 19.1667 5.83333Z" fill="#0CB0E7"/>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M12 10V14" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+            <Path d="M10 12H14" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+            <Path d="M8 6V2H16V6" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+            <Path d="M23 6H1V18H23V6Z" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
+            <Path d="M22 18V22H2V18" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square"/>
         </Svg>
     </View>
 );

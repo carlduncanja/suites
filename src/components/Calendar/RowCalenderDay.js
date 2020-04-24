@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import DayIdentifier from '../common/DayIdentifier';
 import moment from 'moment';
+import { formatDate } from '../../utils/formatter';
 import {parse} from 'qs';
 
 /**
@@ -32,10 +33,10 @@ const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress, isInSelect
                     <DayIdentifier color="#3FC7F4"/>
                 }
                 <Text style={[styles.day, {color: color, opacity,marginTop: marginTop}]}>
-                    {moment(day).format("D")}
+                    {formatDate(day,"D")}
                 </Text>
                 <Text style={{color: defaultColor, opacity,fontWeight: fontWeight}}>
-                    {moment(day).format("ddd").toUpperCase()}
+                    {formatDate(day,"ddd").toUpperCase()}
                 </Text>
 
                 {

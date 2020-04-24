@@ -6,7 +6,8 @@ import {ScheduleContext} from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../Buttons/Button';
 import moment from 'moment';
-import ScheduleItem from '../../Schedule/ScheduleItem'
+import ScheduleItem from '../../Schedule/ScheduleItem';
+import { formatDate } from '../../../utils/formatter';
 
 
 const SearchBar = (props) => {
@@ -209,7 +210,7 @@ const SearchBar = (props) => {
                                         >
                                             <Text style={styles.matchText}>
                                                 {(suggestion) instanceof Date ?
-                                                    moment(suggestion).format("MMMM D, YYYY")
+                                                    formatDate(suggestion,"MMMM D, YYYY")
                                                     :
                                                     suggestion
                                                 }

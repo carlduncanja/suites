@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import DayIdentifier from '../common/DayIdentifier';
-import moment from 'moment';
+import { formatDate } from '../../utils/formatter'
 
 /**
  *
@@ -43,7 +43,7 @@ const DayOfMonth = ({day, isSelected, appointmentColors, onDayPress, isInSelectM
             <View style={[styles.dayWrapper, {}]}>
                 {isSelected && <DayIdentifier color="#3FC7F4"/>}
                 <Text style={[styles.day, {color: color,opacity, marginTop: marginTop}]}>
-                    {moment(day).format("D")}
+                    {formatDate(day,"D")}
                 </Text>
                 {
                     <View style={styles.appointmentsList}>

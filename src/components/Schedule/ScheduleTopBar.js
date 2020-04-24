@@ -6,6 +6,7 @@ import moment from 'moment';
 import Month from '../Calendar/Month';
 import { ScheduleContext } from '../../contexts/ScheduleContext';
 import { scheduleActions } from '../../redux/reducers/scheduleReducer';
+import { formatDate } from "../../utils/formatter";
 
 export default ScheduleTopBar = (props) => {
     [searchAppointmentStatus, setSearchAppointmentStatus] = useState(true);
@@ -48,7 +49,7 @@ export default ScheduleTopBar = (props) => {
 
         if (state._scrollView) {
             if (!state.displayFullCalendar) {
-                if (moment().format("YYYY-MM-D") === state.currentDate.format("YYYY-MM-D")) {
+                if (formatDate(new Date(),"YYYY-MM-D") === state.currentDate.format("YYYY-MM-D")) {
                     state._scrollView.scrollTo({ x: state.calendarOffsetset, y: 0, animated: true })
                     state._scrollAppointment.scrollTo({ x: 0, y: state.scheduleOffset, animated: true })
                     dispatch({

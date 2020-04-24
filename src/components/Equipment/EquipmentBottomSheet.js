@@ -5,6 +5,7 @@ import General from '../OverlayTabs/General';
 import moment from 'moment';
 import {colors} from "../../styles";
 import { getEquipmentById } from "../../api/network";
+import { formatDate } from '../../utils/formatter';
 
 function EquipmentBottomSheet({equipment}) {
 
@@ -14,7 +15,7 @@ function EquipmentBottomSheet({equipment}) {
         status : equipment.status,
         supplier : 'Medical Suppliers Ltd.',
         usage : '12 Hours',
-        availableOn : moment(equipment.nextAvailable).format("DD/MM/YYYY")
+        availableOn : formatDate(equipment.nextAvailable,"DD/MM/YYYY")
     }
 
     const currentTabs = ["Details"];

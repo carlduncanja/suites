@@ -9,6 +9,7 @@ import SchedulesList from "../components/Schedule/SchedulesList";
 import {ScheduleContext} from '../contexts/ScheduleContext';
 import {getSchedules} from "../api/network";
 import {getDaysForMonth} from "../utils";
+import {formatDate} from "../utils/formatter";
 import {connect} from 'react-redux'
 import {setAppointments} from "../redux/actions/appointmentActions"
 import {colors} from '../styles'
@@ -29,7 +30,7 @@ const Schedule = (props) => {
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialDaysList = getDaysForMonth(currentDate);
-    const initialIndex = getSelectedIndex(moment(currentDate).format("YYYY-MM-DD").toString(), initialDaysList);
+    const initialIndex = getSelectedIndex(formatDate(currentDate,"YYYY-MM-DD").toString(), initialDaysList);
 
     //########### States
     const [state, dispatch] = useContext(ScheduleContext);
@@ -90,7 +91,7 @@ const Schedule = (props) => {
 
     const handleOnGoToToday = () => {
         const currentDate = new Date();
-        let date = moment(currentDate).format("YYYY-MM-DD").toString();
+        let date = formatDate(currentDate,"YYYY-MM-DD").toString();
         let currentDaysList = getDaysForMonth(currentDate);
 
         setDaysList(getDaysForMonth(currentDate));

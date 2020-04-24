@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from "react-native";
 import moment from "moment";
 import LevelIndicator from "../common/LevelIndicator/LevelIndicator";
-import {currencyFormatter} from "../../utils/formatter";
+import {currencyFormatter, formatDate} from "../../utils/formatter";
+
 
 const UiData = {
     description: "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
@@ -62,7 +63,7 @@ function InventoryGeneralTabContent({inventoryDetails}) {
 
             <View style={styles.item}>
                 <Text style={styles.textLabel}>Last Received</Text>
-                <Text style={styles.textDefault}>{moment(lastReceived).format("MMM DD, YYYY")} </Text>
+                <Text style={styles.textDefault}>{formatDate(lastReceived,"MMM DD, YYYY")} </Text>
             </View>
 
             <View style={styles.item}>

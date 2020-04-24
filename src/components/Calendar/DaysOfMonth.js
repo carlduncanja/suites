@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {View, StyleSheet} from "react-native";
 import {getDaysForMonth} from "../../utils";
 import moment from "moment";
+import { formatDate } from "../../utils/formatter";
 import DayOfMonth from "./DayOfMonth";
 
 /**
@@ -44,8 +45,8 @@ function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
         appointments.forEach(item => {
             const defaultColor = "gray";
             const color = item.scheduleType && item.scheduleType.color;
-
-            const date = moment(item.startTime).format("YYYY-MM-DD");
+            
+            const date = formatDate(item.startTime,"YYYY-MM-DD");
             if (!appointmentDays[date]) appointmentDays[date] = [];
             appointmentDays[date].push(color || defaultColor)
         });
@@ -66,7 +67,8 @@ function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
 
         return weekdays.map((day, index) => {
             const appointmentsColors = groupAppointments[day] || [];
-            const isSelectedDay = day === moment(selectedDay).format("YYYY-MM-DD");
+
+            const isSelectedDay = day === formatDate(selectedDay,"YYYY-MM-DD");
             const isInSelectedMonth = moment(day).isSame(moment(month), 'month');
 
             return <DayOfMonth key={index}

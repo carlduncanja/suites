@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, StyleSheet} from "react-native";
 import moment from "moment";
+import { formatDate } from '../../utils/formatter';
 
 const UiData = {
     description: "",
@@ -62,7 +63,7 @@ function TheatresDetailsTab(props) {
 
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Available On</Text>
-                    <Text style={styles.textDefault}>{ moment(availableOn).format("DD/MM/YYYY @ hh:mm a") }</Text>
+                    <Text style={styles.textDefault}>{ formatDate(availableOn,"DD/MM/YYYY @ hh:mm a") }</Text>
                 </View>
 
                 <View style={styles.item}/>

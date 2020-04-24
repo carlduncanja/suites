@@ -16,6 +16,7 @@ import AssignIcon from "../../../assets/svg/assignIcon";
 import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import { withModal } from "react-native-modalfy";
 import moment from "moment";
+import { formatDate } from '../../utils/formatter';
 
 
 
@@ -172,7 +173,7 @@ const CaseFilesTab = ({modal, cases}) => {
             <Text style={{fontSize:14, color: item.status === 'Closed'? '#DD6B20' : '#3182CE'}}>{item.status}</Text>
         </View>
         <View style={{flex:1}}>
-            <Text style={{fontSize:14, color:'#4E5664'}}>{moment(item.nextVisit).format("MMM DD, YYYY")}</Text>
+            <Text style={{fontSize:14, color:'#4E5664'}}>{formatDate(item.nextVisit,"MMM DD, YYYY")}</Text>
         </View>
     </>
 

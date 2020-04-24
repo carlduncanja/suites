@@ -6,7 +6,7 @@ import ColumnSectionsList from '../common/ColumnsSectionsList';
 import Record from '../common/Information Record/Record';
 import ColumnSection from "../common/ColumnSection";
 import moment from "moment";
-import { transformToSentence } from '../../utils/formatter';
+import { transformToSentence, formatDate } from '../../utils/formatter';
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
 
 const PhysiciansDetailsTab = ({physician}) => {
@@ -87,7 +87,7 @@ const PhysiciansDetailsTab = ({physician}) => {
         />,
         dobRecord = <Record
             recordTitle = "Date Of Birth"
-            recordValue = {moment(dob).format("DD/MM/YYYY") }
+            recordValue = {formatDate(dob,"DD/MM/YYYY") }
         />,
         trnRecord = <Record
             recordTitle = "TRN"

@@ -3,6 +3,8 @@ import {Text, View, StyleSheet } from 'react-native';
 import DayOfMonth from './DayOfMonth';
 import ActionCalendar from './ActionCalendar';
 import moment from 'moment';
+import { formatDate } from '../../utils/formatter';
+
 
 export default class Days extends Component {
     constructor(props){
@@ -32,7 +34,7 @@ export default class Days extends Component {
         const filterLevels = (date, day) => {
             //console.log("Date: ", day)
             let result = appointments.filter(
-                appointment => parseInt(moment(appointment.startTime).format("D")) === date && moment(appointment.startTime).format("MM") === day.format("MM") && moment(appointment.startTime).format("YYYY") === day.format("YYYY"));
+                appointment => parseInt(formatDate(appointment.startTime,"D")) === date && formatDate(appointment.startTime,"MM") === day.format("MM") && formatDate(appointment.startTime,"YYYY") === day.format("YYYY"));
             return result;
         }
 
@@ -59,7 +61,7 @@ export default class Days extends Component {
         let blanks = [];
         this.props.getStartDays.map((day,index)=>{
             const dayLevels=[]
-            filterLevels(parseInt(moment(day).format("D")) + 1, moment(day)).map((app)=> dayLevels.push(app.level));
+            filterLevels(parseInt(formatDate(day,"D")) + 1, moment(day)).map((app)=> dayLevels.push(app.level));
             blanks.push(
                 <DayOfMonth
                     currentDate = {this.props.currentDate}
@@ -78,7 +80,7 @@ export default class Days extends Component {
         let trailblanks = [];
         this.props.getEndDays.map((day,index)=>{
             const dayLevels=[]
-            filterLevels(parseInt(moment(day).format("D")) + 1, moment(day)).map((app)=> dayLevels.push(app.level));
+            filterLevels(parseInt(formatDate(day,"D")) + 1, moment(day)).map((app)=> dayLevels.push(app.level));
             trailblanks.push(
                 <DayOfMonth
                     currentDate = {this.props.currentDate}
@@ -98,7 +100,7 @@ export default class Days extends Component {
         this.props.currentDays.map((day,index)=>{
             const filterDay = moment(`${this.props.currentDate.format("YYYY")}-${this.props.currentDate.format("MM")}-${day.format("DD")}`)
             const dayLevels=[]
-            filterLevels(parseInt(moment(filterDay).format("D")) + 1, this.props.currentDate).map((app)=> dayLevels.push(app.level));
+            filterLevels(parseInt(formatDate(filterDay,"D")) + 1, this.props.currentDate).map((app)=> dayLevels.push(app.level));
 
             daysInMonth.push(
                 <DayOfMonth

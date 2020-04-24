@@ -16,6 +16,7 @@ import { getEquipment, getEquipmentTypes } from "../api/network";
 
 import { withModal } from 'react-native-modalfy';
 import moment from "moment";
+import { formatDate } from '../utils/formatter';
 
 import equipmentTest from '../../data/Equipment';
 
@@ -142,6 +143,7 @@ const Equipment = (props) => {
     };
 
     const renderEquipmentFn = (item) => { 
+        
         const filterEquiments = equipment.filter( eqItem => eqItem.type._id === item._id)
         const filterStatus = filterEquiments.filter( eqItem => eqItem.status === 'Available')
         const viewItem = {
@@ -178,7 +180,7 @@ const Equipment = (props) => {
             <Text style={{fontSize:14, color: getStatusColor(item.status)}}>{item.status}</Text>
         </View>
         <View style={{flex:1, alignItems:'center'}}>
-            <Text style={{fontSize:14, color:'#4E5664'}}>{moment(item.nextAvailable).format("DD/MM/YYYY")}</Text>
+            <Text style={{fontSize:14, color:'#4E5664'}}>{formatDate(item.nextAvailable,"DD/MM/YYYY")}</Text>
         </View>
         <View style={{flex:1, alignItems:'center'}}>
             {<EquipmentListIcon/>}

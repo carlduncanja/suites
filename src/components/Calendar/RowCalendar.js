@@ -2,6 +2,7 @@ import React, {useRef, useEffect} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import moment from 'moment';
 import RowCalendarDay from "./RowCalenderDay";
+import { formatDate } from '../../utils/formatter';
 
 
 const ROW_ITEM_WIDTH = 96;
@@ -23,12 +24,12 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
     const generateCalendarData = (days) => {
         return days.map((item, index) => {
             const isSameMonth = moment(item).isSame(moment(month), 'month');
-            const formatDate = moment(selectedDay).format("YYYY-MM-DD");
+            const formattedDate = formatDate(selectedDay,"YYYY-MM-DD");
             return {
                 key: index,
                 day: moment(item),
-                isSelected: formatDate === item,
-                hasAppointment: appointmentDays.includes(moment(item).format("YYYY-MM-DD")),
+                isSelected: formattedDate === item,
+                hasAppointment: appointmentDays.includes(formatDate(item,"YYYY-MM-DD")),
                 onDayPress: () => {
                     onDayPress(item);
                     scrollToIndex(index);
@@ -52,7 +53,8 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
 
     //Go To Today
     useEffect(() => {
-        let dateSelected = moment(selectedDay).format("YYYY-MM-DD");
+        let dateSelected =formatDate(selectedDay,"YYYY-MM-DD");
+
         let index = getIndexForSelectedDay(dateSelected, days);
         scrollToIndex(index);
     }, [selectedDay, month]);
@@ -62,7 +64,7 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
         return daysIndex > 0 ? daysIndex : 0 // day index should not be less than 0
     };
 
-    const initialIndex = getIndexForSelectedDay(moment(selectedDay).format("YYYY-MM-DD"), days);
+    const initialIndex = getIndexForSelectedDay(formatDate(selectedDay,"YYYY-MM-DD"), days);
 
     return (
         <View
