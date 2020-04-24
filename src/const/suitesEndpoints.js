@@ -8,13 +8,14 @@ export const inventoriesEndpoint = "/inventories";
 export const inventoryEndpoint = (id) => `{{base-url}}/inventories/${id}`;
 
 export const physiciansEndpoint = "/physicians";
-export const physicianEndpoint = (id) => `{{base-url}}/physicians/${id}`;
+export const physicianEndpoint = (id) => `/physicians/${id}`;
 
 export const proceduresEndpoint = "/procedures";
-export const procedureEndpoint = (id) => `{{base-url}}/procedures/${id}`;
+export const procedureEndpoint = (id) => `/procedures/${id}`;
 
 export const equipmentsEndpoint = "/equipments";
-export const equipmentEndpoint = (id) => `{{base-url}}/equipments/${id}`;
+export const equipmentEndpoint = (id) => `/equipments/${id}`;
+export const equipmentTypesEndpoint = "/equipment-types"
 
 export const caseFilesEndpoint = "/cases";
 export const caseFileEndpoint = (id) => `{{base-url}}/cases/${id}`;

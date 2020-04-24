@@ -44,7 +44,7 @@ const testData = [
     }
 ]
 
-const TheatresTab = ({modal}) => {
+const TheatresTab = ({modal, theatresData}) => {
 
     const recordsPerPage = 10;
     
@@ -55,12 +55,13 @@ const TheatresTab = ({modal}) => {
 
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
-    const data = testData.map( item =>{
+    const data = theatresData.map( item =>{
+        const recovery = item.isRecovery ? "Yes" : "No"
         return {
-            room : item.room,
-            status : item.status,
-            recovery : item.recovery,
-            availability : item.availability,
+            room : item.name,
+            status : "In Use",
+            recovery : recovery,
+            availability : 3,
         }
     })
 
@@ -141,7 +142,7 @@ const TheatresTab = ({modal}) => {
                     <RoundedPaginator
                         totalPages={totalPages}
                         currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
+                        goToNextPage={goToNextPage} 
                         goToPreviousPage={goToPreviousPage}
                     />
                 </View>

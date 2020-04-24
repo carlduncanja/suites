@@ -63,6 +63,7 @@ const Physicians = (props) => {
         if (!physicians.length) {
             fetchPhysiciansData()
         }
+        setTotalPages(Math.ceil(physicians.length / recordsPerPage))
     }, []);
 
     // ############# Event Handlers
@@ -131,7 +132,7 @@ const Physicians = (props) => {
     const renderPhysiciansFn = (item) => {
         return <ListItem
             hasCheckBox={true}
-            isChecked={selectedPhysiciansId.includes(item.id)}
+            isChecked={selectedPhysiciansId.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item)}
             itemView={physiciansItem(item)}
@@ -142,22 +143,26 @@ const Physicians = (props) => {
         return status === 'Active' ? '#4E5664' : '#E53E3E'
     }
 
-    const physiciansItem = (item) => <>
-
-        <View style={[styles.item,{}]}>
-            <Text style={[styles.itemText,{fontSize: 12, color: "#718096"}]}>{`#${item.id}`}</Text>
-            <Text style={[styles.itemText,{fontSize: 16, color: "#3182CE"}]}>{`Dr. ${item.surname}`}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
-            <Text style={[styles.itemText,{fontSize: 16, color: '#4E5664'}]}>{item.type}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
-            <Text style={[styles.itemText,{fontSize: 14, color: statusColor(item.status)}]}>{item.status}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
-            <PhysicianActionIcon/>
-        </View>
-    </>
+    const physiciansItem = (item) => {
+        return (
+            <>
+                <View style={[styles.item,{}]}>
+                    <Text style={[styles.itemText,{fontSize: 12, color: "#718096"}]}>{`#${item._id}`}</Text>
+                    <Text style={[styles.itemText,{fontSize: 16, color: "#3182CE"}]}>{`Dr. ${item.surname}`}</Text>
+                </View>
+                <View style={[styles.item,{alignItems:'center'}]}>
+                    <Text style={[styles.itemText,{fontSize: 16, color: '#4E5664'}]}>{item.type}</Text>
+                </View>
+                <View style={[styles.item,{alignItems:'center'}]}>
+                    <Text style={[styles.itemText,{fontSize: 14, color: statusColor(item.status)}]}>{item.status}</Text>
+                </View>
+                <View style={[styles.item,{alignItems:'center'}]}>
+                    <PhysicianActionIcon/>
+                </View>
+            </>
+        )
+        
+    }
 
     // ############# Prepare list data
 
@@ -207,9 +212,7 @@ const mapStateToProps = (state) => {
     const physicians = state.physicians.map( item => {
         return {
             ...item,
-            id : item.trn,
             type : 'Neurosurgeon',
-            // type : item.field.name
             status : 'Active'
         }
     })

@@ -7,7 +7,7 @@ import {
     physiciansEndpoint,physicianEndpoint,
     proceduresEndpoint,procedureEndpoint,
     caseFilesEndpoint,
-    equipmentsEndpoint,equipmentEndpoint,
+    equipmentsEndpoint,equipmentEndpoint,equipmentTypesEndpoint,
     storageLocationsEndpoint, 
 } from "../const/suitesEndpoints";
 
@@ -94,7 +94,7 @@ export const getProcedures = async () => {
         .catch(handleError)
 };
 
-export const getProceduresById = async (id) => {
+export const getProcedureById = async (id) => {
     return suitesAxiosInstance.get(procedureEndpoint(id))
         .then(handleResponse)
         .catch(handleError)
@@ -107,7 +107,7 @@ export const getPhysicians = async () => {
         .catch(handleError)
 };
 
-export const getPhysiciansById = async (id) => {
+export const getPhysicianById = async (id) => {
     return suitesAxiosInstance.get(physicianEndpoint(id))
         .then(handleResponse)
         .catch(handleError)
@@ -136,6 +136,12 @@ export const getEquipment = async () => {
 
 export const getEquipmentById = async (id) => {
     return suitesAxiosInstance.get(equipmentEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError)
+};
+
+export const getEquipmentTypes = async () => {
+    return suitesAxiosInstance.get(equipmentTypesEndpoint)
         .then(handleResponse)
         .catch(handleError)
 };

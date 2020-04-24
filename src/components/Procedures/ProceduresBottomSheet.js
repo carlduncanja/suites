@@ -7,21 +7,24 @@ import ConsumablesTab from './OverlayTabs/ConsumablesTab';
 import EquipmentTab from './OverlayTabs/EquipmentTab';
 import TheatresTab from './OverlayTabs/TheatresTab';
 import {colors} from "../../styles";
-import {getProceduresById} from "../../api/network";
 
-function PhysicianBottomSheet({procedure}) {
+import { getProcedureById } from "../../api/network";
+
+function ProceduresBottomSheet({procedure}) {
+    
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
-    const {id, name} = procedure;
+    const {_id, name} = procedure;
 
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [isEditMode, setEditMode] = useState(false);
     const [isFetching, setFetching] = useState(false);
+    const [selectedProcedure, setSelectedProcedure] = useState({})
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        fetchProcdure(id)
+        fetchProcdure(_id)
     }, []);
 
     // ##### Event Handlers
@@ -32,32 +35,12 @@ function PhysicianBottomSheet({procedure}) {
 
     // ##### Helper functions
 
-    const getTabContent = (selectedTab) => {
-        switch (selectedTab) {
-            case "Configuration":
-                return <Configuration procedure = {procedure}/>;
-            case "Consumables":
-                return <ConsumablesTab/>;
-            case "Equipment":
-                return <EquipmentTab/>;
-            case "Notes":
-                return <NotesTab/>;
-            case "Theatres" :
-                return <TheatresTab/>
-            default :
-                return <View/>
-        }
-    };
-
-    const overlayContent = <View style={{flex: 1, padding:30}}>
-        {getTabContent(currentTab)}
-    </View>;
-
     const fetchProcdure = (id) => {
         setFetching(true);
-        getProceduresById(id)
+        getProcedureById(id)
             .then(data => {
-                setProcedure(data)
+                setSelectedProcedure(data)
+                // setProcedure(data)
             })
             .catch(error => {
                 console.log("Failed to get procedure", error)
@@ -68,6 +51,24 @@ function PhysicianBottomSheet({procedure}) {
             })
     };
 
+    const getTabContent = (selectedTab) => {
+        const { inventories = [], equipments = [], notes = "", supportedRooms = [] } = selectedProcedure
+        switch (selectedTab) {
+            case "Configuration":
+                return <Configuration procedure = {selectedProcedure}/>;
+            case "Consumables":
+                return <ConsumablesTab consumablesData = {inventories} />;
+            case "Equipment":
+                return <EquipmentTab equipmentsData = {equipments}/>;
+            case "Notes":
+                return <NotesTab notesData = {notes}/>;
+            case "Theatres" :
+                return <TheatresTab theatresData = {supportedRooms}/>
+            default :
+                return <View/>
+        }
+    };
+
     return (
         <View style={{flex: 1}}>
             {
@@ -76,21 +77,26 @@ function PhysicianBottomSheet({procedure}) {
                         <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
                     </View>
                     :
+                    // console.log("Selected: ", selectedProcedure)
                     <SlideOverlay
-                        overlayId={id}
+                        overlayId={_id}
                         overlayTitle={name}
                         onTabPressChange={onTabPress}
                         currentTabs={currentTabs}
                         selectedTab={currentTab}
                         isEditMode={isEditMode}
-                        overlayContent={overlayContent}
+                        overlayContent={<View style={{flex: 1, padding:30}}>
+                            {
+                                getTabContent(currentTab)
+                            }
+                        </View>}
                     />
             }
         </View>
     );
 }
 
-PhysicianBottomSheet.propTypes = {};
-PhysicianBottomSheet.defaultProps = {};
+ProceduresBottomSheet.propTypes = {};
+ProceduresBottomSheet.defaultProps = {};
 
-export default PhysicianBottomSheet;
+export default ProceduresBottomSheet;

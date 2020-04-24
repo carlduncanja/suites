@@ -6,7 +6,7 @@ const ColumnSectionsList = ({sections}) => {
     return (
         sections.map(( item, index) => {
             return (
-                <>
+                <View key={index}>
                     {item}
                     {
                         index !== sections.length - 1 && <View style = {{
@@ -18,7 +18,7 @@ const ColumnSectionsList = ({sections}) => {
                             }}  
                         />
                     }
-                </>
+                </View>
 
             )
         })     

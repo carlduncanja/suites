@@ -4,6 +4,7 @@ import Consumables from '../../CaseFiles/OverlayPages/ChargeSheet/Consumables';
 
 import FloatingActionButton from "../../common/FloatingAction/FloatingActionButton";
 import ActionContainer from "../../common/FloatingAction/ActionContainer";
+import { currencyFormatter } from '../../../utils/formatter'
 
 import { withModal } from "react-native-modalfy";
 
@@ -22,7 +23,7 @@ const testData = [
     }
 
 ]
-const ConsumablesTab = ({modal}) => {
+const ConsumablesTab = ({modal, consumablesData}) => {
 
     const headers = [
         {
@@ -43,6 +44,8 @@ const ConsumablesTab = ({modal}) => {
         }
     ]
 
+    // const { inventories = [] } = consumablesData
+
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
     const listItem = (item) => <>
@@ -56,18 +59,18 @@ const ConsumablesTab = ({modal}) => {
             <Text style={styles.itemText}>{item.quantity}</Text>
         </View>
         <View style={[styles.item,{alignItems:'flex-end'}]}>
-            <Text style={styles.itemText}>{item.unitPrice}</Text>
+            <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
         </View>
             
     </>
 
-    const data = testData.map(item => {
+    const data = consumablesData.map(item => {
 
         return {
-            item :  item.itemName,
-            type : item.type,
-            quantity : item.quantity,
-            unitPrice : item.unitPrice
+            item :  item.inventory.name,
+            type : "Anaesthesia",
+            quantity : item.amount,
+            unitPrice : item.inventory.unitPrice
         }
     });
 
@@ -98,7 +101,7 @@ const ConsumablesTab = ({modal}) => {
             <Consumables
                 tabDetails = {data}
                 headers = {headers}
-                listItemFormat = {listItem}
+                listItemFormat = {listItem} 
             />
             <View style={styles.footer}>
                 <FloatingActionButton

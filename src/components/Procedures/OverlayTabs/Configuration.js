@@ -12,7 +12,22 @@ const Configuration = ({procedure, modal}) => {
 
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
-    const { name, duration, recovery, custom, physician, description} = procedure   
+    const { 
+        name, 
+        duration, 
+        hasRecovery, 
+        custom, 
+        physician={}, 
+        description} = procedure 
+
+    const {
+        firstName = "", 
+        surname = ""} =  physician
+    
+    const recovery = hasRecovery ? "Yes" : "No"
+    const customStatus  = "Yes"
+    const physicianName = `Dr. ${firstName} ${surname}`
+
     const procedureName = <Record 
         recordTitle = {"Procedure"}
         recordValue = {name}
@@ -30,12 +45,12 @@ const Configuration = ({procedure, modal}) => {
 
     const customRecord = <Record
         recordTitle = {"Custom"}
-        recordValue = {custom}
+        recordValue = {customStatus}
     />
 
     const assignedRecord = <ResponsiveRecord
         recordTitle = {"Assigned to"}
-        recordValue = {physician}
+        recordValue = {physicianName}
         handleRecordPress = {()=>{}}
     />
 

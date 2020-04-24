@@ -50,8 +50,8 @@ const testData = [
     }
 ]
 
-const CustomProceduresTab = ({modal}) => {
-
+const CustomProceduresTab = ({modal,procedures}) => {
+   
     const recordsPerPage = 10;
     
     const [totalPages, setTotalPages] = useState(0);
@@ -61,11 +61,12 @@ const CustomProceduresTab = ({modal}) => {
 
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
-    const data = testData.map( item =>{
+    const data = procedures.map( item =>{
+        const recovery = item.hasRecovery ? "Yes" : "No"
         return {
-            procedure : item.procedure,
-            theatre : item.theatre,
-            recovery : item.recovery,
+            procedure : item.name,
+            theatre : "Operating Room 1",
+            recovery : recovery,
             duration : item.duration,
         }
     })
