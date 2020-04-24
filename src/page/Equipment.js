@@ -141,14 +141,13 @@ const Equipment = (props) => {
             })
     };
 
-    const renderEquipmentFn = (item) => {
-        // change to eqItem.type._id
-        const filterEquiments = equipment.filter( eqItem => eqItem.type === item._id)
+    const renderEquipmentFn = (item) => { 
+        const filterEquiments = equipment.filter( eqItem => eqItem.type._id === item._id)
         const filterStatus = filterEquiments.filter( eqItem => eqItem.status === 'Available')
         const viewItem = {
             name : item.name,
-            quantity : [].length,
-            status : [].length === 1 ? "Available" : filterStatus.length > 1 ? "Multiple" : "Unavailable",
+            quantity : filterEquiments.length,
+            status : filterStatus.length === 1 ? "Available" : filterStatus.length > 1 ? "Multiple" : "Unavailable",
             nextAvailable : new Date(2020,12,12)
         }
 

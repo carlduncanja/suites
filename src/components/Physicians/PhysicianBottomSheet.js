@@ -1,9 +1,9 @@
 import React, { useState, useEffect} from 'react';
 import { View, ActivityIndicator} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import Details from './OverlayTabs/Details';
-import CaseFilesTab from './OverlayTabs/CaseFilesTab';
-import CustomProceduresTab from './OverlayTabs/CustomProceduresTab';
+import PhysiciansDetailsTab from '../OverlayTabs/PhysiciansDetailsTab';
+import CaseFilesTab from '../OverlayTabs/CaseFilesTab';
+import CustomProceduresTab from '../OverlayTabs/CustomProceduresTab';
 import {colors} from "../../styles";
 
 import { getPhysicianById } from "../../api/network";
@@ -38,7 +38,7 @@ function PhysicianBottomSheet({physician}) {
         const { cases = [], procedures = [] } = selectedPhysician
         switch (selectedTab) {
             case "Details":
-                return <Details physician = {selectedPhysician}/>;
+                return <PhysiciansDetailsTab physician = {selectedPhysician}/>;
             case "Case Files":
                 return <CaseFilesTab cases = {cases}/>;
             case "Custom Procedures":

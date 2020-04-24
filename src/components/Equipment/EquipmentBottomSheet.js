@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { View, ActivityIndicator } from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import General from '../Equipment/General';
+import General from '../OverlayTabs/General';
 import moment from 'moment';
 import {colors} from "../../styles";
 import { getEquipmentById } from "../../api/network";

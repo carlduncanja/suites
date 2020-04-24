@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from "react-native";
 import moment from "moment";
-import LevelIndicator from "../../common/LevelIndicator/LevelIndicator";
-import {currencyFormatter} from "../../../utils/formatter";
+import LevelIndicator from "../common/LevelIndicator/LevelIndicator";
+import {currencyFormatter} from "../../utils/formatter";
 
 const UiData = {
     description: "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",

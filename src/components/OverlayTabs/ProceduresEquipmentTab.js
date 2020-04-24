@@ -1,16 +1,16 @@
 import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Consumables from '../../CaseFiles/OverlayPages/ChargeSheet/Consumables';
+import Equipment from '../CaseFiles/OverlayPages/ChargeSheet/Equipment';
 
-import FloatingActionButton from "../../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../../common/FloatingAction/ActionContainer";
-import { currencyFormatter } from '../../../utils/formatter'
+import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import { currencyFormatter } from '../../utils/formatter'
 
 import { withModal } from "react-native-modalfy";
 
 const testData = [
     {
-        itemName : 'Agents',
+        itemName : 'Bag',
         type : 'Anaesthesia',
         quantity : 1,
         unitPrice : 4120.76
@@ -23,7 +23,7 @@ const testData = [
     }
 
 ]
-const ConsumablesTab = ({modal, consumablesData}) => {
+const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
 
     const headers = [
         {
@@ -32,11 +32,7 @@ const ConsumablesTab = ({modal, consumablesData}) => {
         },
         {
             name :"Type",
-            alignment: "center"
-        },
-        {
-            name :"Quantity",
-            alignment: "center"
+            alignment: "flex-start"
         },
         {
             name :"Unit Price",
@@ -44,9 +40,10 @@ const ConsumablesTab = ({modal, consumablesData}) => {
         }
     ]
 
-    // const { inventories = [] } = consumablesData
+    // const { equipments = [] } = equipmentsData
 
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
+
 
     const listItem = (item) => <>
         <View style={styles.item}>
@@ -55,22 +52,19 @@ const ConsumablesTab = ({modal, consumablesData}) => {
         <View style={[styles.item,{alignItems:'flex-start'}]}>
             <Text style={styles.itemText}>{item.type}</Text>
         </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
-            <Text style={styles.itemText}>{item.quantity}</Text>
-        </View>
         <View style={[styles.item,{alignItems:'flex-end'}]}>
             <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
         </View>
-             
+            
     </>
 
-    const data = consumablesData.map(item => {
+
+    const data = equipmentsData.map(item => {
 
         return {
-            item :  item.inventory.name,
-            type : "Anaesthesia",
-            quantity : item.amount,
-            unitPrice : item.inventory.unitPrice
+            item :  item.equipment.name,
+            type : item.equipment.type.name,
+            unitPrice : item.equipment.type.unitPrice
         }
     });
 
@@ -98,10 +92,10 @@ const ConsumablesTab = ({modal, consumablesData}) => {
 
     return (
         <>
-            <Consumables
+            <Equipment
                 tabDetails = {data}
                 headers = {headers}
-                listItemFormat = {listItem} 
+                listItemFormat = {listItem}
             />
             <View style={styles.footer}>
                 <FloatingActionButton
@@ -110,11 +104,10 @@ const ConsumablesTab = ({modal, consumablesData}) => {
                 />
             </View>
         </>
-
     )
 }
 
-export default withModal(ConsumablesTab)
+export default withModal(ProceduresEquipmentTab) 
 
 const styles = StyleSheet.create({
     item:{

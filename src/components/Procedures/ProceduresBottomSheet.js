@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {View, ActivityIndicator} from "react-native";
+import {View, ActivityIndicator, StyleSheet, Text} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import Configuration from './OverlayTabs/Configuration';
-import NotesTab from './OverlayTabs/NotesTab';
-import ConsumablesTab from './OverlayTabs/ConsumablesTab';
-import EquipmentTab from './OverlayTabs/EquipmentTab';
-import TheatresTab from './OverlayTabs/TheatresTab';
+import Configuration from '../OverlayTabs/Configuration';
+import NotesTab from '../OverlayTabs/NotesTab';
+import ProceduresConsumablesTab from '../OverlayTabs/ProceduresConsumablesTab';
+import ConsumablesTab from '../OverlayTabs/ConsumablesTab';
+import ProceduresEquipmentTab from '../OverlayTabs/ProceduresEquipmentTab';
+import TheatresTab from '../OverlayTabs/TheatresTab';
 import {colors} from "../../styles";
+import { currencyFormatter } from '../../utils/formatter';
 
 import { getProcedureById } from "../../api/network";
 
@@ -14,6 +16,24 @@ function ProceduresBottomSheet({procedure}) {
     
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
     const {_id, name} = procedure;
+    const consumablesHeader = [
+        {
+            name :"Item Name",
+            alignment: "flex-start"
+        },
+        {
+            name :"Type",
+            alignment: "center"
+        },
+        {
+            name :"Quantity",
+            alignment: "center"
+        },
+        {
+            name :"Unit Price",
+            alignment: "flex-end"
+        }
+    ]
 
     // ##### States
 
@@ -34,6 +54,21 @@ function ProceduresBottomSheet({procedure}) {
     };
 
     // ##### Helper functions
+    const consumablesListItem = (item) => <>
+        <View style={styles.item}>
+            <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.item}</Text>
+        </View>
+        <View style={[styles.item,{alignItems:'flex-start'}]}>
+            <Text style={styles.itemText}>{item.type}</Text>
+        </View>
+        <View style={[styles.item,{alignItems:'center'}]}>
+            <Text style={styles.itemText}>{item.quantity}</Text>
+        </View>
+        <View style={[styles.item,{alignItems:'flex-end'}]}>
+            <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
+        </View>
+             
+    </>
 
     const fetchProcdure = (id) => {
         setFetching(true);
@@ -53,13 +88,22 @@ function ProceduresBottomSheet({procedure}) {
 
     const getTabContent = (selectedTab) => {
         const { inventories = [], equipments = [], notes = "", supportedRooms = [] } = selectedProcedure
+        const consumablesData = inventories.map(item => {
+            return {
+                item :  item.inventory.name,
+                type : "Anaesthesia",
+                quantity : item.amount,
+                unitPrice : item.inventory.unitPrice
+            }
+        });
+
         switch (selectedTab) {
             case "Configuration":
                 return <Configuration procedure = {selectedProcedure}/>;
             case "Consumables":
-                return <ConsumablesTab consumablesData = {inventories} />;
+                return <ConsumablesTab data = {consumablesData}  headers={consumablesHeader} listItem={consumablesListItem}/>;
             case "Equipment":
-                return <EquipmentTab equipmentsData = {equipments}/>;
+                return <ProceduresEquipmentTab equipmentsData = {equipments}/>;
             case "Notes":
                 return <NotesTab notesData = {notes}/>;
             case "Theatres" :
@@ -100,3 +144,13 @@ ProceduresBottomSheet.propTypes = {};
 ProceduresBottomSheet.defaultProps = {};
 
 export default ProceduresBottomSheet;
+
+const styles = StyleSheet.create({
+    item:{
+        flex:1,
+    },
+    itemText:{
+        fontSize:16,
+        color:"#4A5568",
+    },
+})

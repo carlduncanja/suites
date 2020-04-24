@@ -1,8 +1,8 @@
 import React,{  } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Equipment from '../../CaseFiles/OverlayPages/ChargeSheet/Equipment';
-import { currencyFormatter } from '../../../utils/formatter';
-
+import Equipment from '../CaseFiles/OverlayPages/ChargeSheet/Equipment';
+import { currencyFormatter } from '../../utils/formatter';
+ 
 const testData = [
     {
         itemName : 'Bag',
@@ -18,7 +18,7 @@ const testData = [
     }
 
 ]
-const EquipmentTab = () => {
+const StorageEquipmentTab = () => {
 
     const headers = [
         {
@@ -75,7 +75,7 @@ const EquipmentTab = () => {
     )
 }
 
-export default EquipmentTab
+export default StorageEquipmentTab
 
 const styles = StyleSheet.create({
     item:{

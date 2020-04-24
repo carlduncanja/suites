@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import Record from '../../common/Information Record/Record';
-import ResponsiveRecord from '../../common/Information Record/ResponsiveRecord';
-import ColumnSection from '../../common/ColumnSection';
-import FloatingActionButton from "../../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../../common/FloatingAction/ActionContainer";
+import Record from '../common/Information Record/Record';
+import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
+import ColumnSection from '../common/ColumnSection';
+import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
 
 import { withModal } from "react-native-modalfy";
 

@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, View} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import InventoryGeneralTabContent from "../Inventory/OverlayTabs/InventoryGeneralTabContent";
-import TheatresDetailsTab from "./OverlayTabs/TheatresDetailsTab";
+import InventoryGeneralTabContent from "../OverlayTabs/InventoryGeneralTabContent";
+import TheatresDetailsTab from "../OverlayTabs/TheatresDetailsTab";
 import {colors} from "../../styles";
 import {getTheatreById} from "../../api/network";
 
 function TheatresBottomSheetContainer({theatre = {}}) {
     const currentTabs = ["Details", "History", "Storage", "Equipment", "Schedule"];
-
 
     // ##### States
 

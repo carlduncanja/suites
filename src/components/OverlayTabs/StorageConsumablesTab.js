@@ -1,7 +1,7 @@
 import React,{  } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import Consumables from '../../CaseFiles/OverlayPages/ChargeSheet/Consumables';
-import { currencyFormatter } from '../../../utils/formatter';
+import Consumables from '../CaseFiles/OverlayPages/ChargeSheet/Consumables';
+import { currencyFormatter } from '../../utils/formatter';
 
 
 const testData = [
@@ -19,7 +19,7 @@ const testData = [
     }
 
 ]
-const ConsumablesTab = () => {
+const StorageConsumablesTab = () => {
 
     const headers = [
         {
@@ -76,7 +76,7 @@ const ConsumablesTab = () => {
     )
 }
 
-export default ConsumablesTab
+export default StorageConsumablesTab
 
 const styles = StyleSheet.create({
     item:{

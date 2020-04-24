@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, View} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import InventoryGeneralTabContent from "./OverlayTabs/InventoryGeneralTabContent";
+import InventoryGeneralTabContent from "../OverlayTabs/InventoryGeneralTabContent";
 import {colors} from "../../styles";
 import {getInventoryById} from "../../api/network";
 
