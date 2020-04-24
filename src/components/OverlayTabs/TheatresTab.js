@@ -1,12 +1,12 @@
 import React,{ useState, useEffect  } from "react";
 import { View, Text, StyleSheet} from "react-native";
 
-import Table from '../../common/Table/Table';
-import FloatingActionButton from "../../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../../common/FloatingAction/ActionContainer";
-import RoundedPaginator from "../../common/Paginators/RoundedPaginator";
+import Table from '../common/Table/Table';
+import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import RoundedPaginator from "../common/Paginators/RoundedPaginator";
 
-import {useNextPaginator, usePreviousPaginator} from "../../../helpers/caseFilesHelpers";
+import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import { withModal } from "react-native-modalfy";
 
 

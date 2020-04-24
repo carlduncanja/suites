@@ -1,9 +1,9 @@
 import React,{ useState } from "react";
 import { View, StyleSheet } from "react-native";
-import FrameCard from '../../common/Frames/FrameCards/FrameCard';
+import FrameCard from '../common/Frames/FrameCards/FrameCard';
 
-import FloatingActionButton from "../../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../../common/FloatingAction/ActionContainer";
+import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
 
 import { withModal } from "react-native-modalfy";
 

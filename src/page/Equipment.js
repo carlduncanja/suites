@@ -141,9 +141,8 @@ const Equipment = (props) => {
             })
     };
 
-    const renderEquipmentFn = (item) => {
-
-        const filterEquiments = equipment.filter( eqItem => eqItem.type === item._id)
+    const renderEquipmentFn = (item) => { 
+        const filterEquiments = equipment.filter( eqItem => eqItem.type._id === item._id)
         const filterStatus = filterEquiments.filter( eqItem => eqItem.status === 'Available')
         const viewItem = {
             name : item.name,
@@ -154,7 +153,7 @@ const Equipment = (props) => {
 
         return <ListItem
             hasCheckBox={true}
-            isChecked={selectedEquipmentIds.includes(item.id)}
+            isChecked={selectedEquipmentIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item)}
             itemView={equipmentItem(viewItem)}

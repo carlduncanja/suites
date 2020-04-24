@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {View} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import ConsumablesTab from './OverlayPages/ConsumablesTab';
-import EquipmentTab from './OverlayPages/EquipmentTab';
+import StorageConsumablesTab from '../OverlayTabs/StorageConsumablesTab';
+import StorageEquipmentTab from '../OverlayTabs/StorageEquipmentTab';
 
 function StorageBottomSheetContainer({storage}) {
     const currentTabs = ["Transfer", "Consumables", "Equipment"];
@@ -31,9 +31,9 @@ function StorageBottomSheetContainer({storage}) {
             case "Transfer":
                 return <View/>;
             case "Consumables":
-                return <ConsumablesTab/>;
+                return <StorageConsumablesTab/>;
             case "Equipment":
-                return <EquipmentTab/>;
+                return <StorageEquipmentTab/>;
             default :
                 return <View/>
         }

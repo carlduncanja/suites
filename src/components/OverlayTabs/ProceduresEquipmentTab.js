@@ -1,10 +1,10 @@
 import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Equipment from '../../CaseFiles/OverlayPages/ChargeSheet/Equipment';
+import Equipment from '../CaseFiles/OverlayPages/ChargeSheet/Equipment';
 
-import FloatingActionButton from "../../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../../common/FloatingAction/ActionContainer";
-import { currencyFormatter } from '../../../utils/formatter'
+import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import { currencyFormatter } from '../../utils/formatter'
 
 import { withModal } from "react-native-modalfy";
 
@@ -23,7 +23,7 @@ const testData = [
     }
 
 ]
-const EquipmentTab = ({modal, equipmentsData}) => {
+const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
 
     const headers = [
         {
@@ -107,7 +107,7 @@ const EquipmentTab = ({modal, equipmentsData}) => {
     )
 }
 
-export default withModal(EquipmentTab) 
+export default withModal(ProceduresEquipmentTab) 
 
 const styles = StyleSheet.create({
     item:{

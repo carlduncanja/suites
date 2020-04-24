@@ -1,55 +1,57 @@
 import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet} from "react-native";
 
-import List from '../../common/List/List';
-import ListItem from '../../common/List/ListItem'
-import LongPressWithFeedback from "../../common/LongPressWithFeedback";
-import FloatingActionButton from "../../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../../common/FloatingAction/ActionContainer";
-import ActionItem from "../../common/ActionItem";
-import RoundedPaginator from "../../common/Paginators/RoundedPaginator";
+import Table from '../common/Table/Table';
+import LongPressWithFeedback from "../common/LongPressWithFeedback";
+import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import ActionItem from "../common/ActionItem";
+import RoundedPaginator from "../common/Paginators/RoundedPaginator";
 
-import WasteIcon from "../../../../assets/svg/wasteIcon";
-import AddIcon from "../../../../assets/svg/addIcon";
-import AssignIcon from "../../../../assets/svg/assignIcon";
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import AddIcon from "../../../assets/svg/addIcon";
+import AssignIcon from "../../../assets/svg/assignIcon";
 
-import {useNextPaginator, usePreviousPaginator} from "../../../helpers/caseFilesHelpers";
+import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
+
 import { withModal } from "react-native-modalfy";
-import moment from "moment";
-
-
 
 const headers = [
     {
-        name : "Patient",
-        alignment: "flex-start"
+        name : 'Procedure',
+        alignment : 'flex-start'
     },
     {
-        name : "Balance",
-        alignment: "flex-start"
+        name : 'Theatre',
+        alignment : 'flex-start'
     },
     {
-        name : "Status",
-        alignment: "flex-start"
+        name : 'Recovery',
+        alignment : 'center'
     },
     {
-        name : "Next Visit",
-        alignment: "flex-start"
+        name : 'Duration',
+        alignment : 'flex-end'
     }
 ]
 
 const testData = [
     {
-        patientId : '#3502193850',
-        patientName : 'Alexis Scott',
-        balance: '340000.67',
-        status : 'Closed',
-        nextVisit : new Date(2019, 10, 21)
+        procedure: 'Coronary Bypass Graft',
+        theatre : 'Operating Room 1',
+        recovery : 'Yes',
+        duration : 2
+    },
+    {
+        procedure: 'Adenosine',
+        theatre : 'Operating Room 1',
+        recovery : 'No',
+        duration : 3
     }
 ]
 
-const CaseFilesTab = ({modal, cases}) => {
-
+const CustomProceduresTab = ({modal,procedures}) => {
+   
     const recordsPerPage = 10;
     
     const [totalPages, setTotalPages] = useState(0);
@@ -57,17 +59,15 @@ const CaseFilesTab = ({modal, cases}) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
-    const [selectedIds, setSelectedIds] = useState([])
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
-    const [isIndeterminate, setIsIndeterminate] = useState(false)
 
-    const data = cases.map( item =>{
+    const data = procedures.map( item =>{
+        const recovery = item.hasRecovery ? "Yes" : "No"
         return {
-            id : item.patient,
-            name : item.name,
-            balance : 2560.90,
-            status : "Closed",
-            nextVisit : new Date(2019, 10, 21)
+            procedure : item.name,
+            theatre : "Operating Room 1",
+            recovery : recovery,
+            duration : item.duration,
         }
     })
 
@@ -92,30 +92,6 @@ const CaseFilesTab = ({modal, cases}) => {
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
     };
-
-    const onSelectAll = () => {
-        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== data.length;
-        setIsIndeterminate(indeterminate)
-        if (indeterminate) {
-            const selectedAllIds = [...data.map( item => item.id )]
-            setSelectedIds(selectedAllIds)
-        } else {
-            setSelectedIds([])
-        }
-    }
-
-    const handleOnCheckBoxPress = (item) => () =>  {
-        const { id } = item;
-        let updatedCases = [...selectedIds];
-
-        if (updatedCases.includes(id)) {
-            updatedCases = updatedCases.filter(id => id !== item.id)
-        } else {
-            updatedCases.push(item.id);
-        }
-        
-        setSelectedIds(updatedCases);
-    }
 
     const toggleActionButton = () => {
         setIsFloatingActionDisabled(true);
@@ -150,29 +126,20 @@ const CaseFilesTab = ({modal, cases}) => {
     />
     }
 
-    const renderListFn = (item) =>{
-        return <ListItem
-            hasCheckBox={true}
-            isChecked={selectedIds.includes(item.id)}
-            onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => {}}
-            itemView={listItemFormat(item)}
-        />
-    }
-
     const listItemFormat = (item) => <>
-        <View style={{flex:1}}>
-            <Text style={{color: "#718096", fontSize: 12}}>{item.id}</Text>
-            <Text style={{color: "#3182CE", fontSize: 16}}>{item.name}</Text>
-        </View>
-        <View style={{flex:1}}>
-            <Text style={{fontSize:14, color:'#4E5664'}}>{item.balance}</Text>
-        </View>
-        <View style={{flex:1}}>
-            <Text style={{fontSize:14, color: item.status === 'Closed'? '#DD6B20' : '#3182CE'}}>{item.status}</Text>
-        </View>
-        <View style={{flex:1}}>
-            <Text style={{fontSize:14, color:'#4E5664'}}>{moment(item.nextVisit).format("MMM DD, YYYY")}</Text>
+        <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
+            <View style={{flex:1}}>
+                <Text style={{fontSize:16, color:'#3182CE'}}>{item.procedure}</Text>
+            </View>
+            <View style={{flex:1, alignItems:"flex-start"}}>
+                <Text style={{fontSize:16, color:'#3182CE'}}>{item.theatre}</Text>
+            </View>
+            <View style={{flex:1, alignItems:'center'}}>
+                <Text style={{fontSize:14, color: item.recovery === 'Yes'?'#38A169':'#ED8936'}}>{item.recovery}</Text>
+            </View>
+            <View style={{flex:1, alignItems:'flex-end'}}>
+                <Text style={{fontSize:16, color:'#323843'}}>{`${item.duration} hrs`}</Text>
+            </View>
         </View>
     </>
 
@@ -181,13 +148,11 @@ const CaseFilesTab = ({modal, cases}) => {
 
     return (
         <>
-            <List
-                listData={dataToDisplay}
-                listHeaders={headers}
-                itemsSelected={selectedIds}
-                isCheckbox={true}
-                onSelectAll={onSelectAll}
-                listItemFormat={renderListFn}
+            <Table
+                data = {dataToDisplay}
+                listItemFormat = {listItemFormat}
+                headers = {headers}
+                isCheckbox = {false}
             />
             <View style={styles.footer}>
                 <View style={{alignSelf: "center", marginRight: 10}}>
@@ -203,12 +168,11 @@ const CaseFilesTab = ({modal, cases}) => {
                     toggleActionButton = {toggleActionButton}
                 />
             </View>
-        
         </>
     )
 }
 
-export default withModal(CaseFilesTab) 
+export default withModal(CustomProceduresTab)
 
 const styles = StyleSheet.create({
     footer:{

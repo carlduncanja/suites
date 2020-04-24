@@ -1,21 +1,29 @@
-import React,{ useState, useContext } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React,{ useState, useContext, useEffect } from "react";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import SlideOverlay from '../common/SlideOverlay/SlideOverlay';
 import Navigation from '../CaseFiles/navigation/ContentNavigationStack';
+import {colors} from "../../styles";
 
+import { getCaseFileById } from "../../api/network";
 
-const CaseFileBottomSheet = ({item, overlayMenu}) =>{
+const CaseFileBottomSheet = ({caseItem, overlayMenu}) =>{
 
-    let initialCurrentTabs = overlayMenu[0].overlayTabs
-    let intialSelectedTab = initialCurrentTabs[0]
-    const overlayId = item.id
-    const overlayTitle = item.caseFileDetails.title
+    const initialCurrentTabs = overlayMenu[0].overlayTabs
+    const intialSelectedTab = initialCurrentTabs[0]
+    const {_id, name } = caseItem
     
     // ############### Staate
 
     const [selectedTab, setSelectedTab] = useState(intialSelectedTab)
     const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs)
     const [isEditMode, setEditMode] = useState(false)
+    const [selectedCase, setSelectedCase] = useState({})
+    const [isFetching, setFetching] = useState(false);
+
+    // ############### Lifecycle Methods
+    useEffect(() => {
+        fetchCase(_id)
+    }, []);
 
     // ############### Event Handlers
     const handleTabPressChange = (tab) => {
@@ -32,10 +40,26 @@ const CaseFileBottomSheet = ({item, overlayMenu}) =>{
         setSelectedTab(selectedTab)
     }
 
+    // ############### Helper Function
+    const fetchCase = (id) => {
+        setFetching(true);
+        getCaseFileById(id)
+            .then(data => {
+                setSelectedCase(data)
+                // setProcedure(data)
+            })
+            .catch(error => {
+                console.log("Failed to get case", error)
+            })
+            .finally(_ => {
+                setFetching(false)
+            })
+    };
+
     // ############### Data
     
     const overlayContent = <Navigation 
-        item = {item} 
+        item = {caseItem} 
         overlayMenu = {overlayMenu}
         handleOverlayMenuPress = {handleOverlayMenuPress}
         selectedTab = {selectedTab}
@@ -45,17 +69,26 @@ const CaseFileBottomSheet = ({item, overlayMenu}) =>{
 
     return (
         <View style={{flex:1}}>
-            <SlideOverlay
-                overlayId = {overlayId}
-                overlayTitle = {overlayTitle}
-                onTabPressChange = {handleTabPressChange}
-                currentTabs = {currentTabs}
-                selectedTab = {selectedTab}
-                isEditMode = {isEditMode}
-                overlayContent = {overlayContent}
-            />
+            {
+                isFetching
+                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
+                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
+                    </View>
+                    :
+                    <SlideOverlay
+                        overlayId = {_id}
+                        overlayTitle = {name}
+                        onTabPressChange = {handleTabPressChange}
+                        currentTabs = {currentTabs}
+                        selectedTab = {selectedTab}
+                        isEditMode = {isEditMode}
+                        overlayContent = {overlayContent}
+                    />
+            }
         </View>
     )
 }
+CaseFileBottomSheet.propTypes = {};
+CaseFileBottomSheet.defaultProps = {};
 
 export default CaseFileBottomSheet
