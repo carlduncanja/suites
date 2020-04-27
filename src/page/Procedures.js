@@ -6,6 +6,13 @@ import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
 import ProceduresBottomSheet from '../components/Procedures/ProceduresBottomSheet';
+import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
+import ActionContainer from "../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../components/common/ActionItem";
+
+import WasteIcon from "../../assets/svg/wasteIcon";
+import AddIcon from "../../assets/svg/addIcon";
+import AssignIcon from "../../assets/svg/assignIcon";
 
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
 
@@ -100,8 +107,15 @@ const Procedures = (props) =>{
     };
 
     const toggleActionButton = () => {
-        setFloatingAction(!isFloatingActionDisabled)
-        modal.openModal("ActionContainerModal",{ floatingActions, title : "PROCEDURES ACTIONS" })
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "PROCEDURES ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
     }
 
     // ############# Helper functions
@@ -149,6 +163,26 @@ const Procedures = (props) =>{
         )
         
     }
+
+    const getFabActions = () => {
+
+        const deleteAction =
+            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+            </LongPressWithFeedback>;
+        const createCopy = <ActionItem title={"Create Copy"} icon={<AddIcon/>} onPress={()=>{}}/>;
+        const createNewProcedure = <ActionItem title={"New Procedure"} icon={<AddIcon/>} onPress={()=>{}}/>;
+
+
+        return <ActionContainer
+            floatingActions={[
+                deleteAction,
+                createCopy,
+                createNewProcedure
+            ]}
+            title={"PROCEDURES ACTIONS"}
+        />
+    };
     // ############# Prepare list data
 
     let proceduresToDisplay = [...procedures];

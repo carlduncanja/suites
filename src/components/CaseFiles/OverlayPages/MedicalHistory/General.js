@@ -2,6 +2,14 @@ import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { Allergies, PreExistingConditions, Immunisations, Medications, Procedures, MedicalHistoryImplantedDevices } from '../../OverlayCardFrames';
 
+import AllergiesIcon from '../../../../../assets/svg/allergies';
+import ConditionsIcon from '../../../../../assets/svg/preExistingConditions';
+import ImmunisationsIcon from '../../../../../assets/svg/immunisations';
+import MedicationsIcon from '../../../../../assets/svg/medications';
+import ProceduresIcon from '../../../../../assets/svg/frameProcedures';
+import DevicesIcon from '../../../../../assets/svg/implantedDevices';
+
+
 const General = ({tabDetails}) => {
     const getData = (data) => {
         let newArray = []
@@ -19,12 +27,30 @@ const General = ({tabDetails}) => {
 
     return ( 
         <ScrollView>
-            <Allergies cardInformation = {getData(allergies)}/>
-            <PreExistingConditions cardInformation = {getData(preExistConditions)} />
-            <Immunisations cardInformation = {getData(immunisations)}/>
-            <Medications cardInformation = {getData(medications)}/>
-            <Procedures cardInformation = {getData(procedures)}/>
-            <MedicalHistoryImplantedDevices cardInformation = {getData(devices)}/>
+            <Allergies 
+                cardInformation = {getData(allergies)}
+                icon = {AllergiesIcon}
+            />
+            <PreExistingConditions 
+                cardInformation = {getData(preExistConditions)} 
+                icon = {ConditionsIcon}
+            />
+            <Immunisations 
+                cardInformation = {getData(immunisations)}
+                icon = {ImmunisationsIcon}
+            />
+            <Medications 
+                cardInformation = {getData(medications)}
+                icon = {MedicationsIcon}
+            />
+            <Procedures 
+                cardInformation = {getData(procedures)}
+                icon = {ProceduresIcon}
+            />
+            <MedicalHistoryImplantedDevices 
+                cardInformation = {getData(devices)}
+                icon = {DevicesIcon}
+            />
         </ScrollView>
     );
 }

@@ -2,16 +2,27 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import SvgIcon from '../../../../assets/SvgIcon';
 
-export default class FrameTitle extends Component{
-    render(){
-        return(
-            <View style={[styles.container,{backgroundColor:this.props.backgroundColor, borderColor:this.props.borderColor}]}>
-                <SvgIcon iconName={this.props.iconName} fillColor={this.props.iconFillColor}/>
-                <Text style={[styles.text,{color:this.props.color}]}>{this.props.frameTitle}</Text>
-            </View>
-        )
-    }
+const FrameTitle = (props) => {
+    const {
+        backgroundColor,
+        borderColor,
+        color,
+        frameTitle,
+        icon
+    } = props
+
+    const FrameIcon = icon
+    
+    return (
+        <View style={[styles.container,{backgroundColor:backgroundColor, borderColor:borderColor}]}>
+            {/* <SvgIcon iconName={this.props.iconName} fillColor={this.props.iconFillColor}/> */}
+            <FrameIcon fillColor = {color}/>
+            <Text style={[styles.text,{color:color}]}>{frameTitle}</Text>
+        </View>
+    )
 }
+
+export default FrameTitle
 
 const styles = StyleSheet.create({
     container:{

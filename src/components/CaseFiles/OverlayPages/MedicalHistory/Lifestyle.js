@@ -1,7 +1,11 @@
 import React from 'react';
-import { View, Picker } from "react-native";
+import { View, Picker, ScrollView } from "react-native";
 import { DrugUse, AlcoholUse, TobaccoUse } from '../../OverlayCardFrames'
-import { ScrollView } from 'react-native-gesture-handler';
+
+import TobaccoIcon from '../../../../../assets/svg/tobacco';
+import DrugIcon from '../../../../../assets/svg/drug';
+import AlcoholIcon from '../../../../../assets/svg/alcohol';
+
 
 const Lifestyle = ({tabDetails}) => {
     const drugItems = tabDetails.filter( item => item.categories === 'drug')
@@ -10,13 +14,13 @@ const Lifestyle = ({tabDetails}) => {
     return ( 
         <ScrollView>
             {drugItems.map((drug)=>{
-                return <DrugUse cardInformation = {drug}/>
+                return <DrugUse cardInformation = {drug} icon = {DrugIcon}/>
             })}
             {alcoholItems.map((alcohol)=>{
-                return <AlcoholUse cardInformation = {alcohol}/>
+                return <AlcoholUse cardInformation = {alcohol} icon = {AlcoholIcon}/>
             })}
             {tobaccoItems.map((tobaccoItem)=>{
-                return <TobaccoUse cardInformation = {tobaccoItem}/>
+                return <TobaccoUse cardInformation = {tobaccoItem} icon = {TobaccoIcon}/>
             })}
         </ScrollView>
     );

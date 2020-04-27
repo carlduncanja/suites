@@ -1,6 +1,8 @@
 import React,{ useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView} from 'react-native';
 import { Physicians, Nurses } from '../../OverlayCardFrames';
+import FramStaffIcon from '../../../../../assets/svg/frameMedicalStaff';
+
 
 const Details = ({tabDetails}) => {
     const getData = (data) => {
@@ -15,8 +17,14 @@ const Details = ({tabDetails}) => {
     let nurses =  tabDetails.filter(item => item.type === "Nurse")
     return (  
         <ScrollView>
-            <Physicians cardInformation = {getData(physicians)}/>
-            <Nurses cardInformation = {getData(nurses)}/>
+            <Physicians 
+                cardInformation = {getData(physicians)}
+                icon = {FramStaffIcon}
+            />
+            <Nurses 
+                cardInformation = {getData(nurses)}
+                icon = {FramStaffIcon}
+            />
         </ScrollView>
        
     );

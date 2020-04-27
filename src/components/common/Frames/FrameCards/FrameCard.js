@@ -12,8 +12,8 @@ export default class FrameCard extends Component{
                         color={this.props.frameColor}
                         borderColor = {this.props.frameBorderColor}
                         backgroundColor={this.props.titleBackgroundColor}
-                        iconName={this.props.frameIconName}
-                        iconFillColor = {this.props.iconFillColor}
+                        icon={this.props.icon}
+                        // iconFillColor = {this.props.iconFillColor}
                         frameTitle={this.props.frameTitle}
                     />
                 </View>

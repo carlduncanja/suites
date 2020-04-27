@@ -6,6 +6,14 @@ import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
 import EquipmentBottomSheet from '../components/Equipment/EquipmentBottomSheet';
+import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
+import ActionContainer from "../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../components/common/ActionItem";
+
+import WasteIcon from "../../assets/svg/wasteIcon";
+import AddIcon from "../../assets/svg/addIcon";
+import AssignIcon from "../../assets/svg/assignIcon";
+import EditIcon from "../../assets/svg/editIcon";
 
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
 import EquipmentListIcon from '../../assets/svg/equipmentListAction';
@@ -115,8 +123,16 @@ const Equipment = (props) => {
     };
 
     const toggleActionButton = () => {
-        setFloatingAction(!isFloatingActionDisabled)
-        modal.openModal("ActionContainerModal",{ floatingActions, title : "EQUIPMENT ACTIONS" })
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            { 
+                actions: getFabActions(),
+                title: "EQUIPMENT ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            }
+        )
     }
 
     // ############# Helper functions
@@ -187,6 +203,27 @@ const Equipment = (props) => {
         </View>
     </>
 
+    const getFabActions = () => {
+
+        const deleteAction =
+            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+            </LongPressWithFeedback>;
+        const assignEquipment = <ActionItem title={"Assign Equipment"} icon={<AssignIcon/>} onPress={()=>{}}/>;
+        const editGroup = <ActionItem title={"Edit Group"} icon={<EditIcon/>} onPress={()=>{}}/>;
+        const createEquipment = <ActionItem title={"Add Equipment"} icon={<AddIcon/>} onPress={()=>{}}/>;
+
+        return <ActionContainer
+            floatingActions={[
+                deleteAction,
+                assignEquipment,
+                editGroup,
+                createEquipment
+            ]}
+            title={"EQUIPMENT ACTIONS"}
+        />
+
+    };
     // ############# Prepare list data
 
     let equipmentToDisplay = [...equipmentTypes];

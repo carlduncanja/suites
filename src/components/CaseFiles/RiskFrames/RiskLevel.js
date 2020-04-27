@@ -1,7 +1,7 @@
 import React,{useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import FrameItem from '../../common/Frames/FrameItems/FrameItem';
-import SvgIcon from '../../../../assets/SvgIcon'
+import RiskIcon from '../../../../assets/svg/riskLevel';
 
 const RiskLevel = (props) => {
     const levels = [
@@ -29,10 +29,11 @@ const RiskLevel = (props) => {
             </View>
         )
     }
+
     return (
         <View style={styles.container}>
             <View style={[styles.titleContainer,{backgroundColor:props.titleBackground, borderColor:props.borderColor, borderWidth:1}]}>
-                <SvgIcon iconName = "riskLevel" fillColor={props.levelColor}/>
+                <RiskIcon fillColor={props.levelColor}/>
                 <Text style={{color:props.cardColor, marginLeft:5}}>Risk Level</Text>
             </View>
             <View style={styles.contentContainer}>

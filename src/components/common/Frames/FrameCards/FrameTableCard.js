@@ -11,7 +11,7 @@ const FrameTableCard = (props) => {
                     color={props.frameColor}
                     borderColor = {props.frameBorderColor}
                     backgroundColor={props.titleBackgroundColor}
-                    iconName={props.frameIconName}
+                    icon={props.icon}
                     frameTitle={props.frameTitle}
                 />
             </View>

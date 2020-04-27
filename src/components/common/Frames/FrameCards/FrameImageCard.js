@@ -12,7 +12,7 @@ export default class FrameImageCard extends Component{
                         color={this.props.frameColor}
                         borderColor = {this.props.frameBorderColor}
                         backgroundColor={this.props.titleBackgroundColor}
-                        iconName={this.props.frameIconName}
+                        icon={this.props.icon}
                         frameTitle={this.props.frameTitle}
                     />
                 </View>
