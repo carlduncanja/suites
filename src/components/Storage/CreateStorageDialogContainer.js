@@ -27,9 +27,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     const selectedIndex = 0;
 
     const [fields, setFields] = useState({
-        name: "",
-        capacity: "",
-        theatre: ""
+        capacity: '0'
     });
 
     // useEffect(() => {
@@ -53,13 +51,13 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
 
 
     const createStorageCall = () => {
-        createStorageLocation()
+        createStorageLocation(fields)
             .then(data => {
                 addStorageLocation(data);
             })
             .catch(error => {
                 // todo handle error
-                console.log("failed to create storage location")
+                console.log("failed to create storage location", error)
             })
             .finally(_ => {
                 modal.closeAllModals()
@@ -87,21 +85,31 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                             <InputField2 label={"Location Name"}
                                          onChangeText={onFieldChange('name')}
                                          value={fields['name']}
+                                         onClear={() => onFieldChange('name')('')}
                             />
                         </View>
 
                         <View style={styles.inputWrapper}>
-                            <NumberInputField
+                            <InputField2
                                 label={"Capacity"}
-                                onChangeText={onFieldChange('capacity')}
+                                onChangeText={(value) => {
+                                    if (/^\d+$/g.test(value) || !value) {
+                                        onFieldChange('capacity')(value)
+                                    }
+                                }}
                                 value={fields['capacity']}
+                                keyboardType={'number-pad'}
+                                onClear={() => onFieldChange('name')('')}
                             />
                         </View>
                     </View>
 
                     <View style={styles.row}>
                         <View style={styles.inputWrapper}>
-                            <InputField2 label={"Theatre"} onChangeText={onFieldChange('theatre')}/>
+                            <InputField2
+                                label={"Theatre"}
+                                onChangeText={onFieldChange('theatre')}
+                            />
                         </View>
                         <View style={styles.inputWrapper}/>
                     </View>

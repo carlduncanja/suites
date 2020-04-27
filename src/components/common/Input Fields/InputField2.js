@@ -1,8 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, TextInput, StyleSheet, Text} from "react-native";
+import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
+import ClearIcon from "../../../../assets/svg/clearIcon";
 
-function InputField2({label, onChangeText, value, placeholder, keyboardType}) {
+/**
+ *
+ * @param label
+ * @param onChangeText
+ * @param value
+ * @param placeholder
+ * @param keyboardType
+ * @param onClear
+ * @returns {*}
+ * @constructor
+ */
+function InputField2({label, onChangeText, value, placeholder, keyboardType, onClear}) {
+
+
     return (
         <View style={styles.container}>
             <Text style={[
@@ -11,7 +25,7 @@ function InputField2({label, onChangeText, value, placeholder, keyboardType}) {
                 }
             ]}>{label}</Text>
 
-            <View style={styles.inputWrapper}>
+            <View style={[styles.inputWrapper, {paddingRight: value ? 4 : 0}]}>
                 <TextInput
                     style={styles.inputField}
                     onChangeText={onChangeText}
@@ -20,6 +34,19 @@ function InputField2({label, onChangeText, value, placeholder, keyboardType}) {
                     placeholder={placeholder}
                 />
             </View>
+
+
+            {
+                value
+                    ? <TouchableOpacity
+                        style={styles.clearIcon}
+                        onPress={onClear}
+                    >
+                        <ClearIcon/>
+                    </TouchableOpacity>
+                    : null
+            }
+
         </View>
     );
 }
@@ -30,6 +57,7 @@ InputField2.defaultProps = {};
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        position: 'relative',
         flexDirection: 'row',
         alignItems: 'center'
     },
@@ -47,9 +75,14 @@ const styles = StyleSheet.create({
     },
     inputField: {
         flex: 1,
-        padding: 12,
-        paddingTop: 9,
-        paddingBottom: 9
+        padding: 10,
+        paddingTop: 2,
+        paddingBottom: 2,
+    },
+    clearIcon: {
+        position: 'absolute',
+        right: 0,
+        margin: 5
     }
 });
 

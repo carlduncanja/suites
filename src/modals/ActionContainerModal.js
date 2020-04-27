@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from "react-native";
+import {View, StyleSheet, TouchableOpacity, Text, Dimensions} from "react-native";
 import {SuitesContext} from '../contexts/SuitesContext';
 import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 import {withModal} from 'react-native-modalfy';
@@ -9,6 +9,8 @@ import KeyboardShift from "../components/KeyboardShift";
 
 const ActionContainerModal = (props) => {
     const [state, dispatch] = useContext(SuitesContext);
+    const dimensions = Dimensions.get("window");
+
 
     const {
         modal: {
@@ -34,7 +36,7 @@ const ActionContainerModal = (props) => {
     });
 
     return (
-        <View style={{width: state.pageMeasure.width, height: state.pageMeasure.height}}>
+        <View style={[{width: dimensions.width, height: state.pageMeasure.height}]}>
             <TouchableOpacity
                 onPress={() => {
                     console.log("hello");
