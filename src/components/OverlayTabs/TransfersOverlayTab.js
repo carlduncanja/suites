@@ -3,6 +3,7 @@ import {View, StyleSheet, Text} from "react-native";
 import PropTypes from 'prop-types';
 import Table from "../common/Table/Table";
 import {formatDate} from "../../utils/formatter";
+import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 
 const uiData = [
     // transfer data;
@@ -29,34 +30,55 @@ const uiData = [
 const PendingTransferHeadings = [
     {
         name: 'Transfer',
-        alignment: 'flex-start'
+        alignment: 'flex-start',
+        styles: {
+            flex: 2
+        }
     },
     {
         name: 'Product',
-        alignment: 'center'
+        alignment: 'center',
+        styles: {
+            flex: 1
+        }
     },
     {
         name: 'Date',
-        alignment: 'center'
+        alignment: 'center',
+        styles: {
+            flex: 1
+        }
     },
     {
         name: 'Quantity',
-        alignment: 'flex-end'
+        alignment: 'flex-end',
+        styles: {
+            flex: 1
+        }
     }
 ];
 
 const CompletedTransferHeadings = [
     {
         name: 'Transfer',
-        alignment: 'flex-start'
+        alignment: 'flex-start',
+        styles: {
+            flex: 2
+        }
     },
     {
         name: 'Date',
-        alignment: 'center'
+        alignment: 'flex-start',
+        styles: {
+            flex: 1
+        }
     },
     {
         name: 'Product',
-        alignment: 'center'
+        alignment: 'flex-start',
+        styles: {
+            flex: 1
+        }
     }
 ];
 
@@ -64,25 +86,58 @@ const CompletedTransferHeadings = [
 function TransfersOverlayTab({transferItems = uiData}) {
 
 
-    const completedTransferListItem = ({from, to, product, quantity}) => {
-        return (<>
-            <View style={styles.item}>
-                <View style={[styles.highlighted]}>{from}</View>
-                <View style={[styles.highlighted]}>{to}</View>
+    const completedTransferListItem = ({from, to, product, quantity,date}) => {
+        return (<View
+            style={{flexDirection: 'row', alignItems: 'flex-start', marginBottom: 32}}>
+            <View style={[styles.item, {flex: 2, justifyContent: 'space-between', paddingRight: 20}]}>
+                <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{from}</Text></View>
+                <ArrowRightIcon/>
+                <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{to}</Text></View>
             </View>
 
-            <View style={styles.item}>
+            <View style={[styles.item, {justifyContent: 'flex-start'}]}>
                 <Text style={styles.itemText}>
-                    {formatDate(Date)}
+                    {formatDate(date, "MM/DD/YYYY")}
                 </Text>
             </View>
 
-            <View style={styles.item}>
+            <View style={[styles.item, {justifyContent: 'flex-start'}]}>
                 <Text style={styles.itemText}>
                     {product}({quantity})
                 </Text>
             </View>
-        </>)
+        </View>)
+    };
+
+    const pendingTransferListItem = ({from, to, product, quantity,date}) => {
+        return (<View
+            style={{flexDirection: 'row', alignItems: 'flex-start', marginBottom: 32}}>
+            <View style={[styles.item, {flex: 2, justifyContent: 'space-between', paddingRight: 20}]}>
+                <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{from}</Text></View>
+                <ArrowRightIcon/>
+                <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{to}</Text></View>
+            </View>
+
+            <View style={[styles.item, {justifyContent: 'flex-start'}]}>
+                <Text style={styles.itemText}>
+                    {formatDate(date, "MM/DD/YYYY")}
+                </Text>
+            </View>
+
+            <View style={[styles.item, {justifyContent: 'flex-start'}]}>
+                <Text style={styles.itemText}>
+                    {product}({quantity})
+                </Text>
+            </View>
+        </View>)
+    };
+
+    const renderCompleteItem = (item) => {
+        return completedTransferListItem(item)
+    };
+
+    const renderPendingItem = () => {
+        return pendingTransferListItem()
     };
 
 
@@ -97,13 +152,27 @@ function TransfersOverlayTab({transferItems = uiData}) {
 
             {/*PENDING*/}
             <View style={styles.sectionContainer}>
-                <Text>Pending</Text>
+                <Text style={styles.sectionHeading}>Pending</Text>
+
+                {/*<Table*/}
+                {/*    data={dataToDisplay}*/}
+                {/*    listItemFormat={listItemFormat}*/}
+                {/*    headers={headers}*/}
+                {/*    isCheckbox={false}*/}
+                {/*/>*/}
 
             </View>
 
             {/*COMPLETED*/}
             <View style={styles.sectionContainer}>
-                <Text>Completed</Text>
+                <Text style={styles.sectionHeading}>Completed</Text>
+
+                <Table
+                    data={transferItems}
+                    listItemFormat={renderCompleteItem}
+                    headers={CompletedTransferHeadings}
+                    isCheckbox={false}
+                />
 
             </View>
 
@@ -113,20 +182,25 @@ function TransfersOverlayTab({transferItems = uiData}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        padding: 32
     },
     item: {
         flex: 1,
         flexDirection: 'row',
     },
     itemText: {
-        fontSize: 14,
+        fontSize: 16,
         color: "#4E5664",
+    },
+    linkText: {
+        color: "#3182CE",
     },
     sectionHeading: {
         color: '#323843',
         fontWeight: '500',
         fontSize: 20,
+        marginBottom: 24,
     },
     sectionContainer: {
         marginBottom: 40
