@@ -115,13 +115,13 @@ InventoryGeneralTabContent.defaultProps = {};
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 24,
-        paddingTop: 32
+        // padding: 24,
+        // paddingTop: 32
     },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 32
+        // marginBottom: 32
     },
     item: {
         flex: 1,

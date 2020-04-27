@@ -62,7 +62,7 @@ function InventoryBottomSheetContainer({inventory}) {
                 console.log("Failed to get inventory item", error);
                 // TODO handle error
             })
-            .finally( _ => {
+            .finally(_ => {
                 setFetching(false)
             })
     };
@@ -81,7 +81,13 @@ function InventoryBottomSheetContainer({inventory}) {
                         currentTabs={currentTabs}
                         selectedTab={currentTab}
                         isEditMode={isEditMode}
-                        overlayContent={getOverlayScreen(currentTab)}
+                        overlayContent={
+                            <View style={{flex:1, padding: 30}}>
+                                {
+                                    getOverlayScreen(currentTab)
+                                }
+                            </View>
+                        }
                     />
             }
         </View>
