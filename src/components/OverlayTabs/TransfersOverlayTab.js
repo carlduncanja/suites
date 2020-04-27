@@ -32,7 +32,7 @@ const PendingTransferHeadings = [
         name: 'Transfer',
         alignment: 'flex-start',
         styles: {
-            flex: 2
+            flex: 1
         }
     },
     {
@@ -51,7 +51,7 @@ const PendingTransferHeadings = [
     },
     {
         name: 'Quantity',
-        alignment: 'flex-end',
+        alignment: 'center',
         styles: {
             flex: 1
         }
@@ -86,7 +86,7 @@ const CompletedTransferHeadings = [
 function TransfersOverlayTab({transferItems = uiData}) {
 
 
-    const completedTransferListItem = ({from, to, product, quantity,date}) => {
+    const completedTransferListItem = ({from, to, product, quantity, date}) => {
         return (<View
             style={{flexDirection: 'row', alignItems: 'flex-start', marginBottom: 32}}>
             <View style={[styles.item, {flex: 2, justifyContent: 'space-between', paddingRight: 20}]}>
@@ -109,24 +109,28 @@ function TransfersOverlayTab({transferItems = uiData}) {
         </View>)
     };
 
-    const pendingTransferListItem = ({from, to, product, quantity,date}) => {
+    const pendingTransferListItem = ({from, to, product, quantity, date}) => {
         return (<View
             style={{flexDirection: 'row', alignItems: 'flex-start', marginBottom: 32}}>
-            <View style={[styles.item, {flex: 2, justifyContent: 'space-between', paddingRight: 20}]}>
+            <View style={[styles.item, {justifyContent: 'space-between', paddingRight: 20}]}>
                 <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{from}</Text></View>
-                <ArrowRightIcon/>
-                <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{to}</Text></View>
             </View>
 
-            <View style={[styles.item, {justifyContent: 'flex-start'}]}>
+            <View style={[styles.item, {justifyContent: 'center'}]}>
+                <Text style={styles.itemText}>
+                    {product}
+                </Text>
+            </View>
+
+            <View style={[styles.item, {justifyContent: 'center'}]}>
                 <Text style={styles.itemText}>
                     {formatDate(date, "MM/DD/YYYY")}
                 </Text>
             </View>
 
-            <View style={[styles.item, {justifyContent: 'flex-start'}]}>
+            <View style={[styles.item, {justifyContent: 'center'}]}>
                 <Text style={styles.itemText}>
-                    {product}({quantity})
+                    {quantity}
                 </Text>
             </View>
         </View>)
@@ -136,30 +140,23 @@ function TransfersOverlayTab({transferItems = uiData}) {
         return completedTransferListItem(item)
     };
 
-    const renderPendingItem = () => {
-        return pendingTransferListItem()
+    const renderPendingItem = (item) => {
+        return pendingTransferListItem(item)
     };
 
 
     return (
         <View style={styles.container}>
-            {/*<Table*/}
-            {/*    data={dataToDisplay}*/}
-            {/*    listItemFormat={listItemFormat}*/}
-            {/*    headers={headers}*/}
-            {/*    isCheckbox={false}*/}
-            {/*/>*/}
-
             {/*PENDING*/}
             <View style={styles.sectionContainer}>
                 <Text style={styles.sectionHeading}>Pending</Text>
 
-                {/*<Table*/}
-                {/*    data={dataToDisplay}*/}
-                {/*    listItemFormat={listItemFormat}*/}
-                {/*    headers={headers}*/}
-                {/*    isCheckbox={false}*/}
-                {/*/>*/}
+                <Table
+                    data={transferItems}
+                    listItemFormat={renderPendingItem}
+                    headers={PendingTransferHeadings}
+                    isCheckbox={false}
+                />
 
             </View>
 
