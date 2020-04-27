@@ -1,7 +1,9 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { FamilyPreExistingConditions } from '../../OverlayCardFrames';
-import { ScrollView } from 'react-native-gesture-handler';
+
+import FamilyIcon from '../../../../../assets/svg/familyConditions';
+
 
 const FamilyHistory = ({tabDetails}) => {
     const getConditionData = (conditions) => {
@@ -15,7 +17,10 @@ const FamilyHistory = ({tabDetails}) => {
     let conditions = tabDetails.filter(item => item.types === 'preExistingConditions')
     return ( 
         <ScrollView>
-            <FamilyPreExistingConditions cardInformation = {getConditionData(conditions)}/>
+            <FamilyPreExistingConditions 
+                cardInformation = {getConditionData(conditions)}
+                icon = {FamilyIcon}
+            />
         </ScrollView>
     );
 }

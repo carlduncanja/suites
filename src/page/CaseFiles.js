@@ -4,9 +4,15 @@ import { View, Text, StyleSheet } from 'react-native';
 import Page from '../components/common/Page/Page';
 import ListItem from "../components/common/List/ListItem";
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
-// import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
+import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
 import CaseActions from '../components/CaseFiles/CaseActions';
 import CaseFileBottomSheet from '../components/CaseFiles/CaseFileBottomSheet';
+import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
+import ActionContainer from "../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../components/common/ActionItem";
+
+import AddIcon from "../../assets/svg/addIcon";
+import ArchiveIcon from "../../assets/svg/archiveIcon";
 
 import {connect} from 'react-redux';
 import { setCaseFiles } from "../redux/actions/caseFilesActions";
@@ -14,9 +20,7 @@ import { getCaseFiles } from "../api/network";
 
 import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
 import { currencyFormatter } from '../utils/formatter';
-// import SvgIcon from '../../assets/SvgIcon';
 import {SuitesContext} from '../contexts/SuitesContext';
-// import {appActions} from '../redux/reducers/suitesAppReducer';
 
 import { withModal } from 'react-native-modalfy';
 import moment from 'moment';
@@ -86,6 +90,8 @@ const CaseFiles = (props) => {
     const [textInput, setTextInput] = useState("");
     const [selectedCaseIds, setSelectedCaseIds] = useState([]);
     const [isFetchingCaseFiles, setFetchingCaseFiles] = useState(false);
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false)
+
     const routeName = navigation.state.routeName;
 
     // pagination
@@ -159,6 +165,18 @@ const CaseFiles = (props) => {
         fetchCaseFilesData()
     };
 
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "CASE ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
+    }
+
     //######## Helper Functions
 
     const changeText = (text) => {
@@ -218,6 +236,21 @@ const CaseFiles = (props) => {
         )
     }
 
+    const getFabActions = () => {
+
+        const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={()=>{}}/>;
+        const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon/>} onPress={()=>{}}/>;
+
+
+        return <ActionContainer
+            floatingActions={[
+                archiveCase,
+                createNewCase
+            ]}
+            title={"PHYSICIAN ACTIONS"}
+        />
+    };
+
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
     caseFilesToDisplay = caseFilesToDisplay.slice(currentPageListMin, currentPageListMax);
@@ -254,11 +287,11 @@ const CaseFiles = (props) => {
                     />
                 </View>
 
-                {/* <FloatingActionComponent
-                    actionContent = {actionContent}
-                /> */}
-                <CaseActions/>
-        
+                <FloatingActionButton
+                    isDisabled = {isFloatingActionDisabled}
+                    toggleActionButton = {toggleActionButton}
+                />
+                
             </View>
         </View>
 

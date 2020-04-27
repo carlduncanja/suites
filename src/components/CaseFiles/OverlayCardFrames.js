@@ -7,9 +7,8 @@ import FrameMixedTableCard from '../common/Frames/FrameCards/FrameMixedTableCard
 import { SuitesContext } from '../../contexts/SuitesContext';
 import FrameLifestyleCard from '../common/Frames/FrameCards/FrameLifestyleCard';
 
-export function SignsAndSymptoms({cardInformation}) {
+export function SignsAndSymptoms({cardInformation,icon}) {
     const [state] = useContext(SuitesContext)
-    // console.log("Card Information:", cardInformation) 
     return(
         <View style={styles.frameContainer}>
             <FrameCard
@@ -18,14 +17,15 @@ export function SignsAndSymptoms({cardInformation}) {
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Signs and Symptoms"
                 cardInformation = {cardInformation}
-                frameIconName = "signsAndSymptoms"
+                icon = {icon}
+                // frameIconName = "signsAndSymptoms"
             />
         </View>
     )
     
 }
 
-export function Examinations({cardInformation}){
+export function Examinations({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -35,14 +35,15 @@ export function Examinations({cardInformation}){
                 frameBorderColor = "#4FD1C5"
                 frameTitle = "Examinations"
                 cardInformation = {cardInformation}
-                frameIconName = "examinations"
+                icon = {icon}
+                // frameIconName = "examinations"
             />
         </View>
         
     )
 }
 
-export function DiagnosticEvaluations({cardInformation}){
+export function DiagnosticEvaluations({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -52,13 +53,14 @@ export function DiagnosticEvaluations({cardInformation}){
                 frameBorderColor = "#A3BFFA"
                 frameTitle = "Diagnostic Evaluations"
                 cardInformation = {cardInformation}
-                frameIconName = "diagnosticEvaluations"
+                icon = {icon}
+                // frameIconName = "diagnosticEvaluations"
             />
         </View>
     )
 }
 
-export function LaboratoryInvestigations({cardInformation}){
+export function LaboratoryInvestigations({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -68,14 +70,15 @@ export function LaboratoryInvestigations({cardInformation}){
                 frameBorderColor = "#4FD1C5"
                 frameTitle = "Laboratory Investigations"
                 cardInformation = {cardInformation}
-                frameIconName = "laboratoryInvestigations"
+                icon = {icon}
+                // frameIconName = "laboratoryInvestigations"
             />
         </View>
         
     )
 }
 
-export function ProvisionalDiagnosis({cardInformation}){
+export function ProvisionalDiagnosis({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -85,14 +88,15 @@ export function ProvisionalDiagnosis({cardInformation}){
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Provisional Diagnosis"
                 cardInformation = {cardInformation}
-                frameIconName = "provisionalDiagnosis"
+                icon = {icon}
+                // frameIconName = "provisionalDiagnosis"
             />
         </View>
         
     )
 }
 
-export function FinalDiagnosis({cardInformation}){
+export function FinalDiagnosis({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -102,14 +106,15 @@ export function FinalDiagnosis({cardInformation}){
                 frameBorderColor = "#9AE6B4"
                 frameTitle = "Final Diagnosis"
                 cardInformation = {cardInformation}
-                frameIconName = "finalDiagnosis"
+                // frameIconName = "finalDiagnosis"
+                icon = {icon}
             />
         </View>
         
     )
 }
 
-export function MedicationPrescribed({cardInformation}){
+export function MedicationPrescribed({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -119,14 +124,15 @@ export function MedicationPrescribed({cardInformation}){
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Medication Prescribed"
                 cardInformation = {cardInformation}
-                frameIconName = "medicationPrescribed"
+                icon = {icon}
+                // frameIconName = "medicationPrescribed"
             />
         </View>
        
     )
 }
 
-export function ImplantedDevices({cardInformation}){
+export function ImplantedDevices({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -136,14 +142,16 @@ export function ImplantedDevices({cardInformation}){
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Implanted Devices"
                 cardInformation = {cardInformation}
-                frameIconName = "implantedDevices"
+                icon = {icon}
+                // frameIconName = "implantedDevices"
             />
         </View>
         
     )
 }
 
-export function Physicians({cardInformation}){
+
+export function Physicians({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -153,15 +161,16 @@ export function Physicians({cardInformation}){
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Physicians"
                 cardInformation = {cardInformation}
-                frameIconName = "medicalStaff"
-                iconFillColor = "#4299E1"
+                icon = {icon}
+                // frameIconName = "medicalStaff"
+                // iconFillColor = "#4299E1"
             />
         </View>
         
     )
 }
 
-export function Nurses({cardInformation}){
+export function Nurses({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -171,15 +180,16 @@ export function Nurses({cardInformation}){
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Nurses"
                 cardInformation = {cardInformation}
-                frameIconName = "medicalStaff"
-                iconFillColor = "#F56565"
+                icon = {icon}
+                // frameIconName = "medicalStaff"
+                // iconFillColor = "#F56565"
             />
         </View>
        
     )
 }
 
-export function Allergies({cardInformation}){
+export function Allergies({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -189,14 +199,15 @@ export function Allergies({cardInformation}){
                 frameBorderColor = "#D6BCFA"
                 frameTitle = "Allergies"
                 cardInformation = {cardInformation}
-                frameIconName = "allergies"
+                icon = {icon}
+                // frameIconName = "allergies"
             />
         </View>
         
     )
 }
 
-export function PreExistingConditions({cardInformation}){
+export function PreExistingConditions({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -206,13 +217,14 @@ export function PreExistingConditions({cardInformation}){
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Pre-Existing Conditions"
                 cardInformation = {cardInformation}
-                frameIconName = "preExistingConditions"
+                icon = {icon}
+                // frameIconName = "preExistingConditions"
             />
         </View> 
     )
 }
 
-export function Immunisations({cardInformation}){
+export function Immunisations({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -222,13 +234,14 @@ export function Immunisations({cardInformation}){
                 frameBorderColor = "#A3BFFA"
                 frameTitle = "Immunisations"
                 cardInformation = {cardInformation}
-                frameIconName = "immunisations"
+                icon = {icon}
+                // frameIconName = "immunisations"
             />
         </View> 
     )
 }
 
-export function Medications({cardInformation}){
+export function Medications({cardInformation, icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -238,13 +251,14 @@ export function Medications({cardInformation}){
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Medications"
                 cardInformation = {cardInformation}
-                frameIconName = "medications"
+                icon = {icon}
+                // frameIconName = "medications"
             />
         </View> 
     )
 }
 
-export function Procedures({cardInformation}){
+export function Procedures({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -254,13 +268,14 @@ export function Procedures({cardInformation}){
                 frameBorderColor = "#9AE6B4"
                 frameTitle = "Procedures"
                 cardInformation = {cardInformation}
-                frameIconName = "overlayProcedures"
+                icon = {icon}
+                // frameIconName = "overlayProcedures"
             />
         </View> 
     )
 }
 
-export function MedicalHistoryImplantedDevices({cardInformation}){
+export function MedicalHistoryImplantedDevices({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -270,13 +285,14 @@ export function MedicalHistoryImplantedDevices({cardInformation}){
                 frameBorderColor = "#90CDF4"
                 frameTitle = "Implanted Devices"
                 cardInformation = {cardInformation}
-                frameIconName = "implantedDevices"
+                icon = {icon}
+                // frameIconName = "implantedDevices"
             />
         </View> 
     )
 }
 
-export function FamilyPreExistingConditions({cardInformation}){
+export function FamilyPreExistingConditions({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -286,13 +302,14 @@ export function FamilyPreExistingConditions({cardInformation}){
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Pre-Existing Conditions"
                 cardInformation = {cardInformation}
-                frameIconName = "familyPreExistingConditions"
+                icon = {icon}
+                // frameIconName = "familyPreExistingConditions"
             />
         </View> 
     )
 }
 
-export function OtherNotableConditions({cardInformation}){
+export function OtherNotableConditions({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -302,13 +319,14 @@ export function OtherNotableConditions({cardInformation}){
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Other Notable Conditions"
                 cardInformation = {cardInformation}
-                frameIconName = "otherNotableConditions"
+                icon = {icon}
+                // frameIconName = "otherNotableConditions"
             />
         </View>
     )
 }
 
-export function DrugUse({cardInformation}){
+export function DrugUse({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -318,13 +336,14 @@ export function DrugUse({cardInformation}){
                 frameBorderColor = "#D6BCFA"
                 frameTitle = "Drug Use"
                 cardInformation = {cardInformation}
-                frameIconName = "drugUse"
+                icon = {icon}
+                // frameIconName = "drugUse"
             />
         </View>
     )
 }
 
-export function AlcoholUse({cardInformation}){
+export function AlcoholUse({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -334,12 +353,13 @@ export function AlcoholUse({cardInformation}){
                 frameBorderColor = "#FEB2B2"
                 frameTitle = "Alcohol Use"
                 cardInformation = {cardInformation}
-                frameIconName = "alcoholUse"
+                icon = {icon}
+                // frameIconName = "alcoholUse"
             />
         </View>
     )
 }
-export function TobaccoUse({cardInformation}){
+export function TobaccoUse({cardInformation,icon}){
     const [state] = useContext(SuitesContext)
     return(
         <View style={styles.frameContainer}>
@@ -349,7 +369,8 @@ export function TobaccoUse({cardInformation}){
                 frameBorderColor = "#A0AEC0"
                 frameTitle = "Tobacco Use"
                 cardInformation = {cardInformation}
-                frameIconName = "tobaccoUse"
+                icon = {icon}
+                // frameIconName = "tobaccoUse"
             />
         </View>
     )

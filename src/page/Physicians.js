@@ -7,6 +7,13 @@ import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
 import PhysicianActionIcon from '../../assets/svg/physicianListAction';
 import PhysicianBottomSheet from '../components/Physicians/PhysicianBottomSheet';
+import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
+import ActionContainer from "../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../components/common/ActionItem";
+
+import WasteIcon from "../../assets/svg/wasteIcon";
+import AddIcon from "../../assets/svg/addIcon";
+import AssignIcon from "../../assets/svg/assignIcon";
 
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
 
@@ -69,7 +76,7 @@ const Physicians = (props) => {
     // ############# Event Handlers
 
     const handleDataRefresh = () => {
-        fetchProceduresData()
+        fetchPhysiciansData()
     };
 
     const handleOnSelectAll = () => {
@@ -108,8 +115,15 @@ const Physicians = (props) => {
     };
 
     const toggleActionButton = () => {
-        setFloatingAction(!isFloatingActionDisabled)
-        modal.openModal("ActionContainerModal",{ floatingActions, title : "PHYSICIAN ACTIONS" })
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "PHYSICIAN ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
     }
 
     // ############# Helper functions
@@ -163,6 +177,28 @@ const Physicians = (props) => {
         )
         
     }
+
+    const getFabActions = () => {
+
+        const deleteAction =
+            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+            </LongPressWithFeedback>;
+        const assignActionCase = <ActionItem title={"Assign Case"} icon={<AssignIcon/>} onPress={()=>{}}/>;
+        const createActionWorkItem = <ActionItem title={"Add Work Item"} icon={<AddIcon/>} onPress={()=>{}}/>;
+        const createActionPhysician = <ActionItem title={"Add Physician"} icon={<AddIcon/>} onPress={()=>{}}/>;
+
+
+        return <ActionContainer
+            floatingActions={[
+                deleteAction,
+                assignActionCase,
+                createActionPhysician,
+                createActionWorkItem
+            ]}
+            title={"PHYSICIAN ACTIONS"}
+        />
+    };
 
     // ############# Prepare list data
 

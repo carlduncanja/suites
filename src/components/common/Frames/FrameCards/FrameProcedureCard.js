@@ -11,7 +11,7 @@ const FrameProcedureCard = (props) => {
                     color="#718096"  
                     borderColor = "#E3E8EF"
                     backgroundColor="#F8FAFB"
-                    iconName="overlayProcedures"
+                    icon={props.icon}
                     frameTitle={props.information.title}
                 />
             </View>

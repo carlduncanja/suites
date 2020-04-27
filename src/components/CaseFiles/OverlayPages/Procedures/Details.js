@@ -5,6 +5,7 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import PickListCard from '../../PickList/PickListCard';
 import { withModal } from 'react-native-modalfy';
 import ProceduresPickList from '../../ProceduresPickList'
+import ProcedureIcon from '../../../../../assets/svg/frameProcedures';
 
 const Details = ({tabDetails, modal}) => {
     // ############# Data declaration
@@ -28,6 +29,7 @@ const Details = ({tabDetails, modal}) => {
                         <FrameProcedureCard 
                             information = {item} 
                             onOpenPickList={onOpenPickList}
+                            icon = {ProcedureIcon}
                         />
                     </View>
                 )
