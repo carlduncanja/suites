@@ -4,6 +4,7 @@ import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import InventoryGeneralTabContent from "../OverlayTabs/InventoryGeneralTabContent";
 import {colors} from "../../styles";
 import {getInventoryById} from "../../api/network";
+import TransfersOverlayTab from "../OverlayTabs/TransfersOverlayTab";
 
 function InventoryBottomSheetContainer({inventory}) {
     const currentTabs = ["General", "Storage Locations", "Transfer", "Supplier"];
@@ -41,7 +42,7 @@ function InventoryBottomSheetContainer({inventory}) {
             case "Storage Locations":
                 return <View/>;
             case "Transfer":
-                return <View/>;
+                return <TransfersOverlayTab/>;
             case "Supplier":
                 return <View/>;
             default :
