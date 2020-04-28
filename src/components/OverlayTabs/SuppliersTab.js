@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // marginBottom: 32
+        marginBottom: 32
     },
     item: {
         flex: 1,

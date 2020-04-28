@@ -5,6 +5,10 @@ import InventoryGeneralTabContent from "../OverlayTabs/InventoryGeneralTabConten
 import TheatresDetailsTab from "../OverlayTabs/TheatresDetailsTab";
 import {colors} from "../../styles";
 import {getTheatreById} from "../../api/network";
+import ProceduresEquipmentTab from "../OverlayTabs/ProceduresEquipmentTab";
+import EquipmentsTab from "../OverlayTabs/EquipmentsTab";
+import StorageLocationsTab from "../OverlayTabs/StorageLocationsTab";
+import HistoryTabs from "../OverlayTabs/HistoryTabs";
 
 function TheatresBottomSheetContainer({theatre = {}}) {
     const currentTabs = ["Details", "History", "Storage", "Equipment", "Schedule"];
@@ -34,11 +38,11 @@ function TheatresBottomSheetContainer({theatre = {}}) {
             case "Details":
                 return <TheatresDetailsTab/>;
             case "History":
-                return <View/>;
+                return <HistoryTabs/>;
             case "Storage":
-                return <View/>;
+                return <StorageLocationsTab/>;
             case "Equipment":
-                return <View/>;
+                return <EquipmentsTab/>;
             case "Schedule":
                 return <View/>;
             default :
@@ -65,7 +69,6 @@ function TheatresBottomSheetContainer({theatre = {}}) {
     const {_id, name} = selectedTheatre;
 
 
-
     return (
         <View style={{flex: 1}}>
             {
@@ -80,7 +83,11 @@ function TheatresBottomSheetContainer({theatre = {}}) {
                         currentTabs={currentTabs}
                         selectedTab={currentTab}
                         isEditMode={isEditMode}
-                        overlayContent={getOverlayScreen(currentTab)}
+                        overlayContent={
+                            <View style={{flex:1, padding: 30}}>
+                                {getOverlayScreen(currentTab)}
+                            </View>
+                        }
                     />
 
             }
