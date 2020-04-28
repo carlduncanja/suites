@@ -10,11 +10,11 @@ import { transformToSentence, formatDate } from '../../utils/formatter';
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
 
 const PhysiciansDetailsTab = ({physician}) => {
-    const { 
-        firstName, 
-        middleName, 
+    const {
+        firstName,
+        middleName,
         surname,
-        dob, 
+        dob,
         gender,
         trn,
         emails,
@@ -26,7 +26,7 @@ const PhysiciansDetailsTab = ({physician}) => {
     const phoneObject = {}
     const emailObject = {}
     const addressObject = {}
-    
+
     phones.map( phone => {
         if ( phone.type === 'cell'){
            Object.assign(phoneObject, {cell:phone.phone})
@@ -52,11 +52,11 @@ const PhysiciansDetailsTab = ({physician}) => {
         }
 
     })
-    
+
     address.map( addressObj => {
         Object.assign(addressObject, {
             address1 : addressObj.line1,
-            address2 : addressObj.line2 
+            address2 : addressObj.line2
         })
     })
 
@@ -158,7 +158,7 @@ const PhysiciansDetailsTab = ({physician}) => {
                     numOfColumns = {3}
                 />
             </View>
-        
+
         )
     })
 
@@ -187,7 +187,7 @@ const PhysiciansDetailsTab = ({physician}) => {
     // })
 
     // const emergencyContacts = [
-        
+
     //     {
     //         name: "Donna Lee (Mother)",
     //         number : "876 728 8783",
