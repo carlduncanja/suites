@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, StyleSheet} from "react-native";
 import moment from "moment";
-import { formatDate } from '../../utils/formatter';
+import {formatDate} from '../../utils/formatter';
 
 const UiData = {
     description: "",
@@ -12,28 +12,27 @@ const UiData = {
     statusColor: "#ED8936",
 
     physician: "Dr. H. Mansingh",
-    availableOn: new Date(2020, 12, 13, 23,0),
+    availableOn: new Date(2020, 12, 13, 23, 0),
 };
 
-function TheatresDetailsTab(props) {
+function TheatresDetailsTab({
+                                description = "",
+                                id = "--",
+                                name = "--",
+                                status = "Available",
+                                statusColor = "black",
 
-    const {
-        description = "No description available",
-        id = "--",
-        name = "--",
-        status = "Available",
-        statusColor = "black",
+                                physician = "--",
+                                availableOn = "--",
+                            }) {
 
-        physician = "--",
-        availableOn = "--",
-    } = UiData;
 
     return (
         <View style={styles.container}>
             <View style={[styles.row]}>
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Description</Text>
-                    <Text style={styles.textDefault}>{description}</Text>
+                    <Text style={styles.textDefault}>{description ? description : "No description available."}</Text>
                 </View>
                 <View style={{flex: 1}}/>
             </View>
@@ -63,7 +62,7 @@ function TheatresDetailsTab(props) {
 
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Available On</Text>
-                    <Text style={styles.textDefault}>{ formatDate(availableOn,"DD/MM/YYYY @ hh:mm a") }</Text>
+                    <Text style={styles.textDefault}>{ availableOn }</Text>
                 </View>
 
                 <View style={styles.item}/>
@@ -78,8 +77,8 @@ TheatresDetailsTab.defaultProps = {};
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 24,
-        paddingTop: 32
+        // padding: 24,
+        // paddingTop: 32
     },
     row: {
         flexDirection: 'row',
