@@ -19,6 +19,13 @@ import FloatingActionButton from "../components/common/FloatingAction/FloatingAc
 import {useNextPaginator, usePreviousPaginator} from "../helpers/caseFilesHelpers";
 import CheckBoxComponent from "../components/common/Checkbox";
 import SvgIcon from "../../assets/SvgIcon";
+import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
+import ActionItem from "../components/common/ActionItem";
+import WasteIcon from "../../assets/svg/wasteIcon";
+import AddIcon from "../../assets/svg/addIcon";
+import ActionContainer from "../components/common/FloatingAction/ActionContainer";
+import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
+import CreateInventoryDialogContainer from "../components/Inventory/CreateInventoryDialogContainer";
 
 const listHeaders = [
     {
@@ -198,7 +205,7 @@ function Inventory(props) {
         setFloatingAction(!isFloatingActionDisabled);
         modal.openModal("ActionContainerModal",
             {
-                actions: <View/>,
+                actions: getFabActions(),
                 title: "INVENTORY ACTIONS"
             })
     };
@@ -217,6 +224,50 @@ function Inventory(props) {
     };
 
     // ##### Helper functions
+
+    const getFabActions = () => {
+
+        const deleteAction =
+            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+                <LongPressWithFeedback pressTimer={1200} onLongPress={() => {
+                }}>
+                    <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
+                    }} touchable={false}/>
+                </LongPressWithFeedback>
+            </View>;
+
+
+        const createAction = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={
+            openCreateInventoryModel
+        }/>;
+
+        return <ActionContainer
+            floatingActions={[
+                deleteAction,
+                createAction
+            ]}
+            title={"STORAGE ACTIONS"}
+        />
+    };
+
+    const openCreateInventoryModel = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <CreateInventoryDialogContainer
+                            onCreated={(item) => onItemPress(item)()}
+                            onCancel={() => setFloatingAction(false)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    };
 
     const inventoryItem = ({name, stock, locations, levels}, onActionPress) => <>
         <View style={[styles.item, {justifyContent: 'flex-start'}]}>
