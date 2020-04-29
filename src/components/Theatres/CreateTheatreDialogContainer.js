@@ -29,7 +29,7 @@ import TheatresBottomSheetContainer from "./TheatresBottomSheetContainer";
  * @returns {*}
  * @constructor
  */
-function CreateStorageDialogContainer({onCancel, onCreated, addTheatre}) {
+function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
 
     const modal = useModal();
     const dialogTabs = ['Details'];
@@ -122,8 +122,8 @@ function CreateStorageDialogContainer({onCancel, onCreated, addTheatre}) {
     );
 }
 
-CreateStorageDialogContainer.propTypes = {};
-CreateStorageDialogContainer.defaultProps = {};
+CreateTheatreDialogContainer.propTypes = {};
+CreateTheatreDialogContainer.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
@@ -173,4 +173,4 @@ const mapDispatcherToProps = {
 };
 
 export default
-connect(null, mapDispatcherToProps)(CreateStorageDialogContainer);
+connect(null, mapDispatcherToProps)(CreateTheatreDialogContainer);
