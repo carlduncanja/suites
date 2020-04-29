@@ -53,6 +53,8 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     const createStorageCall = () => {
         createStorageLocation(fields)
             .then(data => {
+                modal.closeAllModals();
+                setTimeout(() => {onCreated(data)}, 200);
                 addStorageLocation(data);
             })
             .catch(error => {
@@ -60,7 +62,6 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                 console.log("failed to create storage location", error)
             })
             .finally(_ => {
-                modal.closeAllModals()
             });
     };
 

@@ -21,6 +21,7 @@ import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
+import CreateTheatreDialogContainer from "../components/Theatres/CreateTheatreDialogContainer";
 
 
 const listHeaders = [
@@ -289,7 +290,9 @@ function Storage(props) {
                 .openModal(
                     'OverlayModal',
                     {
-                        content: <CreateStorageDialogContainer onCancel={() => setFloatingAction(false)}
+                        content: <CreateStorageDialogContainer
+                            onCreated={(item) => onItemPress(item)()}
+                            onCancel={() => setFloatingAction(false)}
                         />,
                         onClose: () => setFloatingAction(false)
                     })

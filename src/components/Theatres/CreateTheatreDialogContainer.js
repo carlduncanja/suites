@@ -63,7 +63,7 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
         createTheatre(fields)
             .then(data => {
                 modal.closeAllModals();
-                setTimeout(() => {onCreated(data)}, 100);
+                setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
                 console.log("failed to create theatre", error);
