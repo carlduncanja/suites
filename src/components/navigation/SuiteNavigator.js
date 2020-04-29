@@ -15,6 +15,8 @@ import ActionContainerModal from '../../modals/ActionContainerModal';
 import ReportPreviewModal from '../../modals/ReportPreviewModal';
 import OverlayInfoModal from '../../modals/OverlayInfoModal';
 import BottomSheetModal from '../../modals/BottomSheetModal';
+import { MenuProvider } from 'react-native-popup-menu';
+
 
 /**
  * Custom navigator wrapper for application.
@@ -63,26 +65,29 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
 
     return (
         <Provider>
-            <ModalProvider stack={stack}>
-                <View style={styles.container}>
-                    <SideBarComponent
-                        routes={routes}
-                        selectedIndex={index}
-                        screenDimensions={screenDimensions}
-                        navigation={navigation}
-                        onTabPressed={handleOnTabPress}
-                        style={styles.navBar}
-                    />
+            <MenuProvider>
 
-                    <View style={styles.pageContent}>
-                        <ActiveScreen
-                            navigation={descriptor.navigation}
-                            descriptor={descriptor}
+                <ModalProvider stack={stack}>
+                    <View style={styles.container}>
+                        <SideBarComponent
+                            routes={routes}
+                            selectedIndex={index}
                             screenDimensions={screenDimensions}
+                            navigation={navigation}
+                            onTabPressed={handleOnTabPress}
+                            style={styles.navBar}
                         />
+
+                        <View style={styles.pageContent}>
+                            <ActiveScreen
+                                navigation={descriptor.navigation}
+                                descriptor={descriptor}
+                                screenDimensions={screenDimensions}
+                            />
+                        </View>
                     </View>
-                </View>
-            </ModalProvider>
+                </ModalProvider>
+            </MenuProvider>
         </Provider>
     )
 };

@@ -4,6 +4,9 @@ import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import InventoryGeneralTabContent from "../OverlayTabs/InventoryGeneralTabContent";
 import {colors} from "../../styles";
 import {getInventoryById} from "../../api/network";
+import TransfersOverlayTab from "../OverlayTabs/TransfersOverlayTab";
+import StorageLocationsTab from "../OverlayTabs/StorageLocationsTab";
+import SuppliersTab from "../OverlayTabs/SuppliersTab";
 
 function InventoryBottomSheetContainer({inventory}) {
     const currentTabs = ["General", "Storage Locations", "Transfer", "Supplier"];
@@ -39,11 +42,11 @@ function InventoryBottomSheetContainer({inventory}) {
             case "General":
                 return <InventoryGeneralTabContent/>;
             case "Storage Locations":
-                return <View/>;
+                return <StorageLocationsTab/>;
             case "Transfer":
-                return <View/>;
+                return <TransfersOverlayTab/>;
             case "Supplier":
-                return <View/>;
+                return <SuppliersTab/>;
             default :
                 return <View/>
         }
@@ -59,7 +62,7 @@ function InventoryBottomSheetContainer({inventory}) {
                 console.log("Failed to get inventory item", error);
                 // TODO handle error
             })
-            .finally( _ => {
+            .finally(_ => {
                 setFetching(false)
             })
     };
@@ -78,7 +81,13 @@ function InventoryBottomSheetContainer({inventory}) {
                         currentTabs={currentTabs}
                         selectedTab={currentTab}
                         isEditMode={isEditMode}
-                        overlayContent={getOverlayScreen(currentTab)}
+                        overlayContent={
+                            <View style={{flex:1, padding: 30}}>
+                                {
+                                    getOverlayScreen(currentTab)
+                                }
+                            </View>
+                        }
                     />
             }
         </View>

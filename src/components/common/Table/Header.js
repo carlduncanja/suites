@@ -9,8 +9,8 @@ const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked, isChec
         <View style={styles.headersContainer}>
             {
                 isCheckbox &&
-                    <View style={{marginRight:20}}>
-                        <CheckBoxComponent
+                <View style={{marginRight: 20}}>
+                    <CheckBoxComponent
                         isIndeterminate={isIndeterminate}
                         onPress={toggleHeaderCheckbox}
                         isCheck={checked}
@@ -18,9 +18,9 @@ const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked, isChec
                 </View>
             }
 
-            {headers.map((header,index)=>{
-                return(
-                    <View style={[styles.item,{alignItems:header.alignment}]} key={index}>
+            {headers.map((header, index) => {
+                return (
+                    <View style={[styles.item, {alignItems: header.alignment}, header.styles]} key={index}>
                         <Text style={styles.headerText}>{header.name}</Text>
                     </View>
                 )
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     headerText: {
-        fontSize: 12,
+        fontSize: 16,
         color: '#718096'
     }
-})
+});

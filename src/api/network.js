@@ -2,13 +2,13 @@ import suitesAxiosInstance from "./index"
 import {handleError, handleResponse} from "./apiUtils";
 
 import {
-    inventoriesEndpoint,inventoryEndpoint,
-    theatresEndpoint,theatreEndpoint,
-    physiciansEndpoint,physicianEndpoint,
-    proceduresEndpoint,procedureEndpoint,
-    caseFilesEndpoint,caseFileEndpoint,
-    equipmentsEndpoint,equipmentEndpoint,equipmentTypesEndpoint,
-    storageLocationsEndpoint, 
+    inventoriesEndpoint, inventoryEndpoint,
+    theatresEndpoint, theatreEndpoint,
+    physiciansEndpoint, physicianEndpoint,
+    proceduresEndpoint, procedureEndpoint,
+    caseFilesEndpoint, caseFileEndpoint,
+    equipmentsEndpoint, equipmentEndpoint, equipmentTypesEndpoint,
+    storageLocationsEndpoint,
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -61,6 +61,12 @@ export const getTheatreById = async (id) => {
     return suitesAxiosInstance.get(theatreEndpoint(id))
         .then(handleResponse)
         .catch(handleError);
+};
+
+export const createTheatre = async (theatreForCreation) => {
+    return suitesAxiosInstance.post(theatresEndpoint, theatreForCreation)
+        .then(handleResponse)
+        .catch(handleError)
 };
 
 

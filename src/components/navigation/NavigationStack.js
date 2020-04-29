@@ -34,6 +34,9 @@ import StorageIcon from "../../../assets/svg/storage"
 import PhysiciansIcon from "../../../assets/svg/physicians"
 import ProcedureIcon from "../../../assets/svg/procedures"
 import {CaseFileContextProvider} from "../../contexts/CaseFileContext";
+import SettingsIcon from "../../../assets/svg/settingsIcon";
+import HelpIcon from "../../../assets/svg/helpIcon";
+import NotificationIcon from "../../../assets/svg/notificationIcon";
 
 /***
  *  Top level navigation Stack for Suites Application for the side navigation bar.
@@ -137,7 +140,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Alerts: {
         screen: NotFound,
         params: {
-            icon: CaseFileIcon,
+            icon: NotificationIcon,
             tabName: 'Alerts',
             provider: ScheduleProvider
         },
@@ -145,7 +148,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     Help: {
         screen: NotFound,
         params: {
-            icon: CaseFileIcon,
+            icon: HelpIcon,
             tabName: 'Help',
             provider: ScheduleProvider
         },
@@ -153,14 +156,14 @@ const SuitesNavigationStack = createSidebarNavigator(
     Settings: {
         screen: NotFound,
         params: {
-            icon: CaseFileIcon,
+            icon: SettingsIcon,
             tabName: 'Settings',
             provider: ScheduleProvider
         },
     }
   },
   {
-    initialRouteName: 'Storage',
+    initialRouteName: 'Theatre',
   },
 );
 

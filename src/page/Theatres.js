@@ -11,6 +11,16 @@ import {connect} from 'react-redux'
 import {useModal} from "react-native-modalfy";
 import CaseFileBottomSheet from "../components/CaseFiles/CaseFileBottomSheet";
 import TheatresBottomSheetContainer from "../components/Theatres/TheatresBottomSheetContainer";
+import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
+import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
+import {useNextPaginator, usePreviousPaginator} from "../helpers/caseFilesHelpers";
+import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
+import ActionItem from "../components/common/ActionItem";
+import WasteIcon from "../../assets/svg/wasteIcon";
+import AddIcon from "../../assets/svg/addIcon";
+import ActionContainer from "../components/common/FloatingAction/ActionContainer";
+import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
+import CreateTheatreDialogContainer from "../components/Theatres/CreateTheatreDialogContainer";
 
 
 const listHeaders = [
@@ -100,19 +110,28 @@ function Theatres(props) {
 
     const pageTitle = "Theatres";
     const modal = useModal();
+    const recordsPerPage = 10;
 
     // ##### States
+    const [isFetchingData, setFetchingData] = useState(false);
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [searchValue, setSearchValue] = useState("");
-    const [isFetchingData, setFetchingData] = useState(false);
     const [selectedIds, setSelectedIds] = useState([]);
+
+    // pagination
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
 
     // ##### Lifecycle Methods functions
 
     // on mount
     useEffect(() => {
-        if (!theatres.length) fetchTheatres()
+        if (!theatres.length) fetchTheatres();
+        setTotalPages(Math.ceil(theatres.length / recordsPerPage));
     }, []);
 
     // ##### Handler functions
@@ -121,6 +140,7 @@ function Theatres(props) {
     };
 
     const onItemPress = (item) => () => {
+        console.log("item press", item);
         modal.openModal('BottomSheetModal', {
             content: <TheatresBottomSheetContainer theatre={item}/>
         })
@@ -144,6 +164,24 @@ function Theatres(props) {
         }
     };
 
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPagePosition === 1) return;
+
+        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+    };
+
     const onCheckBoxPress = (item) => () => {
         const {id} = item;
         let updatedCases = [...selectedIds];
@@ -155,6 +193,18 @@ function Theatres(props) {
         }
 
         setSelectedIds(updatedCases);
+    };
+
+    const toggleActionButton = () => {
+        setFloatingAction(true);
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "STORAGE ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
     };
 
     // ##### Helper functions
@@ -192,6 +242,48 @@ function Theatres(props) {
         </View>
     </>;
 
+    const getFabActions = () => {
+
+        const deleteAction =
+            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+                <LongPressWithFeedback pressTimer={1200} onLongPress={() => {
+                }}>
+                    <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
+                    }} touchable={false}/>
+                </LongPressWithFeedback>
+            </View>;
+
+
+        const createAction = <ActionItem title={"Create Theatre"} icon={<AddIcon/>} onPress={
+            openCreateTheatreModel
+        }/>;
+
+        return <ActionContainer
+            floatingActions={[
+                deleteAction,
+                createAction
+            ]}
+            title={"STORAGE ACTIONS"}
+        />
+    };
+
+    const openCreateTheatreModel = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+            modal.openModal(
+                    'OverlayModal',
+                    {
+                        content: <CreateTheatreDialogContainer
+                            onCreated={(item) => onItemPress(item)()}
+                            onCancel={() => setFloatingAction(false)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    };
+
     const renderItem = (item) => {
         const availableColor = "#38A169";
         const inUseColor = "#DD6B20";
@@ -225,7 +317,8 @@ function Theatres(props) {
         getTheatres()
             .then(data => {
                 console.log("get theatres", data);
-                setTheatres(data)
+                setTheatres(data);
+                setTotalPages(Math.ceil(data.length / recordsPerPage));
             })
             .catch(error => {
                 // TODO handle error
@@ -236,12 +329,16 @@ function Theatres(props) {
             })
     };
 
+    let theatreToDisplay = [...theatres];
+
+    theatreToDisplay = theatreToDisplay.slice(currentPageListMin, currentPageListMax);
+
     return (
         <View style={styles.container}>
             <Page
                 placeholderText={"Search by heading or entry below."}
                 routeName={pageTitle}
-                listData={theatres}
+                listData={theatreToDisplay}
                 listItemFormat={renderItem}
                 inputText={searchValue}
                 itemsSelected={selectedIds}
@@ -251,6 +348,22 @@ function Theatres(props) {
                 isFetchingData={isFetchingData}
                 onSelectAll={onSelectAll}
             />
+
+            <View style={styles.footer}>
+                <View style={{alignSelf: "center", marginRight: 10}}>
+                    <RoundedPaginator
+                        totalPages={totalPages}
+                        currentPage={currentPagePosition}
+                        goToNextPage={goToNextPage}
+                        goToPreviousPage={goToPreviousPage}
+                    />
+                </View>
+
+                <FloatingActionButton
+                    isDisabled={isFloatingActionDisabled}
+                    toggleActionButton={toggleActionButton}
+                />
+            </View>
         </View>
     );
 }
@@ -270,6 +383,15 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 14,
         color: "#4E5664",
+    },
+    footer: {
+        flex: 1,
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        marginBottom: 20,
+        marginRight: 30,
     },
 });
 

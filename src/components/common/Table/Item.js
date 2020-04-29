@@ -16,22 +16,25 @@ import CheckBoxComponent from "../Checkbox";
  */
 
 const Item = ({
-    itemView,
-    hasCheckBox,
-    isChecked,
-    onCheckBoxPress,
-    onItemPress
-}) => {
+                  itemView,
+                  hasCheckBox,
+                  isChecked,
+                  onCheckBoxPress,
+                  onItemPress
+              }) => {
 
     return (
         <TouchableOpacity onPress={onItemPress}>
             <View style={styles.container}>
-                <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
-                    <CheckBoxComponent
-                        isCheck={isChecked}
-                        onPress={onCheckBoxPress}
-                    />
-                </View>
+                {
+                    hasCheckBox &&
+                    <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
+                        <CheckBoxComponent
+                            isCheck={isChecked}
+                            onPress={onCheckBoxPress}
+                        />
+                    </View>
+                }
                 {
                     itemView
                 }

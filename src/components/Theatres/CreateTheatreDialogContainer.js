@@ -1,34 +1,43 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text} from "react-native";
+import {View, StyleSheet, Text, Switch, Picker} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField from "../common/Input Fields/InputField";
 import InputField2 from "../common/Input Fields/InputField2";
-import {createStorageLocation} from "../../api/network";
+import {createStorageLocation, createTheatre} from "../../api/network";
 import NumberInputField from "../common/Input Fields/NumberInputField";
-
 import {addStorageLocation} from "../../redux/actions/storageActions";
 import {connect} from "react-redux";
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+} from 'react-native-popup-menu';
+import DropDownIcon from "../../../assets/svg/dropDown";
+import OptionsField from "../common/Input Fields/OptionsField";
+import TheatresBottomSheetContainer from "./TheatresBottomSheetContainer";
 
 /**
  * Component to handle the create storage process.
  *
  * @param onCancel
  * @param onCreated
- * @param addStorageLocation
+ * @param addTheatre
  * @returns {*}
  * @constructor
  */
-function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation}) {
+function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
 
     const modal = useModal();
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
 
     const [fields, setFields] = useState({
-        capacity: '0'
+        name: '',
+        isRecovery: false,
     });
 
     // useEffect(() => {
@@ -40,7 +49,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     };
 
     const onPositiveClick = () => {
-        createStorageCall()
+        createTheatreCall()
     };
 
     const onFieldChange = (fieldName) => (value) => {
@@ -50,22 +59,24 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
         })
     };
 
-
-    const createStorageCall = () => {
-        createStorageLocation(fields)
+    const createTheatreCall = () => {
+        createTheatre(fields)
             .then(data => {
                 modal.closeAllModals();
                 setTimeout(() => {onCreated(data)}, 200);
-                addStorageLocation(data);
             })
             .catch(error => {
-                // todo handle error
-                console.log("failed to create storage location", error)
+                console.log("failed to create theatre", error);
+                // TODO handle error
             })
             .finally(_ => {
-            });
+            })
     };
 
+    const recoveryText = {
+        true: "Yes",
+        false: "No"
+    };
 
     return (
         <OverlayDialog
@@ -84,36 +95,24 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                 <View style={styles.sectionContainer}>
                     <View style={styles.row}>
                         <View style={styles.inputWrapper}>
-                            <InputField2 label={"Location Name"}
+                            <InputField2 label={"Theatre Name"}
                                          onChangeText={onFieldChange('name')}
                                          value={fields['name']}
                                          onClear={() => onFieldChange('name')('')}
                             />
                         </View>
-
-                        <View style={styles.inputWrapper}>
-                            <InputField2
-                                label={"Capacity"}
-                                onChangeText={(value) => {
-                                    if (/^\d+$/g.test(value) || !value) {
-                                        onFieldChange('capacity')(value)
-                                    }
-                                }}
-                                value={fields['capacity']}
-                                keyboardType={'number-pad'}
-                                onClear={() => onFieldChange('name')('')}
-                            />
-                        </View>
                     </View>
 
-                    <View style={styles.row}>
-                        <View style={styles.inputWrapper}>
-                            <InputField2
-                                label={"Theatre"}
-                                onChangeText={onFieldChange('theatre')}
-                            />
-                        </View>
-                        <View style={styles.inputWrapper}/>
+                    <View style={[styles.row, {width: 150}]}>
+                        <OptionsField
+                            label={"Recovery"}
+                            text={recoveryText[fields['isRecovery']]}
+                            oneOptionsSelected={onFieldChange('isRecovery')}
+                            menuOption={<MenuOptions>
+                                <MenuOption value={true} text='Yes'/>
+                                <MenuOption value={false} text='No'/>
+                            </MenuOptions>}
+                        />
                     </View>
                 </View>
             </View>
@@ -123,8 +122,8 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     );
 }
 
-CreateStorageDialogContainer.propTypes = {};
-CreateStorageDialogContainer.defaultProps = {};
+CreateTheatreDialogContainer.propTypes = {};
+CreateTheatreDialogContainer.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
@@ -142,18 +141,36 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         marginBottom: 20
+    },
+    inputField: {
+        // flex: 1,
+        width: 64,
+        borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#E3E8EF',
+        borderRadius: 4,
+        height: 32,
     },
     inputWrapper: {
         // flex: 1,
         width: 260,
         flexDirection: 'row',
         // backgroundColor: 'blue'
-    }
+    },
+    textLabel: {
+        marginRight: 20,
+        fontSize: 12,
+        color: '#718096',
+        fontWeight: '500',
+    },
 });
 
 const mapDispatcherToProps = {
-    addStorageLocation
+
 };
 
-export default connect(null, mapDispatcherToProps)(CreateStorageDialogContainer);
+export default
+connect(null, mapDispatcherToProps)(CreateTheatreDialogContainer);
