@@ -1,6 +1,7 @@
 
 // ##### Theatre
-export const theatresEndpoint =  "/theatres";
+export const
+    theatresEndpoint =  "/theatres";
 export const theatreEndpoint =  (id) => `/theatres/${id}`;
 
 // ##### INVENTORY

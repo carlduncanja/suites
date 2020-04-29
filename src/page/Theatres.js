@@ -139,6 +139,7 @@ function Theatres(props) {
     };
 
     const onItemPress = (item) => () => {
+        console.log("item press", item);
         modal.openModal('BottomSheetModal', {
             content: <TheatresBottomSheetContainer theatre={item}/>
         })
@@ -274,6 +275,7 @@ function Theatres(props) {
                     'OverlayModal',
                     {
                         content: <CreateTheatreDialogContainer
+                            onCreated={(item) => onItemPress(item)()}
                             onCancel={() => setFloatingAction(false)}
                         />,
                         onClose: () => setFloatingAction(false)

@@ -6,7 +6,7 @@ import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField from "../common/Input Fields/InputField";
 import InputField2 from "../common/Input Fields/InputField2";
-import {createStorageLocation} from "../../api/network";
+import {createStorageLocation, createTheatre} from "../../api/network";
 import NumberInputField from "../common/Input Fields/NumberInputField";
 import {addStorageLocation} from "../../redux/actions/storageActions";
 import {connect} from "react-redux";
@@ -18,6 +18,7 @@ import {
 } from 'react-native-popup-menu';
 import DropDownIcon from "../../../assets/svg/dropDown";
 import OptionsField from "../common/Input Fields/OptionsField";
+import TheatresBottomSheetContainer from "./TheatresBottomSheetContainer";
 
 /**
  * Component to handle the create storage process.
@@ -48,7 +49,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addTheatre}) {
     };
 
     const onPositiveClick = () => {
-        createStorageCall()
+        createTheatreCall()
     };
 
     const onFieldChange = (fieldName) => (value) => {
@@ -58,9 +59,18 @@ function CreateStorageDialogContainer({onCancel, onCreated, addTheatre}) {
         })
     };
 
-
-    const createStorageCall = () => {
-
+    const createTheatreCall = () => {
+        createTheatre(fields)
+            .then(data => {
+                modal.closeAllModals();
+                setTimeout(() => {onCreated(data)}, 100);
+            })
+            .catch(error => {
+                console.log("failed to create theatre", error);
+                // TODO handle error
+            })
+            .finally(_ => {
+            })
     };
 
     const recoveryText = {
@@ -162,4 +172,5 @@ const mapDispatcherToProps = {
 
 };
 
-export default connect(null, mapDispatcherToProps)(CreateStorageDialogContainer);
+export default
+connect(null, mapDispatcherToProps)(CreateStorageDialogContainer);
