@@ -2,8 +2,6 @@ import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Equipment from '../CaseFiles/OverlayPages/ChargeSheet/Equipment';
 
-import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../common/FloatingAction/ActionContainer";
 import { currencyFormatter } from '../../utils/formatter'
 
 import { withModal } from "react-native-modalfy";
@@ -68,28 +66,6 @@ const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
         }
     });
 
-    const toggleActionButton = () =>{
-        setIsFloatingActionDisabled(true);
-        modal.openModal("ActionContainerModal",
-            {
-                actions: getFloatingActions(),
-                title: "PROCEDURE ACTIONS",
-                onClose: () => {
-                    setIsFloatingActionDisabled(false)
-                }
-            })
-    }
-
-    getFloatingActions = () =>{
-        return <ActionContainer
-            floatingActions={[
-
-            ]}
-            title={"PROCEDURE ACTIONS"}
-        />
-    }
-
-
     return (
         <>
             <Equipment
@@ -97,12 +73,6 @@ const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
                 headers = {headers}
                 listItemFormat = {listItem}
             />
-            <View style={styles.footer}>
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
-            </View>
         </>
     )
 }
@@ -117,13 +87,4 @@ const styles = StyleSheet.create({
         fontSize:16,
         color:"#4A5568",
     },
-    footer:{
-        flex: 1,
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        marginBottom: 20,
-        marginRight: 30,
-    }
 })

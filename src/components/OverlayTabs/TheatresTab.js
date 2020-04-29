@@ -53,7 +53,6 @@ const TheatresTab = ({modal, theatresData}) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
-    const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
     const data = theatresData.map( item =>{
         const recovery = item.isRecovery ? "Yes" : "No"
@@ -86,28 +85,6 @@ const TheatresTab = ({modal, theatresData}) => {
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
     };
-
-    const toggleActionButton = () => {
-        setIsFloatingActionDisabled(true);
-        modal.openModal("ActionContainerModal",
-            {
-                actions: getFloatingActions(),
-                title: "PROCEDURE ACTIONS",
-                onClose: () => {
-                    setIsFloatingActionDisabled(false)
-                }
-            })
-    }
-
-    const getFloatingActions = () =>{
-
-        return <ActionContainer
-            floatingActions={[
-
-            ]}
-            title={"PROCEDURE ACTIONS"}
-        />
-    }
 
     const listItemFormat = (item) => <>
         <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
@@ -146,10 +123,6 @@ const TheatresTab = ({modal, theatresData}) => {
                         goToPreviousPage={goToPreviousPage}
                     />
                 </View>
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
             </View>
         </>
         

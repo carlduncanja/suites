@@ -49,7 +49,7 @@ const testData = [
     }
 ]
 
-const CaseFilesTab = ({modal, cases}) => {
+const CaseFilesTab = ({cases}) => {
 
     const recordsPerPage = 10;
     
@@ -118,39 +118,6 @@ const CaseFilesTab = ({modal, cases}) => {
         setSelectedIds(updatedCases);
     }
 
-    const toggleActionButton = () => {
-        setIsFloatingActionDisabled(true);
-        modal.openModal("ActionContainerModal",
-            {
-                actions: getFloatingActions(),
-                title: "PHYSICIAN ACTIONS",
-                onClose: () => {
-                    setIsFloatingActionDisabled(false)
-                }
-            })
-    }
-
-    const getFloatingActions = () =>{
-        const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
-                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
-            </LongPressWithFeedback>;
-        const assignActionCase = <ActionItem title={"Assign Case"} icon={<AssignIcon/>} onPress={()=>{}}/>;
-        const createActionWorkItem = <ActionItem title={"Add Work Item"} icon={<AddIcon/>} onPress={()=>{}}/>;
-        const createActionPhysician = <ActionItem title={"Add Physician"} icon={<AddIcon/>} onPress={()=>{}}/>;
-
-
-    return <ActionContainer
-        floatingActions={[
-            deleteAction,
-            assignActionCase,
-            createActionPhysician,
-            createActionWorkItem
-        ]}
-        title={"PHYSICIAN ACTIONS"}
-    />
-    }
-
     const renderListFn = (item) =>{
         return <ListItem
             hasCheckBox={true}
@@ -199,10 +166,6 @@ const CaseFilesTab = ({modal, cases}) => {
                         goToPreviousPage={goToPreviousPage}
                     />
                 </View>
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
             </View>
         
         </>

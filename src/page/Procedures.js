@@ -9,6 +9,7 @@ import ProceduresBottomSheet from '../components/Procedures/ProceduresBottomShee
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
+import CreateProcedureDialog from '../components/Procedures/CreateProcedureDialogContainer';
 
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -147,7 +148,7 @@ const Procedures = (props) =>{
     }
 
     const procedureItem = (item) => {
-        const physician = `Dr. ${item.physician.firstName} ${item.physician.surname}`;
+        const physician = `Dr. `;
         return (
             <>
                 <View style={[styles.item,{paddingRight:10, borderRightColor:"#E3E8EF", borderRightWidth:1, marginRight:20, width:'50%'}]}>
@@ -171,7 +172,7 @@ const Procedures = (props) =>{
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
             </LongPressWithFeedback>;
         const createCopy = <ActionItem title={"Create Copy"} icon={<AddIcon/>} onPress={()=>{}}/>;
-        const createNewProcedure = <ActionItem title={"New Procedure"} icon={<AddIcon/>} onPress={()=>{}}/>;
+        const createNewProcedure = <ActionItem title={"New Procedure"} icon={<AddIcon/>} onPress={ openCreateProcedure }/>;
 
 
         return <ActionContainer
@@ -183,6 +184,24 @@ const Procedures = (props) =>{
             title={"PROCEDURES ACTIONS"}
         />
     };
+
+    const openCreateProcedure = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <CreateProcedureDialog onCancel={() => setFloatingAction(false)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    }
+
     // ############# Prepare list data
 
     let proceduresToDisplay = [...procedures];
