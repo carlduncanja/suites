@@ -58,7 +58,6 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
     };
 
     const createInventoryCall = () => {
-
     };
 
     const getTabContent = () => {
@@ -76,46 +75,55 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
         <View style={styles.sectionContainer}>
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
-                    <InputField2 label={"Reference"}
-                                 onChangeText={onFieldChange('referenceName')}
-                                 value={fields['referenceName']}
-                                 onClear={() => onFieldChange('referenceName')('')}
+                    <InputField2
+                        label={"Reference"}
+                        onChangeText={onFieldChange('referenceName')}
+                        value={fields['referenceName']}
+                        onClear={() => onFieldChange('referenceName')('')}
                     />
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 label={"Item Name"}
-                                 onChangeText={onFieldChange('name')}
-                                 value={fields['name']}
-                                 onClear={() => onFieldChange('name')('')}
-                    />
-                </View>
-            </View>
-
-            <View style={styles.row}>
-                <View style={styles.inputWrapper}>
-                    <InputField2 label={"Category"}
-                                 onChangeText={onFieldChange('category')}
-                                 value={fields['category']}
-                                 onClear={() => onFieldChange('category')('')}
-                    />
-                </View>
-
-                <View style={styles.inputWrapper}>
-                    <InputField2 label={"Supplier"}
-                                 onChangeText={onFieldChange('supplier')}
-                                 value={fields['supplier']}
-                                 onClear={() => onFieldChange('supplier')('')}
+                    <InputField2
+                        label={"Item Name"}
+                        onChangeText={onFieldChange('name')}
+                        value={fields['name']}
+                        onClear={() => onFieldChange('name')('')}
                     />
                 </View>
             </View>
 
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
-                    <InputField2 label={"SKU"}
-                                 onChangeText={onFieldChange('sku')}
-                                 value={fields['sku']}
-                                 onClear={() => onFieldChange('sku')('')}
+
+
+                    <InputField2
+                        label={"Category"}
+                        onChangeText={onFieldChange('category')}
+                        value={fields['category']}
+                        onClear={() => onFieldChange('category')('')}
+                    />
+
+
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        label={"Supplier"}
+                        onChangeText={onFieldChange('supplier')}
+                        value={fields['supplier']}
+                        onClear={() => onFieldChange('supplier')('')}
+                    />
+                </View>
+            </View>
+
+            <View style={styles.row}>
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        label={"SKU"}
+                        onChangeText={onFieldChange('sku')}
+                        value={fields['sku']}
+                        onClear={() => onFieldChange('sku')('')}
                     />
                 </View>
 
@@ -125,10 +133,11 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
 
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
-                    <InputField2 label={"Barcode"}
-                                 onChangeText={onFieldChange('barcode')}
-                                 value={fields['barcode']}
-                                 onClear={() => onFieldChange('barcode')('')}
+                    <InputField2
+                        label={"Barcode"}
+                        onChangeText={onFieldChange('barcode')}
+                        value={fields['barcode']}
+                        onClear={() => onFieldChange('barcode')('')}
                     />
                 </View>
 
@@ -142,28 +151,31 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
         <View style={styles.sectionContainer}>
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
-                    <InputField2 label={"Unit"}
-                                 onChangeText={onFieldChange('referenceName')}
-                                 value={fields['referenceName']}
-                                 onClear={() => onFieldChange('referenceName')('')}
+                    <InputField2
+                        label={"Unit"}
+                        onChangeText={onFieldChange('referenceName')}
+                        value={fields['referenceName']}
+                        onClear={() => onFieldChange('referenceName')('')}
                     />
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 label={"Unit Of Measure"}
-                                 onChangeText={onFieldChange('name')}
-                                 value={fields['name']}
-                                 onClear={() => onFieldChange('name')('')}
+                    <InputField2
+                        label={"Unit Of Measure"}
+                        onChangeText={onFieldChange('name')}
+                        value={fields['name']}
+                        onClear={() => onFieldChange('name')('')}
                     />
                 </View>
             </View>
 
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
-                    <InputField2 label={"Unit Price"}
-                                 onChangeText={onFieldChange('category')}
-                                 value={fields['category']}
-                                 onClear={() => onFieldChange('category')('')}
+                    <InputField2
+                        label={"Unit Price"}
+                        onChangeText={onFieldChange('category')}
+                        value={fields['category']}
+                        onClear={() => onFieldChange('category')('')}
                     />
                 </View>
 
