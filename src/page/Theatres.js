@@ -130,7 +130,8 @@ function Theatres(props) {
 
     // on mount
     useEffect(() => {
-        if (!theatres.length) fetchTheatres()
+        if (!theatres.length) fetchTheatres();
+        setTotalPages(Math.ceil(theatres.length / recordsPerPage));
     }, []);
 
     // ##### Handler functions
@@ -316,7 +317,8 @@ function Theatres(props) {
         getTheatres()
             .then(data => {
                 console.log("get theatres", data);
-                setTheatres(data)
+                setTheatres(data);
+                setTotalPages(Math.ceil(data.length / recordsPerPage));
             })
             .catch(error => {
                 // TODO handle error
@@ -327,12 +329,16 @@ function Theatres(props) {
             })
     };
 
+    let theatreToDisplay = [...theatres];
+
+    theatreToDisplay = theatreToDisplay.slice(currentPageListMin, currentPageListMax);
+
     return (
         <View style={styles.container}>
             <Page
                 placeholderText={"Search by heading or entry below."}
                 routeName={pageTitle}
-                listData={theatres}
+                listData={theatreToDisplay}
                 listItemFormat={renderItem}
                 inputText={searchValue}
                 itemsSelected={selectedIds}
