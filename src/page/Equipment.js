@@ -9,6 +9,7 @@ import EquipmentBottomSheet from '../components/Equipment/EquipmentBottomSheet';
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
+import CreateEquipmentDialog from '../components/Equipment/CreateEquipmentDialogContainer';
 
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -211,7 +212,7 @@ const Equipment = (props) => {
             </LongPressWithFeedback>;
         const assignEquipment = <ActionItem title={"Assign Equipment"} icon={<AssignIcon/>} onPress={()=>{}}/>;
         const editGroup = <ActionItem title={"Edit Group"} icon={<EditIcon/>} onPress={()=>{}}/>;
-        const createEquipment = <ActionItem title={"Add Equipment"} icon={<AddIcon/>} onPress={()=>{}}/>;
+        const createEquipment = <ActionItem title={"Add Equipment"} icon={<AddIcon/>} onPress={ openEquipmentDialog }/>;
 
         return <ActionContainer
             floatingActions={[
@@ -224,6 +225,23 @@ const Equipment = (props) => {
         />
 
     };
+
+    const openEquipmentDialog = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <CreateEquipmentDialog onCancel={() => setFloatingAction(false)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    }
     // ############# Prepare list data
 
     let equipmentToDisplay = [...equipmentTypes];

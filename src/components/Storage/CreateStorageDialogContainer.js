@@ -8,6 +8,7 @@ import InputField from "../common/Input Fields/InputField";
 import InputField2 from "../common/Input Fields/InputField2";
 import {createStorageLocation} from "../../api/network";
 import NumberInputField from "../common/Input Fields/NumberInputField";
+
 import {addStorageLocation} from "../../redux/actions/storageActions";
 import {connect} from "react-redux";
 

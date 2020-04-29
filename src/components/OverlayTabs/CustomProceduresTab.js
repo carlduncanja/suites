@@ -59,8 +59,6 @@ const CustomProceduresTab = ({modal,procedures}) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
-    const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
-
     const data = procedures.map( item =>{
         const recovery = item.hasRecovery ? "Yes" : "No"
         return {
@@ -92,39 +90,6 @@ const CustomProceduresTab = ({modal,procedures}) => {
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
     };
-
-    const toggleActionButton = () => {
-        setIsFloatingActionDisabled(true);
-        modal.openModal("ActionContainerModal",
-            {
-                actions: getFloatingActions(),
-                title: "PHYSICIAN ACTIONS",
-                onClose: () => {
-                    setIsFloatingActionDisabled(false)
-                }
-            })
-    }
-
-    const getFloatingActions = () =>{
-        const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
-                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
-            </LongPressWithFeedback>;
-        const assignActionCase = <ActionItem title={"Assign Case"} icon={<AssignIcon/>} onPress={()=>{}}/>;
-        const createActionWorkItem = <ActionItem title={"Add Work Item"} icon={<AddIcon/>} onPress={()=>{}}/>;
-        const createActionPhysician = <ActionItem title={"Add Physician"} icon={<AddIcon/>} onPress={()=>{}}/>;
-
-
-    return <ActionContainer
-        floatingActions={[
-            deleteAction,
-            assignActionCase,
-            createActionPhysician,
-            createActionWorkItem
-        ]}
-        title={"PHYSICIAN ACTIONS"}
-    />
-    }
 
     const listItemFormat = (item) => <>
         <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
@@ -163,10 +128,6 @@ const CustomProceduresTab = ({modal,procedures}) => {
                         goToPreviousPage={goToPreviousPage}
                     />
                 </View>
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
             </View>
         </>
     )

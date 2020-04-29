@@ -1,37 +1,11 @@
 import React,{ useState } from "react";
 import { View, StyleSheet } from "react-native";
 import FrameCard from '../common/Frames/FrameCards/FrameCard';
-
-import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../common/FloatingAction/ActionContainer";
-
+import NotesIcon from '../../../assets/svg/notes';
 import { withModal } from "react-native-modalfy";
 
 const NotesTab = ({modal, notesData}) => {
     // const { notes } = notesData
-
-    const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
-
-    const toggleActionButton = () =>{
-        setIsFloatingActionDisabled(true);
-        modal.openModal("ActionContainerModal",
-            {
-                actions: getFloatingActions(),
-                title: "PROCEDURE ACTIONS",
-                onClose: () => {
-                    setIsFloatingActionDisabled(false)
-                }
-            })
-    }
-
-    getFloatingActions = () =>{
-        return <ActionContainer
-            floatingActions={[
-
-            ]}
-            title={"PROCEDURE ACTIONS"}
-        />
-    }
 
     return (
         <>
@@ -41,15 +15,8 @@ const NotesTab = ({modal, notesData}) => {
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Notes"
                 cardInformation = {[notesData]}
-                frameIconName = ""
-                iconFillColor = "#ED8936"
+                icon = {NotesIcon}
             />
-            <View style={styles.footer}>
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
-            </View>
         </>
     )
 }
@@ -57,13 +24,5 @@ const NotesTab = ({modal, notesData}) => {
 export default withModal(NotesTab)
 
 const styles = StyleSheet.create({
-    footer:{
-        flex: 1,
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        marginBottom: 20,
-        marginRight: 30,
-    }
+    
 })

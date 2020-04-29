@@ -10,8 +10,6 @@ import { withModal } from "react-native-modalfy";
 
 const Configuration = ({procedure, modal}) => {
 
-    const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
-
     const { 
         name, 
         duration, 
@@ -64,27 +62,6 @@ const Configuration = ({procedure, modal}) => {
         assignedRecord
     ]
 
-    const toggleActionButton = () =>{
-        setIsFloatingActionDisabled(true);
-        modal.openModal("ActionContainerModal",
-            {
-                actions: getFloatingActions(),
-                title: "PROCEDURE ACTIONS",
-                onClose: () => {
-                    setIsFloatingActionDisabled(false)
-                }
-            })
-    }
-
-    getFloatingActions = () =>{
-        return <ActionContainer
-            floatingActions={[
-
-            ]}
-            title={"PROCEDURE ACTIONS"}
-        />
-    }
-
     return (
         <>
             <View style={styles.description}>
@@ -106,12 +83,6 @@ const Configuration = ({procedure, modal}) => {
             <View style={{marginTop:15}}>
                 <Text style={{color:'#718096', fontSize:16 }}>This Procedure is available at these Locations</Text>
             </View>
-            <View style={styles.footer}>
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
-            </View>
         </>
     )
 }
@@ -128,13 +99,4 @@ const styles = StyleSheet.create({
     },
     detailsContainer:{
     },
-    footer:{
-        flex: 1,
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        marginBottom: 20,
-        marginRight: 30,
-    }
 })

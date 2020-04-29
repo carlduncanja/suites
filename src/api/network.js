@@ -104,6 +104,13 @@ export const getProcedureById = async (id) => {
         .catch(handleError)
 };
 
+export const createNewProcedure = async (procedureToCreate) => {
+    return suitesAxiosInstance
+        .post(proceduresEndpoint, procedureToCreate)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 // ################# Physicians Endpoints
 export const getPhysicians = async () => {
     return suitesAxiosInstance.get(physiciansEndpoint)

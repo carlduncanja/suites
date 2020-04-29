@@ -10,6 +10,7 @@ import PhysicianBottomSheet from '../components/Physicians/PhysicianBottomSheet'
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
+import CreateWorkItemDialog from "../components/Physicians/CreateWorkItemDialog";
 
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -185,7 +186,7 @@ const Physicians = (props) => {
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
             </LongPressWithFeedback>;
         const assignActionCase = <ActionItem title={"Assign Case"} icon={<AssignIcon/>} onPress={()=>{}}/>;
-        const createActionWorkItem = <ActionItem title={"Add Work Item"} icon={<AddIcon/>} onPress={()=>{}}/>;
+        const createActionWorkItem = <ActionItem title={"Add Work Item"} icon={<AddIcon/>} onPress={ openCreateNewWorkItem }/>;
         const createActionPhysician = <ActionItem title={"Add Physician"} icon={<AddIcon/>} onPress={()=>{}}/>;
 
 
@@ -199,6 +200,23 @@ const Physicians = (props) => {
             title={"PHYSICIAN ACTIONS"}
         />
     };
+
+    const openCreateNewWorkItem = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <CreateWorkItemDialog onCancel={() => setFloatingAction(false)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    }
 
     // ############# Prepare list data
 

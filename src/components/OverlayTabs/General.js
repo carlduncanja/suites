@@ -72,37 +72,6 @@ const General = ({details, modal}) => {
         category
     ]
 
-    const toggleActionButton = () =>{
-        setIsFloatingActionDisabled(true);
-        modal.openModal("ActionContainerModal",
-            {
-                actions: getFloatingActions(),
-                title: "EQUIPMENT ACTIONS",
-                onClose: () => {
-                    setIsFloatingActionDisabled(false)
-                }
-            })
-    }
-
-    getFloatingActions = () =>{
-        const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
-                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
-            </LongPressWithFeedback>;
-        const assignEquipment = <ActionItem title={"Assign Equipment"} icon={<AssignIcon/>} onPress={()=>{}}/>;
-        const editGroup = <ActionItem title={"Edit Group"} icon={<EditIcon/>} onPress={()=>{}}/>;
-        const createEquipment = <ActionItem title={"Add Equipment"} icon={<AddIcon/>} onPress={()=>{}}/>;
-
-        return <ActionContainer
-            floatingActions={[
-                deleteAction,
-                assignEquipment,
-                editGroup,
-                createEquipment
-            ]}
-            title={"EQUIPMENT ACTIONS"}
-        />
-    }
 
 
     return (
@@ -125,13 +94,7 @@ const General = ({details, modal}) => {
                     ]}
                 />
             </View>
-            
-            <View style={styles.footer}>
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
-            </View> 
+        
         </>
     )
 }
