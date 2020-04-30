@@ -40,7 +40,43 @@ function InventoryBottomSheetContainer({inventory}) {
 
         switch (selectedOverlay) {
             case "General":
-                return <InventoryGeneralTabContent/>;
+
+                let stock = 0;
+                const levels = {
+                    max: 0,
+                    min: 0,
+                    critical: 0,
+                    ideal: 0,
+                };
+
+
+                // calculate levels
+                selectedInventoryItem.inventoryLocations.forEach(item => {
+                    stock += item.stock;
+                    console.log(item);
+                    if (item.levels) {
+                        levels.max += item.levels.max;
+                        levels.low += item.levels.low;
+                        levels.ideal += item.levels.ideal;
+                        levels.critical += item.levels.critical;
+                    }
+                });
+
+
+                const inventoryDetails = {
+                    description: selectedInventoryItem.description,
+                    sku: selectedInventoryItem.sku,
+                    lastReceived: null,
+                    supplier: selectedInventoryItem.supplier,
+                    categories: [],
+                    unit: selectedInventoryItem.unit,
+                    unitPrice: selectedInventoryItem.unitPrice,
+                    stock,
+                    levels
+                };
+
+
+                return <InventoryGeneralTabContent {...inventoryDetails}/>;
             case "Storage Locations":
                 return <StorageLocationsTab/>;
             case "Transfer":
@@ -82,7 +118,7 @@ function InventoryBottomSheetContainer({inventory}) {
                         selectedTab={currentTab}
                         isEditMode={isEditMode}
                         overlayContent={
-                            <View style={{flex:1, padding: 30}}>
+                            <View style={{flex: 1, padding: 30}}>
                                 {
                                     getOverlayScreen(currentTab)
                                 }

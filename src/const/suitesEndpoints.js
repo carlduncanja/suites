@@ -6,7 +6,7 @@ export const theatreEndpoint =  (id) => `/theatres/${id}`;
 
 // ##### INVENTORY
 export const inventoriesEndpoint = "/inventories";
-export const inventoryEndpoint = (id) => `{{base-url}}/inventories/${id}`;
+export const inventoryEndpoint = (id) => `/inventories/${id}`;
 
 export const physiciansEndpoint = "/physicians";
 export const physicianEndpoint = (id) => `/physicians/${id}`;

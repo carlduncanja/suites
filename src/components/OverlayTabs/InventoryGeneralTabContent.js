@@ -23,24 +23,24 @@ const UiData = {
     }
 };
 
-function InventoryGeneralTabContent({inventoryDetails}) {
+function InventoryGeneralTabContent(props) {
 
     const {
         description = "",
-        sku = "",
+        sku = "--",
         lastReceived = null,
-        supplier = "",
+        supplier = "--",
         categories = [],
-        unit = "pack",
+        unit = "--",
         unitPrice = 0,
         stock = 0,
         levels = {
-            max: 300,
+            max: 0,
             min: 0,
-            critical: 100,
-            ideal: 200,
+            critical: 0,
+            ideal: 0,
         }
-    } = UiData;
+    } = props;
 
 
     return <View style={styles.container}>
