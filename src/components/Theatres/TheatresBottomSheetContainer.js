@@ -71,7 +71,41 @@ function TheatresBottomSheetContainer({theatre = {}}) {
 
                 return <HistoryTabs/>;
             case "Storage":
-                return <StorageLocationsTab/>;
+
+                const storageLocations = selectedTheatre.storageLocations.map(item => {
+
+
+                    let stock = 0;
+                    const levels = {
+                        ideal: 0,
+                        max: 0,
+                        low: 0,
+                        min: 0,
+                        critical: 0
+                    };
+
+                    // get the total stock and levels
+                    item.inventoryLocations.forEach(item => {
+                        stock += item.stock;
+
+                        levels.ideal += item.levels.ideal;
+                        levels.max += item.levels.max;
+                        levels.low += item.levels.low;
+                        levels.critical += item.levels.critical;
+                    });
+
+
+                    return {
+                        id: item._id,
+                        locationName: item.name,
+                        restockDate: new Date(),
+
+                        //TODO get this info
+                        stock,
+                        levels
+                    }
+                });
+                return <StorageLocationsTab storageLocations={storageLocations}/>;
             case "Equipment":
                 return <EquipmentsTab/>;
             case "Schedule":

@@ -67,7 +67,7 @@ const storageHeader = [
 ];
 
 function StorageLocationsTab({
-                                 storageLocations = UiData,
+                                 storageLocations = [],
                                  selectedItems = [],
                                  onCheckBoxPress = () => {
                                  }
