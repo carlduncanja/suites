@@ -161,7 +161,8 @@ const Equipment = (props) => {
 
     const renderEquipmentFn = (item) => { 
         
-        const filterEquiments = equipment.filter( eqItem => eqItem.type._id === item._id)
+        // const filterEquiments = equipment.filter( eqItem => eqItem.type._id === item._id)
+        const filterEquiments = []
         const filterStatus = filterEquiments.filter( eqItem => eqItem.status === 'Available')
         const viewItem = {
             name : item.name,
