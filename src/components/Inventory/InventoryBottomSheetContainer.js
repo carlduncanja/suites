@@ -7,6 +7,7 @@ import {getInventoryById} from "../../api/network";
 import TransfersOverlayTab from "../OverlayTabs/TransfersOverlayTab";
 import StorageLocationsTab from "../OverlayTabs/StorageLocationsTab";
 import SuppliersTab from "../OverlayTabs/SuppliersTab";
+import InventoryStorageLocationsTab from "../OverlayTabs/InventoryStorageLocationsTab";
 
 function InventoryBottomSheetContainer({inventory}) {
     const currentTabs = ["General", "Storage Locations", "Transfer", "Supplier"];
@@ -78,7 +79,28 @@ function InventoryBottomSheetContainer({inventory}) {
 
                 return <InventoryGeneralTabContent {...inventoryDetails}/>;
             case "Storage Locations":
-                return <StorageLocationsTab/>;
+
+                const storageLocations = selectedInventoryItem.inventoryLocations.map(item => {
+
+                    const itemLevels = item.levels;
+                    const levels = {
+                        ideal: itemLevels.ideal || 0,
+                        max: itemLevels.max || 0,
+                        low: itemLevels.low || 0,
+                        min: 0,
+                        critical: itemLevels.critical || 0
+                    };
+
+                    return {
+                        id: item._id,
+                        locationName: item.location && item.location.name,
+                        stock: item.stock,
+                        levels
+                    }
+                });
+
+
+                return <InventoryStorageLocationsTab storageLocations={storageLocations}/>;
             case "Transfer":
                 return <TransfersOverlayTab/>;
             case "Supplier":
