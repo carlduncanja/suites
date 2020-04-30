@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
-import {View} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, View} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import StorageConsumablesTab from '../OverlayTabs/StorageConsumablesTab';
 import StorageEquipmentTab from '../OverlayTabs/StorageEquipmentTab';
 import TransfersOverlayTab from "../OverlayTabs/TransfersOverlayTab";
+import {getStorageById} from "../../api/network";
+import {colors} from "../../styles";
 
 function StorageBottomSheetContainer({storage}) {
     const currentTabs = ["Transfer", "Consumables", "Equipment"];
@@ -11,8 +13,15 @@ function StorageBottomSheetContainer({storage}) {
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [selectedStorageItem, setStorageItem] = useState(storage);
+    const [storageItem, setStorageItem] = useState(storage);
     const [isEditMode, setEditMode] = useState(false);
+    const [isFetching, setFetching] = useState(false);
+
+    // ##### Life cycle methods
+
+    useEffect(() => {
+        fetchStorageItem(storage._id)
+    }, []);
 
 
     // ##### Event Handlers
@@ -27,12 +36,40 @@ function StorageBottomSheetContainer({storage}) {
 
     // ##### Helper functions
 
+    const fetchStorageItem = (id) => {
+        setFetching(true);
+        getStorageById(id)
+            .then(data => {
+                setStorageItem(data);
+            })
+            .catch(error => {
+                console.log("Failed to get inventory item", error);
+                // TODO handle error
+            })
+            .finally(_ => {
+                setFetching(false)
+            })
+    };
+
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Transfer":
                 return <TransfersOverlayTab/>;
             case "Consumables":
-                return <StorageConsumablesTab/>;
+                // Get Consumables
+                const consumables = storageItem.inventoryLocations.map(item => {
+                    console.log(item);
+
+                    return {
+                        item: item.inventory.name,
+                        type: "",
+                        onHand: item.stock,
+                        unitPrice: item.inventory.unitPrice
+                    }
+                });
+
+                return <StorageConsumablesTab consumables={consumables}/>;
+
             case "Equipment":
                 return <StorageEquipmentTab/>;
             default :
@@ -40,24 +77,30 @@ function StorageBottomSheetContainer({storage}) {
         }
     };
 
-    const overlayContent = <View style={{flex: 1, padding:30}}>
+    const overlayContent = <View style={{flex: 1, padding: 30}}>
         {getTabContent(currentTab)}
     </View>;
 
-    const {_id, name} = selectedStorageItem;
+    const {_id, name} = storageItem;
 
     return (
         <View style={{flex: 1}}>
-            <SlideOverlay
-                overlayId={_id}
-                overlayTitle={name}
-                onTabPressChange={onTabPress}
-                currentTabs={currentTabs}
-                selectedTab={currentTab}
-                isEditMode={isEditMode}
-                overlayContent={overlayContent}
-                onEditPress={onEditPress}
-            />
+            {
+                isFetching
+                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
+                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
+                    </View>
+                    : <SlideOverlay
+                        overlayId={_id}
+                        overlayTitle={name}
+                        onTabPressChange={onTabPress}
+                        currentTabs={currentTabs}
+                        selectedTab={currentTab}
+                        isEditMode={isEditMode}
+                        overlayContent={overlayContent}
+                        onEditPress={onEditPress}
+                    />
+            }
         </View>
     );
 }

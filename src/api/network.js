@@ -8,7 +8,7 @@ import {
     proceduresEndpoint, procedureEndpoint,
     caseFilesEndpoint, caseFileEndpoint,
     equipmentsEndpoint, equipmentEndpoint, equipmentTypesEndpoint,
-    storageLocationsEndpoint,
+    storageLocationsEndpoint, storageLocationEndpoint,
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -133,6 +133,12 @@ export const getPhysicianById = async (id) => {
 // ################# Storage Endpoints
 export const getStorage = async () => {
     return suitesAxiosInstance.get(storageLocationsEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
+};
+
+export const getStorageById = async (id) => {
+    return suitesAxiosInstance.get(storageLocationEndpoint(id))
         .then(handleResponse)
         .catch(handleError)
 };
