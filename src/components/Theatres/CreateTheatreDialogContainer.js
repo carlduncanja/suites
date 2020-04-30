@@ -114,6 +114,8 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
                             </MenuOptions>}
                         />
                     </View>
+
+                    
                 </View>
             </View>
 

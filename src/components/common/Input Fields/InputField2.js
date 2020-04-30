@@ -16,7 +16,6 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  */
 function InputField2({label, onChangeText, value, placeholder, keyboardType, onClear}) {
 
-
     return (
         <View style={styles.container}>
             <Text style={[
