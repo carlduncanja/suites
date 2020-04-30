@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, Switch, Picker} from "react-native";
+import {View, StyleSheet, Text, Switch, Picker, Alert} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
+import {createInventories} from "../../api/network";
 
 
 /**
@@ -18,7 +19,7 @@ import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
  * @returns {*}
  * @constructor
  */
-function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
+function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
     const modal = useModal();
     const dialogTabs = ['Details', 'Configuration'];
@@ -42,7 +43,7 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
-
+            createInventoryCall()
         }
     };
 
@@ -58,6 +59,19 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
     };
 
     const createInventoryCall = () => {
+        createInventories(fields)
+            .then(data => {
+                modal.closeAllModals();
+                setTimeout(() => {
+                    onCreated(data)
+                }, 200);
+            })
+            .catch(error => {
+                // todo handle error
+                console.log("failed to create inventory", error);
+                Alert.alert("Failed", "failed to created inventory item")
+            })
+            .finally()
     };
 
     const getTabContent = () => {
@@ -143,7 +157,6 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
 
                 <View style={styles.inputWrapper}/>
             </View>
-
         </View>
     );
 
@@ -153,18 +166,18 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Unit"}
-                        onChangeText={onFieldChange('referenceName')}
-                        value={fields['referenceName']}
-                        onClear={() => onFieldChange('referenceName')('')}
+                        onChangeText={onFieldChange('unit')}
+                        value={fields['unit']}
+                        onClear={() => onFieldChange('unit')('')}
                     />
                 </View>
 
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Unit Of Measure"}
-                        onChangeText={onFieldChange('name')}
-                        value={fields['name']}
-                        onClear={() => onFieldChange('name')('')}
+                        onChangeText={onFieldChange('unitOfMeasure')}
+                        value={fields['unitOfMeasure']}
+                        onClear={() => onFieldChange('unitOfMeasure')('')}
                     />
                 </View>
             </View>
@@ -173,12 +186,16 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Unit Price"}
-                        onChangeText={onFieldChange('category')}
-                        value={fields['category']}
-                        onClear={() => onFieldChange('category')('')}
+                        onChangeText={(value) => {
+                            if (/^-?[0-9][0-9.]+$/g.test(value) || /^\d+$/g.test(value) || !value) {
+                                onFieldChange('unitPrice')
+                            }
+                        }}
+                        value={fields['unitPrice']}
+                        keyboardType={'number-pad'}
+                        onClear={() => onFieldChange('unitPrice')('')}
                     />
                 </View>
-
                 <View style={styles.inputWrapper}/>
             </View>
         </View>
@@ -207,8 +224,8 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
     );
 }
 
-CreateTheatreDialogContainer.propTypes = {};
-CreateTheatreDialogContainer.defaultProps = {};
+CreateInventoryDialogContainer.propTypes = {};
+CreateInventoryDialogContainer.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
@@ -254,4 +271,4 @@ const styles = StyleSheet.create({
 
 const mapDispatcherToProps = {};
 
-export default connect(null, mapDispatcherToProps)(CreateTheatreDialogContainer);
+export default connect(null, mapDispatcherToProps)(CreateInventoryDialogContainer);

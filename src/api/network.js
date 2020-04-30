@@ -83,6 +83,12 @@ export const getInventoryById = async (id) => {
         .catch(handleError);
 };
 
+export const createInventories = async (inventoryForCreation) => {
+    return suitesAxiosInstance.post(inventoriesEndpoint, inventoryForCreation)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 
 // ################# Case Files Endpoints
 export const getCaseFiles = async () => {
