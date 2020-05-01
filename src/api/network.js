@@ -124,8 +124,8 @@ export const createNewProcedure = async (procedureToCreate) => {
 };
 
 // ################# Physicians Endpoints
-export const getPhysicians = async () => {
-    return suitesAxiosInstance.get(physiciansEndpoint)
+export const getPhysicians = async (query, max) => {
+    return suitesAxiosInstance.get(physiciansEndpoint, {params: {query, max}})
         .then(handleResponse)
         .catch(handleError)
 };

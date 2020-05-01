@@ -1,4 +1,4 @@
-import React,{ useState } from "react";
+import React, {useEffect, useState} from "react";
 import { View, Text, StyleSheet } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
@@ -9,10 +9,11 @@ import { formatDate } from '../../utils/formatter'
 import {useModal} from "react-native-modalfy";
 
 
-import { createNewProcedure } from "../../api/network";
+import {createNewProcedure, getTheatres} from "../../api/network";
 import { addProcedure } from "../../redux/actions/proceduresActions";
 import {connect} from "react-redux";
 import { duration } from "moment";
+import _ from "lodash";
 
 
 /**

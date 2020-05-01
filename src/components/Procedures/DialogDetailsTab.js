@@ -1,17 +1,74 @@
-import React,{  } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, {useEffect, useState} from "react";
+import {View, Text, StyleSheet} from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import DropdownInputField from "../common/Input Fields/DropdownInputField";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import _ from "lodash";
+import {getPhysicians, getTheatres} from "../../api/network";
 
-const DialogDetailsTab = ({ onFieldChange, fields }) =>{
+const DialogDetailsTab = ({onFieldChange, fields}) => {
+
+    const [searchValue, setSearchValue] = useState();
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
+
+    // ######
+
+
+    // Handle theatres search
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchPhysicians, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchValue]);
+
+
+    const fetchPhysicians = () => {
+        getPhysicians(searchValue, 5)
+            .then((data = []) => {
+
+
+                const results = data.map(item => ({
+                    name: `Dr. ${item.surname}`,
+                    ...item
+                }));
+
+                setSearchResult(results || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get theatres");
+                setSearchValue([]);
+            })
+    };
+
     return (
         <View style={styles.sectionContainer}>
-            
+
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 
+                    <InputField2
                         label={"Reference"}
                         onChangeText={onFieldChange('reference')}
                         value={fields['reference']}
@@ -19,28 +76,28 @@ const DialogDetailsTab = ({ onFieldChange, fields }) =>{
                     />
                 </View>
                 <View style={[styles.inputWrapper]}>
-                    <DropdownInputField 
+                    <DropdownInputField
                         label={"Template ?"}
                         onSelectChange={onFieldChange('isTemplate')}
                         value={fields['isTemplate']}
-                        dropdownOptions = {["Yes","No"]}
+                        dropdownOptions={["Yes", "No"]}
                     />
                 </View>
 
             </View>
 
             <View
-            style={{
-                height:2,
-                backgroundColor:'#CCD6E0',
-                marginBottom:20
-            }}
+                style={{
+                    height: 2,
+                    backgroundColor: '#CCD6E0',
+                    marginBottom: 20
+                }}
             />
 
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 
+                    <InputField2
                         label={"Procedure"}
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
@@ -49,12 +106,28 @@ const DialogDetailsTab = ({ onFieldChange, fields }) =>{
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 
+                    {/*<InputField2 */}
+                    {/*    label={"Physician"}*/}
+                    {/*    onChangeText={onFieldChange('physician')}*/}
+                    {/*    value={fields['physician']}*/}
+                    {/*    onClear={() => onFieldChange('physician')('')}*/}
+                    {/*/>*/}
+
+                    <SearchableOptionsField
                         label={"Physician"}
-                        onChangeText={onFieldChange('physician')}
-                        value={fields['physician']}
-                        onClear={() => onFieldChange('physician')('')}
+                        text={searchValue}
+                        oneOptionsSelected={(item) => {
+                            onFieldChange('physician')(item._id)
+                        }}
+                        onChangeText={value => setSearchValue(value)}
+                        onClear={() => {
+                            onFieldChange('physician')('');
+                            setSearchValue('');
+                        }}
+                        options={searchResults}
                     />
+
+
                 </View>
 
             </View>
@@ -62,7 +135,7 @@ const DialogDetailsTab = ({ onFieldChange, fields }) =>{
             <View style={styles.row}>
 
                 {/* <View style={styles.inputWrapper}>
-                    <DropdownInputField 
+                    <DropdownInputField
                         label={"Location"}
                         onSelectChange={onFieldChange('location')}
                         value={fields['location']}
@@ -71,7 +144,7 @@ const DialogDetailsTab = ({ onFieldChange, fields }) =>{
                 </View> */}
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 
+                    <InputField2
                         label={"Category"}
                         onChangeText={onFieldChange('category')}
                         value={fields['category']}
@@ -84,21 +157,21 @@ const DialogDetailsTab = ({ onFieldChange, fields }) =>{
             <View style={[styles.row]}>
 
                 <View style={styles.inputWrapper}>
-                    <InputUnitField 
+                    <InputUnitField
                         label={"Duration"}
                         onChangeText={onFieldChange('duration')}
                         value={fields['duration']}
-                        units = {['hrs']}
-                        keyboardType = "number-pad"
+                        units={['hrs']}
+                        keyboardType="number-pad"
                     />
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <DropdownInputField 
+                    <DropdownInputField
                         label={"Recovery ?"}
                         onSelectChange={onFieldChange('hasRecovery')}
                         value={fields['hasRecovery']}
-                        dropdownOptions = {["Yes","No"]}
+                        dropdownOptions={["Yes", "No"]}
                     />
                 </View>
 
@@ -129,4 +202,4 @@ const styles = StyleSheet.create({
         width: 260,
         flexDirection: 'row',
     }
-})
+});
