@@ -1,5 +1,5 @@
-import React,{  } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, {useState, useEffect} from "react";
+import {View, Text, StyleSheet} from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import OptionsField from "../common/Input Fields/OptionsField";
@@ -8,24 +8,23 @@ import SearchableOptionsField from "../common/Input Fields/SearchableOptionsFiel
 import {getTheatres, searchSchedule} from "../../api/network";
 import _ from "lodash";
 
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
 
-const EquipmentDialogDetailsTab = ({ onFieldChange, fields, storage, equipmentTypes }) =>{
+const EquipmentDialogDetailsTab = ({onFieldChange, fields, storage, equipmentTypes}) => {
 
-const testCategory = [
-    {
-        _id : '8hwHGuygf92',
-        name : 'Surgical'
-    },
-    {
-        _id : '8hopTEoud10',
-        name : 'Electric'
-    }
-];
+    const testCategory = [
+        {
+            _id: '8hwHGuygf92',
+            name: 'Surgical'
+        },
+        {
+            _id: '8hopTEoud10',
+            name: 'Electric'
+        }
+    ];
 
-const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
 
     const [theatresSearchValue, setTheatreSearchValue] = useState();
     const [theatreSearchResults, setTheatreSearchResult] = useState([]);
@@ -91,8 +90,8 @@ const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
                     <MultipleSelectionsField
                         label={"Category"}
                         onOptionsSelected={onFieldChange('category')}
-                        options = {testCategory}
-                        keysToFilter = {['name']}
+                        options={testCategory}
+                        keysToFilter={['name']}
                     />
                 </View>
             </View>
@@ -105,9 +104,9 @@ const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
                         text={fields['assigmentType']}
                         oneOptionsSelected={onFieldChange('assigmentType')}
                         menuOption={
-                        <MenuOptions>
-                            <MenuOption value={'Location'} text='Location'/>
-                        </MenuOptions>
+                            <MenuOptions>
+                                <MenuOption value={'Location'} text='Location'/>
+                            </MenuOptions>
                         }
                     />
                 </View>
@@ -144,10 +143,10 @@ const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
                         text={fields['status']}
                         oneOptionsSelected={onFieldChange('status')}
                         menuOption={
-                        <MenuOptions>
-                            <MenuOption value={'Available'} text='Available'/>
-                            <MenuOption value={'In Use'} text='In Use'/>
-                        </MenuOptions>
+                            <MenuOptions>
+                                <MenuOption value={'Available'} text='Available'/>
+                                <MenuOption value={'In Use'} text='In Use'/>
+                            </MenuOptions>
                         }
                     />
                 </View>
@@ -159,8 +158,8 @@ const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
                     <OptionSearchableField
                         label={"Type"}
                         onOptionsSelected={onFieldChange('type')}
-                        options = {equipmentTypes}
-                        keysToFilter = {['name']}
+                        options={equipmentTypes}
+                        keysToFilter={['name']}
                     />
                 </View>
             </View>
@@ -168,7 +167,8 @@ const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
 
         </View>
     )
-}
+};
+
 
 EquipmentDialogDetailsTab.propTypes = {}
 EquipmentDialogDetailsTab.defaultProps = {}

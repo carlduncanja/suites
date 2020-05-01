@@ -34,23 +34,23 @@ const Equipment = (props) => {
     // ############# Const data
     const recordsPerPage = 15;
     const listHeaders = [
-        {   
+        {
             name : "Assigned",
             alignment : "flex-start"
         },
-        {   
+        {
             name : "Quantity",
             alignment : "center"
         },
-        {   
+        {
             name : "Status",
             alignment : "flex-start"
         },
-        {   
+        {
             name : "Available on",
             alignment : "center"
         },
-        {   
+        {
             name : "Actions",
             alignment : "center"
         }
@@ -75,7 +75,8 @@ const Equipment = (props) => {
     // ############# Lifecycle methods
 
     useEffect(() => {
-        if (!equipment.length) {
+        console.log("equipments: ", equipment);
+        if (!equipmentTypes.length) {
             fetchEquipmentData()
         }
         setTotalPages(Math.ceil(equipment.length / recordsPerPage))
@@ -95,7 +96,7 @@ const Equipment = (props) => {
     const handleOnCheckBoxPress = (item) => () =>{
         const { id } = item;
         let updatedEquipmentList = checkboxItemPress(item, id, selectedEquipmentIds)
- 
+
         setSelectedEquipmentIds(updatedEquipmentList)
     }
 
@@ -126,7 +127,7 @@ const Equipment = (props) => {
     const toggleActionButton = () => {
         setFloatingAction(true)
         modal.openModal("ActionContainerModal",
-            { 
+            {
                 actions: getFabActions(),
                 title: "EQUIPMENT ACTIONS",
                 onClose: () => {
@@ -159,20 +160,20 @@ const Equipment = (props) => {
             })
     };
 
-    const renderEquipmentFn = (item) => { 
+    const renderEquipmentFn = (item) => {
 
         const filterEquiments = equipment.filter( eqItem => {
             const { type = {} } = eqItem
             const { _id = "" } = type
-            
+
             return ( item._id === _id)
-            
+
             // return _id === null ?
             //     null
             //     :
-            
+
             //     item._id  === _id
-        
+
         })
         // const filterEquiments = []
         const filterStatus = filterEquiments.filter( eqItem => eqItem.status === 'Available')
@@ -193,7 +194,7 @@ const Equipment = (props) => {
     }
 
     const getStatusColor = (status) => {
-        return status === 'Unavailable' ? '#C53030' 
+        return status === 'Unavailable' ? '#C53030'
             : status === 'Multiple' ? '#6B46C1'
             : status === 'Available' ? '#4E5664'
             : '#4E5664'
@@ -249,7 +250,7 @@ const Equipment = (props) => {
                 .openModal(
                     'OverlayModal',
                     {
-                        content: <CreateEquipmentDialog 
+                        content: <CreateEquipmentDialog
                             onCancel={() => setFloatingAction(false)}
                             onCreated={(item) => handleOnItemPress(item)}
                             equipmentTypes = {equipmentTypes}
@@ -277,7 +278,7 @@ const Equipment = (props) => {
                 listHeaders={listHeaders}
                 itemsSelected={selectedEquipmentIds}
                 onSelectAll={handleOnSelectAll}
-                
+
                 listItemFormat={renderEquipmentFn}
             />
 
