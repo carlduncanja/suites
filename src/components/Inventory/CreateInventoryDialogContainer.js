@@ -27,7 +27,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
     const [fields, setFields] = useState({
         name: "",
-        unitPrice: 300.95,
+        unitPrice: "",
         category: "",
         referenceName: "",
         sku: "",
