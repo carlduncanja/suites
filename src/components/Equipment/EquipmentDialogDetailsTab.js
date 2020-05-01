@@ -138,7 +138,7 @@ const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
                         label={"Assigned"}
                         text={theatresSearchValue}
                         oneOptionsSelected={(item) => {
-                            onFieldChange('assigned')(item.id)
+                            onFieldChange('assigned')(item._id)
                         }}
                         onChangeText={value => setTheatreSearchValue(value)}
                         onClear={() => {

@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
+        height: 32,
     },
     inputFieldWrapper: {
         position: 'relative',

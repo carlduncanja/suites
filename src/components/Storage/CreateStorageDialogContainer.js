@@ -6,11 +6,13 @@ import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField from "../common/Input Fields/InputField";
 import InputField2 from "../common/Input Fields/InputField2";
-import {createStorageLocation} from "../../api/network";
+import {createStorageLocation, getTheatres} from "../../api/network";
 import NumberInputField from "../common/Input Fields/NumberInputField";
 
 import {addStorageLocation} from "../../redux/actions/storageActions";
 import {connect} from "react-redux";
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import _ from "lodash";
 
 /**
  * Component to handle the create storage process.
@@ -34,6 +36,52 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     // useEffect(() => {
     // }, []);
 
+    const [theatresSearchValue, setTheatreSearchValue] = useState();
+    const [theatreSearchResults, setTheatreSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
+
+    // ######
+
+    // Handle theatres search
+    useEffect(() => {
+
+        if (!theatresSearchValue) {
+            // empty search values and cancel any out going request.
+            setTheatreSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchTheatres, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [theatresSearchValue]);
+
+
+    const fetchTheatres = () => {
+        getTheatres(theatresSearchValue, 5)
+            .then(data => {
+                console.log("theatres search", data);
+                setTheatreSearchResult(data || []);
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get theatres");
+                setTheatreSearchValue([]);
+            })
+    };
+
+
     const handleCloseDialog = () => {
         onCancel();
         modal.closeAllModals();
@@ -52,10 +100,13 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
 
 
     const createStorageCall = () => {
+        console.log(fields);
         createStorageLocation(fields)
             .then(data => {
                 modal.closeAllModals();
-                setTimeout(() => {onCreated(data)}, 200);
+                setTimeout(() => {
+                    onCreated(data)
+                }, 200);
                 addStorageLocation(data);
             })
             .catch(error => {
@@ -108,9 +159,18 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
 
                     <View style={styles.row}>
                         <View style={styles.inputWrapper}>
-                            <InputField2
-                                label={"Theatre"}
-                                onChangeText={onFieldChange('theatre')}
+                            <SearchableOptionsField
+                                label={"Assigned"}
+                                text={theatresSearchValue}
+                                oneOptionsSelected={(item) => {
+                                    onFieldChange('theatre')(item._id)
+                                }}
+                                onChangeText={value => setTheatreSearchValue(value)}
+                                onClear={() => {
+                                    onFieldChange('theatre')('');
+                                    setTheatreSearchValue('');
+                                }}
+                                options={theatreSearchResults}
                             />
                         </View>
                         <View style={styles.inputWrapper}/>
