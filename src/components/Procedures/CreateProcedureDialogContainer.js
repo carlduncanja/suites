@@ -1,4 +1,4 @@
-import React,{ useState } from "react";
+import React,{ useState, useEffect} from "react";
 import { View, Text, StyleSheet } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
@@ -9,7 +9,7 @@ import { formatDate } from '../../utils/formatter'
 import {useModal} from "react-native-modalfy";
 
 
-import { createNewProcedure } from "../../api/network";
+import { createNewProcedure, getTheatres, getPhysicians } from "../../api/network";
 import { addProcedure } from "../../redux/actions/proceduresActions";
 import {connect} from "react-redux";
 import { duration } from "moment";
@@ -25,7 +25,7 @@ import { duration } from "moment";
  * @constructor
  */
 
-const CreateProcedureDialogContainer = ({onCancel, addProcedure}) =>{
+const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
 
     const modal = useModal();
     const dialogTabs = ['Details','Location'];
@@ -33,11 +33,38 @@ const CreateProcedureDialogContainer = ({onCancel, addProcedure}) =>{
 
     const [tabIndex, setTabIndex] = useState(selectedIndex)
     const [positiveText, setPositiveText] = useState("NEXT")
+    const [physicians, setPhysicians] = useState([])
+    const [theatres, setTheates] = useState([])
 
     const [fields, setFields] = useState({
-        isTemplate : 'Yes',
-        hasRecovery : 'Yes'
+        reference :'--',
+        name : '',
+        duration : '',
+        notes:'',
+        isTemplate : false,
+        hasRecovery : true,
+        physician: '',
+        supportedRooms: [],
+        inventories:[],
+        equipments:[]
     });
+
+    useEffect(()=>{
+        getTheatres()
+            .then(data => {
+                setTheates(data)
+            })
+            .catch(error => {
+                console.log("Failed to get storage", error)
+            })
+        getPhysicians()
+            .then(data => {
+                setPhysicians(data)
+            })
+            .catch(error => {
+                console.log("Failed to get storage", error)
+            })
+    },[])
 
     const handleCloseDialog = () => {
         onCancel();
@@ -57,9 +84,13 @@ const CreateProcedureDialogContainer = ({onCancel, addProcedure}) =>{
     }
 
     const onPositiveButtonPress = () =>{
+        const updatedFields = {
+            ...fields,
+            duration : parseInt(fields['duration'])
+        }
         if(tabIndex === dialogTabs.length - 1){
-            // console.log("Fields: ",fields)
-            createProcedureCall()
+            // console.log("Fields: ",updatedFields)
+            createProcedureCall(updatedFields)
         }else if (tabIndex + 1 === dialogTabs.length - 1)
         {
             setPositiveText("DONE")
@@ -78,20 +109,25 @@ const CreateProcedureDialogContainer = ({onCancel, addProcedure}) =>{
                 return <DialogDetailsTab
                     onFieldChange = {onFieldChange}
                     fields = {fields}
+                    physicians = {physicians.map( item => { return { _id : item._id, name : `Dr. ${item.firstName} ${item.surname}`} })}
+                    theatres = {theatres}
                 />;
             case "Location":
                 return <DialogLocationTab
                     onFieldChange = {onFieldChange}
+                    theatres = {theatres}
                 />;
             default :
                 return <View/>
         }
     };
 
-    const createProcedureCall = () =>{
-        createNewProcedure(fields)
+    const createProcedureCall = (updatedFields) =>{
+        createNewProcedure(updatedFields)
             .then(data => {
-                addProcedure(data);
+                // addProcedure(data);
+                modal.closeAllModals();
+                setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
                 // todo handle error
@@ -126,11 +162,8 @@ const CreateProcedureDialogContainer = ({onCancel, addProcedure}) =>{
 CreateProcedureDialogContainer.propTypes = {}
 CreateProcedureDialogContainer.defaultProps = {}
 
-const mapDispatcherToProps = {
-    addProcedure
-};
 
-export default connect(null, mapDispatcherToProps)(CreateProcedureDialogContainer);
+export default CreateProcedureDialogContainer;
 
 
 const styles = StyleSheet.create({

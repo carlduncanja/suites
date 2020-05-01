@@ -1,16 +1,10 @@
-import React,{ useState, useEffect } from "react";
+import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
-import EquipmentDialogDetailsTab from './EquipmentDialogDetailsTab';
-
-import { formatDate } from '../../utils/formatter'
+import { createPhysician } from "../../api/network";
 import {useModal} from "react-native-modalfy";
-
-import { createEquipment, getStorage } from "../../api/network";
-import { addEquipment } from "../../redux/actions/equipmentActions";
-import {connect} from "react-redux";
-
+import PhysicianDetailsTab from './PhysicianDetailsTab';
 
 
 /**
@@ -18,44 +12,30 @@ import {connect} from "react-redux";
  *
  * @param onCancel
  * @param onCreated
- * @param addWorkItem
  * @returns {*}
  * @constructor
  */
 
-const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equipmentTypes}) =>{
+const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
 
     const modal = useModal();
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
 
     const [positiveText, setPositiveText] = useState("DONE")
-    const [storage, setStorage] = useState([])
 
     const [fields, setFields] = useState({
-        name : '',
-        assigmentType: 'Location',
-        status : 'Available',
-        appointments : [],
-        sku : '',
-        type: '',
-        assignment : {},
-        usage : '0',
-        category : []
+        firstName : '',
+        middleName: '',
+        surname : '',
+        gender: '',
+        phones : [],
+        emails : [],
+        emergencyContact:[],
+        address:[]
     });
 
-    useEffect(()=>{
-        getStorage()
-            .then(data => {
-                setStorage(data)
-            })
-            .catch(error => {
-                console.log("Failed to get storage", error)
-            })
-    },[])
-
     const onFieldChange = (fieldName) => (value) => {
-        console.log("Value:", value)
         setFields({
             ...fields,
             [fieldName]: value
@@ -68,41 +48,34 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
     };
 
     const onPositiveButtonPress = () => {
-
         const updatedFields = {
-            ...fields, 
-            usage: parseInt(fields['usage']),
-            assignment : { theatre : fields['assignment'] },
-            // type : fields['type'][0]._id
+            ...fields,
+            trn : parseInt(fields['trn'])
         }
-
-        // console.log("New Fields: ", updatedFields)
-        createEquipmentCall(updatedFields)
+        console.log("Fields:", updatedFields)
+        createPhysicianCall(updatedFields)
     };
-    
-    const getDialogContent = (tab) => {
 
+    const getDialogContent = (tab) => {
         switch (tab) {
             case "Details":
-                return <EquipmentDialogDetailsTab
+                return <PhysicianDetailsTab
                     onFieldChange = {onFieldChange}
                     fields = {fields}
-                    storage = {storage.map( item => { return { _id: item.theatre._id, name: item.name}})}
-                    equipmentTypes = {equipmentTypes}
                 />;
             default :
                 return <View/>
         }
     };
 
-    const createEquipmentCall = (updatedFields) => {
-        createEquipment(updatedFields)
+    const createPhysicianCall = (updatedFields) => {
+        createPhysician(updatedFields)
             .then(data => {
                 modal.closeAllModals();
                 setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
-                console.log("failed to create equipment", error);
+                console.log("failed to create physician", error);
                 // TODO handle error
             })
             .finally(_ => {
@@ -111,7 +84,7 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
 
     return (
         <OverlayDialog
-            title={"Add Equipment"}
+            title={"Add Physician"}
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
@@ -129,10 +102,10 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
     )
 }
 
-CreateEquipmentDialogContainer.propTypes = {}
-CreateEquipmentDialogContainer.defaultProps = {}
+CreatePhysicianDialogContainer.propTypes = {}
+CreatePhysicianDialogContainer.defaultProps = {}
 
-export default CreateEquipmentDialogContainer
+export default CreatePhysicianDialogContainer
 
 const styles = StyleSheet.create({
     container:{
@@ -142,4 +115,3 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
 })
-

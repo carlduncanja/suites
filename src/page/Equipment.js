@@ -160,9 +160,21 @@ const Equipment = (props) => {
     };
 
     const renderEquipmentFn = (item) => { 
+
+        const filterEquiments = equipment.filter( eqItem => {
+            const { type = {} } = eqItem
+            const { _id = "" } = type
+            
+            return ( item._id === _id)
+            
+            // return _id === null ?
+            //     null
+            //     :
+            
+            //     item._id  === _id
         
-        // const filterEquiments = equipment.filter( eqItem => eqItem.type._id === item._id)
-        const filterEquiments = []
+        })
+        // const filterEquiments = []
         const filterStatus = filterEquiments.filter( eqItem => eqItem.status === 'Available')
         const viewItem = {
             name : item.name,
@@ -237,7 +249,10 @@ const Equipment = (props) => {
                 .openModal(
                     'OverlayModal',
                     {
-                        content: <CreateEquipmentDialog onCancel={() => setFloatingAction(false)}
+                        content: <CreateEquipmentDialog 
+                            onCancel={() => setFloatingAction(false)}
+                            onCreated={(item) => handleOnItemPress(item)}
+                            equipmentTypes = {equipmentTypes}
                         />,
                         onClose: () => setFloatingAction(false)
                     })

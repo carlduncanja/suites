@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React,{ useState  } from "react";
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text, TextInput} from "react-native";
 import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
@@ -8,42 +8,30 @@ import AddIcon from "../../../../assets/svg/addIcon";
 import IconButton from "../Buttons/IconButton";
 import CheckBoxComponent from '../Checkbox';
 import { checkboxItemPress } from '../../../helpers/caseFilesHelpers';
-import SearchInput,{ createFilter } from 'react-native-search-filter';
+import { createFilter } from 'react-native-search-filter';
 import SearchableContainer from '../SearchableContainer';
 
-
-function MultipleOptionsField ({onOptionsSelected, label, options, keysToFilter = ['value']}) {
+const MultipleSelectionsField = ({onOptionsSelected, label, options, keysToFilter = ['name']}) => {
 
     const [selectedOption, setSelectedOption] = useState("")
     const [searchText, setSearchText] = useState("")
     const [checkedList, setCheckedList] = useState([])
 
-    const onSearchChangeText = (text) =>{ 
+    const onSearchChangeText = (text) =>{
         setSearchText(text)
-    } 
-
-    const handleIsCheck = (item) =>{
-        const {_id} = item
-        return checkedList.includes(item)
     }
 
     const onCheckboxPress = (item) => () => {
-        const { _id = "" } = item;
-        
-        // let updatedList = checkboxItemPress(item, id, checkedList)
-        // const filterSelected = options.filter( item => item._id === updatedList[0])
-        
-        let updatedList = [...checkedList];
-        if (updatedList.includes(_id)){
-            console.log("Includes")
-            updatedList = updatedList.filter( id => id !==  _id )
+        let updatedList = [...checkedList]
+        if (checkedList.includes(item)){
+            updatedList = updatedList.filter( filterItem => filterItem !== item)
         }else{
-            updatedList = [...updatedList, _id]
+            updatedList = [...updatedList,item]
         }
-        console.log("Checked List: ", updatedList)
+
         setCheckedList(updatedList)
-        onOptionsSelected(updatedList)
-        // setSelectedOption(filterSelected[0].name)
+        setSelectedOption(updatedList[0].name)
+        
     }
 
     return (
@@ -56,7 +44,7 @@ function MultipleOptionsField ({onOptionsSelected, label, options, keysToFilter 
                 {label}
             </Text>
             <Menu 
-                // onSelect={oneOptionsSelected} 
+                onClose = {()=>{onOptionsSelected(checkedList)}}
                 style={{flex: 1,position:"relative"}} 
             >
                 <MenuTrigger>
@@ -71,20 +59,26 @@ function MultipleOptionsField ({onOptionsSelected, label, options, keysToFilter 
                                     />
                                 </View>
                         }
-                            
                         {
-                            checkedList.length - 1 > 0 &&
-                                <Text style={{color:'#3182CE', fontSize:14}}>+ {checkedList.length - 1} more</Text>
+                            checkedList.length - 1 > 0 && 
+                                <Text style={{
+                                    fontSize:14,
+                                    color:'#3182CE',
+                                    paddingLeft:4
+                                }}>
+                                    +{checkedList.length - 1} more
+                                </Text>
                         }
-
+                            
                         <View style={{flex:1,justifyContent:"flex-end", alignItems:"flex-end"}}>
                             <DropDownIcon/>
                         </View>
                             
                     </View>
                 </MenuTrigger>
-                
+
                 <MenuOptions customStyles={optionsStyles}>
+
                     <View style={styles.menuOptionsContainer}>
                         <SearchableContainer
                             options = {options}
@@ -93,7 +87,6 @@ function MultipleOptionsField ({onOptionsSelected, label, options, keysToFilter 
                             checkedList = {checkedList}
                             searchText = {searchText}
                             onSearchChangeText = {onSearchChangeText}
-                            handleIsCheck = {handleIsCheck}
                         />
                         
                         <View style={styles.footer}>
@@ -108,12 +101,16 @@ function MultipleOptionsField ({onOptionsSelected, label, options, keysToFilter 
                     </View>
                 </MenuOptions> 
             </Menu>
+
         </View>
-    );
+    )
 }
 
-MultipleOptionsField.propTypes = {};
-MultipleOptionsField.defaultProps = {};
+MultipleSelectionsField.propTypes = {};
+MultipleSelectionsField.defaultProps = {};
+
+export default MultipleSelectionsField;
+
 
 const optionsStyles = {
     optionsContainer: {
@@ -121,12 +118,6 @@ const optionsStyles = {
     }
 }
 
-const optionStyle = {
-    optionWrapper : {
-        flexDirection : 'row',
-        padding:10
-    },
-}
 
 const styles = StyleSheet.create({
     container: {
@@ -195,4 +186,3 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MultipleOptionsField;

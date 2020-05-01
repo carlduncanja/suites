@@ -195,7 +195,9 @@ const Procedures = (props) =>{
                 .openModal(
                     'OverlayModal',
                     {
-                        content: <CreateProcedureDialog onCancel={() => setFloatingAction(false)}
+                        content: <CreateProcedureDialog 
+                            onCancel={() => setFloatingAction(false)}
+                            onCreated={(item) => handleOnItemPress(item)}
                         />,
                         onClose: () => setFloatingAction(false)
                     })

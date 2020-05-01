@@ -3,8 +3,33 @@ import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import DropdownInputField from "../common/Input Fields/DropdownInputField";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
+import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
+import OptionsField from "../common/Input Fields/OptionsField";
+import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
-const DialogDetailsTab = ({ onFieldChange, fields }) =>{
+
+
+const DialogDetailsTab = ({ onFieldChange, fields, physicians }) =>{
+   
+    const recoveryText = {
+        true: "Yes",
+        false: "No"
+    };
+    const templateText = {
+        true: "Yes",
+        false: "No"
+    }
+    const testCategory = [
+        {
+            _id : 'surgical',
+            name : 'Surgical'
+        },
+        {
+            _id : 'electrical',
+            name : 'Electrical'
+        }
+    ]
     return (
         <View style={styles.sectionContainer}>
             
@@ -19,11 +44,14 @@ const DialogDetailsTab = ({ onFieldChange, fields }) =>{
                     />
                 </View>
                 <View style={[styles.inputWrapper]}>
-                    <DropdownInputField 
+                    <OptionsField
                         label={"Template ?"}
-                        onSelectChange={onFieldChange('isTemplate')}
-                        value={fields['isTemplate']}
-                        dropdownOptions = {["Yes","No"]}
+                        text={templateText[fields['isTemplate']]}
+                        oneOptionsSelected={onFieldChange('isTemplate')}
+                        menuOption={<MenuOptions>
+                            <MenuOption value={true} text='Yes'/>
+                            <MenuOption value={false} text='No'/>
+                        </MenuOptions>}
                     />
                 </View>
 
@@ -49,11 +77,11 @@ const DialogDetailsTab = ({ onFieldChange, fields }) =>{
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 
+                    <OptionSearchableField
                         label={"Physician"}
-                        onChangeText={onFieldChange('physician')}
-                        value={fields['physician']}
-                        onClear={() => onFieldChange('physician')('')}
+                        onOptionsSelected={onFieldChange('physician')}
+                        options = {physicians}
+                        keysToFilter = {['name']}
                     />
                 </View>
 
@@ -61,21 +89,21 @@ const DialogDetailsTab = ({ onFieldChange, fields }) =>{
 
             <View style={styles.row}>
 
-                {/* <View style={styles.inputWrapper}>
-                    <DropdownInputField 
+                <View style={styles.inputWrapper}>
+                    {/* <DropdownInputField 
                         label={"Location"}
                         onSelectChange={onFieldChange('location')}
                         value={fields['location']}
                         dropdownOptions = {["Operating Room 1","Operating Room 2", "Operating Room 3", "Operating Room 4", "Operating Room 5"]}
-                    />
-                </View> */}
+                    /> */}
+                </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 
+                    <MultipleSelectionsField 
                         label={"Category"}
-                        onChangeText={onFieldChange('category')}
-                        value={fields['category']}
-                        onClear={() => onFieldChange('category')('')}
+                        onOptionsSelected={onFieldChange('category')}
+                        options = {testCategory}
+                        keysToFilter = {['name']}
                     />
                 </View>
 
@@ -94,11 +122,14 @@ const DialogDetailsTab = ({ onFieldChange, fields }) =>{
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <DropdownInputField 
+                    <OptionsField
                         label={"Recovery ?"}
-                        onSelectChange={onFieldChange('hasRecovery')}
-                        value={fields['hasRecovery']}
-                        dropdownOptions = {["Yes","No"]}
+                        text={templateText[fields['hasRecovery']]}
+                        oneOptionsSelected={onFieldChange('hasRecovery')}
+                        menuOption={<MenuOptions>
+                            <MenuOption value={true} text='Yes'/>
+                            <MenuOption value={false} text='No'/>
+                        </MenuOptions>}
                     />
                 </View>
 
