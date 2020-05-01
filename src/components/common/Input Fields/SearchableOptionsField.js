@@ -79,14 +79,15 @@ function SearchableOptionsField({text, label, options, oneOptionsSelected, onCha
 
 
                 {
-                    !selectedValue &&
-                    <View style={styles.suggestionContainer}>
-                        <FlatList
-                            keyExtractor={(item, index) => index+''}
-                            data={options}
-                            renderItem={renderOptions}
-                        />
-                    </View>
+                    (!selectedValue && text)
+                        ? <View style={styles.suggestionContainer}>
+                            <FlatList
+                                keyExtractor={(item, index) => index + ''}
+                                data={options}
+                                renderItem={renderOptions}
+                            />
+                        </View>
+                        : null
                 }
             </View>
         </View>
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
         flex: 1,
         position: 'relative',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     inputFieldWrapper: {
         position: 'relative',
@@ -114,17 +115,18 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     suggestionContainer: {
-        // flex: 1,
-        height: 100,
+        position: 'absolute',
         top: 35,
         padding: 12,
         paddingTop: 8,
+        paddingBottom: 2,
         width: '100%',
-        position: 'absolute',
-        borderBottomLeftRadius: 12,
-        borderBottomRightRadius: 12,
+        maxHeight: 300,
+        borderRadius: 8,
+        // border: 1px solid #CCD6E0;
+        borderWidth: 1,
+        borderColor: '#CCD6E0',
         backgroundColor: '#FFFFFF',
-        paddingBottom: 15,
         shadowColor: "#000",
         shadowOffset: {
             width: 0.5,
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 3.84,
         elevation: 10,
-        zIndex: 100,
+        zIndex: 1,
     },
     optionText: {
         fontSize: 14,
