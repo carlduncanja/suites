@@ -33,20 +33,21 @@ function OverlayDialog(props) {
                 </TouchableOpacity>
             </View>
 
-            <View>
-                {props.children}
-            </View>
 
-            <TouchableOpacity onPress={onPositiveButtonPress}>
-                <View style={styles.footerButton}>
+            <TouchableOpacity style={styles.footerButton} onPress={onPositiveButtonPress}>
+                <View>
                     <Text style={styles.positiveText}>{positiveText}</Text>
                     {
                         buttonIcon
                     }
                 </View>
             </TouchableOpacity>
-        </View>
 
+            <View>
+                {props.children}
+            </View>
+
+        </View>
     );
 }
 
@@ -60,9 +61,11 @@ OverlayDialog.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
+        position: 'relative',
         backgroundColor: "#FFFFFF",
         borderRadius: 8,
         maxWidth: 636,
+        paddingBottom: 67,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -84,13 +87,18 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E3E8EF'
     },
     footerButton: {
-        flex: 1,
-        flexDirection: 'row',
+        position: 'absolute',
         height: 57,
+        width: '100%',
+        bottom: 0,
+        flexDirection: 'row',
+        borderBottomRightRadius: 8,
+        borderBottomLeftRadius: 8,
         borderTopWidth: 1,
         borderTopColor: '#E3E8EF',
         justifyContent: 'center',
         alignItems: 'center',
+        zIndex: 0,
     },
     positiveText: {
         fontSize: 16,
