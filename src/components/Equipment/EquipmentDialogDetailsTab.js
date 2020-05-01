@@ -1,19 +1,65 @@
-import React, {useState} from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, {useEffect, useState} from "react";
+import {View, Text, StyleSheet} from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import DropdownMultipleSelectField from "../common/Input Fields/DropdownMultipleSelectField";
 import DropdownInputField from "../common/Input Fields/DropdownInputField";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import OptionsField from "../common/Input Fields/OptionsField";
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
 import MultipleOptionsField from "../common/Input Fields/MultipleOptionsField";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import {getTheatres, searchSchedule} from "../../api/network";
+import _ from "lodash";
 
-const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
+
+const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
 
     const [theatresSearchValue, setTheatreSearchValue] = useState();
     const [theatreSearchResults, setTheatreSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
 
+
+    // ######
+
+
+    // Handle theatres search
+    useEffect(() => {
+
+        if (!theatresSearchValue) {
+            // empty search values and cancel any out going request.
+            setTheatreSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchTheatres, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [theatresSearchValue]);
+
+
+    const fetchTheatres = () => {
+        console.log("searching for ", theatresSearchValue);
+        getTheatres(theatresSearchValue, 5)
+            .then(data => {
+                console.log("theatres search", data);
+                setTheatreSearchResult(data || []);
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get theatres");
+                setTheatreSearchValue([]);
+            })
+    };
 
 
     return (
@@ -38,16 +84,16 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
                         //     <MenuOption value={'sur'} text='Surgical'/>
                         //     <MenuOption value={'ele'} text='Electric'/>
                         // </MenuOptions>}
-                        options = {[
+                        options={[
                             {
-                                id : 'sur',
-                                value : 'sur',
-                                text : 'Surgical'
+                                id: 'sur',
+                                value: 'sur',
+                                text: 'Surgical'
                             },
                             {
-                                id : 'ele',
-                                value : 'ele',
-                                text : 'Electric'
+                                id: 'ele',
+                                value: 'ele',
+                                text: 'Electric'
                             }
                         ]}
                     />
@@ -63,15 +109,15 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
 
             <View style={styles.row}>
 
-                <View style={{width:260}}>
+                <View style={{width: 260}}>
                     <OptionsField
                         label={"Assignment"}
                         text={fields['assignment']}
                         oneOptionsSelected={onFieldChange('assignment')}
                         menuOption={
-                        <MenuOptions>
-                            <MenuOption value={'location'} text='Location'/>
-                        </MenuOptions>
+                            <MenuOptions>
+                                <MenuOption value={'location'} text='Location'/>
+                            </MenuOptions>
                         }
                     />
                 </View>
@@ -80,26 +126,14 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
                         label={"Usage"}
                         onChangeText={onFieldChange('usage')}
                         value={fields['usage']}
-                        units = {['hrs']}
-                        keyboardType = "number-pad"
+                        units={['hrs']}
+                        keyboardType="number-pad"
                     />
                 </View>
             </View>
 
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
-                    {/*<OptionsField*/}
-                    {/*    label={"Assigned"}*/}
-                    {/*    text={fields['assigned']}*/}
-                    {/*    oneOptionsSelected={onFieldChange('assigned')}*/}
-                    {/*    menuOption={*/}
-                    {/*    <MenuOptions>*/}
-                    {/*        <MenuOption value={'or1'} text='OR1'/>*/}
-                    {/*        <MenuOption value={'or2'} text='OR2'/>*/}
-                    {/*    </MenuOptions>*/}
-                    {/*    }*/}
-                    {/*/>*/}
-
                     <SearchableOptionsField
                         label={"Assigned"}
                         text={theatresSearchValue}
@@ -111,25 +145,8 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
                             onFieldChange('assigned')('');
                             setTheatreSearchValue('');
                         }}
-                        options={[
-                            {
-                                key: "1",
-                                name: "one"
-                            },
-                            {
-                                key: "2",
-                                name: "two"
-                            }
-                        ]}
+                        options={theatreSearchResults}
                     />
-
-
-                    {/* <DropdownInputField
-                        label={"Assigned"}
-                        onSelectChange={onFieldChange('assigned')}
-                        value={fields['assigned']}
-                        dropdownOptions = {["OR 1", "OR 2"]}
-                    /> */}
                 </View>
                 <View style={styles.inputWrapper}>
                     <OptionsField
@@ -137,18 +154,12 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
                         text={fields['status']}
                         oneOptionsSelected={onFieldChange('status')}
                         menuOption={
-                        <MenuOptions>
-                            <MenuOption value={'available'} text='Available'/>
-                            <MenuOption value={'use'} text='In Use'/>
-                        </MenuOptions>
+                            <MenuOptions>
+                                <MenuOption value={'available'} text='Available'/>
+                                <MenuOption value={'use'} text='In Use'/>
+                            </MenuOptions>
                         }
                     />
-                    {/* <DropdownInputField
-                        label={"Status"}
-                        onSelectChange={onFieldChange('status')}
-                        value={fields['status']}
-                        dropdownOptions = {["Available", "In Use"]}
-                    /> */}
                 </View>
             </View>
 
