@@ -23,6 +23,7 @@ import { setPhysicians } from "../redux/actions/physiciansActions";
 import { getPhysicians } from "../api/network";
 
 import { withModal } from 'react-native-modalfy';
+import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
 
 const Physicians = (props) => {
 
@@ -187,7 +188,7 @@ const Physicians = (props) => {
             </LongPressWithFeedback>;
         const assignActionCase = <ActionItem title={"Assign Case"} icon={<AssignIcon/>} onPress={()=>{}}/>;
         const createActionWorkItem = <ActionItem title={"Add Work Item"} icon={<AddIcon/>} onPress={ openCreateNewWorkItem }/>;
-        const createActionPhysician = <ActionItem title={"Add Physician"} icon={<AddIcon/>} onPress={()=>{}}/>;
+        const createActionPhysician = <ActionItem title={"Add Physician"} icon={<AddIcon/>} onPress={ openCreatePhysicians }/>;
 
 
         return <ActionContainer
@@ -212,6 +213,25 @@ const Physicians = (props) => {
                     'OverlayModal',
                     {
                         content: <CreateWorkItemDialog onCancel={() => setFloatingAction(false)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    }
+
+    const openCreatePhysicians = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <CreatePhysicianDialogContainer 
+                            onCancel={() => setFloatingAction(false)}
+                            onCreated={(item) => handleOnItemPress(item)}
                         />,
                         onClose: () => setFloatingAction(false)
                     })

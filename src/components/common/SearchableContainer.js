@@ -1,6 +1,6 @@
 import React,{ useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, TextInput} from "react-native";
+import {View, StyleSheet, Text, TextInput, ScrollView} from "react-native";
 import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
 import SearchInput,{ createFilter } from 'react-native-search-filter';
 
@@ -12,22 +12,15 @@ import CheckBoxComponent from './Checkbox';
 import { checkboxItemPress } from '../../helpers/caseFilesHelpers';
 
 /**
- * @param keysToFilter array of string
+ * @param keysToFilter array of string 
  * @returns {*} 
  */
 
-const SearchableContainer = ({keysToFilter, options, onCheckboxPress, checkedList}) => {
+const SearchableContainer = ({keysToFilter, options, handleIsCheck  ,onCheckboxPress, checkedList, searchText, onSearchChangeText}) => {
 
     const  KEYS_TO_FILTER = keysToFilter
 
-    const [searchText, setSearchText] = useState("")
-
-    const onSearchChangeText = (text) =>{
-        setSearchText(text)
-    }
-
     const filteredOptions = searchText === '' ? [] : options.filter(createFilter(searchText, KEYS_TO_FILTER))
-
     return (
         <>
             <View style={styles.searchContainer}>
@@ -37,19 +30,23 @@ const SearchableContainer = ({keysToFilter, options, onCheckboxPress, checkedLis
                     keyboardType = {"default"}
                 />
             </View>
-             <View style={styles.suggestionsContainer}>
+             <ScrollView 
+                bounces = {false}
+                style={styles.suggestionsContainer}
+            >
                 {filteredOptions.map(( option, index)=>{
+                   
                     return (
                         <View key={index} style={styles.optionWrapper}>
                             <CheckBoxComponent
-                                isCheck = {checkedList.includes(option.value)}
+                                isCheck = {checkedList.includes(option)}
                                 onPress = {onCheckboxPress(option)}
                             />
-                            <Text style={{color:"#323843", fontSize:14, paddingLeft:6}}>{option.text}</Text>
+                            <Text style={{color:"#323843", fontSize:14, paddingLeft:6}}>{option.name}</Text>
                         </View>
                     )
                 })}
-            </View>
+            </ScrollView>
         </>
 
     )

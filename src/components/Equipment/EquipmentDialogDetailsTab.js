@@ -1,16 +1,29 @@
-import React, {useEffect, useState} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import React,{  } from "react";
+import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
-import DropdownMultipleSelectField from "../common/Input Fields/DropdownMultipleSelectField";
-import DropdownInputField from "../common/Input Fields/DropdownInputField";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import OptionsField from "../common/Input Fields/OptionsField";
-import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
 import MultipleOptionsField from "../common/Input Fields/MultipleOptionsField";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import {getTheatres, searchSchedule} from "../../api/network";
 import _ from "lodash";
 
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
+import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
+
+const EquipmentDialogDetailsTab = ({ onFieldChange, fields, storage, equipmentTypes }) =>{
+
+const testCategory = [
+    {
+        _id : '8hwHGuygf92',
+        name : 'Surgical'
+    },
+    {
+        _id : '8hopTEoud10',
+        name : 'Electric'
+    }
+];
 
 const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
 
@@ -69,41 +82,18 @@ const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Equipment"}
-                        onChangeText={onFieldChange('equipmentName')}
-                        value={fields['equipmentName']}
-                        onClear={() => onFieldChange('equipmentName')('')}
+                        onChangeText={onFieldChange('name')}
+                        value={fields['name']}
+                        onClear={() => onFieldChange('name')('')}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
-                    <MultipleOptionsField
+                    <MultipleSelectionsField
                         label={"Category"}
-                        text={fields['category']}
-                        oneOptionsSelected={onFieldChange('category')}
-                        // menuOption={
-                        // <MenuOptions>
-                        //     <MenuOption value={'sur'} text='Surgical'/>
-                        //     <MenuOption value={'ele'} text='Electric'/>
-                        // </MenuOptions>}
-                        options={[
-                            {
-                                id: 'sur',
-                                value: 'sur',
-                                text: 'Surgical'
-                            },
-                            {
-                                id: 'ele',
-                                value: 'ele',
-                                text: 'Electric'
-                            }
-                        ]}
+                        onOptionsSelected={onFieldChange('category')}
+                        options = {testCategory}
+                        keysToFilter = {['name']}
                     />
-
-                    {/* <DropdownMultipleSelectField
-                        label={"Category"}
-                        onSelectChange={onFieldChange('category')}
-                        value={fields['category']}
-                        dropdownOptions = {["Electric","Manual"]}
-                    /> */}
                 </View>
             </View>
 
@@ -112,12 +102,12 @@ const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
                 <View style={{width: 260}}>
                     <OptionsField
                         label={"Assignment"}
-                        text={fields['assignment']}
-                        oneOptionsSelected={onFieldChange('assignment')}
+                        text={fields['assigmentType']}
+                        oneOptionsSelected={onFieldChange('assigmentType')}
                         menuOption={
-                            <MenuOptions>
-                                <MenuOption value={'location'} text='Location'/>
-                            </MenuOptions>
+                        <MenuOptions>
+                            <MenuOption value={'Location'} text='Location'/>
+                        </MenuOptions>
                         }
                     />
                 </View>
@@ -154,11 +144,23 @@ const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
                         text={fields['status']}
                         oneOptionsSelected={onFieldChange('status')}
                         menuOption={
-                            <MenuOptions>
-                                <MenuOption value={'available'} text='Available'/>
-                                <MenuOption value={'use'} text='In Use'/>
-                            </MenuOptions>
+                        <MenuOptions>
+                            <MenuOption value={'Available'} text='Available'/>
+                            <MenuOption value={'In Use'} text='In Use'/>
+                        </MenuOptions>
                         }
+                    />
+                </View>
+
+            </View>
+
+            <View style={styles.row}>
+                <View style={styles.inputWrapper}>
+                    <OptionSearchableField
+                        label={"Type"}
+                        onOptionsSelected={onFieldChange('type')}
+                        options = {equipmentTypes}
+                        keysToFilter = {['name']}
                     />
                 </View>
             </View>
@@ -175,7 +177,7 @@ export default EquipmentDialogDetailsTab
 
 const styles = StyleSheet.create({
     sectionContainer: {
-        height: 200,
+        height: 230,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         padding: 24,

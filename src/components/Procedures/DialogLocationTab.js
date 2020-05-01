@@ -5,6 +5,7 @@ import Table from '../common/Table/Table';
 import Paginator from "../common/Paginators/Paginator";
 import Button from '../common/Buttons/Button';
 import IconButton from '../common/Buttons/IconButton'
+import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
 
 import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
 
@@ -41,16 +42,17 @@ const testLocations = [
     },
 ]
 
-const DialogLocationTab = ({locations = testLocations, onFieldChange}) =>{
+const DialogLocationTab = ({theatres , onFieldChange}) =>{
 
     const recordsPerPage = 4
-    const totalPages = Math.ceil(locations.length/recordsPerPage)
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [displayLocations, setDisplayLoations] = useState(false)
     const [selectedLocations, setSelectedLocations] = useState([])
+
+    const totalPages = Math.ceil(selectedLocations.length/recordsPerPage)
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages){
@@ -99,23 +101,25 @@ const DialogLocationTab = ({locations = testLocations, onFieldChange}) =>{
     }
 
     const listItem = (item) => {
+        const status = "In Use"
+        const availability = 3
         let recovery = item.hasRecovery ? "Yes" : "No"
-        const statusColor = item.status === 'In Use' ? '#DD6B20' : item.status === 'Available' ? "#38A169" : "#323843"
+        const statusColor = status === 'In Use' ? '#DD6B20' : item.status === 'Available' ? "#38A169" : "#323843"
         const recoveryColor = item.hasRecovery ? "#38A169" : '#DD6B20'
 
         return (
             <TouchableOpacity style={{flexDirection:'row'}} onPress={()=>onPressItem(item)}>
                 <View style={styles.itemContainer}>
-                    <Text style={{color:'#3182CE', fontSize:16}}>{item.location}</Text>
+                    <Text style={{color:'#3182CE', fontSize:16}}>{item.name}</Text>
                 </View>
                 <View style={[styles.itemContainer,{alignItems:'center'}]}>
-                    <Text style={{color: statusColor, fontSize:14}}>{item.status}</Text>
+                    <Text style={{color: statusColor, fontSize:14}}>{status}</Text>
                 </View>
                 <View style={[styles.itemContainer,{alignItems:'center'}]}>
                     <Text style={{color:recoveryColor, fontSize:14}}>{recovery}</Text>
                 </View>
                 <View style={[styles.itemContainer,{alignItems:'flex-end'}]}>
-                    <Text style={{color:'#323843', fontSize:14}}>{item.availability} Slots</Text>
+                    <Text style={{color:'#323843', fontSize:14}}>{availability} Slots</Text>
                 </View>
             </TouchableOpacity>
         )
@@ -127,26 +131,30 @@ const DialogLocationTab = ({locations = testLocations, onFieldChange}) =>{
     return (
         <View style={styles.sectionContainer}>
 
-            <View style={[styles.container,styles.addNewContainer]}>
-                <Text>Add New Location</Text>
-                <IconButton
-                    Icon = {<AddIcon/>}
-                    onPress = { addLocation }
-                />
-                
-            </View>
-            {
-                displayLocations && <ScrollView style={{backgroundColor: 'yellow', height:100, width:"100%"}}>
-                    <Table
-                        isCheckbox = {false}
-                        data = {locations}
-                        listItemFormat = {listItem}
-                        headers = {[]}
-                    />
-                </ScrollView>
-
-            }
-
+            <Menu 
+                onClose = {()=>{}}
+                // onSelect={oneOptionsSelected} 
+                // style={{flex: 1,position:"relative"}} 
+                // style={[styles.container,styles.addNewContainer]}
+            >
+                <MenuTrigger>
+                    <View style={[styles.container,styles.addNewContainer]}>
+                        <Text>Add New Location</Text>
+                        <AddIcon/>
+                    </View>
+                </MenuTrigger>
+                <MenuOptions customStyles = {optionsStyles}>
+                    <ScrollView style={{ height:200, width:"100%", backgroundColor:'#FFFFFF',padding: 10, borderColor:'#CCD6E0', borderWidth:1}}>
+                        <Table
+                            isCheckbox = {false}
+                            data = {theatres}
+                            listItemFormat = {listItem}
+                            headers = {[]}
+                        />
+                    </ScrollView>
+                </MenuOptions>
+            </Menu>
+            
             <View style={[styles.container,styles.listContainer]}>
                 <Table
                     isCheckbox = {false}
@@ -168,7 +176,7 @@ const DialogLocationTab = ({locations = testLocations, onFieldChange}) =>{
                         <Button
                             backgroundColor = "#F8FAFB"
                             // buttonPress = {()=>{console.log("Selected: ", selectedLocations)}}
-                            buttonPress = {()=>onFieldChange('supportedRooms')(selectedLocations.map( item => item.location))}
+                            buttonPress = {()=>onFieldChange('supportedRooms')(selectedLocations.map( item => item._id))}
                             title = "DONE"
                             color = "#4299E1"
                         />
@@ -185,6 +193,13 @@ DialogLocationTab.propTypes = {}
 DialogLocationTab.defaultProps = {}
 
 export default DialogLocationTab
+
+const optionsStyles = {
+    optionsContainer: {
+        width: 600,
+        backgroundColor:"rgba(255, 255, 255, 0)"
+    }
+}
 
 const styles = StyleSheet.create({
     sectionContainer: {

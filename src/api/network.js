@@ -136,6 +136,12 @@ export const getPhysicianById = async (id) => {
         .catch(handleError)
 };
 
+export const createPhysician = async (physicianToCreate) => {
+    return suitesAxiosInstance.post(physiciansEndpoint, physicianToCreate)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 // ################# Storage Endpoints
 export const getStorage = async () => {
     return suitesAxiosInstance.get(storageLocationsEndpoint)
@@ -173,6 +179,12 @@ export const getEquipmentTypes = async () => {
     return suitesAxiosInstance.get(equipmentTypesEndpoint)
         .then(handleResponse)
         .catch(handleError)
+};
+
+export const createEquipment = async (equipmentToCreate) => {
+    return suitesAxiosInstance.post(equipmentsEndpoint, equipmentToCreate)
+        .then(handleResponse)
+        .catch(handleError);
 };
 
 
