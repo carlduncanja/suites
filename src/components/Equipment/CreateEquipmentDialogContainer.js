@@ -76,7 +76,7 @@ const CreateEquipmentDialogContainer = () =>{
             </View>
         </OverlayDialog>
     )
-}
+};
 
 CreateEquipmentDialogContainer.propTypes = {}
 CreateEquipmentDialogContainer.defaultProps = {}

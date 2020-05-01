@@ -1,4 +1,4 @@
-import React,{  } from "react";
+import React, {useState} from "react";
 import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import DropdownMultipleSelectField from "../common/Input Fields/DropdownMultipleSelectField";
@@ -7,8 +7,15 @@ import InputUnitField from "../common/Input Fields/InputUnitFields";
 import OptionsField from "../common/Input Fields/OptionsField";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import MultipleOptionsField from "../common/Input Fields/MultipleOptionsField";
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 
 const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
+
+    const [theatresSearchValue, setTheatreSearchValue] = useState();
+    const [theatreSearchResults, setTheatreSearchResult] = useState([]);
+
+
+
     return (
         <View style={styles.sectionContainer}>
 
@@ -44,8 +51,8 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
                             }
                         ]}
                     />
-                    
-                    {/* <DropdownMultipleSelectField 
+
+                    {/* <DropdownMultipleSelectField
                         label={"Category"}
                         onSelectChange={onFieldChange('category')}
                         value={fields['category']}
@@ -55,7 +62,7 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
             </View>
 
             <View style={styles.row}>
-                
+
                 <View style={{width:260}}>
                     <OptionsField
                         label={"Assignment"}
@@ -69,7 +76,7 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
                     />
                 </View>
                 <View style={styles.inputWrapper}>
-                    <InputUnitField 
+                    <InputUnitField
                         label={"Usage"}
                         onChangeText={onFieldChange('usage')}
                         value={fields['usage']}
@@ -81,18 +88,43 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
 
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
-                    <OptionsField
+                    {/*<OptionsField*/}
+                    {/*    label={"Assigned"}*/}
+                    {/*    text={fields['assigned']}*/}
+                    {/*    oneOptionsSelected={onFieldChange('assigned')}*/}
+                    {/*    menuOption={*/}
+                    {/*    <MenuOptions>*/}
+                    {/*        <MenuOption value={'or1'} text='OR1'/>*/}
+                    {/*        <MenuOption value={'or2'} text='OR2'/>*/}
+                    {/*    </MenuOptions>*/}
+                    {/*    }*/}
+                    {/*/>*/}
+
+                    <SearchableOptionsField
                         label={"Assigned"}
-                        text={fields['assigned']}
-                        oneOptionsSelected={onFieldChange('assigned')}
-                        menuOption={
-                        <MenuOptions>
-                            <MenuOption value={'or1'} text='OR1'/>
-                            <MenuOption value={'or2'} text='OR2'/>
-                        </MenuOptions>
-                        }
+                        text={theatresSearchValue}
+                        oneOptionsSelected={(item) => {
+                            onFieldChange('assigned')(item.id)
+                        }}
+                        onChangeText={value => setTheatreSearchValue(value)}
+                        onClear={() => {
+                            onFieldChange('assigned')('');
+                            setTheatreSearchValue('');
+                        }}
+                        options={[
+                            {
+                                key: "1",
+                                name: "one"
+                            },
+                            {
+                                key: "2",
+                                name: "two"
+                            }
+                        ]}
                     />
-                    {/* <DropdownInputField 
+
+
+                    {/* <DropdownInputField
                         label={"Assigned"}
                         onSelectChange={onFieldChange('assigned')}
                         value={fields['assigned']}
@@ -111,7 +143,7 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields }) =>{
                         </MenuOptions>
                         }
                     />
-                    {/* <DropdownInputField 
+                    {/* <DropdownInputField
                         label={"Status"}
                         onSelectChange={onFieldChange('status')}
                         value={fields['status']}
