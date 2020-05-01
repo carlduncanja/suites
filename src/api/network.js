@@ -51,8 +51,8 @@ export const searchSchedule = async (query) => {
 };
 
 // ################# Theatres Endpoints
-export const getTheatres = async () => {
-    return suitesAxiosInstance.get(theatresEndpoint)
+export const getTheatres = async (query, max) => {
+    return suitesAxiosInstance.get(theatresEndpoint, {params: {query, max}})
         .then(handleResponse)
         .catch(handleError);
 };
