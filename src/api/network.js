@@ -104,8 +104,8 @@ export const getCaseFileById = async (id) => {
 };
 
 // ################# Procedures Endpoints
-export const getProcedures = async () => {
-    return suitesAxiosInstance.get(proceduresEndpoint)
+export const getProcedures = async ( query, max ) => {
+    return suitesAxiosInstance.get(proceduresEndpoint, {params : {query, max}})
         .then(handleResponse)
         .catch(handleError)
 };
@@ -175,8 +175,9 @@ export const getEquipmentById = async (id) => {
         .catch(handleError)
 };
 
-export const getEquipmentTypes = async () => {
-    return suitesAxiosInstance.get(equipmentTypesEndpoint)
+
+export const getEquipmentTypes = async ( query, max ) => {
+    return suitesAxiosInstance.get(equipmentTypesEndpoint, {params : {query, max}})
         .then(handleResponse)
         .catch(handleError)
 };

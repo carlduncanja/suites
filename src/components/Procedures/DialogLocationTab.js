@@ -1,13 +1,20 @@
-import React,{ useState } from "react";
+import React,{ useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import AddIcon from '../../../assets/svg/addNewIcon';
 import Table from '../common/Table/Table';
 import Paginator from "../common/Paginators/Paginator";
 import Button from '../common/Buttons/Button';
+import Item from '../common/Table/Item';
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
+
 import IconButton from '../common/Buttons/IconButton'
 import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
+import { getTheatres } from "../../api/network";
+import _ from "lodash";
 
 import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
+import SearchableMultipleOptionField from "../common/Input Fields/SearchableMultipleOptionField";
 
 const testLocations = [
     {
@@ -49,10 +56,55 @@ const DialogLocationTab = ({theatres , onFieldChange}) =>{
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
-    const [displayLocations, setDisplayLoations] = useState(false)
+   
+    const [searchLocationValue, setSearchLocationValue] = useState("")
+    const [searchLocationResults, setSearchLocationResults] = useState([])
+    const [searchLocationQuery, setSearchLocationQuery] = useState({});
+
     const [selectedLocations, setSelectedLocations] = useState([])
 
     const totalPages = Math.ceil(selectedLocations.length/recordsPerPage)
+
+    useEffect(() => {
+
+        if (!searchLocationValue) {
+            // empty search values and cancel any out going request.
+            setSearchLocationResults([]);
+            if (searchLocationQuery.cancel) searchLocationQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchTheatres, 300);
+
+        setSearchLocationQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchLocationValue]);
+
+    const fetchTheatres = () => {
+        getTheatres(searchLocationValue, 5)
+            .then((data = []) => {
+                const results = data.map(item => ({
+                    // name: `Dr. ${item.surname}`,
+                    ...item
+                }));
+                console.log("Results: ", results)
+                setSearchLocationResults(results || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get theatres");
+                setSearchLocationValue([]);
+            })
+    };
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages){
@@ -79,47 +131,42 @@ const DialogLocationTab = ({theatres , onFieldChange}) =>{
             alignment : "flex-start"
         },
         {
-            name : "Status",
-            alignment : "center"
-        },
-        {
             name : "Recovery",
-            alignment : "center"
-        },
-        {
-            name : "Availbility",
             alignment : "flex-end"
-        }
+        },
     ]
 
-    const addLocation = () =>{
-        setDisplayLoations(true)
+    const onPressItem = (item) =>{
+        let updatedLocations = [...selectedLocations]
+        selectedLocations.includes(item) ?
+            updatedLocations = updatedLocations.filter( location => location !== item)
+            :
+            updatedLocations = [...updatedLocations,item]
+        setSelectedLocations(updatedLocations)
+    } 
+
+    onPressResultItem = (item) => {
+        let updatedLocations = [...selectedLocations]
+        selectedLocations.includes(item) ?
+            updatedLocations = [...updatedLocations]
+            :
+            updatedLocations = [...updatedLocations,item]
+        setSelectedLocations(updatedLocations)
     }
 
-    const onPressItem = (item) =>{
-        setSelectedLocations([...selectedLocations, item])
-    }
 
     const listItem = (item) => {
-        const status = "In Use"
-        const availability = 3
         let recovery = item.hasRecovery ? "Yes" : "No"
-        const statusColor = status === 'In Use' ? '#DD6B20' : item.status === 'Available' ? "#38A169" : "#323843"
         const recoveryColor = item.hasRecovery ? "#38A169" : '#DD6B20'
 
         return (
-            <TouchableOpacity style={{flexDirection:'row'}} onPress={()=>onPressItem(item)}>
+            
+            <TouchableOpacity style={{flexDirection:'row'}} onPress={()=>onPressItem(item)}> 
                 <View style={styles.itemContainer}>
                     <Text style={{color:'#3182CE', fontSize:16}}>{item.name}</Text>
                 </View>
-                <View style={[styles.itemContainer,{alignItems:'center'}]}>
-                    <Text style={{color: statusColor, fontSize:14}}>{status}</Text>
-                </View>
-                <View style={[styles.itemContainer,{alignItems:'center'}]}>
-                    <Text style={{color:recoveryColor, fontSize:14}}>{recovery}</Text>
-                </View>
                 <View style={[styles.itemContainer,{alignItems:'flex-end'}]}>
-                    <Text style={{color:'#323843', fontSize:14}}>{availability} Slots</Text>
+                    <Text style={{color:recoveryColor, fontSize:14}}>{recovery}</Text>
                 </View>
             </TouchableOpacity>
         )
@@ -127,33 +174,22 @@ const DialogLocationTab = ({theatres , onFieldChange}) =>{
 
     let dataToDisplay = [...selectedLocations]
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
-
+    
     return (
         <View style={styles.sectionContainer}>
 
-            <Menu 
-                onClose = {()=>{}}
-                // onSelect={oneOptionsSelected} 
-                // style={{flex: 1,position:"relative"}} 
-                // style={[styles.container,styles.addNewContainer]}
-            >
-                <MenuTrigger>
-                    <View style={[styles.container,styles.addNewContainer]}>
-                        <Text>Add New Location</Text>
-                        <AddIcon/>
-                    </View>
-                </MenuTrigger>
-                <MenuOptions customStyles = {optionsStyles}>
-                    <ScrollView style={{ height:200, width:"100%", backgroundColor:'#FFFFFF',padding: 10, borderColor:'#CCD6E0', borderWidth:1}}>
-                        <Table
-                            isCheckbox = {false}
-                            data = {theatres}
-                            listItemFormat = {listItem}
-                            headers = {[]}
-                        />
-                    </ScrollView>
-                </MenuOptions>
-            </Menu>
+            <View style={[styles.container,styles.addNewContainer]}>
+                <SearchableMultipleOptionField
+                    label={"Add New Location"}
+                    text={searchLocationValue}
+                    onPressResultItem = {(item)=>onPressResultItem(item)}
+                    onChangeText={value => setSearchLocationValue(value)}
+                    onClear={() => {
+                        setSearchLocationValue("");
+                    }}
+                    options={searchLocationResults}
+                />
+            </View>
             
             <View style={[styles.container,styles.listContainer]}>
                 <Table
@@ -175,7 +211,6 @@ const DialogLocationTab = ({theatres , onFieldChange}) =>{
                     <View style={styles.buttonContainer}>
                         <Button
                             backgroundColor = "#F8FAFB"
-                            // buttonPress = {()=>{console.log("Selected: ", selectedLocations)}}
                             buttonPress = {()=>onFieldChange('supportedRooms')(selectedLocations.map( item => item._id))}
                             title = "DONE"
                             color = "#4299E1"

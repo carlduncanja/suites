@@ -5,7 +5,7 @@ import DropdownInputField from "../common/Input Fields/DropdownInputField";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import _ from "lodash";
-import {getPhysicians, getTheatres} from "../../api/network";
+import {getPhysicians, getTheatres, getProcedures} from "../../api/network";
 import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
 import OptionsField from "../common/Input Fields/OptionsField";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
@@ -22,6 +22,7 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
         true: "Yes",
         false: "No"
     }
+
     const testCategory = [
         {
             _id : 'surgical',
@@ -33,15 +34,21 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
         }
     ]
 
+    // Physicians Search
     const [searchValue, setSearchValue] = useState();
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
+
+    // Procedures Search
+    const [searchProcedureValue, setSearchProcedureValue] = useState();
+    const [searchProcedureResults, setSearcProcedurehResult] = useState([]);
+    const [searchProcedureQuery, setSearchProcedureQuery] = useState({});
 
 
     // ######
 
 
-    // Handle theatres search
+    // Handle physicians search
     useEffect(() => {
 
         if (!searchValue) {
@@ -65,6 +72,30 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
         search()
     }, [searchValue]);
 
+    // Handle procedures search
+    useEffect(() => {
+
+        if (!searchProcedureValue) {
+            // empty search values and cancel any out going request.
+            setSearcProcedurehResult([]);
+            if (searchProcedureQuery.cancel) searchProcedureQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchProcedures, 300);
+
+        setSearchProcedureQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchProcedureValue]);
+
 
     const fetchPhysicians = () => {
         getPhysicians(searchValue, 5)
@@ -86,28 +117,42 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
             })
     };
 
+    const fetchProcedures = () => {
+        getProcedures(searchProcedureValue, 5)
+            .then((data = []) => {
+                console.log("Data: ", data)
+                const results = data.map(item => ({
+                    ...item
+                }));
+
+                setSearcProcedurehResult(results || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get procedures");
+                setSearchProcedureValue([]);
+            })
+    };
+
     return (
         <View style={styles.sectionContainer}>
 
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2
+                    <SearchableOptionsField
                         label={"Reference"}
-                        onChangeText={onFieldChange('reference')}
-                        value={fields['reference']}
-                        onClear={() => onFieldChange('reference')('')}
-                    />
-                </View>
-                <View style={[styles.inputWrapper]}>
-                    <OptionsField
-                        label={"Template ?"}
-                        text={templateText[fields['isTemplate']]}
-                        oneOptionsSelected={onFieldChange('isTemplate')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={true} text='Yes'/>
-                            <MenuOption value={false} text='No'/>
-                        </MenuOptions>}
+                        text={searchProcedureValue}
+                        oneOptionsSelected={(item) => {
+                            onFieldChange('reference')(item._id)
+                        }}
+                        onChangeText={value => setSearchProcedureValue(value)}
+                        onClear={() => {
+                            onFieldChange('reference')('');
+                            setSearchProcedureValue('');
+                        }}
+                        options={searchProcedureResults}
                     />
                 </View>
 
@@ -160,15 +205,15 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
             </View>
 
             <View style={styles.row}>
-
-                {/* <View style={styles.inputWrapper}>
-                    <DropdownInputField
-                        label={"Location"}
-                        onSelectChange={onFieldChange('location')}
-                        value={fields['location']}
-                        dropdownOptions = {["Operating Room 1","Operating Room 2", "Operating Room 3", "Operating Room 4", "Operating Room 5"]}
-                    /> */}
-                {/*</View>*/}
+                <View style={styles.inputWrapper}>
+                    <InputUnitField
+                        label={"Duration"}
+                        onChangeText={onFieldChange('duration')}
+                        value={fields['duration']}
+                        units={['hrs']}
+                        keyboardType="number-pad"
+                    />
+                </View>
 
                 <View style={styles.inputWrapper}>
                     <MultipleSelectionsField
@@ -181,16 +226,6 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
             </View>
 
             <View style={[styles.row]}>
-
-                <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Duration"}
-                        onChangeText={onFieldChange('duration')}
-                        value={fields['duration']}
-                        units={['hrs']}
-                        keyboardType="number-pad"
-                    />
-                </View>
 
                 <View style={styles.inputWrapper}>
                     <OptionsField

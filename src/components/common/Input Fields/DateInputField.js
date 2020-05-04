@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
-// import DateTimePicker from '@react-native-community/datetimepicker'
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 /**
  *
@@ -17,7 +17,6 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  */
 
 function DateInputField({label, onChangeText, value, placeholder, keyboardType}) {
-
 
     return (
         <View style={styles.container}>
