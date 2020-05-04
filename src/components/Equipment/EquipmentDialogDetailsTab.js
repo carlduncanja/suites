@@ -1,5 +1,5 @@
-import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, {useState, useEffect} from "react";
+import {View, Text, StyleSheet} from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import OptionsField from "../common/Input Fields/OptionsField";
@@ -8,11 +8,11 @@ import SearchableOptionsField from "../common/Input Fields/SearchableOptionsFiel
 import {getTheatres, searchSchedule, getPhysicians, getEquipmentTypes} from "../../api/network";
 import _ from "lodash";
 
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
 
-const EquipmentDialogDetailsTab = ({ onFieldChange, fields, storage, equipmentTypes }) =>{
+const EquipmentDialogDetailsTab = ({onFieldChange, fields, storage, equipmentTypes}) => {
 
 const testCategory = [
     {
@@ -218,9 +218,15 @@ const testCategory = [
                     {/* <MultipleSelectionsField
                         label={"Category"}
                         onOptionsSelected={onFieldChange('category')}
+<<<<<<< HEAD
                         options = {testCategory}
                         keysToFilter = {['name']}
                     /> */}
+=======
+                        options={testCategory}
+                        keysToFilter={['name']}
+                    />
+>>>>>>> ccd72c345b8a0af18746e96cf7d36bd49fbf6cf3
                 </View>
             </View>
 
@@ -232,10 +238,16 @@ const testCategory = [
                         text={fields['assigmentType']}
                         oneOptionsSelected={onFieldChange('assigmentType')}
                         menuOption={
+<<<<<<< HEAD
                         <MenuOptions>
                             <MenuOption value={'Physicians'} text='Physicians'/>
                             <MenuOption value={'Location'} text='Location'/>
                         </MenuOptions>
+=======
+                            <MenuOptions>
+                                <MenuOption value={'Location'} text='Location'/>
+                            </MenuOptions>
+>>>>>>> ccd72c345b8a0af18746e96cf7d36bd49fbf6cf3
                         }
                     />
 
@@ -291,10 +303,10 @@ const testCategory = [
                         text={fields['status']}
                         oneOptionsSelected={onFieldChange('status')}
                         menuOption={
-                        <MenuOptions>
-                            <MenuOption value={'Available'} text='Available'/>
-                            <MenuOption value={'In Use'} text='In Use'/>
-                        </MenuOptions>
+                            <MenuOptions>
+                                <MenuOption value={'Available'} text='Available'/>
+                                <MenuOption value={'In Use'} text='In Use'/>
+                            </MenuOptions>
                         }
                     />
                 </View>
@@ -305,6 +317,7 @@ const testCategory = [
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Type"}
+<<<<<<< HEAD
                         text={typeSearchValue}
                         oneOptionsSelected={(item) => {
                             onFieldChange('type')(item._id)
@@ -315,6 +328,11 @@ const testCategory = [
                             setTypeSearchValue('');
                         }}
                         options={typeSearchResults}
+=======
+                        onOptionsSelected={onFieldChange('type')}
+                        options={equipmentTypes}
+                        keysToFilter={['name']}
+>>>>>>> ccd72c345b8a0af18746e96cf7d36bd49fbf6cf3
                     />
                 </View>
             </View>
@@ -322,7 +340,8 @@ const testCategory = [
 
         </View>
     )
-}
+};
+
 
 EquipmentDialogDetailsTab.propTypes = {}
 EquipmentDialogDetailsTab.defaultProps = {}
