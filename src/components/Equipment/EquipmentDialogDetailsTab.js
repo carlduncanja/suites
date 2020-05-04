@@ -218,15 +218,9 @@ const testCategory = [
                     {/* <MultipleSelectionsField
                         label={"Category"}
                         onOptionsSelected={onFieldChange('category')}
-<<<<<<< HEAD
                         options = {testCategory}
                         keysToFilter = {['name']}
                     /> */}
-=======
-                        options={testCategory}
-                        keysToFilter={['name']}
-                    />
->>>>>>> ccd72c345b8a0af18746e96cf7d36bd49fbf6cf3
                 </View>
             </View>
 
@@ -238,16 +232,10 @@ const testCategory = [
                         text={fields['assigmentType']}
                         oneOptionsSelected={onFieldChange('assigmentType')}
                         menuOption={
-<<<<<<< HEAD
                         <MenuOptions>
                             <MenuOption value={'Physicians'} text='Physicians'/>
                             <MenuOption value={'Location'} text='Location'/>
                         </MenuOptions>
-=======
-                            <MenuOptions>
-                                <MenuOption value={'Location'} text='Location'/>
-                            </MenuOptions>
->>>>>>> ccd72c345b8a0af18746e96cf7d36bd49fbf6cf3
                         }
                     />
 
@@ -317,7 +305,6 @@ const testCategory = [
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Type"}
-<<<<<<< HEAD
                         text={typeSearchValue}
                         oneOptionsSelected={(item) => {
                             onFieldChange('type')(item._id)
@@ -328,11 +315,6 @@ const testCategory = [
                             setTypeSearchValue('');
                         }}
                         options={typeSearchResults}
-=======
-                        onOptionsSelected={onFieldChange('type')}
-                        options={equipmentTypes}
-                        keysToFilter={['name']}
->>>>>>> ccd72c345b8a0af18746e96cf7d36bd49fbf6cf3
                     />
                 </View>
             </View>
