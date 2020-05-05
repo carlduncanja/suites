@@ -5,14 +5,14 @@ import InputUnitField from "../common/Input Fields/InputUnitFields";
 import OptionsField from "../common/Input Fields/OptionsField";
 import MultipleOptionsField from "../common/Input Fields/MultipleOptionsField";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
-import {getTheatres, searchSchedule, getPhysicians, getEquipmentTypes} from "../../api/network";
+import {getTheatres, searchSchedule, getPhysicians, getEquipmentTypes, getCategories} from "../../api/network";
 import _ from "lodash";
 
 import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
 
-const EquipmentDialogDetailsTab = ({onFieldChange, fields, storage, equipmentTypes}) => {
+const EquipmentDialogDetailsTab = ({onFieldChange, fields }) => {
 
 const testCategory = [
     {
@@ -173,19 +173,32 @@ const testCategory = [
     };
 
     const fetchEquipmentTypes = () => {
-        getEquipmentTypes(physicianSearchValue, 5)
+        getEquipmentTypes(typeSearchValue)
             .then(data => {
+                console.log("Equip Data: ", data)
                 setTypeSearchResult(data || []);
             })
             .catch(error => {
                 // TODO handle error
-                // console.log("failed to get theatres");
+                console.log("Eroor:", error)
                 setTypeSearchResult([]);
             })
     };
 
     const fetchCategory = () => {
-        setCategorySearchResult(testCategory)
+        getCategories(categorySearchValue,5)
+            .then(data => {
+                const results = data.map(item => ({
+                    _id : item,
+                    name : item
+                }));
+                setCategorySearchResult(results || [])
+            })
+            .catch(error => {
+                console.log("Failed to get categories: ", error)
+                setCategorySearchResult([])
+            })
+       
     }
 
 
@@ -202,25 +215,14 @@ const testCategory = [
                     />
                 </View>
                 <View style={styles.inputWrapper}>
-                    <SearchableOptionsField
-                        label={"Category"}
-                        text={categorySearchValue}
-                        oneOptionsSelected={(item) => {
-                            onFieldChange('category')(item._id)
-                        }}
-                        onChangeText={value => setCategorySearchValue(value)}
-                        onClear={() => {
-                            onFieldChange('category')('');
-                            setCategorySearchValue('');
-                        }}
-                        options={categorySearchResults}
-                    />
-                    {/* <MultipleSelectionsField
+                    <MultipleSelectionsField
                         label={"Category"}
                         onOptionsSelected={onFieldChange('category')}
-                        options = {testCategory}
-                        keysToFilter = {['name']}
-                    /> */}
+                        options = {categorySearchResults}
+                        searchText = {categorySearchValue}
+                        onSearchChangeText = {(value)=> setCategorySearchValue(value)}
+                        onClear={()=>{setCategorySearchValue('')}}
+                    />
                 </View>
             </View>
 
@@ -243,7 +245,11 @@ const testCategory = [
                 <View style={styles.inputWrapper}>
                     <InputUnitField
                         label={"Usage"}
-                        onChangeText={onFieldChange('usage')}
+                        onChangeText={(value)=>{
+                            if (/^\d+$/g.test(value) || !value) {
+                                onFieldChange('usage')(value)
+                            }
+                        }}
                         value={fields['usage']}
                         units={['hrs']}
                         keyboardType="number-pad"
@@ -262,7 +268,10 @@ const testCategory = [
                                 theatresSearchValue
                         }
                         oneOptionsSelected={(item) => {
-                            onFieldChange('assigned')(item._id)
+                            assignmentOption === 'Physicians'?
+                                onFieldChange('assigned')({physician : item._id})
+                                :
+                                onFieldChange('assigned')({theatre : item._id})
                         }}
                         onChangeText={value => 
                             assignmentOption === 'Physicians' ?

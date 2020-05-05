@@ -10,16 +10,13 @@ import CheckBoxComponent from '../Checkbox';
 import { checkboxItemPress } from '../../../helpers/caseFilesHelpers';
 import { createFilter } from 'react-native-search-filter';
 import SearchableContainer from '../SearchableContainer';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-const MultipleSelectionsField = ({onOptionsSelected, label, options, keysToFilter = ['name']}) => {
+const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText, onSearchChangeText, onClear}) => {
 
     const [selectedOption, setSelectedOption] = useState("")
-    const [searchText, setSearchText] = useState("")
     const [checkedList, setCheckedList] = useState([])
-
-    const onSearchChangeText = (text) =>{
-        setSearchText(text)
-    }
+    const [isDisplay, setIsDisplay] = useState(false)
 
     const onCheckboxPress = (item) => () => {
         let updatedList = [...checkedList]
@@ -30,8 +27,12 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, keysToFilte
         }
 
         setCheckedList(updatedList)
-        setSelectedOption(updatedList[0].name)
-        
+        setSelectedOption(updatedList.length > 0 ? updatedList[0].name : "")
+        onOptionsSelected(updatedList)
+    }
+
+    const toggleCheckBox = () => {
+        setIsDisplay(!isDisplay)
     }
 
     return (
@@ -43,65 +44,75 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, keysToFilte
             ]}>
                 {label}
             </Text>
-            <Menu 
-                onClose = {()=>{onOptionsSelected(checkedList)}}
-                style={{flex: 1,position:"relative"}} 
-            >
-                <MenuTrigger>
-                    <View style={styles.inputField}>
-                        {
-                            checkedList.length > 0 &&
-                                <View style={styles.valueBox}>
-                                    <Text style={{padding:3,paddingLeft:5, marginRight:5}}>{selectedOption}</Text>
-                                    <IconButton
-                                        Icon = {<RemoveIcon/>}
-                                        onPress = {()=>{}}
-                                    />
-                                </View>
-                        }
-                        {
-                            checkedList.length - 1 > 0 && 
-                                <Text style={{
-                                    fontSize:14,
-                                    color:'#3182CE',
-                                    paddingLeft:4
-                                }}>
-                                    +{checkedList.length - 1} more
-                                </Text>
-                        }
-                            
-                        <View style={{flex:1,justifyContent:"flex-end", alignItems:"flex-end"}}>
-                            <DropDownIcon/>
-                        </View>
-                            
-                    </View>
-                </MenuTrigger>
-
-                <MenuOptions customStyles={optionsStyles}>
-
-                    <View style={styles.menuOptionsContainer}>
-                        <SearchableContainer
-                            options = {options}
-                            keysToFilter = {keysToFilter}
-                            onCheckboxPress = {onCheckboxPress}
-                            checkedList = {checkedList}
-                            searchText = {searchText}
-                            onSearchChangeText = {onSearchChangeText}
-                        />
+           
+            <View style={styles.inputWrapper}>
+                <View style={styles.inputField}>
+                    {
+                        checkedList.length > 0 &&
+                            <TouchableOpacity 
+                                style={styles.valueBox} 
+                                onPress={
+                                    onCheckboxPress(checkedList[0])
+                                }
+                            >
+                                <Text style={{padding:3,paddingLeft:5, marginRight:5}}>{selectedOption}</Text>
+                                <RemoveIcon/>
+                                {/* <IconButton
+                                    Icon = {<RemoveIcon/>}
+                                    onPress = {()=>onCheckboxPress(checkedList[0])}
+                                /> */}
+                            </TouchableOpacity>
+                    }
+                    {
+                        checkedList.length - 1 > 0 && 
+                            <Text style={{
+                                fontSize:14,
+                                color:'#3182CE',
+                                paddingLeft:4
+                            }}>
+                                +{checkedList.length - 1} more
+                            </Text>
+                    }
                         
-                        <View style={styles.footer}>
-                            <View style={{flexDirection:"row", justifyContent:"space-evenly", }}>
-                                <AddIcon/>
-                                <Text style={{paddingLeft:10}}>Create New</Text>
-                            </View>
-                            <View>
-                                <Text style={{color:'#4299E1', fontSize:12}}>"{searchText}"</Text>
-                            </View>
+                    <View style={{flex:1,justifyContent:"flex-end", alignItems:"flex-end"}}>
+                        <IconButton
+                            Icon = {<DropDownIcon/>}
+                            onPress = {()=>toggleCheckBox()}
+                        />
+                    </View>
+                        
+                </View>
+            </View>
+                    
+               
+            { isDisplay &&
+
+                <View style={styles.menuOptionsContainer}>
+                    
+                    <SearchableContainer
+                        options = {options}
+                        onCheckboxPress = {onCheckboxPress}
+                        checkedList = {checkedList}
+                        searchText = {searchText}
+                        onSearchChangeText = {onSearchChangeText}
+                        onClear = {onClear}
+                    />
+                   
+                    
+
+                    <View style={styles.footer}>
+                        <View style={{flexDirection:"row", justifyContent:"space-evenly", }}>
+                            <AddIcon/>
+                            <Text style={{paddingLeft:10}}>Create New</Text>
+                        </View>
+                        <View>
+                            <Text style={{color:'#4299E1', fontSize:12}}>"{searchText}"</Text>
                         </View>
                     </View>
-                </MenuOptions> 
-            </Menu>
+                </View>
 
+            }
+              
         </View>
     )
 }
@@ -124,7 +135,10 @@ const styles = StyleSheet.create({
         flex: 1,
         position: 'relative',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor:'#FFFFFF',
+        // elevation:20
+        
     },
     textLabel: {
         fontSize: 12,
@@ -132,7 +146,8 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     inputWrapper: {
-        alignItems: 'center',
+        flex: 1,
+        height: 32,
     },
     inputField: {
         // flex: 1,
@@ -148,13 +163,36 @@ const styles = StyleSheet.create({
         height: 32,
     },
     menuOptionsContainer:{
-        // flex:1,
-        height:180,
-        backgroundColor:"#FFFFFF", 
-        // top:34, 
-        borderRadius:8,
-        borderColor:'#CCD6E0',
-        borderWidth:1
+        position: 'absolute',
+        top: 15,
+        padding: 12,
+        paddingTop: 8,
+        paddingBottom: 2,
+        width: '100%',
+        height:150,
+        maxHeight: 300,
+        borderRadius: 8,
+        // border: 1px solid #CCD6E0;
+        borderWidth: 1,
+        borderColor: '#CCD6E0',
+        backgroundColor: '#FFFFFF',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0.5,
+            height: 2.5,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
+        elevation: 10,
+        zIndex: 1,
+
+    },
+    searchContainer:{
+        padding:10,
+        paddingLeft:6,
+        paddingRight:6,
+        borderBottomColor:"#E3E8EF",
+        borderBottomWidth: 1,
     },
     valueBox:{
         flexDirection:'row',

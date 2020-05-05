@@ -9,6 +9,7 @@ import {
     caseFilesEndpoint, caseFileEndpoint,
     equipmentsEndpoint, equipmentEndpoint, equipmentTypesEndpoint,
     storageLocationsEndpoint, storageLocationEndpoint,
+    categoriesEndpoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -51,7 +52,7 @@ export const searchSchedule = async (query) => {
 };
 
 // ################# Theatres Endpoints
-export const getTheatres = async (query, max) => {
+export const getTheatres = async (query,max) => {
     return suitesAxiosInstance.get(theatresEndpoint, {params: {query, max}})
         .then(handleResponse)
         .catch(handleError);
@@ -125,7 +126,7 @@ export const createNewProcedure = async (procedureToCreate) => {
 
 // ################# Physicians Endpoints
 export const getPhysicians = async (query, max) => {
-    return suitesAxiosInstance.get(physiciansEndpoint, {params: {query, max}})
+    return suitesAxiosInstance.get(physiciansEndpoint, {params: {query}})
         .then(handleResponse)
         .catch(handleError)
 };
@@ -175,9 +176,8 @@ export const getEquipmentById = async (id) => {
         .catch(handleError)
 };
 
-
-export const getEquipmentTypes = async ( query, max ) => {
-    return suitesAxiosInstance.get(equipmentTypesEndpoint, {params : {query, max}})
+export const getEquipmentTypes = async ( query ) => {
+    return suitesAxiosInstance.get(equipmentTypesEndpoint, {params : {query}})
         .then(handleResponse)
         .catch(handleError)
 };
@@ -187,6 +187,15 @@ export const createEquipment = async (equipmentToCreate) => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+// ################# Categories Endpoint
+
+export const getCategories = async (query, max) => {
+    return suitesAxiosInstance.get(categoriesEndpoint, { params : { query }} )
+        .then(handleResponse)
+        .catch(handleError)
+}
+
 
 
 

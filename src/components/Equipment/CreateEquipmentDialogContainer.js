@@ -7,7 +7,7 @@ import EquipmentDialogDetailsTab from './EquipmentDialogDetailsTab';
 import { formatDate } from '../../utils/formatter'
 import {useModal} from "react-native-modalfy";
 
-import { createEquipment, getStorage } from "../../api/network";
+import { createEquipment } from "../../api/network";
 import { addEquipment } from "../../redux/actions/equipmentActions";
 import {connect} from "react-redux";
 
@@ -44,18 +44,7 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
         category : []
     });
 
-    useEffect(()=>{
-        getStorage()
-            .then(data => {
-                setStorage(data)
-            })
-            .catch(error => {
-                console.log("Failed to get storage", error)
-            })
-    },[])
-
     const onFieldChange = (fieldName) => (value) => {
-        console.log("Value:", value)
         setFields({
             ...fields,
             [fieldName]: value
@@ -72,11 +61,11 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
         const updatedFields = {
             ...fields, 
             usage: parseInt(fields['usage']),
-            assignment : { theatre : fields['assignment'] },
+            assignment : fields['assigned'] ,
             // type : fields['type'][0]._id
         }
 
-        // console.log("New Fields: ", updatedFields)
+        console.log("New Fields: ", updatedFields)
         createEquipmentCall(updatedFields)
     };
     
@@ -87,8 +76,6 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
                 return <EquipmentDialogDetailsTab
                     onFieldChange = {onFieldChange}
                     fields = {fields}
-                    storage = {storage.map( item => { return { _id: item.theatre._id, name: item.name}})}
-                    equipmentTypes = {equipmentTypes}
                 />;
             default :
                 return <View/>

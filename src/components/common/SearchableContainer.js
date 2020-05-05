@@ -4,7 +4,7 @@ import {View, StyleSheet, Text, TextInput, ScrollView} from "react-native";
 import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
 import SearchInput,{ createFilter } from 'react-native-search-filter';
 
-import RemoveIcon from "../../../assets/svg/removeIcon";
+import ClearIcon from "../../../assets/svg/clearIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 
 import IconButton from "./Buttons/IconButton";
@@ -16,25 +16,32 @@ import { checkboxItemPress } from '../../helpers/caseFilesHelpers';
  * @returns {*} 
  */
 
-const SearchableContainer = ({keysToFilter, options, handleIsCheck  ,onCheckboxPress, checkedList, searchText, onSearchChangeText}) => {
+const SearchableContainer = ({ options, onCheckboxPress, checkedList, searchText, onSearchChangeText, onClear}) => {
 
-    const  KEYS_TO_FILTER = keysToFilter
-
-    const filteredOptions = searchText === '' ? [] : options.filter(createFilter(searchText, KEYS_TO_FILTER))
     return (
         <>
             <View style={styles.searchContainer}>
-                <TextInput
+                <TextInput 
+                    style={styles.inputField}
                     value = {searchText}
                     onChangeText = {(text)=>onSearchChangeText(text)}
                     keyboardType = {"default"}
                 />
+                <View style={{alignItems:'center', paddingLeft:5, paddingRight:5}}>
+                    <IconButton
+                        Icon = {<ClearIcon/>}
+                        onPress = {()=>{onClear()}}
+                    />
+                </View>
+                
             </View>
+            
+      
              <ScrollView 
                 bounces = {false}
                 style={styles.suggestionsContainer}
             >
-                {filteredOptions.map(( option, index)=>{
+                {options.map(( option, index)=>{
                    
                     return (
                         <View key={index} style={styles.optionWrapper}>
@@ -56,11 +63,18 @@ export default SearchableContainer
 
 const styles = StyleSheet.create({
     searchContainer:{
-        padding:10,
-        paddingLeft:6,
-        paddingRight:6,
+        height:30,
         borderBottomColor:"#E3E8EF",
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
+        flexDirection:'row',
+        // alignItems:'center'
+    },
+    inputField: {
+        flex: 1,
+        height: 32,
+        padding: 10,
+        paddingTop: 2,
+        paddingBottom: 2,
     },
     suggestionsContainer:{
         // height:120,

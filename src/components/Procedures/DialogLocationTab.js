@@ -49,7 +49,7 @@ const testLocations = [
     },
 ]
 
-const DialogLocationTab = ({theatres , onFieldChange}) =>{
+const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatres}) =>{
 
     const recordsPerPage = 4
 
@@ -62,8 +62,16 @@ const DialogLocationTab = ({theatres , onFieldChange}) =>{
     const [searchLocationQuery, setSearchLocationQuery] = useState({});
 
     const [selectedLocations, setSelectedLocations] = useState([])
+    const [isDisable, setIsDisable] = useState(false)
 
-    const totalPages = Math.ceil(selectedLocations.length/recordsPerPage)
+
+    const handleDisplayData = () => {
+        let newSet = new Set([...savedTheatres,...selectedLocations])
+        let updatedTheeatres = [...newSet]
+        return updatedTheeatres
+    }
+
+    const totalPages = Math.ceil(handleDisplayData().length/recordsPerPage)
 
     useEffect(() => {
 
@@ -95,7 +103,6 @@ const DialogLocationTab = ({theatres , onFieldChange}) =>{
                     // name: `Dr. ${item.surname}`,
                     ...item
                 }));
-                console.log("Results: ", results)
                 setSearchLocationResults(results || []);
 
             })
@@ -154,6 +161,14 @@ const DialogLocationTab = ({theatres , onFieldChange}) =>{
         setSelectedLocations(updatedLocations)
     }
 
+    const buttonPress = () => {
+        if(isDisable === false){
+            updatedTheeatres = handleDisplayData()
+            onFieldChange('supportedRooms')(updatedTheeatres.map( item => item._id)) 
+            getSavedTheatres(updatedTheeatres)
+        }
+        setIsDisable(true)
+    }
 
     const listItem = (item) => {
         let recovery = item.hasRecovery ? "Yes" : "No"
@@ -172,23 +187,21 @@ const DialogLocationTab = ({theatres , onFieldChange}) =>{
         )
     }
 
-    let dataToDisplay = [...selectedLocations]
+    let dataToDisplay = handleDisplayData()
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
     
     return (
         <View style={styles.sectionContainer}>
 
             <View style={[styles.container,styles.addNewContainer]}>
-                <SearchableMultipleOptionField
-                    label={"Add New Location"}
-                    text={searchLocationValue}
-                    onPressResultItem = {(item)=>onPressResultItem(item)}
-                    onChangeText={value => setSearchLocationValue(value)}
-                    onClear={() => {
-                        setSearchLocationValue("");
-                    }}
-                    options={searchLocationResults}
-                />
+                    <MultipleSelectionsField
+                        label={"Add New Location"}
+                        onOptionsSelected = {(value)=>{setSelectedLocations(value)}}
+                        options = {searchLocationResults}
+                        searchText = {searchLocationValue}
+                        onSearchChangeText = {(value)=> setSearchLocationValue(value)}
+                        onClear={()=>{setSearchLocationValue('')}}
+                    />
             </View>
             
             <View style={[styles.container,styles.listContainer]}>
@@ -208,12 +221,15 @@ const DialogLocationTab = ({theatres , onFieldChange}) =>{
                         />
                     </View>
                     
-                    <View style={styles.buttonContainer}>
+                    <View style={[styles.buttonContainer,{
+                        backgroundColor: isDisable ? "#F8FAFB" : "#4299E1",
+                        color: isDisable ? "#4299E1" : "#F8FAFB"
+                    }]}>
                         <Button
-                            backgroundColor = "#F8FAFB"
-                            buttonPress = {()=>onFieldChange('supportedRooms')(selectedLocations.map( item => item._id))}
+                            backgroundColor = {isDisable ? "#F8FAFB" : "#4299E1"}
+                            buttonPress = {()=>{buttonPress()}}
                             title = "DONE"
-                            color = "#4299E1"
+                            color = {isDisable ? "#4299E1" : "#F8FAFB"}
                         />
                     </View>
                     
@@ -258,6 +274,7 @@ const styles = StyleSheet.create({
         marginBottom:20
     },
     listContainer:{
+        marginTop:50,
         paddingTop:10,
         paddingBottom:10
     },

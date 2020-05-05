@@ -5,7 +5,7 @@ import DropdownInputField from "../common/Input Fields/DropdownInputField";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import _ from "lodash";
-import {getPhysicians, getTheatres, getProcedures} from "../../api/network";
+import {getPhysicians, getTheatres, getProcedures, getCategories} from "../../api/network";
 import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
 import OptionsField from "../common/Input Fields/OptionsField";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
@@ -43,6 +43,12 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
     const [searchProcedureValue, setSearchProcedureValue] = useState();
     const [searchProcedureResults, setSearcProcedurehResult] = useState([]);
     const [searchProcedureQuery, setSearchProcedureQuery] = useState({});
+
+     // Category Search
+     const [categorySearchValue, setCategorySearchValue] = useState();
+     const [categorySearchResults, setCategorySearchResult] = useState([]);
+     const [categorySearchQuery, setCategorySearchQuery] = useState({});
+ 
 
 
     // ######
@@ -96,17 +102,38 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
         search()
     }, [searchProcedureValue]);
 
+    // Handle category search
+    useEffect(() => {
+
+        if (!categorySearchValue) {
+            // empty search values and cancel any out going request.
+            setCategorySearchResult([]);
+            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchCategory, 300);
+
+        setCategorySearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [categorySearchValue]);
 
     const fetchPhysicians = () => {
         getPhysicians(searchValue, 5)
             .then((data = []) => {
-
-
                 const results = data.map(item => ({
                     name: `Dr. ${item.surname}`,
                     ...item
                 }));
-
+                console.log("Results: ", results)
                 setSearchResult(results || []);
 
             })
@@ -134,6 +161,22 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                 setSearchProcedureValue([]);
             })
     };
+
+    const fetchCategory = () => {
+        getCategories(categorySearchValue,5)
+            .then((data = [])=>{
+                const results = data.map(item => ({
+                    _id : item,
+                    name : item
+                }));
+                setCategorySearchResult(results || [])
+            })
+            .catch(error => {
+                console.log("failed to get categories: ", error)
+                setCategorySearchResult([])
+            })
+
+    }
 
     return (
         <View style={styles.sectionContainer}>
@@ -178,13 +221,7 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    {/*<InputField2 */}
-                    {/*    label={"Physician"}*/}
-                    {/*    onChangeText={onFieldChange('physician')}*/}
-                    {/*    value={fields['physician']}*/}
-                    {/*    onClear={() => onFieldChange('physician')('')}*/}
-                    {/*/>*/}
-
+    
                     <SearchableOptionsField
                         label={"Physician"}
                         text={searchValue}
@@ -208,7 +245,11 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                 <View style={styles.inputWrapper}>
                     <InputUnitField
                         label={"Duration"}
-                        onChangeText={onFieldChange('duration')}
+                        onChangeText={(value) => {
+                            if (/^\d{9}/g.test(value).toString() || !value) {
+                                onFieldChange('duration')(value)
+                            }
+                        }}
                         value={fields['duration']}
                         units={['hrs']}
                         keyboardType="number-pad"
@@ -219,8 +260,10 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                     <MultipleSelectionsField
                         label={"Category"}
                         onOptionsSelected={onFieldChange('category')}
-                        options = {testCategory}
-                        keysToFilter = {['name']}
+                        options = {categorySearchResults}
+                        searchText = {categorySearchValue}
+                        onSearchChangeText = {(value)=> setCategorySearchValue(value)}
+                        onClear={()=>{setCategorySearchValue('')}}
                     />
                 </View>
             </View>
