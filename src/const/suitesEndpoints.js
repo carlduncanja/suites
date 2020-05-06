@@ -24,5 +24,10 @@ export const caseFileEndpoint = (id) => `/cases/${id}`;
 export const storageLocationsEndpoint = "/storage-locations";
 export const storageLocationEndpoint = (id) => `/storage-locations/${id}`;
 
+// ##### CATEGORIES
+export const categoriesEndpoint = "/categories/items";
+
+
+
 
 

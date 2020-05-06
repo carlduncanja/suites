@@ -35,7 +35,8 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     const [tabIndex, setTabIndex] = useState(selectedIndex)
     const [positiveText, setPositiveText] = useState("NEXT")
     const [physicians, setPhysicians] = useState([])
-    const [theatres, setTheates] = useState([])
+    // const [theatres, setTheates] = useState([])
+    const [savedTheatres, setSavedTheatres] = useState([])
 
     const [fields, setFields] = useState({
         reference :'--',
@@ -50,22 +51,22 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         equipments:[]
     });
 
-    useEffect(()=>{
-        getTheatres()
-            .then(data => {
-                setTheates(data)
-            })
-            .catch(error => {
-                console.log("Failed to get storage", error)
-            })
-        getPhysicians()
-            .then(data => {
-                setPhysicians(data)
-            })
-            .catch(error => {
-                console.log("Failed to get storage", error)
-            })
-    },[])
+    // useEffect(()=>{
+    //     getTheatres()
+    //         .then(data => {
+    //             setTheates(data)
+    //         })
+    //         .catch(error => {
+    //             console.log("Failed to get storage", error)
+    //         })
+    //     getPhysicians()
+    //         .then(data => {
+    //             setPhysicians(data)
+    //         })
+    //         .catch(error => {
+    //             console.log("Failed to get storage", error)
+    //         })
+    // },[])
 
     const handleCloseDialog = () => {
         onCancel();
@@ -81,7 +82,16 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
 
     const onTabPress = (newTab) => {
         const newIndex = dialogTabs.findIndex( tab => tab === newTab)
-        setTabIndex(newIndex)
+        if (newIndex === dialogTabs.length - 1)
+        {
+            setPositiveText("DONE")
+            setTabIndex(dialogTabs.length-1)
+
+        }else
+        {
+            setTabIndex(newIndex)
+        }
+
     }
 
     const onPositiveButtonPress = () =>{
@@ -103,6 +113,10 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         }
     }
 
+    const getSavedTheatres = (value) => {
+        setSavedTheatres(value)
+    }
+
     const getDialogContent = (tab) => {
 
         switch (tab) {
@@ -110,13 +124,16 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                 return <DialogDetailsTab
                     onFieldChange = {onFieldChange}
                     fields = {fields}
-                    physicians = {physicians.map( item => { return { _id : item._id, name : `Dr. ${item.firstName} ${item.surname}`} })}
-                    theatres = {theatres}
+                    // physicians = {physicians.map( item => { return { _id : item._id, name : `Dr. ${item.firstName} ${item.surname}`} })}
+                    // theatres = {theatres}
                 />;
             case "Location":
                 return <DialogLocationTab
                     onFieldChange = {onFieldChange}
-                    theatres = {theatres}
+                    fields = {fields}
+                    // theatres = {theatres}
+                    getSavedTheatres={getSavedTheatres}
+                    savedTheatres = {savedTheatres}
                 />;
             default :
                 return <View/>

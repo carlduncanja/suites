@@ -1,12 +1,9 @@
-import React,{  } from "react";
+import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
-import DropdownInputField from "../common/Input Fields/DropdownInputField";
-import InputUnitField from "../common/Input Fields/InputUnitFields";
-import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
 import OptionsField from "../common/Input Fields/OptionsField";
-import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import DateInputField from "../common/Input Fields/DateInputField";
 
 
 
@@ -16,6 +13,26 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
         true: "Yes",
         false: "No"
     }
+
+    const [dateText, setDateText] = useState(fields['dob'])
+    const [trnText, setTrnText] = useState(fields['trn'])
+
+    const handleDateValidation = (date) => {
+
+        let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
+        if (dateRegex.test(date) || !date) {
+            onFieldChange('dob')(date)
+        }
+        setDateText(date)
+    }
+
+    const handleTrnValidation = (trnValue) => {
+        if (/^\d{9}$/g.test(trnValue) || !trnValue) {
+            onFieldChange('trn')(trnValue)
+        }
+        setTrnText(trnValue)
+    }
+
    
     return (
         <View style={styles.sectionContainer}>
@@ -31,24 +48,16 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
                     />
                 </View>
                 <View style={[styles.inputWrapper]}>
-                <InputField2 
+                    <InputField2 
                         label={"Middle Name"}
                         onChangeText={onFieldChange('middleName')}
                         value={fields['middleName']}
                         onClear={() => onFieldChange('middleName')('')}
                     />
-                    {/* <OptionsField
-                        label={"Template ?"}
-                        text={templateText[fields['isTemplate']]}
-                        oneOptionsSelected={onFieldChange('isTemplate')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={true} text='Yes'/>
-                            <MenuOption value={false} text='No'/>
-                        </MenuOptions>}
-                    /> */}
                 </View>
 
             </View>
+
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
@@ -75,25 +84,24 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
                 <View style={styles.inputWrapper}>
                     <InputField2 
                         label={"TRN"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value) || !value) {
-                                onFieldChange('trn')(value)
-                            }}
-                        }
-                        value={fields['trn']}
+                        onChangeText={(value) => { handleTrnValidation(value)}}
+                        value={trnText}
                         onClear={() => onFieldChange('trn')('')}
                         keyboardType = "number-pad"
                     />
                 </View>
 
                 <View style={styles.inputWrapper}>
+                    {/* <DateInputField
+                        label= "Date"
+                    /> */}
                     <InputField2 
                         label={"Date of Birth"}
                         onChangeText={(value) => {
-                            if (/^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g.test(value) || !value) {
-                                onFieldChange('dob')(value)
-                            }}}
-                        value={fields['dob']}
+                            handleDateValidation(value)
+                        }}
+                        // value={fields['dob']}
+                        value = {dateText}
                         onClear={() => onFieldChange('dob')('')}
                         placeholder="DD/MM/YYYY"
                         keyboardType = "number-pad"

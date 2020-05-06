@@ -27,6 +27,7 @@
     "react-native-cn-richtext-editor": "^1.0.40",
     "react-native-collapsible": "^1.5.2",
     "react-native-css-gradient": "^0.4.0",
+    "react-native-datepicker": "^1.7.2",
     "react-native-drawer-menu": "^0.2.5",
     "react-native-dropdown-menu": "^2.0.0",
     "react-native-elements": "^1.2.7",

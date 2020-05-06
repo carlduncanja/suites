@@ -27,6 +27,7 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
     const [fields, setFields] = useState({
         firstName : '',
         middleName: '',
+        trn:'',
         surname : '',
         gender: '',
         phones : [],
@@ -36,6 +37,7 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
     });
 
     const onFieldChange = (fieldName) => (value) => {
+        console.log("Value:", value)
         setFields({
             ...fields,
             [fieldName]: value
@@ -50,7 +52,7 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
     const onPositiveButtonPress = () => {
         const updatedFields = {
             ...fields,
-            trn : parseInt(fields['trn'])
+            // trn : parseInt(fields['trn']) || ''
         }
         console.log("Fields:", updatedFields)
         createPhysicianCall(updatedFields)

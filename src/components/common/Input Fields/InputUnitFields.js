@@ -38,7 +38,7 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
                 }
             ]}>{label}</Text>
 
-            <View style={[styles.inputWrapper, {paddingRight: value ? 4 : 0}]}>
+            <View style={[styles.inputWrapper]}>
                 <TextInput
                     style={styles.inputField}
                     onChangeText={onChangeText}
