@@ -35,7 +35,6 @@ const CollapsibleListItem = ({
 
     return (
         <TouchableOpacity onPress={onItemPress}>
-
             <View style={styles.container}>
 
 
@@ -50,10 +49,11 @@ const CollapsibleListItem = ({
                         </View>
                     }
                     {
-                        render(collapse)
+                        render(collapse, isCollapsed)
                     }
                 </View>
                 <Collapsible collapsed={isCollapsed}>
+                    <View style={styles.divider}/>
                     <View style={styles.childContent}>
                         {
                             childView
@@ -89,6 +89,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderColor: "#E3E8EF",
     },
+    divider: {
+        // flex: 1,
+        width: '100%',
+        height: 2,
+        borderBottomWidth: 1,
+        borderBottomColor: "#E3E8EF",
+        marginBottom: 20
+    },
     list: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -97,6 +105,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         margin: 10,
-        marginBottom: 0
+        marginBottom: 0,
+        marginTop:0
     }
 });
