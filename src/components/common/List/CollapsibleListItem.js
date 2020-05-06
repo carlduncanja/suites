@@ -1,26 +1,37 @@
-import React from 'react';
-import {View, StyleSheet, TouchableOpacity, Animated} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import CheckBoxComponent from "../Checkbox";
+import Collapsible from 'react-native-collapsible';
+import PropTypes from 'prop-types';
+
 
 
 /**
  *
- * @param itemView
- * @param hasCheckBox
- * @param isChecked
- * @param onCheckBoxPress
- * @param onItemPress
+ * @param hasCheckBox{bool}
+ * @param isChecked{bool}
+ * @param onCheckBoxPress{function}
+ * @param onItemPress{function}
+ * @param childView{node}
+ * @param render{function} function to render item view that take collapse a s call back.
  * @returns {*}
  * @constructor
  */
 const CollapsibleListItem = ({
-                      itemView,
-                      hasCheckBox,
-                      isChecked,
-                      onCheckBoxPress,
-                      onItemPress,
-                      secondaryView
-                  }) => {
+                                 hasCheckBox,
+                                 isChecked,
+                                 onCheckBoxPress,
+                                 onItemPress,
+                                 childView,
+                                 render
+                             }) => {
+
+    const [isCollapsed, setCollapsed] = useState(true);
+
+    const collapse = () => {
+        console.log("collapse press")
+        setCollapsed(!isCollapsed);
+    }
 
     return (
         <TouchableOpacity onPress={onItemPress}>
@@ -29,53 +40,63 @@ const CollapsibleListItem = ({
 
 
                 <View style={styles.list}>
-                    <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
-                        <CheckBoxComponent
-                            isCheck={isChecked}
-                            onPress={onCheckBoxPress}
-                        />
-                    </View>
                     {
-                        itemView
+                        hasCheckBox &&
+                        <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
+                            <CheckBoxComponent
+                                isCheck={isChecked}
+                                onPress={onCheckBoxPress}
+                            />
+                        </View>
+                    }
+                    {
+                        render(collapse)
                     }
                 </View>
-                <Animated.View style={{flexDirection: 'column'}}>
-                    <View/>
-
-                    {
-                        secondaryView
-                    }
-                </Animated.View>
+                <Collapsible collapsed={isCollapsed}>
+                    <View style={styles.childContent}>
+                        {
+                            childView
+                        }
+                    </View>
+                </Collapsible>
             </View>
-
         </TouchableOpacity>
     );
 };
 
 export default CollapsibleListItem
 
-CollapsibleListItem.propTypes = {};
+CollapsibleListItem.propTypes = {
+    hasCheckBox: PropTypes.bool,
+    isChecked: PropTypes.bool,
+    onCheckBoxPress: PropTypes.func,
+    onItemPress: PropTypes.func,
+    childView: PropTypes.node,
+    render: PropTypes.func
+};
 CollapsibleListItem.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
-        // flex:1,
         flexDirection: 'column',
-        // flexWrap:'wrap',
-        //justifyContent:'center',
-        // padding:10,
+        width: '100%',
         paddingBottom: 8,
+        marginBottom: 10,
         paddingTop: 8,
-        backgroundColor: '#FFFFFF',
         borderRadius: 8,
         borderWidth: 1,
+        backgroundColor: '#FFFFFF',
         borderColor: "#E3E8EF",
-        width: '100%',
-        marginBottom: 10,
-        // justifyContent:'center'
     },
     list: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    childContent: {
+        flex: 1,
+        alignItems: 'center',
+        margin: 10,
+        marginBottom: 0
     }
 });

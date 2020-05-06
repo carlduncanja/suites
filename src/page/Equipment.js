@@ -1,5 +1,5 @@
-import React,{ useContext, useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, {useContext, useState, useEffect, useRef} from "react";
+import {View, Text, StyleSheet} from "react-native";
 
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
@@ -16,18 +16,21 @@ import AddIcon from "../../assets/svg/addIcon";
 import AssignIcon from "../../assets/svg/assignIcon";
 import EditIcon from "../../assets/svg/editIcon";
 
-import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
 import EquipmentListIcon from '../../assets/svg/equipmentListAction';
 
 import {connect} from 'react-redux';
-import { setEquipment } from "../redux/actions/equipmentActions";
-import { getEquipment, getEquipmentTypes } from "../api/network";
+import {setEquipment} from "../redux/actions/equipmentActions";
+import {getEquipment, getEquipmentTypes} from "../api/network";
 
-import { withModal } from 'react-native-modalfy';
+import {withModal} from 'react-native-modalfy';
 import moment from "moment";
-import { formatDate } from '../utils/formatter';
+import {formatDate} from '../utils/formatter';
 
 import equipmentTest from '../../data/Equipment';
+import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
+import ActionIcon from "../../assets/svg/ActionIcon";
+import IconButton from "../components/common/Buttons/IconButton";
 
 const Equipment = (props) => {
 
@@ -35,24 +38,24 @@ const Equipment = (props) => {
     const recordsPerPage = 15;
     const listHeaders = [
         {
-            name : "Assigned",
-            alignment : "flex-start"
+            name: "Assigned",
+            alignment: "flex-start"
         },
         {
-            name : "Quantity",
-            alignment : "center"
+            name: "Quantity",
+            alignment: "center"
         },
         {
-            name : "Status",
-            alignment : "flex-start"
+            name: "Status",
+            alignment: "flex-start"
         },
         {
-            name : "Available on",
-            alignment : "center"
+            name: "Available on",
+            alignment: "center"
         },
         {
-            name : "Actions",
-            alignment : "center"
+            name: "Actions",
+            alignment: "center"
         }
     ];
     const floatingActions = []
@@ -89,20 +92,20 @@ const Equipment = (props) => {
     };
 
     const handleOnSelectAll = () => {
-        let updatedEquipmentList = selectAll(equipment,selectedEquipmentIds)
+        let updatedEquipmentList = selectAll(equipment, selectedEquipmentIds)
         setSelectedEquipmentIds(updatedEquipmentList)
     }
 
-    const handleOnCheckBoxPress = (item) => () =>{
-        const { id } = item;
+    const handleOnCheckBoxPress = (item) => () => {
+        const {id} = item;
         let updatedEquipmentList = checkboxItemPress(item, id, selectedEquipmentIds)
 
         setSelectedEquipmentIds(updatedEquipmentList)
     }
 
     const handleOnItemPress = (item) => {
-        modal.openModal('BottomSheetModal',{
-            content : <EquipmentBottomSheet equipment = {item}/>
+        modal.openModal('BottomSheetModal', {
+            content: <EquipmentBottomSheet equipment={item}/>
         })
     }
 
@@ -161,72 +164,78 @@ const Equipment = (props) => {
     };
 
     const renderEquipmentFn = (item) => {
+        const filterEquiments = equipment.filter(eqItem => {
+            const {type = {}} = eqItem
+            const {_id = ""} = type
 
-        const filterEquiments = equipment.filter( eqItem => {
-            const { type = {} } = eqItem
-            const { _id = "" } = type
-
-            return ( item._id === _id)
+            return (item._id === _id)
 
             // return _id === null ?
             //     null
             //     :
-
             //     item._id  === _id
+        });
 
-        })
-        // const filterEquiments = []
-        const filterStatus = filterEquiments.filter( eqItem => eqItem.status === 'Available')
+        // const filterEquipments = []
+        const filterStatus = filterEquiments.filter(eqItem => eqItem.status === 'Available')
         const viewItem = {
-            name : item.name,
-            quantity : filterEquiments.length,
-            status : filterStatus.length === 1 ? "Available" : filterStatus.length > 1 ? "Multiple" : "Unavailable",
-            nextAvailable : new Date(2020,12,12)
-        }
+            name: item.name,
+            quantity: filterEquiments.length,
+            status: filterStatus.length === 1 ? "Available" : filterStatus.length > 1 ? "Multiple" : "Unavailable",
+            nextAvailable: new Date(2020, 12, 12)
+        };
 
-        return <ListItem
+
+        return <CollapsibleListItem
             hasCheckBox={true}
             isChecked={selectedEquipmentIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item)}
-            itemView={equipmentItem(viewItem)}
+            render={(collapse) => equipmentItem(viewItem, collapse)}
         />
-    }
+    };
 
     const getStatusColor = (status) => {
         return status === 'Unavailable' ? '#C53030'
             : status === 'Multiple' ? '#6B46C1'
-            : status === 'Available' ? '#4E5664'
-            : '#4E5664'
-    }
+                : status === 'Available' ? '#4E5664'
+                    : '#4E5664'
+    };
 
-    const equipmentItem = (item) => <>
-        <View style={{flex:1}}>
-            <Text style={{fontSize:16, color:'#323843'}}>{item.name}</Text>
+    const equipmentItem = (item, onActionPress) => <>
+        <View style={{flex: 1}}>
+            <Text style={{fontSize: 16, color: '#323843'}}>{item.name}</Text>
         </View>
-        <View style={{flex:1, alignItems:'center'}}>
-            <Text style={{fontSize:16, color:'#4E5664'}}>{item.quantity}</Text>
+        <View style={{flex: 1, alignItems: 'center'}}>
+            <Text style={{fontSize: 16, color: '#4E5664'}}>{item.quantity}</Text>
         </View>
-        <View style={{flex:1}}>
-            <Text style={{fontSize:14, color: getStatusColor(item.status)}}>{item.status}</Text>
+        <View style={{flex: 1}}>
+            <Text style={{fontSize: 14, color: getStatusColor(item.status)}}>{item.status}</Text>
         </View>
-        <View style={{flex:1, alignItems:'center'}}>
-            <Text style={{fontSize:14, color:'#4E5664'}}>{formatDate(item.nextAvailable,"DD/MM/YYYY")}</Text>
+        <View style={{flex: 1, alignItems: 'center'}}>
+            <Text style={{fontSize: 14, color: '#4E5664'}}>{formatDate(item.nextAvailable, "DD/MM/YYYY")}</Text>
         </View>
-        <View style={{flex:1, alignItems:'center'}}>
-            {<EquipmentListIcon/>}
+        <View style={{flex: 1, alignItems: 'center'}}>
+            <IconButton
+                Icon={<ActionIcon/>}
+                onPress={onActionPress}
+            />
         </View>
     </>
 
     const getFabActions = () => {
 
         const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
-                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+            <LongPressWithFeedback pressTimer={700} onLongPress={() => {
+            }}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
+                }} touchable={false}/>
             </LongPressWithFeedback>;
-        const assignEquipment = <ActionItem title={"Assign Equipment"} icon={<AssignIcon/>} onPress={()=>{}}/>;
-        const editGroup = <ActionItem title={"Edit Group"} icon={<EditIcon/>} onPress={()=>{}}/>;
-        const createEquipment = <ActionItem title={"Add Equipment"} icon={<AddIcon/>} onPress={ openEquipmentDialog }/>;
+        const assignEquipment = <ActionItem title={"Assign Equipment"} icon={<AssignIcon/>} onPress={() => {
+        }}/>;
+        const editGroup = <ActionItem title={"Edit Group"} icon={<EditIcon/>} onPress={() => {
+        }}/>;
+        const createEquipment = <ActionItem title={"Add Equipment"} icon={<AddIcon/>} onPress={openEquipmentDialog}/>;
 
         return <ActionContainer
             floatingActions={[
@@ -253,7 +262,7 @@ const Equipment = (props) => {
                         content: <CreateEquipmentDialog
                             onCancel={() => setFloatingAction(false)}
                             onCreated={(item) => handleOnItemPress(item)}
-                            equipmentTypes = {equipmentTypes}
+                            equipmentTypes={equipmentTypes}
                         />,
                         onClose: () => setFloatingAction(false)
                     })
@@ -264,8 +273,8 @@ const Equipment = (props) => {
     let equipmentToDisplay = [...equipmentTypes];
     equipmentToDisplay = equipmentToDisplay.slice(currentPageListMin, currentPageListMax);
 
-    return(
-        <View style={{flex:1}}>
+    return (
+        <View style={{flex: 1}}>
             <Page
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
@@ -293,8 +302,8 @@ const Equipment = (props) => {
                 </View>
 
                 <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
+                    isDisabled={isFloatingActionDisabled}
+                    toggleActionButton={toggleActionButton}
                 />
             </View>
 
@@ -303,12 +312,12 @@ const Equipment = (props) => {
 }
 
 const mapStateToProps = (state) => {
-    const equipment = state.equipment.map( item =>{
+    const equipment = state.equipment.map(item => {
         return {
             ...item
         }
     })
-    return { equipment }
+    return {equipment}
 };
 
 const mapDispatcherToProp = {
