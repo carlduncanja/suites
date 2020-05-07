@@ -26,7 +26,7 @@ function InputField2({label, onChangeText, value, placeholder, keyboardType, onC
 
             <View style={[styles.inputWrapper, {paddingRight: value ? 4 : 0}]}>
                 <TextInput
-                    style={styles.inputField}
+                    style={[styles.inputField,{}]}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         flex: 1,
         position: 'relative',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     textLabel: {
         fontSize: 12,

@@ -195,6 +195,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
     const detailsTab = (
         <View style={styles.sectionContainer}>
+
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
@@ -210,12 +211,6 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                         }}
                         options={inventorySearchResults}
                     />
-                    {/* <InputField2
-                        label={"Reference"}
-                        onChangeText={onFieldChange('referenceName')}
-                        value={fields['referenceName']}
-                        onClear={() => onFieldChange('referenceName')('')}
-                    /> */}
                 </View>
 
                 <View style={styles.inputWrapper}>
@@ -228,7 +223,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                 </View>
             </View>
 
-            <View style={styles.row}>
+            <View style={[styles.row,{zIndex:-2}]}>
                 <View style={styles.inputWrapper}>
                     <MultipleSelectionsField
                         label={"Category"}
@@ -257,7 +252,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                 </View>
             </View>
 
-            <View style={styles.row}>
+            <View style={[styles.row,{zIndex:-3}]}>
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"SKU"}
@@ -271,7 +266,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
             </View>
 
-            <View style={styles.row}>
+            <View style={[styles.row,{zIndex:-4}]}>
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Barcode"}
@@ -283,6 +278,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
                 <View style={styles.inputWrapper}/>
             </View>
+        
         </View>
     );
 
@@ -366,6 +362,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     sectionContainer: {
+        height:240,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         padding: 24,
@@ -373,31 +370,17 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        // alignItems: 'center',
         marginBottom: 20
     },
-    inputField: {
-        // flex: 1,
-        width: 64,
-        borderWidth: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderColor: '#E3E8EF',
-        borderRadius: 4,
-        height: 32,
-    },
+
     inputWrapper: {
         // flex: 1,
         width: 260,
         flexDirection: 'row',
         // backgroundColor: 'blue'
     },
-    textLabel: {
-        marginRight: 20,
-        fontSize: 12,
-        color: '#718096',
-        fontWeight: '500',
-    },
+
 });
 
 const mapDispatcherToProps = {};

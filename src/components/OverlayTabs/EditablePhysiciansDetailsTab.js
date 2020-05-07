@@ -152,16 +152,6 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
         return updatedEmails
     }
 
-    // const removeIds = (array) =>{
-    //     let updatedArray = array.map( obj => {
-    //         let newObj = obj
-    //         delete newObj['_id']
-    //         return {...newObj}
-    //     })
-
-    //     return updatedArray
-    // }
-
     const divider = <View style={{
             backgroundColor:'#CCD6E0',
             height:1,

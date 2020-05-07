@@ -45,22 +45,19 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText,
                 {label}
             </Text>
            
-            <View style={styles.inputWrapper}>
-                <View style={styles.inputField}>
+            {/* <View style={styles.inputWrapper}> */}
+                <View style={[styles.inputField,]}>
                     {
                         checkedList.length > 0 &&
                             <TouchableOpacity 
-                                style={styles.valueBox} 
+                                style={[styles.valueBox,{zIndex:-4}]} 
                                 onPress={
                                     onCheckboxPress(checkedList[0])
                                 }
                             >
                                 <Text style={{padding:3,paddingLeft:5, marginRight:5}}>{selectedOption}</Text>
                                 <RemoveIcon/>
-                                {/* <IconButton
-                                    Icon = {<RemoveIcon/>}
-                                    onPress = {()=>onCheckboxPress(checkedList[0])}
-                                /> */}
+                                
                             </TouchableOpacity>
                     }
                     {
@@ -82,7 +79,7 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText,
                     </View>
                         
                 </View>
-            </View>
+            {/* </View> */}
                     
                
             { isDisplay &&
@@ -136,7 +133,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor:'#FFFFFF',
+        // backgroundColor:'#FFFFFF',
         // elevation:20
         
     },
@@ -145,12 +142,12 @@ const styles = StyleSheet.create({
         color: '#718096',
         fontWeight: '500',
     },
-    inputWrapper: {
-        flex: 1,
-        height: 32,
-    },
+    // inputWrapper: {
+    //     flex: 1,
+    //     height: 32,
+    // },
     inputField: {
-        // flex: 1,
+        flex: 1,
         width: '100%',
         borderWidth: 1,
         flexDirection: 'row',
@@ -164,7 +161,7 @@ const styles = StyleSheet.create({
     },
     menuOptionsContainer:{
         position: 'absolute',
-        top: 15,
+        top: 32,
         padding: 12,
         paddingTop: 8,
         paddingBottom: 2,
@@ -202,7 +199,7 @@ const styles = StyleSheet.create({
         borderColor:'#FEB2B2',
         borderWidth:1,
         backgroundColor:'#FFF5F5',
-        borderRadius:2
+        borderRadius:2,
     },
     footer:{
         // flex:1,

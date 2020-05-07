@@ -144,7 +144,7 @@ export const createPhysician = async (physicianToCreate) => {
 };
 
 export const updatePhysician = async (id, data) => {
-    return suitesAxiosInstance.put(physicianEndpoint(id))
+    return suitesAxiosInstance.put(physicianEndpoint(id),data)
         .then(handleResponse)
         .catch(handleError)
 }

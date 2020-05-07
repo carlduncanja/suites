@@ -7,8 +7,9 @@ import CaseFilesTab from '../OverlayTabs/CaseFilesTab';
 import CustomProceduresTab from '../OverlayTabs/CustomProceduresTab';
 import {colors} from "../../styles";
 
-import { getPhysicianById, } from "../../api/network";
-
+import { getPhysicianById, updatePhysician } from "../../api/network";
+import { updatePhysicianRecord } from "../../redux/actions/physiciansActions";
+import {connect} from 'react-redux';
 
 function PhysicianBottomSheet({physician, isOpenEditable}) {
     const currentTabs = ["Details", "Case Files", "Custom Procedures", "Schedule"];
@@ -40,8 +41,8 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
         middleName : middleName,
         surname : surname,
         dob : dob,
+        trn :trn,
         gender : gender,
-        trn : trn,
         emails : emails,
         address : address,
         phones : phones,
@@ -72,6 +73,7 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
             }
 
             console.log("Fields: ", fieldsObject)
+            updatePhysicianFn(_id, fieldsObject)
         }
     }
 
@@ -135,6 +137,21 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
             })
     };
 
+    const updatePhysicianFn = (id, data) => {
+        updatePhysician(id, data)
+            .then((data, id) => {
+                let newData = {
+                    _id : id,
+                    ...physician
+                }
+                updatePhysicianRecord(newData)
+                console.log("Success: ", data)
+            })
+            .catch(error => {
+                console.log("Failed to update physician", error)
+            })
+    }
+
     return (
         <View style={{flex: 1}}>
             {
@@ -161,4 +178,9 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
 PhysicianBottomSheet.propTypes = {};
 PhysicianBottomSheet.defaultProps = {};
 
-export default PhysicianBottomSheet;
+
+const mapDispatcherToProp = {
+    updatePhysicianRecord
+};
+
+export default connect(null, mapDispatcherToProp)(PhysicianBottomSheet)

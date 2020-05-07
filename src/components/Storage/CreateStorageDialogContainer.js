@@ -136,9 +136,9 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                     <View style={styles.row}>
                         <View style={styles.inputWrapper}>
                             <InputField2 label={"Location Name"}
-                                         onChangeText={onFieldChange('name')}
-                                         value={fields['name']}
-                                         onClear={() => onFieldChange('name')('')}
+                                onChangeText={onFieldChange('name')}
+                                value={fields['name']}
+                                onClear={() => onFieldChange('name')('')}
                             />
                         </View>
 
@@ -173,7 +173,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                                 options={theatreSearchResults}
                             />
                         </View>
-                        <View style={styles.inputWrapper}/>
+                        {/* <View style={styles.inputWrapper}/> */}
                     </View>
                 </View>
             </View>

@@ -226,7 +226,7 @@ const testCategory = [
                 </View>
             </View>
 
-            <View style={styles.row}>
+            <View style={[styles.row,{zIndex:-2}]}>
 
                 <View style={{width: 260}}>
                     <OptionsField
@@ -235,7 +235,7 @@ const testCategory = [
                         oneOptionsSelected={onFieldChange('assigmentType')}
                         menuOption={
                         <MenuOptions>
-                            <MenuOption value={'Physicians'} text='Physicians'/>
+                            <MenuOption value={'Physician'} text='Physician'/>
                             <MenuOption value={'Location'} text='Location'/>
                         </MenuOptions>
                         }
@@ -257,37 +257,37 @@ const testCategory = [
                 </View>
             </View>
 
-            <View style={styles.row}>
+            <View style={[styles.row,{zIndex:-3}]}>
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Assigned"}
                         text={
-                            assignmentOption === 'Physicians' ?
+                            assignmentOption === 'Physician' ?
                                 physicianSearchValue
                                 :
                                 theatresSearchValue
                         }
                         oneOptionsSelected={(item) => {
-                            assignmentOption === 'Physicians'?
+                            assignmentOption === 'Physician'?
                                 onFieldChange('assigned')({physician : item._id})
                                 :
                                 onFieldChange('assigned')({theatre : item._id})
                         }}
                         onChangeText={value => 
-                            assignmentOption === 'Physicians' ?
+                            assignmentOption === 'Physician' ?
                                 setPhysicianSearchValue(value)
                                 :
                                 setTheatreSearchValue(value)
                         }
                         onClear={() => {
                             onFieldChange('assigned')('');
-                            assignmentOption === 'Physicians' ?
+                            assignmentOption === 'Physician' ?
                                 setPhysicianSearchValue('')
                                 :
                                 setTheatreSearchValue('');
                         }}
                         options={
-                            assignmentOption === 'Physicians' ?
+                            assignmentOption === 'Physician' ?
                                 physicianSearchResults
                                 :
                                 theatreSearchResults
@@ -310,7 +310,7 @@ const testCategory = [
 
             </View>
 
-            <View style={styles.row}>
+            <View style={[styles.row,{zIndex:-4}]}>
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Type"}
