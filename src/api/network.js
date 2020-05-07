@@ -72,8 +72,8 @@ export const createTheatre = async (theatreForCreation) => {
 
 
 // ################# Inventory Endpoints
-export const getInventories = async () => {
-    return suitesAxiosInstance.get(inventoriesEndpoint)
+export const getInventories = async ( query, max ) => {
+    return suitesAxiosInstance.get(inventoriesEndpoint, {params : {query}})
         .then(handleResponse)
         .catch(handleError);
 };
@@ -142,6 +142,12 @@ export const createPhysician = async (physicianToCreate) => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+export const updatePhysician = async (id, data) => {
+    return suitesAxiosInstance.put(physicianEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError)
+}
 
 // ################# Storage Endpoints
 export const getStorage = async () => {

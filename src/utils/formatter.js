@@ -30,3 +30,15 @@ export let transformToSentence = (word) => {
     let newWord = word.replace(/([A-Z])/g, " $1")
     return newWord.charAt(0).toUpperCase() + newWord.slice(1);
 }
+
+export let calcAge = (dob) =>{
+    let today = new Date()
+    let dateObject  = new Date(dob)
+    let age = today.getFullYear() - dateObject.getFullYear()
+    let month = today.getMonth() - dateObject.getMonth()
+    if (month < 0 || (month === 0 && today.getDate() < dateObject.getDate())){
+        age --
+    }
+    return age
+}
+

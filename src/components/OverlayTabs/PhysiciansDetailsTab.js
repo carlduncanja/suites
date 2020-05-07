@@ -6,8 +6,9 @@ import ColumnSectionsList from '../common/ColumnsSectionsList';
 import Record from '../common/Information Record/Record';
 import ColumnSection from "../common/ColumnSection";
 import moment from "moment";
-import { transformToSentence, formatDate } from '../../utils/formatter';
+import { transformToSentence, formatDate, calcAge } from '../../utils/formatter';
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
+import InputField2 from "../common/Input Fields/InputField2";
 
 const PhysiciansDetailsTab = ({physician}) => {
     const {
@@ -60,9 +61,19 @@ const PhysiciansDetailsTab = ({physician}) => {
         })
     })
 
-    const calcAge = (dob) =>{
-        return age
-    }
+    // const calcAge = (dob) =>{
+    //     let today = new Date()
+    //     let dateObject  = new Date(dob)
+    //     let age = today.getFullYear() - dateObject.getFullYear()
+    //     let month = today.getMonth() - dateObject.getMonth()
+    //     if (month < 0 || (month === 0 && today.getDate() < dateObject.getDate())){
+    //         age --
+    //     }
+    //     return age
+       
+    // }
+
+  
 
     const demoData = [
         firstNameRecord = <Record
@@ -79,7 +90,7 @@ const PhysiciansDetailsTab = ({physician}) => {
         />,
         ageRecord = <Record
             recordTitle = "Age"
-            recordValue = {20}
+            recordValue = {calcAge(dob)}
         />,
         genderRecord = <Record
             recordTitle = "Gender"
@@ -162,47 +173,7 @@ const PhysiciansDetailsTab = ({physician}) => {
         )
     })
 
-    // const contacts = [
-    //     {
-    //         phone : {
-    //             ...phoneObject,
-    //             handlePress :  () => {}
-    //         },
-    //         email : {
-    //             ...emailObject,
-    //             handlePress : () => {}
-    //         },
-    //         address : {
-    //             ...addressObject
-    //         }
-    //     }
-    // ]
-
-    // const eContact = emergencyContact.map( contact => {
-    //     return {
-    //         name : `${contact.name} ${contact.relation}`,
-    //         number : contact.phone,
-    //         email : contact.email
-    //     }
-    // })
-
-    // const emergencyContacts = [
-
-    //     {
-    //         name: "Donna Lee (Mother)",
-    //         number : "876 728 8783",
-    //         email : "donnalEE@gmail.com",
-    //         handlePress : ()=>{}
-
-    //     },
-    //     {
-    //         name: "Martin Lee (Father)",
-    //         number : "876 137 9209",
-    //         email : "lee_Martin@gmail.com",
-    //         handlePress : () => {}
-    //     }
-    // ]
-
+    
     const sections = [
         <ColumnSection
             data = {demoData}

@@ -2,12 +2,13 @@ import React, {useState, useEffect} from 'react';
 import { View, ActivityIndicator } from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import General from '../OverlayTabs/General';
+import EditableEquipmentDetails from '../OverlayTabs/EditableEquipmentDetails';
 import moment from 'moment';
 import {colors} from "../../styles";
 import { getEquipmentById } from "../../api/network";
 import { formatDate } from '../../utils/formatter';
 
-function EquipmentBottomSheet({equipment}) {
+function EquipmentBottomSheet({equipment, isOpenEditable}) {
 
     const testData = {
         description : "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
@@ -25,7 +26,9 @@ function EquipmentBottomSheet({equipment}) {
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [isEditMode, setEditMode] = useState(false);
+    const [selectedEquipment, setSelectedEquipment] = useState(equipment)
+    const [isEditMode, setEditMode] = useState(isOpenEditable);
+    const [editableTab, setEditableTab] = useState()
     const [isFetching, setFetching] = useState(false);
 
     // ##### Lifecycle Methods
@@ -39,12 +42,21 @@ function EquipmentBottomSheet({equipment}) {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
+    const onEditPress = (tab) => {
+        setEditableTab(tab)
+        setEditMode(!isEditMode)
+    }
+
     // ##### Helper functions
 
     const getTabContent = (selectedTab) => {
+
         switch (selectedTab) {
             case "Details":
-                return <General details = {{...testData, id : id}}/>;
+                return editableTab === 'Details' && isEditMode ?
+                    <EditableEquipmentDetails equipment = {selectedEquipment} />
+                    :
+                    <General equipment = {selectedEquipment}/>;
             default :
                 return <View/>
         }
@@ -84,6 +96,7 @@ function EquipmentBottomSheet({equipment}) {
                         selectedTab={currentTab}
                         isEditMode={isEditMode}
                         overlayContent={overlayContent}
+                        onEditPress = {onEditPress}
                     />
             }
         </View>

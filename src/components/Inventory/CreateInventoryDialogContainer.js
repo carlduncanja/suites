@@ -5,9 +5,14 @@ import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
+import OptionsField from "../common/Input Fields/OptionsField";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import {createInventories} from "../../api/network";
+import {createInventories, getInventories, getCategories} from "../../api/network";
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import _ from "lodash";
 
 
 /**
@@ -24,6 +29,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
     const modal = useModal();
     const dialogTabs = ['Details', 'Configuration'];
     const [selectedIndex, setSelectedTabIndex] = useState(0);
+    
 
     const [fields, setFields] = useState({
         name: "",
@@ -33,6 +39,101 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         sku: "",
         barCode: "",
     });
+
+    // Inventory Search
+    const [inventorySearchValue, setInventorySearchValue] = useState();
+    const [inventorySearchResults, setInventorySearchResult] = useState([]);
+    const [inventorySearchQuery, setInventorySearchQuery] = useState({});
+
+    // Category Search
+    const [categorySearchValue, setCategorySearchValue] = useState();
+    const [categorySearchResults, setCategorySearchResult] = useState([]);
+    const [categorySearchQuery, setCategorySearchQuery] = useState({});
+
+    const [unitPriceText, setUnitPriceText] = useState(fields['unitPrice'])
+
+    // Handle inventories search
+    useEffect(() => {
+        console.log("Hello: ", )
+        console.log("Search: ", inventorySearchValue)
+        if (!inventorySearchValue) {
+            // empty search values and cancel any out going request.
+            setInventorySearchResult([]);
+            if (inventorySearchQuery.cancel) inventorySearchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchInventories, 300);
+
+        setInventorySearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [inventorySearchValue]);
+
+    // Handle category search
+    useEffect(() => {
+
+        if (!categorySearchValue) {
+            // empty search values and cancel any out going request.
+            setCategorySearchResult([]);
+            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchCategory, 300);
+
+        setCategorySearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [categorySearchValue]);
+
+    const fetchInventories = () => {
+        getInventories(inventorySearchValue, 5)
+            .then((data = []) => {
+                console.log("Data: ", data)
+                const results = data.map(item => ({
+                    ...item
+                }));
+
+                setInventorySearchResult(results || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get inventories", error);
+                setInventorySearchResult([]);
+            })
+    };
+
+    const fetchCategory = () => {
+        getCategories(categorySearchValue,5)
+            .then((data = [])=>{
+                const results = data.map(item => ({
+                    _id : item,
+                    name : item
+                }));
+                setCategorySearchResult(results || [])
+            })
+            .catch(error => {
+                console.log("failed to get categories: ", error)
+                setCategorySearchResult([])
+            })
+
+    }
 
     const handleCloseDialog = () => {
         onCancel();
@@ -57,6 +158,13 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
             [fieldName]: value
         })
     };
+
+    const handleUnitPrice = (price) => {
+        if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
+            onFieldChange('unitPrice')
+        }
+        setUnitPriceText(price)
+    }
 
     const createInventoryCall = () => {
         createInventories(fields)
@@ -89,12 +197,25 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         <View style={styles.sectionContainer}>
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
-                    <InputField2
+                    <SearchableOptionsField
+                        label={"Reference"}
+                        text={inventorySearchValue}
+                        oneOptionsSelected={(item) => {
+                            onFieldChange('referenceName')(item._id)
+                        }}
+                        onChangeText={value => {setInventorySearchValue(value); console.log("Value:", value)}}
+                        onClear={() => {
+                            onFieldChange('referenceName')('');
+                            setInventorySearchValue('');
+                        }}
+                        options={inventorySearchResults}
+                    />
+                    {/* <InputField2
                         label={"Reference"}
                         onChangeText={onFieldChange('referenceName')}
                         value={fields['referenceName']}
                         onClear={() => onFieldChange('referenceName')('')}
-                    />
+                    /> */}
                 </View>
 
                 <View style={styles.inputWrapper}>
@@ -109,16 +230,21 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
             <View style={styles.row}>
                 <View style={styles.inputWrapper}>
+                    <MultipleSelectionsField
+                        label={"Category"}
+                        onOptionsSelected={onFieldChange('category')}
+                        options = {categorySearchResults}
+                        searchText = {categorySearchValue}
+                        onSearchChangeText = {(value)=> setCategorySearchValue(value)}
+                        onClear={()=>{setCategorySearchValue('')}}
+                    />
 
-
-                    <InputField2
+                    {/* <InputField2
                         label={"Category"}
                         onChangeText={onFieldChange('category')}
                         value={fields['category']}
                         onClear={() => onFieldChange('category')('')}
-                    />
-
-
+                    /> */}
                 </View>
 
                 <View style={styles.inputWrapper}>
@@ -173,12 +299,21 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2
+                    <OptionsField
+                        label={"Unit of Measure"}
+                        text={fields['unitOfMeasure']}
+                        oneOptionsSelected={onFieldChange('unitOfMeasure')}
+                        menuOption={<MenuOptions>
+                            <MenuOption value={'Glove Boxes'} text='Glove Boxes'/>
+                            <MenuOption value={'Pack'} text='Pack'/>
+                        </MenuOptions>}
+                    />
+                    {/* <InputField2
                         label={"Unit Of Measure"}
                         onChangeText={onFieldChange('unitOfMeasure')}
                         value={fields['unitOfMeasure']}
                         onClear={() => onFieldChange('unitOfMeasure')('')}
-                    />
+                    /> */}
                 </View>
             </View>
 
@@ -186,12 +321,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Unit Price"}
-                        onChangeText={(value) => {
-                            if (/^-?[0-9][0-9.]+$/g.test(value) || /^\d+$/g.test(value) || !value) {
-                                onFieldChange('unitPrice')
-                            }
-                        }}
-                        value={fields['unitPrice']}
+                        onChangeText={(value) => { handleUnitPrice(value )}}
+                        value={unitPriceText}
                         keyboardType={'number-pad'}
                         onClear={() => onFieldChange('unitPrice')('')}
                     />

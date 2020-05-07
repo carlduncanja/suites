@@ -100,9 +100,9 @@ const Equipment = (props) => {
         setSelectedEquipmentIds(updatedEquipmentList)
     }
 
-    const handleOnItemPress = (item) => {
+    const handleOnItemPress = (item, isOpenEditable) => {
         modal.openModal('BottomSheetModal',{
-            content : <EquipmentBottomSheet equipment = {item}/>
+            content : <EquipmentBottomSheet equipment = {item} isOpenEditable = {isOpenEditable}/>
         })
     }
 
@@ -188,7 +188,7 @@ const Equipment = (props) => {
             hasCheckBox={true}
             isChecked={selectedEquipmentIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => handleOnItemPress(item)}
+            onItemPress={() => handleOnItemPress(item, false)}
             itemView={equipmentItem(viewItem)}
         />
     }
@@ -252,7 +252,7 @@ const Equipment = (props) => {
                     {
                         content: <CreateEquipmentDialog
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={(item) => handleOnItemPress(item)}
+                            onCreated={(item) => handleOnItemPress(item,true)}
                             equipmentTypes = {equipmentTypes}
                         />,
                         onClose: () => setFloatingAction(false)

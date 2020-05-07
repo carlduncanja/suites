@@ -14,13 +14,13 @@ const SlideHeader = ({id, title, selectedTab, currentTabs, onTabPressChange, isE
                     <EditModeHeading
                         id={id}
                         title={title}
-                        onButtonPress={onEditButtonPress}
+                        onButtonPress={()=>onEditButtonPress(selectedTab)}
                     />
                     :
                     <ViewModeHeading
                         id={id}
                         title={title}
-                        onButtonPress={onEditButtonPress}
+                        onButtonPress={()=>onEditButtonPress(selectedTab)}
                     />
             }
 

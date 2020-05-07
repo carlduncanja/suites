@@ -17,41 +17,54 @@ import EditIcon from "../../../assets/svg/editIcon";
 
 import { withModal } from "react-native-modalfy";
 
-const General = ({details, modal}) => {
+const General = ({equipment, modal}) => {
+
+    const {
+        // supplier id
+        _id,
+        // supplier name
+        supplier, 
+        assigned,
+        status,
+        usage,
+        availableOn,
+        categories, 
+        description
+    } = equipment
 
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
     const supplierId = <Record 
         recordTitle = {"Supplier ID"}
-        recordValue = {details.id}
+        recordValue = {_id || ""}
     />
 
-    const assigned = <ResponsiveRecord
+    const assignedRecord = <ResponsiveRecord
         recordTitle = {"Assigned"}
-        recordValue = {details.assigned}
+        recordValue = {assigned || ""}
         handleRecordPress = {()=>{}}
     />
    
-    const status = <Record
+    const statusRecord = <Record
         recordTitle = {"Status"}
-        recordValue = {details.status}
+        recordValue = {status || ""}
         valueColor = {"#DD6B20"}
     />
 
-    const supplier = <ResponsiveRecord
+    const supplierRecord = <ResponsiveRecord
         recordTitle = {"Supplier"}
-        recordValue = {details.supplier}
+        recordValue = {supplier || ""}
         handleRecordPress = {()=>{}}
     />
 
-    const usage = <Record
+    const usageRecord = <Record
         recordTitle = {"Usage"}
-        recordValue = {details.usage}
+        recordValue = {usage || ""}
     />
 
-    const availableOn = <Record
+    const available = <Record
         recordTitle = {"Available On"}
-        recordValue = {details.availableOn}
+        recordValue = {availableOn || ""}
     />
 
     const category = <Record
@@ -61,24 +74,22 @@ const General = ({details, modal}) => {
 
     const section1 = [
         supplierId,
-        assigned,
-        status,
-        supplier,
-        usage,
-        availableOn
+        assignedRecord,
+        statusRecord,
+        supplierRecord,
+        usageRecord,
+        available
     ]
 
     const section2 = [
         category
     ]
 
-
-
     return (
         <>
             <View style={styles.description}>
                 <Text>Description</Text>
-                <Text>{details.description}</Text>
+                <Text>{description}</Text>
             </View>
             <View style={styles.detailsContainer}>
                 <ColumnSectionsList
