@@ -266,7 +266,7 @@ const Equipment = (props) => {
             </View>
             <View style={{flex: 1, alignItems: 'center'}}>
                 <IconButton
-                    Icon={<ActionIcon/>}
+                    Icon={<AssignIcon/>}
                     onPress={onActionPress}
                 />
             </View>

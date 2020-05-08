@@ -21,6 +21,7 @@ import AddIcon from "../../assets/svg/addIcon";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
 import CreateTheatreDialogContainer from "../components/Theatres/CreateTheatreDialogContainer";
+import AssignIcon from "../../assets/svg/assignIcon";
 
 
 const listHeaders = [
@@ -213,7 +214,7 @@ function Theatres(props) {
     };
 
     // ##### Helper functions
-    const theatreItem = ({name, recoveryStatus, recoveryStatusColor, status, statusColor}, onActionPress, actionIcon = actionIcon) => <>
+    const theatreItem = ({name, recoveryStatus, recoveryStatusColor, status, statusColor}, onActionPress) => <>
         <View style={[styles.item, {flex: 2, ...styles.rowBorderRight}]}>
             <Text style={{color: "#3182CE", fontSize: 16}}>
                 {name}
@@ -235,7 +236,7 @@ function Theatres(props) {
         </View>
         <View style={[styles.item, {flex: 1, justifyContent: "center"}]}>
             <IconButton
-                Icon={<ActionIcon/>}
+                Icon={<AssignIcon/>}
                 onPress={onActionPress}
             />
         </View>
