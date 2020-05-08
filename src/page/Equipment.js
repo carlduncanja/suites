@@ -27,6 +27,7 @@ import {formatDate} from '../utils/formatter';
 import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
 import ActionIcon from "../../assets/svg/ActionIcon";
 import IconButton from "../components/common/Buttons/IconButton";
+import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
 
 const Equipment = (props) => {
 
@@ -106,8 +107,8 @@ const Equipment = (props) => {
     }
 
     const handleOnItemPress = (item, isOpenEditable) => {
-        modal.openModal('BottomSheetModal',{
-            content : <EquipmentBottomSheet equipment = {item} isOpenEditable = {isOpenEditable}/>
+        modal.openModal('BottomSheetModal', {
+            content: <EquipmentBottomSheet equipment={item} isOpenEditable={isOpenEditable}/>
         })
     }
 
@@ -182,8 +183,8 @@ const Equipment = (props) => {
             hasCheckBox={true}
             isChecked={selectedEquipmentIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => handleOnItemPress(item,false)}
-            render={(collapse) => equipmentItem(viewItem, collapse)}
+            onItemPress={() => handleOnItemPress(item, false)}
+            render={(collapse, isCollapsed) => equipmentGroupView(viewItem,collapse, isCollapsed)}
         >
             <FlatList
                 data={renderChildView(equipments)}
@@ -202,7 +203,7 @@ const Equipment = (props) => {
                     const onActionPress = () => {
                     }
 
-                    return equipmentItemItem(equipmentItem, onActionPress)
+                    return equipmentItemView(equipmentItem, onActionPress)
                 }}
             />
 
@@ -243,7 +244,7 @@ const Equipment = (props) => {
                     : '#4E5664'
     };
 
-    const equipmentItemItem = ({assigmentName, quantity, status, dateAvailable}, onActionPress) => (
+    const equipmentItemView = ({assigmentName, quantity, status, dateAvailable}, onActionPress) => (
         <View style={{flexDirection: 'row', marginTop: 10}}>
             <View style={{width: 40}}/>
             <View style={{flex: 2, alignment: "flex-start"}}>
@@ -268,7 +269,7 @@ const Equipment = (props) => {
     );
 
 
-    const equipmentGroupItem = (item, onActionPress) => <>
+    const equipmentGroupView = (item, onActionPress, isCollapsed) => <>
         <View style={{flex: 2}}>
             <Text style={{fontSize: 16, color: '#323843'}}>{item.name}</Text>
         </View>
@@ -283,7 +284,7 @@ const Equipment = (props) => {
         </View>
         <View style={{flex: 1, alignItems: 'center'}}>
             <IconButton
-                Icon={<ActionIcon/>}
+                Icon={isCollapsed ? <ActionIcon/> : <ActionCollapseIcon/>}
                 onPress={onActionPress}
             />
         </View>
@@ -327,8 +328,8 @@ const Equipment = (props) => {
                     {
                         content: <CreateEquipmentDialog
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={(item) => handleOnItemPress(item,true)}
-                            equipmentTypes = {equipmentTypes}
+                            onCreated={(item) => handleOnItemPress(item, true)}
+                            equipmentTypes={equipmentTypes}
                         />,
                         onClose: () => setFloatingAction(false)
                     })
