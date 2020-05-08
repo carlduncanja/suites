@@ -1,8 +1,7 @@
-import React, {useContext, useState, useEffect, useRef} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import React, {useState, useEffect} from "react";
+import {View, Text, StyleSheet, FlatList} from "react-native";
 
 import Page from '../components/common/Page/Page';
-import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
 import EquipmentBottomSheet from '../components/Equipment/EquipmentBottomSheet';
@@ -17,17 +16,14 @@ import AssignIcon from "../../assets/svg/assignIcon";
 import EditIcon from "../../assets/svg/editIcon";
 
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
-import EquipmentListIcon from '../../assets/svg/equipmentListAction';
 
 import {connect} from 'react-redux';
 import {setEquipment} from "../redux/actions/equipmentActions";
 import {getEquipment, getEquipmentTypes} from "../api/network";
 
 import {withModal} from 'react-native-modalfy';
-import moment from "moment";
 import {formatDate} from '../utils/formatter';
 
-import equipmentTest from '../../data/Equipment';
 import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
 import ActionIcon from "../../assets/svg/ActionIcon";
 import IconButton from "../components/common/Buttons/IconButton";
@@ -39,23 +35,29 @@ const Equipment = (props) => {
     const listHeaders = [
         {
             name: "Assigned",
-            alignment: "flex-start"
+            alignment: "flex-start",
+            flex: 2
+
         },
         {
             name: "Quantity",
-            alignment: "center"
+            alignment: "center",
+            flex: 1
         },
         {
             name: "Status",
-            alignment: "flex-start"
+            alignment: "center",
+            flex: 1
         },
         {
             name: "Available on",
-            alignment: "center"
+            alignment: "center",
+            flex: 1
         },
         {
             name: "Actions",
-            alignment: "center"
+            alignment: "center",
+            flex: 1
         }
     ];
     const floatingActions = []
@@ -164,24 +166,14 @@ const Equipment = (props) => {
     };
 
     const renderEquipmentFn = (item) => {
-        const filterEquiments = equipment.filter(eqItem => {
-            const {type = {}} = eqItem
-            const {_id = ""} = type
+        const equipments = item.equipments || []
 
-            return (item._id === _id)
+        console.log(equipments);
 
-            // return _id === null ?
-            //     null
-            //     :
-            //     item._id  === _id
-        });
-
-        // const filterEquipments = []
-        const filterStatus = filterEquiments.filter(eqItem => eqItem.status === 'Available')
         const viewItem = {
             name: item.name,
-            quantity: filterEquiments.length,
-            status: filterStatus.length === 1 ? "Available" : filterStatus.length > 1 ? "Multiple" : "Unavailable",
+            quantity: item.equipments.length,
+            status: equipments.length === 1 ? "Available" : item.equipments.length > 1 ? "Multiple" : "Unavailable",
             nextAvailable: new Date(2020, 12, 12)
         };
 
@@ -191,9 +183,59 @@ const Equipment = (props) => {
             isChecked={selectedEquipmentIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item)}
-            render={(collapse) => equipmentItem(viewItem, collapse)}
-        />
+            render={(collapse) => equipmentGroupItem(viewItem, collapse)}
+        >
+            <FlatList
+                data={renderChildView(equipments)}
+                keyExtractor={(item, index) => "" + index}
+                renderItem={({item}) => {
+                    const equipmentGroup = item.items || []
+
+                    // console.log("render children equipment item", item);
+                    const equipmentItem = {
+                        assigmentName: item.id,
+                        quantity: equipmentGroup.length,
+                        status: '...',
+                        dateAvailable: new Date()
+                    }
+
+                    const onActionPress = () => {
+                    }
+
+                    return equipmentItemItem(equipmentItem, onActionPress)
+                }}
+            />
+
+        </CollapsibleListItem>
+
     };
+
+    const renderChildView = (equipments = []) => {
+        const assignmentGroupedEquipments = {};
+
+        console.log("render children equipments", equipments);
+
+        // group equipment by assignment
+        equipments.forEach(item => {
+            const assignmentName = item.assigment && !item.assigment.name
+            if (!assignmentName) {
+                return assignmentGroupedEquipments[item.name] = [item]
+            }
+            if (assignmentGroupedEquipments[assignmentName]) {
+                assignmentGroupedEquipments[assignmentName].push(item);
+            } else {
+                assignmentGroupedEquipments[assignmentName] = [item];
+            }
+        })
+
+        console.log("render children groups", assignmentGroupedEquipments);
+
+        const data = Object.keys(assignmentGroupedEquipments).map(item => ({
+            id: item,
+            items: assignmentGroupedEquipments[item] || []
+        }));
+        return data;
+    }
 
     const getStatusColor = (status) => {
         return status === 'Unavailable' ? '#C53030'
@@ -202,14 +244,39 @@ const Equipment = (props) => {
                     : '#4E5664'
     };
 
-    const equipmentItem = (item, onActionPress) => <>
-        <View style={{flex: 1}}>
+    const equipmentItemItem = ({assigmentName, quantity, status, dateAvailable}, onActionPress) => (
+        <View style={{flexDirection: 'row', marginTop: 10}}>
+            <View style={{width: 40}}/>
+            <View style={{flex: 2, alignment: "flex-start"}}>
+                <Text style={{fontSize: 16, color: '#323843'}}>{assigmentName}</Text>
+            </View>
+            <View style={{flex: 1, alignItems: 'center'}}>
+                <Text style={{fontSize: 16, color: '#4E5664'}}>{quantity}</Text>
+            </View>
+            <View style={{flex: 1, alignItems: 'center'}}>
+                <Text style={{fontSize: 14, color: getStatusColor(status)}}>{status}</Text>
+            </View>
+            <View style={{flex: 1, alignItems: 'center'}}>
+                <Text style={{fontSize: 14, color: '#4E5664'}}>{formatDate(dateAvailable, "DD/MM/YYYY")}</Text>
+            </View>
+            <View style={{flex: 1, alignItems: 'center'}}>
+                <IconButton
+                    Icon={<ActionIcon/>}
+                    onPress={onActionPress}
+                />
+            </View>
+        </View>
+    );
+
+
+    const equipmentGroupItem = (item, onActionPress) => <>
+        <View style={{flex: 2}}>
             <Text style={{fontSize: 16, color: '#323843'}}>{item.name}</Text>
         </View>
         <View style={{flex: 1, alignItems: 'center'}}>
             <Text style={{fontSize: 16, color: '#4E5664'}}>{item.quantity}</Text>
         </View>
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, alignItems: 'center'}}>
             <Text style={{fontSize: 14, color: getStatusColor(item.status)}}>{item.status}</Text>
         </View>
         <View style={{flex: 1, alignItems: 'center'}}>
