@@ -1,5 +1,5 @@
-import React,{ useEffect, useContext, useState} from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import React, {useEffect, useContext, useState} from 'react';
+import {View, Text, StyleSheet} from "react-native";
 
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
@@ -15,31 +15,34 @@ import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
 import AssignIcon from "../../assets/svg/assignIcon";
 
-import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
 
 import {connect} from 'react-redux';
 import {setProcedures} from "../redux/actions/proceduresActions";
 import {getProcedures} from "../api/network";
 
-import { withModal } from 'react-native-modalfy';
+import {withModal} from 'react-native-modalfy';
 import proceduresTest from '../../data/Procedures'
 
-const Procedures = (props) =>{
+const Procedures = (props) => {
 
     // ############# Const data
     const recordsPerPage = 15;
     const listHeaders = [
-        {   
-            name : "Procedure",
-            alignment : "flex-start"
+        {
+            name: "Procedure",
+            alignment: "flex-start",
+            flex: 2
         },
-        {   
-            name : "Physician",
-            alignment : "flex-end"
+        {
+            name: "Physician",
+            alignment: "center",
+            flex: 1
         },
-        {   
-            name : "Duration",
-            alignment : "center"
+        {
+            name: "Duration",
+            alignment: "center",
+            flex: 1
         }
     ];
     const floatingActions = []
@@ -72,20 +75,20 @@ const Procedures = (props) =>{
     };
 
     const handleOnSelectAll = () => {
-        let updatedProceduresList = selectAll(procedures,selectedProcedures)
+        let updatedProceduresList = selectAll(procedures, selectedProcedures)
         setSelectedProcedures(updatedProceduresList)
     }
 
-    const handleOnCheckBoxPress = (item) => () =>{
-        const { id } = item;
+    const handleOnCheckBoxPress = (item) => () => {
+        const {id} = item;
         let updatedProceduresList = checkboxItemPress(item, id, selectedProcedures)
- 
+
         setSelectedProcedures(updatedProceduresList)
     }
 
     const handleOnItemPress = (item) => {
-        modal.openModal('BottomSheetModal',{
-            content : <ProceduresBottomSheet procedure = {item} />
+        modal.openModal('BottomSheetModal', {
+            content: <ProceduresBottomSheet procedure={item}/>
         })
     }
 
@@ -152,28 +155,32 @@ const Procedures = (props) =>{
         const physician = `Dr. ${item.physician.firstName} ${item.physician.surname}`;
         return (
             <>
-                <View style={[styles.item,{paddingRight:10, borderRightColor:"#E3E8EF", borderRightWidth:1, marginRight:20, width:'50%'}]}>
+                <View style={[styles.item,{borderRightColor:"#E3E8EF", borderRightWidth:1, marginRight:20, flex: 2}]}>
                     <Text style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
                 </View>
-                <View style={[styles.item, {flex:1}]}>
-                    <Text style={[styles.itemText, {color:"#3182CE"}]}>{physician}</Text>
+                <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
+                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{physician}</Text>
                 </View>
-                <View style={[styles.item, {flex:1}]}>
-                    <Text style={[styles.itemText, {color:"#3182CE"}]}>{`${item.duration} hours`}</Text>
+                <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
+                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{`${item.duration} hours`}</Text>
                 </View>
             </>
         )
-        
+
     }
 
     const getFabActions = () => {
 
         const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
-                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+            <LongPressWithFeedback pressTimer={700} onLongPress={() => {
+            }}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
+                }} touchable={false}/>
             </LongPressWithFeedback>;
-        const createCopy = <ActionItem title={"Create Copy"} icon={<AddIcon/>} onPress={()=>{}}/>;
-        const createNewProcedure = <ActionItem title={"New Procedure"} icon={<AddIcon/>} onPress={ openCreateProcedure }/>;
+        const createCopy = <ActionItem title={"Create Copy"} icon={<AddIcon/>} onPress={() => {
+        }}/>;
+        const createNewProcedure = <ActionItem title={"New Procedure"} icon={<AddIcon/>}
+                                               onPress={openCreateProcedure}/>;
 
 
         return <ActionContainer
@@ -196,7 +203,7 @@ const Procedures = (props) =>{
                 .openModal(
                     'OverlayModal',
                     {
-                        content: <CreateProcedureDialog 
+                        content: <CreateProcedureDialog
                             onCancel={() => setFloatingAction(false)}
                             onCreated={(item) => handleOnItemPress(item)}
                         />,
@@ -212,7 +219,7 @@ const Procedures = (props) =>{
 
 
     return (
-        <View style={{flex:1}}> 
+        <View style={{flex: 1}}>
             <Page
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
@@ -225,7 +232,7 @@ const Procedures = (props) =>{
                 listHeaders={listHeaders}
                 itemsSelected={selectedProcedures}
                 onSelectAll={handleOnSelectAll}
-                
+
                 listItemFormat={renderProcedureFn}
             />
 
@@ -240,8 +247,8 @@ const Procedures = (props) =>{
                 </View>
 
                 <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
+                    isDisabled={isFloatingActionDisabled}
+                    toggleActionButton={toggleActionButton}
                 />
             </View>
 
@@ -249,14 +256,14 @@ const Procedures = (props) =>{
     )
 }
 
-const mapStateToProps = (state) =>({ 
+const mapStateToProps = (state) => ({
     // const procedures = state.procedures.map(item => {
     //     return {
     //         ...item
     //     }
     // })
     // return { procedures }
-    procedures : state.procedures
+    procedures: state.procedures
 });
 
 const mapDispatcherToProp = {
@@ -266,11 +273,11 @@ const mapDispatcherToProp = {
 export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Procedures))
 
 const styles = StyleSheet.create({
-    item : {
+    item: {
         // flex:1
     },
     itemText: {
-        fontSize:16
+        fontSize: 16
     },
     footer: {
         flex: 1,
