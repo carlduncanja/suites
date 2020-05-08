@@ -151,11 +151,10 @@ const Procedures = (props) => {
     }
 
     const procedureItem = (item) => {
-        console.log("Item:", item)
         const physician = `Dr. ${item.physician.firstName} ${item.physician.surname}`;
         return (
             <>
-                <View style={[styles.item,{borderRightColor:"#E3E8EF", borderRightWidth:1, marginRight:20, flex: 2}]}>
+                <View style={[styles.item,{...styles.rowBorderRight, flex: 2}]}>
                     <Text style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
@@ -289,4 +288,9 @@ const styles = StyleSheet.create({
         right: 0,
         marginRight: 30,
     },
+    rowBorderRight: {
+        borderRightColor: "#E3E8EF",
+        borderRightWidth: 1,
+        marginRight: 20,
+    }
 })

@@ -214,16 +214,10 @@ function Theatres(props) {
 
     // ##### Helper functions
     const theatreItem = ({name, recoveryStatus, recoveryStatusColor, status, statusColor}, onActionPress, actionIcon = actionIcon) => <>
-        <View style={[styles.item, {flex: 2, justifyContent: 'space-between'}]}>
+        <View style={[styles.item, {flex: 2, ...styles.rowBorderRight}]}>
             <Text style={{color: "#3182CE", fontSize: 16}}>
                 {name}
             </Text>
-            <View style={{
-                width: 1,
-                height: 24,
-                backgroundColor: "#E3E8EF",
-                marginLeft: 20
-            }}/>
         </View>
         <View style={[
             styles.item, {flex: 1, justifyContent: "center"}
@@ -398,6 +392,11 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginRight: 30,
     },
+    rowBorderRight: {
+        borderRightColor: "#E3E8EF",
+        borderRightWidth: 1,
+        marginRight: 20,
+    }
 });
 
 const mapStateToProps = (state) => {

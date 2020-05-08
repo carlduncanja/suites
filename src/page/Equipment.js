@@ -275,14 +275,8 @@ const Equipment = (props) => {
 
 
     const equipmentGroupView = (item, onActionPress, isCollapsed) => <>
-        <View style={{flex: 2, flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{flex: 2, flexDirection: 'row', ...styles.rowBorderRight}}>
             <Text style={{fontSize: 16, color: '#323843'}}>{item.name}</Text>
-            <View style={{
-                width: 1,
-                height: 24,
-                backgroundColor: "#E3E8EF",
-                marginLeft: 20
-            }}/>
         </View>
         <View style={{flex: 1, alignItems: 'center'}}>
             <Text style={{fontSize: 16, color: '#4E5664'}}>{item.quantity}</Text>
@@ -415,5 +409,11 @@ const styles = StyleSheet.create({
         right: 0,
         marginRight: 30,
     },
+    rowBorderRight: {
+        borderRightColor: "#E3E8EF",
+        borderRightWidth: 1,
+        marginRight: 20,
+        flex: 2
+    }
 
 })
