@@ -1,0 +1,653 @@
+import React,{ useState, useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView,KeyboardAvoidingView, TouchableOpacity } from "react-native";
+import InputField2 from '../common/Input Fields/InputField2';
+import OptionsField from '../common/Input Fields/OptionsField';
+import { formatDate, transformToSentence, calcAge, isValidEmail } from '../../utils/formatter';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+
+const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
+    
+    const handlePhones = () => {
+        let newPhoneArray = [...fields['phones']]
+
+        const cellPhone = fields['phones'].filter(phone => phone.type === 'cell')
+        const homePhone = fields['phones'].filter(phone => phone.type === 'home')
+        const workPhone = fields['phones'].filter(phone => phone.type === 'work')
+        
+        if(cellPhone.length > 0){
+            newPhoneArray = newPhoneArray
+        }else{
+            newPhoneArray = [...newPhoneArray,{
+                type : "cell",
+                phone : ""
+            }]
+        }
+
+        if(workPhone.length > 0){
+            newPhoneArray = newPhoneArray
+        }else{
+            newPhoneArray = [...newPhoneArray,{
+                type : "work",
+                phone : ""
+            }]
+        }
+
+        if(homePhone.length > 0){
+            newPhoneArray = newPhoneArray
+        }else{
+            newPhoneArray = [...newPhoneArray,{
+                type : "home",
+                phone : ""
+            }]
+        }
+
+        return newPhoneArray
+    }
+
+    const handleEmails = () => {
+
+        let newEmailArray = [...fields['emails']]
+
+        const primaryEmail = fields['emails'].filter(email => email.type === 'primary')
+        const otherEmail = fields['emails'].filter(email => email.type === 'other')
+        const workEmail = fields['emails'].filter(email => email.type === 'work')
+        
+        if(primaryEmail.length === 0){
+            newEmailArray = [...newEmailArray,{
+                type : "primary",
+                email : ""
+            }]
+        }
+
+        if(otherEmail.length === 0){
+            newEmailArray = [...newEmailArray,{
+                type : "other",
+                email : ""
+            }]
+        }
+
+        if(workEmail.length === 0){
+            newEmailArray = [...newEmailArray,{
+                type : "work",
+                email : ""
+            }]
+        }
+
+        return newEmailArray
+    }
+
+    const handleAddress = () => {
+        let newAddress = [...fields['address']]
+        if(newAddress.length === 0){
+            newAddress = [{
+                line1 : "",
+                line2 : ""
+            }]
+        }
+        return newAddress
+    }
+
+    const handleEmergencyContact = () => {
+        let newEmergency = [...fields['emergencyContact']]
+        if(newEmergency.length === 0){
+            newEmergency = [{
+                email : '',
+                name : '',
+                phone : '',
+                relation: ''
+            }]
+        }
+        return newEmergency
+    }
+
+    const [phoneValue, setPhoneValue] = useState(handlePhones())
+    const [emailValue, setEmailValue] = useState(handleEmails())
+    const [addresses, setAddresses] = useState(handleAddress())  
+    const [emergencyContacts, setEmergencyContacts] = useState(handleEmergencyContact()) 
+    const [dateOfBirth, setDateOfBirth] = useState(formatDate(fields['dob'],'DD/MM/YYYY'))
+    const [isEmergencyOpen, setIsEmergencyOpen] = useState(false)
+    const [emergencyIndex, setEmergencyIndex] = useState(0)
+
+    // ######## Helper Functions
+
+    const formatTrn = (value) => {
+        return value.replace(/(\d{3})(\d{3})(\d{3})/, "$1-$2-$3")
+    }
+
+    const formatNumber = (value) => {
+        return value.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3")
+    }
+
+    const formatDOB = (date) => {
+        const parts = date.split('/');
+        const newDate = new Date(parts[2], parts[1] - 1, parts[0])
+        return newDate
+    }
+
+    const formatEmergencyName = (name, relation) => {
+        return (`${name} (${relation})`).trim()
+    }
+
+    const updatePhone = (newValue, phoneType) => {
+        const objIndex = phoneValue.findIndex(obj => obj.type === phoneType);
+        const updatedObj = { ...phoneValue[objIndex], phone: newValue};
+        const updatedPhones = [
+            ...phoneValue.slice(0, objIndex),
+            updatedObj,
+            ...phoneValue.slice(objIndex + 1),
+        ]; 
+        setPhoneValue(updatedPhones)
+        return updatedPhones
+    }
+
+    const updateEmail = (newValue, emailType) => {
+        const objIndex = emailValue.findIndex(obj => obj.type === emailType);
+        const updatedObj = { ...emailValue[objIndex], email: newValue};
+        const updatedEmails = [
+            ...emailValue.slice(0, objIndex),
+            updatedObj,
+            ...emailValue.slice(objIndex + 1),
+        ]; 
+        setEmailValue(updatedEmails)
+        return updatedEmails
+    }
+
+    const divider = <View style={{
+            backgroundColor:'#CCD6E0',
+            height:1,
+            borderRadius:2,
+            marginTop:8,
+            marginBottom:38
+        }}
+    />
+
+    // ######## Event Handlers
+
+    const handlePhoneChange = (number, phoneType) => {
+        let formattedNumber = number.replace(/\s/g,'')
+        const updatedPhones = updatePhone(formatNumber(formattedNumber),phoneType)
+       
+        if (/^\d{10}$/g.test(formattedNumber) || !number){
+            onFieldChange('phones')(updatedPhones)
+        }
+    }
+
+    const handleEmailChange = (email, emailType) => {
+        const updatedEmails = updateEmail(email, emailType)
+
+        if (isValidEmail(email) || !email){
+            onFieldChange('emails')(updatedEmails)
+        }
+    }
+
+    const updatedAddress = (value, key, id) => {
+        const objIndex = addresses.findIndex(obj => obj._id === id);
+        if(key === 'line1'){
+            updatedObj = { ...addresses[objIndex], line1: value}
+        }else{
+            updatedObj = { ...addresses[objIndex], line2: value}
+        } 
+
+        const updatedAddress = [
+            ...addresses.slice(0, objIndex),
+            updatedObj,
+            ...addresses.slice(objIndex + 1),
+        ]; 
+        setAddresses(updatedAddress)
+     
+        onFieldChange('address')(updatedAddress)
+
+    }
+
+    const handleClear = (phoneType) => {
+        const updatedPhones = updatePhone("",phoneType)
+        onFieldChange('phones')(updatedPhones)
+    }
+
+    const handleEmailClear = (emailType) => {
+        const updatedEmails = updateEmail("",emailType)
+        onFieldChange('phones')(updatedEmails)
+    }
+
+    const handleEmergency = (value, key, id) => {
+        const objIndex = emergencyContacts.findIndex(obj => obj._id === id);
+        let updatedObj = {}
+        let updatedContacts = []
+        if(key === 'name'){
+            updatedObj = { ...emergencyContacts[objIndex], name : value}
+            updatedContacts = [
+                ...emergencyContacts.slice(0, objIndex),
+                updatedObj,
+                ...emergencyContacts.slice(objIndex + 1),
+            ]; 
+
+            onFieldChange('emergencyContact')(updatedContacts)
+
+        }else if(key === 'relation'){
+
+            if (value === "") {
+                updatedObj = { ...emergencyContacts[objIndex], relation : ""}
+            }else{
+                // console.log("Value: ", value.trim())
+                // let splitValue = value.trim().split(' ')
+                
+                // if (/\((\w)*\)/g.test(value)){
+                //     console.log("Length 1")
+                //     name = ""
+                //     relation = value.replace(/[()]/g, "")
+                // }else if(/\w*\s*\((\w)*\)/g.test(value.trim()) && splitValue.length === 2){
+                //     console.log("Length 2")
+                //     name = splitValue[0]
+                //     relation = splitValue[1].replace(/[()]/g, "")
+                // }else {
+                //     name = splitValue[0].contact(' ', splitValue[1])
+                //     relation = splitValue[2].replace(/[()]/g, "")
+                // }
+
+                updatedObj = { ...emergencyContacts[objIndex], relation : value.trim()}
+            }
+            
+            updatedContacts = [
+                ...emergencyContacts.slice(0, objIndex),
+                updatedObj,
+                ...emergencyContacts.slice(objIndex + 1),
+            ]; 
+
+            onFieldChange('emergencyContact')(updatedContacts)
+            
+        }else if( key === 'phone'){
+            formattedNumber = value.replace(/\s/g,'')
+            updatedObj = { ...emergencyContacts[objIndex], phone: formatNumber(formattedNumber)}
+
+            updatedContacts = [
+                ...emergencyContacts.slice(0, objIndex),
+                updatedObj,
+                ...emergencyContacts.slice(objIndex + 1),
+            ]; 
+            
+            if (/^\d{10}$/g.test(formattedNumber) || !value){
+                onFieldChange('emergencyContact')(updatedContacts)
+            }
+
+        }else{
+            updatedObj = { ...emergencyContacts[objIndex], email: value}
+
+            updatedContacts = [
+                ...emergencyContacts.slice(0, objIndex),
+                updatedObj,
+                ...emergencyContacts.slice(objIndex + 1),
+            ]; 
+
+            if (isValidEmail(value) || !value){
+                onFieldChange('emergencyContact')(updatedContacts)
+            }
+        }
+        
+        setEmergencyContacts(updatedContacts)
+          
+    }
+
+    const handleDOB = (date) => {
+        const updatedDob = formatDOB(date)
+        if (/(\d{2})\/(\d{2})\/(\d{4})/g.test(date) || !date){
+            onFieldChange('dob')(updatedDob)
+        }
+        setDateOfBirth(date)
+    }
+
+    const openEmergencyName = (index) =>{
+        console.log("E indexx:", index)
+        setEmergencyIndex(index)
+        setIsEmergencyOpen(!isEmergencyOpen)
+    }
+
+    const demoData = <>
+
+        <View style={styles.row}>
+
+            <View style={styles.fieldWrapper}>
+                <View style={{ marginBottom:5}}>
+                    <Text style={styles.title}>First Name</Text>
+                </View>
+
+                <View style={styles.inputWrapper}> 
+                    <InputField2
+                        onChangeText = {onFieldChange('firstName')}
+                        value = {fields['firstName']}
+                        onClear = {()=>onFieldChange('firstName')('')}
+                    />
+                </View>
+            </View>
+            
+            <View style={styles.fieldWrapper}>
+                <View style={{ marginBottom:5}}>
+                    <Text style={styles.title}>Middle Name</Text>
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        onChangeText = {onFieldChange('middleName')}
+                        value = {fields['middleName']}
+                        onClear = {()=>{onFieldChange('middleName')('')}}
+                    />
+                </View>
+            </View>
+
+
+            <View style={styles.fieldWrapper}>
+                <View style={{ marginBottom:5}}>
+                    <Text style={styles.title}>Surname</Text>
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        onChangeText = {onFieldChange('surname')}
+                        value = {fields['surname']}
+                        onClear = {()=>{onFieldChange('surname')('')}}
+                    />
+                </View>
+            </View>
+
+        </View>
+
+        <View style={styles.row}>
+
+            <View style={styles.fieldWrapper}>
+                <View style={{ marginBottom:5}}>
+                    <Text style={styles.title}>Age</Text>
+                </View>
+                <View style={styles.inputWrapper}> 
+                    <Text>{calcAge(new Date(fields['dob'])) || 0}</Text>
+                </View>
+            </View>
+
+            <View style={styles.fieldWrapper}>
+                <View style={{ marginBottom:5}}>
+                    <Text style={styles.title}>Gender</Text>
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <OptionsField
+                        text={transformToSentence(fields['gender'])}
+                        oneOptionsSelected={onFieldChange('gender')}
+                        menuOption={<MenuOptions>
+                            <MenuOption value={'male'} text='Male'/>
+                            <MenuOption value={'female'} text='Female'/>
+                        </MenuOptions>}
+                    />
+                </View>
+            </View>
+
+            <View style={styles.fieldWrapper}>
+                <View style={{ marginBottom:5}}>
+                    <Text style={styles.title}>DOB</Text>
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        onChangeText = {(value)=>handleDOB(value)}
+                        value = {dateOfBirth}
+                        onClear = {()=>{handleDOB('')}}
+                    />
+                </View>
+            </View>
+
+        </View>
+    
+        <View style={styles.row}>
+
+            <View style={styles.fieldWrapper}>
+                <View style={{ marginBottom:5}}>
+                    <Text style={styles.title}>TRN</Text>
+                </View>
+                <View style={styles.inputWrapper}> 
+                    <Text>{formatTrn(fields['trn'])}</Text>
+                </View>
+            </View>
+
+        </View>
+
+    </>
+
+    const contactData = <>
+        
+        <View style={styles.row}>
+            {phoneValue.map(( phone, index)=>{
+                const type = phone.type
+                const number = phone.phone
+                let title = type === 'cell' ? "Cell Phone" : type === 'home' ? "Home Phone" : type === 'work' ? "Work Phone" : null
+                return (
+                    <View style={styles.fieldWrapper} key={index}>
+                        <View style={{ marginBottom:5}}>
+                            <Text style={styles.title}>{title}</Text>
+                        </View>
+
+                        <View style={styles.inputWrapper}> 
+                            <InputField2
+                                onChangeText = {(value)=>handlePhoneChange(value, type)}
+                                value = {formatNumber(number)}
+                                onClear = {()=>handleClear(type)}
+                                keyboardType = "number-pad"
+                            />
+                        </View>
+                    </View>
+
+                )
+            })}
+        </View>
+
+        <View style={styles.row}>
+            {emailValue.map(( email, index)=>{
+                const type = email.type
+                const emailAddress = email.email
+                let title = type === 'primary' ? "Primary Email" : type === 'other' ? "Alternate Email" : type === 'work' ? "Work Email" : null
+                return (
+                    <View style={styles.fieldWrapper} key={index}>
+                        <View style={{ marginBottom:5}}>
+                            <Text style={styles.title}>{title}</Text>
+                        </View>
+
+                        <View style={styles.inputWrapper}> 
+                            <InputField2
+                                onChangeText = {(value)=>handleEmailChange(value, type)}
+                                value = {emailAddress}
+                                onClear = {()=>handleEmailClear(type)}
+                                keyboardType = "email-address"
+                            />
+                        </View>
+                    </View>
+
+                )
+            })}
+        </View>
+
+        <View style={{}}>
+            {addresses.map(( addressObj, index)=>{
+                return (
+                    <View key={index} style={{flexDirection:'row', flex:1}}>
+
+                        <View style={[{paddingRight:35, width:'33%', marginBottom:30}]}>
+                            <View style={{ marginBottom:5}}>
+                                <Text style={styles.title}>Address 1</Text>
+                            </View>
+
+                            <View style={styles.inputWrapper}> 
+                                <InputField2
+                                    onChangeText = {(value)=>updatedAddress(value, 'line1', addressObj._id)}
+                                    value = {addressObj.line1}
+                                    onClear = {()=>{updatedAddress("",'line1', addressObj._id)}}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={styles.fieldWrapper}>
+                            <View style={{ marginBottom:5}}>
+                                <Text style={styles.title}>Address 2</Text>
+                            </View>
+
+                            <View style={styles.inputWrapper}> 
+                                <InputField2
+                                    onChangeText = {(value)=>updatedAddress(value, 'line2', addressObj._id)}
+                                    value = {addressObj.line2}
+                                    onClear = {()=>{updatedAddress("",'line2', addressObj._id)}}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                )
+            })}
+        </View>
+
+    </>
+        
+    const emergencyContactData = <>
+        <View style={{}}>
+            {emergencyContacts.map(( contact, index)=>{
+                
+                return (
+                    <View style={{flexDirection:"row",width:'100%'}} key = {index}>
+                      
+                        <TouchableOpacity 
+                            style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:-1}}
+                            onPress = {()=>openEmergencyName(index)}
+                            activeOpacity = {1}
+                        >
+                            <View style={{ marginBottom:5}}>
+                                <Text style={[styles.title,{fontSize:14}]}>Emergency Contact Name</Text>
+                            </View>
+
+                            <View style={[styles.inputWrapper]}> 
+                                <Text>
+                                    {`${contact.name} (${contact.relation})`}
+                                </Text>
+                                {/* <InputField2
+                                    onChangeText = {(value)=>handleEmergency(value, 'name', contact._id )}
+                                    value = {contact.name}
+                                    onClear = {()=>handleEmergency('', 'name', contact._id)}
+                                />  */}
+                                { isEmergencyOpen && index === emergencyIndex &&
+                                    <View style={styles.modalContainer}>
+                                        <InputField2
+                                            label = "Name"
+                                            onChangeText = {(value)=>handleEmergency(value, 'name', contact._id )}
+                                            value = {contact.name}
+                                            onClear = {()=>handleEmergency('', 'name', contact._id)}
+                                        /> 
+                                       
+                                        <InputField2
+                                            label = "Relation"
+                                            onChangeText = {(value)=>handleEmergency(value, 'relation', contact._id )}
+                                            value = {contact.relation}
+                                            onClear = {()=>handleEmergency('', 'relation', contact._id)}
+                                        /> 
+
+                                    </View>
+                                }
+                            </View>
+                        </TouchableOpacity>
+
+                        <View style={{paddingRight:35, width:'33%', marginBottom:30}} >
+                            <View style={{ marginBottom:5}}>
+                                <Text style={[styles.title,{fontSize:13}]}>Emergency Contact Phone</Text>
+                            </View>
+
+                            <View style={styles.inputWrapper}> 
+                                <InputField2
+                                    onChangeText = {(value)=>handleEmergency(value, 'phone', contact._id)}
+                                    value = {contact.phone}
+                                    onClear = {()=>handleEmergency('', 'phone', contact._id)}
+                                    keyboardType = 'number-pad'
+                                />
+                            </View>
+                        </View>
+
+                        <View style={{paddingRight:35, width:'33%', marginBottom:30}} >
+                            <View style={{ marginBottom:5}}>
+                                <Text style={[styles.title,{fontSize:14}]}>Emergency Contact Email</Text>
+                            </View>
+
+                            <View style={styles.inputWrapper}> 
+                                <InputField2
+                                    onChangeText = {(value)=>handleEmergency(value, 'email', contact._id)}
+                                    value = {contact.email}
+                                    onClear = {()=>handleEmergency('', 'email', contact._id)}
+                                    keyboardType = "email-address"
+                                />
+                            </View>
+                        </View>
+
+                    </View>
+                    
+                )
+            })}
+        </View>
+    </>
+        
+   return (
+        <KeyboardAvoidingView
+            style={{ flex: 1}}
+            enabled   
+            keyboardVerticalOffset={300}
+            behavior={'padding'}
+        >
+            <ScrollView
+                bounces = {true}
+                // fadingEdgeLength = {100}
+                contentContainerStyle={{paddingBottom:40}}
+            >
+                {demoData}
+                {divider}
+                {contactData}
+                {divider}
+                {emergencyContactData}
+
+            </ScrollView>
+        </KeyboardAvoidingView>
+        
+
+    )
+}
+
+EditablePhysiciansDetailsTab.propTypes = {};
+EditablePhysiciansDetailsTab.defaultProps = {};
+
+export default EditablePhysiciansDetailsTab
+
+const styles = StyleSheet.create({
+    section:{
+    },
+    row:{
+        flexDirection:'row',
+    },
+    fieldWrapper:{
+        flex:1,
+        marginRight:35,
+        marginBottom:30,
+        flexDirection:'column'
+    },
+    inputWrapper:{
+        height:30,
+        justifyContent:'center'
+    },
+    title:{
+        color:'#718096',
+        fontSize:16,
+        // marginBottom:5
+    },
+    modalContainer:{
+        position:'absolute', 
+        padding:10, 
+        backgroundColor:'yellow', 
+        width:300, 
+        height: 100,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.32,
+        shadowRadius: 5.46,
+        elevation: 8,
+    }
+
+})

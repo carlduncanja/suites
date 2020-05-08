@@ -105,9 +105,9 @@ const Equipment = (props) => {
         setSelectedEquipmentIds(updatedEquipmentList)
     }
 
-    const handleOnItemPress = (item) => {
-        modal.openModal('BottomSheetModal', {
-            content: <EquipmentBottomSheet equipment={item}/>
+    const handleOnItemPress = (item, isOpenEditable) => {
+        modal.openModal('BottomSheetModal',{
+            content : <EquipmentBottomSheet equipment = {item} isOpenEditable = {isOpenEditable}/>
         })
     }
 
@@ -182,8 +182,8 @@ const Equipment = (props) => {
             hasCheckBox={true}
             isChecked={selectedEquipmentIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => handleOnItemPress(item)}
-            render={(collapse) => equipmentGroupItem(viewItem, collapse)}
+            onItemPress={() => handleOnItemPress(item,false)}
+            render={(collapse) => equipmentItem(viewItem, collapse)}
         >
             <FlatList
                 data={renderChildView(equipments)}
@@ -207,7 +207,6 @@ const Equipment = (props) => {
             />
 
         </CollapsibleListItem>
-
     };
 
     const renderChildView = (equipments = []) => {
@@ -328,8 +327,8 @@ const Equipment = (props) => {
                     {
                         content: <CreateEquipmentDialog
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={(item) => handleOnItemPress(item)}
-                            equipmentTypes={equipmentTypes}
+                            onCreated={(item) => handleOnItemPress(item,true)}
+                            equipmentTypes = {equipmentTypes}
                         />,
                         onClose: () => setFloatingAction(false)
                     })

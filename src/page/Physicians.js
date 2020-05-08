@@ -92,9 +92,9 @@ const Physicians = (props) => {
         setSelectedPhysiciansId(updatedPhysiciansList)
     }
 
-    const handleOnItemPress = (item) => {
+    const handleOnItemPress = (item, isOpenEditable) => {
         modal.openModal('BottomSheetModal',{
-            content : <PhysicianBottomSheet physician = {item} />
+            content : <PhysicianBottomSheet physician = {item} isOpenEditable = {isOpenEditable}/>
         })
     }
 
@@ -150,7 +150,7 @@ const Physicians = (props) => {
             hasCheckBox={true}
             isChecked={selectedPhysiciansId.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => handleOnItemPress(item)}
+            onItemPress={() => handleOnItemPress(item,false)}
             itemView={physiciansItem(item)}
         />
     }
@@ -231,7 +231,7 @@ const Physicians = (props) => {
                     {
                         content: <CreatePhysicianDialogContainer 
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={(item) => handleOnItemPress(item)}
+                            onCreated={(item) => handleOnItemPress(item, true)}
                         />,
                         onClose: () => setFloatingAction(false)
                     })

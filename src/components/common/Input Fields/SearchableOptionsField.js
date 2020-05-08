@@ -46,7 +46,7 @@ function SearchableOptionsField({text, label, options, oneOptionsSelected, onCha
             ]}>
                 {label}
             </Text>
-            <View style={styles.inputFieldWrapper}>
+            <View style={[styles.inputFieldWrapper]}>
 
                 <TextInput
                     style={styles.inputField}

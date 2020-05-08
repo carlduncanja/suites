@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, YellowBox} from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import DropdownInputField from "../common/Input Fields/DropdownInputField";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
@@ -179,7 +179,7 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
     }
 
     return (
-        <View style={styles.sectionContainer}>
+        <View style={[styles.sectionContainer]}>
 
             <View style={styles.row}>
 
@@ -205,13 +205,14 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                 style={{
                     height: 2,
                     backgroundColor: '#CCD6E0',
-                    marginBottom: 20
+                    marginBottom: 20,
+                    zIndex:-1
                 }}
             />
 
-            <View style={styles.row}>
+            <View style={[styles.row,{zIndex:-1}]}>
 
-                <View style={styles.inputWrapper}>
+                <View style={[styles.inputWrapper,{zIndex:-2}]}>
                     <InputField2
                         label={"Procedure"}
                         onChangeText={onFieldChange('name')}
@@ -220,29 +221,28 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                     />
                 </View>
 
-                <View style={styles.inputWrapper}>
-    
+                <View style={[styles.inputWrapper]}>
                     <SearchableOptionsField
-                        label={"Physician"}
-                        text={searchValue}
-                        oneOptionsSelected={(item) => {
-                            onFieldChange('physician')(item._id)
-                        }}
-                        onChangeText={value => setSearchValue(value)}
-                        onClear={() => {
-                            onFieldChange('physician')('');
-                            setSearchValue('');
-                        }}
-                        options={searchResults}
+                            label={"Physician"}
+                            text={searchValue}
+                            oneOptionsSelected={(item) => {
+                                onFieldChange('physician')(item._id)
+                            }}
+                            onChangeText={value => setSearchValue(value)}
+                            onClear={() => {
+                                onFieldChange('physician')('');
+                                setSearchValue('');
+                            }}
+                            options={searchResults}
                     />
-
 
                 </View>
 
             </View>
 
-            <View style={styles.row}>
-                <View style={styles.inputWrapper}>
+            <View style={[styles.row, {zIndex:-2}]}>
+
+                <View style={[styles.inputWrapper, {zIndex:-3}]}>
                     <InputUnitField
                         label={"Duration"}
                         onChangeText={(value) => {
@@ -255,8 +255,8 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                         keyboardType="number-pad"
                     />
                 </View>
-
-                <View style={styles.inputWrapper}>
+                
+                <View style={[styles.inputWrapper,{zIndex:-3}]}>
                     <MultipleSelectionsField
                         label={"Category"}
                         onOptionsSelected={onFieldChange('category')}
@@ -268,7 +268,7 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                 </View>
             </View>
 
-            <View style={[styles.row]}>
+            <View style={[styles.row, {zIndex:-3}]}>
 
                 <View style={styles.inputWrapper}>
                     <OptionsField

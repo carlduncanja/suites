@@ -204,7 +204,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                     />
             </View>
             
-            <View style={[styles.container,styles.listContainer]}>
+            <View style={[styles.container,styles.listContainer,{zIndex:-1}]}>
                 <Table
                     isCheckbox = {false}
                     data = {dataToDisplay}
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
         marginBottom:20
     },
     listContainer:{
-        marginTop:50,
+        marginTop:20,
         paddingTop:10,
         paddingBottom:10
     },

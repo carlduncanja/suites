@@ -148,7 +148,8 @@ const Procedures = (props) =>{
     }
 
     const procedureItem = (item) => {
-        const physician = `Dr. `;
+        console.log("Item:", item)
+        const physician = `Dr. ${item.physician.firstName} ${item.physician.surname}`;
         return (
             <>
                 <View style={[styles.item,{paddingRight:10, borderRightColor:"#E3E8EF", borderRightWidth:1, marginRight:20, width:'50%'}]}>

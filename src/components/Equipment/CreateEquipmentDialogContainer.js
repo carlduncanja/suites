@@ -77,7 +77,7 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
                     onFieldChange = {onFieldChange}
                     fields = {fields}
                 />;
-            default :
+            default : 
                 return <View/>
         }
     };
