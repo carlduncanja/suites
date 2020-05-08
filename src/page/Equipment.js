@@ -28,6 +28,7 @@ import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
 import ActionIcon from "../../assets/svg/ActionIcon";
 import IconButton from "../components/common/Buttons/IconButton";
 import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
+import SvgIcon from "../../assets/SvgIcon";
 
 const Equipment = (props) => {
 
@@ -184,11 +185,14 @@ const Equipment = (props) => {
             isChecked={selectedEquipmentIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item, false)}
-            render={(collapse, isCollapsed) => equipmentGroupView(viewItem,collapse, isCollapsed)}
+            render={(collapse, isCollapsed) => equipmentGroupView(viewItem, collapse, isCollapsed)}
         >
             <FlatList
                 data={renderChildView(equipments)}
                 keyExtractor={(item, index) => "" + index}
+                ItemSeparatorComponent={() => <View
+                    style={{flex: 1, margin: 18, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
+                }
                 renderItem={({item}) => {
                     const equipmentGroup = item.items || []
 
@@ -245,10 +249,11 @@ const Equipment = (props) => {
     };
 
     const equipmentItemView = ({assigmentName, quantity, status, dateAvailable}, onActionPress) => (
-        <View style={{flexDirection: 'row', marginTop: 10}}>
+        <View style={{flexDirection: 'row'}}>
             <View style={{width: 40}}/>
-            <View style={{flex: 2, alignment: "flex-start"}}>
-                <Text style={{fontSize: 16, color: '#323843'}}>{assigmentName}</Text>
+            <View style={{flex: 2, flexDirection: 'row', alignment: "flex-start"}}>
+                <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
+                <Text style={{color: "#3182CE", fontSize: 16, marginLeft: 18}}>{assigmentName}</Text>
             </View>
             <View style={{flex: 1, alignItems: 'center'}}>
                 <Text style={{fontSize: 16, color: '#4E5664'}}>{quantity}</Text>

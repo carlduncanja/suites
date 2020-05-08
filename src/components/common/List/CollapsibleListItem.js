@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
     childContent: {
         flex: 1,
         flexDirection: 'column',
+        marginBottom: 6,
         // padding: 8,
-        // marginBottom: 0,
         // marginTop: 0
     }
 });
