@@ -274,10 +274,17 @@ function Inventory(props) {
     };
 
     const inventoryItemView = ({name, stock, locations, levels}, onActionPress, isCollapsed) => <>
-        <View style={[styles.item, {justifyContent: 'flex-start', flex: 2}]}>
+        <View style={[styles.item, {justifyContent: 'space-between', flex: 2}]}>
             <Text style={{color: "#3182CE", fontSize: 16}}>
                 {name}
             </Text>
+
+            <View style={{
+                width: 1,
+                height: 24,
+                backgroundColor: "#E3E8EF",
+                marginLeft: 20
+            }}/>
         </View>
         <View style={[styles.item, {justifyContent: "center"}]}>
             <Text style={[styles.itemText]}>

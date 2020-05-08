@@ -275,8 +275,14 @@ const Equipment = (props) => {
 
 
     const equipmentGroupView = (item, onActionPress, isCollapsed) => <>
-        <View style={{flex: 2}}>
+        <View style={{flex: 2, justifyContent: 'space-between'}}>
             <Text style={{fontSize: 16, color: '#323843'}}>{item.name}</Text>
+            <View style={{
+                width: 1,
+                height: 24,
+                backgroundColor: "#E3E8EF",
+                marginLeft: 20
+            }}/>
         </View>
         <View style={{flex: 1, alignItems: 'center'}}>
             <Text style={{fontSize: 16, color: '#4E5664'}}>{item.quantity}</Text>
