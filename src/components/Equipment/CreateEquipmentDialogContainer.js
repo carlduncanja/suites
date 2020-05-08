@@ -32,6 +32,21 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
     const [positiveText, setPositiveText] = useState("DONE")
     const [storage, setStorage] = useState([])
 
+    const [popoverList, setPopoverList] = useState([
+        {
+            name : "category",
+            status : false
+        },
+        {
+            name : "assigned",
+            status : false
+        },
+        {
+            name : "type",
+            status : false
+        }
+    ])
+
     const [fields, setFields] = useState({
         name : '',
         assigmentType: 'Location',
@@ -50,6 +65,28 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
             [fieldName]: value
         })
     };
+
+    const handlePopovers = (popoverValue) => (popoverItem) =>{
+        
+        if(!popoverItem){
+            let updatedPopovers = popoverList.map( item => {return {
+                ...item,
+                status : false
+            }})
+            
+            setPopoverList(updatedPopovers)
+        }else{
+            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedPopovers = [
+                ...popoverList.slice(0, objIndex),
+                updatedObj,
+                ...popoverList.slice(objIndex + 1),
+            ]; 
+            setPopoverList(updatedPopovers)
+        }
+    
+    }
 
     const handleCloseDialog = () => {
         onCancel();
@@ -76,6 +113,8 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
                 return <EquipmentDialogDetailsTab
                     onFieldChange = {onFieldChange}
                     fields = {fields}
+                    handlePopovers = {handlePopovers}
+                    popoverList = {popoverList}
                 />;
             default : 
                 return <View/>
@@ -102,6 +141,8 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
+            handlePopovers = {handlePopovers}
+
         >
             <View style = {styles.container}>
                 <DialogTabs

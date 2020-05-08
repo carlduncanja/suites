@@ -40,6 +40,17 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         barCode: "",
     });
 
+    const [popoverList, setPopoverList] = useState([
+        {
+            name : "reference",
+            status : false
+        },
+        {
+            name : "category",
+            status : false
+        }
+    ])
+
     // Inventory Search
     const [inventorySearchValue, setInventorySearchValue] = useState();
     const [inventorySearchResults, setInventorySearchResult] = useState([]);
@@ -54,7 +65,6 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
     // Handle inventories search
     useEffect(() => {
-        console.log("Hello: ", )
         console.log("Search: ", inventorySearchValue)
         if (!inventorySearchValue) {
             // empty search values and cancel any out going request.
@@ -135,6 +145,28 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
     }
 
+    const handlePopovers = (popoverValue) => (popoverItem) =>{
+        
+        if(!popoverItem){
+            let updatedPopovers = popoverList.map( item => {return {
+                ...item,
+                status : false
+            }})
+            
+            setPopoverList(updatedPopovers)
+        }else{
+            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedPopovers = [
+                ...popoverList.slice(0, objIndex),
+                updatedObj,
+                ...popoverList.slice(objIndex + 1),
+            ]; 
+            setPopoverList(updatedPopovers)
+        }
+    
+    }
+
     const handleCloseDialog = () => {
         onCancel();
         modal.closeAllModals();
@@ -193,6 +225,9 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         }
     };
 
+    let refPop = popoverList.filter( item => item.name === 'reference')
+    let catPop = popoverList.filter( item => item.name === 'category')
+
     const detailsTab = (
         <View style={styles.sectionContainer}>
 
@@ -210,6 +245,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                             setInventorySearchValue('');
                         }}
                         options={inventorySearchResults}
+                        handlePopovers = {(value)=>handlePopovers(value)('reference')}
+                        isPopoverOpen = {refPop[0].status}
                     />
                 </View>
 
@@ -232,6 +269,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                         searchText = {categorySearchValue}
                         onSearchChangeText = {(value)=> setCategorySearchValue(value)}
                         onClear={()=>{setCategorySearchValue('')}}
+                        handlePopovers = {(value)=>handlePopovers(value)('category')}
+                        isPopoverOpen = {catPop[0].status}
                     />
 
                     {/* <InputField2
@@ -334,6 +373,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={selectedIndex === (dialogTabs.length - 1) ? "DONE" : "NEXT"}
+            handlePopovers = {handlePopovers}
             // buttonIcon={<ArrowRightIcon/>}
         >
 

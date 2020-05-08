@@ -32,6 +32,13 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     const [fields, setFields] = useState({
         capacity: '0'
     });
+    const [popoverList, setPopoverList] = useState([
+        {
+            name : "assigned",
+            status : false
+        }
+    ])
+    const [isPopoverOpen, setIsPopoverOpen] = useState(true)
 
     // useEffect(() => {
     // }, []);
@@ -66,6 +73,29 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
 
         search()
     }, [theatresSearchValue]);
+
+    const handlePopovers = (popoverValue) => (popoverItem) =>{
+        
+        if(!popoverItem){
+            setIsPopoverOpen(popoverValue)
+            let updatedPopovers = popoverList.map( item => {return {
+                ...item,
+                status : false
+            }})
+            
+            setPopoverList(updatedPopovers)
+        }else{
+            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedPopovers = [
+                ...popoverList.slice(0, objIndex),
+                updatedObj,
+                ...popoverList.slice(objIndex + 1),
+            ]; 
+            setPopoverList(updatedPopovers)
+        }
+    
+    }
 
 
     const fetchTheatres = () => {
@@ -117,6 +147,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
             });
     };
 
+    let assignedPop = popoverList.filter( item => item.name === 'assigned')
 
     return (
         <OverlayDialog
@@ -124,6 +155,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={"DONE"}
+            handlePopovers = {handlePopovers}
         >
 
             <View style={styles.container}>
@@ -171,6 +203,8 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                                     setTheatreSearchValue('');
                                 }}
                                 options={theatreSearchResults}
+                                handlePopovers = {(value)=>handlePopovers(value)('assigned')}
+                                isPopoverOpen = {assignedPop[0].status}
                             />
                         </View>
                         {/* <View style={styles.inputWrapper}/> */}

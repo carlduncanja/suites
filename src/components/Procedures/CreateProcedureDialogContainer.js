@@ -65,12 +65,9 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         equipments:[]
     });
 
-    const [isPopoverOpen, setIsPopoverOpen] = useState(true)
-
     const handlePopovers = (popoverValue) => (popoverItem) =>{
         
         if(!popoverItem){
-            setIsPopoverOpen(popoverValue)
             let updatedPopovers = popoverList.map( item => {return {
                 ...item,
                 status : false
@@ -147,7 +144,6 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                 return <DialogDetailsTab
                     onFieldChange = {onFieldChange}
                     fields = {fields}
-                    isPopoverOpen = {isPopoverOpen}
                     handlePopovers = {handlePopovers}
                     popoverList = {popoverList}
                 />;

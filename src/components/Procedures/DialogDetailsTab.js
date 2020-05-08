@@ -12,7 +12,7 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 
-const DialogDetailsTab = ({onFieldChange, fields, isPopoverOpen, handlePopovers,popoverList}) => {
+const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) => {
 
     const templateText = {
         true: "Yes",

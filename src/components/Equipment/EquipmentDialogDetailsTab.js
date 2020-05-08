@@ -12,7 +12,7 @@ import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-men
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
 
-const EquipmentDialogDetailsTab = ({onFieldChange, fields }) => {
+const EquipmentDialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList }) => {
 
 const testCategory = [
     {
@@ -201,6 +201,9 @@ const testCategory = [
 
     }
 
+    let assignedPop = popoverList.filter( item => item.name === 'assigned')
+    let typePop = popoverList.filter( item => item.name === 'type')
+    let catPop = popoverList.filter( item => item.name === 'category')
 
     return (
         <View style={styles.sectionContainer}>
@@ -222,6 +225,8 @@ const testCategory = [
                         searchText = {categorySearchValue}
                         onSearchChangeText = {(value)=> setCategorySearchValue(value)}
                         onClear={()=>{setCategorySearchValue('')}}
+                        handlePopovers = {(value)=>handlePopovers(value)('category')}
+                        isPopoverOpen = {catPop[0].status}
                     />
                 </View>
             </View>
@@ -292,6 +297,8 @@ const testCategory = [
                                 :
                                 theatreSearchResults
                         }
+                        handlePopovers = {(value)=>handlePopovers(value)('assigned')}
+                        isPopoverOpen = {assignedPop[0].status}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
@@ -324,6 +331,8 @@ const testCategory = [
                             setTypeSearchValue('');
                         }}
                         options={typeSearchResults}
+                        handlePopovers = {(value)=>handlePopovers(value)('type')}
+                        isPopoverOpen = {typePop[0].status}
                     />
                 </View>
             </View>
