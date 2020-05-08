@@ -20,7 +20,7 @@ const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked, isChec
 
             {headers.map((header, index) => {
                 return (
-                    <View style={[styles.item, {alignItems: header.alignment}, header.styles]} key={index}>
+                    <View style={[styles.item, {alignItems: header.alignment, flex: header.flex || 1}, header.styles]} key={index}>
                         <Text style={styles.headerText}>{header.name}</Text>
                     </View>
                 )

@@ -198,14 +198,14 @@ const testCategory = [
                 console.log("Failed to get categories: ", error)
                 setCategorySearchResult([])
             })
-       
+
     }
 
 
     return (
         <View style={styles.sectionContainer}>
 
-            <View style={styles.row}>
+            <View style={[styles.row, {zIndex: 10}]}>
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Equipment"}
@@ -273,7 +273,7 @@ const testCategory = [
                                 :
                                 onFieldChange('assigned')({theatre : item._id})
                         }}
-                        onChangeText={value => 
+                        onChangeText={value =>
                             assignmentOption === 'Physician' ?
                                 setPhysicianSearchValue(value)
                                 :

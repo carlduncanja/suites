@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import CheckBoxComponent from "../Checkbox";
 import Collapsible from 'react-native-collapsible';
 import PropTypes from 'prop-types';
-
 
 
 /**
@@ -23,7 +22,8 @@ const CollapsibleListItem = ({
                                  onCheckBoxPress,
                                  onItemPress,
                                  childView,
-                                 render
+                                 render,
+                                 children
                              }) => {
 
     const [isCollapsed, setCollapsed] = useState(true);
@@ -36,8 +36,6 @@ const CollapsibleListItem = ({
     return (
         <TouchableOpacity onPress={onItemPress}>
             <View style={styles.container}>
-
-
                 <View style={styles.list}>
                     {
                         hasCheckBox &&
@@ -54,11 +52,14 @@ const CollapsibleListItem = ({
                 </View>
                 <Collapsible collapsed={isCollapsed}>
                     <View style={styles.divider}/>
-                    <View style={styles.childContent}>
-                        {
-                            childView
-                        }
-                    </View>
+                    {
+                        !isCollapsed &&
+                        <View style={[styles.childContent]}>
+
+                            {children}
+
+                        </View>
+                    }
                 </Collapsible>
             </View>
         </TouchableOpacity>
@@ -103,9 +104,9 @@ const styles = StyleSheet.create({
     },
     childContent: {
         flex: 1,
-        alignItems: 'center',
-        margin: 10,
-        marginBottom: 0,
-        marginTop:0
+        flexDirection: 'column',
+        marginBottom: 6,
+        // padding: 8,
+        // marginTop: 0
     }
 });

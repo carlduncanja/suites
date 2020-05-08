@@ -26,11 +26,15 @@ import AddIcon from "../../assets/svg/addIcon";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
 import CreateInventoryDialogContainer from "../components/Inventory/CreateInventoryDialogContainer";
+import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
+import TransferIcon from "../../assets/svg/transferIcon";
+import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
 
 const listHeaders = [
     {
         name: "Item Name",
-        alignment: "flex-start"
+        alignment: "flex-start",
+        flex: 2
     },
     {
         name: "In Stock",
@@ -269,15 +273,20 @@ function Inventory(props) {
         }, 200)
     };
 
-    const inventoryItem = ({name, stock, locations, levels}, onActionPress) => <>
-        <View style={[styles.item, {justifyContent: 'flex-start'}]}>
+    const inventoryItemView = ({name, stock, locations, levels}, onActionPress, isCollapsed) => <>
+        <View style={[styles.item, {justifyContent: 'space-between', flex: 2}]}>
             <Text style={{color: "#3182CE", fontSize: 16}}>
                 {name}
             </Text>
+
+            <View style={{
+                width: 1,
+                height: 24,
+                backgroundColor: "#E3E8EF",
+                marginLeft: 20
+            }}/>
         </View>
-        <View style={[
-            styles.item, {justifyContent: "center"}
-        ]}>
+        <View style={[styles.item, {justifyContent: "center"}]}>
             <Text style={[styles.itemText]}>
                 {numberFormatter(stock)}
             </Text>
@@ -303,13 +312,13 @@ function Inventory(props) {
         </View>
         <View style={[styles.item, {justifyContent: "center"}]}>
             <IconButton
-                Icon={<ActionIcon/>}
+                Icon={isCollapsed ? <ActionIcon/> : <ActionCollapseIcon/>}
                 onPress={onActionPress}
             />
         </View>
     </>;
 
-    const secondaryItem = ({locationName, stock, levels}, isChecked, onActionPress) => <View
+    const storageItemView = ({locationName, stock, levels}, isChecked, onActionPress) => <View
         style={{flexDirection: 'row', alignItems: 'center'}}>
         <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
             <CheckBoxComponent
@@ -317,7 +326,7 @@ function Inventory(props) {
                 onPress={onCheckBoxPress}
             />
         </View>
-        <View style={[styles.item, {justifyContent: 'flex-start'}]}>
+        <View style={[styles.item, {justifyContent: 'flex-start', flex: 2}]}>
             <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
             <Text style={{color: "#3182CE", fontSize: 16, marginLeft: 10}}>
                 {locationName}
@@ -349,7 +358,7 @@ function Inventory(props) {
         </View>
         <View style={[styles.item, {justifyContent: "center"}]}>
             <IconButton
-                Icon={<ActionIcon/>}
+                Icon={<TransferIcon/>}
                 onPress={onActionPress}
             />
         </View>
@@ -364,20 +373,50 @@ function Inventory(props) {
             levels: item.levels
         };
 
-        const onActionClick = () => {
-        };
-
-        const itemView = inventoryItem(
-            formattedItem,
-            onActionClick
-        );
-
-        return <ListItem
+        return <CollapsibleListItem
             isChecked={selectedIds.includes(item.id)}
             onCheckBoxPress={onCheckBoxPress(item)}
+            hasCheckBox={true}
             onItemPress={onItemPress(item)}
-            itemView={itemView}
-        />
+            render={(collapse, isCollapsed) => inventoryItemView(formattedItem, collapse, isCollapsed)}
+        >
+            <FlatList
+                data={[
+                    {
+                        id: "1",
+                        locationName: "OR1: Cabinet 6",
+                        stock: 138,
+                        levels: {
+                            max: 400,
+                            min: 0,
+                            critical: 100,
+                            ideal: 300,
+                        },
+                    },
+                    {
+                        id: "2",
+                        locationName: "OR1: Cabinet 8",
+                        stock: 22,
+                        levels: {
+                            max: 200,
+                            min: 0,
+                            critical: 50,
+                            ideal: 100,
+                        },
+                        locations: 1
+                    },
+                ]}
+                renderItem={({item}) => {
+                    return storageItemView(item, false,() => {
+                    })
+                }}
+                keyExtractor={(item, index)=> ""+index}
+                ItemSeparatorComponent={() =>
+                    <View style={{flex: 1, margin: 10, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
+                }
+            />
+
+        </CollapsibleListItem>
     };
 
     const secondaryRender = () => {
@@ -409,7 +448,7 @@ function Inventory(props) {
                 },
             ]}
             renderItem={({item}) => {
-                return secondaryItem(item, () => {
+                return storageItemView(item, () => {
                 })
             }}
             ItemSeparatorComponent={() =>
