@@ -166,18 +166,27 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
     const handlePhoneChange = (number, phoneType) => {
         let formattedNumber = number.replace(/\s/g,'')
         const updatedPhones = updatePhone(formatNumber(formattedNumber),phoneType)
-       
-        if (/^\d{10}$/g.test(formattedNumber) || !number){
-            onFieldChange('phones')(updatedPhones)
-        }
+
+        if (number === ""){
+            onFieldChange('phones')(updatePhone("",phoneType))
+        }else{
+            if (/^\d{10}$/g.test(formattedNumber) || !number){
+                onFieldChange('phones')(updatedPhones)
+            }
+        } 
     }
 
     const handleEmailChange = (email, emailType) => {
         const updatedEmails = updateEmail(email, emailType)
 
-        if (isValidEmail(email) || !email){
+        if(email === ""){
             onFieldChange('emails')(updatedEmails)
+        }else{
+            if (isValidEmail(email) || !email){
+                onFieldChange('emails')(updatedEmails)
+            }
         }
+        
     }
 
     const updatedAddress = (value, key, id) => {
@@ -198,17 +207,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
         onFieldChange('address')(updatedAddress)
 
     }
-
-    const handleClear = (phoneType) => {
-        const updatedPhones = updatePhone("",phoneType)
-        onFieldChange('phones')(updatedPhones)
-    }
-
-    const handleEmailClear = (emailType) => {
-        const updatedEmails = updateEmail("",emailType)
-        onFieldChange('phones')(updatedEmails)
-    }
-
+ 
     const handleEmergency = (value, key, id) => {
         const objIndex = emergencyContacts.findIndex(obj => obj._id === id);
         let updatedObj = {}
@@ -426,7 +425,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                             <InputField2
                                 onChangeText = {(value)=>handlePhoneChange(value, type)}
                                 value = {formatNumber(number)}
-                                onClear = {()=>handleClear(type)}
+                                onClear = {()=>handlePhoneChange("",type)}
                                 keyboardType = "number-pad"
                             />
                         </View>
@@ -451,7 +450,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                             <InputField2
                                 onChangeText = {(value)=>handleEmailChange(value, type)}
                                 value = {emailAddress}
-                                onClear = {()=>handleEmailClear(type)}
+                                onClear = {()=>handleEmailChange("",type)}
                                 keyboardType = "email-address"
                             />
                         </View>
@@ -505,10 +504,10 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
             {emergencyContacts.map(( contact, index)=>{
                 
                 return (
-                    <View style={{flexDirection:"row",width:'100%'}} key = {index}>
+                    <View style={{flexDirection:"row",width:'100%', zIndex: index === 1 ? -1 :0}} key = {index}>
                       
                         <TouchableOpacity 
-                            style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:-1}}
+                            style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:1}}
                             onPress = {()=>openEmergencyName(index)}
                             activeOpacity = {1}
                         >
@@ -517,14 +516,17 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                             </View>
 
                             <View style={[styles.inputWrapper]}> 
-                                <Text>
-                                    {`${contact.name} (${contact.relation})`}
-                                </Text>
-                                {/* <InputField2
-                                    onChangeText = {(value)=>handleEmergency(value, 'name', contact._id )}
-                                    value = {contact.name}
-                                    onClear = {()=>handleEmergency('', 'name', contact._id)}
-                                />  */}
+                                {/* <View style={styles.inputField}>
+                                    <Text>
+                                        {`${contact.name} (${contact.relation})`}
+                                    </Text>
+                                </View> */}
+                                
+                                <InputField2
+                                    onChangeText = {()=>{}}
+                                    value = {`${contact.name} (${contact.relation})`}
+                                    onClear = {()=>{}}
+                                /> 
                                 { isEmergencyOpen && index === emergencyIndex &&
                                     <View style={styles.modalContainer}>
                                         <InputField2
@@ -546,7 +548,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                             </View>
                         </TouchableOpacity>
 
-                        <View style={{paddingRight:35, width:'33%', marginBottom:30}} >
+                        <View style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:-1}} >
                             <View style={{ marginBottom:5}}>
                                 <Text style={[styles.title,{fontSize:13}]}>Emergency Contact Phone</Text>
                             </View>
@@ -561,7 +563,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                             </View>
                         </View>
 
-                        <View style={{paddingRight:35, width:'33%', marginBottom:30}} >
+                        <View style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:-2}} >
                             <View style={{ marginBottom:5}}>
                                 <Text style={[styles.title,{fontSize:14}]}>Emergency Contact Email</Text>
                             </View>
@@ -637,7 +639,7 @@ const styles = StyleSheet.create({
     modalContainer:{
         position:'absolute', 
         padding:10, 
-        backgroundColor:'yellow', 
+        backgroundColor:'#FFFFFF', 
         width:300, 
         height: 100,
         shadowColor: "#000",
@@ -648,6 +650,20 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.32,
         shadowRadius: 5.46,
         elevation: 8,
+        borderWidth: 1,
+        borderColor: '#E3E8EF',
+        borderRadius: 4,
+    },
+    inputField:{
+        flex:1,
+        justifyContent:'center',
+        borderWidth: 1,
+        borderColor: '#E3E8EF',
+        borderRadius: 4,
+        height: 32,
+        padding:10, 
+        paddingBottom:2, 
+        paddingTop:2
     }
 
 })

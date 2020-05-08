@@ -11,7 +11,7 @@ const optionsStyles = {
     }
 };
 
-function SearchableOptionsField({text, label, options, oneOptionsSelected, onChangeText, onClear}) {
+function SearchableOptionsField({text, label, options, oneOptionsSelected, onChangeText, onClear, isPopoverOpen, handlePopovers }) {
 
     const textInputRef = useRef();
     const [selectedValue, setSelectedValue] = useState(false);
@@ -47,12 +47,11 @@ function SearchableOptionsField({text, label, options, oneOptionsSelected, onCha
                 {label}
             </Text>
             <View style={[styles.inputFieldWrapper]}>
-
                 <TextInput
                     style={styles.inputField}
                     value={text}
                     editable={!selectedValue}
-                    onChangeText={onChangeText}
+                    onChangeText={(value)=>{onChangeText(value);handlePopovers(true)}}
                     ref={textInputRef}
                 />
 
@@ -79,7 +78,8 @@ function SearchableOptionsField({text, label, options, oneOptionsSelected, onCha
 
 
                 {
-                    (!selectedValue && text)
+
+                    (!selectedValue && text && isPopoverOpen)
                         ? <View style={styles.suggestionContainer}>
                             <FlatList
                                 keyExtractor={(item, index) => index + ''}

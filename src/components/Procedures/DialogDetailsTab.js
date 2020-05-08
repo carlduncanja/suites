@@ -12,12 +12,8 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 
-const DialogDetailsTab = ({onFieldChange, fields}) => {
+const DialogDetailsTab = ({onFieldChange, fields, isPopoverOpen, handlePopovers,popoverList}) => {
 
-    const recoveryText = {
-        true: "Yes",
-        false: "No"
-    };
     const templateText = {
         true: "Yes",
         false: "No"
@@ -147,7 +143,6 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
     const fetchProcedures = () => {
         getProcedures(searchProcedureValue, 5)
             .then((data = []) => {
-                console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));
@@ -178,6 +173,10 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
 
     }
 
+    let refPop = popoverList.filter( item => item.name === 'reference')
+    let physPop = popoverList.filter( item => item.name === 'physician')
+    let catPop = popoverList.filter( item => item.name === 'category')
+
     return (
         <View style={[styles.sectionContainer]}>
 
@@ -196,6 +195,8 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                             setSearchProcedureValue('');
                         }}
                         options={searchProcedureResults}
+                        handlePopovers = {(value)=>handlePopovers(value)('reference')}
+                        isPopoverOpen = {refPop[0].status}
                     />
                 </View>
 
@@ -234,6 +235,8 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                                 setSearchValue('');
                             }}
                             options={searchResults}
+                            handlePopovers = {(value)=>handlePopovers(value)('physician')}
+                            isPopoverOpen = {physPop[0].status}
                     />
 
                 </View>
@@ -264,6 +267,8 @@ const DialogDetailsTab = ({onFieldChange, fields}) => {
                         searchText = {categorySearchValue}
                         onSearchChangeText = {(value)=> setCategorySearchValue(value)}
                         onClear={()=>{setCategorySearchValue('')}}
+                        handlePopovers = {(value)=>handlePopovers(value)('category')}
+                        isPopoverOpen = {catPop[0].status}
                     />
                 </View>
             </View>

@@ -37,6 +37,20 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     const [physicians, setPhysicians] = useState([])
     // const [theatres, setTheates] = useState([])
     const [savedTheatres, setSavedTheatres] = useState([])
+    const [popoverList, setPopoverList] = useState([
+        {
+            name : "reference",
+            status : false
+        },
+        {
+            name : "physician",
+            status : false
+        },
+        {
+            name : "category",
+            status : false
+        }
+    ])
 
     const [fields, setFields] = useState({
         reference :'--',
@@ -51,22 +65,31 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         equipments:[]
     });
 
-    // useEffect(()=>{
-    //     getTheatres()
-    //         .then(data => {
-    //             setTheates(data)
-    //         })
-    //         .catch(error => {
-    //             console.log("Failed to get storage", error)
-    //         })
-    //     getPhysicians()
-    //         .then(data => {
-    //             setPhysicians(data)
-    //         })
-    //         .catch(error => {
-    //             console.log("Failed to get storage", error)
-    //         })
-    // },[])
+    const [isPopoverOpen, setIsPopoverOpen] = useState(true)
+
+    const handlePopovers = (popoverValue) => (popoverItem) =>{
+        
+        if(!popoverItem){
+            setIsPopoverOpen(popoverValue)
+            let updatedPopovers = popoverList.map( item => {return {
+                ...item,
+                status : false
+            }})
+            
+            setPopoverList(updatedPopovers)
+        }else{
+            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedPopovers = [
+                ...popoverList.slice(0, objIndex),
+                updatedObj,
+                ...popoverList.slice(objIndex + 1),
+            ]; 
+            setPopoverList(updatedPopovers)
+        }
+    
+    }
+
 
     const handleCloseDialog = () => {
         onCancel();
@@ -124,8 +147,9 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                 return <DialogDetailsTab
                     onFieldChange = {onFieldChange}
                     fields = {fields}
-                    // physicians = {physicians.map( item => { return { _id : item._id, name : `Dr. ${item.firstName} ${item.surname}`} })}
-                    // theatres = {theatres}
+                    isPopoverOpen = {isPopoverOpen}
+                    handlePopovers = {handlePopovers}
+                    popoverList = {popoverList}
                 />;
             case "Location":
                 return <DialogLocationTab
@@ -162,6 +186,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
+            handlePopovers = {handlePopovers}
         >
             <View style = {styles.container}>
                 <DialogTabs

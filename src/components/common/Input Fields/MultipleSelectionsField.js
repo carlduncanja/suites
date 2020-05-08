@@ -12,7 +12,7 @@ import { createFilter } from 'react-native-search-filter';
 import SearchableContainer from '../SearchableContainer';
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText, onSearchChangeText, onClear}) => {
+const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText, onSearchChangeText, onClear, handlePopovers, isPopoverOpen}) => {
 
     const [selectedOption, setSelectedOption] = useState("")
     const [checkedList, setCheckedList] = useState([])
@@ -74,7 +74,7 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText,
                     <View style={{flex:1,justifyContent:"flex-end", alignItems:"flex-end"}}>
                         <IconButton
                             Icon = {<DropDownIcon/>}
-                            onPress = {()=>toggleCheckBox()}
+                            onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
                         />
                     </View>
                         
@@ -82,7 +82,7 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText,
             {/* </View> */}
                     
                
-            { isDisplay &&
+            { isDisplay && isPopoverOpen &&
 
                 <View style={styles.menuOptionsContainer}>
                     
