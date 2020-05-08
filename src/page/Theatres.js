@@ -27,22 +27,27 @@ const listHeaders = [
     {
         id: "1",
         name: "Theatre",
-        alignment: "flex-start"
+        alignment: "flex-start",
+        flex: 2
     },
     {
         id: "2",
         name: "Status",
-        alignment: "center"
+        alignment: "center",
+        flex: 1
     },
     {
         id: "3",
         name: "Recovery",
-        alignment: "center"
+        alignment: "center",
+        flex: 1
     },
     {
         id: "3",
         name: "Actions",
         alignment: "center"
+        ,
+        flex: 1
     }
 ];
 
@@ -209,7 +214,7 @@ function Theatres(props) {
 
     // ##### Helper functions
     const theatreItem = ({name, recoveryStatus, recoveryStatusColor, status, statusColor}, onActionPress, actionIcon = actionIcon) => <>
-        <View style={[styles.item, {justifyContent: 'space-between'}]}>
+        <View style={[styles.item, {flex: 2, justifyContent: 'space-between'}]}>
             <Text style={{color: "#3182CE", fontSize: 16}}>
                 {name}
             </Text>
@@ -221,20 +226,20 @@ function Theatres(props) {
             }}/>
         </View>
         <View style={[
-            styles.item, {justifyContent: "center"}
+            styles.item, {flex: 1, justifyContent: "center"}
         ]}>
             <Text style={[styles.itemText, {color: statusColor}]}>
                 {status}
             </Text>
         </View>
         <View style={[
-            styles.item, {justifyContent: "center"}
+            styles.item, {flex: 1, justifyContent: "center"}
         ]}>
             <Text style={[styles.itemText, {color: recoveryStatusColor}]}>
                 {recoveryStatus}
             </Text>
         </View>
-        <View style={[styles.item, {justifyContent: "center"}]}>
+        <View style={[styles.item, {flex: 1, justifyContent: "center"}]}>
             <IconButton
                 Icon={<ActionIcon/>}
                 onPress={onActionPress}
@@ -273,14 +278,14 @@ function Theatres(props) {
         // For some reason there has to be a delay between closing a modal and opening another.
         setTimeout(() => {
             modal.openModal(
-                    'OverlayModal',
-                    {
-                        content: <CreateTheatreDialogContainer
-                            onCreated={(item) => onItemPress(item)()}
-                            onCancel={() => setFloatingAction(false)}
-                        />,
-                        onClose: () => setFloatingAction(false)
-                    })
+                'OverlayModal',
+                {
+                    content: <CreateTheatreDialogContainer
+                        onCreated={(item) => onItemPress(item)()}
+                        onCancel={() => setFloatingAction(false)}
+                    />,
+                    onClose: () => setFloatingAction(false)
+                })
         }, 200)
     };
 
