@@ -1,27 +1,64 @@
-import React,{Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import SvgIcon from '../../../../assets/SvgIcon';
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import PropTypes from 'prop-types';
 
-const ProgressIcon = ({icon}) => { 
+
+const ProgressIcon = ({icon, state}) => {
+
+    let containerStyle = {};
+    if (state === 'inActive') containerStyle = styles.inActive;
+    else if (state === 'active') containerStyle = styles.active;
+    else if (state === 'completed')  containerStyle = styles.active;
+
     return (
-        <View style={styles.container}>
+        <View style={[
+            styles.container,
+            containerStyle
+        ]}>
             {icon}
         </View>
     );
 }
 
+ProgressIcon.propTypes = {
+    icon: PropTypes.element.isRequired,
+    state: PropTypes.oneOf(['active', 'inactive', 'completed'])
+};
+ProgressIcon.defaultProps = {};
+
+
 export default ProgressIcon;
 
 const styles = StyleSheet.create({
-    container:{
-        backgroundColor:"#FFFFFF",
-        borderRadius:30,
-        width:60,
-        height:60,
-        alignItems:'center',
-        justifyContent:"center",
-        borderColor:'#B0C8D3',
-        borderWidth:3,
-        padding:10,
+    container: {
+        backgroundColor: "#FFFFFF",
+        borderRadius: 30,
+        width: 48,
+        height: 48,
+        alignItems: 'center',
+        justifyContent: "center",
+        borderColor: '#B0C8D3',
+        borderWidth: 4,
+        padding: 10,
+        marginRight: 10,
+        marginLeft: 10,
+    },
+    inActive: {
+        borderColor: '#E3E8EF',
+        backgroundColor: "#EEF2F6",
+    },
+    completed: {
+        borderColor: '#0CB0E7',
+        margin: 0,
+    },
+    active: {
+        shadowColor: "rgba(90,84,84,0.13)",
+        shadowOffset: {
+            width: 1,
+            height: 2,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        elevation: 4
     }
 })
