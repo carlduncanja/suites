@@ -27,15 +27,18 @@ import CreateTheatreDialogContainer from "../components/Theatres/CreateTheatreDi
 const listHeaders = [
     {
         name: "Room Name",
-        alignment: "flex-start"
+        alignment: "flex-start",
+        flex: 1.5
     },
     {
         name: "In Stock",
-        alignment: "center"
+        alignment: "center",
+        flex: 1,
     },
     {
         name: "Capacity",
-        alignment: "center"
+        alignment: "center",
+        flex: 1
     }
 ];
 
@@ -185,16 +188,10 @@ function Storage(props) {
 
     // ##### Helper functions
     const storageItem = ({name, stock, levels}) => <>
-        <View style={[styles.item, {justifyContent: 'space-between'}]}>
+        <View style={[styles.item, {flex: 1.5, justifyContent: 'space-between', ...styles.rowBorderRight}]}>
             <Text style={{color: "#3182CE", fontSize: 16}}>
                 {name}
             </Text>
-            <View style={{
-                width: 1,
-                height: 24,
-                backgroundColor: "#E3E8EF",
-                marginRight: 20
-            }}/>
         </View>
         <View style={[
             styles.item, {justifyContent: "center"}
@@ -363,6 +360,10 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginRight: 30,
     },
+    rowBorderRight: {
+        borderRightColor: "#E3E8EF",
+        borderRightWidth: 1,
+    }
 });
 const mapStateToProps = (state) => ({
     storageLocations: state.storage
