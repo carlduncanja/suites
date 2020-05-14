@@ -4,7 +4,7 @@ import FrameTitle from '../FrameTitle';
 import FrameLifestyleContent from '../FrameContents/FrameLifestyleContent';
 import {transformToSentence} from '../../../../hooks/useTextEditHook'
 
-const FrameLifestyleCard = (props) => {
+const FrameLifestyleCard = (props) => { 
     return (
         <View style={styles.container}>
                 <View style={styles.title}>

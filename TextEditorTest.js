@@ -158,6 +158,7 @@ class TestEditorTest extends Component {
                         onStyleKeyPress={this.onStyleKeyPress}
                     />
                     </View>
+                    
             </KeyboardAvoidingView>
             );
         }

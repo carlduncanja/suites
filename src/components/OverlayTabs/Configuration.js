@@ -80,9 +80,9 @@ const Configuration = ({procedure, modal}) => {
                     numOfColumns = {3}
                 />
             </View>
-            <View style={{marginTop:15}}>
+            {/* <View style={{marginTop:15}}>
                 <Text style={{color:'#718096', fontSize:16 }}>This Procedure is available at these Locations</Text>
-            </View>
+            </View> */}
         </>
     )
 }

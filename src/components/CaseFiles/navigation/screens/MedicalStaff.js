@@ -3,15 +3,13 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Details } from '../../OverlayPages/MedicalStaff'
 import { View, Text } from 'react-native';
 
-const MedicalStaff = ({ item,selectedTab }) => {
-    const [state] = useContext(SuitesContext)
-    const name = selectedTab
-    const details = item.caseFileDetails.medicalStaff
+const MedicalStaff = ({ staff, selectedTab }) => {
+    
     return (
-        name === 'Details' ?
-            <Details tabDetails = {details}/>
+        selectedTab === 'Details' ?
+            <Details tabDetails = {staff}/>
             :
-            <Details tabDetails = {details}/>        
+            <Details tabDetails = {staff}/>        
     );
 }
  

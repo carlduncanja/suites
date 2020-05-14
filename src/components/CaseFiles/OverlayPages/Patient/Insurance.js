@@ -1,47 +1,52 @@
 import React, { } from 'react';
 import { View, StyleSheet } from "react-native";
 import Card from '../../../common/CardList/Card';
-import { formatAmount } from '../../../../helpers/caseFilesHelpers'
+import { currencyFormatter } from '../../../../utils/formatter'
+import Record from '../../../common/Information Record/Record';
 
 const Insurance = ({tabDetails}) => { 
-    
-    return ( 
-        tabDetails.map((detailItem,index)=>{
+    console.log("Insurance")
+    const {name, coverageLimit, policyNumber} = tabDetails
 
-            const headerObject = {
-                title : "Primary Insurer",
-                description : detailItem.name
-            }
-
-            const descriptionArray = [
-                {
-                    name : "Coverage Limit",
-                    detail : formatAmount(detailItem.coverageLimit)
-                },
-                {
-                    name : "Policy Number",
-                    detail : detailItem.policyNumber
-                }
-            ]
+    return(
+        <View style={styles.container}>
+            <Record
+                recordTitle = "Primary Insurer"
+                recordValue = {name}
+            />
+            <View
+                style={{
+                    marginBottom:20,
+                    marginTop:20,
+                    backgroundColor:'#CCD6E0',
+                    borderRadius:2,
+                    height:1
+                }}
+            />
+            <View style={{marginBottom:10}}>
+                <Record
+                    recordTitle = "Coverage Limit"
+                    recordValue = {`$ ${currencyFormatter(coverageLimit)}`}
+                />
+            </View>
             
-            return(
-                <View style={styles.container} key={index}>
-                    <Card
-                        headerObject = {headerObject}
-                        itemsArray = {descriptionArray}
-                    />
-                </View>
-            )
+            <Record
+                recordTitle = "Policy Number"
+                recordValue = {policyNumber}
+            />
+        </View>
+    )
 
-        })
+        
  
-    );
+    
 }
  
 export default Insurance;
 
 const styles = StyleSheet.create({
     container: {
+        flex:1,
         marginBottom:15
     }
 })

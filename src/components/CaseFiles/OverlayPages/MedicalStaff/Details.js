@@ -2,32 +2,55 @@ import React,{ useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView} from 'react-native';
 import { Physicians, Nurses } from '../../OverlayCardFrames';
 import FramStaffIcon from '../../../../../assets/svg/frameMedicalStaff';
+import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 
 
-const Details = ({tabDetails}) => {
-    const getData = (data) => {
-        const newArray = []
-        data.map((dataItem)=>{
-            let name = `${dataItem.staff.firstName} ${dataItem.staff.lastName}`
-            newArray.push(name)
-        })
-        return newArray
-    }
-    let physicians = tabDetails.filter(item => item.type === "Physician")
-    let nurses =  tabDetails.filter(item => item.type === "Nurse")
+const Details = ({tabDetails}) => { 
+    const { physicians, nurses } = tabDetails
+
+    const physicianNames = physicians.map( physician =>{
+        const { surname = "" } = physician
+        return `Dr. ${surname}`
+    })
+
+    const nursesNames = nurses.map( nurse =>{
+        const { surname = "", firstName = "" } = nurse
+        return `${firstName[0]}. ${surname}`
+    })
     return (  
         <ScrollView>
-            <Physicians 
-                cardInformation = {getData(physicians)}
-                icon = {FramStaffIcon}
-            />
-            <Nurses 
-                cardInformation = {getData(nurses)}
-                icon = {FramStaffIcon}
-            />
+
+            <View style={styles.frameContainer}>
+                <FrameCard
+                    frameColor = "#3182CE"
+                    titleBackgroundColor = "#EBF8FF"
+                    frameBorderColor = "#90CDF4"
+                    frameTitle = "Physicians"
+                    cardInformation = {physicianNames}
+                    icon = {FramStaffIcon}
+                />
+            </View>
+
+            <View style={styles.frameContainer}>
+                <FrameCard
+                    frameColor = "#E53E3E"
+                    titleBackgroundColor = "#FFF5F5"
+                    frameBorderColor = "#FEB2B2"
+                    frameTitle = "Nurses"
+                    cardInformation = {nursesNames}
+                    icon = {FramStaffIcon}
+                />
+            </View>
+
         </ScrollView>
        
     );
 }
  
 export default Details;
+
+const styles = StyleSheet.create({
+    frameContainer:{
+        marginBottom:20
+    }
+})

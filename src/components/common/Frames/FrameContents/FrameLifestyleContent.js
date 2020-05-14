@@ -7,58 +7,43 @@ import moment from 'moment';
 import { formatDate } from '../../../../utils/formatter';
 
 const FrameLifestyleContent = ({cardInformation}) => {
-
+    const {
+        frequency = "",
+        amount = 0,
+        unit = "",
+        usage = "",
+        measureValue = 10,
+        unitOfMeasure = "oz",
+        startDate
+    } = cardInformation
     return ( 
-        <View style={styles.container}>
+        <View style={styles.container}> 
             <View style = {styles.rowContainer}>
                 <View style={styles.itemContainer}>
-                    <FrameSelectItem title="Frequency" value={cardInformation.frequency}/>
+                    <FrameSelectItem title="Frequency" value={frequency}/>
                 </View>
                 <View style={styles.itemContainer}>
-                    <FrameTableItem title="Amount" value={cardInformation.amount}/>
+                    <FrameTableItem title="Amount" value={amount}/>
                 </View>
             </View>
 
             <View style = {styles.rowContainer}>
                 <View style = {styles.itemContainer}>
-                    <FrameSelectItem title="Unit" value={cardInformation.unit}/>
+                    <FrameSelectItem title="Unit" value={unit}/>
                 </View>
                 <View style = {styles.itemContainer}>
-                    <FrameMeasureItem title="Unit of Measure" value={cardInformation.measurement} unit = {cardInformation.unitOfMeasure}/>
+                    <FrameMeasureItem title="Unit of Measure" value={measureValue} unit = {unitOfMeasure}/>
                 </View>
             </View>
 
             <View style = {styles.rowContainer}>
                 <View style = {styles.itemContainer}>
-                    <FrameTableItem title="Usage" value={cardInformation.usage}/>
+                    <FrameTableItem title="Usage" value={usage}/>
                 </View>
                 <View style={styles.itemContainer}> 
-                    <FrameTableItem title="Since" value={formatDate(cardInformation.startTime,"DD/MM/YYYY")}/>
+                    <FrameTableItem title="Since" value={formatDate(startDate,"DD/MM/YYYY")}/>
                 </View>
             </View>
-
-            {/* <View style={styles.itemContainer}>
-                {
-                    Object.keys(item).map((key, index)=>{
-                        return (item[key].type === "select" ?
-                            <View key={index} style={{width:'50%'}}>
-                                <FrameSelectItem title={key} value={item[key].value}/>
-                            </View>
-                                :
-                                item[key].type === "measure" ?
-                                    <View key={index} style={{width:'50%'}}>
-                                        <FrameMeasureItem title={"Unit of Measure"} value={item[key].value}/>
-                                    </View>
-                                    :
-
-                                <View key={index} style={{width:'50%'}}>
-                                    <FrameTableItem title={key} value={item[key].value}/>
-                                </View>
-                            
-                            )
-                    })
-                }
-             </View> */}
         </View>
     );
 }

@@ -66,24 +66,25 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     });
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
-        
+    
         if(!popoverItem){
-            let updatedPopovers = popoverList.map( item => {return {
+            updatedPopovers = popoverList.map( item => {return {
                 ...item,
                 status : false
             }})
             
-            setPopoverList(updatedPopovers)
+            // setPopoverList(updatedPopovers)
         }else{
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
             const updatedObj = { ...popoverList[objIndex], status: popoverValue};
-            const updatedPopovers = [
+            updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
             ]; 
-            setPopoverList(updatedPopovers)
+            // setPopoverList(updatedPopovers)
         }
+        setPopoverList(updatedPopovers)
     
     }
 

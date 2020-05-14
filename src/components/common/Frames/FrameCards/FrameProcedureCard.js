@@ -3,7 +3,10 @@ import {View, StyleSheet} from 'react-native';
 import FrameTitle from '../FrameTitle'
 import FrameProcedureContent from '../FrameContents/FrameProcedureContent';
 
-const FrameProcedureCard = (props) => {
+const FrameProcedureCard = (props) => { 
+    const { information = {}, icon, onOpenPickList } = props
+    const {appointment = {}} = information
+    const { title = "", subject="" } = appointment
     return ( 
         <View style={styles.container}> 
             <View style={styles.title}>
@@ -11,13 +14,13 @@ const FrameProcedureCard = (props) => {
                     color="#718096"  
                     borderColor = "#E3E8EF"
                     backgroundColor="#F8FAFB"
-                    icon={props.icon}
-                    frameTitle={props.information.title}
+                    icon={icon}
+                    frameTitle={`${title} - ${subject}`}
                 />
             </View>
 
             <View style={styles.content}>
-                <FrameProcedureContent details = {props.information} onOpenPickList={props.onOpenPickList}/>
+                <FrameProcedureContent details = {information} onOpenPickList={onOpenPickList}/>
             </View> 
         </View>
     );

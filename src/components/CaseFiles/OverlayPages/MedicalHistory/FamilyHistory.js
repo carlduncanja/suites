@@ -1,28 +1,40 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { FamilyPreExistingConditions } from '../../OverlayCardFrames';
+import FrameTableCard from '../../../common/Frames/FrameCards/FrameTableCard'
 
 import FamilyIcon from '../../../../../assets/svg/familyConditions';
 
 
 const FamilyHistory = ({tabDetails}) => {
-    const getConditionData = (conditions) => {
-        let newArray = []
-        conditions.map((item)=>{
-            let newObject = {"relative":item.relative, "condition":item.condition}
-            newArray.push(newObject)
-        })
-        return newArray
-    }
-    let conditions = tabDetails.filter(item => item.types === 'preExistingConditions')
+
+    const familyHistory = tabDetails.map( item => {
+        const { relative = "", condition = "" } = item
+        return { relative, condition}
+    })
+    
     return ( 
         <ScrollView>
-            <FamilyPreExistingConditions 
-                cardInformation = {getConditionData(conditions)}
-                icon = {FamilyIcon}
-            />
+
+            <View style={styles.frameContainer}>
+                <FrameTableCard
+                    frameColor = "#DD6B20"
+                    titleBackgroundColor = "#FFFAF0"
+                    frameBorderColor = "#FBD38D"
+                    frameTitle = "Pre-Existing Conditions"
+                    cardInformation = {familyHistory}
+                    icon = {FamilyIcon}
+                />
+            </View> 
+
         </ScrollView>
     );
 }
  
 export default FamilyHistory;
+
+const styles = StyleSheet.create({
+    frameContainer:{
+        marginBottom: 20
+    }
+})

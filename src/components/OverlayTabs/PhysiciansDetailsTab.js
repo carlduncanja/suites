@@ -46,8 +46,8 @@ const PhysiciansDetailsTab = ({physician}) => {
            Object.assign(emailObject, {primary:email.email})
         }else if ( email.type === 'work'){
             Object.assign(emailObject, {work:email.email})
-        }else if ( email.type === 'alternate'){
-            Object.assign(emailObject, {home:email.email})
+        }else if ( email.type === 'other'){
+            Object.assign(emailObject, {other:email.email})
         }else {
             Object.assign(emailObject, {})
         }
@@ -60,20 +60,6 @@ const PhysiciansDetailsTab = ({physician}) => {
             address2 : addressObj.line2
         })
     })
-
-    // const calcAge = (dob) =>{
-    //     let today = new Date()
-    //     let dateObject  = new Date(dob)
-    //     let age = today.getFullYear() - dateObject.getFullYear()
-    //     let month = today.getMonth() - dateObject.getMonth()
-    //     if (month < 0 || (month === 0 && today.getDate() < dateObject.getDate())){
-    //         age --
-    //     }
-    //     return age
-       
-    // }
-
-  
 
     const demoData = [
         firstNameRecord = <Record
@@ -90,7 +76,7 @@ const PhysiciansDetailsTab = ({physician}) => {
         />,
         ageRecord = <Record
             recordTitle = "Age"
-            recordValue = {calcAge(dob)}
+            recordValue = {calcAge(dob) || ""}
         />,
         genderRecord = <Record
             recordTitle = "Gender"
@@ -108,7 +94,7 @@ const PhysiciansDetailsTab = ({physician}) => {
 
     const contactData = [
         <ResponsiveRecord
-            recordTitle = "Cell"
+            recordTitle = "Cell Phone Number"
             recordValue = {phoneObject.cell}
             handleRecordPress = {()=>{}}
         />,
@@ -128,8 +114,8 @@ const PhysiciansDetailsTab = ({physician}) => {
             handleRecordPress = {()=>{}}
         />,
         <ResponsiveRecord
-            recordTitle = "Alternate Emial"
-            recordValue = {emailObject.alternate}
+            recordTitle = "Alternate Email"
+            recordValue = {emailObject.other}
             handleRecordPress = {()=>{}}
         />,
         <Record
@@ -146,32 +132,51 @@ const PhysiciansDetailsTab = ({physician}) => {
         />
     ]
 
-    const emergencyContacts = emergencyContact.map((contact,index) => {
-        return (
-            <View key = {index}>
-                <ColumnSection
-                    data = {[
-                        <Record
-                            recordTitle = {`Emergency Name ${index + 1}`}
-                            recordValue = {`${contact.name} (${contact.relation})`}
-                        />,
-                        <ResponsiveRecord
-                            recordTitle = {`Emergency Number ${index + 1}`}
-                            recordValue = {contact.phone}
-                            handleRecordPress = {()=>{}}
-                        />,
-                        <ResponsiveRecord
-                            recordTitle = {`Emergency Email ${index + 1}`}
-                            recordValue = {contact.email}
-                            handleRecordPress = {()=>{}}
-                        />
-                    ]}
-                    numOfColumns = {3}
-                />
-            </View>
-
-        )
-    })
+    const emergencyContacts = () => {
+        return emergencyContact.length === 0 ? 
+            <ColumnSection
+                data = {[
+                    <Record
+                        recordTitle = {`Emergency Name 1`}
+                    />,
+                    <ResponsiveRecord
+                        recordTitle = {`Emergency Number 1`}
+                        handleRecordPress = {()=>{}}
+                    />,
+                    <ResponsiveRecord
+                        recordTitle = {`Emergency Email 1`}
+                        handleRecordPress = {()=>{}}
+                    />
+                ]}
+                numOfColumns = {3}
+            />
+        :
+        emergencyContact.map((contact,index) => {
+            return (
+                <View key = {index}>
+                    <ColumnSection
+                        data = {[
+                            <Record
+                                recordTitle = {`Emergency Name ${index + 1}`}
+                                recordValue = {`${contact.name} (${contact.relation})`}
+                            />,
+                            <ResponsiveRecord
+                                recordTitle = {`Emergency Number ${index + 1}`}
+                                recordValue = {contact.phone}
+                                handleRecordPress = {()=>{}}
+                            />,
+                            <ResponsiveRecord
+                                recordTitle = {`Emergency Email ${index + 1}`}
+                                recordValue = {contact.email}
+                                handleRecordPress = {()=>{}}
+                            />
+                        ]}
+                        numOfColumns = {3}
+                    />
+                </View>
+            )
+        })
+    }
 
     
     const sections = [
@@ -183,8 +188,9 @@ const PhysiciansDetailsTab = ({physician}) => {
             data = {contactData}
             numOfColumns = {3}
         />,
-        emergencyContacts
+        emergencyContacts()
     ]
+
     return (
         <>
             <ColumnSectionsList

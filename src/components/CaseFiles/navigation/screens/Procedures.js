@@ -2,16 +2,13 @@ import React,{useContext} from 'react';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Details } from '../../OverlayPages/Procedures'
 
-const Procedures = ({ item,selectedTab }) => {
-    const [state] = useContext(SuitesContext)
-    const name = selectedTab
-    const selected = item.caseFileDetails.caseProcedures
+const Procedures = ({ procedures ,selectedTab }) => {
    
     return (
-        name === 'Details' ?
-            <Details tabDetails = {selected}/>
+        selectedTab === 'Details' ?
+            <Details tabDetails = {procedures}/>
             :
-            <Details tabDetails = {selected}/>        
+            <Details tabDetails = {procedures}/>        
     );
 }
  

@@ -6,7 +6,7 @@ import FrameTableCard from '../common/Frames/FrameCards/FrameTableCard';
 import FrameMixedTableCard from '../common/Frames/FrameCards/FrameMixedTableCard';
 import { SuitesContext } from '../../contexts/SuitesContext';
 import FrameLifestyleCard from '../common/Frames/FrameCards/FrameLifestyleCard';
-
+ 
 export function SignsAndSymptoms({cardInformation,icon}) {
     const [state] = useContext(SuitesContext)
     return(

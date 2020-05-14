@@ -3,26 +3,12 @@ import { View, Text, StyleSheet } from "react-native";
 import Equipment from '../CaseFiles/OverlayPages/ChargeSheet/Equipment';
 
 import { currencyFormatter } from '../../utils/formatter'
+import Button from "../common/Buttons/Button";
 
-import { withModal } from "react-native-modalfy";
+const ProceduresEquipmentTab = ({equipmentsData, isEditMode}) => {
 
-const testData = [
-    {
-        itemName : 'Bag',
-        type : 'Anaesthesia',
-        quantity : 1,
-        unitPrice : 4120.76
-    },
-    {
-        itemName : 'Atracurium',
-        type : 'Anaesthesia',
-        quantity : 5,
-        unitPrice : 8924.09
-    }
-
-]
-const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
-
+    const [equipments, setEquipments] = useState([])
+    
     const headers = [
         {
             name :"Item Name",
@@ -37,11 +23,6 @@ const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
             alignment: "flex-end"
         }
     ]
-
-    // const { equipments = [] } = equipmentsData
-
-    const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
-
 
     const listItem = (item) => <>
         <View style={styles.item}>
@@ -73,11 +54,23 @@ const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
                 headers = {headers}
                 listItemFormat = {listItem}
             />
+            {
+                console.log("Edit Mode: ", isEditMode) &&
+                isEditMode && 
+                <View style={{backgroundColor:'#99C2E3', padding:15, paddingBottom:10, paddingTop:10, borderRadius:8}}>
+                    <Button
+                        buttonPress = {()=>{}}
+                        title = "Add Equipment"
+                        backgroundColor = "#99C2E3"
+                        color = "#FFFFFF"
+                    />
+                </View>
+            }
         </>
     )
 }
 
-export default withModal(ProceduresEquipmentTab) 
+export default ProceduresEquipmentTab
 
 const styles = StyleSheet.create({
     item:{

@@ -19,7 +19,7 @@ function OverlayDialog(props) {
         },
         positiveText = "DONE",
         buttonIcon = <View/>,
-        handlePopovers
+        handlePopovers = () =>{}
     } = props;
 
 

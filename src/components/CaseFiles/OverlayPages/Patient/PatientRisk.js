@@ -1,25 +1,23 @@
 import React,{useContext} from 'react';
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import {Low, Moderate, High, VeryHigh} from '../../RiskFrames/RiskLevels' 
-import { SuitesContext } from '../../../../contexts/SuitesContext';
 
-const PateintRisk = ({tabDetails}) => {
-    const [state] = useContext(SuitesContext)
-    
+const PateintRisk = ({tabDetails}) => { 
+
     return ( 
         <ScrollView>
-            {tabDetails.map((detail)=>{
+            {tabDetails.map((detail,index)=>{
+                const {level = 'low', notes = []} = detail
                 return (
-                    detail.riskLevel === 'low' ?
-                        <Low level={detail}/>
-                    :
-                    detail.riskLevel === 'moderate' ?
-                        <Moderate level={detail}/>
-                        :
-                        detail.riskLevel === 'high' ?
-                            <High level={detail}/>
-                            :
-                                <VeryHigh level={detail}/>
+                    <View key={index}>
+                        {
+                            level === 'low' ? <Low level={level} notes={notes}/> :
+                            level === 'moderate' ? <Moderate level={level} notes={notes}/> :
+                            level === 'high' ? <High level={level} notes={notes}/> :
+                            <VeryHigh llevel={level} notes={notes}/>
+                        }
+                    </View>
+                    
                 )
             })
         }     

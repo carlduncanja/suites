@@ -1,21 +1,34 @@
 import React, {useState, useEffect} from 'react';
-import {View, ActivityIndicator, StyleSheet, Text} from "react-native";
+import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import Configuration from '../OverlayTabs/Configuration';
 import NotesTab from '../OverlayTabs/NotesTab';
 import ProceduresConsumablesTab from '../OverlayTabs/ProceduresConsumablesTab';
 import ConsumablesTab from '../OverlayTabs/ConsumablesTab';
 import ProceduresEquipmentTab from '../OverlayTabs/ProceduresEquipmentTab';
+import EditableProceduresConfig from '../OverlayTabs/EditableProceduresConfig';
 import TheatresTab from '../OverlayTabs/TheatresTab';
 import {colors} from "../../styles";
 import { currencyFormatter } from '../../utils/formatter';
 
 import { getProcedureById } from "../../api/network";
 
-function ProceduresBottomSheet({procedure}) {
+function ProceduresBottomSheet({procedure, isOpenEditable}) {
     
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
-    const {_id, name} = procedure;
+    // console.log("Procedure:", procedure)
+    const {
+        _id, 
+        name,
+        hasRecovery,
+        duration,
+        equipments,
+        inventories,
+        notes,
+        supportedRooms,
+        physician
+    } = procedure;
+    
     const consumablesHeader = [
         {
             name :"Item Name",
@@ -38,9 +51,25 @@ function ProceduresBottomSheet({procedure}) {
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [isEditMode, setEditMode] = useState(false);
+    const [isEditMode, setEditMode] = useState(isOpenEditable);
+    const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
     const [selectedProcedure, setSelectedProcedure] = useState({})
+
+    const [fields, setFields] = useState({
+        name : name,
+        hasRecovery : hasRecovery,
+        duration : duration.toString(),
+        custom : true,
+        physician : physician
+    })
+
+    const [popoverList, setPopoverList] = useState([
+        {
+            name : "physician",
+            status : false
+        }
+    ])
 
     // ##### Lifecycle Methods
     useEffect(() => {
@@ -52,6 +81,45 @@ function ProceduresBottomSheet({procedure}) {
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
+
+    const onEditPress = (tab) => {
+        setEditableTab(tab)
+        setEditMode(!isEditMode)
+        if(!isEditMode === false){
+            console.log("Fields:", fields)
+            
+            // updatePhysicianFn(_id, fieldsObject)
+        }
+    }
+
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName]: value
+        })
+    };
+
+    const handlePopovers = (popoverValue) => (popoverItem) =>{
+        
+        if(!popoverItem){
+            let updatedPopovers = popoverList.map( item => {return {
+                ...item,
+                status : false
+            }})
+            
+            setPopoverList(updatedPopovers)
+        }else{
+            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedPopovers = [
+                ...popoverList.slice(0, objIndex),
+                updatedObj,
+                ...popoverList.slice(objIndex + 1),
+            ]; 
+            setPopoverList(updatedPopovers)
+        }
+    
+    }
 
     // ##### Helper functions
     const consumablesListItem = (item) => <>
@@ -99,11 +167,29 @@ function ProceduresBottomSheet({procedure}) {
 
         switch (selectedTab) {
             case "Configuration":
-                return <Configuration procedure = {selectedProcedure}/>;
+                return currentTab === 'Configuration' && isEditMode ?
+                    <TouchableOpacity
+                        style={{flex: 1}}
+                        activeOpacity = {1}
+                        onPress = {()=>{handlePopovers(false)()}}
+                    >
+                        <EditableProceduresConfig 
+                        fields = {fields}
+                        onFieldChange = {onFieldChange}
+                        popoverList = {popoverList}
+                        handlePopovers = {handlePopovers}
+                        />
+                    </TouchableOpacity>
+                    
+                    :
+                    <Configuration procedure = {selectedProcedure}/>;
             case "Consumables":
                 return <ConsumablesTab data = {consumablesData}  headers={consumablesHeader} listItem={consumablesListItem}/>;
             case "Equipment":
-                return <ProceduresEquipmentTab equipmentsData = {equipments}/>;
+                return <ProceduresEquipmentTab 
+                    equipmentsData = {equipments}
+                    isEditMode = {isEditMode}
+                />;
             case "Notes":
                 return <NotesTab notesData = {notes}/>;
             case "Theatres" :
@@ -129,11 +215,15 @@ function ProceduresBottomSheet({procedure}) {
                         currentTabs={currentTabs}
                         selectedTab={currentTab}
                         isEditMode={isEditMode}
-                        overlayContent={<View style={{flex: 1, padding:30}}>
-                            {
-                                getTabContent(currentTab)
-                            }
-                        </View>}
+                        onEditPress = {onEditPress}
+                        overlayContent={
+                            <View 
+                                style={{flex: 1, padding:30}}
+                                // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
+                            >
+                                {getTabContent(currentTab)}
+                            </View>
+                        }
                     />
             }
         </View>

@@ -5,13 +5,30 @@ import { withModal } from "react-native-modalfy";
 
 const ProceduresPickList = ({details, tabs, modal}) => {
     const { closeModals } = modal
+    const {inventories, equipments } = details
+
     const [selectedTab, setSelectedTab] = useState(tabs[0])
 
     const handleOnPressTab = (tab) => {
         setSelectedTab(tab)
     }
 
-    const data = selectedTab === 'Consumables' ? details.consumables : details.equipments
+    // Format data
+    const inventoriesArray = inventories.map( item => {
+        return {
+            ...item,
+            name : item.inventory
+        }
+    })
+
+    const equipmentsArray = equipments.map( item => {
+        return {
+            ...item,
+            name : item.equipment
+        }
+    })
+    
+    const data = selectedTab === 'Consumables' ? inventoriesArray : equipmentsArray
 
     const headers = [
         {
@@ -24,14 +41,14 @@ const ProceduresPickList = ({details, tabs, modal}) => {
         }
     ]
 
-    const listItemFormat = (item) => {
+    const listItemFormat = (item) => { 
         return (
             <View style={[styles.listDataContainer,{marginBottom:10}]}>
                 <View style={{}}>
-                    <Text style={[styles.dataText,{color:"#3182CE"}]}>{item.item}</Text>
+                    <Text style={[styles.dataText,{color:"#3182CE"}]}>{item.name}</Text>
                 </View>
                 <View style={{alignItems:'flex-end', marginRight:5}}>
-                    <Text style={[styles.dataText,{color:"#4A5568"}]}>{item.quantity}</Text>
+                    <Text style={[styles.dataText,{color:"#4A5568"}]}>{item.amount}</Text>
                 </View>
             </View>
         )

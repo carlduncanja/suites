@@ -10,7 +10,7 @@ import {handleNewItemProgressBar} from '../../../helpers/caseFilesHelpers';
 import Complete from '../../../../assets/svg/stepComplete';
 
 
-const ProgressContainer = ({steps, handleStepPress, selectedStep, completedSteps}) => {
+const ProgressContainer = ({steps, handleStepPress, selectedIndex, completedSteps}) => {
 
     const [state, dispatch] = useContext(CaseFileContext)
     const itemSteps = state.newItemAction.itemSteps
@@ -20,7 +20,7 @@ const ProgressContainer = ({steps, handleStepPress, selectedStep, completedSteps
         setProgressWidth(width)
     }
 
-    const 
+     
 
     // getNumber = (step) =>{
     //     const stepObj = state.progressBar.progressList.filter(item => item.step === step)
@@ -75,7 +75,7 @@ const ProgressContainer = ({steps, handleStepPress, selectedStep, completedSteps
                         >
                             <Text
                                 style={{paddingBottom:10,
-                                color:selectedStep === step.name ?'#3182CE': '#A0AEC0'}}>
+                                color:selectedIndex === index ?'#3182CE': '#A0AEC0'}}>
                                 {step.name}
                             </Text>
                             <View style={{flexDirection:'row'}}>
@@ -84,7 +84,7 @@ const ProgressContainer = ({steps, handleStepPress, selectedStep, completedSteps
                                         getCompleteBar(step.name) === true ?
                                             <Complete/>
                                             :
-                                            selectedStep === step.name ?
+                                            selectedIndex === index ?
                                                 step.selectedIcon
                                                 :
                                                 step.disabledIcon
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
         paddingBottom:15,
         justifyContent:'flex-start',
         flexDirection:"row",
+        backgroundColor:'#EEF2F6'
     },
     iconsContainer:{
         flex:1,

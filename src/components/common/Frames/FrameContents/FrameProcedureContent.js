@@ -9,10 +9,19 @@ import { formatDate } from '../../../../utils/formatter';
 
 const FrameProcedureContent = ({details,onOpenPickList}) => {
 
-    const appointment = (appointment,location) => {
+    // console.log("Details: ", details)
+    const { appointment, procedure } = details
+    const {hasRecovery} = procedure
+    const recovery = {}
+
+    const appointmentView = (appointment) => {
+        const { location = "", startTime = "", endTime = "" } = appointment
+        let duration = moment.duration(moment(endTime).diff(moment(startTime)))
+        let hours = duration.asHours()
+
         return (
             <View>
-                <FrameTableItem title = "Location" value={location.name}/>
+                <FrameTableItem title = "Location" value={location}/>
                 <View style={styles.dateContainer}>
                     <View style={{flex:1}}>
                         <FrameTableItem title = "Date" value = {formatDate(appointment.startTime,"MMM/D/YYYY")}/>
@@ -21,21 +30,22 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
                         <FrameTableItem title = "" value = {formatDate(appointment.startTime,"h:mm A")}/>
                     </View>
                     <View style={{flex:1}}>
-                        <FrameTableItem title = "Duration" value = {appointment.duration}/>
+                        <FrameTableItem title = "Duration" value = {hours}/>
                     </View>
                 </View>
             </View>
         )
     }
 
+    
     return (
         <View style={styles.container}>
             <View style={{paddingBottom:10, borderBottomColor:"#CCD6E0", borderBottomWidth:1}}>
-                {appointment(details.appointment, details.location)}
+                {appointmentView(appointment)}
                 <View style={styles.recovery}>
-                    <FrameCheckboxItem title = "Recovery" status = {details.hasRecovery}/>
+                    <FrameCheckboxItem title = "Recovery" status = {hasRecovery}/>
                 </View>
-                {details.hasRecovery && appointment(details.recovery.appointment,details.recovery.location)}
+                {hasRecovery && appointmentView(recovery)}
             </View>
             <View style={{alignItems:"flex-end", marginTop:10}}>
                 <View style={{padding:8, borderRadius:8, backgroundColor:"#E3E8EF"}}>
@@ -43,38 +53,10 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
                         backgroundColor = "#E3E8EF"
                         color = "#718096"
                         title = "View Picklist"
-                        buttonPress = {()=>onOpenPickList(details)}
+                        buttonPress = {()=>onOpenPickList(procedure)}
                     />
                 </View>
             </View>
-            {/* {Object.keys(props.details).map((key, index) =>{
-                return(
-                    <View key={index}>
-                        {
-                            key === 'recovery' &&
-                            <View style={styles.recovery}>
-                                <FrameCheckboxItem title = "Recovery" status = {props.details.recovery.status}/>
-                            </View>
-                        }
-                        <View>
-                            <FrameTableItem title = "Location" value={props.details[key].location.name}/>
-                            <View style={styles.dateContainer}>
-                                <View style={{flex:1}}>
-                                    <FrameTableItem title = "Date" value = {moment(props.details[key].appointment.startTime).format("MMM/D/YYYY")}/>
-                                </View>
-                                <View style={{flex:1}}>
-                                    <FrameTableItem title = "" value = {moment(props.details[key].appointment.startTime).format("h:mm A")}/>
-                                </View>
-                                <View style={{flex:1}}>
-                                    <FrameTableItem title = "Duration" value = {props.details[key].duration}/>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                )
-            })} */}
-
-
 
         </View>
     );

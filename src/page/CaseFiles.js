@@ -5,11 +5,10 @@ import Page from '../components/common/Page/Page';
 import ListItem from "../components/common/List/ListItem";
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
-import CaseActions from '../components/CaseFiles/CaseActions';
 import CaseFileBottomSheet from '../components/CaseFiles/CaseFileBottomSheet';
-import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
+import CreateCaseDialogContainer from '../components/CaseFiles/CreateCaseDialogContainer';
 
 import AddIcon from "../../assets/svg/addIcon";
 import ArchiveIcon from "../../assets/svg/archiveIcon";
@@ -51,29 +50,6 @@ const CaseFiles = (props) => {
     //######## const
 
     const recordsPerPage = 10;
-
-    const overlayMenu = [
-        {
-            "menuItemName":"Patient",
-            "overlayTabs":["Details","Insurance","Diagnosis","Patient Risk"]
-        },
-        {
-            "menuItemName":"Medical Staff",
-            "overlayTabs":["Details"]
-        },
-        {
-            "menuItemName":"Medical History",
-            "overlayTabs":["General","Family History","Lifestyle","Other"]
-        },
-        {
-            "menuItemName":"Procedures",
-            "overlayTabs":["Details"]
-        },
-        {
-            "menuItemName":"Charge Sheet",
-            "overlayTabs":["Consumables","Equipment","Billing","Quotation","Invoices"]
-        }
-    ]
 
     //######## Props
 
@@ -130,18 +106,18 @@ const CaseFiles = (props) => {
 
     const handleOnItemPress = (item) => {
         modal.openModal('BottomSheetModal',{
-            content : <CaseFileBottomSheet caseItem = {item} overlayMenu = {overlayMenu}/>
+            content : <CaseFileBottomSheet caseItem = {item}/>
         })
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
-        const {id} = caseItem;
+        const {_id} = caseItem;
         let updatedCases = [...selectedCaseIds];
 
-        if (updatedCases.includes(id)) {
-            updatedCases = updatedCases.filter(id => id !== caseItem.id)
+        if (updatedCases.includes(_id)) {
+            updatedCases = updatedCases.filter(id => id !== caseItem._id)
         } else {
-            updatedCases.push(caseItem.id);
+            updatedCases.push(caseItem._id);
         }
 
         setSelectedCaseIds(updatedCases);
@@ -151,7 +127,7 @@ const CaseFiles = (props) => {
         const indeterminate = selectedCaseIds.length >= 0 && selectedCaseIds.length !== caseFiles.length;
         // console.log("Indeterminate: ", indeterminate)
         if (indeterminate) {
-            const selectedAllIds = [...caseFiles.map( caseItem => caseItem.id )]
+            const selectedAllIds = [...caseFiles.map( caseItem => caseItem._id )]
             setSelectedCaseIds(selectedAllIds)
             // todo insert all id's
         } else {
@@ -201,33 +177,69 @@ const CaseFiles = (props) => {
     const renderFn = (item) => {
         return <ListItem
             hasCheckBox={true}
-            isChecked={selectedCaseIds.includes(item.id)}
+            isChecked={selectedCaseIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item)}
             itemView={caseItem(item)}
         />
     };
 
+    const getDate = (dates) => {
+        let updatedDates = [...dates]
+        let dateIndex = 0
+        while(dateIndex < dates.length){
+            let earliestDate = moment.min(updatedDates)
+            let isAfterToday = moment(earliestDate).isSameOrAfter(new Date())
+
+            if (isAfterToday){
+                return earliestDate
+            }else{
+                updatedDates = updatedDates.filter( item => item !== earliestDate)
+            }
+            dateIndex +=1 
+        }
+    }
+    
     const caseItem = (item) => {
         const {
-            id, 
-            name, 
-            balance = 382782.02,
-            leadPhysician = "Dr. Mansingh",
-            nextVisit = new Date(2020,10,12)
+            caseNumber,  
+            patient = {}, 
+            chargeSheets,
+            staff,
+            caseProcedures = [],
+            // nextVisit = new Date(2020,10,12)
         } = item
+
+        let finalBalance = 0
+        let {leadPhysician} = staff
+
+        patient ? name = `${patient.firstName} ${patient.surName}` : name = ""
+        leadPhysician ? physicianName = `Dr. ${leadPhysician.surname}` : physicianName = ""
+        chargeSheets.map( item => {
+            item.status === 'pending' ? finalBalance = finalBalance + item.balance :
+            item.status === 'paid' ? finalBalance = finalBalance - item.balance :
+            item.status === 'billed' ? finalBalance = finalBalance + item.balance :
+            finalBalance = finalBalance
+        })
+        const dates = caseProcedures.map(item => {
+            const { appointment } = item
+            const {startTime} = appointment
+            return moment(startTime)
+        })
+       
+        nextVisit = getDate(dates)
 
         return (
             <>
                 <View style={styles.item}>
-                    <Text style={{color: "#718096", fontSize: 12}}>#{id}</Text>
+                    <Text style={{color: "#718096", fontSize: 12}}>#{caseNumber}</Text>
                     <Text style={{color: "#3182CE", fontSize: 16}}>{name}</Text>
                 </View>
                 <View style={styles.item}>
-                    <Text style={styles.itemText}>$ {currencyFormatter(balance)}</Text>
+                    <Text style={styles.itemText}>$ {currencyFormatter(finalBalance)}</Text>
                 </View>
                 <View style={styles.item}>
-                    <Text style={styles.itemText}>{leadPhysician}</Text>
+                    <Text style={styles.itemText}>{physicianName}</Text>
                 </View>
                 <View style={styles.item}>
                     <Text style={styles.itemText}>{formatDate(nextVisit,"MMM DD, YYYY")}</Text>
@@ -239,7 +251,7 @@ const CaseFiles = (props) => {
     const getFabActions = () => {
 
         const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={()=>{}}/>;
-        const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon/>} onPress={()=>{}}/>;
+        const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon/>} onPress={ openCreateCaseFile }/>;
 
 
         return <ActionContainer
@@ -250,6 +262,24 @@ const CaseFiles = (props) => {
             title={"PHYSICIAN ACTIONS"}
         />
     };
+
+    const openCreateCaseFile = () =>{
+        modal.closeModals('ActionContainerModal');
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <CreateCaseDialogContainer 
+                            onCancel={() => setFloatingAction(false)}
+                            onCreated={(item) => handleOnItemPress(item, true)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    }
 
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
@@ -299,7 +329,7 @@ const CaseFiles = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-    caseFiles: caseFiles
+    caseFiles: state.caseFiles
 });
 
 const mapDispatcherToProp = {

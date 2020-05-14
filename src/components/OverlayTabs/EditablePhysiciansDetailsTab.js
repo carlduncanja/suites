@@ -2,6 +2,7 @@ import React,{ useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView,KeyboardAvoidingView, TouchableOpacity } from "react-native";
 import InputField2 from '../common/Input Fields/InputField2';
 import OptionsField from '../common/Input Fields/OptionsField';
+import Button from '../common/Buttons/Button';
 import { formatDate, transformToSentence, calcAge, isValidEmail } from '../../utils/formatter';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 
@@ -107,6 +108,16 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
     const [dateOfBirth, setDateOfBirth] = useState(formatDate(fields['dob'],'DD/MM/YYYY'))
     const [isEmergencyOpen, setIsEmergencyOpen] = useState(false)
     const [emergencyIndex, setEmergencyIndex] = useState(0)
+    const [popoverList, setPopoverList] = useState([
+        {
+            name : "emergency1",
+            status : false
+        },
+        {
+            name : "emergency2",
+            status : false
+        }
+    ])
 
     // ######## Helper Functions
 
@@ -212,6 +223,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
         const objIndex = emergencyContacts.findIndex(obj => obj._id === id);
         let updatedObj = {}
         let updatedContacts = []
+
         if(key === 'name'){
             updatedObj = { ...emergencyContacts[objIndex], name : value}
             updatedContacts = [
@@ -298,6 +310,38 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
         console.log("E indexx:", index)
         setEmergencyIndex(index)
         setIsEmergencyOpen(!isEmergencyOpen)
+    }
+
+    const onAddEmergency = ()=>{
+        let updatedEmergency = [...emergencyContacts,{
+            email : '',
+            name : '',
+            phone : '',
+            relation : ''
+        }]
+        setEmergencyContacts(updatedEmergency)
+    }
+
+    const handlePopovers = (popoverValue) => (popoverItem) =>{
+        if(!popoverItem){
+            updatedPopovers = popoverList.map( item => {return {
+                ...item,
+                status : false
+            }})
+            
+            // setPopoverList(updatedPopovers)
+        }else{
+            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            updatedPopovers = [
+                ...popoverList.slice(0, objIndex),
+                updatedObj,
+                ...popoverList.slice(objIndex + 1),
+            ]; 
+            // setPopoverList(updatedPopovers)
+        }
+        setPopoverList(updatedPopovers)
+    
     }
 
     const demoData = <>
@@ -387,6 +431,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                         onChangeText = {(value)=>handleDOB(value)}
                         value = {dateOfBirth}
                         onClear = {()=>{handleDOB('')}}
+                        placeholder = {"DD/MM/YYYY"}
                     />
                 </View>
             </View>
@@ -502,17 +547,17 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
     const emergencyContactData = <>
         <View style={{}}>
             {emergencyContacts.map(( contact, index)=>{
-                
-                return (
+                let isOpen = popoverList.filter(item => item.name === `emergency${index + 1}`)
+                return(
                     <View style={{flexDirection:"row",width:'100%', zIndex: index === 1 ? -1 :0}} key = {index}>
                       
                         <TouchableOpacity 
                             style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:1}}
-                            onPress = {()=>openEmergencyName(index)}
+                            onPress = {()=>{openEmergencyName(index); handlePopovers(true)(`emergency${index + 1}`)}}
                             activeOpacity = {1}
                         >
                             <View style={{ marginBottom:5}}>
-                                <Text style={[styles.title,{fontSize:14}]}>Emergency Contact Name</Text>
+                                <Text style={[styles.title,{fontSize:14}]}>Emergency Contact Name {index + 1}</Text>
                             </View>
 
                             <View style={[styles.inputWrapper]}> 
@@ -527,7 +572,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                                     value = {`${contact.name} (${contact.relation})`}
                                     onClear = {()=>{}}
                                 /> 
-                                { isEmergencyOpen && index === emergencyIndex &&
+                                { isEmergencyOpen && index === emergencyIndex && isOpen[0].status &&
                                     <View style={styles.modalContainer}>
                                         <InputField2
                                             label = "Name"
@@ -550,7 +595,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
                         <View style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:-1}} >
                             <View style={{ marginBottom:5}}>
-                                <Text style={[styles.title,{fontSize:13}]}>Emergency Contact Phone</Text>
+                                <Text style={[styles.title,{fontSize:13}]}>Emergency Contact Phone {index + 1}</Text>
                             </View>
 
                             <View style={styles.inputWrapper}> 
@@ -565,7 +610,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
                         <View style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:-2}} >
                             <View style={{ marginBottom:5}}>
-                                <Text style={[styles.title,{fontSize:14}]}>Emergency Contact Email</Text>
+                                <Text style={[styles.title,{fontSize:14}]}>Emergency Contact Email {index + 1}</Text>
                             </View>
 
                             <View style={styles.inputWrapper}> 
@@ -582,6 +627,18 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                     
                 )
             })}
+            {
+                emergencyContacts.length < 2 &&
+                    <View style={{zIndex:-1,padding:15, paddingTop:10, paddingBottom:10, backgroundColor:'#83AED1', alignSelf:'center', alignItems:'center'}}>
+                        <Button
+                            title = "Add Emergency Contact"
+                            backgroundColor="#83AED1"
+                            color="#FFFFFF"
+                            buttonPress = {()=>{onAddEmergency()}}
+                        />
+                    </View>
+                    
+            }
         </View>
     </>
         
@@ -597,11 +654,17 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                 // fadingEdgeLength = {100}
                 contentContainerStyle={{paddingBottom:40}}
             >
-                {demoData}
-                {divider}
-                {contactData}
-                {divider}
-                {emergencyContactData}
+                <TouchableOpacity
+                    activeOpacity = {1}
+                    onPress = {()=>handlePopovers(false)()}
+                >
+                    {demoData}
+                    {divider}
+                    {contactData}
+                    {divider}
+                    {emergencyContactData}
+                </TouchableOpacity>
+                
 
             </ScrollView>
         </KeyboardAvoidingView>

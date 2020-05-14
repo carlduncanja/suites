@@ -10,6 +10,7 @@ const ColumnSection = ({data, numOfColumns}) => {
             keyExtractor = {(item, index) => ""+index}
             numColumns = {numOfColumns}
             horizontal={false}
+            scrollEnabled={false}
         />
     )
 }

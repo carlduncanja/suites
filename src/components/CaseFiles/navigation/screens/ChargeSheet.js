@@ -1,24 +1,25 @@
-import React,{useContext} from 'react';
+import React,{useContext, useEffect} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
 import { currencyFormatter } from '../../../../utils/formatter';
 
-const ChargeSheet = ({item, selectedTab}) => {
-    const [state] = useContext(SuitesContext)
-    const name = selectedTab
+const ChargeSheet = ({chargeSheets = [], selectedTab}) => {
 
-    const chargeSheet = item.caseFileDetails.chargeSheet
-    const procedures = item.caseFileDetails.caseProcedures
+    useEffect(()=>{},[])
 
-    const consumables = []
-    const equipments = []
-    procedures.map(procedure => procedure.consumables.map(consumable => consumables.push(consumable)))
-    procedures.map(procedure => procedure.equipments.map(equipment => equipments.push(equipment)))
+    let allInventories = []
+    let allEquipments = []
 
-    const quotation = chargeSheet.quotation
-    const invoices = chargeSheet.invoices
+    chargeSheets.map( item => {
+       const {inventories, equipments} = item
+        allInventories = [...allInventories,...inventories.map( inventory => {return {...inventory, name : inventory.inventory}})]
+        allEquipments = [...allEquipments,...equipments.map( equipment => {return {...equipment, name : equipment.equipment}})]
+    })
+
+    const quotation = []
+    const invoices = []
 
     const headers = [
         {
@@ -41,42 +42,43 @@ const ChargeSheet = ({item, selectedTab}) => {
 
     const listItem = (item) => <>
         <View style={styles.item}>
-            <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.item}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'flex-start'}]}>
-            <Text style={styles.itemText}>{item.type}</Text>
+            <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.name}</Text>
         </View>
         <View style={[styles.item,{alignItems:'center'}]}>
-            <Text style={styles.itemText}>{item.quantity}</Text>
+            <Text style={styles.itemText}>Type</Text>
+        </View>
+        <View style={[styles.item,{alignItems:'center'}]}>
+            <Text style={styles.itemText}>{item.amount}</Text>
         </View>
         <View style={[styles.item,{alignItems:'flex-end'}]}>
-            <Text style={styles.itemText}>{currencyFormatter(item.unitPrice)}</Text>
+            <Text style={styles.itemText}>{currencyFormatter(2000.00)}</Text>
         </View>
             
     </>
         
     return (
-        name === 'Consumables' ?
+        selectedTab === 'Consumables' ?
             <Consumables 
-                tabDetails = {consumables} 
+                tabDetails = {allInventories} 
                 headers= {headers}
                 listItemFormat = {listItem}
             />
             :
-            name === 'Equipment' ?
+            selectedTab === 'Equipment' ?
                 <Equipment 
-                    tabDetails = {equipments}
+                    tabDetails = {allEquipments}
                     headers = {headers}
                     listItemFormat = {listItem}
                 />
                 :
-                name === 'Invoices' ?
+                selectedTab === 'Invoices' ?
                     <Invoices tabDetails = {invoices}/>
                     :
-                    name === 'Quotation' ?
+                    selectedTab === 'Quotation' ?
                         <Quotation tabDetails = {quotation}/>
                         :
-                        <BillingCaseCard tabDetails = {item.caseFileDetails}/>        
+                        // <BillingCaseCard tabDetails = {{}}/>  
+                        <View/>      
     );
 }
  

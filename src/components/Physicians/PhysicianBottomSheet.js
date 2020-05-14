@@ -32,7 +32,7 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedPhysician, setSelectedPhysician] = useState(physician)
     const [isEditMode, setEditMode] = useState(isOpenEditable);
-    const [editableTab, setEditableTab] = useState()
+    const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
 
 
@@ -71,8 +71,7 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
                 address : removeIds(fields['address']),
                 emergencyContact : removeIds(fields['emergencyContact'])
             }
-
-            console.log("Fields: ", fieldsObject)
+            setSelectedPhysician({...fieldsObject,_id})
             updatePhysicianFn(_id, fieldsObject)
         }
     }
@@ -142,10 +141,9 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
             .then((data, id) => {
                 let newData = {
                     _id : id,
-                    ...physician
+                    ...data
                 }
                 updatePhysicianRecord(newData)
-                console.log("Success: ", data)
             })
             .catch(error => {
                 console.log("Failed to update physician", error)

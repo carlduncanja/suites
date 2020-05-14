@@ -2,27 +2,24 @@ import React,{useContext} from 'react';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { FamilyHistory,General,Lifestyle,Other } from '../../OverlayPages/MedicalHistory' 
 
-const MedicalHistory = ({ item, selectedTab }) => {
-    const [state] = useContext(SuitesContext)
-    const name = selectedTab
-    const selected = item.caseFileDetails.medical
-    const general = selected.medicalHistory
-    const family = selected.familyHistory
-    const lifestyle = selected.lifeStyleHistory
+const MedicalHistory = ({ medicalInfo, selectedTab }) => {
+    
+    const { medicalHistory = [], familyHistory = [], lifestyles = [] } = medicalInfo
     
     return (
-        name === 'Family History' ?
-            <FamilyHistory tabDetails = {family}/>
+        selectedTab === 'Family History' ?
+            <FamilyHistory tabDetails = {familyHistory}/>
             :
-            name === 'General' ?
-                <General tabDetails={general} />
+            selectedTab === 'General' ?
+                <General tabDetails={medicalHistory} />
                 :
-                name === 'Lifestyle' ?
-                    <Lifestyle tabDetails={lifestyle} />
+                selectedTab === 'Lifestyle' ?
+                    <Lifestyle tabDetails={lifestyles} />
                     :
                     <Other tabDetails = {[]}/>        
     );
 }
- 
+  
 export default MedicalHistory;
+
 

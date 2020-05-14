@@ -83,9 +83,9 @@ const Procedures = (props) =>{
         setSelectedProcedures(updatedProceduresList)
     }
 
-    const handleOnItemPress = (item) => {
+    const handleOnItemPress = (item, isOpenEditable) => {
         modal.openModal('BottomSheetModal',{
-            content : <ProceduresBottomSheet procedure = {item} />
+            content : <ProceduresBottomSheet procedure = {item} isOpenEditable = {isOpenEditable}/>
         })
     }
 
@@ -142,7 +142,7 @@ const Procedures = (props) =>{
             hasCheckBox={true}
             isChecked={selectedProcedures.includes(item.id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => handleOnItemPress(item)}
+            onItemPress={() => handleOnItemPress(item, false)}
             itemView={procedureItem(item)}
         />
     }
@@ -198,7 +198,7 @@ const Procedures = (props) =>{
                     {
                         content: <CreateProcedureDialog 
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={(item) => handleOnItemPress(item)}
+                            onCreated={(item) => handleOnItemPress(item, true)}
                         />,
                         onClose: () => setFloatingAction(false)
                     })

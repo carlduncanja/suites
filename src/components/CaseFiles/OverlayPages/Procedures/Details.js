@@ -9,6 +9,7 @@ import ProcedureIcon from '../../../../../assets/svg/frameProcedures';
 
 const Details = ({tabDetails, modal}) => {
     // ############# Data declaration
+    // console.log("Tab Details: ", tabDetails)
     const tabs = ["Consumables", "Equipment"]
 
     const onOpenPickList = (details) => {
@@ -43,7 +44,7 @@ export default withModal(Details) ;
 
 const styles = StyleSheet.create({
     procedureContainer:{
-        marginBottom:15
+        marginBottom:25
     },
     shadowContainer:{
         ...StyleSheet.absoluteFillObject,

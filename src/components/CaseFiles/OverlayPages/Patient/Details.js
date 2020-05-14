@@ -4,9 +4,10 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import BMIConverter from '../../BMIConverter'; 
 import moment from 'moment';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../../components/common/Information Record/RecordStyles';
+import ResponsiveRecord from '../../../common/Information Record/ResponsiveRecord'
 import { withModal } from 'react-native-modalfy';
 import PatientBMIChart from '../../PatientBMIChart';
-import { formatDate } from '../../../../utils/formatter';
+import { formatDate, calcAge } from '../../../../utils/formatter';
 
 let itemWidth = `${100/3}%`
 const Details = ({tabDetails, modal}) => {
@@ -65,33 +66,29 @@ const Details = ({tabDetails, modal}) => {
     }
 
     const seperateNumber = (number) =>{
-        return number.toString().match(/\d{1,3}/g).join(" ")
-    }
-
-    const checkData = (data) => {
-        return data ? data : "--"
+        return number.toString().match(/\d{1,3}/g).join(" ") 
     }
 
     const DemographicData = () =>{
-        let nextVisit = tabDetails.nextVisit
-        let pateintDetails = tabDetails.caseFileDetails.patient
-        const demoObject = Object.assign({},pateintDetails)
-        delete demoObject.contactInfo
-        delete demoObject.insurance
-        delete demoObject.emergencyContacts
-        delete demoObject.addresses
+        const {
+            firstName = "",
+            middleName = "",
+            surName = "",
+            height = 0,
+            weight = 0,
+            dob = "",
+            trn = "",
+            gender = "",
+            ethnicity = "",
+            bloodType = '',
+            nextVisit = formatDate(new Date()) 
+        } = tabDetails
 
-        const getAge = (dateObject) =>{
-            let today = new Date()
-            let age = today.getFullYear() - dateObject.getFullYear()
-            let month = today.getMonth() - dateObject.getMonth()
-            if (month < 0 || (month === 0 && today.getDate() < dateObject.getDate())){
-                age --
-            }
-            return age
-        }
-
-        let dateOfBirth = `${formatDate(demoObject.dob,"D/MM/YYYY")} (${getAge(demoObject.dob)})`
+        let age = calcAge(dob)
+        let dateOfBirth = `${formatDate(dob,"D/MM/YYYY")} (${age})`
+        let kmWeight = weight/2.205 || 0
+        let metreHeight = Math.pow((height/3.281),2) || 0
+        let bmi = Math.ceil(kmWeight/metreHeight) || 0
 
         return(
             <View style={{}}>
@@ -99,86 +96,87 @@ const Details = ({tabDetails, modal}) => {
                     <View style={styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"First Name"}
-                            recordValue={checkData(demoObject.firstName)}
+                            recordValue={firstName}
                         />
                     </View>
                     <View style = {styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"Middle Name"}
-                            recordValue={checkData(demoObject.middleName)}
+                            recordValue={middleName}
                         />
                     </View>
                     <View style = {styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"Surname"}
-                            recordValue={checkData(demoObject.lastName)}
+                            recordValue={surName}
                         />
                     </View>
-                    
-                    
                 </View>
+
                 <View style={styles.rowContainer}>
                     <View style={styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"Height"}
-                            recordValue={checkData(demoObject.height)}
+                            recordValue={height}
                         />
                     </View>
                     <View style={styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"Weight"}
-                            recordValue={checkData(demoObject.weight)}
+                            recordValue={weight}
                         />
                     </View>
                     <TouchableOpacity 
                         style={styles.rowItem} 
                         activeOpactiy = {1}
-                        onPress = {()=>handleBMIPress(demoObject.bmi)}
+                        onPress = {()=>handleBMIPress(bmi)}
                     >
                         <BMIConverter
                             recordTitle={"BMI"}
-                            bmiValue={demoObject.bmi}
+                            bmiValue={bmi}
                             bmiScale = {bmiScale}
                         />
                     </TouchableOpacity>
                 </View>
+                
                 <View style={styles.rowContainer}>
                     <View style={styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"Date of Birth"}
-                            recordValue={checkData(dateOfBirth)}
+                            recordValue={dateOfBirth}
                         />
                     </View>
                     <View style={styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"TRN"}
-                            recordValue={checkData(seperateNumber(demoObject.trn))}
+                            recordValue={trn}
                         />
                     </View>
                     <View style={styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"Gender"}
-                            recordValue={checkData(demoObject.Gender)}
+                            recordValue={gender}
                         />
                     </View>
                 </View>
+                
                 <View style={styles.rowContainer}>
                     <View style={styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"Ethnicity"}
-                            recordValue={checkData(demoObject.ethnicity)}
+                            recordValue={ethnicity}
                         />
                     </View>
                     <View style={styles.rowItem}>
                         <PersonalRecord 
                             recordTitle={"Blood Type"}
-                            recordValue={checkData(demoObject.BloodType)}
+                            recordValue={bloodType}
                         />
                     </View>
                     <View style={styles.rowItem}>
                         <PersonalRecord 
                             recordTitle={"Next Visit"}
-                            recordValue={checkData(nextVisit)}
+                            recordValue={nextVisit}
                         />
                     </View>
                     
@@ -188,112 +186,112 @@ const Details = ({tabDetails, modal}) => {
     }
 
     const ContactData = () => {
-        const contactInfo = tabDetails.caseFileDetails.patient.contactInfo
-        const addressInfo = tabDetails.caseFileDetails.patient.addresses
+        const { contactInfo = {}, address=[] } = tabDetails
+        const { phones = [], emails = []} = contactInfo
+        const emailTypes = ['primary', 'other', 'work']
+        const phoneTypes = ['cell', 'home', 'work']
 
         return(
             <View>
-                {contactInfo.map((contact,index)=>{
-                    return(
-                    <View key={index}>
-                        {contact.phones.map((phone,index)=>{
-                            return (
-                            <View style={styles.rowContainer} key={index}>
-                                <View style={styles.rowItem}>
-                                    <ContactRecord
-                                        recordTitle = "Cell Phone"
-                                        recordValue = {checkData(seperateNumber(phone.cellNumber))}
-                                    />
-                                </View>
-                                <View style={styles.rowItem}>
-                                    <ContactRecord
-                                        recordTitle = "Home Phone Number"
-                                        recordValue = {checkData(seperateNumber(phone.homeNumber))}
-                                    />
-                                </View>
-                                <View style={styles.rowItem}>
-                                    <ContactRecord
-                                        recordTitle = "Work Phone"
-                                        recordValue = {checkData(seperateNumber(phone.workNumber))}
-                                    />
-                                </View>
-                            </View>
-                        )})}
-                        {contact.emails.map((email,index)=>{
-                            return (
-                            <View style={styles.rowContainer} key={index}>
-                                <View style={styles.rowItem}>
-                                    <ContactRecord
-                                        recordTitle = "Primary Email"
-                                        recordValue = {checkData(email.primary)}
-                                    />
-                                </View>
-                                <View style={styles.rowItem}>
-                                    <ContactRecord
-                                        recordTitle = "Alternate Email"
-                                        recordValue = {checkData(email.alternate)}
-                                    />
-                                </View>
-                                <View style={styles.rowItem}>
-                                    <ContactRecord
-                                        recordTitle = "Work Email"
-                                        recordValue = {checkData(email.work)}
-                                    />
-                                </View>
-                            </View>
-                        )})}
-                    </View>
 
-                )})}
+                <View style={styles.rowContainer}>
+                    {
+                        phoneTypes.map((item,index)=>{
+                            const phoneArray = phones.filter( phone => phone.type === item)
+                            phoneArray.length === 0 ? phone = "" : phone = phoneArray[0].phone
+
+                            item === 'cell' ? title = "Cell Phone Number" :
+                            item === 'home' ? title = "Home Phone Number" :
+                            item === 'work' ? title = "Work Phone Number" :
+                            title = "Other Phone Number"
+
+                            return (
+                                <View style={styles.rowItem} key = {index}>
+                                    <ResponsiveRecord
+                                        recordTitle = {title}
+                                        recordValue = {phone}
+                                        handleRecordPress = {()=>{}}
+                                    />
+                                </View>
+                            )
+                        })
+                    }
+                </View>
+
+                <View style={styles.rowContainer}>
+                    {
+                        emailTypes.map((item,index)=>{
+                            const emailArray = emails.filter( email => email.type === item)
+                            emailArray.length === 0 ? email = "" : email = emailArray[0].email
+
+                            item === 'primary' ? title = "Primary Email" :
+                            item === 'other' ? title = "Alternate Email" :
+                            item === 'work' ? title = "Work Email" :
+                            title = "Other"
+
+                            return (
+                                <View style={styles.rowItem} key = {index}>
+                                    <ResponsiveRecord
+                                        recordTitle = {title}
+                                        recordValue = {email}
+                                        handleRecordPress = {()=>{}}
+                                    />
+                                </View>
+                            )
+                        })
+                    }
+
+                </View>
                 
-                {addressInfo.map((address,index)=>{
+                {address.map((item,index)=>{
                     return (
                         <View style={styles.rowContainer} key={index}>
                             <View style={{flex:1,}}>
-                                <ContactRecord
+                                <ResponsiveRecord
                                     recordTitle = "Address 1"
-                                    recordValue = {checkData(address.addressLine1)}
+                                    recordValue = {item.line1}
                                 />
                             </View>
                             <View style={styles.rowItem}>
                                 <PersonalRecord
                                     recordTitle = "Address 2"
-                                    recordValue = {checkData(address.addressLine2)}
+                                    recordValue = {item.line2}
                                 />
                             </View>
                         </View>
                     )
                 })}
+
             </View>
+    
         )
     }
 
     const EmergencyData = () => {
-        const emergencyInfo = tabDetails.caseFileDetails.patient.emergencyContacts
-        const contactName = (name, relationship) =>{
-            return `${name} (${relationship})`
-        }
+        const { contactInfo = {} } = tabDetails
+        const { emergencyContact = []} = contactInfo
         return(
             <View>
-                {emergencyInfo.map((contact,index)=>{
+                {emergencyContact.map((contact,index)=>{
+                    const { relation = "", email = "", phone = "", name = "Coleen Brown"} = contact
                     return (
                         <View style={styles.rowContainer} key={index}>
                             <View style={styles.rowItem}>
                                 <PersonalRecord
                                     recordTitle = "Emergency Contact Name"
-                                    recordValue = {checkData(contactName(contact.name, contact.relationship))}
+                                    recordValue = {`${name} (${relation})`}
                                 />
                             </View>
                             <View style={styles.rowItem}>
                                 <ContactRecord
                                     recordTitle = "Emergency Contact Phone"
-                                    recordValue = {checkData(seperateNumber(contact.phone))}
+                                    recordValue = {phone}
                                 />
                             </View>
                             <View style={styles.rowItem}>
                                 <ContactRecord
                                     recordTitle = "Emergency Contact Email"
-                                    recordValue = {checkData(contact.emails)}
+                                    recordValue = {email}
                                 />
                             </View>
                         </View>
@@ -309,7 +307,7 @@ const Details = ({tabDetails, modal}) => {
             {Divider()}
             {ContactData()}
             {Divider()}
-            {EmergencyData()}
+            {EmergencyData()} 
         </ScrollView>
     );
 }

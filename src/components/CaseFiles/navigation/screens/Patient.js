@@ -1,26 +1,23 @@
 import React,{useContext} from 'react';
+import { View } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Details, Diagnosis, Insurance, PatientRisk} from '../../OverlayPages/Patient'
 
-const Patient = ({ item, selectedTab }) => {
-    const [state] = useContext(SuitesContext)
-    const insuranceDetails = item.caseFileDetails.patient.insurance
-    const diagnosisDetails = item.caseFileDetails.diagnosis
-    const patientRisks = item.caseFileDetails.patientRisks
-    const name = selectedTab
-  
-    
-    return (
-        name === 'Details' ?
-            <Details tabDetails = {item}/>
+const Patient = ({ patient, selectedTab }) => {
+    const { insurance = {} , medicalInfo = {} } = patient
+    const { diagnosis = [], risks = [] } = medicalInfo
+
+    return ( 
+        selectedTab === 'Details' ?
+            <Details tabDetails = {patient}/>
             :
-            name === 'Insurance' ?
-                <Insurance tabDetails = {insuranceDetails}/>
+            selectedTab === 'Insurance' ?
+                <Insurance tabDetails = {insurance}/>
                 :
-                name === 'Diagnosis' ?
-                    <Diagnosis tabDetails = {diagnosisDetails}/>
+                selectedTab === 'Diagnosis' ?
+                    <Diagnosis tabDetails = {diagnosis}/>
                     :
-                    <PatientRisk tabDetails = {patientRisks}/>        
+                    <PatientRisk tabDetails = {risks}/>        
     );
 }
  

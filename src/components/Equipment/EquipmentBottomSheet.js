@@ -20,8 +20,6 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
     }
 
     const currentTabs = ["Details"];
-    
-    const {id, name} = equipment;
 
     // ##### States
 
@@ -31,12 +29,44 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
     const [editableTab, setEditableTab] = useState()
     const [isFetching, setFetching] = useState(false);
 
+    const {
+        // supplier id
+        id,
+        name,
+        // supplier name
+        supplier, 
+        assigned,
+        status,
+        usage,
+        availableOn,
+        categories, 
+        description
+    } = equipment
+
+    const [fields, setFields] = useState({
+        // supplier name
+        supplier : supplier, 
+        assigned : assigned,
+        status : status ,
+        usage : usage,
+        availableOn : availableOn,
+        categories : categories, 
+        description : description
+    })
+
     // ##### Lifecycle Methods
     useEffect(() => {
         fetchEquipment(id)
     }, []);
 
     // ##### Event Handlers
+
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName]: value
+        })
+    };
 
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
@@ -54,7 +84,7 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
         switch (selectedTab) {
             case "Details":
                 return editableTab === 'Details' && isEditMode ?
-                    <EditableEquipmentDetails equipment = {selectedEquipment} />
+                    <EditableEquipmentDetails fields = {fields} onFieldChange = {onFieldChange}/>
                     :
                     <General equipment = {selectedEquipment}/>;
             default :
