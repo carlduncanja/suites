@@ -163,7 +163,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     }
   },
   {
-    initialRouteName: 'Inventory',
+    initialRouteName: 'CaseFiles',
   },
 );
 
