@@ -8,20 +8,20 @@ import { withModal } from 'react-native-modalfy';
 import { formatDate } from '../../../../utils/formatter';
 
 const FrameProcedureContent = ({details,onOpenPickList}) => {
-
     // console.log("Details: ", details)
     const { appointment, procedure } = details
     const {hasRecovery} = procedure
     const recovery = {}
 
     const appointmentView = (appointment) => {
-        const { location = "", startTime = "", endTime = "" } = appointment
+        const { location = {}, startTime = "", endTime = "" } = appointment
+        const { name = "" } = location
         let duration = moment.duration(moment(endTime).diff(moment(startTime)))
         let hours = duration.asHours()
 
         return (
             <View>
-                <FrameTableItem title = "Location" value={location}/>
+                <FrameTableItem title = "Location" value={name}/>
                 <View style={styles.dateContainer}>
                     <View style={{flex:1}}>
                         <FrameTableItem title = "Date" value = {formatDate(appointment.startTime,"MMM/D/YYYY")}/>

@@ -18,7 +18,6 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
     const [trnText, setTrnText] = useState(fields['trn'])
 
     const handleDateValidation = (date) => {
-
         let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
         if (dateRegex.test(date) || !date) {
             onFieldChange('dob')(date)

@@ -16,7 +16,7 @@ const Details = ({tabDetails, modal}) => {
 
         modal.openModal('OverlayInfoModal',{ 
             overlayContent : <ProceduresPickList 
-                details = {details} 
+                details = {details}  
                 tabs = {tabs} 
             />,
         })

@@ -1,25 +1,34 @@
 import React,{useState} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import BillingCaseProcedure from './BillingCaseProcedure';
 import moment from 'moment';
 import SvgIcon from '../../../../assets/SvgIcon';
 import { formatAmount } from '../../../helpers/caseFilesHelpers';
+import { formatDate, currencyFormatter } from "../../../utils/formatter";
 
 
-const BillingCaseCard = ({tabDetails}) => {
-    const caseProcedureDetails = tabDetails.caseProcedures
-    const caseStaff = tabDetails.medicalStaff
-    const casePhysicians = caseStaff.filter( staff => staff.type === "Physician")
+const BillingCaseCard = ({tabDetails}) => { 
+
+    const { lastModified = "", total = 0, hasDiscount = false, discount = 0, procedures = {} } = tabDetails
+    let totalAmount = total - (total * discount)
+
+    // const caseProcedureDetails = tabDetails.caseProcedures
+    // const caseStaff = tabDetails.medicalStaff
+    // const casePhysicians = caseStaff.filter( staff => staff.type === "Physician")
 
     const getProcedureStatusArray = () =>{
-        let caseStateArray = []
-        caseProcedureDetails.map( (procedure, index) => {
-            caseStateArray.push({
-                "index":index,
-                "status":false
-            })
+        // let statusArray = []
+        let statusArray = procedures.map((procedure, index) => {
+            return {
+                index,
+                status : false
+            }
+            // statusArray.push({
+            //     "index":index,
+            //     "status":false
+            // })
         })
-        return caseStateArray
+        return statusArray
     }
 
     const [openDetailsArrayState, setOpenDetailsArrayState] = useState(getProcedureStatusArray())
@@ -45,55 +54,55 @@ const BillingCaseCard = ({tabDetails}) => {
         setOpenDetailsArrayState(updatedArray)
     }
 
-    const getLastModified = () =>{
+    // const getLastModified = () =>{
 
-    }
+    // }
 
-    const getTotal = () =>{
-        let allEquiments = caseProcedureDetails.map( procedure => procedure.equipments)
-        let allConsumables = caseProcedureDetails.map( procedure => procedure.consumables)
-        let procedureCost = caseProcedureDetails.map( procedure => procedure.cost)
-        let physicianCost = casePhysicians.map( physician => physician.staff.cost)
+    // const getTotal = () =>{
+    //     let allEquiments = caseProcedureDetails.map( procedure => procedure.equipments)
+    //     let allConsumables = caseProcedureDetails.map( procedure => procedure.consumables)
+    //     let procedureCost = caseProcedureDetails.map( procedure => procedure.cost)
+    //     let physicianCost = casePhysicians.map( physician => physician.staff.cost)
         
-        const getItemTotal = (itemArray) =>{
-            let itemTotal = 0
-            itemArray.map( item => itemTotal += item)
-            return itemTotal
-        }
-        const getItemArrayTotal = (itemArray) =>{
-            let itemTotal = 0 
-            itemArray
-                .forEach(arr => arr
-                .map(obj => itemTotal += (obj.quantity * obj.unitPrice)))
-            return itemTotal
-        }
+    //     const getItemTotal = (itemArray) =>{
+    //         let itemTotal = 0
+    //         itemArray.map( item => itemTotal += item)
+    //         return itemTotal
+    //     }
+    //     const getItemArrayTotal = (itemArray) =>{
+    //         let itemTotal = 0 
+    //         itemArray
+    //             .forEach(arr => arr
+    //             .map(obj => itemTotal += (obj.quantity * obj.unitPrice)))
+    //         return itemTotal
+    //     }
 
         
-        let equipTotal = getItemArrayTotal(allEquiments)
-        let consumTotal = getItemArrayTotal(allConsumables)
-        let physTotal = getItemTotal(physicianCost)
-        let proTotal = getItemTotal(procedureCost)
+    //     let equipTotal = getItemArrayTotal(allEquiments)
+    //     let consumTotal = getItemArrayTotal(allConsumables)
+    //     let physTotal = getItemTotal(physicianCost)
+    //     let proTotal = getItemTotal(procedureCost)
 
-        let total = equipTotal + consumTotal + physTotal + proTotal
+    //     let total = equipTotal + consumTotal + physTotal + proTotal
 
-        return (Math.round(total * 100) / 100)
-    }
+    //     return (Math.round(total * 100) / 100)
+    // }
 
     return ( 
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
 
             <View style={styles.headerContainer}>
 
                 <View style={styles.headerItem}>
                     <Text style={styles.headerTitle}>Last Modified</Text>
-                    <Text style={styles.headerValue}>{moment(caseProcedureDetails.lastModified).format("DD/MM/YYYY")}</Text>
+                    <Text style={styles.headerValue}>{formatDate(lastModified,'DD/MM/YYYY')}</Text>
                 </View>
 
                 <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
                     <Text style={styles.headerTitle}>Total</Text>
                     <View style={{flexDirection:'row'}}>
-                        <Text style={{color:'#0CB0E7',fontSize:14}}>(discount applied)</Text>
-                        <Text style={styles.headerValue}>{formatAmount(getTotal())}</Text>
+                        { hasDiscount && <Text style={{color:'#0CB0E7',fontSize:14}}>(discount applied)</Text> }
+                        <Text style={styles.headerValue}>{`$ ${currencyFormatter(totalAmount)}`}</Text>
                     </View>
                 </View>
 
@@ -108,34 +117,36 @@ const BillingCaseCard = ({tabDetails}) => {
                     <Text style={styles.procedureText}>PROCEDURE</Text>
                 </View>
 
-                {caseProcedureDetails.map((procedure,index)=>{
+                {procedures.map((item,index)=>{
+                    const { procedure = {}, physicians = [], equipments = [], inventories = [] } = item
+                    
                     return(
                         <View key = {index} style={{marginBottom:15}}>
 
                             <View style={{flexDirection:'row',}}>
                                 <TouchableOpacity 
-                                    style={{paddingRight:15,marginTop:5}}
+                                    style={{paddingRight:15,marginTop:5, }}
                                     onPress = {()=>openProcedureDetails(index)}
                                 >
                                     {getStatus(index) ?
-                                        <SvgIcon iconName = "showProcedure"/>
-                                       :
                                         <SvgIcon iconName = "hideProcedure"/>
+                                       :
+                                        <SvgIcon iconName = "showProcedure"/>
                                     } 
                                 </TouchableOpacity>
                                 
                                 <View style={{flex:1,flexDirection:'column'}}>
                                     <View style={styles.itemContainer}>
-                                        <Text style={{color:'#4E5664',fontSize:16}}>{procedure.title}</Text>
-                                        <Text style={{color:'#4E5664',fontSize:18, alignSelf:'flex-end'}}>{formatAmount(procedure.cost)}</Text>
+                                        <Text style={{color:'#4E5664',fontSize:16}}>{procedure.name}</Text>
+                                        <Text style={{color:'#4E5664',fontSize:18, alignSelf:'flex-end'}}>{`$ ${currencyFormatter(procedure.cost)}`}</Text>
                                     </View>
                                     {
                                         getStatus(index) &&
-                                        <View style={{flex:1,}}>
+                                        <View style={{}}>
                                             <BillingCaseProcedure 
-                                                procedure = {procedure} 
-                                                physicians = {casePhysicians}
-                                                formatAmount = {formatAmount}
+                                                physicians = {physicians} 
+                                                equipments = {equipments}
+                                                inventories = {inventories}
                                             />
                                         </View>
                                     }
@@ -145,9 +156,10 @@ const BillingCaseCard = ({tabDetails}) => {
                             
                         </View>
                     )
-                })}
+                })} 
+            
             </View>
-        </View>
+        </ScrollView>
     );
 }
  
@@ -157,10 +169,10 @@ const styles = StyleSheet.create({
     container:{
     },
     headerContainer:{
-        flex:1,
+        // flex:1,
         flexDirection:'row',
         justifyContent:'space-between',
-        marginBottom:25
+        marginBottom:25,
     },
     headerItem:{
         // justifyContent:'space-between',
@@ -197,7 +209,7 @@ const styles = StyleSheet.create({
         fontWeight:'500'
     },
     itemContainer:{
-        flex:1,
+        // flex:1,
         flexDirection:'row',
         justifyContent:'space-between', 
         marginBottom:6,

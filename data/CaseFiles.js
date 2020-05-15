@@ -228,10 +228,10 @@ export default [
                 ],
                 invoices: [
                     {
-                        "invoiceNumber":"000976",
+                        "invoiceNumber":"IN-000976",
                         "status":"Complete",
-                        // "date":"13/12/2019",
-                        // "value":"$312,000.45",
+                        "date": new Date(2019,10,16),
+                        "value": 467320.90,
                         "reportDetails":{
                             billingDetails:{
                                 billedTo:{
@@ -320,6 +320,8 @@ export default [
                 quotation:[
                     {
                         "quotationNumber":"QU-1240512",
+                        "date": new Date(2019,11, 18) ,
+                        "value":"$60,863.45",
                         "reportDetails":{
                             billingDetails:{
                                 billedTo:{
@@ -386,7 +388,112 @@ export default [
                     //     "value":"$320,863.45",
                     //     "quotationDetails":{}
                     // },
-                ]
+                ],
+                billing:{
+                    lastModified : new Date(2019,11,11),
+                    total : 104002.25,
+                    hasDiscount : true,
+                    discount : 0.15,
+                    procedures : [
+                        {
+                            procedure: {
+                                name : 'Coronary Bypass Graft',
+                                cost : 48000.00
+                            },
+                            physicians : [
+                                {
+                                    name : 'Dr. Mansingh',
+                                    cost : 64000.89
+                                },
+                                {
+                                    name : 'Dr. Brown',
+                                    cost : 50000.89
+                                }
+                            ],
+                            equipments : [
+                                {
+                                    name : 'Blood Glasses',
+                                    amount : 2,
+                                    unitPrice : 16000.45
+                                },
+                                {
+                                    name : 'Stethoscope 4',
+                                    amount : 3,
+                                    unitPrice : 15000.50
+                                }
+                            ],
+                            inventories : [
+                                {
+                                    name : 'Agents',
+                                    amount : 15,
+                                    unitPrice : 5000.62
+                                },
+                                {
+                                    name : 'Atracurium',
+                                    amount : 5,
+                                    unitPrice : 4128.45
+                                },
+                                {
+                                    name : 'GU Tower',
+                                    amount : 10,
+                                    cost : 5055.00
+                                },
+                                {
+                                    name : 'Gauze',
+                                    amount : 20,
+                                    cost : 500.00
+                                }
+                            ]
+                        },
+                        {
+                            procedure: {
+                                name : 'Coronary Artery Graft',
+                                cost : 32000.45
+                            },
+                            physicians : [
+                                {
+                                    name : 'Dr. Abraham',
+                                    cost : 100500.23
+                                }
+                            ],
+                            equipments : [
+                                {
+                                    name : 'Glasses',
+                                    amount : 1,
+                                    unitPrice : 16000.45
+                                },
+                                {
+                                    name : 'Stethoscope 3',
+                                    amount : 1,
+                                    unitPrice : 15000.50
+                                }
+                            ],
+                            inventories : [
+                                {
+                                    name : 'Agents',
+                                    amount : 8,
+                                    unitPrice : 5000.62
+                                },
+                                {
+                                    name : 'Atracurium',
+                                    amount : 5,
+                                    unitPrice : 4128.45
+                                },
+                                {
+                                    name : 'GU Tower',
+                                    amount : 5,
+                                    cost : 5055.00
+                                },
+                                {
+                                    name : 'Gauze',
+                                    amount : 10,
+                                    cost : 500.00
+                                }
+                            ]
+                        }
+                    ]
+                    
+                }
             },
             diagnosis: [
                 {

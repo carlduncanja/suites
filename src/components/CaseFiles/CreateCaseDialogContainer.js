@@ -66,7 +66,11 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
 
     // ########### STATE
 
-    const [fields, setFields] = useState({})
+    const [fields, setFields] = useState({
+        patient : {},
+        staff : {},
+        caseProcedures:[]
+    })
 
     const [positiveText, setPositiveText] = useState("NEXT")
     const [popoverList, setPopoverList] = useState([
@@ -85,7 +89,10 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
     // ########### EVENT HANDLERS
 
     const onFieldChange = (fieldName) => (value) => {
-
+        setFields({
+            ...fields,
+            [fieldName]: value
+        })
     }
 
     const handleStepPress = (name) => {

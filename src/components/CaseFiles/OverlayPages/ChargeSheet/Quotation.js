@@ -9,6 +9,7 @@ import moment from 'moment';
 import { withModal } from 'react-native-modalfy';
 import { CaseFileContext } from '../../../../contexts/CaseFileContext';
 import { caseActions } from '../../../../redux/reducers/caseFilesReducer';
+import { formatDate, currencyFormatter } from '../../../../utils/formatter';
 
 
 const Quotations = ({tabDetails, modal}) => {
@@ -23,7 +24,7 @@ const Quotations = ({tabDetails, modal}) => {
         },
         {
             name: "Date",
-            alignment : "flex-start"
+            alignment : "center"
         },
         {
             name: "Value",
@@ -39,57 +40,36 @@ const Quotations = ({tabDetails, modal}) => {
         modal.openModal("ReportPreviewModal")
     }
 
-    // const headerItem = () =>{
-    //     return(
-    //         <View style={styles.headersContainer}>
-    //             <View style={{marginRight:20}}>
-    //                 {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
-    //             </View>
-            
-    //             <View style={styles.headerItem}>
-    //                 <Text style={styles.headerText}>Quotation</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'flex-start'}]}>
-    //                 <Text style={styles.headerText}>Date</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'center'}]}>
-    //                 <Text style={styles.headerText}>Value</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
-    //                 <Text style={styles.headerText}>Actions</Text>
-    //             </View>
-    //         </View>
-    //     )
-    // }
 
- 
     const listItem = (item) => {
-        const reportId = item.quotationNumber
-        const reportExpenses = item.reportDetails.reportExpenses
-        const billingDetails = item.reportDetails.billingDetails
-        let date = moment(billingDetails.reportDate).format("DD/MM/YYYY")
+        // const reportId = item.quotationNumber
+        // const reportExpenses = item.reportDetails.reportExpenses
+        // const billingDetails = item.reportDetails.billingDetails
+        // let date = moment(billingDetails.reportDate).format("DD/MM/YYYY")
 
-        const reportList = [...reportExpenses.physicians,...reportExpenses.procedures,...reportExpenses.labWork]
-        const reportTable = [...reportExpenses.consumables, ...reportExpenses.equipments]
-        const tax = reportExpenses.tax
-        const discountPercent = reportExpenses.discount
+        // const reportList = [...reportExpenses.physicians,...reportExpenses.procedures,...reportExpenses.labWork]
+        // const reportTable = [...reportExpenses.consumables, ...reportExpenses.equipments]
+        // const tax = reportExpenses.tax
+        // const discountPercent = reportExpenses.discount
 
-        let subTotal = 0
-        let taxValue = `${tax * 100}%`
+        // let subTotal = 0
+        // let taxValue = `${tax * 100}%`
 
-        reportList.forEach(item => subTotal+= item.cost)
-        reportTable.forEach(item => subTotal += (item.unitPrice * item.quantity))
+        // reportList.forEach(item => subTotal+= item.cost)
+        // reportTable.forEach(item => subTotal += (item.unitPrice * item.quantity))
         
-        let {discount, total} = calcBillingValues(subTotal, tax, discountPercent)
+        // let {discount, total} = calcBillingValues(subTotal, tax, discountPercent)
 
-        const billingSummary = {
-            subtotal:subTotal,
-            tax : taxValue,
-            discount : discount,
-            total :total
-        }
+        // const billingSummary = {
+        //     subtotal:subTotal,
+        //     tax : taxValue,
+        //     discount : discount,
+        //     total :total
+        // }
         
         //difference
+
+        const { quotationNumber = "", value = 0, date ="" } = item
         return(
             <View style={styles.container}>
                 <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(item)}>
@@ -97,13 +77,13 @@ const Quotations = ({tabDetails, modal}) => {
                 </TouchableOpacity>
                 <View style={styles.dataContainer}>
                     <View style={styles.item}>
-                        <Text style={[styles.itemText]}>{item.quotationNumber}</Text>
+                        <Text style={[styles.itemText]}>{quotationNumber}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-start'}]}>
-                        <Text style={styles.itemText}>{date}</Text>
+                        <Text style={styles.itemText}>{formatDate(date,'DD/MM/YYYY')}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'center'}]}>
-                        <Text style={styles.itemText}>{formatAmount(total)}</Text>
+                        <Text style={styles.itemText}>{`$ ${currencyFormatter(value)}`}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-end', marginRight:10}]}>
                         <TouchableOpacity

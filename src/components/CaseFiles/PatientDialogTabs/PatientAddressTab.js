@@ -3,7 +3,19 @@ import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../../common/Input Fields/InputField2";
 
 const PatientAddressTab = ({ onFieldChange, fields }) => {
+    const [address, setAddress] = useState({
+        line1 : '',
+        line2 : ''
+    })
 
+    const handleAddress = (type) => (value) =>{
+        const updatedAddress = {
+            ...address,
+            [type] : value
+        }
+        onFieldChange('address')([updatedAddress])
+        setAddress(updatedAddress)
+    }
     return (
         <View style={styles.sectionContainer}>
 
@@ -11,9 +23,9 @@ const PatientAddressTab = ({ onFieldChange, fields }) => {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Address Line 1"}
-                        onChangeText={onFieldChange('address1')}
-                        value={fields['address1']}
-                        onClear={() => onFieldChange('address1')('')}
+                        onChangeText={(value)=>handleAddress('line1')(value)}
+                        value={address['line1']}
+                        onClear={() => handleAddress('line1')('')}
                     />
                 </View>
             </View>
@@ -22,9 +34,9 @@ const PatientAddressTab = ({ onFieldChange, fields }) => {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Address Line 2"}
-                        onChangeText={onFieldChange('address2')}
-                        value={fields['address2']}
-                        onClear={() => onFieldChange('address2')('')}
+                        onChangeText={(value)=>handleAddress('line2')(value)}
+                        value={address['line2']}
+                        onClear={() => handleAddress('line2')('')}
                     />
                 </View>
             </View>

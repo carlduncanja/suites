@@ -4,7 +4,10 @@ import Assignment from "./Assignment";
 
 
 const StaffStep = ({tabs, selectedTabIndex, onFieldChange, fields}) => {
-
+    // const [fields, setFields] = useState({
+    //     firstName: "",
+    //     middleName: "",
+    // })
     const data = tabs.map( (tab,index) => {
         return {
             name : tab,

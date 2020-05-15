@@ -1,9 +1,11 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import { currencyFormatter } from "../../../utils/formatter";
 
-const BillingCaseProcedure = ({procedure,physicians, formatAmount}) =>{
-    const equipments = procedure.equipments
-    const consumables = procedure.consumables
+const BillingCaseProcedure = ({physicians, equipments, inventories}) =>{
+
+    // const equipments = procedure.equipments
+    // const consumables = procedure.consumables
     
     const totalPrice = (quantity,price) =>{
         return quantity * price
@@ -13,7 +15,7 @@ const BillingCaseProcedure = ({procedure,physicians, formatAmount}) =>{
         return (
             <View style={styles.itemContainer}>
                 <Text style={styles.itemValue}>{charge}</Text>
-                <Text style={[styles.itemValue, {fontSize:16, alignSelf:'flex-end'}]}>{formatAmount(cost)}</Text>
+                <Text style={[styles.itemValue, {fontSize:16, alignSelf:'flex-end'}]}>{`$ ${currencyFormatter(cost)}`}</Text>
             </View>
         )
     }
@@ -26,9 +28,10 @@ const BillingCaseProcedure = ({procedure,physicians, formatAmount}) =>{
                 </View>
                 
                 {physicians.map((physician, index)=>{
+                    const { name = "", cost = "" } = physician
                    return (
                        <View key = {index}>
-                           {tableItem(physician.staff.lastName, physician.staff.cost)}
+                           {tableItem(name, cost)}
                        </View>
                    )
                 })}
@@ -39,9 +42,10 @@ const BillingCaseProcedure = ({procedure,physicians, formatAmount}) =>{
                 </View>
                 
                 {equipments.map((equipment, index)=>{
+                    const { name, amount, unitPrice} = equipment
                     return(
                         <View key={index}>
-                            {tableItem(equipment.item,totalPrice(equipment.quantity,equipment.unitPrice))}
+                            {tableItem(name,totalPrice(amount,unitPrice))}
                         </View>
                     )   
                 })}
@@ -51,10 +55,11 @@ const BillingCaseProcedure = ({procedure,physicians, formatAmount}) =>{
                     <Text style={styles.procedureItemTitle}>CONSUMABLES</Text>
                 </View>
                 
-                {consumables.map((consumable, index)=>{
+                {inventories.map((inventory, index)=>{
+                    const { name, amount, unitPrice} = inventory
                     return(
                         <View key={index}>
-                            {tableItem(consumable.item, totalPrice(consumable.quantity,consumable.unitPrice))}
+                            {tableItem(name, totalPrice(amount,unitPrice))}
                         </View>
                     ) 
                 })}

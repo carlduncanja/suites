@@ -10,6 +10,7 @@ import { CaseFileContext } from '../../../../contexts/CaseFileContext';
 import { withModal } from 'react-native-modalfy';
 import moment from 'moment';
 
+import { formatDate, currencyFormatter } from '../../../../utils/formatter';
 
 const Invoices = ({tabDetails, modal}) => {
     const [checkBoxList, setCheckBoxList] = useState([])
@@ -22,11 +23,11 @@ const Invoices = ({tabDetails, modal}) => {
         },
         {
             name :"Status",
-            alignment : "flex-start"
+            alignment : "center"
         },
         {
             name :"Date",
-            alignment : "flex-start"
+            alignment : "center"
         },
         {
             name :"Value",
@@ -44,31 +45,32 @@ const Invoices = ({tabDetails, modal}) => {
     }
 
     const listItem = (item) => {
-        const reportId = item.invoiceNumber
-        const reportExpenses = item.reportDetails.reportExpenses
-        const billingDetails = item.reportDetails.billingDetails
-        let date = moment(billingDetails.reportDate).format("DD/MM/YYYY")
+        // const reportId = item.invoiceNumber
+        // const reportExpenses = item.reportDetails.reportExpenses
+        // const billingDetails = item.reportDetails.billingDetails
+        // let date = moment(billingDetails.reportDate).format("DD/MM/YYYY")
 
-        const reportList = [...reportExpenses.physicians,...reportExpenses.procedures,...reportExpenses.labWork]
-        const reportTable = [...reportExpenses.consumables, ...reportExpenses.equipments]
-        const tax = reportExpenses.tax
-        const discountPercent = reportExpenses.discount
+        // const reportList = [...reportExpenses.physicians,...reportExpenses.procedures,...reportExpenses.labWork]
+        // const reportTable = [...reportExpenses.consumables, ...reportExpenses.equipments]
+        // const tax = reportExpenses.tax
+        // const discountPercent = reportExpenses.discount
 
-        let subTotal = 0
-        let taxValue = `${tax * 100}%`
+        // let subTotal = 0
+        // let taxValue = `${tax * 100}%`
 
-        reportList.forEach(item => subTotal+= item.cost)
-        reportTable.forEach(item => subTotal += (item.unitPrice * item.quantity))
+        // reportList.forEach(item => subTotal+= item.cost)
+        // reportTable.forEach(item => subTotal += (item.unitPrice * item.quantity))
         
-        let {discount, total} = calcBillingValues(subTotal, tax, discountPercent)
+        // let {discount, total} = calcBillingValues(subTotal, tax, discountPercent)
 
-        const billingSummary = {
-            subtotal:subTotal,
-            tax : taxValue,
-            discount : discount,
-            total :total
-        }
+        // const billingSummary = {
+        //     subtotal:subTotal,
+        //     tax : taxValue,
+        //     discount : discount,
+        //     total :total
+        // }
         
+        const { invoiceNumber = "", status = "", value = 0, date = "" } = item
 
         return (
             <View style={styles.container}>
@@ -77,16 +79,16 @@ const Invoices = ({tabDetails, modal}) => {
                 </TouchableOpacity>
                 <View style={styles.dataContainer}>
                     <View style={styles.item}>
-                        <Text style={[styles.itemText]}>{item.invoiceNumber}</Text>
+                        <Text style={[styles.itemText,{color:'#3182CE'}]}>{invoiceNumber}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-start'}]}>
-                        <Text style={[styles.itemText,{color: item.status === 'Complete' ? "#319795" : "#DD6B20"}]}>{item.status}</Text>
+                        <Text style={[styles.itemText,{color: item.status === 'Complete' ? "#319795" : "#DD6B20"}]}>{status}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-start'}]}>
-                        <Text style={styles.itemText}>{date}</Text>
+                        <Text style={styles.itemText}>{formatDate(date,'DD/MM/YYYY') }</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'center'}]}>
-                        <Text style={styles.itemText}>{formatAmount(total)}</Text>
+                        <Text style={styles.itemText}>{`$ ${currencyFormatter(value)}`}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-end', marginRight:10}]}>
                         <TouchableOpacity
@@ -114,48 +116,6 @@ const Invoices = ({tabDetails, modal}) => {
             </View>
         )
     }
-
-    // const headerItem = () => {
-    //     return (
-    //         <View style={styles.headersContainer}>
-    //             <View style={{marginRight:20}}>
-    //                 {checkBoxList.length > 0 ? <PartialCheckbox/> : <Checkbox/>}
-    //             </View>
-            
-    //             <View style={styles.headerItem}>
-    //                 <Text style={styles.headerText}>Invoice Number</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'flex-start'}]}>
-    //                 <Text style={styles.headerText}>Status</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'flex-start'}]}>
-    //                 <Text style={styles.headerText}>Date</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'center'}]}>
-    //                 <Text style={styles.headerText}>Value</Text>
-    //             </View>
-    //             <View style={[styles.headerItem,{alignItems:'flex-end'}]}>
-    //                 <Text style={styles.headerText}>Actions</Text>
-    //             </View>
-    //         </View>
-    //     )}
-    // const [state, dispatch] = useContext(SuitesContext)
-    // const setListTabData = (list,headers) => {
-    //     dispatch({
-    //         type: appActions.SETSLIDEOVERLAYLIST,
-    //         newState : {
-    //             slideOverlayList : list,
-    //             slideOverlayListHeaders : headers
-    //         }
-    //     })
-    //     return true
-    // }
-
-    // useEffect(()=>{
-    //     const headers = ["Invoice Number", "Status", "Date", "Value", "Actions"]
-    //     const list = getReportList(state.slideOverlay.slideOverlayTabInfo, headers)
-    //     setListTabData(list,headers)
-    // },[state.slideOverlay.slideOverlayTabInfo])
     
     const toggleCheckbox = (item) =>{
         let checkedList = useCheckBox(item,checkBoxList)

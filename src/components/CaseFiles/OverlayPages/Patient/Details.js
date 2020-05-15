@@ -86,9 +86,9 @@ const Details = ({tabDetails, modal}) => {
 
         let age = calcAge(dob)
         let dateOfBirth = `${formatDate(dob,"D/MM/YYYY")} (${age})`
-        let kmWeight = weight/2.205 || 0
-        let metreHeight = Math.pow((height/3.281),2) || 0
-        let bmi = Math.ceil(kmWeight/metreHeight) || 0
+        let metreHeight = Math.pow((height/100),2) || 0
+        let bmiMeasure = Math.ceil(weight/metreHeight) || 0
+        let bmi = bmiMeasure > 100 ? 100 : bmiMeasure
 
         return(
             <View style={{}}>

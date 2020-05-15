@@ -4,6 +4,11 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
 import { currencyFormatter } from '../../../../utils/formatter';
+import CaseFiles from '../../../../../data/CaseFiles';
+
+const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices
+const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
+const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
 const ChargeSheet = ({chargeSheets = [], selectedTab}) => {
 
@@ -13,9 +18,28 @@ const ChargeSheet = ({chargeSheets = [], selectedTab}) => {
     let allEquipments = []
 
     chargeSheets.map( item => {
-       const {inventories, equipments} = item
-        allInventories = [...allInventories,...inventories.map( inventory => {return {...inventory, name : inventory.inventory}})]
-        allEquipments = [...allEquipments,...equipments.map( equipment => {return {...equipment, name : equipment.equipment}})]
+       const {inventories = {}, equipments = {} } = item
+        allInventories = [...allInventories,...inventories.map( item => {
+            const { inventory } = item
+            const { name = "", unitPrice = 0} = inventory
+            return {
+                ...item, 
+                name,
+                unitPrice,
+                type : 'Anaesthesia'
+            }}
+        )]
+        allEquipments = [...allEquipments,...equipments.map( item => {
+            const {equipment} = item
+            const { type = {} } = equipment
+            const { name = "", unitPrice = 0} = equipment
+            return {
+                ...item, 
+                type : type.name || "",
+                name,
+                unitPrice : type.unitPrice || 0
+            }}
+        )]
     })
 
     const quotation = []
@@ -45,13 +69,13 @@ const ChargeSheet = ({chargeSheets = [], selectedTab}) => {
             <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.name}</Text>
         </View>
         <View style={[styles.item,{alignItems:'center'}]}>
-            <Text style={styles.itemText}>Type</Text>
+            <Text style={styles.itemText}>{item.type}</Text>
         </View>
         <View style={[styles.item,{alignItems:'center'}]}>
             <Text style={styles.itemText}>{item.amount}</Text>
         </View>
         <View style={[styles.item,{alignItems:'flex-end'}]}>
-            <Text style={styles.itemText}>{currencyFormatter(2000.00)}</Text>
+            <Text style={styles.itemText}>{`$ ${currencyFormatter(item.unitPrice)}`}</Text>
         </View>
             
     </>
@@ -72,13 +96,13 @@ const ChargeSheet = ({chargeSheets = [], selectedTab}) => {
                 />
                 :
                 selectedTab === 'Invoices' ?
-                    <Invoices tabDetails = {invoices}/>
+                    <Invoices tabDetails = {invoiceTestData}/>
                     :
                     selectedTab === 'Quotation' ?
-                        <Quotation tabDetails = {quotation}/>
+                        <Quotation tabDetails = {quotationTestData}/>
                         :
-                        // <BillingCaseCard tabDetails = {{}}/>  
-                        <View/>      
+                        <BillingCaseCard tabDetails = {billingTestData}/>  
+                        // <View/>      
     );
 }
  

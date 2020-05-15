@@ -26,7 +26,7 @@ import { getCaseFileById } from "../../api/network";
 
 
 const CaseFileBottomSheet = ({caseItem}) =>{
-
+    
     const overlayMenu = [
         {
             name:"Patient",
@@ -64,7 +64,7 @@ const CaseFileBottomSheet = ({caseItem}) =>{
     const initialCurrentTabs = overlayMenu[0].overlayTabs
     const intialSelectedTab = initialCurrentTabs[0] 
 
-    const {_id, patient } = caseItem
+    const {_id, patient, caseNumber } = caseItem
     patient ? name = `${patient.firstName} ${patient.surName}` : name = ""
     
     // ############### Staate
@@ -176,14 +176,14 @@ const CaseFileBottomSheet = ({caseItem}) =>{
                     :
                     <>
                         <SlideOverlay
-                            overlayId = {_id}
+                            overlayId = {caseNumber}
                             overlayTitle = {name}
                             onTabPressChange = {handleTabPressChange}
                             currentTabs = {currentTabs}
                             selectedTab = {selectedTab}
                             isEditMode = {isEditMode}
                             overlayContent = {
-                                <View style={{flex:1, padding:15}}>
+                                <View style={{flex:1, padding:25, paddingTop:30}}>
                                     {getOverlayContent()}
                                 </View>
                             }
