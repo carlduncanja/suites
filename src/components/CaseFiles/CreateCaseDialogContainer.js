@@ -32,7 +32,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
 
     const wizard = [
         {
-            step : 
+            step :
                 {
                     name :'Patient',
                     selectedIcon : <PatientIcon fillColor = {'#0CB0E7'} strokeColor = {'#64D8FF'}/>,
@@ -42,7 +42,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
             tabs : ['Details', 'Contact', 'Address', 'Insurance Coverage']
         },
         {
-            step : 
+            step :
                 {
                     name :'Medical Team',
                     selectedIcon : <MedicalIcon fillColor = {'#E53E3E'}/>,
@@ -52,7 +52,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
             tabs : ['Assignment 1', 'Assignment 2']
         },
         {
-            step : 
+            step :
                 {
                     name :'Procedures',
                     selectedIcon : <ProcedureIcon fillColor = {'#319795'} strokeColor={'#81E6D9'}/>,
@@ -61,7 +61,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
                 },
             tabs : ['Procedure 1', 'Procedure 2']
         }
-    ] 
+    ]
     const steps = [...wizard.map( step => step.step )]
 
     // ########### STATE
@@ -70,7 +70,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
 
     const [positiveText, setPositiveText] = useState("NEXT")
     const [popoverList, setPopoverList] = useState([
-       
+
     ])
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(0)
@@ -81,7 +81,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
 
     const [completedSteps, setCompletedSteps] = useState([])
     const [completedTabs, setCompletedTabs] = useState([])
-    
+
     // ########### EVENT HANDLERS
 
     const onFieldChange = (fieldName) => (value) => {
@@ -89,14 +89,14 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
     }
 
     const handleStepPress = (name) => {
-        
+
         if (completedSteps.includes(name)){
 
             let updatedSteps = [...completedSteps]
 
             const selectedIndex = updatedSteps.findIndex( step => step === name)
             const stepsIndex = steps.findIndex( step => step.name === name)
-            
+
             const stepObj = wizard.filter( item => item.step.name === name)
             const stepTabs = stepObj[0].tabs
             updatedSteps = updatedSteps.slice(0,selectedIndex)
@@ -104,7 +104,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
             if (stepsIndex !== steps.length-1){
                 setPositiveText('NEXT')
             }
-           
+
             setSelectedIndex(stepsIndex)
             setSelectedStep(name)
             setCompletedSteps(updatedSteps)
@@ -115,7 +115,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
     }
 
     const handleTabPress = (name) => {
-        
+
         if (completedTabs.includes(name)){
             let newTabs = [...tabs]
             if(selectedIndex === 1){
@@ -167,13 +167,13 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
     }
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
-        
+
         if(!popoverItem){
             let updatedPopovers = popoverList.map( item => {return {
                 ...item,
                 status : false
             }})
-            
+
             setPopoverList(updatedPopovers)
         }else{
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
@@ -182,23 +182,23 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
-            ]; 
+            ];
             setPopoverList(updatedPopovers)
         }
-    
+
     }
 
 
     const getTabContent = () =>{
-    
+
         switch (selectedIndex) {
             case 0:
-                return <PatientStep 
+                return <PatientStep
                     selectedTabIndex = {selectedTabIndex}
                     onFieldChange = {onFieldChange}
                     fields = {fields}
                 />
-            
+
             case 1:
                 return <StaffStep
                     selectedTabIndex = {selectedTabIndex}
@@ -206,7 +206,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
                     fields = {fields}
                     tabs = {tabs}
                 />
-            
+
             case 2:
                 return <ProcedureStep
                     selectedTabIndex = {selectedTabIndex}
@@ -221,6 +221,10 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
             default:
                 break;
         }
+    }
+
+    const getTabsProgress = () => {
+        return (selectedTabIndex+1)/tabs.length * 100
     }
 
     return (
@@ -238,14 +242,15 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
                     handleStepPress = {handleStepPress}
                     selectedIndex = {selectedIndex}
                     completedSteps = {completedSteps}
+                    currentProgress = {getTabsProgress()}
                 />
-                
+
                 <DialogTabs
                     tabs = {tabs}
                     tab = {selectedTabIndex}
                     onTabPress = {handleTabPress}
                 />
-                
+
                 {getTabContent()}
 
             </View>

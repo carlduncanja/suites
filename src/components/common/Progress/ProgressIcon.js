@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 const ProgressIcon = ({icon, state}) => {
 
     let containerStyle = {};
-    if (state === 'inActive') containerStyle = styles.inActive;
+    if (state === 'inactive') containerStyle = styles.inActive;
     else if (state === 'active') containerStyle = styles.active;
-    else if (state === 'completed')  containerStyle = styles.active;
+    else if (state === 'completed')  containerStyle = styles.completed;
 
     return (
         <View style={[

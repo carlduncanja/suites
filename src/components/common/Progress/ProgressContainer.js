@@ -1,68 +1,44 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ProgressViewIOS} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import ProgressIcon from './ProgressIcon';
-import ProgressBar from './ProgressBar';
-import {transformToCamel} from '../../../hooks/useTextEditHook'
-import {CaseFileContext} from '../../../contexts/CaseFileContext';
-import {caseActions} from '../../../redux/reducers/caseFilesReducer'
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {handleNewItemProgressBar} from '../../../helpers/caseFilesHelpers';
 import Complete from '../../../../assets/svg/stepComplete';
 
 
-const ProgressContainer = ({steps, handleStepPress, selectedIndex, completedSteps}) => {
-
-    const [state, dispatch] = useContext(CaseFileContext)
-    const itemSteps = state.newItemAction.itemSteps
-    const [progressWidth, setProgressWidth] = useState(0)
-
-    const getProgressWidth = (width) => {
-        setProgressWidth(width)
-    }
-
-
-    // getNumber = (step) =>{
-    //     const stepObj = state.progressBar.progressList.filter(item => item.step === step)
-    //     return stepObj[0].progress
-    // }
+const ProgressContainer = ({steps, handleStepPress, selectedIndex, completedSteps, currentProgress}) => {
 
     const getCompleteBar = (step) => {
         return completedSteps.includes(step)
     }
 
-    const endBars = progressWidth / 6
+    const getIconState = (index) => {
+        // if the index is the current index
+        // then the return `currentProgress`
+        if (index === selectedIndex) return 'active';
+        // if the selectedIndex is greater then assume the progress in 100
+        else if (index < selectedIndex) return 'completed';
+        // assume we have no progress.
+        else return 'inactive';
+    }
 
-    // const handleItemStepPress = (index) =>{
-    //     let newCompletedList = state.newItemAction.stepsCompletedList.slice(0,index)
-    //     const updatedList = handleNewItemProgressBar(index,state.progressBar.progressList)
-    //     //console.log("Overlay: ", state.newItemAction.overlayComplete)
-    //     dispatch({
-    //         type: caseActions.HANDLESTEPITEMPRESS,
-    //         newState : {
-    //             selectedStep : index,
-    //             selectedTab: 0,
-    //             stepsCompletedList : newCompletedList,
-    //             currentStepTabs : state.newItemAction.itemSteps[index].tabs,
-    //             overlayComplete: false
-    //         }
-    //     })
-    //     dispatch({
-    //         type : caseActions.UPDATEPROGRESSBARLIST,
-    //         newState : {
-    //             progressList : updatedList
-    //         }
-    //     })
-    // }
+    const getProgressForIndex = (index) => {
+        // if the index is the current index
+        // then the return `currentProgress`
+        if (index === selectedIndex) return currentProgress;
+        // if the selectedIndex is greater then assume the progress in 100
+        else if (index < selectedIndex) return 100;
+        // assume we have no progress.
+        else return 0;
+    };
 
     return (
         <View
             style={styles.container}
-            onLayout={(event) => getProgressWidth(event.nativeEvent.layout.width)}
         >
-            {/* PROGRESS */}
+            {/* PROGRESS BAR */}
             <View style={{
                 flex: 1,
-                marginTop: 20
+                marginTop: 24
             }}>
                 <ProgressView progress={100} progressTint={"#0CB0E7"}/>
             </View>
@@ -80,6 +56,7 @@ const ProgressContainer = ({steps, handleStepPress, selectedIndex, completedStep
                                     <Text
                                         style={{
                                             marginBottom: 10,
+                                            alignSelf: "center",
                                             color: selectedIndex === index ? '#3182CE' : '#A0AEC0'
                                         }}
                                     >
@@ -87,7 +64,7 @@ const ProgressContainer = ({steps, handleStepPress, selectedIndex, completedStep
                                     </Text>
 
                                     <ProgressIcon
-                                        state={'inactive'}
+                                        state={getIconState(index)}
                                         icon={
                                             getCompleteBar(step.name) === true ?
                                                 <Complete/>
@@ -101,18 +78,18 @@ const ProgressContainer = ({steps, handleStepPress, selectedIndex, completedStep
                                 </TouchableOpacity>
 
                                 {
-                                    // Intermediary Progress Bar
+                                    //  INTERMEDIARY PROGRESS BAR
                                     (index < steps.length - 1) && // dont show bar after last step
                                     <View style={{
                                         width: 56,
                                         height: 4,
-                                        marginTop: 20,
+                                        marginTop: 24,
                                         alignSelf: "center"
                                     }}>
-                                        <ProgressView progress={50} progressTint={'#0CB0E7'}/>
+                                        <ProgressView progress={getProgressForIndex(index)} progressTint={'#0CB0E7'}/>
                                     </View>
-
                                 }
+
                             </View>
                         )
                     })
@@ -120,12 +97,12 @@ const ProgressContainer = ({steps, handleStepPress, selectedIndex, completedStep
 
             </>
 
-            {/* PROGRESS */}
+            {/* PROGRESS BAR */}
             <View style={{
                 flex: 1,
-                marginTop: 20,
+                marginTop: 24
             }}>
-                <ProgressView progress={0} progressTint={"#0CB0E7"}/>
+                <ProgressView progress={getProgressForIndex(steps.length-1)} progressTint={"#0CB0E7"}/>
             </View>
 
         </View>
