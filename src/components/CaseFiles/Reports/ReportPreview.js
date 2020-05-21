@@ -7,6 +7,7 @@ import BillingSummary from './BillingSummary';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import {caseActions} from '../../../redux/reducers/caseFilesReducer'
 import { formatAmount } from '../../../helpers/caseFilesHelpers';
+import { currencyFormatter } from '../../../utils/formatter';
 
 const Rectangle = () =>{
     return(
@@ -21,7 +22,24 @@ const Rectangle = () =>{
     )
 }
 
-const ReportPreview = () => {
+const ReportPreview = ({type = "", details = {}}) => {
+
+    const { billing = {}, billedItems = {}} = details
+    const {
+        billedTo = {}, 
+        billedFor = "", 
+        date = "", 
+        charges = {}, 
+        invoiceNumber = type = "Invoice" ? invoiceNumber : "",
+        purchaseOrderNumber = type = "Invoice" ? purchaseOrderNumber : ""
+    } = billing
+    const { physicians = [], procedures = [], equipment = [], inventories = [] } = billedItems 
+    const { discount = 0, subTotal = 0, tax = 0 } = charges
+
+    const reportList = [...physicians,...procedures]
+    const reportTable = [...inventories]
+
+    const total = (subTotal - discount) * (1+tax)
 
     const headers = [
             {
@@ -42,27 +60,22 @@ const ReportPreview = () => {
             }
     ]
 
-    const [state, dispatch] = useContext(CaseFileContext)
-
-    const report = state.report
-    const billingDetails = report.billingDetails
-    const billingSummary = report.billingSummary
     
     const listItemFormat = (item) =>{
-        const total = item.unitPrice * item.quantity
+        const total = item.unitPrice * item.amount
         return (
             <View style={{marginBottom:10, flexDirection:'row', justifyContent:'space-between'}}>
                 <View style={[styles.textContainer,{alignItems:"flex-start"}]}>
-                    <Text style={[styles.text,{}]}>{item.itemName}</Text>
+                    <Text style={[styles.text,{}]}>{item.name}</Text>
                 </View>
                 <View style={[styles.textContainer,{alignItems:"flex-start"}]}>
-                    <Text style={[styles.text,{}]}>{item.quantity}</Text>
+                    <Text style={[styles.text,{}]}>{item.amount}</Text>
                 </View>
                 <View style={[styles.textContainer,{alignItems:"center"}]}>
-                    <Text style={[styles.text,{}]}>{formatAmount(item.unitPrice)}</Text>
+                    <Text style={[styles.text,{}]}>$ {currencyFormatter(item.unitPrice)}</Text>
                 </View>
                 <View style={[styles.textContainer,{alignItems:"flex-end"}]}>
-                    <Text style={[styles.text,{}]}>{formatAmount(total)}</Text>
+                    <Text style={[styles.text,{}]}>$ {currencyFormatter(total)}</Text>
                 </View>
             </View>
         )
@@ -72,24 +85,26 @@ const ReportPreview = () => {
         <View style={{flex:1, backgroundColor:'#FFFFFF'}}>
 
             <ReportHeader/>
-
+ 
             <View style={{padding:25}}>
 
                 <ReportHeaderSummary
-                    billedTo = {billingDetails.billedTo}
-                    billedFor = {billingDetails.billedFor}
-                    reportDate = {billingDetails.reportDate}
-                    invoiceNo = {report.reportId}
-                    purchaseOrderNo = {billingDetails.purchaseOrderNo}
+                    billedTo = {billedTo}
+                    billedFor = {billedFor}
+                    total = {total}
+                    type = {"Quotation"}
+                    reportDate = {date}
+                    invoiceNo = {invoiceNumber}
+                    purchaseOrderNo = {purchaseOrderNumber}
                 />
 
                 {Rectangle()}
-
+            
                 <ReportDetails
-                    reportList = {report.reportList}
-                    reportTable = {report.reportTable}
+                    reportList = {reportList}
+                    reportTable = {reportTable}
                     listItemFormat = {listItemFormat}
-                    tableHeaders = {headers}
+                    headers = {headers}
                 />
 
                 {Rectangle()}
@@ -97,12 +112,12 @@ const ReportPreview = () => {
 
             <View style={{width:250, alignSelf:'flex-end'}}>
                 <BillingSummary
-                    subtotal = {formatAmount(billingSummary.subtotal)}
-                    discount = {formatAmount(billingSummary.discount)}
-                    tax = {billingSummary.tax}
-                    total = {formatAmount(billingSummary.total)}
+                    subtotal = {subTotal}
+                    discount = {discount}
+                    tax = {tax}
+                    total = {total}
                 />
-            </View>
+            </View> 
 
         </View>
     );

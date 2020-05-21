@@ -1,5 +1,5 @@
 import React,{ useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
@@ -21,7 +21,7 @@ import {useModal} from "react-native-modalfy";
  * Component to handle the create storage process.
  *
  * @param onCancel
- * @param onCreated
+ * @param onCreated 
  * @returns {*}
  * @constructor
  */
@@ -89,6 +89,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
     // ########### EVENT HANDLERS
 
     const onFieldChange = (fieldName) => (value) => {
+        console.log("Fields: ", fieldName, value)
         setFields({
             ...fields,
             [fieldName]: value
@@ -143,7 +144,9 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
 
     const onPositiveButtonPress = () =>{
         if (selectedIndex === 3){
+            setTimeout(() => {onCreated({})}, 200);
             console.log("Hey Save my data and open bottom sheet with the data")
+
         }else if (selectedTabIndex !== tabs.length -1){
             const updatedTabIndex = selectedTabIndex + 1
 
@@ -156,6 +159,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
             setSelectedIndex(3)
             setSelectedTabIndex(0)
             setTabs(["Julie Brown's Case Created"])
+
         }else{
             const updatedIndex = selectedIndex + 1
             setCompletedSteps([...completedSteps,steps[selectedIndex].name])
@@ -241,7 +245,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
-            handlePopovers = {handlePopovers}
+            // handlePopovers = {handlePopovers}
         >
             <View style = {styles.container}>
                 <ProgressContainer
@@ -258,7 +262,13 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
                     onTabPress = {handleTabPress}
                 />
 
-                {getTabContent()}
+                <TouchableOpacity
+                    onPress = {()=>handlePopovers(false)()}
+                    activeOpacity = {1}
+                >
+                    {getTabContent()}
+                </TouchableOpacity>
+                
 
             </View>
         </OverlayDialog>

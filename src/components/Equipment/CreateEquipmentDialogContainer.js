@@ -1,5 +1,5 @@
 import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import EquipmentDialogDetailsTab from './EquipmentDialogDetailsTab';
@@ -141,7 +141,7 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
-            handlePopovers = {handlePopovers}
+            // handlePopovers = {handlePopovers}
 
         >
             <View style = {styles.container}>
@@ -149,9 +149,15 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
                     tabs = {dialogTabs}
                     tab = {selectedIndex}
                 />
+                <TouchableOpacity
+                    activeOpacity = {1}
+                    onPress = {()=>handlePopovers(false)()}
+                >
                     {
                         getDialogContent(dialogTabs[selectedIndex])
                     }
+                </TouchableOpacity>
+                    
             </View>
         </OverlayDialog>
     )

@@ -3,16 +3,28 @@ import { View, Text, StyleSheet } from "react-native";
 import Assignment from "./Assignment";
 
 
-const StaffStep = ({tabs, selectedTabIndex, onFieldChange, fields}) => {
+const StaffStep = ({tabs, selectedTabIndex}) => {
     // const [fields, setFields] = useState({
     //     firstName: "",
     //     middleName: "",
     // })
+    const [fields, setFields] = useState({
+        physicians : [],
+        nurses : []
+    })
+
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName] : value
+        })
+    }
     const data = tabs.map( (tab,index) => {
         return {
             name : tab,
             index,
             view : <Assignment
+                index = {index}
                 onFieldChange = {onFieldChange}
                 fields = {fields}
             />

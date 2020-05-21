@@ -1,9 +1,25 @@
 import React,{useContext} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FrameItem from '../../common/Frames/FrameItems/FrameItem';
 import RiskIcon from '../../../../assets/svg/riskLevel';
+import TextEditor from '../../common/Input Fields/TextEditor';
 
 const RiskLevel = (props) => {
+    const {
+        titleBackground = "#EBF8FF",
+        borderColor="#90CDF4",
+        levelColor="#4299E1",
+        cardColor="#3182CE", 
+        riskLevel='low',
+        itemContent = [],
+        isEditMode = false,
+        fields = {},
+        onFieldChange = ()=>{},
+        onRiskChange = () =>{}
+    } = props
+
+    // console.log("Fields: ", fields.risks)
+
     const levels = [
         {
             "level":"low",
@@ -22,6 +38,7 @@ const RiskLevel = (props) => {
             "name":"Very High",
         },
     ]
+
     const Level = (name,backgroundColor,textColor) => {
         return(
             <View style={[styles.level,{backgroundColor:backgroundColor}]}>
@@ -32,23 +49,29 @@ const RiskLevel = (props) => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.titleContainer,{backgroundColor:props.titleBackground, borderColor:props.borderColor, borderWidth:1}]}>
-                <RiskIcon fillColor={props.levelColor}/>
-                <Text style={{color:props.cardColor, marginLeft:5}}>Risk Level</Text>
+
+            <View style={[styles.titleContainer,{backgroundColor:titleBackground, borderColor:borderColor, borderWidth:1}]}>
+                <RiskIcon fillColor={levelColor}/>
+                <Text style={{color:cardColor, marginLeft:5}}>Risk Level</Text>
             </View>
+            
             <View style={styles.contentContainer}>
                 <View style={styles.levelsContainer}>
                     {
                         levels.map((level,index)=>{
                             return(
-                                level.level === props.riskLevel ?
-                                    <View key = {index} style={{flex:1, borderWidth:0}}>
-                                        {Level(level.name, props.levelColor,"#FFFFFF")}
-                                    </View>
-                                    :
-                                    <View key={index} style={{flex:1}}>
-                                        {Level(level.name, "#FFFFFF", "#4E5664")}
-                                    </View>
+                                <TouchableOpacity
+                                    activeOpacity = {1}
+                                    key = {index}
+                                    style = {{flex:1, borderWidth : level.level === riskLevel && 0 }}
+                                    onPress = {()=>{onRiskChange(level.level)}}
+                                >
+                                    {Level(
+                                        level.name,
+                                        level.level === riskLevel ? levelColor : "#FFFFFF",
+                                        level.level === riskLevel ? "#FFFFFF" : "#4E5664"
+                                    )}
+                                </TouchableOpacity>
                             )
 
                         })
@@ -67,9 +90,16 @@ const RiskLevel = (props) => {
                     <View style={styles.notesTitleContainer}>
                         <Text style={styles.notesTitle}>Note</Text>
                     </View>
-                    <View>
-                        <FrameItem itemContent={props.itemContent}/>
-                    </View>
+                    {
+                        isEditMode ?
+                            <TextEditor
+                                onFieldChange = {onFieldChange}
+                            />
+                            :
+                            <View>
+                                <FrameItem itemContent={itemContent}/>
+                            </View>
+                    }
                 </View>
             </View>
 

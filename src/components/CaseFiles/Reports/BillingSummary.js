@@ -1,23 +1,25 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { currencyFormatter } from "../../../utils/formatter";
 
 const BillingDetails = ({subtotal, discount, tax, total}) =>{
+    
     const billingDetails = [
         {
             name: "Subtotal",
-            value : subtotal
+            value : `$ ${currencyFormatter(subtotal)}`
         },
         {
             name: "Discount",
-            value : discount
+            value : `-$ ${currencyFormatter(discount)}`
         },
         {
             name: "Tax",
-            value : tax
+            value : tax*100
         },
         {
             name: "Total",
-            value : total
+            value : `$ ${currencyFormatter(total)}`
         }
     ] 
     return(
@@ -43,6 +45,8 @@ const BillingDetails = ({subtotal, discount, tax, total}) =>{
 export default BillingDetails
 
 const styles = StyleSheet.create({
-
+    container:{
+        marginRight:20
+    }
 })
 

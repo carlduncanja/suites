@@ -6,50 +6,47 @@ import PatientAddressTab from "./PatientAddressTab";
 import PatientInsuranceTab from "./PatientInsuranceTab";
 
 
-const PatientStep = ({selectedTabIndex}) => {
+const PatientStep = ({selectedTabIndex, onFieldChange, fields}) => {
 
-    const [fields, setFields] = useState({
+    const [patientFields, setFields] = useState({
         firstName: "",
         middleName: "",
         surname: "",
         trn: "",
-        minor:'No',
-        phones : [],
-        emails : [],
-        emergencyContact: [],
+        minor:'No', 
+        contactInfo : {},
         address:[],
         insurance:{}
     })
 
-    const onFieldChange = (fieldName) => (value) => {
-        console.log("Value:", value)
-        setFields({
-            ...fields,
-            [fieldName]: value
-        })
+    const onPatientFieldChange = (fieldName) => (value) => {
+        // console.log("Value:", value)
+        const updatedFields = {...patientFields, [fieldName]: value}
+        setFields(updatedFields)
+        onFieldChange('patient')(updatedFields)
     }
 
     const getTab = () => {
         switch (selectedTabIndex) {
             case 0: 
                 return <PatientDetailsTab
-                    onFieldChange = {onFieldChange}
-                    fields = {fields}
+                    onFieldChange = {onPatientFieldChange}
+                    fields = {patientFields}
                 />
             case 1:
                 return <PatientContactTab
-                    onFieldChange = {onFieldChange}
-                    fields = {fields}
+                    onFieldChange = {onPatientFieldChange}
+                    fields = {patientFields}
                 />    
             case 2:
                 return <PatientAddressTab
-                    onFieldChange = {onFieldChange}
-                    fields = {fields}
+                    onFieldChange = {onPatientFieldChange}
+                    fields = {patientFields}
                 />
             case 3:
                 return <PatientInsuranceTab
-                    onFieldChange = {onFieldChange}
-                    fields = {fields}
+                    onFieldChange = {onPatientFieldChange}
+                    fields = {patientFields}
                 />
             default:
                 break;

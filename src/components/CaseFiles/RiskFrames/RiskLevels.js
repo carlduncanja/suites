@@ -2,22 +2,26 @@ import React,{useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import RiskLevel from './RiskLevel';
 
-export function Low({level, notes}) {
+export function Low({level, notes, isEditMode, fields, onFieldChange, onRiskChange}) { 
     return(
         <View>
             <RiskLevel
                 titleBackground="#EBF8FF"
                 borderColor="#90CDF4"
                 levelColor="#4299E1"
-                cardColor="#3182CE"
+                cardColor="#3182CE" 
                 riskLevel={level}
                 itemContent = {notes}
+                isEditMode = {isEditMode}
+                fields = {fields}
+                onFieldChange = {onFieldChange}
+                onRiskChange = {onRiskChange}
             />
         </View>
     )
 }
 
-export function Moderate({level, notes}) {
+export function Moderate({level, notes, isEditMode, fields, onFieldChange, onRiskChange}) {
     return(
         <View>
             <RiskLevel
@@ -27,12 +31,16 @@ export function Moderate({level, notes}) {
                 cardColor="#DD6B20"
                 riskLevel={level}
                 itemContent = {notes}
+                isEditMode = {isEditMode}
+                fields = {fields}
+                onFieldChange = {onFieldChange}
+                onRiskChange = {onRiskChange}
             />
         </View>
     )
 }
 
-export function High({level, notes}) {
+export function High({level, notes, isEditMode, fields, onFieldChange, onRiskChange}) {
     return(
         <View>
             <RiskLevel
@@ -42,12 +50,16 @@ export function High({level, notes}) {
                 cardColor="#E53E3E"
                 riskLevel={level}
                 itemContent = {notes}
+                isEditMode = {isEditMode}
+                fields = {fields}
+                onFieldChange = {onFieldChange}
+                onRiskChange = {onRiskChange}
             />
         </View>
     )
 }
 
-export function VeryHigh({level, notes}) {
+export function VeryHigh({level, notes, isEditMode, fields, onFieldChange,onRiskChange}) {
     return(
         <View>
             <RiskLevel
@@ -57,6 +69,10 @@ export function VeryHigh({level, notes}) {
                 cardColor="#805AD5"
                 riskLevel={level}
                 itemContent = {notes}
+                isEditMode = {isEditMode}
+                fields = {fields}
+                onFieldChange = {onFieldChange}
+                onRiskChange = {onRiskChange}
             />
         </View>
     )

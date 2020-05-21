@@ -1,4 +1,4 @@
-import React, {useReducer, useMemo} from 'react';
+import React, {useReducer, useMemo, useState} from 'react';
 
 import {Provider} from 'react-redux'
 import DefaultReduxState from './src/redux/reducers/initialState'
@@ -12,7 +12,7 @@ import {initialState, SuitesContext} from './src/SuitesContext';
 import {SuitesContextProvider} from './src/contexts/SuitesContext';
 import NavigationStack from './src/components/navigation/NavigationStack';
 import configureStore from "./src/redux/configureStore";
-
+import LoginPage from './src/components/Onboarding/LoginPage'
 
 const store = configureStore({});
 
@@ -39,11 +39,37 @@ const App = () => {
         });
     };
 
+    const [fields, setFields] = useState({
+        email: '',
+        password : ''
+    })
+
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName] : value
+        })
+    }
+
+    const onButtonPress = () => {
+        // console.log("Fields: ", fields)
+    }
+
+    const onGuestButtonPress = () => {
+
+    }
+
 
     return (
         <Provider store={store}>
             <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
                 <SafeAreaView style={styles.container} onLayout={getDimensions}>
+                    {/* <LoginPage 
+                        fields={fields} 
+                        onFieldChange = {onFieldChange} 
+                        onButtonPress = {onButtonPress}
+                        onGuestButtonPress = {onGuestButtonPress}
+                    /> */}
                     <NavigationStack
                         screenDimensions={state.screenDimensions}
                         tabSelected={state.tabSelected.tabSelected}

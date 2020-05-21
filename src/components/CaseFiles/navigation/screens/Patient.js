@@ -1,23 +1,79 @@
-import React,{useContext} from 'react';
+import React,{useContext, useState} from 'react';
 import { View } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
-import { Details, Diagnosis, Insurance, PatientRisk} from '../../OverlayPages/Patient'
+import { Details, Diagnosis, Insurance, PatientRisk, EditablePatientDetails} from '../../OverlayPages/Patient'
 
-const Patient = ({ patient, selectedTab }) => {
-    const { insurance = {} , medicalInfo = {} } = patient
+const Patient = ({ patient, selectedTab, isEditMode }) => {
+    
+    const { 
+        firstName = "",
+        middleName = "",
+        surName = "",
+        trn = "",
+        height = 0,
+        weight = 0,
+        bloodType = "",
+        dob = "",
+        gender = "",
+        ethnicity = "",
+        address = [],
+        contactInfo = {},
+        insurance = {} , 
+        medicalInfo = {} 
+    } = patient
+
     const { diagnosis = [], risks = [] } = medicalInfo
 
-    return ( 
+    const [fields, setFields] = useState({
+        firstName,
+        middleName,
+        surName,
+        trn,
+        height,
+        weight,
+        bloodType,
+        dob,
+        gender,
+        ethnicity,
+        contactInfo,
+        nextVisit : new Date(),
+        address,
+        risks,
+        diagnosis
+    })
+
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName] : value
+        }) 
+    }
+    return (  
         selectedTab === 'Details' ?
-            <Details tabDetails = {patient}/>
+            isEditMode ? 
+                <EditablePatientDetails 
+                    fields = {fields} 
+                    onFieldChange = {onFieldChange}
+                /> 
+                :
+                <Details tabDetails = {patient}/>
             :
             selectedTab === 'Insurance' ?
                 <Insurance tabDetails = {insurance}/>
                 :
                 selectedTab === 'Diagnosis' ?
-                    <Diagnosis tabDetails = {diagnosis}/>
+                    <Diagnosis 
+                        tabDetails = {diagnosis}
+                        fields = {fields}
+                        isEditMode = {isEditMode}
+                    />
                     :
-                    <PatientRisk tabDetails = {risks}/>        
+                    <PatientRisk 
+                        tabDetails = {risks}
+                        isEditMode = {isEditMode}
+                        fields = {fields}
+                        onFieldChange = {onFieldChange}
+                    />        
     );
 }
  

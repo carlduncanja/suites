@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text} from "react-native";
+import {View, StyleSheet, Text, TouchableOpacity} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
@@ -155,7 +155,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={"DONE"}
-            handlePopovers = {handlePopovers}
+            // handlePopovers = {handlePopovers}
         >
 
             <View style={styles.container}>
@@ -163,53 +163,61 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                     tabs={dialogTabs}
                     tab={selectedIndex}
                 />
+                
+                <TouchableOpacity
+                    onPress = {()=>handlePopovers(false)()}
+                    activeOpacity = {1}
+                >
 
-                <View style={styles.sectionContainer}>
-                    <View style={styles.row}>
-                        <View style={styles.inputWrapper}>
-                            <InputField2 label={"Location Name"}
-                                onChangeText={onFieldChange('name')}
-                                value={fields['name']}
-                                onClear={() => onFieldChange('name')('')}
-                            />
+                    <View style={styles.sectionContainer}>
+                        <View style={styles.row}>
+                            <View style={styles.inputWrapper}>
+                                <InputField2 label={"Location Name"}
+                                    onChangeText={onFieldChange('name')}
+                                    value={fields['name']}
+                                    onClear={() => onFieldChange('name')('')}
+                                />
+                            </View>
+
+                            <View style={styles.inputWrapper}>
+                                <InputField2
+                                    label={"Capacity"}
+                                    onChangeText={(value) => {
+                                        if (/^\d+$/g.test(value) || !value) {
+                                            onFieldChange('capacity')(value)
+                                        }
+                                    }}
+                                    value={fields['capacity']}
+                                    keyboardType={'number-pad'}
+                                    onClear={() => onFieldChange('name')('')}
+                                />
+                            </View>
                         </View>
 
-                        <View style={styles.inputWrapper}>
-                            <InputField2
-                                label={"Capacity"}
-                                onChangeText={(value) => {
-                                    if (/^\d+$/g.test(value) || !value) {
-                                        onFieldChange('capacity')(value)
-                                    }
-                                }}
-                                value={fields['capacity']}
-                                keyboardType={'number-pad'}
-                                onClear={() => onFieldChange('name')('')}
-                            />
+                        <View style={styles.row}>
+                            <View style={styles.inputWrapper}>
+                                <SearchableOptionsField
+                                    label={"Assigned"}
+                                    text={theatresSearchValue}
+                                    oneOptionsSelected={(item) => {
+                                        onFieldChange('theatre')(item._id)
+                                    }}
+                                    onChangeText={value => setTheatreSearchValue(value)}
+                                    onClear={() => {
+                                        onFieldChange('theatre')('');
+                                        setTheatreSearchValue('');
+                                    }}
+                                    options={theatreSearchResults}
+                                    handlePopovers = {(value)=>handlePopovers(value)('assigned')}
+                                    isPopoverOpen = {assignedPop[0].status}
+                                />
+                            </View>
+                            {/* <View style={styles.inputWrapper}/> */}
                         </View>
                     </View>
 
-                    <View style={styles.row}>
-                        <View style={styles.inputWrapper}>
-                            <SearchableOptionsField
-                                label={"Assigned"}
-                                text={theatresSearchValue}
-                                oneOptionsSelected={(item) => {
-                                    onFieldChange('theatre')(item._id)
-                                }}
-                                onChangeText={value => setTheatreSearchValue(value)}
-                                onClear={() => {
-                                    onFieldChange('theatre')('');
-                                    setTheatreSearchValue('');
-                                }}
-                                options={theatreSearchResults}
-                                handlePopovers = {(value)=>handlePopovers(value)('assigned')}
-                                isPopoverOpen = {assignedPop[0].status}
-                            />
-                        </View>
-                        {/* <View style={styles.inputWrapper}/> */}
-                    </View>
-                </View>
+                </TouchableOpacity>
+                
             </View>
 
 

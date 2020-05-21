@@ -1,5 +1,5 @@
 import React,{ useState, useEffect} from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import DialogDetailsTab from "./DialogDetailsTab";
@@ -183,7 +183,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
-            handlePopovers = {handlePopovers}
+            // handlePopovers = {handlePopovers}
         >
             <View style = {styles.container}>
                 <DialogTabs
@@ -191,9 +191,15 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                     tab = {tabIndex}
                     onTabPress = { onTabPress }
                 />
+                <TouchableOpacity
+                    onPress = {()=>handlePopovers(false)()}
+                    activeOpacity = {1}
+                >
                     {
                         getDialogContent(dialogTabs[tabIndex])
                     }
+                </TouchableOpacity>
+                    
             </View>
         </OverlayDialog>
     )

@@ -3,35 +3,25 @@ import { View, Text, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import moment from "moment";
-import { formatDate } from '../../../utils/formatter';
+import { formatDate, currencyFormatter } from '../../../utils/formatter';
 
-const ReportHeaderSummary = (props) => {
-
-    const {
-        billedTo,
-        billedFor,
-        reportDate,
-        invoiceNo,
-        purchaseOrderNo
-    } = props
+const ReportHeaderSummary = ({billedTo = {}, billedFor = "", reportDate = "", type = "" , invoiceNo = "", purchaseOrderNo = "", total}) => { 
    
-    // const [state] = useContext(CaseFileContext)
-    // const [appState] = useContext(SuitesContext)
-    // const billingDetails = state.report.reportInformation.billingDetails
-    // const name = appState.overlayMenu.selectedMenuItemTabs[appState.overlayMenu.selectedMenuItemCurrentTab]
+    const { name = "", address = {} } = billedTo
+    const {line1 = "", line2="", line3 = ""} = address
 
     return (  
         <View style={styles.container}>
             <View style={styles.billing}>
                 <Text style={styles.contentHeader}>Billed To</Text>
-                <Text style={styles.text}>{billedTo.name}</Text>
-                <Text style={styles.text}>{billedTo.addressLine1}</Text>
-                <Text style={styles.text}>{billedTo.addressLine2}</Text>
-                <Text style={styles.text}>{billedTo.addressLine3}</Text>
+                <Text style={styles.text}>{name}</Text>
+                <Text style={styles.text}>{line1}</Text>
+                <Text style={styles.text}>{line2}</Text>
+                <Text style={styles.text}>{line3}</Text>
             </View>
             
             <View style={styles.billing}>
-                {billedFor ?
+                {type === 'Quotation' ?
                     <>
                         <Text style={styles.contentHeader}>For</Text>
                         <Text style={styles.text}>{billedFor}</Text>
@@ -59,7 +49,7 @@ const ReportHeaderSummary = (props) => {
                 </>
                 <>
                     <Text style={styles.contentHeader}>Total</Text>
-                    <Text style={styles.text}>{}</Text>
+                    <Text style={styles.text}>$ {currencyFormatter(total)}</Text>
                 </>
             </View>
         </View>

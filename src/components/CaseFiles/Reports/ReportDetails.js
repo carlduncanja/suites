@@ -3,27 +3,28 @@ import { View, Text, StyleSheet } from "react-native";
 import Table from '../../common/Table/Table'
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import { formatAmount } from '../../../helpers/caseFilesHelpers';
+import { currencyFormatter } from '../../../utils/formatter';
 
-const ReportDetails = ({reportList, reportTable, listItemFormat, tableHeaders}) => {
-    const [state] = useContext(CaseFileContext)
+const ReportDetails = ({reportList, reportTable, listItemFormat, headers}) => {
     
-    return (  
+    return (   
         <View style={styles.container}>
             <View style={styles.summaryDetails}>
                 {reportList.map((detail,index) =>{
                     return( 
                         <View style={[styles.summaryItem,{backgroundColor:index % 2 === 0 ? '#F8FAFB':'#FFFFFF'}]} key={index}>
-                            <Text style={styles.detailText}>{detail.charge}</Text>
-                            <Text style={styles.detailText}>{formatAmount(detail.cost)}</Text>
+                            <Text style={styles.detailText}>{detail.name}</Text>
+                            <Text style={styles.detailText}>$ {currencyFormatter(detail.cost)}</Text>
                         </View>
                     )
                 })}
             </View>
             <View style={styles.consumablesDetails}>
                 <Table
+                    isCheckbox = {false}
                     data = {reportTable}
                     listItemFormat = {listItemFormat}
-                    headers = {tableHeaders}
+                    headers = {headers}
                 />
             </View>
         </View>

@@ -45,7 +45,7 @@ const PatientContactTab = ({onFieldChange, fields}) => {
         ]; 
 
         if (/^\d{10}$/g.test(value) || !value){
-            onFieldChange('phones')(updatedPhones)
+            onFieldChange('contactInfo')({...fields['contactInfo'], phones: updatedPhones})
         }
 
         setPhones(updatedPhones)
@@ -62,7 +62,7 @@ const PatientContactTab = ({onFieldChange, fields}) => {
         ]; 
 
         if (isValidEmail(value) || !value){
-            onFieldChange('emails')(updatedEmails)
+            onFieldChange('contactInfo')({...fields['contactInfo'], emails : updatedEmails})
         }
 
         setEmails(updatedEmails)
@@ -74,11 +74,11 @@ const PatientContactTab = ({onFieldChange, fields}) => {
             [type] : value
         }
         if(type === 'email'){
-           (isValidEmail(value) || !value) && onFieldChange('emergencyContact')([updatedEmegency])
+           (isValidEmail(value) || !value) && onFieldChange('contactInfo')({...fields['contactInfo'], emergencyContact:[updatedEmegency]})
         }else if (type === 'phone'){
-            if (/^\d{10}$/g.test(value) || !value) onFieldChange('emergencyContact')([updatedEmegency])
+            if (/^\d{10}$/g.test(value) || !value) onFieldChange('contactInfo')({...fields['contactInfo'], emergencyContact:[updatedEmegency]})
         }else{
-            onFieldChange('emergencyContact')([updatedEmegency])
+            onFieldChange('contactInfo')({...fields['contactInfo'], emergencyContact:[updatedEmegency]})
         }
         setEmergency(updatedEmegency)
         

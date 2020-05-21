@@ -38,7 +38,7 @@ const Consumables = ({tabDetails, headers, listItemFormat}) => {
         //     setCheckBoxList(tabDetails)
     }
 
-    const renderListFn = (item) =>{
+    const renderListFn = (item) =>{ 
         return <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}

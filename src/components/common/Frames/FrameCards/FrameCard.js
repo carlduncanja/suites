@@ -3,30 +3,61 @@ import {View, StyleSheet} from 'react-native';
 import FrameTitle from '../FrameTitle'
 import FrameContentList from '../FrameContents/FrameContentList';
 
-export default class FrameCard extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
+/**
+ * @param frameColor string
+ * @param frameBorderColor string
+ * @param titleBackgroundColor string
+ * @param icon component
+ * @param frameTitle string
+ * @param cardInformation object or array
+ * @param isEditMode  boolean
+ * @param handleEdit function
+ * @param isAddNew boolean
+ * @returns {*}
+ * @constructor
+ */
+
+const FrameCard = (props) => {
+    const {
+        frameColor,
+        frameBorderColor,
+        titleBackgroundColor,
+        icon,
+        frameTitle,
+        cardInformation,
+        isEditMode = false,
+        handleEdit = ()=>{},
+        isAddNew = true,
+        handleAddNew = () =>{}
+    } = props
+
+    return (
+        <View style={styles.container}>
+
                 <View style={styles.title}>
                     <FrameTitle
-                        color={this.props.frameColor}
-                        borderColor = {this.props.frameBorderColor}
-                        backgroundColor={this.props.titleBackgroundColor}
-                        icon={this.props.icon}
-                        // iconFillColor = {this.props.iconFillColor}
-                        frameTitle={this.props.frameTitle}
+                        color={frameColor}
+                        borderColor = {frameBorderColor}
+                        backgroundColor={titleBackgroundColor}
+                        icon={icon}
+                        frameTitle={frameTitle}
                     />
                 </View>
+               
                 <View style={styles.content}>
                     <FrameContentList
-                        cardInformation={this.props.cardInformation}
-                        frameColor = {this.props.frameColor}
+                        cardInformation={cardInformation}
+                        // frameColor = {frameColor}
+                        isEditMode = {isEditMode}
+                        handleEdit = {handleEdit}
+                        handleAddNew = {handleAddNew}
+                        isAddNew = {isAddNew}
                     />
                 </View>
             </View>
-        )
-    }
+    )
 }
+export default FrameCard 
 
 const styles = StyleSheet.create({
     container:{

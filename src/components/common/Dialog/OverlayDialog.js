@@ -19,7 +19,7 @@ function OverlayDialog(props) {
         },
         positiveText = "DONE",
         buttonIcon = <View/>,
-        handlePopovers = () =>{}
+        // handlePopovers = () =>{}
     } = props;
 
 
@@ -44,7 +44,12 @@ function OverlayDialog(props) {
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={()=>{console.log("Touchaed"); handlePopovers(false)()}} activeOpacity={1}>
+            <TouchableOpacity 
+                onPress={()=>{console.log("Touchaed"); 
+                // handlePopovers(false)()
+            }} 
+                activeOpacity={1}
+            >
                 {props.children}
             </TouchableOpacity>
 

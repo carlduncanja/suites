@@ -26,10 +26,11 @@ const Table = (props) => {
         toggleHeaderCheckbox = isCheckbox ? toggleHeaderCheckbox : ()=>{},
         itemSelected = isCheckbox ? itemSelected : [],
        
-    } = props 
+    } = props  
 
     // const toggleHeaderCheckbox = isCheckbox ? toggleHeaderCheckbox : ()=>{};
     // const itemSelected = isCheckbox ? itemSelected : [];
+    
     const isIndeterminate = itemSelected.length > 0 && itemSelected.length !== data.length;
     return ( 
         <>

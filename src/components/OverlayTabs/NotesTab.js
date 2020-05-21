@@ -4,9 +4,8 @@ import FrameCard from '../common/Frames/FrameCards/FrameCard';
 import NotesIcon from '../../../assets/svg/notes';
 import { withModal } from "react-native-modalfy";
 
-const NotesTab = ({modal, notesData}) => {
+const NotesTab = ({notesData}) => {
     // const { notes } = notesData
-
     return (
         <>
             <FrameCard
@@ -21,7 +20,7 @@ const NotesTab = ({modal, notesData}) => {
     )
 }
 
-export default withModal(NotesTab)
+export default NotesTab
 
 const styles = StyleSheet.create({
     

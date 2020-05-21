@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, Switch, Picker, Alert} from "react-native";
+import {View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
@@ -373,7 +373,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={selectedIndex === (dialogTabs.length - 1) ? "DONE" : "NEXT"}
-            handlePopovers = {handlePopovers}
+            // handlePopovers = {handlePopovers}
             // buttonIcon={<ArrowRightIcon/>}
         >
 
@@ -383,7 +383,13 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                     tab={selectedIndex}
                     onTabPress={onTabChange}
                 />
-                {getTabContent()}
+                <TouchableOpacity
+                    onPress = {()=>handlePopovers(false)()}
+                    activeOpacity = {1}
+                >
+                    {getTabContent()}
+                </TouchableOpacity>
+                
             </View>
 
 

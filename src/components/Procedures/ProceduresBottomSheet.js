@@ -184,7 +184,10 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
                     :
                     <Configuration procedure = {selectedProcedure}/>;
             case "Consumables":
-                return <ConsumablesTab data = {consumablesData}  headers={consumablesHeader} listItem={consumablesListItem}/>;
+                return <ProceduresConsumablesTab
+                    consumablesData = {inventories}
+                    isEditMode = {isEditMode}
+                />
             case "Equipment":
                 return <ProceduresEquipmentTab 
                     equipmentsData = {equipments}

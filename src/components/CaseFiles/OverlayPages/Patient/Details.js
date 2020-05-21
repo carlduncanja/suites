@@ -195,7 +195,7 @@ const Details = ({tabDetails, modal}) => {
             <View>
 
                 <View style={styles.rowContainer}>
-                    {
+                    { 
                         phoneTypes.map((item,index)=>{
                             const phoneArray = phones.filter( phone => phone.type === item)
                             phoneArray.length === 0 ? phone = "" : phone = phoneArray[0].phone

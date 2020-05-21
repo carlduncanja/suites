@@ -11,7 +11,7 @@ const optionsStyles = {
     }
 };
 
-function SearchableOptionsField({text, label, options, oneOptionsSelected, onChangeText, onClear, isPopoverOpen, handlePopovers }) {
+function SearchableOptionsField({text, label, options, oneOptionsSelected, onChangeText, onClear, isPopoverOpen, handlePopovers, backgroundColor = "#FFFFFF", borderColor = "#E3E8EF" }) {
 
     const textInputRef = useRef();
     const [selectedValue, setSelectedValue] = useState(false);
@@ -46,9 +46,9 @@ function SearchableOptionsField({text, label, options, oneOptionsSelected, onCha
             ]}>
                 {label}
             </Text>
-            <View style={[styles.inputFieldWrapper]}>
+            <View style={[styles.inputFieldWrapper,{backgroundColor:backgroundColor}]}>
                 <TextInput
-                    style={styles.inputField}
+                    style={[styles.inputField,{borderColor: borderColor}]}
                     value={text}
                     editable={!selectedValue}
                     onChangeText={(value)=>{onChangeText(value);handlePopovers(true)}}

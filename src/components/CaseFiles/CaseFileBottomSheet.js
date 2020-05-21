@@ -25,7 +25,7 @@ import { Patient, Procedures, MedicalStaff, MedicalHistory, ChargeSheet  } from 
 import { getCaseFileById } from "../../api/network";
 
 
-const CaseFileBottomSheet = ({caseItem}) =>{
+const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{ 
     
     const overlayMenu = [
         {
@@ -73,7 +73,7 @@ const CaseFileBottomSheet = ({caseItem}) =>{
     const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs)
     const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem)
 
-    const [isEditMode, setEditMode] = useState(false)
+    const [isEditMode, setEditMode] = useState(isOpenEditable)
     const [selectedCase, setSelectedCase] = useState({})
     const [isFetching, setFetching] = useState(false);
 
@@ -100,6 +100,11 @@ const CaseFileBottomSheet = ({caseItem}) =>{
         setSelectedTab(selectedTab)
     }
 
+    const onEditPress = (tab) =>{
+        // setEditableTab(tab)
+        setEditMode(!isEditMode)
+            
+    }
     // ############### Helper Function
     const fetchCase = (id) => {
         setFetching(true);
@@ -126,28 +131,33 @@ const CaseFileBottomSheet = ({caseItem}) =>{
                 return <Patient
                     patient = {patient}
                     selectedTab = {selectedTab}
+                    isEditMode = {isEditMode}
                 />
 
             case "Medical Staff" :
                 return <MedicalStaff
                     staff = {staff}
                     selectedTab = {selectedTab}
+                    isEditMode = {isEditMode}
                 />
             case "Medical History" :
                 return <MedicalHistory
                     medicalInfo = {medicalInfo}
                     selectedTab = {selectedTab}
+                    isEditMode = {isEditMode}
                 />
             case "Procedures" :
                 return <Procedures
                     procedures = {caseProcedures}
                     selectedTab = {selectedTab}
+                    isEditMode = {isEditMode}
                 />
 
             case "Charge Sheet" :
                 return <ChargeSheet
                     chargeSheets = {chargeSheets}
                     selectedTab = {selectedTab}
+                    isEditMode = {isEditMode}
                 />
                
             default :
@@ -187,6 +197,7 @@ const CaseFileBottomSheet = ({caseItem}) =>{
                                     {getOverlayContent()}
                                 </View>
                             }
+                            onEditPress = {onEditPress}
                         />
                         <View style={styles.footer}>
                             <CaseFileOverlayMenu

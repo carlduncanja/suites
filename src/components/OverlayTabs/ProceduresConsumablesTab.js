@@ -1,27 +1,21 @@
 import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Consumables from '../CaseFiles/OverlayPages/ChargeSheet/Consumables';
+import Button from "../common/Buttons/Button";
 
 import { currencyFormatter } from '../../utils/formatter'
+import NumberChangeField from "../common/Input Fields/NumberChangeField";
 
-import { withModal } from "react-native-modalfy";
+const ProceduresConsumablesTab = ({consumablesData, isEditMode}) => {
 
-const testData = [
-    {
-        itemName : 'Agents',
-        type : 'Anaesthesia',
-        quantity : 1,
-        unitPrice : 4120.76
-    },
-    {
-        itemName : 'Atracurium',
-        type : 'Anaesthesia',
-        quantity : 5,
-        unitPrice : 8924.09
+    const [consumables, setConsumbales] = useState(consumablesData)
+
+    const onDecreasePress = () => {
+
     }
+    const onIncreasePress = () => {
 
-]
-const ProceduresConsumablesTab = ({modal, consumablesData}) => {
+    }
 
     const headers = [
         {
@@ -42,10 +36,6 @@ const ProceduresConsumablesTab = ({modal, consumablesData}) => {
         }
     ]
 
-    // const { inventories = [] } = consumablesData
-
-    const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
-
     const listItem = (item) => <>
         <View style={styles.item}>
             <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.item}</Text>
@@ -53,9 +43,21 @@ const ProceduresConsumablesTab = ({modal, consumablesData}) => {
         <View style={[styles.item,{alignItems:'flex-start'}]}>
             <Text style={styles.itemText}>{item.type}</Text>
         </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
-            <Text style={styles.itemText}>{item.quantity}</Text>
-        </View>
+        { isEditMode ?
+            <View style={[styles.item,{alignItems:'center'}]}>
+                <NumberChangeField 
+                    number={item.quantity} 
+                    onDecreasePress = {onDecreasePress(item)}
+                    onIncreasePress = {onIncreasePress(item)}
+                />
+            </View>
+            :
+            <View style={[styles.item,{alignItems:'center'}]}>
+                <Text style={styles.itemText}>{item.quantity}</Text>
+            </View>
+        
+        }
+       
         <View style={[styles.item,{alignItems:'flex-end'}]}>
             <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
         </View>
@@ -79,12 +81,13 @@ const ProceduresConsumablesTab = ({modal, consumablesData}) => {
                 headers = {headers}
                 listItemFormat = {listItem} 
             />
+
         </>
 
     )
 }
 
-export default withModal(ProceduresConsumablesTab)
+export default ProceduresConsumablesTab
 
 const styles = StyleSheet.create({
     item:{
@@ -94,4 +97,5 @@ const styles = StyleSheet.create({
         fontSize:16,
         color:"#4A5568",
     },
+    
 })
