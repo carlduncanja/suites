@@ -4,7 +4,7 @@ import {Provider} from 'react-redux'
 import DefaultReduxState from './src/redux/reducers/initialState'
 
 
-import {StyleSheet, SafeAreaView} from 'react-native';
+import {StyleSheet, SafeAreaView, Alert} from 'react-native';
 
 import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
 import {initialState, SuitesContext} from './src/SuitesContext';
@@ -12,7 +12,9 @@ import {initialState, SuitesContext} from './src/SuitesContext';
 import {SuitesContextProvider} from './src/contexts/SuitesContext';
 import NavigationStack from './src/components/navigation/NavigationStack';
 import configureStore from "./src/redux/configureStore";
-import LoginPage from './src/components/Onboarding/LoginPage'
+import LoginComponent from './src/components/Onboarding/LoginComponent'
+import {login} from "./src/api/network";
+import RootApplicationContainer from "./src/components/navigation/RootStack"
 
 const store = configureStore({});
 
@@ -24,62 +26,24 @@ const App = () => {
     }, [state, dispatch]);
 
 
-    const getDimensions = (event) => {
-        dispatch({
-            type: appActionTypes.DIMENSIONS,
-            newState: {width: event.nativeEvent.layout.width, length: event.nativeEvent.layout.height}
-        });
-    };
 
-    const onTabPress = (event, selected) => {
-        console.log("tab press", selected);
-        dispatch({
-            type: appActionTypes.TABSELECTED,
-            newState: {tabSelected: selected, status: true}
-        });
-    };
 
-    const [fields, setFields] = useState({
-        email: '',
-        password : ''
-    })
-
-    const onFieldChange = (fieldName) => (value) => {
-        setFields({
-            ...fields,
-            [fieldName] : value
-        })
-    }
-
-    const onButtonPress = () => {
-        // console.log("Fields: ", fields)
-    }
-
-    const onGuestButtonPress = () => {
-
-    }
 
 
     return (
         <Provider store={store}>
             <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
 
-                <SafeAreaView style={styles.container} onLayout={getDimensions}>
+                {/*<SafeAreaView style={styles.container} onLayout={getDimensions}>*/}
+                {/*<NavigationStack*/}
+                {/*    screenDimensions={state.screenDimensions}*/}
+                {/*    tabSelected={state.tabSelected.tabSelected}*/}
+                {/*    onTabPress={onTabPress}*/}
+                {/*/>*/}
+                {/*</SafeAreaView>*/}
 
-                    <LoginPage
-                        fields={fields}
-                        onFieldChange={onFieldChange}
-                        onButtonPress={onButtonPress}
-                        onGuestButtonPress={onGuestButtonPress}
-                    />
+                <RootApplicationContainer auth={{signedIn: true}}/>
 
-                    {/*<NavigationStack*/}
-                    {/*    screenDimensions={state.screenDimensions}*/}
-                    {/*    tabSelected={state.tabSelected.tabSelected}*/}
-                    {/*    onTabPress={onTabPress}*/}
-                    {/*/>*/}
-
-                </SafeAreaView>
             </SuitesContextProvider>
         </Provider>
     );

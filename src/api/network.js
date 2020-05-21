@@ -24,7 +24,7 @@ import equipment from "../../data/Equipment";
 export const login = async (email, password) => {
     return suitesAxiosInstance.post(loginEndpoint, {email, password})
         .then(handleResponse)
-        .error(handleError())
+        .catch(handleError)
 }
 
 // ################# Schedule Endpoints

@@ -1,10 +1,6 @@
-import React, {useContext} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, SectionList} from 'react-native';
-import {getList} from '../../hooks/useListHook';
-import NavigationTab from '../SideBar/SideBarTabComponent';
-import {SuitesContext} from '../../contexts/SuitesContext';
-import {appActions} from '../../redux/reducers/suitesAppReducer';
-import SvgIcon from '../../../assets/SvgIcon';
+import React, {useContext, useMemo} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, SectionList, Dimensions, SafeAreaView} from 'react-native';
+import {SuitesContext, SuitesContextProvider} from '../../contexts/SuitesContext';
 import {ModalProvider, createModalStack} from 'react-native-modalfy';
 import {createNavigator, TabRouter} from 'react-navigation';
 import SideBarComponent from "../SideBar/SideBarComponent";
@@ -15,7 +11,7 @@ import ActionContainerModal from '../../modals/ActionContainerModal';
 import ReportPreviewModal from '../../modals/ReportPreviewModal';
 import OverlayInfoModal from '../../modals/OverlayInfoModal';
 import BottomSheetModal from '../../modals/BottomSheetModal';
-import { MenuProvider } from 'react-native-popup-menu';
+import {MenuProvider} from 'react-native-popup-menu';
 
 
 /**
@@ -26,8 +22,9 @@ import { MenuProvider } from 'react-native-popup-menu';
  * @navigation :
  * @descriptor :
  */
-export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
+export const SuiteNavigator = ({navigation, descriptors}) => {
 
+    const screenDimensions = Dimensions.get('window')
     const {routes, index} = navigation.state;
     const descriptor = descriptors[routes[index].key];
 
@@ -55,8 +52,6 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
 
     const stack = createModalStack(modalConfig, defaultOptions);
 
-    const [state, dispatch] = useContext(SuitesContext);
-
     // event handlers;
     const handleOnTabPress = (e, routeName) => {
         console.log("tab pressed", routeName);
@@ -65,29 +60,35 @@ export const SuiteNavigator = ({screenDimensions, navigation, descriptors}) => {
 
     return (
         <Provider>
-            <MenuProvider>
-
-                <ModalProvider stack={stack}>
-                    <View style={styles.container}>
-                        <SideBarComponent
-                            routes={routes}
-                            selectedIndex={index}
-                            screenDimensions={screenDimensions}
-                            navigation={navigation}
-                            onTabPressed={handleOnTabPress}
-                            style={styles.navBar}
-                        />
-
-                        <View style={styles.pageContent}>
-                            <ActiveScreen
-                                navigation={descriptor.navigation}
-                                descriptor={descriptor}
+            <SafeAreaView
+                style={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}
+            >
+                <MenuProvider>
+                    <ModalProvider stack={stack}>
+                        <View style={styles.container}>
+                            <SideBarComponent
+                                routes={routes}
+                                selectedIndex={index}
                                 screenDimensions={screenDimensions}
+                                navigation={navigation}
+                                onTabPressed={handleOnTabPress}
+                                style={styles.navBar}
                             />
+
+                            <View style={styles.pageContent}>
+                                <ActiveScreen
+                                    navigation={descriptor.navigation}
+                                    descriptor={descriptor}
+                                    screenDimensions={screenDimensions}
+                                />
+                            </View>
                         </View>
-                    </View>
-                </ModalProvider>
-            </MenuProvider>
+                    </ModalProvider>
+                </MenuProvider>
+            </SafeAreaView>
         </Provider>
     )
 };
