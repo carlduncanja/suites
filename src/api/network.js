@@ -7,9 +7,9 @@ import {
     physiciansEndpoint, physicianEndpoint,
     proceduresEndpoint, procedureEndpoint,
     caseFilesEndpoint, caseFileEndpoint,
-    equipmentsEndpoint, equipmentEndpoint, equipmentTypesEndpoint,
-    storageLocationsEndpoint, storageLocationEndpoint,
-    categoriesEndpoint
+    equipmentsEndpoint, equipmentEndpoint,
+    equipmentTypesEndpoint, storageLocationsEndpoint,
+    storageLocationEndpoint, categoriesEndpoint, loginEndpoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -20,6 +20,12 @@ import physicians from "../../data/Physicians";
 import storage from "../../data/Storage";
 import equipment from "../../data/Equipment";
 
+// ################# Auth Endpoints
+export const login = async (email, password) => {
+    return suitesAxiosInstance.post(loginEndpoint, {email, password})
+        .then(handleResponse)
+        .error(handleError())
+}
 
 // ################# Schedule Endpoints
 export const getSchedules = async () => {

@@ -63,18 +63,22 @@ const App = () => {
     return (
         <Provider store={store}>
             <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
+
                 <SafeAreaView style={styles.container} onLayout={getDimensions}>
-                    {/* <LoginPage 
-                        fields={fields} 
-                        onFieldChange = {onFieldChange} 
-                        onButtonPress = {onButtonPress}
-                        onGuestButtonPress = {onGuestButtonPress}
-                    /> */}
-                    <NavigationStack
-                        screenDimensions={state.screenDimensions}
-                        tabSelected={state.tabSelected.tabSelected}
-                        onTabPress={onTabPress}
+
+                    <LoginPage
+                        fields={fields}
+                        onFieldChange={onFieldChange}
+                        onButtonPress={onButtonPress}
+                        onGuestButtonPress={onGuestButtonPress}
                     />
+
+                    {/*<NavigationStack*/}
+                    {/*    screenDimensions={state.screenDimensions}*/}
+                    {/*    tabSelected={state.tabSelected.tabSelected}*/}
+                    {/*    onTabPress={onTabPress}*/}
+                    {/*/>*/}
+
                 </SafeAreaView>
             </SuitesContextProvider>
         </Provider>

@@ -558,27 +558,35 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = (state) => {
-
     const getLevels = (inventoryLocations = []) => {
-        const levels = {
+        const levelsTotal = {
             max: 0,
             min: 0,
             critical: 0,
             ideal: 0,
         };
         inventoryLocations.forEach(location => {
-            // TODO calculate level from location.
+            const {levels = {}} = location;
+
+            levelsTotal.max+= levels.max || 0
+            levelsTotal.min+= levels.min || 0
+            levelsTotal.critical+= levels.critical || 0
+            levelsTotal.ideal+= levels.ideal || 0
         });
-        return levels;
+
+        return levelsTotal;
+    };
+    const getTotalStock = (accumulator, currentValue) => {
+        return accumulator + currentValue.stock
     };
 
     // REMAPPING INVENTORY ITEMS
     const inventory = state.inventory.map(item => {
 
-        const {inventoryLocation = []} = item;
-        const stock = 0;
-        const locations = inventoryLocation.length;
-        const levels = getLevels(inventoryLocation);
+        const {inventoryLocations = []} = item;
+        const stock = inventoryLocations.reduce(getTotalStock, 0);
+        const locations = inventoryLocations.length;
+        const levels = getLevels(inventoryLocations);
 
         return {
             ...item,

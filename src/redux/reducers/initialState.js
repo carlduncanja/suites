@@ -6,5 +6,6 @@ export default {
     storage : [],
     theatres: [],
     inventory : [],
-    equipment : []
+    equipment : [],
+    auth: {}
 }

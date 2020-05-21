@@ -1,3 +1,8 @@
+// ##### Auth
+export const loginEndpoint = `/login`
+export const registrationEndpoint = `/register`
+export const guestLoginEndpoint = `/login/guest`
+
 
 // ##### Theatre
 export const
