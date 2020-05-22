@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Alert} from "react-native";
+import {View, StyleSheet, Alert, AsyncStorage} from "react-native";
 import LoginComponent from "./LoginComponent";
 import {login} from "../../api/network";
 import {SuitesContextProvider} from "../../contexts/SuitesContext";
@@ -20,10 +20,15 @@ function LoginPage({navigation}) {
     const onButtonPress = () => {
         console.log("Fields: ", fields)
         login(fields.email, fields.password)
-            .then(r =>{
+            .then(async data => {
                 // save auth data
-                console.log(r)
-                navigation.push("Main")
+                console.log(data)
+                try {
+                    await AsyncStorage.setItem('userToken', data.token);
+                    navigation.navigate("App")
+                } catch (error) {
+                    // Error saving data
+                }
             })
             .catch(e => {
                 console.log("login failed", e);

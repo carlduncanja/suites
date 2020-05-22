@@ -7,5 +7,9 @@ export default {
     theatres: [],
     inventory : [],
     equipment : [],
-    auth: {}
+    auth: {
+        isLoading: true,
+        isSignout: false,
+        userToken: null,
+    }
 }

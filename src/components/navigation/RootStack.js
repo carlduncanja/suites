@@ -1,26 +1,25 @@
 import React from "react";
-import {createStackNavigator} from 'react-navigation-stack';
-import {createAppContainer} from "react-navigation";
-import LoginComponent from "../Onboarding/LoginComponent";
-import LoginPage from "../Onboarding/LoginPage";
-import NavigationStack from "./NavigationStack"
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 
-const RootStack = createStackNavigator({
-    LoginPage: {
-        screen: LoginPage,
-        navigationOptions: {
-            headerShown: false
-        }
+import {SuitesNavigationStack} from "./AppStack/SuitesNavigationStack"
+import Auth from "./AuthStack/AuthStack"
+import SplashScreen from "../../page/SplashScreen";
+
+
+/**
+ * Main navigation stack
+ *
+ * https://reactnavigation.org/docs/4.x/auth-flow
+ */
+const switchNavigator = createSwitchNavigator(
+    {
+        Splash: SplashScreen,
+        App: SuitesNavigationStack,
+        Auth
     },
-    Main: {
-        screen: NavigationStack,
-        navigationOptions: {
-            headerShown: false
-        }
+    {
+        initialRouteName: 'Splash',
     }
-});
+)
 
-
-const RootApplicationContainer = createAppContainer(RootStack);
-
-export default RootApplicationContainer
+export default createAppContainer(switchNavigator);

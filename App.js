@@ -10,7 +10,7 @@ import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
 import {initialState, SuitesContext} from './src/SuitesContext';
 
 import {SuitesContextProvider} from './src/contexts/SuitesContext';
-import NavigationStack from './src/components/navigation/NavigationStack';
+import NavigationStack from './src/components/navigation/AppStack/SuitesNavigationStack';
 import configureStore from "./src/redux/configureStore";
 import LoginComponent from './src/components/Onboarding/LoginComponent'
 import {login} from "./src/api/network";
@@ -33,17 +33,7 @@ const App = () => {
     return (
         <Provider store={store}>
             <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
-
-                {/*<SafeAreaView style={styles.container} onLayout={getDimensions}>*/}
-                {/*<NavigationStack*/}
-                {/*    screenDimensions={state.screenDimensions}*/}
-                {/*    tabSelected={state.tabSelected.tabSelected}*/}
-                {/*    onTabPress={onTabPress}*/}
-                {/*/>*/}
-                {/*</SafeAreaView>*/}
-
                 <RootApplicationContainer auth={{signedIn: true}}/>
-
             </SuitesContextProvider>
         </Provider>
     );

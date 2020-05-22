@@ -1,42 +1,42 @@
 import { createAppContainer } from 'react-navigation';
-import { createSidebarNavigator } from './SuiteNavigator';
+import { createSidebarNavigator } from '../SuiteNavigator';
 
 import React from "react";
 
 
 /* Screens */
-import Schedule from '../../page/Schedule';
-import CaseFiles from '../../page/CaseFiles'
-import Theatres from "../../page/Theatres";
-import Inventory from "../../page/Inventory";
-import Storage from "../../page/Storage";
-import Procedures from '../../page/Procedures';
-import Physicians from '../../page/Physicians';
-import StorageLocations from '../../page/StorageLocations';
-import Equipment from '../../page/Equipment';
+import Schedule from '../../../page/Schedule';
+import CaseFiles from '../../../page/CaseFiles'
+import Theatres from "../../../page/Theatres";
+import Inventory from "../../../page/Inventory";
+import Storage from "../../../page/Storage";
+import Procedures from '../../../page/Procedures';
+import Physicians from '../../../page/Physicians';
+import StorageLocations from '../../../page/StorageLocations';
+import Equipment from '../../../page/Equipment';
 
 
 /* Providers*/
-import {ScheduleProvider} from '../../contexts/ScheduleContext';
-import NotFound from "../../page/NotFound";
+import {ScheduleProvider} from '../../../contexts/ScheduleContext';
+import NotFound from "../../../page/NotFound";
 
 
 /* Icons */
-import ScheduleIcon from "../../../assets/svg/schedule"
-import CaseFileIcon from "../../../assets/svg/caseFile"
-import TheathreIcon from "../../../assets/svg/threatre"
-import InventoryIcon from "../../../assets/svg/caseFile"
-import EquipmentIcon from "../../../assets/svg/equipment"
-import OrdersIcon from "../../../assets/svg/equipment"
-import DeliveryIcon from "../../../assets/svg/delivery"
-import InvoiceIcon from "../../../assets/svg/invoices"
-import StorageIcon from "../../../assets/svg/storage"
-import PhysiciansIcon from "../../../assets/svg/physicians"
-import ProcedureIcon from "../../../assets/svg/procedures"
-import {CaseFileContextProvider} from "../../contexts/CaseFileContext";
-import SettingsIcon from "../../../assets/svg/settingsIcon";
-import HelpIcon from "../../../assets/svg/helpIcon";
-import NotificationIcon from "../../../assets/svg/notificationIcon";
+import ScheduleIcon from "../../../../assets/svg/schedule"
+import CaseFileIcon from "../../../../assets/svg/caseFile"
+import TheathreIcon from "../../../../assets/svg/threatre"
+import InventoryIcon from "../../../../assets/svg/caseFile"
+import EquipmentIcon from "../../../../assets/svg/equipment"
+import OrdersIcon from "../../../../assets/svg/equipment"
+import DeliveryIcon from "../../../../assets/svg/delivery"
+import InvoiceIcon from "../../../../assets/svg/invoices"
+import StorageIcon from "../../../../assets/svg/storage"
+import PhysiciansIcon from "../../../../assets/svg/physicians"
+import ProcedureIcon from "../../../../assets/svg/procedures"
+import {CaseFileContextProvider} from "../../../contexts/CaseFileContext";
+import SettingsIcon from "../../../../assets/svg/settingsIcon";
+import HelpIcon from "../../../../assets/svg/helpIcon";
+import NotificationIcon from "../../../../assets/svg/notificationIcon";
 
 /***
  *  Top level navigation Stack for Suites Application for the side navigation bar.
@@ -47,7 +47,7 @@ import NotificationIcon from "../../../assets/svg/notificationIcon";
  *  @tabName : Name displayed on the sidebar.
  *  @provider : Context provider that is passed in to the component.
  */
-const SuitesNavigationStack = createSidebarNavigator(
+export const SuitesNavigationStack = createSidebarNavigator(
   {
     Schedule: {
         screen: Schedule,

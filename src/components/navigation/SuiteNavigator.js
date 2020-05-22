@@ -1,5 +1,15 @@
 import React, {useContext, useMemo} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, SectionList, Dimensions, SafeAreaView} from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    SectionList,
+    Dimensions,
+    SafeAreaView,
+    AsyncStorage
+} from 'react-native';
 import {SuitesContext, SuitesContextProvider} from '../../contexts/SuitesContext';
 import {ModalProvider, createModalStack} from 'react-native-modalfy';
 import {createNavigator, TabRouter} from 'react-navigation';
@@ -57,6 +67,9 @@ export const SuiteNavigator = ({navigation, descriptors}) => {
         console.log("tab pressed", routeName);
         navigation.navigate(routeName)
     };
+
+    AsyncStorage.clear();
+
 
     return (
         <Provider>
