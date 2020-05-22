@@ -68,9 +68,6 @@ export const SuiteNavigator = ({navigation, descriptors}) => {
         navigation.navigate(routeName)
     };
 
-    AsyncStorage.clear();
-
-
     return (
         <Provider>
             <SafeAreaView

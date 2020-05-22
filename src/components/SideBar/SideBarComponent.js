@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, StyleSheet, View} from "react-native";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 import SvgIcon from "../../../assets/SvgIcon";
 import NavigationTab from "./SideBarTabComponent";
 
@@ -18,14 +18,14 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
             shadowRadius: 3.84,
             zIndex: 5,
             elevation: 5,
-        }} >
+        }}>
             <View style={styles.tabContainer}>
 
                 {/*Logo*/}
-                <View style={[ styles.logo,
-                        {paddingBottom: screenDimensions.width > screenDimensions.height ? 10 : 25 }
-                    ]}>
-                    <SvgIcon iconName="logo" />
+                <View style={[styles.logo,
+                    {paddingBottom: screenDimensions.width > screenDimensions.height ? 10 : 25}
+                ]}>
+                    <SvgIcon iconName="logo"/>
                 </View>
 
                 <ScrollView
@@ -34,16 +34,16 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                     scrollEnabled={true}
                     showsVerticalScrollIndicator={false}
                     style={[styles.container]}
-                    contentContainerStyle={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}
+                    contentContainerStyle={{alignItems: 'center', justifyContent: 'flex-start', width: '100%'}}
                 >
                     {
                         // Spread the navigation routes.
                         routes.map((route, tabIndex) => {
-                            const { routeName , params } = route;
-                            const { icon, tabName } = params || {};
+                            const {routeName, params} = route;
+                            const {icon, tabName} = params || {};
 
                             return (
-                                <View style={{ width: '100%' }} key={tabIndex}>
+                                <View style={{width: '100%'}} key={tabIndex}>
 
                                     <NavigationTab
                                         icon={icon}
@@ -58,9 +58,30 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                     }
                 </ScrollView>
 
+                <View style={{height: 45, width: '100%'}}>
+                    <View style={styles.loginBadge}>
+                        <Text style={
+                            {
+                                ...styles.textStyle,
+                                fontSize: 7
+                            }}>
+                            LOGGED IN AS
+                        </Text>
+                    </View>
+
+                    <View style={styles.userNameBadge}>
+                        <Text style={{
+                            ...styles.textStyle,
+                            fontSize: 10,
+                        }}>
+                            H. EDWARDS
+                        </Text>
+                    </View>
+                </View>
+
             </View>
 
-            <View style={styles.sideBarEdge} />
+            <View style={styles.sideBarEdge}/>
         </View>
     );
 }
@@ -85,6 +106,35 @@ const styles = StyleSheet.create({
     sideBarEdge: {
         width: 8,
         backgroundColor: "white"
+    },
+    loginBadge: {
+        height: 20,
+        width: '100%',
+        backgroundColor: "#205EAC",
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    textStyle: {
+        fontStyle: 'normal',
+        fontWeight: '500',
+        textAlign: 'center',
+        /* default/shade/white */
+        color: '#FFFFFF',
+    },
+    userNameBadge: {
+        flex: 1,
+        height: 25,
+        backgroundColor: '#2168C3',
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: -3,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 5,
+        elevation: 5,
     }
 });
 
