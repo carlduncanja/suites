@@ -40,16 +40,6 @@ function SplashScreen({auth, setAuthData, navigation}) {
     }, []);
 
 
-    // useEffect(() => {
-    //     if (auth) return;
-    //
-    //     console.log("auth data",auth)
-    //
-    //
-    //     navigation.navigate(auth.userToken ? "App": "Auth")
-    // }, [auth])
-
-
     return (
         <View style={styles.container}>
             <View style={styles.background}>

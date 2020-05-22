@@ -19,14 +19,10 @@ const App = () => {
     }, [state, dispatch]);
 
 
-
-
-
-
     return (
         <Provider store={store}>
             <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
-                <RootApplicationContainer auth={{signedIn: true}}/>
+                <RootApplicationContainer/>
             </SuitesContextProvider>
         </Provider>
     );

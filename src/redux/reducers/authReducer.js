@@ -13,6 +13,6 @@ export default (state = initialState.auth, action) => {
                 ...payload.data
             }
         default:
-            return initialState
+            return state
     }
 }
