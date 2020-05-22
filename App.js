@@ -1,19 +1,12 @@
 import React, {useReducer, useMemo, useState} from 'react';
-
 import {Provider} from 'react-redux'
-import DefaultReduxState from './src/redux/reducers/initialState'
-
-
 import {StyleSheet, SafeAreaView, Alert} from 'react-native';
 
 import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
 import {initialState, SuitesContext} from './src/SuitesContext';
 
 import {SuitesContextProvider} from './src/contexts/SuitesContext';
-import NavigationStack from './src/components/navigation/AppStack/SuitesNavigationStack';
 import configureStore from "./src/redux/configureStore";
-import LoginComponent from './src/components/Onboarding/LoginComponent'
-import {login} from "./src/api/network";
 import RootApplicationContainer from "./src/components/navigation/RootStack"
 
 const store = configureStore({});

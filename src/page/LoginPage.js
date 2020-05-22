@@ -1,22 +1,64 @@
-import React, {useState} from "react";
-import {View, StyleSheet, Text, TouchableOpacity} from "react-native";
-import Svg, {Path, Rect, Circle} from "react-native-svg";
-import LoginBackground from './LoginBackground'
-import Logo from "../../../assets/svg/logo";
-import PersonIcon from "../../../assets/svg/personIcon";
-import PasswordIcon from "../../../assets/svg/lockIcon";
+import React, {useState} from 'react';
+import PropTypes from 'prop-types';
+import {View, StyleSheet, Alert, AsyncStorage, ActivityIndicator, Text} from "react-native";
+import {login} from "../api/network";
+import LoginBackground from "../components/Onboarding/LoginBackground";
+import Logo from "../../assets/svg/logo";
+import InputFieldwithIcon from "../components/common/Input Fields/InputFiledwithIcon";
+import PersonIcon from "../../assets/svg/personIcon";
+import PasswordIcon from "../../assets/svg/lockIcon";
+import Button from "../components/common/Buttons/Button";
 
-import InputFieldwithIcon from '../common/Input Fields/InputFiledwithIcon';
-import Button from "../common/Buttons/Button";
+function LoginPage({navigation}) {
+    const [fields, setFields] = useState({
+        email: '',
+        password: ''
+    })
 
-const divider = <View style={{
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#CCD6E0',
-    height: 0
-}}/>
+    const [isLoading, setLoading] = useState(false)
 
-const LoginComponent = ({fields, onFieldChange, onButtonPress, onGuestButtonPress}) => {
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName]: value
+        })
+    }
+    const onButtonPress = () => {
+        console.log("Fields: ", fields)
+
+        setLoading(true);
+
+        login(fields.email, fields.password)
+            .then(async data => {
+                // save auth data
+                console.log(data)
+                try {
+                    await AsyncStorage.setItem('userToken', data.token);
+                    navigation.navigate("App")
+                } catch (error) {
+                    // Error saving data
+                }
+            })
+            .catch(e => {
+                console.log("login failed", e);
+                Alert.alert("Failed to login");
+            })
+            .finally(_ => {
+                setLoading(false)
+            })
+    }
+
+
+    const onGuestButtonPress = () => {
+    }
+
+    const divider = <View style={{
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#CCD6E0',
+        height: 0
+    }}/>
+
     return (
         <View style={{flex: 1}}>
             <LoginBackground/>
@@ -51,12 +93,17 @@ const LoginComponent = ({fields, onFieldChange, onButtonPress, onGuestButtonPres
                         </View>
 
                         <View style={styles.button}>
-                            <Button
-                                backgroundColor="#104587"
-                                buttonPress={onButtonPress}
-                                title="Login"
-                                color="#FFFFFF"
-                            />
+                            {
+                                isLoading
+                                    ? <ActivityIndicator size="small" color="#00ff00"/>
+                                    : <Button
+                                        backgroundColor="#104587"
+                                        buttonPress={onButtonPress}
+                                        title="Login"
+                                        color="#FFFFFF"
+                                    />
+                            }
+
                         </View>
 
                         <View style={styles.loginDivider}>
@@ -88,10 +135,9 @@ const LoginComponent = ({fields, onFieldChange, onButtonPress, onGuestButtonPres
 
 
         </View>
-    )
+    );
 }
 
-export default LoginComponent
 
 const styles = StyleSheet.create({
     overlay: {
@@ -147,3 +193,9 @@ const styles = StyleSheet.create({
         marginRight: 0
     }
 })
+
+
+LoginPage.propTypes = {};
+LoginPage.defaultProps = {};
+
+export default LoginPage;
