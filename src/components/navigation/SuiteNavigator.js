@@ -68,6 +68,11 @@ export const SuiteNavigator = ({navigation, descriptors}) => {
         navigation.navigate(routeName)
     };
 
+    const handleOnLogout = async () => {
+        await AsyncStorage.clear();
+        navigation.navigate('Auth')
+    };
+
     return (
         <Provider>
             <SafeAreaView
@@ -85,6 +90,7 @@ export const SuiteNavigator = ({navigation, descriptors}) => {
                                 screenDimensions={screenDimensions}
                                 navigation={navigation}
                                 onTabPressed={handleOnTabPress}
+                                onLogout={handleOnLogout}
                                 style={styles.navBar}
                             />
 

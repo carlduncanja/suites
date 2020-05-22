@@ -1,10 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, StyleSheet, Text, View} from "react-native";
+import {ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert} from "react-native";
 import SvgIcon from "../../../assets/SvgIcon";
 import NavigationTab from "./SideBarTabComponent";
+import connect from 'react-redux'
 
-function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed}) {
+function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed, onLogout}) {
+
+
+    const showLogoutDialog = () => {
+        // Works on both Android and iOS
+        Alert.alert(
+            'Logout',
+            'Would you like to log out?',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                },
+                {text: 'OK', onPress: onLogout},
+            ],
+            {cancelable: false}
+        );
+    }
+
     return (
         <View style={{
             flexDirection: 'row',
@@ -58,26 +78,31 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                     }
                 </ScrollView>
 
-                <View style={{height: 45, width: '100%'}}>
-                    <View style={styles.loginBadge}>
-                        <Text style={
-                            {
-                                ...styles.textStyle,
-                                fontSize: 7
-                            }}>
-                            LOGGED IN AS
-                        </Text>
-                    </View>
+                <TouchableOpacity
+                    style={{height: 45, width: '100%'}}
+                    onPress={showLogoutDialog}
+                >
+                    <View style={{flex: 1}}>
+                        <View style={styles.loginBadge}>
+                            <Text style={
+                                {
+                                    ...styles.textStyle,
+                                    fontSize: 7
+                                }}>
+                                LOGGED IN AS
+                            </Text>
+                        </View>
 
-                    <View style={styles.userNameBadge}>
-                        <Text style={{
-                            ...styles.textStyle,
-                            fontSize: 10,
-                        }}>
-                            H. EDWARDS
-                        </Text>
+                        <View style={styles.userNameBadge}>
+                            <Text style={{
+                                ...styles.textStyle,
+                                fontSize: 10,
+                            }}>
+                                H. EDWARDS
+                            </Text>
+                        </View>
                     </View>
-                </View>
+                </TouchableOpacity>
 
             </View>
 
@@ -137,7 +162,6 @@ const styles = StyleSheet.create({
         elevation: 5,
     }
 });
-
 
 SideBarComponent.propTypes = {};
 SideBarComponent.defaultProps = {};
