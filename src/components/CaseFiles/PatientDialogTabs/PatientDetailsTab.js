@@ -9,7 +9,7 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
 
     const [isMinor, setIsMinor] = useState("No")
     const [trnText, setTrnText] = useState(fields['trn'])
-    const [dateText, setDateText] = useState(fields['dob'])
+    const [dateText, setDateText] = useState(fields['dob']) 
 
     const handleTrnValidation = (trnValue) => {
         if (/^\d{9}$/g.test(trnValue) || !trnValue) {
@@ -19,8 +19,10 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
     }
 
     const handleDateValidation = (date) => {
+        
+        let dateInstance = new Date(moment(date).toISOString());
         let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
-        if (dateRegex.test(date) || !date) {
+        if ((dateRegex.test(date) && dateInstance instanceof Date) || !date) {
             onFieldChange('dob')(date)
             handleMinor(date)
         }
@@ -43,7 +45,7 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
             onFieldChange('minor')('Yes')
         }
     }
-
+ 
     return (
         <View style={styles.sectionContainer}>
 
@@ -126,7 +128,7 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                         label={"Date of Birth"}
                         onChangeText={(value) => { handleDateValidation(value)}}
                         value={dateText}
-                        onClear={() => onFieldChange('dob')('')}
+                        onClear={() =>onFieldChange('dob')('')}
                         keyboardType = "number-pad"
                         placeholder = "DD/MM/YYYY"
                     />
@@ -136,15 +138,6 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                     <View style={styles.fieldContainer}>
                         <Text>{isMinor}</Text>
                     </View>
-                    {/* <OptionsField
-                        label={"Minor ?"}
-                        text={fields['minor']}
-                        oneOptionsSelected={onFieldChange('minor')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={false} text='No'/>
-                            <MenuOption value={true} text='Yes'/>
-                        </MenuOptions>}
-                    /> */}
                 </View>
 
             </View>

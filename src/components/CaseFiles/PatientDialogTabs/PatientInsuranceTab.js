@@ -4,23 +4,32 @@ import InputField2 from "../../common/Input Fields/InputField2";
 import { isValidNumber, currencyFormatter } from "../../../utils/formatter";
 
 const PatientInsuranceTab = ({ onFieldChange, fields }) => {
-    const [insurance, setInsurance] = useState({
-        name : '',
-        coverageLimit : '',
-        policyNumber : ''
+
+    const { insurance = {} } = fields
+
+    const {
+        name = "",
+        coverage = 0,
+        policyNumber = ""
+    } = insurance
+
+    const [insuranceValues, setInsurance] = useState({
+        name,
+        coverage,
+        policyNumber
     })
 
     const handleInsurance = (type) => (value) => {
         let updatedInsurance = {
-            ...insurance,
+            ...insuranceValues,
             [type] : value
         }
-        if(type === 'policyNumber'){
-            (isValidNumber(parseInt(value)) || !value) && onFieldChange('insurance')({...insurance,policyNumber:parseInt(value)})
-        }else if(type === 'coverageLimit'){
-            (/\d+((\.){1}(\d{2})){0,1}$/g.test(value) || !value) && onFieldChange('insurance')(updatedInsurance)
+        // if(type === 'policyNumber'){
+        //     (isValidNumber(parseInt(value)) || !value) && onFieldChange('insurance')({...insurance,policyNumber:parseInt(value)})
+        if(type === 'coverage'){
+            (/\d+((\.){1}(\d{2})){0,1}$/g.test(value) ) && onFieldChange('insurance')({...insuranceValues, coverage : parseInt(value)})
         }else{
-            onFieldChange('emergencyContact')(updatedInsurance)
+            onFieldChange('insurance')(updatedInsurance)
         }
         setInsurance(updatedInsurance)
     }
@@ -33,7 +42,7 @@ const PatientInsuranceTab = ({ onFieldChange, fields }) => {
                     <InputField2
                         label={"Primary Insurer"}
                         onChangeText={(value)=>handleInsurance('name')(value)}
-                        value={insurance['name']}
+                        value={insuranceValues['name']}
                         onClear={() => handleInsurance('name')('')}
                     />
                 </View>
@@ -44,7 +53,7 @@ const PatientInsuranceTab = ({ onFieldChange, fields }) => {
                     <InputField2
                         label={"Policy Number"}
                         onChangeText={(value)=>handleInsurance('policyNumber')(value)}
-                        value={insurance['policyNumber']}
+                        value={insuranceValues['policyNumber']}
                         onClear={() => handleInsurance('policyNumber')('')}
                     />
                 </View>
@@ -54,9 +63,9 @@ const PatientInsuranceTab = ({ onFieldChange, fields }) => {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Coverage Limit"}
-                        onChangeText={(value)=>handleInsurance('coverageLimit')(value)}
-                        value={insurance['coverageLimit']}
-                        onClear={() => handleInsurance('coverageLimit')('')}
+                        onChangeText={(value)=>handleInsurance('coverage')(value)}
+                        value={insuranceValues['coverage'].toString()}
+                        onClear={() => handleInsurance('coverage')('')}
                     />
                 </View>
             </View>

@@ -1,21 +1,20 @@
 import React,{ useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import InputUnitField from "../../common/Input Fields/InputUnitFields";
 import InputField2 from "../../common/Input Fields/InputField2";
 import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField";
 import DateInputField from "../../common/Input Fields/DateInputField";
 import DateInputField2 from "../../common/Input Fields/DateInputField2";
-
 import MultipleSelectionsField from "../../common/Input Fields/MultipleSelectionsField";
 import _ from "lodash";
 import {getProcedures, getTheatres} from "../../../api/network";
-import moment from 'moment';
+import moment, { min } from 'moment';
 import { formatDate } from "../../../utils/formatter";
 
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
-import DatePicker from "react-native-datepicker";
+import DateInput from "../../common/Input Fields/DateInput";
+import TimePickerField from "../../common/Input Fields/TimePicker";
 
-const ProcedureTab = ({ onFieldChange, fields}) => {
+const ProcedureTab2 = ({onFieldChange, fields}) =>{
 
     const [procedureValues ,setProcedureValues] = useState({
         procedure : '',
@@ -24,10 +23,11 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
         location : '',
     })
 
-    const [date, setDate] = useState("")
-    const [duration, setDuration] = useState('')
-    const [start, setStart] = useState('')
-    const [end, setEnd] = useState('')
+    const [startTime, setStartTime] = useState('')
+    const [endTime, setEndTime] = useState('')
+    const [date, setDate] = useState('')
+
+    const [momentDate, setMomentDate] = useState('')
 
     const [searchProcedureValue, setSearchProcedureValue] = useState('') 
     const [searchProcedureResult, setSearchProcedureResult] = useState([])
@@ -36,10 +36,6 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
     const [searchLocationValue, setSearchLocationValue] = useState('')
     const [searchLocationResult, setSearchLocationResult] = useState([])
     const [searchLocationQuery, setSearchLocationQuery] = useState({})
-
-    const [searchCategoryValue, setSearchCategoryValue] = useState('')
-    const [searchCategoryResult, setSearchCategoryResult] = useState([])
-    const [searchCategoryQuery, setSearchCategoryQuery] = useState()
 
     useEffect(()=>{
         if (!searchProcedureValue) {
@@ -124,7 +120,6 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
         
     }
 
-
     const handleProcedure = (fieldName) => (value) => {
         console.log("Field: ", fieldName, value);
         (fieldName === 'procedure' || fieldName === 'location') ? value = value._id : value = value
@@ -134,40 +129,36 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
         })
     }
 
-    const handleTimeChange = (value) => (unit)=>{
-        console.log("Time: ", value, unit)
-        if(unit === 'AM'){
-            if (value < 11){
-                newTime = moment(`${value}:00`,'h:mm a').format('h:mm a')
-            }
-        }else{
-            newTime = moment(`${parseInt(value)+12}:00`,'h:mm a').format('h:mm a')
-        }
-        setStart(value)
-        if(moment(date).isValid() && date !== ""){
-            let newDate = moment(date).get('year')
-        
-            console.log("Valid: ", moment(date + " " + newTime))
-        }
-        console.log("New Time: ", newTime)
+    const onConfirm = (field) => (hour, minute) => {
+        console.log("Confirm:", momentDate, hour, minute)
+        let date = momentDate !== "" ? moment(momentDate + ' ' + `${hour-5}:${minute}`) : moment(new Date() + ' ' + `${hour-5}:${minute}`)
+        console.log("Date:", date)
+        // if(momentDate !== ""){
+        //     let startDate = moment(momentDate + ' ' + `${hour-5}:${minute}`)
+        //     // let startDate = moment(momentDate + ' ' + `${hour}:${minute}`,'YYYY-MM-DD HH:mm').format('YYYY-MM-DD HH:mm')
+        // }
+        field === 'startTime' ? setStartTime(`${hour}:${minute}`) : setEndTime(`${hour}:${minute}`)
+        setProcedureValues({
+            ...procedureValues,
+            [field] : date
+        })
+        onFieldChange({
+            ...procedureValues,
+            [field] : date
+        })
     }
 
-    const handleDateValidation = (value) => {
+    const handleDate = (date) => {
+        let dateInstance = new Date(moment(date).toISOString());
         let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
-        if (dateRegex.test(date) || !date) {
-           setDate(value)
+        if ((dateRegex.test(date) && dateInstance instanceof Date) || !date) {
+            setMomentDate(date)
         }
-        setDate(value)
-    }
-    const onDateChange = (type) => (value) => {
-        console.log("Value: ", type, value)
-        
-        type === 'date' && setDate(value)
-        type === 'start' && setStart(value)
-        type === 'end' && setEnd(value)
+        setDate(date)
     }
 
     return (
+
         <View style={styles.sectionContainer}>
 
             <View style={styles.row}>
@@ -181,7 +172,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
                         onClear={() => {
                             handleProcedure('procedure')('')
                             // onFieldChange('procedure')('');
-                            setSearchValue('');
+                            setSearchProcedureValue('');
                         }}
                         options={searchProcedureResult}
                         // handlePopovers = {(value)=>handlePopovers(value)('physician')}
@@ -197,7 +188,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
                         onChangeText={value => setSearchLocationValue(value)}
                         onClear={() => {
                             handleProcedure('location')('');
-                            setSearchValue('');
+                            setSearchLocationValue('');
                         }}
                         options={searchLocationResult}
                         // handlePopovers = {(value)=>handlePopovers(value)('physician')}
@@ -207,140 +198,49 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
                 </View>
 
             </View>
-
+            
             <View style={[styles.row,{zIndex:-1}]}>
 
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Date"}
-                        onChangeText={(value) => {handleDateValidation(value)}}
+                        onChangeText={(value) => { handleDate(value)}}
                         value={date}
-                        onClear={() =>handleDateValidation('')}
+                        onClear={() =>setDate('')}
                         keyboardType = "number-pad"
                         placeholder = "DD/MM/YYYY"
                     />
-                </View> 
+                </View>
 
-                <View style={styles.inputWrapper}>
-
-                    <DateInputField2
-                        label={"Start Time"}
-                        onChangeText={handleTimeChange}
-                        value={start}
-                        units={['AM','PM']}
-                        keyboardType="number-pad"
-                    />
-                </View> 
-
-                <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Duration"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value).toString() || !value) {
-                                setDuration(value)
-                            }
-                        }}
-                        value={duration}
-                        units={['hrs']}
-                        keyboardType="number-pad"
-                    />
-                </View> 
-
-                {/* <DateInputField 
-                    label = "Start Time"
-                    mode = "time"
-                    date = {start}
-                    onChangeText = {(value)=>onDateChange('start')(value)}
-                /> */}
-                
-                {/* <View style={styles.inputWrapper}>
-                    <InputField2
-                        label={"Date"}
-                        onChangeText={(value) => {handleDateValidation(value)}}
-                        value={date}
-                        onClear={() =>handleProcedure('startTime')('')}
-                        keyboardType = "number-pad"
-                        placeholder = "DD/MM/YYYY"
-                    />
-                </View> */}
-
-
-                {/* <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Duration"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value).toString() || !value) {
-                                handleProcedure('duration')(value)
-                            }
-                        }}
-                        value={procedureValues['duration']}
-                        units={['hrs']}
-                        keyboardType="number-pad"
-                    />
-                </View> */}
-
-                {/* <View style={styles.inputWrapper}>
-                    <MultipleSelectionsField
-                        label={"Category"}
-                        onOptionsSelected={onFieldChange('category')}
-                        options = {searchCategoryResult}
-                        searchText = {searchCategoryValue}
-                        onSearchChangeText = {(value)=> setSearchCategoryValue(value)}
-                        onClear={()=>{setSearchCategoryValue('')}}
-                        // handlePopovers = {(value)=>handlePopovers(value)('category')}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {false}
-                    />
-                </View> */}
-                
             </View>
 
             <View style={[styles.row, {zIndex:-2}]}>
 
-                
-
-                {/* <DateInputField 
-                    label = "End Time"
-                    mode = "time"
-                    date = {end}
-                    onChangeText = {(value)=>onDateChange('end')(value)}
-                /> */}
-
-                {/* <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Start Time"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value).toString() || !value) {
-                                // handleProcedure('startTime')(value)
-                                console.log("Time: ", value)
-                            }
-                        }}
-                        value={procedureValues['duration']}
-                        units={['AM','PM']}
-                        keyboardType="number-pad"
+                <View style={[styles.inputWrapper]}>
+                    <TimePickerField
+                        refValue = {'startPicker'}
+                        time = {startTime}
+                        onConfirm = {onConfirm('startTime')}
+                        label = "Start Time"
                     />
-                </View> */}
-                {/* <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Duration"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value).toString() || !value) {
-                                handleProcedure('duration')(value)
-                            }
-                        }}
-                        value={procedureValues['duration']}
-                        units={['hrs']}
-                        keyboardType="number-pad"
-                    />
-                </View> */}
+                </View>
 
+                <View style={styles.inputWrapper}>
+                    <TimePickerField
+                        refValue = {'endPicker'}
+                        time = {endTime}
+                        onConfirm = {onConfirm('endTime')}
+                        label = "End Time"
+                    />
+                </View>
+           
             </View>
 
         </View>
     )
 }
 
-export default ProcedureTab
+export default ProcedureTab2
 
 const styles = StyleSheet.create({
     sectionContainer: {

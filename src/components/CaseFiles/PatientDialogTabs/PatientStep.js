@@ -8,15 +8,27 @@ import PatientInsuranceTab from "./PatientInsuranceTab";
 
 const PatientStep = ({selectedTabIndex, onFieldChange, fields}) => {
 
+    const { patient = {} } = fields
+    const { 
+        firstName = "",
+        middleName = "",
+        surname = "",
+        trn = "", 
+        contactInfo = {},
+        addressInfo = [],
+        insurance = {},
+        dob = ""
+    } = patient
+
     const [patientFields, setFields] = useState({
-        firstName: "",
-        middleName: "",
-        surname: "",
-        trn: "",
-        minor:'No', 
-        contactInfo : {},
-        address:[],
-        insurance:{}
+        firstName, 
+        middleName,
+        surname,
+        trn, 
+        contactInfo,
+        addressInfo,
+        insurance,
+        dob
     })
 
     const onPatientFieldChange = (fieldName) => (value) => {

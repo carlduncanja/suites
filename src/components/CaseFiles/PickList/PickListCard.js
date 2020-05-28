@@ -6,7 +6,7 @@ import Table from "../../common/Table/Table"
 import Paginator from '../../common/Paginators/Paginator';
 import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesHelpers';
 
-const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, headers, isCheckBox ,onPressTab}) =>{
+const PickListCard = ({title, isEditMode = false, onEditDone = ()=>{},closeModal, data, selectedTab, listItemFormat, tabs, headers, isCheckBox ,onPressTab}) =>{
 
     const recordsPerPage = 6
     const dataLength = data.length
@@ -37,7 +37,7 @@ const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, head
     return(
         <View style={styles.container}>
             <View style={styles.headerContainer}>
-                <Text>Picklist</Text>
+                <Text>{title}</Text>
                 <TouchableOpacity onPress={()=>closeModal()} style={{alignItems:'flex-end'}}>
                     <SvgIcon iconName = "searchExit" strokeColor="#718096"/>
                 </TouchableOpacity>
@@ -71,17 +71,40 @@ const PickListCard = ({closeModal, data, selectedTab, listItemFormat, tabs, head
                 />
             </View>
 
-            <View style={{alignItems:'flex-end', justifyContent:'flex-end'}}>
-                <View style={styles.paginationContainer}>
-                    <Paginator
-                        currentPage = {currentPagePosition}
-                        totalPages = {totalPages}
-                        goToNextPage = {goToNextPage}
-                        goToPreviousPage = {goToPreviousPage}
-                    />
-                </View>
-            </View>
+            {
+                isEditMode ?
+                    <View style={{marginLeft:20, marginRight:20, justifyContent:'space-between', flexDirection:'row'}}>
+                        <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
+                            <Paginator
+                                currentPage = {currentPagePosition}
+                                totalPages = {totalPages}
+                                goToNextPage = {goToNextPage}
+                                goToPreviousPage = {goToPreviousPage}
+                            />
+                        </View>
+                        <View style={styles.buttonStyle}>
+                            <Button
+                                backgroundColor = "#F8FAFB"
+                                title = 'DONE'
+                                buttonPress = {onEditDone}
+                                color = "#4299E1"
+                            />
+                        </View>
 
+                    </View>
+                    :
+                    <View style={{alignItems:'flex-end', justifyContent:'flex-end'}}>
+                        <View style={styles.paginationContainer}>
+                            <Paginator
+                                currentPage = {currentPagePosition}
+                                totalPages = {totalPages}
+                                goToNextPage = {goToNextPage}
+                                goToPreviousPage = {goToPreviousPage}
+                            />
+                        </View>
+                    </View>
+            }
+        
         </View>
     )
 }
@@ -138,6 +161,18 @@ const styles = StyleSheet.create({
         fontSize:12,
         color:"#718096",
         fontWeight:'500'
+    },
+    buttonStyle:{
+        borderColor:'#CCD6E0',
+        borderWidth:1,
+        backgroundColor:'#F8FAFB',
+        borderRadius: 4,
+        // padding:4,
+        paddingLeft:25,
+        paddingRight:25,
+        marginBottom:20,
+        alignItems:"center",
+        justifyContent:'center',
     },
     paginationContainer:{
         borderColor:'#CCD6E0',

@@ -6,19 +6,20 @@ import RemoveIcon from "../../../../assets/svg/removeIcon";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 
 const optionsStyles = {
-    optionsContainer: {
+    optionsContainer: { 
         backgroundColor: "rgba(255, 255, 255, 0)"
     }
 };
 
-function SearchableOptionsField({text, label, options, oneOptionsSelected, onChangeText, onClear, isPopoverOpen, handlePopovers, backgroundColor = "#FFFFFF", borderColor = "#E3E8EF"}) {
+function ChangeSearchableOptionsField({text, label, selectedValue, onSelectValue, options, oneOptionsSelected, onChangeText, onClear, isPopoverOpen, handlePopovers, backgroundColor = "#FFFFFF", borderColor = "#E3E8EF"}) {
 
     const textInputRef = useRef();
-    const [selectedValue, setSelectedValue] = useState(false);
+    // const [selectedValue, setSelectedValue] = useState(false);
    
     const onOptionPress = (option) => {
 
-        setSelectedValue(option);
+        // setSelectedValue(option);
+        onSelectValue(option)
         if (textInputRef) {
             textInputRef.current.clear();
         }
@@ -27,7 +28,8 @@ function SearchableOptionsField({text, label, options, oneOptionsSelected, onCha
     };
 
     const onClearPress = () => {
-        setSelectedValue(false);
+        // setSelectedValue(false);
+        onSelectValue(false)
         onClear() 
     };
 
@@ -97,8 +99,8 @@ function SearchableOptionsField({text, label, options, oneOptionsSelected, onCha
     );
 }
 
-SearchableOptionsField.propTypes = {};
-SearchableOptionsField.defaultProps = {};
+ChangeSearchableOptionsField.propTypes = {};
+ChangeSearchableOptionsField.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
@@ -180,4 +182,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SearchableOptionsField;
+export default ChangeSearchableOptionsField;

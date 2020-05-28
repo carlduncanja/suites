@@ -2,9 +2,9 @@ import React,{useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
-import DateTimePicker from '@react-native-community/datetimepicker'
 import DatePicker from 'react-native-datepicker'
 import { formatDate } from "../../../utils/formatter"
+import moment from 'moment'
 
 /**
  *
@@ -18,13 +18,14 @@ import { formatDate } from "../../../utils/formatter"
  * @constructor
  */
 
-function DateInputField({label, onChangeText, value, placeholder, keyboardType}) {
+function DateInputField({label, mode, onChangeText, placeholder}) {
 
     const [date, setDate] = useState(formatDate(new Date(), "DD/MM/YYYY"));
-    const [mode, setMode] = useState('date');
+    // const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
 
-    const onChange = (event, selectedDate) => {
+    const onChange = (event, selectedDate) => { 
+        console.log("Event: ",event)
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
@@ -38,54 +39,42 @@ function DateInputField({label, onChangeText, value, placeholder, keyboardType})
                 }
             ]}>{label}</Text>
 
-            <View style={[styles.inputWrapper]}>
+            {/* <View style={[styles.inputWrapper]}>
                 <TouchableOpacity style={styles.inputField} onPress={()=>setShow(true)}>
                     <Text>{date}</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
             {
                 // show &&
-                <View style={styles.inputWrapper}>
+                // <View style={styles.inputWrapper}>
                     <DatePicker
-                        style={{width: 200}}
-                        date={date}
-                        mode="date"
-                        placeholder="select date"
+                        style={{width: 200, alignItems:'center'}}
+                        date={moment().format("hh:mm")}
+                        mode={mode}
+                        placeholder={placeholder}
                         format="YYYY-MM-DD"
                         minDate={formatDate(new Date(),"YYYY-MM-DD")}
-                        maxDate="2022-06-01"
-                        confirmBtnText="Confirm"
+                        maxDate="2025-06-01"
+                        confirmBtnText="Done"
                         cancelBtnText="Cancel"
                         customStyles={{
-                        dateIcon: {
-                            position: 'absolute',
-                            left: 0,
-                            top: 4,
-                            marginLeft: 0
-                        },
-                        dateInput: {
-                            height:0,
-                            width:0,
-                            padding:0,
-                            // marginLeft: 36,
-                            backgroundColor:'red'
-                        }
+                            dateInput: {
+                                // flex:1,
+                                height:32,
+                                alignItems:'flex-start',
+                                // width:20,
+                                // padding:0,
+                                borderWidth:0,
+                                // marginLeft: 36,
+                                backgroundColor:"yellow"
+                            }
                         // ... You can check the source to find the other keys.
                         }}
                         showIcon = {false}
-                        onDateChange={(date) => setDate(date) }
-                        hideText={true}
+                        onDateChange={(date) => {onChangeText(date); onChange}}
+                        hideText={false}
                     />
-                    {/* <DateTimePicker
-                        testID="dateTimePicker"
-                        timeZoneOffsetInMinutes={0}
-                        value={date}
-                        mode={mode}
-                        is24Hour={true}
-                        display="default"
-                        onChange={onChange}
-                    /> */}
-                </View>
+                // </View>
             }
 
         </View>

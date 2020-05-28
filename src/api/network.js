@@ -9,6 +9,7 @@ import {
     caseFilesEndpoint, caseFileEndpoint,
     equipmentsEndpoint, equipmentEndpoint,
     equipmentTypesEndpoint, storageLocationsEndpoint,
+    suppliersEndpoint,supplierEndpoint,
     storageLocationEndpoint, categoriesEndpoint, loginEndpoint
 } from "../const/suitesEndpoints";
 
@@ -208,6 +209,19 @@ export const getCategories = async (query, max) => {
         .catch(handleError)
 }
 
+
+// ################# Suppliers Endpoints
+export const getSuppliers = async () => {
+    return suitesAxiosInstance.get(suppliersEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
+};
+
+export const getSupplierById = async (id) => {
+    return suitesAxiosInstance.get(supplierEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError)
+};
 
 
 

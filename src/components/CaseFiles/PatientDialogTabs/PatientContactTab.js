@@ -4,30 +4,54 @@ import InputField2 from "../../common/Input Fields/InputField2";
 import { isValidEmail } from "../../../utils/formatter";
 
 const PatientContactTab = ({onFieldChange, fields}) => {
+    const { contactInfo = {} } = fields
+    const { 
+        phones = [],
+        emails = [],
+        emergencyContact = []
+    } = contactInfo
 
-    const [phones, setPhones] = useState([
+    const cellObj = phones.filter(item => item.type === 'cell')[0] || {}
+    const cellPhone = cellObj.phone || ""
+
+    const workObj = phones.filter(item => item.type === 'work')[0] || {}
+    const workPhone = workObj.phone || ""
+
+    const primaryObj = emails.filter(item => item.type === 'primary')[0] || {}
+    const primaryEmail = primaryObj.phone || ""
+
+    const workEmailObj = emails.filter(item => item.type === 'work')[0] || {}
+    const workEmail = workEmailObj.phone || ""
+
+    const emergency = emergencyContact[0] || {}
+
+    const [phoneValues, setPhones] = useState([
         {
             type : 'cell',
-            phone : ''
+            phone : cellPhone
         },
         {
             type : 'work',
-            phone : ''
+            phone : workPhone
         }
     ])
-
-    const [emails, setEmails] = useState([
+     
+    const [emailValues, setEmails] = useState([
         {
             type : 'primary',
-            email : ''
+            email : primaryEmail
+        },
+        {
+            type : 'work',
+            email : workEmail
         },
     ])
 
-    const [emergency, setEmergency] = useState({
-        name : '',
-        relation : '',
-        phone : '',
-        email : ''
+    const [emergencyValues, setEmergency] = useState({
+        name : emergency.name || "",
+        relation : emergency.relation || "",
+        phone : emergency.phone || "",
+        email : emergency.email || ""
     })
 
     const formatNumber = (value) => {
@@ -35,13 +59,12 @@ const PatientContactTab = ({onFieldChange, fields}) => {
     }
 
     const handlePhone = (type) => (value) => {
-
-        const objIndex = phones.findIndex(obj => obj.type === type);
-        const updatedObj = { ...phones[objIndex], phone: value};
+        const objIndex = phoneValues.findIndex(obj => obj.type === type);
+        const updatedObj = { ...phoneValues[objIndex], phone: value};
         const updatedPhones = [
-            ...phones.slice(0, objIndex),
+            ...phoneValues.slice(0, objIndex),
             updatedObj,
-            ...phones.slice(objIndex + 1),
+            ...phoneValues.slice(objIndex + 1),
         ]; 
 
         if (/^\d{10}$/g.test(value) || !value){
@@ -53,12 +76,12 @@ const PatientContactTab = ({onFieldChange, fields}) => {
 
     const handleEmail = (type) => (value) => {
 
-        const objIndex = emails.findIndex(obj => obj.type === type);
-        const updatedObj = { ...emails[objIndex], email: value};
+        const objIndex = emailValues.findIndex(obj => obj.type === type);
+        const updatedObj = { ...emailValues[objIndex], email: value};
         const updatedEmails = [
-            ...emails.slice(0, objIndex),
+            ...emailValues.slice(0, objIndex),
             updatedObj,
-            ...emails.slice(objIndex + 1),
+            ...emailValues.slice(objIndex + 1),
         ]; 
 
         if (isValidEmail(value) || !value){
@@ -70,7 +93,7 @@ const PatientContactTab = ({onFieldChange, fields}) => {
 
     const handleEmergency = (type) => (value) => {
         let updatedEmegency = {
-            ...emergency,
+            ...emergencyValues,
             [type] : value
         }
         if(type === 'email'){
@@ -93,7 +116,7 @@ const PatientContactTab = ({onFieldChange, fields}) => {
                     <InputField2
                         label={"Cell"}
                         onChangeText={(value)=>handlePhone('cell')(value)}
-                        value={formatNumber(phones.filter(item => item.type === 'cell')[0].phone)}
+                        value={formatNumber(phoneValues.filter(item => item.type === 'cell')[0].phone)}
                         onClear={() => handlePhone('cell')('')}
                         keyboardType = "number-pad"
                     />
@@ -102,7 +125,7 @@ const PatientContactTab = ({onFieldChange, fields}) => {
                     <InputField2
                         label={"Work"}
                         onChangeText={(value)=>handlePhone('work')(value)}
-                        value={formatNumber(phones.filter(item => item.type === 'work')[0].phone)}
+                        value={formatNumber(phoneValues.filter(item => item.type === 'work')[0].phone)}
                         onClear={() => handlePhone('work')('')}
                         keyboardType = "number-pad"
                     />
@@ -116,8 +139,17 @@ const PatientContactTab = ({onFieldChange, fields}) => {
                     <InputField2
                         label={"Primary Email"}
                         onChangeText={(value)=>handleEmail('primary')(value)}
-                        value={emails.filter(item => item.type === 'primary')[0].email}
+                        value={emailValues.filter(item => item.type === 'primary')[0].email}
                         onClear={() => handleEmail('primary')('')}
+                        keyboardType = "email-address"
+                    />
+                </View>
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        label={"Work Email"}
+                        onChangeText={(value)=>handleEmail('work')(value)}
+                        value={emailValues.filter(item => item.type === 'work')[0].email}
+                        onClear={() => handleEmail('work')('')}
                         keyboardType = "email-address"
                     />
                 </View>
@@ -135,7 +167,7 @@ const PatientContactTab = ({onFieldChange, fields}) => {
                     <InputField2
                         label={"Name"}
                         onChangeText={(value)=>handleEmergency('name')(value)}
-                        value={emergency['name']}
+                        value={emergencyValues['name']}
                         onClear={() => handleEmergency('name')('')}
                     />
                 </View>
@@ -143,7 +175,7 @@ const PatientContactTab = ({onFieldChange, fields}) => {
                     <InputField2
                         label={"Relationship"}
                         onChangeText={(value)=>handleEmergency('relation')(value)}
-                        value={emergency['relation']}
+                        value={emergencyValues['relation']}
                         onClear={() => onFieldChange('relation')('')}
                     />
                 </View>
@@ -156,7 +188,7 @@ const PatientContactTab = ({onFieldChange, fields}) => {
                     <InputField2
                         label={"Cell"}
                         onChangeText={(value)=>handleEmergency('phone')(value)}
-                        value={formatNumber(emergency['phone'])}
+                        value={formatNumber(emergencyValues['phone'])}
                         onClear={() => onFieldChange('phone')('')}
                         keyboardType = "number-pad"
                     />
@@ -165,7 +197,7 @@ const PatientContactTab = ({onFieldChange, fields}) => {
                     <InputField2
                         label={"Email"}
                         onChangeText={(value)=>handleEmergency('email')(value)}
-                        value={emergency['email']}
+                        value={emergencyValues['email']}
                         onClear={() => onFieldChange('email')('')}
                         keyboardType = "email-address"
                     />

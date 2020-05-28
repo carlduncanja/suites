@@ -9,6 +9,8 @@ import theatres from './theatresReducer';
 import inventory from "./inventoryReducer";
 import equipment from './equipmentReducer';
 import auth from './authReducer';
+import suppliers from './suppliersReducer';
+
 // import app from "./appReducer"
 // import casesFiles from "./caseFilesReducer"
 // import suites from './suitesAppReducer'
@@ -25,6 +27,7 @@ const appReducer = combineReducers({
     theatres,
     equipment,
     inventory,
+    suppliers,
     auth
 });
 

@@ -13,6 +13,7 @@ import Storage from "../../../page/Storage";
 import Procedures from '../../../page/Procedures';
 import Physicians from '../../../page/Physicians';
 import StorageLocations from '../../../page/StorageLocations';
+import Suppliers from '../../../page/Suppliers';
 import Equipment from '../../../page/Equipment';
 
 
@@ -98,7 +99,7 @@ export const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Suppliers: {
-        screen: NotFound,
+        screen: Suppliers,
         params: {
             icon: DeliveryIcon,
             tabName: 'Suppliers',
