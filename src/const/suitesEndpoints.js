@@ -20,9 +20,14 @@ export const equipmentTypesEndpoint = "/equipment-types"
 
 export const caseFilesEndpoint = "/cases";
 export const caseFileEndpoint = (id) => `/cases/${id}`;
+
 // ##### STORAGE
 export const storageLocationsEndpoint = "/storage-locations";
 export const storageLocationEndpoint = (id) => `/storage-locations/${id}`;
+
+// ##### SUPPLIERS
+export const suppliersEndpoint = "/suppliers";
+export const supplierEndpoint = (id) => `/suppliers/${id}`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = "/categories/items";

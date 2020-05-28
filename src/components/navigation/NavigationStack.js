@@ -12,6 +12,7 @@ import Inventory from "../../page/Inventory";
 import Storage from "../../page/Storage";
 import Procedures from '../../page/Procedures';
 import Physicians from '../../page/Physicians';
+import Suppliers from '../../page/Suppliers';
 import StorageLocations from '../../page/StorageLocations';
 import Equipment from '../../page/Equipment';
 
@@ -98,7 +99,7 @@ const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Suppliers: {
-        screen: NotFound,
+        screen: Suppliers,
         params: {
             icon: DeliveryIcon,
             tabName: 'Suppliers',
@@ -163,7 +164,7 @@ const SuitesNavigationStack = createSidebarNavigator(
     }
   },
   {
-    initialRouteName: 'CaseFiles',
+    initialRouteName: 'Suppliers',
   },
 );
 

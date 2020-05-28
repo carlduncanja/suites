@@ -68,14 +68,12 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
 
     const [fields, setFields] = useState({
         patient : {},
-        staff : {},
+        staff : [],
         caseProcedures:[]
     })
 
     const [positiveText, setPositiveText] = useState("NEXT")
-    const [popoverList, setPopoverList] = useState([
-
-    ])
+    const [popoverList, setPopoverList] = useState([])
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(0)
     const [selectedIndex, setSelectedIndex] = useState(0)
@@ -86,10 +84,19 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
     const [completedSteps, setCompletedSteps] = useState([])
     const [completedTabs, setCompletedTabs] = useState([])
 
+    const [name, setName] = useState("")
+
     // ########### EVENT HANDLERS
 
     const onFieldChange = (fieldName) => (value) => {
-        console.log("Fields: ", fieldName, value)
+        if(fieldName === 'patient'){
+            const { firstName = "", surname = "" } = fields['patient'];
+            setName(`${firstName} ${surname}'s Case`)
+        }
+        console.log("Fields: ", {
+            ...fields,
+            [fieldName]: value
+        })
         setFields({
             ...fields,
             [fieldName]: value
@@ -144,6 +151,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
 
     const onPositiveButtonPress = () =>{
         if (selectedIndex === 3){
+            
             setTimeout(() => {onCreated({})}, 200);
             console.log("Hey Save my data and open bottom sheet with the data")
 
@@ -216,6 +224,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
                     onFieldChange = {onFieldChange}
                     fields = {fields}
                     tabs = {tabs}
+                    completedTabs={completedTabs}
                 />
 
             case 2:
@@ -238,10 +247,12 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
         return (selectedTabIndex+1)/tabs.length * 100
     }
 
+    const title = name === "" ? "Add Create Case File" : name
+
     return (
 
         <OverlayDialog
-            title={"Add Create Case File"}
+            title={title}
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
