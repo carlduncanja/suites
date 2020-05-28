@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 
 import Page from '../components/common/Page/Page';
 import ListItem from "../components/common/List/ListItem";
@@ -14,16 +14,16 @@ import AddIcon from "../../assets/svg/addIcon";
 import ArchiveIcon from "../../assets/svg/archiveIcon";
 
 import {connect} from 'react-redux';
-import { setCaseFiles } from "../redux/actions/caseFilesActions";
-import { getCaseFiles } from "../api/network";
+import {setCaseFiles} from "../redux/actions/caseFilesActions";
+import {getCaseFiles} from "../api/network";
 
-import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
-import { currencyFormatter } from '../utils/formatter';
+import {useNextPaginator, usePreviousPaginator} from '../helpers/caseFilesHelpers';
+import {currencyFormatter} from '../utils/formatter';
 import {SuitesContext} from '../contexts/SuitesContext';
 
-import { withModal } from 'react-native-modalfy';
+import {withModal} from 'react-native-modalfy';
 import moment from 'moment';
-import { formatDate } from '../utils/formatter';
+import {formatDate} from '../utils/formatter';
 import caseFiles from "../../data/CaseFiles";
 
 
@@ -105,8 +105,8 @@ const CaseFiles = (props) => {
     };
 
     const handleOnItemPress = (item, isOpenEditable) => {
-        modal.openModal('BottomSheetModal',{
-            content : <CaseFileBottomSheet caseItem = {item} isOpenEditable = {isOpenEditable}/>
+        modal.openModal('BottomSheetModal', {
+            content: <CaseFileBottomSheet caseItem={item} isOpenEditable={isOpenEditable}/>
         })
     };
 
@@ -127,7 +127,7 @@ const CaseFiles = (props) => {
         const indeterminate = selectedCaseIds.length >= 0 && selectedCaseIds.length !== caseFiles.length;
         // console.log("Indeterminate: ", indeterminate)
         if (indeterminate) {
-            const selectedAllIds = [...caseFiles.map( caseItem => caseItem._id )]
+            const selectedAllIds = [...caseFiles.map(caseItem => caseItem._id)]
             setSelectedCaseIds(selectedAllIds)
             // todo insert all id's
         } else {
@@ -187,26 +187,28 @@ const CaseFiles = (props) => {
     const getDate = (dates) => {
         let updatedDates = [...dates]
         let dateIndex = 0
-        while(dateIndex < dates.length){
+        while (dateIndex < dates.length) {
             let earliestDate = moment.min(updatedDates)
             let isAfterToday = moment(earliestDate).isSameOrAfter(new Date())
 
-            if (isAfterToday){
+            if (isAfterToday) {
                 return earliestDate
-            }else{
-                updatedDates = updatedDates.filter( item => item !== earliestDate)
+            } else {
+                updatedDates = updatedDates.filter(item => item !== earliestDate)
             }
-            dateIndex +=1 
+            dateIndex += 1
         }
     }
-    
+
     const caseItem = (item) => {
         const {
-            caseNumber,  
-            patient = {}, 
-            chargeSheets,
-            staff,
+            caseNumber,
+            patient = {},
+            chargeSheet = {},
+            staff = {},
             caseProcedures = [],
+            invoices = [],
+            quotations = [],
             // nextVisit = new Date(2020,10,12)
         } = item
 
@@ -214,20 +216,17 @@ const CaseFiles = (props) => {
         let {leadPhysician} = staff
 
         patient ? name = `${patient.firstName} ${patient.surName}` : name = ""
+        let physicianName;
         leadPhysician ? physicianName = `Dr. ${leadPhysician.surname}` : physicianName = ""
-        chargeSheets.map( item => {
-            item.status === 'pending' ? finalBalance = finalBalance + item.balance :
-            item.status === 'paid' ? finalBalance = finalBalance - item.balance :
-            item.status === 'billed' ? finalBalance = finalBalance + item.balance :
-            finalBalance = finalBalance
-        })
+        finalBalance += chargeSheet.balance
+
         const dates = caseProcedures.map(item => {
-            const { appointment } = item
+            const {appointment} = item
             const {startTime} = appointment
             return moment(startTime)
         })
-       
-        nextVisit = getDate(dates)
+
+        const nextVisit = getDate(dates)
 
         return (
             <>
@@ -242,7 +241,7 @@ const CaseFiles = (props) => {
                     <Text style={styles.itemText}>{physicianName}</Text>
                 </View>
                 <View style={styles.item}>
-                    <Text style={styles.itemText}>{formatDate(nextVisit,"MMM DD, YYYY")}</Text>
+                    <Text style={styles.itemText}>{formatDate(nextVisit, "MMM DD, YYYY")}</Text>
                 </View>
             </>
         )
@@ -250,8 +249,9 @@ const CaseFiles = (props) => {
 
     const getFabActions = () => {
 
-        const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={()=>{}}/>;
-        const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon/>} onPress={ openCreateCaseFile }/>;
+        const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={() => {
+        }}/>;
+        const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon/>} onPress={openCreateCaseFile}/>;
 
 
         return <ActionContainer
@@ -263,7 +263,7 @@ const CaseFiles = (props) => {
         />
     };
 
-    const openCreateCaseFile = () =>{
+    const openCreateCaseFile = () => {
         modal.closeModals('ActionContainerModal');
         // For some reason there has to be a delay between closing a modal and opening another.
         setTimeout(() => {
@@ -272,7 +272,7 @@ const CaseFiles = (props) => {
                 .openModal(
                     'OverlayModal',
                     {
-                        content: <CreateCaseDialogContainer 
+                        content: <CreateCaseDialogContainer
                             onCancel={() => setFloatingAction(false)}
                             onCreated={(item) => handleOnItemPress(item, true)}
                         />,
@@ -287,7 +287,7 @@ const CaseFiles = (props) => {
 
 
     return (
-        <View style={{flex:1}}>
+        <View style={{flex: 1}}>
 
             <Page
                 isFetchingData={isFetchingCaseFiles}
@@ -318,10 +318,10 @@ const CaseFiles = (props) => {
                 </View>
 
                 <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
+                    isDisabled={isFloatingActionDisabled}
+                    toggleActionButton={toggleActionButton}
                 />
-                
+
             </View>
         </View>
 
