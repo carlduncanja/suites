@@ -2,15 +2,19 @@ import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../../common/Input Fields/InputField2";
 
+
+//     "line1": "23 Ruthven Road",
+//     "line2": "",
+//     "city": "Kingston",
+//     "parish": "Kingston 8"
 const PatientAddressTab = ({ onFieldChange, fields }) => {
-    const { addressInfo = [] } = fields
-    const createdAddres = addressInfo[0] || {}
-    const { 
+    const { addressInfo = {} } = fields
+    const createdAddres = addressInfo || {}
+    const {
         line1 = "",
         line2 = "",
         city = "",
         parish = ""
-
     } = createdAddres
 
     const [addressValues, setAddress] = useState({
