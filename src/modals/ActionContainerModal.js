@@ -24,15 +24,17 @@ const ActionContainerModal = (props) => {
     const params = getParams({
         actions: <View/>,
         onClose: () => {
-        }
+        },
+        position : 'right'
     });
 
     console.log(params);
 
-    const {actions, onClose} = getParams({
+    const {actions, onClose, position = 'right'} = getParams({
         actions: <View/>,
         onClose: () => {
-        }
+        },
+        position:'right'
     });
 
     return (
@@ -46,7 +48,9 @@ const ActionContainerModal = (props) => {
                 activeOpacity={1}
                 style={styles.modalContainer}
             />
-            <View style={styles.positionContainer}>
+            <View style={[styles.positionContainer, 
+                {right : position === 'right' ? 40 : null, left : position === 'left' ? 120 : null}
+                ]}>
                 {
                     actions
                 }
@@ -67,6 +71,5 @@ const styles = StyleSheet.create({
     positionContainer: {
         position: 'absolute',
         bottom: 80,
-        right: 40
     }
 })

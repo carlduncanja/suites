@@ -204,7 +204,7 @@ const CaseFiles = (props) => {
         const {
             caseNumber,  
             patient = {}, 
-            chargeSheets,
+            chargeSheets = [],
             staff,
             caseProcedures = [],
             // nextVisit = new Date(2020,10,12)
@@ -227,7 +227,7 @@ const CaseFiles = (props) => {
             return moment(startTime)
         })
        
-        nextVisit = getDate(dates)
+        let nextVisit = getDate(dates)
 
         return (
             <>

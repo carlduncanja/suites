@@ -4,6 +4,12 @@ import Table from '../common/Table/Table';
 import Item from '../common/Table/Item'; 
 import { formatDate } from "../../utils/formatter";
 import ImageIcon from '../../../assets/svg/imageIcon';
+import RoundedPaginator from '../common/Paginators/RoundedPaginator';
+import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
+
+import { withModal } from 'react-native-modalfy';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+
 
 const testData = [
     {
@@ -27,34 +33,85 @@ const testData = [
         orderDate: new Date(2019, 11, 12),
         deliveryDate : new Date(2019, 11, 16)
     },
-    
+     
 ]
 
-const SupplierPurchaseOrders = () => {
+const SupplierPurchaseOrders = ({modal, floatingActions}) => { 
+
     const [checkBoxList, setCheckBoxList] = useState([])
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false)
+
+    const recordsPerPage = 15;
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0)
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
+    const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
     const headers = [
         {
             name :"Purchase Orders",
-            alignment : "flex-start"
+            alignment : "flex-start",
+            flex:1
         },
         {
             name :"Invoice No.",
-            alignment : "flex-start"
+            alignment : "flex-start",
+            flex:1
         },
         {
             name :"Status",
-            alignment : "flex-start"
+            alignment : "flex-start",
+            flex:1
+
         },
         {
             name :"Order Date",
-            alignment : "flex-start"
+            alignment : "flex-start",
+            flex:1
+
         },
         {
             name :"Delivery Date",
-            alignment : "flex-start"
+            alignment : "flex-start",
+            flex:1
+
         }     
     ]
+
+    useEffect(() => {
+        // if (!suppliers.length) fetchSuppliersData()
+        setTotalPages(Math.ceil(testData.length / recordsPerPage))
+    }, []);
+
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPagePosition === 1) return;
+
+        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+    };
+
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: floatingActions(),
+                title: "SUPPLIER ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
+    }
 
     const toggleCheckbox = (item) => () => {
         let updatedCases = [...checkBoxList];
@@ -90,20 +147,20 @@ const SupplierPurchaseOrders = () => {
         let statusColor = status === 'Payment Due' ? '#C53030' : '#319795'
         return (
             <>
-                <View style={styles.item}>
+                <View style={[styles.item,{flex:1}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{order}</Text>
                 </View>
-                <View style={[styles.item, {flexDirection:'row',alignItems: 'flex-start'}]}>
+                <View style={[styles.item, {flexDirection:'row',alignItems: 'flex-start', flex:1, marginRight:15}]}>
                     { invoiceNumber !== "" && <View style={{marginRight:4,alignSelf:'center'}}><ImageIcon/></View>}
                     <Text style={[styles.itemText,{color: "#3182CE"}]}>{invoice}</Text>
                 </View>
-                <View style={[styles.item, {alignItems: 'flex-start'}]}>
-                    <Text style={[styles.itemText,{color : statusColor}]}>{status}</Text>
+                <View style={[styles.item, {alignItems: 'flex-start', flex:1}]}>
+                    <Text style={[styles.itemText,{color : statusColor, fontSize:16}]}>{status}</Text>
                 </View>
-                <View style={[styles.item, {alignItems: 'flex-start'}]}>
+                <View style={[styles.item, {alignItems: 'flex-start', flex:1}]}>
                     <Text style={styles.itemText}>{formatDate(orderDate,'DD/MM/YYYY')}</Text>
                 </View>
-                <View style={[styles.item, {alignItems: 'flex-start'}]}>
+                <View style={[styles.item, {alignItems: 'flex-start',flex:1}]}>
                     <Text style={styles.itemText}>{formatDate(deliveryDate,'DD/MM/YYYY')}</Text>
                 </View>
             </>
@@ -122,7 +179,7 @@ const SupplierPurchaseOrders = () => {
     }
 
     return(
-        <View>
+        <View style={{flex:1}}>
             <Table
                 data = {testData}
                 listItemFormat = {renderListFn}
@@ -131,6 +188,21 @@ const SupplierPurchaseOrders = () => {
                 toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 itemSelected = {checkBoxList}
             />
+            <View style={styles.footer}>
+                <View style={{alignSelf: "center", marginRight: 10}}>
+                    <RoundedPaginator
+                        totalPages={totalPages}
+                        currentPage={currentPagePosition}
+                        goToNextPage={goToNextPage}
+                        goToPreviousPage={goToPreviousPage}
+                    />
+                </View>
+
+                <FloatingActionButton
+                    isDisabled={isFloatingActionDisabled}
+                    toggleActionButton={toggleActionButton}
+                />
+            </View>
         </View>
     )
 }
@@ -138,7 +210,7 @@ const SupplierPurchaseOrders = () => {
 SupplierPurchaseOrders.propTypes = {};
 SupplierPurchaseOrders.defaultProps = {};
 
-export default SupplierPurchaseOrders;
+export default withModal(SupplierPurchaseOrders);
 
 const styles = StyleSheet.create({
     item: {
@@ -147,5 +219,15 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 16,
         color: "#4A5568",
+    },
+    footer: {
+        flex: 1,
+        alignSelf: 'flex-end',
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        // marginBottom: 20,
+        right: 0,
+        marginRight: 30,
     },
 })
