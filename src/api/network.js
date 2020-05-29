@@ -111,6 +111,12 @@ export const getCaseFileById = async (id) => {
         .catch(handleError)
 };
 
+export const createCaseFile = async (caseFileForCreation) => {
+    return suitesAxiosInstance.post(caseFilesEndpoint, caseFiles)
+        .then(handleResponse)
+        .error(handleError);
+}
+
 // ################# Procedures Endpoints
 export const getProcedures = async ( query, max ) => {
     return suitesAxiosInstance.get(proceduresEndpoint, {params : {query, max}})

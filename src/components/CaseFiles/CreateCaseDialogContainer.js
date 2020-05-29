@@ -13,15 +13,14 @@ import PatientIcon from '../../../assets/svg/newCasePatient';
 import ProcedureIcon from '../../../assets/svg/newCaseProcedure';
 import MedicalIcon from '../../../assets/svg/newCaseMedical';
 
-import {  } from "../../api/network";
-import {useModal} from "react-native-modalfy";
+import {createCaseFile} from "../../api/network";
 
 
 /**
  * Component to handle the create storage process.
  *
  * @param onCancel
- * @param onCreated 
+ * @param onCreated
  * @returns {*}
  * @constructor
  */
@@ -103,6 +102,8 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
         })
     }
 
+
+
     const handleStepPress = (name) => {
 
         if (completedSteps.includes(name)){
@@ -148,10 +149,9 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
         }
     }
 
-
     const onPositiveButtonPress = () =>{
         if (selectedIndex === 3){
-            
+
             setTimeout(() => {onCreated({})}, 200);
             console.log("Hey Save my data and open bottom sheet with the data")
 
@@ -207,6 +207,15 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
 
     }
 
+    const handleOnComplete = () => {
+        // prepare request create case file request
+
+        console.log(fields);
+
+
+        // createCaseFile()
+    }
+
 
     const getTabContent = () =>{
 
@@ -237,6 +246,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
             case 3 :
                 return <CompleteCreateCase
                     name = {'Julie Brown'}
+                    onComplete={handleOnComplete}
                 />
             default:
                 break;
@@ -279,7 +289,7 @@ const CreateCaseDialogContainer = ({ onCancel, onCreated }) => {
                 >
                     {getTabContent()}
                 </TouchableOpacity>
-                
+
 
             </View>
         </OverlayDialog>

@@ -11,7 +11,7 @@
     "@emotion/core": "^10.0.21",
     "@emotion/native": "^10.0.14",
     "@ismnoiet/react-native-dropdown": "0.0.2",
-    "@react-native-community/datetimepicker": "2.2.2",
+    "@react-native-community/datetimepicker": "^2.4.0",
     "axios": "^0.19.2",
     "expo": "^37.0.0",
     "jwt-decode": "^2.2.0",

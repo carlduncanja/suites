@@ -1,15 +1,44 @@
-import React,{ useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, {useState} from "react";
+import {View, Text, StyleSheet, Button} from "react-native";
 import InputField2 from "../../common/Input Fields/InputField2";
 import OptionsField from "../../common/Input Fields/OptionsField";
-import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import {MenuOptions, MenuOption} from 'react-native-popup-menu';
 import moment from "moment";
- 
+// import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from "react-native-datepicker";
+import DateInput from "../../common/Input Fields/DateInput";
+import DateInputField from "../../common/Input Fields/DateInputField";
+
+
 const PatientDetailsTab = ({onFieldChange, fields}) => {
 
     const [isMinor, setIsMinor] = useState("No")
     const [trnText, setTrnText] = useState(fields['trn'])
-    const [dateText, setDateText] = useState(fields['dob']) 
+    const [dateText, setDateText] = useState(fields['dob'])
+
+    const [date, setDate] = useState(new Date(1598051730000));
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+    };
+
+    const showMode = currentMode => {
+        setShow(true);
+        setMode(currentMode);
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
+
+    const showTimepicker = () => {
+        showMode('time');
+    };
+
 
     const handleTrnValidation = (trnValue) => {
         if (/^\d{9}$/g.test(trnValue) || !trnValue) {
@@ -19,7 +48,7 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
     }
 
     const handleDateValidation = (date) => {
-        
+
         let dateInstance = new Date(moment(date).toISOString());
         let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
         if ((dateRegex.test(date) && dateInstance instanceof Date) || !date) {
@@ -36,16 +65,16 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
     const handleMinor = (date) => {
         var duration = moment.duration(moment().diff(moment(date)));
         var years = duration.asYears();
-        
-        if( Math.ceil(years) >= 18 ){
+
+        if (Math.ceil(years) >= 18) {
             setIsMinor('No')
-            onFieldChange('minor')('No') 
-        }else{
+            onFieldChange('minor')('No')
+        } else {
             setIsMinor('Yes')
             onFieldChange('minor')('Yes')
         }
     }
- 
+
     return (
         <View style={styles.sectionContainer}>
 
@@ -70,8 +99,8 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
 
             </View>
 
-            <View style={[styles.row, {zIndex:-1}]}>
-                
+            <View style={[styles.row, {zIndex: -1}]}>
+
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Last Name"}
@@ -96,8 +125,8 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
 
             </View>
 
-            <View style={[styles.row,{zIndex:-2}]}>
-                
+            <View style={[styles.row, {zIndex: -2}]}>
+
                 <View style={styles.inputWrapper}>
                     <OptionsField
                         label={"Gender"}
@@ -112,33 +141,38 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"TRN"}
-                        onChangeText={(value) => { handleTrnValidation(value)}}
+                        onChangeText={(value) => {
+                            handleTrnValidation(value)
+                        }}
                         value={formatTrn(trnText)}
                         onClear={() => onFieldChange('trn')('')}
-                        keyboardType = "number-pad"
+                        keyboardType="number-pad"
                     />
                 </View>
 
             </View>
 
-            <View style={[styles.row,{zIndex:-3}]}>
-                
+            <View style={[styles.row, {zIndex: -3}]}>
+
                 <View style={styles.inputWrapper}>
-                    <InputField2
+                    <DateInputField
                         label={"Date of Birth"}
-                        onChangeText={(value) => { handleDateValidation(value)}}
+                        onChangeText={(value) => {
+                            handleDateValidation(value)
+                        }}
                         value={dateText}
-                        onClear={() =>onFieldChange('dob')('')}
-                        keyboardType = "number-pad"
-                        placeholder = "DD/MM/YYYY"
+                        onClear={() => onFieldChange('dob')('')}
+                        keyboardType="number-pad"
+                        placeholder="DD/MM/YYYY"
                     />
                 </View>
-                <View style={styles.inputWrapper}>
-                    <Text style={styles.text}>Minor ?</Text>
-                    <View style={styles.fieldContainer}>
-                        <Text>{isMinor}</Text>
-                    </View>
-                </View>
+
+                {/*<View style={styles.inputWrapper}>*/}
+                {/*    <Text style={styles.text}>Minor ?</Text>*/}
+                {/*    <View style={styles.fieldContainer}>*/}
+                {/*        <Text>{isMinor}</Text>*/}
+                {/*    </View>*/}
+                {/*</View>*/}
 
             </View>
 
@@ -166,9 +200,9 @@ const styles = StyleSheet.create({
     inputWrapper: {
         width: 260,
         flexDirection: 'row',
-        alignItems:'center'
+        alignItems: 'center'
     },
-    fieldContainer:{
+    fieldContainer: {
         flex: 1,
         borderWidth: 1,
         borderColor: '#E3E8EF',
@@ -177,12 +211,12 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingTop: 2,
         paddingBottom: 2,
-        justifyContent:'center'
+        justifyContent: 'center'
     },
-    text:{
+    text: {
         fontSize: 12,
         color: '#718096',
         fontWeight: '500',
-        marginRight:20
+        marginRight: 20
     }
 });
