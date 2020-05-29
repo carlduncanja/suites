@@ -3,76 +3,20 @@ import {View, Text, StyleSheet, Button} from "react-native";
 import InputField2 from "../../common/Input Fields/InputField2";
 import OptionsField from "../../common/Input Fields/OptionsField";
 import {MenuOptions, MenuOption} from 'react-native-popup-menu';
-import moment from "moment";
-// import DateTimePicker from '@react-native-community/datetimepicker';
-import DatePicker from "react-native-datepicker";
-import DateInput from "../../common/Input Fields/DateInput";
 import DateInputField from "../../common/Input Fields/DateInputField";
 
 
 const PatientDetailsTab = ({onFieldChange, fields}) => {
-
-    const [isMinor, setIsMinor] = useState("No")
-    const [trnText, setTrnText] = useState(fields['trn'])
-    const [dateText, setDateText] = useState(fields['dob'])
-
-    const [date, setDate] = useState(new Date(1598051730000));
-    const [mode, setMode] = useState('date');
-    const [show, setShow] = useState(false);
-
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'ios');
-        setDate(currentDate);
-    };
-
-    const showMode = currentMode => {
-        setShow(true);
-        setMode(currentMode);
-    };
-
-    const showDatepicker = () => {
-        showMode('date');
-    };
-
-    const showTimepicker = () => {
-        showMode('time');
-    };
-
-
     const handleTrnValidation = (trnValue) => {
-        if (/^\d{9}$/g.test(trnValue) || !trnValue) {
+        if (trnValue.toString().length > 9) return
+
+        if (/^\d+$/g.test(trnValue) || !trnValue) {
             onFieldChange('trn')(trnValue)
         }
-        setTrnText(trnValue)
     }
 
-    const handleDateValidation = (date) => {
-
-        let dateInstance = new Date(moment(date).toISOString());
-        let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
-        if ((dateRegex.test(date) && dateInstance instanceof Date) || !date) {
-            onFieldChange('dob')(date)
-            handleMinor(date)
-        }
-        setDateText(date)
-    }
-
-    const formatTrn = (value) => {
-        return value.replace(/(\d{3})(\d{3})(\d{3})/, "$1-$2-$3")
-    }
-
-    const handleMinor = (date) => {
-        var duration = moment.duration(moment().diff(moment(date)));
-        var years = duration.asYears();
-
-        if (Math.ceil(years) >= 18) {
-            setIsMinor('No')
-            onFieldChange('minor')('No')
-        } else {
-            setIsMinor('Yes')
-            onFieldChange('minor')('Yes')
-        }
+    const onDateChange = (date) => {
+        onFieldChange("dob")(date)
     }
 
     return (
@@ -144,7 +88,7 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                         onChangeText={(value) => {
                             handleTrnValidation(value)
                         }}
-                        value={formatTrn(trnText)}
+                        value={fields['trn']}
                         onClear={() => onFieldChange('trn')('')}
                         keyboardType="number-pad"
                     />
@@ -157,23 +101,13 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                 <View style={styles.inputWrapper}>
                     <DateInputField
                         label={"Date of Birth"}
-                        onChangeText={(value) => {
-                            handleDateValidation(value)
-                        }}
-                        value={dateText}
+                        value={fields['dob']}
                         onClear={() => onFieldChange('dob')('')}
                         keyboardType="number-pad"
-                        placeholder="DD/MM/YYYY"
+                        placeholder="YYYY/MM/DD"
+                        onDateChange={onDateChange}
                     />
                 </View>
-
-                {/*<View style={styles.inputWrapper}>*/}
-                {/*    <Text style={styles.text}>Minor ?</Text>*/}
-                {/*    <View style={styles.fieldContainer}>*/}
-                {/*        <Text>{isMinor}</Text>*/}
-                {/*    </View>*/}
-                {/*</View>*/}
-
             </View>
 
         </View>
