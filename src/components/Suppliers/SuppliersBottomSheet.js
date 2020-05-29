@@ -4,11 +4,11 @@ import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 import SupplierProductsTab from '../OverlayTabs/SupplierProductsTab';
 import SupplierPurshaseOrders from '../OverlayTabs/SupplierPurchaseOrders';
-
-import { getSupplierById } from "../../api/network";
+ 
+import { getSupplierById } from "../../api/network"; 
 import {colors} from "../../styles";
 
-function SuppliersBottomSheet({supplier, isOpenEditable}) {
+function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) {
     
     const currentTabs = ["Details", "Products", "Purchase Orders"];
     console.log("Procedure:", supplier)
@@ -33,7 +33,7 @@ function SuppliersBottomSheet({supplier, isOpenEditable}) {
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        fetchSupplier(_id)
+        // fetchSupplier(_id)
     }, []);
 
     // ##### Event Handlers
@@ -88,7 +88,6 @@ function SuppliersBottomSheet({supplier, isOpenEditable}) {
         getSupplierById(id)
             .then(data => {
                 setSelectedSupplier(data)
-                // setProcedure(data)
             })
             .catch(error => {
                 console.log("Failed to get supplier", error)
@@ -104,9 +103,13 @@ function SuppliersBottomSheet({supplier, isOpenEditable}) {
             case "Details":
                 return <SupplierDetailsTab/>
             case "Products":
-                return <SupplierProductsTab/>
+                return <SupplierProductsTab
+                    floatingActions = {floatingActions}
+                />
             case "Purchase Orders":
-                return <SupplierPurshaseOrders/>;
+                return <SupplierPurshaseOrders
+                    floatingActions = {floatingActions}
+                />;
             default :
                 return <View/>
         }
@@ -120,6 +123,7 @@ function SuppliersBottomSheet({supplier, isOpenEditable}) {
                         <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
                     </View>
                     :
+                   
                     // console.log("Selected: ", selectedProcedure)
                     <SlideOverlay
                         overlayId={_id}
@@ -131,7 +135,7 @@ function SuppliersBottomSheet({supplier, isOpenEditable}) {
                         onEditPress = {onEditPress}
                         overlayContent={
                             <View 
-                                style={{flex: 1, padding:30}}
+                                style={{flex: 1, padding:30, paddingBottom:20}}
                                 // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
                             >
                                 {getTabContent(currentTab)}
@@ -146,7 +150,7 @@ function SuppliersBottomSheet({supplier, isOpenEditable}) {
 SuppliersBottomSheet.propTypes = {};
 SuppliersBottomSheet.defaultProps = {};
 
-export default SuppliersBottomSheet;
+export default  SuppliersBottomSheet;
 
 const styles = StyleSheet.create({
     item:{

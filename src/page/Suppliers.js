@@ -9,9 +9,8 @@ import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
 
-import WasteIcon from "../../assets/svg/wasteIcon";
+import ArchiveIcon from "../../assets/svg/archiveIcon";
 import AddIcon from "../../assets/svg/addIcon";
-import AssignIcon from "../../assets/svg/assignIcon";
 
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
 
@@ -19,7 +18,7 @@ import {connect} from 'react-redux';
 import {setSuppliers} from "../redux/actions/suppliersActions";
 import {getSuppliers} from "../api/network";
 
-import {withModal} from 'react-native-modalfy';
+import {withModal, useModal} from 'react-native-modalfy';
 import suppliersTest from '../../data/Suppliers'
 import SuppliersBottomSheet from '../components/Suppliers/SuppliersBottomSheet';
 
@@ -48,7 +47,8 @@ const Suppliers = (props) => {
     const floatingActions = []
 
     //  ############ Props
-    const {suppliers, setSuppliers, navigation, modal} = props;
+    const {suppliers = [], setSuppliers} = props;
+    const modal = useModal();
 
     //  ############ State
     const [isFetchingData, setFetchingData] = useState(false);
@@ -87,9 +87,13 @@ const Suppliers = (props) => {
         setSelectedSuppliers(updatedSuppliersList)
     }
 
-    const handleOnItemPress = (item, isOpenEditable) => {
+    const handleOnItemPress = (item, isOpenEditable) =>{
         modal.openModal('BottomSheetModal',{
-            content: <SuppliersBottomSheet supplier = {item} isOpenEditable = {isOpenEditable}/>
+            content: <SuppliersBottomSheet 
+                supplier = {item} 
+                isOpenEditable = {isOpenEditable}
+                floatingActions = {getFabActions}
+            />
         })
     }
 
@@ -116,7 +120,7 @@ const Suppliers = (props) => {
         modal.openModal("ActionContainerModal",
             {
                 actions: getFabActions(),
-                title: "SUPPLIERS ACTIONS",
+                title: "SUPPLIER ACTIONS",
                 onClose: () => {
                     setFloatingAction(false)
                 }
@@ -172,23 +176,23 @@ const Suppliers = (props) => {
 
     const getFabActions = () => {
 
-        const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {
-            }}>
-                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
-                }} touchable={false}/>
-            </LongPressWithFeedback>;
-        const createNewSupplier = <ActionItem title={"New Supplier"} icon={<AddIcon/>}onPress={()=>{}}/>;
+        const archiveCase = <ActionItem title={"Archive Supplier"} icon={<ArchiveIcon/>} onPress={()=>{}}/>;
+        const createNewSupplier = <ActionItem title={"Add Supplier"} icon={<AddIcon/>}onPress={onOpenCreateSupplier}/>;
 
 
         return <ActionContainer
             floatingActions={[
-                deleteAction,
+                archiveCase,
                 createNewSupplier
             ]}
-            title={"SUPPLIERS ACTIONS"}
+            title={"SUPPLIER ACTIONS"}
         />
     };
+
+
+    const onOpenCreateSupplier = () =>{
+        console.log("Add Supplier")
+    }
 
     // ############# Prepare list data
 

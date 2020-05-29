@@ -6,7 +6,24 @@ import Table from "../../common/Table/Table"
 import Paginator from '../../common/Paginators/Paginator';
 import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesHelpers';
 
-const PickListCard = ({title, isEditMode = false, onEditDone = ()=>{},closeModal, data, selectedTab, listItemFormat, tabs, headers, isCheckBox ,onPressTab}) =>{
+const PickListCard = (props) =>{
+
+    const { 
+        title, 
+        isEditMode = false, 
+        onEditDone = ()=>{},
+        closeModal, 
+        data, 
+        selectedTab, 
+        listItemFormat, 
+        tabs, 
+        headers, 
+        isCheckBox ,
+        onPressTab,
+        hasFooter = false,
+        onFooterPress = () => {},
+        footerTitle = ""
+    } = props
 
     const recordsPerPage = 6
     const dataLength = data.length
@@ -104,6 +121,18 @@ const PickListCard = ({title, isEditMode = false, onEditDone = ()=>{},closeModal
                         </View>
                     </View>
             }
+
+            {
+                hasFooter &&
+                <View style={styles.footer}>
+                    <Button
+                        backgroundColor = "#FFFFFF"
+                        title = {footerTitle}
+                        buttonPress = {onFooterPress}
+                        color = "#4299E1"
+                    />
+                </View>
+            }
         
         </View>
     )
@@ -183,5 +212,13 @@ const styles = StyleSheet.create({
         alignSelf:'flex-end',
         marginRight:15,
         marginBottom:20
+    },
+    footer:{
+        backgroundColor:'#FFFFFF',
+        borderTopWidth:1,
+        borderTopColor:'#CCD6E0',
+        padding:5,
+        paddingBottom:20,
+        paddingTop:20
     }
 })
