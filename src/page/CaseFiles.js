@@ -104,7 +104,9 @@ const CaseFiles = (props) => {
         setCurrentPageListMax(currentListMax);
     };
 
-    const handleOnItemPress = (item, isOpenEditable) => {
+    const handleOnItemPress = (item, isOpenEditable) => () => {
+        console.log("item press", item);
+
         modal.openModal('BottomSheetModal', {
             content: <CaseFileBottomSheet caseItem={item} isOpenEditable={isOpenEditable}/>
         })
@@ -179,7 +181,7 @@ const CaseFiles = (props) => {
             hasCheckBox={true}
             isChecked={selectedCaseIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => handleOnItemPress(item, false)}
+            onItemPress={handleOnItemPress(item, false)}
             itemView={caseItem(item)}
         />
     };

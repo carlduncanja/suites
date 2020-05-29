@@ -25,8 +25,8 @@ import { Patient, Procedures, MedicalStaff, MedicalHistory, ChargeSheet  } from 
 import { getCaseFileById } from "../../api/network";
 
 
-const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{ 
-    
+const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
+
     const overlayMenu = [
         {
             name:"Patient",
@@ -62,24 +62,23 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
 
     const initialMenuItem = overlayMenu[0].name
     const initialCurrentTabs = overlayMenu[0].overlayTabs
-    const intialSelectedTab = initialCurrentTabs[0] 
+    const intialSelectedTab = initialCurrentTabs[0]
 
     const {_id, patient, caseNumber } = caseItem
     patient ? name = `${patient.firstName} ${patient.surName}` : name = ""
-    
-    // ############### Staate
+
+    // ############### State
 
     const [selectedTab, setSelectedTab] = useState(intialSelectedTab)
     const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs)
     const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem)
 
-    const [isEditMode, setEditMode] = useState(isOpenEditable)
+    const [isEditMode, setEditMode] = useState(false)
     const [selectedCase, setSelectedCase] = useState({})
     const [isFetching, setFetching] = useState(false);
 
     // ############### Lifecycle Methods
     useEffect(() => {
-        console.log("Hello")
         fetchCase(_id)
     }, []);
 
@@ -103,7 +102,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
     const onEditPress = (tab) =>{
         // setEditableTab(tab)
         setEditMode(!isEditMode)
-            
+
     }
     // ############### Helper Function
     const fetchCase = (id) => {
@@ -159,16 +158,16 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
                     selectedTab = {selectedTab}
                     isEditMode = {isEditMode}
                 />
-               
+
             default :
                 return <View/>
-            
+
         }
 
     }
-    
-    // const overlayContent = <Navigation 
-    //     item = {caseItem} 
+
+    // const overlayContent = <Navigation
+    //     item = {caseItem}
     //     overlayMenu = {overlayMenu}
     //     handleOverlayMenuPress = {handleOverlayMenuPress}
     //     selectedTab = {selectedTab}
@@ -199,6 +198,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
                             }
                             onEditPress = {onEditPress}
                         />
+
                         <View style={styles.footer}>
                             <CaseFileOverlayMenu
                                 selectedMenuItem = {selectedMenuItem}
@@ -206,7 +206,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
                                 handleTabPress = {handleOverlayMenuPress}
                             />
                         </View>
-                        
+
                     </>
             }
         </View>
