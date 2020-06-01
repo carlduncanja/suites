@@ -10,6 +10,7 @@ import {
     equipmentsEndpoint, equipmentEndpoint,
     equipmentTypesEndpoint, storageLocationsEndpoint,
     suppliersEndpoint,supplierEndpoint,
+    purchaseOrdersEndpoint,purchaseOrderEndpoint,
     storageLocationEndpoint, categoriesEndpoint, loginEndpoint
 } from "../const/suitesEndpoints";
 
@@ -219,6 +220,19 @@ export const getSuppliers = async () => {
 
 export const getSupplierById = async (id) => {
     return suitesAxiosInstance.get(supplierEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError)
+};
+
+// ################# PurchaseOrders Endpoints
+export const getPurchaseOrders = async () => {
+    return suitesAxiosInstance.get(purchaseOrdersEndpoint)
+        .then(handleResponse)
+        .catch(handleError)
+};
+
+export const getPurchaseOrderById = async (id) => {
+    return suitesAxiosInstance.get(purchaseOrderEndpoint(id))
         .then(handleResponse)
         .catch(handleError)
 };

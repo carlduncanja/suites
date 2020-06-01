@@ -35,7 +35,7 @@ const testData = [
     }
 ]
 
-const SupplierProductsTab = ({modal, floatingActions }) => {
+const SupplierProductsTab = ({modal, floatingActions, supplierId }) => {
 
     const [checkBoxList, setCheckBoxList] = useState([])
     
@@ -139,12 +139,12 @@ const SupplierProductsTab = ({modal, floatingActions }) => {
         //     setCheckBoxList(tabDetails)
     }
 
-    const openPurchaseOrder = (id) =>{
+    const openPurchaseOrder = () =>{
         console.log("Id: ", id)
         modal.openModal('OverlayInfoModal',{ 
             overlayContent : <SuppliersPurchaseOrder 
                 details = {[]}  
-                tabs = {[id]} 
+                tabs = {[supplierId]} 
             />,
         })
     }
@@ -154,7 +154,7 @@ const SupplierProductsTab = ({modal, floatingActions }) => {
             <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
                 <ActionItem title={"Hold to Empty Cart"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
             </LongPressWithFeedback>;
-        const completePO = <ActionItem title={"Complete P.O"} icon={<CartAction/>} onPress={()=>{}}/>;
+        const completePO = <ActionItem title={"Complete P.O"} icon={<CartAction/>} onPress={openPurchaseOrder}/>;
 
 
         return <ActionContainer
@@ -186,7 +186,7 @@ const SupplierProductsTab = ({modal, floatingActions }) => {
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={()=>openPurchaseOrder(item._id)}
+            onItemPress={()=>{}}
             itemView={listItemFormat(item)}
         />
     }

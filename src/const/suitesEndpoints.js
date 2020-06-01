@@ -34,6 +34,11 @@ export const storageLocationEndpoint = (id) => `/storage-locations/${id}`;
 export const suppliersEndpoint = "/suppliers";
 export const supplierEndpoint = (id) => `/suppliers/${id}`;
 
+// ##### PURCHASE ORDERS
+export const purchaseOrdersEndpoint = "/purchaseOrders";
+export const purchaseOrderEndpoint = (id) => `/purchaseOrders/${id}`;
+
+
 // ##### CATEGORIES
 export const categoriesEndpoint = "/categories/items";
 

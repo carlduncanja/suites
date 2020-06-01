@@ -1,22 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
-import SupplierProductsTab from '../OverlayTabs/SupplierProductsTab';
-import SupplierPurshaseOrders from '../OverlayTabs/SupplierPurchaseOrders';
-  
-import { getSupplierById } from "../../api/network"; 
-import {colors} from "../../styles";
 
-function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) {
+  
+import { getPurchaseOrderById } from "../../api/network"; 
+import {colors} from "../../styles";
+import OrderDetailsTab from '../OverlayTabs/OrderDetailsTab';
+import OrderItemTab from '../OverlayTabs/OrderItemTab';
+import OrderSuppliersTab from '../OverlayTabs/OrderSuppliersTab';
+import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
+
+function OrdersBottomSheet({order = {}, isOpenEditable}) {
     
-    const currentTabs = ["Details", "Products", "Purchase Orders"];
-    console.log("Procedure:", supplier)
+    const currentTabs = ["Details", "Items", "Suppliers"];
+    console.log("Order:", order)
     const {
-       id,
-       name,
-       _id = id
-    } = supplier;
+       _id,
+       supplier,
+    } = order;
     
 
     // ##### States
@@ -25,7 +26,7 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
     const [isEditMode, setEditMode] = useState(isOpenEditable);
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
-    const [selectedSupplier, setSelectedSupplier] = useState({})
+    const [selectedOrder, setSelectedOrder] = useState({})
 
     const [fields, setFields] = useState({})
 
@@ -33,7 +34,7 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        // fetchSupplier(_id)
+        // fetchOrder(_id)
     }, []);
 
     // ##### Event Handlers
@@ -83,14 +84,14 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
 
     // ##### Helper functions
 
-    const fetchSupplier = (id) => {
+    const fetchOrder = (id) => {
         setFetching(true);
-        getSupplierById(id)
+        getPurchaseOrderById(id)
             .then(data => {
-                setSelectedSupplier(data)
+                setSelectedOrder(data)
             })
             .catch(error => {
-                console.log("Failed to get supplier", error)
+                console.log("Failed to get order", error)
                 //TODO handle error cases.
             })
             .finally(_ => {
@@ -101,16 +102,11 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <SupplierDetailsTab/>
-            case "Products":
-                return <SupplierProductsTab
-                    floatingActions = {floatingActions}
-                    supplierId = {id}
-                />
-            case "Purchase Orders":
-                return <SupplierPurshaseOrders
-                    floatingActions = {floatingActions}
-                />;
+                return <OrderDetailsTab/>
+            case "Items":
+                return <OrderItemTab/>
+            case "Suppliers":
+                return <SupplierDetailsTab/>;
             default :
                 return <View/>
         }
@@ -127,8 +123,8 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
                    
                     // console.log("Selected: ", selectedProcedure)
                     <SlideOverlay
-                        overlayId={_id}
-                        overlayTitle={name}
+                        overlayId={supplier}
+                        overlayTitle={_id}
                         onTabPressChange={onTabPress}
                         currentTabs={currentTabs}
                         selectedTab={currentTab}
@@ -148,10 +144,10 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
     );
 }
 
-SuppliersBottomSheet.propTypes = {};
-SuppliersBottomSheet.defaultProps = {};
+OrdersBottomSheet.propTypes = {};
+OrdersBottomSheet.defaultProps = {};
 
-export default  SuppliersBottomSheet;
+export default  OrdersBottomSheet;
 
 const styles = StyleSheet.create({
     item:{
