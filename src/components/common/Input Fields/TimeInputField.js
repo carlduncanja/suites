@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 import DatePicker from "react-native-datepicker";
+import moment from 'moment';
 
 /**
  *
@@ -10,21 +11,16 @@ import DatePicker from "react-native-datepicker";
  * @param onChangeText
  * @param value
  * @param placeholder
- * @param keyboardType
  * @param onClear
  * @returns {*}
  * @constructor
  */
-function DateInputField({label, onDateChange, value, placeholder, onClear}) {
+function TimeInputField({label, onDateChange, value, placeholder, onClear}) {
 
     // const [date, setDate] = useState(value);
 
     const handleOnDateChange = (dateString, dateObj) => {
-        // if (!onDateChange) {
-        //     setDate(dateObj)
-        // } else {
             onDateChange(dateObj)
-        // }
     }
 
     return (
@@ -39,11 +35,10 @@ function DateInputField({label, onDateChange, value, placeholder, onClear}) {
             <DatePicker
                 style={{flex: 1}}
                 date={value}
-                mode="date"
+                mode="time"
                 placeholder={placeholder}
-                iconComponent={<View/>}
-                format="YYYY-MM-DD"
-                minDate={new Date()}
+                showIcon={false}
+                format="hh:mm A"
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 customStyles={{
@@ -66,8 +61,8 @@ function DateInputField({label, onDateChange, value, placeholder, onClear}) {
     );
 }
 
-DateInputField.propTypes = {};
-DateInputField.defaultProps = {};
+TimeInputField.propTypes = {};
+TimeInputField.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
@@ -101,4 +96,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default DateInputField;
+export default TimeInputField;

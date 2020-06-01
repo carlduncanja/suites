@@ -173,13 +173,6 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         })
     }
 
-    const onPatientFieldChange = (fieldName) => (value) => {
-        setPatientInfo({
-            ...patientInfo,
-            [fieldName]: value
-        })
-    }
-
     const onStaffUpdate = (value, selectedType) => {
         // update the current staff value at the index
         const newStaff = {...value, type: selectedType}
@@ -196,6 +189,9 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         setStaffInfo(updatedStaffs)
     }
 
+    const onProcedureUpdate = (value) => {
+        setCaseProceduresInfo([...value])
+    }
 
     const handleStepPress = (name) => {
 
@@ -335,8 +331,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
             case 2:
                 return <ProcedureStep
                     selectedTabIndex={selectedTabIndex}
-                    onFieldChange={onFieldChange}
-                    fields={staffInfo}
+                    onProcedureUpdate={onProcedureUpdate}
+                    procedures={caseProceduresInfo}
                 />
 
             case 3 :
@@ -362,7 +358,6 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
-            // handlePopovers = {handlePopovers}
         >
             <View style={styles.container}>
                 <ProgressContainer

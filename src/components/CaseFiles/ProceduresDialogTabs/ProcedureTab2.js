@@ -1,35 +1,21 @@
-import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import InputField2 from "../../common/Input Fields/InputField2";
+import React, {useState, useEffect} from "react";
+import {View, Text, StyleSheet} from "react-native";
 import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField";
 import DateInputField from "../../common/Input Fields/DateInputField";
-import DateInputField2 from "../../common/Input Fields/DateInputField2";
-import MultipleSelectionsField from "../../common/Input Fields/MultipleSelectionsField";
 import _ from "lodash";
 import {getProcedures, getTheatres} from "../../../api/network";
-import moment, { min } from 'moment';
-import { formatDate } from "../../../utils/formatter";
+import moment from 'moment';
+import TimeInputField from "../../common/Input Fields/TimeInputField";
 
-import { MenuOptions, MenuOption } from 'react-native-popup-menu';
-import DateInput from "../../common/Input Fields/DateInput";
-import TimePickerField from "../../common/Input Fields/TimePicker";
+const ProcedureTab2 = ({
+                           onProcedureInfoChange,
+                           procedureInfo
+                       }) => {
 
-const ProcedureTab2 = ({onFieldChange, fields}) =>{
+    // const [procedure, setProcedure] = useState(undefined)
+    // const [location, setLocation] = useState(undefined)
 
-    const [procedureValues ,setProcedureValues] = useState({
-        procedure : '',
-        startTime : '',
-        endTime : '', 
-        location : '',
-    })
-
-    const [startTime, setStartTime] = useState('')
-    const [endTime, setEndTime] = useState('')
-    const [date, setDate] = useState('')
-
-    const [momentDate, setMomentDate] = useState('')
-
-    const [searchProcedureValue, setSearchProcedureValue] = useState('') 
+    const [searchProcedureValue, setSearchProcedureValue] = useState('')
     const [searchProcedureResult, setSearchProcedureResult] = useState([])
     const [searchProcedureQuery, setSearchProcedureQuery] = useState({})
 
@@ -37,7 +23,15 @@ const ProcedureTab2 = ({onFieldChange, fields}) =>{
     const [searchLocationResult, setSearchLocationResult] = useState([])
     const [searchLocationQuery, setSearchLocationQuery] = useState({})
 
-    useEffect(()=>{
+    const {
+        startTime,
+        endTime,
+        location,
+        procedure,
+        date
+    } = procedureInfo || {};
+
+    useEffect(() => {
         if (!searchProcedureValue) {
             // empty search values and cancel any out going request.
             setSearchProcedureResult([]);
@@ -58,9 +52,9 @@ const ProcedureTab2 = ({onFieldChange, fields}) =>{
 
         search()
 
-    },[searchProcedureValue])
+    }, [searchProcedureValue])
 
-    useEffect(()=>{
+    useEffect(() => {
         if (!searchLocationValue) {
             // empty search values and cancel any out going request.
             setSearchLocationResult([]);
@@ -80,20 +74,14 @@ const ProcedureTab2 = ({onFieldChange, fields}) =>{
         });
 
         search()
-        
-    },[searchLocationValue])
+
+    }, [searchLocationValue])
 
     const fetchProcedures = () => {
 
         getProcedures(searchProcedureValue, 5)
             .then((data = []) => {
-                // console.log("Dta: ", data)
-                // const results = data.map(item => ({
-                //     name: `Dr. ${item.surname}`,
-                //     ...item
-                // }));
                 setSearchProcedureResult(data || []);
-
             })
             .catch(error => {
                 // TODO handle error
@@ -104,138 +92,174 @@ const ProcedureTab2 = ({onFieldChange, fields}) =>{
 
     const fetchLocations = () => {
         getTheatres(searchLocationValue, 5)
-        .then((data = []) => {
-            // const results = data.map(item => ({
-            //     name: `Dr. ${item.surname}`,
-            //     ...item
-            // }));
-            setSearchLocationResult(data || []);
+            .then((data = []) => {
+                setSearchLocationResult(data || []);
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get procedures");
+                setSearchLocationResult([]);
+            })
 
-        })
-        .catch(error => {
-            // TODO handle error
-            console.log("failed to get procedures");
-            setSearchLocationResult([]);
-        })
-        
     }
 
-    const handleProcedure = (fieldName) => (value) => {
-        console.log("Field: ", fieldName, value);
-        (fieldName === 'procedure' || fieldName === 'location') ? value = value._id : value = value
-        setProcedureValues({
-            ...procedureValues,
-            [fieldName] : value
+    const handleInfoChange = (fieldName) => (value) => {
+        onProcedureInfoChange({
+            ...procedureInfo,
+            [fieldName]: value,
         })
     }
 
-    const onConfirm = (field) => (hour, minute) => {
-        console.log("Confirm:", momentDate, hour, minute)
-        let date = momentDate !== "" ? moment(momentDate + ' ' + `${hour-5}:${minute}`) : moment(new Date() + ' ' + `${hour-5}:${minute}`)
-        console.log("Date:", date)
-        // if(momentDate !== ""){
-        //     let startDate = moment(momentDate + ' ' + `${hour-5}:${minute}`)
-        //     // let startDate = moment(momentDate + ' ' + `${hour}:${minute}`,'YYYY-MM-DD HH:mm').format('YYYY-MM-DD HH:mm')
-        // }
-        field === 'startTime' ? setStartTime(`${hour}:${minute}`) : setEndTime(`${hour}:${minute}`)
-        setProcedureValues({
-            ...procedureValues,
-            [field] : date
-        })
-        onFieldChange({
-            ...procedureValues,
-            [field] : date
+    const handleProcedure = (value) => {
+        const procedure = value ? {
+            _id: value._id,
+            name: value.name,
+        } : value
+
+        handleInfoChange("procedure")(procedure)
+        setSearchProcedureResult([])
+        setSearchProcedureQuery(undefined);
+    }
+
+    const handleLocationChange = (value) => {
+        const location = value ? {
+            _id: value._id,
+            name: value.name
+        } : value
+
+        handleInfoChange('location')(location);
+        setSearchLocationResult([])
+        setSearchLocationQuery(undefined)
+    }
+
+    const onDateUpdate = (date) => {
+        // update the date for start and end time.
+        const newDate = moment(date);
+
+        console.log("onDateUpdate", newDate, startTime, endTime)
+
+        const newStartTime = startTime ? moment(startTime).year(newDate.year()).month(newDate.month()).date(newDate.date()) : undefined
+        const newEndTime = endTime ? moment(endTime).year(newDate.year()).month(newDate.month()).date(newDate.date()) : undefined
+
+        console.log("onDateUpdate", newDate, newStartTime, newEndTime)
+
+        // update procedure
+        onProcedureInfoChange({
+            ...procedureInfo,
+            date: date,
+            startTime: newStartTime && newStartTime.toDate(),
+            endTime: newEndTime && newEndTime.toDate()
         })
     }
 
-    const handleDate = (date) => {
-        let dateInstance = new Date(moment(date).toISOString());
-        let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
-        if ((dateRegex.test(date) && dateInstance instanceof Date) || !date) {
-            setMomentDate(date)
+    const onDateClear = () => {
+        onProcedureInfoChange({
+            ...procedureInfo,
+            date: undefined
+        })
+    }
+
+
+    const onTimeUpdate = (field) => (dateTime) => {
+        console.log("onTimeUpdated: date time ", dateTime);
+
+        let newTime  = moment(dateTime);
+        if (date) {
+            // change update the date;
+            const dateMoment = new moment(date);
+            newTime.year(dateMoment.year()).month(dateMoment.month()).date(dateMoment.date())
         }
-        setDate(date)
+
+        onProcedureInfoChange({
+            ...procedureInfo,
+            [field]: newTime.toDate()
+        })
+
+        console.log("onTimeUpdated", procedureInfo);
     }
+
+    const onTimeClear = (field) => () => {
+        onProcedureInfoChange({
+            ...procedureInfo,
+            [field]: undefined
+        })
+    }
+
+    console.log("procedure tab", procedureInfo);
+
 
     return (
-
         <View style={styles.sectionContainer}>
-
             <View style={styles.row}>
-
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Procedure"}
+                        value={procedure}
                         text={searchProcedureValue}
-                        oneOptionsSelected={(value) => {handleProcedure('procedure')(value)}}
+                        oneOptionsSelected={handleProcedure}
                         onChangeText={value => setSearchProcedureValue(value)}
-                        onClear={() => {
-                            handleProcedure('procedure')('')
-                            // onFieldChange('procedure')('');
-                            setSearchProcedureValue('');
-                        }}
+                        onClear={handleProcedure}
                         options={searchProcedureResult}
-                        // handlePopovers = {(value)=>handlePopovers(value)('physician')}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {true}
+                        handlePopovers={() => {
+                            console.log("handle popovers");
+                        }}
+                        isPopoverOpen={searchProcedureQuery}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Location"}
+                        value={location}
                         text={searchLocationValue}
-                        oneOptionsSelected={(value) => {handleProcedure('location')(value)}}
+                        oneOptionsSelected={handleLocationChange}
                         onChangeText={value => setSearchLocationValue(value)}
-                        onClear={() => {
-                            handleProcedure('location')('');
-                            setSearchLocationValue('');
-                        }}
+                        onClear={handleLocationChange}
                         options={searchLocationResult}
-                        // handlePopovers = {(value)=>handlePopovers(value)('physician')}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {true}
+                        handlePopovers={() => {
+                        }}
+                        isPopoverOpen={searchLocationQuery}
                     />
                 </View>
 
             </View>
-            
-            <View style={[styles.row,{zIndex:-1}]}>
+
+            <View style={[styles.row, {zIndex: -1}]}>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2
+                    <DateInputField
                         label={"Date"}
-                        onChangeText={(value) => { handleDate(value)}}
+                        onDateChange={onDateUpdate}
                         value={date}
-                        onClear={() =>setDate('')}
-                        keyboardType = "number-pad"
-                        placeholder = "DD/MM/YYYY"
+                        onClear={onDateClear}
+                        placeholder="DD/MM/YYYY"
                     />
                 </View>
 
             </View>
 
-            <View style={[styles.row, {zIndex:-2}]}>
+            <View style={[styles.row, {zIndex: -2}]}>
 
                 <View style={[styles.inputWrapper]}>
-                    <TimePickerField
-                        refValue = {'startPicker'}
-                        time = {startTime}
-                        onConfirm = {onConfirm('startTime')}
-                        label = "Start Time"
+                    <TimeInputField
+                        label={"Start Time"}
+                        onDateChange={onTimeUpdate("startTime")}
+                        value={startTime}
+                        onClear={onTimeClear("startTime")}
+                        placeholder="HH:MM"
                     />
+
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <TimePickerField
-                        refValue = {'endPicker'}
-                        time = {endTime}
-                        onConfirm = {onConfirm('endTime')}
-                        label = "End Time"
+                    <TimeInputField
+                        label={"End Time"}
+                        onDateChange={onTimeUpdate("endTime")}
+                        value={endTime}
+                        onClear={onTimeClear("endTime")}
+                        placeholder="HH:MM"
                     />
                 </View>
-           
             </View>
-
         </View>
     )
 }

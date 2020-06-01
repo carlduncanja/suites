@@ -1,68 +1,26 @@
-import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, {useState, useEffect} from "react";
+import {View, Text, StyleSheet} from "react-native";
 import ProcedureTab2 from "./ProcedureTab2";
 
 
-const ProcedureStep = ({selectedTabIndex, onFieldChange, fields}) => {
+const ProcedureStep = ({onProcedureUpdate, procedures, selectedTabIndex}) => {
 
-    const [procedureFields, setProcedureFields] = useState([
-        // {
-        //     procedure : '',
-        //     startTime : '',
-        //     endTime : '',
-        //     location : ''
-        // },
-        // {
-        //     procedure : '',
-        //     startTime : '',
-        //     endTime : '',
-        //     location : ''
-        // }
-    ])
-
-    const onProcedureFieldChange = (objIndex) => (value) =>{
-        const findIndex = procedureFields.findIndex((obj,index) => index === objIndex);
-        const updatedObj = value;
-        const updatedProcedures = [
-            ...procedureFields.slice(0, findIndex),
-            updatedObj,
-            ...procedureFields.slice(findIndex + 1),
-        ];
-        // console.log("Values: ",[
-        //     ...procedureFields.slice(0, findIndex),
-        //     updatedObj,
-        //     ...procedureFields.slice(findIndex + 1),
-        // ]
-        // )
-        setProcedureFields(updatedProcedures)
-        onFieldChange('caseProcedures')(updatedProcedures)
+    const onProcedureFieldChange = (objIndex) => (value) => {
+        const updatedProcedure = [...procedures];
+        updatedProcedure[objIndex] = value;
+        onProcedureUpdate(updatedProcedure)
     }
 
-    // useEffect(()=>{
-    //     console.log("Change")
-    // },[selectedTabIndex])
+    const currentProcedure = procedures[selectedTabIndex];
 
-    const currentFields = procedureFields.filter( (item,index) => index === selectedTabIndex)
+    console.log("procedure step", selectedTabIndex, procedures)
 
-    const getTab = () => {
-        switch (selectedTabIndex) {
-            case 0:
-                return <ProcedureTab2
-                    onFieldChange = {onProcedureFieldChange(0)}
-                    fields = {currentFields}
-                />
-            case 1:
-                return <ProcedureTab2
-                    onFieldChange = {onProcedureFieldChange(1)}
-                    fields = {currentFields}
-                />
-            default:
-                break;
-        }
-    }
     return (
-        <View style={{flex:1}}>
-            {getTab()}
+        <View style={{flex: 1}}>
+            <ProcedureTab2
+                onProcedureInfoChange={onProcedureFieldChange(selectedTabIndex)}
+                procedureInfo={currentProcedure}
+            />
         </View>
     )
 }

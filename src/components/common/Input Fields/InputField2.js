@@ -20,6 +20,7 @@ function InputField2({label, onChangeText, value, placeholder, keyboardType, onC
         <View style={styles.container}>
             <Text style={[
                 styles.textLabel, {
+                    minWidth: 60,
                     marginRight: label ? 20 : 0
                 }
             ]}>{label}</Text>
