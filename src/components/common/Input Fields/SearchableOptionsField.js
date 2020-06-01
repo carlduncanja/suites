@@ -11,14 +11,28 @@ const optionsStyles = {
     }
 };
 
-function SearchableOptionsField({text, label, options, oneOptionsSelected, onChangeText, onClear, isPopoverOpen, handlePopovers, backgroundColor = "#FFFFFF", borderColor = "#E3E8EF"}) {
+function SearchableOptionsField({
+                                    text,
+                                    label,
+                                    options,
+                                    oneOptionsSelected,
+                                    onChangeText,
+                                    onClear,
+                                    value,
+                                    isPopoverOpen,
+                                    handlePopovers,
+                                    backgroundColor = "#FFFFFF",
+                                    borderColor = "#E3E8EF"
+                                }) {
 
     const textInputRef = useRef();
-    const [selectedValue, setSelectedValue] = useState(false);
-   
+    // const [selectedValue, setSelectedValue] = useState(value);
+
+    console.log("selected value", value);
+
     const onOptionPress = (option) => {
 
-        setSelectedValue(option);
+        // setSelectedValue(option);
         if (textInputRef) {
             textInputRef.current.clear();
         }
@@ -27,8 +41,8 @@ function SearchableOptionsField({text, label, options, oneOptionsSelected, onCha
     };
 
     const onClearPress = () => {
-        setSelectedValue(false);
-        onClear() 
+        // setSelectedValue(false);
+        onClear()
     };
 
     const renderOptions = ({item}) => {
@@ -47,42 +61,45 @@ function SearchableOptionsField({text, label, options, oneOptionsSelected, onCha
             ]}>
                 {label}
             </Text>
-            <View style={[styles.inputFieldWrapper,{backgroundColor:backgroundColor}]}>
+            <View style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}>
                 <TextInput
-                    style={[styles.inputField,{borderColor: borderColor}]}
+                    style={[styles.inputField, {borderColor: borderColor}]}
                     value={text}
-                    editable={!selectedValue}
-                    onChangeText={(value)=>{onChangeText(value);handlePopovers(true)}}
+                    editable={!value}
+                    onChangeText={(value) => {
+                        onChangeText(value);
+                        handlePopovers(true)
+                    }}
                     ref={textInputRef}
                 />
 
 
                 {
-                    selectedValue &&
-                    
-                        <View style={styles.valueBox}>
-                            <Text style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
-                        </View>
-                           
+                    value &&
+
+                    <View style={styles.valueBox}>
+                        <Text style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{value.name}</Text>
+                    </View>
+
                 }
 
 
                 {
-                    selectedValue &&
-                    
-                        <TouchableOpacity
-                            style={styles.clearIcon}
-                            onPress={onClearPress}
-                        >
-                            <ClearIcon/>
-                        </TouchableOpacity>
-                      
+                    value &&
+
+                    <TouchableOpacity
+                        style={styles.clearIcon}
+                        onPress={onClearPress}
+                    >
+                        <ClearIcon/>
+                    </TouchableOpacity>
+
                 }
 
 
                 {
 
-                    (!selectedValue && text && isPopoverOpen)
+                    (!value && text && isPopoverOpen)
                         ? <View style={styles.suggestionContainer}>
                             <FlatList
                                 keyExtractor={(item, index) => index + ''}

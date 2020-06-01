@@ -9,16 +9,15 @@ const ProcedureStep = ({selectedTabIndex, onFieldChange, fields}) => {
         // {
         //     procedure : '',
         //     startTime : '',
-        //     endTime : '', 
+        //     endTime : '',
         //     location : ''
         // },
         // {
         //     procedure : '',
         //     startTime : '',
-        //     endTime : '', 
+        //     endTime : '',
         //     location : ''
         // }
-
     ])
 
     const onProcedureFieldChange = (objIndex) => (value) =>{
@@ -28,7 +27,7 @@ const ProcedureStep = ({selectedTabIndex, onFieldChange, fields}) => {
             ...procedureFields.slice(0, findIndex),
             updatedObj,
             ...procedureFields.slice(findIndex + 1),
-        ]; 
+        ];
         // console.log("Values: ",[
         //     ...procedureFields.slice(0, findIndex),
         //     updatedObj,
@@ -44,9 +43,9 @@ const ProcedureStep = ({selectedTabIndex, onFieldChange, fields}) => {
     // },[selectedTabIndex])
 
     const currentFields = procedureFields.filter( (item,index) => index === selectedTabIndex)
-    
+
     const getTab = () => {
-        switch (selectedTabIndex) { 
+        switch (selectedTabIndex) {
             case 0:
                 return <ProcedureTab2
                     onFieldChange = {onProcedureFieldChange(0)}
@@ -56,7 +55,7 @@ const ProcedureStep = ({selectedTabIndex, onFieldChange, fields}) => {
                 return <ProcedureTab2
                     onFieldChange = {onProcedureFieldChange(1)}
                     fields = {currentFields}
-                />    
+                />
             default:
                 break;
         }

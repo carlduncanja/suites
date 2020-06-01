@@ -1,10 +1,8 @@
-import React,{useState} from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
-import DatePicker from 'react-native-datepicker'
-import { formatDate } from "../../../utils/formatter"
-import moment from 'moment'
+import DatePicker from "react-native-datepicker";
 
 /**
  *
@@ -17,20 +15,19 @@ import moment from 'moment'
  * @returns {*}
  * @constructor
  */
+function DateInputField({label, onDateChange, value, placeholder, keyboardType, onClear}) {
 
-function DateInputField({label, mode, onChangeText, placeholder}) {
+    const [date, setDate] = useState(value);
 
-    const [date, setDate] = useState(formatDate(new Date(), "DD/MM/YYYY"));
-    // const [mode, setMode] = useState('date');
-    const [show, setShow] = useState(false);
+    const handleOnDateChange = (date) => {
+        if (!onDateChange) {
+            setDate(date)
+        } else {
+            onDateChange(date)
+        }
 
-    const onChange = (event, selectedDate) => { 
-        console.log("Event: ",event)
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'ios');
-        setDate(currentDate);
-      };
-    
+    }
+
     return (
         <View style={styles.container}>
             <Text style={[
@@ -39,44 +36,33 @@ function DateInputField({label, mode, onChangeText, placeholder}) {
                 }
             ]}>{label}</Text>
 
-            {/* <View style={[styles.inputWrapper]}>
-                <TouchableOpacity style={styles.inputField} onPress={()=>setShow(true)}>
-                    <Text>{date}</Text>
-                </TouchableOpacity>
-            </View> */}
-            {
-                // show &&
-                // <View style={styles.inputWrapper}>
-                    <DatePicker
-                        style={{width: 200, alignItems:'center'}}
-                        date={moment().format("hh:mm")}
-                        mode={mode}
-                        placeholder={placeholder}
-                        format="YYYY-MM-DD"
-                        minDate={formatDate(new Date(),"YYYY-MM-DD")}
-                        maxDate="2025-06-01"
-                        confirmBtnText="Done"
-                        cancelBtnText="Cancel"
-                        customStyles={{
-                            dateInput: {
-                                // flex:1,
-                                height:32,
-                                alignItems:'flex-start',
-                                // width:20,
-                                // padding:0,
-                                borderWidth:0,
-                                // marginLeft: 36,
-                                backgroundColor:"yellow"
-                            }
-                        // ... You can check the source to find the other keys.
-                        }}
-                        showIcon = {false}
-                        onDateChange={(date) => {onChangeText(date); onChange}}
-                        hideText={false}
-                    />
-                // </View>
-            }
+            <DatePicker
+                style={{flex: 1}}
+                date={value || date}
+                mode="date"
+                placeholder={placeholder}
+                iconComponent={<View/>}
+                format="YYYY-MM-DD"
+                minDate="1900-05-01"
+                maxDate={new Date()}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                    dateInput: styles.inputWrapper
+                }}
+                onDateChange={handleOnDateChange}
+            />
 
+            {
+                value
+                    ? <TouchableOpacity
+                        style={styles.clearIcon}
+                        onPress={onClear}
+                    >
+                        <ClearIcon/>
+                    </TouchableOpacity>
+                    : null
+            }
         </View>
     );
 }
@@ -89,7 +75,7 @@ const styles = StyleSheet.create({
         flex: 1,
         position: 'relative',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     textLabel: {
         fontSize: 12,

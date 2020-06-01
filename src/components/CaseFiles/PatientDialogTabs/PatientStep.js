@@ -9,22 +9,23 @@ import PatientInsuranceTab from "./PatientInsuranceTab";
 const PatientStep = ({selectedTabIndex, onFieldChange, fields}) => {
 
     const { patient = {} } = fields
-    const { 
+    const {
         firstName = "",
         middleName = "",
         surname = "",
-        trn = "", 
+        trn = "",
         contactInfo = {},
         addressInfo = [],
         insurance = {},
         dob = ""
     } = patient
 
+
     const [patientFields, setFields] = useState({
-        firstName, 
+        firstName,
         middleName,
         surname,
-        trn, 
+        trn,
         contactInfo,
         addressInfo,
         insurance,
@@ -40,7 +41,7 @@ const PatientStep = ({selectedTabIndex, onFieldChange, fields}) => {
 
     const getTab = () => {
         switch (selectedTabIndex) {
-            case 0: 
+            case 0:
                 return <PatientDetailsTab
                     onFieldChange = {onPatientFieldChange}
                     fields = {patientFields}
@@ -49,7 +50,7 @@ const PatientStep = ({selectedTabIndex, onFieldChange, fields}) => {
                 return <PatientContactTab
                     onFieldChange = {onPatientFieldChange}
                     fields = {patientFields}
-                />    
+                />
             case 2:
                 return <PatientAddressTab
                     onFieldChange = {onPatientFieldChange}
