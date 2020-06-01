@@ -91,8 +91,7 @@ const testData = {
 const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
     // ########### CONST
-
-    const wizard = [
+    const [wizard, setWizard] = useState([
         {
             step:
                 {
@@ -111,7 +110,19 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     disabledIcon: <MedicalIcon fillColor={'#CBD5E0'}/>,
                     progress: 0
                 },
-            tabs: ['Assignment 1', 'Assignment 2']
+            tabs: ['Assignment 1'],
+            tabName: "Assignment",
+            onAdd: () => {
+                // add new assignment
+                const updatedWizard = [...wizard];
+                const tabs = updatedWizard[1].tabs;
+                if (tabs.length === 3) return;
+
+                const assignment = `Assignment ${tabs.length+1}`
+                // wizard[2].tabs.push()
+                updatedWizard[1].tabs.push(assignment)
+                setWizard(updatedWizard)
+            }
         },
         {
             step:
@@ -121,9 +132,21 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     disabledIcon: <ProcedureIcon fillColor={'#A0AEC0'} strokeColor={'#CCD6E0'}/>,
                     progress: 0
                 },
-            tabs: ['Procedure 1', 'Procedure 2']
+            tabName: "Procedure",
+            tabs: ['Procedure 1'],
+            onAdd: () => {
+                // add new procedure
+                const updatedWizard = [...wizard];
+                const tabs = updatedWizard[2].tabs;
+                if (tabs.length === 3) return;
+
+                const assignment = `Procedure ${tabs.length+1}`
+                // wizard[2].tabs.push()
+                updatedWizard[2].tabs.push(assignment)
+                setWizard(updatedWizard);
+            }
         }
-    ]
+    ])
     const steps = [...wizard.map(step => step.step)]
 
     // ########### STATES
@@ -371,7 +394,9 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                 <DialogTabs
                     tabs={tabs}
                     tab={selectedTabIndex}
+                    onAddTab={wizard[selectedIndex].onAdd}
                     onTabPress={handleTabPress}
+                    tabName={wizard[selectedIndex].tabName}
                 />
 
                 <TouchableOpacity
