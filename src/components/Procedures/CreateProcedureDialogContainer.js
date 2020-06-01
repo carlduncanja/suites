@@ -66,13 +66,13 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     });
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
-    
+        let updatedPopovers;
         if(!popoverItem){
             updatedPopovers = popoverList.map( item => {return {
                 ...item,
                 status : false
             }})
-            
+
             // setPopoverList(updatedPopovers)
         }else{
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
@@ -81,13 +81,11 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
-            ]; 
+            ];
             // setPopoverList(updatedPopovers)
         }
         setPopoverList(updatedPopovers)
-    
     }
-
 
     const handleCloseDialog = () => {
         onCancel();
@@ -139,7 +137,6 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     }
 
     const getDialogContent = (tab) => {
-
         switch (tab) {
             case "Details":
                 return <DialogDetailsTab
@@ -199,7 +196,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                         getDialogContent(dialogTabs[tabIndex])
                     }
                 </TouchableOpacity>
-                    
+
             </View>
         </OverlayDialog>
     )
