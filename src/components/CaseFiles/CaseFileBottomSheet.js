@@ -121,7 +121,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
     // ############### Data
 
     const getOverlayContent = () => {
-        const { patient = {}, staff = {}, chargeSheets = [], caseProcedures = []} = selectedCase
+        const { patient = {}, staff = {}, chargeSheet = {}, caseProcedures = []} = selectedCase
         const { medicalInfo = {} } = patient
 
         switch(selectedMenuItem) {
@@ -153,7 +153,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
 
             case "Charge Sheet" :
                 return <ChargeSheet
-                    chargeSheets = {chargeSheets}
+                    chargeSheet = {chargeSheet}
                     selectedTab = {selectedTab}
                     isEditMode = {isEditMode}
                 />
