@@ -8,7 +8,7 @@ const Patient = ({ patient, selectedTab, isEditMode }) => {
     const {
         firstName = "",
         middleName = "",
-        surName = "",
+        surname = "",
         trn = "",
         height = 0,
         weight = 0,
@@ -27,7 +27,7 @@ const Patient = ({ patient, selectedTab, isEditMode }) => {
     const [fields, setFields] = useState({
         firstName,
         middleName,
-        surName,
+        surname,
         trn,
         height,
         weight,

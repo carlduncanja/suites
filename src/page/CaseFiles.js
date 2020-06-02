@@ -217,7 +217,7 @@ const CaseFiles = (props) => {
         let finalBalance = 0
         let {leadPhysician} = staff
 
-        patient ? name = `${patient.firstName} ${patient.surName}` : name = ""
+        patient ? name = `${patient.firstName} ${patient.surname}` : name = ""
         let physicianName;
         leadPhysician ? physicianName = `Dr. ${leadPhysician.surname}` : physicianName = ""
         finalBalance += chargeSheet.balance

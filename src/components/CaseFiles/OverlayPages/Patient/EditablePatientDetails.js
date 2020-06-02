@@ -14,9 +14,9 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
 
     const [phones, setPhones] = useState(fields['contactInfo'].phones)
     const [emails, setEmails] = useState(fields['contactInfo'].emails)
-    const [addresses, setAddresses] = useState(fields['address'])  
+    const [addresses, setAddresses] = useState(fields['address'])
 
-    const [emergencyContacts, setEmergencyContacts] = useState(fields['contactInfo'].emergencyContact) 
+    const [emergencyContacts, setEmergencyContacts] = useState(fields['contactInfo'].emergencyContact)
     const [dateOfBirth, setDateOfBirth] = useState(formatDate(fields['dob'],'DD/MM/YYYY'))
     const [nextVisit, setNextVisit] = useState(formatDate(fields['nextVisit'],'DD/MM/YYYY'))
 
@@ -60,7 +60,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
             ...phoneValue.slice(0, objIndex),
             updatedObj,
             ...phoneValue.slice(objIndex + 1),
-        ]; 
+        ];
         setPhoneValue(updatedPhones)
         return updatedPhones
     }
@@ -72,7 +72,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
             ...emailValue.slice(0, objIndex),
             updatedObj,
             ...emailValue.slice(objIndex + 1),
-        ]; 
+        ];
         setEmailValue(updatedEmails)
         return updatedEmails
     }
@@ -98,7 +98,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
             if (/^\d{10}$/g.test(formattedNumber) || !number){
                 onFieldChange('phones')(updatedPhones)
             }
-        } 
+        }
     }
 
     const handleEmailChange = (email, emailType) => {
@@ -111,7 +111,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 onFieldChange('emails')(updatedEmails)
             }
         }
-        
+
     }
 
     const updatedAddress = (value, key, id) => {
@@ -120,19 +120,19 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
             updatedObj = { ...addresses[objIndex], line1: value}
         }else{
             updatedObj = { ...addresses[objIndex], line2: value}
-        } 
+        }
 
         const updatedAddress = [
             ...addresses.slice(0, objIndex),
             updatedObj,
             ...addresses.slice(objIndex + 1),
-        ]; 
+        ];
         setAddresses(updatedAddress)
-     
+
         onFieldChange('address')(updatedAddress)
 
     }
- 
+
     const handleEmergency = (value, key, id) => {
         const objIndex = emergencyContacts.findIndex(obj => obj._id === id);
         let updatedObj = {}
@@ -144,7 +144,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 ...emergencyContacts.slice(0, objIndex),
                 updatedObj,
                 ...emergencyContacts.slice(objIndex + 1),
-            ]; 
+            ];
 
             onFieldChange('emergencyContact')(updatedContacts)
 
@@ -155,7 +155,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
             }else{
                 // console.log("Value: ", value.trim())
                 // let splitValue = value.trim().split(' ')
-                
+
                 // if (/\((\w)*\)/g.test(value)){
                 //     console.log("Length 1")
                 //     name = ""
@@ -171,15 +171,15 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
 
                 updatedObj = { ...emergencyContacts[objIndex], relation : value.trim()}
             }
-            
+
             updatedContacts = [
                 ...emergencyContacts.slice(0, objIndex),
                 updatedObj,
                 ...emergencyContacts.slice(objIndex + 1),
-            ]; 
+            ];
 
             onFieldChange('emergencyContact')(updatedContacts)
-            
+
         }else if( key === 'phone'){
             formattedNumber = value.replace(/\s/g,'')
             updatedObj = { ...emergencyContacts[objIndex], phone: formatNumber(formattedNumber)}
@@ -188,8 +188,8 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 ...emergencyContacts.slice(0, objIndex),
                 updatedObj,
                 ...emergencyContacts.slice(objIndex + 1),
-            ]; 
-            
+            ];
+
             if (/^\d{10}$/g.test(formattedNumber) || !value){
                 onFieldChange('emergencyContact')(updatedContacts)
             }
@@ -201,15 +201,15 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 ...emergencyContacts.slice(0, objIndex),
                 updatedObj,
                 ...emergencyContacts.slice(objIndex + 1),
-            ]; 
+            ];
 
             if (isValidEmail(value) || !value){
                 onFieldChange('emergencyContact')(updatedContacts)
             }
         }
-        
+
         setEmergencyContacts(updatedContacts)
-          
+
     }
 
     const handleDOB = (date) => {
@@ -249,7 +249,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 ...item,
                 status : false
             }})
-            
+
             // setPopoverList(updatedPopovers)
         }else{
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
@@ -258,11 +258,11 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
-            ]; 
+            ];
             // setPopoverList(updatedPopovers)
         }
         setPopoverList(updatedPopovers)
-    
+
     }
 
     const demoData = <>
@@ -274,7 +274,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     <Text style={styles.title}>First Name</Text>
                 </View>
 
-                <View style={styles.inputWrapper}> 
+                <View style={styles.inputWrapper}>
                     <InputField2
                         onChangeText = {onFieldChange('firstName')}
                         value = {fields['firstName']}
@@ -282,7 +282,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     />
                 </View>
             </View>
-            
+
             <View style={styles.fieldWrapper}>
                 <View style={{ marginBottom:5}}>
                     <Text style={styles.title}>Middle Name</Text>
@@ -305,9 +305,9 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
 
                 <View style={styles.inputWrapper}>
                     <InputField2
-                        onChangeText = {onFieldChange('surName')}
-                        value = {fields['surName']}
-                        onClear = {()=>{onFieldChange('surName')('')}}
+                        onChangeText = {onFieldChange('surname')}
+                        value = {fields['surname']}
+                        onClear = {()=>{onFieldChange('surname')('')}}
                     />
                 </View>
             </View>
@@ -321,7 +321,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     <Text style={styles.title}>Height</Text>
                 </View>
 
-                <View style={styles.inputWrapper}> 
+                <View style={styles.inputWrapper}>
                     <InputField2
                         onChangeText = {onFieldChange('height')}
                         value = {fields['height'].toString()}
@@ -335,7 +335,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     <Text style={styles.title}>Weight</Text>
                 </View>
 
-                <View style={styles.inputWrapper}> 
+                <View style={styles.inputWrapper}>
                     <InputField2
                         onChangeText = {onFieldChange('weight')}
                         value = {fields['weight'].toString()}
@@ -348,7 +348,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 <View style={{ marginBottom:5}}>
                     <Text style={styles.title}>BMI</Text>
                 </View>
-                <View style={styles.inputWrapper}> 
+                <View style={styles.inputWrapper}>
                     {/* <Text>{calcBmi() || 0}</Text> */}
                     <Text>Calc BMI</Text>
                 </View>
@@ -380,7 +380,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 <View style={{ marginBottom:5}}>
                     <Text style={styles.title}>Age</Text>
                 </View>
-                <View style={styles.inputWrapper}> 
+                <View style={styles.inputWrapper}>
                     <Text>{calcAge(new Date(fields['dob'])) || 0}</Text>
                 </View>
             </View> */}
@@ -389,7 +389,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 <View style={{ marginBottom:5}}>
                     <Text style={styles.title}>TRN</Text>
                 </View>
-                <View style={styles.inputWrapper}> 
+                <View style={styles.inputWrapper}>
                     <Text>{formatTrn(fields['trn'])}</Text>
                 </View>
             </View>
@@ -414,15 +414,15 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
 
 
         </View>
-    
+
         <View style={styles.row}>
-            
+
             <View style={styles.fieldWrapper}>
                 <View style={{ marginBottom:5}}>
                     <Text style={styles.title}>Ethnicity</Text>
                 </View>
 
-                <View style={styles.inputWrapper}> 
+                <View style={styles.inputWrapper}>
                     <InputField2
                         onChangeText = {onFieldChange('ethnicity')}
                         value = {fields['ethnicity']}
@@ -436,7 +436,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     <Text style={styles.title}>Blood Type</Text>
                 </View>
 
-                <View style={styles.inputWrapper}> 
+                <View style={styles.inputWrapper}>
                     <InputField2
                         onChangeText = {onFieldChange('bloodType')}
                         value = {fields['bloodType']}
@@ -444,7 +444,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     />
                 </View>
             </View>
-            
+
             <View style={styles.fieldWrapper}>
                 <View style={{ marginBottom:5}}>
                     <Text style={styles.title}>Next Visity</Text>
@@ -459,14 +459,14 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     />
                 </View>
             </View>
-           
+
 
         </View>
 
     </>
 
     const contactData = <>
-        
+
         <View style={styles.row}>
 
             {phoneTypes.map(( type, index)=>{
@@ -484,7 +484,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                             <Text style={styles.title}>{title}</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
+                        <View style={styles.inputWrapper}>
                             <InputField2
                                 onChangeText = {(value)=>handlePhoneChange(value, type)}
                                 value = {formatNumber(phone)}
@@ -515,7 +515,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                             <Text style={styles.title}>{title}</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
+                        <View style={styles.inputWrapper}>
                             <InputField2
                                 onChangeText = {(value)=>handleEmailChange(value, type)}
                                 value = {email}
@@ -527,7 +527,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
 
                 )
             })}
-       
+
         </View>
 
         <View style={{}}>
@@ -540,7 +540,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                                 <Text style={styles.title}>Address 1</Text>
                             </View>
 
-                            <View style={styles.inputWrapper}> 
+                            <View style={styles.inputWrapper}>
                                 <InputField2
                                     onChangeText = {(value)=>updatedAddress(value, 'line1', addressObj._id)}
                                     value = {addressObj.line1}
@@ -554,7 +554,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                                 <Text style={styles.title}>Address 2</Text>
                             </View>
 
-                            <View style={styles.inputWrapper}> 
+                            <View style={styles.inputWrapper}>
                                 <InputField2
                                     onChangeText = {(value)=>updatedAddress(value, 'line2', addressObj._id)}
                                     value = {addressObj.line2}
@@ -568,15 +568,15 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
         </View>
 
     </>
-        
+
     const emergencyContactData = <>
         <View style={{}}>
             {emergencyContacts.map(( contact, index)=>{
                 let isOpen = popoverList.filter(item => item.name === `emergency${index + 1}`)
                 return(
                     <View style={{flexDirection:"row",width:'100%', zIndex: index === 1 ? -1 :0}} key = {index}>
-                      
-                        <TouchableOpacity 
+
+                        <TouchableOpacity
                             style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:1}}
                             onPress = {()=>{openEmergencyName(index); handlePopovers(true)(`emergency${index + 1}`)}}
                             activeOpacity = {1}
@@ -585,18 +585,18 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                                 <Text style={[styles.title,{fontSize:12}]}>Emergency Contact Name {index + 1}</Text>
                             </View>
 
-                            <View style={[styles.inputWrapper]}> 
+                            <View style={[styles.inputWrapper]}>
                                 {/* <View style={styles.inputField}>
                                     <Text>
                                         {`${contact.name} (${contact.relation})`}
                                     </Text>
                                 </View> */}
-                                
+
                                 <InputField2
                                     onChangeText = {()=>{}}
                                     value = {`${contact.name} (${contact.relation})`}
                                     onClear = {()=>{}}
-                                /> 
+                                />
                                 { isEmergencyOpen && index === emergencyIndex && isOpen[0].status &&
                                     <View style={styles.modalContainer}>
                                         <InputField2
@@ -604,14 +604,14 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                                             onChangeText = {(value)=>handleEmergency(value, 'name', contact._id )}
                                             value = {contact.name}
                                             onClear = {()=>handleEmergency('', 'name', contact._id)}
-                                        /> 
-                                       
+                                        />
+
                                         <InputField2
                                             label = "Relation"
                                             onChangeText = {(value)=>handleEmergency(value, 'relation', contact._id )}
                                             value = {contact.relation}
                                             onClear = {()=>handleEmergency('', 'relation', contact._id)}
-                                        /> 
+                                        />
 
                                     </View>
                                 }
@@ -623,7 +623,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                                 <Text style={[styles.title,{fontSize:13}]}>Emergency Contact Phone {index + 1}</Text>
                             </View>
 
-                            <View style={styles.inputWrapper}> 
+                            <View style={styles.inputWrapper}>
                                 <InputField2
                                     onChangeText = {(value)=>handleEmergency(value, 'phone', contact._id)}
                                     value = {contact.phone}
@@ -638,7 +638,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                                 <Text style={[styles.title,{fontSize:12}]}>Emergency Contact Email {index + 1}</Text>
                             </View>
 
-                            <View style={styles.inputWrapper}> 
+                            <View style={styles.inputWrapper}>
                                 <InputField2
                                     onChangeText = {(value)=>handleEmergency(value, 'email', contact._id)}
                                     value = {contact.email}
@@ -649,7 +649,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                         </View>
 
                     </View>
-                    
+
                 )
             })}
             {
@@ -662,15 +662,15 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                             buttonPress = {()=>{onAddEmergency()}}
                         />
                     </View>
-                    
+
             }
         </View>
     </>
-        
+
    return (
         <KeyboardAvoidingView
             style={{ flex: 1}}
-            enabled   
+            enabled
             keyboardVerticalOffset={300}
             behavior={'padding'}
         >
@@ -689,11 +689,11 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     {divider}
                     {emergencyContactData}
                 </TouchableOpacity>
-                
+
 
             </ScrollView>
         </KeyboardAvoidingView>
-        
+
 
     )
 }
@@ -725,10 +725,10 @@ const styles = StyleSheet.create({
         // marginBottom:5
     },
     modalContainer:{
-        position:'absolute', 
-        padding:10, 
-        backgroundColor:'#FFFFFF', 
-        width:300, 
+        position:'absolute',
+        padding:10,
+        backgroundColor:'#FFFFFF',
+        width:300,
         height: 100,
         shadowColor: "#000",
         shadowOffset: {
@@ -749,8 +749,8 @@ const styles = StyleSheet.create({
         borderColor: '#E3E8EF',
         borderRadius: 4,
         height: 32,
-        padding:10, 
-        paddingBottom:2, 
+        padding:10,
+        paddingBottom:2,
         paddingTop:2
     }
 
