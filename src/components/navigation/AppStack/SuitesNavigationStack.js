@@ -15,6 +15,7 @@ import Physicians from '../../../page/Physicians';
 import StorageLocations from '../../../page/StorageLocations';
 import Suppliers from '../../../page/Suppliers';
 import Equipment from '../../../page/Equipment';
+import Orders from '../../../page/Orders'
 
 
 /* Providers*/
@@ -91,7 +92,7 @@ export const SuitesNavigationStack = createSidebarNavigator(
         },
     },
     Orders: {
-        screen: NotFound,
+        screen: Orders,
         params: {
             icon: OrdersIcon,
             tabName: 'Orders',
@@ -164,7 +165,7 @@ export const SuitesNavigationStack = createSidebarNavigator(
     }
   },
   {
-    initialRouteName: 'CaseFiles',
+    initialRouteName: 'Orders',
   },
 );
 

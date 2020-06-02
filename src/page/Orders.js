@@ -1,0 +1,252 @@
+import React, {useEffect, useContext, useState} from 'react';
+import {View, Text, StyleSheet} from "react-native";
+
+import Page from '../components/common/Page/Page';
+import ListItem from '../components/common/List/ListItem';
+import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
+import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
+import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
+import ActionContainer from "../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../components/common/ActionItem";
+
+import ArchiveIcon from "../../assets/svg/archiveIcon";
+import AddIcon from "../../assets/svg/addIcon";
+
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
+
+import {connect} from 'react-redux';
+import {setPurchaseOrders} from "../redux/actions/purchaseOrdersActions";
+import {getPurchaseOrders} from "../api/network";
+
+import {withModal, useModal} from 'react-native-modalfy';
+import purchaseOrdersTest from '../../data/PurchaseOrders'
+import { formatDate } from '../utils/formatter';
+import OrdersBottomSheet from '../components/PurchaseOrders/OrdersBottomSheet';
+
+const Orders = (props) => {
+
+    // ############# Const data
+    const recordsPerPage = 15;
+    const listHeaders = [
+        {
+            name: "Purchase Orders",
+            alignment: "flex-start",
+            flex: 1,
+            fontSize : 14
+        },
+        {
+            name: "Status",
+            alignment: "center",
+            flex: 1,
+            fontSize : 14
+        },
+        {
+            name: "Delivery Date",
+            alignment: "flex-start",
+            flex: 1,
+            fontSize: 14,
+        },
+        {
+            name: "Supplier",
+            alignment: "flex-start",
+            flex: 2,
+            fontSize : 14
+        }
+    ];
+
+    //  ############ Props
+    const {purchaseOrders = [], setPurchaseOrders} = props;
+    const modal = useModal();
+
+    //  ############ State
+    const [isFetchingData, setFetchingData] = useState(false);
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false)
+
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0)
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
+    const [currentPagePosition, setCurrentPagePosition] = useState(1)
+
+    const [selectedOrders, setSelectedOrders] = useState([])
+
+    // ############# Lifecycle methods
+
+    useEffect(() => {
+        if (!purchaseOrders.length) fetchOrdersData()
+        setTotalPages(Math.ceil(purchaseOrders.length / recordsPerPage))
+    }, []);
+
+    // ############# Event Handlers
+
+    const handleDataRefresh = () => {
+        fetchOrdersData()
+    };
+
+    const handleOnSelectAll = () => {
+        let updatedOrdersList = selectAll(purchaseOrders, selectedOrders)
+        setSelectedOrders(updatedOrdersList)
+    }
+
+    const handleOnCheckBoxPress = (item) => () => {
+        const {id} = item;
+        let updatedOrdersList = checkboxItemPress(item, id, selectedOrders)
+        // console.log("List: ", updatedSuppliersList)
+
+        setSelectedOrders(updatedOrdersList)
+    }
+
+    const handleOnItemPress = (item, isOpenEditable) =>{
+        modal.openModal('BottomSheetModal',{
+            content: <OrdersBottomSheet 
+                order = {item} 
+                isOpenEditable = {isOpenEditable}
+            />
+        })
+    }
+
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPagePosition === 1) return;
+
+        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+    };
+
+    // ############# Helper functions
+
+    const fetchOrdersData = () => {
+        setFetchingData(true)
+        getPurchaseOrders()
+            .then(data => {
+                setPurchaseOrders([])
+                // setSuppliers(data);
+                setTotalPages(Math.ceil(data.length / recordsPerPage))
+
+            })
+            .catch(error => {
+                console.log("failed to get orders", error);
+            })
+            .finally(_ => {
+                setFetchingData(false)
+            })
+    };
+
+    const renderOrderFn = (item) => {
+        return <ListItem
+            hasCheckBox={true}
+            isChecked={selectedOrders.includes(item.id)}
+            onCheckBoxPress={handleOnCheckBoxPress(item)}
+            onItemPress={() => handleOnItemPress(item, false)}
+            itemView={orderItem(item)}
+        />
+    }
+
+    const orderItem = (item) => {
+        const { _id = "", status = "", date = "", supplier = ""} = item
+        const statusColor = status === 'Incomplete' ? "#805AD5" :
+            status === 'Request Sent' ? "#319795" : 
+            status === 'Payment Due' ? "#C53030" : "#4E5664"
+        
+        const deliveryDate = (date === "" || date === null) ? 'n/a' : formatDate(date, 'DD/MM/YYYY')
+
+        return (
+            <>
+                <View style={[styles.item,{...styles.rowBorderRight, flex: 1}]}>
+                    <Text style={[styles.itemText, {color:"#4E5664"}]}>{_id}</Text>
+                </View>
+                <View style={[styles.item, {flex: 1,alignItems:'center' }]}>
+                    <Text style={[styles.itemText, {color: statusColor}]}>{status}</Text>
+                </View>
+                <View style={[styles.item, {flex: 1, }]}>
+                    <Text style={[styles.itemText, {color: "#4E5664"}]}>{deliveryDate}</Text>
+                </View>
+                <View style={[styles.item, {flex: 2,}]}>
+                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{supplier}</Text>
+                </View>
+            </>
+        )
+
+    }
+
+    // ############# Prepare list data
+
+    let ordersToDisplay = [...purchaseOrders];
+    ordersToDisplay = ordersToDisplay.slice(currentPageListMin, currentPageListMax);
+
+
+    return (
+        <View style={{flex: 1}}>
+            <Page
+                isFetchingData={isFetchingData}
+                onRefresh={handleDataRefresh}
+                placeholderText={"Search by Purchase Order"}
+                // changeText={changeText}
+                // inputText={textInput}
+                routeName={"Purchase Orders"}
+                listData={ordersToDisplay}
+
+                listHeaders={listHeaders}
+                itemsSelected={selectedOrders}
+                onSelectAll={handleOnSelectAll}
+
+                listItemFormat={renderOrderFn}
+            />
+
+            <View style={styles.footer}>
+                <View style={{alignSelf: "center", marginRight: 10}}>
+                    <RoundedPaginator
+                        totalPages={totalPages}
+                        currentPage={currentPagePosition}
+                        goToNextPage={goToNextPage}
+                        goToPreviousPage={goToPreviousPage}
+                    />
+                </View>
+            </View>
+
+        </View>
+    )
+}
+
+const mapStateToProps = (state) => ({
+    purchaseOrders: purchaseOrdersTest
+});
+
+const mapDispatcherToProp = {
+    setPurchaseOrders
+};
+
+export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Orders))
+
+const styles = StyleSheet.create({
+    item: {
+        // flex:1
+    },
+    itemText: {
+        fontSize: 16
+    },
+    footer: {
+        flex: 1,
+        alignSelf: 'flex-end',
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 20,
+        right: 0,
+        marginRight: 30,
+    },
+    rowBorderRight: {
+        borderRightColor: "#E3E8EF",
+        borderRightWidth: 1,
+        // marginRight: 20,
+    }
+})
