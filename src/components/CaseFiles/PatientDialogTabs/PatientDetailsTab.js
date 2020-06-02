@@ -77,8 +77,8 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                         text={fields['gender']}
                         oneOptionsSelected={onFieldChange('gender')}
                         menuOption={<MenuOptions>
-                            <MenuOption value={"Female"} text='Female'/>
-                            <MenuOption value={"Male"} text='Male'/>
+                            <MenuOption value={"female"} text='Female'/>
+                            <MenuOption value={"male"} text='Male'/>
                         </MenuOptions>}
                     />
                 </View>

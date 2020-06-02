@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from "react-native";
 
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
@@ -15,6 +15,7 @@ import MedicalIcon from '../../../assets/svg/newCaseMedical';
 
 import {createCaseFile} from "../../api/network";
 import patient from "../../../assets/svg/newCasePatient";
+import {useModal} from "react-native-modalfy";
 
 const testData = {
     "name": "Julie Brown 2",
@@ -22,18 +23,14 @@ const testData = {
         "firstName": "Juilie",
         "middleName": "",
         "surname": "Brown",
-        "trn": "32991530",
-        'dob': '1996-04-10',
+        "gender": "female",
+        "trn": "42991536",
         "contactInfo": {
             "phones": [
                 {
                     "phone": "8764287313",
                     "type": "cell"
-                },
-                {
-                    "phone": "8764287313",
-                    "type": "cell"
-                },
+                }
             ],
             "emails": [
                 {
@@ -43,10 +40,10 @@ const testData = {
             ],
             "emergencyContact": [
                 {
-                    "name": "Peach Brown",
-                    "email": "peach.brown@gmail.com",
+                    "name":"Peach Brown",
+                    "email":"peach.brown@gmail.com",
                     "phone": "8765232141",
-                    "relation": "mother"
+                    "relation":"mother"
                 }
             ]
         },
@@ -91,8 +88,7 @@ const testData = {
 const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
     // ########### CONST
-
-    const wizard = [
+    const [wizard, setWizard] = useState([
         {
             step:
                 {
@@ -111,7 +107,19 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     disabledIcon: <MedicalIcon fillColor={'#CBD5E0'}/>,
                     progress: 0
                 },
-            tabs: ['Assignment 1', 'Assignment 2']
+            tabs: ['Assignment 1'],
+            tabName: "Assignment",
+            onAdd: () => {
+                // add new assignment
+                const updatedWizard = [...wizard];
+                const tabs = updatedWizard[1].tabs;
+                if (tabs.length === 3) return;
+
+                const assignment = `Assignment ${tabs.length + 1}`
+                // wizard[2].tabs.push()
+                updatedWizard[1].tabs.push(assignment)
+                setWizard(updatedWizard)
+            }
         },
         {
             step:
@@ -121,19 +129,27 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     disabledIcon: <ProcedureIcon fillColor={'#A0AEC0'} strokeColor={'#CCD6E0'}/>,
                     progress: 0
                 },
-            tabs: ['Procedure 1', 'Procedure 2']
+            tabName: "Procedure",
+            tabs: ['Procedure 1'],
+            onAdd: () => {
+                // add new procedure
+                const updatedWizard = [...wizard];
+                const tabs = updatedWizard[2].tabs;
+                if (tabs.length === 3) return;
+
+                const assignment = `Procedure ${tabs.length + 1}`
+                // wizard[2].tabs.push()
+                updatedWizard[2].tabs.push(assignment)
+                setWizard(updatedWizard);
+            }
         }
-    ]
+    ])
     const steps = [...wizard.map(step => step.step)]
+    const modal = useModal()
 
     // ########### STATES
 
     const [fields, setFields] = useState(
-        // {
-        //     patient: {},
-        //     staff: [],
-        //     caseProcedures: []
-        // }
         testData
     )
 
@@ -173,13 +189,6 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         })
     }
 
-    const onPatientFieldChange = (fieldName) => (value) => {
-        setPatientInfo({
-            ...patientInfo,
-            [fieldName]: value
-        })
-    }
-
     const onStaffUpdate = (value, selectedType) => {
         // update the current staff value at the index
         const newStaff = {...value, type: selectedType}
@@ -196,6 +205,9 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         setStaffInfo(updatedStaffs)
     }
 
+    const onProcedureUpdate = (value) => {
+        setCaseProceduresInfo([...value])
+    }
 
     const handleStepPress = (name) => {
 
@@ -244,12 +256,9 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
     const onPositiveButtonPress = () => {
         if (selectedIndex === 3) {
-
-            setTimeout(() => {
-                onCreated({})
-            }, 200);
+            // we are on the final tab
             console.log("Hey Save my data and open bottom sheet with the data")
-
+            handleOnComplete()
         } else if (selectedTabIndex !== tabs.length - 1) {
             const updatedTabIndex = selectedTabIndex + 1
 
@@ -277,7 +286,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
     }
 
     const handleCloseDialog = () => {
-
+        onCancel();
+        modal.closeAllModals();
     }
 
     const handlePopovers = (popoverValue) => (popoverItem) => {
@@ -306,12 +316,52 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
     const handleOnComplete = () => {
         // prepare request create case file request
+        console.log("handleOnComplete", fields);
+        console.log("handleOnCompleted", staffInfo);
+        console.log("handleOnCompleted", caseProceduresInfo);
 
-        // console.log(fields);
+        const caseFileData = {
+            name: `${fields.patient.firstName} ${fields.patient.surname}`,
+            patient: fields.patient,
+            caseProcedures: [],
+            staff: {
+                physicians: [],
+                nurses: []
+            }
+        };
+
+        // adding staff info
+        for (const staffInfoElement of staffInfo) {
+            if (staffInfoElement.type === "Physician") {
+                caseFileData.staff.physicians.push(staffInfoElement._id)
+            } else {
+                caseFileData.staff.nurses.push(staffInfoElement._id)
+            }
+        }
+        caseFileData.staff.leadPhysician = caseFileData.staff.physicians[0]
 
 
-        // createCaseFile()
+        // adding procedure info
+        caseFileData.caseProcedures = caseProceduresInfo.map(item => ({
+            ...item,
+            procedure: item.procedure._id,
+            location: item.location._id
+        }))
+
+        console.log("handleOnComplete: caseProcedure Info", caseFileData);
+        createCaseFile(caseFileData)
+            .then((data) => {
+                console.log("Case File Created", data)
+
+                modal.closeAllModals();
+                setTimeout(() => {onCreated(data)}, 300);
+            }).catch(error => {
+                console.log("failed to create case file", error);
+                Alert.alert("Sorry", "Something went wrong when creating case.");
+            })
     }
+
+
 
     const getTabContent = () => {
 
@@ -335,8 +385,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
             case 2:
                 return <ProcedureStep
                     selectedTabIndex={selectedTabIndex}
-                    onFieldChange={onFieldChange}
-                    fields={staffInfo}
+                    onProcedureUpdate={onProcedureUpdate}
+                    procedures={caseProceduresInfo}
                 />
 
             case 3 :
@@ -362,7 +412,6 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
-            // handlePopovers = {handlePopovers}
         >
             <View style={styles.container}>
                 <ProgressContainer
@@ -376,7 +425,9 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                 <DialogTabs
                     tabs={tabs}
                     tab={selectedTabIndex}
+                    onAddTab={wizard[selectedIndex] && wizard[selectedIndex].onAdd}
                     onTabPress={handleTabPress}
+                    tabName={wizard[selectedIndex] && wizard[selectedIndex].tabName}
                 />
 
                 <TouchableOpacity

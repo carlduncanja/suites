@@ -1,17 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text} from "react-native";
+import {View, StyleSheet, Text, TouchableOpacity} from "react-native";
 import TabsContainer from "../Tabs/TabsContainer";
+import AddTab from "../../../../assets/svg/addTab";
 
-function DialogTabs({tabs, tab, onTabPress}) {
+function DialogTabs({tabs, tab, onTabPress, onAddTab, tabName}) {
     return (
         <View style={styles.container}>
-            <View style={{alignSelf: 'flex-end'}}>
+            <View style={{
+                flexDirection: "row",
+                alignSelf: 'flex-end',
+                justifyContent: "flex-end"
+            }}>
                 <TabsContainer
                     tabs={tabs}
                     onPressChange={onTabPress}
                     selectedTab={tabs[tab]}
                 />
+                {
+                    onAddTab &&
+                    <View style={{justifyContent: "center", marginLeft: 16}}>
+                        <TouchableOpacity
+                            style = {{flex:1, justifyContent: "center", flexDirection: "row", alignItems: 'center'}}
+                            onPress={onAddTab}
+                        >
+                            <AddTab/>
+                            <Text style={{marginLeft: 6, color: "#A0AEC0", fontWeight: "500"}}>
+                                { `${tabName} ${tabs.length+1}` }
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                }
             </View>
         </View>
     );

@@ -113,9 +113,9 @@ export const getCaseFileById = async (id) => {
 };
 
 export const createCaseFile = async (caseFileForCreation) => {
-    return suitesAxiosInstance.post(caseFilesEndpoint, caseFiles)
+    return suitesAxiosInstance.post(caseFilesEndpoint, caseFileForCreation)
         .then(handleResponse)
-        .error(handleError);
+        .catch(handleError);
 }
 
 // ################# Procedures Endpoints

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { ScrollView, View, StyleSheet, TouchableOpacity } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
-import BMIConverter from '../../BMIConverter'; 
+import BMIConverter from '../../BMIConverter';
 import moment from 'moment';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../../components/common/Information Record/RecordStyles';
 import ResponsiveRecord from '../../../common/Information Record/ResponsiveRecord'
@@ -13,7 +13,7 @@ let itemWidth = `${100/3}%`
 const Details = ({tabDetails, modal}) => {
     const [state] = useContext(SuitesContext)
 
-    const bmiScale = [ 
+    const bmiScale = [
         {
             "color":"#4299E1",
             "startValue":0,
@@ -66,14 +66,14 @@ const Details = ({tabDetails, modal}) => {
     }
 
     const seperateNumber = (number) =>{
-        return number.toString().match(/\d{1,3}/g).join(" ") 
+        return number.toString().match(/\d{1,3}/g).join(" ")
     }
 
     const DemographicData = () =>{
         const {
             firstName = "",
             middleName = "",
-            surName = "",
+            surname = "",
             height = 0,
             weight = 0,
             dob = "",
@@ -81,7 +81,7 @@ const Details = ({tabDetails, modal}) => {
             gender = "",
             ethnicity = "",
             bloodType = '',
-            nextVisit = formatDate(new Date()) 
+            nextVisit = formatDate(new Date())
         } = tabDetails
 
         let age = calcAge(dob)
@@ -108,7 +108,7 @@ const Details = ({tabDetails, modal}) => {
                     <View style = {styles.rowItem}>
                         <PersonalRecord
                             recordTitle={"Surname"}
-                            recordValue={surName}
+                            recordValue={surname}
                         />
                     </View>
                 </View>
@@ -126,8 +126,8 @@ const Details = ({tabDetails, modal}) => {
                             recordValue={weight}
                         />
                     </View>
-                    <TouchableOpacity 
-                        style={styles.rowItem} 
+                    <TouchableOpacity
+                        style={styles.rowItem}
                         activeOpactiy = {1}
                         onPress = {()=>handleBMIPress(bmi)}
                     >
@@ -138,7 +138,7 @@ const Details = ({tabDetails, modal}) => {
                         />
                     </TouchableOpacity>
                 </View>
-                
+
                 <View style={styles.rowContainer}>
                     <View style={styles.rowItem}>
                         <PersonalRecord
@@ -159,7 +159,7 @@ const Details = ({tabDetails, modal}) => {
                         />
                     </View>
                 </View>
-                
+
                 <View style={styles.rowContainer}>
                     <View style={styles.rowItem}>
                         <PersonalRecord
@@ -168,18 +168,18 @@ const Details = ({tabDetails, modal}) => {
                         />
                     </View>
                     <View style={styles.rowItem}>
-                        <PersonalRecord 
+                        <PersonalRecord
                             recordTitle={"Blood Type"}
                             recordValue={bloodType}
                         />
                     </View>
                     <View style={styles.rowItem}>
-                        <PersonalRecord 
+                        <PersonalRecord
                             recordTitle={"Next Visit"}
                             recordValue={nextVisit}
                         />
                     </View>
-                    
+
                 </View>
             </View>
         )
@@ -195,7 +195,7 @@ const Details = ({tabDetails, modal}) => {
             <View>
 
                 <View style={styles.rowContainer}>
-                    { 
+                    {
                         phoneTypes.map((item,index)=>{
                             const phoneArray = phones.filter( phone => phone.type === item)
                             phoneArray.length === 0 ? phone = "" : phone = phoneArray[0].phone
@@ -242,7 +242,7 @@ const Details = ({tabDetails, modal}) => {
                     }
 
                 </View>
-                
+
                 {address.map((item,index)=>{
                     return (
                         <View style={styles.rowContainer} key={index}>
@@ -263,7 +263,7 @@ const Details = ({tabDetails, modal}) => {
                 })}
 
             </View>
-    
+
         )
     }
 
@@ -301,17 +301,17 @@ const Details = ({tabDetails, modal}) => {
 
     }
 
-    return ( 
+    return (
         <ScrollView>
             {DemographicData()}
             {Divider()}
             {ContactData()}
             {Divider()}
-            {EmergencyData()} 
+            {EmergencyData()}
         </ScrollView>
     );
 }
- 
+
 export default withModal(Details) ;
 
 const styles= StyleSheet.create({
@@ -323,13 +323,13 @@ const styles= StyleSheet.create({
         //marginBottom:10
     },
     rowContainer:{
-        flex:1, 
-        flexDirection:'row', 
+        flex:1,
+        flexDirection:'row',
         // backgroundColor:'green',
         marginLeft:10,
-        marginRight:10, 
+        marginRight:10,
         marginBottom:20,
-        // alignItems:'flex-start', 
+        // alignItems:'flex-start',
         justifyContent:"space-between"
     },
     rowItem:{
