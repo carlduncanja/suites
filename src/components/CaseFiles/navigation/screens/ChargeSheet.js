@@ -1,120 +1,113 @@
-import React,{useContext, useEffect} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { SuitesContext } from '../../../../contexts/SuitesContext';
-import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../OverlayPages/ChargeSheet';
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import {Consumables, Equipment, Invoices, Quotation, Billing} from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
-import { currencyFormatter } from '../../../../utils/formatter';
+import {currencyFormatter} from '../../../../utils/formatter';
 import CaseFiles from '../../../../../data/CaseFiles';
 
 const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices
 const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
 const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
-const ChargeSheet = ({chargeSheets = [], selectedTab}) => {
+const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
 
-    useEffect(()=>{},[])
+    let {
+        inventories = [],
+        equipments = []
+    } = chargeSheet
 
-    let allInventories = []
-    let allEquipments = []
-
-    chargeSheets.map( item => {
-       const {inventories = {}, equipments = {} } = item
-        allInventories = [...allInventories,...inventories.map( item => {
+        inventories = inventories.map( item => {
             const { inventory } = item
             const { name = "", unitPrice = 0} = inventory
             return {
-                ...item, 
+                ...item,
                 name,
                 unitPrice,
                 type : 'Anaesthesia'
             }}
-        )]
-        allEquipments = [...allEquipments,...equipments.map( item => {
+        )
+        equipments = equipments.map( item => {
             const {equipment} = item
             const { type = {} } = equipment
             const { name = "", unitPrice = 0} = equipment
             return {
-                ...item, 
+                ...item,
                 type : type.name || "",
                 name,
                 unitPrice : type.unitPrice || 0
             }}
-        )]
-    })
-
-    const quotation = []
-    const invoices = []
+        )
 
     const headers = [
         {
-            name :"Item Name",
+            name: "Item Name",
             alignment: "flex-start"
         },
         {
-            name :"Type",
+            name: "Type",
             alignment: "center"
         },
         {
-            name :"Quantity",
+            name: "Quantity",
             alignment: "center"
         },
         {
-            name :"Unit Price",
+            name: "Unit Price",
             alignment: "flex-end"
         }
     ]
 
     const listItem = (item) => <>
         <View style={styles.item}>
-            <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.name}</Text>
+            <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
+        <View style={[styles.item, {alignItems: 'center'}]}>
             <Text style={styles.itemText}>{item.type}</Text>
         </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
+        <View style={[styles.item, {alignItems: 'center'}]}>
             <Text style={styles.itemText}>{item.amount}</Text>
         </View>
-        <View style={[styles.item,{alignItems:'flex-end'}]}>
+        <View style={[styles.item, {alignItems: 'flex-end'}]}>
             <Text style={styles.itemText}>{`$ ${currencyFormatter(item.unitPrice)}`}</Text>
         </View>
-            
+
     </>
-        
+
     return (
         selectedTab === 'Consumables' ?
-            <Consumables 
-                tabDetails = {allInventories} 
-                headers= {headers}
-                listItemFormat = {listItem}
+            <Consumables
+                tabDetails={inventories}
+                headers={headers}
+                listItemFormat={listItem}
             />
             :
             selectedTab === 'Equipment' ?
-                <Equipment 
-                    tabDetails = {allEquipments}
-                    headers = {headers}
-                    listItemFormat = {listItem}
+                <Equipment
+                    tabDetails={equipments}
+                    headers={headers}
+                    listItemFormat={listItem}
                 />
                 :
                 selectedTab === 'Invoices' ?
-                    <Invoices tabDetails = {invoiceTestData}/>
+                    <Invoices tabDetails={invoiceTestData}/>
                     :
                     selectedTab === 'Quotation' ?
-                        <Quotation tabDetails = {quotationTestData}/>
+                        <Quotation tabDetails={quotationTestData}/>
                         :
-                        <BillingCaseCard tabDetails = {billingTestData}/>  
-                        // <View/>      
+                        <BillingCaseCard tabDetails={billingTestData}/>
+        // <View/>
     );
 }
- 
+
 export default ChargeSheet;
 
 const styles = StyleSheet.create({
-    item:{
-        flex:1,
+    item: {
+        flex: 1,
     },
-    itemText:{
-        fontSize:16,
-        color:"#4A5568",
+    itemText: {
+        fontSize: 16,
+        color: "#4A5568",
     },
 })
 
