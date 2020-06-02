@@ -10,21 +10,22 @@ import EquipmentsTab from "../OverlayTabs/EquipmentsTab";
 import StorageLocationsTab from "../OverlayTabs/StorageLocationsTab";
 import HistoryTabs from "../OverlayTabs/HistoryTabs";
 import {formatDate} from "../../utils/formatter";
+import moment from 'moment';
 
-function TheatresBottomSheetContainer({theatre = {}}) {
+function TheatresBottomSheetContainer({ theatre = {} }) {
     const currentTabs = ["Details", "History", "Storage", "Equipment", "Schedule"];
-
     // ##### States
-
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
     const [isEditMode, setEditMode] = useState(false);
     const [isFetching, setFetching] = useState(true);
 
     // ##### Lifecycle Methods
+
     useEffect(() => {
+        // console.log("Hello")
         fetchTheatre(theatre._id)
-    }, []);
+    },[]);
 
     // ##### Event Handlers
 
@@ -37,15 +38,15 @@ function TheatresBottomSheetContainer({theatre = {}}) {
     const getOverlayScreen = (selectedOverlay) => {
         switch (selectedOverlay) {
             case "Details":
-
-                console.log(selectedTheatre);
-                const availableOn = selectedTheatre.appointments && selectedTheatre.appointments.length &&
-                    formatDate(selectedTheatre.appointments[0].endTime, "DD/MM/YYYY @ hh:mm a")
+                console.log('Theatre:', selectedTheatre);
+                let appointments = selectedTheatre.appointements || []
+                const availableOn = appointments && appointments.length &&
+                    formatDate(appointments[0].endTime, "DD/MM/YYYY @ hh:mm a")
                     || "--";
 
                 const theatreDetails = {
                     description: selectedTheatre.description,
-                    id: selectedTheatre._id,
+                    id: selectedTheatre.theatreNumber,
                     name: selectedTheatre.name,
                     status: "Available", // TODO calculate status
                     statusColor: "black",
@@ -57,19 +58,21 @@ function TheatresBottomSheetContainer({theatre = {}}) {
 
                 return <TheatresDetailsTab {...theatreDetails}/>;
             case "History":
-
+                // console.log("Cases: ", selectedTheatre.cases)
                 const cases = selectedTheatre.cases.map(caseItem => {
-
-
+                    let end = caseItem.endTime
+                    let start = caseItem.startTime
+                    let duration = moment.duration(moment(end).diff(moment(start)))
+                    duration = duration.asHours()
                     return {
                         name: caseItem.title,
-                        duration: caseItem.duration,
-                        date: caseItem.appointment.startTime,
-                        isRecovery: caseItem.isRecovery
+                        duration: duration,
+                        date: caseItem.startTime,
+                        isRecovery: caseItem.isRecovery || false
                     }
                 });
 
-                return <HistoryTabs/>;
+                return <HistoryTabs cases = {cases}/>;
             case "Storage":
 
                 const storageLocations = selectedTheatre.storageLocations.map(item => {
@@ -132,7 +135,6 @@ function TheatresBottomSheetContainer({theatre = {}}) {
     };
 
     const {_id, name} = selectedTheatre;
-
 
     return (
         <View style={{flex: 1}}>

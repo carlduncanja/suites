@@ -7,13 +7,13 @@ import {currencyFormatter, formatDate} from "../../utils/formatter";
 
 const testData = [
     {
-        procedureName: 'Coronary Bypass Graft',
+        name: 'Coronary Bypass Graft',
         isRecovery: true,
         duration: 1,
         date: new Date()
     },
     {
-        procedureName: 'Biotherapy (Biological Therapy)',
+        name: 'Biotherapy (Biological Therapy)',
         isRecovery: false,
         duration: 5,
         date: new Date()
@@ -24,45 +24,48 @@ const testData = [
 const headers = [
     {
         name: "Procedure",
-        alignment: "flex-start"
+        alignment: "flex-start",
+        flex:2,
     },
     {
         name: "Recovery",
-        alignment: "center"
+        alignment: "center",
+        flex:1,
     },
     {
         name: "Duration",
-        alignment: "center"
+        alignment: "center",
+        flex:1,
     },
     {
         name: "Date",
-        alignment: "center"
-    },
+        alignment: "center",
+        flex:1
+    }, 
 ];
 
-const HistoryTabs = ({
-                         equipments: cases = testData,
-                         selectedItems = [],
-                         onCheckboxPress = () => {
-                         },
-                         onSelectAll = () => {
-                         },
-                     }) => {
+const HistoryTabs = ({ cases = testData, selectedItems = [], onCheckboxPress = () => {}, onSelectAll = () => {} }) => {
 
-    const listItem = ({procedureName, isRecovery, duration, date}) => <>
-        <View style={[styles.item, {alignItems: 'flex-start'}]}>
-            <Text style={[styles.itemText, {color: "#3182CE"}]}>{procedureName}</Text>
-        </View>
-        <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{isRecovery ? "YES" : "NO"}</Text>
-        </View>
-        <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{duration}</Text>
-        </View>
-        <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{formatDate(date, "MM/DD/YYYY")}</Text>
-        </View>
-    </>;
+    const listItem = ({name, isRecovery, duration, date}) => {
+        let recoveryColor = isRecovery ? "#38A169" : "#ED8936"
+        return (
+            <>
+                <View style={[styles.item, {alignItems: 'flex-start', flex:2}]}>
+                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{name}</Text>
+                </View>
+                <View style={[styles.item, {alignItems: 'center',flex:1}]}>
+                    <Text style={[styles.itemText,{color:recoveryColor}]}>{isRecovery ? "Yes" : "No"}</Text>
+                </View>
+                <View style={[styles.item, {alignItems: 'center',flex:1}]}>
+                    <Text style={styles.itemText}>{duration} hrs</Text>
+                </View>
+                <View style={[styles.item, {alignItems: 'center',flex:1}]}>
+                    <Text style={styles.itemText}>{formatDate(date, "MM/DD/YYYY")}</Text>
+                </View>
+            </>
+        )
+    }
+    
 
     const renderListFn = (item) => {
         return <Item
