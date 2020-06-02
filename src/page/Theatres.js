@@ -289,12 +289,14 @@ function Theatres(props) {
         const inUseColor = "#DD6B20";
 
         const formattedItem = {
-            name: item.name,
-            recoveryStatus: item.isRecovery && !item.available ? "yes" : !item.available ? 'No' : '--',
+            name: item.name || "",
+            recoveryStatus: item.isRecovery && !item.available ? "Yes" : !item.available ? 'No' : '--',
             recoveryStatusColor: item.isRecovery && !item.available ? availableColor : '#4E5664',
             status: item.available ? "Available" : "In-Use",
             statusColor: item.available ? availableColor : inUseColor
         };
+
+        // console.log("Formatted Item: ", formattedItem)
 
         const onActionClick = () => {
         };
@@ -316,7 +318,7 @@ function Theatres(props) {
         setFetchingData(true);
         getTheatres()
             .then(data => {
-                console.log("get theatres", data);
+                // console.log("get theatres", data);
                 setTheatres(data);
                 setTotalPages(Math.ceil(data.length / recordsPerPage));
             })
@@ -330,7 +332,6 @@ function Theatres(props) {
     };
 
     let theatreToDisplay = [...theatres];
-
     theatreToDisplay = theatreToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (

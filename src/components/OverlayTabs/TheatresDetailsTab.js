@@ -32,7 +32,7 @@ function TheatresDetailsTab({
             <View style={[styles.row]}>
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Description</Text>
-                    <Text style={styles.textDefault}>{description ? description : "No description available."}</Text>
+                    <Text style={[styles.textDefault,{color: description ? "#1D2129" : "#A0AEC0"}]}>{description ? description : "No description available."}</Text>
                 </View>
                 <View style={{flex: 1}}/>
             </View>
