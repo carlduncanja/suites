@@ -1,5 +1,5 @@
-import React,{ useState, useContext, useEffect } from "react";
-import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
+import React, {useState, useContext, useEffect} from "react";
+import {View, StyleSheet, Text, ActivityIndicator} from "react-native";
 import SlideOverlay from '../common/SlideOverlay/SlideOverlay';
 import CaseFileOverlayMenu from './CaseFileOverlayMenu';
 import {colors} from "../../styles";
@@ -19,43 +19,54 @@ import StaffDisabledIcon from '../../../assets/svg/overlayMedicalStaffDisabled';
 import ChargeSheetSelectedIcon from '../../../assets/svg/overlayChargeSheetSelected';
 import ChargeSheetDisabledIcon from '../../../assets/svg/overlayChargeSheetDisabled';
 
-import { Patient, Procedures, MedicalStaff, MedicalHistory, ChargeSheet  } from "./navigation/screens";
+import {Patient, Procedures, MedicalStaff, MedicalHistory, ChargeSheet} from "./navigation/screens";
 
-import { getCaseFileById } from "../../api/network";
+import {getCaseFileById} from "../../api/network";
+import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
+import {useModal} from "react-native-modalfy";
+import ActionItem from "../common/ActionItem";
+import AddIcon from "../../../assets/svg/addIcon";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import RemoveIcon from "../../../assets/svg/remove2";
+import DeleteIcon from "../../../assets/svg/deleteIcon";
 
 
-const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
+const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
+
+    const modal = useModal();
+
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const overlayMenu = [
         {
-            name:"Patient",
-            overlayTabs:["Details","Insurance","Diagnosis","Patient Risk"],
-            selectedIcon : <PatientSelectedIcon/>,
-            disabledIcon : <PatientDisabledIcon/>
+            name: "Patient",
+            overlayTabs: ["Details", "Insurance", "Diagnosis", "Patient Risk"],
+            selectedIcon: <PatientSelectedIcon/>,
+            disabledIcon: <PatientDisabledIcon/>
         },
         {
-            name:"Medical Staff",
-            overlayTabs:["Details"],
-            selectedIcon : <StaffSelectedIcon/>,
-            disabledIcon : <StaffDisabledIcon/>
+            name: "Medical Staff",
+            overlayTabs: ["Details"],
+            selectedIcon: <StaffSelectedIcon/>,
+            disabledIcon: <StaffDisabledIcon/>
         },
         {
-            name:"Medical History",
-            overlayTabs:["General","Family History","Lifestyle","Other"],
-            selectedIcon : <MedicalSelectedIcon/>,
-            disabledIcon : <MedicalDisabledIcon/>
+            name: "Medical History",
+            overlayTabs: ["General", "Family History", "Lifestyle", "Other"],
+            selectedIcon: <MedicalSelectedIcon/>,
+            disabledIcon: <MedicalDisabledIcon/>
         },
         {
-            name:"Procedures",
-            overlayTabs:["Details"],
-            selectedIcon : <ProcedureSelectedIcon/>,
-            disabledIcon : <ProcedureDisabledIcon/>
+            name: "Procedures",
+            overlayTabs: ["Details"],
+            selectedIcon: <ProcedureSelectedIcon/>,
+            disabledIcon: <ProcedureDisabledIcon/>
         },
         {
-            name:"Charge Sheet",
-            overlayTabs:["Consumables","Equipment","Billing","Quotation","Invoices"],
-            selectedIcon : <ChargeSheetSelectedIcon/>,
-            disabledIcon : <ChargeSheetDisabledIcon/>
+            name: "Charge Sheet",
+            overlayTabs: ["Consumables", "Equipment", "Billing", "Quotation", "Invoices"],
+            selectedIcon: <ChargeSheetSelectedIcon/>,
+            disabledIcon: <ChargeSheetDisabledIcon/>
         }
     ]
 
@@ -63,7 +74,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
     const initialCurrentTabs = overlayMenu[0].overlayTabs
     const intialSelectedTab = initialCurrentTabs[0]
 
-    const {_id, patient, caseNumber } = caseItem
+    const {_id, patient, caseNumber} = caseItem
     patient ? name = `${patient.firstName} ${patient.surname}` : name = ""
 
     // ############### State
@@ -83,7 +94,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
 
     // ############### Event Handlers
     const handleTabPressChange = (tab) => {
-        if ( isEditMode === false){
+        if (isEditMode === false) {
             setSelectedTab(tab)
         }
     }
@@ -98,11 +109,27 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
         setSelectedTab(selectedTab)
     }
 
-    const onEditPress = (tab) =>{
+    const onEditPress = (tab) => {
         // setEditableTab(tab)
         setEditMode(!isEditMode)
-
     }
+
+    /**
+     * Displays floating actions
+     */
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "CASE ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
+    }
+
+
     // ############### Helper Function
     const fetchCase = (id) => {
         setFetching(true);
@@ -118,44 +145,83 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
             })
     };
 
+    /**
+     * Get the list of actions based on the current tab and sections
+     */
+    const getFabActions = () => {
+        let title = "Actions";
+        let floatingAction = [];
+
+        console.log("getFabActions: selected tab", selectedTab);
+        switch (selectedTab) {
+            case "Consumables": {
+                const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {
+                }}/>;
+                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
+                                                         onPress={_ => {
+                                                         }}/>;
+                floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
+                title = "CONSUMABLE'S ACTIONS"
+                break;
+            }
+            case "Equipment": {
+                const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {
+                }}/>;
+                const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>}
+                                                         onPress={_ => {
+                                                         }}/>;
+                floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
+                title = "EQUIPMENT'S ACTIONS"
+                break;
+            }
+        }
+
+
+        return <ActionContainer
+            floatingActions={floatingAction}
+            title={title}
+        />
+
+    }
+
     // ############### Data
 
     const getOverlayContent = () => {
-        const { patient = {}, staff = {}, chargeSheet = {}, caseProcedures = []} = selectedCase
-        const { medicalInfo = {} } = patient
+        const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = []} = selectedCase
+        const {medicalInfo = {}} = patient
 
-        switch(selectedMenuItem) {
+        switch (selectedMenuItem) {
             case "Patient" :
                 return <Patient
-                    patient = {patient}
-                    selectedTab = {selectedTab}
-                    isEditMode = {isEditMode}
+                    patient={patient}
+                    selectedTab={selectedTab}
+                    isEditMode={isEditMode}
                 />
 
             case "Medical Staff" :
                 return <MedicalStaff
-                    staff = {staff}
-                    selectedTab = {selectedTab}
-                    isEditMode = {isEditMode}
+                    staff={staff}
+                    selectedTab={selectedTab}
+                    isEditMode={isEditMode}
                 />
             case "Medical History" :
                 return <MedicalHistory
-                    medicalInfo = {medicalInfo}
-                    selectedTab = {selectedTab}
-                    isEditMode = {isEditMode}
+                    medicalInfo={medicalInfo}
+                    selectedTab={selectedTab}
+                    isEditMode={isEditMode}
                 />
             case "Procedures" :
                 return <Procedures
-                    procedures = {caseProcedures}
-                    selectedTab = {selectedTab}
-                    isEditMode = {isEditMode}
+                    procedures={caseProcedures}
+                    selectedTab={selectedTab}
+                    isEditMode={isEditMode}
                 />
 
             case "Charge Sheet" :
                 return <ChargeSheet
-                    chargeSheet = {chargeSheet}
-                    selectedTab = {selectedTab}
-                    isEditMode = {isEditMode}
+                    chargeSheet={chargeSheet}
+                    selectedTab={selectedTab}
+                    isEditMode={isEditMode}
                 />
 
             default :
@@ -166,7 +232,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
     }
 
     return (
-        <View style={{flex:1}}>
+        <View style={{flex: 1}}>
             {
                 isFetching
                     ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
@@ -175,25 +241,32 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
                     :
                     <>
                         <SlideOverlay
-                            overlayId = {caseNumber}
-                            overlayTitle = {name}
-                            onTabPressChange = {handleTabPressChange}
-                            currentTabs = {currentTabs}
-                            selectedTab = {selectedTab}
-                            isEditMode = {isEditMode}
-                            overlayContent = {
-                                <View style={{flex:1, padding:25, paddingTop:30}}>
+                            overlayId={caseNumber}
+                            overlayTitle={name}
+                            onTabPressChange={handleTabPressChange}
+                            currentTabs={currentTabs}
+                            selectedTab={selectedTab}
+                            isEditMode={isEditMode}
+                            overlayContent={
+                                <View style={{flex: 1, padding: 25, paddingTop: 30}}>
                                     {getOverlayContent()}
                                 </View>
                             }
-                            onEditPress = {onEditPress}
+                            onEditPress={onEditPress}
                         />
 
                         <View style={styles.footer}>
                             <CaseFileOverlayMenu
-                                selectedMenuItem = {selectedMenuItem}
-                                overlayMenu = {overlayMenu}
-                                handleTabPress = {handleOverlayMenuPress}
+                                selectedMenuItem={selectedMenuItem}
+                                overlayMenu={overlayMenu}
+                                handleTabPress={handleOverlayMenuPress}
+                            />
+                        </View>
+
+                        <View style={styles.actionWrapper}>
+                            <FloatingActionButton
+                                isDisabled={isFloatingActionDisabled}
+                                toggleActionButton={toggleActionButton}
                             />
                         </View>
 
@@ -208,9 +281,16 @@ CaseFileBottomSheet.defaultProps = {};
 export default CaseFileBottomSheet
 
 const styles = StyleSheet.create({
-    footer:{
-        position:'absolute',
-        bottom:20,
-        alignSelf:'center'
+    footer: {
+        flexDirection: 'row',
+        flex: 1,
+        position: 'absolute',
+        bottom: 20,
+        alignSelf: 'center'
+    },
+    actionWrapper: {
+        position: 'absolute',
+        bottom: 20,
+        right: 40
     }
 })
