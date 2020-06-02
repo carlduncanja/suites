@@ -4,8 +4,8 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Details, Diagnosis, Insurance, PatientRisk, EditablePatientDetails} from '../../OverlayPages/Patient'
 
 const Patient = ({ patient, selectedTab, isEditMode }) => {
-    
-    const { 
+
+    const {
         firstName = "",
         middleName = "",
         surName = "",
@@ -18,8 +18,8 @@ const Patient = ({ patient, selectedTab, isEditMode }) => {
         ethnicity = "",
         address = [],
         contactInfo = {},
-        insurance = {} , 
-        medicalInfo = {} 
+        insurance = {} ,
+        medicalInfo = {}
     } = patient
 
     const { diagnosis = [], risks = [] } = medicalInfo
@@ -46,15 +46,15 @@ const Patient = ({ patient, selectedTab, isEditMode }) => {
         setFields({
             ...fields,
             [fieldName] : value
-        }) 
+        })
     }
-    return (  
+    return (
         selectedTab === 'Details' ?
-            isEditMode ? 
-                <EditablePatientDetails 
-                    fields = {fields} 
+            isEditMode ?
+                <EditablePatientDetails
+                    fields = {fields}
                     onFieldChange = {onFieldChange}
-                /> 
+                />
                 :
                 <Details tabDetails = {patient}/>
             :
@@ -62,20 +62,20 @@ const Patient = ({ patient, selectedTab, isEditMode }) => {
                 <Insurance tabDetails = {insurance}/>
                 :
                 selectedTab === 'Diagnosis' ?
-                    <Diagnosis 
+                    <Diagnosis
                         tabDetails = {diagnosis}
                         fields = {fields}
                         isEditMode = {isEditMode}
                     />
                     :
-                    <PatientRisk 
+                    <PatientRisk
                         tabDetails = {risks}
                         isEditMode = {isEditMode}
                         fields = {fields}
                         onFieldChange = {onFieldChange}
-                    />        
+                    />
     );
 }
- 
+
 export default Patient;
 

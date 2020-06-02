@@ -2,7 +2,6 @@ import React,{ useState, useContext, useEffect } from "react";
 import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import SlideOverlay from '../common/SlideOverlay/SlideOverlay';
 import CaseFileOverlayMenu from './CaseFileOverlayMenu';
-import Navigation from '../CaseFiles/navigation/ContentNavigationStack';
 import {colors} from "../../styles";
 
 import PatientSelectedIcon from '../../../assets/svg/overlayPatientSelected';
@@ -165,15 +164,6 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) =>{
         }
 
     }
-
-    // const overlayContent = <Navigation
-    //     item = {caseItem}
-    //     overlayMenu = {overlayMenu}
-    //     handleOverlayMenuPress = {handleOverlayMenuPress}
-    //     selectedTab = {selectedTab}
-    //     isEditMode = {isEditMode}
-    // />
-
 
     return (
         <View style={{flex:1}}>
