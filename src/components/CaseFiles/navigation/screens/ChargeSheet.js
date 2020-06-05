@@ -128,32 +128,31 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
     let {
         inventoryList = [],
         equipmentList = [],
-        lineItems = []
+        proceduresBillableItems = [],
+        total
     } = chargeSheet
 
     inventoryList = inventoryList.map(item => {
-            const {inventory} = item
-            const {name = "", unitPrice = 0} = inventory
-            return {
-                ...item,
-                name,
-                unitPrice,
-                type: 'Anaesthesia'
-            }
+        const {inventory} = item
+        const {name = "", unitPrice = 0} = inventory
+        return {
+            ...item,
+            name,
+            unitPrice,
+            type: 'Anaesthesia'
         }
-    )
+    })
     equipmentList = equipmentList.map(item => {
-            const {equipment} = item
-            const {type = {}} = equipment
-            const {name = "", unitPrice = 0} = equipment
-            return {
-                ...item,
-                type: type.name || "",
-                name,
-                unitPrice: type.unitPrice || 0
-            }
+        const {equipment} = item
+        const {type = {}} = equipment
+        const {name = "", unitPrice = 0} = equipment
+        return {
+            ...item,
+            type: type.name || "",
+            name,
+            unitPrice: type.unitPrice || 0
         }
-    )
+    })
 
     const headers = [
         {
@@ -175,30 +174,64 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
     ]
 
     // preparing billing information
-    const billingInfo = {
-        discounts: [],
-        physicians: [],
-        services: [],
-        procedures: [],
+    const billing = {
+        total,
+        lastModified : new Date(2019,11,11),
+        hasDiscount: true,
+        discount: 0.15,
+        procedures: []
     }
+    for (const proceduresBillableItem of proceduresBillableItems) {
+        const {lineItems = [], inventories, equipments} = proceduresBillableItem;
 
-    for (const lineItem of lineItems) {
-        switch (lineItem.type) {
-            case LINE_ITEM_TYPES.PHYSICIANS:
-                billingInfo.physicians.push(lineItem)
-                break
-            case LINE_ITEM_TYPES.SERVICE:
-                billingInfo.services.push(lineItem)
-                break
-            case LINE_ITEM_TYPES.PROCEDURES:
-                billingInfo.procedures.push(lineItem)
-                break
-            case LINE_ITEM_TYPES.DISCOUNT:
-                billingInfo.discounts.push(lineItem)
-                break
+
+
+        const billingItem = {
+            discounts: [],
+            physicians: [],
+            services: [],
+            procedures: [],
+            procedure: {
+                name: proceduresBillableItem.caseProcedureId,
+                cost: proceduresBillableItem.total
+            },
         }
-    }
 
+        for (const lineItem of lineItems) {
+            switch (lineItem.type) {
+                case LINE_ITEM_TYPES.PHYSICIANS:
+                    billingItem.physicians.push(lineItem)
+                    break
+                case LINE_ITEM_TYPES.SERVICE:
+                    billingItem.services.push(lineItem)
+                    break
+                case LINE_ITEM_TYPES.PROCEDURES:
+                    billingItem.procedures.push(lineItem)
+                    break
+                case LINE_ITEM_TYPES.DISCOUNT:
+                    billingItem.discounts.push(lineItem)
+                    break
+            }
+        }
+
+        billingItem.inventories = inventories.map(item => {
+            return {
+                amount: item.amount,
+                name: item.inventory.name,
+                cost: item.unitPrice,
+            }
+        })
+
+        billingItem.equipments = equipments.map(item => {
+            return {
+                amount: item.amount,
+                name: item.equipment.type.name,
+                cost: item.equipment.type.unitPrice,
+            }
+        })
+
+        billing.procedures.push(billingItem)
+    }
 
     const listItem = (item) => <>
         <View style={styles.item}>
@@ -237,7 +270,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
                     selectedTab === 'Quotation' ?
                         <Quotation tabDetails={quotationTestData}/>
                         :
-                        <BillingCaseCard tabDetails={billingTestData}/>
+                        <BillingCaseCard tabDetails={billing}/>
         // <View/>
     );
 }
