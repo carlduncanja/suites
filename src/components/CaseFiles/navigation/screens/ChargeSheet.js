@@ -1,120 +1,257 @@
-import React,{useContext, useEffect} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { SuitesContext } from '../../../../contexts/SuitesContext';
-import { Consumables, Equipment, Invoices, Quotation, Billing } from '../../OverlayPages/ChargeSheet';
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import {Consumables, Equipment, Invoices, Quotation, Billing} from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
-import { currencyFormatter } from '../../../../utils/formatter';
+import {currencyFormatter} from '../../../../utils/formatter';
 import CaseFiles from '../../../../../data/CaseFiles';
 
 const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices
 const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
 const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
-const ChargeSheet = ({chargeSheets = [], selectedTab}) => {
+//     billing:{
+//         lastModified : new Date(2019,11,11),
+//         total : 104002.25,
+//         hasDiscount : true,
+//         discount : 0.15,
+//         procedures : [
+//         {
+//             procedure: {
+//                 name : 'Coronary Bypass Graft',
+//                 cost : 48000.00
+//             },
+//             physicians : [
+//                 {
+//                     name : 'Dr. Mansingh',
+//                     cost : 64000.89
+//                 },
+//                 {
+//                     name : 'Dr. Brown',
+//                     cost : 50000.89
+//                 }
+//             ],
+//             equipments : [
+//                 {
+//                     name : 'Blood Glasses',
+//                     amount : 2,
+//                     unitPrice : 16000.45
+//                 },
+//                 {
+//                     name : 'Stethoscope 4',
+//                     amount : 3,
+//                     unitPrice : 15000.50
+//                 }
+//             ],
+//             inventories : [
+//                 {
+//                     name : 'Agents',
+//                     amount : 15,
+//                     unitPrice : 5000.62
+//                 },
+//                 {
+//                     name : 'Atracurium',
+//                     amount : 5,
+//                     unitPrice : 4128.45
+//                 },
+//                 {
+//                     name : 'GU Tower',
+//                     amount : 10,
+//                     cost : 5055.00
+//                 },
+//                 {
+//                     name : 'Gauze',
+//                     amount : 20,
+//                     cost : 500.00
+//                 }
+//             ]
+//         },
+//         {
+//             procedure: {
+//                 name : 'Coronary Artery Graft',
+//                 cost : 32000.45
+//             },
+//             physicians : [
+//                 {
+//                     name : 'Dr. Abraham',
+//                     cost : 100500.23
+//                 }
+//             ],
+//             equipments : [
+//                 {
+//                     name : 'Glasses',
+//                     amount : 1,
+//                     unitPrice : 16000.45
+//                 },
+//                 {
+//                     name : 'Stethoscope 3',
+//                     amount : 1,
+//                     unitPrice : 15000.50
+//                 }
+//             ],
+//             inventories : [
+//                 {
+//                     name : 'Agents',
+//                     amount : 8,
+//                     unitPrice : 5000.62
+//                 },
+//                 {
+//                     name : 'Atracurium',
+//                     amount : 5,
+//                     unitPrice : 4128.45
+//                 },
+//                 {
+//                     name : 'GU Tower',
+//                     amount : 5,
+//                     cost : 5055.00
+//                 },
+//                 {
+//                     name : 'Gauze',
+//                     amount : 10,
+//                     cost : 500.00
+//                 }
+//             ]
+//         }
+//     ]
+//
+// }
 
-    useEffect(()=>{},[])
 
-    let allInventories = []
-    let allEquipments = []
+const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
 
-    chargeSheets.map( item => {
-       const {inventories = {}, equipments = {} } = item
-        allInventories = [...allInventories,...inventories.map( item => {
-            const { inventory } = item
-            const { name = "", unitPrice = 0} = inventory
+    const LINE_ITEM_TYPES = {
+        DISCOUNT: "discount",
+        SERVICE: "service",
+        PROCEDURES: "procedures",
+        PHYSICIANS: "physician",
+        //BALANCE: "balance",
+    }
+
+    let {
+        inventories = [],
+        equipments = [],
+        lineItems = []
+    } = chargeSheet
+
+    inventories = inventories.map(item => {
+            const {inventory} = item
+            const {name = "", unitPrice = 0} = inventory
             return {
-                ...item, 
+                ...item,
                 name,
                 unitPrice,
-                type : 'Anaesthesia'
-            }}
-        )]
-        allEquipments = [...allEquipments,...equipments.map( item => {
+                type: 'Anaesthesia'
+            }
+        }
+    )
+    equipments = equipments.map(item => {
             const {equipment} = item
-            const { type = {} } = equipment
-            const { name = "", unitPrice = 0} = equipment
+            const {type = {}} = equipment
+            const {name = "", unitPrice = 0} = equipment
             return {
-                ...item, 
-                type : type.name || "",
+                ...item,
+                type: type.name || "",
                 name,
-                unitPrice : type.unitPrice || 0
-            }}
-        )]
-    })
-
-    const quotation = []
-    const invoices = []
+                unitPrice: type.unitPrice || 0
+            }
+        }
+    )
 
     const headers = [
         {
-            name :"Item Name",
+            name: "Item Name",
             alignment: "flex-start"
         },
         {
-            name :"Type",
+            name: "Type",
             alignment: "center"
         },
         {
-            name :"Quantity",
+            name: "Quantity",
             alignment: "center"
         },
         {
-            name :"Unit Price",
+            name: "Unit Price",
             alignment: "flex-end"
         }
     ]
 
+    // preparing billing information
+    const billingInfo = {
+        discounts: [],
+        physicians: [],
+        services: [],
+        procedures: [],
+    }
+
+    for (const lineItem of lineItems) {
+        switch (lineItem.type) {
+            case LINE_ITEM_TYPES.PHYSICIANS:
+                billingInfo.physicians.push(lineItem)
+                break
+            case LINE_ITEM_TYPES.SERVICE:
+                billingInfo.services.push(lineItem)
+                break
+            case LINE_ITEM_TYPES.PROCEDURES:
+                billingInfo.procedures.push(lineItem)
+                break
+            case LINE_ITEM_TYPES.DISCOUNT:
+                billingInfo.discounts.push(lineItem)
+                break
+        }
+    }
+
+
     const listItem = (item) => <>
         <View style={styles.item}>
-            <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.name}</Text>
+            <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
+        <View style={[styles.item, {alignItems: 'center'}]}>
             <Text style={styles.itemText}>{item.type}</Text>
         </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
+        <View style={[styles.item, {alignItems: 'center'}]}>
             <Text style={styles.itemText}>{item.amount}</Text>
         </View>
-        <View style={[styles.item,{alignItems:'flex-end'}]}>
+        <View style={[styles.item, {alignItems: 'flex-end'}]}>
             <Text style={styles.itemText}>{`$ ${currencyFormatter(item.unitPrice)}`}</Text>
         </View>
-            
+
     </>
-        
+
     return (
         selectedTab === 'Consumables' ?
-            <Consumables 
-                tabDetails = {allInventories} 
-                headers= {headers}
-                listItemFormat = {listItem}
+            <Consumables
+                tabDetails={inventories}
+                headers={headers}
+                listItemFormat={listItem}
             />
             :
             selectedTab === 'Equipment' ?
-                <Equipment 
-                    tabDetails = {allEquipments}
-                    headers = {headers}
-                    listItemFormat = {listItem}
+                <Equipment
+                    tabDetails={equipments}
+                    headers={headers}
+                    listItemFormat={listItem}
                 />
                 :
                 selectedTab === 'Invoices' ?
-                    <Invoices tabDetails = {invoiceTestData}/>
+                    <Invoices tabDetails={invoiceTestData}/>
                     :
                     selectedTab === 'Quotation' ?
-                        <Quotation tabDetails = {quotationTestData}/>
+                        <Quotation tabDetails={quotationTestData}/>
                         :
-                        <BillingCaseCard tabDetails = {billingTestData}/>  
-                        // <View/>      
+                        <BillingCaseCard tabDetails={billingTestData}/>
+        // <View/>
     );
 }
- 
+
 export default ChargeSheet;
 
 const styles = StyleSheet.create({
-    item:{
-        flex:1,
+    item: {
+        flex: 1,
     },
-    itemText:{
-        fontSize:16,
-        color:"#4A5568",
+    itemText: {
+        fontSize: 16,
+        color: "#4A5568",
     },
 })
 

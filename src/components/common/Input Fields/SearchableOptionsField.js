@@ -1,6 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, TextInput, FlatList, TouchableOpacity} from "react-native";
+import {View, StyleSheet, Text, TextInput, FlatList, TouchableOpacity, SafeAreaView} from "react-native";
 import IconButton from "../Buttons/IconButton";
 import RemoveIcon from "../../../../assets/svg/removeIcon";
 import ClearIcon from "../../../../assets/svg/clearIcon";
