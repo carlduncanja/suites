@@ -59,6 +59,13 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
         category : []
     });
 
+    const [errorFields, setErrorFields] = useState({
+        name : false,
+        type : false,
+        assignment : false,
+        usage : false
+    })
+
     const onFieldChange = (fieldName) => (value) => {
         setFields({
             ...fields,
@@ -95,6 +102,23 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
 
     const onPositiveButtonPress = () => {
 
+        let isNameError = errorFields['name']
+        let isTypeError = errorFields['type']
+        let isAssignmentError = errorFields['assignment']
+        let isUsageError = errorFields['usage']
+
+        fields['name'] === '' || null ? isNameError = true : isNameError = false
+        fields['type'] === '' || null ? isTypeError = true : isTypeError = false
+        Object.keys(fields['assignment']).length === 0 ? isAssignmentError = true : isAssignmentError = false
+        parseInt(fields['usage']) === 0 ? isUsageError = true : isUsageError = false
+
+        setErrorFields({
+            ...errorFields,
+            name : isNameError,
+            type : isTypeError,
+            assignment : isAssignmentError,
+            usage : isUsageError
+        })
         const updatedFields = {
             ...fields, 
             usage: parseInt(fields['usage']),
@@ -102,8 +126,10 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
             // type : fields['type'][0]._id
         }
 
-        console.log("New Fields: ", updatedFields)
-        createEquipmentCall(updatedFields)
+        if(isNameError === false && isTypeError === false && isUsageError === false && isAssignmentError === false){
+            console.log("Success: ", updatedFields)
+            createEquipmentCall(updatedFields)
+        } 
     };
     
     const getDialogContent = (tab) => {
@@ -115,6 +141,7 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
                     fields = {fields}
                     handlePopovers = {handlePopovers}
                     popoverList = {popoverList}
+                    errorFields = {errorFields}
                 />;
             default : 
                 return <View/>

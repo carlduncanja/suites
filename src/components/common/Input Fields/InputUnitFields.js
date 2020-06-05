@@ -14,7 +14,7 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @returns {*}
  * @constructor
  */
-function InputUnitField({label, onChangeText, value, placeholder, keyboardType, units }) {
+function InputUnitField({label, onChangeText, value, placeholder, keyboardType, units, hasError = false, errorMessage = "" }) {
 
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [selectedUnit, setSelectedUnit] = useState(units[selectedIndex])
@@ -38,30 +38,38 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
                 }
             ]}>{label}</Text>
 
-            <View style={[styles.inputWrapper]}>
-                <TextInput
-                    style={styles.inputField}
-                    onChangeText={onChangeText}
-                    value={value}
-                    keyboardType={keyboardType}
-                    placeholder={placeholder}
-                />
-                <TouchableOpacity 
-                    onPress={()=>changeUnit()}
-                    style={{
-                        backgroundColor:"#F8FAFB", 
-                        alignItems:'center', 
-                        justifyContent:'center',
-                        paddingRight:10,
-                        paddingLeft:10,
-                        borderLeftWidth:1,
-                        borderColor:'#E3E8EF'
-                    }}
-                >
-                    <Text style={{alignSelf:'center'}}>{selectedUnit}</Text>
-                </TouchableOpacity>
-            </View>
+            <View style={{flex:1, height:32}}>
+                <View style={[styles.inputWrapper,{borderColor: hasError ? 'red' : '#E3E8EF'}]}>
+                    <TextInput
+                        style={[styles.inputField]}
+                        onChangeText={onChangeText}
+                        value={value}
+                        keyboardType={keyboardType}
+                        placeholder={placeholder}
+                    />
+                    <TouchableOpacity 
+                        onPress={()=>changeUnit()}
+                        style={{
+                            backgroundColor:"#F8FAFB", 
+                            alignItems:'center', 
+                            justifyContent:'center',
+                            paddingRight:10,
+                            paddingLeft:10,
+                            borderLeftWidth:1,
+                            borderColor:'#E3E8EF'
+                        }}
+                    >
+                        <Text style={{alignSelf:'center'}}>{selectedUnit}</Text>
+                    </TouchableOpacity>
+                    
+                </View>
+                {
+                    hasError && <View style={styles.errorView}>
+                        <Text style={{fontSize:10, color:'red'}}>{errorMessage}</Text>
+                    </View>
+                }
 
+            </View>
         </View>
     );
 }
@@ -83,7 +91,7 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         flexDirection:'row',
-        flex: 1,
+        // flex: 1,
         borderWidth: 1,
         borderColor: '#E3E8EF',
         borderRadius: 4,
@@ -94,11 +102,17 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingTop: 2,
         paddingBottom: 2,
+        
     },
     clearIcon: {
         position: 'absolute',
         right: 0,
         margin: 5
+    },
+    errorView : {
+        paddingTop:3,
+        paddingLeft:15
+        
     }
 });
 

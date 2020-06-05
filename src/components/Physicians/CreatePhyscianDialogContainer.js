@@ -36,6 +36,13 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
         address:[]
     });
 
+    const [errorFields, setErrorFields] = useState({
+        firstName : false,
+        surname : false,
+        trn : false,
+        gender : false,
+    })
+
     const onFieldChange = (fieldName) => (value) => {
         console.log("Value:", value)
         setFields({
@@ -50,12 +57,36 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
     };
 
     const onPositiveButtonPress = () => {
+
+        let isFirstError = errorFields['firstName']
+        let isSurnameError = errorFields['surname']
+        let isTrnError = errorFields['trn']
+        let isGenderError = errorFields['gender']
+
+        fields['firstName'] === '' || null ? isFirstError = true : isFirstError = false
+        fields['surname'] === '' || null ? isSurnameError = true : isSurnameError = false
+        fields['trn'] === '' || null ? isTrnError = true : isTrnError = false
+        fields['gender'] === '' || null ? isGenderError = true : isGenderError = false
+
+        setErrorFields({
+            ...errorFields,
+            firstName: isFirstError,
+            surname : isSurnameError,
+            trn : isTrnError,
+            gender : isGenderError
+        })
+
         const updatedFields = {
             ...fields,
             // trn : parseInt(fields['trn']) || ''
         }
-        console.log("Fields:", updatedFields)
-        createPhysicianCall(updatedFields)
+        
+        if(isFirstError === false && isSurnameError === false && isTrnError === false && isGenderError === false){
+            console.log("Success: ",updatedFields)
+            // createPhysicianCall(updatedFields)
+        } 
+        
+     
     };
 
     const getDialogContent = (tab) => {
@@ -64,6 +95,7 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
                 return <PhysicianDetailsTab
                     onFieldChange = {onFieldChange}
                     fields = {fields}
+                    errorFields = {errorFields}
                 />;
             default :
                 return <View/>

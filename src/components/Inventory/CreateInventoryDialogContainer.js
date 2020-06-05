@@ -40,6 +40,11 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         barCode: "",
     });
 
+    const [errorFields, setErrorFields] = useState({
+        name : false,
+        unitPrice : false
+    })
+
     const [popoverList, setPopoverList] = useState([
         {
             name : "reference",
@@ -176,7 +181,37 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
-            createInventoryCall()
+        
+            let isNameError = errorFields['name']
+            let isPriceError = errorFields['unitPrice']
+            let tabIndex = selectedIndex
+            if(fields['name'] === '' || null){
+                isNameError = true
+                tabIndex = 0
+            }else{
+                isNameError = false
+            }  
+            if(fields['unitPrice'] === '' || null){
+                isPriceError = true 
+                tabIndex = 1
+            } else {
+                isPriceError = false
+            }
+
+            setErrorFields({
+                ...errorFields,
+                name: isNameError,
+                unitPrice : isPriceError,
+            })
+
+            setSelectedTabIndex(tabIndex)
+
+            if(isNameError === false && isPriceError === false){
+                console.log("Success")
+                createInventoryCall()
+            } 
+
+            
         }
     };
 
@@ -193,7 +228,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
     const handleUnitPrice = (price) => {
         if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
-            onFieldChange('unitPrice')
+            onFieldChange('unitPrice')(price)
         }
         setUnitPriceText(price)
     }
@@ -256,6 +291,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
+                        hasError = {errorFields['name']}
+                        errorMessage = "Name must be filled."
                     />
                 </View>
             </View>
@@ -359,7 +396,9 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                         onChangeText={(value) => { handleUnitPrice(value )}}
                         value={unitPriceText}
                         keyboardType={'number-pad'}
-                        onClear={() => onFieldChange('unitPrice')('')}
+                        onClear={() => handleUnitPrice('')}
+                        hasError = {errorFields['unitPrice']}
+                        errorMessage = "Price must be provided."
                     />
                 </View>
                 <View style={styles.inputWrapper}/>

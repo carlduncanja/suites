@@ -3,11 +3,11 @@ import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import OptionsField from "../common/Input Fields/OptionsField";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
-import DateInputField from "../common/Input Fields/DateInputField";
+import DateInputField from "../common/Input Fields/DateInputField"; 
 
 
 
-const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
+const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
    
     const templateText = {
         true: "Yes",
@@ -18,11 +18,12 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
     const [trnText, setTrnText] = useState(fields['trn'])
 
     const handleDateValidation = (date) => {
-        let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
-        if (dateRegex.test(date) || !date) {
-            onFieldChange('dob')(date)
-        }
-        setDateText(date)
+        onFieldChange('dob')(date)
+        // let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
+        // if (dateRegex.test(date) || !date) {
+        //     onFieldChange('dob')(date)
+        // }
+        // setDateText(date)
     }
 
     const handleTrnValidation = (trnValue) => {
@@ -44,6 +45,8 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
                         onChangeText={onFieldChange('firstName')}
                         value={fields['firstName']}
                         onClear={() => onFieldChange('firstName')('')}
+                        hasError = {errorFields['firstName']}
+                        errorMessage = "Name must be filled."
                     />
                 </View>
                 <View style={[styles.inputWrapper]}>
@@ -65,6 +68,8 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
                         onChangeText={onFieldChange('surname')}
                         value={fields['surname']}
                         onClear={() => onFieldChange('surname')('')}
+                        hasError = {errorFields['surname']}
+                        errorMessage = "Name must be filled."
                     />
                 </View>
 
@@ -87,14 +92,24 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
                         value={trnText}
                         onClear={() => onFieldChange('trn')('')}
                         keyboardType = "number-pad"
+                        hasError = {errorFields['trn']}
+                        errorMessage = "TRN must contain 7 numbers."
                     />
                 </View>
 
                 <View style={styles.inputWrapper}>
+                    <DateInputField
+                        label={"Date of Birth"}
+                        value={fields['dob']}
+                        onClear={() => onFieldChange('dob')('')}
+                        keyboardType="number-pad"
+                        placeholder="YYYY/MM/DD"
+                        onDateChange={handleDateValidation}
+                    />
                     {/* <DateInputField
                         label= "Date"
                     /> */}
-                    <InputField2 
+                    {/* <InputField2 
                         label={"Date of Birth"}
                         onChangeText={(value) => {
                             handleDateValidation(value)
@@ -104,7 +119,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
                         onClear={() => onFieldChange('dob')('')}
                         placeholder="DD/MM/YYYY"
                         keyboardType = "number-pad"
-                    />
+                    /> */}
                 </View>
 
             </View>
@@ -120,6 +135,8 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields }) =>{
                             <MenuOption value={'male'} text='Male'/>
                             <MenuOption value={'female'} text='Female'/>
                         </MenuOptions>}
+                        hasError = {errorFields['gender']}
+                        errorMessage = "Select a gender from list."
                     />
                 </View>
 

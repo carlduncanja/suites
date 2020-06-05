@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 import DatePicker from "react-native-datepicker";
-
+ 
 /**
  *
  * @param label

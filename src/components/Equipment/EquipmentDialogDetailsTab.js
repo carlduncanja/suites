@@ -12,7 +12,7 @@ import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-men
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
 
-const EquipmentDialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList }) => {
+const EquipmentDialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, errorFields }) => {
 
 const testCategory = [
     {
@@ -215,6 +215,8 @@ const testCategory = [
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
+                        hasError = {errorFields['name']}
+                        errorMessage = "Name must be filled."
                     />
                 </View>
                 <View style={styles.inputWrapper}>
@@ -258,6 +260,8 @@ const testCategory = [
                         value={fields['usage']}
                         units={['hrs']}
                         keyboardType="number-pad"
+                        hasError = {errorFields['usage']}
+                        errorMessage = "Add hours greater than 0"
                     />
                 </View>
             </View>
@@ -299,6 +303,8 @@ const testCategory = [
                         }
                         handlePopovers = {(value)=>handlePopovers(value)('assigned')}
                         isPopoverOpen = {assignedPop[0].status}
+                        hasError = {errorFields['assignment']}
+                        errorMessage = {`Must select a ${fields['assigmentType']}`}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
@@ -333,6 +339,8 @@ const testCategory = [
                         options={typeSearchResults}
                         handlePopovers = {(value)=>handlePopovers(value)('type')}
                         isPopoverOpen = {typePop[0].status}
+                        hasError = {errorFields['type']}
+                        errorMessage = "Select a type to classify equipment."
                     />
                 </View>
             </View>

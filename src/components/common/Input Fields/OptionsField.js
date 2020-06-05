@@ -5,7 +5,7 @@ import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-men
 import DropDownIcon from "../../../../assets/svg/dropDown";
 
 
-function OptionsField({oneOptionsSelected, text, label, menuOption}) {
+function OptionsField({oneOptionsSelected, text, label, menuOption, hasError = true, errorMessage = ""}) {
     return (
         <View style={styles.container}>
             <Text style={[
@@ -17,10 +17,18 @@ function OptionsField({oneOptionsSelected, text, label, menuOption}) {
             </Text>
             <Menu onSelect={oneOptionsSelected} style={{flex: 1}}>
                 <MenuTrigger>
-                    <View style={styles.inputField}>
-                        <Text>{text}</Text>
-                        <DropDownIcon/>
-                    </View>
+                    <>
+                        <View style={[styles.inputField,{borderColor : hasError ? 'red' : '#E3E8EF'}]}>
+                            <Text>{text}</Text>
+                            <DropDownIcon/>
+                        </View>
+                        {                      
+                            hasError && <View style={styles.errorView}>
+                                <Text style={{fontSize:10, color:'red'}}>{errorMessage}</Text>
+                            </View>
+                        }
+                    </>
+                   
                 </MenuTrigger>
                 {
                     menuOption
@@ -60,6 +68,11 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         height: 32,
+    },
+    errorView : {
+        paddingTop:3,
+        paddingLeft:15
+        
     }
 });
 
