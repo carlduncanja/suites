@@ -62,7 +62,6 @@ const CaseFiles = (props) => {
     } = props;
 
     //######## States
-    const [state, dispatch] = useContext(SuitesContext);
     const [textInput, setTextInput] = useState("");
     const [selectedCaseIds, setSelectedCaseIds] = useState([]);
     const [isFetchingCaseFiles, setFetchingCaseFiles] = useState(false);
@@ -209,18 +208,15 @@ const CaseFiles = (props) => {
             chargeSheet = {},
             staff = {},
             caseProcedures = [],
-            invoices = [],
-            quotations = [],
-            // nextVisit = new Date(2020,10,12)
         } = item
 
-        let finalBalance = 0
+        let name, physicianName;
+
+        const {total = 0} = chargeSheet;
         let {leadPhysician} = staff
 
         patient ? name = `${patient.firstName} ${patient.surname}` : name = ""
-        let physicianName;
         leadPhysician ? physicianName = `Dr. ${leadPhysician.surname}` : physicianName = ""
-        finalBalance += chargeSheet.balance
 
         const dates = caseProcedures.map(item => {
             const {appointment} = item
@@ -237,7 +233,7 @@ const CaseFiles = (props) => {
                     <Text style={{color: "#3182CE", fontSize: 16}}>{name}</Text>
                 </View>
                 <View style={styles.item}>
-                    <Text style={styles.itemText}>$ {currencyFormatter(finalBalance)}</Text>
+                    <Text style={styles.itemText}>$ {currencyFormatter(total)}</Text>
                 </View>
                 <View style={styles.item}>
                     <Text style={styles.itemText}>{physicianName}</Text>

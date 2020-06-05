@@ -10,12 +10,11 @@ import DatePicker from "react-native-datepicker";
  * @param onChangeText
  * @param value
  * @param placeholder
- * @param keyboardType
  * @param onClear
  * @returns {*}
  * @constructor
  */
-function DateInputField({label, onDateChange, value, placeholder, onClear}) {
+function DateInputField({label, onDateChange, value, placeholder, onClear, minDate}) {
 
     // const [date, setDate] = useState(value);
 
@@ -43,7 +42,7 @@ function DateInputField({label, onDateChange, value, placeholder, onClear}) {
                 placeholder={placeholder}
                 iconComponent={<View/>}
                 format="YYYY-MM-DD"
-                minDate={new Date()}
+                minDate={minDate}
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 customStyles={{

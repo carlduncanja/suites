@@ -105,6 +105,7 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                         onClear={() => onFieldChange('dob')('')}
                         keyboardType="number-pad"
                         placeholder="YYYY/MM/DD"
+                        minDate={null}
                         onDateChange={onDateChange}
                     />
                 </View>

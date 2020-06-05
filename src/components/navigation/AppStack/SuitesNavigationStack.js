@@ -165,7 +165,7 @@ export const SuitesNavigationStack = createSidebarNavigator(
     }
   },
   {
-    initialRouteName: 'Orders',
+    initialRouteName: 'Schedule',
   },
 );
 
