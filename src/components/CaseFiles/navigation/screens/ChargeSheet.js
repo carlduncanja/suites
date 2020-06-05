@@ -123,16 +123,15 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
         SERVICE: "service",
         PROCEDURES: "procedures",
         PHYSICIANS: "physician",
-        //BALANCE: "balance",
     }
 
     let {
-        inventories = [],
-        equipments = [],
+        inventoryList = [],
+        equipmentList = [],
         lineItems = []
     } = chargeSheet
 
-    inventories = inventories.map(item => {
+    inventoryList = inventoryList.map(item => {
             const {inventory} = item
             const {name = "", unitPrice = 0} = inventory
             return {
@@ -143,7 +142,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
             }
         }
     )
-    equipments = equipments.map(item => {
+    equipmentList = equipmentList.map(item => {
             const {equipment} = item
             const {type = {}} = equipment
             const {name = "", unitPrice = 0} = equipment
@@ -220,14 +219,14 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
     return (
         selectedTab === 'Consumables' ?
             <Consumables
-                tabDetails={inventories}
+                tabDetails={inventoryList}
                 headers={headers}
                 listItemFormat={listItem}
             />
             :
             selectedTab === 'Equipment' ?
                 <Equipment
-                    tabDetails={equipments}
+                    tabDetails={equipmentList}
                     headers={headers}
                     listItemFormat={listItem}
                 />
