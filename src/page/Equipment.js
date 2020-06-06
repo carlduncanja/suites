@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {View, Text, StyleSheet, FlatList} from "react-native";
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from "react-native";
 
 import Page from '../components/common/Page/Page';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
@@ -9,6 +9,7 @@ import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
 import CreateEquipmentDialog from '../components/Equipment/CreateEquipmentDialogContainer';
+import Item from '../components/common/Table/Item';
 
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -77,12 +78,13 @@ const Equipment = (props) => {
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
     const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([])
+    const [selectedTypesIds, setSelectedTypesIds] = useState([])
     const [equipmentTypes, setEquipmentTypes] = useState([])
 
     // ############# Lifecycle methods
 
     useEffect(() => {
-        console.log("equipments: ", equipment);
+        // console.log("equipments: ", equipment);
         if (!equipmentTypes.length) {
             fetchEquipmentData()
         }
@@ -96,15 +98,38 @@ const Equipment = (props) => {
     };
 
     const handleOnSelectAll = () => {
-        let updatedEquipmentList = selectAll(equipment, selectedEquipmentIds)
-        setSelectedEquipmentIds(updatedEquipmentList)
+        // let updatedEquipmentList = selectAll(equipment, selectedTypesIds)
+        // setSelectedTypesIds(updatedEquipmentList)
+
+        const indeterminate = selectedTypesIds.length >= 0 && selectedTypesIds.length !== equipmentTypes.length;
+        if (indeterminate) {
+            const selectedAllIds = [...equipmentTypes.map(caseItem => caseItem.id)];
+            setSelectedTypesIds(selectedAllIds)
+        } else {
+            setSelectedTypesIds([])
+        }
     }
 
     const handleOnCheckBoxPress = (item) => () => {
         const {id} = item;
-        let updatedEquipmentList = checkboxItemPress(item, id, selectedEquipmentIds)
+        // console.log("Id:", id)
+        let updatedEquipmentList = checkboxItemPress(item, id, selectedTypesIds)
 
-        setSelectedEquipmentIds(updatedEquipmentList)
+        setSelectedTypesIds(updatedEquipmentList)
+    }
+
+    const handleOnItemCheckboxPress = (item) => () => {
+        // console.log("Item: ", item)
+        const {_id} = item;
+        let updatedEquipments = [...selectedEquipmentIds];
+
+        if (updatedEquipments.includes(_id)) {
+            updatedEquipments = updatedEquipments.filter(id => id !== item._id)
+        } else {
+            updatedEquipments.push(item._id);
+        }
+
+        setSelectedEquipmentIds(updatedEquipments);
     }
 
     const handleOnItemPress = (item, isOpenEditable) => {
@@ -149,7 +174,13 @@ const Equipment = (props) => {
         setFetchingData(true)
         getEquipmentTypes()
             .then(data => {
-                setEquipmentTypes(data)
+                let newData = data.map(item => {
+                    return {
+                        id : item._id,
+                        ...item
+                    }
+                })
+                setEquipmentTypes(newData)
             })
             .catch(error => {
                 console.log("Failed to get equipment types", error)
@@ -168,9 +199,10 @@ const Equipment = (props) => {
     };
 
     const renderEquipmentFn = (item) => {
+
         const equipments = item.equipments || []
 
-        console.log(equipments);
+        // console.log(equipments);
 
         const viewItem = {
             name: item.name,
@@ -182,18 +214,20 @@ const Equipment = (props) => {
 
         return <CollapsibleListItem
             hasCheckBox={true}
-            isChecked={selectedEquipmentIds.includes(item._id)}
+            isChecked={selectedTypesIds.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => handleOnItemPress(item, false)}
+            // onItemPress={() => handleOnItemPress(item, false)}
+            onItemPress = {()=>{}}
             render={(collapse, isCollapsed) => equipmentGroupView(viewItem, collapse, isCollapsed)}
         >
             <FlatList
                 data={renderChildView(equipments)}
                 keyExtractor={(item, index) => "" + index}
                 ItemSeparatorComponent={() => <View
-                    style={{flex: 1, margin: 18, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
+                    style={{flex: 1, marginLeft:10, borderColor: "#E3E8EF", borderWidth: .5}}/>
                 }
                 renderItem={({item}) => {
+
                     const equipmentGroup = item.items || []
 
                     // console.log("render children equipment item", item);
@@ -207,7 +241,9 @@ const Equipment = (props) => {
                     const onActionPress = () => {
                     }
 
-                    return equipmentItemView(equipmentItem, onActionPress)
+                    let pressItem = item.items[0]
+                    
+                    return renderItemView(equipmentItem, pressItem,onActionPress)
                 }}
             />
 
@@ -217,10 +253,11 @@ const Equipment = (props) => {
     const renderChildView = (equipments = []) => {
         const assignmentGroupedEquipments = {};
 
-        console.log("render children equipments", equipments);
+        // console.log("render children equipments", equipments);
 
         // group equipment by assignment
         equipments.forEach(item => {
+            // console.log("EEq Item: ", item)
             const assignmentName = item.assigment && !item.assigment.name
             if (!assignmentName) {
                 return assignmentGroupedEquipments[item.name] = [item]
@@ -232,7 +269,7 @@ const Equipment = (props) => {
             }
         })
 
-        console.log("render children groups", assignmentGroupedEquipments);
+        // console.log("render children groups", assignmentGroupedEquipments);
 
         const data = Object.keys(assignmentGroupedEquipments).map(item => ({
             id: item,
@@ -248,10 +285,23 @@ const Equipment = (props) => {
                     : '#4E5664'
     };
 
+    const renderItemView = (item, actionItem, onActionPress) => {
+        let { _id } = actionItem
+        return (
+            <Item
+                itemView = {equipmentItemView(item, onActionPress)}
+                hasCheckBox = {true}
+                isChecked = {selectedEquipmentIds.includes(_id)}
+                onCheckBoxPress = {handleOnItemCheckboxPress(actionItem)}
+                onItemPress = {()=>handleOnItemPress(actionItem, false)}
+            />
+        )
+    } 
+
     const equipmentItemView = ({assigmentName, quantity, status, dateAvailable}, onActionPress) => (
-        <View style={{flexDirection: 'row'}}>
-            <View style={{width: 40}}/>
-            <View style={{flex: 2, flexDirection: 'row', alignment: "flex-start"}}>
+        <>
+            {/* <View style={{width: 40, backgroundColor:'yellow'}}/> */}
+            <View style={{flex: 2, flexDirection: 'row', alignment: "flex-start", ...styles.rowBorderRight}}>
                 <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
                 <Text style={{color: "#3182CE", fontSize: 16, marginLeft: 18}}>{assigmentName}</Text>
             </View>
@@ -270,7 +320,7 @@ const Equipment = (props) => {
                     onPress={onActionPress}
                 />
             </View>
-        </View>
+        </>
     );
 
 
@@ -357,7 +407,7 @@ const Equipment = (props) => {
                 listData={equipmentToDisplay}
 
                 listHeaders={listHeaders}
-                itemsSelected={selectedEquipmentIds}
+                itemsSelected={selectedTypesIds}
                 onSelectAll={handleOnSelectAll}
 
                 listItemFormat={renderEquipmentFn}
@@ -386,7 +436,8 @@ const Equipment = (props) => {
 const mapStateToProps = (state) => {
     const equipment = state.equipment.map(item => {
         return {
-            ...item
+            ...item,
+            id: item._id
         }
     })
     return {equipment}

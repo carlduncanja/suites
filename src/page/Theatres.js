@@ -146,7 +146,7 @@ function Theatres(props) {
     };
 
     const onItemPress = (item) => () => {
-        console.log("item press", item);
+        // console.log("item press", item);
         modal.openModal('BottomSheetModal', {
             content: <TheatresBottomSheetContainer theatre={item}/>
         })
@@ -189,6 +189,7 @@ function Theatres(props) {
     };
 
     const onCheckBoxPress = (item) => () => {
+        
         const {id} = item;
         let updatedCases = [...selectedIds];
 

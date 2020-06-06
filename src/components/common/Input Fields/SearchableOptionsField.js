@@ -12,27 +12,29 @@ const optionsStyles = {
 };
 
 function SearchableOptionsField({
-                                    text,
-                                    label,
-                                    options,
-                                    oneOptionsSelected,
-                                    onChangeText,
-                                    onClear,
-                                    value,
-                                    isPopoverOpen,
-                                    handlePopovers,
-                                    backgroundColor = "#FFFFFF",
-                                    borderColor = "#E3E8EF"
-                                }) {
+        text,
+        label,
+        options,
+        oneOptionsSelected,
+        onChangeText,
+        onClear,
+        value,
+        isPopoverOpen,
+        handlePopovers,
+        backgroundColor = "#FFFFFF",
+        borderColor = "#E3E8EF",
+        hasError = false,
+        errorMessage = ""
+    }) {
 
     const textInputRef = useRef();
-    // const [selectedValue, setSelectedValue] = useState(value);
+    const [selectedValue, setSelectedValue] = useState(false);
 
-    console.log("selected value", value);
+    // console.log("selected value", value);
 
     const onOptionPress = (option) => {
 
-        // setSelectedValue(option);
+        setSelectedValue(option);
         if (textInputRef) {
             textInputRef.current.clear();
         }
@@ -41,7 +43,7 @@ function SearchableOptionsField({
     };
 
     const onClearPress = () => {
-        // setSelectedValue(false);
+        setSelectedValue(false);
         onClear()
     };
 
@@ -63,9 +65,9 @@ function SearchableOptionsField({
             </Text>
             <View style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}>
                 <TextInput
-                    style={[styles.inputField, {borderColor: borderColor}]}
+                    style={[styles.inputField, {borderColor: hasError ? 'red' : borderColor, height:32}]}
                     value={text}
-                    editable={!value}
+                    editable={!selectedValue}
                     onChangeText={(value) => {
                         onChangeText(value);
                         handlePopovers(true)
@@ -75,17 +77,17 @@ function SearchableOptionsField({
 
 
                 {
-                    value &&
+                    selectedValue &&
 
                     <View style={styles.valueBox}>
-                        <Text style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{value.name}</Text>
+                        <Text style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
                     </View>
 
                 }
 
 
                 {
-                    value &&
+                    selectedValue &&
 
                     <TouchableOpacity
                         style={styles.clearIcon}
@@ -96,10 +98,16 @@ function SearchableOptionsField({
 
                 }
 
+                {               
+                    hasError && <View style={styles.errorView}>
+                        <Text style={{fontSize:10, color:'red'}}>{errorMessage}</Text>
+                    </View>
+                }
+
 
                 {
 
-                    (!value && text && isPopoverOpen)
+                    (!selectedValue && text && isPopoverOpen)
                         ? <View style={styles.suggestionContainer}>
                             <FlatList
                                 keyExtractor={(item, index) => index + ''}
@@ -129,6 +137,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         flex: 1,
         flexDirection: 'column',
+        height:32
     },
     textLabel: {
         fontSize: 12,
@@ -165,7 +174,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF'
     },
     inputField: {
-        flex: 1,
+        // flex: 1,
         borderWidth: 1,
         borderColor: '#E3E8EF',
         borderRadius: 4,
@@ -194,6 +203,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         margin: 8,
+    },
+    errorView : {
+        paddingTop:3,
+        paddingLeft:15
+        
     }
 });
 

@@ -20,51 +20,50 @@ import { withModal } from "react-native-modalfy";
 const General = ({equipment, modal}) => {
 
     const {
-        // supplier id
-        _id,
-        // supplier name
-        supplier, 
-        assigned,
-        status,
-        usage,
-        availableOn,
-        categories, 
-        description
+        _id = "",
+        assignment = {},
+        status = "",
+        usage = "",
+        availableOn = "",
+        type = {},
     } = equipment
+
+    const {theatre = {} } = assignment
+    const { description, categories, suppliers} = type
 
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
     const supplierId = <Record 
         recordTitle = {"Supplier ID"}
-        recordValue = {_id || ""}
+        recordValue = {""}
     />
 
     const assignedRecord = <ResponsiveRecord
         recordTitle = {"Assigned"}
-        recordValue = {assigned || ""}
+        recordValue = {theatre.name}
         handleRecordPress = {()=>{}}
     />
    
     const statusRecord = <Record
         recordTitle = {"Status"}
-        recordValue = {status || ""}
+        recordValue = {status}
         valueColor = {"#DD6B20"}
     />
 
     const supplierRecord = <ResponsiveRecord
         recordTitle = {"Supplier"}
-        recordValue = {supplier || ""}
+        recordValue = {""}
         handleRecordPress = {()=>{}}
     />
 
     const usageRecord = <Record
         recordTitle = {"Usage"}
-        recordValue = {usage || ""}
+        recordValue = {usage}
     />
 
     const available = <Record
         recordTitle = {"Available On"}
-        recordValue = {availableOn || ""}
+        recordValue = {availableOn }
     />
 
     const category = <Record

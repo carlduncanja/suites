@@ -40,6 +40,11 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
         isRecovery: false,
     });
 
+    const [errorFields, setErrorFields] = useState({
+        name : false,
+        isRecovery : false
+    })
+
     // useEffect(() => {
     // }, []);
 
@@ -49,7 +54,17 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
     };
 
     const onPositiveClick = () => {
-        createTheatreCall()
+        let nameBool = errorFields['name']
+        fields['name'] === '' || null ? nameBool = true : nameBool = false
+        setErrorFields({
+            ...errorFields,
+            name: nameBool
+        })
+        
+        if(nameBool === false){
+            console.log("Success")
+            createTheatreCall()
+        } 
     };
 
     const onFieldChange = (fieldName) => (value) => {
@@ -95,10 +110,13 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
                 <View style={styles.sectionContainer}>
                     <View style={styles.row}>
                         <View style={styles.inputWrapper}>
-                            <InputField2 label={"Theatre Name"}
-                                         onChangeText={onFieldChange('name')}
-                                         value={fields['name']}
-                                         onClear={() => onFieldChange('name')('')}
+                            <InputField2 
+                                label={"Theatre Name"}
+                                onChangeText={onFieldChange('name')}
+                                value={fields['name']}
+                                onClear={() => onFieldChange('name')('')}
+                                hasError = {errorFields['name']}
+                                errorMessage = "Name must be filled."
                             />
                         </View>
                     </View>

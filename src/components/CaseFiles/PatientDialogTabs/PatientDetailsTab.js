@@ -93,7 +93,7 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                         keyboardType="number-pad"
                     />
                 </View>
-
+ 
             </View>
 
             <View style={[styles.row, {zIndex: -3}]}>

@@ -10,6 +10,7 @@ import { formatDate } from '../../utils/formatter';
 
 function EquipmentBottomSheet({equipment, isOpenEditable}) {
 
+    // console.log("Equipment:", equipment)
     const testData = {
         description : "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
         assigned: "Dr.Mansingh",
@@ -31,7 +32,7 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
 
     const {
         // supplier id
-        id,
+        _id,
         name,
         // supplier name
         supplier, 
@@ -56,7 +57,7 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        fetchEquipment(id)
+        fetchEquipment(_id)
     }, []);
 
     // ##### Event Handlers
@@ -100,6 +101,8 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
         setFetching(true);
         getEquipmentById(id)
             .then(data => {
+                // console.log("Data:", data)
+                setSelectedEquipment(data)
                 setEquipment(data)
             })
             .catch(error => {
@@ -119,7 +122,7 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
                     </View>
                     :
                     <SlideOverlay
-                        overlayId={id}
+                        overlayId={_id}
                         overlayTitle={name}
                         onTabPressChange={onTabPress}
                         currentTabs={currentTabs}

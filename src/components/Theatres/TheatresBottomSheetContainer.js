@@ -38,7 +38,7 @@ function TheatresBottomSheetContainer({ theatre = {} }) {
     const getOverlayScreen = (selectedOverlay) => {
         switch (selectedOverlay) {
             case "Details":
-                console.log('Theatre:', selectedTheatre);
+                // console.log('Theatre:', selectedTheatre);
                 let appointments = selectedTheatre.appointements || []
                 const availableOn = appointments && appointments.length &&
                     formatDate(appointments[0].endTime, "DD/MM/YYYY @ hh:mm a")
