@@ -11,8 +11,6 @@ import { formatDate } from '../../../utils/formatter';
 
 
 const SearchBar = (props) => {
-    const [state, dispatch] = useContext(ScheduleContext);
-
     const {
         changeText,
         closeSearch,
@@ -40,123 +38,7 @@ const SearchBar = (props) => {
         if (matchesFound.length > 0) setSuggestionsOpen(true)
     }, [matchesFoundLength]);
 
-    // const getDataForAppTitle = (selectedResults) => {
-    //     return selectedResults.map(result => {
-    //         const title = moment(result.startTime).format("dddd - MMM D");
-    //         let appointmentForDay = [];
-    //         let index = selectedResults.length - 1;
-    //
-    //         while (index >= 0) {
-    //             let selectedDay = moment(selectedResults[index].startTime);
-    //             const isSameDay = selectedDay.isSame(moment(result.startTime), 'day');
-    //             // console.log("Same Day? ", isSameDay)
-    //             if (isSameDay) {
-    //                 const day = selectedResults.splice(index, 1); // remove item found to decrease the list
-    //                 appointmentForDay.push(day.pop());
-    //             }
-    //             --index
-    //         }
-    //         return {
-    //             title,
-    //             data: appointmentForDay,
-    //         }
-    //     })
-    // }
-
-    // const getDataForAppDate = (selectedResults) => {
-    //     return selectedResults.length > 0 ?
-    //         [
-    //             {
-    //                 title: moment(selectedSuggestion).format("MMMM DD, YYYY"),
-    //                 data: selectedResults
-    //             }
-    //         ]
-    //         :
-    //         []
-    // }
-
-    // const getSectionListData = (appointments = []) => {
-    //     let appointmentList = [...appointments]
-    //     let selectedResults = appointmentList.filter(appointment => appointment.title.includes(selectedSuggestion))
-    //     let selectedDateResults = appointmentList.filter(appointment => moment(appointment.startTime).format("YYYY-MM-DD") === moment(selectedSuggestion).format("YYYY-MM-DD"))
-    //     let DATA = selectedSuggestion === "" ? [] : typeof selectedSuggestion === 'string' ? getDataForAppTitle(selectedResults) : getDataForAppDate(selectedDateResults)
-    //     return (
-    //         <View style={styles.sectionContainer}>
-    //             {DATA.length === 0 ?
-    //                 <View>
-    //                     <View style={[styles.dateLabelContainer]}>
-    //                         <Text style={styles.dateLabel}>
-    //                             {
-    //                                 typeof selectedSuggestion === 'string' ?
-    //                                     selectedSuggestion
-    //                                     :
-    //                                     moment(selectedSuggestion).format("MMMM DD, YYYY")
-    //                             }
-    //                         </Text>
-    //                     </View>
-    //                     <View style={{margin: 10}}>
-    //                         <Text style={{fontSize: 18, color: '#CBD5E0', fontStyle: 'italic', fontWeight: '600'}}>No
-    //                             results found</Text>
-    //                     </View>
-    //                 </View>
-    //
-    //                 :
-    //                 <SectionList
-    //                     keyExtractor={item => Math.random()}
-    //                     sections={DATA}
-    //                     stickySectionHeadersEnabled={true}
-    //                     ItemSeparatorComponent={() => <View style={styles.separatorStyle}/>}
-    //                     renderSectionHeader={({section: {title}}) => (
-    //                         <View style={[styles.dateLabelContainer]}>
-    //                             <Text style={styles.dateLabel}>
-    //                                 {title}
-    //                             </Text>
-    //                         </View>
-    //                     )}
-    //                     renderItem={({item}) => {
-    //                         return (
-    //                             <ScheduleItem
-    //                                 startTime={item.startTime}
-    //                                 endTime={item.endTime}
-    //                                 title={item.title}
-    //                                 onScheduleClick={() => handleClick()}
-    //                                 color={item.scheduleType && item.scheduleType.color || 'gray'}
-    //                                 isInMonthOpacity={1}
-    //                             />
-    //                         )
-    //                     }}
-    //                 />
-    //             }
-    //         </View>
-    //     )
-    // };
-
-    // const handleClick = () => {
-    //     console.log("Item click");
-    // };
-
-    // const renderSearchContent = () => () => {
-    //     return <View style={{
-    //         height: '100%',
-    //         width: '100%',
-    //         backgroundColor: 'white',
-    //         zIndex: 5
-    //     }}>
-    //         {getSectionListData(appointments)}
-    //     </View>
-    // };
-
     const openSearchResult = (suggestion, selectedIndex) => {
-        // setSelectedSuggestion(suggestion)
-
-        // dispatch({
-        //     type: scheduleActions.SEARCHSELECTEDRESULT,
-        //     newState: {
-        //         searchSelectedResult: suggestion
-        //     }
-        // });
-        // if (searchBottomSheetRef) searchBottomSheetRef.current.snapTo(0);x
-
         console.log("selected search result");
         onResultSelected(selectedIndex)
     };

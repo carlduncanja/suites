@@ -4,6 +4,7 @@ import _ from "lodash";
 import {searchSchedule} from "../../../api/network";
 import {StyleSheet, View, TouchableWithoutFeedback} from "react-native";
 import SearchBar from "./SearchBar";
+import {formatDate} from "../../../utils/formatter";
 
 
 /**
@@ -130,11 +131,13 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
     const formatResult = (result) => {
         return result.map(item => {
             const title = item.title;
-            const time = "  9 am - 10pm"
+            const date = formatDate(item.startTime, "MMM D")
+            const startTime = formatDate(item.startTime,"h : mm a")
+            const endTime = formatDate(item.endTime,"h : mm a")
 
-            return title + time;
+            return `${title}\t\t ${date}\t (${startTime} - ${endTime})`
         });
-    }; 
+    };
 
     return (
         isOpen
