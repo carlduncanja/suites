@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, ActivityIndicator, Text, TouchableOpacity, View} from "react-native";
-import {getScheduleById, getSchedules} from "../../api/network";
+import {getAppointmentById, getAppointments} from "../../api/network";
 import ProcedureScheduleContent from "./ProcdureScheduleContent";
 import DefaultScheduleContent from "../Schedule/DefaultScheduleContent";
 import {colors} from "../../styles"
@@ -72,54 +72,68 @@ const surgeryAppointment = {
  * Component fetches and prepare the required data for displaying the appointment
  *
  * @param scheduleItem
- * @param screenDimensions
  * @returns {*}
  * @constructor
  */
-function ScheduleOverlayContainer({appointment = {}, screenDimensions}) {
+function ScheduleOverlayContainer({appointment = {}}) {
+
     const [appointmentDetails, setAppointmentDetails] = useState(undefined);
     const [isFetchingDetails, setFetchingDetails] = useState(false);
 
     // On Mount
-    console.log("fetching data for: ", appointment);
     useEffect(() => {
         // fetch appointment
+        // console.log("fetching data for: ", appointment._id);
         setFetchingDetails(true);
-        getScheduleById(appointment.id)
+        getAppointmentById(appointment._id)
             .then(data => {
                 console.log("data: ", data);
                 setAppointmentDetails(data);
+            })
+            .catch(error => {
+                console.log("failed to get appointment", error);
             })
             .finally(_ => {
                 setFetchingDetails(false)
             });
 
-    }, [appointment]);
+    }, []);
 
     const renderAppointmentDetails = (appointment) => {
         const scheduleTypes = {
-            SURGERY: 'Surgery',
+            SURGERY: 'Procedure',
             DELIVERY: 'Delivery',
             RESTOCK: 'Restock',
             EQUIPMENT: 'Equipment',
+            SUPPLIER: "Supplier",
         };
 
-        const {scheduleType} = appointment;
+        const {type = {}} = appointment;
+        appointment = {
+            ...appointment,
+            location: appointment.location.name
+        }
 
-        switch (scheduleType.name) {
+        switch (type.name) {
             case scheduleTypes.SURGERY: {
 
                 // todo prepare procedure data.
-                console.log("procedure");
+                const caseFile = appointment.item.case;
+
+                const physicians = caseFile.staff && caseFile.staff.physicians.map( item => ({
+                    _id: item._id,
+                    firstName: item.firstName,
+                    surname: item.surname,
+                    position: "",
+                    isLead: caseFile.staff.leadPhysician === item._id
+                }));
+
+                console.log("procedure", physicians);
 
                 return <ProcedureScheduleContent
                     appointmentDetails={appointment}
-                    physicians={[
-                        {_id: "11", firstName: "Harry", lastName: "Mansignh", position: "Lead Surgeon"},
-                        {_id: "12", firstName: "Letischa", lastName: "Bonneville", position: "Assistant Surgeon"},
-                        {_id: "13", firstName: "Yvonne", lastName: "Campbell", position: "Anaesthesiologist"},
-                    ]}
-                    leadPhysicianId={"11"}
+                    physicians={physicians}
+                    leadPhysicianId={caseFile.staff.leadPhysician}
                     nurses={[
                         {_id: "20", firstName: "Jason", lastName: "Morris"},
                         {_id: "21", firstName: "Ashley", lastName: "Gaynor"}

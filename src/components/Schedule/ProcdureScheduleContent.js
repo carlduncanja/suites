@@ -4,15 +4,14 @@ import moment from "moment";
 import SvgIcon from "../../../assets/SvgIcon";
 
 /**
- * Visual compent for rendering procedure appointments.
+ * Visual component for rendering procedure appointments.
  * @param scheduleItem
- * @param screenDimensions
  * @returns {*}
  * @constructor
  */
 function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadPhysicianId}) {
     const {
-        id = "",
+        _id = "",
         responseEntity = "",
         title = "",
         subject = "",
@@ -81,17 +80,20 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadP
 
     const renderPhysicians = (physicians, leadPhysicianId) => {
         const leadPhysician = physicians.find(item => item._id === leadPhysicianId);
-        const supportingPhysicians = physicians.filter(item => item._id !== leadPhysician);
+        const supportingPhysicians = physicians.filter(item => item._id !== leadPhysicianId);
 
         return (
             <View style={styles.box}>
-                {staffItem("lead", `Dr ${leadPhysician.firstName} ${leadPhysician.lastName}`, leadPhysician.position, true, false)}
+                {
+                    leadPhysician &&
+                    staffItem("lead", `Dr ${leadPhysician.firstName} ${leadPhysician.surname}`, leadPhysician.position, true, false)
+                }
                 {
                     supportingPhysicians.map((item, index) => {
-                        const name = `Dr ${item.firstName} ${item.lastName}`;
+                        const name = `Dr ${item.firstName} ${item.surname}`;
                         const position = item.position;
 
-                        return staffItem(index, name, position, false, true);
+                        return staffItem(index, name, position, false, leadPhysician !== null);
                     })
                 }
             </View>
@@ -119,7 +121,7 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadP
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
                             <Text style={styles.idText}>
-                                #{id}
+                                #{_id}
                             </Text>
                             <View style={styles.statusWrapper}>
                                 <Text style={{

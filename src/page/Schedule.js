@@ -108,10 +108,7 @@ const Schedule = (props) => {
 
     const handleAppointmentPress = (appointment) => {
         modal.openModal('BottomSheetModal', {
-            content: <ScheduleOverlayContainer
-                appointment={appointment}
-                screenDimensions={dimensions}
-            />,
+            content: <ScheduleOverlayContainer appointment={appointment}/>,
             initialSnap: 2,
             snapPoints: [600, 500, 0]
         })

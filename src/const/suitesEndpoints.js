@@ -5,7 +5,7 @@ export const guestLoginEndpoint = `/login/guest`
 
 // ##### Appointments
 export const appointmentsEndpoint = `/appointments/`
-export const appointmentEndpoint = () => `/appointments/${id}`;
+export const appointmentEndpoint = (id) => `/appointments/${id}`;
 
 // ##### Theatre
 export const
