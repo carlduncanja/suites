@@ -44,8 +44,8 @@ function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
         const appointmentDays = {};
         appointments.forEach(item => {
             const defaultColor = "gray";
-            const color = item.scheduleType && item.scheduleType.color;
-            
+            const color = item.type && item.type.color;
+
             const date = formatDate(item.startTime,"YYYY-MM-DD");
             if (!appointmentDays[date]) appointmentDays[date] = [];
             appointmentDays[date].push(color || defaultColor)
