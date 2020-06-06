@@ -167,9 +167,7 @@ const Schedule = (props) => {
                             />
                         </View>
 
-
                     </View>
-
                     <View style={styles.scheduleCalendar}>
                         <View style={{
                             flexDirection: 'row',
