@@ -3,6 +3,9 @@ export const loginEndpoint = `/login`
 export const registrationEndpoint = `/register`
 export const guestLoginEndpoint = `/login/guest`
 
+// ##### Appointments
+export const appointmentsEndpoint = `/appointments/`
+export const appointmentEndpoint = () => `/appointments/${id}`;
 
 // ##### Theatre
 export const

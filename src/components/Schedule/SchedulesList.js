@@ -7,7 +7,7 @@ import ScheduleItem from "./ScheduleItem";
 import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
 import {connect} from "react-redux";
 import {setAppointments} from "../../redux/actions/appointmentActions"
-import {getSchedules} from "../../api/network";
+import {getAppointments} from "../../api/network";
 import {getDaysForMonth} from "../../utils";
 import {formatDate} from "../../utils/formatter";
 
@@ -84,7 +84,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
     const onRefresh = () => {
         // fetch the schedule
         setRefreshing(true);
-        getSchedules()
+        getAppointments()
             .then(data => {
                 setAppointments(data);
 

@@ -7,7 +7,7 @@ import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import MonthSelector from "../components/Calendar/MonthSelector";
 import SchedulesList from "../components/Schedule/SchedulesList";
 import {ScheduleContext} from '../contexts/ScheduleContext';
-import {getSchedules} from "../api/network";
+import {getAppointments} from "../api/network";
 import {getDaysForMonth} from "../utils";
 import {formatDate} from "../utils/formatter";
 import {connect} from 'react-redux'
@@ -33,7 +33,6 @@ const Schedule = (props) => {
     const initialIndex = getSelectedIndex(formatDate(currentDate,"YYYY-MM-DD").toString(), initialDaysList);
 
     //########### States
-    const [state, dispatch] = useContext(ScheduleContext);
     const [dimensions, setDimensions] = useState(Dimensions.get('window'));
 
     // calendar states
@@ -60,10 +59,11 @@ const Schedule = (props) => {
     });
 
     useEffect(() => {
-        if (!appointments.length) {
+        // if (!appointments.length) {
             setFetchingAppointments(true);
-            getSchedules()
+            getAppointments()
                 .then(data => {
+                    console.log("appointments",data);
                     setAppointments(data);
                 })
                 .catch(error => {
@@ -72,7 +72,7 @@ const Schedule = (props) => {
                 .finally(_ => {
                     setFetchingAppointments(false)
                 })
-        }
+        // }
     }, []);
 
     //########### Functions

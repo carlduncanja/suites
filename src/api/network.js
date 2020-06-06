@@ -9,9 +9,9 @@ import {
     caseFilesEndpoint, caseFileEndpoint,
     equipmentsEndpoint, equipmentEndpoint,
     equipmentTypesEndpoint, storageLocationsEndpoint,
-    suppliersEndpoint,supplierEndpoint,
-    purchaseOrdersEndpoint,purchaseOrderEndpoint,
-    storageLocationEndpoint, categoriesEndpoint, loginEndpoint
+    suppliersEndpoint, supplierEndpoint,
+    purchaseOrdersEndpoint, purchaseOrderEndpoint,
+    storageLocationEndpoint, categoriesEndpoint, loginEndpoint, appointmentsEndpoint, appointmentEndpoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -29,17 +29,20 @@ export const login = async (email, password) => {
         .catch(handleError)
 }
 
-// ################# Schedule Endpoints
-export const getSchedules = async () => {
+// ################# Appointments Endpoints
+export const getAppointments = async () => {
     await new Promise(r => setTimeout(r, 2000));
-    return appointments
-    //return axios.get('/schedules')
+    return suitesAxiosInstance.get(appointmentsEndpoint)
+        .then(handleResponse)
+        .catch(handleError);
 };
 
-export const getScheduleById = async (id) => {
+export const getAppointmentById = async (id) => {
     await new Promise(r => setTimeout(r, 2000));
-    return appointments.find(item => item.id === id);
-    //return axios.get('/schedules')
+    return suitesAxiosInstance.get(appointmentEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError);
+
 };
 
 export const searchSchedule = async (query) => {
@@ -60,7 +63,7 @@ export const searchSchedule = async (query) => {
 };
 
 // ################# Theatres Endpoints
-export const getTheatres = async (query,max) => {
+export const getTheatres = async (query, max) => {
     return suitesAxiosInstance.get(theatresEndpoint, {params: {query, max}})
         .then(handleResponse)
         .catch(handleError);
@@ -80,8 +83,8 @@ export const createTheatre = async (theatreForCreation) => {
 
 
 // ################# Inventory Endpoints
-export const getInventories = async ( query, max ) => {
-    return suitesAxiosInstance.get(inventoriesEndpoint, {params : {query}})
+export const getInventories = async (query, max) => {
+    return suitesAxiosInstance.get(inventoriesEndpoint, {params: {query}})
         .then(handleResponse)
         .catch(handleError);
 };
@@ -119,8 +122,8 @@ export const createCaseFile = async (caseFileForCreation) => {
 }
 
 // ################# Procedures Endpoints
-export const getProcedures = async ( query, max ) => {
-    return suitesAxiosInstance.get(proceduresEndpoint, {params : {query, max}})
+export const getProcedures = async (query, max) => {
+    return suitesAxiosInstance.get(proceduresEndpoint, {params: {query, max}})
         .then(handleResponse)
         .catch(handleError)
 };
@@ -158,7 +161,7 @@ export const createPhysician = async (physicianToCreate) => {
 };
 
 export const updatePhysician = async (id, data) => {
-    return suitesAxiosInstance.put(physicianEndpoint(id),data)
+    return suitesAxiosInstance.put(physicianEndpoint(id), data)
         .then(handleResponse)
         .catch(handleError)
 }
@@ -196,8 +199,8 @@ export const getEquipmentById = async (id) => {
         .catch(handleError)
 };
 
-export const getEquipmentTypes = async ( query ) => {
-    return suitesAxiosInstance.get(equipmentTypesEndpoint, {params : {query}})
+export const getEquipmentTypes = async (query) => {
+    return suitesAxiosInstance.get(equipmentTypesEndpoint, {params: {query}})
         .then(handleResponse)
         .catch(handleError)
 };
@@ -211,7 +214,7 @@ export const createEquipment = async (equipmentToCreate) => {
 // ################# Categories Endpoint
 
 export const getCategories = async (query, max) => {
-    return suitesAxiosInstance.get(categoriesEndpoint, { params : { query }} )
+    return suitesAxiosInstance.get(categoriesEndpoint, {params: {query}})
         .then(handleResponse)
         .catch(handleError)
 }
