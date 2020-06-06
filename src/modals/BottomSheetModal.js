@@ -26,8 +26,9 @@ const BottomSheetModal = (props) => {
     const bottomSheetRef = useRef();
     const [fall] = useState(new Animated.Value(1));
 
+    const calcSnapPoints = [dimensions.height - 100, dimensions.height - 200, 0];
     const initialSnap = params.initialSnap || 2;
-    const snapPoints = params.snapPoints || [dimensions.height - 100, dimensions.height - 200, 0];
+    const snapPoints = params.snapPoints || calcSnapPoints;
 
 
     useEffect(() => {
@@ -86,6 +87,8 @@ const BottomSheetModal = (props) => {
             </TouchableWithoutFeedback>
         )
     };
+
+    console.log(state.pageMeasure.height, state.pageMeasure.width,)
 
     return (
         <View style={[styles.modalContainer, {width: dimensions.width, height: state.pageMeasure.height}]}>

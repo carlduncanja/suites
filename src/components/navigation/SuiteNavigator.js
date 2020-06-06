@@ -22,6 +22,7 @@ import ReportPreviewModal from '../../modals/ReportPreviewModal';
 import OverlayInfoModal from '../../modals/OverlayInfoModal';
 import BottomSheetModal from '../../modals/BottomSheetModal';
 import {MenuProvider} from 'react-native-popup-menu';
+import {appActions} from "../../redux/reducers/suitesAppReducer";
 
 
 /**
@@ -33,6 +34,8 @@ import {MenuProvider} from 'react-native-popup-menu';
  * @descriptor :
  */
 export const SuiteNavigator = ({navigation, descriptors}) => {
+    const [state, dispatch] = useContext(SuitesContext);
+
 
     const screenDimensions = Dimensions.get('window')
     const {routes, index} = navigation.state;
@@ -73,6 +76,13 @@ export const SuiteNavigator = ({navigation, descriptors}) => {
         navigation.navigate('Auth')
     };
 
+    const getPageMeasure = (event) => {
+        dispatch({
+            type: appActions.SETPAGEMEASURES,
+            newState: event.nativeEvent.layout
+        })
+    };
+
     return (
         <Provider>
             <SafeAreaView
@@ -94,7 +104,9 @@ export const SuiteNavigator = ({navigation, descriptors}) => {
                                 style={styles.navBar}
                             />
 
-                            <View style={styles.pageContent}>
+                            <View style={styles.pageContent}
+                                  onLayout={getPageMeasure}
+                            >
                                 <ActiveScreen
                                     navigation={descriptor.navigation}
                                     descriptor={descriptor}

@@ -33,7 +33,7 @@ const Schedule = (props) => {
     const initialIndex = getSelectedIndex(formatDate(currentDate,"YYYY-MM-DD").toString(), initialDaysList);
 
     //########### States
-    const [dimensions, setDimensions] = useState(Dimensions.get('window'));
+    // const [dimensions, setDimensions] = useState(Dimensions.get('window'));
 
     // calendar states
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
@@ -51,15 +51,15 @@ const Schedule = (props) => {
     // animated states
 
     //########### Event Listeners
-    useEffect(() => {
-        Dimensions.addEventListener("change", onChange);
-        return () => {
-            Dimensions.removeEventListener("change", onChange);
-        };
-    });
+    // useEffect(() => {
+    //     Dimensions.addEventListener("change", onChange);
+    //     return () => {
+    //         Dimensions.removeEventListener("change", onChange);
+    //     };
+    // });
 
     useEffect(() => {
-        // if (!appointments.length) {
+        if (!appointments.length) {
             setFetchingAppointments(true);
             getAppointments()
                 .then(data => {
@@ -72,13 +72,13 @@ const Schedule = (props) => {
                 .finally(_ => {
                     setFetchingAppointments(false)
                 })
-        // }
+        }
     }, []);
 
     //########### Functions
-    const onChange = (dimensions) => {
-        setDimensions(dimensions);
-    };
+    // const onChange = (dimensions) => {
+    //     setDimensions(dimensions);
+    // };
 
     /*
      * @param date string "YYYY-MM-DD" for the selected day.

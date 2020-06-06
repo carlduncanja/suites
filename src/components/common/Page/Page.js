@@ -9,8 +9,6 @@ import {colors} from '../../../styles'
 import PropTypes from 'prop-types';
 
 
-
-
 /**
  * @param placeholderText string
  * @param changeText function
@@ -55,13 +53,12 @@ const Page = (props) => {
     };
 
     return (
-        <View
-            style={{flex: 1}}
-            onLayout={(event) => getPageMeasure(event)}
-        >
+        <View style={{flex: 1}}>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <View style={{marginBottom: 25}} onLayout={(event) => getSlideTop(event)}>
+                    <View style={{marginBottom: 25}}
+                          onLayout={(event) => getSlideTop(event)}
+                    >
                         <PageTitle
                             pageTitle={routeName}
                         />
