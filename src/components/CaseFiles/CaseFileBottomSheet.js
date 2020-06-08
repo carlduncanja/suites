@@ -220,6 +220,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
             case "Charge Sheet" :
                 return <ChargeSheet
                     chargeSheet={chargeSheet}
+                    procedures={caseProcedures}
                     selectedTab={selectedTab}
                     isEditMode={isEditMode}
                 />

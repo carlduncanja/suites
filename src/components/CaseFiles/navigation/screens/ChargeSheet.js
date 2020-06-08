@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Consumables, Equipment, Invoices, Quotation, Billing} from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
-import {currencyFormatter} from '../../../../utils/formatter';
+import {currencyFormatter, formatDate} from '../../../../utils/formatter';
 import CaseFiles from '../../../../../data/CaseFiles';
 
 const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices
@@ -115,8 +115,7 @@ const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 //
 // }
 
-
-const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures}) => {
 
     const LINE_ITEM_TYPES = {
         DISCOUNT: "discount",
@@ -184,6 +183,10 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
     for (const proceduresBillableItem of proceduresBillableItems) {
         const {lineItems = [], inventories, equipments} = proceduresBillableItem;
 
+        const caseProcedure = procedures.find( item => item._id === proceduresBillableItem.caseProcedureId) || {}
+        const caseAppointment = caseProcedure.appointment
+
+        const name = `${caseAppointment.title} (${formatDate(caseAppointment.startTime, "MMM D - h:mm a")})`
 
 
         const billingItem = {
@@ -192,7 +195,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab}) => {
             services: [],
             procedures: [],
             procedure: {
-                name: proceduresBillableItem.caseProcedureId,
+                name: name || proceduresBillableItem.caseProcedureId,
                 cost: proceduresBillableItem.total
             },
         }
