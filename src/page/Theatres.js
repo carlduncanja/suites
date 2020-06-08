@@ -22,6 +22,8 @@ import ActionContainer from "../components/common/FloatingAction/ActionContainer
 import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
 import CreateTheatreDialogContainer from "../components/Theatres/CreateTheatreDialogContainer";
 import AssignIcon from "../../assets/svg/assignIcon";
+import _ from "lodash";
+
 
 
 const listHeaders = [
@@ -122,8 +124,11 @@ function Theatres(props) {
     const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
-    const [searchValue, setSearchValue] = useState("");
     const [selectedIds, setSelectedIds] = useState([]);
+
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
 
     // pagination
     const [totalPages, setTotalPages] = useState(0);
@@ -139,6 +144,30 @@ function Theatres(props) {
         if (!theatres.length) fetchTheatres();
         setTotalPages(Math.ceil(theatres.length / recordsPerPage));
     }, []);
+
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchTheatres, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchValue]);
+
 
     // ##### Handler functions
 
@@ -317,9 +346,9 @@ function Theatres(props) {
 
     const fetchTheatres = () => {
         setFetchingData(true);
-        getTheatres()
+        getTheatres(searchValue)
             .then(data => {
-                // console.log("get theatres", data);
+                console.log("get theatres search", data);
                 setTheatres(data);
                 setTotalPages(Math.ceil(data.length / recordsPerPage));
             })

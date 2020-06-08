@@ -209,6 +209,12 @@ export const createEquipment = async (equipmentToCreate) => {
         .catch(handleError);
 };
 
+export const createEquipmentType = async (equipmentTypeToCreate) => {
+    return suitesAxiosInstance.post(equipmentTypesEndpoint, equipmentTypeToCreate)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 // ################# Categories Endpoint
 
 export const getCategories = async (query, max) => {

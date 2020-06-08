@@ -75,7 +75,8 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     const intialSelectedTab = initialCurrentTabs[0]
 
     const {_id, patient, caseNumber} = caseItem
-    patient ? name = `${patient.firstName} ${patient.surname}` : name = ""
+    let name = patient ? `${patient.firstName} ${patient.surname}` : ""
+    // patient ? name = `${patient.firstName} ${patient.surname}` : name = ""
 
     // ############### State
 

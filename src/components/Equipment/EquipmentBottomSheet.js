@@ -32,7 +32,7 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
 
     const {
         // supplier id
-        _id,
+        _id = "",
         name,
         // supplier name
         supplier, 

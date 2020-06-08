@@ -5,7 +5,7 @@ import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-men
 import DropDownIcon from "../../../../assets/svg/dropDown";
 
 
-function OptionsField({oneOptionsSelected, text, label, menuOption, hasError = true, errorMessage = ""}) {
+function OptionsField({oneOptionsSelected, text, label, menuOption, hasError = false, errorMessage = ""}) {
     return (
         <View style={styles.container}>
             <Text style={[

@@ -16,8 +16,8 @@ import EditIcon from "../../../assets/svg/editIcon";
 
 
 import { withModal } from "react-native-modalfy";
-
-const General = ({equipment, modal}) => {
+ 
+const General = ({equipment = {}, modal}) => {
 
     const {
         _id = "",

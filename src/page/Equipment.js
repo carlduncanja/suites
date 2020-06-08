@@ -10,6 +10,7 @@ import ActionContainer from "../components/common/FloatingAction/ActionContainer
 import ActionItem from "../components/common/ActionItem";
 import CreateEquipmentDialog from '../components/Equipment/CreateEquipmentDialogContainer';
 import Item from '../components/common/Table/Item';
+import _ from "lodash";
 
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -30,6 +31,7 @@ import ActionIcon from "../../assets/svg/ActionIcon";
 import IconButton from "../components/common/Buttons/IconButton";
 import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
 import SvgIcon from "../../assets/SvgIcon";
+import CreateEquipmentTypeDialogContainer from "../components/Equipment/CreateEquipmentTypeDialogContainer";
 
 const Equipment = (props) => {
 
@@ -77,6 +79,10 @@ const Equipment = (props) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
     const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([])
     const [selectedTypesIds, setSelectedTypesIds] = useState([])
     const [equipmentTypes, setEquipmentTypes] = useState([])
@@ -91,7 +97,33 @@ const Equipment = (props) => {
         setTotalPages(Math.ceil(equipment.length / recordsPerPage))
     }, []);
 
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchEquipmentData, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchValue]);
     // ############# Event Handlers
+
+    const onSearchInputChange = (input) => {
+        setSearchValue(input)
+    }
 
     const handleDataRefresh = () => {
         fetchEquipmentData()
@@ -172,7 +204,7 @@ const Equipment = (props) => {
     // ############# Helper functions
     const fetchEquipmentData = () => {
         setFetchingData(true)
-        getEquipmentTypes()
+        getEquipmentTypes(searchValue)
             .then(data => {
                 let newData = data.map(item => {
                     return {
@@ -357,6 +389,7 @@ const Equipment = (props) => {
         }}/>;
         const editGroup = <ActionItem title={"Edit Group"} icon={<EditIcon/>} onPress={() => {
         }}/>;
+        const createEquipmentType = <ActionItem title={"Create Equipment Type"} icon={<AddIcon/>} onPress={openEquipmentTypeDialog}/>;
         const createEquipment = <ActionItem title={"Add Equipment"} icon={<AddIcon/>} onPress={openEquipmentDialog}/>;
 
         return <ActionContainer
@@ -364,6 +397,7 @@ const Equipment = (props) => {
                 deleteAction,
                 assignEquipment,
                 editGroup,
+                createEquipmentType,
                 createEquipment
             ]}
             title={"EQUIPMENT ACTIONS"}
@@ -390,6 +424,26 @@ const Equipment = (props) => {
                     })
         }, 200)
     }
+
+    const openEquipmentTypeDialog = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <CreateEquipmentTypeDialogContainer
+                            onCancel={() => setFloatingAction(false)}
+                            onCreated = {()=>{}}
+                            // onCreated={(item) => handleOnItemPress(item, true)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    }
     // ############# Prepare list data
 
     let equipmentToDisplay = [...equipmentTypes];
@@ -401,15 +455,13 @@ const Equipment = (props) => {
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
                 placeholderText={"Search by Assigned Equipment"}
-                // changeText={changeText}
-                // inputText={textInput}
+                changeText={onSearchInputChange}
+                inputText={searchValue}
                 routeName={"Equipment"}
                 listData={equipmentToDisplay}
-
                 listHeaders={listHeaders}
                 itemsSelected={selectedTypesIds}
                 onSelectAll={handleOnSelectAll}
-
                 listItemFormat={renderEquipmentFn}
             />
 

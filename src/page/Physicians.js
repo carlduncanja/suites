@@ -21,6 +21,7 @@ import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } 
 import {connect} from 'react-redux';
 import { setPhysicians } from "../redux/actions/physiciansActions";
 import { getPhysicians } from "../api/network";
+import _ from "lodash";
 
 import { withModal } from 'react-native-modalfy';
 import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
@@ -64,6 +65,10 @@ const Physicians = (props) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
     const [selectedPhysiciansId, setSelectedPhysiciansId] = useState([])
 
     // ############# Lifecycle methods
@@ -75,7 +80,34 @@ const Physicians = (props) => {
         setTotalPages(Math.ceil(physicians.length / recordsPerPage))
     }, []);
 
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchPhysiciansData, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchValue]);
+
     // ############# Event Handlers
+
+    const onSearchInputChange = (input) =>{
+        setSearchValue(input)
+    }
 
     const handleDataRefresh = () => {
         fetchPhysiciansData()
@@ -132,7 +164,7 @@ const Physicians = (props) => {
 
     const fetchPhysiciansData = () => {
         setFetchingData(true);
-        getPhysicians()
+        getPhysicians(searchValue)
             .then(data => {
                 setPhysicians(data);
                 setTotalPages(Math.ceil(data.length / recordsPerPage))
@@ -249,15 +281,13 @@ const Physicians = (props) => {
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
                 placeholderText={"Search by Physician"}
-                // changeText={changeText}
-                // inputText={textInput}
+                changeText={onSearchInputChange}
+                inputText={searchValue}
                 routeName={"Physicians"}
                 listData={physiciansToDisplay}
-
                 listHeaders={listHeaders}
                 itemsSelected={selectedPhysiciansId}
                 onSelectAll={handleOnSelectAll}
-
                 listItemFormat={renderPhysiciansFn}
             />
 

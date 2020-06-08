@@ -20,6 +20,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 import {connect} from 'react-redux';
 import {setProcedures} from "../redux/actions/proceduresActions";
 import {getProcedures} from "../api/network";
+import _ from "lodash";
 
 import {withModal} from 'react-native-modalfy';
 import proceduresTest from '../../data/Procedures'
@@ -59,6 +60,10 @@ const Procedures = (props) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
     const [selectedProcedures, setSelectedProcedures] = useState([])
 
     // ############# Lifecycle methods
@@ -68,7 +73,35 @@ const Procedures = (props) => {
         setTotalPages(Math.ceil(procedures.length / recordsPerPage))
     }, []);
 
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchProceduresData, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchValue]);
+
+
     // ############# Event Handlers
+
+    const onSearchInputChange = (input) =>{
+        setSearchValue(input)
+    }
 
     const handleDataRefresh = () => {
         fetchProceduresData()
@@ -126,7 +159,7 @@ const Procedures = (props) => {
 
     const fetchProceduresData = () => {
         setFetchingData(true)
-        getProcedures()
+        getProcedures(searchValue)
             .then(data => {
                 setProcedures(data);
                 setTotalPages(Math.ceil(data.length / recordsPerPage))
@@ -223,15 +256,13 @@ const Procedures = (props) => {
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
                 placeholderText={"Search by Procedure"}
-                // changeText={changeText}
-                // inputText={textInput}
+                changeText={onSearchInputChange}
+                inputText={searchValue}
                 routeName={"Procedures"}
                 listData={proceduresToDisplay}
-
                 listHeaders={listHeaders}
                 itemsSelected={selectedProcedures}
                 onSelectAll={handleOnSelectAll}
-
                 listItemFormat={renderProcedureFn}
             />
 

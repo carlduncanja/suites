@@ -7,7 +7,7 @@ import ActionIcon from "../../assets/svg/ActionIcon";
 import ListItem from "../components/common/List/ListItem";
 import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
 import {numberFormatter} from "../utils/formatter";
-
+import _ from "lodash";
 
 import {setInventory} from "../redux/actions/InventorActions";
 import {connect} from "react-redux";
@@ -145,8 +145,13 @@ function Inventory(props) {
     const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
-    const [searchValue, setSearchValue] = useState("");
+    // const [searchValue, setSearchValue] = useState("");
     const [selectedIds, setSelectedIds] = useState([]);
+
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
 
     // pagination
     const [totalPages, setTotalPages] = useState(0);
@@ -161,9 +166,33 @@ function Inventory(props) {
         setTotalPages(Math.ceil(inventory.length / recordsPerPage));
     }, []);
 
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchInventory, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchValue]);
+
     // ##### Handler functions
 
-    const onSearchChange = () => {
+    const onSearchChange = (input) => {
+        setSearchValue(input)
     };
 
     const onItemPress = (item) => () => {
@@ -459,7 +488,7 @@ function Inventory(props) {
 
     const fetchInventory = () => {
         setFetchingData(true);
-        getInventories()
+        getInventories(searchValue)
             .then(data => {
                 setInventory(data);
                 setTotalPages(Math.ceil(data.length / recordsPerPage));
