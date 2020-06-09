@@ -136,7 +136,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures}) => {
         const {name = "", unitPrice = 0} = inventory
         return {
             ...item,
-            name,
+            name, 
             unitPrice,
             type: 'Anaesthesia'
         }

@@ -108,7 +108,7 @@ const Quotations = ({tabDetails, modal}) => {
             alignment : "flex-end"
         }
     ]
-
+ 
     const openModal = (item) => () => {
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview type = "Quotation" details = {reportTestData}/>
