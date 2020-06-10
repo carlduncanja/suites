@@ -6,11 +6,19 @@ import Checkbox from '../../../common/Checkbox/Checkbox';
 import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
 import { useCheckBox } from '../../../../helpers/caseFilesHelpers'
 import Item from '../../../common/Table/Item';
+import Search from '../../../common/Search';
+import DropdownInputField from '../../../common/Input Fields/DropdownInputField';
+import OptionSearchableField from '../../../common/Input Fields/OptionSearchableField';
 
 
 const Consumables = ({tabDetails, headers, listItemFormat}) => {
     
     const [checkBoxList, setCheckBoxList] = useState([])
+    const [searchText, setSearchText] = useState('')
+
+    const onSearchInputChange = (input) =>{
+        setSearchText(input)
+    }
  
     const toggleCheckbox = (item) => () => {
         let updatedCases = [...checkBoxList];
@@ -50,6 +58,25 @@ const Consumables = ({tabDetails, headers, listItemFormat}) => {
 
     return ( 
         <ScrollView>
+            <View style={{flex:1, justifyContent:'space-between', flexDirection:'row', marginBottom:20}}>
+                <View style={{flex:2, paddingRight:100}}>
+                    <Search
+                        placeholderText = "Search by inventory item"
+                        inputText = {searchText}
+                        changeText = {onSearchInputChange}
+                        backgroundColor = "#FAFAFA"
+                    />
+                </View>
+                <View style={{flex:1}}>
+                    <DropdownInputField
+                        onSelectChange = {()=>{}}
+                        value = {'All'}
+                        dropdownOptions = {['All',"Yes",'No']}
+                    />
+                </View>
+                
+            </View>
+            
             <Table
                 isCheckbox = {true}
                 data = {tabDetails}

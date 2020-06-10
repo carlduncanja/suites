@@ -7,7 +7,7 @@ import {formatAmount} from '../../../helpers/caseFilesHelpers';
 import {formatDate, currencyFormatter} from "../../../utils/formatter";
 
 
-const BillingCaseCard = ({tabDetails}) => {
+const BillingCaseCard = ({tabDetails, isEditMode}) => {
 
     const {
         lastModified = "",
@@ -163,6 +163,14 @@ const BillingCaseCard = ({tabDetails}) => {
                                                     equipments={equipments}
                                                     inventories={inventories}
                                                 />
+                                                {
+                                                    isEditMode && <TouchableOpacity 
+                                                        style={styles.editContainer}
+                                                        activeOpacity = {0.5}
+                                                    >
+                                                        <Text style={{color:'#0CB0E7', fontSize:16, fontWeight:'500'}}>Edit Procedure</Text>
+                                                    </TouchableOpacity>
+                                                }
                                             </View>
                                         }
 
@@ -174,6 +182,7 @@ const BillingCaseCard = ({tabDetails}) => {
                     })}
 
             </View>
+
         </ScrollView>
     );
 }
@@ -227,4 +236,12 @@ const styles = StyleSheet.create({
         marginBottom: 6,
         alignItems: 'center'
     },
+    editContainer:{
+        // flex:1,
+        width:'100%',
+        height:40,
+        justifyContent: 'flex-end',
+        alignItems:'flex-end',
+        marginBottom:10
+    }
 })

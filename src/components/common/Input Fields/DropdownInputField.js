@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, Text, ScrollView, TouchableOpacity} from "react-native";
 import DropdownIcon from '../../../../assets/svg/dropdownIcon';
+import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
 import IconButton from '../Buttons/IconButton'
+import SearchableContainer from '../SearchableContainer';
+import SuggestionsFilterContainer from '../SuggestionsFilterContainer';
 
 
 function DropdownInputField({label, onSelectChange, value, dropdownOptions}) {
 
     const [selectedOption, setSelectedOption] = useState(value)
+    const [searchText, setSearchText] = useState("")
     const [isOptionsDisplay, setDisplayOptions] = useState(false)
 
     const toggleDisplayOptions = () =>{
@@ -27,17 +31,51 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions}) {
                 }
             ]}>{label}</Text>
 
-            <View style={[styles.inputWrapper]}>
-                <View style={{flex:1,justifyContent:'space-between', paddingLeft:4, flexDirection:'row', alignItems:'center',paddingRight:4}}>
+            <Menu
+                onClose = {()=>{}}
+                // onSelect={oneOptionsSelected} 
+                style={{flex: 1,position:"relative"}} 
+            >
+                <MenuTrigger>
+
+                    <View style={[styles.inputWrapper]}>
+                        <View style={{flex:1,justifyContent:'space-between', paddingLeft:10, flexDirection:'row', alignItems:'center',paddingRight:8}}>
+                            <Text>{selectedOption}</Text>
+                            <IconButton
+                                Icon = {<DropdownIcon/>}
+                                onPress = {()=>toggleDisplayOptions()}
+                            />
+                        </View>
+                    </View>
+
+                </MenuTrigger>
+
+                
+                <MenuOptions customStyles={optionsStyles}>
+                    <View style={styles.menu}>
+                        <SuggestionsFilterContainer
+                            options = {['All', 'Yes','No']}
+                            searchText = {searchText}
+                            onSearchChangeText = {()=>{}}
+                        />
+                    </View>
+                    
+                </MenuOptions>
+
+
+            </Menu>
+
+            {/* <View style={[styles.inputWrapper]}>
+                <View style={{flex:1,justifyContent:'space-between', paddingLeft:10, flexDirection:'row', alignItems:'center',paddingRight:8}}>
                     <Text>{selectedOption}</Text>
                     <IconButton
                         Icon = {<DropdownIcon/>}
                         onPress = {()=>toggleDisplayOptions()}
                     />
                 </View>
-            </View>
+            </View> */}
 
-            {
+            {/* {
                 isOptionsDisplay &&
                     // <View style={styles.optionsContainer}>
                         <ScrollView style={styles.optionsContainer}>
@@ -57,7 +95,7 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions}) {
                             })}
                         </ScrollView>
                     // </View>
-            }
+            } */}
 
         </View>
     );
@@ -67,6 +105,14 @@ DropdownInputField.propTypes = {};
 DropdownInputField.defaultProps = {};
 
 export default DropdownInputField;
+
+const optionsStyles = {
+    optionsContainer: {
+        backgroundColor:"rgba(255, 255, 255, 0)",
+        
+    }
+}
+
 
 const styles = StyleSheet.create({
     container: {
@@ -82,9 +128,9 @@ const styles = StyleSheet.create({
     inputWrapper: {
         flex: 1,
         borderWidth: 1,
-        borderColor: '#E3E8EF',
-        borderRadius: 4,
-        height: 32,
+        borderColor: '#CCD6E0',
+        borderRadius: 8,
+        height: 42,
     },
     optionsContainer:{
         flex:1,
@@ -105,6 +151,10 @@ const styles = StyleSheet.create({
         padding: 12,
         paddingTop: 9,
         paddingBottom: 9
+    },
+    menu:{
+        backgroundColor:"#FFFFFF",
+        marginRight:25,
     }
 });
 

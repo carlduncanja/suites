@@ -2,9 +2,9 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import InputText from './InputText';
 
-const Search = ({placeholderText, changeText, inputText}) =>{
+const Search = ({placeholderText, changeText, inputText, backgroundColor = "#FFFFFF"}) =>{
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor:backgroundColor}]}>
             <InputText
                 onChangeText={changeText}
                 placeholder={placeholderText}
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         borderRadius:8,
         borderWidth:1,
         borderColor:'#CCD6E0',
-        backgroundColor:'#FFFFFF',
+        // backgroundColor:'#FFFFFF',
         padding:10,
     }
 });

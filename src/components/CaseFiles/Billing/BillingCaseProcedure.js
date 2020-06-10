@@ -10,7 +10,7 @@ const BillingCaseProcedure = ({physicians, equipments, inventories}) =>{
     const totalPrice = (quantity,price) =>{
         return quantity * price
     }
-
+ 
     const tableItem = (charge,cost) =>{
         return (
             <View style={styles.itemContainer}>

@@ -45,7 +45,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
             disabledIcon: <PatientDisabledIcon/>
         },
         {
-            name: "Medical Staff",
+            name: "Medical Staff", 
             overlayTabs: ["Details"],
             selectedIcon: <StaffSelectedIcon/>,
             disabledIcon: <StaffDisabledIcon/>
@@ -84,7 +84,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs)
     const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem)
 
-    const [isEditMode, setEditMode] = useState(false)
+    const [isEditMode, setEditMode] = useState(isOpenEditable)
     const [selectedCase, setSelectedCase] = useState({})
     const [isFetching, setFetching] = useState(false);
 

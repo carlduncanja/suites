@@ -1,121 +1,20 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {Consumables, Equipment, Invoices, Quotation, Billing} from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
 import {currencyFormatter, formatDate} from '../../../../utils/formatter';
 import CaseFiles from '../../../../../data/CaseFiles';
+import IconButton from '../../../common/Buttons/IconButton';
+import RightArrow from '../../../../../assets/svg/rightArrow';
+import LeftArrow from '../../../../../assets/svg/leftArrow';
+
 
 const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices
 const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
 const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
-//     billing:{
-//         lastModified : new Date(2019,11,11),
-//         total : 104002.25,
-//         hasDiscount : true,
-//         discount : 0.15,
-//         procedures : [
-//         {
-//             procedure: {
-//                 name : 'Coronary Bypass Graft',
-//                 cost : 48000.00
-//             },
-//             physicians : [
-//                 {
-//                     name : 'Dr. Mansingh',
-//                     cost : 64000.89
-//                 },
-//                 {
-//                     name : 'Dr. Brown',
-//                     cost : 50000.89
-//                 }
-//             ],
-//             equipments : [
-//                 {
-//                     name : 'Blood Glasses',
-//                     amount : 2,
-//                     unitPrice : 16000.45
-//                 },
-//                 {
-//                     name : 'Stethoscope 4',
-//                     amount : 3,
-//                     unitPrice : 15000.50
-//                 }
-//             ],
-//             inventories : [
-//                 {
-//                     name : 'Agents',
-//                     amount : 15,
-//                     unitPrice : 5000.62
-//                 },
-//                 {
-//                     name : 'Atracurium',
-//                     amount : 5,
-//                     unitPrice : 4128.45
-//                 },
-//                 {
-//                     name : 'GU Tower',
-//                     amount : 10,
-//                     cost : 5055.00
-//                 },
-//                 {
-//                     name : 'Gauze',
-//                     amount : 20,
-//                     cost : 500.00
-//                 }
-//             ]
-//         },
-//         {
-//             procedure: {
-//                 name : 'Coronary Artery Graft',
-//                 cost : 32000.45
-//             },
-//             physicians : [
-//                 {
-//                     name : 'Dr. Abraham',
-//                     cost : 100500.23
-//                 }
-//             ],
-//             equipments : [
-//                 {
-//                     name : 'Glasses',
-//                     amount : 1,
-//                     unitPrice : 16000.45
-//                 },
-//                 {
-//                     name : 'Stethoscope 3',
-//                     amount : 1,
-//                     unitPrice : 15000.50
-//                 }
-//             ],
-//             inventories : [
-//                 {
-//                     name : 'Agents',
-//                     amount : 8,
-//                     unitPrice : 5000.62
-//                 },
-//                 {
-//                     name : 'Atracurium',
-//                     amount : 5,
-//                     unitPrice : 4128.45
-//                 },
-//                 {
-//                     name : 'GU Tower',
-//                     amount : 5,
-//                     cost : 5055.00
-//                 },
-//                 {
-//                     name : 'Gauze',
-//                     amount : 10,
-//                     cost : 500.00
-//                 }
-//             ]
-//         }
-//     ]
-//
-// }
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures}) => {
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, isEditMode}) => {
 
     const LINE_ITEM_TYPES = {
         DISCOUNT: "discount",
@@ -243,9 +142,32 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures}) => {
         <View style={[styles.item, {alignItems: 'center'}]}>
             <Text style={styles.itemText}>{item.type}</Text>
         </View>
-        <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{item.amount}</Text>
-        </View>
+        {
+            isEditMode ?
+
+            <View style={[styles.editItem, {alignItems: 'center'}]}>
+                <IconButton
+                    Icon = {<LeftArrow strokeColor="#718096"/>}
+                    onPress = {()=>{}}
+                    disabled = {false}
+                />
+
+                <TextInput style={styles.editTextBox}>
+                    <Text style={styles.itemText}>{item.amount}</Text>
+                </TextInput>
+                
+                <IconButton
+                    Icon = {<RightArrow strokeColor="#718096"/>}
+                    onPress = {()=>{}}
+                    disabled = {false}
+                />
+            </View>
+            :
+            <View style={[styles.item, {alignItems: 'center'}]}>
+                <Text style={styles.itemText}>{item.amount}</Text>
+            </View>
+
+        }
         <View style={[styles.item, {alignItems: 'flex-end'}]}>
             <Text style={styles.itemText}>{`$ ${currencyFormatter(item.unitPrice)}`}</Text>
         </View>
@@ -273,7 +195,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures}) => {
                     selectedTab === 'Quotation' ?
                         <Quotation tabDetails={quotationTestData}/>
                         :
-                        <BillingCaseCard tabDetails={billing}/>
+                        <BillingCaseCard tabDetails={billing} isEditMode = {isEditMode}/>
         // <View/>
     );
 }
@@ -283,6 +205,22 @@ export default ChargeSheet;
 const styles = StyleSheet.create({
     item: {
         flex: 1,
+    },
+    editItem:{
+        flex:1,
+        flexDirection:'row',  
+        justifyContent:'center'
+    },
+    editTextBox:{
+        backgroundColor:'#F8FAFB',
+        borderColor:'#CCD6E0',
+        borderWidth:1,
+        borderRadius:4,
+        padding:6,
+        paddingTop:2,
+        paddingBottom:2,
+        marginLeft:10,
+        marginRight:10
     },
     itemText: {
         fontSize: 16,
