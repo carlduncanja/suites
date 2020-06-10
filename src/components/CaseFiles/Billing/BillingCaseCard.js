@@ -1,13 +1,15 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
 import BillingCaseProcedure from './BillingCaseProcedure';
+import EditProcedure from './EditProcedure';
 import moment from 'moment';
 import SvgIcon from '../../../../assets/SvgIcon';
 import {formatAmount} from '../../../helpers/caseFilesHelpers';
 import {formatDate, currencyFormatter} from "../../../utils/formatter";
+import { withModal } from 'react-native-modalfy';
 
 
-const BillingCaseCard = ({tabDetails, isEditMode}) => {
+const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
 
     const {
         lastModified = "",
@@ -36,11 +38,6 @@ const BillingCaseCard = ({tabDetails, isEditMode}) => {
 
     const [openDetailsArrayState, setOpenDetailsArrayState] = useState(getProcedureStatusArray())
 
-    // const formatAmount = (amount) => {
-    //     let newAmountString = (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
-    //     return `$ ${newAmountString}`
-    // }
-
     const getStatus = (index) => {
         let currentArray = openDetailsArrayState.filter(item => item.index === index)
         return currentArray[0].status
@@ -57,39 +54,15 @@ const BillingCaseCard = ({tabDetails, isEditMode}) => {
         setOpenDetailsArrayState(updatedArray)
     }
 
-    // const getLastModified = () =>{
-
-    // }
-
-    // const getTotal = () =>{
-    //     let allEquiments = caseProcedureDetails.map( procedure => procedure.equipments)
-    //     let allConsumables = caseProcedureDetails.map( procedure => procedure.consumables)
-    //     let procedureCost = caseProcedureDetails.map( procedure => procedure.cost)
-    //     let physicianCost = casePhysicians.map( physician => physician.staff.cost)
-
-    //     const getItemTotal = (itemArray) =>{
-    //         let itemTotal = 0
-    //         itemArray.map( item => itemTotal += item)
-    //         return itemTotal
-    //     }
-    //     const getItemArrayTotal = (itemArray) =>{
-    //         let itemTotal = 0
-    //         itemArray
-    //             .forEach(arr => arr
-    //             .map(obj => itemTotal += (obj.quantity * obj.unitPrice)))
-    //         return itemTotal
-    //     }
-
-
-    //     let equipTotal = getItemArrayTotal(allEquiments)
-    //     let consumTotal = getItemArrayTotal(allConsumables)
-    //     let physTotal = getItemTotal(physicianCost)
-    //     let proTotal = getItemTotal(procedureCost)
-
-    //     let total = equipTotal + consumTotal + physTotal + proTotal
-
-    //     return (Math.round(total * 100) / 100)
-    // }
+    const openActionContainer = (name) =>{
+        modal.openModal('OverlayInfoModal',{ 
+            overlayContent : <EditProcedure
+                procedureName = {name}
+                tabs = {['Consumables','Charges and Fees']}
+                details = {[]}
+            />,
+        })
+    }
 
     return (
         <ScrollView style={styles.container}>
@@ -167,6 +140,7 @@ const BillingCaseCard = ({tabDetails, isEditMode}) => {
                                                     isEditMode && <TouchableOpacity 
                                                         style={styles.editContainer}
                                                         activeOpacity = {0.5}
+                                                        onPress = {()=>openActionContainer(procedure.name)}
                                                     >
                                                         <Text style={{color:'#0CB0E7', fontSize:16, fontWeight:'500'}}>Edit Procedure</Text>
                                                     </TouchableOpacity>
@@ -187,7 +161,7 @@ const BillingCaseCard = ({tabDetails, isEditMode}) => {
     );
 }
 
-export default BillingCaseCard;
+export default withModal(BillingCaseCard);
 
 const styles = StyleSheet.create({
     container: {},

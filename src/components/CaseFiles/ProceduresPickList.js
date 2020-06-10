@@ -1,6 +1,6 @@
 import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import PickListCard from './PickList/PickListCard'
+import PickListCard from './PickList/PickListCard' 
 import { withModal } from "react-native-modalfy";
 
 const ProceduresPickList = ({details, tabs, modal}) => {

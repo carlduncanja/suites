@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 
-const Button = ({backgroundColor, buttonPress, color, title}) => {
+const Button = ({backgroundColor, buttonPress, color, title, fontSize = 12, fontWeight = 'normal'}) => {
     return (
         <TouchableOpacity onPress={buttonPress}>
             <View style={[styles.button, {backgroundColor: backgroundColor}]}>
-                <Text style={{color: color}}>{title}</Text>
+                <Text style={{color: color, fontSize: fontSize, fontWeight : fontWeight}}>{title}</Text>
             </View>
         </TouchableOpacity>
     )
