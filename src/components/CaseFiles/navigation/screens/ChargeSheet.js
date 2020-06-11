@@ -14,8 +14,10 @@ const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
 const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, isEditMode}) => {
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isEditMode}) => {
 
+    // console.log("Sheet: ", quotations)
+    
     const LINE_ITEM_TYPES = {
         DISCOUNT: "discount",
         SERVICE: "service",
@@ -117,10 +119,11 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, isEditMode}) =>
         }
 
         billingItem.inventories = inventories.map(item => {
+            const {inventory = {} } = item
             return {
                 amount: item.amount,
                 name: item.inventory.name,
-                cost: item.unitPrice,
+                cost: inventory.unitPrice,
             }
         })
 
@@ -180,6 +183,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, isEditMode}) =>
                 tabDetails={inventoryList}
                 headers={headers}
                 listItemFormat={listItem}
+                details = {billing.procedures}
             />
             :
             selectedTab === 'Equipment' ?
@@ -193,7 +197,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, isEditMode}) =>
                     <Invoices tabDetails={invoiceTestData}/>
                     :
                     selectedTab === 'Quotation' ?
-                        <Quotation tabDetails={quotationTestData}/>
+                        <Quotation tabDetails={quotations}/>
                         :
                         <BillingCaseCard tabDetails={billing} isEditMode = {isEditMode}/>
         // <View/>

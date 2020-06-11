@@ -5,6 +5,7 @@ import ActionableListCard from "../PickList/ActionableListCard";
 import IconButton from '../../common/Buttons/IconButton';
 import LeftArrow from '../../../../assets/svg/leftArrow';
 import RightArrow from '../../../../assets/svg/rightArrow';
+import CreateLineItemDialog from "../Billing/CreateLineItemDialog";
 
 const testData = [
     {
@@ -84,6 +85,7 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
     const {inventories = [], equipments = [] } = details
 
     const [selectedTab, setSelectedTab] = useState(tabs[0])
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const handleOnPressTab = (tab) => {
         setSelectedTab(tab)
@@ -220,6 +222,16 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
         )
     }
 
+    const openDialogContainer = () => {
+        modal.openModal('OverlayModal',{
+            content: <CreateLineItemDialog
+                onCreated={() => {}}
+                onCancel={() => setFloatingAction(false)}
+            />,
+            onClose: () => setFloatingAction(false)
+        })
+    }
+
     const itemFormat = selectedTab === 'Charges and Fees' ? chargeItemFormat : listItemFormat
     const listHeaders = selectedTab === 'Charges and Fees' ? chargeHeaders : headers
 
@@ -235,6 +247,7 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
                 headers = {listHeaders}
                 isCheckBox = {false}
                 data = {data}
+                onActionPress = {openDialogContainer}
             /> 
         </View>
     )

@@ -10,7 +10,7 @@ import SuggestionsFilterContainer from '../SuggestionsFilterContainer';
 
 function DropdownInputField({label, onSelectChange, value, dropdownOptions}) {
 
-    const [selectedOption, setSelectedOption] = useState(value)
+    // const [selectedOption, setSelectedOption] = useState(value)
     const [searchText, setSearchText] = useState("")
     const [isOptionsDisplay, setDisplayOptions] = useState(false)
 
@@ -18,11 +18,6 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions}) {
         setDisplayOptions(!isOptionsDisplay)
     }
 
-    const setValue = (value) =>{
-        setSelectedOption(value)
-        setDisplayOptions(false)
-    }
-    
     return (
         <View style={styles.container}>
             <Text style={[
@@ -40,7 +35,7 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions}) {
 
                     <View style={[styles.inputWrapper]}>
                         <View style={{flex:1,justifyContent:'space-between', paddingLeft:10, flexDirection:'row', alignItems:'center',paddingRight:8}}>
-                            <Text>{selectedOption}</Text>
+                            <Text>{value}</Text>
                             <IconButton
                                 Icon = {<DropdownIcon/>}
                                 onPress = {()=>toggleDisplayOptions()}
@@ -54,9 +49,10 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions}) {
                 <MenuOptions customStyles={optionsStyles}>
                     <View style={styles.menu}>
                         <SuggestionsFilterContainer
-                            options = {['All', 'Yes','No']}
+                            options = {dropdownOptions}
                             searchText = {searchText}
                             onSearchChangeText = {()=>{}}
+                            onOptionSelected = {onSelectChange}
                         />
                     </View>
                     

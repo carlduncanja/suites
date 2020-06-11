@@ -9,12 +9,21 @@ import Item from '../../../common/Table/Item';
 import Search from '../../../common/Search';
 import DropdownInputField from '../../../common/Input Fields/DropdownInputField';
 import OptionSearchableField from '../../../common/Input Fields/OptionSearchableField';
+import { currencyFormatter } from '../../../../utils/formatter';
 
 
-const Consumables = ({tabDetails, headers, listItemFormat}) => {
+const Consumables = ({tabDetails, headers, listItemFormat, details = []}) => {
     
     const [checkBoxList, setCheckBoxList] = useState([])
     const [searchText, setSearchText] = useState('')
+    const [selectedOption, setSelectedOption] = useState('All')
+
+    const procedureNames = details.map( item => item.procedure.name)
+    const allInventories = details.map( item => item.inventories)
+    const data = []
+    allInventories.forEach(item => item.map( obj => data.push(obj)))
+   
+    const [selectedData, setSelectedData] = useState(data)
 
     const onSearchInputChange = (input) =>{
         setSearchText(input)
@@ -46,6 +55,23 @@ const Consumables = ({tabDetails, headers, listItemFormat}) => {
         //     setCheckBoxList(tabDetails)
     }
 
+    const onSelectChange = (index) => {
+        if(index === 0){
+            // console.log("All")
+            setSelectedOption('All')
+            setSelectedData(data)
+        }else{
+            let data = details[index-1].inventories.map(item => {return {
+                ...item,
+                unitPrice : item.cost
+            }})
+            setSelectedData( data|| [])
+            setSelectedOption(procedureNames[index-1])
+            // console.log("Index: ", )
+        }
+        
+    }
+
     const renderListFn = (item) =>{ 
         return <Item
             hasCheckBox={true}
@@ -69,9 +95,9 @@ const Consumables = ({tabDetails, headers, listItemFormat}) => {
                 </View>
                 <View style={{flex:1}}>
                     <DropdownInputField
-                        onSelectChange = {()=>{}}
-                        value = {'All'}
-                        dropdownOptions = {['All',"Yes",'No']}
+                        onSelectChange = {onSelectChange}
+                        value = {selectedOption}
+                        dropdownOptions = {['All',...procedureNames]}
                     />
                 </View>
                 
@@ -79,7 +105,7 @@ const Consumables = ({tabDetails, headers, listItemFormat}) => {
             
             <Table
                 isCheckbox = {true}
-                data = {tabDetails}
+                data = {selectedData}
                 listItemFormat = {renderListFn}
                 headers = {headers}
                 toggleHeaderCheckbox = {toggleHeaderCheckbox} 

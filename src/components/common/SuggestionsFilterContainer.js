@@ -1,6 +1,6 @@
 import React,{ useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, TextInput, ScrollView} from "react-native";
+import {View, StyleSheet, Text, TextInput, ScrollView, TouchableOpacity} from "react-native";
 import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
 import SearchInput,{ createFilter } from 'react-native-search-filter';
 
@@ -20,7 +20,7 @@ import Search from './Search';
 
 const SuggestionsFilterContainer = ({ options, searchText, onSearchChangeText, onOptionSelected}) => {
 
-    const [selectedOption, setSelectedOption] = useState('All')
+    const [selectedOption, setSelectedOption] = useState(0)
 
     return (
         <>
@@ -39,9 +39,14 @@ const SuggestionsFilterContainer = ({ options, searchText, onSearchChangeText, o
                 {options.map(( option, index)=>{
                    
                     return (
-                        <View key={index} style={[styles.optionWrapper,{backgroundColor: selectedOption === option ? "#EEF2F6" : null}]}>
+                        <TouchableOpacity 
+                            key={index} 
+                            activeOpacity = {0.7}
+                            style={[styles.optionWrapper,{backgroundColor: selectedOption === index ? "#EEF2F6" : null}]}
+                            onPress = {()=>{onOptionSelected(index); setSelectedOption(index)}}
+                        >
                             <Text style={{color:"#323843", fontSize:14}}>{option}</Text>
-                        </View>
+                        </TouchableOpacity>
                     )
                 })}
             </View>

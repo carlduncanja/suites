@@ -11,7 +11,7 @@ import OptionsField from "../common/Input Fields/OptionsField";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 import {createInventories, getInventories, getCategories} from "../../api/network";
-import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu'; 
 import _ from "lodash";
 
 

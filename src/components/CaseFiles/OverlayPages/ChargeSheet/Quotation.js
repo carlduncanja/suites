@@ -88,6 +88,7 @@ const reportTestData = {
 
 const Quotations = ({tabDetails, modal}) => {
 
+
     const [checkBoxList, setCheckBoxList] = useState([])
 
     const headers = [
@@ -97,7 +98,7 @@ const Quotations = ({tabDetails, modal}) => {
         },
         {
             name: "Date",
-            alignment : "center"
+            alignment : "flex-start"
         },
         {
             name: "Value",
@@ -117,77 +118,28 @@ const Quotations = ({tabDetails, modal}) => {
 
 
     const listItem = (item) => {
-        // const reportId = item.quotationNumber
-        // const reportExpenses = item.reportDetails.reportExpenses
-        // const billingDetails = item.reportDetails.billingDetails
-        // let date = moment(billingDetails.reportDate).format("DD/MM/YYYY")
 
-        // const reportList = [...reportExpenses.physicians,...reportExpenses.procedures,...reportExpenses.labWork]
-        // const reportTable = [...reportExpenses.consumables, ...reportExpenses.equipments]
-        // const tax = reportExpenses.tax
-        // const discountPercent = reportExpenses.discount
-
-        // let subTotal = 0
-        // let taxValue = `${tax * 100}%`
-
-        // reportList.forEach(item => subTotal+= item.cost)
-        // reportTable.forEach(item => subTotal += (item.unitPrice * item.quantity))
-        
-        // let {discount, total} = calcBillingValues(subTotal, tax, discountPercent)
-
-        // const billingSummary = {
-        //     subtotal:subTotal,
-        //     tax : taxValue,
-        //     discount : discount,
-        //     total :total
-        // }
-        
-        //difference
-
-        const { quotationNumber = "", value = 0, date ="" } = item
+        const { quotationNumber = "", amountDue = 0, dateGenerated ="" } = item
         return(
-            // <View style={styles.container}>
-                <>
-                    <View style={styles.item}>
-                        <Text style={[styles.itemText]}>{quotationNumber}</Text>
-                    </View>
-                    <View style={[styles.item,{alignItems:'flex-start'}]}>
-                        <Text style={styles.itemText}>{formatDate(date,'DD/MM/YYYY')}</Text>
-                    </View>
-                    <View style={[styles.item,{alignItems:'center'}]}>
-                        <Text style={styles.itemText}>{`$ ${currencyFormatter(value)}`}</Text>
-                    </View>
-                    <View style={[styles.item,{alignItems:'flex-end', marginRight:10}]}>
-                        {/* <TouchableOpacity
-                            style={{}}
-                            onPress={()=>{
-
-                                dispatch({
-                                    type : caseActions.SETREPORTDETAILS,
-                                    newState:{
-                                        reportStatus :true,
-                                        reportId : reportId,
-                                        billingDetails : billingDetails,
-                                        reportList : reportList,
-                                        reportTable : reportTable,
-                                        billingSummary :billingSummary
-                                    }
-                                })
-                                openModal();
-                                // openReportAction(props.fields.recordId)
-                            }}> */}
-                            <SvgIcon iconName = "actions"/>
-                        {/* </TouchableOpacity> */}
-                    </View>
-                </>
-            // </View>
+            
+            <>
+                <View style={styles.item}>
+                    <Text style={[styles.itemText]}>{quotationNumber}</Text>
+                </View>
+                <View style={[styles.item,{alignItems:'flex-start'}]}>
+                    <Text style={styles.itemText}>{formatDate(dateGenerated,'DD/MM/YYYY')}</Text>
+                </View>
+                <View style={[styles.item,{alignItems:'center'}]}>
+                    <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>
+                </View>
+                <View style={[styles.item,{alignItems:'flex-end', marginRight:10}]}>
+                    <SvgIcon iconName = "actions"/>
+                </View>
+            </>
+           
         )
     }
    
-    // const toggleCheckbox = (itemId) =>{
-    //     let checkedList = useCheckBox(itemId,checkBoxList)
-    //     setCheckBoxList(checkedList)
-    // }
 
     const toggleCheckbox = (item) => () => {
         let updatedCases = [...checkBoxList];
@@ -240,7 +192,7 @@ const Quotations = ({tabDetails, modal}) => {
 }
  
 export default withModal(Quotations);
-
+ 
 const styles = StyleSheet.create({
     container:{
         flex:1,

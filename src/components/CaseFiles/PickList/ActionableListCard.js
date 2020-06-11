@@ -7,29 +7,29 @@ import Paginator from '../../common/Paginators/Paginator';
 import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesHelpers';
 import IconButton from "../../common/Buttons/IconButton";
 import AddNew from '../../../../assets/svg/addNewIcon';
+import {useModal} from "react-native-modalfy";
+
 
 const ActionableListCard = (props) =>{
 
     const { 
         title, 
-        isEditMode = false, 
-        onEditDone = ()=>{},
         closeModal, 
         data, 
         selectedTab, 
         listItemFormat, 
         tabs, 
         headers, 
-        isCheckBox ,
         onPressTab,
-        hasFooter = false,
         onFooterPress = () => {},
-        footerTitle = ""
+        onActionPress
     } = props
 
     const recordsPerPage = 6
     const dataLength = data.length
     const totalPages = Math.ceil(dataLength/recordsPerPage)
+    const modal = useModal();
+
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
@@ -83,7 +83,7 @@ const ActionableListCard = (props) =>{
                 <Text style={{color:'#4E5664', fontSize:16}}>Add Item</Text>
                 <IconButton
                     Icon = {<AddNew/>}
-                    onPress = {()=>{}}
+                    onPress = {()=>{onActionPress()}}
                 />
             </View>
 
