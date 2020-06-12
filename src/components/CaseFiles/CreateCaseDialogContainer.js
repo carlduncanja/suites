@@ -18,11 +18,11 @@ import patient from "../../../assets/svg/newCasePatient";
 import {useModal} from "react-native-modalfy";
 
 const testData = {
-    "name": "Julie Brown 2",
+    "name": "John Doe",
     "patient": {
-        "firstName": "Juilie",
+        "firstName": "John",
         "middleName": "",
-        "surname": "Brown",
+        "surname": "Doe",
         "gender": "female",
         "trn": "42991536",
         "contactInfo": {
@@ -34,14 +34,14 @@ const testData = {
             ],
             "emails": [
                 {
-                    "email": "julie.brown@gmail.com",
+                    "email": "john.doe@gmail.com",
                     "type": "work"
                 }
             ],
             "emergencyContact": [
                 {
-                    "name":"Peach Brown",
-                    "email":"peach.brown@gmail.com",
+                    "name":"Bob Brown",
+                    "email":"Bob.brown@gmail.com",
                     "phone": "8765232141",
                     "relation":"mother"
                 }
@@ -206,6 +206,9 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
     }
 
     const onProcedureUpdate = (value) => {
+
+        console.log("procedure update", value);
+
         setCaseProceduresInfo([...value])
     }
 
@@ -360,8 +363,6 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                 Alert.alert("Sorry", "Something went wrong when creating case.");
             })
     }
-
-
 
     const getTabContent = () => {
 

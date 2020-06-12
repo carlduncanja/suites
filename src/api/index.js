@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// const BASE_URL = "localhost:4001"; //process.env.SUITES_BASE_URL;
-const BASE_URL = "https://suite-api.azurewebsites.net/api"; //process.env.SUITES_BASE_URL;
+const BASE_URL = "http://eeff64279987.ngrok.io/api"; //process.env.SUITES_BASE_URL;
+// const BASE_URL = "https://suite-api.azurewebsites.net/api"; //process.env.SUITES_BASE_URL;
 
 const baseInstance = axios.create({
     baseURL: BASE_URL,

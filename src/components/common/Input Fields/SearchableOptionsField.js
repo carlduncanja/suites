@@ -28,7 +28,12 @@ function SearchableOptionsField({
     }) {
 
     const textInputRef = useRef();
-    const [selectedValue, setSelectedValue] = useState(false);
+
+    const [selectedValue, setSelectedValue] = useState(value);
+
+    useEffect(() => {
+        setSelectedValue(value);
+    }, [value])
 
     // console.log("selected value", value);
 
@@ -98,7 +103,7 @@ function SearchableOptionsField({
 
                 }
 
-                {               
+                {
                     hasError && <View style={styles.errorView}>
                         <Text style={{fontSize:10, color:'red'}}>{errorMessage}</Text>
                     </View>
@@ -207,7 +212,7 @@ const styles = StyleSheet.create({
     errorView : {
         paddingTop:3,
         paddingLeft:15
-        
+
     }
 });
 

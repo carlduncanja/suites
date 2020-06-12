@@ -34,7 +34,7 @@ import DeleteIcon from "../../../assets/svg/deleteIcon";
 const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
 
     const modal = useModal();
-
+    
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const overlayMenu = [
@@ -45,7 +45,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
             disabledIcon: <PatientDisabledIcon/>
         },
         {
-            name: "Medical Staff", 
+            name: "Medical Staff",
             overlayTabs: ["Details"],
             selectedIcon: <StaffSelectedIcon/>,
             disabledIcon: <StaffDisabledIcon/>
