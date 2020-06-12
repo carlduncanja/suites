@@ -62,7 +62,7 @@ const testCategory = [
         const search = _.debounce(fetchTheatres, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -86,7 +86,7 @@ const testCategory = [
         const search = _.debounce(fetchPhysician, 300);
 
         setPhysicianSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -110,7 +110,7 @@ const testCategory = [
         const search = _.debounce(fetchEquipmentTypes, 300);
 
         setTypeSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -134,7 +134,7 @@ const testCategory = [
         const search = _.debounce(fetchCategory, 300);
 
         setCategorySearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;

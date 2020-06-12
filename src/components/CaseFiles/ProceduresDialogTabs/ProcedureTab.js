@@ -20,7 +20,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
     const [procedureValues ,setProcedureValues] = useState({
         procedure : '',
         startTime : '',
-        endTime : '', 
+        endTime : '',
         location : '',
     })
 
@@ -29,7 +29,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
     const [start, setStart] = useState('')
     const [end, setEnd] = useState('')
 
-    const [searchProcedureValue, setSearchProcedureValue] = useState('') 
+    const [searchProcedureValue, setSearchProcedureValue] = useState('')
     const [searchProcedureResult, setSearchProcedureResult] = useState([])
     const [searchProcedureQuery, setSearchProcedureQuery] = useState({})
 
@@ -54,7 +54,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
         const search = _.debounce(fetchProcedures, 300);
 
         setSearchProcedureQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -77,14 +77,14 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
         const search = _.debounce(fetchLocations, 300);
 
         setSearchLocationQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
         });
 
         search()
-        
+
     },[searchLocationValue])
 
     const fetchProcedures = () => {
@@ -121,7 +121,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
             console.log("failed to get procedures");
             setSearchLocationResult([]);
         })
-        
+
     }
 
 
@@ -146,7 +146,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
         setStart(value)
         if(moment(date).isValid() && date !== ""){
             let newDate = moment(date).get('year')
-        
+
             console.log("Valid: ", moment(date + " " + newTime))
         }
         console.log("New Time: ", newTime)
@@ -161,7 +161,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
     }
     const onDateChange = (type) => (value) => {
         console.log("Value: ", type, value)
-        
+
         type === 'date' && setDate(value)
         type === 'start' && setStart(value)
         type === 'end' && setEnd(value)
@@ -219,7 +219,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
                         keyboardType = "number-pad"
                         placeholder = "DD/MM/YYYY"
                     />
-                </View> 
+                </View>
 
                 <View style={styles.inputWrapper}>
 
@@ -230,7 +230,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
                         units={['AM','PM']}
                         keyboardType="number-pad"
                     />
-                </View> 
+                </View>
 
                 <View style={styles.inputWrapper}>
                     <InputUnitField
@@ -244,15 +244,15 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
                         units={['hrs']}
                         keyboardType="number-pad"
                     />
-                </View> 
+                </View>
 
-                {/* <DateInputField 
+                {/* <DateInputField
                     label = "Start Time"
                     mode = "time"
                     date = {start}
                     onChangeText = {(value)=>onDateChange('start')(value)}
                 /> */}
-                
+
                 {/* <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Date"}
@@ -292,14 +292,14 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
                         isPopoverOpen = {false}
                     />
                 </View> */}
-                
+
             </View>
 
             <View style={[styles.row, {zIndex:-2}]}>
 
-                
 
-                {/* <DateInputField 
+
+                {/* <DateInputField
                     label = "End Time"
                     mode = "time"
                     date = {end}

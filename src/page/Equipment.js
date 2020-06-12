@@ -111,7 +111,7 @@ const Equipment = (props) => {
         const search = _.debounce(fetchEquipmentData, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -274,7 +274,7 @@ const Equipment = (props) => {
                     }
 
                     let pressItem = item.items[0]
-                    
+
                     return renderItemView(equipmentItem, pressItem,onActionPress)
                 }}
             />
@@ -328,7 +328,7 @@ const Equipment = (props) => {
                 onItemPress = {()=>handleOnItemPress(actionItem, false)}
             />
         )
-    } 
+    }
 
     const equipmentItemView = ({assigmentName, quantity, status, dateAvailable}, onActionPress) => (
         <>

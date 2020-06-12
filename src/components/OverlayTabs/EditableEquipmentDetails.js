@@ -17,23 +17,23 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
     //     // supplier id
     //     _id,
     //     // supplier name
-    //     supplier, 
+    //     supplier,
     //     assigned,
     //     status,
     //     usage,
     //     availableOn,
-    //     categories, 
+    //     categories,
     //     description
     // } = equipment
 
     // const [fields, setFields] = useState({
     //     // supplier name
-    //     supplier : supplier, 
+    //     supplier : supplier,
     //     assigned : assigned,
     //     status : status ,
     //     usage : usage,
     //     availableOn : availableOn,
-    //     categories : categories, 
+    //     categories : categories,
     //     description : description
     // })
 
@@ -62,7 +62,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
         const search = _.debounce(fetchPhysicians, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -85,7 +85,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
         const search = _.debounce(fetchCategory, 300);
 
         setCategorySearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -93,7 +93,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
 
         search()
     }, [categorySearchValue]);
-    
+
     const fetchPhysicians = () => {
         getPhysicians(searchValue, 5)
             .then((data = []) => {
@@ -131,7 +131,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
     return (
         <KeyboardAvoidingView
             style={{ flex: 1}}
-            enabled   
+            enabled
             keyboardVerticalOffset={300}
             behavior={'padding'}
         >
@@ -142,7 +142,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                         <Text style={styles.title}>Description</Text>
                     </View>
 
-                    <View style={styles.inputWrapper}> 
+                    <View style={styles.inputWrapper}>
                     </View>
                 </View>
 
@@ -153,7 +153,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                             <Text style={styles.title}>ID</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
+                        <View style={styles.inputWrapper}>
                             <Text>{_id}</Text>
                         </View>
                     </View>
@@ -163,7 +163,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                             <Text style={styles.title}>Assigned</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
+                        <View style={styles.inputWrapper}>
                             <SearchableOptionsField
                                 text={searchValue}
                                 oneOptionsSelected={(item) => {
@@ -184,7 +184,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                             <Text style={styles.title}>Status</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
+                        <View style={styles.inputWrapper}>
                             <OptionsField
                                 text={fields['status']}
                                 oneOptionsSelected={onFieldChange('status')}
@@ -197,16 +197,16 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                     </View>
 
                 </View>
-                
+
                 <View style={styles.row}>
-                    
+
                     <View style={styles.fieldWrapper}>
                         <View style={{ marginBottom:5}}>
                             <Text style={styles.title}>Supplier</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
-                            
+                        <View style={styles.inputWrapper}>
+
                         </View>
                     </View>
 
@@ -215,7 +215,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                             <Text style={styles.title}>Usage</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
+                        <View style={styles.inputWrapper}>
                             <InputUnitField
                                 label={"Usage"}
                                 onChangeText={(value)=>{
@@ -235,19 +235,19 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                             <Text style={styles.title}>Available On</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
-                            
+                        <View style={styles.inputWrapper}>
+
                         </View>
                     </View>
 
                 </View>
-                
+
                 <View style={styles.fieldWrapper}>
                     <View style={{ marginBottom:5}}>
                         <Text style={styles.title}>Description</Text>
                     </View>
 
-                    <View style={styles.inputWrapper}> 
+                    <View style={styles.inputWrapper}>
                         <MultipleSelectionsField
                             label={"Category"}
                             onOptionsSelected={onFieldChange('category')}
@@ -261,8 +261,8 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
 
             </View>
         </KeyboardAvoidingView>
-        
-        
+
+
     )
 }
 

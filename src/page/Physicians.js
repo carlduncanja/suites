@@ -94,7 +94,7 @@ const Physicians = (props) => {
         const search = _.debounce(fetchPhysiciansData, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -209,7 +209,7 @@ const Physicians = (props) => {
                 </View>
             </>
         )
-        
+
     }
 
     const getFabActions = () => {
@@ -261,7 +261,7 @@ const Physicians = (props) => {
                 .openModal(
                     'OverlayModal',
                     {
-                        content: <CreatePhysicianDialogContainer 
+                        content: <CreatePhysicianDialogContainer
                             onCancel={() => setFloatingAction(false)}
                             onCreated={(item) => handleOnItemPress(item, true)}
                         />,

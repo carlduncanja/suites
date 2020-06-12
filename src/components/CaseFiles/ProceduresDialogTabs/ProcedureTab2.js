@@ -44,7 +44,7 @@ const ProcedureTab2 = ({
         const search = _.debounce(fetchProcedures, 300);
 
         setSearchProcedureQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -67,7 +67,7 @@ const ProcedureTab2 = ({
         const search = _.debounce(fetchLocations, 300);
 
         setSearchLocationQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;

@@ -56,7 +56,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
-   
+
     const [searchLocationValue, setSearchLocationValue] = useState("")
     const [searchLocationResults, setSearchLocationResults] = useState([])
     const [searchLocationQuery, setSearchLocationQuery] = useState({});
@@ -87,7 +87,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
         const search = _.debounce(fetchTheatres, 300);
 
         setSearchLocationQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -150,7 +150,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
             :
             updatedLocations = [...updatedLocations,item]
         setSelectedLocations(updatedLocations)
-    } 
+    }
 
     onPressResultItem = (item) => {
         let updatedLocations = [...selectedLocations]
@@ -164,7 +164,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
     const buttonPress = () => {
         if(isDisable === false){
             updatedTheeatres = handleDisplayData()
-            onFieldChange('supportedRooms')(updatedTheeatres.map( item => item._id)) 
+            onFieldChange('supportedRooms')(updatedTheeatres.map( item => item._id))
             getSavedTheatres(updatedTheeatres)
         }
         setIsDisable(true)
@@ -175,8 +175,8 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
         const recoveryColor = item.hasRecovery ? "#38A169" : '#DD6B20'
 
         return (
-            
-            <TouchableOpacity style={{flexDirection:'row'}} onPress={()=>onPressItem(item)}> 
+
+            <TouchableOpacity style={{flexDirection:'row'}} onPress={()=>onPressItem(item)}>
                 <View style={styles.itemContainer}>
                     <Text style={{color:'#3182CE', fontSize:16}}>{item.name}</Text>
                 </View>
@@ -189,7 +189,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
 
     let dataToDisplay = handleDisplayData()
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
-    
+
     return (
         <View style={styles.sectionContainer}>
 
@@ -203,7 +203,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                         onClear={()=>{setSearchLocationValue('')}}
                     />
             </View>
-            
+
             <View style={[styles.container,styles.listContainer,{zIndex:-1}]}>
                 <Table
                     isCheckbox = {false}
@@ -220,7 +220,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                             currentPage = {currentPagePosition}
                         />
                     </View>
-                    
+
                     <View style={[styles.buttonContainer,{
                         backgroundColor: isDisable ? "#F8FAFB" : "#4299E1",
                         color: isDisable ? "#4299E1" : "#F8FAFB"
@@ -232,7 +232,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                             color = {isDisable ? "#4299E1" : "#F8FAFB"}
                         />
                     </View>
-                    
+
                 </View>
             </View>
 
@@ -290,8 +290,8 @@ const styles = StyleSheet.create({
         padding:4,
     },
     buttonContainer:{
-        padding:30, 
-        paddingBottom:5, 
+        padding:30,
+        paddingBottom:5,
         paddingTop:5,
         borderColor:'#CCD6E0',
         borderWidth:1,

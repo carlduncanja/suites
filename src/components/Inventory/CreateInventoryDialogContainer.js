@@ -11,7 +11,7 @@ import OptionsField from "../common/Input Fields/OptionsField";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 import {createInventories, getInventories, getCategories} from "../../api/network";
-import { MenuOptions, MenuOption } from 'react-native-popup-menu'; 
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import _ from "lodash";
 
 
@@ -29,7 +29,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
     const modal = useModal();
     const dialogTabs = ['Details', 'Configuration'];
     const [selectedIndex, setSelectedTabIndex] = useState(0);
-    
+
 
     const [fields, setFields] = useState({
         name: "",
@@ -83,7 +83,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         const search = _.debounce(fetchInventories, 300);
 
         setInventorySearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -107,7 +107,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         const search = _.debounce(fetchCategory, 300);
 
         setCategorySearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -151,13 +151,13 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
     }
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
-        
+
         if(!popoverItem){
             let updatedPopovers = popoverList.map( item => {return {
                 ...item,
                 status : false
             }})
-            
+
             setPopoverList(updatedPopovers)
         }else{
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
@@ -166,10 +166,10 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
-            ]; 
+            ];
             setPopoverList(updatedPopovers)
         }
-    
+
     }
 
     const handleCloseDialog = () => {
@@ -181,7 +181,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
-        
+
             let isNameError = errorFields['name']
             let isPriceError = errorFields['unitPrice']
             let tabIndex = selectedIndex
@@ -190,9 +190,9 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                 tabIndex = 0
             }else{
                 isNameError = false
-            }  
+            }
             if(fields['unitPrice'] === '' || null){
-                isPriceError = true 
+                isPriceError = true
                 tabIndex = 1
             } else {
                 isPriceError = false
@@ -209,9 +209,9 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
             if(isNameError === false && isPriceError === false){
                 console.log("Success")
                 createInventoryCall()
-            } 
+            }
 
-            
+
         }
     };
 
@@ -354,7 +354,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
                 <View style={styles.inputWrapper}/>
             </View>
-        
+
         </View>
     );
 
@@ -428,7 +428,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                 >
                     {getTabContent()}
                 </TouchableOpacity>
-                
+
             </View>
 
 
