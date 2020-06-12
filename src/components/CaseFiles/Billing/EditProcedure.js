@@ -80,9 +80,10 @@ const chargeTestData = [
 
 ]
 
-const EditProcedure = ({details, tabs, procedureName, modal}) => {
+const EditProcedure = ({tabs, procedureName, consumables, modal, onAmountChange}) => {
     const { closeModals } = modal
-    const {inventories = [], equipments = [] } = details
+    // const {inventories = [], equipments = [] } = details
+    console.log("Invent: ", consumables)
 
     const [selectedTab, setSelectedTab] = useState(tabs[0])
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
@@ -92,25 +93,25 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
     }
 
     // Format data
-    const inventoriesArray = inventories.map( item => {
-        const { inventory = {} } = item
-        const { name = "" } = inventory
-        return {
-            ...item,
-            name : name
-        }
-    })
+    // const inventoriesArray = inventories.map( item => {
+    //     const { inventory = {} } = item
+    //     const { name = "" } = inventory
+    //     return {
+    //         ...item,
+    //         name : name
+    //     }
+    // })
 
-    const equipmentsArray = equipments.map( item => {
-        const { equipment = {} } = item
-        const { name = "" } = equipment
-        return {
-            ...item,
-            name : name
-        }
-    })
+    // const equipmentsArray = equipments.map( item => {
+    //     const { equipment = {} } = item
+    //     const { name = "" } = equipment
+    //     return {
+    //         ...item,
+    //         name : name
+    //     }
+    // })
     
-    const data = selectedTab === 'Consumables' ? testData : chargeTestData
+    const data = selectedTab === 'Consumables' ? consumables : chargeTestData
 
     const headers = [
         {
@@ -163,7 +164,7 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
                 <View style={[styles.editItem, {alignItems: 'center',flex:1}]}>
                     <IconButton
                         Icon = {<LeftArrow strokeColor="#718096"/>}
-                        onPress = {()=>{}}
+                        onPress = {()=>{onAmountChange(item)('subtract')}}
                         disabled = {false}
                     />
 
@@ -173,7 +174,7 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
                     
                     <IconButton
                         Icon = {<RightArrow strokeColor="#38A169"/>}
-                        onPress = {()=>{}}
+                        onPress = {()=>onAmountChange(item)('add')}
                         disabled = {false}
                     />
                 </View>

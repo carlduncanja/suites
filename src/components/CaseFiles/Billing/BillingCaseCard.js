@@ -21,6 +21,9 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
 
     let totalAmount = total - (total * discount)
 
+    const [selectedProcedure, setSelectedProcedure] = useState(0)
+    const [billingProcedures, setBillingProcedures] = useState(procedures)
+
     const getProcedureStatusArray = () => {
         // let statusArray = []
         let statusArray = procedures.map((procedure, index) => {
@@ -54,12 +57,39 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
         setOpenDetailsArrayState(updatedArray)
     }
 
-    const openActionContainer = (name) =>{
+    const onAmountChange = (item) => (action) => {
+        const procedure = procedures[selectedProcedure]
+        const { inventories=[] } = procedure
+
+        const findIndex = inventories.findIndex(obj => obj.name === item.name);
+       
+        const updatedObj = { ...inventories[findIndex], amount: action === 'add' ? inventories[findIndex].amount + 1 : inventories[findIndex].amount - 1};
+       
+        const updatedInventories = [
+            ...inventories.slice(0, findIndex),
+            updatedObj,
+            ...inventories.slice(findIndex + 1),
+        ]; 
+        // console.log("Procedure: ", updatedInventories)
+        const updatedProcedures = billingProcedures.map( item => {
+            return {
+                ...item,
+                inventories : updatedInventories
+            }
+        })
+        setBillingProcedures(updatedProcedures)
+        // console.log("Updated: ", updatedProcedures)
+
+    }
+
+    const openActionContainer = (name,consumables) =>{
+       console.log("Consumables:", consumables)
         modal.openModal('OverlayInfoModal',{ 
             overlayContent : <EditProcedure
                 procedureName = {name}
+                consumables = {consumables}
                 tabs = {['Consumables','Charges and Fees']}
-                details = {[]}
+                onAmountChange = {onAmountChange}
             />,
         })
     }
@@ -94,7 +124,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
                 </View>
 
                 {
-                    procedures.map(
+                    billingProcedures.map(
                         (item, index) => {
 
                         const {
@@ -140,7 +170,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
                                                     isEditMode && <TouchableOpacity 
                                                         style={styles.editContainer}
                                                         activeOpacity = {0.5}
-                                                        onPress = {()=>openActionContainer(procedure.name)}
+                                                        onPress = {()=>{openActionContainer(procedure.name,inventories); setSelectedProcedure(index)}}
                                                     >
                                                         <Text style={{color:'#0CB0E7', fontSize:16, fontWeight:'500'}}>Edit Procedure</Text>
                                                     </TouchableOpacity>
