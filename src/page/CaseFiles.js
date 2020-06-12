@@ -272,7 +272,7 @@ const CaseFiles = (props) => {
                     {
                         content: <CreateCaseDialogContainer
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={(item) => handleOnItemPress(item, true)()}
+                            onCreated={(item) => handleOnItemPress(item, false)()}
                         />,
                         onClose: () => setFloatingAction(false)
                     })

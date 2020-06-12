@@ -357,7 +357,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                 console.log("Case File Created", data)
 
                 modal.closeAllModals();
-                setTimeout(() => {onCreated(data)}, 300);
+                setTimeout(() => {onCreated(data, false)}, 300);
             }).catch(error => {
                 console.log("failed to create case file", error);
                 Alert.alert("Sorry", "Something went wrong when creating case.");
