@@ -86,9 +86,8 @@ const reportTestData = {
     }
 }
 
-const Quotations = ({tabDetails, modal}) => {
-
-
+const Quotations = ({tabDetails, reportDetails, modal}) => {
+    // console.log("Deta:", reportDetails)
     const [checkBoxList, setCheckBoxList] = useState([])
 
     const headers = [
@@ -112,7 +111,11 @@ const Quotations = ({tabDetails, modal}) => {
  
     const openModal = (item) => () => {
         modal.openModal('ReportPreviewModal', {
-            content: <ReportPreview type = "Quotation" details = {reportTestData}/>
+            content: <ReportPreview 
+                type = "Quotation" 
+                details = {tabDetails[0]}
+                reportDetails = {reportDetails}
+            />
         })
     }
 

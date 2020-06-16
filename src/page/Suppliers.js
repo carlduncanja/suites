@@ -17,6 +17,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 import {connect} from 'react-redux';
 import {setSuppliers} from "../redux/actions/suppliersActions";
 import {getSuppliers} from "../api/network";
+import _ from "lodash";
 
 import {withModal, useModal} from 'react-native-modalfy';
 import suppliersTest from '../../data/Suppliers'
@@ -44,8 +45,6 @@ const Suppliers = (props) => {
         }
     ];
 
-    const floatingActions = []
-
     //  ############ Props
     const {suppliers = [], setSuppliers} = props;
     const modal = useModal();
@@ -59,6 +58,10 @@ const Suppliers = (props) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
     const [selectedSuppliers, setSelectedSuppliers] = useState([])
 
     // ############# Lifecycle methods
@@ -68,7 +71,34 @@ const Suppliers = (props) => {
         setTotalPages(Math.ceil(suppliers.length / recordsPerPage))
     }, []);
 
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchSuppliersData, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchValue]);
+
     // ############# Event Handlers
+
+    const onSearchInputChange = (input) =>{
+        setSearchValue(input)
+    }
 
     const handleDataRefresh = () => {
         fetchSuppliersData()
@@ -131,10 +161,11 @@ const Suppliers = (props) => {
 
     const fetchSuppliersData = () => {
         setFetchingData(true)
-        getSuppliers()
-            .then(data => {
-                setSuppliers([])
-                // setSuppliers(data);
+        getSuppliers(searchValue,recordsPerPage)
+            .then(suppliersInfo => {
+                const {data = [], pages = 0} = suppliersInfo
+                // setSuppliers([])
+                setSuppliers(data);
                 setTotalPages(Math.ceil(data.length / recordsPerPage))
 
             })
@@ -189,7 +220,6 @@ const Suppliers = (props) => {
         />
     };
 
-
     const onOpenCreateSupplier = () =>{
         console.log("Add Supplier")
     }
@@ -206,8 +236,8 @@ const Suppliers = (props) => {
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
                 placeholderText={"Search by Supplier"}
-                // changeText={changeText}
-                // inputText={textInput}
+                changeText={onSearchInputChange}
+                inputText={searchValue}
                 routeName={"Suppliers"}
                 listData={suppliersToDisplay}
 
@@ -239,7 +269,7 @@ const Suppliers = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-    suppliers: suppliersTest
+    suppliers: state.suppliers
 });
 
 const mapDispatcherToProp = {

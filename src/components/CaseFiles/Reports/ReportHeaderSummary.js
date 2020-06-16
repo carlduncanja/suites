@@ -3,34 +3,41 @@ import { View, Text, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import moment from "moment";
-import { formatDate, currencyFormatter } from '../../../utils/formatter';
+import { formatDate, currencyFormatter } from '../../../utils/formatter'; 
 
-const ReportHeaderSummary = ({billedTo = {}, billedFor = "", reportDate = "", type = "" , invoiceNo = "", purchaseOrderNo = "", total}) => { 
+const ReportHeaderSummary = ({billedTo = "", address = {}, billedFor = "", reportNumber = "",reportDate = "", type = "", purchaseOrderNo = "", total}) => { 
    
-    const { name = "", address = {} } = billedTo
-    const {line1 = "", line2="", line3 = ""} = address
+    const { city = "", country = "", line1 = "", line2 = "", parish="", postalCode="" } = address
 
     return (  
         <View style={styles.container}>
             <View style={styles.billing}>
                 <Text style={styles.contentHeader}>Billed To</Text>
-                <Text style={styles.text}>{name}</Text>
+                <Text style={styles.text}>{billedTo}</Text>
                 <Text style={styles.text}>{line1}</Text>
                 <Text style={styles.text}>{line2}</Text>
-                <Text style={styles.text}>{line3}</Text>
+                <Text style={styles.text}>{city}</Text>
+                <Text style={styles.text}>{postalCode}</Text>
             </View>
             
             <View style={styles.billing}>
                 {type === 'Quotation' ?
-                    <>
-                        <Text style={styles.contentHeader}>For</Text>
-                        <Text style={styles.text}>{billedFor}</Text>
-                    </>
+                    <View style={{justifyContent:'space-between'}}>
+                        <>
+                            <Text style={styles.contentHeader}>For</Text>
+                            <Text style={styles.text}>{billedFor}</Text>
+                        </>
+                        <>
+                            <Text style={styles.contentHeader}>Quotation Number</Text>
+                            <Text style={styles.text}>{reportNumber}</Text>
+                        </>
+                    </View>
+                    
                     :
                     <View style={{justifyContent:'space-between'}}>
                         <>
                             <Text style={styles.contentHeader}>Invoice No</Text>
-                            <Text style={styles.text}>{invoiceNo}</Text>
+                            <Text style={styles.text}>{reportNumber}</Text>
                         </>
                         <>
                             <Text style={styles.contentHeader}>Purchase Order No</Text>

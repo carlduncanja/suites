@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import ReportHeader from './ReportHeader'
-import ReportHeaderSummary from './ReportHeaderSummary';
+import ReportHeaderSummary from './ReportHeaderSummary'; 
 import ReportDetails from './ReportDetails';
 import BillingSummary from './BillingSummary';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
@@ -22,24 +22,32 @@ const Rectangle = () =>{
     )
 }
 
-const ReportPreview = ({type = "", details = {}}) => {
+const ReportPreview = ({type = "", details = {}, reportDetails }) => {
 
-    const { billing = {}, billedItems = {}} = details
-    const {
-        billedTo = {}, 
-        billedFor = "", 
-        date = "", 
-        charges = {}, 
-        invoiceNumber = type = "Invoice" ? invoiceNumber : "",
-        purchaseOrderNumber = type = "Invoice" ? purchaseOrderNumber : ""
-    } = billing
-    const { physicians = [], procedures = [], equipment = [], inventories = [] } = billedItems 
-    const { discount = 0, subTotal = 0, tax = 0 } = charges
+    const { billingDetails = {}, dateGenerated = "", amountDue = 0 } = details
+    const { address = {}, email = "", name= "", phone = "", billedFor="" } = billingDetails
+    const reportNumber = type === 'Invoice' ? details.invoiceNumber : details.quotationNumber
+    const purchaseOrderNumber = details.purchaseOrderNumber || ""
+    const { procedures = [], discount = 0, hasDiscount = false, tax = 0} = reportDetails
+    const total = hasDiscount ? (amountDue - (amountDue * discount)) * (1+tax) : (amountDue) * (1+tax)
+    const formatDiscount = amountDue * discount
+    console.log("ReportDetails: ", reportDetails)
+    // const { billing = {}, billedItems = {}} = details
+    // const {
+    //     billedTo = {}, 
+    //     billedFor = "", 
+    //     date = "", 
+    //     charges = {}, 
+    //     invoiceNumber = type = "Invoice" ? invoiceNumber : "",
+    //     purchaseOrderNumber = type = "Invoice" ? purchaseOrderNumber : ""
+    // } = billing
+    // const { physicians = [], procedures = [], equipment = [], inventories = [] } = billedItems 
+    // const { discount = 0, subTotal = 0, tax = 0 } = charges
 
-    const reportList = [...physicians,...procedures]
-    const reportTable = [...inventories]
+    // const reportList = [...physicians,...procedures]
+    // const reportTable = [...inventories]
 
-    const total = (subTotal - discount) * (1+tax)
+    // const total = (subTotal - discount) * (1+tax)
 
     const headers = [
             {
@@ -62,9 +70,9 @@ const ReportPreview = ({type = "", details = {}}) => {
 
     
     const listItemFormat = (item) =>{
-        const total = item.unitPrice * item.amount
+        const total = item.cost * item.amount
         return (
-            <View style={{marginBottom:10, flexDirection:'row', justifyContent:'space-between'}}>
+            <View style={{marginBottom:10, flexDirection:'row', justifyContent:'space-between', marginLeft:10}}>
                 <View style={[styles.textContainer,{alignItems:"flex-start"}]}>
                     <Text style={[styles.text,{}]}>{item.name}</Text>
                 </View>
@@ -72,7 +80,7 @@ const ReportPreview = ({type = "", details = {}}) => {
                     <Text style={[styles.text,{}]}>{item.amount}</Text>
                 </View>
                 <View style={[styles.textContainer,{alignItems:"center"}]}>
-                    <Text style={[styles.text,{}]}>$ {currencyFormatter(item.unitPrice)}</Text>
+                    <Text style={[styles.text,{}]}>$ {currencyFormatter(item.cost)}</Text>
                 </View>
                 <View style={[styles.textContainer,{alignItems:"flex-end"}]}>
                     <Text style={[styles.text,{}]}>$ {currencyFormatter(total)}</Text>
@@ -89,20 +97,21 @@ const ReportPreview = ({type = "", details = {}}) => {
             <View style={{padding:25}}>
 
                 <ReportHeaderSummary
-                    billedTo = {billedTo}
+                    billedTo = {name}
+                    address = {address}
                     billedFor = {billedFor}
-                    total = {total}
+                    reportNumber = {reportNumber}
+                    total = {amountDue}
                     type = {"Quotation"}
-                    reportDate = {date}
-                    invoiceNo = {invoiceNumber}
+                    reportDate = {dateGenerated}
                     purchaseOrderNo = {purchaseOrderNumber}
                 />
 
                 {Rectangle()}
             
                 <ReportDetails
-                    reportList = {reportList}
-                    reportTable = {reportTable}
+                    reportList = {procedures}
+                    // reportTable = {reportTable}
                     listItemFormat = {listItemFormat}
                     headers = {headers}
                 />
@@ -112,8 +121,8 @@ const ReportPreview = ({type = "", details = {}}) => {
 
             <View style={{width:250, alignSelf:'flex-end'}}>
                 <BillingSummary
-                    subtotal = {subTotal}
-                    discount = {discount}
+                    subtotal = {amountDue}
+                    discount = {hasDiscount ? formatDiscount : 0}
                     tax = {tax}
                     total = {total}
                 />

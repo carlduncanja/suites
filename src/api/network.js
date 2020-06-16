@@ -224,9 +224,9 @@ export const getCategories = async (query, max) => {
 }
 
 
-// ################# Suppliers Endpoints
-export const getSuppliers = async () => {
-    return suitesAxiosInstance.get(suppliersEndpoint)
+// ################# Suppliers Endpoints 
+export const getSuppliers = async (query, max) => {
+    return suitesAxiosInstance.get(suppliersEndpoint, {params: {query, max}})
         .then(handleResponse)
         .catch(handleError)
 };
@@ -238,8 +238,8 @@ export const getSupplierById = async (id) => {
 };
 
 // ################# PurchaseOrders Endpoints
-export const getPurchaseOrders = async () => {
-    return suitesAxiosInstance.get(purchaseOrdersEndpoint)
+export const getPurchaseOrders = async (query, max) => {
+    return suitesAxiosInstance.get(purchaseOrdersEndpoint, {params: {query, max}})
         .then(handleResponse)
         .catch(handleError)
 };

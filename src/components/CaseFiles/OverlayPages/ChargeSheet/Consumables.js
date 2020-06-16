@@ -21,15 +21,15 @@ const Consumables = ({tabDetails, headers, listItemFormat, details = [], isEditM
     const [checkBoxList, setCheckBoxList] = useState([])
     const [searchText, setSearchText] = useState('')
     const [inventoriesData, setInventoriesData] = useState(details)
-    const [selectedOption, setSelectedOption] = useState('All')
-
+    
     const procedureNames = inventoriesData.map( item => item.procedure.name) 
-    // const getData = () =>{
-        const data = []
-        const allInventories = inventoriesData.map( item => item.inventories)
-        allInventories.forEach(item => item.map( obj => data.push(obj)))
-    // }
-   
+    const data = []
+    const allInventories = inventoriesData.map( item => item.inventories)
+    allInventories.forEach(item => item.map( obj => data.push(obj)))
+    let initialOption = isEditMode ? procedureNames[0] : 'All'
+    
+    
+    const [selectedOption, setSelectedOption] = useState(initialOption)
     const [selectedData, setSelectedData] = useState(data)
 
     const onSearchInputChange = (input) =>{
@@ -63,19 +63,28 @@ const Consumables = ({tabDetails, headers, listItemFormat, details = [], isEditM
     }
 
     const onSelectChange = (index) => {
-        if(index === 0){
-            // console.log("All")
-            setSelectedOption('All')
-            setSelectedData(data)
-        }else{
-            let data = details[index-1].inventories.map(item => {return {
+        if(isEditMode){
+            let data = details[index].inventories.map(item => {return {
                 ...item,
                 unitPrice : item.cost
             }})
             setSelectedData( data|| [])
-            setSelectedOption(procedureNames[index-1])
-            // console.log("Index: ", )
+            setSelectedOption(procedureNames[index])
+        }else{
+            if(index === 0){
+                setSelectedOption('All')
+                setSelectedData(data)
+            }else{
+                let data = details[index-1].inventories.map(item => {return {
+                    ...item,
+                    unitPrice : item.cost
+                }})
+                setSelectedData( data|| [])
+                setSelectedOption(procedureNames[index-1])
+                // console.log("Index: ", )
+            }
         }
+        
         
     }
 
@@ -181,7 +190,7 @@ const Consumables = ({tabDetails, headers, listItemFormat, details = [], isEditM
                     <DropdownInputField
                         onSelectChange = {onSelectChange}
                         value = {selectedOption}
-                        dropdownOptions = {['All',...procedureNames]}
+                        dropdownOptions = { isEditMode ? [...procedureNames] : ['All',...procedureNames]}
                     />
                 </View>
                 

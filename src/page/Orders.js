@@ -17,6 +17,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 import {connect} from 'react-redux';
 import {setPurchaseOrders} from "../redux/actions/purchaseOrdersActions";
 import {getPurchaseOrders} from "../api/network";
+import _ from "lodash";
 
 import {withModal, useModal} from 'react-native-modalfy';
 import purchaseOrdersTest from '../../data/PurchaseOrders'
@@ -67,6 +68,9 @@ const Orders = (props) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
     const [selectedOrders, setSelectedOrders] = useState([])
 
     // ############# Lifecycle methods
@@ -76,7 +80,34 @@ const Orders = (props) => {
         setTotalPages(Math.ceil(purchaseOrders.length / recordsPerPage))
     }, []);
 
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchOrdersData, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchValue]);
+
     // ############# Event Handlers
+
+    const onSearchInputChange = (input) =>{
+        setSearchValue(input)
+    }
 
     const handleDataRefresh = () => {
         fetchOrdersData()
@@ -126,10 +157,11 @@ const Orders = (props) => {
 
     const fetchOrdersData = () => {
         setFetchingData(true)
-        getPurchaseOrders()
-            .then(data => {
-                setPurchaseOrders([])
-                // setSuppliers(data);
+        getPurchaseOrders(searchValue, recordsPerPage)
+            .then(ordersInfo => {
+                const { data = [], pages = 0} = ordersInfo
+                // setPurchaseOrders([])
+                setPurchaseOrders(data);
                 setTotalPages(Math.ceil(data.length / recordsPerPage))
 
             })
@@ -190,8 +222,8 @@ const Orders = (props) => {
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
                 placeholderText={"Search by Purchase Order"}
-                // changeText={changeText}
-                // inputText={textInput}
+                changeText={onSearchInputChange}
+                inputText={searchValue}
                 routeName={"Purchase Orders"}
                 listData={ordersToDisplay}
 
@@ -218,7 +250,7 @@ const Orders = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-    purchaseOrders: purchaseOrdersTest
+    purchaseOrders: state.orders
 });
 
 const mapDispatcherToProp = {

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { currencyFormatter } from "../../../utils/formatter";
 
 const BillingDetails = ({subtotal, discount, tax, total}) =>{
+    console.log("Sub: ", subtotal)
     
     const billingDetails = [
         {

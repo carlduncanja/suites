@@ -1,16 +1,61 @@
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import Table from '../../common/Table/Table'
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import { formatAmount } from '../../../helpers/caseFilesHelpers';
 import { currencyFormatter } from '../../../utils/formatter';
 
 const ReportDetails = ({reportList, reportTable, listItemFormat, headers}) => {
+
+    let physiciansArray = []
+    let proceduresArray = []
+    let servicesArray = []
+    let inventoriesArray = []
+
+    reportList.map( item => {
+        const {physicians = [], services = [], procedures=[],inventories = [] } = item
+        physicians.map( physician => {
+            physiciansArray.push({
+                name : physician.name || "",
+                cost : physician.cost || 0
+            })
+        })
+        procedures.map( procedure => {
+            proceduresArray.push({
+                name : procedure.name || "",
+                cost : procedure.cost || 0
+            })
+        })
+        services.map( service => {
+            servicesArray.push({
+                name : service.name || "",
+                cost : service.cost || 0
+            })
+        })
+        inventoriesArray = [...inventories]
+        // console.log("In:", inventories)
+    })
     
     return (   
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.summaryDetails}>
-                {reportList.map((detail,index) =>{
+                {physiciansArray.map((detail,index) =>{
+                    return( 
+                        <View style={[styles.summaryItem,{backgroundColor:index % 2 === 0 ? '#F8FAFB':'#FFFFFF'}]} key={index}>
+                            <Text style={styles.detailText}>{detail.name}</Text>
+                            <Text style={styles.detailText}>$ {currencyFormatter(detail.cost)}</Text>
+                        </View>
+                    )
+                })}
+                {proceduresArray.map((detail,index) =>{
+                    return( 
+                        <View style={[styles.summaryItem,{backgroundColor:index % 2 === 0 ? '#F8FAFB':'#FFFFFF'}]} key={index}>
+                            <Text style={styles.detailText}>{detail.name}</Text>
+                            <Text style={styles.detailText}>$ {currencyFormatter(detail.cost)}</Text>
+                        </View>
+                    )
+                })}
+                {servicesArray.map((detail,index) =>{
                     return( 
                         <View style={[styles.summaryItem,{backgroundColor:index % 2 === 0 ? '#F8FAFB':'#FFFFFF'}]} key={index}>
                             <Text style={styles.detailText}>{detail.name}</Text>
@@ -22,12 +67,12 @@ const ReportDetails = ({reportList, reportTable, listItemFormat, headers}) => {
             <View style={styles.consumablesDetails}>
                 <Table
                     isCheckbox = {false}
-                    data = {reportTable}
+                    data = {inventoriesArray}
                     listItemFormat = {listItemFormat}
                     headers = {headers}
                 />
             </View>
-        </View>
+        </ScrollView>
     );
 }
  
@@ -36,6 +81,7 @@ export default ReportDetails;
 const styles = StyleSheet.create({
     container:{
         //flex:1,
+        height: 400
     },
     summaryDetails:{
         //flex:1,

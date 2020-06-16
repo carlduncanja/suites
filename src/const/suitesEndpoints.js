@@ -38,8 +38,8 @@ export const suppliersEndpoint = "/suppliers";
 export const supplierEndpoint = (id) => `/suppliers/${id}`;
 
 // ##### PURCHASE ORDERS
-export const purchaseOrdersEndpoint = "/purchaseOrders";
-export const purchaseOrderEndpoint = (id) => `/purchaseOrders/${id}`;
+export const purchaseOrdersEndpoint = "/purchase_orders";
+export const purchaseOrderEndpoint = (id) => `/purchase_orders/${id}`;
 
 
 // ##### CATEGORIES
