@@ -13,7 +13,7 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @param onClear
  * @param hasError
  * @returns {*}
- * @constructor
+ * @constructor 
  */
 function InputField2({label, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error"}) {
 
@@ -25,7 +25,7 @@ function InputField2({label, onChangeText, value, placeholder, keyboardType, onC
                     marginRight: label ? 20 : 0
                 }
             ]}>{label}</Text>
-            
+             
             <View style={[styles.inputWrapper, {
                 paddingRight: value ? 4 : 0,
             }]}>

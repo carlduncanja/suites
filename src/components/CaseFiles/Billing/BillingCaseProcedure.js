@@ -4,8 +4,6 @@ import { currencyFormatter } from "../../../utils/formatter";
 
 const BillingCaseProcedure = ({physicians, equipments, inventories}) =>{
 
-    // const equipments = procedure.equipments
-    // const consumables = procedure.consumables
     
     const totalPrice = (quantity,price) =>{
         return quantity * price
@@ -36,16 +34,17 @@ const BillingCaseProcedure = ({physicians, equipments, inventories}) =>{
                    )
                 })}
             </View>
+
             <View style={styles.procedureItemContainer}>
                 <View style={{marginBottom:6}}>
                     <Text style={styles.procedureItemTitle}>EQUIPMENT</Text>
                 </View>
                 
                 {equipments.map((equipment, index)=>{
-                    const { name, amount, unitPrice} = equipment
+                    const { name, amount, cost} = equipment
                     return(
                         <View key={index}>
-                            {tableItem(name,totalPrice(amount,unitPrice))}
+                            {tableItem(name,totalPrice(amount,cost))}
                         </View>
                     )   
                 })}
@@ -56,10 +55,10 @@ const BillingCaseProcedure = ({physicians, equipments, inventories}) =>{
                 </View>
                 
                 {inventories.map((inventory, index)=>{
-                    const { name, amount, unitPrice} = inventory
+                    const { name, amount, cost} = inventory
                     return(
                         <View key={index}>
-                            {tableItem(name, totalPrice(amount,unitPrice))}
+                            {tableItem(name, totalPrice(amount,cost))}
                         </View>
                     ) 
                 })}

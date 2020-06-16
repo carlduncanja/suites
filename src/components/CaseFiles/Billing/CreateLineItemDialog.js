@@ -6,16 +6,18 @@ import OverlayDialog from "../../common/Dialog/OverlayDialog";
 import DialogTabs from "../../common/Dialog/DialogTabs";
 import {useModal} from "react-native-modalfy";
 import { getInventories } from "../../../api/network";
+import _ from "lodash";
+import AutoFillField from "../../common/Input Fields/AutoFillField";
 
 const CreateLineItemDialog = ({onCreated, onCancel}) => {
 
     const modal = useModal();
 
-    const [fields, setFields] = useState({
+    const [fields, setFields] = useState({ 
         name : '',
         type : '',
         unitPrice : '',
-        quantity : ''
+        amount : ''
     });
 
     const [popoverList, setPopoverList] = useState([
@@ -24,6 +26,13 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
             status : false
         },
     ])
+
+    const [errorFields, setErrorFields] = useState({
+        name : false,
+        unitPrice : false,
+        amount : false,
+    })
+
     // Inventory Search
     const [inventorySearchValue, setInventorySearchValue] = useState();
     const [inventorySearchResults, setInventorySearchResult] = useState([]);
@@ -57,7 +66,7 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
     const fetchInventories = () => {
         getInventories(inventorySearchValue, 5)
             .then((data = []) => {
-                console.log("Data: ", data)
+                // console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));
@@ -95,14 +104,48 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
     }
 
     const onPositiveClick = () => {
-        console.log("Add Item: ",fields)
+
+        let isNameError = errorFields['name']
+        let isPriceError = errorFields['unitPrice']
+        let isAmountError = errorFields['amount']
+
+        fields['name'] === '' || null ? isNameError = true : isNameError = false
+        fields['unitPrice'] === '' || null ? isPriceError = true : isPriceError = false
+        fields['amount'] === '' || null ? isAmountError = true : isAmountError = false
+
+        setErrorFields({
+            ...errorFields,
+            name : isNameError,
+            unitPrice : isPriceError,
+            amount : isAmountError,
+        })
+
+        if( isNameError === false && isAmountError === false && isPriceError === false){
+            onCreated(fields)
+            modal.closeModals("OverlayModal")
+            console.log("Add Item: ",fields)
+        }else{
+            console.log("Missing", fields)
+        }
+        
     }
 
     const handleCloseDialog = () => {
         onCancel();
-        modal.closeModal('OverlayModal');
+        modal.closeModals('OverlayModal');
     }
 
+    const handleName = (value) => {
+        const { type = "Unknown" } = value
+        if(value === ""){
+            onFieldChange("name")("") &&
+            onFieldChange('type')("")
+        }else{
+            onFieldChange('name')(value.name) &&
+            onFieldChange('type')(type) 
+        }
+        
+    }
     const onFieldChange = (fieldName) => (value) => {
         setFields({
             ...fields,
@@ -112,7 +155,8 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
 
     const handleUnitPrice = (price) => {
         if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
-            onFieldChange('unitPrice')(price)
+            console.log("Unit Price: ", price)
+            onFieldChange('unitPrice')(parseFloat(price))
         }
         setUnitPriceText(price)
     }
@@ -148,32 +192,32 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
                                 label={"Item Name"}
                                 text={inventorySearchValue}
                                 oneOptionsSelected={(item) => {
-                                    onFieldChange('name')(item.name)
+                                    handleName(item)
                                 }}
                                 onChangeText={value => {setInventorySearchValue(value)}}
                                 onClear={() => {
-                                    onFieldChange('name')('');
+                                    handleName("")
                                     setInventorySearchValue('');
                                 }}
                                 options={inventorySearchResults}
                                 handlePopovers = {(value)=>handlePopovers(value)('name')}
                                 isPopoverOpen = {namePop[0].status}
+                                hasError = {errorFields['name']}
+                                errorMessage = "Choose an item to add."
                             />
                         </View>
 
                         <View style={styles.inputWrapper}>
-                            <InputField2
+                            
+                            <AutoFillField
                                 label={"Item Type"}
-                                onChangeText={()=>{}}
                                 value={fields['type']}
-                                onClear={() => onFieldChange('type')('')}
-                                // hasError = {errorFields['name']}
-                                // errorMessage = "Name must be filled."
                             />
+
                         </View>
                     </View>
 
-                    <View style={[styles.row,{zIndex:-2}]}>
+                    <View style={[styles.row,{zIndex:-1}]}>
                         <View style={styles.inputWrapper}>
                             <InputField2
                                 label={"Unit Price"}
@@ -181,18 +225,20 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
                                 value={unitPriceText}
                                 keyboardType={'number-pad'}
                                 onClear={() => handleUnitPrice('')}
-                                // hasError = {errorFields['unitPrice']}
-                                // errorMessage = "Price must be provided."
+                                hasError = {errorFields['unitPrice']}
+                                errorMessage = "Price must be provided."
                             />
                         </View>
 
                         <View style={styles.inputWrapper}>
                             <InputField2
                                 label={"Quanity"}
-                                onChangeText={onFieldChange('quantity')}
-                                value={fields['quantity']}
-                                onClear={() => onFieldChange('quantity')('')}
+                                onChangeText={(value)=>onFieldChange('amount')(parseInt(value))}
+                                value={fields['amount'].toString()}
+                                onClear={() => onFieldChange('amount')('')}
                                 keyboardType = {'number-pad'}
+                                hasError = {errorFields['amount']}
+                                errorMessage = "Provide a quantity"
                             />
                         </View>
                     </View>
