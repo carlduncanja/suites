@@ -37,7 +37,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
-    const overlayMenu = [
+    const overlayMenu = [ 
         {
             name: "Patient",
             overlayTabs: ["Details", "Insurance", "Diagnosis", "Patient Risk"],
@@ -110,9 +110,9 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         setSelectedTab(selectedTab)
     }
 
-    const onEditPress = (tab) => {
-        // setEditableTab(tab)
+    const onEditPress = (tab) =>{
         setEditMode(!isEditMode)
+        if(isEditMode === true){fetchCase(_id)}
     }
 
     /**
@@ -156,23 +156,23 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         console.log("getFabActions: selected tab", selectedTab);
         switch (selectedTab) {
             case "Consumables": {
-                const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {
-                }}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
-                                                         onPress={_ => {
-                                                         }}/>;
+                const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {}}/>;
+                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>} onPress={_ => {}}/>;
                 floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
                 title = "CONSUMABLE'S ACTIONS"
                 break;
             }
             case "Equipment": {
-                const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {
-                }}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>}
-                                                         onPress={_ => {
-                                                         }}/>;
+                const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {}}/>;
+                const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>} onPress={_ => {}}/>;
                 floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
                 title = "EQUIPMENT'S ACTIONS"
+                break;
+            }
+            case 'Quotation' : {
+                const createInvoice = <ActionItem title = "Create Invoice" icon = {<AddIcon/>} onPress = {()=>{}}/>
+                floatingAction.push(createInvoice)
+                title = "QUOTATION ACTIONS"
                 break;
             }
         }
@@ -184,7 +184,6 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         />
 
     }
-
     // ############### Data
 
     const getOverlayContent = () => {

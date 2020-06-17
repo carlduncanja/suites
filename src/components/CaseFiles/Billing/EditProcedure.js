@@ -6,89 +6,20 @@ import IconButton from '../../common/Buttons/IconButton';
 import LeftArrow from '../../../../assets/svg/leftArrow';
 import RightArrow from '../../../../assets/svg/rightArrow';
 import CreateLineItemDialog from "../Billing/CreateLineItemDialog";
+import CreateServiceLineItem from '../Billing/CreateServiceLineItem';
 import { transformToSentence } from "../../../utils/formatter";
-
-const testData = [
-    {
-        name : 'Agents',
-        amount : 1,
-    },
-    {
-        name : 'Agents',
-        amount : 2,
-    },
-    {
-        name : 'Agents',
-        amount : 1,
-    },
-    {
-        name : 'Agents',
-        amount : 4,
-    },
-    {
-        name : 'Agents',
-        amount : 1,
-    },
-    {
-        name : 'Agents',
-        amount : 1,
-    },
-    {
-        name : 'Agents',
-        amount : 1,
-    },
+import { updateChargeSheet } from "../../../api/network";
 
 
-]
-
-const chargeTestData = [
-    {
-        charge : 'X-Ray',
-        type : 'Lab Work',
-        amount : 1,
-    },
-    {
-        charge : 'X-Ray',
-        type : 'Lab Work',
-        amount : 2,
-    },
-    {
-        charge : 'X-Ray',
-        type : 'Lab Work',
-        amount : 1,
-    },
-    {
-        charge : 'X-Ray',
-        type : 'Lab Work',
-        amount : 1,
-    },
-    {
-        charge : 'X-Ray',
-        type : 'Lab Work',
-        amount : 1,
-    },
-    {
-        charge : 'X-Ray',
-        type : 'Lab Work',
-        amount : 4,
-    },
-    {
-        charge : 'X-Ray',
-        type : 'Lab Work',
-        amount : 1,
-    },
-
-
-]
-
-const EditProcedure = ({tabs, procedureName, consumables, services, modal}) => {
+const EditProcedure = ({tabs, procedureName, consumables, equipments, services, onCreated, modal}) => {
     const { closeModals } = modal
     // const {inventories = [], equipments = [] } = details
-    // console.log("Consum: ", consumables, services)
+    // console.log("Id: ", caseId, )
 
     const [selectedTab, setSelectedTab] = useState(tabs[0])
     const [selectedConsumables, setSelectConsumables] = useState(consumables)
     const [selectedServices, setSelectedServices] = useState(services)
+    const [selectedEquipments, setSelectedEquipments] = useState(equipments)
     const [newData, setNewData] = useState({})
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
@@ -98,7 +29,9 @@ const EditProcedure = ({tabs, procedureName, consumables, services, modal}) => {
 
     const onItemAction = (item) => (action) => {
 
-        const itemsToEdit = selectedTab === 'Consumables' ? selectedConsumables : selectedServices
+        const itemsToEdit = selectedTab === 'Consumables' ? selectedConsumables :
+                            selectedTab === 'Equipments' ? selectedEquipments :
+                            selectedServices
 
         const findIndex = itemsToEdit.findIndex(obj => obj.name === item.name);
 
@@ -111,7 +44,7 @@ const EditProcedure = ({tabs, procedureName, consumables, services, modal}) => {
             ]
         }else{
             let updatedObj = {}
-            if (selectedTab === 'Consumables'){
+            if (selectedTab === 'Consumables' || selectedTab === 'Equipments'){
                 updatedObj = { ...selectedItem, amount: action === 'add' ? selectedItem.amount + 1 : selectedItem.amount - 1}
             }else{
                 updatedObj = { ...selectedItem, quantity: action === 'add' ? selectedItem.quantity + 1 : selectedItem.quantity - 1}
@@ -124,18 +57,22 @@ const EditProcedure = ({tabs, procedureName, consumables, services, modal}) => {
             ]; 
         }
         
-        selectedTab === 'Consumables' ? setSelectConsumables(updatedItems) : setSelectedServices(updatedItems)
+        selectedTab === 'Consumables' ? setSelectConsumables(updatedItems) : 
+        selectedTab === 'Equipments' ? setSelectedEquipments(updatedItems) :
+        setSelectedServices(updatedItems)
     
     }
 
     const onAmountChange = (value) => (item) => {
 
-        const itemsToEdit = selectedTab === 'Consumables' ? selectedConsumables : selectedServices
+        const itemsToEdit = selectedTab === 'Consumables' ? selectedConsumables :
+                            selectedTab === 'Equipments' ? selectedEquipments :
+                            selectedServices
         
         const findIndex = itemsToEdit.findIndex(obj => obj.name === item.name);
         let selectedItem = itemsToEdit[findIndex]
         let updatedObj = {}
-        if(selectedTab === 'Consumables'){
+        if(selectedTab === 'Consumables' || selectedTab === 'Equipments'){
             updatedObj = { ...selectedItem, amount: value === "" ? 0 : parseInt(value)};
         }else{
             updatedObj = { ...selectedItem, quantity: value === "" ? 0 : parseInt(value)};
@@ -147,18 +84,24 @@ const EditProcedure = ({tabs, procedureName, consumables, services, modal}) => {
             ]; 
         
         
-        selectedTab === 'Consumables' ? setSelectConsumables(updatedItems) : setSelectedServices(updatedItems)
+        selectedTab === 'Consumables' ? setSelectConsumables(updatedItems) : 
+        selectedTab === 'Equipments' ? setSelectedEquipments(updatedItems) :
+        setSelectedServices(updatedItems)
 
         console.log("Inventories: ", updatedItems)
     }
 
     const handleNewData = (data) =>{
+        const itemsToEdit = selectedTab === 'Consumables' ? selectedConsumables :
+                            selectedTab === 'Equipments' ? selectedEquipments :
+                            selectedServices
         const updatedItems = [
-            ...selectedConsumables,
+            ...itemsToEdit,
             data
         ]
-        console.log("Data:", updatedItems)
-        setSelectConsumables(updatedItems)
+        selectedTab === 'Consumables' ? setSelectConsumables(updatedItems) : 
+        selectedTab === 'Equipments' ? setSelectedEquipments(updatedItems) :
+        setSelectedServices(updatedItems)
     }
 
     const headers = [
@@ -279,17 +222,58 @@ const EditProcedure = ({tabs, procedureName, consumables, services, modal}) => {
 
     const openDialogContainer = () => {
         modal.openModal('OverlayModal',{
-            content: <CreateLineItemDialog
-                onCreated={(obj) => {handleNewData(obj)}}
-                onCancel={() => setFloatingAction(false)}
-            />,
+            content: selectedTab === 'Consumables' || selectedTab === 'Equipments'? 
+                <CreateLineItemDialog
+                    selectedTab = {selectedTab}
+                    onCreated={(obj) => {handleNewData(obj)}}
+                    onCancel={() => setFloatingAction(false)}
+                />
+                :
+                <CreateServiceLineItem
+                    onCreated={(obj) => {handleNewData(obj)}}
+                    onCancel={() => setFloatingAction(false)}
+                />,
             onClose: () => setFloatingAction(false)
         })
     }
 
+    const onDonePress = () => {
+        let updatedInventory = selectedConsumables.map( item => {
+            const { amount, inventory } = item
+            return {
+                amount,
+                inventory
+            }
+        })
+        let updatedEquipment = selectedEquipments.map( item => {
+            const { amount, equipment } = item
+            return {
+                amount,
+                equipment
+            }
+        })
+        let updatedBilling = 
+            {
+                inventories : updatedInventory,
+                equipments : updatedEquipment,
+                lineItems : selectedServices,
+                // caseProcedureId
+            }
+        
+       
+        onCreated(updatedBilling)
+        // console.log("Updated: ", updatedBilling)
+        // updateCase(updatedBilling)
+    }
+
+    const handleClose = () => {
+        console.log("Close")
+        modal.closeModals("OverlayInfoModal")
+    }
+
     const itemFormat = selectedTab === 'Charges and Fees' ? chargeItemFormat : listItemFormat
     const listHeaders = selectedTab === 'Charges and Fees' ? chargeHeaders : headers
-    const data = selectedTab === 'Consumables' ? selectedConsumables : selectedServices
+    const data = selectedTab === 'Consumables' ? selectedConsumables :  selectedTab === 'Equipments' ? selectedEquipments : selectedServices
 
     return (
         <View>
@@ -297,13 +281,14 @@ const EditProcedure = ({tabs, procedureName, consumables, services, modal}) => {
                 title = {procedureName}
                 tabs = {tabs} 
                 selectedTab = {selectedTab}
-                closeModal = {()=>closeModals("OverlayInfoModal")}
+                closeModal = {handleClose} 
                 onPressTab = {handleOnPressTab}
                 listItemFormat = {itemFormat}
                 headers = {listHeaders}
                 isCheckBox = {false}
                 data = {data}
                 onActionPress = {openDialogContainer}
+                onFooterPress = {onDonePress}
             /> 
         </View>
     )

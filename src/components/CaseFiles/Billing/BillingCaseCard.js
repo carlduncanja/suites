@@ -7,11 +7,10 @@ import SvgIcon from '../../../../assets/SvgIcon';
 import {formatAmount} from '../../../helpers/caseFilesHelpers';
 import {formatDate, currencyFormatter} from "../../../utils/formatter";
 import { withModal } from 'react-native-modalfy';
+import { updateChargeSheet } from "../../../api/network";
 
-
-const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
+const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId}) => {
     
-    // console.log("biLLING: ", tabDetails)
     const {
         lastModified = "",
         total = 0,
@@ -23,8 +22,8 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
     let totalAmount = total - (total * discount)
 
     const [selectedProcedure, setSelectedProcedure] = useState(0)
-    const [billingProcedures, setBillingProcedures] = useState(procedures)
-    console.log("Procedures: ",procedures)
+    const [billingProcedures, setBillingProcedures] = useState([...procedures])
+    const [updatedBilling, setUpdatedBilling] = useState([])
 
     const getProcedureStatusArray = () => {
         // let statusArray = []
@@ -59,41 +58,55 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
         setOpenDetailsArrayState(updatedArray)
     }
 
-    // const onAmountChange = (item) => (action) => {
-    //     const procedure = procedures[selectedProcedure]
-    //     const { inventories=[] } = procedure
+    const onCreated = (id) => (data) => {
+        let createdData = [...updatedBilling]
+        let updatedData = {caseProcedureId:id,...data}
+        const filterData = createdData.filter( obj => obj.caseProcedureId === id)
 
-    //     const findIndex = inventories.findIndex(obj => obj.name === item.name);
+        if(filterData.length === 0){
+            createdData = [...createdData, updatedData]
+            setUpdatedBilling(createdData) 
+        }else{
+            const findIndex = createdData.findIndex(obj => obj.caseProcedureId === id);
+            createdData = [
+                ...createdData.slice(0,findIndex),
+                updatedData,
+                ...createdData.slice(findIndex + 1)
+            ]
+            setUpdatedBilling(createdData)
+        }
+        modal.closeModals("OverlayInfoModal")
+        // console.log("Edit mode: ", isEditMode)
+        // console.log("Date: ", createdData)
+        // updateCase(createdData)
        
-    //     const updatedObj = { ...inventories[findIndex], amount: action === 'add' ? inventories[findIndex].amount + 1 : inventories[findIndex].amount - 1};
-       
-    //     const updatedInventories = [
-    //         ...inventories.slice(0, findIndex),
-    //         updatedObj,
-    //         ...inventories.slice(findIndex + 1),
-    //     ]; 
-    //     // console.log("Procedure: ", updatedInventories)
-    //     const updatedProcedures = billingProcedures.map( item => {
-    //         return {
-    //             ...item,
-    //             inventories : updatedInventories
-    //         }
-    //     })
-    //     setBillingProcedures(updatedProcedures)
-    //     // console.log("Updated: ", updatedProcedures)
+    }
 
-    // }
+    const updateCase = (data) => {
+        updateChargeSheet(caseId, data)
+            .then((data) => {
+                console.log("Updated Record:", data)
+                // let newData = {
+                //     _id : id,
+                //     ...data
+                // }
+                // updatePhysicianRecord(newData)
+            })
+            .catch(error => {
+                console.log("Failed to update chargesheet", error)
+            })
+    }
 
-    const openActionContainer = (name,consumables,services) =>{
-       console.log("Consumables:", consumables)
+    const openActionContainer = (name,consumables, equipments, services, caseProcedureId) =>{
 
         modal.openModal('OverlayInfoModal',{ 
             overlayContent : <EditProcedure
+                onCreated = {onCreated(caseProcedureId)}
                 procedureName = {name}
                 consumables = {consumables}
+                equipments = {equipments}
                 services = {services}
-                tabs = {['Consumables','Charges and Fees']}
-                // onAmountChange = {onAmountChange}
+                tabs = {['Consumables','Equipments','Charges and Fees']}
             />,
         })
     }
@@ -130,15 +143,16 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
                 {
                     billingProcedures.map(
                         (item, index) => {
-                            // console.log("Prop: ", item)
+                            
                         const {
                             procedure = {},
                             physicians = [],
                             equipments = [],
                             inventories = [],
-                            services = []
+                            services = [],
+                            caseProcedureId = ""
                         } = item
-
+                        
                         return (
                             <View key={index} style={{marginBottom: 15}}>
 
@@ -175,7 +189,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
                                                     isEditMode && <TouchableOpacity 
                                                         style={styles.editContainer}
                                                         activeOpacity = {0.5}
-                                                        onPress = {()=>{openActionContainer(procedure.name,inventories, services); setSelectedProcedure(index)}}
+                                                        onPress = {()=>{openActionContainer(procedure.name,inventories, equipments, services, caseProcedureId); setSelectedProcedure(index)}}
                                                     >
                                                         <Text style={{color:'#0CB0E7', fontSize:16, fontWeight:'500'}}>Edit Procedure</Text>
                                                     </TouchableOpacity>

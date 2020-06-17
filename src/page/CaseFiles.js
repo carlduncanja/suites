@@ -247,17 +247,15 @@ const CaseFiles = (props) => {
 
     const getFabActions = () => {
 
-        const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={() => {
-        }}/>;
+        const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={() => {}}/>;
         const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon/>} onPress={openCreateCaseFile}/>;
-
 
         return <ActionContainer
             floatingActions={[
                 archiveCase,
                 createNewCase
             ]}
-            title={"PHYSICIAN ACTIONS"}
+            title={"CASE ACTIONS"}
         />
     };
 

@@ -6,7 +6,7 @@ import {
     theatresEndpoint, theatreEndpoint,
     physiciansEndpoint, physicianEndpoint,
     proceduresEndpoint, procedureEndpoint,
-    caseFilesEndpoint, caseFileEndpoint,
+    caseFilesEndpoint, caseFileEndpoint,updateChargeSheetEndpoint,
     equipmentsEndpoint, equipmentEndpoint,
     equipmentTypesEndpoint, storageLocationsEndpoint,
     suppliersEndpoint, supplierEndpoint,
@@ -119,6 +119,13 @@ export const createCaseFile = async (caseFileForCreation) => {
         .catch(handleError);
 }
 
+export const updateChargeSheet = async (id, data) =>{
+    console.log("Net data: ", data)
+    return suitesAxiosInstance.put(updateChargeSheetEndpoint(id),data)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
 // ################# Procedures Endpoints
 export const getProcedures = async (query, max) => {
     return suitesAxiosInstance.get(proceduresEndpoint, {params: {query, max}})
@@ -185,8 +192,8 @@ export const createStorageLocation = async (storageForCreation) => {
 };
 
 // ################# Equipment Endpoint
-export const getEquipment = async () => {
-    return suitesAxiosInstance.get(equipmentsEndpoint)
+export const getEquipment = async (query) => {
+    return suitesAxiosInstance.get(equipmentsEndpoint, {params : {query}})
         .then(handleResponse)
         .catch(handleError)
 };

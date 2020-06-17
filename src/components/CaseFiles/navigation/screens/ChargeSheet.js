@@ -14,11 +14,9 @@ const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
 const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isEditMode}) => {
-
-    // console.log("Sheet: ", quotations) 
-    
-    const LINE_ITEM_TYPES = {
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isEditMode}) => { 
+   
+    const LINE_ITEM_TYPES = { 
         DISCOUNT: "discount",
         SERVICE: "service",
         PROCEDURES: "procedures",
@@ -29,7 +27,8 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
         inventoryList = [],
         equipmentList = [],
         proceduresBillableItems = [],
-        total
+        total,
+        caseId
     } = chargeSheet
 
     inventoryList = inventoryList.map(item => {
@@ -82,7 +81,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
         procedures: []
     }
     for (const proceduresBillableItem of proceduresBillableItems) {
-        const {lineItems = [], inventories, equipments} = proceduresBillableItem;
+        const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
 
         const caseProcedure = procedures.find( item => item._id === proceduresBillableItem.caseProcedureId) || {}
         const caseAppointment = caseProcedure.appointment
@@ -91,6 +90,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
 
 
         const billingItem = {
+            caseProcedureId,
             discounts: [],
             physicians: [],
             services: [],
@@ -119,16 +119,17 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
         }
 
         billingItem.inventories = inventories.map(item => {
-            const {inventory = {} } = item
             return {
+                inventory : item.inventory._id,
                 amount: item.amount,
                 name: item.inventory.name,
-                cost: inventory.unitPrice,
+                cost: item.inventory.unitPrice,
             }
         })
 
         billingItem.equipments = equipments.map(item => {
             return {
+                equipment : item.equipment._id,
                 amount: item.amount,
                 name: item.equipment.type.name,
                 cost: item.equipment.type.unitPrice,
@@ -181,6 +182,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
 
     </>
 
+    
     return (
         selectedTab === 'Consumables' ?
             <Consumables
@@ -207,7 +209,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
                             reportDetails = {billing}
                         />
                         :
-                        <BillingCaseCard tabDetails={billing} isEditMode = {isEditMode}/>
+                        <BillingCaseCard tabDetails={billing} isEditMode = {isEditMode} caseId = {caseId}/>
         // <View/>
     );
 }

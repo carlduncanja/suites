@@ -5,11 +5,11 @@ import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsF
 import OverlayDialog from "../../common/Dialog/OverlayDialog";
 import DialogTabs from "../../common/Dialog/DialogTabs";
 import {useModal} from "react-native-modalfy";
-import { getInventories } from "../../../api/network";
+import { getInventories, getEquipment } from "../../../api/network";
 import _ from "lodash";
 import AutoFillField from "../../common/Input Fields/AutoFillField";
 
-const CreateLineItemDialog = ({onCreated, onCancel}) => {
+const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => { 
 
     const modal = useModal();
 
@@ -37,6 +37,11 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
     const [inventorySearchValue, setInventorySearchValue] = useState();
     const [inventorySearchResults, setInventorySearchResult] = useState([]);
     const [inventorySearchQuery, setInventorySearchQuery] = useState({});
+
+    // Inventory Search
+    const [equipmentSearchValue, setEquipmentSearchValue] = useState();
+    const [equipmentSearchResults, setEquipmentSearchResult] = useState([]);
+    const [equipmentSearchQuery, setEquipmentSearchQuery] = useState({});
 
     const [unitPriceText, setUnitPriceText] = useState(fields['unitPrice'])
 
@@ -78,6 +83,47 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
                 // TODO handle error
                 console.log("failed to get inventories", error);
                 setInventorySearchResult([]);
+            })
+    };
+
+    useEffect(() => {
+       
+        if (!equipmentSearchValue) {
+            // empty search values and cancel any out going request.
+            setEquipmentSearchResult([]);
+            if (equipmentSearchQuery.cancel) equipmentSearchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchEquipment, 300);
+
+        setEquipmentSearchQuery(prevSearch => {
+            if (prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [equipmentSearchValue]);
+
+    const fetchEquipment = () => {
+        getEquipment(equipmentSearchValue)
+            .then((data = []) => {
+                // console.log("Data: ", data)
+                const results = data.map(item => ({
+                    ...item
+                }));
+
+                setEquipmentSearchResult(results || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get equipments", error);
+                setEquipmentSearchResult([]);
             })
     };
 
@@ -162,6 +208,8 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
     }
 
     let namePop = popoverList.filter( item => item.name === 'name')
+    const searchValue = selectedTab === 'Consumables' ? inventorySearchValue : equipmentSearchValue
+    const searchResults = selectedTab === 'Consumables' ? inventorySearchResults : equipmentSearchQuery
 
     return(
         <OverlayDialog
@@ -190,16 +238,16 @@ const CreateLineItemDialog = ({onCreated, onCancel}) => {
                         <View style={styles.inputWrapper}>
                             <SearchableOptionsField
                                 label={"Item Name"}
-                                text={inventorySearchValue}
+                                text={searchValue}
                                 oneOptionsSelected={(item) => {
                                     handleName(item)
                                 }}
-                                onChangeText={value => {setInventorySearchValue(value)}}
+                                onChangeText={value => { selectedTab === 'Consumables' ? setInventorySearchValue(value) : setEquipmentSearchValue(value)}}
                                 onClear={() => {
                                     handleName("")
-                                    setInventorySearchValue('');
+                                    selectedTab === 'Consumables' ? setInventorySearchValue('') : setEquipmentSearchValue('')
                                 }}
-                                options={inventorySearchResults}
+                                options={searchResults}
                                 handlePopovers = {(value)=>handlePopovers(value)('name')}
                                 isPopoverOpen = {namePop[0].status}
                                 hasError = {errorFields['name']}
