@@ -52,9 +52,7 @@ function InputField2({label, onChangeText, value, placeholder, keyboardType, onC
                     style={styles.clearIcon}
                     onPress={onClear}
                 >
-                    <Text>
-                        <ClearIcon/>
-                    </Text>
+                    <ClearIcon/>
                 </TouchableOpacity>
             }
         </View>
@@ -92,7 +90,6 @@ const styles = StyleSheet.create({
     clearIcon: {
         position: 'absolute',
         right: 0,
-        top: 1.5,
         margin: 10,
     },
     errorView: {
