@@ -86,7 +86,7 @@ const reportTestData = {
     }
 }
 
-const Quotations = ({tabDetails, reportDetails, modal}) => {
+const Quotations = ({tabDetails, reportDetails, modal, handleQuotes}) => {
     // console.log("Deta:", reportDetails)
     const [checkBoxList, setCheckBoxList] = useState([])
 
@@ -145,14 +145,17 @@ const Quotations = ({tabDetails, reportDetails, modal}) => {
    
 
     const toggleCheckbox = (item) => () => {
-        let updatedCases = [...checkBoxList];
+        // console.log('Item:', item)
+        let updatedQuotes = [...checkBoxList];
 
-        if (updatedCases.includes(item)) {
-            updatedCases = updatedCases.filter(caseItem => caseItem !== item)
+        if (updatedQuotes.includes(item)) {
+            updatedQuotes = updatedQuotes.filter(quote => quote !== item)
         } else {
-            updatedCases.push(item);
+            updatedQuotes.push(item);
         }
-        setCheckBoxList(updatedCases);
+        setCheckBoxList(updatedQuotes);
+        handleQuotes(updatedQuotes)
+        // console.log('Quotes:', updatedQuotes)
     }
 
     const toggleHeaderCheckbox = () =>{
@@ -181,7 +184,7 @@ const Quotations = ({tabDetails, reportDetails, modal}) => {
     }
 
     return (  
-        <ScrollView>
+        <ScrollView> 
             <Table
                 isCheckbox = {true}
                 data = {tabDetails}

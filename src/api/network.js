@@ -6,13 +6,13 @@ import {
     theatresEndpoint, theatreEndpoint,
     physiciansEndpoint, physicianEndpoint,
     proceduresEndpoint, procedureEndpoint,
-    caseFilesEndpoint, caseFileEndpoint,updateChargeSheetEndpoint,
+    caseFilesEndpoint, caseFileEndpoint,updateChargeSheetEndpoint,createInvoice,
     equipmentsEndpoint, equipmentEndpoint,
     equipmentTypesEndpoint, storageLocationsEndpoint,
     suppliersEndpoint, supplierEndpoint,
     purchaseOrdersEndpoint, purchaseOrderEndpoint,
     storageLocationEndpoint, categoriesEndpoint, loginEndpoint, appointmentsEndpoint, appointmentEndpoint
-} from "../const/suitesEndpoints";
+} from "../const/suitesEndpoints"; 
 
 // ################# Mock Data
 import {appointments} from "../../data/Appointments"
@@ -120,8 +120,13 @@ export const createCaseFile = async (caseFileForCreation) => {
 }
 
 export const updateChargeSheet = async (id, data) =>{
-    console.log("Net data: ", data)
     return suitesAxiosInstance.put(updateChargeSheetEndpoint(id),data)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+export const createInvoiceViaQuotation = async (caseId, quotationId) => {
+    return suitesAxiosInstance.post(createInvoice(caseId)(quotationId))
         .then(handleResponse)
         .catch(handleError)
 }

@@ -21,7 +21,7 @@ import _ from "lodash";
 
 import {withModal, useModal} from 'react-native-modalfy';
 import purchaseOrdersTest from '../../data/PurchaseOrders'
-import { formatDate } from '../utils/formatter';
+import { formatDate, transformToSentence } from '../utils/formatter';
 import OrdersBottomSheet from '../components/PurchaseOrders/OrdersBottomSheet';
 
 const Orders = (props) => {
@@ -57,6 +57,7 @@ const Orders = (props) => {
 
     //  ############ Props
     const {purchaseOrders = [], setPurchaseOrders} = props;
+
     const modal = useModal();
 
     //  ############ State
@@ -162,6 +163,7 @@ const Orders = (props) => {
                 const { data = [], pages = 0} = ordersInfo
                 // setPurchaseOrders([])
                 setPurchaseOrders(data);
+                console.log("OrdersInfo: ", data)
                 setTotalPages(Math.ceil(data.length / recordsPerPage))
 
             })
@@ -184,26 +186,27 @@ const Orders = (props) => {
     }
 
     const orderItem = (item) => {
-        const { _id = "", status = "", date = "", supplier = ""} = item
+        const { purchaseOrderNumber = "", status = "", orderDate = "", supplier = {} } = item
+        const { name = "" } = supplier
         const statusColor = status === 'Incomplete' ? "#805AD5" :
             status === 'Request Sent' ? "#319795" : 
             status === 'Payment Due' ? "#C53030" : "#4E5664"
         
-        const deliveryDate = (date === "" || date === null) ? 'n/a' : formatDate(date, 'DD/MM/YYYY')
+        const deliveryDate = (orderDate === "" || orderDate === null) ? 'n/a' : formatDate(orderDate, 'DD/MM/YYYY')
 
         return (
             <>
                 <View style={[styles.item,{...styles.rowBorderRight, flex: 1}]}>
-                    <Text style={[styles.itemText, {color:"#4E5664"}]}>{_id}</Text>
+                    <Text style={[styles.itemText, {color:"#4E5664"}]}>{purchaseOrderNumber}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1,alignItems:'center' }]}>
-                    <Text style={[styles.itemText, {color: statusColor}]}>{status}</Text>
+                    <Text style={[styles.itemText, {color: statusColor}]}>{transformToSentence(status)}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, }]}>
                     <Text style={[styles.itemText, {color: "#4E5664"}]}>{deliveryDate}</Text>
                 </View>
                 <View style={[styles.item, {flex: 2,}]}>
-                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{supplier}</Text>
+                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{name}</Text>
                 </View>
             </>
         )
@@ -213,6 +216,7 @@ const Orders = (props) => {
     // ############# Prepare list data
 
     let ordersToDisplay = [...purchaseOrders];
+    console.log("Orders: ", ordersToDisplay)
     ordersToDisplay = ordersToDisplay.slice(currentPageListMin, currentPageListMax);
 
 

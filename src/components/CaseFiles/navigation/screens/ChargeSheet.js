@@ -14,7 +14,7 @@ const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
 const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isEditMode, handleEditDone}) => { 
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices,isEditMode, handleEditDone, handleQuotes}) => { 
    
     const LINE_ITEM_TYPES = { 
         DISCOUNT: "discount",
@@ -184,7 +184,6 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
 
     </>
 
-    
     return (
         selectedTab === 'Consumables' ?
             <Consumables
@@ -204,15 +203,23 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
                 />
                 :
                 selectedTab === 'Invoices' ?
-                    <Invoices tabDetails={invoiceTestData}/>
+                    <Invoices 
+                        tabDetails={invoices}
+                    />
                     :
                     selectedTab === 'Quotation' ?
                         <Quotation 
                             tabDetails={quotations} 
                             reportDetails = {billing}
+                            handleQuotes = {handleQuotes}
                         />
                         :
-                        <BillingCaseCard tabDetails={billing} isEditMode = {isEditMode} caseId = {caseId}/>
+                        <BillingCaseCard 
+                            tabDetails={billing} 
+                            isEditMode = {isEditMode} 
+                            caseId = {caseId}
+                            handleEditDone = {handleEditDone(caseId)}
+                        />
         // <View/>
     );
 }

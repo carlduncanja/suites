@@ -21,7 +21,7 @@ import ChargeSheetDisabledIcon from '../../../assets/svg/overlayChargeSheetDisab
 
 import {Patient, Procedures, MedicalStaff, MedicalHistory, ChargeSheet} from "./navigation/screens";
 
-import {getCaseFileById, updateChargeSheet} from "../../api/network";
+import {getCaseFileById, updateChargeSheet, createInvoiceViaQuotation} from "../../api/network";
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
 import {useModal} from "react-native-modalfy";
 import ActionItem from "../common/ActionItem";
@@ -38,6 +38,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([])
     const [selectedCaseId, setSelectedCaseId] = useState("")
+    const [selectedQuotes, setSelectedQuotes] = useState([])
 
     const overlayMenu = [ 
         {
@@ -114,9 +115,10 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
 
     const onEditPress = (tab) =>{
         setEditMode(!isEditMode)
-        // if(isEditMode === true){fetchCase(_id)}
+    
         if(isEditMode === true){
-            updateCase()
+            console.log("New Data: ", updateInfo)
+            // updateCase()
             setTimeout(()=>{
                 fetchCase(_id)
             },500)
@@ -137,6 +139,12 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
             .catch(error => {
                 console.log("Failed to update chargesheet", error)
             })
+    }
+
+    const handleQuotes = (quotes) => {
+        const quoteIds = quotes.map( item => item._id)
+        // console.log("Ids: ", quoteIds)
+        setSelectedQuotes(quoteIds)
     }
 
     /**
@@ -194,7 +202,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
                 break;
             }
             case 'Quotation' : {
-                const createInvoice = <ActionItem title = "Create Invoice" icon = {<AddIcon/>} onPress = {()=>{}}/>
+                const createInvoice = <ActionItem title = "Create Invoice" icon = {<AddIcon/>} onPress = {onCreateInvoice}/>
                 floatingAction.push(createInvoice)
                 title = "QUOTATION ACTIONS"
                 break;
@@ -208,10 +216,26 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         />
 
     }
+
+    const onCreateInvoice = () => {
+        selectedQuotes.forEach( item => {
+            // console.log("Id, quote: ", _id, item)
+            createInvoiceViaQuotation(_id, item)
+            .then((data) => {
+                console.log("Invoice Record:", data)
+            })
+            .catch(error => {
+                console.log("Failed to create invoice", error)
+            })
+        })
+       
+    }
+
+   
     // ############### Data
 
     const getOverlayContent = () => {
-        const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = []} = selectedCase
+        const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = [] } = selectedCase
         const {medicalInfo = {}} = patient
 
         switch (selectedMenuItem) {
@@ -248,7 +272,9 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
                     selectedTab={selectedTab}
                     isEditMode={isEditMode}
                     quotations = {quotations}
+                    invoices = {invoices}
                     handleEditDone = {handleEditDone}
+                    handleQuotes = {handleQuotes}
                 />
 
             default :
