@@ -1,11 +1,12 @@
 import React,{ useState } from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { withModal } from "react-native-modalfy";
 import ActionableListCard from "../PickList/ActionableListCard";
 import IconButton from '../../common/Buttons/IconButton';
 import LeftArrow from '../../../../assets/svg/leftArrow';
 import RightArrow from '../../../../assets/svg/rightArrow';
 import CreateLineItemDialog from "../Billing/CreateLineItemDialog";
+import { transformToSentence } from "../../../utils/formatter";
 
 const testData = [
     {
@@ -80,37 +81,85 @@ const chargeTestData = [
 
 ]
 
-const EditProcedure = ({details, tabs, procedureName, modal}) => {
+const EditProcedure = ({tabs, procedureName, consumables, services, modal}) => {
     const { closeModals } = modal
-    const {inventories = [], equipments = [] } = details
+    // const {inventories = [], equipments = [] } = details
+    // console.log("Consum: ", consumables, services)
 
     const [selectedTab, setSelectedTab] = useState(tabs[0])
+    const [selectedConsumables, setSelectConsumables] = useState(consumables)
+    const [selectedServices, setSelectedServices] = useState(services)
+    const [newData, setNewData] = useState({})
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const handleOnPressTab = (tab) => {
         setSelectedTab(tab)
     }
 
-    // Format data
-    const inventoriesArray = inventories.map( item => {
-        const { inventory = {} } = item
-        const { name = "" } = inventory
-        return {
-            ...item,
-            name : name
-        }
-    })
+    const onItemAction = (item) => (action) => {
 
-    const equipmentsArray = equipments.map( item => {
-        const { equipment = {} } = item
-        const { name = "" } = equipment
-        return {
-            ...item,
-            name : name
+        const itemsToEdit = selectedTab === 'Consumables' ? selectedConsumables : selectedServices
+
+        const findIndex = itemsToEdit.findIndex(obj => obj.name === item.name);
+
+        let selectedItem = itemsToEdit[findIndex]
+        let updatedItems = []
+        if(action === 'remove'){
+            updatedItems = [
+                ...itemsToEdit.slice(0, findIndex),
+                ...itemsToEdit.slice(findIndex + 1),
+            ]
+        }else{
+            let updatedObj = {}
+            if (selectedTab === 'Consumables'){
+                updatedObj = { ...selectedItem, amount: action === 'add' ? selectedItem.amount + 1 : selectedItem.amount - 1}
+            }else{
+                updatedObj = { ...selectedItem, quantity: action === 'add' ? selectedItem.quantity + 1 : selectedItem.quantity - 1}
+            }
+
+            updatedItems = [
+                ...itemsToEdit.slice(0, findIndex),
+                updatedObj,
+                ...itemsToEdit.slice(findIndex + 1),
+            ]; 
         }
-    })
+        
+        selectedTab === 'Consumables' ? setSelectConsumables(updatedItems) : setSelectedServices(updatedItems)
     
-    const data = selectedTab === 'Consumables' ? testData : chargeTestData
+    }
+
+    const onAmountChange = (value) => (item) => {
+
+        const itemsToEdit = selectedTab === 'Consumables' ? selectedConsumables : selectedServices
+        
+        const findIndex = itemsToEdit.findIndex(obj => obj.name === item.name);
+        let selectedItem = itemsToEdit[findIndex]
+        let updatedObj = {}
+        if(selectedTab === 'Consumables'){
+            updatedObj = { ...selectedItem, amount: value === "" ? 0 : parseInt(value)};
+        }else{
+            updatedObj = { ...selectedItem, quantity: value === "" ? 0 : parseInt(value)};
+        }
+        const updatedItems = [
+                ...itemsToEdit.slice(0, findIndex),
+                updatedObj,
+                ...itemsToEdit.slice(findIndex + 1),
+            ]; 
+        
+        
+        selectedTab === 'Consumables' ? setSelectConsumables(updatedItems) : setSelectedServices(updatedItems)
+
+        console.log("Inventories: ", updatedItems)
+    }
+
+    const handleNewData = (data) =>{
+        const updatedItems = [
+            ...selectedConsumables,
+            data
+        ]
+        console.log("Data:", updatedItems)
+        setSelectConsumables(updatedItems)
+    }
 
     const headers = [
         {
@@ -163,24 +212,27 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
                 <View style={[styles.editItem, {alignItems: 'center',flex:1}]}>
                     <IconButton
                         Icon = {<LeftArrow strokeColor="#718096"/>}
-                        onPress = {()=>{}}
+                        onPress = {()=>onItemAction(item)('subtract')}
                         disabled = {false}
                     />
 
-                    <TextInput style={styles.editTextBox}>
-                        <Text style={styles.itemText}>{item.amount}</Text>
-                    </TextInput>
+                    <TextInput 
+                        style={styles.editTextBox}
+                        onChangeText = {(value)=>onAmountChange(value)(item)}
+                        value = {item.amount === 0 ? "" : item.amount.toString()}
+                        keyboardType = "number-pad"
+                    />
                     
                     <IconButton
                         Icon = {<RightArrow strokeColor="#38A169"/>}
-                        onPress = {()=>{}}
+                        onPress = {()=>onItemAction(item)('add')}
                         disabled = {false}
                     />
                 </View>
            
-                <View style={{alignItems:'flex-end', flex:1}}>
-                    <Text style={[styles.dataText,{color:"#4A5568"}]}>Remove</Text>
-                </View>
+                <TouchableOpacity style={{alignItems:'flex-end', flex:1}} onPress={()=>onItemAction(item)('remove')}>
+                    <Text style={[styles.dataText,{color:"#0CB0E7"}]}>Remove</Text>
+                </TouchableOpacity>
             </View>
         )
         
@@ -190,34 +242,37 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
         return (
             <View style={[styles.listDataContainer,{marginBottom:10, marginLeft:10}]}>
                 <View style={{flex:1}}>
-                    <Text style={[styles.dataText,{color:"#3182CE",}]}>{item.charge}</Text>
+                    <Text style={[styles.dataText,{color:"#3182CE",}]}>{item.name}</Text>
                 </View>
 
                 <View style={{alignItems:'center', flex:1}}>
-                    <Text style={[styles.dataText,{color:"#4A5568"}]}>{item.type}</Text>
+                    <Text style={[styles.dataText,{color:"#4A5568"}]}>{transformToSentence(item.type)}</Text>
                 </View>
 
                 <View style={[styles.editItem, {alignItems: 'center',flex:1}]}>
                     <IconButton
                         Icon = {<LeftArrow strokeColor="#718096"/>}
-                        onPress = {()=>{}}
+                        onPress = {()=>onItemAction(item)('subtract')}
                         disabled = {false}
                     />
 
-                    <TextInput style={styles.editTextBox}>
-                        <Text style={styles.itemText}>{item.amount}</Text>
-                    </TextInput>
-                    
+                    <TextInput 
+                        style={styles.editTextBox}
+                        onChangeText = {(value)=>onAmountChange(value)(item)}
+                        value = {item.quantity === 0 ? "" : item.quantity.toString()}
+                        keyboardType = "number-pad"
+                    />
+                   
                     <IconButton
                         Icon = {<RightArrow strokeColor="#38A169"/>}
-                        onPress = {()=>{}}
+                        onPress = {()=>onItemAction(item)('add')}
                         disabled = {false}
                     />
                 </View>
-           
-                <View style={{alignItems:'flex-end', flex:1}}>
-                    <Text style={[styles.dataText,{color:"#4A5568"}]}>Remove</Text>
-                </View>
+
+                <TouchableOpacity style={{alignItems:'flex-end', flex:1}} onPress={()=>onItemAction(item)('remove')}>
+                    <Text style={[styles.dataText,{color:"#0CB0E7"}]}>Remove</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -225,7 +280,7 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
     const openDialogContainer = () => {
         modal.openModal('OverlayModal',{
             content: <CreateLineItemDialog
-                onCreated={() => {}}
+                onCreated={(obj) => {handleNewData(obj)}}
                 onCancel={() => setFloatingAction(false)}
             />,
             onClose: () => setFloatingAction(false)
@@ -234,12 +289,13 @@ const EditProcedure = ({details, tabs, procedureName, modal}) => {
 
     const itemFormat = selectedTab === 'Charges and Fees' ? chargeItemFormat : listItemFormat
     const listHeaders = selectedTab === 'Charges and Fees' ? chargeHeaders : headers
+    const data = selectedTab === 'Consumables' ? selectedConsumables : selectedServices
 
     return (
         <View>
             <ActionableListCard
                 title = {procedureName}
-                tabs = {tabs}
+                tabs = {tabs} 
                 selectedTab = {selectedTab}
                 closeModal = {()=>closeModals("OverlayInfoModal")}
                 onPressTab = {handleOnPressTab}

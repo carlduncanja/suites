@@ -10,16 +10,21 @@ import { withModal } from 'react-native-modalfy';
 
 
 const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
-
+    
+    // console.log("biLLING: ", tabDetails)
     const {
         lastModified = "",
         total = 0,
         hasDiscount = false,
         discount = 0,
-        procedures = {}
+        procedures = []
     } = tabDetails
 
     let totalAmount = total - (total * discount)
+
+    const [selectedProcedure, setSelectedProcedure] = useState(0)
+    const [billingProcedures, setBillingProcedures] = useState(procedures)
+    console.log("Procedures: ",procedures)
 
     const getProcedureStatusArray = () => {
         // let statusArray = []
@@ -42,7 +47,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
         let currentArray = openDetailsArrayState.filter(item => item.index === index)
         return currentArray[0].status
     }
-
+ 
     const openProcedureDetails = (index) => {
         let selectedIndex = openDetailsArrayState.findIndex(obj => obj.index === index)
         let newObject = {...openDetailsArrayState[selectedIndex], status: !openDetailsArrayState[selectedIndex].status}
@@ -54,12 +59,41 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
         setOpenDetailsArrayState(updatedArray)
     }
 
-    const openActionContainer = (name) =>{
+    // const onAmountChange = (item) => (action) => {
+    //     const procedure = procedures[selectedProcedure]
+    //     const { inventories=[] } = procedure
+
+    //     const findIndex = inventories.findIndex(obj => obj.name === item.name);
+       
+    //     const updatedObj = { ...inventories[findIndex], amount: action === 'add' ? inventories[findIndex].amount + 1 : inventories[findIndex].amount - 1};
+       
+    //     const updatedInventories = [
+    //         ...inventories.slice(0, findIndex),
+    //         updatedObj,
+    //         ...inventories.slice(findIndex + 1),
+    //     ]; 
+    //     // console.log("Procedure: ", updatedInventories)
+    //     const updatedProcedures = billingProcedures.map( item => {
+    //         return {
+    //             ...item,
+    //             inventories : updatedInventories
+    //         }
+    //     })
+    //     setBillingProcedures(updatedProcedures)
+    //     // console.log("Updated: ", updatedProcedures)
+
+    // }
+
+    const openActionContainer = (name,consumables,services) =>{
+       console.log("Consumables:", consumables)
+
         modal.openModal('OverlayInfoModal',{ 
             overlayContent : <EditProcedure
                 procedureName = {name}
+                consumables = {consumables}
+                services = {services}
                 tabs = {['Consumables','Charges and Fees']}
-                details = {[]}
+                // onAmountChange = {onAmountChange}
             />,
         })
     }
@@ -94,14 +128,15 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
                 </View>
 
                 {
-                    procedures.map(
+                    billingProcedures.map(
                         (item, index) => {
-
+                            // console.log("Prop: ", item)
                         const {
                             procedure = {},
                             physicians = [],
                             equipments = [],
-                            inventories = []
+                            inventories = [],
+                            services = []
                         } = item
 
                         return (
@@ -140,7 +175,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode}) => {
                                                     isEditMode && <TouchableOpacity 
                                                         style={styles.editContainer}
                                                         activeOpacity = {0.5}
-                                                        onPress = {()=>openActionContainer(procedure.name)}
+                                                        onPress = {()=>{openActionContainer(procedure.name,inventories, services); setSelectedProcedure(index)}}
                                                     >
                                                         <Text style={{color:'#0CB0E7', fontSize:16, fontWeight:'500'}}>Edit Procedure</Text>
                                                     </TouchableOpacity>

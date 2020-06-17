@@ -79,7 +79,7 @@ const Physicians = (props) => {
         }
         setTotalPages(Math.ceil(physicians.length / recordsPerPage))
     }, []);
-
+ 
     useEffect(() => {
 
         if (!searchValue) {

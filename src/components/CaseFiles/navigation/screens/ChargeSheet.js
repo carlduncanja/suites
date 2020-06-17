@@ -16,7 +16,7 @@ const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
 const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isEditMode}) => {
 
-    // console.log("Sheet: ", quotations)
+    // console.log("Sheet: ", quotations) 
     
     const LINE_ITEM_TYPES = {
         DISCOUNT: "discount",
@@ -138,6 +138,10 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
         billing.procedures.push(billingItem)
     }
 
+    const onQuantityChange = (item) => {
+        console.log("Item: ", item)
+    }
+
     const listItem = (item) => <>
         <View style={styles.item}>
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
@@ -151,7 +155,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
             <View style={[styles.editItem, {alignItems: 'center'}]}>
                 <IconButton
                     Icon = {<LeftArrow strokeColor="#718096"/>}
-                    onPress = {()=>{}}
+                    onPress = {()=>onQuantityChange(item)}
                     disabled = {false}
                 />
 
@@ -161,7 +165,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
                 
                 <IconButton
                     Icon = {<RightArrow strokeColor="#718096"/>}
-                    onPress = {()=>{}}
+                    onPress = {()=>{onQuantityChange(item)}}
                     disabled = {false}
                 />
             </View>
@@ -172,7 +176,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
 
         }
         <View style={[styles.item, {alignItems: 'flex-end'}]}>
-            <Text style={styles.itemText}>{`$ ${currencyFormatter(item.unitPrice)}`}</Text>
+            <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
         </View>
 
     </>
@@ -184,6 +188,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
                 headers={headers}
                 listItemFormat={listItem}
                 details = {billing.procedures}
+                isEditMode = {isEditMode}
             />
             :
             selectedTab === 'Equipment' ?
@@ -197,7 +202,10 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
                     <Invoices tabDetails={invoiceTestData}/>
                     :
                     selectedTab === 'Quotation' ?
-                        <Quotation tabDetails={quotations}/>
+                        <Quotation 
+                            tabDetails={quotations} 
+                            reportDetails = {billing}
+                        />
                         :
                         <BillingCaseCard tabDetails={billing} isEditMode = {isEditMode}/>
         // <View/>

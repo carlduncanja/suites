@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput } from "react-native";
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import Table from '../../../common/Table/Table';
 import Checkbox from '../../../common/Checkbox/Checkbox';
@@ -10,19 +10,26 @@ import Search from '../../../common/Search';
 import DropdownInputField from '../../../common/Input Fields/DropdownInputField';
 import OptionSearchableField from '../../../common/Input Fields/OptionSearchableField';
 import { currencyFormatter } from '../../../../utils/formatter';
+import IconButton from '../../../common/Buttons/IconButton';
+import RightArrow from '../../../../../assets/svg/rightArrow';
+import LeftArrow from '../../../../../assets/svg/leftArrow';
 
 
-const Consumables = ({tabDetails, headers, listItemFormat, details = []}) => {
+
+const Consumables = ({tabDetails, headers, listItemFormat, details = [], isEditMode}) => {
     
     const [checkBoxList, setCheckBoxList] = useState([])
     const [searchText, setSearchText] = useState('')
-    const [selectedOption, setSelectedOption] = useState('All')
-
-    const procedureNames = details.map( item => item.procedure.name)
-    const allInventories = details.map( item => item.inventories)
+    const [inventoriesData, setInventoriesData] = useState(details)
+    
+    const procedureNames = inventoriesData.map( item => item.procedure.name) 
     const data = []
+    const allInventories = inventoriesData.map( item => item.inventories)
     allInventories.forEach(item => item.map( obj => data.push(obj)))
-   
+    let initialOption = isEditMode ? procedureNames[0] : 'All'
+    
+    
+    const [selectedOption, setSelectedOption] = useState(initialOption)
     const [selectedData, setSelectedData] = useState(data)
 
     const onSearchInputChange = (input) =>{
@@ -56,21 +63,107 @@ const Consumables = ({tabDetails, headers, listItemFormat, details = []}) => {
     }
 
     const onSelectChange = (index) => {
-        if(index === 0){
-            // console.log("All")
-            setSelectedOption('All')
-            setSelectedData(data)
-        }else{
-            let data = details[index-1].inventories.map(item => {return {
+        if(isEditMode){
+            let data = details[index].inventories.map(item => {return {
                 ...item,
                 unitPrice : item.cost
             }})
             setSelectedData( data|| [])
-            setSelectedOption(procedureNames[index-1])
-            // console.log("Index: ", )
+            setSelectedOption(procedureNames[index])
+        }else{
+            if(index === 0){
+                setSelectedOption('All')
+                setSelectedData(data)
+            }else{
+                let data = details[index-1].inventories.map(item => {return {
+                    ...item,
+                    unitPrice : item.cost
+                }})
+                setSelectedData( data|| [])
+                setSelectedOption(procedureNames[index-1])
+                // console.log("Index: ", )
+            }
+        }
+        
+        
+    }
+
+    const onQuantityChangePress = (item) => (action) =>{
+        if(selectedOption !== 'All'){
+            let filterOption = inventoriesData.filter(item => item.procedure.name === selectedOption)
+
+            // Update inventories array
+            const { inventories } = filterOption[0]
+            const findIndex = inventories.findIndex(obj => obj.name === item.name);
+            const updatedObj = { 
+                ...inventories[findIndex],
+                amount: action ==='add' ? inventories[findIndex].amount + 1 : inventories[findIndex].amount - 1
+            };
+            const updatedInventories = [
+                ...inventories.slice(0, findIndex),
+                updatedObj,
+                ...inventories.slice(findIndex + 1),
+            ]; 
+            // console.log("Inventories: ", updatedInventories)
+
+            // Update procedure with updated inventories
+            const updatedProcedure = {...filterOption[0], inventories : updatedInventories}
+
+            // Update entire list of procedures
+            const filterProcedure = inventoriesData.findIndex( obj => obj.procedure.name === selectedOption)
+            const updatedData = [
+                ...inventoriesData.slice(0, filterProcedure),
+                updatedProcedure,
+                ...inventoriesData.slice(findIndex+1)
+            ]
+
+            setInventoriesData(updatedData)
+            setSelectedData(updatedProcedure.inventories)
         }
         
     }
+
+    const listItem = (item) => <>
+        <View style={styles.item}>
+            <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
+        </View>
+        <View style={[styles.item, {alignItems: 'center'}]}>
+            <Text style={styles.itemText}>{item.type}</Text>
+        </View>
+        {
+            isEditMode ?
+
+            <View style={[styles.editItem, {alignItems: 'center'}]}>
+                <IconButton
+                    Icon = {<LeftArrow strokeColor="#718096"/>}
+                    onPress = {()=>onQuantityChangePress(item)('sub')}
+                    disabled = {false}
+                />
+
+                <TextInput 
+                    style={styles.editTextBox}
+                >
+                    <Text style={styles.itemText}>{item.amount}</Text>
+                </TextInput>
+                
+                <IconButton
+                    Icon = {<RightArrow strokeColor="#718096"/>}
+                    onPress = {()=>{onQuantityChangePress(item)('add')}}
+                    disabled = {false}
+                />
+            </View>
+            :
+            <View style={[styles.item, {alignItems: 'center'}]}>
+                <Text style={styles.itemText}>{item.amount}</Text>
+            </View>
+
+        }
+        <View style={[styles.item, {alignItems: 'flex-end'}]}>
+            <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
+        </View>
+
+    </>
+
 
     const renderListFn = (item) =>{ 
         return <Item
@@ -78,7 +171,7 @@ const Consumables = ({tabDetails, headers, listItemFormat, details = []}) => {
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
             onItemPress={() => {}}
-            itemView={listItemFormat(item)}
+            itemView={listItem(item)}
         />
     }
 
@@ -97,7 +190,7 @@ const Consumables = ({tabDetails, headers, listItemFormat, details = []}) => {
                     <DropdownInputField
                         onSelectChange = {onSelectChange}
                         value = {selectedOption}
-                        dropdownOptions = {['All',...procedureNames]}
+                        dropdownOptions = { isEditMode ? [...procedureNames] : ['All',...procedureNames]}
                     />
                 </View>
                 
@@ -154,5 +247,21 @@ const styles = StyleSheet.create({
     headerText:{
         fontSize:12,
         color:'#718096'
-    }
+    },
+    editItem:{
+        flex:1,
+        flexDirection:'row',  
+        justifyContent:'center'
+    },
+    editTextBox:{
+        backgroundColor:'#F8FAFB',
+        borderColor:'#CCD6E0',
+        borderWidth:1,
+        borderRadius:4,
+        padding:6,
+        paddingTop:2,
+        paddingBottom:2,
+        marginLeft:10,
+        marginRight:10
+    },
 })

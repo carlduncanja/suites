@@ -8,6 +8,7 @@ export default {
     inventory : [],
     equipment : [],
     suppliers : [],
+    orders: [],
     auth: {
         isLoading: true,
         isSignout: false,
