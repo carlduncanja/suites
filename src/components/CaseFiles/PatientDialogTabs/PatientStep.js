@@ -6,60 +6,71 @@ import PatientAddressTab from "./PatientAddressTab";
 import PatientInsuranceTab from "./PatientInsuranceTab";
 
 
-const PatientStep = ({selectedTabIndex, onFieldChange, fields}) => {
+const PatientStep = ({selectedTabIndex, patient, errors, onPatientUpdate, onErrorUpdate }) => {
 
-    const { patient = {} } = fields
-    const {
-        firstName = "",
-        middleName = "",
-        surname = "",
-        trn = "",
-        contactInfo = {},
-        addressInfo = [],
-        insurance = {},
-        dob = ""
-    } = patient
+    // const {
+    //     firstName = "",
+    //     middleName = "",
+    //     surname = "",
+    //     trn = "",
+    //     contactInfo = {},
+    //     addressInfo = [],
+    //     insurance = {},
+    //     dob = ""
+    // } = fields
 
 
-    const [patientFields, setFields] = useState({
-        firstName,
-        middleName,
-        surname,
-        trn,
-        contactInfo,
-        addressInfo,
-        insurance,
-        dob
-    })
+    // const [patientFields, setFields] = useState({
+    //     firstName,
+    //     middleName,
+    //     surname,
+    //     trn,
+    //     contactInfo,
+    //     addressInfo,
+    //     insurance,
+    //     dob
+    // })
 
-    const onPatientFieldChange = (fieldName) => (value) => {
-        // console.log("Value:", value)
-        const updatedFields = {...patientFields, [fieldName]: value}
-        setFields(updatedFields)
-        onFieldChange('patient')(updatedFields)
+    const onFieldChange = (fieldName) => (value)  => {
+        const updateFields = {...patient}
+        onPatientUpdate({
+            ...updateFields,
+            [fieldName]: value
+        })
+
+        const updatedErrors = {...errors}
+        delete updatedErrors[fieldName];
+        console.log("errors: ", errors);
+        onErrorUpdate(updatedErrors);
     }
+
+
 
     const getTab = () => {
         switch (selectedTabIndex) {
             case 0:
                 return <PatientDetailsTab
-                    onFieldChange = {onPatientFieldChange}
-                    fields = {patientFields}
+                    onFieldChange = {onFieldChange}
+                    fields = {patient}
+                    errors = {errors}
                 />
             case 1:
                 return <PatientContactTab
-                    onFieldChange = {onPatientFieldChange}
-                    fields = {patientFields}
+                    onFieldChange = {onFieldChange}
+                    fields = {patient}
+                    errors = {errors}
                 />
             case 2:
                 return <PatientAddressTab
-                    onFieldChange = {onPatientFieldChange}
-                    fields = {patientFields}
+                    onFieldChange = {onFieldChange}
+                    fields = {patient}
+                    errors = {errors}
                 />
             case 3:
                 return <PatientInsuranceTab
-                    onFieldChange = {onPatientFieldChange}
-                    fields = {patientFields}
+                    onFieldChange = {onFieldChange}
+                    fields = {patient}
+                    errors = {errors}
                 />
             default:
                 break;

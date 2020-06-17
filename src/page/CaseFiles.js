@@ -322,7 +322,6 @@ const CaseFiles = (props) => {
 
             </View>
         </View>
-
     );
 };
 

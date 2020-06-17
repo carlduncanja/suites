@@ -6,7 +6,7 @@ import {MenuOptions, MenuOption} from 'react-native-popup-menu';
 import DateInputField from "../../common/Input Fields/DateInputField";
 
 
-const PatientDetailsTab = ({onFieldChange, fields}) => {
+const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
     const handleTrnValidation = (trnValue) => {
         if (trnValue.toString().length > 9) return
 
@@ -30,6 +30,8 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                         onChangeText={onFieldChange('firstName')}
                         value={fields['firstName']}
                         onClear={() => onFieldChange('firstName')('')}
+                        hasError={errors['firstName']}
+                        errorMessage={errors['firstName']}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
@@ -51,6 +53,8 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                         onChangeText={onFieldChange('surname')}
                         value={fields['surname']}
                         onClear={() => onFieldChange('surname')('')}
+                        hasError={errors['surname']}
+                        errorMessage={errors['surname']}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
@@ -91,9 +95,11 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                         value={fields['trn']}
                         onClear={() => onFieldChange('trn')('')}
                         keyboardType="number-pad"
+                        hasError={errors['trn']}
+                        errorMessage={errors['trn']}
                     />
                 </View>
- 
+
             </View>
 
             <View style={[styles.row, {zIndex: -3}]}>
@@ -107,6 +113,8 @@ const PatientDetailsTab = ({onFieldChange, fields}) => {
                         placeholder="YYYY/MM/DD"
                         minDate={null}
                         onDateChange={onDateChange}
+                        hasError={errors['dob']}
+                        errorMessage={errors['dob']}
                     />
                 </View>
             </View>

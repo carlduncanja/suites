@@ -16,7 +16,6 @@ import DatePicker from "react-native-datepicker";
  */
 function DateInputField({label, onDateChange, value, placeholder, onClear, hasError = false, errorMessage = "", minDate}) {
 
-    // const [date, setDate] = useState(value);
 
     const handleOnDateChange = (dateString, dateObj) => {
         // if (!onDateChange) {
