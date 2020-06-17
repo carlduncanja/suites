@@ -47,7 +47,7 @@ function InputField2({label, onChangeText, value, placeholder, keyboardType, onC
 
             </View>
             {
-                value !== undefined &&
+                !(value === undefined || value === null || value === '') &&
                 <TouchableOpacity
                     style={styles.clearIcon}
                     onPress={onClear}
