@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 import DatePicker from "react-native-datepicker";
- 
+
 /**
  *
  * @param label
@@ -14,7 +14,7 @@ import DatePicker from "react-native-datepicker";
  * @returns {*}
  * @constructor
  */
-function DateInputField({label, onDateChange, value, placeholder, onClear, minDate}) {
+function DateInputField({label, onDateChange, value, placeholder, onClear, hasError = false, errorMessage = "", minDate}) {
 
     // const [date, setDate] = useState(value);
 
@@ -22,45 +22,70 @@ function DateInputField({label, onDateChange, value, placeholder, onClear, minDa
         // if (!onDateChange) {
         //     setDate(dateObj)
         // } else {
-            onDateChange(dateObj)
+        onDateChange(dateObj)
         // }
     }
 
     return (
         <View style={styles.container}>
             <Text style={[
-                styles.textLabel, {
+                styles.textLabel,
+                {
                     minWidth: 60,
                     marginRight: label ? 20 : 0
                 }
             ]}>{label}</Text>
 
-            <DatePicker
-                style={{flex: 1}}
-                date={value}
-                mode="date"
-                placeholder={placeholder}
-                iconComponent={<View/>}
-                format="YYYY-MM-DD"
-                minDate={minDate}
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                    dateInput: styles.inputWrapper
+            <View
+                style={{
+                    flex: 1,
+                    position: 'relative',
+                    flexDirection: 'row',
+                    alignItems: 'center',
                 }}
-                onDateChange={handleOnDateChange}
-            />
+            >
+                <DatePicker
+                    style={{flex: 1}}
+                    date={value}
+                    mode="date"
+                    placeholder={placeholder}
+                    iconComponent={<View/>}
+                    format="YYYY-MM-DD"
+                    minDate={minDate}
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    customStyles={{
+                        dateInput: {
+                            ...styles.inputWrapper,
+                            flex: 1,
+                            borderColor: hasError ? 'red' : '#E3E8EF'
+                        }
+                    }}
+                    onDateChange={handleOnDateChange}
+                />
 
-            {
-                value
-                    ? <TouchableOpacity
+
+                {
+                    hasError && <View style={{
+                        position: "absolute",
+                        top: 35,
+                        paddingTop: 3,
+                        paddingLeft: 15
+                    }}>
+                        <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
+                    </View>
+                }
+
+                {
+                    !(value === undefined || value === null || value === "" ) &&
+                    <TouchableOpacity
                         style={styles.clearIcon}
                         onPress={onClear}
                     >
                         <ClearIcon/>
                     </TouchableOpacity>
-                    : null
-            }
+                }
+            </View>
         </View>
     );
 }
@@ -71,7 +96,7 @@ DateInputField.defaultProps = {};
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        position: 'relative',
+        // position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -97,6 +122,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         margin: 5
+    },
+    errorView: {
+        paddingTop: 3,
+        paddingLeft: 15
     }
 });
 
