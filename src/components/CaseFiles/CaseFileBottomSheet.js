@@ -114,32 +114,25 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
 
     const onEditPress = (tab) =>{
         setEditMode(!isEditMode)
-        if(isEditMode === true){fetchCase(_id)}
+        // if(isEditMode === true){fetchCase(_id)}
         if(isEditMode === true){
             updateCase()
-            console.log("Data Info: ", updateInfo)
-            console.log("Case Id: ", selectedCaseId)
+            setTimeout(()=>{
+                fetchCase(_id)
+            },500)
         }
 
     }
 
     const handleEditDone = (id) => (data) => {
-        // console.log("Id:", id)
         setUpdateInfo(data)
         setSelectedCaseId(id)
-        // return data
-        // console.log("Handle data: ", data) 
     }
 
     const updateCase = () => {
         updateChargeSheet(selectedCaseId, updateInfo)
             .then((data) => {
                 console.log("Updated Record:", data)
-                // let newData = {
-                //     _id : id,
-                //     ...data
-                // }
-                // updatePhysicianRecord(newData)
             })
             .catch(error => {
                 console.log("Failed to update chargesheet", error)
