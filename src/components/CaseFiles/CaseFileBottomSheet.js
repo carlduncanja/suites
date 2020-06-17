@@ -21,7 +21,7 @@ import ChargeSheetDisabledIcon from '../../../assets/svg/overlayChargeSheetDisab
 
 import {Patient, Procedures, MedicalStaff, MedicalHistory, ChargeSheet} from "./navigation/screens";
 
-import {getCaseFileById} from "../../api/network";
+import {getCaseFileById, updateChargeSheet} from "../../api/network";
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
 import {useModal} from "react-native-modalfy";
 import ActionItem from "../common/ActionItem";
@@ -36,6 +36,8 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     const modal = useModal();
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+    const [updateInfo, setUpdateInfo] = useState([])
+    const [selectedCaseId, setSelectedCaseId] = useState("")
 
     const overlayMenu = [ 
         {
@@ -113,6 +115,35 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     const onEditPress = (tab) =>{
         setEditMode(!isEditMode)
         if(isEditMode === true){fetchCase(_id)}
+        if(isEditMode === true){
+            updateCase()
+            console.log("Data Info: ", updateInfo)
+            console.log("Case Id: ", selectedCaseId)
+        }
+
+    }
+
+    const handleEditDone = (id) => (data) => {
+        // console.log("Id:", id)
+        setUpdateInfo(data)
+        setSelectedCaseId(id)
+        // return data
+        // console.log("Handle data: ", data) 
+    }
+
+    const updateCase = () => {
+        updateChargeSheet(selectedCaseId, updateInfo)
+            .then((data) => {
+                console.log("Updated Record:", data)
+                // let newData = {
+                //     _id : id,
+                //     ...data
+                // }
+                // updatePhysicianRecord(newData)
+            })
+            .catch(error => {
+                console.log("Failed to update chargesheet", error)
+            })
     }
 
     /**
@@ -224,6 +255,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
                     selectedTab={selectedTab}
                     isEditMode={isEditMode}
                     quotations = {quotations}
+                    handleEditDone = {handleEditDone}
                 />
 
             default :

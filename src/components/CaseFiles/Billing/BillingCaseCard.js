@@ -78,7 +78,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId}) => {
         modal.closeModals("OverlayInfoModal")
         // console.log("Edit mode: ", isEditMode)
         // console.log("Date: ", createdData)
-        // updateCase(createdData)
+        updateCase(createdData)
        
     }
 

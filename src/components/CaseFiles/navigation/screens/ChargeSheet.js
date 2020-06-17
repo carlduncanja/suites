@@ -14,7 +14,7 @@ const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
 const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isEditMode}) => { 
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isEditMode, handleEditDone}) => { 
    
     const LINE_ITEM_TYPES = { 
         DISCOUNT: "discount",
@@ -120,6 +120,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
 
         billingItem.inventories = inventories.map(item => {
             return {
+                _id : item._id,
                 inventory : item.inventory._id,
                 amount: item.amount,
                 name: item.inventory.name,
@@ -129,6 +130,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
 
         billingItem.equipments = equipments.map(item => {
             return {
+                _id : item._id,
                 equipment : item.equipment._id,
                 amount: item.amount,
                 name: item.equipment.type.name,
@@ -191,6 +193,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, isE
                 listItemFormat={listItem}
                 details = {billing.procedures}
                 isEditMode = {isEditMode}
+                handleEditDone = {handleEditDone(caseId)}
             />
             :
             selectedTab === 'Equipment' ?
