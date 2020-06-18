@@ -1,5 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, Alert} from "react-native";
 
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
@@ -244,16 +244,30 @@ const Orders = (props) => {
     };
 
     const onCreateInvoice = () => {
+        let errors = []
         selectedOrders.forEach( id => {
             createInvoiceViaOrders(id)
                 .then((data) => {
                     console.log("Invoice Record:", data)
                 })
                 .catch(error => {
+                    Alert.alert(
+                        "Unsuccessful creation",
+                        "Invoice can only be generated for purchase orders in `ORDER RECEIVED` status.",
+                        [
+                            {
+                                text : 'Ok',
+                                onPress : () => console.log("Ok pressed")
+                            }
+                        ],
+                        {
+                            cancelable : false
+                        }
+
+                    )
                     console.log("Failed to create invoice", error)
                 })
-        })
-
+        });
     }
 
     // ############# Prepare list data

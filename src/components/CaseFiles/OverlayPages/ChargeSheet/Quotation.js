@@ -87,7 +87,7 @@ const reportTestData = {
 }
 
 const Quotations = ({tabDetails, reportDetails, modal, handleQuotes}) => {
-    // console.log("Deta:", reportDetails)
+    console.log("Deta:", tabDetails)
     const [checkBoxList, setCheckBoxList] = useState([])
 
     const headers = [

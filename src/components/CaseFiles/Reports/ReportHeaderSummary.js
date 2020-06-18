@@ -39,10 +39,13 @@ const ReportHeaderSummary = ({billedTo = "", address = {}, billedFor = "", repor
                             <Text style={styles.contentHeader}>Invoice No</Text>
                             <Text style={styles.text}>{reportNumber}</Text>
                         </>
-                        <>
+                        {
+                            purchaseOrderNo !== "" && <>
                             <Text style={styles.contentHeader}>Purchase Order No</Text>
                             <Text style={styles.text}>{purchaseOrderNo}</Text>
-                        </>
+                            </>
+                        }
+                        
 
                     </View>
                 }

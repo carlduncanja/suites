@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from "react";
-import {View, StyleSheet, Text, ActivityIndicator} from "react-native";
+import {View, StyleSheet, Text, ActivityIndicator, Alert} from "react-native";
 import SlideOverlay from '../common/SlideOverlay/SlideOverlay';
 import CaseFileOverlayMenu from './CaseFileOverlayMenu';
 import {colors} from "../../styles";
@@ -222,6 +222,20 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
                     console.log("Invoice Record:", data)
                 })
                 .catch(error => {
+                    Alert.alert(
+                        "Unsuccessful creation",
+                        "Invoice can only be generated for quotations in `Open` status.",
+                        [
+                            {
+                                text : 'Ok',
+                                onPress : () => console.log("Ok pressed")
+                            }
+                        ],
+                        {
+                            cancelable : false
+                        }
+
+                    )
                     console.log("Failed to create invoice", error)
                 })
         })
