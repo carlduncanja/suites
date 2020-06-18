@@ -28,11 +28,13 @@ export const equipmentsEndpoint = "/equipments";
 export const equipmentEndpoint = (id) => `/equipments/${id}`;
 export const equipmentTypesEndpoint = "/equipment-types"
 
-// ##### CASE FILES 
+// ##### CASE FILES
 export const caseFilesEndpoint = "/cases";
 export const caseFileEndpoint = (id) => `/cases/${id}`;
 export const updateChargeSheetEndpoint = (id) => `/cases/${id}/chargesheets`;
 export const createInvoice = (id) => (quotationId) => `/cases/${id}/quotations/${quotationId}/invoices`;
+export const suggestedStartTimeEndpoint = '/cases/appointment/suggestions'
+export const validateCaseProcedureEndpoint = '/cases/appointment/isvalid';
 
 // ##### STORAGE
 export const storageLocationsEndpoint = "/storage-locations";
