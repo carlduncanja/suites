@@ -3,12 +3,12 @@ import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import OptionsField from "../common/Input Fields/OptionsField";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
-import DateInputField from "../common/Input Fields/DateInputField"; 
+import DateInputField from "../common/Input Fields/DateInputField";
 
 
 
 const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
-   
+
     const templateText = {
         true: "Yes",
         false: "No"
@@ -33,14 +33,14 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
         setTrnText(trnValue)
     }
 
-   
+
     return (
         <View style={styles.sectionContainer}>
-            
+
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 
+                    <InputField2
                         label={"First Name"}
                         onChangeText={onFieldChange('firstName')}
                         value={fields['firstName']}
@@ -50,7 +50,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                     />
                 </View>
                 <View style={[styles.inputWrapper]}>
-                    <InputField2 
+                    <InputField2
                         label={"Middle Name"}
                         onChangeText={onFieldChange('middleName')}
                         value={fields['middleName']}
@@ -63,7 +63,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 
+                    <InputField2
                         label={"Surname"}
                         onChangeText={onFieldChange('surname')}
                         value={fields['surname']}
@@ -86,7 +86,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2 
+                    <InputField2
                         label={"TRN"}
                         onChangeText={(value) => { handleTrnValidation(value)}}
                         value={trnText}
@@ -103,13 +103,15 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                         value={fields['dob']}
                         onClear={() => onFieldChange('dob')('')}
                         keyboardType="number-pad"
+                        mode={'date'}
+                        format={"YYYY-MM-DD"}
                         placeholder="YYYY/MM/DD"
                         onDateChange={handleDateValidation}
                     />
                     {/* <DateInputField
                         label= "Date"
                     /> */}
-                    {/* <InputField2 
+                    {/* <InputField2
                         label={"Date of Birth"}
                         onChangeText={(value) => {
                             handleDateValidation(value)

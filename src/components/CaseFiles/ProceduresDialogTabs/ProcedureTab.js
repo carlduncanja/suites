@@ -5,8 +5,6 @@ import DateInputField from "../../common/Input Fields/DateInputField";
 import _ from "lodash";
 import {getProcedures, getTheatres} from "../../../api/network";
 import moment from 'moment';
-import TimeInputField from "../../common/Input Fields/TimeInputField";
-import TextInput from "react-native-web/src/exports/TextInput";
 import InputField2 from "../../common/Input Fields/InputField2";
 
 const ProcedureTab = ({
@@ -293,16 +291,20 @@ const ProcedureTab = ({
                         value={date}
                         onClear={onDateClear}
                         placeholder="DD/MM/YYYY"
+                        mode={'date'}
+                        format={"YYYY-MM-DD"}
                         errorMessage={errors['date']}
                         hasError={errors['date']}
                     />
                 </View>
 
                 <View style={[styles.inputWrapper]}>
-                    <TimeInputField
+                    <DateInputField
                         label={"Start Time"}
                         onDateChange={onTimeUpdate("startTime")}
                         value={startTime}
+                        mode={'time'}
+                        format={'hh:mm A'}
                         onClear={onTimeClear("startTime")}
                         placeholder="HH:MM"
                         errorMessage={errors['startTime']}

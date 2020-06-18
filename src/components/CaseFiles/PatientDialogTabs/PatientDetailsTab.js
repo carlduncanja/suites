@@ -109,6 +109,8 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         label={"Date of Birth"}
                         value={fields['dob']}
                         onClear={() => onFieldChange('dob')('')}
+                        mode={'date'}
+                        format={"YYYY-MM-DD"}
                         keyboardType="number-pad"
                         placeholder="YYYY/MM/DD"
                         minDate={null}

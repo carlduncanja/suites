@@ -14,8 +14,7 @@ import DatePicker from "react-native-datepicker";
  * @returns {*}
  * @constructor
  */
-function DateInputField(
-    {
+function DateInputField({
         label,
         onDateChange,
         value,
@@ -23,7 +22,10 @@ function DateInputField(
         onClear,
         hasError = false,
         errorMessage = "",
-        minDate
+        minDate,
+        mode,
+        format,
+        maxDate
     }) {
 
 
@@ -56,11 +58,12 @@ function DateInputField(
                 <DatePicker
                     style={{flex: 1}}
                     date={value}
-                    mode="date"
+                    mode={mode}
+                    format={format}
                     placeholder={placeholder}
-                    iconComponent={<View/>}
-                    format="YYYY-MM-DD"
                     minDate={minDate}
+                    maxDate={maxDate}
+                    iconComponent={<View/>}
                     confirmBtnText="Confirm"
                     cancelBtnText="Cancel"
                     customStyles={{
