@@ -481,9 +481,11 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
         // adding procedure info
         caseFileData.caseProcedures = caseProceduresInfo.map(item => ({
-            ...item,
+            // ...item,
             procedure: item.procedure._id,
-            location: item.location._id
+            location: item.location._id,
+            startTime: item.startTime,
+            duration: item.duration
         }))
 
         console.log("handleOnComplete: caseProcedure Info", caseFileData);

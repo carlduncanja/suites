@@ -6,6 +6,8 @@ import _ from "lodash";
 import {getProcedures, getTheatres} from "../../../api/network";
 import moment from 'moment';
 import TimeInputField from "../../common/Input Fields/TimeInputField";
+import TextInput from "react-native-web/src/exports/TextInput";
+import InputField2 from "../../common/Input Fields/InputField2";
 
 const ProcedureTab2 = ({
                            onProcedureInfoChange,
@@ -25,9 +27,10 @@ const ProcedureTab2 = ({
 
     const {
         startTime,
-        endTime,
         location,
         procedure,
+        duration,
+        category,
         date
     } = procedureInfo || {};
 
@@ -114,9 +117,17 @@ const ProcedureTab2 = ({
         const procedure = value ? {
             _id: value._id,
             name: value.name,
+            duration: value.duration
         } : value
 
-        handleInfoChange("procedure")(procedure)
+        // handleInfoChange("procedure")(procedure)
+
+        onProcedureInfoChange({
+            ...procedureInfo,
+            ['procedure']: procedure,
+            ['duration']: procedure && procedure.duration.toString(),
+        })
+
         setSearchProcedureResult([])
         setSearchProcedureQuery(undefined);
     }
@@ -136,19 +147,17 @@ const ProcedureTab2 = ({
         // update the date for start and end time.
         const newDate = moment(date);
 
-        console.log("onDateUpdate", newDate, startTime, endTime)
+        console.log("onDateUpdate", newDate, startTime)
 
         const newStartTime = startTime ? moment(startTime).year(newDate.year()).month(newDate.month()).date(newDate.date()) : undefined
-        const newEndTime = endTime ? moment(endTime).year(newDate.year()).month(newDate.month()).date(newDate.date()) : undefined
 
-        console.log("onDateUpdate", newDate, newStartTime, newEndTime)
+        console.log("onDateUpdate", newDate, newStartTime)
 
         // update procedure
         onProcedureInfoChange({
             ...procedureInfo,
             date: date,
             startTime: newStartTime && newStartTime.toDate(),
-            endTime: newEndTime && newEndTime.toDate()
         })
     }
 
@@ -163,7 +172,7 @@ const ProcedureTab2 = ({
     const onTimeUpdate = (field) => (dateTime) => {
         console.log("onTimeUpdated: date time ", dateTime);
 
-        let newTime  = moment(dateTime);
+        let newTime = moment(dateTime);
         if (date) {
             // change update the date;
             const dateMoment = new moment(date);
@@ -185,7 +194,7 @@ const ProcedureTab2 = ({
         })
     }
 
-    console.log("procedure tab", procedureInfo);
+
 
 
     return (
@@ -223,6 +232,32 @@ const ProcedureTab2 = ({
 
             </View>
 
+            <View style={[styles.row, {zIndex: -2}]}>
+
+                <View style={[styles.inputWrapper]}>
+                    <InputField2
+                        label={"Duration"}
+                        onChangeText={handleInfoChange("duration")}
+                        value={duration}
+                        onClear={() => handleInfoChange("duration")('')}
+                        placeholder={""}
+                    />
+
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        label={"Category"}
+                        onChangeText={handleInfoChange("category")}
+                        value={category}
+                        onClear={handleInfoChange("category")}
+                        placeholder={""}
+                        keyboardType={'numeric'}
+                    />
+                </View>
+            </View>
+
+
             <View style={[styles.row, {zIndex: -1}]}>
 
                 <View style={styles.inputWrapper}>
@@ -235,10 +270,6 @@ const ProcedureTab2 = ({
                     />
                 </View>
 
-            </View>
-
-            <View style={[styles.row, {zIndex: -2}]}>
-
                 <View style={[styles.inputWrapper]}>
                     <TimeInputField
                         label={"Start Time"}
@@ -250,15 +281,6 @@ const ProcedureTab2 = ({
 
                 </View>
 
-                <View style={styles.inputWrapper}>
-                    <TimeInputField
-                        label={"End Time"}
-                        onDateChange={onTimeUpdate("endTime")}
-                        value={endTime}
-                        onClear={onTimeClear("endTime")}
-                        placeholder="HH:MM"
-                    />
-                </View>
             </View>
         </View>
     )
