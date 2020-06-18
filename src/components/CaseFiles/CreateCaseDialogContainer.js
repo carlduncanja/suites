@@ -48,7 +48,7 @@ const testData = {
                 }
             ]
         },
-        "addressInfo": {
+        "address": {
             "line1": "23 Ruthven Road",
             "line2": "",
             "city": "Kingston",
@@ -171,7 +171,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
     const [staffInfo, setStaffInfo] = useState([])
     const [caseProceduresInfo, setCaseProceduresInfo] = useState([])
-
+    const [procedureErrors, setProcedureErrors] = useState([]);
 
     const [positiveText, setPositiveText] = useState("NEXT")
     const [popoverList, setPopoverList] = useState([])
@@ -310,8 +310,10 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         switch (selectedIndex) {
             case CASE_PROCEDURE_TABS.PATIENT_DETAILS: {
                 isValid = validatePatientDetailsTab(currentTab);
+                break
             }
             case CASE_PROCEDURE_TABS.PROCEDURES: {
+                isValid = validateProcedureInfo(selectedTabIndex)
                 break;
             }
             case CASE_PROCEDURE_TABS.MEDICAL_STAFF: {
@@ -373,7 +375,6 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         }
     }
 
-
     const validatePatientDetailsTab = (tab) => {
 
         let isValid = true
@@ -415,6 +416,38 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
         setPatientErrors(updateErrors);
         console.log(patientFieldErrors)
+
+        return isValid;
+    }
+
+    const validateProcedureInfo = (procedureIndex) => {
+        let isValid = true;
+        const requiredParams = ['date', 'startTime', 'location', 'procedure'];
+
+        const procedure = caseProceduresInfo[procedureIndex] || {}
+
+        let updateErrors = [...procedureErrors];
+        let errorObj = updateErrors[procedureIndex] || {};
+
+
+        console.log('error index at', procedureIndex);
+
+        for (const requiredParam of requiredParams) {
+
+            if (!procedure[requiredParam]) {
+                console.log(`${requiredParam} is required`)
+                isValid = false
+                errorObj[requiredParam] = "Please enter a value";
+                updateErrors[+procedureIndex] = errorObj;
+            } else {
+                delete errorObj[requiredParam];
+                updateErrors[+procedureIndex] = errorObj;
+            }
+
+        }
+
+        setProcedureErrors(updateErrors)
+        console.log("procedure errors", procedureErrors)
 
         return isValid;
     }
@@ -504,9 +537,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
     }
 
     const getTabContent = () => {
-
         switch (selectedIndex) {
-            case 0:
+            case CASE_PROCEDURE_TABS.PATIENT_DETAILS:
                 return <PatientStep
                     selectedTabIndex={selectedTabIndex}
                     patient={patientFields}
@@ -515,7 +547,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     onErrorUpdate={(value) => setPatientErrors(value)}
                 />
 
-            case 1:
+            case CASE_PROCEDURE_TABS.MEDICAL_STAFF:
                 return <StaffStep
                     selectedTabIndex={selectedTabIndex}
                     onStaffChange={onStaffUpdate}
@@ -524,14 +556,16 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     completedTabs={completedTabs}
                 />
 
-            case 2:
+            case CASE_PROCEDURE_TABS.PROCEDURES:
                 return <ProcedureStep
                     selectedTabIndex={selectedTabIndex}
                     onProcedureUpdate={onProcedureUpdate}
                     procedures={caseProceduresInfo}
+                    errors={procedureErrors}
+                    onErrorUpdate={(value) => setProcedureErrors(value)}
                 />
 
-            case 3 :
+            case CASE_PROCEDURE_TABS.FINAL :
                 return <CompleteCreateCase
                     name={'Julie Brown'}
                     onComplete={handleOnComplete}

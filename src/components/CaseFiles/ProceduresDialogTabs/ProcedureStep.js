@@ -1,14 +1,20 @@
 import React, {useState, useEffect} from "react";
 import {View, Text, StyleSheet} from "react-native";
-import ProcedureTab2 from "./ProcedureTab2";
+import ProcedureTab from "./ProcedureTab";
 
 
-const ProcedureStep = ({onProcedureUpdate, procedures, selectedTabIndex}) => {
+const ProcedureStep = ({onProcedureUpdate, procedures, selectedTabIndex, errors, onErrorUpdate}) => {
 
     const onProcedureFieldChange = (objIndex) => (value) => {
         const updatedProcedure = [...procedures];
         updatedProcedure[objIndex] = value;
         onProcedureUpdate(updatedProcedure)
+    }
+
+    const handleOnErrorUpdate = (objIndex) => (value) => {
+        const updatedErrors = [...errors];
+        updatedErrors[objIndex] = value;
+        onErrorUpdate(updatedErrors)
     }
 
     const currentProcedure = procedures[selectedTabIndex];
@@ -17,9 +23,11 @@ const ProcedureStep = ({onProcedureUpdate, procedures, selectedTabIndex}) => {
 
     return (
         <View style={{flex: 1}}>
-            <ProcedureTab2
+            <ProcedureTab
                 onProcedureInfoChange={onProcedureFieldChange(selectedTabIndex)}
                 procedureInfo={currentProcedure}
+                errors={errors[selectedTabIndex] || {}}
+                onErrorUpdate={handleOnErrorUpdate(selectedTabIndex)}
             />
         </View>
     )

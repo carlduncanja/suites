@@ -14,7 +14,17 @@ import DatePicker from "react-native-datepicker";
  * @returns {*}
  * @constructor
  */
-function DateInputField({label, onDateChange, value, placeholder, onClear, hasError = false, errorMessage = "", minDate}) {
+function DateInputField(
+    {
+        label,
+        onDateChange,
+        value,
+        placeholder,
+        onClear,
+        hasError = false,
+        errorMessage = "",
+        minDate
+    }) {
 
 
     const handleOnDateChange = (dateString, dateObj) => {
@@ -76,7 +86,7 @@ function DateInputField({label, onDateChange, value, placeholder, onClear, hasEr
                 }
 
                 {
-                    !(value === undefined || value === null || value === "" ) &&
+                    !(value === undefined || value === null || value === "") &&
                     <TouchableOpacity
                         style={styles.clearIcon}
                         onPress={onClear}
