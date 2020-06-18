@@ -1,5 +1,5 @@
 import suitesAxiosInstance from "./index"
-import {handleError, handleResponse} from "./apiUtils";
+import {handleError, handleResponse} from "./apiUtils"; 
 
 import {
     inventoriesEndpoint, inventoryEndpoint,
@@ -9,8 +9,8 @@ import {
     caseFilesEndpoint, caseFileEndpoint,updateChargeSheetEndpoint,createInvoice,
     equipmentsEndpoint, equipmentEndpoint,
     equipmentTypesEndpoint, storageLocationsEndpoint,
-    suppliersEndpoint, supplierEndpoint,
-    purchaseOrdersEndpoint, purchaseOrderEndpoint,
+    suppliersEndpoint, supplierEndpoint, supplierProductsEndpoint, updateProductsEndpoint,
+    purchaseOrdersEndpoint, purchaseOrderEndpoint, createOrderInvoice,
     storageLocationEndpoint, categoriesEndpoint, loginEndpoint, appointmentsEndpoint, appointmentEndpoint
 } from "../const/suitesEndpoints"; 
 
@@ -249,6 +249,18 @@ export const getSupplierById = async (id) => {
         .catch(handleError)
 };
 
+export const getSupplierProducts = async (id, query, max) => {
+    return suitesAxiosInstance.get(supplierProductsEndpoint(id), {params: {query, max}})
+        .then(handleResponse)
+        .catch(handleError)
+};
+
+export const updateSupplierProducts = async (supplierId, productId, data) => {
+    return suitesAxiosInstance.put(updateProductsEndpoint(supplierId)(productId), data)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
 // ################# PurchaseOrders Endpoints
 export const getPurchaseOrders = async (query, max) => {
     return suitesAxiosInstance.get(purchaseOrdersEndpoint, {params: {query, max}})
@@ -261,6 +273,12 @@ export const getPurchaseOrderById = async (id) => {
         .then(handleResponse)
         .catch(handleError)
 };
+
+export const createInvoiceViaOrders = async (quotationId) => {
+    return suitesAxiosInstance.post(createOrderInvoice(quotationId))
+        .then(handleResponse)
+        .catch(handleError)
+}
 
 
 

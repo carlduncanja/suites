@@ -13,11 +13,9 @@ import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 function OrdersBottomSheet({order = {}, isOpenEditable}) {
     
     const currentTabs = ["Details", "Items", "Suppliers"];
-    console.log("Order:", order)
-    const {
-       _id,
-       supplier,
-    } = order;
+    // console.log("Order:", order)
+    const { _id, supplier = {}, purchaseOrderNumber} = order;
+    const { name = "" } = supplier
     
 
     // ##### States
@@ -34,7 +32,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        // fetchOrder(_id)
+        fetchOrder(_id)
     }, []);
 
     // ##### Event Handlers
@@ -88,6 +86,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
         setFetching(true);
         getPurchaseOrderById(id)
             .then(data => {
+                // console.log("Data: ", data)
                 setSelectedOrder(data)
             })
             .catch(error => {
@@ -102,11 +101,11 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <OrderDetailsTab/>
+                return <OrderDetailsTab order = {selectedOrder}/>
             case "Items":
-                return <OrderItemTab/>
+                return <OrderItemTab order = {selectedOrder}/>
             case "Suppliers":
-                return <SupplierDetailsTab/>;
+                return <SupplierDetailsTab order = {selectedOrder}/>;
             default :
                 return <View/>
         }
@@ -123,8 +122,8 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
                    
                     // console.log("Selected: ", selectedProcedure)
                     <SlideOverlay
-                        overlayId={supplier}
-                        overlayTitle={_id}
+                        overlayId={name}
+                        overlayTitle={purchaseOrderNumber}
                         onTabPressChange={onTabPress}
                         currentTabs={currentTabs}
                         selectedTab={currentTab}

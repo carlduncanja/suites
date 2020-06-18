@@ -117,8 +117,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         setEditMode(!isEditMode)
     
         if(isEditMode === true){
-            console.log("New Data: ", updateInfo)
-            // updateCase()
+            updateCase()
             setTimeout(()=>{
                 fetchCase(_id)
             },500)
@@ -143,7 +142,6 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
 
     const handleQuotes = (quotes) => {
         const quoteIds = quotes.map( item => item._id)
-        // console.log("Ids: ", quoteIds)
         setSelectedQuotes(quoteIds)
     }
 
@@ -219,14 +217,13 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
 
     const onCreateInvoice = () => {
         selectedQuotes.forEach( item => {
-            // console.log("Id, quote: ", _id, item)
             createInvoiceViaQuotation(_id, item)
-            .then((data) => {
-                console.log("Invoice Record:", data)
-            })
-            .catch(error => {
-                console.log("Failed to create invoice", error)
-            })
+                .then((data) => {
+                    console.log("Invoice Record:", data)
+                })
+                .catch(error => {
+                    console.log("Failed to create invoice", error)
+                })
         })
        
     }

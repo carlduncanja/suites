@@ -16,7 +16,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 
 import {connect} from 'react-redux';
 import {setPurchaseOrders} from "../redux/actions/purchaseOrdersActions";
-import {getPurchaseOrders} from "../api/network";
+import {getPurchaseOrders, createInvoiceViaOrders} from "../api/network";
 import _ from "lodash";
 
 import {withModal, useModal} from 'react-native-modalfy';
@@ -120,11 +120,17 @@ const Orders = (props) => {
     }
 
     const handleOnCheckBoxPress = (item) => () => {
-        const {id} = item;
-        let updatedOrdersList = checkboxItemPress(item, id, selectedOrders)
-        // console.log("List: ", updatedSuppliersList)
+        const {_id} = item;
+        let updatedOrders = [...selectedOrders];
 
-        setSelectedOrders(updatedOrdersList)
+        if (updatedOrders.includes(_id)) {
+            updatedOrders = updatedOrders.filter(id => id !== item._id)
+        } else {
+            updatedOrders.push(item._id);
+        }
+
+        setSelectedOrders(updatedOrders);
+        console.log("List: ", updatedOrders)
     }
 
     const handleOnItemPress = (item, isOpenEditable) =>{
@@ -154,6 +160,18 @@ const Orders = (props) => {
         setCurrentPageListMax(currentListMax);
     };
 
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "ORDERS ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
+    }
+
     // ############# Helper functions
 
     const fetchOrdersData = () => {
@@ -178,7 +196,7 @@ const Orders = (props) => {
     const renderOrderFn = (item) => {
         return <ListItem
             hasCheckBox={true}
-            isChecked={selectedOrders.includes(item.id)}
+            isChecked={selectedOrders.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item, false)}
             itemView={orderItem(item)}
@@ -213,10 +231,34 @@ const Orders = (props) => {
 
     }
 
+    const getFabActions = () => {
+
+        const createInvoice = <ActionItem title={"Create Invoice"} icon={<AddIcon/>} onPress={onCreateInvoice}/>;
+
+        return <ActionContainer
+            floatingActions={[
+                createInvoice
+            ]}
+            title={"ORDERS ACTIONS"}
+        />
+    };
+
+    const onCreateInvoice = () => {
+        selectedOrders.forEach( id => {
+            createInvoiceViaOrders(id)
+                .then((data) => {
+                    console.log("Invoice Record:", data)
+                })
+                .catch(error => {
+                    console.log("Failed to create invoice", error)
+                })
+        })
+
+    }
+
     // ############# Prepare list data
 
     let ordersToDisplay = [...purchaseOrders];
-    console.log("Orders: ", ordersToDisplay)
     ordersToDisplay = ordersToDisplay.slice(currentPageListMin, currentPageListMax);
 
 
@@ -247,6 +289,11 @@ const Orders = (props) => {
                         goToPreviousPage={goToPreviousPage}
                     />
                 </View>
+
+                <FloatingActionButton
+                    isDisabled={isFloatingActionDisabled}
+                    toggleActionButton={toggleActionButton}
+                />
             </View>
 
         </View>

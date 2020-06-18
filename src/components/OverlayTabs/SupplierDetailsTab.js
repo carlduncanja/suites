@@ -21,18 +21,19 @@ const testData = {
     }
 }
 
-const SupplierDetailsTab = () => {
-
+const SupplierDetailsTab = ({order}) => { 
+    
+    const { supplier = {} , status = "" } = order
     const {
-        description,
-        _id,
-        name,
-        status,
-        contactInfo,
-        representative
-    } = testData
+        description = "",
+        supplierNumber = "",
+        name = "",
+        phone = "",
+        fax = "",
+        email = "",
+        representatives = []
+    } = supplier
 
-    const {phone,fax,email} = contactInfo
 
     return(
         <View>
@@ -40,7 +41,7 @@ const SupplierDetailsTab = () => {
                 <View style={{flex:1}}>
                     <Record
                         recordTitle = "Description"
-                        recordValue = ""
+                        recordValue = {description}
                     />
                 </View>
             </View>
@@ -49,15 +50,17 @@ const SupplierDetailsTab = () => {
                 <View style={styles.inputWrapper}>
                     <Record
                         recordTitle = "Supplier ID"
-                        recordValue = {_id}
+                        recordValue = {supplierNumber}
                     />
                 </View>
+                
                 <View style={styles.inputWrapper}>
                     <Record
                         recordTitle = "Supplier Name"
                         recordValue = {name}
                     />
                 </View>
+               
                 <View style={styles.inputWrapper}>
                     <Record
                         recordTitle = "Status"
@@ -74,6 +77,7 @@ const SupplierDetailsTab = () => {
                         handleRecordPress = {()=>{}}
                     />
                 </View>
+               
                 <View style={styles.inputWrapper}>
                     <ResponsiveRecord
                         recordTitle = "Fax"
@@ -81,6 +85,7 @@ const SupplierDetailsTab = () => {
                         handleRecordPress = {()=>{}}
                     />
                 </View>
+                
                 <View style={styles.inputWrapper}>
                     <ResponsiveRecord
                         recordTitle = "Email"
@@ -96,29 +101,36 @@ const SupplierDetailsTab = () => {
                 borderRadius:2,
                 marginBottom:30
             }} />
+            {
+                representatives.map( (item, index) => {
 
-            <View style = {styles.row}>
-                <View style={styles.inputWrapper}>
-                    <Record
-                        recordTitle = "Representative"
-                        recordValue = {representative.name}
-                    />
-                </View>
-                <View style={styles.inputWrapper}>
-                    <ResponsiveRecord
-                        recordTitle = "Rep. Telephone"
-                        recordValue = {representative.phone}
-                        handleRecordPress = {()=>{}}
-                    />
-                </View>
-                <View style={styles.inputWrapper}>
-                    <ResponsiveRecord
-                        recordTitle = "Rep. Email"
-                        recordValue = {representative.email}
-                        handleRecordPress = {()=>{}}
-                    />
-                </View>
-            </View>
+                    return(
+                        <View style = {styles.row} key ={index}>
+                            <View style={styles.inputWrapper}>
+                                <Record
+                                    recordTitle = "Representative"
+                                    recordValue = {item.name}
+                                />
+                            </View>
+                            <View style={styles.inputWrapper}>
+                                <ResponsiveRecord
+                                    recordTitle = "Rep. Telephone"
+                                    recordValue = {item.phone}
+                                    handleRecordPress = {()=>{}}
+                                />
+                            </View>
+                            <View style={styles.inputWrapper}>
+                                <ResponsiveRecord
+                                    recordTitle = "Rep. Email"
+                                    recordValue = {item.email}
+                                    handleRecordPress = {()=>{}}
+                                />
+                            </View>
+                        </View>
+                    )
+                })
+            }
+           
         </View>
     )
 }

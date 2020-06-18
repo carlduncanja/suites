@@ -52,7 +52,7 @@ const Page = (props) => {
         })
     };
 
-    return (
+    return ( 
         <View style={{flex: 1}}>
             <View style={styles.container}>
                 <View style={styles.header}>
