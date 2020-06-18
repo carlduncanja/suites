@@ -286,10 +286,9 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
             setCompletedTabs([])
         }
 
-
         const isFinalTab = (selectedTabIndex === tabs.length - 1)
 
-        const currentTab = wizard[selectedIndex].tabs[selectedTabIndex]
+        const currentTab = wizard[selectedIndex] && wizard[selectedIndex].tabs[selectedTabIndex]
 
 
         console.log(`selected index ${selectedIndex}, selected tab index ${selectedTabIndex}, current tab ${currentTab}`)
@@ -310,12 +309,10 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                 break;
             }
             case CASE_PROCEDURE_TABS.FINAL: {
+                console.log("validation procedure info")
+
                 break;
             }
-            default: {
-
-            }
-
         }
 
         if (!isValid) {
@@ -328,22 +325,18 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         //     incrementTab();
         // }
 
-
         if (selectedIndex === 3) {
             // we are on the final tab
             console.log("Hey Save my data and open bottom sheet with the data")
 
             handleOnComplete()
         } else if (selectedTabIndex !== tabs.length - 1) {
-            // VALIDATE FIELDS
 
             const updatedTabIndex = selectedTabIndex + 1
             setCompletedTabs([...completedTabs, tabs[selectedTabIndex]])
             setSelectedTabIndex(updatedTabIndex)
 
         } else if (selectedIndex === steps.length - 1 && selectedTabIndex === tabs.length - 1) {
-            // VALIDATE FIELDS
-
             setPositiveText('CONTINUE')
             setCompletedSteps([...completedSteps, steps[selectedIndex].name])
             setSelectedIndex(3)
@@ -351,7 +344,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
             setTabs(["Julie Brown's Case Created"])
 
         } else {
-            // VALIDATE FIELDS
+
             const updatedIndex = selectedIndex + 1
             setCompletedSteps([...completedSteps, steps[selectedIndex].name])
             setSelectedIndex(updatedIndex)
