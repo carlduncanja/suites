@@ -1,6 +1,7 @@
 import React,{ useState,useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Table from '../common/Table/Table';
+import Search from '../common/Search';
 import Item from '../common/Table/Item'; 
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
@@ -16,6 +17,9 @@ import CartAction from "../../../assets/svg/actionCart";
 import { currencyFormatter } from "../../utils/formatter";
 import { withModal } from 'react-native-modalfy';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import { getSupplierProducts } from "../../api/network"; 
+import _ from "lodash";
+
 
 
 const testData = [
@@ -38,12 +42,18 @@ const testData = [
 const SupplierProductsTab = ({modal, floatingActions, supplierId }) => {
 
     const [checkBoxList, setCheckBoxList] = useState([])
-    
+    const [isFetching, setFetching] = useState(false);
+    const [products, setProducts] = useState([])
+
     const recordsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
+
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
 
@@ -67,9 +77,55 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId }) => {
     ]
 
     useEffect(() => {
-        // if (!suppliers.length) fetchSuppliersData()
-        setTotalPages(Math.ceil(testData.length / recordsPerPage))
+        if (!products.length) fetchProducts()
+        setTotalPages(Math.ceil(products.length / recordsPerPage))
     }, []);
+
+    useEffect(() => {
+       
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchProducts, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [searchValue]);
+
+    // ############# Event Handlers
+
+    const onSearchChange = (input) =>{
+        setSearchValue(input)
+    }
+
+    const fetchProducts = () => {
+        setFetching(true);
+        getSupplierProducts(supplierId, searchValue, recordsPerPage)
+            .then(productsData => {
+                const { data = [], pages = 0} = productsData
+                setProducts(data)
+                setTotalPages(Math.ceil(data.length / recordsPerPage))
+            })
+            .catch(error => {
+                console.log("Failed to get products", error)
+                //TODO handle error cases.
+            })
+            .finally(_ => {
+                setFetching(false)
+            })
+    };
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
@@ -171,13 +227,13 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId }) => {
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'flex-start'}]}>
-            <Text style={styles.itemText}>{item.category}</Text>
+            <Text style={styles.itemText}>{item.type}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'center'}]}>
             <Text style={styles.itemText}>{item.sku}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'flex-end'}]}>
-            <Text style={styles.itemText}>$ {currencyFormatter(item.cost)}</Text>
+            <Text style={styles.itemText}>$ {currencyFormatter(item.unitCost)}</Text>
         </View>
     </>;
 
@@ -193,8 +249,16 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId }) => {
 
     return(
         <View style={{flex:1}}>
+            <View style={{marginBottom:25}}>
+                <Search
+                placeholderText = "Search by Product"
+                changeText = {onSearchChange}
+                inputText = {searchValue}
+                />
+            </View>
+            
             <Table
-                data = {testData} 
+                data = {products} 
                 listItemFormat = {renderListFn}
                 headers = {headers}
                 isCheckbox = {true}
@@ -204,7 +268,7 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId }) => {
             <View style={styles.footer}>
                 <View>
                     <FloatingActionAnnotated
-                        toggleActionButton={toggleCartActionButton}
+                        toggleActionButton={toggleCartActionButton} 
                         icon = {Cart}
                         value = {123}
                     />

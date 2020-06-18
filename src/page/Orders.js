@@ -16,12 +16,12 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 
 import {connect} from 'react-redux';
 import {setPurchaseOrders} from "../redux/actions/purchaseOrdersActions";
-import {getPurchaseOrders} from "../api/network";
+import {getPurchaseOrders, createInvoiceViaOrders} from "../api/network";
 import _ from "lodash";
 
 import {withModal, useModal} from 'react-native-modalfy';
 import purchaseOrdersTest from '../../data/PurchaseOrders'
-import { formatDate } from '../utils/formatter';
+import { formatDate, transformToSentence } from '../utils/formatter';
 import OrdersBottomSheet from '../components/PurchaseOrders/OrdersBottomSheet';
 
 const Orders = (props) => {
@@ -57,6 +57,7 @@ const Orders = (props) => {
 
     //  ############ Props
     const {purchaseOrders = [], setPurchaseOrders} = props;
+
     const modal = useModal();
 
     //  ############ State
@@ -94,7 +95,7 @@ const Orders = (props) => {
         const search = _.debounce(fetchOrdersData, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if ( prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -119,11 +120,17 @@ const Orders = (props) => {
     }
 
     const handleOnCheckBoxPress = (item) => () => {
-        const {id} = item;
-        let updatedOrdersList = checkboxItemPress(item, id, selectedOrders)
-        // console.log("List: ", updatedSuppliersList)
+        const {_id} = item;
+        let updatedOrders = [...selectedOrders];
 
-        setSelectedOrders(updatedOrdersList)
+        if (updatedOrders.includes(_id)) {
+            updatedOrders = updatedOrders.filter(id => id !== item._id)
+        } else {
+            updatedOrders.push(item._id);
+        }
+
+        setSelectedOrders(updatedOrders);
+        console.log("List: ", updatedOrders)
     }
 
     const handleOnItemPress = (item, isOpenEditable) =>{
@@ -153,6 +160,18 @@ const Orders = (props) => {
         setCurrentPageListMax(currentListMax);
     };
 
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "ORDERS ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
+    }
+
     // ############# Helper functions
 
     const fetchOrdersData = () => {
@@ -162,6 +181,7 @@ const Orders = (props) => {
                 const { data = [], pages = 0} = ordersInfo
                 // setPurchaseOrders([])
                 setPurchaseOrders(data);
+                console.log("OrdersInfo: ", data)
                 setTotalPages(Math.ceil(data.length / recordsPerPage))
 
             })
@@ -176,7 +196,7 @@ const Orders = (props) => {
     const renderOrderFn = (item) => {
         return <ListItem
             hasCheckBox={true}
-            isChecked={selectedOrders.includes(item.id)}
+            isChecked={selectedOrders.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item, false)}
             itemView={orderItem(item)}
@@ -184,29 +204,55 @@ const Orders = (props) => {
     }
 
     const orderItem = (item) => {
-        const { _id = "", status = "", date = "", supplier = ""} = item
+        const { purchaseOrderNumber = "", status = "", orderDate = "", supplier = {} } = item
+        const { name = "" } = supplier
         const statusColor = status === 'Incomplete' ? "#805AD5" :
             status === 'Request Sent' ? "#319795" : 
             status === 'Payment Due' ? "#C53030" : "#4E5664"
         
-        const deliveryDate = (date === "" || date === null) ? 'n/a' : formatDate(date, 'DD/MM/YYYY')
+        const deliveryDate = (orderDate === "" || orderDate === null) ? 'n/a' : formatDate(orderDate, 'DD/MM/YYYY')
 
         return (
             <>
                 <View style={[styles.item,{...styles.rowBorderRight, flex: 1}]}>
-                    <Text style={[styles.itemText, {color:"#4E5664"}]}>{_id}</Text>
+                    <Text style={[styles.itemText, {color:"#4E5664"}]}>{purchaseOrderNumber}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1,alignItems:'center' }]}>
-                    <Text style={[styles.itemText, {color: statusColor}]}>{status}</Text>
+                    <Text style={[styles.itemText, {color: statusColor}]}>{transformToSentence(status)}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, }]}>
                     <Text style={[styles.itemText, {color: "#4E5664"}]}>{deliveryDate}</Text>
                 </View>
                 <View style={[styles.item, {flex: 2,}]}>
-                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{supplier}</Text>
+                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{name}</Text>
                 </View>
             </>
         )
+
+    }
+
+    const getFabActions = () => {
+
+        const createInvoice = <ActionItem title={"Create Invoice"} icon={<AddIcon/>} onPress={onCreateInvoice}/>;
+
+        return <ActionContainer
+            floatingActions={[
+                createInvoice
+            ]}
+            title={"ORDERS ACTIONS"}
+        />
+    };
+
+    const onCreateInvoice = () => {
+        selectedOrders.forEach( id => {
+            createInvoiceViaOrders(id)
+                .then((data) => {
+                    console.log("Invoice Record:", data)
+                })
+                .catch(error => {
+                    console.log("Failed to create invoice", error)
+                })
+        })
 
     }
 
@@ -243,6 +289,11 @@ const Orders = (props) => {
                         goToPreviousPage={goToPreviousPage}
                     />
                 </View>
+
+                <FloatingActionButton
+                    isDisabled={isFloatingActionDisabled}
+                    toggleActionButton={toggleActionButton}
+                />
             </View>
 
         </View>

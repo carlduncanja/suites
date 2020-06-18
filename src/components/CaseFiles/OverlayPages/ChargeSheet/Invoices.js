@@ -12,9 +12,7 @@ import moment from 'moment';
 import ReportPreview from '../../Reports/ReportPreview';
 import Item from '../../../common/Table/Item';
 
-
-
-import { formatDate, currencyFormatter } from '../../../../utils/formatter';
+import { formatDate, currencyFormatter, transformToSentence } from '../../../../utils/formatter';
 const reportTestData = {
     billing : {
         billedTo: {
@@ -87,6 +85,7 @@ const reportTestData = {
     }
 }
 const Invoices = ({tabDetails, modal}) => {
+ 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [state, dispatch] = useContext(CaseFileContext)
 
@@ -127,32 +126,9 @@ const Invoices = ({tabDetails, modal}) => {
     }
 
     const listItem = (item) => {
-        // const reportId = item.invoiceNumber
-        // const reportExpenses = item.reportDetails.reportExpenses
-        // const billingDetails = item.reportDetails.billingDetails
-        // let date = moment(billingDetails.reportDate).format("DD/MM/YYYY")
-
-        // const reportList = [...reportExpenses.physicians,...reportExpenses.procedures,...reportExpenses.labWork]
-        // const reportTable = [...reportExpenses.consumables, ...reportExpenses.equipments]
-        // const tax = reportExpenses.tax
-        // const discountPercent = reportExpenses.discount
-
-        // let subTotal = 0
-        // let taxValue = `${tax * 100}%`
-
-        // reportList.forEach(item => subTotal+= item.cost)
-        // reportTable.forEach(item => subTotal += (item.unitPrice * item.quantity))
-        
-        // let {discount, total} = calcBillingValues(subTotal, tax, discountPercent)
-
-        // const billingSummary = {
-        //     subtotal:subTotal,
-        //     tax : taxValue,
-        //     discount : discount,
-        //     total :total
-        // }
-        
-        const { invoiceNumber = "", status = "", value = 0, date = "" } = item
+    
+        const { invoiceNumber = "", status = "", billing = {}, date = "" } = item
+        const { subTotal = 0 } = billing
 
         return (
             <>
@@ -163,14 +139,14 @@ const Invoices = ({tabDetails, modal}) => {
                     <View style={styles.item}>
                         <Text style={[styles.itemText,{color:'#3182CE'}]}>{invoiceNumber}</Text>
                     </View>
-                    <View style={[styles.item,{alignItems:'flex-start'}]}>
-                        <Text style={[styles.itemText,{color: item.status === 'Complete' ? "#319795" : "#DD6B20"}]}>{status}</Text>
+                    <View style={[styles.item,{alignItems:'center'}]}>
+                        <Text style={[styles.itemText,{color: item.status === 'Complete' ? "#319795" : "#DD6B20"}]}>{transformToSentence(status)}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-start'}]}>
                         <Text style={styles.itemText}>{formatDate(date,'DD/MM/YYYY') }</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'center'}]}>
-                        <Text style={styles.itemText}>{`$ ${currencyFormatter(value)}`}</Text>
+                        <Text style={styles.itemText}>{`$ ${currencyFormatter(subTotal)}`}</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'flex-end', marginRight:10}]}>
                         {/* <TouchableOpacity

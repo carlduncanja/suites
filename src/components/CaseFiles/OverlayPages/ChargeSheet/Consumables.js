@@ -12,7 +12,7 @@ import OptionSearchableField from '../../../common/Input Fields/OptionSearchable
 import { currencyFormatter } from '../../../../utils/formatter';
 import IconButton from '../../../common/Buttons/IconButton';
 import RightArrow from '../../../../../assets/svg/rightArrow';
-import LeftArrow from '../../../../../assets/svg/leftArrow';
+import LeftArrow from '../../../../../assets/svg/leftArrow'; 
 
 
 const Consumables = ({tabDetails, headers, listItemFormat, details = [], handleEditDone, isEditMode}) => {

@@ -13,11 +13,10 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
     const currentTabs = ["Details", "Products", "Purchase Orders"];
     console.log("Procedure:", supplier)
     const {
-       id,
-       name,
-       _id = id
+        supplierNumber = "",
+        name = "",
+       _id = "",
     } = supplier;
-    
 
     // ##### States
 
@@ -98,14 +97,15 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
             })
     };
 
+    const supplierDetails = {supplier, status : ''}
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <SupplierDetailsTab/>
+                return <SupplierDetailsTab order = {supplierDetails}/>
             case "Products":
                 return <SupplierProductsTab
                     floatingActions = {floatingActions}
-                    supplierId = {id}
+                    supplierId = {_id}
                 />
             case "Purchase Orders":
                 return <SupplierPurshaseOrders
@@ -127,7 +127,7 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
                    
                     // console.log("Selected: ", selectedProcedure)
                     <SlideOverlay
-                        overlayId={_id}
+                        overlayId={supplierNumber}
                         overlayTitle={name}
                         onTabPressChange={onTabPress}
                         currentTabs={currentTabs}

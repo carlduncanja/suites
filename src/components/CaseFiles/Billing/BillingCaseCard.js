@@ -9,7 +9,7 @@ import {formatDate, currencyFormatter} from "../../../utils/formatter";
 import { withModal } from 'react-native-modalfy';
 import { updateChargeSheet } from "../../../api/network";
 
-const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId}) => {
+const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}) => {
     
     const {
         lastModified = "",
@@ -75,27 +75,29 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId}) => {
             ]
             setUpdatedBilling(createdData)
         }
+        handleEditDone(createdData)
         modal.closeModals("OverlayInfoModal")
+        
         // console.log("Edit mode: ", isEditMode)
         // console.log("Date: ", createdData)
-        updateCase(createdData)
+        // updateCase(createdData)
        
     }
 
-    const updateCase = (data) => {
-        updateChargeSheet(caseId, data)
-            .then((data) => {
-                console.log("Updated Record:", data)
-                // let newData = {
-                //     _id : id,
-                //     ...data
-                // }
-                // updatePhysicianRecord(newData)
-            })
-            .catch(error => {
-                console.log("Failed to update chargesheet", error)
-            })
-    }
+    // const updateCase = (data) => {
+    //     updateChargeSheet(caseId, data)
+    //         .then((data) => {
+    //             console.log("Updated Record:", data)
+    //             // let newData = {
+    //             //     _id : id,
+    //             //     ...data
+    //             // }
+    //             // updatePhysicianRecord(newData)
+    //         })
+    //         .catch(error => {
+    //             console.log("Failed to update chargesheet", error)
+    //         })
+    // }
 
     const openActionContainer = (name,consumables, equipments, services, caseProcedureId) =>{
 

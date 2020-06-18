@@ -2,39 +2,41 @@ import React,{  } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Record from "../common/Information Record/Record";
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
-import { formatDate } from "../../utils/formatter";
+import { formatDate } from "../../utils/formatter"; 
+import { formatAmount } from "../../helpers/caseFilesHelpers";
 
-const order = {
-    decscription : "",
-    invoiceNumber : "IN-00000023",
-    orderTotal : 63467.56,
-    status : 'Complete',
-    orderDate : new Date(2019, 11, 20),
-    deliveryDate : new Date(2019, 11, 23),
-    storageLocation : 'Warehouse',
-    requestedBy : 'Anthony Brown',
-    approvedBy : "Sandra Smith",
-    receivedBy : "Anthony Brown",
-    type: 'Repeating',
-    configStatus : 'Active',
-}
-const OrderDetailsTab = () =>{
+// const order = {
+//     decscription : "",
+//     invoiceNumber : "IN-00000023",
+//     orderTotal : 63467.56,
+//     status : 'Complete',
+//     orderDate : new Date(2019, 11, 20),
+//     deliveryDate : new Date(2019, 11, 23),
+//     storageLocation : 'Warehouse',
+//     requestedBy : 'Anthony Brown',
+//     approvedBy : "Sandra Smith",
+//     receivedBy : "Anthony Brown",
+//     type: 'Repeating',
+//     configStatus : 'Active',
+// }
+const OrderDetailsTab = ({order = {} }) =>{
 
     const {
-        decscription = "",
-        invoiceNumber = "",
-        orderTotal = 0,
-        status  = "",
         orderDate = "",
         deliveryDate = "",
+        status  = "",
+        total = 0,
+        supplier = {},
+        invoiceNumber = "",
         storageLocation = "",
-        requestedBy = "",
-        approvedBy = "",
-        receivedBy = "",
         type = "",
         configStatus = "",
-
+        approvedBy =  "",
+        receivedBy = "",
+        requestedBy = ""
     } = order
+
+    const { decscription = "" } = supplier
 
     return (
         <View style={{flex:1}}>
@@ -59,7 +61,7 @@ const OrderDetailsTab = () =>{
                <View style={styles.inputWrapper}>
                    <Record
                         recordTitle = "Order Total"
-                        recordValue = {orderTotal}
+                        recordValue = {formatAmount(total)}
                    />
                </View>
 

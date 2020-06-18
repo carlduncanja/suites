@@ -10,6 +10,7 @@ import inventory from "./inventoryReducer";
 import equipment from './equipmentReducer';
 import auth from './authReducer';
 import suppliers from './suppliersReducer';
+import orders from './ordersReducers';
 
 // import app from "./appReducer"
 // import casesFiles from "./caseFilesReducer"
@@ -28,6 +29,7 @@ const appReducer = combineReducers({
     equipment,
     inventory,
     suppliers,
+    orders,
     auth
 });
 

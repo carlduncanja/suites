@@ -37,7 +37,9 @@ const testData = [
     },
 ]
 
-const OrderItemTab = () =>{
+const OrderItemTab = ({order}) =>{
+
+    const { orders = [] } = order
 
     const recordsPerPage = 15;
 
@@ -93,7 +95,9 @@ const OrderItemTab = () =>{
 
 
     const listItemFormat = (item) => {
-        const {name = "", sku = "", quanity = "", unitPrice = 0 } = item
+        const { amount = 0, productId = {} } = item
+        const { name = "", sku = "", unitCost = 0 } = productId
+        
         return (
             <>
                 <View style={{flexDirection:'row', marginLeft:7}}>
@@ -106,11 +110,11 @@ const OrderItemTab = () =>{
                     </View>
 
                     <View style={styles.item}>
-                        <Text style={styles.itemText}>{quanity}</Text>
+                        <Text style={styles.itemText}>{amount}</Text>
                     </View>
 
                     <View style={styles.item}>
-                        <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
+                        <Text style={styles.itemText}>$ {currencyFormatter(unitCost)}</Text>
                     </View>
                 </View>
 
@@ -118,7 +122,7 @@ const OrderItemTab = () =>{
         )
     }
 
-    let itemsToDisplay = [...testData];
+    let itemsToDisplay = [...orders];
     itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax); 
     
     return (
