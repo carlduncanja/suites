@@ -95,7 +95,7 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId }) => {
         const search = _.debounce(fetchProducts, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;

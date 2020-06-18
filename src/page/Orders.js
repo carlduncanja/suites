@@ -95,7 +95,7 @@ const Orders = (props) => {
         const search = _.debounce(fetchOrdersData, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if ( prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
