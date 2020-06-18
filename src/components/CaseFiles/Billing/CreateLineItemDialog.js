@@ -46,7 +46,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
     const [unitPriceText, setUnitPriceText] = useState(fields['unitPrice'])
 
     useEffect(() => {
-       
+
         if (!inventorySearchValue) {
             // empty search values and cancel any out going request.
             setInventorySearchResult([]);
@@ -59,7 +59,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
         const search = _.debounce(fetchInventories, 300);
 
         setInventorySearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -128,13 +128,13 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
     };
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
-        
+
         if(!popoverItem){
             let updatedPopovers = popoverList.map( item => {return {
                 ...item,
                 status : false
             }})
-            
+
             setPopoverList(updatedPopovers)
         }else{
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
@@ -143,10 +143,10 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
-            ]; 
+            ];
             setPopoverList(updatedPopovers)
         }
-    
+
     }
 
     const onPositiveClick = () => {
@@ -291,9 +291,9 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
                         </View>
                     </View>
                 </View>
-                
+
             </TouchableOpacity>
-            
+
         </View>
 
 

@@ -65,7 +65,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
         const search = _.debounce(fetchTheatres, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -75,14 +75,14 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     }, [theatresSearchValue]);
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
-        
+
         if(!popoverItem){
             setIsPopoverOpen(popoverValue)
             let updatedPopovers = popoverList.map( item => {return {
                 ...item,
                 status : false
             }})
-            
+
             setPopoverList(updatedPopovers)
         }else{
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
@@ -91,10 +91,10 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
-            ]; 
+            ];
             setPopoverList(updatedPopovers)
         }
-    
+
     }
 
 
@@ -163,7 +163,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                     tabs={dialogTabs}
                     tab={selectedIndex}
                 />
-                
+
                 <TouchableOpacity
                     onPress = {()=>handlePopovers(false)()}
                     activeOpacity = {1}
@@ -217,7 +217,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                     </View>
 
                 </TouchableOpacity>
-                
+
             </View>
 
 

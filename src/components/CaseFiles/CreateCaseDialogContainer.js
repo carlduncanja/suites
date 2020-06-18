@@ -18,13 +18,14 @@ import patient from "../../../assets/svg/newCasePatient";
 import {useModal} from "react-native-modalfy";
 
 const testData = {
-    "name": "Julie Brown 2",
+    "name": "John Doe",
     "patient": {
-        "firstName": "Juilie",
+        "firstName": "John",
         "middleName": "",
-        "surname": "Brown",
+        "surname": "Doe",
         "gender": "female",
         "trn": "42991536",
+        'dob': "2020-06-02",
         "contactInfo": {
             "phones": [
                 {
@@ -34,20 +35,20 @@ const testData = {
             ],
             "emails": [
                 {
-                    "email": "julie.brown@gmail.com",
+                    "email": "john.doe@gmail.com",
                     "type": "work"
                 }
             ],
             "emergencyContact": [
                 {
-                    "name":"Peach Brown",
-                    "email":"peach.brown@gmail.com",
+                    "name": "Bob Brown",
+                    "email": "Bob.brown@gmail.com",
                     "phone": "8765232141",
-                    "relation":"mother"
+                    "relation": "mother"
                 }
             ]
         },
-        "addressInfo": {
+        "address": {
             "line1": "23 Ruthven Road",
             "line2": "",
             "city": "Kingston",
@@ -76,6 +77,21 @@ const testData = {
 }
 
 
+const CASE_PROCEDURE_TABS = {
+    PATIENT_DETAILS: 0,
+    MEDICAL_STAFF: 1,
+    PROCEDURES: 2,
+    FINAL: 3
+}
+
+const PATIENT_TABS = {
+    DETAILS: 'Details',
+    CONTACT: 'Contact',
+    ADDRESS: 'Address',
+    INSURANCE: 'Insurance Coverage'
+}
+
+
 /**
  * Component to handle the create storage process.
  *
@@ -84,20 +100,18 @@ const testData = {
  * @returns {*}
  * @constructor
  */
-
 const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
     // ########### CONST
     const [wizard, setWizard] = useState([
         {
-            step:
-                {
-                    name: 'Patient',
-                    selectedIcon: <PatientIcon fillColor={'#0CB0E7'} strokeColor={'#64D8FF'}/>,
-                    disabledIcon: <PatientIcon fillColor={'#A0AEC0'} strokeColor={'#CCD6E0'}/>,
-                    progress: 0
-                },
-            tabs: ['Details', 'Contact', 'Address', 'Insurance Coverage']
+            step: {
+                name: 'Patient',
+                selectedIcon: <PatientIcon fillColor={'#0CB0E7'} strokeColor={'#64D8FF'}/>,
+                disabledIcon: <PatientIcon fillColor={'#A0AEC0'} strokeColor={'#CCD6E0'}/>,
+                progress: 0
+            },
+            tabs: [PATIENT_TABS.DETAILS, PATIENT_TABS.CONTACT, PATIENT_TABS.ADDRESS, PATIENT_TABS.INSURANCE]
         },
         {
             step:
@@ -149,14 +163,15 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
     // ########### STATES
 
-    const [fields, setFields] = useState(
-        testData
+    const [patientFields, setPatientFields] = useState(
+        testData.patient
+        // {}
     )
+    const [patientFieldErrors, setPatientErrors] = useState({})
 
-    const [patientInfo, setPatientInfo] = useState({})
     const [staffInfo, setStaffInfo] = useState([])
     const [caseProceduresInfo, setCaseProceduresInfo] = useState([])
-
+    const [procedureErrors, setProcedureErrors] = useState([]);
 
     const [positiveText, setPositiveText] = useState("NEXT")
     const [popoverList, setPopoverList] = useState([])
@@ -174,19 +189,22 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
     // ########### EVENT HANDLERS
 
-    const onFieldChange = (fieldName) => (value) => {
-        if (fieldName === 'patient') {
-            const {firstName = "", surname = ""} = fields['patient'];
-            setName(`${firstName} ${surname}'s Case`)
-        }
-        console.log("Fields: ", {
-            ...fields,
-            [fieldName]: value
-        })
-        setFields({
-            ...fields,
-            [fieldName]: value
-        })
+    const onPatientInfoUpdate = (value) => {
+        // if (fieldName === 'patient') {
+        //     const {firstName = "", surname = ""} = patientFields['patient'];
+        //     setName(`${firstName} ${surname}'s Case`)
+        // }
+        //
+        // setPatientFields({
+        //     ...patientFields,
+        //     [fieldName]: value
+        // })
+        //
+        // const errors = {...patientFieldErrors}
+        // delete errors[fieldName];
+        // setPatientErrors(errors);
+
+        setPatientFields(value)
     }
 
     const onStaffUpdate = (value, selectedType) => {
@@ -206,6 +224,9 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
     }
 
     const onProcedureUpdate = (value) => {
+
+        console.log("procedure update", value);
+
         setCaseProceduresInfo([...value])
     }
 
@@ -255,17 +276,85 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
     }
 
     const onPositiveButtonPress = () => {
+
+
+        const incrementTab = () => {
+            const updatedTabIndex = selectedTabIndex + 1
+            setCompletedTabs([...completedTabs, tabs[selectedTabIndex]])
+            setSelectedTabIndex(updatedTabIndex)
+        }
+
+        const incrementStep = () => {
+            const updatedIndex = selectedIndex + 1
+            setCompletedSteps([...completedSteps, steps[selectedIndex].name])
+            setSelectedIndex(updatedIndex)
+            setSelectedStep(steps[updatedIndex].name)
+
+            const tabs = wizard[updatedIndex].tabs
+            setTabs(tabs)
+            setSelectedTabIndex(0)
+            setCompletedTabs([])
+        }
+
+
+        const isFinalTab = (selectedTabIndex === tabs.length - 1)
+
+        const currentTab = wizard[selectedIndex].tabs[selectedTabIndex]
+
+
+        console.log(`selected index ${selectedIndex}, selected tab index ${selectedTabIndex}, current tab ${currentTab}`)
+
+        let isValid = true;
+
+
+        switch (selectedIndex) {
+            case CASE_PROCEDURE_TABS.PATIENT_DETAILS: {
+                isValid = validatePatientDetailsTab(currentTab);
+                break
+            }
+            case CASE_PROCEDURE_TABS.PROCEDURES: {
+                isValid = validateProcedureInfo(selectedTabIndex)
+                break;
+            }
+            case CASE_PROCEDURE_TABS.MEDICAL_STAFF: {
+
+                break;
+            }
+            case CASE_PROCEDURE_TABS.FINAL: {
+                break;
+            }
+            default: {
+
+            }
+
+        }
+
+        if (!isValid) {
+            return
+        }
+
+        // if (isFinalTab) {
+        //     incrementStep()
+        // } else {
+        //     incrementTab();
+        // }
+
+
         if (selectedIndex === 3) {
             // we are on the final tab
             console.log("Hey Save my data and open bottom sheet with the data")
+
             handleOnComplete()
         } else if (selectedTabIndex !== tabs.length - 1) {
-            const updatedTabIndex = selectedTabIndex + 1
+            // VALIDATE FIELDS
 
+            const updatedTabIndex = selectedTabIndex + 1
             setCompletedTabs([...completedTabs, tabs[selectedTabIndex]])
             setSelectedTabIndex(updatedTabIndex)
 
         } else if (selectedIndex === steps.length - 1 && selectedTabIndex === tabs.length - 1) {
+            // VALIDATE FIELDS
+
             setPositiveText('CONTINUE')
             setCompletedSteps([...completedSteps, steps[selectedIndex].name])
             setSelectedIndex(3)
@@ -273,6 +362,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
             setTabs(["Julie Brown's Case Created"])
 
         } else {
+            // VALIDATE FIELDS
             const updatedIndex = selectedIndex + 1
             setCompletedSteps([...completedSteps, steps[selectedIndex].name])
             setSelectedIndex(updatedIndex)
@@ -285,10 +375,88 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         }
     }
 
+    const validatePatientDetailsTab = (tab) => {
+
+        let isValid = true
+
+        let requiredFields = [];
+        switch (tab) {
+            case PATIENT_TABS.DETAILS: {
+                // validate the fields on the details tab that are required
+                requiredFields = ['firstName', 'surname', 'trn', 'dob']
+
+                break;
+            }
+            case PATIENT_TABS.ADDRESS: {
+                // validate the fields on the details tab that are required
+                requiredFields = ['line1', 'city', 'parish']
+
+                break;
+            }
+        }
+
+        let updateErrors = {...patientFieldErrors};
+
+        console.log(patientFields);
+
+        for (const requiredField of requiredFields) {
+            if (!patientFields[requiredField]) {
+                isValid = false;
+
+                updateErrors = {
+                    ...updateErrors,
+                    [requiredField]: `${requiredField} is required`,
+                }
+
+            } else {
+                delete updateErrors[requiredField];
+                console.log(`${requiredField} is valid`)
+            }
+        }
+
+        setPatientErrors(updateErrors);
+        console.log(patientFieldErrors)
+
+        return isValid;
+    }
+
+    const validateProcedureInfo = (procedureIndex) => {
+        let isValid = true;
+        const requiredParams = ['date', 'startTime', 'location', 'procedure'];
+
+        const procedure = caseProceduresInfo[procedureIndex] || {}
+
+        let updateErrors = [...procedureErrors];
+        let errorObj = updateErrors[procedureIndex] || {};
+
+
+        console.log('error index at', procedureIndex);
+
+        for (const requiredParam of requiredParams) {
+
+            if (!procedure[requiredParam]) {
+                console.log(`${requiredParam} is required`)
+                isValid = false
+                errorObj[requiredParam] = "Please enter a value";
+                updateErrors[+procedureIndex] = errorObj;
+            } else {
+                delete errorObj[requiredParam];
+                updateErrors[+procedureIndex] = errorObj;
+            }
+
+        }
+
+        setProcedureErrors(updateErrors)
+        console.log("procedure errors", procedureErrors)
+
+        return isValid;
+    }
+
     const handleCloseDialog = () => {
         onCancel();
         modal.closeAllModals();
     }
+
 
     const handlePopovers = (popoverValue) => (popoverItem) => {
 
@@ -316,19 +484,22 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
     const handleOnComplete = () => {
         // prepare request create case file request
-        console.log("handleOnComplete", fields);
+        console.log("handleOnComplete", patientFields);
         console.log("handleOnCompleted", staffInfo);
         console.log("handleOnCompleted", caseProceduresInfo);
 
         const caseFileData = {
-            name: `${fields.patient.firstName} ${fields.patient.surname}`,
-            patient: fields.patient,
+            name: `${patientFields.firstName} ${patientFields.surname}`,
+            patient: {},
             caseProcedures: [],
             staff: {
                 physicians: [],
                 nurses: []
             }
         };
+        // adding patient info
+        caseFileData.patient = patientFields;
+
 
         // adding staff info
         for (const staffInfoElement of staffInfo) {
@@ -343,9 +514,11 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
         // adding procedure info
         caseFileData.caseProcedures = caseProceduresInfo.map(item => ({
-            ...item,
+            // ...item,
             procedure: item.procedure._id,
-            location: item.location._id
+            location: item.location._id,
+            startTime: item.startTime,
+            duration: item.duration
         }))
 
         console.log("handleOnComplete: caseProcedure Info", caseFileData);
@@ -354,26 +527,27 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                 console.log("Case File Created", data)
 
                 modal.closeAllModals();
-                setTimeout(() => {onCreated(data)}, 300);
+                setTimeout(() => {
+                    onCreated(data, false)
+                }, 300);
             }).catch(error => {
-                console.log("failed to create case file", error);
-                Alert.alert("Sorry", "Something went wrong when creating case.");
-            })
+            console.log("failed to create case file", error);
+            Alert.alert("Sorry", "Something went wrong when creating case.");
+        })
     }
 
-
-
     const getTabContent = () => {
-
         switch (selectedIndex) {
-            case 0:
+            case CASE_PROCEDURE_TABS.PATIENT_DETAILS:
                 return <PatientStep
                     selectedTabIndex={selectedTabIndex}
-                    onFieldChange={onFieldChange}
-                    fields={fields}
+                    patient={patientFields}
+                    onPatientUpdate={onPatientInfoUpdate}
+                    errors={patientFieldErrors}
+                    onErrorUpdate={(value) => setPatientErrors(value)}
                 />
 
-            case 1:
+            case CASE_PROCEDURE_TABS.MEDICAL_STAFF:
                 return <StaffStep
                     selectedTabIndex={selectedTabIndex}
                     onStaffChange={onStaffUpdate}
@@ -382,14 +556,16 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     completedTabs={completedTabs}
                 />
 
-            case 2:
+            case CASE_PROCEDURE_TABS.PROCEDURES:
                 return <ProcedureStep
                     selectedTabIndex={selectedTabIndex}
                     onProcedureUpdate={onProcedureUpdate}
                     procedures={caseProceduresInfo}
+                    errors={procedureErrors}
+                    onErrorUpdate={(value) => setProcedureErrors(value)}
                 />
 
-            case 3 :
+            case CASE_PROCEDURE_TABS.FINAL :
                 return <CompleteCreateCase
                     name={'Julie Brown'}
                     onComplete={handleOnComplete}

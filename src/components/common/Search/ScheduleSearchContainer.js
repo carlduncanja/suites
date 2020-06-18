@@ -61,7 +61,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
 
         // saving function
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;

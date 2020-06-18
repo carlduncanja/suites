@@ -159,7 +159,7 @@ function Theatres(props) {
         const search = _.debounce(fetchTheatres, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -218,7 +218,7 @@ function Theatres(props) {
     };
 
     const onCheckBoxPress = (item) => () => {
-        
+
         const {id} = item;
         let updatedCases = [...selectedIds];
 

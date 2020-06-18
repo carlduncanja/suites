@@ -1,35 +1,23 @@
-import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import InputUnitField from "../../common/Input Fields/InputUnitFields";
-import InputField2 from "../../common/Input Fields/InputField2";
+import React, {useState, useEffect} from "react";
+import {View, Text, StyleSheet} from "react-native";
 import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField";
 import DateInputField from "../../common/Input Fields/DateInputField";
-import DateInputField2 from "../../common/Input Fields/DateInputField2";
-
-import MultipleSelectionsField from "../../common/Input Fields/MultipleSelectionsField";
 import _ from "lodash";
 import {getProcedures, getTheatres} from "../../../api/network";
 import moment from 'moment';
-import { formatDate } from "../../../utils/formatter";
+import InputField2 from "../../common/Input Fields/InputField2";
 
-import { MenuOptions, MenuOption } from 'react-native-popup-menu';
-import DatePicker from "react-native-datepicker";
+const ProcedureTab = ({
+                          onProcedureInfoChange,
+                          procedureInfo,
+                          errors,
+                          onErrorUpdate
+                      }) => {
 
-const ProcedureTab = ({ onFieldChange, fields}) => {
+    // const [procedure, setProcedure] = useState(undefined)
+    // const [location, setLocation] = useState(undefined)
 
-    const [procedureValues ,setProcedureValues] = useState({
-        procedure : '',
-        startTime : '',
-        endTime : '', 
-        location : '',
-    })
-
-    const [date, setDate] = useState("")
-    const [duration, setDuration] = useState('')
-    const [start, setStart] = useState('')
-    const [end, setEnd] = useState('')
-
-    const [searchProcedureValue, setSearchProcedureValue] = useState('') 
+    const [searchProcedureValue, setSearchProcedureValue] = useState('')
     const [searchProcedureResult, setSearchProcedureResult] = useState([])
     const [searchProcedureQuery, setSearchProcedureQuery] = useState({})
 
@@ -37,11 +25,16 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
     const [searchLocationResult, setSearchLocationResult] = useState([])
     const [searchLocationQuery, setSearchLocationQuery] = useState({})
 
-    const [searchCategoryValue, setSearchCategoryValue] = useState('')
-    const [searchCategoryResult, setSearchCategoryResult] = useState([])
-    const [searchCategoryQuery, setSearchCategoryQuery] = useState()
+    const {
+        startTime,
+        location,
+        procedure,
+        duration,
+        category,
+        date
+    } = procedureInfo || {};
 
-    useEffect(()=>{
+    useEffect(() => {
         if (!searchProcedureValue) {
             // empty search values and cancel any out going request.
             setSearchProcedureResult([]);
@@ -54,7 +47,7 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
         const search = _.debounce(fetchProcedures, 300);
 
         setSearchProcedureQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -62,9 +55,9 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
 
         search()
 
-    },[searchProcedureValue])
+    }, [searchProcedureValue])
 
-    useEffect(()=>{
+    useEffect(() => {
         if (!searchLocationValue) {
             // empty search values and cancel any out going request.
             setSearchLocationResult([]);
@@ -77,27 +70,21 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
         const search = _.debounce(fetchLocations, 300);
 
         setSearchLocationQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
         });
 
         search()
-        
-    },[searchLocationValue])
+
+    }, [searchLocationValue])
 
     const fetchProcedures = () => {
 
         getProcedures(searchProcedureValue, 5)
             .then((data = []) => {
-                // console.log("Dta: ", data)
-                // const results = data.map(item => ({
-                //     name: `Dr. ${item.surname}`,
-                //     ...item
-                // }));
                 setSearchProcedureResult(data || []);
-
             })
             .catch(error => {
                 // TODO handle error
@@ -108,234 +95,225 @@ const ProcedureTab = ({ onFieldChange, fields}) => {
 
     const fetchLocations = () => {
         getTheatres(searchLocationValue, 5)
-        .then((data = []) => {
-            // const results = data.map(item => ({
-            //     name: `Dr. ${item.surname}`,
-            //     ...item
-            // }));
-            setSearchLocationResult(data || []);
+            .then((data = []) => {
+                setSearchLocationResult(data || []);
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get procedures");
+                setSearchLocationResult([]);
+            })
 
-        })
-        .catch(error => {
-            // TODO handle error
-            console.log("failed to get procedures");
-            setSearchLocationResult([]);
-        })
-        
     }
 
-
-    const handleProcedure = (fieldName) => (value) => {
-        console.log("Field: ", fieldName, value);
-        (fieldName === 'procedure' || fieldName === 'location') ? value = value._id : value = value
-        setProcedureValues({
-            ...procedureValues,
-            [fieldName] : value
+    const handleInfoChange = (fieldName) => (value) => {
+        onProcedureInfoChange({
+            ...procedureInfo,
+            [fieldName]: value,
         })
     }
 
-    const handleTimeChange = (value) => (unit)=>{
-        console.log("Time: ", value, unit)
-        if(unit === 'AM'){
-            if (value < 11){
-                newTime = moment(`${value}:00`,'h:mm a').format('h:mm a')
-            }
-        }else{
-            newTime = moment(`${parseInt(value)+12}:00`,'h:mm a').format('h:mm a')
-        }
-        setStart(value)
-        if(moment(date).isValid() && date !== ""){
-            let newDate = moment(date).get('year')
-        
-            console.log("Valid: ", moment(date + " " + newTime))
-        }
-        console.log("New Time: ", newTime)
+    const handleProcedure = (value) => {
+        const procedure = value ? {
+            _id: value._id,
+            name: value.name,
+            duration: value.duration
+        } : value
+
+        // handleInfoChange("procedure")(procedure)
+
+        onProcedureInfoChange({
+            ...procedureInfo,
+            ['procedure']: procedure,
+            ['duration']: procedure && procedure.duration.toString(),
+        })
+
+        updateErrorField('procedure')(false)
+
+        setSearchProcedureResult([])
+        setSearchProcedureQuery(undefined);
     }
 
-    const handleDateValidation = (value) => {
-        let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
-        if (dateRegex.test(date) || !date) {
-           setDate(value)
+    const handleLocationChange = (value) => {
+        const location = value ? {
+            _id: value._id,
+            name: value.name
+        } : value
+
+        handleInfoChange('location')(location);
+
+        updateErrorField('location')(false)
+
+        setSearchLocationResult([])
+        setSearchLocationQuery(undefined)
+    }
+
+    const onDateUpdate = (date) => {
+        // update the date for start and end time.
+        const newDate = moment(date);
+
+        console.log("onDateUpdate", newDate, startTime)
+
+        const newStartTime = startTime ? moment(startTime).year(newDate.year()).month(newDate.month()).date(newDate.date()) : undefined
+
+        console.log("onDateUpdate", newDate, newStartTime)
+
+        // update procedure
+        onProcedureInfoChange({
+            ...procedureInfo,
+            date: date,
+            startTime: newStartTime && newStartTime.toDate(),
+        })
+
+        onErrorUpdate({
+            ...errors,
+            date: false,
+            startTime: false
+        })
+    }
+
+    const onDateClear = () => {
+        onProcedureInfoChange({
+            ...procedureInfo,
+            date: undefined
+        })
+
+        updateErrorField('date')(false);
+    }
+
+    const updateErrorField = (field) =>  (value) => {
+        onErrorUpdate({
+            ...errors,
+            [field]: value
+        })
+    }
+
+    const onTimeUpdate = (field) => (dateTime) => {
+        console.log("onTimeUpdated: date time ", dateTime);
+
+        let newTime = moment(dateTime);
+        if (date) {
+            // change update the date;
+            const dateMoment = new moment(date);
+            newTime.year(dateMoment.year()).month(dateMoment.month()).date(dateMoment.date())
         }
-        setDate(value)
+
+        onProcedureInfoChange({
+            ...procedureInfo,
+            [field]: newTime.toDate()
+        })
+
+        updateErrorField(field)(false);
+
+        console.log("onTimeUpdated", procedureInfo);
     }
-    const onDateChange = (type) => (value) => {
-        console.log("Value: ", type, value)
-        
-        type === 'date' && setDate(value)
-        type === 'start' && setStart(value)
-        type === 'end' && setEnd(value)
+
+    const onTimeClear = (field) => () => {
+        onProcedureInfoChange({
+            ...procedureInfo,
+            [field]: undefined
+        })
     }
+
+    console.log("errors", errors);
 
     return (
         <View style={styles.sectionContainer}>
-
             <View style={styles.row}>
-
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Procedure"}
+                        value={procedure}
                         text={searchProcedureValue}
-                        oneOptionsSelected={(value) => {handleProcedure('procedure')(value)}}
+                        oneOptionsSelected={handleProcedure}
                         onChangeText={value => setSearchProcedureValue(value)}
-                        onClear={() => {
-                            handleProcedure('procedure')('')
-                            // onFieldChange('procedure')('');
-                            setSearchValue('');
-                        }}
+                        onClear={handleProcedure}
                         options={searchProcedureResult}
-                        // handlePopovers = {(value)=>handlePopovers(value)('physician')}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {true}
+                        handlePopovers={() => {
+                            console.log("handle popovers");
+                        }}
+                        isPopoverOpen={searchProcedureQuery}
+                        hasError={errors['procedure']}
+                        errorMessage={errors['procedure']}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Location"}
+                        value={location}
                         text={searchLocationValue}
-                        oneOptionsSelected={(value) => {handleProcedure('location')(value)}}
+                        oneOptionsSelected={handleLocationChange}
                         onChangeText={value => setSearchLocationValue(value)}
-                        onClear={() => {
-                            handleProcedure('location')('');
-                            setSearchValue('');
-                        }}
+                        onClear={handleLocationChange}
                         options={searchLocationResult}
-                        // handlePopovers = {(value)=>handlePopovers(value)('physician')}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {true}
+                        handlePopovers={() => {
+                        }}
+                        isPopoverOpen={searchLocationQuery}
+                        hasError={errors['location']}
+                        errorMessage={errors['location']}
+                    />
+                </View>
+            </View>
+
+            <View style={[styles.row, {zIndex: -2}]}>
+
+                <View style={[styles.inputWrapper]}>
+                    <InputField2
+                        label={"Duration"}
+                        onChangeText={handleInfoChange("duration")}
+                        value={duration}
+                        onClear={() => handleInfoChange("duration")('')}
+                        placeholder={""}
+                        keyboardType={'numeric'}
+                        errorMessage={errors['duration']}
+                        hasError={errors['duration']}
+                    />
+
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        label={"Category"}
+                        onChangeText={handleInfoChange("category")}
+                        value={category}
+                        onClear={handleInfoChange("category")}
+                        placeholder={""}
+                    />
+                </View>
+            </View>
+
+            <View style={[styles.row, {zIndex: -1}]}>
+
+                <View style={styles.inputWrapper}>
+                    <DateInputField
+                        label={"Date"}
+                        onDateChange={onDateUpdate}
+                        value={date}
+                        onClear={onDateClear}
+                        placeholder="DD/MM/YYYY"
+                        mode={'date'}
+                        format={"YYYY-MM-DD"}
+                        errorMessage={errors['date']}
+                        hasError={errors['date']}
                     />
                 </View>
 
-            </View>
-
-            <View style={[styles.row,{zIndex:-1}]}>
-
-                <View style={styles.inputWrapper}>
-                    <InputField2
-                        label={"Date"}
-                        onChangeText={(value) => {handleDateValidation(value)}}
-                        value={date}
-                        onClear={() =>handleDateValidation('')}
-                        keyboardType = "number-pad"
-                        placeholder = "DD/MM/YYYY"
-                    />
-                </View> 
-
-                <View style={styles.inputWrapper}>
-
-                    <DateInputField2
+                <View style={[styles.inputWrapper]}>
+                    <DateInputField
                         label={"Start Time"}
-                        onChangeText={handleTimeChange}
-                        value={start}
-                        units={['AM','PM']}
-                        keyboardType="number-pad"
+                        onDateChange={onTimeUpdate("startTime")}
+                        value={startTime}
+                        mode={'time'}
+                        format={'hh:mm A'}
+                        onClear={onTimeClear("startTime")}
+                        placeholder="HH:MM"
+                        errorMessage={errors['startTime']}
+                        hasError={errors['startTime']}
                     />
-                </View> 
 
-                <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Duration"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value).toString() || !value) {
-                                setDuration(value)
-                            }
-                        }}
-                        value={duration}
-                        units={['hrs']}
-                        keyboardType="number-pad"
-                    />
-                </View> 
-
-                {/* <DateInputField 
-                    label = "Start Time"
-                    mode = "time"
-                    date = {start}
-                    onChangeText = {(value)=>onDateChange('start')(value)}
-                /> */}
-                
-                {/* <View style={styles.inputWrapper}>
-                    <InputField2
-                        label={"Date"}
-                        onChangeText={(value) => {handleDateValidation(value)}}
-                        value={date}
-                        onClear={() =>handleProcedure('startTime')('')}
-                        keyboardType = "number-pad"
-                        placeholder = "DD/MM/YYYY"
-                    />
-                </View> */}
-
-
-                {/* <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Duration"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value).toString() || !value) {
-                                handleProcedure('duration')(value)
-                            }
-                        }}
-                        value={procedureValues['duration']}
-                        units={['hrs']}
-                        keyboardType="number-pad"
-                    />
-                </View> */}
-
-                {/* <View style={styles.inputWrapper}>
-                    <MultipleSelectionsField
-                        label={"Category"}
-                        onOptionsSelected={onFieldChange('category')}
-                        options = {searchCategoryResult}
-                        searchText = {searchCategoryValue}
-                        onSearchChangeText = {(value)=> setSearchCategoryValue(value)}
-                        onClear={()=>{setSearchCategoryValue('')}}
-                        // handlePopovers = {(value)=>handlePopovers(value)('category')}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {false}
-                    />
-                </View> */}
-                
-            </View>
-
-            <View style={[styles.row, {zIndex:-2}]}>
-
-                
-
-                {/* <DateInputField 
-                    label = "End Time"
-                    mode = "time"
-                    date = {end}
-                    onChangeText = {(value)=>onDateChange('end')(value)}
-                /> */}
-
-                {/* <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Start Time"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value).toString() || !value) {
-                                // handleProcedure('startTime')(value)
-                                console.log("Time: ", value)
-                            }
-                        }}
-                        value={procedureValues['duration']}
-                        units={['AM','PM']}
-                        keyboardType="number-pad"
-                    />
-                </View> */}
-                {/* <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Duration"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value).toString() || !value) {
-                                handleProcedure('duration')(value)
-                            }
-                        }}
-                        value={procedureValues['duration']}
-                        units={['hrs']}
-                        keyboardType="number-pad"
-                    />
-                </View> */}
+                </View>
 
             </View>
-
         </View>
     )
 }

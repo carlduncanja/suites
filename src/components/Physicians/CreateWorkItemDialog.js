@@ -4,9 +4,6 @@ import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
 import DropdownInputField from "../common/Input Fields/DropdownInputField";
-import DateInputField from "../common/Input Fields/DateInputField";
-
-import { formatDate } from '../../utils/formatter'
 import {useModal} from "react-native-modalfy";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 
@@ -57,7 +54,7 @@ const CreateWorkItemDialogContainer = () =>{
                     <View style={styles.row}>
 
                         <View style={styles.inputWrapper}>
-                            <InputField2 
+                            <InputField2
                                 label={"Task"}
                                 onChangeText={onFieldChange('task')}
                                 value={fields['task']}
@@ -65,7 +62,7 @@ const CreateWorkItemDialogContainer = () =>{
                             />
                         </View>
                         <View style={[styles.inputWrapper]}>
-                            <DropdownInputField 
+                            <DropdownInputField
                                 label={"Location"}
                                 onSelectChange={onFieldChange('location')}
                                 value={fields['location']}
@@ -77,7 +74,7 @@ const CreateWorkItemDialogContainer = () =>{
 
                     <View style={styles.row}>
                         <View style={styles.inputWrapper}>
-                            <DropdownInputField 
+                            <DropdownInputField
                                 label={"Case"}
                                 onSelectChange={onFieldChange('case')}
                                 value={fields['case']}
@@ -86,7 +83,7 @@ const CreateWorkItemDialogContainer = () =>{
                         </View>
 
                         <View style={styles.inputWrapper}>
-                            <InputField2 
+                            <InputField2
                                 label={"Date"}
                                 onChangeText={(value) => {
                                     if (/^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g.test(value) || !value) {
@@ -98,13 +95,13 @@ const CreateWorkItemDialogContainer = () =>{
                                 placeholder = {"DD/MM/YYYY"}
                             />
                         </View>
-                        
+
                     </View>
-                
+
                     <View style={[styles.row]}>
 
                         <View style={styles.inputWrapper}>
-                            <InputUnitField 
+                            <InputUnitField
                                 label={"Start"}
                                 onChangeText={onFieldChange('startTime')}
                                 value={fields['startTime']}
@@ -113,7 +110,7 @@ const CreateWorkItemDialogContainer = () =>{
                             />
                         </View>
                         <View style={styles.inputWrapper}>
-                            <InputUnitField 
+                            <InputUnitField
                                 label={"End"}
                                 onChangeText={onFieldChange('endTime')}
                                 value={fields['endTime']}

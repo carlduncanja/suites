@@ -7,31 +7,33 @@ import InputField2 from "../../common/Input Fields/InputField2";
 //     "line2": "",
 //     "city": "Kingston",
 //     "parish": "Kingston 8"
-const PatientAddressTab = ({ onFieldChange, fields }) => {
-    const { addressInfo = {} } = fields
-    const createdAddres = addressInfo || {}
-    const {
-        line1 = "",
-        line2 = "",
-        city = "",
-        parish = ""
-    } = createdAddres
+const PatientAddressTab = ({ onFieldChange, fields, errors}) => {
+    // const { addressInfo = {} } = fields
+    // const createdAddres = addressInfo || {}
+    // const {
+    //     line1 = "",
+    //     line2 = "",
+    //     city = "",
+    //     parish = ""
+    // } = createdAddres
+    //
+    // const [addressValues, setAddress] = useState({
+    //     line1,
+    //     line2,
+    //     city,
+    //     parish
+    // })
+    //
+    // const handleAddress = (type) => (value) =>{
+    //     const updatedAddress = {
+    //         ...addressValues,
+    //         [type] : value
+    //     }
+    //     onFieldChange('addressInfo')([updatedAddress])
+    //     setAddress(updatedAddress)
+    // }
 
-    const [addressValues, setAddress] = useState({
-        line1,
-        line2,
-        city,
-        parish
-    })
 
-    const handleAddress = (type) => (value) =>{
-        const updatedAddress = {
-            ...addressValues,
-            [type] : value
-        }
-        onFieldChange('addressInfo')([updatedAddress])
-        setAddress(updatedAddress)
-    }
     return (
         <View style={styles.sectionContainer}>
 
@@ -39,9 +41,11 @@ const PatientAddressTab = ({ onFieldChange, fields }) => {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Address Line 1"}
-                        onChangeText={(value)=>handleAddress('line1')(value)}
-                        value={addressValues['line1']}
-                        onClear={() => handleAddress('line1')('')}
+                        onChangeText={onFieldChange('line1')}
+                        value={fields['line1']}
+                        onClear={() => onFieldChange('line1')('')}
+                        hasError={errors['line1']}
+                        errorMessage={errors['line1']}
                     />
                 </View>
             </View>
@@ -50,9 +54,10 @@ const PatientAddressTab = ({ onFieldChange, fields }) => {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Address Line 2"}
-                        onChangeText={(value)=>handleAddress('line2')(value)}
-                        value={addressValues['line2']}
-                        onClear={() => handleAddress('line2')('')}
+                        onChangeText={onFieldChange('line2')}
+                        value={fields['line2']}
+                        onClear={() => onFieldChange('line2')('')}
+
                     />
                 </View>
             </View>
@@ -61,9 +66,11 @@ const PatientAddressTab = ({ onFieldChange, fields }) => {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"City"}
-                        onChangeText={(value)=>handleAddress('city')(value)}
-                        value={addressValues['city']}
-                        onClear={() => handleAddress('city')('')}
+                        onChangeText={onFieldChange('city')}
+                        value={fields['city']}
+                        onClear={() => onFieldChange('city')('')}
+                        hasError={errors['city']}
+                        errorMessage={errors['city']}
                     />
                 </View>
             </View>
@@ -72,9 +79,11 @@ const PatientAddressTab = ({ onFieldChange, fields }) => {
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Parish"}
-                        onChangeText={(value)=>handleAddress('parish')(value)}
-                        value={addressValues['parish']}
-                        onClear={() => handleAddress('parish')('')}
+                        onChangeText={onFieldChange('parish')}
+                        value={fields['parish']}
+                        onClear={() => onFieldChange('parish')('')}
+                        hasError={errors['parish']}
+                        errorMessage={errors['parish']}
                     />
                 </View>
             </View>

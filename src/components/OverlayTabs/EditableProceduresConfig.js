@@ -36,7 +36,7 @@ const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopo
         const search = _.debounce(fetchPhysician, 300);
 
         setPhysicianSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -66,7 +66,7 @@ const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopo
     return(
         <KeyboardAvoidingView
             style={{ flex: 1}}
-            enabled   
+            enabled
             keyboardVerticalOffset={300}
             behavior={'padding'}
         >
@@ -87,7 +87,7 @@ const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopo
                             <Text style={styles.title}>Procedure</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
+                        <View style={styles.inputWrapper}>
                             <InputField2
                                 onChangeText = {onFieldChange('name')}
                                 value = {fields['name']}
@@ -111,14 +111,14 @@ const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopo
                                 </MenuOptions>}
                             />
                         </View>
-                    </View>   
+                    </View>
 
                     <View style={styles.fieldWrapper}>
                         <View style={{ marginBottom:5}}>
                             <Text style={styles.title}>Duration</Text>
                         </View>
 
-                        <View style={styles.inputWrapper}> 
+                        <View style={styles.inputWrapper}>
                             <InputUnitField
                                 onChangeText={(value)=>{
                                     if (/^\d+$/g.test(value) || !value) {
@@ -151,7 +151,7 @@ const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopo
                                 </MenuOptions>}
                             />
                         </View>
-                    </View>   
+                    </View>
 
                     <View style={{width:"33%", marginBottom:30, paddingRight:35}}>
                         <View style={{ marginBottom:5}}>
@@ -176,15 +176,15 @@ const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopo
                                 isPopoverOpen = {isPhysicianOpen[0].status}
                             />
                         </View>
-                    </View>   
-                    
+                    </View>
+
 
                 </View>
-            
+
             </View>
 
         </KeyboardAvoidingView>
-        
+
     )
 }
 
@@ -215,10 +215,10 @@ const styles = StyleSheet.create({
         // marginBottom:5
     },
     modalContainer:{
-        position:'absolute', 
-        padding:10, 
-        backgroundColor:'#FFFFFF', 
-        width:300, 
+        position:'absolute',
+        padding:10,
+        backgroundColor:'#FFFFFF',
+        width:300,
         height: 100,
         shadowColor: "#000",
         shadowOffset: {
@@ -239,8 +239,8 @@ const styles = StyleSheet.create({
         borderColor: '#E3E8EF',
         borderRadius: 4,
         height: 32,
-        padding:10, 
-        paddingBottom:2, 
+        padding:10,
+        paddingBottom:2,
         paddingTop:2
     }
 

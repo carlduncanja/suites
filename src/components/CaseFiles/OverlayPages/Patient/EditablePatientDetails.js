@@ -12,8 +12,8 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
     const phoneTypes = ['cell', 'home', 'work']
     const addressLines = ['line1', 'line2']
 
-    const [phones, setPhones] = useState(fields['contactInfo'].phones)
-    const [emails, setEmails] = useState(fields['contactInfo'].emails)
+    const [phones, setPhones] = useState(fields['contactInfo'].phones || [])
+    const [emails, setEmails] = useState(fields['contactInfo'].emails || [])
     const [addresses, setAddresses] = useState(fields['address'])
 
     const [emergencyContacts, setEmergencyContacts] = useState(fields['contactInfo'].emergencyContact)

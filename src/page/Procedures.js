@@ -87,7 +87,7 @@ const Procedures = (props) => {
         const search = _.debounce(fetchProceduresData, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;

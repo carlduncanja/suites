@@ -180,7 +180,7 @@ function Inventory(props) {
         const search = _.debounce(fetchInventory, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;

@@ -13,24 +13,27 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @param onClear
  * @param hasError
  * @returns {*}
- * @constructor 
+ * @constructor
  */
 function InputField2({label, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error"}) {
 
     return (
         <View style={styles.container}>
+
             <Text style={[
                 styles.textLabel, {
                     minWidth: 60,
                     marginRight: label ? 20 : 0
                 }
-            ]}>{label}</Text>
-             
+            ]}>
+                {label}
+            </Text>
+
             <View style={[styles.inputWrapper, {
                 paddingRight: value ? 4 : 0,
             }]}>
                 <TextInput
-                    style={[styles.inputField,{borderColor : hasError ? 'red' : '#E3E8EF'}]}
+                    style={[styles.inputField, {borderColor: hasError ? 'red' : '#E3E8EF'}]}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}
@@ -38,25 +41,20 @@ function InputField2({label, onChangeText, value, placeholder, keyboardType, onC
                 />
                 {
                     hasError && <View style={styles.errorView}>
-                        <Text style={{fontSize:10, color:'red'}}>{errorMessage}</Text>
+                        <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
                     </View>
                 }
-                
-            </View>
-            
-          
-            {
-                value
-                    ? <TouchableOpacity
-                        style={styles.clearIcon}
-                        onPress={onClear}
-                    >
-                        <ClearIcon/>
-                    </TouchableOpacity>
-                    : null
-            }
-           
 
+            </View>
+            {
+                !(value === undefined || value === null || value === '') &&
+                <TouchableOpacity
+                    style={styles.clearIcon}
+                    onPress={onClear}
+                >
+                    <ClearIcon/>
+                </TouchableOpacity>
+            }
         </View>
     );
 }
@@ -78,13 +76,9 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         flex: 1,
-        // borderWidth: 1,
-        // borderColor: '#E3E8EF',
-        // borderRadius: 4,
         height: 32,
     },
     inputField: {
-        // flex: 1,
         padding: 10,
         paddingTop: 2,
         paddingBottom: 2,
@@ -96,12 +90,11 @@ const styles = StyleSheet.create({
     clearIcon: {
         position: 'absolute',
         right: 0,
-        margin: 5
+        margin: 10,
     },
-    errorView : {
-        paddingTop:3,
-        paddingLeft:15
-        
+    errorView: {
+        paddingTop: 3,
+        paddingLeft: 15
     }
 });
 

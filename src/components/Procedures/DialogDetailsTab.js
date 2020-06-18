@@ -44,7 +44,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) =
      const [categorySearchValue, setCategorySearchValue] = useState();
      const [categorySearchResults, setCategorySearchResult] = useState([]);
      const [categorySearchQuery, setCategorySearchQuery] = useState({});
- 
+
 
 
     // ######
@@ -65,7 +65,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) =
         const search = _.debounce(fetchPhysicians, 300);
 
         setSearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -89,7 +89,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) =
         const search = _.debounce(fetchProcedures, 300);
 
         setSearchProcedureQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -113,7 +113,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) =
         const search = _.debounce(fetchCategory, 300);
 
         setCategorySearchQuery(prevSearch => {
-            if (prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -258,7 +258,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) =
                         keyboardType="number-pad"
                     />
                 </View>
-                
+
                 <View style={[styles.inputWrapper,{zIndex:-3}]}>
                     <MultipleSelectionsField
                         label={"Category"}
