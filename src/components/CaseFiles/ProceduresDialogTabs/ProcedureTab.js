@@ -6,11 +6,8 @@ import _ from "lodash";
 import {getProcedures, getTheatres} from "../../../api/network";
 import moment from 'moment';
 import InputField2 from "../../common/Input Fields/InputField2";
-import Popover from "../../common/Popover";
-import SuggestionsFilterContainer from "../../common/SuggestionsFilterContainer";
 import SuggestedTimesPopover from "../../common/SuggestedTimesPopover";
 import {useModal} from "react-native-modalfy";
-import InventoryBottomSheetContainer from "../../Inventory/InventoryBottomSheetContainer";
 
 const ProcedureTab = ({
                           onProcedureInfoChange,
