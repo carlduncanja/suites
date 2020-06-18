@@ -15,16 +15,15 @@ import RightArrow from '../../../../../assets/svg/rightArrow';
 import LeftArrow from '../../../../../assets/svg/leftArrow';
 
 
-
-const Consumables = ({tabDetails, headers, listItemFormat, details = [], isEditMode}) => {
+const Consumables = ({tabDetails, headers, listItemFormat, details = [], handleEditDone, isEditMode}) => {
     
     const [checkBoxList, setCheckBoxList] = useState([])
     const [searchText, setSearchText] = useState('')
-    const [inventoriesData, setInventoriesData] = useState(details)
+    // const [inventoriesData, setInventoriesData] = useState(details)
     
-    const procedureNames = inventoriesData.map( item => item.procedure.name) 
+    const procedureNames = details.map( item => item.procedure.name) 
     const data = []
-    const allInventories = inventoriesData.map( item => item.inventories)
+    const allInventories = details.map( item => item.inventories)
     allInventories.forEach(item => item.map( obj => data.push(obj)))
     let initialOption = isEditMode ? procedureNames[0] : 'All'
     
@@ -88,39 +87,57 @@ const Consumables = ({tabDetails, headers, listItemFormat, details = [], isEditM
         
     }
 
-    const onQuantityChangePress = (item) => (action) =>{
+    const getProcedureId = (data) => {
         if(selectedOption !== 'All'){
-            let filterOption = inventoriesData.filter(item => item.procedure.name === selectedOption)
-
-            // Update inventories array
-            const { inventories } = filterOption[0]
-            const findIndex = inventories.findIndex(obj => obj.name === item.name);
-            const updatedObj = { 
-                ...inventories[findIndex],
-                amount: action ==='add' ? inventories[findIndex].amount + 1 : inventories[findIndex].amount - 1
-            };
-            const updatedInventories = [
-                ...inventories.slice(0, findIndex),
-                updatedObj,
-                ...inventories.slice(findIndex + 1),
-            ]; 
-            // console.log("Inventories: ", updatedInventories)
-
-            // Update procedure with updated inventories
-            const updatedProcedure = {...filterOption[0], inventories : updatedInventories}
-
-            // Update entire list of procedures
-            const filterProcedure = inventoriesData.findIndex( obj => obj.procedure.name === selectedOption)
-            const updatedData = [
-                ...inventoriesData.slice(0, filterProcedure),
-                updatedProcedure,
-                ...inventoriesData.slice(findIndex+1)
+            const filterItem = details.filter( obj => obj.procedure.name === selectedOption) || []
+            const { caseProcedureId, services, equipments } = filterItem[0]
+            let updatedData = [
+                {
+                    caseProcedureId,
+                    inventories : data,
+                    equipments : equipments,
+                    lineItems : services
+                }
             ]
-
-            setInventoriesData(updatedData)
-            setSelectedData(updatedProcedure.inventories)
+            handleEditDone(updatedData)
+            // console.log("Id: ", caseProcedureId)
+            // console.log("Servies: ", services)
+            // console.log("Equip: ", equipments)
         }
+    }
+
+    const onQuantityChangePress = (item) => (action) =>{
+        const findIndex = selectedData.findIndex(obj => obj._id === item._id);
+        let selectedItem = selectedData[findIndex]
+        const updatedObj = { 
+            ...selectedItem,
+            amount: action ==='add' ? selectedItem.amount + 1 : selectedItem.amount - 1
+        };
+        const updatedData = [
+            ...selectedData.slice(0, findIndex),
+            updatedObj,
+            ...selectedData.slice(findIndex + 1),
+        ]; 
+        getProcedureId(updatedData)
+        // handleEditDone(updatedData)
+        // console.log("SelctedData: ", updatedData)
+        setSelectedData(updatedData)
+    }
+
+    const onAmountChange = (value) => (item) => {
         
+        const findIndex = selectedData.findIndex(obj => obj._id === item._id);
+        let selectedItem = selectedData[findIndex]
+        let updatedObj = { ...selectedItem, amount: value === "" ? 0 : parseInt(value)};
+        const updatedItems = [
+            ...selectedData.slice(0, findIndex),
+            updatedObj,
+            ...selectedData.slice(findIndex + 1),
+        ]; 
+        getProcedureId(updatedItems)
+        setSelectedData(updatedItems)
+        
+        // console.log("update: ", updatedItems)
     }
 
     const listItem = (item) => <>
@@ -131,7 +148,7 @@ const Consumables = ({tabDetails, headers, listItemFormat, details = [], isEditM
             <Text style={styles.itemText}>{item.type}</Text>
         </View>
         {
-            isEditMode ?
+            isEditMode && selectedOption !== 'All'?
 
             <View style={[styles.editItem, {alignItems: 'center'}]}>
                 <IconButton
@@ -142,9 +159,10 @@ const Consumables = ({tabDetails, headers, listItemFormat, details = [], isEditM
 
                 <TextInput 
                     style={styles.editTextBox}
-                >
-                    <Text style={styles.itemText}>{item.amount}</Text>
-                </TextInput>
+                    onChangeText = {(value)=>onAmountChange(value)(item)}
+                    value = {item.amount === 0 ? "" : item.amount.toString()}
+                    keyboardType = "number-pad"
+                />
                 
                 <IconButton
                     Icon = {<RightArrow strokeColor="#718096"/>}

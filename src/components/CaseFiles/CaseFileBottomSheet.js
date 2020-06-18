@@ -21,7 +21,7 @@ import ChargeSheetDisabledIcon from '../../../assets/svg/overlayChargeSheetDisab
 
 import {Patient, Procedures, MedicalStaff, MedicalHistory, ChargeSheet} from "./navigation/screens";
 
-import {getCaseFileById} from "../../api/network";
+import {getCaseFileById, updateChargeSheet} from "../../api/network";
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
 import {useModal} from "react-native-modalfy";
 import ActionItem from "../common/ActionItem";
@@ -36,8 +36,10 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     const modal = useModal();
     
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+    const [updateInfo, setUpdateInfo] = useState([])
+    const [selectedCaseId, setSelectedCaseId] = useState("")
 
-    const overlayMenu = [
+    const overlayMenu = [ 
         {
             name: "Patient",
             overlayTabs: ["Details", "Insurance", "Diagnosis", "Patient Risk"],
@@ -110,9 +112,31 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         setSelectedTab(selectedTab)
     }
 
-    const onEditPress = (tab) => {
-        // setEditableTab(tab)
+    const onEditPress = (tab) =>{
         setEditMode(!isEditMode)
+        // if(isEditMode === true){fetchCase(_id)}
+        if(isEditMode === true){
+            updateCase()
+            setTimeout(()=>{
+                fetchCase(_id)
+            },500)
+        }
+
+    }
+
+    const handleEditDone = (id) => (data) => {
+        setUpdateInfo(data)
+        setSelectedCaseId(id)
+    }
+
+    const updateCase = () => {
+        updateChargeSheet(selectedCaseId, updateInfo)
+            .then((data) => {
+                console.log("Updated Record:", data)
+            })
+            .catch(error => {
+                console.log("Failed to update chargesheet", error)
+            })
     }
 
     /**
@@ -156,23 +180,23 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         console.log("getFabActions: selected tab", selectedTab);
         switch (selectedTab) {
             case "Consumables": {
-                const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {
-                }}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
-                                                         onPress={_ => {
-                                                         }}/>;
+                const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {}}/>;
+                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>} onPress={_ => {}}/>;
                 floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
                 title = "CONSUMABLE'S ACTIONS"
                 break;
             }
             case "Equipment": {
-                const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {
-                }}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>}
-                                                         onPress={_ => {
-                                                         }}/>;
+                const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {}}/>;
+                const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>} onPress={_ => {}}/>;
                 floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
                 title = "EQUIPMENT'S ACTIONS"
+                break;
+            }
+            case 'Quotation' : {
+                const createInvoice = <ActionItem title = "Create Invoice" icon = {<AddIcon/>} onPress = {()=>{}}/>
+                floatingAction.push(createInvoice)
+                title = "QUOTATION ACTIONS"
                 break;
             }
         }
@@ -184,7 +208,6 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         />
 
     }
-
     // ############### Data
 
     const getOverlayContent = () => {
@@ -225,6 +248,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
                     selectedTab={selectedTab}
                     isEditMode={isEditMode}
                     quotations = {quotations}
+                    handleEditDone = {handleEditDone}
                 />
 
             default :
