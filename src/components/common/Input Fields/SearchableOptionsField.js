@@ -12,20 +12,22 @@ const optionsStyles = {
 };
 
 function SearchableOptionsField({
-        text,
-        label,
-        options,
-        oneOptionsSelected,
-        onChangeText,
-        onClear,
-        value,
-        isPopoverOpen,
-        handlePopovers,
-        backgroundColor = "#FFFFFF",
-        borderColor = "#E3E8EF",
-        hasError = false,
-        errorMessage = ""
-    }) {
+                                    text,
+                                    label,
+                                    options,
+                                    oneOptionsSelected,
+                                    onChangeText,
+                                    onClear,
+                                    value,
+                                    isPopoverOpen = () => {
+                                    },
+                                    handlePopovers = () => {
+                                    },
+                                    backgroundColor = "#FFFFFF",
+                                    borderColor = "#E3E8EF",
+                                    hasError = false,
+                                    errorMessage = ""
+                                }) {
 
     const textInputRef = useRef();
 
@@ -70,7 +72,7 @@ function SearchableOptionsField({
             </Text>
             <View style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}>
                 <TextInput
-                    style={[styles.inputField, {borderColor: hasError ? 'red' : borderColor, height:32}]}
+                    style={[styles.inputField, {borderColor: hasError ? 'red' : borderColor, height: 32}]}
                     value={text}
                     editable={!selectedValue}
                     onChangeText={(value) => {
@@ -105,7 +107,7 @@ function SearchableOptionsField({
 
                 {
                     hasError && <View style={styles.errorView}>
-                        <Text style={{fontSize:10, color:'red'}}>{errorMessage}</Text>
+                        <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
                     </View>
                 }
 
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         flex: 1,
         flexDirection: 'column',
-        height:32
+        height: 32
     },
     textLabel: {
         fontSize: 12,
@@ -209,9 +211,9 @@ const styles = StyleSheet.create({
         right: 0,
         margin: 8,
     },
-    errorView : {
-        paddingTop:3,
-        paddingLeft:15
+    errorView: {
+        paddingTop: 3,
+        paddingLeft: 15
 
     }
 });

@@ -170,6 +170,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
     const [patientFieldErrors, setPatientErrors] = useState({})
 
     const [staffInfo, setStaffInfo] = useState([])
+    const [staffErrors, setStaffErrors] = useState([])
+
     const [caseProceduresInfo, setCaseProceduresInfo] = useState([])
     const [procedureErrors, setProcedureErrors] = useState([]);
 
@@ -207,20 +209,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         setPatientFields(value)
     }
 
-    const onStaffUpdate = (value, selectedType) => {
-        // update the current staff value at the index
-        const newStaff = {...value, type: selectedType}
-
-        const updatedStaffs = [...staffInfo]
-
-        // check if value is at index
-        if (updatedStaffs[selectedTabIndex]) {
-            updatedStaffs[selectedTabIndex] = newStaff;
-        } else {
-            updatedStaffs.push(newStaff)
-        }
-
-        setStaffInfo(updatedStaffs)
+    const onStaffUpdate = (value) => {
+        setStaffInfo(value)
     }
 
     const onProcedureUpdate = (value) => {
@@ -306,7 +296,6 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
 
         let isValid = true;
 
-
         switch (selectedIndex) {
             case CASE_PROCEDURE_TABS.PATIENT_DETAILS: {
                 isValid = validatePatientDetailsTab(currentTab);
@@ -317,7 +306,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                 break;
             }
             case CASE_PROCEDURE_TABS.MEDICAL_STAFF: {
-
+                isValid = validateStaffInfo(selectedTabIndex);
                 break;
             }
             case CASE_PROCEDURE_TABS.FINAL: {
@@ -452,11 +441,41 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         return isValid;
     }
 
+    const validateStaffInfo = (staffIndex) => {
+        let isValid = true;
+        const requiredParams = ['name'];
+
+        const staff = staffInfo[staffIndex] || {}
+
+        let updateErrors = [...staffErrors];
+        let errorObj = updateErrors[staffIndex] || {};
+
+        console.log('error index at', staffIndex, staff, staffInfo);
+
+        for (const requiredParam of requiredParams) {
+
+            if (!staff[requiredParam]) {
+                console.log(`${requiredParam} is required`)
+                isValid = false
+                errorObj[requiredParam] = "Please enter a value";
+                updateErrors[+staffIndex] = errorObj;
+            } else {
+                delete errorObj[requiredParam];
+                updateErrors[+staffIndex] = errorObj;
+            }
+
+        }
+
+        setStaffErrors(updateErrors)
+        console.log("staff errors", staffErrors)
+
+        return isValid;
+    }
+
     const handleCloseDialog = () => {
         onCancel();
         modal.closeAllModals();
     }
-
 
     const handlePopovers = (popoverValue) => (popoverItem) => {
 
@@ -554,6 +573,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     staffs={staffInfo}
                     tabs={tabs}
                     completedTabs={completedTabs}
+                    errors={staffErrors}
+                    onErrorsUpdate={(value) => setStaffErrors(value)}
                 />
 
             case CASE_PROCEDURE_TABS.PROCEDURES:
