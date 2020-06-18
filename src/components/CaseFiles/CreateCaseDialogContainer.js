@@ -48,7 +48,7 @@ const testData = {
                 }
             ]
         },
-        "address": {
+        "addressInfo": {
             "line1": "23 Ruthven Road",
             "line2": "",
             "city": "Kingston",
@@ -389,7 +389,12 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         console.log(patientFields);
 
         for (const requiredField of requiredFields) {
-            if (!patientFields[requiredField]) {
+
+
+            if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo[requiredField])) {
+                delete updateErrors[requiredField];
+                console.log(`${requiredField} is valid`)
+            } else {
                 isValid = false;
 
                 updateErrors = {
@@ -397,9 +402,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     [requiredField]: `${requiredField} is required`,
                 }
 
-            } else {
-                delete updateErrors[requiredField];
-                console.log(`${requiredField} is valid`)
+                console.log(patientFields.addressInfo[requiredField])
             }
         }
 
