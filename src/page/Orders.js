@@ -16,13 +16,20 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 
 import {connect} from 'react-redux';
 import {setPurchaseOrders} from "../redux/actions/purchaseOrdersActions";
-import {getPurchaseOrders, createInvoiceViaOrders} from "../api/network";
+import {
+    getPurchaseOrders,
+    createInvoiceViaOrders,
+    updateCaseQuotationStatus,
+    updatePurchaseOrderStatus
+} from "../api/network";
 import _ from "lodash";
 
 import {withModal, useModal} from 'react-native-modalfy';
 import purchaseOrdersTest from '../../data/PurchaseOrders'
-import { formatDate, transformToSentence } from '../utils/formatter';
+import {formatDate, transformToSentence} from '../utils/formatter';
 import OrdersBottomSheet from '../components/PurchaseOrders/OrdersBottomSheet';
+import {PURCHASE_ORDER_STATUSES} from "../const";
+import EditIcon from "../../assets/svg/editIcon";
 
 const Orders = (props) => {
 
@@ -33,13 +40,13 @@ const Orders = (props) => {
             name: "Purchase Orders",
             alignment: "flex-start",
             flex: 1,
-            fontSize : 14
+            fontSize: 14
         },
         {
             name: "Status",
             alignment: "center",
             flex: 1,
-            fontSize : 14
+            fontSize: 14
         },
         {
             name: "Delivery Date",
@@ -51,7 +58,7 @@ const Orders = (props) => {
             name: "Supplier",
             alignment: "flex-start",
             flex: 2,
-            fontSize : 14
+            fontSize: 14
         }
     ];
 
@@ -95,7 +102,7 @@ const Orders = (props) => {
         const search = _.debounce(fetchOrdersData, 300);
 
         setSearchQuery(prevSearch => {
-            if ( prevSearch && prevSearch.cancel) {
+            if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
             return search;
@@ -106,7 +113,7 @@ const Orders = (props) => {
 
     // ############# Event Handlers
 
-    const onSearchInputChange = (input) =>{
+    const onSearchInputChange = (input) => {
         setSearchValue(input)
     }
 
@@ -142,11 +149,11 @@ const Orders = (props) => {
         console.log("List: ", updatedOrders)
     }
 
-    const handleOnItemPress = (item, isOpenEditable) =>{
-        modal.openModal('BottomSheetModal',{
-            content: <OrdersBottomSheet 
-                order = {item} 
-                isOpenEditable = {isOpenEditable}
+    const handleOnItemPress = (item, isOpenEditable) => {
+        modal.openModal('BottomSheetModal', {
+            content: <OrdersBottomSheet
+                order={item}
+                isOpenEditable={isOpenEditable}
             />
         })
     }
@@ -187,7 +194,7 @@ const Orders = (props) => {
         setFetchingData(true)
         getPurchaseOrders(searchValue, recordsPerPage)
             .then(ordersInfo => {
-                const { data = [], pages = 0} = ordersInfo
+                const {data = [], pages = 0} = ordersInfo
                 // setPurchaseOrders([])
                 setPurchaseOrders(data);
                 console.log("OrdersInfo: ", data)
@@ -213,23 +220,23 @@ const Orders = (props) => {
     }
 
     const orderItem = (item) => {
-        const { purchaseOrderNumber = "", status = "", orderDate = "", supplier = {} } = item
-        const { name = "" } = supplier
+        const {purchaseOrderNumber = "", status = "", orderDate = "", supplier = {}} = item
+        const {name = ""} = supplier
         const statusColor = status === 'Incomplete' ? "#805AD5" :
-            status === 'Request Sent' ? "#319795" : 
-            status === 'Payment Due' ? "#C53030" : "#4E5664"
-        
+            status === 'Request Sent' ? "#319795" :
+                status === 'Payment Due' ? "#C53030" : "#4E5664"
+
         const deliveryDate = (orderDate === "" || orderDate === null) ? 'n/a' : formatDate(orderDate, 'DD/MM/YYYY')
 
         return (
             <>
-                <View style={[styles.item,{...styles.rowBorderRight, flex: 1}]}>
-                    <Text style={[styles.itemText, {color:"#4E5664"}]}>{purchaseOrderNumber}</Text>
+                <View style={[styles.item, {...styles.rowBorderRight, flex: 1}]}>
+                    <Text style={[styles.itemText, {color: "#4E5664"}]}>{purchaseOrderNumber}</Text>
                 </View>
-                <View style={[styles.item, {flex: 1,alignItems:'center' }]}>
+                <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
                     <Text style={[styles.itemText, {color: statusColor}]}>{transformToSentence(status)}</Text>
                 </View>
-                <View style={[styles.item, {flex: 1, }]}>
+                <View style={[styles.item, {flex: 1,}]}>
                     <Text style={[styles.itemText, {color: "#4E5664"}]}>{deliveryDate}</Text>
                 </View>
                 <View style={[styles.item, {flex: 2,}]}>
@@ -242,48 +249,105 @@ const Orders = (props) => {
 
     const getFabActions = () => {
 
-        const createInvoice = <ActionItem title={"Create Invoice"} icon={<AddIcon/>} onPress={onCreateInvoice}/>;
+        const actions = [];
+        if (selectedOrders.length === 1) {
+
+            const orderId = selectedOrders[0];
+            const purchaseOrder = purchaseOrders.find(item => item._id === orderId) || {};
+
+            switch (purchaseOrder.status) {
+                case PURCHASE_ORDER_STATUSES.DRAFTED: {
+                    const updateStatusAction = <ActionItem
+                        title={"Accept Purchase Order"}
+                        icon={<AddIcon/>}
+                        onPress={() => updateStatus(orderId, PURCHASE_ORDER_STATUSES.ACCEPTED)}
+                    />;
+
+                    actions.push(updateStatusAction)
+                    break;
+                }
+                case PURCHASE_ORDER_STATUSES.ORDER_RECEIVED:
+
+                    const createInvoice = <ActionItem
+                        title={"Create Invoice"}
+                        icon={<AddIcon/>}
+                        onPress={() => onCreateInvoice(orderId)}
+                    />;
+
+
+                    actions.push(createInvoice)
+                    break;
+                case PURCHASE_ORDER_STATUSES.BILLED: {
+
+                    break;
+                }
+                case PURCHASE_ORDER_STATUSES.ACCEPTED: {
+                    const updateStatusAction = <ActionItem
+                        title={"Purchase Order Received"}
+                        icon={<EditIcon/>}
+                        onPress={() => updateStatus(orderId, PURCHASE_ORDER_STATUSES.ORDER_RECEIVED)}
+                    />;
+
+                    actions.push(updateStatusAction)
+                    break;
+                }
+                case PURCHASE_ORDER_STATUSES.CANCELLED:
+                    break
+
+            }
+
+
+            // actions.push(createInvoice);
+        } else {
+
+        }
+
 
         return <ActionContainer
-            floatingActions={[
-                createInvoice
-            ]}
+            floatingActions={actions}
             title={"ORDERS ACTIONS"}
         />
     };
 
-    const onCreateInvoice = () => {
-        let errors = []
-        selectedOrders.forEach( id => {
-            createInvoiceViaOrders(id)
-                .then((data) => {
-                    console.log("Invoice Record:", data)
-                })
-                .catch(error => {
-                    Alert.alert(
-                        "Unsuccessful creation",
-                        "Invoice can only be generated for purchase orders in `ORDER RECEIVED` status.",
-                        [
-                            {
-                                text : 'Ok',
-                                onPress : () => console.log("Ok pressed")
-                            }
-                        ],
+    const onCreateInvoice = (purchaseOrderId) => {
+        createInvoiceViaOrders(purchaseOrderId)
+            .then((data) => {
+                console.log("Invoice Record:", data)
+            })
+            .catch(error => {
+                Alert.alert(
+                    "Unsuccessful creation",
+                    "Invoice can only be generated for purchase orders in `ORDER RECEIVED` status.",
+                    [
                         {
-                            cancelable : false
+                            text: 'Ok',
+                            onPress: () => console.log("Ok pressed")
                         }
+                    ],
+                    {
+                        cancelable: false
+                    }
+                )
+                console.log("Failed to create invoice", error)
+            })
+    }
 
-                    )
-                    console.log("Failed to create invoice", error)
-                })
-        });
+    const updateStatus = (purchaseOrderId, status) => {
+        updatePurchaseOrderStatus(purchaseOrderId, status)
+            .then((data) => {
+                console.log("Purchase Order Record:", data)
+                // todo update purchase order in state.
+            })
+            .catch(error => {
+                console.log("Failed to update status", error)
+                Alert.alert("Sorry", "Failed to open quotation, please try again.")
+            })
     }
 
     // ############# Prepare list data
 
     let ordersToDisplay = [...purchaseOrders];
     ordersToDisplay = ordersToDisplay.slice(currentPageListMin, currentPageListMax);
-
 
     return (
         <View style={{flex: 1}}>
