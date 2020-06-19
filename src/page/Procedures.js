@@ -113,10 +113,10 @@ const Procedures = (props) => {
     }
 
     const handleOnCheckBoxPress = (item) => () => {
-        const {id} = item;
-        let updatedProceduresList = checkboxItemPress(item, id, selectedProcedures)
-
-        setSelectedProcedures(updatedProceduresList)
+        const {_id} = item;
+        let updatedProcedures = checkboxItemPress(item, _id, selectedProcedures)
+        
+        setSelectedProcedures(updatedProcedures)
     }
 
     const handleOnItemPress = (item, isOpenEditable) => {
@@ -176,7 +176,7 @@ const Procedures = (props) => {
     const renderProcedureFn = (item) => {
         return <ListItem
             hasCheckBox={true}
-            isChecked={selectedProcedures.includes(item.id)}
+            isChecked={selectedProcedures.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item, false)}
             itemView={procedureItem(item)}

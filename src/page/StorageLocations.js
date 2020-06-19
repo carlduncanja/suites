@@ -73,8 +73,10 @@ const StorageLocations = (props) => {
 
     const handleOnCheckBoxPress = (item) => () =>{
         const { id } = item;
+        console.log("Item: ", item)
         let updatedStorageList = checkboxItemPress(item, id, selectedStorageIds)
         setSelectedStorageIds(updatedStorageList)
+        console.log("Locations checked: ", updatedStorageList)
     }
 
     const handleOnItemPress = (item) => {

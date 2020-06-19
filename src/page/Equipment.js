@@ -130,22 +130,22 @@ const Equipment = (props) => {
     };
 
     const handleOnSelectAll = () => {
-        // let updatedEquipmentList = selectAll(equipment, selectedTypesIds)
-        // setSelectedTypesIds(updatedEquipmentList)
+        let updatedEquipmentList = selectAll(equipment, selectedTypesIds)
+        setSelectedTypesIds(updatedEquipmentList)
 
-        const indeterminate = selectedTypesIds.length >= 0 && selectedTypesIds.length !== equipmentTypes.length;
-        if (indeterminate) {
-            const selectedAllIds = [...equipmentTypes.map(caseItem => caseItem.id)];
-            setSelectedTypesIds(selectedAllIds)
-        } else {
-            setSelectedTypesIds([])
-        }
+        // const indeterminate = selectedTypesIds.length >= 0 && selectedTypesIds.length !== equipmentTypes.length;
+        // if (indeterminate) {
+        //     const selectedAllIds = [...equipmentTypes.map(caseItem => caseItem.id)];
+        //     setSelectedTypesIds(selectedAllIds)
+        // } else {
+        //     setSelectedTypesIds([])
+        // }
     }
 
     const handleOnCheckBoxPress = (item) => () => {
-        const {id} = item;
-        // console.log("Id:", id)
-        let updatedEquipmentList = checkboxItemPress(item, id, selectedTypesIds)
+        const {_id} = item;
+        console.log("Id:", item)
+        let updatedEquipmentList = checkboxItemPress(item, _id, selectedTypesIds)
 
         setSelectedTypesIds(updatedEquipmentList)
     }
@@ -489,7 +489,7 @@ const mapStateToProps = (state) => {
     const equipment = state.equipment.map(item => {
         return {
             ...item,
-            id: item._id
+            // id: item._id
         }
     })
     return {equipment}

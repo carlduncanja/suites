@@ -16,7 +16,7 @@ import {useModal} from "react-native-modalfy";
 import InventoryBottomSheetContainer from "../components/Inventory/InventoryBottomSheetContainer";
 import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
 import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
-import {useNextPaginator, usePreviousPaginator} from "../helpers/caseFilesHelpers";
+import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from "../helpers/caseFilesHelpers";
 import CheckBoxComponent from "../components/common/Checkbox";
 import SvgIcon from "../../assets/SvgIcon";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
@@ -206,14 +206,8 @@ function Inventory(props) {
     };
 
     const onSelectAll = () => {
-        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== inventory.length;
-        // console.log("Indeterminate: ", indeterminate)
-        if (indeterminate) {
-            const selectedAllIds = [...inventory.map(item => item.id)];
-            setSelectedIds(selectedAllIds)
-        } else {
-            setSelectedIds([])
-        }
+        let updatedInventory = selectAll(inventory, selectedIds)
+        setSelectedIds(updatedInventory)
     };
 
     const goToNextPage = () => {
@@ -244,16 +238,9 @@ function Inventory(props) {
     };
 
     const onCheckBoxPress = (item) => () => {
-        const {id} = item;
-        let updatedCases = [...selectedIds];
-
-        if (updatedCases.includes(id)) {
-            updatedCases = updatedCases.filter(id => id !== item.id)
-        } else {
-            updatedCases.push(item.id);
-        }
-
-        setSelectedIds(updatedCases);
+        const {_id} = item;
+        let updatedInventory = checkboxItemPress(item, _id, selectedIds);
+        setSelectedIds(updatedInventory);
     };
 
     // ##### Helper functions

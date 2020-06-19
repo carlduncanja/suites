@@ -119,8 +119,8 @@ const Physicians = (props) => {
     }
 
     const handleOnCheckBoxPress = (item) => () =>{
-        const { id } = item;
-        let updatedPhysiciansList = checkboxItemPress(item, id, selectedPhysiciansId)
+        const { _id } = item;
+        let updatedPhysiciansList = checkboxItemPress(item, _id, selectedPhysiciansId)
         setSelectedPhysiciansId(updatedPhysiciansList)
     }
 
@@ -192,17 +192,19 @@ const Physicians = (props) => {
     }
 
     const physiciansItem = (item) => {
+        
+        const { _id = "", surname = "", type = "Neurosurgeon", status = "Active" } = item
         return (
             <>
                 <View style={[styles.item,{}]}>
-                    <Text style={[styles.itemText,{fontSize: 12, color: "#718096"}]}>{`#${item._id}`}</Text>
-                    <Text style={[styles.itemText,{fontSize: 16, color: "#3182CE"}]}>{`Dr. ${item.surname}`}</Text>
+                    <Text style={[styles.itemText,{fontSize: 12, color: "#718096"}]}>#{_id}</Text>
+                    <Text style={[styles.itemText,{fontSize: 16, color: "#3182CE"}]}>Dr. {surname}</Text>
                 </View>
                 <View style={[styles.item,{alignItems:'center'}]}>
-                    <Text style={[styles.itemText,{fontSize: 16, color: '#4E5664'}]}>{item.type}</Text>
+                    <Text style={[styles.itemText,{fontSize: 16, color: '#4E5664'}]}>{type}</Text>
                 </View>
                 <View style={[styles.item,{alignItems:'center'}]}>
-                    <Text style={[styles.itemText,{fontSize: 14, color: statusColor(item.status)}]}>{item.status}</Text>
+                    <Text style={[styles.itemText,{fontSize: 14, color: statusColor(status)}]}>{status}</Text>
                 </View>
                 <View style={[styles.item,{alignItems:'center'}]}>
                     <PhysicianActionIcon/>
@@ -316,8 +318,8 @@ const mapStateToProps = (state) => {
     const physicians = state.physicians.map( item => {
         return {
             ...item,
-            type : 'Neurosurgeon',
-            status : 'Active'
+            // type : 'Neurosurgeon',
+            // status : 'Active'
         }
     })
 

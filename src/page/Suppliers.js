@@ -110,10 +110,9 @@ const Suppliers = (props) => {
     }
 
     const handleOnCheckBoxPress = (item) => () => {
-        const {id} = item;
-        let updatedSuppliersList = checkboxItemPress(item, id, selectedSuppliers)
-        console.log("List: ", updatedSuppliersList)
-
+        const {_id} = item;
+        let updatedSuppliersList = checkboxItemPress(item, _id, selectedSuppliers)
+        
         setSelectedSuppliers(updatedSuppliersList)
     }
 
@@ -180,7 +179,7 @@ const Suppliers = (props) => {
     const renderSupplierFn = (item) => {
         return <ListItem
             hasCheckBox={true}
-            isChecked={selectedSuppliers.includes(item.id)}
+            isChecked={selectedSuppliers.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item, false)}
             itemView={supplierItem(item)}
