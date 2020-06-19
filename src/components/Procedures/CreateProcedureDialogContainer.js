@@ -146,8 +146,8 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
             })
 
             if(isNameError === false && isDurationError === false && isPhysicianError === false){
-                console.log("Fields: ",updatedFields)
-                // createProcedureCall(updatedFields)
+                // console.log("Fields: ",updatedFields)
+                createProcedureCall(updatedFields)
             }else{
                 setTabIndex(0)
             }
