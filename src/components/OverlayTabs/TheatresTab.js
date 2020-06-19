@@ -53,19 +53,8 @@ const TheatresTab = ({modal, theatresData}) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
-
-    const data = theatresData.map( item =>{
-        const recovery = item.isRecovery ? "Yes" : "No"
-        return {
-            room : item.name,
-            status : "In Use",
-            recovery : recovery,
-            availability : 3,
-        }
-    })
-
     useEffect(()=>{
-        setTotalPages(Math.ceil(data.length / recordsPerPage))
+        setTotalPages(Math.ceil(theatresData.length / recordsPerPage))
     },[])
 
     const goToNextPage = () => {
@@ -86,24 +75,29 @@ const TheatresTab = ({modal, theatresData}) => {
         setCurrentPageListMax(currentListMax);
     };
 
-    const listItemFormat = (item) => <>
-        <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
-            <View style={{flex:1}}>
-                <Text style={{fontSize:16, color:'#3182CE'}}>{item.room}</Text>
-            </View>
-            <View style={{flex:1, alignItems:"center"}}>
-                <Text style={{fontSize:14, color:'#DD6B20'}}>{item.status}</Text>
-            </View>
-            <View style={{flex:1, alignItems:'center'}}>
-                <Text style={{fontSize:14, color:'#38A169'}}>{item.recovery}</Text>
-            </View>
-            <View style={{flex:1, alignItems:'flex-end'}}>
-                <Text style={{fontSize:14, color:'#323843'}}>{item.availability}</Text>
-            </View>
-        </View>
-    </>
+    const listItemFormat = (item) => {
+        const { name = "", isRecovery = false, availability = 0, status = "Test_Status" } = item
+        return (
+            <>
+                <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
+                    <View style={{flex:1}}>
+                        <Text style={{fontSize:16, color:'#3182CE'}}>{name}</Text>
+                    </View>
+                    <View style={{flex:1, alignItems:"center"}}>
+                        <Text style={{fontSize:14, color:'#DD6B20'}}>{status}</Text>
+                    </View>
+                    <View style={{flex:1, alignItems:'center'}}>
+                        <Text style={{fontSize:14, color:'#38A169'}}>{isRecovery ? 'Yes' : 'No'}</Text>
+                    </View>
+                    <View style={{flex:1, alignItems:'flex-end'}}>
+                        <Text style={{fontSize:14, color:'#323843'}}>{availability}</Text>
+                    </View>
+                </View>
+            </>
+        )
+    }
 
-    let dataToDisplay = [...data];
+    let dataToDisplay = [...theatresData];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
