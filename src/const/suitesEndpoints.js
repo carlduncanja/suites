@@ -28,11 +28,14 @@ export const equipmentsEndpoint = "/equipments";
 export const equipmentEndpoint = (id) => `/equipments/${id}`;
 export const equipmentTypesEndpoint = "/equipment-types"
 
-// ##### CASE FILES 
+// ##### CASE FILES
 export const caseFilesEndpoint = "/cases";
 export const caseFileEndpoint = (id) => `/cases/${id}`;
 export const updateChargeSheetEndpoint = (id) => `/cases/${id}/chargesheets`;
 export const createInvoice = (id) => (quotationId) => `/cases/${id}/quotations/${quotationId}/invoices`;
+export const suggestedStartTimeEndpoint = '/cases/appointment/suggestions'
+export const validateCaseProcedureEndpoint = '/cases/appointment/isvalid';
+export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${caseId}/quotations/${quotationId}/status`
 
 // ##### STORAGE
 export const storageLocationsEndpoint = "/storage-locations";
@@ -48,6 +51,7 @@ export const updateProductsEndpoint = (id) => (productId) => `/suppliers/${id}/p
 export const purchaseOrdersEndpoint = "/purchase_orders";
 export const purchaseOrderEndpoint = (id) => `/purchase_orders/${id}`;
 export const createOrderInvoice = (id) => `/purchase_orders/${id}/invoice`;
+export const updatePurchaseOrderStatusEndpoint = (purchaseOrderId) => `/purchase_orders/${purchaseOrderId}/status`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = "/categories/items";

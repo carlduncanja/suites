@@ -48,7 +48,7 @@ const testData = {
                 }
             ]
         },
-        "address": {
+        "addressInfo": {
             "line1": "23 Ruthven Road",
             "line2": "",
             "city": "Kingston",
@@ -170,6 +170,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
     const [patientFieldErrors, setPatientErrors] = useState({})
 
     const [staffInfo, setStaffInfo] = useState([])
+    const [staffErrors, setStaffErrors] = useState([])
+
     const [caseProceduresInfo, setCaseProceduresInfo] = useState([])
     const [procedureErrors, setProcedureErrors] = useState([]);
 
@@ -207,20 +209,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         setPatientFields(value)
     }
 
-    const onStaffUpdate = (value, selectedType) => {
-        // update the current staff value at the index
-        const newStaff = {...value, type: selectedType}
-
-        const updatedStaffs = [...staffInfo]
-
-        // check if value is at index
-        if (updatedStaffs[selectedTabIndex]) {
-            updatedStaffs[selectedTabIndex] = newStaff;
-        } else {
-            updatedStaffs.push(newStaff)
-        }
-
-        setStaffInfo(updatedStaffs)
+    const onStaffUpdate = (value) => {
+        setStaffInfo(value)
     }
 
     const onProcedureUpdate = (value) => {
@@ -296,16 +286,14 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
             setCompletedTabs([])
         }
 
-
         const isFinalTab = (selectedTabIndex === tabs.length - 1)
 
-        const currentTab = wizard[selectedIndex].tabs[selectedTabIndex]
+        const currentTab = wizard[selectedIndex] && wizard[selectedIndex].tabs[selectedTabIndex]
 
 
         console.log(`selected index ${selectedIndex}, selected tab index ${selectedTabIndex}, current tab ${currentTab}`)
 
         let isValid = true;
-
 
         switch (selectedIndex) {
             case CASE_PROCEDURE_TABS.PATIENT_DETAILS: {
@@ -317,16 +305,14 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                 break;
             }
             case CASE_PROCEDURE_TABS.MEDICAL_STAFF: {
-
+                isValid = validateStaffInfo(selectedTabIndex);
                 break;
             }
             case CASE_PROCEDURE_TABS.FINAL: {
+                console.log("validation procedure info")
+
                 break;
             }
-            default: {
-
-            }
-
         }
 
         if (!isValid) {
@@ -339,22 +325,18 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         //     incrementTab();
         // }
 
-
         if (selectedIndex === 3) {
             // we are on the final tab
             console.log("Hey Save my data and open bottom sheet with the data")
 
             handleOnComplete()
         } else if (selectedTabIndex !== tabs.length - 1) {
-            // VALIDATE FIELDS
 
             const updatedTabIndex = selectedTabIndex + 1
             setCompletedTabs([...completedTabs, tabs[selectedTabIndex]])
             setSelectedTabIndex(updatedTabIndex)
 
         } else if (selectedIndex === steps.length - 1 && selectedTabIndex === tabs.length - 1) {
-            // VALIDATE FIELDS
-
             setPositiveText('CONTINUE')
             setCompletedSteps([...completedSteps, steps[selectedIndex].name])
             setSelectedIndex(3)
@@ -362,7 +344,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
             setTabs(["Julie Brown's Case Created"])
 
         } else {
-            // VALIDATE FIELDS
+
             const updatedIndex = selectedIndex + 1
             setCompletedSteps([...completedSteps, steps[selectedIndex].name])
             setSelectedIndex(updatedIndex)
@@ -400,7 +382,12 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         console.log(patientFields);
 
         for (const requiredField of requiredFields) {
-            if (!patientFields[requiredField]) {
+
+
+            if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo[requiredField])) {
+                delete updateErrors[requiredField];
+                console.log(`${requiredField} is valid`)
+            } else {
                 isValid = false;
 
                 updateErrors = {
@@ -408,9 +395,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     [requiredField]: `${requiredField} is required`,
                 }
 
-            } else {
-                delete updateErrors[requiredField];
-                console.log(`${requiredField} is valid`)
+                console.log(patientFields.addressInfo[requiredField])
             }
         }
 
@@ -452,11 +437,41 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
         return isValid;
     }
 
+    const validateStaffInfo = (staffIndex) => {
+        let isValid = true;
+        const requiredParams = ['name'];
+
+        const staff = staffInfo[staffIndex] || {}
+
+        let updateErrors = [...staffErrors];
+        let errorObj = updateErrors[staffIndex] || {};
+
+        console.log('error index at', staffIndex, staff, staffInfo);
+
+        for (const requiredParam of requiredParams) {
+
+            if (!staff[requiredParam]) {
+                console.log(`${requiredParam} is required`)
+                isValid = false
+                errorObj[requiredParam] = "Please enter a value";
+                updateErrors[+staffIndex] = errorObj;
+            } else {
+                delete errorObj[requiredParam];
+                updateErrors[+staffIndex] = errorObj;
+            }
+
+        }
+
+        setStaffErrors(updateErrors)
+        console.log("staff errors", staffErrors)
+
+        return isValid;
+    }
+
     const handleCloseDialog = () => {
         onCancel();
         modal.closeAllModals();
     }
-
 
     const handlePopovers = (popoverValue) => (popoverItem) => {
 
@@ -554,6 +569,8 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     staffs={staffInfo}
                     tabs={tabs}
                     completedTabs={completedTabs}
+                    errors={staffErrors}
+                    onErrorsUpdate={(value) => setStaffErrors(value)}
                 />
 
             case CASE_PROCEDURE_TABS.PROCEDURES:

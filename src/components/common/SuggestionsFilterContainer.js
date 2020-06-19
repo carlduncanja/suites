@@ -13,19 +13,19 @@ import { checkboxItemPress } from '../../helpers/caseFilesHelpers';
 import Search from './Search';
 
 /**
- * @param keysToFilter array of string 
+ * @param keysToFilter array of string
  * @param options array of strings
- * @returns {*} 
+ * @returns {*}
  */
 
-const SuggestionsFilterContainer = ({ options, searchText, onSearchChangeText, onOptionSelected}) => {
+const SuggestionsFilterContainer = ({ options = [], searchText, onSearchChangeText, onOptionSelected}) => {
 
     const [selectedOption, setSelectedOption] = useState(0)
 
     return (
         <>
             <View style={styles.searchContainer}>
-                <TextInput 
+                <TextInput
                     style={styles.inputField}
                     value = {searchText}
                     onChangeText = {(text)=>onSearchChangeText(text)}
@@ -33,14 +33,14 @@ const SuggestionsFilterContainer = ({ options, searchText, onSearchChangeText, o
                     placeholder = "Filter"
                 />
             </View>
-            
-      
+
+
             <View style={styles.suggestionsContainer}>
                 {options.map(( option, index)=>{
-                   
+
                     return (
-                        <TouchableOpacity 
-                            key={index} 
+                        <TouchableOpacity
+                            key={index}
                             activeOpacity = {0.7}
                             style={[styles.optionWrapper,{backgroundColor: selectedOption === index ? "#EEF2F6" : null}]}
                             onPress = {()=>{onOptionSelected(index); setSelectedOption(index)}}

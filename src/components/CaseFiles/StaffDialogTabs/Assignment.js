@@ -13,11 +13,13 @@ import {getPhysicians} from "../../../api/network";
  * @param value
  * @param type
  * @param onStaffChange
+ * @param errors
+ * @param onErrorUpdate
  * @returns {*}
  * @constructor
  */
 const
-    Assignment = ({value, type, onStaffChange}) => {
+    Assignment = ({value, type, onStaffChange, errors = {}, onErrorUpdate}) => {
         // Fields is an object of arrays - Nurses and Physicians.
         // To change the field - add the item object to the specific araay depending on type
         // Eg: Type is Physician, check if exists, if not add the physicians.
@@ -86,6 +88,12 @@ const
             setSearchValue('')
         }
 
+        const handleClear = () => {
+            onStaffChange(false, undefined)
+            setSearchValue('')
+            onErrorUpdate({})
+        }
+
         console.log("assignments value", value, type);
 
         return (
@@ -121,19 +129,19 @@ const
                             text={searchValue}
                             oneOptionsSelected={(value) => {
                                 const staff = {
+                                    _id: value._id,
                                     name: value.name,
-                                    _id: value._id
+                                    type: selectedType,
                                 }
 
-                                onStaffChange(staff, selectedType)
+                                onStaffChange(staff)
+                                onErrorUpdate({})
                             }}
                             onChangeText={(value) => setSearchValue(value)}
-                            onClear={() => setSearchValue('')}
+                            onClear={handleClear}
                             options={searchResult}
-                            isPopoverOpen={() => {
-                            }}
-                            handlePopovers={() => {
-                            }}
+                            errorMessage={errors['name']}
+                            hasError={errors['name']}
                         />
                     </View>
                 </View>

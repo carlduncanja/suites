@@ -60,11 +60,11 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
             ...errorFields,
             name: nameBool
         })
-        
+
         if(nameBool === false){
             console.log("Success")
             createTheatreCall()
-        } 
+        }
     };
 
     const onFieldChange = (fieldName) => (value) => {
@@ -110,7 +110,7 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
                 <View style={styles.sectionContainer}>
                     <View style={styles.row}>
                         <View style={styles.inputWrapper}>
-                            <InputField2 
+                            <InputField2
                                 label={"Theatre Name"}
                                 onChangeText={onFieldChange('name')}
                                 value={fields['name']}
@@ -133,7 +133,7 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
                         />
                     </View>
 
-                    
+
                 </View>
             </View>
 
@@ -188,9 +188,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const mapDispatcherToProps = {
-
-};
+const mapDispatcherToProps = {};
 
 export default
 connect(null, mapDispatcherToProps)(CreateTheatreDialogContainer);

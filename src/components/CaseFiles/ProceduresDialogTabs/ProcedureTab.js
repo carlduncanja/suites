@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField";
 import DateInputField from "../../common/Input Fields/DateInputField";
 import _ from "lodash";
 import {getProcedures, getTheatres} from "../../../api/network";
 import moment from 'moment';
 import InputField2 from "../../common/Input Fields/InputField2";
+import SuggestedTimesPopover from "../../common/SuggestedTimesPopover";
+import {useModal} from "react-native-modalfy";
 
 const ProcedureTab = ({
                           onProcedureInfoChange,
@@ -14,6 +16,7 @@ const ProcedureTab = ({
                           onErrorUpdate
                       }) => {
 
+    const modal = useModal();
     // const [procedure, setProcedure] = useState(undefined)
     // const [location, setLocation] = useState(undefined)
 
@@ -181,7 +184,7 @@ const ProcedureTab = ({
         updateErrorField('date')(false);
     }
 
-    const updateErrorField = (field) =>  (value) => {
+    const updateErrorField = (field) => (value) => {
         onErrorUpdate({
             ...errors,
             [field]: value
@@ -216,6 +219,27 @@ const ProcedureTab = ({
     }
 
     console.log("errors", errors);
+
+    const handleSuggestedTimeSelected = (time) => {
+        console.log("suggested time selected", time);
+        modal.closeModals('BottomSheetModal');
+
+        onTimeUpdate('startTime')(time);
+    }
+
+    const openModal = () => {
+        modal.openModal('BottomSheetModal', {
+            content: <SuggestedTimesPopover
+                onTimeSelected={handleSuggestedTimeSelected}
+                procedure={procedure._id}
+                location={location._id}
+                duration={duration}
+                date={date}
+            />,
+            initialSnap: 2,
+            snapPoints: [300, 200, 0]
+        })
+    }
 
     return (
         <View style={styles.sectionContainer}>
@@ -298,7 +322,8 @@ const ProcedureTab = ({
                     />
                 </View>
 
-                <View style={[styles.inputWrapper]}>
+                <View
+                    style={[styles.inputWrapper, {height: 110, flexDirection: "column", justifyContent: "flex-start"}]}>
                     <DateInputField
                         label={"Start Time"}
                         onDateChange={onTimeUpdate("startTime")}
@@ -311,9 +336,27 @@ const ProcedureTab = ({
                         hasError={errors['startTime']}
                     />
 
-                </View>
+                    {
+                        // duration procedure location date
 
+                        procedure && location && duration && date &&
+                        <TouchableOpacity
+                            onPress={openModal}
+                            style={{
+                                flex: 1,
+                                marginLeft: 90,
+                            }}
+                        >
+
+                            <Text style={styles.suggestedTimesText}>
+                                Suggested Times
+                            </Text>
+
+                        </TouchableOpacity>
+                    }
+                </View>
             </View>
+
         </View>
     )
 }
@@ -330,10 +373,16 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'flex-start',
         marginBottom: 20,
     },
     inputWrapper: {
         width: 260,
         flexDirection: 'row',
+    },
+    suggestedTimesText: {
+        color: '#3182CE',
+        fontWeight: '500',
+        fontSize: 14
     }
 });
