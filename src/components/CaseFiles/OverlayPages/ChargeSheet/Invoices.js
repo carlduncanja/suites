@@ -85,10 +85,9 @@ const reportTestData = {
         ]
     }
 }
-const Invoices = ({tabDetails, reportDetails, modal}) => {
+const Invoices = ({tabDetails = [], reportDetails, modal}) => {
     
     console.log("Invoices: ", tabDetails)
-    const report = tabDetails[0]
     const [checkBoxList, setCheckBoxList] = useState([])
     const [state, dispatch] = useContext(CaseFileContext)
 
@@ -122,13 +121,17 @@ const Invoices = ({tabDetails, reportDetails, modal}) => {
     //     })
     // }
 
-    const details = {
-        amountDue : report.billing.subTotal,
-        billingDetails : report.customer,
-        ...report
-    }
+    
 
     const openModal = (item) => () => {
+        const report = tabDetails[0] || {}
+        const { billing = {}, customer = {} } = report
+        const { subTotal = 0 } = billing
+        const details = {
+            amountDue : subTotal,
+            billingDetails : customer,
+            ...report
+        }
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview 
                 type = "Invoice" 
