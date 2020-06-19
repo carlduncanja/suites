@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from "react";
-import {View, StyleSheet, Text, ActivityIndicator} from "react-native";
+import {View, StyleSheet, Text, ActivityIndicator, Alert} from "react-native";
 import SlideOverlay from '../common/SlideOverlay/SlideOverlay';
 import CaseFileOverlayMenu from './CaseFileOverlayMenu';
 import {colors} from "../../styles";
@@ -21,7 +21,12 @@ import ChargeSheetDisabledIcon from '../../../assets/svg/overlayChargeSheetDisab
 
 import {Patient, Procedures, MedicalStaff, MedicalHistory, ChargeSheet} from "./navigation/screens";
 
-import {getCaseFileById, updateChargeSheet, createInvoiceViaQuotation} from "../../api/network";
+import {
+    getCaseFileById,
+    updateChargeSheet,
+    createInvoiceViaQuotation,
+    updateCaseQuotationStatus
+} from "../../api/network";
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
 import {useModal} from "react-native-modalfy";
 import ActionItem from "../common/ActionItem";
@@ -29,18 +34,21 @@ import AddIcon from "../../../assets/svg/addIcon";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
 import RemoveIcon from "../../../assets/svg/remove2";
 import DeleteIcon from "../../../assets/svg/deleteIcon";
+import {QUOTATION_STATUS} from "../../const";
+import EditIcon from "../../../assets/svg/editIcon";
+import {createInvoice} from "../../const/suitesEndpoints";
 
 
 const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
 
     const modal = useModal();
-    
+
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([])
     const [selectedCaseId, setSelectedCaseId] = useState("")
     const [selectedQuotes, setSelectedQuotes] = useState([])
 
-    const overlayMenu = [ 
+    const overlayMenu = [
         {
             name: "Patient",
             overlayTabs: ["Details", "Insurance", "Diagnosis", "Patient Risk"],
@@ -113,14 +121,14 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         setSelectedTab(selectedTab)
     }
 
-    const onEditPress = (tab) =>{
+    const onEditPress = (tab) => {
         setEditMode(!isEditMode)
-    
-        if(isEditMode === true){
+
+        if (isEditMode === true) {
             updateCase()
-            setTimeout(()=>{
+            setTimeout(() => {
                 fetchCase(_id)
-            },500)
+            }, 500)
         }
 
     }
@@ -141,8 +149,8 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     }
 
     const handleQuotes = (quotes) => {
-        const quoteIds = quotes.map( item => item._id)
-        setSelectedQuotes(quoteIds)
+        // const quoteIds = quotes.map(item => item._id)
+        setSelectedQuotes(quotes)
     }
 
     /**
@@ -186,22 +194,76 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         console.log("getFabActions: selected tab", selectedTab);
         switch (selectedTab) {
             case "Consumables": {
-                const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {}}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>} onPress={_ => {}}/>;
+                const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {
+                }}/>;
+                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
+                                                         onPress={_ => {
+                                                         }}/>;
                 floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
                 title = "CONSUMABLE'S ACTIONS"
                 break;
             }
             case "Equipment": {
-                const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {}}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>} onPress={_ => {}}/>;
+                const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {
+                }}/>;
+                const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>} onPress={_ => {
+                }}/>;
                 floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
                 title = "EQUIPMENT'S ACTIONS"
                 break;
             }
             case 'Quotation' : {
-                const createInvoice = <ActionItem title = "Create Invoice" icon = {<AddIcon/>} onPress = {onCreateInvoice}/>
-                floatingAction.push(createInvoice)
+                // Generate Actions depending on the quotation that was selected.
+                if (selectedQuotes.length === 1) {
+                    const quotation = selectedQuotes[0];
+                    // check the status and generate actions depending on status
+
+                    console.log("quotation", quotation);
+
+                    switch (quotation.status) {
+                        case QUOTATION_STATUS.DRAFT:
+                            floatingAction.push(
+                                <ActionItem
+                                    title="Open Quotation" icon={<EditIcon/>}
+                                    onPress={updateQuotationStatus(_id, quotation._id, QUOTATION_STATUS.OPEN)}
+                                />
+                            )
+
+                            break;
+                        case QUOTATION_STATUS.OPEN:
+                            floatingAction.push(
+                                <ActionItem
+                                    title="Cancel Quotation"
+                                    icon={<EditIcon/>}
+                                    onPress={updateQuotationStatus(_id, quotation._id, QUOTATION_STATUS.OPEN)}
+                                />
+                            )
+
+                            floatingAction.push(
+                                <ActionItem
+                                    title="Create Invoice"
+                                    icon={<EditIcon/>}
+                                    onPress={onCreateInvoice(_id, quotation._id)}
+                                />
+                            )
+                            break;
+                        case QUOTATION_STATUS.CANCELLED:
+                            break;
+                        case QUOTATION_STATUS.BILLED:
+                            break;
+
+                    }
+
+                    // const update = <ActionItem title="Create Invoice" icon={<AddIcon/>}
+                    //                            onPress={onCreateInvoice}/>
+
+                } else if (selectedQuotes.length > 1) {
+                    // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
+                    //                                   onPress={onCreateInvoice}/>
+                }
+
+
+                // floatingAction.push(createInvoice)
                 title = "QUOTATION ACTIONS"
                 break;
             }
@@ -215,24 +277,35 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
 
     }
 
-    const onCreateInvoice = () => {
-        selectedQuotes.forEach( item => {
-            createInvoiceViaQuotation(_id, item)
-                .then((data) => {
-                    console.log("Invoice Record:", data)
-                })
-                .catch(error => {
-                    console.log("Failed to create invoice", error)
-                })
-        })
-       
+    const onCreateInvoice = (caseId, quotationId) => {
+        createInvoiceViaQuotation(caseId, quotationId)
+            .then((data) => {
+                console.log("Invoice Record:", data)
+            })
+            .catch(error => {
+                console.log("Failed to create invoice", error)
+                Alert.alert("Sorry", 'Failed to generate invoice, please try again');
+            })
     }
 
-   
+    const updateQuotationStatus = (caseId, quotationId, status) => {
+        updateCaseQuotationStatus(caseId, quotationId, status)
+            .then((data) => {
+                console.log("Invoice Record:", data)
+                // todo upate invoice in state.
+
+            })
+            .catch(error => {
+                console.log("Failed to update status", error)
+                Alert.alert("Sorry", "Failed to open quotation, please try again.")
+            })
+    }
+
+
     // ############### Data
 
     const getOverlayContent = () => {
-        const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = [] } = selectedCase
+        const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase
         const {medicalInfo = {}} = patient
 
         switch (selectedMenuItem) {
@@ -268,10 +341,10 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
                     procedures={caseProcedures}
                     selectedTab={selectedTab}
                     isEditMode={isEditMode}
-                    quotations = {quotations}
-                    invoices = {invoices}
-                    handleEditDone = {handleEditDone}
-                    handleQuotes = {handleQuotes}
+                    quotations={quotations}
+                    invoices={invoices}
+                    handleEditDone={handleEditDone}
+                    handleQuotes={handleQuotes}
                 />
 
             default :

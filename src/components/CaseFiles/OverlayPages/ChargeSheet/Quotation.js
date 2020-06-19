@@ -1,14 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from "react-native";
+import React, {  useState } from 'react';
+import { View, StyleSheet, ScrollView, Text } from "react-native";
 import Table from '../../../common/Table/Table';
 import SvgIcon from '../../../../../assets/SvgIcon'
-import Checkbox from '../../../common/Checkbox/Checkbox';
-import { useCheckBox, formatAmount, calcBillingValues } from '../../../../helpers/caseFilesHelpers';
-import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
-import moment from 'moment';
 import { withModal } from 'react-native-modalfy';
-import { CaseFileContext } from '../../../../contexts/CaseFileContext';
-import { caseActions } from '../../../../redux/reducers/caseFilesReducer';
 import { formatDate, currencyFormatter } from '../../../../utils/formatter';
 import Item from '../../../common/Table/Item';
 import ReportPreview from '../../Reports/ReportPreview';
@@ -100,6 +94,10 @@ const Quotations = ({tabDetails, reportDetails, modal, handleQuotes}) => {
             alignment : "flex-start"
         },
         {
+            name: "Status",
+            alignment : "flex-start"
+        },
+        {
             name: "Value",
             alignment : "center"
         },
@@ -108,11 +106,11 @@ const Quotations = ({tabDetails, reportDetails, modal, handleQuotes}) => {
             alignment : "flex-end"
         }
     ]
- 
+
     const openModal = (item) => () => {
         modal.openModal('ReportPreviewModal', {
-            content: <ReportPreview 
-                type = "Quotation" 
+            content: <ReportPreview
+                type = "Quotation"
                 details = {tabDetails[0]}
                 reportDetails = {reportDetails}
             />
@@ -124,13 +122,16 @@ const Quotations = ({tabDetails, reportDetails, modal, handleQuotes}) => {
 
         const { quotationNumber = "", amountDue = 0, dateGenerated ="" } = item
         return(
-            
+
             <>
                 <View style={styles.item}>
                     <Text style={[styles.itemText]}>{quotationNumber}</Text>
                 </View>
                 <View style={[styles.item,{alignItems:'flex-start'}]}>
                     <Text style={styles.itemText}>{formatDate(dateGenerated,'DD/MM/YYYY')}</Text>
+                </View>
+                <View style={[styles.item,{alignItems:'flex-start'}]}>
+                    <Text style={styles.itemText}>{item.status}</Text>
                 </View>
                 <View style={[styles.item,{alignItems:'center'}]}>
                     <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>
@@ -139,10 +140,10 @@ const Quotations = ({tabDetails, reportDetails, modal, handleQuotes}) => {
                     <SvgIcon iconName = "actions"/>
                 </View>
             </>
-           
+
         )
     }
-   
+
 
     const toggleCheckbox = (item) => () => {
         // console.log('Item:', item)
@@ -183,22 +184,22 @@ const Quotations = ({tabDetails, reportDetails, modal, handleQuotes}) => {
         />
     }
 
-    return (  
-        <ScrollView> 
+    return (
+        <ScrollView>
             <Table
                 isCheckbox = {true}
                 data = {tabDetails}
                 listItemFormat = {renderListFn}
                 headers = {headers}
-                toggleHeaderCheckbox = {toggleHeaderCheckbox} 
+                toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 itemSelected = {checkBoxList}
             />
         </ScrollView>
     );
 }
- 
+
 export default withModal(Quotations);
- 
+
 const styles = StyleSheet.create({
     container:{
         flex:1,
