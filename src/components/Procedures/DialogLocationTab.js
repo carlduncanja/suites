@@ -49,7 +49,7 @@ const testLocations = [
     },
 ]
 
-const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatres}) =>{
+const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatres, handlePopovers, popoverList }) =>{
 
     const recordsPerPage = 4
 
@@ -67,8 +67,8 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
 
     const handleDisplayData = () => {
         let newSet = new Set([...savedTheatres,...selectedLocations])
-        let updatedTheeatres = [...newSet]
-        return updatedTheeatres
+        let updatedTheatres = [...newSet]
+        return updatedTheatres
     }
 
     const totalPages = Math.ceil(handleDisplayData().length/recordsPerPage)
@@ -95,7 +95,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
 
         search()
     }, [searchLocationValue]);
-
+ 
     const fetchTheatres = () => {
         getTheatres(searchLocationValue, 5)
             .then((data = []) => {
@@ -163,9 +163,9 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
 
     const buttonPress = () => {
         if(isDisable === false){
-            updatedTheeatres = handleDisplayData()
-            onFieldChange('supportedRooms')(updatedTheeatres.map( item => item._id))
-            getSavedTheatres(updatedTheeatres)
+            let updatedTheatres = handleDisplayData()
+            onFieldChange('supportedRooms')(updatedTheatres.map( item => item._id))
+            getSavedTheatres(updatedTheatres)
         }
         setIsDisable(true)
     }
@@ -186,6 +186,8 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
             </TouchableOpacity>
         )
     }
+  
+    let { status } = popoverList.filter( item => item.name === 'location')[0]
 
     let dataToDisplay = handleDisplayData()
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
@@ -201,6 +203,8 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                         searchText = {searchLocationValue}
                         onSearchChangeText = {(value)=> setSearchLocationValue(value)}
                         onClear={()=>{setSearchLocationValue('')}}
+                        handlePopovers = {(value)=>handlePopovers(value)('location')}
+                        isPopoverOpen = {status}
                     />
             </View>
 

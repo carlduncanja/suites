@@ -171,7 +171,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) =
                 setCategorySearchResult([])
             })
 
-    }
+    } 
 
     let refPop = popoverList.filter( item => item.name === 'reference')
     let physPop = popoverList.filter( item => item.name === 'physician')

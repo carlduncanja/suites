@@ -49,11 +49,15 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         {
             name : "category",
             status : false
+        },
+        {
+            name : 'location',
+            status : false
         }
     ])
 
     const [fields, setFields] = useState({
-        reference :'--',
+        reference :'',
         name : '',
         duration : '',
         notes:'',
@@ -119,7 +123,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
             duration : parseInt(fields['duration'])
         }
         if(tabIndex === dialogTabs.length - 1){
-            // console.log("Fields: ",updatedFields)
+            console.log("Fields: ",updatedFields)
             createProcedureCall(updatedFields)
         }else if (tabIndex + 1 === dialogTabs.length - 1)
         {
@@ -152,6 +156,8 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                     // theatres = {theatres}
                     getSavedTheatres={getSavedTheatres}
                     savedTheatres = {savedTheatres}
+                    handlePopovers = {handlePopovers}
+                    popoverList = {popoverList}
                 />;
             default :
                 return <View/>
