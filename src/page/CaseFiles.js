@@ -17,7 +17,7 @@ import {connect} from 'react-redux';
 import {setCaseFiles} from "../redux/actions/caseFilesActions";
 import {getCaseFiles} from "../api/network";
 
-import {useNextPaginator, usePreviousPaginator} from '../helpers/caseFilesHelpers';
+import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from '../helpers/caseFilesHelpers';
 import {currencyFormatter} from '../utils/formatter';
 import {SuitesContext} from '../contexts/SuitesContext';
 
@@ -113,29 +113,13 @@ const CaseFiles = (props) => {
 
     const handleOnCheckBoxPress = (caseItem) => () => {
         const {_id} = caseItem;
-        let updatedCases = [...selectedCaseIds];
-
-        if (updatedCases.includes(_id)) {
-            updatedCases = updatedCases.filter(id => id !== caseItem._id)
-        } else {
-            updatedCases.push(caseItem._id);
-        }
-
+        let updatedCases = checkboxItemPress(caseItem, _id, selectedCaseIds)
         setSelectedCaseIds(updatedCases);
     };
 
     const handleOnSelectAll = () => {
-        const indeterminate = selectedCaseIds.length >= 0 && selectedCaseIds.length !== caseFiles.length;
-        // console.log("Indeterminate: ", indeterminate)
-        if (indeterminate) {
-            const selectedAllIds = [...caseFiles.map(caseItem => caseItem._id)]
-            setSelectedCaseIds(selectedAllIds)
-            // todo insert all id's
-        } else {
-            setSelectedCaseIds([])
-            // todo remove all i
-        }
-
+        let updatedCases = selectAll(caseFiles, selectedCaseIds)
+        setSelectedCaseIds(updatedCases)
     };
 
     const handleDataRefresh = () => {

@@ -5,7 +5,7 @@ import Table from '../../../common/Table/Table';
 import Checkbox from '../../../common/Checkbox/Checkbox';
 import { useCheckBox } from '../../../../helpers/caseFilesHelpers';
 import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
-import Item from '../../../common/Table/Item';
+import Item from '../../../common/Table/Item'; 
 
 const Equipment = ({tabDetails, headers, listItemFormat}) => {
 
@@ -44,7 +44,7 @@ const Equipment = ({tabDetails, headers, listItemFormat}) => {
     }
    
     return ( 
-        <ScrollView>
+        <View>
             <Table
                 isCheckbox = {true}
                 data = {tabDetails}
@@ -54,7 +54,7 @@ const Equipment = ({tabDetails, headers, listItemFormat}) => {
                 itemSelected = {checkBoxList}
                 // dataLength = {tabDetails.length}
             />
-        </ScrollView>
+        </View>
     );
 }
  

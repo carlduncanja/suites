@@ -205,6 +205,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                 selectedTab === 'Invoices' ?
                     <Invoices 
                         tabDetails={invoices}
+                        reportDetails = {billing}
                     />
                     :
                     selectedTab === 'Quotation' ?

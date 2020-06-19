@@ -57,15 +57,15 @@ export const useCheckBox = (item, checkBoxList) => {
 export const checkboxItemPress = (item, id, checkBoxList) => {
     let updatedList = [...checkBoxList];
     return updatedList.includes(id) ?
-        updatedList.filter(id => id !== item.id)
+        updatedList.filter(id => id !== item._id)
         :
-        [...updatedList, item.id]
+        [...updatedList, item._id]
 }
 
 export const selectAll = (data, checkBoxList) => {
     const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== data.length;
         return indeterminate ?
-            [...data.map( item => item.id )]
+            [...data.map( item => item._id )]
             :
             []
 }

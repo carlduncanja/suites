@@ -13,7 +13,7 @@ import CaseFileBottomSheet from "../components/CaseFiles/CaseFileBottomSheet";
 import TheatresBottomSheetContainer from "../components/Theatres/TheatresBottomSheetContainer";
 import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
 import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
-import {useNextPaginator, usePreviousPaginator} from "../helpers/caseFilesHelpers";
+import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from "../helpers/caseFilesHelpers";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionItem from "../components/common/ActionItem";
 import WasteIcon from "../../assets/svg/wasteIcon";
@@ -171,9 +171,6 @@ function Theatres(props) {
 
     // ##### Handler functions
 
-    const onSearchChange = () => {
-    };
-
     const onItemPress = (item) => () => {
         // console.log("item press", item);
         modal.openModal('BottomSheetModal', {
@@ -190,13 +187,8 @@ function Theatres(props) {
     };
 
     const onSelectAll = () => {
-        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== theatres.length;
-        if (indeterminate) {
-            const selectedAllIds = [...theatres.map(caseItem => caseItem.id)];
-            setSelectedIds(selectedAllIds)
-        } else {
-            setSelectedIds([])
-        }
+        let updatedTheatres = selectAll(theatres, selectedIds)
+        setSelectedIds(updatedTheatres)
     };
 
     const goToNextPage = () => {
@@ -218,17 +210,9 @@ function Theatres(props) {
     };
 
     const onCheckBoxPress = (item) => () => {
-
-        const {id} = item;
-        let updatedCases = [...selectedIds];
-
-        if (updatedCases.includes(id)) {
-            updatedCases = updatedCases.filter(id => id !== item.id)
-        } else {
-            updatedCases.push(item.id);
-        }
-
-        setSelectedIds(updatedCases);
+        const {_id} = item;
+        let updatedTheatres = checkboxItemPress(item, _id, selectedIds)
+        setSelectedIds(updatedTheatres);
     };
 
     const toggleActionButton = () => {
@@ -337,7 +321,7 @@ function Theatres(props) {
         );
 
         return <ListItem
-            isChecked={selectedIds.includes(item.id)}
+            isChecked={selectedIds.includes(item._id)}
             onCheckBoxPress={onCheckBoxPress(item)}
             onItemPress={onItemPress(item)}
             itemView={itemView}
@@ -436,7 +420,7 @@ const mapStateToProps = (state) => {
 
         return {
             ...item,
-            id: item._id
+            // id: item._id
         }
     });
 

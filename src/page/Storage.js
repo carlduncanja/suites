@@ -14,7 +14,7 @@ import {setStorage} from "../redux/actions/storageActions";
 import {connect} from "react-redux";
 import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
 import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
-import {useNextPaginator, usePreviousPaginator} from "../helpers/caseFilesHelpers";
+import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from "../helpers/caseFilesHelpers";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
 import WasteIcon from "../../assets/svg/wasteIcon";
@@ -144,27 +144,16 @@ function Storage(props) {
     };
 
     const onSelectAll = () => {
-        const indeterminate = selectedIds.length >= 0 && selectedIds.length !== storageLocations.length;
-        // console.log("Indeterminate: ", indeterminate)
-        if (indeterminate) {
-            const selectedAllIds = [...storageLocations.map(item => item.id)];
-            setSelectedIds(selectedAllIds)
-        } else {
-            setSelectedIds([])
-        }
+        let updatedStorage = selectAll(storageLocations, selectedIds)
+        setSelectedIds(updatedStorage)
+        
     };
 
     const onCheckBoxPress = (item) => () => {
-        const {id} = item;
-        let updatedCases = [...selectedIds];
-
-        if (updatedCases.includes(id)) {
-            updatedCases = updatedCases.filter(id => id !== item.id)
-        } else {
-            updatedCases.push(item.id);
-        }
-
-        setSelectedIds(updatedCases);
+        const {_id} = item;
+        let updatedStorage = checkboxItemPress(item, _id, selectedIds)
+        setSelectedIds(updatedStorage);
+       
     };
 
     const onItemPress = (item) => () => {
@@ -245,7 +234,7 @@ function Storage(props) {
         );
 
         return <ListItem
-            isChecked={selectedIds.includes(item.id)}
+            isChecked={selectedIds.includes(item._id)}
             onCheckBoxPress={onCheckBoxPress(item)}
             onItemPress={onItemPress(item)}
             itemView={itemView}

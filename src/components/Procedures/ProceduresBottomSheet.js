@@ -16,7 +16,7 @@ import { getProcedureById } from "../../api/network";
 function ProceduresBottomSheet({procedure, isOpenEditable}) {
     
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
-    // console.log("Procedure:", procedure)
+    console.log("Procedure:", procedure)
     const {
         _id, 
         name,
@@ -24,10 +24,11 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
         duration,
         equipments,
         inventories,
-        notes,
+        notes = '',
         supportedRooms,
         physician
     } = procedure;
+
     
     const consumablesHeader = [
         {
@@ -194,7 +195,7 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
                     isEditMode = {isEditMode}
                 />;
             case "Notes":
-                return <NotesTab notesData = {notes}/>;
+                return <NotesTab notesData = {[notes]}/>;
             case "Theatres" :
                 return <TheatresTab theatresData = {supportedRooms}/>
             default :

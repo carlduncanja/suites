@@ -12,7 +12,7 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 
-const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) => {
+const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, errorFields}) => {
 
     const templateText = {
         true: "Yes",
@@ -171,7 +171,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) =
                 setCategorySearchResult([])
             })
 
-    }
+    } 
 
     let refPop = popoverList.filter( item => item.name === 'reference')
     let physPop = popoverList.filter( item => item.name === 'physician')
@@ -219,24 +219,28 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) =
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
+                        hasError = {errorFields['name']}
+                        errorMessage = "Name must be assigned"
                     />
                 </View>
 
                 <View style={[styles.inputWrapper]}>
                     <SearchableOptionsField
-                            label={"Physician"}
-                            text={searchValue}
-                            oneOptionsSelected={(item) => {
-                                onFieldChange('physician')(item._id)
-                            }}
-                            onChangeText={value => setSearchValue(value)}
-                            onClear={() => {
-                                onFieldChange('physician')('');
-                                setSearchValue('');
-                            }}
-                            options={searchResults}
-                            handlePopovers = {(value)=>handlePopovers(value)('physician')}
-                            isPopoverOpen = {physPop[0].status}
+                        label={"Physician"}
+                        text={searchValue}
+                        oneOptionsSelected={(item) => {
+                            onFieldChange('physician')(item._id)
+                        }}
+                        onChangeText={value => setSearchValue(value)}
+                        onClear={() => {
+                            onFieldChange('physician')('');
+                            setSearchValue('');
+                        }}
+                        options={searchResults}
+                        handlePopovers = {(value)=>handlePopovers(value)('physician')}
+                        isPopoverOpen = {physPop[0].status}
+                        hasError = {errorFields['physician']}
+                        errorMessage = "Physician must be assigned"
                     />
 
                 </View>
@@ -256,6 +260,8 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList}) =
                         value={fields['duration']}
                         units={['hrs']}
                         keyboardType="number-pad"
+                        hasError = {errorFields['duration']}
+                        errorMessage = "Input estimated time (hours)."
                     />
                 </View>
 

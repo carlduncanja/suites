@@ -124,7 +124,8 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     const onEditPress = (tab) => {
         setEditMode(!isEditMode)
 
-        if (isEditMode === true) {
+        if(isEditMode === true){
+            // console.log("Record: ", selectedCaseId)
             updateCase()
             setTimeout(() => {
                 fetchCase(_id)
@@ -276,6 +277,31 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         />
 
     }
+
+    // const onCreateInvoice = () => {
+    //     selectedQuotes.forEach( item => {
+    //         createInvoiceViaQuotation(_id, item)
+    //             .then((data) => {
+    //                 console.log("Invoice Record:", data)
+    //             })
+    //             .catch(error => {
+    //                 Alert.alert(
+    //                     "Unsuccessful creation",
+    //                     "Invoice can only be generated for quotations in `Open` status.",
+    //                     [
+    //                         {
+    //                             text : 'Ok',
+    //                             onPress : () => console.log("Ok pressed")
+    //                         }
+    //                     ],
+    //                     {
+    //                         cancelable : false
+    //                     }
+    //
+    //                 )
+    //                 console.log("Failed to create invoice", error)
+    //             })
+    //     })
 
     const onCreateInvoice = (caseId, quotationId) => {
         createInvoiceViaQuotation(caseId, quotationId)

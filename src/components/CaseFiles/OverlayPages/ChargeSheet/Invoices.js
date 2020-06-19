@@ -13,6 +13,7 @@ import ReportPreview from '../../Reports/ReportPreview';
 import Item from '../../../common/Table/Item';
 
 import { formatDate, currencyFormatter, transformToSentence } from '../../../../utils/formatter';
+
 const reportTestData = {
     billing : {
         billedTo: {
@@ -84,8 +85,10 @@ const reportTestData = {
         ]
     }
 }
-const Invoices = ({tabDetails, modal}) => {
- 
+const Invoices = ({tabDetails, reportDetails, modal}) => {
+    
+    console.log("Invoices: ", tabDetails)
+    const report = tabDetails[0]
     const [checkBoxList, setCheckBoxList] = useState([])
     const [state, dispatch] = useContext(CaseFileContext)
 
@@ -119,9 +122,19 @@ const Invoices = ({tabDetails, modal}) => {
     //     })
     // }
 
+    const details = {
+        amountDue : report.billing.subTotal,
+        billingDetails : report.customer,
+        ...report
+    }
+
     const openModal = (item) => () => {
         modal.openModal('ReportPreviewModal', {
-            content: <ReportPreview type = "Quotation" details = {reportTestData}/>
+            content: <ReportPreview 
+                type = "Invoice" 
+                details = {details}
+                reportDetails = {reportDetails}
+            />
         })
     }
 

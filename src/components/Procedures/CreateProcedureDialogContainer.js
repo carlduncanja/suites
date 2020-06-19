@@ -35,8 +35,8 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     const [tabIndex, setTabIndex] = useState(selectedIndex)
     const [positiveText, setPositiveText] = useState("NEXT")
     const [physicians, setPhysicians] = useState([])
-    // const [theatres, setTheates] = useState([])
     const [savedTheatres, setSavedTheatres] = useState([])
+    
     const [popoverList, setPopoverList] = useState([
         {
             name : "reference",
@@ -49,11 +49,15 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         {
             name : "category",
             status : false
+        },
+        {
+            name : 'location',
+            status : false
         }
     ])
 
     const [fields, setFields] = useState({
-        reference :'--',
+        reference :'',
         name : '',
         duration : '',
         notes:'',
@@ -64,6 +68,12 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         inventories:[],
         equipments:[]
     });
+
+    const [errorFields, setErrorFields] = useState({
+        name : false,
+        duration : false,
+        physician : false,
+    })
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
         let updatedPopovers;
@@ -119,13 +129,33 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
             duration : parseInt(fields['duration'])
         }
         if(tabIndex === dialogTabs.length - 1){
-            // console.log("Fields: ",updatedFields)
-            createProcedureCall(updatedFields)
+            
+            let isNameError = errorFields['name']
+            let isDurationError = errorFields['duration']
+            let isPhysicianError = errorFields['physician']
+
+            fields['name'] === '' || null ? isNameError = true : isNameError = false
+            fields['duration'] === '' || null ? isDurationError = true : isDurationError = false
+            fields['physician'] === '' || null ? isPhysicianError = true : isPhysicianError = false
+            
+            setErrorFields({
+                ...errorFields,
+                name : isNameError,
+                duration : isDurationError,
+                physician : isPhysicianError
+            })
+
+            if(isNameError === false && isDurationError === false && isPhysicianError === false){
+                // console.log("Fields: ",updatedFields)
+                createProcedureCall(updatedFields)
+            }else{
+                setTabIndex(0)
+            }
+            
         }else if (tabIndex + 1 === dialogTabs.length - 1)
         {
             setPositiveText("DONE")
             setTabIndex(dialogTabs.length-1)
-
         }else
         {
             setTabIndex(tabIndex + 1)
@@ -144,6 +174,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                     fields = {fields}
                     handlePopovers = {handlePopovers}
                     popoverList = {popoverList}
+                    errorFields = {errorFields}
                 />;
             case "Location":
                 return <DialogLocationTab
@@ -152,6 +183,8 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                     // theatres = {theatres}
                     getSavedTheatres={getSavedTheatres}
                     savedTheatres = {savedTheatres}
+                    handlePopovers = {handlePopovers}
+                    popoverList = {popoverList}
                 />;
             default :
                 return <View/>

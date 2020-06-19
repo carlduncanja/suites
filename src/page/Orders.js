@@ -1,5 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, Alert} from "react-native";
 
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
@@ -117,17 +117,26 @@ const Orders = (props) => {
     const handleOnSelectAll = () => {
         let updatedOrdersList = selectAll(purchaseOrders, selectedOrders)
         setSelectedOrders(updatedOrdersList)
+
+        // const indeterminate = selectedOrders.length >= 0 && selectedOrders.length !== purchaseOrders.length;
+        // if (indeterminate) {
+        //     const selectedAllIds = [...purchaseOrders.map(item => item._id)];
+        //     setSelectedOrders(selectedAllIds)
+        // } else {
+        //     setSelectedOrders([])
+        // }
     }
 
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
-        let updatedOrders = [...selectedOrders];
+        let updatedOrders = checkboxItemPress(item, _id, selectedOrders)
+        // let updatedOrders = [...selectedOrders];
 
-        if (updatedOrders.includes(_id)) {
-            updatedOrders = updatedOrders.filter(id => id !== item._id)
-        } else {
-            updatedOrders.push(item._id);
-        }
+        // if (updatedOrders.includes(_id)) {
+        //     updatedOrders = updatedOrders.filter(id => id !== item._id)
+        // } else {
+        //     updatedOrders.push(item._id);
+        // }
 
         setSelectedOrders(updatedOrders);
         console.log("List: ", updatedOrders)
@@ -244,16 +253,30 @@ const Orders = (props) => {
     };
 
     const onCreateInvoice = () => {
+        let errors = []
         selectedOrders.forEach( id => {
             createInvoiceViaOrders(id)
                 .then((data) => {
                     console.log("Invoice Record:", data)
                 })
                 .catch(error => {
+                    Alert.alert(
+                        "Unsuccessful creation",
+                        "Invoice can only be generated for purchase orders in `ORDER RECEIVED` status.",
+                        [
+                            {
+                                text : 'Ok',
+                                onPress : () => console.log("Ok pressed")
+                            }
+                        ],
+                        {
+                            cancelable : false
+                        }
+
+                    )
                     console.log("Failed to create invoice", error)
                 })
-        })
-
+        });
     }
 
     // ############# Prepare list data

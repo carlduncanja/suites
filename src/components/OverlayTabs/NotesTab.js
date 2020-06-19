@@ -1,11 +1,11 @@
-import React,{ useState } from "react";
+import React,{ useState } from "react"; 
 import { View, StyleSheet } from "react-native";
 import FrameCard from '../common/Frames/FrameCards/FrameCard';
 import NotesIcon from '../../../assets/svg/notes';
 import { withModal } from "react-native-modalfy";
 
 const NotesTab = ({notesData}) => {
-    // const { notes } = notesData
+
     return (
         <>
             <FrameCard

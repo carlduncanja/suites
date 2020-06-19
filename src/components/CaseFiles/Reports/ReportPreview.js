@@ -26,29 +26,15 @@ const ReportPreview = ({type = "", details = {}, reportDetails }) => {
 
     const { billingDetails = {}, dateGenerated = "", amountDue = 0 } = details
     const { address = {}, email = "", name= "", phone = "", billedFor="" } = billingDetails
+
     const reportNumber = type === 'Invoice' ? details.invoiceNumber : details.quotationNumber
     const purchaseOrderNumber = details.purchaseOrderNumber || ""
     const { procedures = [], discount = 0, hasDiscount = false, tax = 0} = reportDetails
     const total = hasDiscount ? (amountDue - (amountDue * discount)) * (1+tax) : (amountDue) * (1+tax)
     const formatDiscount = amountDue * discount
+
     console.log("ReportDetails: ", reportDetails)
-    // const { billing = {}, billedItems = {}} = details
-    // const {
-    //     billedTo = {}, 
-    //     billedFor = "", 
-    //     date = "", 
-    //     charges = {}, 
-    //     invoiceNumber = type = "Invoice" ? invoiceNumber : "",
-    //     purchaseOrderNumber = type = "Invoice" ? purchaseOrderNumber : ""
-    // } = billing
-    // const { physicians = [], procedures = [], equipment = [], inventories = [] } = billedItems 
-    // const { discount = 0, subTotal = 0, tax = 0 } = charges
-
-    // const reportList = [...physicians,...procedures]
-    // const reportTable = [...inventories]
-
-    // const total = (subTotal - discount) * (1+tax)
-
+    
     const headers = [
             {
                 name: "Item Name",
@@ -102,7 +88,7 @@ const ReportPreview = ({type = "", details = {}, reportDetails }) => {
                     billedFor = {billedFor}
                     reportNumber = {reportNumber}
                     total = {amountDue}
-                    type = {"Quotation"}
+                    type = {type}
                     reportDate = {dateGenerated}
                     purchaseOrderNo = {purchaseOrderNumber}
                 />

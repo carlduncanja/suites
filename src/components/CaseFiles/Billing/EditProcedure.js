@@ -92,12 +92,16 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
     }
 
     const handleNewData = (data) =>{
+        
+        const updatedData = selectedTab === 'Consumables' ? {...data, inventory : data.id} :
+                            selectedTab === 'Equipments' ? {...data, equipment : data.id} : data
+
         const itemsToEdit = selectedTab === 'Consumables' ? selectedConsumables :
                             selectedTab === 'Equipments' ? selectedEquipments :
                             selectedServices
         const updatedItems = [
             ...itemsToEdit,
-            data
+            updatedData
         ]
         selectedTab === 'Consumables' ? setSelectConsumables(updatedItems) : 
         selectedTab === 'Equipments' ? setSelectedEquipments(updatedItems) :
@@ -179,7 +183,7 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
             </View>
         )
         
-    }
+    } 
 
     const chargeItemFormat = (item) => {
         return (
