@@ -6,7 +6,7 @@ import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import DateInputField from "../common/Input Fields/DateInputField";
 
 
-
+ 
 const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
 
     const templateText = {
