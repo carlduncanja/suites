@@ -30,7 +30,10 @@ import {
     loginEndpoint,
     appointmentsEndpoint,
     appointmentEndpoint,
-    validateCaseProcedureEndpoint, suggestedStartTimeEndpoint
+    validateCaseProcedureEndpoint,
+    suggestedStartTimeEndpoint,
+    updateQuotationStatusEndpoint,
+    updatePurchaseOrderStatusEndpoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -164,6 +167,12 @@ export const updateChargeSheet = async (id, data) => {
         .catch(handleError)
 }
 
+export const updateCaseQuotationStatus = async (caseId, quotationId, status) => {
+    return suitesAxiosInstance.put(updateQuotationStatusEndpoint(caseId, quotationId), {status})
+        .then(handleResponse)
+        .catch(handleError)
+}
+
 export const createInvoiceViaQuotation = async (caseId, quotationId) => {
     return suitesAxiosInstance.post(createInvoice(caseId)(quotationId))
         .then(handleResponse)
@@ -189,6 +198,12 @@ export const createNewProcedure = async (procedureToCreate) => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+export const updatePurchaseOrderStatus = async (purchaseOrderId, status) => {
+    return suitesAxiosInstance.put(updatePurchaseOrderStatusEndpoint(purchaseOrderId), {status})
+        .then(handleResponse)
+        .catch(handleError)
+}
 
 // ################# Physicians Endpoints
 export const getPhysicians = async (query, max) => {
