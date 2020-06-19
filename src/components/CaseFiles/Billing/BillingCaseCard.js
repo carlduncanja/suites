@@ -63,7 +63,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
         let updatedData = {caseProcedureId:id,...data}
         const filterData = createdData.filter( obj => obj.caseProcedureId === id)
 
-        if(filterData.length === 0){
+        if(filterData.length === 0){ 
             createdData = [...createdData, updatedData]
             setUpdatedBilling(createdData) 
         }else{

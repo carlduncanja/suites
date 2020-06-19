@@ -117,6 +117,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         setEditMode(!isEditMode)
     
         if(isEditMode === true){
+            // console.log("Record: ", selectedCaseId)
             updateCase()
             setTimeout(()=>{
                 fetchCase(_id)

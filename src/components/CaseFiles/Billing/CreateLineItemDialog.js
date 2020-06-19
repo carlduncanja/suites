@@ -5,31 +5,34 @@ import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsF
 import OverlayDialog from "../../common/Dialog/OverlayDialog";
 import DialogTabs from "../../common/Dialog/DialogTabs";
 import {useModal} from "react-native-modalfy";
-import { getInventories, getEquipment } from "../../../api/network";
+import { getInventories, getEquipmentTypes } from "../../../api/network";
 import _ from "lodash";
 import AutoFillField from "../../common/Input Fields/AutoFillField";
+import { currencyFormatter } from "../../../utils/formatter";
 
 const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => { 
 
     const modal = useModal();
+    const [selectedItem, setSelectedItem] = useState({})
 
     const [fields, setFields] = useState({ 
         name : '',
-        type : '',
-        unitPrice : '',
-        amount : ''
+        // type : '',
+        // unitPrice : '',
+        amount : '',
+        id : '',
     });
 
     const [popoverList, setPopoverList] = useState([
         {
-            name : "name",
+            name : "name", 
             status : false
         },
     ])
 
     const [errorFields, setErrorFields] = useState({
         name : false,
-        unitPrice : false,
+        // unitPrice : false,
         amount : false,
     })
 
@@ -110,9 +113,8 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
     }, [equipmentSearchValue]);
 
     const fetchEquipment = () => {
-        getEquipment(equipmentSearchValue)
+        getEquipmentTypes(equipmentSearchValue)
             .then((data = []) => {
-                // console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));
@@ -152,26 +154,24 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
     const onPositiveClick = () => {
 
         let isNameError = errorFields['name']
-        let isPriceError = errorFields['unitPrice']
+        // let isPriceError = errorFields['unitPrice']
         let isAmountError = errorFields['amount']
 
         fields['name'] === '' || null ? isNameError = true : isNameError = false
-        fields['unitPrice'] === '' || null ? isPriceError = true : isPriceError = false
+        // fields['unitPrice'] === '' || null ? isPriceError = true : isPriceError = false
         fields['amount'] === '' || null ? isAmountError = true : isAmountError = false
 
         setErrorFields({
             ...errorFields,
             name : isNameError,
-            unitPrice : isPriceError,
+            // unitPrice : isPriceError,
             amount : isAmountError,
         })
 
-        if( isNameError === false && isAmountError === false && isPriceError === false){
+        if( isNameError === false && isAmountError === false){
             onCreated(fields)
             modal.closeModals("OverlayModal")
-            console.log("Add Item: ",fields)
-        }else{
-            console.log("Missing", fields)
+            // console.log("Add Item: ",fields)
         }
         
     }
@@ -182,20 +182,23 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
     }
 
     const handleName = (value) => {
+        // console.log("UnitPrice: ", value)
         const { type = "Unknown" } = value
         if(value === ""){
             onFieldChange("name")("") &&
             onFieldChange('type')("")
         }else{
-            onFieldChange('name')(value.name) &&
-            onFieldChange('type')(type) 
+            setSelectedItem(value);
+            onFieldChange('name')(value.name);
         }
         
     }
+
     const onFieldChange = (fieldName) => (value) => {
         setFields({
             ...fields,
-            [fieldName]: value
+            [fieldName]: value,
+            id : selectedItem._id || '',
         })
     };
 
@@ -209,7 +212,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
 
     let namePop = popoverList.filter( item => item.name === 'name')
     const searchValue = selectedTab === 'Consumables' ? inventorySearchValue : equipmentSearchValue
-    const searchResults = selectedTab === 'Consumables' ? inventorySearchResults : equipmentSearchQuery
+    const searchResults = selectedTab === 'Consumables' ? inventorySearchResults : equipmentSearchResults
 
     return(
         <OverlayDialog
@@ -240,11 +243,12 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
                                 label={"Item Name"}
                                 text={searchValue}
                                 oneOptionsSelected={(item) => {
+                                    // onFieldChange('name')(item.name)
                                     handleName(item)
                                 }}
                                 onChangeText={value => { selectedTab === 'Consumables' ? setInventorySearchValue(value) : setEquipmentSearchValue(value)}}
                                 onClear={() => {
-                                    handleName("")
+                                    handleName("");
                                     selectedTab === 'Consumables' ? setInventorySearchValue('') : setEquipmentSearchValue('')
                                 }}
                                 options={searchResults}
@@ -259,7 +263,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
                             
                             <AutoFillField
                                 label={"Item Type"}
-                                value={fields['type']}
+                                value={selectedItem.type || ''}
                             />
 
                         </View>
@@ -267,7 +271,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
 
                     <View style={[styles.row,{zIndex:-1}]}>
                         <View style={styles.inputWrapper}>
-                            <InputField2
+                            {/* <InputField2
                                 label={"Unit Price"}
                                 onChangeText={(value) => { handleUnitPrice(value )}}
                                 value={unitPriceText}
@@ -275,6 +279,10 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
                                 onClear={() => handleUnitPrice('')}
                                 hasError = {errorFields['unitPrice']}
                                 errorMessage = "Price must be provided."
+                            /> */}
+                            <AutoFillField
+                                label={"Unit Price"}
+                                value={`$ ${currencyFormatter(selectedItem.unitPrice)}`}
                             />
                         </View>
 
