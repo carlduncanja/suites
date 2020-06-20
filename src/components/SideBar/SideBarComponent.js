@@ -64,10 +64,8 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                     {
                         // Spread the navigation routes.
                         routes.map((route, tabIndex) => {
-                            const {key, name, params} = route;
+                            const {name, params} = route;
                             const {icon, tabName} = params || {};
-
-                            console.log(icon)
 
                             return (
                                 <View style={{width: '100%'}} key={tabIndex}>
