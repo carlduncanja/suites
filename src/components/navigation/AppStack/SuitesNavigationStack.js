@@ -42,6 +42,7 @@ import NotificationIcon from "../../../../assets/svg/notificationIcon";
 import CaseFileStack from "./CaseFileNavigationStack";
 import Invoices from "../../CaseFiles/OverlayPages/ChargeSheet/Invoices";
 import {AlertIOS} from "react-native-web";
+import CaseFileNavigationStack from "./CaseFileNavigationStack";
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
@@ -63,7 +64,7 @@ export const SuitesNavigationStack = () => {
 
             <SuitesNavigator.Screen
                 name="Case Files"
-                component={CaseFiles}
+                component={CaseFileNavigationStack}
                 initialParams={{
                     icon: CaseFileIcon,
                     tabName: 'Case Files',

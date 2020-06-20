@@ -262,6 +262,8 @@ const CaseFiles = (props) => {
         //             })
         // }, 200)
 
+
+        props.navigation.navigate('Case Files', {screen: 'CreateCase'});
     }
 
     // prepare case files to display
