@@ -18,8 +18,11 @@ export const signOut = () => ({
     type: SIGN_OUT
 })
 
-export const signIn = () => ({
-    type: SIGN_IN
+export const signIn = (token) => ({
+    type: SIGN_IN,
+    payload: {
+        data: token
+    }
 })
 
 export const restoreToken = (token) => ({

@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, ActivityIndicator, AsyncStorage} from "react-native"
+import {View, StyleSheet, ActivityIndicator} from "react-native"
+import AsyncStorage from "@react-native-community/async-storage"
 import LoginBackground from "../components/Onboarding/LoginBackground";
 import {restoreToken, setAuthData} from "../redux/actions/authActions";
 import {connect} from 'react-redux'

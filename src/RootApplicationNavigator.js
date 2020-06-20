@@ -51,9 +51,6 @@ function RootApplicationNavigator({auth}) {
                                 component={AuthStack}
                                 options={{
                                     headerShown: false,
-                                    // When logging out, a pop animation feels intuitive
-                                    // You can remove this if you want the default 'push' animation
-                                    animationTypeForReplace: isSignOut ? 'pop' : 'push',
                                 }}
                             />
                             :
@@ -62,6 +59,9 @@ function RootApplicationNavigator({auth}) {
                                 component={NotFound}
                                 options={{
                                     headerShown: false,
+                                    // When logging out, a pop animation feels intuitive
+                                    // You can remove this if you want the default 'push' animation
+                                    animationTypeForReplace: isSignOut ? 'pop' : 'push',
                                 }}
                             />
 

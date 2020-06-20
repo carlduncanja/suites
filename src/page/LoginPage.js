@@ -8,8 +8,10 @@ import InputFieldwithIcon from "../components/common/Input Fields/InputFiledwith
 import PersonIcon from "../../assets/svg/personIcon";
 import PasswordIcon from "../../assets/svg/lockIcon";
 import Button from "../components/common/Buttons/Button";
+import {connect} from "react-redux"
+import {signIn} from "../redux/actions/authActions";
 
-function LoginPage({navigation}) {
+function LoginPage({navigation, signIn}) {
     const [fields, setFields] = useState({
         email: '',
         password: ''
@@ -32,9 +34,14 @@ function LoginPage({navigation}) {
             .then(async data => {
                 // save auth data
                 console.log(data)
+                const {token = null} = data;
                 try {
-                    await AsyncStorage.setItem('userToken', data.token);
-                    navigation.navigate("App")
+
+
+                    await AsyncStorage.setItem('userToken', token);
+                    // navigation.navigate("App")
+                    signIn(token);
+
                 } catch (error) {
                     // Error saving data
                 }
@@ -198,4 +205,8 @@ const styles = StyleSheet.create({
 LoginPage.propTypes = {};
 LoginPage.defaultProps = {};
 
-export default LoginPage;
+const mapDispatcherToProps = {
+    signIn
+}
+
+export default connect(null, mapDispatcherToProps)(LoginPage);
