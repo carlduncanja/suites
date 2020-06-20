@@ -2,10 +2,10 @@ import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, ActivityIndicator, AsyncStorage} from "react-native"
 import LoginBackground from "../components/Onboarding/LoginBackground";
-import {setAuthData} from "../redux/actions/authActions";
+import {restoreToken, setAuthData} from "../redux/actions/authActions";
 import {connect} from 'react-redux'
 
-function SplashScreen({auth, setAuthData, navigation}) {
+function SplashScreen({restoreToken}) {
     useEffect(() => {
         // Fetch the token from storage then navigate to our appropriate place
         const bootstrapAsync = async () => {
@@ -24,19 +24,12 @@ function SplashScreen({auth, setAuthData, navigation}) {
             // This will switch to the App screen or Auth screen and this loading
             // screen will be unmounted and thrown away.
 
-            if (userToken) {
-                const authData = {
-                    ...auth,
-                    userToken: userToken,
-                    isLoading: false,
-                }
-                setAuthData(authData)
-            }
+            console.log('setting user token', userToken);
 
-            navigation.navigate(userToken ? "App" : "Auth")
+            restoreToken(userToken);
         };
 
-        bootstrapAsync();
+        bootstrapAsync().then();
     }, []);
 
 
@@ -73,7 +66,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    setAuthData
+    restoreToken
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SplashScreen);

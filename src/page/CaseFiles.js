@@ -49,6 +49,7 @@ const listHeaders = [
 const CaseFiles = (props) => {
     //######## const
 
+    // const router = useRouter
     const recordsPerPage = 10;
 
     //######## Props
@@ -244,21 +245,24 @@ const CaseFiles = (props) => {
     };
 
     const openCreateCaseFile = () => {
-        modal.closeModals('ActionContainerModal');
-        // For some reason there has to be a delay between closing a modal and opening another.
-        setTimeout(() => {
+        // modal.closeModals('ActionContainerModal');
+        // // For some reason there has to be a delay between closing a modal and opening another.
+        // setTimeout(() => {
+        //
+        //     modal
+        //         .openModal(
+        //             'OverlayModal',
+        //             {
+        //                 content: <CreateCaseDialogContainer
+        //                     onCancel={() => setFloatingAction(false)}
+        //                     onCreated={(item) => handleOnItemPress(item, false)()}
+        //                 />,
+        //                 onClose: () => setFloatingAction(false)
+        //             })
+        // }, 200)
 
-            modal
-                .openModal(
-                    'OverlayModal',
-                    {
-                        content: <CreateCaseDialogContainer
-                            onCancel={() => setFloatingAction(false)}
-                            onCreated={(item) => handleOnItemPress(item, false)()}
-                        />,
-                        onClose: () => setFloatingAction(false)
-                    })
-        }, 200)
+
+        props.navigation.navigate('Schedule');
     }
 
     // prepare case files to display

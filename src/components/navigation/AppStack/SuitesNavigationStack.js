@@ -1,5 +1,5 @@
-import { createAppContainer } from 'react-navigation';
-import { createSidebarNavigator } from '../SuiteNavigator';
+import {createAppContainer} from 'react-navigation';
+import {createSidebarNavigator} from '../SuiteNavigator';
 
 import React from "react";
 
@@ -39,6 +39,7 @@ import {CaseFileContextProvider} from "../../../contexts/CaseFileContext";
 import SettingsIcon from "../../../../assets/svg/settingsIcon";
 import HelpIcon from "../../../../assets/svg/helpIcon";
 import NotificationIcon from "../../../../assets/svg/notificationIcon";
+import CaseFileStack from "./CaseFileNavigationStack";
 
 /***
  *  Top level navigation Stack for Suites Application for the side navigation bar.
@@ -50,123 +51,123 @@ import NotificationIcon from "../../../../assets/svg/notificationIcon";
  *  @provider : Context provider that is passed in to the component.
  */
 export const SuitesNavigationStack = createSidebarNavigator(
-  {
-    Schedule: {
-        screen: Schedule,
-        params: {
-            icon: ScheduleIcon,
-            tabName: 'schedule',
-            provider: ScheduleProvider
+    {
+        Schedule: {
+            screen: Schedule,
+            params: {
+                icon: ScheduleIcon,
+                tabName: 'schedule',
+                provider: ScheduleProvider
+            },
         },
+        CaseFiles: {
+            screen: CaseFileStack,
+            params: {
+                icon: CaseFileIcon,
+                tabName: 'CaseFiles',
+                provider: CaseFileContextProvider
+            },
+        },
+        Theatre: {
+            screen: Theatres,
+            params: {
+                icon: TheathreIcon,
+                tabName: 'Theatre',
+                provider: ScheduleProvider
+            },
+        },
+        Inventory: {
+            screen: Inventory,
+            params: {
+                icon: InventoryIcon,
+                tabName: 'Inventory',
+                provider: ScheduleProvider
+            },
+        },
+        Equipment: {
+            screen: Equipment,
+            params: {
+                icon: EquipmentIcon,
+                tabName: 'Equipment',
+                provider: ScheduleProvider
+            },
+        },
+        Orders: {
+            screen: Orders,
+            params: {
+                icon: OrdersIcon,
+                tabName: 'Orders',
+                provider: ScheduleProvider
+            },
+        },
+        Suppliers: {
+            screen: Suppliers,
+            params: {
+                icon: DeliveryIcon,
+                tabName: 'Suppliers',
+                provider: ScheduleProvider
+            },
+        },
+        Invoices: {
+            screen: NotFound,
+            params: {
+                icon: InvoiceIcon,
+                tabName: 'Invoices',
+                provider: ScheduleProvider
+            },
+        },
+        Storage: {
+            screen: Storage,
+            params: {
+                icon: StorageIcon,
+                tabName: 'Storage',
+                provider: ScheduleProvider
+            },
+        },
+        Physicians: {
+            screen: Physicians,
+            params: {
+                icon: PhysiciansIcon,
+                tabName: 'Physicians',
+                provider: ScheduleProvider
+            },
+        },
+        Procedures: {
+            screen: Procedures,
+            params: {
+                icon: ProcedureIcon,
+                tabName: 'Procedures',
+                provider: ScheduleProvider
+            },
+        },
+        Alerts: {
+            screen: NotFound,
+            params: {
+                icon: NotificationIcon,
+                tabName: 'Alerts',
+                provider: ScheduleProvider
+            },
+        },
+        Help: {
+            screen: NotFound,
+            params: {
+                icon: HelpIcon,
+                tabName: 'Help',
+                provider: ScheduleProvider
+            },
+        },
+        Settings: {
+            screen: NotFound,
+            params: {
+                icon: SettingsIcon,
+                tabName: 'Settings',
+                provider: ScheduleProvider
+            },
+        }
     },
-    CaseFiles: {
-        screen: CaseFiles,
-        params: {
-            icon: CaseFileIcon,
-            tabName: 'CaseFiles',
-            provider: CaseFileContextProvider
-        },
+    {
+        initialRouteName: 'Schedule',
     },
-    Theatre: {
-        screen: Theatres,
-        params: {
-            icon: TheathreIcon,
-            tabName: 'Theatre',
-            provider: ScheduleProvider
-        },
-    },
-    Inventory: {
-        screen: Inventory,
-        params: {
-            icon: InventoryIcon,
-            tabName: 'Inventory',
-            provider: ScheduleProvider
-        },
-    },
-    Equipment: {
-        screen: Equipment,
-        params: {
-            icon: EquipmentIcon,
-            tabName: 'Equipment',
-            provider: ScheduleProvider
-        },
-    },
-    Orders: {
-        screen: Orders,
-        params: {
-            icon: OrdersIcon,
-            tabName: 'Orders',
-            provider: ScheduleProvider
-        },
-    },
-    Suppliers: {
-        screen: Suppliers,
-        params: {
-            icon: DeliveryIcon,
-            tabName: 'Suppliers',
-            provider: ScheduleProvider
-        },
-    },
-    Invoices: {
-        screen: NotFound,
-        params: {
-            icon: InvoiceIcon,
-            tabName: 'Invoices',
-            provider: ScheduleProvider
-        },
-    },
-    Storage: {
-        screen: Storage,
-        params: {
-            icon: StorageIcon,
-            tabName: 'Storage',
-            provider: ScheduleProvider
-        },
-    },
-    Physicians: {
-        screen: Physicians,
-        params: {
-            icon: PhysiciansIcon,
-            tabName: 'Physicians',
-            provider: ScheduleProvider
-        },
-    },
-    Procedures: {
-        screen: Procedures,
-        params: {
-            icon: ProcedureIcon,
-            tabName: 'Procedures',
-            provider: ScheduleProvider
-        },
-    },
-    Alerts: {
-        screen: NotFound,
-        params: {
-            icon: NotificationIcon,
-            tabName: 'Alerts',
-            provider: ScheduleProvider
-        },
-    },
-    Help: {
-        screen: NotFound,
-        params: {
-            icon: HelpIcon,
-            tabName: 'Help',
-            provider: ScheduleProvider
-        },
-    },
-    Settings: {
-        screen: NotFound,
-        params: {
-            icon: SettingsIcon,
-            tabName: 'Settings',
-            provider: ScheduleProvider
-        },
-    }
-  },
-  {
-    initialRouteName: 'Schedule',
-  },
 );
 
 /**

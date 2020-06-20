@@ -5,13 +5,17 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "debug": "open 'rndebugger://set-debugger-loc?host=localhost&port=19001'"
   },
   "dependencies": {
     "@emotion/core": "^10.0.21",
     "@emotion/native": "^10.0.14",
     "@ismnoiet/react-native-dropdown": "0.0.2",
     "@react-native-community/datetimepicker": "2.2.2",
+    "@react-native-community/masked-view": "0.1.6",
+    "@react-navigation/native": "^5.5.1",
+    "@react-navigation/stack": "^5.5.1",
     "axios": "^0.19.2",
     "expo": "^37.0.0",
     "jwt-decode": "^2.2.0",
@@ -46,6 +50,8 @@
     "react-native-popover-menu": "^1.0.0",
     "react-native-popover-view": "^2.0.5",
     "react-native-popup-menu": "^0.15.7",
+    "react-native-reanimated": "~1.7.0",
+    "react-native-safe-area-context": "0.7.3",
     "react-native-screens": "~2.2.0",
     "react-native-search-filter": "^0.1.5",
     "react-native-section-list-get-item-layout": "^2.2.3",

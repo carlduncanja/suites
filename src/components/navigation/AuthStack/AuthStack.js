@@ -1,17 +1,14 @@
 import React from "react";
-import {createStackNavigator} from 'react-navigation-stack';
+
+import {createStackNavigator} from '@react-navigation/stack'
 import LoginPage from "../../../page/LoginPage";
 
-const AuthStack = createStackNavigator({
-    LoginScreen: {
-        screen: LoginPage,
-        navigationOptions: {
-            headerShown: false
-        }
-    }
-});
+const Stack = createStackNavigator();
 
 
-// const RootApplicationContainer = createAppContainer(AuthStack);
+const AuthStack = () => <Stack.Navigator>
+    <Stack.Screen name='login' component={LoginPage} options={{headerShown: false}}/>
+</Stack.Navigator>
+
 
 export default AuthStack
