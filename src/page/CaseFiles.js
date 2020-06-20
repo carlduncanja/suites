@@ -59,7 +59,8 @@ const CaseFiles = (props) => {
         caseFiles,
         setCaseFiles,
         navigation,
-        modal
+        modal,
+        route,
     } = props;
 
     //######## States
@@ -68,7 +69,7 @@ const CaseFiles = (props) => {
     const [isFetchingCaseFiles, setFetchingCaseFiles] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
 
-    const routeName = navigation.state.routeName;
+    const routeName = route.name;
 
     // pagination
     const [totalPages, setTotalPages] = useState(0);

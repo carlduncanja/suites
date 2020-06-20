@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import LoginPage from "./page/LoginPage";
 import NotFound from "./page/NotFound";
+import SuitesNavigationStack from "./components/navigation/AppStack/SuitesNavigationStack";
 
 const Stack = createStackNavigator();
 
@@ -56,7 +57,7 @@ function RootApplicationNavigator({auth}) {
                             :
                             <Stack.Screen
                                 name="App"
-                                component={NotFound}
+                                component={SuitesNavigationStack}
                                 options={{
                                     headerShown: false,
                                     // When logging out, a pop animation feels intuitive
