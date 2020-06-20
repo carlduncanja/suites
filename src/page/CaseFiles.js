@@ -262,8 +262,6 @@ const CaseFiles = (props) => {
         //             })
         // }, 200)
 
-
-        props.navigation.navigate('Schedule');
     }
 
     // prepare case files to display

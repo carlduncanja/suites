@@ -40,6 +40,8 @@ import SettingsIcon from "../../../../assets/svg/settingsIcon";
 import HelpIcon from "../../../../assets/svg/helpIcon";
 import NotificationIcon from "../../../../assets/svg/notificationIcon";
 import CaseFileStack from "./CaseFileNavigationStack";
+import Invoices from "../../CaseFiles/OverlayPages/ChargeSheet/Invoices";
+import {AlertIOS} from "react-native-web";
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
@@ -65,6 +67,125 @@ export const SuitesNavigationStack = () => {
                 initialParams={{
                     icon: CaseFileIcon,
                     tabName: 'Case Files',
+                }}/>
+
+
+            <SuitesNavigator.Screen
+                name="Theatres"
+                component={Theatres}
+                initialParams={{
+                    icon: TheathreIcon,
+                    tabName: 'Theatre',
+                }}/>
+
+
+            <SuitesNavigator.Screen
+                name="Inventory"
+                component={Inventory}
+                initialParams={{
+                    icon: InventoryIcon,
+                    tabName: 'Inventory',
+                }}/>
+
+
+            <SuitesNavigator.Screen
+                name="Equipment"
+                component={Equipment}
+                initialParams={{
+                    icon: EquipmentIcon,
+                    tabName: 'Equipment',
+                }}/>
+
+
+            <SuitesNavigator.Screen
+                name="Orders"
+                component={Orders}
+                initialParams={{
+                    icon: OrdersIcon,
+                    tabName: 'Orders',
+                }}
+            />
+
+
+            <SuitesNavigator.Screen
+                name="Suppliers"
+                component={Suppliers}
+                initialParams={{
+                    icon: DeliveryIcon,
+                    tabName: 'Suppliers',
+                }}
+            />
+
+
+            <SuitesNavigator.Screen
+                name="Invoices"
+                component={Invoices}
+                initialParams={{
+                    icon: InvoiceIcon,
+                    tabName: 'Invoices',
+                }}
+            />
+
+
+            <SuitesNavigator.Screen
+                name="Storage"
+                component={Storage}
+                initialParams={{
+                    icon: StorageIcon,
+                    tabName: 'Storage',
+                }}
+            />
+
+
+            <SuitesNavigator.Screen
+                name="Physicians"
+                component={Physicians}
+                initialParams={{
+                    icon: PhysiciansIcon,
+                    tabName: 'Physicians',
+                }}
+            />
+
+
+            <SuitesNavigator.Screen
+                name="Procedures"
+                component={Procedures}
+                initialParams={{
+                    icon: ProcedureIcon,
+                    tabName: 'Procedures',
+                }}
+            />
+
+
+
+            <SuitesNavigator.Screen
+                name="Alerts"
+                component={NotFound}
+                initialParams={{
+                    icon: NotificationIcon,
+                    tabName: 'Alerts',
+                }}
+            />
+
+
+
+            <SuitesNavigator.Screen
+                name="Help"
+                component={Procedures}
+                initialParams={{
+                    icon: HelpIcon,
+                    tabName: 'Help',
+                }}
+            />
+
+
+
+            <SuitesNavigator.Screen
+                name="Settings"
+                component={NotFound}
+                initialParams={{
+                    icon: SettingsIcon,
+                    tabName: 'Settings',
                 }}
             />
 
