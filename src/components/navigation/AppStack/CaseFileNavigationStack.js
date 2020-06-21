@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import CaseFiles from "../../../page/CaseFile/CaseFiles";
 import NotFound from "../../../page/NotFound";
 import CreateCasePage from "../../../page/CaseFile/CreateCasePage";
+import HeaderBackComponent from "../components/HeaderBackComponent";
 
 const Stack = createStackNavigator();
 
@@ -24,7 +25,16 @@ export default () => (
             name="CreateCase"
             component={CreateCasePage}
             options={{
-                headerShown: false
+                // headerShown: false
+                headerLeft: (props) => (
+                    <HeaderBackComponent
+                        {...props}
+                    />
+                ),
+                headerStyle: {
+                    height: 100,
+                },
+                headerTitle: ""
             }}
         />
 
