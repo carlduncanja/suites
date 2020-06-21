@@ -1,30 +1,30 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-import Page from '../components/common/Page/Page';
-import ListItem from "../components/common/List/ListItem";
-import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
-import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
-import CaseFileBottomSheet from '../components/CaseFiles/CaseFileBottomSheet';
-import ActionContainer from "../components/common/FloatingAction/ActionContainer";
-import ActionItem from "../components/common/ActionItem";
-import CreateCaseDialogContainer from '../components/CaseFiles/CreateCaseDialogContainer';
+import Page from '../../components/common/Page/Page';
+import ListItem from "../../components/common/List/ListItem";
+import RoundedPaginator from '../../components/common/Paginators/RoundedPaginator';
+import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
+import CaseFileBottomSheet from '../../components/CaseFiles/CaseFileBottomSheet';
+import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../../components/common/ActionItem";
+import CreateCaseDialogContainer from '../../components/CaseFiles/CreateCaseDialogContainer';
 
-import AddIcon from "../../assets/svg/addIcon";
-import ArchiveIcon from "../../assets/svg/archiveIcon";
+import AddIcon from "../../../assets/svg/addIcon";
+import ArchiveIcon from "../../../assets/svg/archiveIcon";
 
 import {connect} from 'react-redux';
-import {setCaseFiles} from "../redux/actions/caseFilesActions";
-import {getCaseFiles} from "../api/network";
+import {setCaseFiles} from "../../redux/actions/caseFilesActions";
+import {getCaseFiles} from "../../api/network";
 
-import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from '../helpers/caseFilesHelpers';
-import {currencyFormatter} from '../utils/formatter';
-import {SuitesContext} from '../contexts/SuitesContext';
+import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from '../../helpers/caseFilesHelpers';
+import {currencyFormatter} from '../../utils/formatter';
+import {SuitesContext} from '../../contexts/SuitesContext';
 
 import {withModal} from 'react-native-modalfy';
 import moment from 'moment';
-import {formatDate} from '../utils/formatter';
-import caseFiles from "../../data/CaseFiles";
+import {formatDate} from '../../utils/formatter';
+import caseFiles from "../../../data/CaseFiles";
 
 
 const listHeaders = [
@@ -246,7 +246,7 @@ const CaseFiles = (props) => {
     };
 
     const openCreateCaseFile = () => {
-        // modal.closeModals('ActionContainerModal');
+        modal.closeModals('ActionContainerModal');
         // // For some reason there has to be a delay between closing a modal and opening another.
         // setTimeout(() => {
         //

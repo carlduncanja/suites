@@ -6,7 +6,7 @@ import React from "react";
 
 /* Screens */
 import Schedule from '../../../page/Schedule';
-import CaseFiles from '../../../page/CaseFiles'
+import CaseFiles from '../../../page/CaseFile/CaseFiles'
 import Theatres from "../../../page/Theatres";
 import Inventory from "../../../page/Inventory";
 import Storage from "../../../page/Storage";

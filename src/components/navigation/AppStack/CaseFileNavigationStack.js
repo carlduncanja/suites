@@ -1,8 +1,9 @@
 import React from "react";
 import {createStackNavigator} from '@react-navigation/stack';
 
-import CaseFiles from "../../../page/CaseFiles";
+import CaseFiles from "../../../page/CaseFile/CaseFiles";
 import NotFound from "../../../page/NotFound";
+import CreateCasePage from "../../../page/CaseFile/CreateCasePage";
 
 const Stack = createStackNavigator();
 
@@ -21,7 +22,7 @@ export default () => (
 
         <Stack.Screen
             name="CreateCase"
-            component={NotFound}
+            component={CreateCasePage}
             options={{
                 headerShown: false
             }}
