@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {View, Text, ScrollView, StyleSheet, Dimensions} from 'react-native';
 import Schedule from '../../page/Schedule';
-import CaseFiles from '../../page/CaseFiles';
+import CaseFiles from '../../page/CaseFile/CaseFiles';
 
 export default class Content extends Component {
     constructor(props){

@@ -1,7 +1,7 @@
 import initialState from "./initialState";
-import {SET_AUTH, UPDATE_AUTH} from "../actions/authActions";
+import {RESTORE_TOKEN, SET_AUTH, SIGN_IN, SIGN_OUT, UPDATE_AUTH} from "../actions/authActions";
 
-export default (state = initialState.auth, action) => {
+export default (prevState = initialState.auth, action) => {
     const {type, payload} = action
 
     switch (type) {
@@ -9,10 +9,28 @@ export default (state = initialState.auth, action) => {
             return payload.data
         case UPDATE_AUTH:
             return {
-                ...state,
+                ...prevState,
                 ...payload.data
             }
+        case RESTORE_TOKEN:
+            return {
+                ...prevState,
+                userToken: payload.data,
+                isLoading: false,
+            };
+        case SIGN_IN:
+            return {
+                ...prevState,
+                isSignOut: false,
+                userToken: payload.data,
+            };
+        case SIGN_OUT:
+            return {
+                ...prevState,
+                isSignOut: true,
+                userToken: null,
+            };
         default:
-            return state
+            return prevState
     }
 }

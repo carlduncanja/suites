@@ -1,13 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View} from "react-native";
+import {Text, View, Button} from "react-native";
+import AsyncStorage from "@react-native-community/async-storage"
+import {connect} from "react-redux"
+import {signOut} from "../redux/actions/authActions";
 
-function NotFound({descriptor}) {
-    const {navigation} = descriptor;
+function NotFound({signOut, route = {}}) {
+
+    const {name = ""} = route;
+
+    const handleOnLogout = async () => {
+        await AsyncStorage.clear();
+        signOut()
+    };
 
     return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text>Page {navigation.state.routeName}</Text>
+        <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={{margin: 50}}> {name} Page Not Found</Text>
+
+            <Button onPress={handleOnLogout} title="LOGOUT"/>
         </View>
     );
 }
@@ -15,4 +26,8 @@ function NotFound({descriptor}) {
 NotFound.propTypes = {};
 NotFound.defaultProps = {};
 
-export default NotFound;
+const mapDispatcherToProps = {
+    signOut
+}
+
+export default connect(null, mapDispatcherToProps)(NotFound);

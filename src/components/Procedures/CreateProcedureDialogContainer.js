@@ -66,13 +66,15 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         physician: '',
         supportedRooms: [],
         inventories:[],
-        equipments:[]
+        equipments:[],
+        serviceFee : 0
     });
 
     const [errorFields, setErrorFields] = useState({
         name : false,
         duration : false,
         physician : false,
+        serviceFee : false
     })
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
@@ -133,20 +135,23 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
             let isNameError = errorFields['name']
             let isDurationError = errorFields['duration']
             let isPhysicianError = errorFields['physician']
+            let isServiceFeeError = errorFields['serviceFee']
 
             fields['name'] === '' || null ? isNameError = true : isNameError = false
             fields['duration'] === '' || null ? isDurationError = true : isDurationError = false
             fields['physician'] === '' || null ? isPhysicianError = true : isPhysicianError = false
+            fields['serviceFee'] === 0 || null ? isServiceFeeError = true : isServiceFeeError = false
             
             setErrorFields({
                 ...errorFields,
                 name : isNameError,
                 duration : isDurationError,
-                physician : isPhysicianError
+                physician : isPhysicianError,
+                serviceFee : isServiceFeeError
             })
 
-            if(isNameError === false && isDurationError === false && isPhysicianError === false){
-                // console.log("Fields: ",updatedFields)
+            if(isNameError === false && isDurationError === false && isPhysicianError === false && isServiceFeeError === false){
+                console.log("Fields: ",updatedFields)
                 createProcedureCall(updatedFields)
             }else{
                 setTabIndex(0)

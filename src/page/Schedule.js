@@ -27,6 +27,8 @@ const Schedule = (props) => {
         setAppointments
     } = props;
     const modal = useModal();
+    const screenDimensions = Dimensions.get('window')
+
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialDaysList = getDaysForMonth(currentDate);
@@ -176,7 +178,7 @@ const Schedule = (props) => {
                                 month={selectedMonth}
                                 days={daysList}
                                 selectedDate={selectedDay}
-                                screenDimensions={props.screenDimensions}
+                                screenDimensions={screenDimensions}
                             />
                         </View>
                         {

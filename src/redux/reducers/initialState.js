@@ -11,7 +11,7 @@ export default {
     orders: [],
     auth: {
         isLoading: true,
-        isSignout: false,
+        isSignOut: false,
         userToken: null,
     }
 }
