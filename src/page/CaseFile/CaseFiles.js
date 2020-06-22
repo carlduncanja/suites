@@ -106,7 +106,7 @@ const CaseFiles = (props) => {
     };
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
-        props.navigation.navigate('Case Files', {
+        navigation.navigate('Case Files', {
             screen: 'Case',
             initial: false,
             params: {caseId: item._id, isEdit: isOpenEditable}

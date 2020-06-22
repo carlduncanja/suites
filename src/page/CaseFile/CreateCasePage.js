@@ -262,17 +262,6 @@ function CreateCasePage({navigation, route}) {
     }
 
     const onPositiveButtonPress = () => {
-
-        // navigation.replace(
-        //     'Case',
-        //     {
-        //         caseId: "5eba97f72b680f49069d5f5b",
-        //         isEdit: false
-        //     }
-        // );
-        //
-        // return
-
         const incrementTab = () => {
             const updatedTabIndex = selectedTabIndex + 1
             setCompletedTabs([...completedTabs, tabs[selectedTabIndex]])
@@ -548,7 +537,7 @@ function CreateCasePage({navigation, route}) {
                     'Case',
                     {
                         caseId: data._id,
-                        isEdit: false
+                        isEdit: true
                     }
                 );
             })
