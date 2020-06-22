@@ -21,7 +21,7 @@ import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} fr
 import {currencyFormatter} from '../../utils/formatter';
 import {SuitesContext} from '../../contexts/SuitesContext';
 
-import {withModal} from 'react-native-modalfy';
+import {useModal, withModal} from 'react-native-modalfy';
 import moment from 'moment';
 import {formatDate} from '../../utils/formatter';
 import caseFiles from "../../../data/CaseFiles";
@@ -48,6 +48,7 @@ const listHeaders = [
 
 const CaseFiles = (props) => {
     //######## const
+    const modal = useModal();
 
     // const router = useRouter
     const recordsPerPage = 10;
@@ -58,8 +59,9 @@ const CaseFiles = (props) => {
         // Redux props
         caseFiles,
         setCaseFiles,
+
+        // React Navigation Props
         navigation,
-        modal,
         route,
     } = props;
 
@@ -305,7 +307,7 @@ const mapDispatcherToProp = {
     setCaseFiles
 };
 
-export default connect(mapStateToProps, mapDispatcherToProp)(withModal(CaseFiles));
+export default connect(mapStateToProps, mapDispatcherToProp)(CaseFiles);
 
 const styles = StyleSheet.create({
     item: {

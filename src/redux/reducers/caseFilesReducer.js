@@ -14,13 +14,6 @@ export const caseActions = {
 export const caseFilesReducer = (state, action) =>{
     const { type, newState } = action
     switch (type){
-        // case caseActions.SETPROGRESSWIDTH:
-        //     let progressBar = {
-        //         ...state.progressBar,
-        //         progressContainerWidth : newState.progressContainerWidth
-        //     }
-        //     return {...state,progressBar}
-
         case caseActions.UPDATEPROGRESSBARLIST:
             return {
                 ...state,

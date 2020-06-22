@@ -16,7 +16,8 @@ import StaffStep from "../../components/CaseFiles/StaffDialogTabs/StaffStep";
 import ProcedureStep from "../../components/CaseFiles/ProceduresDialogTabs/ProcedureStep";
 import CompleteCreateCase from "../../components/CaseFiles/CompleteCreateCase";
 import ProgressContainer from "../../components/common/Progress/ProgressContainer";
-import ClearIcon from "../../../assets/svg/clearIcon";
+import {addCaseFile} from "../../redux/actions/caseFilesActions";
+import {connect} from 'react-redux';
 
 const PATIENT_TABS = {
     DETAILS: 'Details',
@@ -150,7 +151,7 @@ const testData = {
 }
 
 
-function CreateCasePage({navigation, route}) {
+function CreateCasePage({navigation, addCaseFile}) {
 
     // ########### CONST
     const [wizard, setWizard] = useState(createCaseWizard)
@@ -531,8 +532,10 @@ function CreateCasePage({navigation, route}) {
         }))
 
         console.log("handleOnComplete: caseProcedure Info", caseFileData);
+
         createCaseFile(caseFileData)
             .then((data) => {
+                addCaseFile(data);
                 navigation.replace(
                     'Case',
                     {
@@ -647,7 +650,11 @@ function CreateCasePage({navigation, route}) {
 CreateCasePage.propTypes = {};
 CreateCasePage.defaultProps = {};
 
-export default CreateCasePage;
+const mapDispatchToProp = {
+    addCaseFile
+}
+
+export default connect(null, mapDispatchToProp)(CreateCasePage);
 
 const styles = StyleSheet.create({
     container: {

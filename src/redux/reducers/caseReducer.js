@@ -1,17 +1,22 @@
 import initialState from "./initialState";
-import {SET_CASEFILES} from "../actions/caseFilesActions";
+import {ADD_CASE_FILE, SET_CASE_FILES} from "../actions/caseFilesActions";
 
-export default (state = initialState.caseFiles, action) => {
+export default (prevState = initialState.caseFiles, action) => {
 
     const {type, payload} = action;
 
     switch (type) {
-        case SET_CASEFILES: {
+        case SET_CASE_FILES: {
             const {data} = payload;
             return [...data]
         }
+        case ADD_CASE_FILE: {
+            const updatedCases = [...prevState]
+            updatedCases.push(payload.data);
+            return updatedCases;
+        }
         default:
-            return state
+            return prevState
     }
 
 }
