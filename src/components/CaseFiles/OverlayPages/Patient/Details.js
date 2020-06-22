@@ -131,11 +131,11 @@ const Details = ({tabDetails, modal}) => {
                         activeOpactiy = {1}
                         onPress = {()=>handleBMIPress(bmi)}
                     >
-                        <BMIConverter
-                            recordTitle={"BMI"}
-                            bmiValue={bmi}
-                            bmiScale = {bmiScale}
-                        />
+                        {/*<BMIConverter*/}
+                        {/*    recordTitle={"BMI"}*/}
+                        {/*    bmiValue={bmi}*/}
+                        {/*    bmiScale = {bmiScale}*/}
+                        {/*/>*/}
                     </TouchableOpacity>
                 </View>
 

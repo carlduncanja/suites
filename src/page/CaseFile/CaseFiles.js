@@ -108,9 +108,11 @@ const CaseFiles = (props) => {
     const handleOnItemPress = (item, isOpenEditable) => () => {
         console.log("item press", item);
 
-        modal.openModal('BottomSheetModal', {
-            content: <CaseFileBottomSheet caseItem={item} isOpenEditable={isOpenEditable}/>
-        })
+        // modal.openModal('BottomSheetModal', {
+        //     content: <CaseFileBottomSheet caseItem={item} isOpenEditable={isOpenEditable}/>
+        // })
+
+        props.navigation.navigate('Case Files', {screen: 'Case',   initial: false, params: {caseItem: item, isEdit: isOpenEditable}});
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
