@@ -247,23 +247,7 @@ const CaseFiles = (props) => {
 
     const openCreateCaseFile = () => {
         modal.closeModals('ActionContainerModal');
-        // // For some reason there has to be a delay between closing a modal and opening another.
-        // setTimeout(() => {
-        //
-        //     modal
-        //         .openModal(
-        //             'OverlayModal',
-        //             {
-        //                 content: <CreateCaseDialogContainer
-        //                     onCancel={() => setFloatingAction(false)}
-        //                     onCreated={(item) => handleOnItemPress(item, false)()}
-        //                 />,
-        //                 onClose: () => setFloatingAction(false)
-        //             })
-        // }, 200)
-
-
-        props.navigation.navigate('Case Files', {screen: 'CreateCase'});
+        props.navigation.navigate('Case Files', {screen: 'CreateCase',   initial: false});
     }
 
     // prepare case files to display
