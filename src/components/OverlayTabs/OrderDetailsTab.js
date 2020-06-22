@@ -4,6 +4,7 @@ import Record from "../common/Information Record/Record";
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
 import { formatDate } from "../../utils/formatter"; 
 import { formatAmount } from "../../helpers/caseFilesHelpers";
+import { transformToSentence } from "../../hooks/useTextEditHook";
 
 // const order = {
 //     decscription : "",
@@ -19,7 +20,7 @@ import { formatAmount } from "../../helpers/caseFilesHelpers";
 //     type: 'Repeating',
 //     configStatus : 'Active',
 // }
-const OrderDetailsTab = ({order = {} }) =>{
+const OrderDetailsTab = ({order = {} }) =>{ 
 
     const {
         orderDate = "",
@@ -27,7 +28,7 @@ const OrderDetailsTab = ({order = {} }) =>{
         status  = "",
         total = 0,
         supplier = {},
-        invoiceNumber = "",
+        invoice = "",
         storageLocation = "",
         type = "",
         configStatus = "",
@@ -54,7 +55,7 @@ const OrderDetailsTab = ({order = {} }) =>{
                <View style={styles.inputWrapper}>
                    <ResponsiveRecord
                         recordTitle = "Invoice"
-                        recordValue = {invoiceNumber}
+                        recordValue = {invoice}
                    />
                </View>
 
@@ -68,7 +69,7 @@ const OrderDetailsTab = ({order = {} }) =>{
                <View style={styles.inputWrapper}>
                    <Record
                         recordTitle = "Status"
-                        recordValue = {status}
+                        recordValue = {transformToSentence(status)}
                    />
                </View>
            </View>

@@ -86,7 +86,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
         setFetching(true);
         getPurchaseOrderById(id)
             .then(data => {
-                // console.log("Data: ", data)
+                console.log("Data: ", data)
                 setSelectedOrder(data)
             })
             .catch(error => {
