@@ -16,13 +16,13 @@ const CreateServiceLineItem = ({onCreated, onCancel}) => {
     const [fields, setFields] = useState({ 
         name : '',
         type : 'service',
-        unitPrice : '',
+        cost : '',
         quantity : ''
     });
 
     const [errorFields, setErrorFields] = useState({
         name : false,
-        unitPrice : false,
+        cost : false,
         quantity : false,
     })
 
@@ -31,17 +31,17 @@ const CreateServiceLineItem = ({onCreated, onCancel}) => {
     const onPositiveClick = () => {
 
         let isNameError = errorFields['name']
-        let isPriceError = errorFields['unitPrice']
+        let isPriceError = errorFields['cost']
         let isQuantityError = errorFields['quantity']
 
         fields['name'] === '' || null ? isNameError = true : isNameError = false
-        fields['unitPrice'] === '' || null ? isPriceError = true : isPriceError = false
+        fields['cost'] === '' || null ? isPriceError = true : isPriceError = false
         fields['quantity'] === '' || null ? isQuantityError = true : isQuantityError = false
 
         setErrorFields({
             ...errorFields,
             name : isNameError,
-            unitPrice : isPriceError,
+            cost : isPriceError,
             quantity : isQuantityError,
         })
 
@@ -70,7 +70,7 @@ const CreateServiceLineItem = ({onCreated, onCancel}) => {
     const handleUnitPrice = (price) => {
         if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
             console.log("Unit Price: ", price)
-            onFieldChange('unitPrice')(parseFloat(price))
+            onFieldChange('cost')(parseFloat(price))
         }
         setUnitPriceText(price)
     }

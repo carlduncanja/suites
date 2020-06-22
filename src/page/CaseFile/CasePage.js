@@ -122,8 +122,13 @@ function CasePage({route}) {
         setEditMode(!isEditMode)
 
         if(isEditMode === true){
-            // console.log("Record: ", selectedCaseId)
-            updateCase()
+            if(updateInfo.length !== 0){
+                console.log("Record: ", updateInfo)
+                updateCase()
+            }else{
+                console.log("No data added")
+            }
+            
             setTimeout(() => {
                 fetchCase(caseId)
             }, 500)
@@ -137,7 +142,7 @@ function CasePage({route}) {
     }
 
     const updateCase = () => {
-        console.log("Selectedcase: ", selectedCaseId, updateInfo)
+        // console.log("Selectedcase: ", selectedCaseId, updateInfo)
         updateChargeSheet(selectedCaseId, updateInfo)
             .then((data) => {
                 console.log("Updated Record:", data)
