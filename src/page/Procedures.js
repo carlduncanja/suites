@@ -190,7 +190,7 @@ const Procedures = (props) => {
                 <View style={[styles.item,{...styles.rowBorderRight, flex: 2}]}>
                     <Text style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
                 </View>
-                <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
+                <View style={[styles.item, {flex: 1, alignItems: 'flex-start'}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{physician}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>

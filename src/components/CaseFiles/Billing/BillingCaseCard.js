@@ -18,6 +18,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
         discount = 0,
         procedures = []
     } = tabDetails
+    // console.log("TabDetails: ", tabDetails)
 
     let totalAmount = total - (total * discount)
 
