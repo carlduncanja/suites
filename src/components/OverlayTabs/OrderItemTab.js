@@ -106,7 +106,7 @@ const OrderItemTab = ({order}) =>{
                     </View>
 
                     <View style={styles.item}>
-                        <Text style={styles.itemText}>{sku}</Text>
+                        <Text style={styles.itemText}>{sku === "" ? `n/a` : sku}</Text>
                     </View>
 
                     <View style={styles.item}>

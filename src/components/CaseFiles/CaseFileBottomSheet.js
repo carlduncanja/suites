@@ -140,7 +140,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     }
 
     const updateCase = () => {
-        console.log("Selectedcase: ", selectedCaseId, updateInfo)
+        // console.log("Selectedcase: ", selectedCaseId, updateInfo)
         updateChargeSheet(selectedCaseId, updateInfo)
             .then((data) => {
                 console.log("Updated Record:", data)
