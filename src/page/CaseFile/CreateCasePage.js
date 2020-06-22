@@ -150,7 +150,7 @@ const testData = {
 }
 
 
-function CreateCasePage({onCancel, onCreated}) {
+function CreateCasePage({navigation, route}) {
 
     // ########### CONST
     const [wizard, setWizard] = useState(createCaseWizard)
@@ -263,6 +263,15 @@ function CreateCasePage({onCancel, onCreated}) {
 
     const onPositiveButtonPress = () => {
 
+        // navigation.replace(
+        //     'Case',
+        //     {
+        //         caseId: "5eba97f72b680f49069d5f5b",
+        //         isEdit: false
+        //     }
+        // );
+        //
+        // return
 
         const incrementTab = () => {
             const updatedTabIndex = selectedTabIndex + 1
@@ -535,13 +544,15 @@ function CreateCasePage({onCancel, onCreated}) {
         console.log("handleOnComplete: caseProcedure Info", caseFileData);
         createCaseFile(caseFileData)
             .then((data) => {
-                console.log("Case File Created", data)
-
-                modal.closeAllModals();
-                setTimeout(() => {
-                    onCreated(data, false)
-                }, 300);
-            }).catch(error => {
+                navigation.replace(
+                    'Case',
+                    {
+                        caseId: data._id,
+                        isEdit: false
+                    }
+                );
+            })
+            .catch(error => {
             console.log("failed to create case file", error);
             Alert.alert("Sorry", "Something went wrong when creating case.");
         })
@@ -637,9 +648,6 @@ function CreateCasePage({onCancel, onCreated}) {
             <TouchableOpacity style={styles.footerButton} onPress={onPositiveButtonPress}>
                 <View>
                     <Text style={styles.footerText}>{positiveText}</Text>
-                    {/*{*/}
-                    {/*    buttonIcon*/}
-                    {/*}*/}
                 </View>
             </TouchableOpacity>
 

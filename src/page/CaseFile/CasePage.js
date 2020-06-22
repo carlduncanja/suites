@@ -41,7 +41,7 @@ import {
 function CasePage({route}) {
     const modal = useModal();
 
-    const {caseItem, isEdit} = route.params;
+    const {caseId, isEdit} = route.params;
 
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
@@ -84,15 +84,11 @@ function CasePage({route}) {
 
     const initialMenuItem = overlayMenu[0].name
     const initialCurrentTabs = overlayMenu[0].overlayTabs
-    const intialSelectedTab = initialCurrentTabs[0]
-
-    const {_id, patient, caseNumber} = caseItem
-    let name = patient ? `${patient.firstName} ${patient.surname}` : ""
-    // patient ? name = `${patient.firstName} ${patient.surname}` : name = ""
+    const initialSelectedTab = initialCurrentTabs[0]
 
     // ############### State
 
-    const [selectedTab, setSelectedTab] = useState(intialSelectedTab)
+    const [selectedTab, setSelectedTab] = useState(initialSelectedTab)
     const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs)
     const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem)
 
@@ -102,7 +98,7 @@ function CasePage({route}) {
 
     // ############### Lifecycle Methods
     useEffect(() => {
-        fetchCase(_id)
+        fetchCase(caseId)
     }, []);
 
     // ############### Event Handlers
@@ -129,7 +125,7 @@ function CasePage({route}) {
             // console.log("Record: ", selectedCaseId)
             updateCase()
             setTimeout(() => {
-                fetchCase(_id)
+                fetchCase(caseId)
             }, 500)
         }
 
@@ -343,7 +339,6 @@ function CasePage({route}) {
                     selectedTab={selectedTab}
                     isEditMode={isEditMode}
                 />
-
             case "Medical Staff" :
                 return <MedicalStaff
                     staff={staff}
@@ -362,7 +357,6 @@ function CasePage({route}) {
                     selectedTab={selectedTab}
                     isEditMode={isEditMode}
                 />
-
             case "Charge Sheet" :
                 return <ChargeSheet
                     chargeSheet={chargeSheet}
@@ -374,13 +368,15 @@ function CasePage({route}) {
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
                 />
-
             default :
                 return <View/>
-
         }
 
     }
+
+    const {patient, caseNumber} = selectedCase;
+    const name = patient ? `${patient.firstName} ${patient.surname}` : ""
+
 
     return (
         <View style={{flex: 1}}>
@@ -389,8 +385,7 @@ function CasePage({route}) {
                     ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
                         <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
                     </View>
-                    :
-                    <>
+                    : <>
                         <SlideOverlay
                             overlayId={caseNumber}
                             overlayTitle={name}
@@ -398,14 +393,13 @@ function CasePage({route}) {
                             currentTabs={currentTabs}
                             selectedTab={selectedTab}
                             isEditMode={isEditMode}
+                            onEditPress={onEditPress}
                             overlayContent={
-                                <View style={{flex: 1, padding: 25, paddingTop: 30}}>
+                                <View style={{flex: 1, padding: 25, paddingTop: 30, backgroundColor: 'white'}}>
                                     {getOverlayContent()}
                                 </View>
                             }
-                            onEditPress={onEditPress}
                         />
-
                         <View style={styles.footer}>
                             <CaseFileOverlayMenu
                                 selectedMenuItem={selectedMenuItem}
@@ -413,14 +407,12 @@ function CasePage({route}) {
                                 handleTabPress={handleOverlayMenuPress}
                             />
                         </View>
-
                         <View style={styles.actionWrapper}>
                             <FloatingActionButton
                                 isDisabled={isFloatingActionDisabled}
                                 toggleActionButton={toggleActionButton}
                             />
                         </View>
-
                     </>
             }
         </View>

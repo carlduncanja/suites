@@ -106,13 +106,11 @@ const CaseFiles = (props) => {
     };
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
-        console.log("item press", item);
-
-        // modal.openModal('BottomSheetModal', {
-        //     content: <CaseFileBottomSheet caseItem={item} isOpenEditable={isOpenEditable}/>
-        // })
-
-        props.navigation.navigate('Case Files', {screen: 'Case',   initial: false, params: {caseItem: item, isEdit: isOpenEditable}});
+        props.navigation.navigate('Case Files', {
+            screen: 'Case',
+            initial: false,
+            params: {caseId: item._id, isEdit: isOpenEditable}
+        });
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
@@ -235,7 +233,8 @@ const CaseFiles = (props) => {
 
     const getFabActions = () => {
 
-        const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={() => {}}/>;
+        const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={() => {
+        }}/>;
         const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon/>} onPress={openCreateCaseFile}/>;
 
         return <ActionContainer
@@ -249,7 +248,7 @@ const CaseFiles = (props) => {
 
     const openCreateCaseFile = () => {
         modal.closeModals('ActionContainerModal');
-        props.navigation.navigate('Case Files', {screen: 'CreateCase',   initial: false});
+        props.navigation.navigate('Case Files', {screen: 'CreateCase', initial: false});
     }
 
     // prepare case files to display
