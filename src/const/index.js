@@ -32,3 +32,44 @@ export const QUOTATION_STATUS = {
      */
     CANCELLED: "cancelled"
 }
+
+
+export const PURCHASE_ORDER_STATUSES = {
+    /**
+     * A this state the purchase order has been created
+     * and still in editing state
+     */
+    DRAFTED: "drafted",
+
+    /**
+     * A this state the purchases order has been locked in,
+     * ie the order has been sent out.
+     *
+     * No further edit can be done to the purchases order and this point.
+     * A delivery date is set for the purchase order at this point. An
+     */
+    ACCEPTED: "accepted",
+
+    /**
+     * A this state the devices are in the process of being accepted,
+     * ie devices are delivered and being transferred for accepted.
+     *
+     */
+    ORDER_RECEIVED: "order_received",
+
+    /**
+     * Purchases order has been invoices and the inventory items are now in system.
+     * A this point the purchases order is considered paid.
+     */
+    BILLED: "billed",
+
+    /**
+     *
+     */
+    CANCELLED: "cancelled",
+
+    /**
+     *
+     */
+    VOIDED: "voided",
+}

@@ -389,6 +389,15 @@ function Inventory(props) {
             levels: item.levels
         };
 
+        let {storageLocations = []} = item;
+
+        storageLocations = storageLocations.map(item => ({
+            id: item._id,
+            locationName: item.locationName,
+            stock: item.stock,
+            levels: item.levels || {}
+        }))
+
         return <CollapsibleListItem
             isChecked={selectedIds.includes(item.id)}
             onCheckBoxPress={onCheckBoxPress(item)}
@@ -397,36 +406,12 @@ function Inventory(props) {
             render={(collapse, isCollapsed) => inventoryItemView(formattedItem, collapse, isCollapsed)}
         >
             <FlatList
-                data={[
-                    {
-                        id: "1",
-                        locationName: "OR1: Cabinet 6",
-                        stock: 138,
-                        levels: {
-                            max: 400,
-                            min: 0,
-                            critical: 100,
-                            ideal: 300,
-                        },
-                    },
-                    {
-                        id: "2",
-                        locationName: "OR1: Cabinet 8",
-                        stock: 22,
-                        levels: {
-                            max: 200,
-                            min: 0,
-                            critical: 50,
-                            ideal: 100,
-                        },
-                        locations: 1
-                    },
-                ]}
+                data={storageLocations}
                 renderItem={({item}) => {
-                    return storageItemView(item, false,() => {
+                    return storageItemView(item, false, () => {
                     })
                 }}
-                keyExtractor={(item, index)=> ""+index}
+                keyExtractor={(item, index) => "" + index}
                 ItemSeparatorComponent={() =>
                     <View style={{flex: 1, margin: 10, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
                 }
@@ -584,10 +569,10 @@ const mapStateToProps = (state) => {
         inventoryLocations.forEach(location => {
             const {levels = {}} = location;
 
-            levelsTotal.max+= levels.max || 0
-            levelsTotal.min+= levels.min || 0
-            levelsTotal.critical+= levels.critical || 0
-            levelsTotal.ideal+= levels.ideal || 0
+            levelsTotal.max += levels.max || 0
+            levelsTotal.min += levels.min || 0
+            levelsTotal.critical += levels.critical || 0
+            levelsTotal.ideal += levels.ideal || 0
         });
 
         return levelsTotal;
@@ -609,7 +594,8 @@ const mapStateToProps = (state) => {
             id: item._id,
             stock,
             locations,
-            levels
+            levels,
+            storageLocations: inventoryLocations
         }
     });
 
