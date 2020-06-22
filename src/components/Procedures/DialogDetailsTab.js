@@ -19,16 +19,6 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
         false: "No"
     }
 
-    const testCategory = [
-        {
-            _id : 'surgical',
-            name : 'Surgical'
-        },
-        {
-            _id : 'electrical',
-            name : 'Electrical'
-        }
-    ]
 
     // Physicians Search
     const [searchValue, setSearchValue] = useState();
@@ -40,12 +30,12 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
     const [searchProcedureResults, setSearcProcedurehResult] = useState([]);
     const [searchProcedureQuery, setSearchProcedureQuery] = useState({});
 
-     // Category Search
-     const [categorySearchValue, setCategorySearchValue] = useState();
-     const [categorySearchResults, setCategorySearchResult] = useState([]);
-     const [categorySearchQuery, setCategorySearchQuery] = useState({});
+    // Category Search
+    const [categorySearchValue, setCategorySearchValue] = useState();
+    const [categorySearchResults, setCategorySearchResult] = useState([]);
+    const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
-
+    const [fee, setFee] = useState(fields['serviceFee'])
 
     // ######
 
@@ -173,6 +163,14 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
 
     } 
 
+    const handlePrice = (price) => {
+        if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
+            console.log("Service Fee: ", price)
+            onFieldChange('serviceFee')(parseFloat(price))
+        }
+        setFee(price)
+    }
+
     let refPop = popoverList.filter( item => item.name === 'reference')
     let physPop = popoverList.filter( item => item.name === 'physician')
     let catPop = popoverList.filter( item => item.name === 'category')
@@ -290,6 +288,18 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
                             <MenuOption value={true} text='Yes'/>
                             <MenuOption value={false} text='No'/>
                         </MenuOptions>}
+                    />
+                </View>
+
+                <View style={[styles.inputWrapper]}>
+                    <InputField2
+                        label={"Service Fee"}
+                        onChangeText={(value) => {handlePrice(value)}}
+                        value={fee.toString()}
+                        keyboardType={'number-pad'}
+                        onClear={() => handlePrice('')}
+                        hasError = {errorFields['serviceFee']}
+                        errorMessage = "Cost is required."
                     />
                 </View>
 
