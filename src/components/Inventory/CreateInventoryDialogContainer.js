@@ -10,7 +10,7 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import OptionsField from "../common/Input Fields/OptionsField";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import {createInventories, getInventories, getCategories} from "../../api/network";
+import {createInventories, getInventories, getCategories, getSuppliers} from "../../api/network";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import _ from "lodash";
 
@@ -30,20 +30,16 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
     const dialogTabs = ['Details', 'Configuration'];
     const [selectedIndex, setSelectedTabIndex] = useState(0);
 
-
     const [fields, setFields] = useState({
-        name: "",
-        unitPrice: "",
-        category: "",
-        referenceName: "",
-        sku: "",
-        barCode: "",
+        // name: "",
+        // unitPrice: 0,
+        // category: "",
+        // referenceName: "",
+        // sku: "",
+        // barCode: "",
     });
 
-    const [errorFields, setErrorFields] = useState({
-        name : false,
-        unitPrice : false
-    })
+    const [errorFields, setErrorFields] = useState({})
 
     const [popoverList, setPopoverList] = useState([
         {
@@ -53,6 +49,10 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
         {
             name : "category",
             status : false
+        },
+        {
+            name : "supplier",
+            status : false
         }
     ])
 
@@ -61,16 +61,21 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
     const [inventorySearchResults, setInventorySearchResult] = useState([]);
     const [inventorySearchQuery, setInventorySearchQuery] = useState({});
 
+    // Suppliers Search
+    const [supplierSearchValue, setSupplierSearchValue] = useState();
+    const [supplierSearchResults, setSupplierSearchResult] = useState([]);
+    const [supplierSearchQuery, setSupplierSearchQuery] = useState({});
+
     // Category Search
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
-    const [unitPriceText, setUnitPriceText] = useState(fields['unitPrice'])
+    const [unitPriceText, setUnitPriceText] = useState(0)
 
     // Handle inventories search
     useEffect(() => {
-        console.log("Search: ", inventorySearchValue)
+        // console.log("Search: ", inventorySearchValue)
         if (!inventorySearchValue) {
             // empty search values and cancel any out going request.
             setInventorySearchResult([]);
@@ -91,6 +96,30 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
         search()
     }, [inventorySearchValue]);
+
+    // Handle suppliers search
+    useEffect(() => {
+        // console.log("Search: ", supplierSearchValue)
+        if (!supplierSearchValue) {
+            // empty search values and cancel any out going request.
+            setSupplierSearchResult([]);
+            if (supplierSearchQuery.cancel) supplierSearchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchSuppliers, 300);
+
+        setSupplierSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [supplierSearchValue]);
 
     // Handle category search
     useEffect(() => {
@@ -131,6 +160,25 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                 // TODO handle error
                 console.log("failed to get inventories", error);
                 setInventorySearchResult([]);
+            })
+    };
+
+    const fetchSuppliers = () => {
+        getSuppliers(supplierSearchValue, 5)
+            .then((supplierData ) => {
+                const { data = [], pages = 0} = supplierData
+                // console.log("Data: ", data)
+                const results = data.map(item => ({
+                    ...item
+                }));
+
+                setSupplierSearchResult(results || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get suppliers", error);
+                setSupplierSearchResult([]);
             })
     };
 
@@ -178,39 +226,46 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
     };
 
     const onPositiveClick = () => {
+        
+        let isValid = validateInventory()
+
+        if(!isValid){ return }
+        
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
 
-            let isNameError = errorFields['name']
-            let isPriceError = errorFields['unitPrice']
-            let tabIndex = selectedIndex
-            if(fields['name'] === '' || null){
-                isNameError = true
-                tabIndex = 0
-            }else{
-                isNameError = false
-            }
-            if(fields['unitPrice'] === '' || null){
-                isPriceError = true
-                tabIndex = 1
-            } else {
-                isPriceError = false
-            }
+            // let isNameError = errorFields['name']
+            // let isPriceError = errorFields['unitPrice']
+            // let tabIndex = selectedIndex
+            // if(fields['name'] === '' || null){
+            //     isNameError = true
+            //     tabIndex = 0
+            // }else{
+            //     isNameError = false
+            // }
+            // if(fields['unitPrice'] === '' || null){
+            //     isPriceError = true
+            //     tabIndex = 1
+            // } else {
+            //     isPriceError = false
+            // }
 
-            setErrorFields({
-                ...errorFields,
-                name: isNameError,
-                unitPrice : isPriceError,
-            })
+            // setErrorFields({
+            //     ...errorFields,
+            //     name: isNameError,
+            //     unitPrice : isPriceError,
+            // })
 
-            setSelectedTabIndex(tabIndex)
+            // setSelectedTabIndex(tabIndex)
 
-            if(isNameError === false && isPriceError === false){
-                console.log("Success")
-                createInventoryCall()
-            }
+            // if(isNameError === false && isPriceError === false){
+            //     console.log("Success:", fields)
+            //     // createInventoryCall()
+            // }
 
+            console.log("Success:", fields)
+            // createInventoryCall()
 
         }
     };
@@ -220,15 +275,45 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
     };
 
     const onFieldChange = (fieldName) => (value) => {
+        const updatedFields = {...fields}
         setFields({
-            ...fields,
+            ...updatedFields,
             [fieldName]: value
         })
+
+        const updatedErrors = {...errorFields}
+        delete updatedErrors[fieldName]
+        setErrorFields(updatedErrors)
+
     };
+
+    const validateInventory = () => {
+        let isValid = true
+        let requiredFields = ['name']
+        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unitPrice']
+        // const requiredFields = ['name', 'unitPrice']
+    
+        let errorObj = {...errorFields} || {}
+
+        for (const requiredField of requiredFields) {
+            if(!fields[requiredField]){
+                // console.log(`${requiredField} is required`)
+                isValid = false
+                errorObj[requiredField] = "Value is required.";
+            }else{
+                delete errorObj[requiredField]
+            }
+        }
+
+        setErrorFields(errorObj)
+        console.log("Error obj: ", errorObj)
+
+        return isValid
+    }
 
     const handleUnitPrice = (price) => {
         if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
-            onFieldChange('unitPrice')(price)
+            onFieldChange('unitPrice')(parseFloat(price))
         }
         setUnitPriceText(price)
     }
@@ -262,6 +347,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
 
     let refPop = popoverList.filter( item => item.name === 'reference')
     let catPop = popoverList.filter( item => item.name === 'category')
+    let supplierPop = popoverList.filter( item => item.name === 'supplier')
 
     const detailsTab = (
         <View style={styles.sectionContainer}>
@@ -319,12 +405,27 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2
+                    <SearchableOptionsField
+                        label={"Supplier"}
+                        text={supplierSearchValue}
+                        oneOptionsSelected={(item) => {
+                            onFieldChange('supplier')(item._id)
+                        }}
+                        onChangeText={value => {setSupplierSearchValue(value); console.log("Value:", value)}}
+                        onClear={() => {
+                            onFieldChange('supplier')('');
+                            setSupplierSearchValue('');
+                        }}
+                        options={supplierSearchResults}
+                        handlePopovers = {(value)=>handlePopovers(value)('supplier')}
+                        isPopoverOpen = {supplierPop[0].status}
+                    />
+                    {/* <InputField2
                         label={"Supplier"}
                         onChangeText={onFieldChange('supplier')}
                         value={fields['supplier']}
                         onClear={() => onFieldChange('supplier')('')}
-                    />
+                    /> */}
                 </View>
             </View>
 
@@ -394,7 +495,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
                     <InputField2
                         label={"Unit Price"}
                         onChangeText={(value) => { handleUnitPrice(value )}}
-                        value={unitPriceText}
+                        value={unitPriceText.toString()}
                         keyboardType={'number-pad'}
                         onClear={() => handleUnitPrice('')}
                         hasError = {errorFields['unitPrice']}
