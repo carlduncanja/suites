@@ -16,7 +16,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
     const [emails, setEmails] = useState(fields['contactInfo'].emails || [])
     const [addresses, setAddresses] = useState(fields['address'])
 
-    const [emergencyContacts, setEmergencyContacts] = useState(fields['contactInfo'].emergencyContact)
+    const [emergencyContacts, setEmergencyContacts] = useState(fields['contactInfo'].emergencyContact || [])
     const [dateOfBirth, setDateOfBirth] = useState(formatDate(fields['dob'],'DD/MM/YYYY'))
     const [nextVisit, setNextVisit] = useState(formatDate(fields['nextVisit'],'DD/MM/YYYY'))
 

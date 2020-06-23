@@ -35,13 +35,10 @@ import InvoiceIcon from "../../../../assets/svg/invoices"
 import StorageIcon from "../../../../assets/svg/storage"
 import PhysiciansIcon from "../../../../assets/svg/physicians"
 import ProcedureIcon from "../../../../assets/svg/procedures"
-import {CaseFileContextProvider} from "../../../contexts/CaseFileContext";
 import SettingsIcon from "../../../../assets/svg/settingsIcon";
 import HelpIcon from "../../../../assets/svg/helpIcon";
 import NotificationIcon from "../../../../assets/svg/notificationIcon";
-import CaseFileStack from "./CaseFileNavigationStack";
 import Invoices from "../../CaseFiles/OverlayPages/ChargeSheet/Invoices";
-import {AlertIOS} from "react-native-web";
 import CaseFileNavigationStack from "./CaseFileNavigationStack";
 
 
