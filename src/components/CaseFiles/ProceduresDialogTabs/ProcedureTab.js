@@ -306,7 +306,7 @@ const ProcedureTab = ({
                 </View>
             </View>
 
-            <View style={[styles.row, {zIndex: -1}]}>
+            <View style={[styles.row, {zIndex: -1, height: 90, alignItems: "flex-start"}]}>
 
                 <View style={styles.inputWrapper}>
                     <DateInputField
@@ -322,8 +322,10 @@ const ProcedureTab = ({
                     />
                 </View>
 
-                <View
-                    style={[styles.inputWrapper, {height: 110, flexDirection: "column", justifyContent: "flex-start"}]}>
+                <View style={[styles.inputWrapper, {
+                    flexDirection: "column",
+                    justifyContent: "flex-end"
+                }]}>
                     <DateInputField
                         label={"Start Time"}
                         onDateChange={onTimeUpdate("startTime")}
@@ -336,24 +338,28 @@ const ProcedureTab = ({
                         hasError={errors['startTime']}
                     />
 
-                    {
-                        // duration procedure location date
 
-                        procedure && location && duration && date &&
-                        <TouchableOpacity
-                            onPress={openModal}
-                            style={{
-                                flex: 1,
-                                marginLeft: 90,
-                            }}
-                        >
+                    <View style={{flex: 1}}>
+                        {
+                            // duration procedure location date
 
-                            <Text style={styles.suggestedTimesText}>
-                                Suggested Times
-                            </Text>
+                            procedure && location && duration && date &&
+                            <TouchableOpacity
+                                onPress={openModal}
+                                style={{
+                                    flex: 1,
+                                    marginLeft: 90,
+                                    marginTop: 5,
+                                }}
+                            >
+                                <Text style={styles.suggestedTimesText}>
+                                    Suggested Times
+                                </Text>
+                            </TouchableOpacity>
+                        }
+                    </View>
 
-                        </TouchableOpacity>
-                    }
+
                 </View>
             </View>
 
