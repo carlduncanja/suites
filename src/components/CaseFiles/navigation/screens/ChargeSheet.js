@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
-import {Consumables, Equipment, Invoices, Quotation, Billing} from '../../OverlayPages/ChargeSheet';
+import {Consumables, Equipment, Invoices, Quotation, Billing, ChargesheetEquipment} from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
 import {currencyFormatter, formatDate} from '../../../../utils/formatter';
 import CaseFiles from '../../../../../data/CaseFiles';
@@ -141,65 +141,69 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         billing.procedures.push(billingItem)
     }
 
-    const onQuantityChange = (item) => {
-        console.log("Item: ", item)
-    }
 
-    const listItem = (item) => <>
-        <View style={styles.item}>
-            <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
-        </View>
-        <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{item.type}</Text>
-        </View>
-        {
-            isEditMode ?
+    // const onQuantityChange = (item) => {
+    //     console.log("Item: ", item)
+    // }
 
-            <View style={[styles.editItem, {alignItems: 'center'}]}>
-                <IconButton
-                    Icon = {<LeftArrow strokeColor="#718096"/>}
-                    onPress = {()=>onQuantityChange(item)}
-                    disabled = {false}
-                />
+    // const listItem = (item) => <>
+    //     <View style={styles.item}>
+    //         <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
+    //     </View>
+    //     <View style={[styles.item, {alignItems: 'center'}]}>
+    //         <Text style={styles.itemText}>{item.type}</Text>
+    //     </View>
+    //     {
+    //         isEditMode ?
 
-                <TextInput style={styles.editTextBox}>
-                    <Text style={styles.itemText}>{item.amount}</Text>
-                </TextInput>
+    //         <View style={[styles.editItem, {alignItems: 'center'}]}>
+    //             <IconButton
+    //                 Icon = {<LeftArrow strokeColor="#718096"/>}
+    //                 onPress = {()=>onQuantityChange(item)}
+    //                 disabled = {false}
+    //             />
+
+    //             <TextInput style={styles.editTextBox}>
+    //                 <Text style={styles.itemText}>{item.amount}</Text>
+    //             </TextInput>
                 
-                <IconButton
-                    Icon = {<RightArrow strokeColor="#718096"/>}
-                    onPress = {()=>{onQuantityChange(item)}}
-                    disabled = {false}
-                />
-            </View>
-            :
-            <View style={[styles.item, {alignItems: 'center'}]}>
-                <Text style={styles.itemText}>{item.amount}</Text>
-            </View>
+    //             <IconButton
+    //                 Icon = {<RightArrow strokeColor="#718096"/>}
+    //                 onPress = {()=>{onQuantityChange(item)}}
+    //                 disabled = {false}
+    //             />
+    //         </View>
+    //         :
+    //         <View style={[styles.item, {alignItems: 'center'}]}>
+    //             <Text style={styles.itemText}>{item.amount}</Text>
+    //         </View>
 
-        }
-        <View style={[styles.item, {alignItems: 'flex-end'}]}>
-            <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
-        </View>
+    //     }
+    //     <View style={[styles.item, {alignItems: 'flex-end'}]}>
+    //         <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
+    //     </View>
 
-    </>
+    // </>
 
     return (
         selectedTab === 'Consumables' ?
             <Consumables
-                tabDetails={inventoryList}
+                // tabDetails={inventoryList}
                 headers={headers}
-                listItemFormat={listItem}
+                // listItemFormat={listItem}
                 details = {billing.procedures}
                 isEditMode = {isEditMode}
                 handleEditDone = {handleEditDone(caseId)}
             />
             :
             selectedTab === 'Equipment' ?
-                <Equipment
-                    tabDetails={equipmentList}
+                <ChargesheetEquipment
+                    // tabDetails={equipmentList}
                     headers={headers}
-                    listItemFormat={listItem}
+                    // listItemFormat={listItem}
+                    details = {billing.procedures}
+                    isEditMode = {isEditMode}
+                    handleEditDone = {handleEditDone(caseId)}
                 />
                 :
                 selectedTab === 'Invoices' ?

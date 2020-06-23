@@ -23,10 +23,10 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode}) => {
         setTotalPages(Math.ceil(consumables.length / recordsPerPage))
     },[])
 
-    const onDecreasePress = () => {
+    const onQuantityChange = (item) => (action) =>  {
 
     }
-    const onIncreasePress = () => {
+    const onAmountChange = (item) => (value) => {
 
     }
 
@@ -94,9 +94,9 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode}) => {
                 { isEditMode ?
                     <View style={[styles.item,{alignItems:'center'}]}>
                         <NumberChangeField 
-                            number={amount} 
-                            onDecreasePress = {onDecreasePress(item)}
-                            onIncreasePress = {onIncreasePress(item)}
+                            value={amount} 
+                            onChangePress = {onQuantityChange(item)}
+                            onAmountChange = {onAmountChange(item)}
                         />
                     </View>
                     :
