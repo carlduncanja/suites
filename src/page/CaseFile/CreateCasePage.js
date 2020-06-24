@@ -623,22 +623,21 @@ function CreateCasePage({navigation, addCaseFile}) {
                     />
                 </View>
 
-                <View style={{flex: 1}}>
-                    <TouchableOpacity
-                        onPress={() => handlePopovers(false)()}
-                        activeOpacity={1}
-                    >
+                {/*<TouchableOpacity*/}
+                {/*    style={{flex: 1}}*/}
+                {/*    onPress={() => handlePopovers(false)()}*/}
+                {/*    activeOpacity={1}*/}
+                {/*>*/}
+                    <View style={{flex: 1}}>
                         {getTabContent()}
-                    </TouchableOpacity>
-                </View>
+                    </View>
+                {/*</TouchableOpacity>*/}
 
             </View>
 
 
             <TouchableOpacity style={styles.footerButton} onPress={onPositiveButtonPress}>
-                <View>
-                    <Text style={styles.footerText}>{positiveText}</Text>
-                </View>
+                <Text style={styles.footerText}>{positiveText}</Text>
             </TouchableOpacity>
 
         </View>
@@ -661,7 +660,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     footerButton: {
-        position: 'absolute',
         height: 57,
         width: '100%',
         bottom: 0,

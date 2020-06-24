@@ -52,15 +52,13 @@ export const login = async (email, password) => {
 }
 
 // ################# Appointments Endpoints
-export const getAppointments = async () => {
-    await new Promise(r => setTimeout(r, 2000));
-    return suitesAxiosInstance.get(appointmentsEndpoint)
+export const getAppointments = async (query, location, from, to, type) => {
+    return suitesAxiosInstance.get(appointmentsEndpoint, {params: {query, location, from, to, type}})
         .then(handleResponse)
         .catch(handleError);
 };
 
 export const getAppointmentById = async (id) => {
-    await new Promise(r => setTimeout(r, 2000));
     return suitesAxiosInstance.get(appointmentEndpoint(id))
         .then(handleResponse)
         .catch(handleError);

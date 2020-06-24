@@ -579,6 +579,7 @@ const CreateCaseDialogContainer = ({onCancel, onCreated}) => {
                     onProcedureUpdate={onProcedureUpdate}
                     procedures={caseProceduresInfo}
                     errors={procedureErrors}
+                    patient={`${patientFields.firstName} ${patientFields.surname}`}
                     onErrorUpdate={(value) => setProcedureErrors(value)}
                 />
 

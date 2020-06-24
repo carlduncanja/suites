@@ -8,6 +8,7 @@ import moment from 'moment';
 import InputField2 from "../../common/Input Fields/InputField2";
 import SuggestedTimesPopover from "../../common/SuggestedTimesPopover";
 import {useModal} from "react-native-modalfy";
+import ScheduleDisplayComponent from "../../ScheduleDisplay/ScheduleDisplayComponent";
 
 const ProcedureTab = ({
                           onProcedureInfoChange,
@@ -361,7 +362,11 @@ const ProcedureTab = ({
 
 
                 </View>
+
+
             </View>
+
+
 
         </View>
     )
@@ -371,7 +376,7 @@ export default ProcedureTab
 
 const styles = StyleSheet.create({
     sectionContainer: {
-        height: 260,
+        height: 230,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         padding: 24,

@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         // backgroundColor: '#E3E8EF',
-        paddingStart: 48,
+        paddingStart: 20,
     },
     timeLineContainer: {
         // position: 'absolute',
@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
         marginLeft: 100,
     }
 })
-
 
 const CurrentTimeIndicator = () => (
     <View
