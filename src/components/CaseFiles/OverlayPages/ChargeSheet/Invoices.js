@@ -32,6 +32,7 @@ const reportTestData = {
             tax : 0.2
         }
     },
+
     billedItems : {
         physicians : [
             {
@@ -87,11 +88,10 @@ const reportTestData = {
 }
 const Invoices = ({tabDetails = [], reportDetails}) => {
 
-    const model = useModal();
+    const modal = useModal();
 
     console.log("Invoices: ", tabDetails)
     const [checkBoxList, setCheckBoxList] = useState([])
-    const [state, dispatch] = useContext(CaseFileContext)
 
     const headers = [
         {
@@ -116,14 +116,6 @@ const Invoices = ({tabDetails = [], reportDetails}) => {
         },
 
     ]
-
-    // const openModal = () =>{
-    //     modal.openModal("ReportPreviewModal",{
-    //         content: <ReportPreview type = "Invoice" details = {reportTestData}/>
-    //     })
-    // }
-
-
 
     const openModal = (item) => () => {
         const report = tabDetails[0] || {}
@@ -205,7 +197,6 @@ const Invoices = ({tabDetails = [], reportDetails}) => {
     }
 
     const toggleHeaderCheckbox = () =>{
-
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
         if(indeterminate){
             const selectedAllIds = [...tabDetails.map( item => item )]
@@ -213,10 +204,6 @@ const Invoices = ({tabDetails = [], reportDetails}) => {
         }else{
             setCheckBoxList([])
         }
-        // checkBoxList.length > 0 ?
-        //     setCheckBoxList([])
-        //     :
-        //     setCheckBoxList(tabDetails)
     }
 
     const renderListFn = (item) => {
@@ -228,18 +215,6 @@ const Invoices = ({tabDetails = [], reportDetails}) => {
             itemView = {listItem(item)}
         />
     }
-
-    // const toggleCheckbox = (item) =>{
-    //     let checkedList = useCheckBox(item,checkBoxList)
-    //     setCheckBoxList(checkedList)
-    // }
-
-    // const toggleHeaderCheckbox = () =>{
-    //     checkBoxList.length > 0 ?
-    //         setCheckBoxList([])
-    //         :
-    //         setCheckBoxList(tabDetails)
-    // }
 
     return (
         <ScrollView>

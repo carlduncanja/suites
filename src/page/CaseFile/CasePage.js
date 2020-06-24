@@ -310,7 +310,7 @@ function CasePage({route}) {
         createInvoiceViaQuotation(caseId, quotationId)
             .then((data) => {
                 console.log("Invoice Record:", data)
-                fetchCase()
+                fetchCase(caseId)
             })
             .catch(error => {
                 console.log("Failed to create invoice", error)
