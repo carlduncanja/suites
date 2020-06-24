@@ -255,7 +255,7 @@ const ProcedureTab = ({
                         options={searchProcedureResult}
                         handlePopovers={() => {
                             console.log("handle popovers");
-                        }}
+                        }} 
                         isPopoverOpen={searchProcedureQuery}
                         hasError={errors['procedure']}
                         errorMessage={errors['procedure']}

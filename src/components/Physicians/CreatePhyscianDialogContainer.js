@@ -25,30 +25,30 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
     const [positiveText, setPositiveText] = useState("DONE")
 
     const [fields, setFields] = useState({
-        firstName : '',
-        middleName: '',
-        trn:'',
-        surname : '',
-        gender: '',
-        phones : [],
-        emails : [],
-        emergencyContact:[],
-        address:[]
+        // firstName : '',
+        // middleName: '',
+        // trn:'',
+        // surname : '',
+        // gender: '',
+        // phones : [],
+        // emails : [],
+        // emergencyContact:[],
+        // address:[]
     });
 
-    const [errorFields, setErrorFields] = useState({
-        firstName : false,
-        surname : false,
-        trn : false,
-        gender : false,
-    })
+    const [errorFields, setErrorFields] = useState({})
 
     const onFieldChange = (fieldName) => (value) => {
-        console.log("Value:", value)
+        const updatedFields = {...fields}
         setFields({
-            ...fields,
+            ...updatedFields,
             [fieldName]: value
         })
+
+        const updatedErrors = {...errorFields}
+        delete updatedErrors[fieldName]
+        setErrorFields(updatedErrors)
+
     };
 
     const handleCloseDialog = () => {
@@ -56,35 +56,65 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
         modal.closeAllModals();
     };
 
+    const validatePhysician = () =>{
+        let isValid = true
+        const requiredFields = ['firstName', 'surname', 'trn', 'gender']
+
+        let errorObj = {...errorFields} || {}
+
+        for (const requiredField of requiredFields) {
+            if(!fields[requiredField]){
+                console.log(`${requiredField} is required`)
+                isValid = false
+                errorObj[requiredField] = "Value is required.";
+            }else{
+                delete errorObj[requiredField]
+            }
+        }
+
+        setErrorFields(errorObj)
+        console.log("Error obj: ", errorObj)
+
+        return isValid
+    }
+
     const onPositiveButtonPress = () => {
 
-        let isFirstError = errorFields['firstName']
-        let isSurnameError = errorFields['surname']
-        let isTrnError = errorFields['trn']
-        let isGenderError = errorFields['gender']
-
-        fields['firstName'] === '' || null ? isFirstError = true : isFirstError = false
-        fields['surname'] === '' || null ? isSurnameError = true : isSurnameError = false
-        fields['trn'] === '' || null ? isTrnError = true : isTrnError = false
-        fields['gender'] === '' || null ? isGenderError = true : isGenderError = false
-
-        setErrorFields({
-            ...errorFields,
-            firstName: isFirstError,
-            surname : isSurnameError,
-            trn : isTrnError,
-            gender : isGenderError
-        })
-
+        let isValid = true
         const updatedFields = {
             ...fields,
             // trn : parseInt(fields['trn']) || ''
         }
+
+        isValid = validatePhysician()
+        if(!isValid){ return }
+        console.log("Success: ",updatedFields)
+        createPhysicianCall(updatedFields)
+
+        // let isFirstError = errorFields['firstName']
+        // let isSurnameError = errorFields['surname']
+        // let isTrnError = errorFields['trn']
+        // let isGenderError = errorFields['gender']
+
+        // fields['firstName'] === '' || null ? isFirstError = true : isFirstError = false
+        // fields['surname'] === '' || null ? isSurnameError = true : isSurnameError = false
+        // fields['trn'] === '' || null ? isTrnError = true : isTrnError = false
+        // fields['gender'] === '' || null ? isGenderError = true : isGenderError = false
+
+        // setErrorFields({
+        //     ...errorFields,
+        //     firstName: isFirstError,
+        //     surname : isSurnameError,
+        //     trn : isTrnError,
+        //     gender : isGenderError
+        // })
+
+       
         
-        if(isFirstError === false && isSurnameError === false && isTrnError === false && isGenderError === false){
-            console.log("Success: ",updatedFields)
-            // createPhysicianCall(updatedFields)
-        } 
+        // if(isFirstError === false && isSurnameError === false && isTrnError === false && isGenderError === false){
+        //     console.log("Success: ",updatedFields)
+        //     // createPhysicianCall(updatedFields)
+        // } 
         
      
     };

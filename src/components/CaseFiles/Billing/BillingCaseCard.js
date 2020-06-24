@@ -18,6 +18,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
         discount = 0,
         procedures = []
     } = tabDetails
+    // console.log("TabDetails: ", tabDetails)
 
     let totalAmount = total - (total * discount)
 
@@ -47,7 +48,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
         return currentArray[0].status
     }
  
-    const openProcedureDetails = (index) => {
+    const openProcedureDetails = (index) => { 
         let selectedIndex = openDetailsArrayState.findIndex(obj => obj.index === index)
         let newObject = {...openDetailsArrayState[selectedIndex], status: !openDetailsArrayState[selectedIndex].status}
         let updatedArray = [
@@ -186,6 +187,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
                                                     physicians={physicians}
                                                     equipments={equipments}
                                                     inventories={inventories}
+                                                    services = {services}
                                                 />
                                                 {
                                                     isEditMode && <TouchableOpacity 

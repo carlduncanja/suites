@@ -12,7 +12,7 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 
-const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, errorFields}) => {
+const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, errorFields, errors}) => {
 
     const templateText = {
         true: "Yes",
@@ -35,10 +35,10 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
-    const [fee, setFee] = useState(fields['serviceFee'])
+    const [fee, setFee] = useState(0)
+    const [selectedPhysicican, setSelectedPhysician] = useState()
 
     // ######
-
 
     // Handle physicians search
     useEffect(() => {
@@ -171,6 +171,23 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
         setFee(price)
     }
 
+    const handlePhysician = (value) => {
+        const physician = value ? {
+            _id: value._id,
+            name: value.name
+        } : value
+
+        if(value === undefined || null ){
+            delete fields['physician']
+        }else{
+            onFieldChange('physician')(physician);
+        }
+        
+        // setSearchValue()
+        setSearchResult([])
+        setSearchQuery(undefined)
+    }
+
     let refPop = popoverList.filter( item => item.name === 'reference')
     let physPop = popoverList.filter( item => item.name === 'physician')
     let catPop = popoverList.filter( item => item.name === 'category')
@@ -217,27 +234,30 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
-                        hasError = {errorFields['name']}
+                        // hasError = {errorFields['name']}
+                        hasError = {errors['name']}
                         errorMessage = "Name must be assigned"
                     />
                 </View>
 
                 <View style={[styles.inputWrapper]}>
                     <SearchableOptionsField
-                        label={"Physician"}
+                        label={"Physician"} 
+                        value = {fields['physician']}
                         text={searchValue}
                         oneOptionsSelected={(item) => {
-                            onFieldChange('physician')(item._id)
+                            handlePhysician(item)
+                            // onFieldChange('physician')(item);
                         }}
                         onChangeText={value => setSearchValue(value)}
-                        onClear={() => {
-                            onFieldChange('physician')('');
-                            setSearchValue('');
-                        }}
+                        onClear={handlePhysician}
+                            // onFieldChange('physician')('');
+                            // setSearchValue('');
+                        // }}
                         options={searchResults}
                         handlePopovers = {(value)=>handlePopovers(value)('physician')}
                         isPopoverOpen = {physPop[0].status}
-                        hasError = {errorFields['physician']}
+                        hasError = {errors['physician']}
                         errorMessage = "Physician must be assigned"
                     />
 
@@ -258,7 +278,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
                         value={fields['duration']}
                         units={['hrs']}
                         keyboardType="number-pad"
-                        hasError = {errorFields['duration']}
+                        hasError = {errors['duration']}
                         errorMessage = "Input estimated time (hours)."
                     />
                 </View>
@@ -298,7 +318,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
                         value={fee.toString()}
                         keyboardType={'number-pad'}
                         onClear={() => handlePrice('')}
-                        hasError = {errorFields['serviceFee']}
+                        hasError = {errors['serviceFee']}
                         errorMessage = "Cost is required."
                     />
                 </View>

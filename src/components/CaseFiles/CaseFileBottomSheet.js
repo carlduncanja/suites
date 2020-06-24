@@ -125,8 +125,14 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         setEditMode(!isEditMode)
 
         if(isEditMode === true){
-            // console.log("Record: ", selectedCaseId)
-            updateCase()
+            
+            if(updateInfo.length !== 0){
+                console.log("Why you not updating")
+                // console.log("Record: ", updateInfo)
+                // updateCase()
+            }else{
+                console.log("No data changed")
+            }
             setTimeout(() => {
                 fetchCase(_id)
             }, 500)
@@ -140,7 +146,6 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
     }
 
     const updateCase = () => {
-        // console.log("Selectedcase: ", selectedCaseId, updateInfo)
         updateChargeSheet(selectedCaseId, updateInfo)
             .then((data) => {
                 console.log("Updated Record:", data)

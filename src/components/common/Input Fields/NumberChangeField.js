@@ -1,27 +1,32 @@
 import React,{  } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TextInput } from "react-native";
 import RightArrow from '../../../../assets/svg/rightArrow';
 import LeftArrow from '../../../../assets/svg/leftArrow';
 import IconButton from '../Buttons/IconButton'
 
 
-const NumberChangeField = ({number, onIncreasePress, onDecreasePress}) =>{
-    return (
+const NumberChangeField = ({ onChangePress = () => {}, onAmountChange = () => {}, value=0 }) =>{
+    return ( 
+
         <View style={styles.inputWrapper}>
             <IconButton
-                Icon = {<LeftArrow strokeColor = {'grey'}/>}
-                onPress = {onDecreasePress}
-                disabled = {false}
-            />
-            <View style={[styles.inputField,{borderColor:'#CCD6E0', backgroundColor:'#F8FAFB'}]}>
-                <Text style={styles.text}>{number}</Text>
-            </View>
-            <IconButton
-                Icon = {<RightArrow strokeColor = {'grey'}/>}
-                onPress = {onIncreasePress}
+                Icon = {<LeftArrow strokeColor = {'#718096'}/>}
+                onPress = {()=>onChangePress('sub')}
                 disabled = {false}
             />
 
+            <TextInput 
+                style={styles.editTextBox}
+                onChangeText = {(value)=>onAmountChange(value)}
+                value = {value}
+                keyboardType = "number-pad"
+            />
+
+            <IconButton
+                Icon = {<RightArrow strokeColor="#718096"/>}
+                onPress = {()=>{onChangePress('add')}}
+                disabled = {false}
+            />
         </View>
     )
 }
@@ -32,6 +37,17 @@ const styles = StyleSheet.create({
     inputWrapper:{
         flexDirection:'row',
         alignItems:'center'
+    },
+    editTextBox:{
+        backgroundColor:'#F8FAFB',
+        borderColor:'#CCD6E0',
+        borderWidth:1,
+        borderRadius:4,
+        padding:6,
+        paddingTop:2,
+        paddingBottom:2,
+        marginLeft:10,
+        marginRight:10
     },
     inputField : {
         height:30,

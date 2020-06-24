@@ -9,21 +9,20 @@ import { getInventories } from "../../../api/network";
 import _ from "lodash";
 import AutoFillField from "../../common/Input Fields/AutoFillField";
 
-const CreateServiceLineItem = ({onCreated, onCancel}) => { 
+const CreateServiceLineItem = ({onCreated, onCancel}) => {  
 
     const modal = useModal();
 
     const [fields, setFields] = useState({ 
         name : '',
-        type : '',
-        unitPrice : '',
+        type : 'service',
+        cost : '',
         quantity : ''
     });
 
     const [errorFields, setErrorFields] = useState({
         name : false,
-        type : false,
-        unitPrice : false,
+        cost : false,
         quantity : false,
     })
 
@@ -32,24 +31,21 @@ const CreateServiceLineItem = ({onCreated, onCancel}) => {
     const onPositiveClick = () => {
 
         let isNameError = errorFields['name']
-        let isPriceError = errorFields['unitPrice']
+        let isPriceError = errorFields['cost']
         let isQuantityError = errorFields['quantity']
-        let isTypeError = errorFields['type']
 
         fields['name'] === '' || null ? isNameError = true : isNameError = false
-        fields['unitPrice'] === '' || null ? isPriceError = true : isPriceError = false
+        fields['cost'] === '' || null ? isPriceError = true : isPriceError = false
         fields['quantity'] === '' || null ? isQuantityError = true : isQuantityError = false
-        fields['type'] === 'null' || null ? isTypeError = true : isTypeError = false
 
         setErrorFields({
             ...errorFields,
             name : isNameError,
-            unitPrice : isPriceError,
+            cost : isPriceError,
             quantity : isQuantityError,
-            type : isTypeError,
         })
 
-        if( isNameError === false && isQuantityError === false && isPriceError === false && isTypeError === false){
+        if( isNameError === false && isQuantityError === false && isPriceError === false ){
             onCreated(fields)
             modal.closeModals("OverlayModal")
             console.log("Add Item: ",fields)
@@ -74,7 +70,7 @@ const CreateServiceLineItem = ({onCreated, onCancel}) => {
     const handleUnitPrice = (price) => {
         if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
             console.log("Unit Price: ", price)
-            onFieldChange('unitPrice')(parseFloat(price))
+            onFieldChange('cost')(parseFloat(price))
         }
         setUnitPriceText(price)
     }
@@ -115,14 +111,18 @@ const CreateServiceLineItem = ({onCreated, onCancel}) => {
                         </View>
 
                         <View style={styles.inputWrapper}>
-                            <InputField2
+                            <AutoFillField
+                                label = {"Item Type"}
+                                value = {fields['type']}
+                            />
+                            {/* <InputField2
                                 label={"Item Type"}
                                 onChangeText={onFieldChange('type')}
                                 value={fields['type']}
                                 onClear={() => onFieldChange('type')('')}
                                 hasError = {errorFields['type']}
                                 errorMessage = "Type must be provided."
-                            />
+                            /> */}
                         </View>
                     </View>
 

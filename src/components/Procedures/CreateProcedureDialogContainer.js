@@ -57,18 +57,20 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     ])
 
     const [fields, setFields] = useState({
-        reference :'',
-        name : '',
-        duration : '',
-        notes:'',
-        isTemplate : false,
-        hasRecovery : true,
-        physician: '',
-        supportedRooms: [],
-        inventories:[],
-        equipments:[],
-        serviceFee : 0
+        // reference :'',
+        // name : '',
+        // duration : '',
+        // notes:'',
+        // isTemplate : false,
+        // hasRecovery : true,
+        // physician: '',
+        // supportedRooms: [],
+        // inventories:[],
+        // equipments:[],
+        // serviceFee : 0
     });
+
+    const [errors, setErrors] = useState({})
 
     const [errorFields, setErrorFields] = useState({
         name : false,
@@ -105,10 +107,16 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     };
 
     const onFieldChange = (fieldName) => (value) => {
+        const updatedFields = {...fields}
         setFields({
-            ...fields,
+            ...updatedFields,
             [fieldName]: value
         })
+
+        const updatedErrors = {...errors}
+        delete updatedErrors[fieldName]
+        console.log("Update error: ", errors)
+        setErrors(updatedErrors)
     };
 
     const onTabPress = (newTab) => {
@@ -120,42 +128,80 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
 
         }else
         {
+            setPositiveText("NEXT")
             setTabIndex(newIndex)
         }
 
     }
 
-    const onPositiveButtonPress = () =>{
-        const updatedFields = {
-            ...fields,
-            duration : parseInt(fields['duration'])
-        }
-        if(tabIndex === dialogTabs.length - 1){
-            
-            let isNameError = errorFields['name']
-            let isDurationError = errorFields['duration']
-            let isPhysicianError = errorFields['physician']
-            let isServiceFeeError = errorFields['serviceFee']
+    const validateProcedure = () =>{
+        let isValid = true
+        const requiredFields = ['name', 'duration', 'physician', 'serviceFee']
 
-            fields['name'] === '' || null ? isNameError = true : isNameError = false
-            fields['duration'] === '' || null ? isDurationError = true : isDurationError = false
-            fields['physician'] === '' || null ? isPhysicianError = true : isPhysicianError = false
-            fields['serviceFee'] === 0 || null ? isServiceFeeError = true : isServiceFeeError = false
-            
-            setErrorFields({
-                ...errorFields,
-                name : isNameError,
-                duration : isDurationError,
-                physician : isPhysicianError,
-                serviceFee : isServiceFeeError
-            })
+        let errorObj = {...errors} || {}
 
-            if(isNameError === false && isDurationError === false && isPhysicianError === false && isServiceFeeError === false){
-                console.log("Fields: ",updatedFields)
-                createProcedureCall(updatedFields)
+        for (const requiredField of requiredFields) {
+            if(!fields[requiredField]){
+                console.log(`${requiredField} is required`)
+                isValid = false
+                errorObj[requiredField] = "Value is required.";
             }else{
-                setTabIndex(0)
+                delete errorObj[requiredField]
             }
+        }
+
+        setErrors(errorObj)
+        console.log("Error obj: ", errorObj)
+
+        return isValid
+    }
+
+    const onPositiveButtonPress = () =>{
+        let updatedFields = {}
+        let isValid = true
+
+
+        if (tabIndex === 0){
+            isValid = validateProcedure()
+        }
+
+        if(!isValid){ return }
+
+        if(tabIndex === dialogTabs.length - 1){
+            updatedFields = {
+                ...fields,
+                physician : fields['physician']._id,
+                duration : parseInt(fields['duration']),
+                supportedRooms : fields['supportedRooms'].map(item => item._id)
+            }
+            console.log("Fields: ",updatedFields)
+            createProcedureCall(updatedFields)
+
+
+            // let isNameError = errorFields['name']
+            // let isDurationError = errorFields['duration']
+            // let isPhysicianError = errorFields['physician']
+            // let isServiceFeeError = errorFields['serviceFee']
+
+            // fields['name'] === '' || null ? isNameError = true : isNameError = false
+            // fields['duration'] === '' || null ? isDurationError = true : isDurationError = false
+            // fields['physician'] === '' || null ? isPhysicianError = true : isPhysicianError = false
+            // fields['serviceFee'] === 0 || null ? isServiceFeeError = true : isServiceFeeError = false
+            
+            // setErrorFields({
+            //     ...errorFields,
+            //     name : isNameError,
+            //     duration : isDurationError,
+            //     physician : isPhysicianError,
+            //     serviceFee : isServiceFeeError
+            // })
+
+            // if(isNameError === false && isDurationError === false && isPhysicianError === false && isServiceFeeError === false){
+            //     console.log("Fields: ",updatedFields)
+            //     // createProcedureCall(updatedFields)
+            // }else{
+            //     setTabIndex(0)
+            // }
             
         }else if (tabIndex + 1 === dialogTabs.length - 1)
         {
@@ -180,6 +226,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                     handlePopovers = {handlePopovers}
                     popoverList = {popoverList}
                     errorFields = {errorFields}
+                    errors = {errors}
                 />;
             case "Location":
                 return <DialogLocationTab
@@ -199,7 +246,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     const createProcedureCall = (updatedFields) =>{
         createNewProcedure(updatedFields)
             .then(data => {
-                // addProcedure(data);
+                addProcedure(data);
                 modal.closeAllModals();
                 setTimeout(() => {onCreated(data)}, 200);
             })
@@ -243,8 +290,11 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
 CreateProcedureDialogContainer.propTypes = {}
 CreateProcedureDialogContainer.defaultProps = {}
 
+const mapDispatchToProp = {
+    addProcedure
+}
 
-export default CreateProcedureDialogContainer;
+export default connect(null, mapDispatchToProp)(CreateProcedureDialogContainer);
 
 
 const styles = StyleSheet.create({

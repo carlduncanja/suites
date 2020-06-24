@@ -12,10 +12,13 @@ import { createFilter } from 'react-native-search-filter';
 import SearchableContainer from '../SearchableContainer';
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText, onSearchChangeText, onClear, handlePopovers, isPopoverOpen}) => {
+const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options, searchText, onSearchChangeText, onClear, handlePopovers, isPopoverOpen}) => {
 
-    const [selectedOption, setSelectedOption] = useState("")
-    const [checkedList, setCheckedList] = useState([])
+    // console.log("Value: ", value)
+    let { name = "" } = value[0] || {}
+
+    const [selectedOption, setSelectedOption] = useState(name)
+    const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
     const onCheckboxPress = (item) => () => {
@@ -28,9 +31,10 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText,
 
         setCheckedList(updatedList)
         setSelectedOption(updatedList.length > 0 ? updatedList[0].name : "")
+        // console.log("Updated List: ", updatedList)
         onOptionsSelected(updatedList)
     }
-
+ 
     const toggleCheckBox = () => {
         setIsDisplay(!isDisplay)
     }
@@ -45,8 +49,11 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText,
                 {label}
             </Text>
            
-            {/* <View style={styles.inputWrapper}> */}
-                <View style={[styles.inputField,]}>
+            <View style={styles.inputWrapper}>
+                <TouchableOpacity 
+                    onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
+                    style={[styles.inputField,{}]}
+                >
                     {
                         checkedList.length > 0 &&
                             <TouchableOpacity 
@@ -74,12 +81,14 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText,
                     <View style={{flex:1,justifyContent:"flex-end", alignItems:"flex-end"}}>
                         <IconButton
                             Icon = {<DropDownIcon/>}
-                            onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
+                            onPress = {()=>{}}
+                            // onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
                         />
-                    </View>
+                    </View> 
                         
-                </View>
-            {/* </View> */}
+                </TouchableOpacity>
+            
+            </View>
                     
                
             { isDisplay && isPopoverOpen &&
@@ -142,19 +151,22 @@ const styles = StyleSheet.create({
         color: '#718096',
         fontWeight: '500',
     },
-    // inputWrapper: {
-    //     flex: 1,
-    //     height: 32,
-    // },
-    inputField: {
+    inputWrapper: {
         flex: 1,
-        width: '100%',
+        height: 32,
+        borderColor: '#E3E8EF',
+        borderRadius: 4,
         borderWidth: 1,
+    },
+    inputField: {
+        // flex: 1,
+        width: '100%',
+        // borderWidth: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderColor: '#E3E8EF',
-        borderRadius: 4,
+        // borderColor: '#E3E8EF',
+        // borderRadius: 4,
         paddingRight:4,
         paddingLeft:4,
         height: 32,

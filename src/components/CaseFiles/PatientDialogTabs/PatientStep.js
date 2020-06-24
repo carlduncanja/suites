@@ -7,7 +7,7 @@ import PatientInsuranceTab from "./PatientInsuranceTab";
 
 
 const PatientStep = ({selectedTabIndex, patient, errors, onPatientUpdate, onErrorUpdate}) => {
-
+ 
     // const {
     //     firstName = "",
     //     middleName = "",

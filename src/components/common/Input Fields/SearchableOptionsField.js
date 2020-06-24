@@ -29,7 +29,7 @@ function SearchableOptionsField({
                                     errorMessage = ""
                                 }) {
 
-    const textInputRef = useRef();
+    const textInputRef = useRef(); 
 
     const [selectedValue, setSelectedValue] = useState(value);
 

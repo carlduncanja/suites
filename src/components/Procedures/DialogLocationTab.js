@@ -16,42 +16,11 @@ import _ from "lodash";
 import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
 import SearchableMultipleOptionField from "../common/Input Fields/SearchableMultipleOptionField";
 
-const testLocations = [
-    {
-        location : 'Operating Room 1',
-        status: 'In Use',
-        hasRecovery : false,
-        availability : 3
-    },
-    {
-        location : 'Operating Room 2',
-        status: 'Available',
-        hasRecovery : false,
-        availability : 3
-    },
-    {
-        location : 'Operating Room 3',
-        status: 'In Use',
-        hasRecovery : true,
-        availability : 3
-    },
-    {
-        location : 'Operating Room 4',
-        status: 'In Use',
-        hasRecovery : false,
-        availability : 3
-    },
-    {
-        location : 'Operating Room 5',
-        status: 'In Use',
-        hasRecovery : true,
-        availability : 3
-    },
-]
+
 
 const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatres, handlePopovers, popoverList }) =>{
 
-    const recordsPerPage = 4
+    const recordsPerPage = 4 
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
@@ -143,7 +112,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
         },
     ]
 
-    const onPressItem = (item) =>{
+    const onPressItem = (item) =>{ 
         let updatedLocations = [...selectedLocations]
         selectedLocations.includes(item) ?
             updatedLocations = updatedLocations.filter( location => location !== item)
@@ -152,19 +121,20 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
         setSelectedLocations(updatedLocations)
     }
 
-    onPressResultItem = (item) => {
-        let updatedLocations = [...selectedLocations]
-        selectedLocations.includes(item) ?
-            updatedLocations = [...updatedLocations]
-            :
-            updatedLocations = [...updatedLocations,item]
-        setSelectedLocations(updatedLocations)
-    }
+    // onPressResultItem = (item) => {
+    //     let updatedLocations = [...selectedLocations]
+    //     selectedLocations.includes(item) ?
+    //         updatedLocations = [...updatedLocations]
+    //         :
+    //         updatedLocations = [...updatedLocations,item]
+    //     setSelectedLocations(updatedLocations)
+    // }
 
     const buttonPress = () => {
         if(isDisable === false){
             let updatedTheatres = handleDisplayData()
-            onFieldChange('supportedRooms')(updatedTheatres.map( item => item._id))
+            onFieldChange('supportedRooms')(updatedTheatres)
+            // onFieldChange('supportedRooms')(updatedTheatres.map( item => item._id))
             getSavedTheatres(updatedTheatres)
         }
         setIsDisable(true)
@@ -186,7 +156,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
             </TouchableOpacity>
         )
     }
-  
+
     let { status } = popoverList.filter( item => item.name === 'location')[0]
 
     let dataToDisplay = handleDisplayData()
@@ -195,9 +165,10 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
     return (
         <View style={styles.sectionContainer}>
 
-            <View style={[styles.container,styles.addNewContainer]}>
+            <View style={[styles.addNewContainer]}>
                     <MultipleSelectionsField
                         label={"Add New Location"}
+                        value = {fields['supportedRooms']}
                         onOptionsSelected = {(value)=>{setSelectedLocations(value)}}
                         options = {searchLocationResults}
                         searchText = {searchLocationValue}
