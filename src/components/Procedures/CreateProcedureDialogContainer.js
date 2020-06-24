@@ -175,7 +175,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                 supportedRooms : fields['supportedRooms'].map(item => item._id)
             }
             console.log("Fields: ",updatedFields)
-            // createProcedureCall(updatedFields)
+            createProcedureCall(updatedFields)
 
 
             // let isNameError = errorFields['name']
@@ -246,7 +246,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     const createProcedureCall = (updatedFields) =>{
         createNewProcedure(updatedFields)
             .then(data => {
-                // addProcedure(data);
+                addProcedure(data);
                 modal.closeAllModals();
                 setTimeout(() => {onCreated(data)}, 200);
             })
@@ -290,8 +290,11 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
 CreateProcedureDialogContainer.propTypes = {}
 CreateProcedureDialogContainer.defaultProps = {}
 
+const mapDispatchToProp = {
+    addProcedure
+}
 
-export default CreateProcedureDialogContainer;
+export default connect(null, mapDispatchToProp)(CreateProcedureDialogContainer);
 
 
 const styles = StyleSheet.create({

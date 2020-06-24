@@ -11,8 +11,11 @@ export default (state = initialState.procedures, action) => {
             return [...data]
         }
         case ADD_PROCEDURE : {
-            const { data } = payload
-            return [...state,data]
+            const updatedProcedures = [...state];
+            updatedProcedures.push(payload.data);
+            return updatedProcedures;
+            // const { data } = payload
+            // return [...state,data]
         }
         default:
             return state

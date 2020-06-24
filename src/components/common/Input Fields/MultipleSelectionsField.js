@@ -15,7 +15,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options, searchText, onSearchChangeText, onClear, handlePopovers, isPopoverOpen}) => {
 
     // console.log("Value: ", value)
-    const [selectedOption, setSelectedOption] = useState(value[0].name || "")
+    let { name = "" } = value[0] || {}
+
+    const [selectedOption, setSelectedOption] = useState(name)
     const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
@@ -47,8 +49,11 @@ const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options,
                 {label}
             </Text>
            
-            {/* <View style={styles.inputWrapper}> */}
-                <View style={[styles.inputField,]}>
+            <View style={styles.inputWrapper}>
+                <TouchableOpacity 
+                    onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
+                    style={[styles.inputField,{}]}
+                >
                     {
                         checkedList.length > 0 &&
                             <TouchableOpacity 
@@ -76,12 +81,14 @@ const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options,
                     <View style={{flex:1,justifyContent:"flex-end", alignItems:"flex-end"}}>
                         <IconButton
                             Icon = {<DropDownIcon/>}
-                            onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
+                            onPress = {()=>{}}
+                            // onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
                         />
-                    </View>
+                    </View> 
                         
-                </View>
-            {/* </View> */}
+                </TouchableOpacity>
+            
+            </View>
                     
                
             { isDisplay && isPopoverOpen &&
@@ -144,19 +151,22 @@ const styles = StyleSheet.create({
         color: '#718096',
         fontWeight: '500',
     },
-    // inputWrapper: {
-    //     flex: 1,
-    //     height: 32,
-    // },
-    inputField: {
+    inputWrapper: {
         flex: 1,
-        width: '100%',
+        height: 32,
+        borderColor: '#E3E8EF',
+        borderRadius: 4,
         borderWidth: 1,
+    },
+    inputField: {
+        // flex: 1,
+        width: '100%',
+        // borderWidth: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderColor: '#E3E8EF',
-        borderRadius: 4,
+        // borderColor: '#E3E8EF',
+        // borderRadius: 4,
         paddingRight:4,
         paddingLeft:4,
         height: 32,

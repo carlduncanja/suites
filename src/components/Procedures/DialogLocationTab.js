@@ -16,38 +16,7 @@ import _ from "lodash";
 import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
 import SearchableMultipleOptionField from "../common/Input Fields/SearchableMultipleOptionField";
 
-const testLocations = [
-    {
-        location : 'Operating Room 1',
-        status: 'In Use',
-        hasRecovery : false,
-        availability : 3
-    },
-    {
-        location : 'Operating Room 2',
-        status: 'Available',
-        hasRecovery : false,
-        availability : 3
-    },
-    {
-        location : 'Operating Room 3',
-        status: 'In Use',
-        hasRecovery : true,
-        availability : 3
-    },
-    {
-        location : 'Operating Room 4',
-        status: 'In Use',
-        hasRecovery : false,
-        availability : 3
-    },
-    {
-        location : 'Operating Room 5',
-        status: 'In Use',
-        hasRecovery : true,
-        availability : 3
-    },
-]
+
 
 const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatres, handlePopovers, popoverList }) =>{
 
@@ -196,7 +165,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
     return (
         <View style={styles.sectionContainer}>
 
-            <View style={[styles.container,styles.addNewContainer]}>
+            <View style={[styles.addNewContainer]}>
                     <MultipleSelectionsField
                         label={"Add New Location"}
                         value = {fields['supportedRooms']}

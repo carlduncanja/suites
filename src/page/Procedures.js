@@ -184,14 +184,16 @@ const Procedures = (props) => {
     }
 
     const procedureItem = (item) => {
-        const physician = `Dr. ${item.physician.firstName} ${item.physician.surname}`;
+        const { physician = {} } = item
+        const { firstName = "", surname = ""} = physician
+        // const physician = `Dr. ${item.physician.firstName} ${item.physician.surname}`;
         return (
             <>
                 <View style={[styles.item,{...styles.rowBorderRight, flex: 2}]}>
                     <Text style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, alignItems: 'flex-start'}]}>
-                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{physician}</Text>
+                    <Text style={[styles.itemText, {color: "#3182CE"}]}>Dr. {firstName} {surname}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{`${item.duration} hours`}</Text>
