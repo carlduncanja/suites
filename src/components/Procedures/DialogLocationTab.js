@@ -51,7 +51,7 @@ const testLocations = [
 
 const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatres, handlePopovers, popoverList }) =>{
 
-    const recordsPerPage = 4
+    const recordsPerPage = 4 
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
@@ -143,7 +143,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
         },
     ]
 
-    const onPressItem = (item) =>{
+    const onPressItem = (item) =>{ 
         let updatedLocations = [...selectedLocations]
         selectedLocations.includes(item) ?
             updatedLocations = updatedLocations.filter( location => location !== item)
@@ -152,19 +152,20 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
         setSelectedLocations(updatedLocations)
     }
 
-    onPressResultItem = (item) => {
-        let updatedLocations = [...selectedLocations]
-        selectedLocations.includes(item) ?
-            updatedLocations = [...updatedLocations]
-            :
-            updatedLocations = [...updatedLocations,item]
-        setSelectedLocations(updatedLocations)
-    }
+    // onPressResultItem = (item) => {
+    //     let updatedLocations = [...selectedLocations]
+    //     selectedLocations.includes(item) ?
+    //         updatedLocations = [...updatedLocations]
+    //         :
+    //         updatedLocations = [...updatedLocations,item]
+    //     setSelectedLocations(updatedLocations)
+    // }
 
     const buttonPress = () => {
         if(isDisable === false){
             let updatedTheatres = handleDisplayData()
-            onFieldChange('supportedRooms')(updatedTheatres.map( item => item._id))
+            onFieldChange('supportedRooms')(updatedTheatres)
+            // onFieldChange('supportedRooms')(updatedTheatres.map( item => item._id))
             getSavedTheatres(updatedTheatres)
         }
         setIsDisable(true)
@@ -186,7 +187,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
             </TouchableOpacity>
         )
     }
-  
+
     let { status } = popoverList.filter( item => item.name === 'location')[0]
 
     let dataToDisplay = handleDisplayData()
@@ -198,6 +199,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
             <View style={[styles.container,styles.addNewContainer]}>
                     <MultipleSelectionsField
                         label={"Add New Location"}
+                        value = {fields['supportedRooms']}
                         onOptionsSelected = {(value)=>{setSelectedLocations(value)}}
                         options = {searchLocationResults}
                         searchText = {searchLocationValue}

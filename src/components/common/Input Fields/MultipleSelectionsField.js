@@ -12,10 +12,11 @@ import { createFilter } from 'react-native-search-filter';
 import SearchableContainer from '../SearchableContainer';
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText, onSearchChangeText, onClear, handlePopovers, isPopoverOpen}) => {
+const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options, searchText, onSearchChangeText, onClear, handlePopovers, isPopoverOpen}) => {
 
-    const [selectedOption, setSelectedOption] = useState("")
-    const [checkedList, setCheckedList] = useState([])
+    // console.log("Value: ", value)
+    const [selectedOption, setSelectedOption] = useState(value[0].name || "")
+    const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
     const onCheckboxPress = (item) => () => {
@@ -28,9 +29,10 @@ const MultipleSelectionsField = ({onOptionsSelected, label, options, searchText,
 
         setCheckedList(updatedList)
         setSelectedOption(updatedList.length > 0 ? updatedList[0].name : "")
+        // console.log("Updated List: ", updatedList)
         onOptionsSelected(updatedList)
     }
-
+ 
     const toggleCheckBox = () => {
         setIsDisplay(!isDisplay)
     }

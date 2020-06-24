@@ -36,9 +36,9 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
     const [fee, setFee] = useState(0)
+    const [selectedPhysicican, setSelectedPhysician] = useState()
 
     // ######
-
 
     // Handle physicians search
     useEffect(() => {
@@ -171,6 +171,23 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
         setFee(price)
     }
 
+    const handlePhysician = (value) => {
+        const physician = value ? {
+            _id: value._id,
+            name: value.name
+        } : value
+
+        if(value === undefined || null ){
+            delete fields['physician']
+        }else{
+            onFieldChange('physician')(physician);
+        }
+        
+        // setSearchValue()
+        setSearchResult([])
+        setSearchQuery(undefined)
+    }
+
     let refPop = popoverList.filter( item => item.name === 'reference')
     let physPop = popoverList.filter( item => item.name === 'physician')
     let catPop = popoverList.filter( item => item.name === 'category')
@@ -225,16 +242,18 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
 
                 <View style={[styles.inputWrapper]}>
                     <SearchableOptionsField
-                        label={"Physician"}
+                        label={"Physician"} 
+                        value = {fields['physician']}
                         text={searchValue}
                         oneOptionsSelected={(item) => {
-                            onFieldChange('physician')(item._id)
+                            handlePhysician(item)
+                            // onFieldChange('physician')(item);
                         }}
                         onChangeText={value => setSearchValue(value)}
-                        onClear={() => {
-                            onFieldChange('physician')('');
-                            setSearchValue('');
-                        }}
+                        onClear={handlePhysician}
+                            // onFieldChange('physician')('');
+                            // setSearchValue('');
+                        // }}
                         options={searchResults}
                         handlePopovers = {(value)=>handlePopovers(value)('physician')}
                         isPopoverOpen = {physPop[0].status}

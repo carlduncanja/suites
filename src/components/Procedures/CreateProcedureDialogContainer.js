@@ -128,6 +128,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
 
         }else
         {
+            setPositiveText("NEXT")
             setTabIndex(newIndex)
         }
 
@@ -156,12 +157,8 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
     }
 
     const onPositiveButtonPress = () =>{
-
+        let updatedFields = {}
         let isValid = true
-        const updatedFields = {
-            ...fields,
-            duration : parseInt(fields['duration'])
-        }
 
 
         if (tabIndex === 0){
@@ -171,9 +168,14 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         if(!isValid){ return }
 
         if(tabIndex === dialogTabs.length - 1){
-            
+            updatedFields = {
+                ...fields,
+                physician : fields['physician']._id,
+                duration : parseInt(fields['duration']),
+                supportedRooms : fields['supportedRooms'].map(item => item._id)
+            }
             console.log("Fields: ",updatedFields)
-            createProcedureCall(updatedFields)
+            // createProcedureCall(updatedFields)
 
 
             // let isNameError = errorFields['name']
