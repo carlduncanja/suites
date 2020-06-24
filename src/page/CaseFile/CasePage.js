@@ -142,7 +142,7 @@ function CasePage({route}) {
     }
 
     const updateCase = () => {
-        // console.log("Selectedcase: ", selectedCaseId, updateInfo)
+        console.log("Selectedcase: ", updateInfo)
         updateChargeSheet(selectedCaseId, updateInfo)
             .then((data) => {
                 console.log("Updated Record:", data)

@@ -2,10 +2,10 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import { currencyFormatter } from "../../../utils/formatter";
 
-const BillingCaseProcedure = ({physicians, equipments, inventories}) =>{
+const BillingCaseProcedure = ({physicians = [], equipments = [], inventories = [], services = []}) =>{
 
     
-    const totalPrice = (quantity,price) =>{
+    const totalPrice = (quantity,price) =>{ 
         return quantity * price
     }
  
@@ -59,6 +59,22 @@ const BillingCaseProcedure = ({physicians, equipments, inventories}) =>{
                     return(
                         <View key={index}>
                             {tableItem(name, totalPrice(amount,cost))}
+                        </View>
+                    ) 
+                })}
+            </View>
+
+            <View style={styles.procedureItemContainer}>
+                <View style={{marginBottom:6}}>
+                    <Text style={styles.procedureItemTitle}>SERVICES</Text>
+                </View>
+                
+                {services.map((service, index)=>{
+                    console.log("Service: ",service)
+                    const { name = "", quantity = 0, cost = 0} = service
+                    return(
+                        <View key={index}>
+                            {tableItem(name, totalPrice(quantity,cost))}
                         </View>
                     ) 
                 })}

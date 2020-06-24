@@ -9,7 +9,7 @@ import { getInventories } from "../../../api/network";
 import _ from "lodash";
 import AutoFillField from "../../common/Input Fields/AutoFillField";
 
-const CreateServiceLineItem = ({onCreated, onCancel}) => { 
+const CreateServiceLineItem = ({onCreated, onCancel}) => {  
 
     const modal = useModal();
 
