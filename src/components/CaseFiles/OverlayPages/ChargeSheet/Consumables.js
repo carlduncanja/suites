@@ -7,29 +7,29 @@ import DropdownInputField from '../../../common/Input Fields/DropdownInputField'
 import { currencyFormatter } from '../../../../utils/formatter';
 import IconButton from '../../../common/Buttons/IconButton';
 import RightArrow from '../../../../../assets/svg/rightArrow';
-import LeftArrow from '../../../../../assets/svg/leftArrow'; 
+import LeftArrow from '../../../../../assets/svg/leftArrow';
 import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
 
- 
+
 const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
-    
+
     const [checkBoxList, setCheckBoxList] = useState([])
     const [searchText, setSearchText] = useState('')
     // const [inventoriesData, setInventoriesData] = useState(details)
-    
-    const procedureNames = details.map( item => item.procedure.name) 
+
+    const procedureNames = details.map( item => item.procedure.name)
     const data = []
     let allInventories = details.map( item => item.inventories)
     allInventories.forEach(item => item.map( obj => data.push(obj)))
     let initialOption = isEditMode ? procedureNames[0] : 'All'
-    
+
     const [selectedOption, setSelectedOption] = useState(initialOption)
     const [selectedData, setSelectedData] = useState(data)
 
     const onSearchInputChange = (input) =>{
         setSearchText(input)
     }
- 
+
     const toggleCheckbox = (item) => () => {
         let updatedInventories = [...checkBoxList];
 
@@ -40,10 +40,10 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
         }
         setCheckBoxList(updatedInventories);
     }
-    
+
     const toggleHeaderCheckbox = () =>{
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== selectedData.length;
-        
+
         if (indeterminate) {
             const selectedAllIds = [...selectedData.map( item => item )]
             setCheckBoxList(selectedAllIds)
@@ -78,8 +78,8 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
                 // console.log("Index: ", )
             }
         }
-        
-        
+
+
     }
 
     const getProcedureId = (data) => {
@@ -102,10 +102,10 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
     }
 
     const onQuantityChangePress = (item) => (action) =>{
-       
+
         const findIndex = selectedData.findIndex(obj => obj._id === item._id);
         let selectedItem = selectedData[findIndex]
-        const updatedObj = { 
+        const updatedObj = {
             ...selectedItem,
             amount: action ==='add' ? selectedItem.amount + 1 : selectedItem.amount - 1
         };
@@ -113,7 +113,7 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
             ...selectedData.slice(0, findIndex),
             updatedObj,
             ...selectedData.slice(findIndex + 1),
-        ]; 
+        ];
         getProcedureId(updatedData)
         // handleEditDone(updatedData)
         // console.log("SelctedData: ", updatedData)
@@ -129,10 +129,10 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
             ...selectedData.slice(0, findIndex),
             updatedObj,
             ...selectedData.slice(findIndex + 1),
-        ]; 
+        ];
         getProcedureId(updatedItems)
         setSelectedData(updatedItems)
-        
+
         // console.log("update: ", updatedItems)
     }
 
@@ -153,7 +153,7 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
                     value = {item.amount === 0 ? "" : item.amount.toString()}
                 />
             </View>
-            
+
             // <View style={[styles.editItem, {alignItems: 'center'}]}>
             //     <IconButton
             //         Icon = {<LeftArrow strokeColor="#718096"/>}
@@ -161,13 +161,13 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
             //         disabled = {false}
             //     />
 
-            //     <TextInput 
+            //     <TextInput
             //         style={styles.editTextBox}
             //         onChangeText = {(value)=>onAmountChange(value)(item)}
             //         value = {item.amount === 0 ? "" : item.amount.toString()}
             //         keyboardType = "number-pad"
             //     />
-                
+
             //     <IconButton
             //         Icon = {<RightArrow strokeColor="#718096"/>}
             //         onPress = {()=>{onQuantityChangePress(item)('add')}}
@@ -187,17 +187,18 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
     </>
 
 
-    const renderListFn = (item) =>{ 
+    const renderListFn = (item) =>{
         return <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
             onItemPress={() => {}}
+            onPressDisabled={true}
             itemView={listItem(item)}
         />
     }
 
-    return ( 
+    return (
         <ScrollView>
             <View style={{flex:1, justifyContent:'space-between', flexDirection:'row', marginBottom:20}}>
                 <View style={{flex:2, paddingRight:100}}>
@@ -215,22 +216,22 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
                         dropdownOptions = { isEditMode ? [...procedureNames] : ['All',...procedureNames]}
                     />
                 </View>
-                
+
             </View>
-            
+
             <Table
                 isCheckbox = {true}
                 data = {selectedData}
                 listItemFormat = {renderListFn}
                 headers = {headers}
-                toggleHeaderCheckbox = {toggleHeaderCheckbox} 
+                toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 itemSelected = {checkBoxList}
                 // dataLength = {tabDetails.length}
             />
         </ScrollView>
     );
 }
- 
+
 export default Consumables;
 
 const styles = StyleSheet.create({
@@ -272,7 +273,7 @@ const styles = StyleSheet.create({
     },
     editItem:{
         flex:1,
-        flexDirection:'row',  
+        flexDirection:'row',
         justifyContent:'center'
     },
     editTextBox:{

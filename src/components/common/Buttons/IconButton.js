@@ -4,11 +4,9 @@ import {TouchableOpacity, View, StyleSheet} from "react-native";
 
 function IconButton({Icon, onPress, disabled}) {
     return (
-        <View>
-            <TouchableOpacity onPress={onPress}>
-                {Icon}
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={onPress} style={{padding: 10}}>
+            {Icon}
+        </TouchableOpacity>
     );
 }
 
