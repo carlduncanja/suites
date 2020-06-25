@@ -5,6 +5,7 @@ import ActionContainer from '../components/common/FloatingAction/ActionContainer
 import * as Animatable from 'react-native-animatable';
 import ActionItem from "../components/common/ActionItem";
 import { useNavigation } from '@react-navigation/native';
+import AddIcon from "../../assets/svg/addIcon";
 
 
 
@@ -23,8 +24,7 @@ const QuickActionsModal = (props) => {
     const navigation = useNavigation();
 
     const getActions = () => {
-
-        const createCaseAction = <ActionItem title={"Create Case File"} onPress={() => {
+        const createCaseAction = <ActionItem icon={<AddIcon/>} title={"Create Case File"} onPress={() => {
             closeModals(currentModal);
             navigation.navigate("Case Files", {screen: "CreateCase", initial: false})
         }}/>

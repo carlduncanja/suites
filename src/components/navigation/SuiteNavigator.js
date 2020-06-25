@@ -29,6 +29,8 @@ import {MenuProvider} from 'react-native-popup-menu';
 import {appActions} from "../../redux/reducers/suitesAppReducer";
 import {signOut} from "../../redux/actions/authActions";
 import QuickActionsModal from "../../modals/QuickActionsModal";
+import Notifier from "../notifications/Notifier";
+import NotificationRegistry from "../notifications/NotficationRegistry";
 
 
 /**
@@ -126,7 +128,12 @@ const SuitesCustomNavigator = ({
                                 {descriptors[state.routes[state.index].key].render()}
 
                             </View>
+
+                            <Notifier/>
+
+
                         </View>
+
                     </ModalProvider>
                 </MenuProvider>
             </SafeAreaView>

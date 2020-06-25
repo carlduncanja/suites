@@ -8,6 +8,8 @@ import {SuitesContextProvider} from './src/contexts/SuitesContext';
 import configureStore from "./src/redux/configureStore";
 import {createStackNavigator} from '@react-navigation/stack';
 import RootApplicationNavigator from "./src/RootApplicationNavigator";
+import NotificationRegistry from "./src/components/notifications/NotficationRegistry";
+import {View} from "react-native";
 
 const store = configureStore({});
 
@@ -24,6 +26,7 @@ const App = () => {
 
                 {/*<RootApplicationContainer/>*/}
                 <RootApplicationNavigator/>
+                <NotificationRegistry/>
 
             </SuitesContextProvider>
         </Provider>

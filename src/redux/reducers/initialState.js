@@ -9,6 +9,7 @@ export default {
     equipment : [],
     suppliers : [],
     orders: [],
+    notifications: [],
     auth: {
         isLoading: true,
         isSignOut: false,

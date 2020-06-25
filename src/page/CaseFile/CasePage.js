@@ -149,6 +149,7 @@ function CasePage({route}) {
             })
             .catch(error => {
                 console.log("Failed to update chargesheet", error)
+                Alert.alert("Sorry", "Failed to update case file");
             })
     }
 
