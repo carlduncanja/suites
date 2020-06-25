@@ -19,7 +19,7 @@ function InventoryBottomSheetContainer({inventory}) {
     const [isEditMode, setEditMode] = useState(false);
     const [isFetching, setFetching] = useState(false);
 
-
+    // console.log("Inventory: ", selectedInventoryItem)
     // ##### Life cycle methods
 
     useEffect(() => {
@@ -114,6 +114,7 @@ function InventoryBottomSheetContainer({inventory}) {
         setFetching(true);
         getInventoryById(id)
             .then(data => {
+                // console.log("Data: ", data)
                 setInventoryItem(data);
             })
             .catch(error => {

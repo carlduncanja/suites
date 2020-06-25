@@ -265,7 +265,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
             // }
 
             console.log("Success:", fields)
-            // createInventoryCall()
+            createInventoryCall()
 
         }
     };

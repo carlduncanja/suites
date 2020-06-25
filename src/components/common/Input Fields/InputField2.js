@@ -18,17 +18,18 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
 function InputField2({label, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error"}) {
 
     return (
-        <View style={styles.container}>
-
-            <Text style={[
-                styles.textLabel, {
-                    minWidth: 60,
-                    marginRight: label ? 20 : 0
-                }
-            ]}>
-                {label}
-            </Text>
-
+        <View style={styles.container}> 
+            {
+                label &&  <Text style={[
+                    styles.textLabel, {
+                        minWidth: 60,
+                        marginRight: label ? 20 : 0
+                    }
+                ]}>
+                    {label}
+                </Text>
+            }
+           
             <View style={[styles.inputWrapper, {
                 paddingRight: value ? 4 : 0,
             }]}>
