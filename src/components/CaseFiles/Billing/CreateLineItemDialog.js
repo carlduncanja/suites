@@ -5,9 +5,9 @@ import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsF
 import OverlayDialog from "../../common/Dialog/OverlayDialog";
 import DialogTabs from "../../common/Dialog/DialogTabs";
 import {useModal} from "react-native-modalfy";
-import { getInventories, getEquipmentTypes } from "../../../api/network";
+import { getInventories, getEquipmentTypes } from "../../../api/network"; 
 import _ from "lodash";
-import AutoFillField from "../../common/Input Fields/AutoFillField";
+import AutoFillField from "../../common/Input Fields/AutoFillField"; 
 import { currencyFormatter } from "../../../utils/formatter";
 
 const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => { 

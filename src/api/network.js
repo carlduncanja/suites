@@ -203,6 +203,13 @@ export const updatePurchaseOrderStatus = async (purchaseOrderId, status) => {
         .catch(handleError)
 }
 
+export const updateProcedure = async (id, data) => {
+    return suitesAxiosInstance.put(procedureEndpoint(id), data)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+
 // ################# Physicians Endpoints
 export const getPhysicians = async (query, max) => {
     return suitesAxiosInstance.get(physiciansEndpoint, {params: {query}})

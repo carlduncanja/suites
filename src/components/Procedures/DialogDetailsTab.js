@@ -19,6 +19,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
         false: "No"
     }
 
+    const { serviceFee = 0 } = fields
 
     // Physicians Search
     const [searchValue, setSearchValue] = useState();
@@ -35,7 +36,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
-    const [fee, setFee] = useState(0)
+    const [fee, setFee] = useState(serviceFee)
     const [selectedPhysicican, setSelectedPhysician] = useState()
 
     // ######
