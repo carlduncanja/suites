@@ -117,7 +117,7 @@ export const SuitesNavigationStack = () => {
 
             <SuitesNavigator.Screen
                 name="Invoices"
-                component={Invoices}
+                component={NotFound}
                 initialParams={{
                     icon: InvoiceIcon,
                     tabName: 'Invoices',

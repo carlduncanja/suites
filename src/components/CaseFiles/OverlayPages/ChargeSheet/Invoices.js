@@ -7,7 +7,7 @@ import { useCheckBox, formatAmount, calcBillingValues } from '../../../../helper
 import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
 import { caseActions } from '../../../../redux/reducers/caseFilesReducer';
 import { CaseFileContext } from '../../../../contexts/CaseFileContext';
-import { withModal } from 'react-native-modalfy';
+import {useModal, withModal} from 'react-native-modalfy';
 import moment from 'moment';
 import ReportPreview from '../../Reports/ReportPreview';
 import Item from '../../../common/Table/Item';
@@ -32,6 +32,7 @@ const reportTestData = {
             tax : 0.2
         }
     },
+
     billedItems : {
         physicians : [
             {
@@ -85,11 +86,12 @@ const reportTestData = {
         ]
     }
 }
-const Invoices = ({tabDetails = [], reportDetails, modal}) => {
-    
+const Invoices = ({tabDetails = [], reportDetails}) => {
+
+    const modal = useModal();
+
     console.log("Invoices: ", tabDetails)
     const [checkBoxList, setCheckBoxList] = useState([])
-    const [state, dispatch] = useContext(CaseFileContext)
 
     const headers = [
         {
@@ -112,16 +114,8 @@ const Invoices = ({tabDetails = [], reportDetails, modal}) => {
             name :"Actions",
             alignment : "flex-end"
         },
-            
-    ]
-    
-    // const openModal = () =>{
-    //     modal.openModal("ReportPreviewModal",{
-    //         content: <ReportPreview type = "Invoice" details = {reportTestData}/>
-    //     })
-    // }
 
-    
+    ]
 
     const openModal = (item) => () => {
         const report = tabDetails[0] || {}
@@ -133,8 +127,8 @@ const Invoices = ({tabDetails = [], reportDetails, modal}) => {
             ...report
         }
         modal.openModal('ReportPreviewModal', {
-            content: <ReportPreview 
-                type = "Invoice" 
+            content: <ReportPreview
+                type = "Invoice"
                 details = {details}
                 reportDetails = {reportDetails}
             />
@@ -142,7 +136,7 @@ const Invoices = ({tabDetails = [], reportDetails, modal}) => {
     }
 
     const listItem = (item) => {
-    
+
         const { invoiceNumber = "", status = "", billing = {}, date = "" } = item
         const { subTotal = 0 } = billing
 
@@ -203,7 +197,6 @@ const Invoices = ({tabDetails = [], reportDetails, modal}) => {
     }
 
     const toggleHeaderCheckbox = () =>{
-
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
         if(indeterminate){
             const selectedAllIds = [...tabDetails.map( item => item )]
@@ -211,10 +204,6 @@ const Invoices = ({tabDetails = [], reportDetails, modal}) => {
         }else{
             setCheckBoxList([])
         }
-        // checkBoxList.length > 0 ?
-        //     setCheckBoxList([])
-        //     :
-        //     setCheckBoxList(tabDetails)
     }
 
     const renderListFn = (item) => {
@@ -226,34 +215,22 @@ const Invoices = ({tabDetails = [], reportDetails, modal}) => {
             itemView = {listItem(item)}
         />
     }
-    
-    // const toggleCheckbox = (item) =>{
-    //     let checkedList = useCheckBox(item,checkBoxList)
-    //     setCheckBoxList(checkedList)
-    // }
 
-    // const toggleHeaderCheckbox = () =>{
-    //     checkBoxList.length > 0 ?
-    //         setCheckBoxList([])
-    //         :
-    //         setCheckBoxList(tabDetails)
-    // }
-    
-    return ( 
+    return (
         <ScrollView>
             <Table
                 isCheckbox = {true}
                 data = {tabDetails}
                 listItemFormat = {renderListFn}
                 headers = {headers}
-                toggleHeaderCheckbox = {toggleHeaderCheckbox} 
+                toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 itemSelected = {checkBoxList}
             />
         </ScrollView>
     );
 }
- 
-export default withModal(Invoices) ;
+
+export default Invoices;
 
 const styles = StyleSheet.create({
     container:{

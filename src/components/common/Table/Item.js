@@ -11,6 +11,7 @@ import CheckBoxComponent from "../Checkbox";
  * @param isChecked
  * @param onCheckBoxPress
  * @param onItemPress
+ * @param onPressDisabled
  * @returns {*}
  * @constructor
  */
@@ -20,11 +21,12 @@ const Item = ({
                   hasCheckBox,
                   isChecked,
                   onCheckBoxPress,
-                  onItemPress
+                  onItemPress,
+                  onPressDisabled = false,
               }) => {
 
     return (
-        <TouchableOpacity onPress={onItemPress}>
+        <TouchableOpacity onPress={onItemPress} disabled={onPressDisabled}>
             <View style={styles.container}>
                 {
                     hasCheckBox &&

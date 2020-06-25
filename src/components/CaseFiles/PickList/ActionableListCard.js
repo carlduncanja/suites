@@ -12,14 +12,14 @@ import {useModal} from "react-native-modalfy";
 
 const ActionableListCard = (props) =>{
 
-    const { 
-        title, 
-        closeModal, 
-        data, 
-        selectedTab, 
-        listItemFormat, 
-        tabs, 
-        headers, 
+    const {
+        title,
+        closeModal,
+        data,
+        selectedTab,
+        listItemFormat,
+        tabs,
+        headers,
         onPressTab,
         onFooterPress = () => {},
         onActionPress
@@ -78,16 +78,13 @@ const ActionableListCard = (props) =>{
                     })
                 }
             </View>
-            
-            <View style={styles.addNew}>
-                <Text style={{color:'#4E5664', fontSize:16}}>Add Item</Text>
-                <IconButton
-                    Icon = {<AddNew/>}
-                    onPress = {()=>{onActionPress()}}
-                />
-            </View>
 
-            <View style={styles.list}> 
+            <TouchableOpacity style={styles.addNew} onPress={onActionPress}>
+                <Text style={{color:'#4E5664', fontSize:16}}>Add Item</Text>
+                <IconButton Icon = {<AddNew/>}/>
+            </TouchableOpacity>
+
+            <View style={styles.list}>
                 <Table
                     data = {data}
                     listItemFormat = {listItemFormat}
@@ -100,7 +97,7 @@ const ActionableListCard = (props) =>{
                 totalPages > 1 &&
                     <View style={{marginLeft:20, marginRight:20, justifyContent:'space-between', flexDirection:'row', alignItems:'center',marginBottom:15}}>
                         <View style={[{alignItems:'center'}]}>
-                            <Text style={{color:'#4E5664', fontSize:16}}>Showing 
+                            <Text style={{color:'#4E5664', fontSize:16}}>Showing
                                 <Text style={{fontWeight:'500'}}> {recordsPerPage}</Text> of <Text style={{fontWeight:'500'}}>{dataLength}</Text>
                             </Text>
                         </View>
@@ -116,7 +113,7 @@ const ActionableListCard = (props) =>{
                     </View>
             }
 
-        
+
             <View style={styles.footer}>
                 <Button
                     backgroundColor = "#FFFFFF"
@@ -127,8 +124,8 @@ const ActionableListCard = (props) =>{
                     fontWeight = 'bold'
                 />
             </View>
-            
-        
+
+
         </View>
     )
 }
@@ -176,7 +173,7 @@ const styles = StyleSheet.create({
         borderRadius:4,
         borderWidth:1,
         justifyContent:'space-between',
-        alignItems:'center', 
+        alignItems:'center',
     },
     list:{
         margin:15,

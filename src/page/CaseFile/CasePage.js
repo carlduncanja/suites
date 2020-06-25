@@ -121,14 +121,14 @@ function CasePage({route}) {
     const onEditPress = (tab) => {
         setEditMode(!isEditMode)
 
-        if(isEditMode === true){
-            if(updateInfo.length !== 0){
+        if (isEditMode === true) {
+            if (updateInfo.length !== 0) {
                 console.log("Record: ", updateInfo)
                 updateCase()
-            }else{
+            } else {
                 console.log("No data added")
             }
-            
+
             setTimeout(() => {
                 fetchCase(caseId)
             }, 500)
@@ -229,7 +229,7 @@ function CasePage({route}) {
                             floatingAction.push(
                                 <ActionItem
                                     title="Open Quotation" icon={<EditIcon/>}
-                                    onPress={updateQuotationStatus(_id, quotation._id, QUOTATION_STATUS.OPEN)}
+                                    onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
                                 />
                             )
 
@@ -239,7 +239,7 @@ function CasePage({route}) {
                                 <ActionItem
                                     title="Cancel Quotation"
                                     icon={<EditIcon/>}
-                                    onPress={updateQuotationStatus(_id, quotation._id, QUOTATION_STATUS.OPEN)}
+                                    onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
                                 />
                             )
 
@@ -247,7 +247,7 @@ function CasePage({route}) {
                                 <ActionItem
                                     title="Create Invoice"
                                     icon={<EditIcon/>}
-                                    onPress={onCreateInvoice(_id, quotation._id)}
+                                    onPress={onCreateInvoice(caseId, quotation._id)}
                                 />
                             )
                             break;
@@ -255,7 +255,6 @@ function CasePage({route}) {
                             break;
                         case QUOTATION_STATUS.BILLED:
                             break;
-
                     }
 
                     // const update = <ActionItem title="Create Invoice" icon={<AddIcon/>}
@@ -306,27 +305,47 @@ function CasePage({route}) {
     //             })
     //     })
 
-    const onCreateInvoice = (caseId, quotationId) => {
+    const onCreateInvoice = (caseId, quotationId) => () => {
+        modal.closeAllModals()
         createInvoiceViaQuotation(caseId, quotationId)
             .then((data) => {
                 console.log("Invoice Record:", data)
+                fetchCase(caseId)
             })
             .catch(error => {
                 console.log("Failed to create invoice", error)
                 Alert.alert("Sorry", 'Failed to generate invoice, please try again');
             })
+            .finally(_ => {
+                modal.closeAllModals()
+            })
     }
 
-    const updateQuotationStatus = (caseId, quotationId, status) => {
+    const updateQuotationStatus = (caseId, quotationId, status) => () => {
         updateCaseQuotationStatus(caseId, quotationId, status)
             .then((data) => {
                 console.log("Invoice Record:", data)
-                // todo upate invoice in state.
+
+                // update the quotation in state
+                const updatedCase = {...selectedCase}
+                let {quotations} = updatedCase;
+
+                quotations = quotations.map( item => {
+                    return item._id === quotationId
+                        ? {...item, status}
+                        : {...item}
+                })
+
+                updatedCase.quotations = quotations;
+                setSelectedCase(updatedCase);
 
             })
             .catch(error => {
                 console.log("Failed to update status", error)
                 Alert.alert("Sorry", "Failed to open quotation, please try again.")
+            })
+            .finally(_ => {
+                modal.closeAllModals();
             })
     }
 

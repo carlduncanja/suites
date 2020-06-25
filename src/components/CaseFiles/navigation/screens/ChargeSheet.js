@@ -14,9 +14,9 @@ const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
 const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices,isEditMode, handleEditDone, handleQuotes}) => { 
-   
-    const LINE_ITEM_TYPES = { 
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices,isEditMode, handleEditDone, handleQuotes}) => {
+
+    const LINE_ITEM_TYPES = {
         DISCOUNT: "discount",
         SERVICE: "service",
         PROCEDURES: "procedures",
@@ -36,7 +36,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         const {name = "", unitPrice = 0} = inventory
         return {
             ...item,
-            name, 
+            name,
             unitPrice,
             type: 'Anaesthesia'
         }
@@ -166,7 +166,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     //             <TextInput style={styles.editTextBox}>
     //                 <Text style={styles.itemText}>{item.amount}</Text>
     //             </TextInput>
-                
+
     //             <IconButton
     //                 Icon = {<RightArrow strokeColor="#718096"/>}
     //                 onPress = {()=>{onQuantityChange(item)}}
@@ -207,21 +207,21 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                 />
                 :
                 selectedTab === 'Invoices' ?
-                    <Invoices 
+                    <Invoices
                         tabDetails={invoices}
                         reportDetails = {billing}
                     />
                     :
-                    selectedTab === 'Quotation' ? 
-                        <Quotation 
-                            tabDetails={quotations} 
+                    selectedTab === 'Quotation' ?
+                        <Quotation
+                            tabDetails={quotations}
                             reportDetails = {billing}
                             handleQuotes = {handleQuotes}
                         />
                         :
-                        <BillingCaseCard 
-                            tabDetails={billing} 
-                            isEditMode = {isEditMode} 
+                        <BillingCaseCard
+                            tabDetails={billing}
+                            isEditMode = {isEditMode}
                             caseId = {caseId}
                             handleEditDone = {handleEditDone(caseId)}
                         />
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     },
     editItem:{
         flex:1,
-        flexDirection:'row',  
+        flexDirection:'row',
         justifyContent:'center'
     },
     editTextBox:{

@@ -26,7 +26,7 @@ function DateInputField({
         mode,
         format,
         maxDate
-    }) {
+    }) { 
 
 
     const handleOnDateChange = (dateString, dateObj) => {

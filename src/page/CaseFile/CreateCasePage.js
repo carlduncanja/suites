@@ -33,64 +33,6 @@ const CASE_PROCEDURE_TABS = {
     FINAL: 3
 }
 
-
-const createCaseWizard = [
-    {
-        step: {
-            name: 'Patient',
-            selectedIcon: <PatientIcon fillColor={'#0CB0E7'} strokeColor={'#64D8FF'}/>,
-            disabledIcon: <PatientIcon fillColor={'#A0AEC0'} strokeColor={'#CCD6E0'}/>,
-            progress: 0
-        },
-        tabs: [PATIENT_TABS.DETAILS, PATIENT_TABS.CONTACT, PATIENT_TABS.ADDRESS, PATIENT_TABS.INSURANCE]
-    },
-    {
-        step:
-            {
-                name: 'Medical Team',
-                selectedIcon: <MedicalIcon fillColor={'#E53E3E'}/>,
-                disabledIcon: <MedicalIcon fillColor={'#CBD5E0'}/>,
-                progress: 0
-            },
-        tabs: ['Assignment 1'],
-        tabName: "Assignment",
-        onAdd: () => {
-            // add new assignment
-            const updatedWizard = [...wizard];
-            const tabs = updatedWizard[1].tabs;
-            if (tabs.length === 3) return;
-
-            const assignment = `Assignment ${tabs.length + 1}`
-            // wizard[2].tabs.push()
-            updatedWizard[1].tabs.push(assignment)
-            setWizard(updatedWizard)
-        }
-    },
-    {
-        step:
-            {
-                name: 'Procedures',
-                selectedIcon: <ProcedureIcon fillColor={'#319795'} strokeColor={'#81E6D9'}/>,
-                disabledIcon: <ProcedureIcon fillColor={'#A0AEC0'} strokeColor={'#CCD6E0'}/>,
-                progress: 0
-            },
-        tabName: "Procedure",
-        tabs: ['Procedure 1'],
-        onAdd: () => {
-            // add new procedure
-            const updatedWizard = [...wizard];
-            const tabs = updatedWizard[2].tabs;
-            if (tabs.length === 3) return;
-
-            const assignment = `Procedure ${tabs.length + 1}`
-            // wizard[2].tabs.push()
-            updatedWizard[2].tabs.push(assignment)
-            setWizard(updatedWizard);
-        }
-    }
-]
-
-
 const testData = {
     "name": "John Doe",
     "patient": {
@@ -154,7 +96,63 @@ const testData = {
 function CreateCasePage({navigation, addCaseFile}) {
 
     // ########### CONST
-    const [wizard, setWizard] = useState(createCaseWizard)
+    const [wizard, setWizard] = useState(
+        [
+            {
+                step: {
+                    name: 'Patient',
+                    selectedIcon: <PatientIcon fillColor={'#0CB0E7'} strokeColor={'#64D8FF'}/>,
+                    disabledIcon: <PatientIcon fillColor={'#A0AEC0'} strokeColor={'#CCD6E0'}/>,
+                    progress: 0
+                },
+                tabs: [PATIENT_TABS.DETAILS, PATIENT_TABS.CONTACT, PATIENT_TABS.ADDRESS, PATIENT_TABS.INSURANCE]
+            },
+            {
+                step:
+                    {
+                        name: 'Medical Team',
+                        selectedIcon: <MedicalIcon fillColor={'#E53E3E'}/>,
+                        disabledIcon: <MedicalIcon fillColor={'#CBD5E0'}/>,
+                        progress: 0
+                    },
+                tabs: ['Assignment 1'],
+                tabName: "Assignment",
+                onAdd: () => {
+                    // add new assignment
+                    const updatedWizard = [...wizard];
+                    const tabs = updatedWizard[1].tabs;
+                    if (tabs.length === 3) return;
+
+                    const assignment = `Assignment ${tabs.length + 1}`
+                    // wizard[2].tabs.push()
+                    updatedWizard[1].tabs.push(assignment)
+                    setWizard(updatedWizard)
+                }
+            },
+            {
+                step:
+                    {
+                        name: 'Procedures',
+                        selectedIcon: <ProcedureIcon fillColor={'#319795'} strokeColor={'#81E6D9'}/>,
+                        disabledIcon: <ProcedureIcon fillColor={'#A0AEC0'} strokeColor={'#CCD6E0'}/>,
+                        progress: 0
+                    },
+                tabName: "Procedure",
+                tabs: ['Procedure 1'],
+                onAdd: () => {
+                    // add new procedure
+                    const updatedWizard = [...wizard];
+                    const tabs = updatedWizard[2].tabs;
+                    if (tabs.length === 3) return;
+
+                    const assignment = `Procedure ${tabs.length + 1}`
+                    // wizard[2].tabs.push()
+                    updatedWizard[2].tabs.push(assignment)
+                    setWizard(updatedWizard);
+                }
+            }
+        ]
+    )
     const steps = [...wizard.map(step => step.step)]
     const modal = useModal()
 
@@ -545,9 +543,9 @@ function CreateCasePage({navigation, addCaseFile}) {
                 );
             })
             .catch(error => {
-            console.log("failed to create case file", error);
-            Alert.alert("Sorry", "Something went wrong when creating case.");
-        })
+                console.log("failed to create case file", error);
+                Alert.alert("Sorry", "Something went wrong when creating case.");
+            })
     }
 
     const getTabContent = () => {
@@ -619,28 +617,27 @@ function CreateCasePage({navigation, addCaseFile}) {
                     <DialogTabs
                         tabs={tabs}
                         tab={selectedTabIndex}
+                        tabName={wizard[selectedIndex] && wizard[selectedIndex].tabName}
                         onAddTab={wizard[selectedIndex] && wizard[selectedIndex].onAdd}
                         onTabPress={handleTabPress}
-                        tabName={wizard[selectedIndex] && wizard[selectedIndex].tabName}
                     />
                 </View>
 
-                <View style={{flex: 1}}>
-                    <TouchableOpacity
-                        onPress={() => handlePopovers(false)()}
-                        activeOpacity={1}
-                    >
+                {/*<TouchableOpacity*/}
+                {/*    style={{flex: 1}}*/}
+                {/*    onPress={() => handlePopovers(false)()}*/}
+                {/*    activeOpacity={1}*/}
+                {/*>*/}
+                    <View style={{flex: 1}}>
                         {getTabContent()}
-                    </TouchableOpacity>
-                </View>
+                    </View>
+                {/*</TouchableOpacity>*/}
 
             </View>
 
 
             <TouchableOpacity style={styles.footerButton} onPress={onPositiveButtonPress}>
-                <View>
-                    <Text style={styles.footerText}>{positiveText}</Text>
-                </View>
+                <Text style={styles.footerText}>{positiveText}</Text>
             </TouchableOpacity>
 
         </View>
@@ -663,7 +660,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     footerButton: {
-        position: 'absolute',
         height: 57,
         width: '100%',
         bottom: 0,

@@ -41,14 +41,13 @@ const ActionContainerModal = (props) => {
         <View style={[{width: dimensions.width, height: state.pageMeasure.height}]}>
             <TouchableOpacity
                 onPress={() => {
-                    console.log("hello");
                     closeModals(currentModal);
                     if (onClose) onClose()
                 }}
                 activeOpacity={1}
                 style={styles.modalContainer}
             />
-            <View style={[styles.positionContainer, 
+            <View style={[styles.positionContainer,
                 {right : position === 'right' ? 40 : null, left : position === 'left' ? 120 : null}
                 ]}>
                 {
