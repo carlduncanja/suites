@@ -18,7 +18,7 @@ import Search from './Search';
  * @returns {*}
  */
 
-const SuggestionsFilterContainer = ({ options = [], searchText, onSearchChangeText, onOptionSelected}) => {
+const SuggestionsFilterContainer = ({ options = [], searchText, onSearchChangeText, onOptionSelected, selected}) => {
 
     const [selectedOption, setSelectedOption] = useState(0)
 
@@ -42,7 +42,7 @@ const SuggestionsFilterContainer = ({ options = [], searchText, onSearchChangeTe
                         <TouchableOpacity
                             key={index}
                             activeOpacity = {0.7}
-                            style={[styles.optionWrapper,{backgroundColor: selectedOption === index ? "#EEF2F6" : null}]}
+                            style={[styles.optionWrapper,{backgroundColor: selected === index ? "#EEF2F6" : null}]}
                             onPress = {()=>{onOptionSelected(index); setSelectedOption(index)}}
                         >
                             <Text style={{color:"#323843", fontSize:14}}>{option}</Text>

@@ -182,7 +182,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     //     <View style={[styles.item, {alignItems: 'flex-end'}]}>
     //         <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
     //     </View>
-
+ 
     // </>
 
     return (
@@ -191,9 +191,10 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                 // tabDetails={inventoryList}
                 headers={headers}
                 // listItemFormat={listItem}
+                allItems = {inventoryList}
                 details = {billing.procedures}
                 isEditMode = {isEditMode}
-                handleEditDone = {handleEditDone(caseId)}
+                handleEditDone = {handleEditDone}
             />
             :
             selectedTab === 'Equipment' ?

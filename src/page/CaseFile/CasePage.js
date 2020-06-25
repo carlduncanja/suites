@@ -136,9 +136,9 @@ function CasePage({route}) {
 
     }
 
-    const handleEditDone = (id) => (data) => {
+    const handleEditDone = (data) => {
         setUpdateInfo(data)
-        setSelectedCaseId(id)
+        // setSelectedCaseId(id)
     }
 
     const updateCase = () => {

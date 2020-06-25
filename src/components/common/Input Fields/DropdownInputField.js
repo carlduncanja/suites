@@ -8,7 +8,7 @@ import SearchableContainer from '../SearchableContainer';
 import SuggestionsFilterContainer from '../SuggestionsFilterContainer';
 
 
-function DropdownInputField({label, onSelectChange, value, dropdownOptions}) {
+function DropdownInputField({label, onSelectChange, value, dropdownOptions, selected}) {
 
     // const [selectedOption, setSelectedOption] = useState(value)
     const [searchText, setSearchText] = useState("")
@@ -53,6 +53,7 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions}) {
                             searchText = {searchText}
                             onSearchChangeText = {()=>{}}
                             onOptionSelected = {onSelectChange}
+                            selected = {selected}
                         />
                     </View>
                     

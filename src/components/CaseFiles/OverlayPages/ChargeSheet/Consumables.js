@@ -11,20 +11,32 @@ import LeftArrow from '../../../../../assets/svg/leftArrow';
 import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
 
 
-const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
+const Consumables = ({ headers, details = [], handleEditDone, isEditMode, allItems = []}) => { 
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [searchText, setSearchText] = useState('')
-    // const [inventoriesData, setInventoriesData] = useState(details)
+
+    let allInventories = details.map( item => {
+        return {
+            caseProcedureId : item.caseProcedureId,
+            inventories : item.inventories,
+            equipments : item.equipments,
+            lineItems : item.services,
+            name : item.procedure.name
+        }
+    })
+    // allInventories.forEach(item => item.map( obj => data.push(obj)))
+    // console.log("All Inventories: ", allInventories)
 
     const procedureNames = details.map( item => item.procedure.name)
-    const data = []
-    let allInventories = details.map( item => item.inventories)
-    allInventories.forEach(item => item.map( obj => data.push(obj)))
+    const groupedInventories = allItems.map( item => {return {...item, cost : item.unitPrice}})
+   
     let initialOption = isEditMode ? procedureNames[0] : 'All'
-
+    
+    const [inventoriesList, setInventoriesList] = useState(allInventories)
     const [selectedOption, setSelectedOption] = useState(initialOption)
-    const [selectedData, setSelectedData] = useState(data)
+    const [selectedIndex, setSelectedIndex] = useState(0)
+    const [selectedData, setSelectedData] = useState(groupedInventories)
 
     const onSearchInputChange = (input) =>{
         setSearchText(input)
@@ -58,23 +70,28 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
 
     const onSelectChange = (index) => {
         if(isEditMode){
-            let data = details[index].inventories.map(item => {return {
+            let data = inventoriesList[index].inventories.map(item => {return {
                 ...item,
                 unitPrice : item.cost
             }})
             setSelectedData( data|| [])
             setSelectedOption(procedureNames[index])
+            setSelectedIndex(index)
         }else{
+            console.log("Index:", index)
             if(index === 0){
+                setSelectedIndex(0)
                 setSelectedOption('All')
-                setSelectedData(data)
+                setSelectedData(groupedInventories)
             }else{
-                let data = details[index-1].inventories.map(item => {return {
+                let data = allInventories[index-1].inventories.map(item => {return {
                     ...item,
                     unitPrice : item.cost
                 }})
+                // console.log("Data: ", allInventories[index-1])
                 setSelectedData( data|| [])
                 setSelectedOption(procedureNames[index-1])
+                setSelectedIndex(index)
                 // console.log("Index: ", )
             }
         }
@@ -82,18 +99,50 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
 
     }
 
+    const updateInventoriesList = (id, data) => {
+       
+        let findIndex = inventoriesList.findIndex(obj => obj.caseProcedureId === id);
+        let selectedItem = inventoriesList[findIndex]
+        const updatedObj = {
+            ...selectedItem,
+            inventories : data
+            // amount: action ==='add' ? selectedItem.amount + 1 : selectedItem.amount - 1
+        };
+        const updatedData = [
+            ...inventoriesList.slice(0, findIndex),
+            updatedObj,
+            ...inventoriesList.slice(findIndex + 1),
+        ];
+        setInventoriesList(updatedData)
+        return updatedData
+
+    }
+
     const getProcedureId = (data) => {
+        // console.log("Data: ", data)
         if(selectedOption !== 'All'){
-            const filterItem = details.filter( obj => obj.procedure.name === selectedOption) || []
+
+            const filterItem = details.filter( (obj,index) => index === selectedIndex) || []
             const { caseProcedureId, services, equipments } = filterItem[0]
-            let updatedData = [
-                {
-                    caseProcedureId,
-                    inventories : data,
-                    equipments : equipments,
-                    lineItems : services
+            
+            // let updatedData = [
+            //     {
+            //         caseProcedureId,
+            //         inventories : data,
+            //         equipments : equipments,
+            //         lineItems : services
+            //     }
+            // ]
+            let inventoriesData = updateInventoriesList(caseProcedureId,data)
+            let updatedData = inventoriesData.map( item => {
+                return {
+                    caseProcedureId : item.caseProcedureId,
+                    inventories : item.inventories,
+                    equipments : item.equipments,
+                    lineItems : item.lineItems
                 }
-            ]
+            })
+            // console.log(" new iNventories: ", newInventoriesList)
             handleEditDone(updatedData)
             // console.log("Id: ", caseProcedureId)
             // console.log("Servies: ", services)
@@ -114,9 +163,8 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
             updatedObj,
             ...selectedData.slice(findIndex + 1),
         ];
+
         getProcedureId(updatedData)
-        // handleEditDone(updatedData)
-        // console.log("SelctedData: ", updatedData)
         setSelectedData(updatedData)
     }
 
@@ -213,6 +261,7 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode}) => {
                     <DropdownInputField
                         onSelectChange = {onSelectChange}
                         value = {selectedOption}
+                        selected = {selectedIndex}
                         dropdownOptions = { isEditMode ? [...procedureNames] : ['All',...procedureNames]}
                     />
                 </View>
