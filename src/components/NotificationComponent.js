@@ -11,7 +11,9 @@ function NotificationComponent(props) {
     const {
         icon = <FolderIcon/>,
         timeCreated = new Date(),
-        msg = "300 items have been added to inventory."
+        context = "Group",
+        onClose,
+        message = ""
     } = props;
 
     return (
@@ -23,7 +25,7 @@ function NotificationComponent(props) {
                         <View style={{paddingRight: 10, paddingTop: 4,}}>
                             {icon}
                         </View>
-                        <Text>Group</Text>
+                        <Text style={{fontSize: 14}}>{context}</Text>
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'center'}}>
@@ -32,7 +34,7 @@ function NotificationComponent(props) {
                             {moment(timeCreated).fromNow()}
 
                         </Text>
-                        <TouchableOpacity style={{paddingLeft: 10, paddingTop: 4,}}>
+                        <TouchableOpacity style={{paddingLeft: 10, paddingTop: 4}} onPress={onClose}>
                             <CancelIcon/>
                         </TouchableOpacity>
                     </View>
@@ -41,7 +43,7 @@ function NotificationComponent(props) {
                 <View style={{flex: 1, justifyContent: "center"}}>
 
                     <Text style={styles.text}>
-                        {msg}
+                        {message}
                     </Text>
 
                     {props.children}
@@ -51,7 +53,13 @@ function NotificationComponent(props) {
     );
 }
 
-NotificationComponent.propTypes = {};
+NotificationComponent.propTypes = {
+    icon: PropTypes.element,
+    timeCreated: PropTypes.object,
+    context: PropTypes.string,
+    message: PropTypes.string,
+    onClose: PropTypes.func.isRequired
+};
 NotificationComponent.defaultProps = {};
 
 const styles = StyleSheet.create({
@@ -77,6 +85,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     text: {
+        fontSize: 16,
         color: "#718096"
     }
 })

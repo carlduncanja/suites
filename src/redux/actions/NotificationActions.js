@@ -1,4 +1,5 @@
 import React from "react";
+
 export const NOTIFICATIONS = "[Notifications]";
 
 // document
@@ -9,21 +10,18 @@ export const REMOVE_NOTIFICATION = `${NOTIFICATIONS} remove`; // Immediately rem
 
 export const addNotification = (
     message,
-    variant,
-    key= (new Date().getTime() + Math.random()),
+    title,
+    key = (new Date().getTime() + Math.random()),
     action = undefined
 ) => ({
     type: INSERT_NOTIFICATION,
-    key,
     payload: {
-       data: {
-           message: message,
-           options: {
-               key: key,
-               variant: variant,
-               action: action
-           },
-       }
+        data: {
+            title,
+            message,
+            key,
+            action,
+        }
     }
 });
 
