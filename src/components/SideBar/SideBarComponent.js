@@ -5,8 +5,12 @@ import SvgIcon from "../../../assets/SvgIcon";
 import NavigationTab from "./SideBarTabComponent";
 import jwtDecode from 'jwt-decode';
 import {connect} from 'react-redux'
+import QuickMenu from "../../../assets/svg/QuickMenu";
+import {useModal} from "react-native-modalfy";
 
 function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed, onLogout, auth = {}}) {
+
+    const modal = useModal();
 
     const showLogoutDialog = () => {
         // Works on both Android and iOS
@@ -29,6 +33,11 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
     const authInfo = auth.userToken && jwtDecode(auth.userToken);
 
     console.log(authInfo)
+
+
+    const showQuickMenuModal = () => {
+        modal.openModal('QuickActionsModal')
+    }
 
     return (
         <View style={{
@@ -53,14 +62,26 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                     <SvgIcon iconName="logo"/>
                 </View>
 
+
                 <ScrollView
-                    stickyHeaderIndices={[selectedIndex]}
+                    stickyHeaderIndices={[selectedIndex + 1]}
                     scrollEventThrottle={2}
                     scrollEnabled={true}
                     showsVerticalScrollIndicator={false}
                     style={[styles.container]}
                     contentContainerStyle={{alignItems: 'center', justifyContent: 'flex-start', width: '100%'}}
                 >
+
+                    {/*QUICK MENU*/}
+                    <View style={{width: '100%'}} key={"QUICK_MENU"}>
+                        <NavigationTab
+                            icon={QuickMenu}
+                            tabName={"Quick Menu"}
+                            isTabSelected={false}
+                            onTabPress={showQuickMenuModal}
+                        />
+                    </View>
+
                     {
                         // Spread the navigation routes.
                         routes.map((route, tabIndex) => {

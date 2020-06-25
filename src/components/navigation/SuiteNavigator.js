@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import AsyncStorage from "@react-native-community/async-storage";
 import {SuitesContext, SuitesContextProvider} from '../../contexts/SuitesContext';
-import {ModalProvider, createModalStack} from 'react-native-modalfy';
+import {ModalProvider, createModalStack, useModal} from 'react-native-modalfy';
 import {
     NavigationHelpersContext,
     useNavigationBuilder,
@@ -28,6 +28,7 @@ import BottomSheetModal from '../../modals/BottomSheetModal';
 import {MenuProvider} from 'react-native-popup-menu';
 import {appActions} from "../../redux/reducers/suitesAppReducer";
 import {signOut} from "../../redux/actions/authActions";
+import QuickActionsModal from "../../modals/QuickActionsModal";
 
 
 /**
@@ -53,11 +54,6 @@ const SuitesCustomNavigator = ({
 
     console.log(`initialRouteName ${initialRouteName} state`, state)
 
-
-    // const ActiveScreen = descriptors.getComponent();
-    // const ActiveScreen = descriptors[state.routes[state.index].key].render()
-
-
     const modalConfig = {
         OverlaySlidePanelModal: OverlaySlidePanelModal,
         OverlayModal: OverlayModal,
@@ -65,6 +61,7 @@ const SuitesCustomNavigator = ({
         ReportPreviewModal: ReportPreviewModal,
         OverlayInfoModal: OverlayInfoModal,
         BottomSheetModal: BottomSheetModal,
+        QuickActionsModal: QuickActionsModal
     };
 
     const defaultOptions = {
@@ -97,6 +94,7 @@ const SuitesCustomNavigator = ({
         // navigation.navigate('Auth')
     };
 
+
     const getPageMeasure = (event) => {
         dispatch({
             type: appActions.SETPAGEMEASURES,
@@ -124,12 +122,6 @@ const SuitesCustomNavigator = ({
                                   onLayout={getPageMeasure}
                             >
                                 {/*    ACTIVE SCREEN    */}
-
-                                {/*<ActiveScreen*/}
-                                {/*    navigation={descriptor.navigation}*/}
-                                {/*    descriptor={descriptor}*/}
-                                {/*    screenDimensions={screenDimensions}*/}
-                                {/*/>*/}
 
                                 {descriptors[state.routes[state.index].key].render()}
 
