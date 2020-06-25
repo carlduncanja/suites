@@ -16,7 +16,7 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode, allIte
     const [checkBoxList, setCheckBoxList] = useState([])
     const [searchText, setSearchText] = useState('')
 
-    let allInventories = details.map( item => {
+    let allInventories = details.map( item => { 
         return {
             caseProcedureId : item.caseProcedureId,
             inventories : item.inventories,
@@ -70,6 +70,8 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode, allIte
 
     const onSelectChange = (index) => {
         if(isEditMode){
+            console.log("Selected: ", selectedOption)
+            console.log("Index:", index)
             let data = inventoriesList[index].inventories.map(item => {return {
                 ...item,
                 unitPrice : item.cost

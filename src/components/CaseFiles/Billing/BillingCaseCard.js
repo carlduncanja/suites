@@ -60,23 +60,53 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
     }
 
     const onCreated = (id) => (data) => {
-        let createdData = [...updatedBilling]
-        let updatedData = {caseProcedureId: id, ...data}
-        const filterData = createdData.filter(obj => obj.caseProcedureId === id)
+       
+        // let createdData = [...updatedBilling]
+        // let updatedData = {caseProcedureId: id, ...data}
+        // const filterData = createdData.filter(obj => obj.caseProcedureId === id)
 
-        if (filterData.length === 0) {
-            createdData = [...createdData, updatedData]
-            setUpdatedBilling(createdData)
-        } else {
-            const findIndex = createdData.findIndex(obj => obj.caseProcedureId === id);
-            createdData = [
-                ...createdData.slice(0, findIndex),
-                updatedData,
-                ...createdData.slice(findIndex + 1)
-            ]
-            setUpdatedBilling(createdData)
-        }
-        handleEditDone(createdData)
+        // if (filterData.length === 0) {
+        //     createdData = [...createdData, updatedData]
+        //     setUpdatedBilling(createdData)
+        // } else {
+        //     const findIndex = createdData.findIndex(obj => obj.caseProcedureId === id);
+        //     createdData = [
+        //         ...createdData.slice(0, findIndex),
+        //         updatedData,
+        //         ...createdData.slice(findIndex + 1)
+        //     ]
+        //     setUpdatedBilling(createdData)
+        // }
+
+        let billingData = [...billingProcedures]
+        const findIndex = billingData.findIndex(obj => obj.caseProcedureId === id);
+        let selectedItem = billingData[findIndex]
+        const updatedObj = {
+            ...selectedItem,
+            inventories : data.inventories,
+            equipments : data.equipments,
+            services : data.lineItems
+            // amount: action ==='add' ? selectedItem.amount + 1 : selectedItem.amount - 1
+        };
+        const updatedData= [
+            ...billingData.slice(0, findIndex),
+            updatedObj,
+            ...billingData.slice(findIndex + 1),
+        ];
+
+        const handleEditData = updatedData.map( item => {
+            return {
+                caseProcedureId : item.caseProcedureId,
+                inventories : item.inventories,
+                equipments : item.equipments,
+                lineItems : item.services
+            }
+        })
+
+        // console.log("Procedures: ", billingProcedures)
+        // console.log("Updated Data: ", updatedData1)
+        setBillingProcedures(updatedData)
+        handleEditDone(handleEditData)
         modal.closeModals("OverlayInfoModal")
 
         // console.log("Edit mode: ", isEditMode)
@@ -155,6 +185,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
                                 services = [],
                                 caseProcedureId = ""
                             } = item
+
 
                             return (
                                 <View key={index} style={{marginBottom: 15}}>
@@ -235,7 +266,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
                         })}
 
             </View>
-
+ 
         </ScrollView>
     );
 }

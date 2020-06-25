@@ -4,7 +4,7 @@ import InputField2 from '../../common/Input Fields/InputField2';
 import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField";
 import OverlayDialog from "../../common/Dialog/OverlayDialog";
 import DialogTabs from "../../common/Dialog/DialogTabs";
-import {useModal} from "react-native-modalfy";
+import {useModal} from "react-native-modalfy"; 
 import { getInventories } from "../../../api/network";
 import _ from "lodash";
 import AutoFillField from "../../common/Input Fields/AutoFillField";
@@ -92,7 +92,7 @@ const CreateServiceLineItem = ({onCreated, onCancel}) => {
                 onTabPress={onTabChange}
             /> */}
             <TouchableOpacity
-                 onPress = {()=>handlePopovers(false)()}
+                // onPress = {()=>handlePopovers(false)()}
                 activeOpacity = {1}
             >
                 <View style={styles.sectionContainer}>

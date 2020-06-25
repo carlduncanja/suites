@@ -220,11 +220,11 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                             handleQuotes = {handleQuotes}
                         />
                         :
-                        <BillingCaseCard
+                        <BillingCaseCard 
                             tabDetails={billing}
                             isEditMode = {isEditMode}
                             caseId = {caseId}
-                            handleEditDone = {handleEditDone(caseId)}
+                            handleEditDone = {handleEditDone}
                         />
         // <View/>
     );

@@ -106,6 +106,7 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
         selectedTab === 'Consumables' ? setSelectConsumables(updatedItems) : 
         selectedTab === 'Equipments' ? setSelectedEquipments(updatedItems) :
         setSelectedServices(updatedItems)
+        console.log("Add Item: ", updatedItems)
     }
 
     const headers = [
@@ -243,15 +244,19 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
 
     const onDonePress = () => {
         let updatedInventory = selectedConsumables.map( item => {
-            const { amount, inventory } = item
+            const { name, cost = 0, amount, inventory } = item
             return {
+                name,
+                cost,
                 amount,
                 inventory
             }
         })
         let updatedEquipment = selectedEquipments.map( item => {
-            const { amount, equipment } = item
+            const { name, cost = 0, amount, equipment } = item
             return {
+                name,
+                cost,
                 amount,
                 equipment
             }
@@ -265,8 +270,9 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
             }
         
        
+        
         onCreated(updatedBilling)
-        // console.log("Updated: ", updatedBilling)
+        // console.log("Billing: ", updatedBilling)
         // updateCase(updatedBilling)
     }
 
@@ -292,7 +298,7 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
                 isCheckBox = {false}
                 data = {data}
                 onActionPress = {openDialogContainer}
-                onFooterPress = {onDonePress}
+                onFooterPress = {onDonePress} 
             /> 
         </View>
     )

@@ -1,7 +1,7 @@
 import React,{ useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import InputField2 from '../../common/Input Fields/InputField2';
-import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField";
+import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField"; 
 import OverlayDialog from "../../common/Dialog/OverlayDialog";
 import DialogTabs from "../../common/Dialog/DialogTabs";
 import {useModal} from "react-native-modalfy";
@@ -169,7 +169,11 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
         })
 
         if( isNameError === false && isAmountError === false){
-            onCreated(fields)
+            let updatedFields = {
+                ...fields,
+                cost : selectedItem.unitPrice
+            }
+            onCreated(updatedFields)
             modal.closeModals("OverlayModal")
             // console.log("Add Item: ",fields)
         }

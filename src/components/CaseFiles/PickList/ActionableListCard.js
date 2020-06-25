@@ -10,7 +10,7 @@ import AddNew from '../../../../assets/svg/addNewIcon';
 import {useModal} from "react-native-modalfy";
 
 
-const ActionableListCard = (props) =>{
+const ActionableListCard = (props) =>{ 
 
     const {
         title,
@@ -81,7 +81,9 @@ const ActionableListCard = (props) =>{
 
             <TouchableOpacity style={styles.addNew} onPress={onActionPress}>
                 <Text style={{color:'#4E5664', fontSize:16}}>Add Item</Text>
-                <IconButton Icon = {<AddNew/>}/>
+                {/* <View style={{ flex:1,backgroundColor:'yellow', alignItems:"flex-end", justifyContent:"center"}}> */}
+                    <IconButton Icon = {<AddNew/>}/>
+                {/* </View> */}
             </TouchableOpacity>
 
             <View style={styles.list}>
@@ -174,6 +176,7 @@ const styles = StyleSheet.create({
         borderWidth:1,
         justifyContent:'space-between',
         alignItems:'center',
+        // backgroundColor:'red'
     },
     list:{
         margin:15,
