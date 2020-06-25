@@ -6,7 +6,7 @@ import Button from '../common/Buttons/Button';
 import { formatDate, transformToSentence, calcAge, isValidEmail } from '../../utils/formatter';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 
-const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
+const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => { 
     
     const handlePhones = () => {
         let newPhoneArray = [...fields['phones']]
@@ -349,7 +349,8 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
         <View style={styles.row}>
 
             <View style={styles.fieldWrapper}>
-                <View style={{ marginBottom:5}}>
+
+                <View style={{marginBottom:5,}}>
                     <Text style={styles.title}>First Name</Text>
                 </View>
 
@@ -360,10 +361,11 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                         onClear = {()=>onFieldChange('firstName')('')}
                     />
                 </View>
+
             </View>
             
             <View style={styles.fieldWrapper}>
-                <View style={{ marginBottom:5}}>
+                <View style={{flex:1,marginBottom:5}}>
                     <Text style={styles.title}>Middle Name</Text>
                 </View>
 
@@ -546,83 +548,127 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
         
     const emergencyContactData = <>
         <View style={{}}>
+
             {emergencyContacts.map(( contact, index)=>{
                 let isOpen = popoverList.filter(item => item.name === `emergency${index + 1}`)
                 return(
-                    <View style={{flexDirection:"row",width:'100%', zIndex: index === 1 ? -1 :0}} key = {index}>
-                      
-                        <TouchableOpacity 
-                            style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:1}}
-                            onPress = {()=>{openEmergencyName(index); handlePopovers(true)(`emergency${index + 1}`)}}
-                            activeOpacity = {1}
-                        >
-                            <View style={{ marginBottom:5}}>
-                                <Text style={[styles.title,{fontSize:14}]}>Emergency Contact Name {index + 1}</Text>
-                            </View>
+                    <View style={{width:'100%', zIndex: index === 1 ? -1 :0}} key = {index}>
+                        
+                        <View style={{marginBottom: 10}}>
+                            <Text>Emergency Contact {index + 1}</Text>
+                        </View>
+                        
+                        <>
+                            {/* <TouchableOpacity 
+                                style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:1}}
+                                onPress = {()=>{openEmergencyName(index); handlePopovers(true)(`emergency${index + 1}`)}}
+                                activeOpacity = {1}
+                            >
+                                <View style={{ marginBottom:5}}>
+                                    <Text style={[styles.title,{fontSize:12}]}>Emergency Contact Name {index + 1}</Text>
+                                </View>
 
-                            <View style={[styles.inputWrapper]}> 
-                                {/* <View style={styles.inputField}>
-                                    <Text>
-                                        {`${contact.name} (${contact.relation})`}
-                                    </Text>
-                                </View> */}
-                                
-                                <InputField2
-                                    onChangeText = {()=>{}}
-                                    value = {`${contact.name} (${contact.relation})`}
-                                    onClear = {()=>{}}
-                                /> 
-                                { isEmergencyOpen && index === emergencyIndex && isOpen[0].status &&
-                                    <View style={styles.modalContainer}>
+                                <View style={[styles.inputWrapper]}> 
+                                    {/* <View style={styles.inputField}>
+                                        <Text>
+                                            {`${contact.name} (${contact.relation})`}
+                                        </Text>
+                                    </View> */}
+                                    
+                                    {/* <InputField2  
+                                        onChangeText = {()=>{}}
+                                        value = {`${contact.name} (${contact.relation})`}
+                                        onClear = {()=>{}}
+                                    /> 
+                                    { isEmergencyOpen && index === emergencyIndex && isOpen[0].status &&
+                                        <View style={styles.modalContainer}>
+                                            <InputField2
+                                                label = "Name"
+                                                onChangeText = {(value)=>handleEmergency(value, 'name', contact._id )}
+                                                value = {contact.name}
+                                                onClear = {()=>handleEmergency('', 'name', contact._id)}
+                                            /> 
+                                        
+                                            <InputField2
+                                                label = "Relation"
+                                                onChangeText = {(value)=>handleEmergency(value, 'relation', contact._id )}
+                                                value = {contact.relation}
+                                                onClear = {()=>handleEmergency('', 'relation', contact._id)}
+                                            /> 
+
+                                        </View>
+                                    }
+                                </View>
+                            </TouchableOpacity>
+ */}
+                            <View style={[styles.row]}>
+
+                                <View style={{paddingRight:35, flex:1, marginBottom:30, zIndex:-1}} >
+                                    <View style={{ marginBottom:5}}>
+                                        <Text style={[styles.title,{fontSize:12}]}>Name</Text>
+                                    </View>
+
+                                    <View style={styles.inputWrapper}> 
                                         <InputField2
-                                            label = "Name"
-                                            onChangeText = {(value)=>handleEmergency(value, 'name', contact._id )}
+                                            onChangeText = {(value)=>handleEmergency(value, 'name', contact._id)}
                                             value = {contact.name}
                                             onClear = {()=>handleEmergency('', 'name', contact._id)}
-                                        /> 
-                                       
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={{paddingRight:35, flex:1, marginBottom:30, zIndex:-1}} >
+                                    <View style={{ marginBottom:5}}>
+                                        <Text style={[styles.title,{fontSize:12}]}>Relation</Text>
+                                    </View>
+
+                                    <View style={styles.inputWrapper}> 
                                         <InputField2
-                                            label = "Relation"
-                                            onChangeText = {(value)=>handleEmergency(value, 'relation', contact._id )}
+                                            onChangeText = {(value)=>handleEmergency(value, 'relation', contact._id)}
                                             value = {contact.relation}
                                             onClear = {()=>handleEmergency('', 'relation', contact._id)}
-                                        /> 
-
+                                        />
                                     </View>
-                                }
-                            </View>
-                        </TouchableOpacity>
+                                </View>
 
-                        <View style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:-1}} >
-                            <View style={{ marginBottom:5}}>
-                                <Text style={[styles.title,{fontSize:13}]}>Emergency Contact Phone {index + 1}</Text>
+                            </View>
+                            
+
+                            <View style={[styles.row]}>
+
+                                <View style={{paddingRight:35, flex:1, marginBottom:30, zIndex:-1}} >
+                                    <View style={{ marginBottom:5}}>
+                                        <Text style={[styles.title,{fontSize:12}]}>Phone</Text>
+                                    </View>
+
+                                    <View style={styles.inputWrapper}> 
+                                        <InputField2
+                                            onChangeText = {(value)=>handleEmergency(value, 'phone', contact._id)}
+                                            value = {contact.phone}
+                                            onClear = {()=>handleEmergency('', 'phone', contact._id)}
+                                            keyboardType = 'number-pad'
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={{paddingRight:35,flex:1, marginBottom:30, zIndex:-2}} >
+                                    <View style={{ marginBottom:5}}>
+                                        <Text style={[styles.title,{fontSize:12}]}>Email</Text>
+                                    </View>
+
+                                    <View style={styles.inputWrapper}> 
+                                        <InputField2
+                                            onChangeText = {(value)=>handleEmergency(value, 'email', contact._id)}
+                                            value = {contact.email}
+                                            onClear = {()=>handleEmergency('', 'email', contact._id)}
+                                            keyboardType = "email-address"
+                                        />
+                                    </View>
+                                </View>
+
                             </View>
 
-                            <View style={styles.inputWrapper}> 
-                                <InputField2
-                                    onChangeText = {(value)=>handleEmergency(value, 'phone', contact._id)}
-                                    value = {contact.phone}
-                                    onClear = {()=>handleEmergency('', 'phone', contact._id)}
-                                    keyboardType = 'number-pad'
-                                />
-                            </View>
-                        </View>
-
-                        <View style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:-2}} >
-                            <View style={{ marginBottom:5}}>
-                                <Text style={[styles.title,{fontSize:14}]}>Emergency Contact Email {index + 1}</Text>
-                            </View>
-
-                            <View style={styles.inputWrapper}> 
-                                <InputField2
-                                    onChangeText = {(value)=>handleEmergency(value, 'email', contact._id)}
-                                    value = {contact.email}
-                                    onClear = {()=>handleEmergency('', 'email', contact._id)}
-                                    keyboardType = "email-address"
-                                />
-                            </View>
-                        </View>
-
+                        </>
                     </View>
                     
                 )
@@ -688,11 +734,13 @@ const styles = StyleSheet.create({
         flex:1,
         marginRight:35,
         marginBottom:30,
-        flexDirection:'column'
+        flexDirection:'column',
     },
     inputWrapper:{
+        // flex:1,
         height:30,
-        justifyContent:'center'
+        // width:'100%',
+        justifyContent:'center',
     },
     title:{
         color:'#718096',

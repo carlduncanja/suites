@@ -93,7 +93,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                         onClear={() => onFieldChange('trn')('')}
                         keyboardType = "number-pad"
                         hasError = {errorFields['trn']}
-                        errorMessage = "TRN must contain 7 numbers."
+                        errorMessage = "TRN must contain 9 numbers."
                     />
                 </View>
 

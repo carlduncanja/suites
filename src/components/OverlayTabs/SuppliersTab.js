@@ -11,7 +11,7 @@ const UiData = {
     id: "SP-129031",
     name: "Medical Suppliers Ltd",
     status: "Active",
-    phone: "876 920 1277",
+    phone: "876 920 1277", 
     fax: "876 920 1278",
     email: "support@meds.com",
     representative: {
@@ -21,7 +21,7 @@ const UiData = {
     }
 };
 
-function InventoryGeneralTabContent({inventoryDetails = UiData}) {
+function SuppliersTab({inventoryDetails = UiData}) {
 
     const {
         description = "",
@@ -109,8 +109,8 @@ function InventoryGeneralTabContent({inventoryDetails = UiData}) {
     </View>;
 }
 
-InventoryGeneralTabContent.propTypes = {};
-InventoryGeneralTabContent.defaultProps = {};
+SuppliersTab.propTypes = {};
+SuppliersTab.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
@@ -151,4 +151,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default InventoryGeneralTabContent;
+export default SuppliersTab;

@@ -10,13 +10,15 @@ import EditableProceduresConfig from '../OverlayTabs/EditableProceduresConfig';
 import TheatresTab from '../OverlayTabs/TheatresTab';
 import {colors} from "../../styles";
 import { currencyFormatter } from '../../utils/formatter';
+import { updateProcedure } from "../../api/network";
+
 
 import { getProcedureById } from "../../api/network";
 
 function ProceduresBottomSheet({procedure, isOpenEditable}) {
     
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
-    console.log("Procedure:", procedure)
+    // console.log("Procedure:", procedure)
     const {
         _id, 
         name,
@@ -155,6 +157,38 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
             })
     };
 
+    const handleUpdate = (data) => {
+        
+        let {inventories = [] } = selectedProcedure
+        let newInventories = inventories.map( item => {
+            return {
+                inventory : item.inventory._id,
+                amount : item.amount
+            }
+        })
+        let updatedArray = [...newInventories, data]
+        let updatedObj = {
+            inventories : updatedArray
+        }
+        console.log("Data: ", updatedObj)
+        updateProcedureCall(updatedObj)
+    }
+
+    const updateProcedureCall = (updatedFields) =>{
+        updateProcedure(_id, updatedFields)
+            .then(data => {
+                fetchProcdure(_id)
+                console.log("Data from db: ", data)
+                // modal.closeAllModals();
+                // setTimeout(() => {onCreated(data)}, 200);
+            })
+            .catch(error => {
+                // todo handle error
+                console.log("failed to update procedure", error)
+            })
+    }
+
+
     const getTabContent = (selectedTab) => {
         const { inventories = [], equipments = [], notes = "", supportedRooms = [] } = selectedProcedure
         const consumablesData = inventories.map(item => {
@@ -188,6 +222,7 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
                 return <ProceduresConsumablesTab
                     consumablesData = {inventories}
                     isEditMode = {isEditMode}
+                    handleUpdate = {handleUpdate}
                 />
             case "Equipment":
                 return <ProceduresEquipmentTab 

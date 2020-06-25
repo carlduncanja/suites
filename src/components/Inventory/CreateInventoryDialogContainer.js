@@ -10,7 +10,8 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import OptionsField from "../common/Input Fields/OptionsField";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import {createInventories, getInventories, getCategories, getSuppliers} from "../../api/network";
+import {createInventories, getInventories, getCategories, getSuppliers,} from "../../api/network";
+import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import _ from "lodash";
 
@@ -24,7 +25,7 @@ import _ from "lodash";
  * @returns {*}
  * @constructor
  */
-function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
+function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
 
     const modal = useModal();
     const dialogTabs = ['Details', 'Configuration'];
@@ -265,12 +266,14 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
             // }
 
             console.log("Success:", fields)
-            // createInventoryCall()
+            createInventoryCall()
 
         }
     };
 
     const onTabChange = (tab) => {
+        let isValid = validateInventory()
+        if(!isValid) {return}
         setSelectedTabIndex(dialogTabs.indexOf(tab))
     };
 
@@ -321,6 +324,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addTheatre}) {
     const createInventoryCall = () => {
         createInventories(fields)
             .then(data => {
+                addInventory(data)
                 modal.closeAllModals();
                 setTimeout(() => {
                     onCreated(data)
@@ -569,6 +573,8 @@ const styles = StyleSheet.create({
 
 });
 
-const mapDispatcherToProps = {};
+const mapDispatcherToProps = {
+    addInventory
+};
 
 export default connect(null, mapDispatcherToProps)(CreateInventoryDialogContainer);

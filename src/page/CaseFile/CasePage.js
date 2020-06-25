@@ -123,12 +123,8 @@ function CasePage({route}) {
 
         if (isEditMode === true) {
             if (updateInfo.length !== 0) {
-                console.log("Record: ", updateInfo)
-
-                //
+                // console.log("Record: ", updateInfo)
                 updateCase()
-
-
             } else {
                 console.log("No data added")
             }
@@ -140,18 +136,14 @@ function CasePage({route}) {
 
     }
 
-    const handleEditDone = (id) => (data) => {
+    const handleEditDone = (data) => {
         setUpdateInfo(data)
-        setSelectedCaseId(id)
+        // setSelectedCaseId(id)
     }
 
     const updateCase = () => {
         console.log("Selectedcase: ", updateInfo)
-        updateChargeSheet(updateInfo)
-    }
-
-    const updateChargeSheet = (data) => {
-        updateChargeSheet(caseId, data)
+        updateChargeSheet(caseId, updateInfo)
             .then((data) => {
                 console.log("Updated Record:", data)
             })

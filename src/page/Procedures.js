@@ -239,7 +239,7 @@ const Procedures = (props) => {
                     {
                         content: <CreateProcedureDialog
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={(item) => handleOnItemPress(item, true)}
+                            onCreated={(item) => {handleOnItemPress(item, true); handleDataRefresh()}}
                         />,
                         onClose: () => setFloatingAction(false)
                     })

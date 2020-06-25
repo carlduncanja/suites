@@ -1,18 +1,27 @@
 import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
+import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import ActionItem from "../common/ActionItem";
+import IconButton from "../common/Buttons/IconButton";
+import AddNew from '../../../assets/svg/addNewIcon';
+import AddIcon from "../../../assets/svg/addIcon";
 
 import { currencyFormatter } from '../../utils/formatter'
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import NumberChangeField from "../common/Input Fields/NumberChangeField";
+import { withModal } from "react-native-modalfy";
+import AddItemDialog from "../Procedures/AddItemDialog";
 
-const ProceduresConsumablesTab = ({consumablesData, isEditMode}) => {
+const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpdate}) => { 
 
     const recordsPerPage = 10
     const [consumables, setConsumbales] = useState(consumablesData)
     const [checkBoxList, setCheckboxList] = useState([])
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
@@ -79,6 +88,18 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode}) => {
         let updatedProcedures = checkboxItemPress(item, _id, checkBoxList)
         setCheckboxList(updatedProcedures)
     }
+
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "PROCEDURES ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
+    }
  
     const listItem = (item) => {
         const { inventory = {}, amount = 0 } = item
@@ -125,6 +146,35 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode}) => {
         />
     }
 
+    const getFabActions = () => {
+        const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={openAddItem}/>;
+        return <ActionContainer
+            floatingActions={[
+                addItem
+            ]}
+            title={"PROCEDURES ACTIONS"}
+        />
+    }
+
+    const openAddItem = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <AddItemDialog
+                            onCancel={() => setFloatingAction(false)}
+                            onCreated={handleUpdate}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    }
+
     let dataToDisplay = [...consumables];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
@@ -138,23 +188,30 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode}) => {
                 toggleHeaderCheckbox = {handleOnSelectAll} 
                 itemSelected = {checkBoxList}
             />
-            
-            <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
+
+                <View style={styles.footer}>
+                    
+                    <View style={{alignSelf: "center", marginRight: 10}}>
+                        <RoundedPaginator
+                            totalPages={totalPages}
+                            currentPage={currentPagePosition}
+                            goToNextPage={goToNextPage}
+                            goToPreviousPage={goToPreviousPage}
+                        />
+                    </View>
+
+                    <FloatingActionButton
+                        isDisabled={isFloatingActionDisabled}
+                        toggleActionButton={toggleActionButton}
                     />
                 </View>
-            </View>
+
         </>
 
     )
 }
 
-export default ProceduresConsumablesTab
+export default withModal(ProceduresConsumablesTab)
 
 const styles = StyleSheet.create({
     item:{
@@ -173,6 +230,18 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         right: 0,
         marginRight: 30,
+    },
+    addNew:{
+        flexDirection:'row',
+        height:40,
+        margin:15,
+        marginBottom:30,
+        padding:10,
+        borderColor:'#CCD6E0',
+        borderRadius:4,
+        borderWidth:1,
+        justifyContent:'space-between',
+        alignItems:'center',
     },
     
 })

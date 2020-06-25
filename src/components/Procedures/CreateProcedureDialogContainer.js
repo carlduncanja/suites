@@ -123,11 +123,16 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
         const newIndex = dialogTabs.findIndex( tab => tab === newTab)
         if (newIndex === dialogTabs.length - 1)
         {
+            let isValid = validateProcedure()
+
+            if(!isValid){return} 
+
             setPositiveText("DONE")
             setTabIndex(dialogTabs.length-1)
 
         }else
         {
+            
             setPositiveText("NEXT")
             setTabIndex(newIndex)
         }
