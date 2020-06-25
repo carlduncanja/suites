@@ -124,7 +124,11 @@ function CasePage({route}) {
         if (isEditMode === true) {
             if (updateInfo.length !== 0) {
                 console.log("Record: ", updateInfo)
+
+                //
                 updateCase()
+
+
             } else {
                 console.log("No data added")
             }
@@ -143,12 +147,17 @@ function CasePage({route}) {
 
     const updateCase = () => {
         console.log("Selectedcase: ", updateInfo)
-        updateChargeSheet(selectedCaseId, updateInfo)
+        updateChargeSheet(updateInfo)
+    }
+
+    const updateChargeSheet = (data) => {
+        updateChargeSheet(caseId, data)
             .then((data) => {
                 console.log("Updated Record:", data)
             })
             .catch(error => {
                 console.log("Failed to update chargesheet", error)
+                Alert.alert("Sorry", "Failed to update case file");
             })
     }
 
