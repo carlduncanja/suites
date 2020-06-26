@@ -24,7 +24,7 @@ const QuickActionsModal = (props) => {
     const navigation = useNavigation();
 
     const getActions = () => {
-        const createCaseAction = <ActionItem icon={<AddIcon/>} title={"Create Case File"} onPress={() => {
+        const createCaseAction = <ActionItem key={"create"} icon={<AddIcon/>} title={"Create Case File"} onPress={() => {
             closeModals(currentModal);
             navigation.navigate("Case Files", {screen: "CreateCase", initial: false})
         }}/>
