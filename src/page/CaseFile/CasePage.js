@@ -36,9 +36,12 @@ import {
     Patient,
     Procedures
 } from "../../components/CaseFiles/navigation/screens";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {addNotification} from "../../redux/actions/NotificationActions";
 
 
-function CasePage({route}) {
+function CasePage({route, addNotification}) {
     const modal = useModal();
 
     const {caseId, isEdit} = route.params;
@@ -312,6 +315,9 @@ function CasePage({route}) {
         createInvoiceViaQuotation(caseId, quotationId)
             .then((data) => {
                 console.log("Invoice Record:", data)
+
+                addNotification("Inventory items have been removed.", "Inventory")
+
                 fetchCase(caseId)
             })
             .catch(error => {
@@ -449,7 +455,12 @@ function CasePage({route}) {
 CasePage.propTypes = {};
 CasePage.defaultProps = {};
 
-export default CasePage;
+const mapDispatchTopProp = dispatch => bindActionCreators({
+    addNotification
+}, dispatch);
+
+
+export default connect(null, mapDispatchTopProp)(CasePage);
 
 
 const styles = StyleSheet.create({
