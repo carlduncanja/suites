@@ -1,25 +1,40 @@
 import React, { useEffect, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import Table from '../../../common/Table/Table'; 
+import Table from '../../../common/Table/Table';  
 import Item from '../../../common/Table/Item';  
 import Search from '../../../common/Search';
 import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
 import DropdownInputField from '../../../common/Input Fields/DropdownInputField';
 import { currencyFormatter } from '../../../../utils/formatter';
 
-const ChargesheetEquipment = ({tabDetails, headers, details = [], handleEditDone = () => {}, isEditMode = false, listItemFormat}) => {
+const ChargesheetEquipment = ({headers, details = [], handleEditDone = () => {}, isEditMode = false, listItemFormat, allItems = []}) => {
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [searchText, setSearchText] = useState('')
 
+    let allEquipments = details.map( item => {
+        return {
+            caseProcedureId : item.caseProcedureId,
+            inventories : item.inventories,
+            equipments : item.equipments,
+            lineItems : item.services,
+            name : item.procedure.name
+        }
+       
+    })
+
+
     const procedureNames = details.map( item => item.procedure.name) 
-    const data = []
-    let allEquipments = details.map( item => item.equipments)
-    allEquipments.forEach(item => item.map( obj => data.push(obj)))
+    const groupedEquipments = allItems.map( item => { return {...item, cost : item.unitPrice}})
+    
+    // const data = []
+    // allEquipments.forEach(item => item.map( obj => data.push(obj)))
     let initialOption = isEditMode ? procedureNames[0] : 'All'
      
+    const [equipmentsList, setEquipmentsList] = useState(allEquipments)
     const [selectedOption, setSelectedOption] = useState(initialOption)
-    const [selectedData, setSelectedData] = useState(data)
+    const [selectedIndex, setSelectedIndex] = useState(0)
+    const [selectedData, setSelectedData] = useState(groupedEquipments)
 
     console.log("Selected data: ", selectedData)
 
@@ -51,41 +66,71 @@ const ChargesheetEquipment = ({tabDetails, headers, details = [], handleEditDone
 
     const onSelectChange = (index) => {
         if(isEditMode){
-            let data = details[index].equipments.map(item => {return {
+            let data = equipmentsList[index].equipments.map(item => {return {
                 ...item,
                 unitPrice : item.cost
             }})
             setSelectedData( data|| [])
             setSelectedOption(procedureNames[index])
+            setSelectedIndex(index)
         }else{
             if(index === 0){
+                setSelectedIndex(0)
                 setSelectedOption('All')
-                setSelectedData(data)
+                setSelectedData(groupedEquipments)
             }else{
-                let data = details[index-1].equipments.map(item => {return {
+                let data = equipmentsList[index-1].equipments.map(item => {return {
                     ...item,
                     unitPrice : item.cost
                 }})
                 setSelectedData( data|| [])
                 setSelectedOption(procedureNames[index-1])
+                setSelectedIndex(index)
                 // console.log("Index: ", )
             }
         }
         
     }
 
+    const updateEquipmentList = (id, data) =>{
+        let findIndex = equipmentsList.findIndex(obj => obj.caseProcedureId === id);
+        let selectedItem = equipmentsList[findIndex]
+        const updatedObj = {
+            ...selectedItem,
+            equipments : data
+        };
+        const updatedData = [
+            ...equipmentsList.slice(0, findIndex),
+            updatedObj,
+            ...equipmentsList.slice(findIndex + 1),
+        ];
+        setEquipmentsList(updatedData)
+        return updatedData
+    }
+
     const getProcedureId = (data) => {
         if(selectedOption !== 'All'){
-            const filterItem = details.filter( obj => obj.procedure.name === selectedOption) || []
+
+            const filterItem = details.filter( (obj,index) => index === selectedIndex) || []
             const { caseProcedureId, services, inventories } = filterItem[0]
-            let updatedData = [
-                {
-                    caseProcedureId,
-                    inventories : inventories,
-                    equipments : data,
-                    lineItems : services
+            // let updatedData = [
+            //     {
+            //         caseProcedureId,
+            //         inventories : inventories,
+            //         equipments : data,
+            //         lineItems : services
+            //     }
+            // ]
+            let equipmentsData = updateEquipmentList(caseProcedureId,data)
+            let updatedData = equipmentsData.map( item => {
+                return {
+                    caseProcedureId : item.caseProcedureId,
+                    inventories : item.inventories,
+                    equipments : item.equipments,
+                    lineItems : item.lineItems
                 }
-            ]
+            })
+            // console.log("Updated Dta: ", updatedData)
             handleEditDone(updatedData)
             // console.log("Id: ", caseProcedureId)
             // console.log("Servies: ", services)
@@ -94,8 +139,8 @@ const ChargesheetEquipment = ({tabDetails, headers, details = [], handleEditDone
     }
 
     const onQuantityChangePress = (item) => (action) =>{
-       
-        const findIndex = selectedData.findIndex(obj => obj._id === item._id);
+       console.log("Item: ", item)
+        const findIndex = selectedData.findIndex(obj => obj.equipment === item.equipment);
         let selectedItem = selectedData[findIndex]
         const updatedObj = { 
             ...selectedItem,
@@ -114,7 +159,7 @@ const ChargesheetEquipment = ({tabDetails, headers, details = [], handleEditDone
 
     const onAmountChange = (item) => (value) => {
 
-        const findIndex = selectedData.findIndex(obj => obj._id === item._id);
+        const findIndex = selectedData.findIndex(obj => obj.equipment === item.equipment);
         let selectedItem = selectedData[findIndex]
         let updatedObj = { ...selectedItem, amount: value === "" ? 0 : parseInt(value)};
         const updatedItems = [
@@ -185,6 +230,7 @@ const ChargesheetEquipment = ({tabDetails, headers, details = [], handleEditDone
                     <DropdownInputField
                         onSelectChange = {onSelectChange}
                         value = {selectedOption}
+                        selected = {selectedIndex}
                         dropdownOptions = { isEditMode ? [...procedureNames] : ['All',...procedureNames]}
                     />
                 </View>

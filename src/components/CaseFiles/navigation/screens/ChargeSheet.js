@@ -16,7 +16,7 @@ const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
 const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices,isEditMode, handleEditDone, handleQuotes}) => {
 
-    const LINE_ITEM_TYPES = {
+    const LINE_ITEM_TYPES = { 
         DISCOUNT: "discount",
         SERVICE: "service",
         PROCEDURES: "procedures",
@@ -201,10 +201,11 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                 <ChargesheetEquipment
                     // tabDetails={equipmentList}
                     headers={headers}
+                    allItems = {equipmentList}
                     // listItemFormat={listItem}
                     details = {billing.procedures}
                     isEditMode = {isEditMode}
-                    handleEditDone = {handleEditDone(caseId)}
+                    handleEditDone = {handleEditDone}
                 />
                 :
                 selectedTab === 'Invoices' ?

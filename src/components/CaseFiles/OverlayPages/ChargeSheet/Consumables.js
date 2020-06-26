@@ -1,13 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput } from "react-native";
-import Table from '../../../common/Table/Table';
+import Table from '../../../common/Table/Table'; 
 import Item from '../../../common/Table/Item';
 import Search from '../../../common/Search';
 import DropdownInputField from '../../../common/Input Fields/DropdownInputField';
 import { currencyFormatter } from '../../../../utils/formatter';
-import IconButton from '../../../common/Buttons/IconButton';
-import RightArrow from '../../../../../assets/svg/rightArrow';
-import LeftArrow from '../../../../../assets/svg/leftArrow';
 import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
 
 
@@ -86,7 +83,7 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode, allIte
                 setSelectedOption('All')
                 setSelectedData(groupedInventories)
             }else{
-                let data = allInventories[index-1].inventories.map(item => {return {
+                let data = inventoriesList[index-1].inventories.map(item => {return {
                     ...item,
                     unitPrice : item.cost
                 }})
@@ -108,7 +105,6 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode, allIte
         const updatedObj = {
             ...selectedItem,
             inventories : data
-            // amount: action ==='add' ? selectedItem.amount + 1 : selectedItem.amount - 1
         };
         const updatedData = [
             ...inventoriesList.slice(0, findIndex),
