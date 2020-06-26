@@ -35,12 +35,12 @@ const Suppliers = (props) => {
         },
         {
             name: "Phone",
-            alignment: "flex-start",
+            alignment: "center",
             flex: 1
         },
         {
             name: "Email",
-            alignment: "flex-start",
+            alignment: "center",
             flex: 2
         }
     ];
@@ -297,6 +297,6 @@ const styles = StyleSheet.create({
     rowBorderRight: {
         borderRightColor: "#E3E8EF",
         borderRightWidth: 1,
-        marginRight: 20,
+        // marginRight: 20,
     }
 })

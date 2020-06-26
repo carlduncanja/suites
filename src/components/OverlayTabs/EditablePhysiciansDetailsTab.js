@@ -1,13 +1,15 @@
 import React,{ useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView,KeyboardAvoidingView, TouchableOpacity } from "react-native";
 import InputField2 from '../common/Input Fields/InputField2';
+import DateInputField from '../common/Input Fields/DateInputField'
 import OptionsField from '../common/Input Fields/OptionsField';
 import Button from '../common/Buttons/Button';
 import { formatDate, transformToSentence, calcAge, isValidEmail } from '../../utils/formatter';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 
 const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => { 
-    
+
+
     const handlePhones = () => {
         let newPhoneArray = [...fields['phones']]
 
@@ -99,7 +101,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
             }]
         }
         return newEmergency
-    }
+    } 
 
     const [phoneValue, setPhoneValue] = useState(handlePhones())
     const [emailValue, setEmailValue] = useState(handleEmails())
@@ -202,6 +204,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
     const updatedAddress = (value, key, id) => {
         const objIndex = addresses.findIndex(obj => obj._id === id);
+        let updatedObj = {}
         if(key === 'line1'){
             updatedObj = { ...addresses[objIndex], line1: value}
         }else{
@@ -219,8 +222,8 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
     }
  
-    const handleEmergency = (value, key, id) => {
-        const objIndex = emergencyContacts.findIndex(obj => obj._id === id);
+    const handleEmergency = (value, key, contactIndex) => {
+        const objIndex = emergencyContacts.findIndex((ob, index) => index === contactIndex);
         let updatedObj = {}
         let updatedContacts = []
 
@@ -267,7 +270,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
             onFieldChange('emergencyContact')(updatedContacts)
             
         }else if( key === 'phone'){
-            formattedNumber = value.replace(/\s/g,'')
+            const formattedNumber = value.replace(/\s/g,'')
             updatedObj = { ...emergencyContacts[objIndex], phone: formatNumber(formattedNumber)}
 
             updatedContacts = [
@@ -298,6 +301,10 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
           
     }
 
+    const handleDateValidation = (date) =>{
+        onFieldChange('dob')(date)
+    }
+
     const handleDOB = (date) => {
         const updatedDob = formatDOB(date)
         if (/(\d{2})\/(\d{2})\/(\d{4})/g.test(date) || !date){
@@ -313,6 +320,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
     }
 
     const onAddEmergency = ()=>{
+        console.log("Emergency Contacts: ", emergencyContacts)
         let updatedEmergency = [...emergencyContacts,{
             email : '',
             name : '',
@@ -429,11 +437,14 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2
-                        onChangeText = {(value)=>handleDOB(value)}
-                        value = {dateOfBirth}
-                        onClear = {()=>{handleDOB('')}}
-                        placeholder = {"DD/MM/YYYY"}
+                    <DateInputField
+                        value={fields['dob']}
+                        onClear={() => onFieldChange('dob')('')}
+                        keyboardType="number-pad"
+                        mode={'date'}
+                        format={"DD/MM/YYYY"}
+                        placeholder="DD/MM/YYYY"
+                        onDateChange={handleDateValidation}
                     />
                 </View>
             </View>
@@ -610,9 +621,9 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
                                     <View style={styles.inputWrapper}> 
                                         <InputField2
-                                            onChangeText = {(value)=>handleEmergency(value, 'name', contact._id)}
+                                            onChangeText = {(value)=>handleEmergency(value, 'name', index)}
                                             value = {contact.name}
-                                            onClear = {()=>handleEmergency('', 'name', contact._id)}
+                                            onClear = {()=>handleEmergency('', 'name', index)}
                                         />
                                     </View>
                                 </View>
@@ -624,9 +635,9 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
                                     <View style={styles.inputWrapper}> 
                                         <InputField2
-                                            onChangeText = {(value)=>handleEmergency(value, 'relation', contact._id)}
+                                            onChangeText = {(value)=>handleEmergency(value, 'relation', index)}
                                             value = {contact.relation}
-                                            onClear = {()=>handleEmergency('', 'relation', contact._id)}
+                                            onClear = {()=>handleEmergency('', 'relation', index)}
                                         />
                                     </View>
                                 </View>
@@ -643,9 +654,9 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
                                     <View style={styles.inputWrapper}> 
                                         <InputField2
-                                            onChangeText = {(value)=>handleEmergency(value, 'phone', contact._id)}
+                                            onChangeText = {(value)=>handleEmergency(value, 'phone', index)}
                                             value = {contact.phone}
-                                            onClear = {()=>handleEmergency('', 'phone', contact._id)}
+                                            onClear = {()=>handleEmergency('', 'phone', index)}
                                             keyboardType = 'number-pad'
                                         />
                                     </View>
@@ -658,9 +669,9 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
                                     <View style={styles.inputWrapper}> 
                                         <InputField2
-                                            onChangeText = {(value)=>handleEmergency(value, 'email', contact._id)}
+                                            onChangeText = {(value)=>handleEmergency(value, 'email', index)}
                                             value = {contact.email}
-                                            onClear = {()=>handleEmergency('', 'email', contact._id)}
+                                            onClear = {()=>handleEmergency('', 'email', index)}
                                             keyboardType = "email-address"
                                         />
                                     </View>

@@ -39,14 +39,16 @@ function DateInputField({
 
     return (
         <View style={styles.container}>
-            <Text style={[
-                styles.textLabel,
-                {
-                    minWidth: 60,
-                    marginRight: label ? 20 : 0
-                }
-            ]}>{label}</Text>
-
+            {
+                label && <Text style={[
+                    styles.textLabel,
+                    {
+                        minWidth: 60,
+                        marginRight: label ? 20 : 0
+                    }
+                ]}>{label}</Text>
+            }
+            
             <View
                 style={{
                     flex: 1,

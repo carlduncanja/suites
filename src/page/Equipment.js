@@ -515,8 +515,9 @@ const styles = StyleSheet.create({
     rowBorderRight: {
         borderRightColor: "#E3E8EF",
         borderRightWidth: 1,
-        marginRight: 20,
-        flex: 2
+        
+        // marginRight: 20,
+        // flex: 2
     }
 
 })
