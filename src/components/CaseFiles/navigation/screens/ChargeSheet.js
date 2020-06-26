@@ -187,6 +187,24 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         setUpdated(true)
     }
 
+    const handleLineItemsUpdate = (procedureIndex, procedureLineItem) => {
+        const updatedCaseProcedures = [...caseProcedures];
+
+
+        if (updatedCaseProcedures[index]) {
+            updatedCaseProcedures[index].lineItems = procedureLineItem
+        }
+
+        setCaseProcedure(updatedCaseProcedures);
+        setUpdated(true)
+    }
+
+    const handleCaseProcedureUpdate = (caseProcedures) => {
+        setCaseProcedure(caseProcedures)
+        setUpdated(true)
+    }
+
+
     const groupedInventories = inventoryList.map(item => {
         return {...item, cost: item.unitPrice}
     })
@@ -235,8 +253,10 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                     :
                     <BillingCaseCard
                         tabDetails={billing}
+                        caseProcedures={caseProcedures}
                         isEditMode={isEditMode}
                         caseId={caseId}
+                        onCaseProcedureBillablesChange={handleCaseProcedureUpdate}
                         handleEditDone={handleEditDone}
                     />
         // <View/>
