@@ -1,41 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput } from "react-native";
-import Table from '../../../common/Table/Table'; 
+import React, {useContext, useEffect, useState} from 'react';
+import {View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput} from "react-native";
+import Table from '../../../common/Table/Table';
 import Item from '../../../common/Table/Item';
 import Search from '../../../common/Search';
 import DropdownInputField from '../../../common/Input Fields/DropdownInputField';
-import { currencyFormatter } from '../../../../utils/formatter';
+import {currencyFormatter} from '../../../../utils/formatter';
+import IconButton from '../../../common/Buttons/IconButton';
+import RightArrow from '../../../../../assets/svg/rightArrow';
+import LeftArrow from '../../../../../assets/svg/leftArrow';
 import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
 
 
-const Consumables = ({ headers, details = [], handleEditDone, isEditMode, allItems = []}) => { 
+const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onConsumablesUpdate, isEditMode, allItems = []}) => {
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [searchText, setSearchText] = useState('')
-
-    let allInventories = details.map( item => { 
-        return {
-            caseProcedureId : item.caseProcedureId,
-            inventories : item.inventories,
-            equipments : item.equipments,
-            lineItems : item.services,
-            name : item.procedure.name
-        }
-    })
-    // allInventories.forEach(item => item.map( obj => data.push(obj)))
-    // console.log("All Inventories: ", allInventories)
-
-    const procedureNames = details.map( item => item.procedure.name)
-    const groupedInventories = allItems.map( item => {return {...item, cost : item.unitPrice}})
-   
-    let initialOption = isEditMode ? procedureNames[0] : 'All'
-    
-    const [inventoriesList, setInventoriesList] = useState(allInventories)
-    const [selectedOption, setSelectedOption] = useState(initialOption)
+    const [selectedOption, setSelectedOption] = useState(caseProceduresFilters[0])
     const [selectedIndex, setSelectedIndex] = useState(0)
-    const [selectedData, setSelectedData] = useState(groupedInventories)
 
-    const onSearchInputChange = (input) =>{
+    const onSearchInputChange = (input) => {
         setSearchText(input)
     }
 
@@ -50,139 +33,51 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode, allIte
         setCheckBoxList(updatedInventories);
     }
 
-    const toggleHeaderCheckbox = () =>{
+    const toggleHeaderCheckbox = () => {
+        const selectedData = consumables[selectedIndex];
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== selectedData.length;
 
         if (indeterminate) {
-            const selectedAllIds = [...selectedData.map( item => item )]
+            const selectedAllIds = [...selectedData.map(item => item)]
             setCheckBoxList(selectedAllIds)
         } else {
             setCheckBoxList([])
         }
-        // checkBoxList.length > 0 ?
-        //     setCheckBoxList([])
-        //     :
-        //     setCheckBoxList(tabDetails)
     }
 
     const onSelectChange = (index) => {
-        if(isEditMode){
-            console.log("Selected: ", selectedOption)
-            console.log("Index:", index)
-            let data = inventoriesList[index].inventories.map(item => {return {
-                ...item,
-                unitPrice : item.cost
-            }})
-            setSelectedData( data|| [])
-            setSelectedOption(procedureNames[index])
+
+        console.log("Index:", index)
+        if (index === 0) {
+            setSelectedIndex(0)
+            setSelectedOption('All')
+        } else {
+            setSelectedOption(caseProceduresFilters[index])
             setSelectedIndex(index)
-        }else{
-            console.log("Index:", index)
-            if(index === 0){
-                setSelectedIndex(0)
-                setSelectedOption('All')
-                setSelectedData(groupedInventories)
-            }else{
-                let data = inventoriesList[index-1].inventories.map(item => {return {
-                    ...item,
-                    unitPrice : item.cost
-                }})
-                // console.log("Data: ", allInventories[index-1])
-                setSelectedData( data|| [])
-                setSelectedOption(procedureNames[index-1])
-                setSelectedIndex(index)
-                // console.log("Index: ", )
-            }
-        }
-
-
-    }
-
-    const updateInventoriesList = (id, data) => {
-       
-        let findIndex = inventoriesList.findIndex(obj => obj.caseProcedureId === id);
-        let selectedItem = inventoriesList[findIndex]
-        const updatedObj = {
-            ...selectedItem,
-            inventories : data
-        };
-        const updatedData = [
-            ...inventoriesList.slice(0, findIndex),
-            updatedObj,
-            ...inventoriesList.slice(findIndex + 1),
-        ];
-        setInventoriesList(updatedData)
-        return updatedData
-
-    }
-
-    const getProcedureId = (data) => {
-        // console.log("Data: ", data)
-        if(selectedOption !== 'All'){
-
-            const filterItem = details.filter( (obj,index) => index === selectedIndex) || []
-            const { caseProcedureId, services, equipments } = filterItem[0]
-            
-            // let updatedData = [
-            //     {
-            //         caseProcedureId,
-            //         inventories : data,
-            //         equipments : equipments,
-            //         lineItems : services
-            //     }
-            // ]
-            let inventoriesData = updateInventoriesList(caseProcedureId,data)
-            let updatedData = inventoriesData.map( item => {
-                return {
-                    caseProcedureId : item.caseProcedureId,
-                    inventories : item.inventories,
-                    equipments : item.equipments,
-                    lineItems : item.lineItems
-                }
-            })
-            // console.log(" new iNventories: ", newInventoriesList)
-            handleEditDone(updatedData)
-            // console.log("Id: ", caseProcedureId)
-            // console.log("Servies: ", services)
-            // console.log("Equip: ", equipments)
         }
     }
 
-    const onQuantityChangePress = (item) => (action) =>{
 
-        const findIndex = selectedData.findIndex(obj => obj._id === item._id);
-        let selectedItem = selectedData[findIndex]
+
+    const onQuantityChangePress = (item, index) => (action) => {
+
+        const selectedData = consumables[selectedIndex];
+
         const updatedObj = {
-            ...selectedItem,
-            amount: action ==='add' ? selectedItem.amount + 1 : selectedItem.amount - 1
+            ...item,
+            amount: action === 'add' ? item.amount + 1 : item.amount - 1
         };
-        const updatedData = [
-            ...selectedData.slice(0, findIndex),
-            updatedObj,
-            ...selectedData.slice(findIndex + 1),
-        ];
 
-        getProcedureId(updatedData)
-        setSelectedData(updatedData)
+        const updatedData = selectedData.map(item => {
+            return item._id === updatedObj._id
+                ? {...updatedObj}
+                : {...item}
+        })
+
+        onConsumablesUpdate(selectedIndex - 1, updatedData);
     }
 
-    const onAmountChange = (item) => (value) => {
-
-        const findIndex = selectedData.findIndex(obj => obj._id === item._id);
-        let selectedItem = selectedData[findIndex]
-        let updatedObj = { ...selectedItem, amount: value === "" ? 0 : parseInt(value)};
-        const updatedItems = [
-            ...selectedData.slice(0, findIndex),
-            updatedObj,
-            ...selectedData.slice(findIndex + 1),
-        ];
-        getProcedureId(updatedItems)
-        setSelectedData(updatedItems)
-
-        // console.log("update: ", updatedItems)
-    }
-
-    const listItem = (item) => <>
+    const listItem = (item, index) => <>
         <View style={styles.item}>
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
@@ -190,89 +85,67 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode, allIte
             <Text style={styles.itemText}>{item.type}</Text>
         </View>
         {
-            isEditMode && selectedOption !== 'All'?
+            isEditMode && selectedOption !== 'All'
+                ? <View style={{flex: 1, alignItems: 'center'}}>
+                    <NumberChangeField
+                        onChangePress={onQuantityChangePress(item, index)}
+                        // onAmountChange={onAmountChange(item, index)}
+                        value={item.amount === 0 ? "" : item.amount.toString()}
+                    />
+                </View>
 
-            <View style={{flex:1, alignItems:'center'}}>
-                <NumberChangeField
-                    onChangePress = {onQuantityChangePress(item)}
-                    onAmountChange = {onAmountChange(item)}
-                    value = {item.amount === 0 ? "" : item.amount.toString()}
-                />
-            </View>
-
-            // <View style={[styles.editItem, {alignItems: 'center'}]}>
-            //     <IconButton
-            //         Icon = {<LeftArrow strokeColor="#718096"/>}
-            //         onPress = {()=>onQuantityChangePress(item)('sub')}
-            //         disabled = {false}
-            //     />
-
-            //     <TextInput
-            //         style={styles.editTextBox}
-            //         onChangeText = {(value)=>onAmountChange(value)(item)}
-            //         value = {item.amount === 0 ? "" : item.amount.toString()}
-            //         keyboardType = "number-pad"
-            //     />
-
-            //     <IconButton
-            //         Icon = {<RightArrow strokeColor="#718096"/>}
-            //         onPress = {()=>{onQuantityChangePress(item)('add')}}
-            //         disabled = {false}
-            //     />
-            // </View>
-            :
-            <View style={[styles.item, {alignItems: 'center'}]}>
-                <Text style={styles.itemText}>{item.amount}</Text>
-            </View>
+                : <View style={[styles.item, {alignItems: 'center'}]}>
+                    <Text style={styles.itemText}>{item.amount}</Text>
+                </View>
 
         }
         <View style={[styles.item, {alignItems: 'flex-end'}]}>
             <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
         </View>
-
     </>
 
 
-    const renderListFn = (item) =>{
+    const renderListFn = (item, index) => {
         return <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
             onItemPress={() => {}}
             onPressDisabled={true}
-            itemView={listItem(item)}
+            itemView={listItem(item, index)}
         />
     }
 
     return (
         <ScrollView>
-            <View style={{flex:1, justifyContent:'space-between', flexDirection:'row', marginBottom:20}}>
-                <View style={{flex:2, paddingRight:100}}>
-                    <Search
-                        placeholderText = "Search by inventory item"
-                        inputText = {searchText}
-                        changeText = {onSearchInputChange}
-                        backgroundColor = "#FAFAFA"
-                    />
-                </View>
-                <View style={{flex:1}}>
-                    <DropdownInputField
-                        onSelectChange = {onSelectChange}
-                        value = {selectedOption}
-                        selected = {selectedIndex}
-                        dropdownOptions = { isEditMode ? [...procedureNames] : ['All',...procedureNames]}
-                    />
-                </View>
 
+            <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
+                <View style={{flex: 2, paddingRight: 100}}>
+                    <Search
+                        placeholderText="Search by inventory item"
+                        inputText={searchText}
+                        changeText={onSearchInputChange}
+                        backgroundColor="#FAFAFA"
+                    />
+                </View>
+                <View style={{flex: 1}}>
+                    <DropdownInputField
+                        onSelectChange={onSelectChange}
+                        value={selectedOption}
+                        selected={selectedIndex}
+                        dropdownOptions={caseProceduresFilters}
+                    />
+                </View>
             </View>
 
+
             <Table
-                isCheckbox = {true}
-                data = {selectedData}
-                listItemFormat = {renderListFn}
-                headers = {headers}
-                toggleHeaderCheckbox = {toggleHeaderCheckbox}
-                itemSelected = {checkBoxList}
+                isCheckbox={true}
+                data={consumables[selectedIndex] || []}
+                listItemFormat={renderListFn}
+                headers={headers}
+                toggleHeaderCheckbox={toggleHeaderCheckbox}
+                itemSelected={checkBoxList}
                 // dataLength = {tabDetails.length}
             />
         </ScrollView>
@@ -282,56 +155,56 @@ const Consumables = ({ headers, details = [], handleEditDone, isEditMode, allIte
 export default Consumables;
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        flexDirection:'row',
-        padding:10,
-        backgroundColor:'#FFFFFF',
-        alignItems:'center',
-        marginBottom:10
+    container: {
+        flex: 1,
+        flexDirection: 'row',
+        padding: 10,
+        backgroundColor: '#FFFFFF',
+        alignItems: 'center',
+        marginBottom: 10
     },
-    dataContainer:{
-        flex:1,
-        flexDirection:'row',
-        alignItems:"flex-start",
-        justifyContent:"space-between"
+    dataContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: "flex-start",
+        justifyContent: "space-between"
     },
-    item:{
-        flex:1,
+    item: {
+        flex: 1,
     },
-    itemText:{
-        fontSize:16,
-        color:"#4A5568",
+    itemText: {
+        fontSize: 16,
+        color: "#4A5568",
     },
-    headersContainer:{
+    headersContainer: {
         //flex:1,
-        marginLeft:10,
-        flexDirection:'row',
+        marginLeft: 10,
+        flexDirection: 'row',
         //width:'100%'
     },
-    headerItem:{
-        flex:1,
-        alignItems:'flex-start',
-        justifyContent:'center',
+    headerItem: {
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'center',
     },
-    headerText:{
-        fontSize:12,
-        color:'#718096'
+    headerText: {
+        fontSize: 12,
+        color: '#718096'
     },
-    editItem:{
-        flex:1,
-        flexDirection:'row',
-        justifyContent:'center'
+    editItem: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center'
     },
-    editTextBox:{
-        backgroundColor:'#F8FAFB',
-        borderColor:'#CCD6E0',
-        borderWidth:1,
-        borderRadius:4,
-        padding:6,
-        paddingTop:2,
-        paddingBottom:2,
-        marginLeft:10,
-        marginRight:10
+    editTextBox: {
+        backgroundColor: '#F8FAFB',
+        borderColor: '#CCD6E0',
+        borderWidth: 1,
+        borderRadius: 4,
+        padding: 6,
+        paddingTop: 2,
+        paddingBottom: 2,
+        marginLeft: 10,
+        marginRight: 10
     },
 })

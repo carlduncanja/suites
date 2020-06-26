@@ -20,6 +20,9 @@ const App = () => {
     }, [state, dispatch]);
 
 
+    // TODO REMOVE IN PROD [JUST FOR DEMO PURPOSES]
+    console.disableYellowBox = true;
+
     return (
         <Provider store={store}>
             <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>

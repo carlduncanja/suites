@@ -9,7 +9,7 @@ import {formatDate, currencyFormatter} from "../../../utils/formatter";
 import {withModal} from 'react-native-modalfy';
 import {updateChargeSheet} from "../../../api/network";
 
-const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}) => {
+const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleEditDone, onCaseProcedureBillablesChange}) => {
 
     const {
         lastModified = "",
@@ -23,20 +23,22 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
     let totalAmount = total - (total * discount)
 
     const [selectedProcedure, setSelectedProcedure] = useState(0)
-    const [billingProcedures, setBillingProcedures] = useState([...procedures])
+    const [billingProcedures, setBillingProcedures] = useState(caseProcedures)
     const [updatedBilling, setUpdatedBilling] = useState([])
 
     const getProcedureStatusArray = () => {
-        // let statusArray = []
+
         let statusArray = procedures.map((procedure, index) => {
             return {
                 index,
                 status: false
             }
+
             // statusArray.push({
             //     "index":index,
             //     "status":false
             // })
+
         })
         return statusArray
     }
@@ -60,7 +62,7 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
     }
 
     const onCreated = (id) => (data) => {
-       
+
         // let createdData = [...updatedBilling]
         // let updatedData = {caseProcedureId: id, ...data}
         // const filterData = createdData.filter(obj => obj.caseProcedureId === id)
@@ -83,36 +85,36 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
         let selectedItem = billingData[findIndex]
         const updatedObj = {
             ...selectedItem,
-            inventories : data.inventories,
-            equipments : data.equipments,
-            services : data.lineItems
+            inventories: data.inventories,
+            equipments: data.equipments,
+            services: data.lineItems
             // amount: action ==='add' ? selectedItem.amount + 1 : selectedItem.amount - 1
         };
-        const updatedData= [
+        const updatedData = [
             ...billingData.slice(0, findIndex),
             updatedObj,
             ...billingData.slice(findIndex + 1),
         ];
 
-        const handleEditData = updatedData.map( item => {
+        const handleEditData = updatedData.map(item => {
             return {
-                caseProcedureId : item.caseProcedureId,
-                inventories : item.inventories,
-                equipments : item.equipments,
-                lineItems : item.services
+                caseProcedureId: item.caseProcedureId,
+                inventories: item.inventories,
+                equipments: item.equipments,
+                lineItems: item.services
             }
         })
 
         // console.log("Procedures: ", billingProcedures)
         // console.log("Updated Data: ", updatedData1)
         setBillingProcedures(updatedData)
-        handleEditDone(handleEditData)
+        onCaseProcedureBillablesChange(updatedData);
+        // handleEditDone(handleEditData)
         modal.closeModals("OverlayInfoModal")
 
         // console.log("Edit mode: ", isEditMode)
         // console.log("Date: ", createdData)
         // updateCase(createdData)
-
     }
 
     // const updateCase = (data) => {
@@ -263,10 +265,10 @@ const BillingCaseCard = ({modal, tabDetails, isEditMode, caseId, handleEditDone}
 
                                 </View>
                             )
-                        })}
+                        })} 
 
             </View>
- 
+
         </ScrollView>
     );
 }
