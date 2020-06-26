@@ -75,16 +75,23 @@ const ActionableListCard = (props) =>{
                                 />
                             </View>
                         )
-                    })
+                    }) 
                 }
             </View>
 
-            <TouchableOpacity style={styles.addNew} onPress={onActionPress}>
-                <Text style={{color:'#4E5664', fontSize:16}}>Add Item</Text>
-                {/* <View style={{ flex:1,backgroundColor:'yellow', alignItems:"flex-end", justifyContent:"center"}}> */}
-                    <IconButton Icon = {<AddNew/>}/>
-                {/* </View> */}
+            <TouchableOpacity 
+                style={[styles.new]}
+                onPress = {onActionPress}
+            >
+                <View style={{justifyContent:'center'}}>
+                    <Text style={{color:'#4E5664', fontSize:16, paddingLeft:10}}>Add Item</Text>
+                </View>
+                
+                <IconButton Icon = {<AddNew/>}/>
+
             </TouchableOpacity>
+
+            
 
             <View style={styles.list}>
                 <Table
@@ -177,6 +184,14 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         alignItems:'center',
         // backgroundColor:'red'
+    },
+    new:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        borderColor:'#CCD6E0',
+        borderRadius:4,
+        borderWidth:1,
+        margin:15
     },
     list:{
         margin:15,
