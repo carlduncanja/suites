@@ -120,20 +120,18 @@ function CasePage({route}) {
 
     const onEditPress = (tab) => {
         setEditMode(!isEditMode)
-
-        if (isEditMode === true) {
-            if (updateInfo.length !== 0) {
-                // console.log("Record: ", updateInfo)
-                updateCase()
-            } else {
-                console.log("No data added")
-            }
-
-            setTimeout(() => {
-                fetchCase(caseId)
-            }, 500)
-        }
-
+        // if (isEditMode === true) {
+        //     if (updateInfo.length !== 0) {
+        //         // console.log("Record: ", updateInfo)
+        //         updateCaseChargeSheet()
+        //     } else {
+        //         console.log("No data added")
+        //     }
+        //
+        //     setTimeout(() => {
+        //         fetchCase(caseId)
+        //     }, 500)
+        // }
     }
 
     const handleEditDone = (data) => {
@@ -141,7 +139,7 @@ function CasePage({route}) {
         // setSelectedCaseId(id)
     }
 
-    const updateCase = () => {
+    const updateCaseChargeSheet = (updateInfo) => {
         console.log("Selectedcase: ", updateInfo)
         updateChargeSheet(caseId, updateInfo)
             .then((data) => {
@@ -150,6 +148,9 @@ function CasePage({route}) {
             .catch(error => {
                 console.log("Failed to update chargesheet", error)
                 Alert.alert("Sorry", "Failed to update case file");
+            })
+            .finally(_ => {
+                fetchCase(caseId)
             })
     }
 
@@ -331,7 +332,7 @@ function CasePage({route}) {
                 const updatedCase = {...selectedCase}
                 let {quotations} = updatedCase;
 
-                quotations = quotations.map( item => {
+                quotations = quotations.map(item => {
                     return item._id === quotationId
                         ? {...item, status}
                         : {...item}
@@ -390,6 +391,7 @@ function CasePage({route}) {
                     isEditMode={isEditMode}
                     quotations={quotations}
                     invoices={invoices}
+                    onUpdateChargeSheet={(data) => updateCaseChargeSheet(data)}
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
                 />

@@ -1,6 +1,13 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
-import {Consumables, Equipment, Invoices, Quotation, Billing, ChargesheetEquipment} from '../../OverlayPages/ChargeSheet';
+import {
+    Consumables,
+    Equipment,
+    Invoices,
+    Quotation,
+    Billing,
+    ChargesheetEquipment
+} from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard'
 import {currencyFormatter, formatDate} from '../../../../utils/formatter';
 import CaseFiles from '../../../../../data/CaseFiles';
@@ -13,15 +20,16 @@ const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices
 const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation
 const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing
 
+const LINE_ITEM_TYPES = {
+    DISCOUNT: "discount",
+    SERVICE: "service",
+    PROCEDURES: "procedures",
+    PHYSICIANS: "physician",
+}
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices,isEditMode, handleEditDone, handleQuotes}) => {
 
-    const LINE_ITEM_TYPES = {
-        DISCOUNT: "discount",
-        SERVICE: "service",
-        PROCEDURES: "procedures",
-        PHYSICIANS: "physician",
-    }
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, isEditMode, onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
+
 
     let {
         inventoryList = [],
@@ -53,6 +61,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         }
     })
 
+
     const headers = [
         {
             name: "Item Name",
@@ -75,15 +84,16 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     // preparing billing information
     const billing = {
         total,
-        lastModified : new Date(2019,11,11),
+        lastModified: new Date(2019, 11, 11),
         hasDiscount: true,
         discount: 0.15,
         procedures: []
     }
+
     for (const proceduresBillableItem of proceduresBillableItems) {
         const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
 
-        const caseProcedure = procedures.find( item => item._id === proceduresBillableItem.caseProcedureId) || {}
+        const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {}
         const caseAppointment = caseProcedure.appointment
 
         const name = `${caseAppointment.title} (${formatDate(caseAppointment.startTime, "MMM D - h:mm a")})`
@@ -120,8 +130,8 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
         billingItem.inventories = inventories.map(item => {
             return {
-                _id : item._id,
-                inventory : item.inventory._id,
+                _id: item._id,
+                inventory: item.inventory._id,
                 amount: item.amount,
                 name: item.inventory.name,
                 cost: item.inventory.unitPrice,
@@ -130,8 +140,8 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
         billingItem.equipments = equipments.map(item => {
             return {
-                _id : item._id,
-                equipment : item.equipment._id,
+                _id: item._id,
+                equipment: item.equipment._id,
                 amount: item.amount,
                 name: item.equipment.type.name,
                 cost: item.equipment.type.unitPrice,
@@ -141,91 +151,94 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         billing.procedures.push(billingItem)
     }
 
+    // --------------------------- Life Cycle
 
-    // const onQuantityChange = (item) => {
-    //     console.log("Item: ", item)
-    // }
+    useEffect(() => {
 
-    // const listItem = (item) => <>
-    //     <View style={styles.item}>
-    //         <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
-    //     </View>
-    //     <View style={[styles.item, {alignItems: 'center'}]}>
-    //         <Text style={styles.itemText}>{item.type}</Text>
-    //     </View>
-    //     {
-    //         isEditMode ?
+        // [HOT FIX] TODO FIND A BETTER WAY TO IMPLEMENT UPDATES
+        if (isUpdated && !isEditMode) {
+            onUpdateChargeSheet(caseProcedures)
+            setUpdated(false);
+        }
 
-    //         <View style={[styles.editItem, {alignItems: 'center'}]}>
-    //             <IconButton
-    //                 Icon = {<LeftArrow strokeColor="#718096"/>}
-    //                 onPress = {()=>onQuantityChange(item)}
-    //                 disabled = {false}
-    //             />
+    }, [isEditMode])
 
-    //             <TextInput style={styles.editTextBox}>
-    //                 <Text style={styles.itemText}>{item.amount}</Text>
-    //             </TextInput>
 
-    //             <IconButton
-    //                 Icon = {<RightArrow strokeColor="#718096"/>}
-    //                 onPress = {()=>{onQuantityChange(item)}}
-    //                 disabled = {false}
-    //             />
-    //         </View>
-    //         :
-    //         <View style={[styles.item, {alignItems: 'center'}]}>
-    //             <Text style={styles.itemText}>{item.amount}</Text>
-    //         </View>
+    // --------------------------- States
 
-    //     }
-    //     <View style={[styles.item, {alignItems: 'flex-end'}]}>
-    //         <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
-    //     </View>
- 
-    // </>
+    const [caseProcedures, setCaseProcedure] = useState(billing.procedures);
+    const [isUpdated, setUpdated] = useState(false);
+    //const [allConsumables, setAllConsumables] = useState([])
+
+
+    // --------------------------- Helper Methods
+
+    const handleConsumableUpdate = (index, procedureInventories) => {
+
+        console.log("onConsumablesUpdate", index, procedureInventories);
+        const updatedCaseProcedures = [...caseProcedures];
+
+        //
+        // if (updatedCaseProcedures[index]) {
+        updatedCaseProcedures[index].inventories = procedureInventories
+        // }
+
+        setCaseProcedure(updatedCaseProcedures);
+        setUpdated(true)
+    }
+
+    const groupedInventories = inventoryList.map(item => {
+        return {...item, cost: item.unitPrice}
+    })
+
+    let inventories = caseProcedures.map(({inventories}) => inventories.map(item => {
+        return {
+            ...item,
+            unitPrice: item.cost
+        }
+    }))
+
+    const consumables = [groupedInventories, ...inventories];
+    const consumableProcedures = ['All', ...caseProcedures.map(item => item.procedure.name)]
 
     return (
-        selectedTab === 'Consumables' ?
-            <Consumables
-                // tabDetails={inventoryList}
+        selectedTab === 'Consumables'
+            ? <Consumables
                 headers={headers}
-                // listItemFormat={listItem}
-                allItems = {inventoryList}
-                details = {billing.procedures}
-                isEditMode = {isEditMode}
-                handleEditDone = {handleEditDone}
+                allItems={inventoryList}
+                consumables={consumables}
+                caseProceduresFilters={consumableProcedures}
+                onConsumablesUpdate={handleConsumableUpdate}
+                isEditMode={isEditMode}
+                handleEditDone={handleEditDone}
+            />
+            : selectedTab === 'Equipment' ?
+            <ChargesheetEquipment
+                headers={headers}
+                details={billing.procedures}
+                isEditMode={isEditMode}
+                handleEditDone={handleEditDone(caseId)}
             />
             :
-            selectedTab === 'Equipment' ?
-                <ChargesheetEquipment
-                    // tabDetails={equipmentList}
-                    headers={headers}
-                    // listItemFormat={listItem}
-                    details = {billing.procedures}
-                    isEditMode = {isEditMode}
-                    handleEditDone = {handleEditDone(caseId)}
+            selectedTab === 'Invoices' ?
+                <Invoices
+                    tabDetails={invoices}
+                    reportDetails={billing}
                 />
                 :
-                selectedTab === 'Invoices' ?
-                    <Invoices
-                        tabDetails={invoices}
-                        reportDetails = {billing}
+                selectedTab === 'Quotation' ?
+                    <Quotation
+                        tabDetails={quotations}
+                        reportDetails={billing}
+                        handleQuotes={handleQuotes}
                     />
                     :
-                    selectedTab === 'Quotation' ?
-                        <Quotation
-                            tabDetails={quotations}
-                            reportDetails = {billing}
-                            handleQuotes = {handleQuotes}
-                        />
-                        :
-                        <BillingCaseCard 
-                            tabDetails={billing}
-                            isEditMode = {isEditMode}
-                            caseId = {caseId}
-                            handleEditDone = {handleEditDone}
-                        />
+                    <BillingCaseCard
+                        tabDetails={billing}
+                        isEditMode={isEditMode}
+                        caseId={caseId}
+                        handleEditDone={handleEditDone}
+                    />
         // <View/>
     );
 }
@@ -236,21 +249,21 @@ const styles = StyleSheet.create({
     item: {
         flex: 1,
     },
-    editItem:{
-        flex:1,
-        flexDirection:'row',
-        justifyContent:'center'
+    editItem: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center'
     },
-    editTextBox:{
-        backgroundColor:'#F8FAFB',
-        borderColor:'#CCD6E0',
-        borderWidth:1,
-        borderRadius:4,
-        padding:6,
-        paddingTop:2,
-        paddingBottom:2,
-        marginLeft:10,
-        marginRight:10
+    editTextBox: {
+        backgroundColor: '#F8FAFB',
+        borderColor: '#CCD6E0',
+        borderWidth: 1,
+        borderRadius: 4,
+        padding: 6,
+        paddingTop: 2,
+        paddingBottom: 2,
+        marginLeft: 10,
+        marginRight: 10
     },
     itemText: {
         fontSize: 16,
