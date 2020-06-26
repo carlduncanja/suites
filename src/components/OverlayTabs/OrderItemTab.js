@@ -100,7 +100,7 @@ const OrderItemTab = ({order}) =>{
         
         return (
             <>
-                <View style={{flexDirection:'row', marginLeft:7}}>
+                <View style={[styles.row,{flexDirection:'row',}]}>
                     <View style={styles.item}>
                         <Text style={styles.itemText}>{name}</Text>
                     </View>
@@ -151,12 +151,15 @@ const OrderItemTab = ({order}) =>{
 export default OrderItemTab
 
 const styles = StyleSheet.create({
-    item: {
-        flex: 1,
+    row: {
         borderBottomColor : '#E3E8EF',
         borderBottomWidth : 1,
         paddingBottom:8,
+        paddingLeft:10,
         marginBottom:10
+    },
+    item: {
+        flex: 1,
     },
     itemText: {
         fontSize: 16,

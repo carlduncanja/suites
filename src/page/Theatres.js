@@ -28,28 +28,27 @@ import _ from "lodash";
 
 const listHeaders = [
     {
-        id: "1",
+        // id: "1",
         name: "Theatre",
         alignment: "flex-start",
         flex: 2
     },
     {
-        id: "2",
+        // id: "2",
         name: "Status",
         alignment: "center",
         flex: 1
     },
     {
-        id: "3",
+        // id: "3",
         name: "Recovery",
         alignment: "center",
         flex: 1
     },
     {
-        id: "3",
+        // id: "3",
         name: "Actions",
-        alignment: "center"
-        ,
+        alignment: "center",
         flex: 1
     }
 ];
@@ -411,7 +410,7 @@ const styles = StyleSheet.create({
     rowBorderRight: {
         borderRightColor: "#E3E8EF",
         borderRightWidth: 1,
-        marginRight: 20,
+        // marginRight: 20,
     }
 });
 

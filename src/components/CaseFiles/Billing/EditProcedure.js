@@ -152,8 +152,8 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
 
     const listItemFormat = (item) => { 
         return (
-            <View style={[styles.listDataContainer,{marginBottom:10, marginLeft:10}]}>
-                <View style={{flex:2}}>
+            <View style={[styles.listDataContainer,{marginBottom:10, marginLeft:10,}]}>
+                <View style={{flex:2, justifyContent:'center'}}>
                     <Text style={[styles.dataText,{color:"#3182CE",}]}>{item.name}</Text>
                 </View>
 
@@ -178,7 +178,7 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
                     />
                 </View>
            
-                <TouchableOpacity style={{alignItems:'flex-end', flex:1}} onPress={()=>onItemAction(item)('remove')}>
+                <TouchableOpacity style={{alignItems:'flex-end', flex:1, justifyContent:'center'}} onPress={()=>onItemAction(item)('remove')}>
                     <Text style={[styles.dataText,{color:"#0CB0E7"}]}>Remove</Text>
                 </TouchableOpacity>
             </View>
@@ -188,12 +188,12 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
 
     const chargeItemFormat = (item) => {
         return (
-            <View style={[styles.listDataContainer,{marginBottom:10, marginLeft:10}]}>
-                <View style={{flex:1}}>
+            <View style={[styles.listDataContainer,{marginBottom:10, marginLeft:10, }]}>
+                <View style={{flex:1, justifyContent:'center'}}>
                     <Text style={[styles.dataText,{color:"#3182CE",}]}>{item.name}</Text>
                 </View>
 
-                <View style={{alignItems:'center', flex:1}}>
+                <View style={{alignItems:'center', flex:1, justifyContent:'center'}}>
                     <Text style={[styles.dataText,{color:"#4A5568"}]}>{transformToSentence(item.type)}</Text>
                 </View>
 
@@ -218,7 +218,7 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
                     />
                 </View>
 
-                <TouchableOpacity style={{alignItems:'flex-end', flex:1}} onPress={()=>onItemAction(item)('remove')}>
+                <TouchableOpacity style={{alignItems:'flex-end', flex:1, justifyContent:"center"}} onPress={()=>onItemAction(item)('remove')}>
                     <Text style={[styles.dataText,{color:"#0CB0E7"}]}>Remove</Text>
                 </TouchableOpacity>
             </View>

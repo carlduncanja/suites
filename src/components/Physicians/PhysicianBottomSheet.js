@@ -77,6 +77,8 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
     }
 
     const onFieldChange = (fieldName) => (value) => {
+        // console.log("FIELD NAME: ", fieldName)
+        // console.log("VALUE: ", value)
         setFields({
             ...fields,
             [fieldName]: value
