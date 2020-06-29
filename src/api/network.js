@@ -102,7 +102,7 @@ export const createTheatre = async (theatreForCreation) => {
 
 // ################# Inventory Endpoints
 export const getInventories = async (query, max) => {
-    return suitesAxiosInstance.get(inventoriesEndpoint, {params: {query}})
+    return suitesAxiosInstance.get(inventoriesEndpoint, {params: {query, max}})
         .then(handleResponse)
         .catch(handleError);
 };

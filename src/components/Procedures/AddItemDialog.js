@@ -25,7 +25,7 @@ import AddItem from "./AddItem";
  * @constructor
  */
 
-const AddItemDialog = ({onCancel, onCreated}) =>{
+const AddItemDialog = ({onCancel, onCreated}) =>{ 
 
     const modal = useModal();
 
@@ -80,7 +80,6 @@ const AddItemDialog = ({onCancel, onCreated}) =>{
             ...updatedFields,
             [fieldName]: value
         })
-
         const updatedErrors = {...errors}
         delete updatedErrors[fieldName]
         console.log("Update error: ", errors)
@@ -112,7 +111,11 @@ const AddItemDialog = ({onCancel, onCreated}) =>{
     const onPositiveButtonPress = () =>{
         let updatedFields = {
             amount : parseInt(fields['amount']),
-            inventory : fields['item']._id
+            inventory : {
+                _id : fields['item']._id,
+                unitPrice : fields['item'].unitPrice,
+                name : fields['item'].name
+            }
         }
         // console.log("Update: ", updatedFields)
         let isValid = validateItem()

@@ -19,7 +19,7 @@ import AddItemDialog from "../Procedures/AddItemDialog";
 const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpdate}) => { 
 
     const recordsPerPage = 10
-    const [consumables, setConsumbales] = useState(consumablesData)
+    // const [consumables, setConsumbales] = useState(consumablesData)
     const [checkBoxList, setCheckboxList] = useState([])
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
@@ -28,8 +28,10 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpd
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
+    // console.log("Inventories: ", consumablesData)
+
     useEffect(()=>{
-        setTotalPages(Math.ceil(consumables.length / recordsPerPage))
+        setTotalPages(Math.ceil(consumablesData.length / recordsPerPage))
     },[])
 
     const onQuantityChange = (item) => (action) =>  {
@@ -79,7 +81,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpd
     };
 
     const handleOnSelectAll = () => {
-        let updatedList = selectAll(consumables, checkBoxList)
+        let updatedList = selectAll(consumablesData, checkBoxList)
         setCheckboxList(updatedList)
     }
 
@@ -175,7 +177,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpd
         }, 200)
     }
 
-    let dataToDisplay = [...consumables];
+    let dataToDisplay = [...consumablesData];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (

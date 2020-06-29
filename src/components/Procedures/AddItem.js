@@ -6,7 +6,7 @@ import InputField2 from "../common/Input Fields/InputField2";
 
 import Table from '../common/Table/Table';
 import Paginator from "../common/Paginators/Paginator";
-import Button from '../common/Buttons/Button';
+import Button from '../common/Buttons/Button'; 
 import { getInventories } from "../../api/network";
 import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
 import _ from "lodash";
@@ -39,7 +39,7 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
         });
 
         search()
-    }, [searchInventoriesValue]);
+    }, [searchInventoriesValue]); 
  
     const fetchInventories = () => {
         getInventories(searchInventoriesValue, 5)
@@ -59,9 +59,11 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
     };
 
     const handleItem = (value) => {
+        // console.log("Value: ", value)
         const item = value ? {
             _id: value._id,
-            name: value.name
+            name: value.name,
+            unitPrice : value.unitPrice
         } : value
 
         if(value === undefined || null ){
