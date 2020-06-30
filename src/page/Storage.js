@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from "react-native";
 import Page from "../components/common/Page/Page";
-import IconButton from "../components/common/Buttons/IconButton";
-import ActionIcon from "../../assets/svg/ActionIcon";
 import ListItem from "../components/common/List/ListItem";
 import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
 import {numberFormatter} from "../utils/formatter";
@@ -21,7 +19,6 @@ import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
-import CreateTheatreDialogContainer from "../components/Theatres/CreateTheatreDialogContainer";
 
 
 const listHeaders = [
@@ -146,14 +143,14 @@ function Storage(props) {
     const onSelectAll = () => {
         let updatedStorage = selectAll(storageLocations, selectedIds)
         setSelectedIds(updatedStorage)
-        
+
     };
 
     const onCheckBoxPress = (item) => () => {
         const {_id} = item;
         let updatedStorage = checkboxItemPress(item, _id, selectedIds)
         setSelectedIds(updatedStorage);
-       
+
     };
 
     const onItemPress = (item) => () => {
@@ -220,9 +217,11 @@ function Storage(props) {
 
     const renderItem = (item) => {
 
+        const totalStock = item.inventoryLocations?.reduce((acc, item) => acc + item.stock, 0) || 0
+
         const formattedItem = {
             name: item.name,
-            stock: item.stock,
+            stock: totalStock,
             levels: {
                 min: 0,
                 max: item.capacity

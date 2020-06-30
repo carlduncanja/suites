@@ -6,20 +6,17 @@ import React from "react";
 
 /* Screens */
 import Schedule from '../../../page/Schedule';
-import CaseFiles from '../../../page/CaseFile/CaseFiles'
 import Theatres from "../../../page/Theatres";
 import Inventory from "../../../page/Inventory";
 import Storage from "../../../page/Storage";
 import Procedures from '../../../page/Procedures';
 import Physicians from '../../../page/Physicians';
-import StorageLocations from '../../../page/StorageLocations';
 import Suppliers from '../../../page/Suppliers';
 import Equipment from '../../../page/Equipment';
 import Orders from '../../../page/Orders'
 
 
 /* Providers*/
-import {ScheduleProvider} from '../../../contexts/ScheduleContext';
 import NotFound from "../../../page/NotFound";
 
 
