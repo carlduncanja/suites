@@ -7,31 +7,31 @@ import InputField2 from "../common/Input Fields/InputField2";
 import Table from '../common/Table/Table';
 import Paginator from "../common/Paginators/Paginator";
 import Button from '../common/Buttons/Button'; 
-import { getInventories } from "../../api/network";
+import { getEquipment } from "../../api/network";
 import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
 import _ from "lodash";
 
-const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) => {
+const AddEquipmentItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) => {
 
-    const [searchInventoriesValue, setSearchInventoriesValue] = useState("")
-    const [searchInventoriesResults, setSearchInventoriesResults] = useState([])
-    const [searchInventoriesQuery, setSearchInventoriesQuery] = useState({});
+    const [searchEquipmentsValue, setSearchEquipmentsValue] = useState("")
+    const [searchEquipmentsResults, setSearchEquipmentsResults] = useState([])
+    const [searchEquipmentsQuery, setSearchEquipmentsQuery] = useState({});
      
 
     useEffect(() => {
 
-        if (!searchInventoriesValue) {
+        if (!searchEquipmentsValue) {
             // empty search values and cancel any out going request.
-            setSearchInventoriesResults([]);
-            if (searchInventoriesQuery.cancel) searchInventoriesQuery.cancel();
+            setSearchEquipmentsResults([]);
+            if (searchEquipmentsQuery.cancel) searchEquipmentsQuery.cancel();
             return;
         }
 
         // wait 300ms before search. cancel any prev request before executing current.
 
-        const search = _.debounce(fetchInventories, 300);
+        const search = _.debounce(fetchEquipments, 300);
 
-        setSearchInventoriesQuery(prevSearch => {
+        setSearchEquipmentsQuery(prevSearch => {
             if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
@@ -39,22 +39,22 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
         });
 
         search()
-    }, [searchInventoriesValue]); 
+    }, [searchEquipmentsValue]); 
  
-    const fetchInventories = () => {
-        getInventories(searchInventoriesValue, 5)
+    const fetchEquipments = () => {
+        getEquipment(searchEquipmentsValue, 5)
             .then((data = []) => {
+                console.log("Data: ", data)
                 const results = data.map(item => ({
-                    // name: `Dr. ${item.surname}`,
                     ...item
                 }));
-                setSearchInventoriesResults(results || []);
+                setSearchEquipmentsResults(results || []);
 
             })
             .catch(error => {
                 // TODO handle error
                 console.log("failed to get inventories");
-                setSearchInventoriesResults([]);
+                setSearchEquipmentsResults([]);
             })
     };
 
@@ -63,7 +63,8 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
         const item = value ? {
             _id: value._id,
             name: value.name,
-            unitPrice : value.unitPrice
+            type: value.type,
+            // unitPrice : value.type.unitPrice
         } : value
 
         if(value === undefined || null ){
@@ -73,8 +74,8 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
         }
         
         // setSearchValue()
-        setSearchInventoriesResults([])
-        setSearchInventoriesQuery(undefined)
+        setSearchEquipmentsResults([])
+        setSearchEquipmentsQuery(undefined)
     }
 
     const handleAmount = (value) => {
@@ -93,18 +94,18 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Item Name"} 
-                        value = {fields['inventory']}
-                        text={searchInventoriesValue}
+                        value = {fields['equipment']}
+                        text={searchEquipmentsValue}
                         oneOptionsSelected={(item) => {
                             handleItem(item)
                             // onFieldChange('physician')(item);
                         }}
-                        onChangeText={value => setSearchInventoriesValue(value)}
+                        onChangeText={value => setSearchEquipmentsValue(value)}
                         onClear={handleItem}
                             // onFieldChange('physician')('');
                             // setSearchValue('');
                         // }}
-                        options={searchInventoriesResults}
+                        options={searchEquipmentsResults}
                         handlePopovers = {(value)=>handlePopovers(value)('item')}
                         isPopoverOpen = {status}
                         hasError = {errors['item']}
@@ -130,7 +131,7 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
     )
 }
 
-export default AddItem
+export default AddEquipmentItem
 
 const styles = StyleSheet.create({
     sectionContainer: {

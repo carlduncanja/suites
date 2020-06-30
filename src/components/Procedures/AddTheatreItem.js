@@ -7,31 +7,31 @@ import InputField2 from "../common/Input Fields/InputField2";
 import Table from '../common/Table/Table';
 import Paginator from "../common/Paginators/Paginator";
 import Button from '../common/Buttons/Button'; 
-import { getInventories } from "../../api/network";
+import { getTheatres } from "../../api/network";
 import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
 import _ from "lodash";
 
-const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) => {
+const AddTheatreItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) => {
 
-    const [searchInventoriesValue, setSearchInventoriesValue] = useState("")
-    const [searchInventoriesResults, setSearchInventoriesResults] = useState([])
-    const [searchInventoriesQuery, setSearchInventoriesQuery] = useState({});
+    const [searchTheatresValue, setSearchTheatresValue] = useState("")
+    const [searchTheatresResults, setSearchThetresResults] = useState([])
+    const [searchTheatresQuery, setSearchTheatresQuery] = useState({});
      
 
     useEffect(() => {
 
-        if (!searchInventoriesValue) {
+        if (!searchTheatresValue) {
             // empty search values and cancel any out going request.
-            setSearchInventoriesResults([]);
-            if (searchInventoriesQuery.cancel) searchInventoriesQuery.cancel();
+            setSearchThetresResults([]);
+            if (searchTheatresQuery.cancel) searchTheatresQuery.cancel();
             return;
         }
 
         // wait 300ms before search. cancel any prev request before executing current.
 
-        const search = _.debounce(fetchInventories, 300);
+        const search = _.debounce(fetchTheatres, 300);
 
-        setSearchInventoriesQuery(prevSearch => {
+        setSearchTheatresQuery(prevSearch => {
             if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
@@ -39,31 +39,30 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
         });
 
         search()
-    }, [searchInventoriesValue]); 
+    }, [searchTheatresValue]); 
  
-    const fetchInventories = () => {
-        getInventories(searchInventoriesValue, 5)
+    const fetchTheatres = () => {
+        getTheatres(searchTheatresValue, 5)
             .then((data = []) => {
                 const results = data.map(item => ({
-                    // name: `Dr. ${item.surname}`,
                     ...item
                 }));
-                setSearchInventoriesResults(results || []);
+                setSearchThetresResults(results || []);
 
             })
             .catch(error => {
                 // TODO handle error
                 console.log("failed to get inventories");
-                setSearchInventoriesResults([]);
+                setSearchThetresResults([]);
             })
     };
 
     const handleItem = (value) => {
-        // console.log("Value: ", value)
         const item = value ? {
             _id: value._id,
             name: value.name,
-            unitPrice : value.unitPrice
+            status : value.status,
+            isRecovery : value.isRecovery
         } : value
 
         if(value === undefined || null ){
@@ -73,14 +72,8 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
         }
         
         // setSearchValue()
-        setSearchInventoriesResults([])
-        setSearchInventoriesQuery(undefined)
-    }
-
-    const handleAmount = (value) => {
-        if (/^\d{9}/g.test(value).toString() || !value) {
-            onFieldChange('amount')(value)
-        }
+        setSearchThetresResults([])
+        setSearchTheatresQuery(undefined)
     }
 
     let {status} = popoverList.filter( item => item.name === 'item')[0]
@@ -93,34 +86,22 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Item Name"} 
-                        value = {fields['inventory']}
-                        text={searchInventoriesValue}
+                        value = {fields['theatre']}
+                        text={searchTheatresValue}
                         oneOptionsSelected={(item) => {
                             handleItem(item)
                             // onFieldChange('physician')(item);
                         }}
-                        onChangeText={value => setSearchInventoriesValue(value)}
+                        onChangeText={value => setSearchTheatresValue(value)}
                         onClear={handleItem}
                             // onFieldChange('physician')('');
                             // setSearchValue('');
                         // }}
-                        options={searchInventoriesResults}
+                        options={searchTheatresResults}
                         handlePopovers = {(value)=>handlePopovers(value)('item')}
                         isPopoverOpen = {status}
                         hasError = {errors['item']}
                         errorMessage = "Item must be selected"
-                    />
-                </View>
-
-                <View style={[styles.inputWrapper]}>
-                    <InputField2
-                        label={"Amount"}
-                        onChangeText={(value) => {handleAmount(value)}}
-                        value={fields['amount']}
-                        keyboardType={'number-pad'}
-                        onClear={() => handleAmount('')}
-                        hasError = {errors['amount']}
-                        errorMessage = "Amount is required."
                     />
                 </View>
 
@@ -130,7 +111,7 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
     )
 }
 
-export default AddItem
+export default AddTheatreItem
 
 const styles = StyleSheet.create({
     sectionContainer: {

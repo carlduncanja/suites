@@ -5,6 +5,9 @@ import Table from '../common/Table/Table';
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
 import RoundedPaginator from "../common/Paginators/RoundedPaginator";
+import ActionItem from "../common/ActionItem";
+import AddIcon from "../../../assets/svg/addIcon";
+import AddItemDialog from '../Procedures/AddItemDialog';
 
 import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import { withModal } from "react-native-modalfy";
@@ -44,9 +47,10 @@ const testData = [
     }
 ]
 
-const TheatresTab = ({modal, theatresData}) => {
+const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 
     const recordsPerPage = 10;
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false)
     
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
@@ -97,6 +101,52 @@ const TheatresTab = ({modal, theatresData}) => {
         )
     }
 
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "PROCEDURE ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
+    }
+
+    const getFabActions = () => {
+
+        const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={ openAddItem }/>;
+
+
+        return <ActionContainer
+            floatingActions={[
+                addItem
+            ]}
+            title={"PROCEDURE ACTIONS"}
+        />
+    };
+
+    const openAddItem = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <AddItemDialog
+                            itemType = "Theatres"
+                            onCancel={() => setFloatingAction(false)}
+                            onCreated={onAddTheatre}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
+    }
+
+
     let dataToDisplay = [...theatresData];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
@@ -117,8 +167,12 @@ const TheatresTab = ({modal, theatresData}) => {
                         goToPreviousPage={goToPreviousPage}
                     />
                 </View>
+                <FloatingActionButton
+                    isDisabled = {isFloatingActionDisabled}
+                    toggleActionButton = {toggleActionButton}
+                />
             </View>
-        </>
+        </> 
         
     )
 }

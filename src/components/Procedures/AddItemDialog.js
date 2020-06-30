@@ -13,6 +13,8 @@ import {connect} from "react-redux";
 import { duration } from "moment";
 import _ from "lodash";
 import AddItem from "./AddItem";
+import AddEquipmentItem from "./AddEquipmentItem";
+import AddTheatreItem from "./AddTheatreItem";
 
 
 /**
@@ -23,9 +25,9 @@ import AddItem from "./AddItem";
  * @param addWorkItem
  * @returns {*}
  * @constructor
- */
+ */ 
 
-const AddItemDialog = ({onCancel, onCreated}) =>{ 
+const AddItemDialog = ({onCancel, onCreated, itemType}) =>{ 
 
     const modal = useModal();
 
@@ -37,7 +39,7 @@ const AddItemDialog = ({onCancel, onCreated}) =>{
             status : false
         },
     ])
-
+ 
     const [fields, setFields] = useState({});
 
     const [errors, setErrors] = useState({})
@@ -88,7 +90,7 @@ const AddItemDialog = ({onCancel, onCreated}) =>{
 
     const validateItem = () =>{
         let isValid = true
-        const requiredFields = ['item', 'amount']
+        const requiredFields = itemType === "Theatres" ? ['item'] : ['item', 'amount']
 
         let errorObj = {...errors} || {}
 
@@ -109,15 +111,34 @@ const AddItemDialog = ({onCancel, onCreated}) =>{
     }
 
     const onPositiveButtonPress = () =>{
-        let updatedFields = {
-            amount : parseInt(fields['amount']),
-            inventory : {
-                _id : fields['item']._id,
-                unitPrice : fields['item'].unitPrice,
-                name : fields['item'].name
+        let updatedFields = {}
+        itemType === 'Consumables' ?
+            updatedFields = {
+                amount : parseInt(fields['amount']),
+                inventory : {
+                    _id : fields['item']._id,
+                    unitPrice : fields['item'].unitPrice,
+                    name : fields['item'].name
+                }
             }
-        }
-        // console.log("Update: ", updatedFields)
+            :
+        itemType === 'Equipments' ?
+            updatedFields = {
+                amount : parseInt(fields['amount']),
+                equipment : {
+                    _id : fields['item']._id,
+                    type : fields['item'].type,
+                    name : fields['item'].name
+                }
+            }
+            :
+            updatedFields = {
+                _id : fields['item']._id,
+                name : fields['item'].name,
+                // status : fields['item'].status,
+                isRecovery : fields['item'].isRecovery
+            }
+
         let isValid = validateItem()
         if(!isValid){ return }
 
@@ -128,20 +149,6 @@ const AddItemDialog = ({onCancel, onCreated}) =>{
         // console.log("Fields: ",updatedFields)
     }
 
-    // const addItemCall = (updatedFields) =>{
-    //     updateProcedure(updatedFields)
-    //         .then(data => {
-    //             modal.closeAllModals();
-    //             // setTimeout(() => {onCreated(data)}, 200);
-    //         })
-    //         .catch(error => {
-    //             // todo handle error
-    //             console.log("failed to update procedure", error)
-    //         })
-    //         .finally(_ => {
-    //             modal.closeAllModals()
-    //         });
-    // }
 
     return (
         <OverlayDialog
@@ -156,14 +163,38 @@ const AddItemDialog = ({onCancel, onCreated}) =>{
                     onPress = {()=>handlePopovers(false)()}
                     activeOpacity = {1}
                 >
-                    <AddItem
-                        fields = {fields}
-                        handlePopovers = {handlePopovers}
-                        popoverList = {popoverList}
-                        errorFields = {errorFields}
-                        errors = {errors}
-                        onFieldChange = {onFieldChange}
-                    />
+                    {
+                        itemType === "Consumables" ?
+                            <AddItem
+                                fields = {fields}
+                                handlePopovers = {handlePopovers}
+                                popoverList = {popoverList}
+                                errorFields = {errorFields}
+                                errors = {errors}
+                                onFieldChange = {onFieldChange}
+                            />
+                            :
+                            itemType === "Equipments" ?
+                                <AddEquipmentItem
+                                    fields = {fields}
+                                    handlePopovers = {handlePopovers}
+                                    popoverList = {popoverList}
+                                    errorFields = {errorFields}
+                                    errors = {errors}
+                                    onFieldChange = {onFieldChange}
+                                />
+                                :
+                                <AddTheatreItem
+                                    fields = {fields}
+                                    handlePopovers = {handlePopovers}
+                                    popoverList = {popoverList}
+                                    errorFields = {errorFields}
+                                    errors = {errors}
+                                    onFieldChange = {onFieldChange}
+                                />
+
+                    }
+                    
                 </TouchableOpacity>
 
             </View>

@@ -54,6 +54,7 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
     const [selectedProcedure, setSelectedProcedure] = useState({})
+    const [isInfoUpdated, setIsInfoUpdated] = useState(false)
 
 
     const [fields, setFields] = useState({
@@ -85,8 +86,10 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
     const onEditPress = (tab) => {
         setEditableTab(tab)
         setEditMode(!isEditMode)
-        if(!isEditMode === false){
-            console.log("Fields:", fields)
+        if(!isEditMode === false && isInfoUpdated){
+            console.log("Info: ", selectedProcedure)
+            // updateProcedureCall(selectedProcedure)
+            // console.log("Fields:", fields)
             
             // updatePhysicianFn(_id, fieldsObject)
         }
@@ -154,13 +157,13 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
             })
     };
 
-    const handleInventoryUpdate = (data) => {
+    const onAddInventory = (data) => {
         let {inventories = [] } = selectedProcedure
-        let updatedData = {
-            amount : data.amount,
-            inventory : data.inventory._id
-        }
-        let updatedObj = { inventories : [...inventories, updatedData] }
+        // let updatedData = {
+        //     amount : data.amount,
+        //     inventory : data.inventory._id
+        // }
+        // let updatedObj = { inventories : [...inventories, updatedData] }
         // let newInventories = inventories.map( item => {
         //     return {
         //         inventory : item.inventory._id,
@@ -173,16 +176,53 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
         // }
         let newData = [...inventories, data]
         let newProcedureData = {...selectedProcedure, inventories:newData}
-        
+        setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
         // console.log("Data: ", updatedObj)
-        updateProcedureCall(updatedObj)
+        updateProcedureCall(newProcedureData)
+    }
+
+    const handleInventoryUpdate = (data) => {
+        const procedure = {...selectedProcedure, inventories : data}
+        const updatedObj = { inventories : data}
+        setSelectedProcedure(procedure)
+        setIsInfoUpdated(true)
+        // Change updated
+        // updateProcedureCall(updatedObj)
+    }
+
+    const onAddEquipment = (data) => {
+        let { equipments = [] } = selectedProcedure
+        let newData = [...equipments, data]
+        let newProcedureData = {...selectedProcedure, equipments:newData}
+        setIsInfoUpdated(true)
+        setSelectedProcedure(newProcedureData)
+        updateProcedureCall(newProcedureData)
+    }
+
+    const onAddTheatre = (data) => {
+        // console.log("Theatre: ", data)
+        let { supportedRooms = [] } = selectedProcedure
+        let newData = [...supportedRooms, data]
+        let newProcedureData = {...selectedProcedure, supportedRooms:newData}
+        setIsInfoUpdated(true)
+        setSelectedProcedure(newProcedureData)
+        // updateProcedureCall(newProcedureData)
+    }
+
+    const handleEquipmentUpdate = (data) => {
+        const procedure = {...selectedProcedure, equipments : data}
+        const updatedObj = { inventories : data}
+        setSelectedProcedure(procedure)
+        setIsInfoUpdated(true)
+        // Change updated
+        // updateProcedureCall(updatedObj)
     }
 
     const updateProcedureCall = (updatedFields) =>{
         updateProcedure(_id, updatedFields)
             .then(data => {
-                fetchProcdure(_id)
+                // fetchProcdure(_id)
                 console.log("Data from db: ", data)
                 // modal.closeAllModals();
                 // setTimeout(() => {onCreated(data)}, 200);
@@ -194,10 +234,9 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
     }
 
 
-
     const getTabContent = (selectedTab) => {
         const { inventories = [], equipments = [], notes = "", supportedRooms = [] } = selectedProcedure
-        // console.log("hELLO")
+        
         const consumablesData = inventories.map(item => {
             return {
                 item :  item.inventory.name,
@@ -229,17 +268,23 @@ function ProceduresBottomSheet({procedure, isOpenEditable}) {
                 return <ProceduresConsumablesTab
                     consumablesData = {inventories}
                     isEditMode = {isEditMode}
-                    handleUpdate = {handleInventoryUpdate}
+                    onAddInventory = {onAddInventory}
+                    handleInventoryUpdate = {handleInventoryUpdate}
                 />
             case "Equipment":
                 return <ProceduresEquipmentTab 
                     equipmentsData = {equipments}
                     isEditMode = {isEditMode}
+                    onAddEquipment = {onAddEquipment}
+                    handleEquipmentUpdate = {handleEquipmentUpdate}
                 />;
             case "Notes":
                 return <NotesTab notesData = {[notes]}/>;
             case "Theatres" :
-                return <TheatresTab theatresData = {supportedRooms}/>
+                return <TheatresTab 
+                    theatresData = {supportedRooms}
+                    onAddTheatre = {onAddTheatre}
+                />
             default :
                 return <View/>
         }

@@ -16,7 +16,7 @@ import NumberChangeField from "../common/Input Fields/NumberChangeField";
 import { withModal } from "react-native-modalfy";
 import AddItemDialog from "../Procedures/AddItemDialog";
 
-const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpdate}) => { 
+const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInventoryUpdate, onAddInventory}) => { 
 
     const recordsPerPage = 10
     // const [consumables, setConsumbales] = useState(consumablesData)
@@ -36,9 +36,37 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpd
 
     const onQuantityChange = (item) => (action) =>  {
 
+        const updatedObj = {
+            ...item,
+            amount: action === 'add' ? item.amount + 1 : item.amount - 1
+        };
+
+        const updatedData = consumablesData.map(item => {
+            return item._id === updatedObj._id ? 
+                {...updatedObj}
+                : 
+                {...item}
+        })
+
+        handleInventoryUpdate(updatedData)
+
     }
+
     const onAmountChange = (item) => (value) => {
 
+        const updatedObj = {
+            ...item,
+            amount: value
+        };
+
+        const updatedData = consumablesData.map(item => {
+            return item._id === updatedObj._id ? 
+                {...updatedObj}
+                : 
+                {...item}
+        })
+
+        handleInventoryUpdate(updatedData)
     }
 
     const headers = [
@@ -117,7 +145,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpd
                 { isEditMode ?
                     <View style={[styles.item,{alignItems:'center'}]}>
                         <NumberChangeField 
-                            value={amount} 
+                            value={amount === 0 ? "" : amount.toString()} 
                             onChangePress = {onQuantityChange(item)}
                             onAmountChange = {onAmountChange(item)}
                         />
@@ -169,8 +197,9 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpd
                     'OverlayModal',
                     {
                         content: <AddItemDialog
+                            itemType = {'consumables'}
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={handleUpdate}
+                            onCreated={onAddInventory}
                         />,
                         onClose: () => setFloatingAction(false)
                     })
@@ -201,7 +230,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleUpd
                             goToPreviousPage={goToPreviousPage}
                         />
                     </View>
-
+ 
                     <FloatingActionButton
                         isDisabled={isFloatingActionDisabled}
                         toggleActionButton={toggleActionButton}

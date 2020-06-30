@@ -57,7 +57,7 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
         }
     }
 
-
+ 
 
     const onQuantityChangePress = (item, index) => (action) => {
 

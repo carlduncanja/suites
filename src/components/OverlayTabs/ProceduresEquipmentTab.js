@@ -12,15 +12,16 @@ import ActionContainer from "../common/FloatingAction/ActionContainer";
 import ActionItem from "../common/ActionItem";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import AddIcon from "../../../assets/svg/addIcon";
+import AddItemDialog from '../Procedures/AddItemDialog';
 
 import { currencyFormatter } from '../../utils/formatter';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import { withModal } from "react-native-modalfy";
 
-const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
+const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipmentUpdate, onAddEquipment}) => {
 
     const recordsPerPage = 10
-    const [equipments, setEquipments] = useState(equipmentsData)
+    // const [equipments, setEquipments] = useState(equipmentsData)
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
     const [checkBoxList, setCheckboxList] = useState([])
     
@@ -30,8 +31,9 @@ const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
 
     useEffect(()=>{
-        setTotalPages(Math.ceil(equipments.length / recordsPerPage))
+        setTotalPages(Math.ceil(equipmentsData.length / recordsPerPage))
     },[])
+
 
 
     const headers = [
@@ -73,9 +75,9 @@ const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
     };
 
     const handleOnSelectAll = () => {
-        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== equipments.length;
+        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== equipmentsData.length;
         if (indeterminate) {
-            const selectedAllIds = [...equipments.map(item => item.equipment._id)];
+            const selectedAllIds = [...equipmentsData.map(item => item.equipment._id)];
             setCheckboxList(selectedAllIds)
         } else {
             setCheckboxList([])
@@ -97,6 +99,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
 
         setCheckboxList(updatedEquipments)
     }
+
 
     const listItem = (item) => {
         const { equipment = {} } = item
@@ -160,9 +163,26 @@ const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
     };
 
     const openAddItem = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'OverlayModal',
+                    {
+                        content: <AddItemDialog
+                            itemType = "Equipments"
+                            onCancel={() => setFloatingAction(false)}
+                            onCreated={onAddEquipment}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                    })
+        }, 200)
     }
 
-    let dataToDisplay = [...equipments];
+    let dataToDisplay = [...equipmentsData];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
 
@@ -183,7 +203,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData}) => {
                         totalPages={totalPages}
                         currentPage={currentPagePosition}
                         goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
+                        goToPreviousPage={goToPreviousPage}  
                     />
                 </View>
 
