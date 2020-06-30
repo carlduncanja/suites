@@ -42,6 +42,7 @@ const BottomSheetModal = (props) => {
     };
 
     const closeBottomSheet = () => {
+        console.log("closeBottomSheet")
         bottomSheetRef.current.snapTo(initialSnap);
     };
 
