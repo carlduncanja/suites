@@ -17,6 +17,8 @@ import Suppliers from '../../../page/Suppliers';
 import Equipment from '../../../page/Equipment';
 import Orders from '../../../page/Orders'
 
+import ProcedureNavigationStack from "./ProcedureNavigationStack"; 
+
 
 /* Providers*/
 import {ScheduleProvider} from '../../../contexts/ScheduleContext';
@@ -147,7 +149,7 @@ export const SuitesNavigationStack = () => {
 
             <SuitesNavigator.Screen
                 name="Procedures"
-                component={Procedures}
+                component={ProcedureNavigationStack}
                 initialParams={{
                     icon: ProcedureIcon,
                     tabName: 'Procedures',
