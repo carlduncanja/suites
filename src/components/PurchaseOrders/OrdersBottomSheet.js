@@ -2,8 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 
-  
-import { getPurchaseOrderById } from "../../api/network"; 
+
+import { getPurchaseOrderById } from "../../api/network";
 import {colors} from "../../styles";
 import OrderDetailsTab from '../OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../OverlayTabs/OrderItemTab';
@@ -11,12 +11,12 @@ import OrderSuppliersTab from '../OverlayTabs/OrderSuppliersTab';
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 
 function OrdersBottomSheet({order = {}, isOpenEditable}) {
-    
+
     const currentTabs = ["Details", "Items", "Suppliers"];
     // console.log("Order:", order)
     const { _id, supplier = {}, purchaseOrderNumber} = order;
     const { name = "" } = supplier
-    
+
 
     // ##### States
 
@@ -44,11 +44,6 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     const onEditPress = (tab) => {
         setEditableTab(tab)
         setEditMode(!isEditMode)
-        if(!isEditMode === false){
-            console.log("Fields:", fields)
-            
-            // updatePhysicianFn(_id, fieldsObject)
-        }
     }
 
     const onFieldChange = (fieldName) => (value) => {
@@ -59,13 +54,13 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     };
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
-        
+
         if(!popoverItem){
             let updatedPopovers = popoverList.map( item => {return {
                 ...item,
                 status : false
             }})
-            
+
             setPopoverList(updatedPopovers)
         }else{
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
@@ -74,15 +69,15 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
-            ]; 
+            ];
             setPopoverList(updatedPopovers)
         }
-    
+
     }
 
     // ##### Helper functions
 
-    const fetchOrder = (id) => {
+    const fetchOrder = async (id) => {
         setFetching(true);
         getPurchaseOrderById(id)
             .then(data => {
@@ -119,7 +114,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
                         <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
                     </View>
                     :
-                   
+
                     // console.log("Selected: ", selectedProcedure)
                     <SlideOverlay
                         overlayId={name}
@@ -130,7 +125,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
                         isEditMode={isEditMode}
                         onEditPress = {onEditPress}
                         overlayContent={
-                            <View 
+                            <View
                                 style={{flex: 1, padding:30, paddingBottom:20}}
                                 // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
                             >

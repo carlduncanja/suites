@@ -1,70 +1,67 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Alert} from "react-native";
 
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
-import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
-
-import ArchiveIcon from "../../assets/svg/archiveIcon";
 import AddIcon from "../../assets/svg/addIcon";
 
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
 
 import {connect} from 'react-redux';
-import {setPurchaseOrders} from "../redux/actions/purchaseOrdersActions";
+import {setPurchaseOrders, updatePurchaseOrder} from "../redux/actions/purchaseOrdersActions";
 import {
     getPurchaseOrders,
     createInvoiceViaOrders,
-    updateCaseQuotationStatus,
-    updatePurchaseOrderStatus
+    updatePurchaseOrderStatus,
 } from "../api/network";
 import _ from "lodash";
 
 import {withModal, useModal} from 'react-native-modalfy';
-import purchaseOrdersTest from '../../data/PurchaseOrders'
 import {formatDate, transformToSentence} from '../utils/formatter';
 import OrdersBottomSheet from '../components/PurchaseOrders/OrdersBottomSheet';
 import {PURCHASE_ORDER_STATUSES} from "../const";
 import EditIcon from "../../assets/svg/editIcon";
+import {addNotification} from "../redux/actions/NotificationActions";
+
+const listHeaders = [
+    {
+        name: "Purchase Orders",
+        alignment: "flex-start",
+        flex: 1,
+        fontSize: 14
+    },
+    {
+        name: "Status",
+        alignment: "center",
+        flex: 1,
+        fontSize: 14
+    },
+    {
+        name: "Delivery Date",
+        alignment: "flex-start",
+        flex: 1,
+        fontSize: 14,
+    },
+    {
+        name: "Supplier",
+        alignment: "flex-start",
+        flex: 2,
+        fontSize: 14
+    }
+];
+
 
 const Orders = (props) => {
 
     // ############# Const data
     const recordsPerPage = 15;
-    const listHeaders = [
-        {
-            name: "Purchase Orders",
-            alignment: "flex-start",
-            flex: 1,
-            fontSize: 14
-        },
-        {
-            name: "Status",
-            alignment: "center",
-            flex: 1,
-            fontSize: 14
-        },
-        {
-            name: "Delivery Date",
-            alignment: "flex-start",
-            flex: 1,
-            fontSize: 14,
-        },
-        {
-            name: "Supplier",
-            alignment: "flex-start",
-            flex: 2,
-            fontSize: 14
-        }
-    ];
 
     //  ############ Props
-    const {purchaseOrders = [], setPurchaseOrders} = props;
-
+    const {purchaseOrders = [], setPurchaseOrders, updatePurchaseOrder, addNotification} = props;
     const modal = useModal();
 
     //  ############ State
@@ -124,26 +121,11 @@ const Orders = (props) => {
     const handleOnSelectAll = () => {
         let updatedOrdersList = selectAll(purchaseOrders, selectedOrders)
         setSelectedOrders(updatedOrdersList)
-
-        // const indeterminate = selectedOrders.length >= 0 && selectedOrders.length !== purchaseOrders.length;
-        // if (indeterminate) {
-        //     const selectedAllIds = [...purchaseOrders.map(item => item._id)];
-        //     setSelectedOrders(selectedAllIds)
-        // } else {
-        //     setSelectedOrders([])
-        // }
     }
 
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
         let updatedOrders = checkboxItemPress(item, _id, selectedOrders)
-        // let updatedOrders = [...selectedOrders];
-
-        // if (updatedOrders.includes(_id)) {
-        //     updatedOrders = updatedOrders.filter(id => id !== item._id)
-        // } else {
-        //     updatedOrders.push(item._id);
-        // }
 
         setSelectedOrders(updatedOrders);
         console.log("List: ", updatedOrders)
@@ -293,7 +275,6 @@ const Orders = (props) => {
                 }
                 case PURCHASE_ORDER_STATUSES.CANCELLED:
                     break
-
             }
 
 
@@ -313,6 +294,8 @@ const Orders = (props) => {
         createInvoiceViaOrders(purchaseOrderId)
             .then((data) => {
                 console.log("Invoice Record:", data)
+                modal.closeAllModals();
+                addNotification("Inventory Items have been added to the system.", "Inventory")
             })
             .catch(error => {
                 Alert.alert(
@@ -337,6 +320,10 @@ const Orders = (props) => {
             .then((data) => {
                 console.log("Purchase Order Record:", data)
                 // todo update purchase order in state.
+
+                updatePurchaseOrder(purchaseOrderId, {status});
+                modal.closeAllModals();
+
             })
             .catch(error => {
                 console.log("Failed to update status", error)
@@ -392,7 +379,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatcherToProp = {
-    setPurchaseOrders
+    setPurchaseOrders,
+    updatePurchaseOrder,
+    addNotification
 };
 
 export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Orders))
