@@ -23,8 +23,8 @@ import { withModal } from 'react-native-modalfy';
 function ProcedurePage({route}) {
     
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
-
-    const { procedure, isOpenEditable } = route.params.params
+    
+    const { procedure, isOpenEditable } = route.params
 
     const {
         _id = "", 

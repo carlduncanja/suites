@@ -122,7 +122,7 @@ const Procedures = (props) => {
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
         // console.log("Open")
-        navigation.navigate('Procedure', {
+        navigation.navigate('Procedures List', {
             screen: 'Procedure',
             initial: false,
             params: {procedure: item, isOpenEditable: isOpenEditable}
@@ -237,7 +237,7 @@ const Procedures = (props) => {
     const openCreateProcedure = () => {
         modal.closeModals('ActionContainerModal');
 
-        navigation.navigate('CreateProcedure', {
+        navigation.navigate('Procedures List', {
             screen : 'CreateProcedure',
             initial : false,
         })

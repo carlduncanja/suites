@@ -148,7 +148,7 @@ export const SuitesNavigationStack = () => {
 
 
             <SuitesNavigator.Screen
-                name="Procedures"
+                name="Procedures List"
                 component={ProcedureNavigationStack}
                 initialParams={{
                     icon: ProcedureIcon,

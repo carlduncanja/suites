@@ -300,6 +300,9 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
                     </TouchableOpacity>
                 </View>
                 
+                <TouchableOpacity style={styles.footer} onPress={onPositiveButtonPress}>
+                    <Text style={styles.footerText}>{positiveText}</Text>
+                </TouchableOpacity>
 
             </View>
         // </OverlayDialog>
@@ -334,6 +337,26 @@ const styles = StyleSheet.create({
         paddingBottom: 8,
         borderBottomWidth: 1,
         borderBottomColor: '#E3E8EF'
+    },
+    footer:{
+        height: 57,
+        width: '100%',
+        bottom: 0,
+        flexDirection: 'row',
+        borderBottomRightRadius: 8,
+        borderBottomLeftRadius: 8,
+        borderTopWidth: 1,
+        borderTopColor: '#E3E8EF',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 0,
+    },
+    footerText:{
+        fontSize: 16,
+        marginRight: 10,
+        marginLeft: 10,
+        fontWeight: 'bold',
+        color: "#3182CE",
     }
 })
 
