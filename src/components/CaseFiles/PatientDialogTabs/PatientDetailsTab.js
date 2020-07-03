@@ -5,7 +5,7 @@ import OptionsField from "../../common/Input Fields/OptionsField";
 import {MenuOptions, MenuOption} from 'react-native-popup-menu';
 import DateInputField from "../../common/Input Fields/DateInputField";
 
- 
+
 const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
     const handleTrnValidation = (trnValue) => {
         if (trnValue.toString().length > 9) return
