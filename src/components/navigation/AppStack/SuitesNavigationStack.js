@@ -15,6 +15,8 @@ import Suppliers from '../../../page/Suppliers';
 import Equipment from '../../../page/Equipment';
 import Orders from '../../../page/Orders'
 
+import ProcedureNavigationStack from "./ProcedureNavigationStack"; 
+
 
 /* Providers*/
 import NotFound from "../../../page/NotFound";
@@ -143,8 +145,8 @@ export const SuitesNavigationStack = () => {
 
 
             <SuitesNavigator.Screen
-                name="Procedures"
-                component={Procedures}
+                name="Procedures List"
+                component={ProcedureNavigationStack}
                 initialParams={{
                     icon: ProcedureIcon,
                     tabName: 'Procedures',

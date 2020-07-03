@@ -239,7 +239,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
 
         </>
 
-    )
+    ) 
 }
 
 export default withModal(ProceduresConsumablesTab)

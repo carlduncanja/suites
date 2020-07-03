@@ -1,31 +1,33 @@
 import React, {useState, useEffect} from 'react';
 import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
-import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import Configuration from '../OverlayTabs/Configuration';
-import NotesTab from '../OverlayTabs/NotesTab';
-import ProceduresConsumablesTab from '../OverlayTabs/ProceduresConsumablesTab';
-import ConsumablesTab from '../OverlayTabs/ConsumablesTab';
-import ProceduresEquipmentTab from '../OverlayTabs/ProceduresEquipmentTab';
-import EditableProceduresConfig from '../OverlayTabs/EditableProceduresConfig';
-import TheatresTab from '../OverlayTabs/TheatresTab';
+import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
+import Configuration from '../../components/OverlayTabs/Configuration';
+import NotesTab from '../../components/OverlayTabs/NotesTab';
+import ProceduresConsumablesTab from '../../components/OverlayTabs/ProceduresConsumablesTab';
+import ConsumablesTab from '../../components/OverlayTabs/ConsumablesTab';
+import ProceduresEquipmentTab from '../../components/OverlayTabs/ProceduresEquipmentTab';
+import EditableProceduresConfig from '../../components/OverlayTabs/EditableProceduresConfig';
+import TheatresTab from '../../components/OverlayTabs/TheatresTab';
 import {colors} from "../../styles";
 import { currencyFormatter } from '../../utils/formatter';
 import { updateProcedure } from "../../api/network";
 
 
 import { getProcedureById } from "../../api/network";
-import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
-import ActionItem from "../common/ActionItem";
+import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
+import ActionItem from "../../components/common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
-import ActionContainer from "../common/FloatingAction/ActionContainer";
+import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import { withModal } from 'react-native-modalfy';
 
-function ProceduresBottomSheet({modal, procedure, isOpenEditable}) {
+function ProcedurePage({route}) {
     
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
-    // console.log("Procedure:", procedure)
+    
+    const { procedure, isOpenEditable } = route.params
+
     const {
-        _id, 
+        _id = "", 
         name,
         hasRecovery,
         duration,
@@ -33,24 +35,24 @@ function ProceduresBottomSheet({modal, procedure, isOpenEditable}) {
     } = procedure;
 
     
-    const consumablesHeader = [
-        {
-            name :"Item Name",
-            alignment: "flex-start"
-        },
-        {
-            name :"Type",
-            alignment: "center"
-        },
-        {
-            name :"Quantity",
-            alignment: "center"
-        },
-        {
-            name :"Unit Price",
-            alignment: "flex-end"
-        }
-    ]
+    // const consumablesHeader = [
+    //     {
+    //         name :"Item Name",
+    //         alignment: "flex-start"
+    //     },
+    //     {
+    //         name :"Type",
+    //         alignment: "center"
+    //     },
+    //     {
+    //         name :"Quantity",
+    //         alignment: "center"
+    //     },
+    //     {
+    //         name :"Unit Price",
+    //         alignment: "flex-end"
+    //     }
+    // ]
 
     // ##### States
 
@@ -130,34 +132,34 @@ function ProceduresBottomSheet({modal, procedure, isOpenEditable}) {
     
     }
 
-    const toggleActionButton = () =>{
-        setIsDisabled(true)
-        modal.openModal("ActionContainerModal",
-            {
-                actions: getFabActions(),
-                title: "CASE ACTIONS",
-                onClose: () => {
-                    setFloatingAction(false)
-                }
-            })
-    }
+    // const toggleActionButton = () =>{
+    //     setIsDisabled(true)
+    //     modal.openModal("ActionContainerModal",
+    //         {
+    //             actions: getFabActions(),
+    //             title: "CASE ACTIONS",
+    //             onClose: () => {
+    //                 setFloatingAction(false)
+    //             }
+    //         })
+    // }
 
     // ##### Helper functions
-    const consumablesListItem = (item) => <>
-        <View style={styles.item}>
-            <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.item}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'flex-start'}]}>
-            <Text style={styles.itemText}>{item.type}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
-            <Text style={styles.itemText}>{item.quantity}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'flex-end'}]}>
-            <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
-        </View>
+    // const consumablesListItem = (item) => <>
+    //     <View style={styles.item}>
+    //         <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.item}</Text>
+    //     </View>
+    //     <View style={[styles.item,{alignItems:'flex-start'}]}>
+    //         <Text style={styles.itemText}>{item.type}</Text>
+    //     </View>
+    //     <View style={[styles.item,{alignItems:'center'}]}>
+    //         <Text style={styles.itemText}>{item.quantity}</Text>
+    //     </View>
+    //     <View style={[styles.item,{alignItems:'flex-end'}]}>
+    //         <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
+    //     </View>
              
-    </>
+    // </>
 
     const fetchProcdure = (id) => {
         setFetching(true);
@@ -355,7 +357,7 @@ function ProceduresBottomSheet({modal, procedure, isOpenEditable}) {
                             onEditPress = {onEditPress}
                             overlayContent={
                                 <View 
-                                    style={{flex: 1, padding:30}}
+                                    style={{flex: 1, padding:30, backgroundColor:'#FFFFFF'}}
                                     // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
                                 >
                                     {getTabContent(currentTab)}
@@ -375,10 +377,10 @@ function ProceduresBottomSheet({modal, procedure, isOpenEditable}) {
     );
 }
 
-ProceduresBottomSheet.propTypes = {};
-ProceduresBottomSheet.defaultProps = {};
+ProcedurePage.propTypes = {};
+ProcedurePage.defaultProps = {};
 
-export default withModal(ProceduresBottomSheet);
+export default withModal(ProcedurePage);
 
 const styles = StyleSheet.create({
     item:{

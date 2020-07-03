@@ -34,8 +34,8 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
     const [isDisable, setIsDisable] = useState(false)
 
 
-    const handleDisplayData = () => {
-        let newSet = new Set([...savedTheatres,...selectedLocations])
+    const handleDisplayData = (data = []) => {
+        let newSet = new Set([...savedTheatres,...data])
         let updatedTheatres = [...newSet]
         return updatedTheatres
     }
@@ -121,14 +121,6 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
         setSelectedLocations(updatedLocations)
     }
 
-    // onPressResultItem = (item) => {
-    //     let updatedLocations = [...selectedLocations]
-    //     selectedLocations.includes(item) ?
-    //         updatedLocations = [...updatedLocations]
-    //         :
-    //         updatedLocations = [...updatedLocations,item]
-    //     setSelectedLocations(updatedLocations)
-    // }
 
     const buttonPress = () => {
         if(isDisable === false){
@@ -138,6 +130,14 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
             getSavedTheatres(updatedTheatres)
         }
         setIsDisable(true)
+    }
+
+    const handleSelectedOption = (value) => {
+        setSelectedLocations(value)
+        let updatedLocations = handleDisplayData(value)
+        onFieldChange('supportedRooms')(updatedLocations)
+        getSavedTheatres(updatedLocations)
+        // console.log("Data: ", value)
     }
 
     const listItem = (item) => {
@@ -169,7 +169,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                     <MultipleSelectionsField
                         label={"Add New Location"}
                         value = {fields['supportedRooms']}
-                        onOptionsSelected = {(value)=>{setSelectedLocations(value)}}
+                        onOptionsSelected = {(value)=>{handleSelectedOption(value)}}
                         options = {searchLocationResults}
                         searchText = {searchLocationValue}
                         onSearchChangeText = {(value)=> setSearchLocationValue(value)}
@@ -196,7 +196,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                         />
                     </View>
 
-                    <View style={[styles.buttonContainer,{
+                    {/* <View style={[styles.buttonContainer,{
                         backgroundColor: isDisable ? "#F8FAFB" : "#4299E1",
                         color: isDisable ? "#4299E1" : "#F8FAFB"
                     }]}>
@@ -206,7 +206,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                             title = "DONE"
                             color = {isDisable ? "#4299E1" : "#F8FAFB"}
                         />
-                    </View>
+                    </View> */}
 
                 </View>
             </View>
