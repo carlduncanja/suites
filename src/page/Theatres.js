@@ -289,7 +289,7 @@ function Theatres(props) {
                 'OverlayModal',
                 {
                     content: <CreateTheatreDialogContainer
-                        onCreated={(item) => onItemPress(item)()}
+                        onCreated={onItemPress}
                         onCancel={() => setFloatingAction(false)}
                     />,
                     onClose: () => setFloatingAction(false)

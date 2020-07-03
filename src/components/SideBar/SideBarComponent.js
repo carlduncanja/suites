@@ -29,9 +29,8 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
         );
     }
 
-    console.log(auth)
     const authInfo = auth.userToken && jwtDecode(auth.userToken);
-
+    // console.log(auth)
     console.log(authInfo)
 
 
