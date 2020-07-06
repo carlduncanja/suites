@@ -1,0 +1,148 @@
+import React,{ useState, useEffect } from "react";
+import { View, Text, StyleSheet} from "react-native";
+
+import Table from '../common/Table/Table';
+import LongPressWithFeedback from "../common/LongPressWithFeedback";
+import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import ActionItem from "../common/ActionItem";
+import RoundedPaginator from "../common/Paginators/RoundedPaginator";
+
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import AddIcon from "../../../assets/svg/addIcon";
+import AssignIcon from "../../../assets/svg/assignIcon";
+
+import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
+
+import { withModal } from "react-native-modalfy";
+
+const headers = [
+    {
+        name : 'Procedure',
+        alignment : 'flex-start'
+    },
+    {
+        name : 'Theatre',
+        alignment : 'flex-start'
+    },
+    {
+        name : 'Recovery',
+        alignment : 'center'
+    },
+    {
+        name : 'Duration',
+        alignment : 'flex-end'
+    }
+]
+
+const testData = [
+    {
+        procedure: 'Coronary Bypass Graft',
+        theatre : 'Operating Room 1',
+        recovery : 'Yes',
+        duration : 2
+    },
+    {
+        procedure: 'Adenosine',
+        theatre : 'Operating Room 1',
+        recovery : 'No',
+        duration : 3
+    }
+]
+
+const CustomProceduresTab = ({modal,procedures}) => {
+   
+    const recordsPerPage = 10;
+    
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
+
+    const data = procedures.map( item =>{
+        const recovery = item.hasRecovery ? "Yes" : "No"
+        return {
+            procedure : item.name,
+            theatre : "Operating Room 1",
+            recovery : recovery,
+            duration : item.duration,
+        }
+    })
+
+    useEffect(()=>{
+        setTotalPages(Math.ceil(data.length / recordsPerPage))
+    },[])
+
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPagePosition === 1) return;
+
+        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+    };
+
+    const listItemFormat = (item) => <>
+        <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
+            <View style={{flex:1}}>
+                <Text style={{fontSize:16, color:'#3182CE'}}>{item.procedure}</Text>
+            </View>
+            <View style={{flex:1, alignItems:"flex-start"}}>
+                <Text style={{fontSize:16, color:'#3182CE'}}>{item.theatre}</Text>
+            </View>
+            <View style={{flex:1, alignItems:'center'}}>
+                <Text style={{fontSize:14, color: item.recovery === 'Yes'?'#38A169':'#ED8936'}}>{item.recovery}</Text>
+            </View>
+            <View style={{flex:1, alignItems:'flex-end'}}>
+                <Text style={{fontSize:16, color:'#323843'}}>{`${item.duration} hrs`}</Text>
+            </View>
+        </View>
+    </>
+
+    let dataToDisplay = [...data];
+    dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
+
+    return (
+        <>
+            <Table
+                data = {dataToDisplay}
+                listItemFormat = {listItemFormat}
+                headers = {headers}
+                isCheckbox = {false}
+            />
+            <View style={styles.footer}>
+                <View style={{alignSelf: "center", marginRight: 10}}>
+                    <RoundedPaginator
+                        totalPages={totalPages}
+                        currentPage={currentPagePosition}
+                        goToNextPage={goToNextPage}
+                        goToPreviousPage={goToPreviousPage}
+                    />
+                </View>
+            </View>
+        </>
+    )
+}
+
+export default withModal(CustomProceduresTab)
+
+const styles = StyleSheet.create({
+    footer:{
+        flex: 1,
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        marginBottom: 20,
+        marginRight: 30,
+    }
+})
