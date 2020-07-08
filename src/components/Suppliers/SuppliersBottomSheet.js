@@ -5,7 +5,7 @@ import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 import SupplierProductsTab from '../OverlayTabs/SupplierProductsTab';
 import SupplierPurshaseOrders from '../OverlayTabs/SupplierPurchaseOrders';
   
-import { getSupplierById } from "../../api/network"; 
+import { getSupplierById, createPurchaseOrder } from "../../api/network"; 
 import {colors} from "../../styles";
 
 function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) {
@@ -25,9 +25,9 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
     const [selectedSupplier, setSelectedSupplier] = useState({})
+    const [cartOrderItems, setCartOrderItems] = useState([])
 
     const [fields, setFields] = useState({})
-
     const [popoverList, setPopoverList] = useState([])
 
     // ##### Lifecycle Methods
@@ -97,7 +97,35 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
             })
     };
 
+    const updateCartItems = (data) => {
+        setCartOrderItems(data)
+        //console.log("Cart: ", data)
+    }
+
+    const onOrderComplete = (data) =>{
+        const { name = "", storageLocation = {} } = data
+        const updatedOrders = cartOrderItems.map(item => {return { amount: item.amount, productId : item._id}})
+        let newPO = {
+            name : name,
+            storageLocation : storageLocation._id,
+            supplier : _id,
+            orders : updatedOrders,
+            orderDate : new Date()
+        }
+        createPurchaseOrder(newPO)
+            .then(data => {
+                console.log("DB data: ", data)
+            })
+            .catch(error => {
+                console.log("Failed to create PO", error)
+                //TODO handle error cases.
+            })
+        // console.log("Purchase Order: ", newPO)
+        // console.log("Cart Items: ", cartOrderItems)
+    }
+
     const supplierDetails = {supplier, status : ''}
+
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
@@ -105,6 +133,9 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
             case "Products":
                 return <SupplierProductsTab
                     floatingActions = {floatingActions}
+                    updateCartItems = {updateCartItems}
+                    cartOrderItems = {cartOrderItems}
+                    onOrderComplete = {onOrderComplete}
                     supplierId = {_id}
                 />
             case "Purchase Orders":

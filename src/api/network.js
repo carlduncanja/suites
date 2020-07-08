@@ -1,6 +1,6 @@
 import suitesAxiosInstance from "./index"
 import {handleError, handleResponse} from "./apiUtils";
-
+ 
 import {
     inventoriesEndpoint,
     inventoryEndpoint,
@@ -326,6 +326,12 @@ export const getPurchaseOrders = async (query, max) => {
         .then(handleResponse)
         .catch(handleError)
 };
+
+export const createPurchaseOrder = async (orderToCreate) => {
+    return suitesAxiosInstance.post(purchaseOrdersEndpoint, orderToCreate)
+        .then(handleResponse)
+        .catch(handleError);
+}; 
 
 export const getPurchaseOrderById = async (id) => {
     return suitesAxiosInstance.get(purchaseOrderEndpoint(id))

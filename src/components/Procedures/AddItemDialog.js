@@ -30,7 +30,7 @@ import AddTheatreItem from "./AddTheatreItem";
 const AddItemDialog = ({onCancel, onCreated, itemType}) =>{ 
 
     const modal = useModal();
-
+ 
     const [positiveText, setPositiveText] = useState("DONE")
     
     const [popoverList, setPopoverList] = useState([

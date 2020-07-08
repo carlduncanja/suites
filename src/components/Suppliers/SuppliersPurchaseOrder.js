@@ -3,35 +3,18 @@ import { View, Text, StyleSheet } from "react-native";
 import PickListCard from '../CaseFiles/PickList/PickListCard'
 import DeleteIcon from '../../../assets/svg/wasteIcon';
 import RightArrow from '../../../assets/svg/rightArrow';
+import NumberChangeField from '../common/Input Fields/NumberChangeField';
 import LeftArrow from '../../../assets/svg/leftArrow';
 
 import { withModal } from "react-native-modalfy";
 import IconButton from "../common/Buttons/IconButton";
 import { TextInput } from "react-native-gesture-handler";
+import CartCard from "../common/CartCard";
 
-const testData = [
-    {
-        _id : 'NEO-67341',
-        name :'Neostigme',
-        quantity:21
-    },
-    {
-        _id: 'GZ-973142',
-        name :'Gauze',
-        quantity:21
-    },
-    {
-        _id : 'AG-083184',
-        name :'Agents',
-        quantity:30
-    }
-]
-const SuppliersPurchaseOrder = ({details, tabs, modal}) => {
+
+const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFooterPress, modal}) => {
     const { closeModals } = modal
-    const {inventories = [] } = details
-
-    const [selectedTab, setSelectedTab] = useState(tabs[0])
-    const [purchaseOrders, setPurchaseOrders] = useState(testData)
+    const [purchaseOrders, setPurchaseOrders] = useState(details)
 
     const headers = [
         {
@@ -51,29 +34,30 @@ const SuppliersPurchaseOrder = ({details, tabs, modal}) => {
         }
     ]
 
-    const handleOnPressTab = (tab) => {
-        setSelectedTab(tab)
-    }
-
-    const onNumberArrowChange = (operation) => (id) =>{
-        const findIndex = purchaseOrders.findIndex(obj => obj._id === id);
+    const onNumberArrowChange = (id) => (operation) =>{
+        const findIndex = details.findIndex(obj => obj._id === id);
+        let objQuantity = purchaseOrders[findIndex].amount || 0
+       
         const updatedObj = { 
             ...purchaseOrders[findIndex], 
-            quantity: operation === 'subtract' ? purchaseOrders[findIndex].quantity -1 : purchaseOrders[findIndex].quantity +1
+            amount: operation === 'sub' ? objQuantity === 0 ? objQuantity : objQuantity -1 : objQuantity +1
         };
+
         const updatedArray = [
             ...purchaseOrders.slice(0, findIndex),
             updatedObj,
             ...purchaseOrders.slice(findIndex + 1),
         ]; 
         setPurchaseOrders(updatedArray) 
+        onUpdateItems(updatedArray)
     }
 
     const onChangeField = (id) => (value)=>{
         const findIndex = purchaseOrders.findIndex(obj => obj._id === id);
+        let objQuantity = purchaseOrders[findIndex].amount || 0
         const updatedObj = { 
             ...purchaseOrders[findIndex], 
-            quantity: parseInt(value) || ""
+            amount: parseInt(value) || ""
         };
         const updatedArray = [
             ...purchaseOrders.slice(0, findIndex),
@@ -81,47 +65,54 @@ const SuppliersPurchaseOrder = ({details, tabs, modal}) => {
             ...purchaseOrders.slice(findIndex + 1),
         ]; 
         setPurchaseOrders(updatedArray) 
+        onUpdateItems(updatedArray)
     }
 
     const onDeletePress = (id) => {
        const filteredArray = purchaseOrders.filter( obj => obj._id !== id)
        setPurchaseOrders(filteredArray)
+       onUpdateItems(filteredArray)
     }
 
-    // Format data
-    const inventoriesArray = inventories.map( item => {
-        const { inventory = {} } = item
-        const { name = "" } = inventory
-        return {
-            ...item,
-            name : name
-        }
-    })
+    const onClearItems = () => {
+        setPurchaseOrders([])
+        onClearPress()
+    }
 
+    const onFooterPress = () => {
+
+        onListFooterPress(purchaseOrders)
+        // onUpdateItems(purchaseOrders)
+    }
 
     const listItemFormat = (item) => { 
-        const { _id = "" } = item
+        const { _id = "", name = "", amount = 0 } = item
         return (
             <View style={[styles.listDataContainer,{marginBottom:10}]}>
-                <View style={{flex:2,}}>
-                    <Text style={[styles.dataText,{color:"#3182CE"}]}>{item.name}</Text>
+                <View style={{flex:2,justifyContent:"center"}}>
+                    <Text style={[styles.dataText,{color:"#3182CE"}]}>{name}</Text>
                 </View>
                 <View style={{flex:1,alignItems:'center', flexDirection:'row', justifyContent:'space-between'}}>
-                    <IconButton
+                    <NumberChangeField
+                        onChangePress = {onNumberArrowChange(_id)}
+                        onAmountChange = {onChangeField(_id)}
+                        value = {amount.toString()}
+                    />
+                    {/* <IconButton
                         Icon = {<LeftArrow strokeColor="#CCD6E0"/>}
                         onPress = {()=>onNumberArrowChange('subtract')(_id)}
                     />
                     <View style={{padding:5, paddingLeft:8, paddingRight:8, borderColor:'#CCD6E0', borderWidth:1}}>
                         <TextInput
-                            value = {item.quantity.toString()}
+                            value = {quantity.toString()}
                             onChangeText = {(value)=>onChangeField(_id)(value)}
                         />
-                        {/* <Text style={[styles.dataText,{color:"#4A5568"}]}>{item.quantity}</Text> */}
+                        <Text style={[styles.dataText,{color:"#4A5568"}]}>{item.quantity}</Text> 
                     </View>
                     <IconButton
                         Icon = {<RightArrow strokeColor="#CCD6E0"/>}
                         onPress = {()=>onNumberArrowChange('add')(_id)}
-                    />
+                    />  */}
                 </View>
                 <View style={{flex:1,alignItems:'flex-end'}}>
                     <IconButton
@@ -135,31 +126,19 @@ const SuppliersPurchaseOrder = ({details, tabs, modal}) => {
         
     }
 
-    const onEditDone = () => {
-        console.log("Done Edit")
-    }
-
-    const onFooterPress = () =>{
-
-    }
-
     return (
         <View>
-            <PickListCard
-                title = "Purchase Order"  
-                tabs = {tabs}
-                selectedTab = {selectedTab}
+            <CartCard
+                title = "Cart"  
                 closeModal = {()=>closeModals("OverlayInfoModal")}
-                onPressTab = {handleOnPressTab}
                 listItemFormat = {listItemFormat}
                 headers = {headers}
                 isCheckBox = {false}
                 data = {purchaseOrders}
-                isEditMode = {true}
-                onEditDone = {onEditDone}
                 hasFooter = {true}
                 footerTitle = "COMPLETE ORDER"
                 onFooterPress = {onFooterPress}
+                onClearPress = {onClearItems}
             /> 
         </View>
     )

@@ -9,10 +9,11 @@ import { isValidNumber } from '../../utils/formatter';
 import { getPhysicians } from "../../api/network";
 import _ from "lodash";
 import TextEditor from "../common/Input Fields/TextEditor";
+import TextEditor2 from "../common/Input Fields/TextEditor2";
 
 const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopovers}) => {
 
-    const recoveryText = {
+    const recoveryText = { 
         true: "Yes",
         false: "No"
     };
@@ -160,13 +161,14 @@ const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopo
 
                         <View style={styles.inputWrapper}>
                             <SearchableOptionsField
+                                value = {fields['physician']}
                                 text={physicianSearchValue}
                                 oneOptionsSelected={(item) => {
                                     onFieldChange('physician')(item)
                                 }}
                                 onChangeText={value => setPhysicianSearchValue(value)}
                                 onClear={() => {
-                                    onFieldChange('physician')('');
+                                    onFieldChange('physician')();
                                     setPhysicianSearchValue('');
                                 }}
                                 options={physicianSearchResults}
