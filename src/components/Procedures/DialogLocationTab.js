@@ -32,7 +32,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
 
     const [selectedLocations, setSelectedLocations] = useState([])
     const [isDisable, setIsDisable] = useState(false)
-
+ 
 
     const handleDisplayData = (data = []) => {
         let newSet = new Set([...savedTheatres,...data])

@@ -64,6 +64,10 @@ function ProcedurePage({route}) {
     const [isInfoUpdated, setIsInfoUpdated] = useState(false)
     const [isFloatingActionDisabled, setIsDisabled] = useState(false)
 
+    let updatedPhysician = {
+        name : `Dr. ${physician.firstName} ${physician.surname}` || null,
+        _id : physician._id || null
+    }
 
     const [fields, setFields] = useState({
         name : name,
@@ -72,6 +76,7 @@ function ProcedurePage({route}) {
         custom : true,
         physician : physician
     })
+    // console.log("Physician: ", physician)
 
     const [popoverList, setPopoverList] = useState([
         {
@@ -94,13 +99,21 @@ function ProcedurePage({route}) {
     const onEditPress = (tab) => {
         setEditableTab(tab)
         setEditMode(!isEditMode)
-        if(!isEditMode === false && isInfoUpdated){
-            console.log("Info: ", selectedProcedure)
-            // updateProcedureCall(selectedProcedure)
-            // console.log("Fields:", fields)
+        if(!isEditMode === false){
             
-            // updatePhysicianFn(_id, fieldsObject)
+            if(currentTab === 'Configuration'){
+                updateProcedureCall(selectedProcedure)
+                // onProcedureUpdate()
+            }
+            
         }
+        // if(!isEditMode === false && isInfoUpdated){
+        //     console.log("Info: ", selectedProcedure)
+        //     // updateProcedureCall(selectedProcedure)
+        //     // console.log("Fields:", fields)
+            
+        //     // updatePhysicianFn(_id, fieldsObject)
+        // }
     }
 
     const onFieldChange = (fieldName) => (value) => {
@@ -108,6 +121,8 @@ function ProcedurePage({route}) {
             ...fields,
             [fieldName]: value
         })
+
+        setSelectedProcedure({...selectedProcedure,[fieldName]:value})
     };
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
@@ -230,6 +245,20 @@ function ProcedurePage({route}) {
         // updateProcedureCall(newProcedureData)
     }
 
+    const onProcedureUpdate = () =>{
+        let newProcedureData = {
+            ...selectedProcedure,
+            name : fields['name'],
+            hasRecovery : fields['hasRecovery'],
+            duration : parseInt(fields['duration']),
+            custom : fields['custom'],
+            physician : fields['physician']
+        }
+        // console.log("New Procedure: ", newProcedureData)
+        // setSelectedProcedure(newProcedureData)
+        // updateProcedureCall(newProcedureData)
+    }
+
     const handleEquipmentUpdate = (data) => {
         const procedure = {...selectedProcedure, equipments : data}
         const updatedObj = { inventories : data}
@@ -293,6 +322,7 @@ function ProcedurePage({route}) {
                 unitPrice : item.inventory.unitPrice
             }
         });
+
 
         switch (selectedTab) {
             case "Configuration":

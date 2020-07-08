@@ -11,7 +11,7 @@ const TextEditor = ({onFieldChange}) => {
     const [selectedStyles, setSelectedStyles] = useState([])
     const [value, setValue] = useState([getInitialObject()])
    
-    console.log("Default: ", defaultStyles)
+    // console.log("Default: ", defaultStyles)
 
     const customStyles = {...defaultStyles, body : {fontSize:14}, ol: {fontSize:14}, ul: {fontSize:14}}
 
@@ -21,17 +21,17 @@ const TextEditor = ({onFieldChange}) => {
     }
     const handleValueChange = (value) => {
         console.log("Value:", value)
-        // let text = ""
+        let text = ""
         // value[0].content.map((item, index) => {
         //     item.NewLine ?
-        //         console.log("Text Concat: ", `${item.text}.`)
+        //         // console.log("Text Concat: ", `${item.text}.`)
         //         // text.concat(`${item.text}.`)
         //         :
         //         console.log("Text: ", item.text, item.NewLine, item.stype, index)
            
         // })
         
-        // console.log("Value: ",value[0].content)
+        console.log("Value: ",text)
         setValue(value)
     }
 

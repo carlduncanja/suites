@@ -100,7 +100,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
 
         const billingItem = {
-            caseProcedureId,
+            caseProcedureId, 
             discounts: [],
             physicians: [],
             services: [],

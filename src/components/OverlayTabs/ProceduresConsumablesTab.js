@@ -193,11 +193,11 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
         setTimeout(() => {
 
             modal
-                .openModal(
+                .openModal( 
                     'OverlayModal',
                     {
                         content: <AddItemDialog
-                            itemType = {'consumables'}
+                            itemType = {'Consumables'}
                             onCancel={() => setFloatingAction(false)}
                             onCreated={onAddInventory}
                         />,

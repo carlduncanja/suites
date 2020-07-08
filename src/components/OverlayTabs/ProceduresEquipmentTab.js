@@ -203,7 +203,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
                         totalPages={totalPages}
                         currentPage={currentPagePosition}
                         goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}  
+                        goToPreviousPage={goToPreviousPage} 
                     />
                 </View>
 

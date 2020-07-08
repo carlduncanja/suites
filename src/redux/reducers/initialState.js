@@ -9,6 +9,7 @@ export default {
     equipment : [],
     suppliers : [],
     orders: [],
+    cart:[],
     notifications: [],
     auth: {
         isLoading: true,

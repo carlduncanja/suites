@@ -3,7 +3,7 @@ import {View, StyleSheet, ScrollView, Text} from "react-native";
 import Table from '../../../common/Table/Table';
 import SvgIcon from '../../../../../assets/SvgIcon'
 import {useModal, withModal} from 'react-native-modalfy';
-import {formatDate, currencyFormatter} from '../../../../utils/formatter';
+import {formatDate, currencyFormatter, transformToSentence} from '../../../../utils/formatter';
 import Item from '../../../common/Table/Item';
 import ReportPreview from '../../Reports/ReportPreview';
 
@@ -77,7 +77,7 @@ const reportTestData = {
                 unitPrice: 500.00
             }
         ]
-    }
+    } 
 }
 
 const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
@@ -109,10 +109,11 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     ]
 
     const openModal = (item) => () => {
+        console.log("Item: ", item)
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Quotation"
-                details={tabDetails[0]}
+                details={item}
                 reportDetails={reportDetails}
             />
         })
@@ -131,7 +132,7 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
                     <Text style={styles.itemText}>{formatDate(dateGenerated, 'DD/MM/YYYY')}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'flex-start'}]}>
-                    <Text style={styles.itemText}>{item.status}</Text>
+                    <Text style={styles.itemText}>{transformToSentence(item.status)}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>

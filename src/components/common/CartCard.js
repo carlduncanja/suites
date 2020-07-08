@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import SvgIcon from "../../../../assets/SvgIcon";
-import Button from "../../common/Buttons/Button";
-import Table from "../../common/Table/Table"
-import Paginator from '../../common/Paginators/Paginator';
-import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesHelpers';
+import SvgIcon from "../../../assets/SvgIcon";
+import ClearList from '../../../assets/svg/clearList';
+import Button from "./Buttons/Button";
+import Table from "./Table/Table"
+import Paginator from './Paginators/Paginator';
+import {useNextPaginator,usePreviousPaginator} from '../../helpers/caseFilesHelpers';
 
-const PickListCard = (props) =>{
+
+const CartCard = (props) =>{
 
     const { 
         title, 
         isEditMode = false, 
         onEditDone = ()=>{},
+        onClearPress = () => {},
         closeModal, 
         data, 
         selectedTab, 
@@ -94,7 +97,7 @@ const PickListCard = (props) =>{
             </View>
 
             {
-                isEditMode ?
+                // isEditMode ?
                     <View style={{marginLeft:20, marginRight:20, justifyContent:'space-between', flexDirection:'row'}}>
                         <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
                             <Paginator
@@ -104,27 +107,32 @@ const PickListCard = (props) =>{
                                 goToPreviousPage = {goToPreviousPage}
                             />
                         </View>
-                        <View style={styles.buttonStyle}>
-                            <Button
+                        <TouchableOpacity 
+                            style={styles.clearListStyle}
+                            onPress = {onClearPress}
+                        >
+                            <Text style={{color:'#718096', fontSize:12}}>Clear List</Text>
+                            <ClearList/>
+                            {/* <Button
                                 backgroundColor = "#F8FAFB"
-                                title = 'DONE'
+                                title = 'Clear'
                                 buttonPress = {onEditDone}
                                 color = "#4299E1"
-                            />
-                        </View>
+                            /> */}
+                        </TouchableOpacity>
 
                     </View>
-                    :
-                    <View style={{alignItems:'flex-end', justifyContent:'flex-end'}}>
-                        <View style={styles.paginationContainer}>
-                            <Paginator
-                                currentPage = {currentPagePosition}
-                                totalPages = {totalPages}
-                                goToNextPage = {goToNextPage}
-                                goToPreviousPage = {goToPreviousPage}
-                            />
-                        </View>
-                    </View>
+                    // :
+                    // <View style={{alignItems:'flex-end', justifyContent:'flex-end'}}>
+                    //     <View style={styles.paginationContainer}>
+                    //         <Paginator
+                    //             currentPage = {currentPagePosition}
+                    //             totalPages = {totalPages}
+                    //             goToNextPage = {goToNextPage}
+                    //             goToPreviousPage = {goToPreviousPage}
+                    //         />
+                    //     </View>
+                    // </View>
             }
 
             {
@@ -143,7 +151,7 @@ const PickListCard = (props) =>{
     )
 }
 
-export default PickListCard
+export default CartCard
 
 const styles = StyleSheet.create({
     container:{
@@ -197,17 +205,19 @@ const styles = StyleSheet.create({
         color:"#718096",
         fontWeight:'500'
     },
-    buttonStyle:{
-        borderColor:'#CCD6E0',
-        borderWidth:1,
-        backgroundColor:'#F8FAFB',
-        borderRadius: 4,
+    clearListStyle:{
+        flexDirection:'row',
+        // borderColor:'#CCD6E0',
+        // borderWidth:1,
+        // backgroundColor:'#F8FAFB',
+        // borderRadius: 4,
         // padding:4,
-        paddingLeft:25,
-        paddingRight:25,
+        // paddingLeft:25,
+        // paddingRight:25,
         marginBottom:20,
+        width:100,
         alignItems:"center",
-        justifyContent:'center',
+        justifyContent:'space-evenly',
     },
     paginationContainer:{
         borderColor:'#CCD6E0',

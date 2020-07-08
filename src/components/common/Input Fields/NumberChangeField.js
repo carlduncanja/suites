@@ -9,11 +9,14 @@ const NumberChangeField = ({ onChangePress = () => {}, onAmountChange = () => {}
     return ( 
 
         <View style={styles.inputWrapper}>
-            <IconButton
+            <View style={{}}>
+                <IconButton
                 Icon = {<LeftArrow strokeColor = {'#718096'}/>}
                 onPress = {()=>onChangePress('sub')}
                 disabled = {false}
             />
+            </View>
+            
 
             <TextInput 
                 style={styles.editTextBox}
@@ -21,12 +24,14 @@ const NumberChangeField = ({ onChangePress = () => {}, onAmountChange = () => {}
                 value = {value}
                 keyboardType = "number-pad"
             />
-
-            <IconButton
+            <View style={{}}>
+                <IconButton
                 Icon = {<RightArrow strokeColor="#718096"/>}
                 onPress = {()=>{onChangePress('add')}}
                 disabled = {false}
             />
+            </View>
+            
         </View>
     )
 }
@@ -36,7 +41,8 @@ export default NumberChangeField
 const styles = StyleSheet.create({
     inputWrapper:{
         flexDirection:'row',
-        alignItems:'center'
+        alignItems:'center',
+        // backgroundColor:'red'
     },
     editTextBox:{
         backgroundColor:'#F8FAFB',
@@ -46,8 +52,8 @@ const styles = StyleSheet.create({
         padding:6,
         paddingTop:2,
         paddingBottom:2,
-        marginLeft:10,
-        marginRight:10
+        // marginLeft:10,
+        // marginRight:10
     },
     inputField : {
         height:30,
