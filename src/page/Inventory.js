@@ -29,6 +29,7 @@ import CreateInventoryDialogContainer from "../components/Inventory/CreateInvent
 import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
 import TransferIcon from "../../assets/svg/transferIcon";
 import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
+import CreateInventoryGroupDialogContainer from '../components/Inventory/CreateInventoryGroupDialogContainer';
 
 const listHeaders = [
     {
@@ -257,14 +258,14 @@ function Inventory(props) {
             </View>;
 
 
-        const createAction = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={
-            openCreateInventoryModel
-        }/>;
+        const createAction = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={openCreateInventoryModel}/>;
+        const createGroup = <ActionItem title={"Create Item Group"} icon={<AddIcon/>} onPress={openCreateGroupDialog}/>;
 
         return <ActionContainer
             floatingActions={[
                 deleteAction,
-                createAction
+                createAction,
+                createGroup
             ]}
             title={"STORAGE ACTIONS"}
         />
@@ -286,6 +287,20 @@ function Inventory(props) {
                         />,
                         onClose: () => setFloatingAction(false)
                     })
+        }, 200)
+    };
+
+    const openCreateGroupDialog = () => {
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal('OverlayModal',
+                {
+                    content: <CreateInventoryGroupDialogContainer
+                        onCreated={()=>{}}
+                        onCancel={() => setFloatingAction(false)}
+                    />,
+                    onClose: () => setFloatingAction(false)
+                })
         }, 200)
     };
 

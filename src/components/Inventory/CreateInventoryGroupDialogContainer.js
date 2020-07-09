@@ -22,62 +22,51 @@ import _ from "lodash";
  *
  * @param onCancel
  * @param onCreated
- * @param addTheatre
  * @returns {*}
  * @constructor
  */
-function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
 
-    // ########## CONST
+function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
+
+    // ######### CONST
     const modal = useModal();
     const dialogTabs = ['Details', 'Configuration'];
 
-    // ########## STATE
+    // ######### STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
-    const [unitPriceText, setUnitPriceText] = useState(0);
-    const [customPriceText, setCustomPriceText] = useState(0)
+
     const [fields, setFields] = useState({});
     const [errorFields, setErrorFields] = useState({})
     const [popoverList, setPopoverList] = useState([
         {
-            name : "reference",
-            status : false
-        },
-        {
-            name : "supplier",
+            name : "category",
             status : false
         }
     ])
 
-    // Inventory Search
-    const [inventorySearchValue, setInventorySearchValue] = useState();
-    const [inventorySearchResults, setInventorySearchResult] = useState([]);
-    const [inventorySearchQuery, setInventorySearchQuery] = useState({});
+    // Category Search
+    const [categorySearchValue, setCategorySearchValue] = useState();
+    const [categorySearchResults, setCategorySearchResult] = useState([]);
+    const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
-    // Suppliers Search
-    const [supplierSearchValue, setSupplierSearchValue] = useState();
-    const [supplierSearchResults, setSupplierSearchResult] = useState([]);
-    const [supplierSearchQuery, setSupplierSearchQuery] = useState({});
 
-    
+    // ######### LIFECYCLE FUNCTIONS
 
-    // ########## LIFECYCLE METHODS
-
-    // Handle inventories search
+    // Handle category search
     useEffect(() => {
-        // console.log("Search: ", inventorySearchValue)
-        if (!inventorySearchValue) {
+
+        if (!categorySearchValue) {
             // empty search values and cancel any out going request.
-            setInventorySearchResult([]);
-            if (inventorySearchQuery.cancel) inventorySearchQuery.cancel();
+            setCategorySearchResult([]);
+            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
             return;
         }
 
         // wait 300ms before search. cancel any prev request before executing current.
 
-        const search = _.debounce(fetchInventories, 300);
+        const search = _.debounce(fetchCategory, 300);
 
-        setInventorySearchQuery(prevSearch => {
+        setCategorySearchQuery(prevSearch => {
             if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
@@ -85,72 +74,26 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
         });
 
         search()
-    }, [inventorySearchValue]);
+    }, [categorySearchValue]);
 
-    // Handle suppliers search
-    useEffect(() => {
-        // console.log("Search: ", supplierSearchValue)
-        if (!supplierSearchValue) {
-            // empty search values and cancel any out going request.
-            setSupplierSearchResult([]);
-            if (supplierSearchQuery.cancel) supplierSearchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-
-        const search = _.debounce(fetchSuppliers, 300);
-
-        setSupplierSearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search()
-    }, [supplierSearchValue]);
-
-
-    const fetchInventories = () => {
-        getInventories(inventorySearchValue, 5)
-            .then((data = []) => {
-                console.log("Data: ", data)
+    const fetchCategory = () => {
+        getCategories(categorySearchValue,5)
+            .then((data = [])=>{
                 const results = data.map(item => ({
-                    ...item
+                    _id : item,
+                    name : item
                 }));
-
-                setInventorySearchResult(results || []);
-
+                setCategorySearchResult(results || [])
             })
             .catch(error => {
-                // TODO handle error
-                console.log("failed to get inventories", error);
-                setInventorySearchResult([]);
+                console.log("failed to get categories: ", error)
+                setCategorySearchResult([])
             })
-    };
 
-    const fetchSuppliers = () => {
-        getSuppliers(supplierSearchValue, 5)
-            .then((supplierData ) => {
-                const { data = [], pages = 0} = supplierData
-                // console.log("Data: ", data)
-                const results = data.map(item => ({
-                    ...item
-                }));
+    }
 
-                setSupplierSearchResult(results || []);
+    // ######### EVENT HANDLERS
 
-            })
-            .catch(error => {
-                // TODO handle error
-                console.log("failed to get suppliers", error);
-                setSupplierSearchResult([]);
-            })
-    };
-
-    // ########## EVENT LISTENERS
-    
     const handlePopovers = (popoverValue) => (popoverItem) =>{
 
         if(!popoverItem){
@@ -180,20 +123,21 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
 
     const onPositiveClick = () => {
         
-        let isValid = validateInventory()
+        let isValid = validateGroup()
 
         if(!isValid){ return }
         
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
+
             console.log("Success:", fields)
-            // createInventoryCall()
+            // createGroupCall()
         }
     };
 
     const onTabChange = (tab) => {
-        let isValid = validateInventory()
+        let isValid = validateGroup()
         if(!isValid) {return}
         setSelectedTabIndex(dialogTabs.indexOf(tab))
     };
@@ -211,10 +155,11 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
 
     };
 
-    const validateInventory = () => {
+    const validateGroup = () => {
         let isValid = true
-        let requiredFields = ['name','reference','supplier']
-        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unitPrice','markup']
+        let requiredFields = ['name']
+        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unit', 'unitOfMeasure', 'markup']
+        // const requiredFields = ['name', 'unitPrice']
     
         let errorObj = {...errorFields} || {}
 
@@ -234,21 +179,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
         return isValid
     }
 
-    const handleUnitPrice = (price) => {
-        if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
-            onFieldChange('unitPrice')(parseFloat(price))
-        }
-        setUnitPriceText(price)
-    }
-
-    const handleCustomPrice = (price) => {
-        if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
-            onFieldChange('customPrice')(parseFloat(price))
-        }
-        setCustomPriceText(price)
-    }
-
-    const createInventoryCall = () => {
+    const createGroupCall = () => {
         createInventories(fields)
             .then(data => {
                 addInventory(data)
@@ -276,35 +207,16 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
         }
     };
 
-    let refPop = popoverList.filter( item => item.name === 'reference')
-    let supplierPop = popoverList.filter( item => item.name === 'supplier')
-
-    let markupPrice = fields['unitPrice']*((100 + parseFloat(fields['markup']))/100) || 0
-
+    let catPop = popoverList.filter( item => item.name === 'category')
+    
     const detailsTab = (
+
         <View style={styles.sectionContainer}>
 
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
-                    <SearchableOptionsField
-                        label={"Reference"}
-                        text={inventorySearchValue}
-                        oneOptionsSelected={(item) => {
-                            onFieldChange('reference')(item._id)
-                        }}
-                        onChangeText={value => {setInventorySearchValue(value); console.log("Value:", value)}}
-                        onClear={() => {
-                            onFieldChange('reference')('');
-                            setInventorySearchValue('');
-                        }}
-                        options={inventorySearchResults}
-                        handlePopovers = {(value)=>handlePopovers(value)('reference')}
-                        isPopoverOpen = {refPop[0].status}
-                    />
-                </View>
 
-                <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Item Name"}
                         onChangeText={onFieldChange('name')}
@@ -313,28 +225,21 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                         hasError = {errorFields['name']}
                         errorMessage = "Name must be filled."
                     />
-                </View>
-            </View>
 
-            <View style={[styles.row,{zIndex:-2}]}>
+                </View>
 
                 <View style={styles.inputWrapper}>
-                    <SearchableOptionsField
-                        label={"Supplier"}
-                        text={supplierSearchValue}
-                        oneOptionsSelected={(item) => {
-                            onFieldChange('supplier')(item._id)
-                        }}
-                        onChangeText={value => {setSupplierSearchValue(value); console.log("Value:", value)}}
-                        onClear={() => {
-                            onFieldChange('supplier')('');
-                            setSupplierSearchValue('');
-                        }}
-                        options={supplierSearchResults}
-                        handlePopovers = {(value)=>handlePopovers(value)('supplier')}
-                        isPopoverOpen = {supplierPop[0].status}
+
+                    <MultipleSelectionsField
+                        label={"Category"}
+                        onOptionsSelected={onFieldChange('category')}
+                        options = {categorySearchResults}
+                        searchText = {categorySearchValue}
+                        onSearchChangeText = {(value)=> setCategorySearchValue(value)}
+                        onClear={()=>{setCategorySearchValue('')}}
+                        handlePopovers = {(value)=>handlePopovers(value)('category')}
+                        isPopoverOpen = {catPop[0].status}
                     />
-                
                 </View>
 
             </View>
@@ -343,26 +248,35 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
     );
 
     const configTab = (
+
         <View style={styles.sectionContainer}>
 
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
                     <InputField2
-                        label={"Unit Price"}
-                        onChangeText={(value) => { handleUnitPrice(value )}}
-                        value={unitPriceText.toString()}
-                        keyboardType={'number-pad'}
-                        onClear={() => handleUnitPrice('')}
-                        hasError = {errorFields['unitPrice']}
-                        errorMessage = "Price must be provided."
+                        label={"Unit"}
+                        onChangeText={onFieldChange('unit')}
+                        value={fields['unit']}
+                        onClear={() => onFieldChange('unit')('')}
+                    />
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <OptionsField
+                        label={"Unit of Measure"}
+                        text={fields['unitOfMeasure']}
+                        oneOptionsSelected={onFieldChange('unitOfMeasure')}
+                        menuOption={<MenuOptions>
+                            <MenuOption value={'Glove Boxes'} text='Glove Boxes'/>
+                            <MenuOption value={'Pack'} text='Pack'/>
+                        </MenuOptions>}
                     />
                 </View>
 
             </View>
 
             <View style={styles.row}>
-
                 <View style={styles.inputWrapper}>
                     <InputUnitField
                         label={"Markup"}
@@ -378,25 +292,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                         errorMessage = "Add markup value"
                     />
                 </View>
-
-                <View style={[styles.inputWrapper,{alignItems:'center'}]}>
-                    <Text style={{color:'#A0AEC0', fontSize:14}}>@{fields['markup']}:{markupPrice}</Text>
-                </View>
-
-            </View>
-
-            <View style={styles.row}>
-
-                <View style={styles.inputWrapper}>
-                    <InputField2
-                        label={"Custom Price"}
-                        onChangeText={(value) => { handleCustomPrice(value )}}
-                        value={customPriceText.toString()}
-                        keyboardType={'number-pad'}
-                        onClear={() => handleCustomPrice('')}
-                    />
-                </View>
-
+               
             </View>
         </View>
     );
@@ -431,8 +327,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
     );
 }
 
-CreateInventoryDialogContainer.propTypes = {};
-CreateInventoryDialogContainer.defaultProps = {};
+CreateInventoryGroupDialogContainer.propTypes = {};
+CreateInventoryGroupDialogContainer.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
@@ -467,4 +363,4 @@ const mapDispatcherToProps = {
     addInventory
 };
 
-export default connect(null, mapDispatcherToProps)(CreateInventoryDialogContainer);
+export default connect(null, mapDispatcherToProps)(CreateInventoryGroupDialogContainer);
