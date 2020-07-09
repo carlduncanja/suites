@@ -111,7 +111,7 @@ function ScheduleOverlayContainer({appointment = {}}) {
         const {type = {}} = appointment;
         appointment = {
             ...appointment,
-            location: appointment.location.name
+            location: appointment?.location?.name || "--"
         }
 
         switch (type.name) {
