@@ -302,6 +302,12 @@ export const getSuppliers = async (query, max) => {
         .catch(handleError)
 };
 
+export const createSuppier = async (supplierToCreate) => {
+    return suitesAxiosInstance.post(suppliersEndpoint, supplierToCreate)
+        .then(handleResponse)
+        .catch(handleError);
+}; 
+
 export const getSupplierById = async (id) => {
     return suitesAxiosInstance.get(supplierEndpoint(id))
         .then(handleResponse)

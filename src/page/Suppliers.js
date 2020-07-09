@@ -22,6 +22,7 @@ import _ from "lodash";
 import {withModal, useModal} from 'react-native-modalfy';
 import suppliersTest from '../../data/Suppliers'
 import SuppliersBottomSheet from '../components/Suppliers/SuppliersBottomSheet';
+import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplierDialogContainer';
 
 const Suppliers = (props) => {
 
@@ -220,7 +221,17 @@ const Suppliers = (props) => {
     };
 
     const onOpenCreateSupplier = () =>{
-        console.log("Add Supplier")
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal('OverlayModal',
+                {
+                    content: <CreateSupplierDialogContainer
+                        onCancel={() => setFloatingAction(false)}
+                        onCreated={(item) => handleOnItemPress(item, true)}
+                    />,
+                    onClose: () => setFloatingAction(false)
+                })
+        }, 200)
     }
 
     // ############# Prepare list data
