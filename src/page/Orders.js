@@ -294,6 +294,7 @@ const Orders = (props) => {
         createInvoiceViaOrders(purchaseOrderId)
             .then((data) => {
                 console.log("Invoice Record:", data)
+                updatePurchaseOrder(purchaseOrderId, {status: 'billed'});
                 modal.closeAllModals();
                 addNotification("Inventory Items have been added to the system.", "Inventory")
             })

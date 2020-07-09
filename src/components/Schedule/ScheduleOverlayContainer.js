@@ -84,8 +84,14 @@ function ScheduleOverlayContainer({appointment = {}}) {
     useEffect(() => {
         // fetch appointment
         // console.log("fetching data for: ", appointment._id);
+
+        setTimeout(() => getAppointment(appointment._id), 200)
+
+    }, []);
+
+    const getAppointment = (id) => {
         setFetchingDetails(true);
-        getAppointmentById(appointment._id)
+        getAppointmentById(id)
             .then(data => {
                 console.log("data: ", data);
                 setAppointmentDetails(data);
@@ -96,8 +102,7 @@ function ScheduleOverlayContainer({appointment = {}}) {
             .finally(_ => {
                 setFetchingDetails(false)
             });
-
-    }, []);
+    }
 
     const renderAppointmentDetails = (appointment) => {
         const scheduleTypes = {
@@ -111,7 +116,7 @@ function ScheduleOverlayContainer({appointment = {}}) {
         const {type = {}} = appointment;
         appointment = {
             ...appointment,
-            location: appointment.location.name
+            location: appointment?.location?.name || "--"
         }
 
         switch (type.name) {
@@ -173,6 +178,7 @@ function ScheduleOverlayContainer({appointment = {}}) {
             }
         }
     };
+
     return (
         <View style={styles.container}>
             {

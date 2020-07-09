@@ -3,7 +3,7 @@ import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 
 
-import { getPurchaseOrderById } from "../../api/network";
+import {getPurchaseOrderById} from "../../api/network";
 import {colors} from "../../styles";
 import OrderDetailsTab from '../OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../OverlayTabs/OrderItemTab';
@@ -14,8 +14,8 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
 
     const currentTabs = ["Details", "Items", "Suppliers"];
     // console.log("Order:", order)
-    const { _id, supplier = {}, purchaseOrderNumber} = order;
-    const { name = "" } = supplier
+    const {_id, supplier = {}, purchaseOrderNumber} = order;
+    const {name = ""} = supplier
 
 
     // ##### States
@@ -32,7 +32,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        fetchOrder(_id)
+        setTimeout(() => fetchOrder(_id), 200);
     }, []);
 
     // ##### Event Handlers
@@ -53,18 +53,20 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
         })
     };
 
-    const handlePopovers = (popoverValue) => (popoverItem) =>{
+    const handlePopovers = (popoverValue) => (popoverItem) => {
 
-        if(!popoverItem){
-            let updatedPopovers = popoverList.map( item => {return {
-                ...item,
-                status : false
-            }})
+        if (!popoverItem) {
+            let updatedPopovers = popoverList.map(item => {
+                return {
+                    ...item,
+                    status: false
+                }
+            })
 
             setPopoverList(updatedPopovers)
-        }else{
+        } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedObj = {...popoverList[objIndex], status: popoverValue};
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -81,7 +83,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
         setFetching(true);
         getPurchaseOrderById(id)
             .then(data => {
-                console.log("Data: ", data)
+                // console.log("Data: ", data)
                 setSelectedOrder(data)
             })
             .catch(error => {
@@ -96,11 +98,11 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <OrderDetailsTab order = {selectedOrder}/>
+                return <OrderDetailsTab order={selectedOrder}/>
             case "Items":
-                return <OrderItemTab order = {selectedOrder}/>
+                return <OrderItemTab order={selectedOrder}/>
             case "Suppliers":
-                return <SupplierDetailsTab order = {selectedOrder}/>;
+                return <SupplierDetailsTab order={selectedOrder}/>;
             default :
                 return <View/>
         }
@@ -113,21 +115,17 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
                     ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
                         <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
                     </View>
-                    :
-
-                    // console.log("Selected: ", selectedProcedure)
-                    <SlideOverlay
+                    : <SlideOverlay
                         overlayId={name}
                         overlayTitle={purchaseOrderNumber}
                         onTabPressChange={onTabPress}
                         currentTabs={currentTabs}
                         selectedTab={currentTab}
                         isEditMode={isEditMode}
-                        onEditPress = {onEditPress}
+                        onEditPress={onEditPress}
                         overlayContent={
                             <View
-                                style={{flex: 1, padding:30, paddingBottom:20}}
-                                // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
+                                style={{flex: 1, padding: 30, paddingBottom: 20}}
                             >
                                 {getTabContent(currentTab)}
                             </View>
@@ -141,14 +139,14 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
 OrdersBottomSheet.propTypes = {};
 OrdersBottomSheet.defaultProps = {};
 
-export default  OrdersBottomSheet;
+export default OrdersBottomSheet;
 
 const styles = StyleSheet.create({
-    item:{
-        flex:1,
+    item: {
+        flex: 1,
     },
-    itemText:{
-        fontSize:16,
-        color:"#4A5568",
+    itemText: {
+        fontSize: 16,
+        color: "#4A5568",
     },
 })

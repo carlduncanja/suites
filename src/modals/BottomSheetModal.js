@@ -89,10 +89,8 @@ const BottomSheetModal = (props) => {
         )
     };
 
-    console.log(state.pageMeasure.height, state.pageMeasure.width,)
-
     return (
-        <View style={[styles.modalContainer, {width: dimensions.width, height: state.pageMeasure.height}]}>
+        <View style={[styles.modalContainer, {width: dimensions.width, height: dimensions.height}]}>
             {renderShadow()}
 
             <View style={[

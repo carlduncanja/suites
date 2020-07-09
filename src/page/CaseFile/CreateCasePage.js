@@ -375,9 +375,21 @@ function CreateCasePage({navigation, addCaseFile}) {
         console.log(patientFields);
 
         for (const requiredField of requiredFields) {
+            if (requiredField === 'trn') {
+                // check if trn field is 9
 
+                const trn = patientFields[requiredField];
+                if (trn.length !== 9) {
+                    isValid = false;
 
-            if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo[requiredField])) {
+                    updateErrors = {
+                        ...updateErrors,
+                        [requiredField]: `Invalid trn.`,
+                    }
+
+                }
+
+            } else if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo[requiredField])) {
                 delete updateErrors[requiredField];
                 console.log(`${requiredField} is valid`)
             } else {
@@ -628,9 +640,9 @@ function CreateCasePage({navigation, addCaseFile}) {
                 {/*    onPress={() => handlePopovers(false)()}*/}
                 {/*    activeOpacity={1}*/}
                 {/*>*/}
-                    <View style={{flex: 1}}>
-                        {getTabContent()}
-                    </View>
+                <View style={{flex: 1}}>
+                    {getTabContent()}
+                </View>
                 {/*</TouchableOpacity>*/}
 
             </View>
