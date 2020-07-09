@@ -35,7 +35,7 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
     const [positiveText, setPositiveText] = useState("NEXT")
     const [physicians, setPhysicians] = useState([])
     const [savedTheatres, setSavedTheatres] = useState([])
-    
+
     const [popoverList, setPopoverList] = useState([
         {
             name : "reference",
@@ -124,14 +124,14 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
         {
             let isValid = validateProcedure()
 
-            if(!isValid){return} 
+            if(!isValid){return}
 
             setPositiveText("DONE")
             setTabIndex(dialogTabs.length-1)
 
         }else
         {
-            
+
             setPositiveText("NEXT")
             setTabIndex(newIndex)
         }
@@ -176,7 +176,7 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
                 ...fields,
                 physician : fields['physician']._id,
                 duration : parseInt(fields['duration']),
-                supportedRooms : fields['supportedRooms'].map(item => item._id)
+                supportedRooms : fields['supportedRooms']?.map(item => item._id) || []
             }
             console.log("Fields: ",updatedFields)
             createProcedureCall(updatedFields)
@@ -191,7 +191,7 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
             // fields['duration'] === '' || null ? isDurationError = true : isDurationError = false
             // fields['physician'] === '' || null ? isPhysicianError = true : isPhysicianError = false
             // fields['serviceFee'] === 0 || null ? isServiceFeeError = true : isServiceFeeError = false
-            
+
             // setErrorFields({
             //     ...errorFields,
             //     name : isNameError,
@@ -206,7 +206,7 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
             // }else{
             //     setTabIndex(0)
             // }
-            
+
         }else if (tabIndex + 1 === dialogTabs.length - 1)
         {
             setPositiveText("DONE")
@@ -289,7 +289,7 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
                             onTabPress = { onTabPress }
                         />
                     </View>
-                    
+
                     <TouchableOpacity
                         onPress = {()=>handlePopovers(false)()}
                         activeOpacity = {1}
@@ -299,7 +299,7 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
                         }
                     </TouchableOpacity>
                 </View>
-                
+
                 <TouchableOpacity style={styles.footer} onPress={onPositiveButtonPress}>
                     <Text style={styles.footerText}>{positiveText}</Text>
                 </TouchableOpacity>
