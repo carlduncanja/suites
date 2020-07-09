@@ -16,7 +16,7 @@ import NumberChangeField from "../common/Input Fields/NumberChangeField";
 import { withModal } from "react-native-modalfy";
 import AddItemDialog from "../Procedures/AddItemDialog";
 
-const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInventoryUpdate, onAddInventory}) => { 
+const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInventoryUpdate, onAddInventory}) => {
 
     const recordsPerPage = 10
     // const [consumables, setConsumbales] = useState(consumablesData)
@@ -42,9 +42,9 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
         };
 
         const updatedData = consumablesData.map(item => {
-            return item._id === updatedObj._id ? 
+            return item._id === updatedObj._id ?
                 {...updatedObj}
-                : 
+                :
                 {...item}
         })
 
@@ -60,9 +60,9 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
         };
 
         const updatedData = consumablesData.map(item => {
-            return item._id === updatedObj._id ? 
+            return item._id === updatedObj._id ?
                 {...updatedObj}
-                : 
+                :
                 {...item}
         })
 
@@ -130,10 +130,10 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                 }
             })
     }
- 
+
     const listItem = (item) => {
         const { inventory = {}, amount = 0 } = item
-        const { name = "", unitPrice = 0, type = "Test_Type" } = inventory
+        const { name = "", unitPrice = 0, type = "" } = inventory
         return (
             <>
                 <View style={styles.item}>
@@ -144,8 +144,8 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                 </View>
                 { isEditMode ?
                     <View style={[styles.item,{alignItems:'center'}]}>
-                        <NumberChangeField 
-                            value={amount === 0 ? "" : amount.toString()} 
+                        <NumberChangeField
+                            value={amount === 0 ? "" : amount.toString()}
                             onChangePress = {onQuantityChange(item)}
                             onAmountChange = {onAmountChange(item)}
                         />
@@ -154,18 +154,18 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                     <View style={[styles.item,{alignItems:'center'}]}>
                         <Text style={styles.itemText}>{amount}</Text>
                     </View>
-                
+
                 }
-            
+
                 <View style={[styles.item,{alignItems:'flex-end'}]}>
                     <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
                 </View>
-                
+
             </>
         )
-        
+
     }
- 
+
     const renderProcedureFn = (item) => {
         return <Item
             hasCheckBox={true}
@@ -193,7 +193,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
         setTimeout(() => {
 
             modal
-                .openModal( 
+                .openModal(
                     'OverlayModal',
                     {
                         content: <AddItemDialog
@@ -216,12 +216,12 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                 data = {dataToDisplay}
                 listItemFormat = {renderProcedureFn}
                 headers = {headers}
-                toggleHeaderCheckbox = {handleOnSelectAll} 
+                toggleHeaderCheckbox = {handleOnSelectAll}
                 itemSelected = {checkBoxList}
             />
 
                 <View style={styles.footer}>
-                    
+
                     <View style={{alignSelf: "center", marginRight: 10}}>
                         <RoundedPaginator
                             totalPages={totalPages}
@@ -230,7 +230,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                             goToPreviousPage={goToPreviousPage}
                         />
                     </View>
- 
+
                     <FloatingActionButton
                         isDisabled={isFloatingActionDisabled}
                         toggleActionButton={toggleActionButton}
@@ -239,7 +239,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
 
         </>
 
-    ) 
+    )
 }
 
 export default withModal(ProceduresConsumablesTab)
@@ -274,5 +274,5 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         alignItems:'center',
     },
-    
+
 })
