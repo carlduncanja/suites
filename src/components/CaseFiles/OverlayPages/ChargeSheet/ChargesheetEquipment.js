@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import Table from '../../../common/Table/Table';  
-import Item from '../../../common/Table/Item';  
+import Table from '../../../common/Table/Table';
+import Item from '../../../common/Table/Item';
 import Search from '../../../common/Search';
 import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
 import DropdownInputField from '../../../common/Input Fields/DropdownInputField';
@@ -14,31 +14,6 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
     const [selectedOption, setSelectedOption] = useState(caseProceduresFilters[0])
     const [selectedIndex, setSelectedIndex] = useState(0)
 
-    // let allEquipments = details.map( item => {
-    //     return {
-    //         caseProcedureId : item.caseProcedureId,
-    //         inventories : item.inventories,
-    //         equipments : item.equipments,
-    //         lineItems : item.services,
-    //         name : item.procedure.name
-    //     }
-       
-    // })
-
-
-    // const procedureNames = details.map( item => item.procedure.name) 
-    // const groupedEquipments = allItems.map( item => { return {...item, cost : item.unitPrice}})
-    
-    // const data = []
-    // allEquipments.forEach(item => item.map( obj => data.push(obj)))
-    // let initialOption = isEditMode ? procedureNames[0] : 'All'
-     
-    // const [equipmentsList, setEquipmentsList] = useState(allEquipments)
-    // const [selectedOption, setSelectedOption] = useState(initialOption)
-    // const [selectedIndex, setSelectedIndex] = useState(0)
-    // const [selectedData, setSelectedData] = useState(groupedEquipments)
-
-    
     const onSearchInputChange = (input) =>{
         setSearchText(input)
     }
@@ -53,11 +28,11 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
         }
         setCheckBoxList(updateEquipment);
     }
-    
+
     const toggleHeaderCheckbox = () =>{
         const selectedData = equipments[selectedIndex]
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== selectedData.length;
-        
+
         if (indeterminate) {
             const selectedAllIds = [...selectedData.map( item => item )]
             setCheckBoxList(selectedAllIds)
@@ -100,7 +75,7 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
         //         // console.log("Index: ", )
         //     }
         // }
-        
+
     }
 
     // const updateEquipmentList = (id, data) =>{
@@ -168,7 +143,7 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
         //console.log("Item: ", item)
         // const findIndex = selectedData.findIndex(obj => obj.equipment === item.equipment);
         // let selectedItem = selectedData[findIndex]
-        // const updatedObj = { 
+        // const updatedObj = {
         //     ...selectedItem,
         //     amount: action ==='add' ? selectedItem.amount + 1 : selectedItem.amount - 1
         // };
@@ -176,7 +151,7 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
         //     ...selectedData.slice(0, findIndex),
         //     updatedObj,
         //     ...selectedData.slice(findIndex + 1),
-        // ]; 
+        // ];
         // getProcedureId(updatedData)
         // // handleEditDone(updatedData)
         // // console.log("SelctedData: ", updatedData)
@@ -206,10 +181,10 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
         //     ...selectedData.slice(0, findIndex),
         //     updatedObj,
         //     ...selectedData.slice(findIndex + 1),
-        // ]; 
+        // ];
         // getProcedureId(updatedItems)
         // setSelectedData(updatedItems)
-        
+
         // console.log("update: ", updatedItems)
     }
 
@@ -218,7 +193,7 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{item.type}</Text>
+            <Text style={styles.itemText}>{item?.type}</Text>
         </View>
         {
             isEditMode && selectedOption !== 'All'?
@@ -230,7 +205,7 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
                     value = {item.amount === 0 ? "" : item.amount.toString()}
                 />
             </View>
-            
+
             :
             <View style={[styles.item, {alignItems: 'center'}]}>
                 <Text style={styles.itemText}>{item.amount}</Text>
@@ -254,8 +229,8 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
             itemView={listItem(item,index)}
         />
     }
-   
-    return ( 
+
+    return (
         <ScrollView>
 
             <View style={{flex:1, justifyContent:'space-between', flexDirection:'row', marginBottom:20}}>
@@ -275,7 +250,7 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
                         dropdownOptions = {caseProceduresFilters}
                     />
                 </View>
-                
+
             </View>
 
             <Table
@@ -283,14 +258,14 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
                 data = {equipments[selectedIndex] || []}
                 listItemFormat = {renderListFn}
                 headers = {headers}
-                toggleHeaderCheckbox = {toggleHeaderCheckbox} 
+                toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 itemSelected = {checkBoxList}
                 // dataLength = {tabDetails.length}
             />
         </ScrollView>
     );
 }
- 
+
 export default ChargesheetEquipment;
 
 const styles = StyleSheet.create({
