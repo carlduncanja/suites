@@ -27,7 +27,7 @@ import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplie
 const Suppliers = (props) => {
 
     // ############# Const data
-    const recordsPerPage = 15;
+    const recordsPerPage = 10;
     const listHeaders = [
         {
             name: "Name",
