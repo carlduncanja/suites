@@ -20,15 +20,16 @@ import { addCartItem } from "../../redux/actions/cartActions";
 import {connect} from "react-redux";
 import _ from "lodash";
 import CreatePurchaseOrderDialog from "../Suppliers/CreatePurchaseOrderDialog";
+import CreateInventoryDialogContainer from "../Inventory/CreateInventoryDialogContainer";
 
 
-const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, cart, updateCartItems, cartOrderItems, onOrderComplete }) => {
+const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, cart, products, onAddProducts, updateCartItems, cartOrderItems }) => {
 
     // ######## STATES
     
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFetching, setFetching] = useState(false);
-    const [products, setProducts] = useState([])
+    // const [products, setProducts] = useState([])
 
     const recordsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
@@ -42,7 +43,7 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
     const [cartTotal, setCartTotal] = useState(0)
-    // const [cartItems, setCartItems] = useState([])
+    const [cartItems, setCartItems] = useState([])
 
     // ######## CONSTS
 
@@ -72,32 +73,32 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
     },[])
 
     useEffect(() => {
-        if (!products.length) fetchProducts()
+        // if (!products.length) fetchProducts()
         setTotalPages(Math.ceil(products.length / recordsPerPage))
     }, []);
 
-    useEffect(() => {
+    // useEffect(() => {
        
-        if (!searchValue) {
-            // empty search values and cancel any out going request.
-            setSearchResult([]);
-            if (searchQuery.cancel) searchQuery.cancel();
-            return;
-        }
+    //     if (!searchValue) {
+    //         // empty search values and cancel any out going request.
+    //         setSearchResult([]);
+    //         if (searchQuery.cancel) searchQuery.cancel();
+    //         return;
+    //     }
 
-        // wait 300ms before search. cancel any prev request before executing current.
+    //     // wait 300ms before search. cancel any prev request before executing current.
 
-        const search = _.debounce(fetchProducts, 300);
+    //     const search = _.debounce(fetchProducts, 300);
 
-        setSearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
+    //     setSearchQuery(prevSearch => {
+    //         if (prevSearch && prevSearch.cancel) {
+    //             prevSearch.cancel();
+    //         }
+    //         return search;
+    //     });
 
-        search()
-    }, [searchValue]);
+    //     search()
+    // }, [searchValue]);
 
     // ######## EVENT HANDLERS
 
@@ -164,30 +165,31 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
     }
 
     const toggleCartActionButton = () =>{
-        updateCartItems([...cartOrderItems,...checkBoxList])
-        let data = [...cartOrderItems,...checkBoxList]
-        modal.openModal('OverlayInfoModal',{ 
-            overlayContent : <SuppliersPurchaseOrder 
-                details = {data}  
-                onUpdateItems = {onUpdateItems}
-                onClearPress = {onClearPress}
-                onListFooterPress = {onListFooterPress}
-            />,
-        })
+        // updateCartItems([...cartOrderItems,...checkBoxList])
+        // let data = [...cartOrderItems,...checkBoxList]
+        // modal.openModal('OverlayInfoModal',{ 
+        //     overlayContent : <SuppliersPurchaseOrder 
+        //         details = {data}  
+        //         onUpdateItems = {onUpdateItems}
+        //         onClearPress = {onClearPress}
+        //         onListFooterPress = {onListFooterPress}
+        //     />,
+        // })
     }
 
     const onClearPress = () =>{
         // setCartItems([])
-        updateCartItems([])
+        // updateCartItems([])
         addCartItem([])
         setCartTotal(0)
+        setCartItems([])
         setCheckBoxList([])
     }
 
     const onListFooterPress = (data) => {
         addCartItem(data)
-        updateCartItems(data)
-        // setCartItems(data)
+        // updateCartItems(data)
+        setCartItems(data)
         setCheckBoxList([])
 
         modal.closeModals('OverlayInfoModal');
@@ -203,47 +205,127 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
         }, 200)
     }
 
-    // const onOrderComplete = (data) => {
-    //     modal.closeModals('OverlayModal')
-    //     console.log("Fields: ", data)
-        
-    //     // create Purchase Order
-    // }
+    const onOrderComplete = (data) =>{
+        const { name = "", storageLocation = {} } = data
+        const updatedOrders = cartItems.map(item => {return { amount: item.amount, productId : item._id}})
+        let newPO = {
+            name : name,
+            storageLocation : storageLocation._id,
+            supplier : supplierId,
+            orders : updatedOrders,
+            orderDate : new Date()
+        }
+        createPurchaseOrder(newPO)
+            .then(data => {
+                console.log("DB data: ", data)
+            })
+            .catch(error => {
+                console.log("Failed to create PO", error)
+                //TODO handle error cases.
+            })
+        // console.log("Purchase Order: ", newPO)
+        // console.log("Cart Items: ", cartOrderItems)
+    }
 
     const onUpdateItems = (data) => {
         const total = data.reduce((acc, curr) => acc + (curr.amount || 0),0)
-        // setCartItems(data)
+        setCartItems(data)
         setCartTotal(total)
-        updateCartItems(data)
+        // updateCartItems(data)
     }
 
     // ######## HELPER FUNCTIONS
 
-    const fetchProducts = () => {
-        setFetching(true);
-        getSupplierProducts(supplierId, searchValue, recordsPerPage)
-            .then(productsData => {
-                const { data = [], pages = 0} = productsData
-                setProducts(data)
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
-            })
-            .catch(error => {
-                console.log("Failed to get products", error)
-                //TODO handle error cases.
-            })
-            .finally(_ => {
-                setFetching(false)
-            })
-    };
+    // const fetchProducts = () => {
+    //     setFetching(true);
+    //     getSupplierProducts(supplierId, searchValue, recordsPerPage)
+    //         .then(productsData => {
+    //             const { data = [], pages = 0} = productsData
+    //             setProducts(data)
+    //             setTotalPages(Math.ceil(data.length / recordsPerPage))
+    //         })
+    //         .catch(error => {
+    //             console.log("Failed to get products", error)
+    //             //TODO handle error cases.
+    //         })
+    //         .finally(_ => {
+    //             setFetching(false)
+    //         })
+    // };
 
     const actions = () =>{
-        const create = <ActionItem title={"Create P.O"} icon={<AddIcon/>} onPress={()=>{}}/>;
+        const addCart = <ActionItem title={"Add to Cart"} icon={<AddIcon/>} onPress={openCartDailog}/>;
+        const addProduct = <ActionItem title={"Add Product"} icon={<AddIcon/>} onPress={openAddProduct}/>;
         return <ActionContainer
             floatingActions={[
-                
+                addCart,
+                addProduct
             ]}
             title={"SUPPLIER ACTIONS"}
         />
+    }
+
+    const openCartDailog = () => {
+    
+        let cartArray = []
+        let updatedCheck = [...checkBoxList]
+        if(updatedCheck.length === 0){
+            cartArray = cartItems
+        }else{
+            
+            cartItems.map(item => {
+                let isFilterCheck = checkBoxList.filter( checkItem => checkItem._id === item._id)
+                if(isFilterCheck){
+                    cartArray.push(item) 
+                }
+                let index = updatedCheck.findIndex( checkItem => checkItem._id === item._id)
+                updatedCheck = [
+                    ...updatedCheck.slice(0, index),
+                    ...updatedCheck.slice(index + 1),
+                ]; 
+                
+            })
+
+        }
+        cartArray = [...cartArray,...updatedCheck]
+
+        modal.closeModals('ActionContainerModal')
+        setCartItems([...cartArray])
+        // updateCartItems([...cartArray])
+
+        setTimeout(()=>{
+            modal.openModal('OverlayInfoModal',{ 
+                overlayContent : <SuppliersPurchaseOrder 
+                    details = {cartArray}  
+                    onUpdateItems = {onUpdateItems}
+                    onClearPress = {onClearPress}
+                    onListFooterPress = {onListFooterPress}
+                />,
+            })
+        },200)
+        
+    }
+
+    const addItemComplete = (data) =>{
+        modal.closeModals('OverlayModal')
+        setTimeout(()=>{
+            onAddProducts(data)
+        },200)
+    }
+
+    const openAddProduct = () => {
+        modal.closeModals('ActionContainerModal')
+
+        setTimeout(()=>{
+            modal.openModal('OverlayModal',
+                {
+                    content: <CreateInventoryDialogContainer
+                        onCreated={(item) => addItemComplete(item)}
+                        onCancel={() => setFloatingAction(false)}
+                    />,
+                    onClose: () => setFloatingAction(false)
+                })
+        },200)
     }
 
     const listItemFormat = (item) => <>
@@ -325,7 +407,7 @@ SupplierProductsTab.defaultProps = {};
 const mapStateToProps = (state) => ({
     cart: state.cart
 });
-
+ 
 const mapDispatchToProp = {
     addCartItem
 }
