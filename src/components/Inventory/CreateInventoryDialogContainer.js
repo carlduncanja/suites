@@ -188,7 +188,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
             console.log("Success:", fields)
-            onCreated(fields)
+            // onCreated(fields)
             // createInventoryCall()
         }
     };
