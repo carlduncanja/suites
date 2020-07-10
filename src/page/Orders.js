@@ -31,7 +31,7 @@ const listHeaders = [
     {
         name: "Purchase Orders",
         alignment: "flex-start",
-        flex: 1,
+        flex: 1.5,
         fontSize: 14
     },
     {
@@ -212,7 +212,7 @@ const Orders = (props) => {
 
         return (
             <>
-                <View style={[styles.item, {...styles.rowBorderRight, flex: 1}]}>
+                <View style={[styles.item, {...styles.rowBorderRight, flex: 1.5}]}>
                     <Text style={[styles.itemText, {color: "#4E5664"}]}>{purchaseOrderNumber}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
