@@ -79,7 +79,7 @@ const Physicians = (props) => {
         }
         setTotalPages(Math.ceil(physicians.length / recordsPerPage))
     }, []);
- 
+
     useEffect(() => {
 
         if (!searchValue) {
@@ -192,19 +192,19 @@ const Physicians = (props) => {
     }
 
     const physiciansItem = (item) => {
-        
+
         const { _id = "", surname = "", type = "Neurosurgeon", status = "Active" } = item
         return (
             <>
                 <View style={[styles.item,{}]}>
-                    <Text style={[styles.itemText,{fontSize: 12, color: "#718096"}]}>#{_id}</Text>
-                    <Text style={[styles.itemText,{fontSize: 16, color: "#3182CE"}]}>Dr. {surname}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText,{fontSize: 12, color: "#718096"}]}>#{_id}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText,{fontSize: 16, color: "#3182CE"}]}>Dr. {surname}</Text>
                 </View>
                 <View style={[styles.item,{alignItems:'center'}]}>
-                    <Text style={[styles.itemText,{fontSize: 16, color: '#4E5664'}]}>{type}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText,{fontSize: 16, color: '#4E5664'}]}>{type}</Text>
                 </View>
                 <View style={[styles.item,{alignItems:'center'}]}>
-                    <Text style={[styles.itemText,{fontSize: 14, color: statusColor(status)}]}>{status}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText,{fontSize: 14, color: statusColor(status)}]}>{status}</Text>
                 </View>
                 <View style={[styles.item,{alignItems:'center'}]}>
                     <PhysicianActionIcon/>
