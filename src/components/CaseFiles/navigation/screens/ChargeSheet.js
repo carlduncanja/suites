@@ -51,13 +51,12 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     })
     equipmentList = equipmentList.map(item => {
         const {equipment} = item
-        const {type = {}} = equipment
-        const {name = "", unitPrice = 0} = equipment
+        const {name = ""} = equipment
         return {
             ...item,
-            type: type.name || "",
+            type: equipment.type?.name || "",
             name,
-            unitPrice: type.unitPrice || 0
+            unitPrice: equipment.type?.unitPrice || 0
         }
     })
 
@@ -143,8 +142,8 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                 _id: item?._id,
                 equipment: item.equipment?._id,
                 amount: item.amount,
-                name: item.equipment?.type.name,
-                cost: item.equipment?.type.unitPrice,
+                name: item.equipment?.type?.name,
+                cost: item.equipment?.type?.unitPrice,
             }
         })
 
