@@ -14,11 +14,11 @@ import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 const General = ({tabDetails}) => {
 
     const getData = (medicalType) => {
-        const { notes = [] } =  tabDetails.filter(item => item.type.name === medicalType)[0]
+        const { notes = [] } =  tabDetails.filter(item => item?.type?.name === medicalType[0])
         return notes
     }
 
-    return ( 
+    return (
         <ScrollView>
 
             <View style={styles.frameContainer}>
@@ -38,10 +38,10 @@ const General = ({tabDetails}) => {
                     titleBackgroundColor = "#FFFAF0"
                     frameBorderColor = "#FBD38D"
                     frameTitle = "Pre-Existing Conditions"
-                    cardInformation = {getData("Pre-Existing Conditions")} 
+                    cardInformation = {getData("Pre-Existing Conditions")}
                     icon = {ConditionsIcon}
                 />
-            </View> 
+            </View>
 
             <View style={styles.frameContainer}>
                 <FrameCard
@@ -52,7 +52,7 @@ const General = ({tabDetails}) => {
                     cardInformation = {getData("Immunisations")}
                     icon = {ImmunisationsIcon}
                 />
-            </View> 
+            </View>
 
             <View style={styles.frameContainer}>
                 <FrameCard
@@ -63,8 +63,8 @@ const General = ({tabDetails}) => {
                     cardInformation = {getData("Medications")}
                     icon = {MedicationsIcon}
                 />
-            </View> 
-            
+            </View>
+
             <View style={styles.frameContainer}>
                 <FrameCard
                     frameColor = "#38A169"
@@ -74,8 +74,8 @@ const General = ({tabDetails}) => {
                     cardInformation = {getData("Procedures")}
                     icon = {ProceduresIcon}
                 />
-            </View> 
-            
+            </View>
+
             <View style={styles.frameContainer}>
                 <FrameCard
                     frameColor = "#3182CE"
@@ -85,12 +85,12 @@ const General = ({tabDetails}) => {
                     cardInformation = {getData("Implanted Devices")}
                     icon = {DevicesIcon}
                 />
-            </View> 
-            
+            </View>
+
         </ScrollView>
     );
 }
- 
+
 export default General;
 
 const styles = StyleSheet.create({
