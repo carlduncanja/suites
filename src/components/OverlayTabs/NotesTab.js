@@ -5,7 +5,7 @@ import NotesIcon from '../../../assets/svg/notes';
 import { withModal } from "react-native-modalfy";
 
 const NotesTab = ({notesData}) => {
-
+ 
     return (
         <>
             <FrameCard

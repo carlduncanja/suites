@@ -29,7 +29,7 @@ const OrderDetailsTab = ({order = {} }) =>{
         total = 0,
         supplier = {},
         invoice = "",
-        storageLocation = "",
+        storageLocation = {},
         type = "",
         configStatus = "",
         approvedBy =  "",
@@ -37,7 +37,10 @@ const OrderDetailsTab = ({order = {} }) =>{
         requestedBy = ""
     } = order
 
-    const { decscription = "" } = supplier
+    // console.log("Order: ",order)
+
+    const { decscription = "", representatives = [] } = supplier
+    const { name = "" } = storageLocation
 
     return (
         <View style={{flex:1}}>
@@ -92,7 +95,7 @@ const OrderDetailsTab = ({order = {} }) =>{
                <View style={styles.inputWrapper}>
                    <ResponsiveRecord
                         recordTitle = "Storage Location"
-                        recordValue = {storageLocation}
+                        recordValue = {name}
                    />
                </View>
            </View>

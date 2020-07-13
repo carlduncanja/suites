@@ -404,7 +404,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
 
     return (
         <OverlayDialog
-            title={"New Location"}
+            title={"Create Inventory Item"}
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={selectedIndex === (dialogTabs.length - 1) ? "DONE" : "NEXT"}

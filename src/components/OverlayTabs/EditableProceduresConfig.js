@@ -1,6 +1,7 @@
 import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet,KeyboardAvoidingView } from "react-native";
+import { View, Text, StyleSheet,KeyboardAvoidingView, TextInput } from "react-native";
 import InputField2 from '../common/Input Fields/InputField2';
+import TextArea from '../common/Input Fields/TextArea';
 import OptionsField from '../common/Input Fields/OptionsField';
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
@@ -14,7 +15,7 @@ import TextEditor2 from "../common/Input Fields/TextEditor2";
 const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopovers}) => {
 
     const recoveryText = { 
-        true: "Yes",
+        true: "Yes", 
         false: "No"
     };
 
@@ -75,9 +76,24 @@ const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopo
 
                 <View style = {styles.row}>
                     <View style={styles.fieldWrapper}>
-                        <TextEditor
+                        {/* <TextEditor
                             onFieldChange = {onFieldChange}
-                        />
+                        /> */}
+
+                        <View style={{ marginBottom:5}}>
+                            <Text style={styles.title}>Description</Text>
+                        </View>
+
+                        <View style={{height:70,justifyContent:'center'}}>
+                            <TextArea
+                                onChangeText = {onFieldChange('description')}
+                                value = {fields['description']}
+                                multiline = {true}
+                                numberOfLines = {4}
+                                onClear = {()=>onFieldChange('description')('')}
+                            />
+                        </View>
+                        
                     </View>
                 </View>
 

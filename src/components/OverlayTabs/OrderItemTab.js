@@ -35,7 +35,7 @@ const testData = [
         quanity : 10,
         unitPrice : 7724.81,
     },
-]
+] 
 
 const OrderItemTab = ({order}) =>{
 

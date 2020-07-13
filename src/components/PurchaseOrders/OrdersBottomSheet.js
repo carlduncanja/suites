@@ -25,7 +25,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState({})
-
+    const [orderItems, setOrderItems] = useState([])
     const [fields, setFields] = useState({})
 
     const [popoverList, setPopoverList] = useState([])
@@ -83,7 +83,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
         setFetching(true);
         getPurchaseOrderById(id)
             .then(data => {
-                // console.log("Data: ", data)
+                console.log("Data: ", data)
                 setSelectedOrder(data)
             })
             .catch(error => {

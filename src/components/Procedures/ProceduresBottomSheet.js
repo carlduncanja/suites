@@ -29,7 +29,8 @@ function ProceduresBottomSheet({modal, procedure, isOpenEditable}) {
         name,
         hasRecovery,
         duration,
-        physician
+        physician,
+        description = "",
     } = procedure;
 
     
@@ -68,7 +69,8 @@ function ProceduresBottomSheet({modal, procedure, isOpenEditable}) {
         hasRecovery : hasRecovery,
         duration : duration.toString(),
         custom : true,
-        physician : physician
+        physician : physician,
+        description : description
     })
 
     const [popoverList, setPopoverList] = useState([
