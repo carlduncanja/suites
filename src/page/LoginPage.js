@@ -83,6 +83,7 @@ function LoginPage({navigation, signIn}) {
                                 label="Email"
                                 onChangeText={(value) => onFieldChange('email')(value)}
                                 value={fields['email']}
+                                keyboardType={"email-address"}
                                 onClear={() => onFieldChange('email')('')}
                                 icon={<PersonIcon/>}
                             />
