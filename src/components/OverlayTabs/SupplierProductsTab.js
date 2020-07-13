@@ -350,6 +350,7 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
                         toggleActionButton={toggleCartActionButton}
                         icon = {Cart}
                         value = {cartTotal}
+                        showValue =  {cartTotal !== 0}
                     />
                 </View>
 
