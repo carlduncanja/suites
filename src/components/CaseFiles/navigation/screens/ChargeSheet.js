@@ -27,6 +27,24 @@ const LINE_ITEM_TYPES = {
     PHYSICIANS: "physician",
 }
 
+const headers = [
+    {
+        name: "Item Name",
+        alignment: "flex-start"
+    },
+    {
+        name: "Type",
+        alignment: "center"
+    },
+    {
+        name: "Quantity",
+        alignment: "center"
+    },
+    {
+        name: "Unit Price",
+        alignment: "flex-end"
+    }
+]
 
 const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, isEditMode, onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
 
@@ -41,11 +59,11 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
     inventoryList = inventoryList.map(item => {
         const {inventory} = item
-        const {name = "", unitPrice = 0} = inventory
+        const {name = "", unitCost = 1} = inventory
         return {
             ...item,
             name,
-            unitPrice,
+            unitPrice: unitCost,
             type: 'Anaesthesia'
         }
     })
@@ -59,26 +77,6 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
             unitPrice
         }
     })
-
-
-    const headers = [
-        {
-            name: "Item Name",
-            alignment: "flex-start"
-        },
-        {
-            name: "Type",
-            alignment: "center"
-        },
-        {
-            name: "Quantity",
-            alignment: "center"
-        },
-        {
-            name: "Unit Price",
-            alignment: "flex-end"
-        }
-    ]
 
     // preparing billing information
     const billing = {
@@ -128,12 +126,15 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         }
 
         billingItem.inventories = inventories.map(item => {
+
+            console.log(item);
+
             return {
                 _id: item._id,
                 inventory: item?.inventory?._id,
-                amount: item?.amount,
-                name: item?.inventory?.name,
-                cost: item?.inventory?.unitPrice,
+                amount: item.amount,
+                name: item.inventory?.name,
+                cost: item.inventory?.unitCost || 0,
             }
         })
 
