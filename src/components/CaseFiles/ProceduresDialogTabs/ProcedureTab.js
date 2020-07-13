@@ -256,7 +256,7 @@ const ProcedureTab = ({
                         options={searchProcedureResult}
                         handlePopovers={() => {
                             console.log("handle popovers");
-                        }} 
+                        }}
                         isPopoverOpen={searchProcedureQuery}
                         hasError={errors['procedure']}
                         errorMessage={errors['procedure']}
@@ -343,8 +343,7 @@ const ProcedureTab = ({
                     <View style={{flex: 1}}>
                         {
                             // duration procedure location date
-
-                            procedure && location && duration && date &&
+                            !(!procedure || !location || !duration || !date) &&
                             <TouchableOpacity
                                 onPress={openModal}
                                 style={{

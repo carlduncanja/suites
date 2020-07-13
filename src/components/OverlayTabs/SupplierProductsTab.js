@@ -2,7 +2,7 @@ import React,{ useState,useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Table from '../common/Table/Table';
 import Search from '../common/Search';
-import Item from '../common/Table/Item'; 
+import Item from '../common/Table/Item';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import FloatingActionAnnotated from '../common/FloatingAction/FloatingActionAnnotated';
@@ -15,20 +15,20 @@ import AddIcon from "../../../assets/svg/addIcon";
 import { currencyFormatter } from "../../utils/formatter";
 import { withModal } from 'react-native-modalfy';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
-import { getSupplierProducts } from "../../api/network"; 
+import { getSupplierProducts } from "../../api/network";
 import { addCartItem } from "../../redux/actions/cartActions";
 import {connect} from "react-redux";
 import _ from "lodash";
 import CreatePurchaseOrderDialog from "../Suppliers/CreatePurchaseOrderDialog";
+import CreateInventoryDialogContainer from "../Inventory/CreateInventoryDialogContainer";
 
 
-const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, cart, updateCartItems, cartOrderItems, onOrderComplete }) => {
+const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, cart, products, onAddProducts, updateCartItems, cartOrderItems }) => {
 
     // ######## STATES
-    
+
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFetching, setFetching] = useState(false);
-    const [products, setProducts] = useState([])
 
     const recordsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
@@ -39,12 +39,13 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
+    const [tabDetails, setTabDetails] = useState([]);
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
     const [cartTotal, setCartTotal] = useState(0)
-    // const [cartItems, setCartItems] = useState([])
+    const [cartItems, setCartItems] = useState([])
 
-    // ######## CONSTS
+    // ######## CONST
 
     const headers = [
         {
@@ -62,42 +63,19 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
         {
             name :"Price",
             alignment : "flex-end"
-        }     
+        }
     ]
 
-    // ######## LIFECYCLE METHODS 
+    // ######## LIFECYCLE METHODS
 
     useEffect(()=>{
         onUpdateItems(cart)
     },[])
 
     useEffect(() => {
-        if (!products.length) fetchProducts()
+        // if (!products.length) fetchProducts()
         setTotalPages(Math.ceil(products.length / recordsPerPage))
     }, []);
-
-    useEffect(() => {
-       
-        if (!searchValue) {
-            // empty search values and cancel any out going request.
-            setSearchResult([]);
-            if (searchQuery.cancel) searchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-
-        const search = _.debounce(fetchProducts, 300);
-
-        setSearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search()
-    }, [searchValue]);
 
     // ######## EVENT HANDLERS
 
@@ -135,20 +113,16 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
         // updateCartItems([...cartOrderItems,...updatedCases])
         // setCartItems([...cartOrderItems,...updatedCases])
     }
-    
+
     const toggleHeaderCheckbox = () =>{
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
-        
+
         if (indeterminate) {
             const selectedAllIds = [...tabDetails.map( item => item )]
             setCheckBoxList(selectedAllIds)
         } else {
             setCheckBoxList([])
         }
-        // checkBoxList.length > 0 ?
-        //     setCheckBoxList([])
-        //     :
-        //     setCheckBoxList(tabDetails)
     }
 
     const toggleActionButton = () => {
@@ -164,30 +138,31 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
     }
 
     const toggleCartActionButton = () =>{
-        updateCartItems([...cartOrderItems,...checkBoxList])
-        let data = [...cartOrderItems,...checkBoxList]
-        modal.openModal('OverlayInfoModal',{ 
-            overlayContent : <SuppliersPurchaseOrder 
-                details = {data}  
-                onUpdateItems = {onUpdateItems}
-                onClearPress = {onClearPress}
-                onListFooterPress = {onListFooterPress}
-            />,
-        })
+        // updateCartItems([...cartOrderItems,...checkBoxList])
+        // let data = [...cartOrderItems,...checkBoxList]
+        // modal.openModal('OverlayInfoModal',{
+        //     overlayContent : <SuppliersPurchaseOrder
+        //         details = {data}
+        //         onUpdateItems = {onUpdateItems}
+        //         onClearPress = {onClearPress}
+        //         onListFooterPress = {onListFooterPress}
+        //     />,
+        // })
     }
 
     const onClearPress = () =>{
         // setCartItems([])
-        updateCartItems([])
+        // updateCartItems([])
         addCartItem([])
         setCartTotal(0)
+        setCartItems([])
         setCheckBoxList([])
     }
 
     const onListFooterPress = (data) => {
         addCartItem(data)
-        updateCartItems(data)
-        // setCartItems(data)
+        // updateCartItems(data)
+        setCartItems(data)
         setCheckBoxList([])
 
         modal.closeModals('OverlayInfoModal');
@@ -203,47 +178,127 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
         }, 200)
     }
 
-    // const onOrderComplete = (data) => {
-    //     modal.closeModals('OverlayModal')
-    //     console.log("Fields: ", data)
-        
-    //     // create Purchase Order
-    // }
+    const onOrderComplete = (data) =>{
+        const { name = "", storageLocation = {} } = data
+        const updatedOrders = cartItems.map(item => {return { amount: item.amount, productId : item._id}})
+        let newPO = {
+            name : name,
+            storageLocation : storageLocation._id,
+            supplier : supplierId,
+            orders : updatedOrders,
+            orderDate : new Date()
+        }
+        createPurchaseOrder(newPO)
+            .then(data => {
+                console.log("DB data: ", data)
+            })
+            .catch(error => {
+                console.log("Failed to create PO", error)
+                //TODO handle error cases.
+            })
+        // console.log("Purchase Order: ", newPO)
+        // console.log("Cart Items: ", cartOrderItems)
+    }
 
     const onUpdateItems = (data) => {
         const total = data.reduce((acc, curr) => acc + (curr.amount || 0),0)
-        // setCartItems(data)
+        setCartItems(data)
         setCartTotal(total)
-        updateCartItems(data)
+        // updateCartItems(data)
     }
 
     // ######## HELPER FUNCTIONS
 
-    const fetchProducts = () => {
-        setFetching(true);
-        getSupplierProducts(supplierId, searchValue, recordsPerPage)
-            .then(productsData => {
-                const { data = [], pages = 0} = productsData
-                setProducts(data)
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
-            })
-            .catch(error => {
-                console.log("Failed to get products", error)
-                //TODO handle error cases.
-            })
-            .finally(_ => {
-                setFetching(false)
-            })
-    };
+    // const fetchProducts = () => {
+    //     setFetching(true);
+    //     getSupplierProducts(supplierId, searchValue, recordsPerPage)
+    //         .then(productsData => {
+    //             const { data = [], pages = 0} = productsData
+    //             setProducts(data)
+    //             setTotalPages(Math.ceil(data.length / recordsPerPage))
+    //         })
+    //         .catch(error => {
+    //             console.log("Failed to get products", error)
+    //             //TODO handle error cases.
+    //         })
+    //         .finally(_ => {
+    //             setFetching(false)
+    //         })
+    // };
 
     const actions = () =>{
-        const create = <ActionItem title={"Create P.O"} icon={<AddIcon/>} onPress={()=>{}}/>;
+        const addCart = <ActionItem title={"Add to Cart"} icon={<AddIcon/>} onPress={openCartDailog}/>;
+        const addProduct = <ActionItem title={"Add Product"} icon={<AddIcon/>} onPress={openAddProduct}/>;
         return <ActionContainer
             floatingActions={[
-                
+                addCart,
+                addProduct
             ]}
             title={"SUPPLIER ACTIONS"}
         />
+    }
+
+    const openCartDailog = () => {
+
+        let cartArray = []
+        let updatedCheck = [...checkBoxList]
+        if(updatedCheck.length === 0){
+            cartArray = cartItems
+        }else{
+
+            cartItems.map(item => {
+                let isFilterCheck = checkBoxList.filter( checkItem => checkItem._id === item._id)
+                if(isFilterCheck){
+                    cartArray.push(item)
+                }
+                let index = updatedCheck.findIndex( checkItem => checkItem._id === item._id)
+                updatedCheck = [
+                    ...updatedCheck.slice(0, index),
+                    ...updatedCheck.slice(index + 1),
+                ];
+
+            })
+
+        }
+        cartArray = [...cartArray,...updatedCheck]
+
+        modal.closeModals('ActionContainerModal')
+        setCartItems([...cartArray])
+        // updateCartItems([...cartArray])
+
+        setTimeout(()=>{
+            modal.openModal('OverlayInfoModal',{
+                overlayContent : <SuppliersPurchaseOrder
+                    details = {cartArray}
+                    onUpdateItems = {onUpdateItems}
+                    onClearPress = {onClearPress}
+                    onListFooterPress = {onListFooterPress}
+                />,
+            })
+        },200)
+
+    }
+
+    const addItemComplete = (data) =>{
+        modal.closeModals('OverlayModal')
+        setTimeout(()=>{
+            onAddProducts(data)
+        },200)
+    }
+
+    const openAddProduct = () => {
+        modal.closeModals('ActionContainerModal')
+
+        setTimeout(()=>{
+            modal.openModal('OverlayModal',
+                {
+                    content: <CreateInventoryDialogContainer
+                        onCreated={(item) => addItemComplete(item)}
+                        onCancel={() => setFloatingAction(false)}
+                    />,
+                    onClose: () => setFloatingAction(false)
+                })
+        },200)
     }
 
     const listItemFormat = (item) => <>
@@ -261,7 +316,7 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
         </View>
     </>;
 
-    const renderListFn = (item) =>{ 
+    const renderListFn = (item) =>{
         return <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
@@ -280,9 +335,9 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
                     inputText = {searchValue}
                 />
             </View>
-            
+
             <Table
-                data = {products} 
+                data = {products}
                 listItemFormat = {renderListFn}
                 headers = {headers}
                 isCheckbox = {true}
@@ -292,7 +347,7 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
             <View style={styles.footer}>
                 <View>
                     <FloatingActionAnnotated
-                        toggleActionButton={toggleCartActionButton} 
+                        toggleActionButton={toggleCartActionButton}
                         icon = {Cart}
                         value = {cartTotal}
                     />
@@ -313,7 +368,7 @@ const SupplierProductsTab = ({modal, floatingActions, supplierId, addCartItem, c
                         toggleActionButton={toggleActionButton}
                     />
                 </View>
-                
+
             </View>
         </View>
     )

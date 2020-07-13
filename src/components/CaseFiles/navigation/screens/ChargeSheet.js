@@ -143,7 +143,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                 equipment: item.equipment?._id,
                 amount: item.amount,
                 name: item.equipment?.name,
-                cost: item.equipment?.unitPrice || 3,
+                cost: item.equipment?.unitPrice || 0,
             }
         })
 

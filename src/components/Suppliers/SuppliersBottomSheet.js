@@ -5,13 +5,13 @@ import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 import SupplierProductsTab from '../OverlayTabs/SupplierProductsTab';
 import SupplierPurshaseOrders from '../OverlayTabs/SupplierPurchaseOrders';
   
-import { getSupplierById, createPurchaseOrder } from "../../api/network"; 
+import { getSupplierById, createPurchaseOrder, getSupplierProducts } from "../../api/network"; 
 import {colors} from "../../styles";
+
 
 function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) {
     
     const currentTabs = ["Details", "Products", "Purchase Orders"];
-    console.log("Procedure:", supplier)
     const {
         supplierNumber = "",
         name = "",
@@ -25,17 +25,41 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
     const [selectedSupplier, setSelectedSupplier] = useState({})
-    const [cartOrderItems, setCartOrderItems] = useState([])
+    // const [cartOrderItems, setCartOrderItems] = useState([])
+    const [products, setProducts] = useState([])
 
     const [fields, setFields] = useState({})
     const [popoverList, setPopoverList] = useState([])
 
     // ##### Lifecycle Methods
     useEffect(() => {
+        setTimeout(()=>{},200)
         // fetchSupplier(_id)
     }, []);
 
+    useEffect(() => {
+        if (!products.length) fetchProducts()
+        // setTotalPages(Math.ceil(products.length / recordsPerPage))
+    }, []);
+
     // ##### Event Handlers
+
+    const fetchProducts = () => {
+        setFetching(true);
+        getSupplierProducts(_id, "")
+            .then(productsData => {
+                const { data = [], pages = 0} = productsData
+                setProducts(data)
+                // setTotalPages(Math.ceil(data.length / recordsPerPage))
+            })
+            .catch(error => {
+                console.log("Failed to get products", error)
+                //TODO handle error cases.
+            })
+            .finally(_ => {
+                setFetching(false)
+            })
+    };
 
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
@@ -80,6 +104,16 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
     
     }
 
+    const onAddProducts = (item) =>{
+        console.log("DATA: ", )
+        const newItem = {
+            ...item,
+            unitCost: item.unitPrice
+        }
+        setProducts([...products,newItem])
+        
+    }
+
     // ##### Helper functions
 
     const fetchSupplier = (id) => {
@@ -97,32 +131,32 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
             })
     };
 
-    const updateCartItems = (data) => {
-        setCartOrderItems(data)
-        //console.log("Cart: ", data)
-    }
+    // const updateCartItems = (data) => {
+    //     setCartOrderItems(data)
+    //     //console.log("Cart: ", data)
+    // }
 
-    const onOrderComplete = (data) =>{
-        const { name = "", storageLocation = {} } = data
-        const updatedOrders = cartOrderItems.map(item => {return { amount: item.amount, productId : item._id}})
-        let newPO = {
-            name : name,
-            storageLocation : storageLocation._id,
-            supplier : _id,
-            orders : updatedOrders,
-            orderDate : new Date()
-        }
-        createPurchaseOrder(newPO)
-            .then(data => {
-                console.log("DB data: ", data)
-            })
-            .catch(error => {
-                console.log("Failed to create PO", error)
-                //TODO handle error cases.
-            })
-        // console.log("Purchase Order: ", newPO)
-        // console.log("Cart Items: ", cartOrderItems)
-    }
+    // const onOrderComplete = (data) =>{
+    //     const { name = "", storageLocation = {} } = data
+    //     const updatedOrders = cartOrderItems.map(item => {return { amount: item.amount, productId : item._id}})
+    //     let newPO = {
+    //         name : name,
+    //         storageLocation : storageLocation._id,
+    //         supplier : _id,
+    //         orders : updatedOrders,
+    //         orderDate : new Date()
+    //     }
+    //     createPurchaseOrder(newPO)
+    //         .then(data => {
+    //             console.log("DB data: ", data)
+    //         })
+    //         .catch(error => {
+    //             console.log("Failed to create PO", error)
+    //             //TODO handle error cases.
+    //         })
+    //     // console.log("Purchase Order: ", newPO)
+    //     // console.log("Cart Items: ", cartOrderItems)
+    // }
 
     const supplierDetails = {supplier, status : ''}
 
@@ -133,9 +167,11 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
             case "Products":
                 return <SupplierProductsTab
                     floatingActions = {floatingActions}
-                    updateCartItems = {updateCartItems}
-                    cartOrderItems = {cartOrderItems}
-                    onOrderComplete = {onOrderComplete}
+                    products = {products}
+                    onAddProducts = {onAddProducts}
+                    // updateCartItems = {updateCartItems}
+                    // cartOrderItems = {cartOrderItems}
+                    // onOrderComplete = {onOrderComplete}
                     supplierId = {_id}
                 />
             case "Purchase Orders":

@@ -106,13 +106,16 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
 
             if (duration && startTime) {
                 const tempAppointment = getTempAppointment(duration, startTime)
-
+                const {startTime: newStart, endTime: newEnd} = tempAppointment;
 
                 for (const appointment of appointments) {
                     const start = moment(appointment.startTime);
                     const end = moment(appointment.endTime);
 
-                    const hasConflict = moment(startTime).isBetween(start, end);
+
+
+                    const hasConflict = moment(start).isBetween(startTime, newEnd)|| moment(end).isBetween(startTime, newEnd);
+
                     console.log("checking conflict time", appointment._id, start, end, startTime, hasConflict);
                     if (hasConflict) {
                         tempAppointment.isValid = false;

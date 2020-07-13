@@ -31,7 +31,7 @@ const listHeaders = [
     {
         name: "Purchase Orders",
         alignment: "flex-start",
-        flex: 1,
+        flex: 1.5,
         fontSize: 14
     },
     {
@@ -212,13 +212,13 @@ const Orders = (props) => {
 
         return (
             <>
-                <View style={[styles.item, {...styles.rowBorderRight, flex: 1}]}>
+                <View style={[styles.item, {...styles.rowBorderRight, flex: 1.5}]}>
                     <Text style={[styles.itemText, {color: "#4E5664"}]}>{purchaseOrderNumber}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
                     <Text style={[styles.itemText, {color: statusColor}]}>{transformToSentence(status)}</Text>
                 </View>
-                <View style={[styles.item, {flex: 1,}]}>
+                <View style={[styles.item, {flex: 1, alignItems: "flex-start"}]}>
                     <Text style={[styles.itemText, {color: "#4E5664"}]}>{deliveryDate}</Text>
                 </View>
                 <View style={[styles.item, {flex: 2,}]}>
@@ -390,6 +390,7 @@ export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Orders))
 const styles = StyleSheet.create({
     item: {
         // flex:1
+        marginRight: 25,
     },
     itemText: {
         fontSize: 16

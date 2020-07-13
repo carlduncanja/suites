@@ -33,7 +33,7 @@ const Procedures = (props) => {
         {
             name: "Procedure",
             alignment: "flex-start",
-            flex: 2
+            flex: 1.5
         },
         {
             name: "Physician",
@@ -115,7 +115,7 @@ const Procedures = (props) => {
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
         let updatedProcedures = checkboxItemPress(item, _id, selectedProcedures)
-        
+
         setSelectedProcedures(updatedProcedures)
     }
 
@@ -189,14 +189,14 @@ const Procedures = (props) => {
         // const physician = `Dr. ${item.physician.firstName} ${item.physician.surname}`;
         return (
             <>
-                <View style={[styles.item,{...styles.rowBorderRight, flex: 2}]}>
-                    <Text style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
+                <View style={[styles.item,{...styles.rowBorderRight, flex: 1.5}]}>
+                    <Text numberOfLines={1} style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, alignItems: 'flex-start'}]}>
-                    <Text style={[styles.itemText, {color: "#3182CE"}]}>Dr. {firstName} {surname}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText, {color: "#3182CE"}]}>Dr. {firstName} {surname}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
-                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{`${item.duration} hours`}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText, {color: "#3182CE"}]}>{`${item.duration} hours`}</Text>
                 </View>
             </>
         )

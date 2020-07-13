@@ -27,7 +27,7 @@ import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplie
 const Suppliers = (props) => {
 
     // ############# Const data
-    const recordsPerPage = 15;
+    const recordsPerPage = 10;
     const listHeaders = [
         {
             name: "Name",
@@ -113,14 +113,14 @@ const Suppliers = (props) => {
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
         let updatedSuppliersList = checkboxItemPress(item, _id, selectedSuppliers)
-        
+
         setSelectedSuppliers(updatedSuppliersList)
     }
 
     const handleOnItemPress = (item, isOpenEditable) =>{
         modal.openModal('BottomSheetModal',{
-            content: <SuppliersBottomSheet 
-                supplier = {item} 
+            content: <SuppliersBottomSheet
+                supplier = {item}
                 isOpenEditable = {isOpenEditable}
                 floatingActions = {getFabActions}
             />
@@ -192,13 +192,13 @@ const Suppliers = (props) => {
         return (
             <>
                 <View style={[styles.item,{...styles.rowBorderRight, flex: 2}]}>
-                    <Text style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
                 </View>
                 <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
-                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.phone}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText, {color: "#3182CE"}]}>{item.phone}</Text>
                 </View>
                 <View style={[styles.item, {flex: 2, alignItems: 'center'}]}>
-                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.email}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText, {color: "#3182CE"}]}>{item.email}</Text>
                 </View>
             </>
         )
