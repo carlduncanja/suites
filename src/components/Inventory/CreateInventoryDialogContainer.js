@@ -302,6 +302,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                         options={inventorySearchResults}
                         handlePopovers = {(value)=>handlePopovers(value)('reference')}
                         isPopoverOpen = {refPop[0].status}
+                        errorMessage = "Reference must be given."
+                        hasError = {errorFields['reference']}
                     />
                 </View>
 
@@ -334,6 +336,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                         options={supplierSearchResults}
                         handlePopovers = {(value)=>handlePopovers(value)('supplier')}
                         isPopoverOpen = {supplierPop[0].status}
+                        hasError = {errorFields['supplier']}
+                        errorMessage = "Select the supplier for item."
                     />
                 
                 </View>
@@ -368,7 +372,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                     <InputUnitField
                         label={"Markup"}
                         onChangeText={(value)=>{
-                            if (/^\d{1,3}$/g.test(value) || !value) {
+                            if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
                                 onFieldChange('markup')(value)
                             }
                         }}
@@ -399,6 +403,18 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                 </View>
 
             </View>
+        
+            <View style={styles.row}>
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        label={"Barcode"}
+                        onChangeText={onFieldChange('barcode')}
+                        value={fields['barcode']}
+                        onClear={() => onFieldChange('barcode')('')}
+                    />
+                </View>
+            </View>
+        
         </View>
     );
 

@@ -11,9 +11,10 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import OptionsField from "../common/Input Fields/OptionsField";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import {createInventories, getInventories, getCategories, getSuppliers,} from "../../api/network";
+import {createInventoryGroup, getInventories, getCategories, getSuppliers,} from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import TextArea from '../common/Input Fields/TextArea';
 import _ from "lodash";
 
 
@@ -132,7 +133,7 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
         } else {
 
             console.log("Success:", fields)
-            // createGroupCall()
+            createGroupCall()
         }
     };
 
@@ -158,7 +159,7 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
     const validateGroup = () => {
         let isValid = true
         let requiredFields = ['name']
-        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unit', 'unitOfMeasure', 'markup']
+        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unit', 'unitOfMeasure']
         // const requiredFields = ['name', 'unitPrice']
     
         let errorObj = {...errorFields} || {}
@@ -180,9 +181,9 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
     }
 
     const createGroupCall = () => {
-        createInventories(fields)
+        createInventoryGroup(fields)
             .then(data => {
-                addInventory(data)
+                // addInventory(data)
                 modal.closeAllModals();
                 setTimeout(() => {
                     onCreated(data)
@@ -190,8 +191,8 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
             })
             .catch(error => {
                 // todo handle error
-                console.log("failed to create inventory", error);
-                Alert.alert("Failed", "failed to created inventory item")
+                console.log("failed to create inventory group", error);
+                Alert.alert("Failed", "failed to create inventory group")
             })
             .finally()
     };
@@ -244,6 +245,18 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
 
             </View>
 
+            {/* <View style={styles.row}>
+                <View style={styles.inputWrapper}>
+                    <TextArea
+                        label = "Description"
+                        onChangeText={onFieldChange('description')}
+                        value={fields['description']}
+                        onClear = {()=> onFieldChange('description')('')}
+                    />
+                </View>
+                
+            </View> */}
+
         </View>
     );
 
@@ -281,15 +294,13 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
                     <InputUnitField
                         label={"Markup"}
                         onChangeText={(value)=>{
-                            if (/^\d{1,3}$/g.test(value) || !value) {
+                            if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
                                 onFieldChange('markup')(value)
                             }
                         }}
                         value={fields['markup']}
                         units={['%']}
                         keyboardType="number-pad"
-                        hasError = {errorFields['markup']}
-                        errorMessage = "Add markup value"
                     />
                 </View>
                
@@ -338,7 +349,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     sectionContainer: {
-        height:240,
+        height:200,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         padding: 24,
