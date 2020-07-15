@@ -27,6 +27,24 @@ const LINE_ITEM_TYPES = {
     PHYSICIANS: "physician",
 }
 
+const headers = [
+    {
+        name: "Item Name",
+        alignment: "flex-start"
+    },
+    {
+        name: "Type",
+        alignment: "center"
+    },
+    {
+        name: "Quantity",
+        alignment: "center"
+    },
+    {
+        name: "Unit Price",
+        alignment: "flex-end"
+    }
+]
 
 const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, isEditMode, onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
 
@@ -41,44 +59,24 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
     inventoryList = inventoryList.map(item => {
         const {inventory} = item
-        const {name = "", unitPrice = 0} = inventory
+        const {name = "", unitCost = 1} = inventory
         return {
             ...item,
             name,
-            unitPrice,
+            unitPrice: unitCost,
             type: 'Anaesthesia'
         }
     })
     equipmentList = equipmentList.map(item => {
         const {equipment} = item
-        const {name = ""} = equipment
+        const {name = "", unitPrice = 0, type = ""} = equipment
         return {
             ...item,
-            type: equipment.type?.name || "",
+            type,
             name,
-            unitPrice: equipment.type?.unitPrice || 0
+            unitPrice
         }
     })
-
-
-    const headers = [
-        {
-            name: "Item Name",
-            alignment: "flex-start"
-        },
-        {
-            name: "Type",
-            alignment: "center"
-        },
-        {
-            name: "Quantity",
-            alignment: "center"
-        },
-        {
-            name: "Unit Price",
-            alignment: "flex-end"
-        }
-    ]
 
     // preparing billing information
     const billing = {
@@ -128,12 +126,15 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         }
 
         billingItem.inventories = inventories.map(item => {
+
+            console.log(item);
+
             return {
                 _id: item._id,
-                inventory: item.inventory._id,
+                inventory: item?.inventory?._id,
                 amount: item.amount,
-                name: item.inventory.name,
-                cost: item.inventory.unitPrice,
+                name: item.inventory?.name,
+                cost: item.inventory?.unitCost || 0,
             }
         })
 
@@ -142,8 +143,8 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                 _id: item?._id,
                 equipment: item.equipment?._id,
                 amount: item.amount,
-                name: item.equipment?.type?.name,
-                cost: item.equipment?.type?.unitPrice,
+                name: item.equipment?.name,
+                cost: item.equipment?.unitPrice || 0,
             }
         })
 

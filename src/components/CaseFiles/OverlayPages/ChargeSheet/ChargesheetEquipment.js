@@ -50,79 +50,8 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
             setSelectedOption(caseProceduresFilters[index])
             setSelectedIndex(index)
         }
-
-        // if(isEditMode){
-        //     let data = equipmentsList[index].equipments.map(item => {return {
-        //         ...item,
-        //         unitPrice : item.cost
-        //     }})
-        //     setSelectedData( data|| [])
-        //     setSelectedOption(procedureNames[index])
-        //     setSelectedIndex(index)
-        // }else{
-        //     if(index === 0){
-        //         setSelectedIndex(0)
-        //         setSelectedOption('All')
-        //         setSelectedData(groupedEquipments)
-        //     }else{
-        //         let data = equipmentsList[index-1].equipments.map(item => {return {
-        //             ...item,
-        //             unitPrice : item.cost
-        //         }})
-        //         setSelectedData( data|| [])
-        //         setSelectedOption(procedureNames[index-1])
-        //         setSelectedIndex(index)
-        //         // console.log("Index: ", )
-        //     }
-        // }
-
     }
 
-    // const updateEquipmentList = (id, data) =>{
-    //     let findIndex = equipmentsList.findIndex(obj => obj.caseProcedureId === id);
-    //     let selectedItem = equipmentsList[findIndex]
-    //     const updatedObj = {
-    //         ...selectedItem,
-    //         equipments : data
-    //     };
-    //     const updatedData = [
-    //         ...equipmentsList.slice(0, findIndex),
-    //         updatedObj,
-    //         ...equipmentsList.slice(findIndex + 1),
-    //     ];
-    //     setEquipmentsList(updatedData)
-    //     return updatedData
-    // }
-
-    // const getProcedureId = (data) => {
-    //     if(selectedOption !== 'All'){
-
-    //         const filterItem = details.filter( (obj,index) => index === selectedIndex) || []
-    //         const { caseProcedureId, services, inventories } = filterItem[0]
-    //         // let updatedData = [
-    //         //     {
-    //         //         caseProcedureId,
-    //         //         inventories : inventories,
-    //         //         equipments : data,
-    //         //         lineItems : services
-    //         //     }
-    //         // ]
-    //         let equipmentsData = updateEquipmentList(caseProcedureId,data)
-    //         let updatedData = equipmentsData.map( item => {
-    //             return {
-    //                 caseProcedureId : item.caseProcedureId,
-    //                 inventories : item.inventories,
-    //                 equipments : item.equipments,
-    //                 lineItems : item.lineItems
-    //             }
-    //         })
-    //         // console.log("Updated Dta: ", updatedData)
-    //         handleEditDone(updatedData)
-    //         // console.log("Id: ", caseProcedureId)
-    //         // console.log("Servies: ", services)
-    //         // console.log("Equip: ", equipments)
-    //     }
-    // }
 
     const onQuantityChangePress = (item,index) => (action) =>{
 
@@ -140,22 +69,6 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
         })
 
         onEquipmentsUpdate(selectedIndex - 1, updatedData);
-        //console.log("Item: ", item)
-        // const findIndex = selectedData.findIndex(obj => obj.equipment === item.equipment);
-        // let selectedItem = selectedData[findIndex]
-        // const updatedObj = {
-        //     ...selectedItem,
-        //     amount: action ==='add' ? selectedItem.amount + 1 : selectedItem.amount - 1
-        // };
-        // const updatedData = [
-        //     ...selectedData.slice(0, findIndex),
-        //     updatedObj,
-        //     ...selectedData.slice(findIndex + 1),
-        // ];
-        // getProcedureId(updatedData)
-        // // handleEditDone(updatedData)
-        // // console.log("SelctedData: ", updatedData)
-        // setSelectedData(updatedData)
     }
 
     const onAmountInputChange = (item,index) => (value) => {
@@ -174,18 +87,6 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
         })
 
         onEquipmentsUpdate(selectedIndex - 1, updatedData);
-        // const findIndex = selectedData.findIndex(obj => obj.equipment === item.equipment);
-        // let selectedItem = selectedData[findIndex]
-        // let updatedObj = { ...selectedItem, amount: value === "" ? 0 : parseInt(value)};
-        // const updatedItems = [
-        //     ...selectedData.slice(0, findIndex),
-        //     updatedObj,
-        //     ...selectedData.slice(findIndex + 1),
-        // ];
-        // getProcedureId(updatedItems)
-        // setSelectedData(updatedItems)
-
-        // console.log("update: ", updatedItems)
     }
 
     const listItem = (item,index) => <>
