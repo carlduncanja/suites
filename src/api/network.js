@@ -4,6 +4,7 @@ import {handleError, handleResponse} from "./apiUtils";
 import {
     inventoriesEndpoint,
     inventoryEndpoint,
+    inventoryVariantEndpoint,
     theatresEndpoint,
     theatreEndpoint,
     physiciansEndpoint,
@@ -27,7 +28,7 @@ import {
     createOrderInvoice,
     storageLocationEndpoint,
     categoriesEndpoint,
-    loginEndpoint,
+    loginEndpoint, 
     appointmentsEndpoint,
     appointmentEndpoint,
     validateCaseProcedureEndpoint,
@@ -125,6 +126,11 @@ export const createInventoryGroup = async (groupToCreate) => {
         .catch(handleError);
 };
 
+export const createInventoryVariant = async (referenceId, itemToCreate) => {
+    return suitesAxiosInstance.post(inventoryVariantEndpoint(referenceId), itemToCreate)
+        .then(handleResponse)
+        .catch(handleError);
+};
 
 // ################# Case Files Endpoints
 export const getCaseFiles = async () => {
@@ -242,8 +248,8 @@ export const updatePhysician = async (id, data) => {
 }
 
 // ################# Storage Endpoints
-export const getStorage = async () => {
-    return suitesAxiosInstance.get(storageLocationsEndpoint)
+export const getStorage = async (query,max) => {
+    return suitesAxiosInstance.get(storageLocationsEndpoint, {params : {query,max}})
         .then(handleResponse)
         .catch(handleError)
 };

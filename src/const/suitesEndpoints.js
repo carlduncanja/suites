@@ -14,6 +14,7 @@ export const theatreEndpoint =  (id) => `/theatres/${id}`;
 // ##### INVENTORY
 export const inventoriesEndpoint = "/inventories";
 export const inventoryEndpoint = (id) => `/inventories/${id}`;
+export const inventoryVariantEndpoint = (id) => `/inventories/${id}/variants`;
 
 // ##### PHYSICIANS
 export const physiciansEndpoint = "/physicians";

@@ -1,5 +1,6 @@
 import React, {useReducer, useMemo} from 'react';
-import {connect, Provider} from 'react-redux'
+import {connect, Provider} from 'react-redux';
+import { StatusBar } from 'react-native'
 
 import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
 import {initialState, SuitesContext} from './src/SuitesContext';

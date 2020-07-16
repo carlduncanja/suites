@@ -77,14 +77,53 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
 
     }
 
+    const onItemChange = (data) => {
+        setOrderItems(data)
+    }
+
+    const onAddProductItems = (data) =>{
+        // console.log("Data: ", data)
+        let updatedList = data.map( item => {
+            return {
+                amount : item.amount || 0,
+                productId : {
+                    ...item
+                }
+            }
+        })
+        let itemsList = [...orderItems, ...updatedList]
+    
+        let newItems = []
+
+        console.log("Items list: ", itemsList)
+        setOrderItems(itemsList)
+
+        // data.map(dataItem => {
+        //     let isFilterCheck = itemsList.filter( item => item._id === dataItem._id)
+        //     if(isFilterCheck){
+        //         newItems.push(dataItem)
+        //     }
+        //     let index = itemsList.findIndex( item => item._id === dataItem._id)
+        //     itemsList = [
+        //         ...updatedCheck.slice(0, index),
+        //         ...updatedCheck.slice(index + 1),
+        //     ];
+
+        // })
+
+            
+    }
+
     // ##### Helper functions
 
     const fetchOrder = async (id) => {
         setFetching(true);
         getPurchaseOrderById(id)
             .then(data => {
-                console.log("Data: ", data)
+                const { orders = [] } = data
                 setSelectedOrder(data)
+                setOrderItems(orders)
+                
             })
             .catch(error => {
                 console.log("Failed to get order", error)
@@ -100,7 +139,13 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
             case "Details":
                 return <OrderDetailsTab order={selectedOrder}/>
             case "Items":
-                return <OrderItemTab order={selectedOrder}/>
+                return <OrderItemTab 
+                    orders={orderItems}
+                    isEditMode = {isEditMode}
+                    onItemChange = {onItemChange}
+                    supplierId = {supplier?._id}
+                    onAddProductItems = {onAddProductItems}
+                />
             case "Suppliers":
                 return <SupplierDetailsTab order={selectedOrder}/>;
             default :

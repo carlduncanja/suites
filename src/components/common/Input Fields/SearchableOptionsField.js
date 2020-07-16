@@ -32,6 +32,7 @@ function SearchableOptionsField({
     const textInputRef = useRef(); 
 
     const [selectedValue, setSelectedValue] = useState(value);
+    console.log("Selected Value: ", selectedValue)
 
     useEffect(() => {
         setSelectedValue(value);
@@ -84,7 +85,7 @@ function SearchableOptionsField({
 
 
                 {
-                    selectedValue &&
+                    (selectedValue ) &&
 
                     <View style={styles.valueBox}>
                         <Text style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
@@ -94,7 +95,7 @@ function SearchableOptionsField({
 
 
                 {
-                    selectedValue &&
+                    (selectedValue) &&
 
                     <TouchableOpacity
                         style={styles.clearIcon}
@@ -113,14 +114,25 @@ function SearchableOptionsField({
 
 
                 {
-
+                    
                     (!selectedValue && text && isPopoverOpen)
-                        ? <View style={styles.suggestionContainer}>
-                            <FlatList
-                                keyExtractor={(item, index) => index + ''}
-                                data={options}
-                                renderItem={renderOptions}
-                            />
+                        ? 
+                        <View style={styles.suggestionContainer}>
+                            
+                            {
+                                options.length === 0 ?
+                                    <View style={{marginBottom:10, marginTop:10}}>
+                                        <Text style={{color:'#718096',fontSize:14}}>No Suggestions Found</Text>
+                                    </View>
+                                    
+                                    :
+                                <FlatList
+                                    keyExtractor={(item, index) => index + ''}
+                                    data={options}
+                                    renderItem={renderOptions}
+                                />
+                            }
+                            
                         </View>
                         : null
                 }

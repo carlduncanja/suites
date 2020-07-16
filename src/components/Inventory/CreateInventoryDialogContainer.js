@@ -11,7 +11,7 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import OptionsField from "../common/Input Fields/OptionsField";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import {createInventories, getInventories, getCategories, getSuppliers,} from "../../api/network";
+import {createInventoryVariant, getInventories, getCategories, getSuppliers,} from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import _ from "lodash";
@@ -40,7 +40,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
     const [errorFields, setErrorFields] = useState({})
     const [popoverList, setPopoverList] = useState([
         {
-            name : "reference",
+            name : "product",
             status : false
         },
         {
@@ -187,9 +187,11 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
-            console.log("Success:", fields)
+            const referenceId = fields['product']
+            console.log("Success:", fields, referenceId)
+            
             // onCreated(fields)
-            // createInventoryCall()
+            // createInventoryCall(referenceId,fields)
         }
     };
 
@@ -214,8 +216,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
 
     const validateInventory = () => {
         let isValid = true
-        let requiredFields = ['name','reference','supplier']
-        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unitPrice','markup']
+        let requiredFields = ['name','product','supplier']
+        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unitCost','markup']
     
         let errorObj = {...errorFields} || {}
 
@@ -237,7 +239,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
 
     const handleUnitPrice = (price) => {
         if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
-            onFieldChange('unitPrice')(parseFloat(price))
+            onFieldChange('unitCost')(parseFloat(price))
         }
         setUnitPriceText(price)
     }
@@ -249,8 +251,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
         setCustomPriceText(price)
     }
 
-    const createInventoryCall = () => {
-        createInventories(fields)
+    const createInventoryCall = (id, itemToCreate) => {
+        createInventoryVariant(id, itemToCreate)
             .then(data => {
                 addInventory(data)
                 modal.closeAllModals();
@@ -261,7 +263,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
             .catch(error => {
                 // todo handle error
                 console.log("failed to create inventory", error);
-                Alert.alert("Failed", "failed to created inventory item")
+                Alert.alert("Failed", "Failed to create an inventory item")
             })
             .finally()
     };
@@ -277,10 +279,10 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
         }
     };
 
-    let refPop = popoverList.filter( item => item.name === 'reference')
+    let refPop = popoverList.filter( item => item.name === 'product')
     let supplierPop = popoverList.filter( item => item.name === 'supplier')
 
-    let markupPrice = fields['unitPrice']*((100 + parseFloat(fields['markup']))/100) || 0
+    let markupPrice = fields['unitCost']*((100 + parseFloat(fields['markup']))/100) || 0
 
     const detailsTab = (
         <View style={styles.sectionContainer}>
@@ -292,18 +294,18 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                         label={"Reference"}
                         text={inventorySearchValue}
                         oneOptionsSelected={(item) => {
-                            onFieldChange('reference')(item._id)
+                            onFieldChange('product')(item._id)
                         }}
                         onChangeText={value => {setInventorySearchValue(value); console.log("Value:", value)}}
                         onClear={() => {
-                            onFieldChange('reference')('');
+                            onFieldChange('product')('');
                             setInventorySearchValue('');
                         }}
                         options={inventorySearchResults}
-                        handlePopovers = {(value)=>handlePopovers(value)('reference')}
+                        handlePopovers = {(value)=>handlePopovers(value)('product')}
                         isPopoverOpen = {refPop[0].status}
                         errorMessage = "Reference must be given."
-                        hasError = {errorFields['reference']}
+                        hasError = {errorFields['product']}
                     />
                 </View>
 
@@ -359,7 +361,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                         value={unitPriceText.toString()}
                         keyboardType={'number-pad'}
                         onClear={() => handleUnitPrice('')}
-                        hasError = {errorFields['unitPrice']}
+                        hasError = {errorFields['unitCost']}
                         errorMessage = "Price must be provided."
                     />
                 </View>

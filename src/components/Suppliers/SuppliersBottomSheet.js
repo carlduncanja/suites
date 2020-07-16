@@ -33,14 +33,16 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        setTimeout(()=>{},200)
+        setTimeout(()=>{
+            if (!products.length) fetchProducts()
+        },200)
         // fetchSupplier(_id)
     }, []);
 
-    useEffect(() => {
-        if (!products.length) fetchProducts()
-        // setTotalPages(Math.ceil(products.length / recordsPerPage))
-    }, []);
+    // useEffect(() => {
+    //     if (!products.length) fetchProducts()
+    //     // setTotalPages(Math.ceil(products.length / recordsPerPage))
+    // }, []);
 
     // ##### Event Handlers
 
@@ -50,6 +52,7 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
             .then(productsData => {
                 const { data = [], pages = 0} = productsData
                 setProducts(data)
+                // console.log("Products data: ", data)
                 // setTotalPages(Math.ceil(data.length / recordsPerPage))
             })
             .catch(error => {
@@ -131,33 +134,6 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
             })
     };
 
-    // const updateCartItems = (data) => {
-    //     setCartOrderItems(data)
-    //     //console.log("Cart: ", data)
-    // }
-
-    // const onOrderComplete = (data) =>{
-    //     const { name = "", storageLocation = {} } = data
-    //     const updatedOrders = cartOrderItems.map(item => {return { amount: item.amount, productId : item._id}})
-    //     let newPO = {
-    //         name : name,
-    //         storageLocation : storageLocation._id,
-    //         supplier : _id,
-    //         orders : updatedOrders,
-    //         orderDate : new Date()
-    //     }
-    //     createPurchaseOrder(newPO)
-    //         .then(data => {
-    //             console.log("DB data: ", data)
-    //         })
-    //         .catch(error => {
-    //             console.log("Failed to create PO", error)
-    //             //TODO handle error cases.
-    //         })
-    //     // console.log("Purchase Order: ", newPO)
-    //     // console.log("Cart Items: ", cartOrderItems)
-    // }
-
     const supplierDetails = {supplier, status : ''}
 
     const getTabContent = (selectedTab) => {
@@ -169,9 +145,7 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
                     floatingActions = {floatingActions}
                     products = {products}
                     onAddProducts = {onAddProducts}
-                    // updateCartItems = {updateCartItems}
                     // cartOrderItems = {cartOrderItems}
-                    // onOrderComplete = {onOrderComplete}
                     supplierId = {_id}
                 />
             case "Purchase Orders":
