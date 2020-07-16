@@ -191,7 +191,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
             console.log("Success:", fields, referenceId)
             
             // onCreated(fields)
-            // createInventoryCall(referenceId,fields)
+            createInventoryCall(referenceId,fields)
         }
     };
 
