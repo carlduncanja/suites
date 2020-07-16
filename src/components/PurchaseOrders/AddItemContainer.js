@@ -97,9 +97,9 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
             return
         }
 
-        updatedData.filter( productItem => item.inventoryId === productItem.inventoryId).length > 0 ? 
+        updatedData.filter( productItem => item?.inventoryId === productItem?.inventoryId).length > 0 ? 
             updatedData = updatedData.map( dataItem => {
-                if(dataItem._id === item._id){
+                if(dataItem._id === item?._id || ""){
                     Alert.alert('Sorry',"Item is currently in the list, please add another product")
                     return {...dataItem}
                 }

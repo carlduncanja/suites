@@ -71,6 +71,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
         updatePurchaseOrder(purchaseOrderId, data)
             .then(data => {
                 console.log("DB data: ", data)
+                Alert.alert('Success', 'Purchase Order has been successfully updated.')
             })
             .catch(error => {
                 console.log("Failed to update order", error)

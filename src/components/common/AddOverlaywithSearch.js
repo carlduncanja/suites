@@ -32,7 +32,7 @@ function AddOverlaywithSearch(props){
         onSelectItem = () => {}
     } = props
 
-    const recordsPerPage = 6
+    const recordsPerPage = 4
     const dataLength = data.length
     const totalPages = Math.ceil(dataLength/recordsPerPage)
 
@@ -69,6 +69,9 @@ function AddOverlaywithSearch(props){
         onSearchChange('')
         setSelectedItem(false)
     }
+
+    let dataToDisplay = [...data]
+    dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax)
 
     return(
         <View style={styles.container}>
@@ -118,7 +121,7 @@ function AddOverlaywithSearch(props){
 
                 <View style={styles.list}>
                     <Table
-                        data = {data}
+                        data = {dataToDisplay}
                         currentListMin = {currentPageListMin}
                         currentListMax = {currentPageListMax}
                         listItemFormat = {listItemFormat}
