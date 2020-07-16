@@ -82,7 +82,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     }
 
     const onAddProductItems = (data) =>{
-        // console.log("Data: ", data)
+
         let updatedList = data.map( item => {
             return {
                 amount : item.amount || 0,
@@ -92,26 +92,9 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
             }
         })
         let itemsList = [...orderItems, ...updatedList]
-    
-        let newItems = []
 
-        console.log("Items list: ", itemsList)
         setOrderItems(itemsList)
-
-        // data.map(dataItem => {
-        //     let isFilterCheck = itemsList.filter( item => item._id === dataItem._id)
-        //     if(isFilterCheck){
-        //         newItems.push(dataItem)
-        //     }
-        //     let index = itemsList.findIndex( item => item._id === dataItem._id)
-        //     itemsList = [
-        //         ...updatedCheck.slice(0, index),
-        //         ...updatedCheck.slice(index + 1),
-        //     ];
-
-        // })
-
-            
+     
     }
 
     // ##### Helper functions
