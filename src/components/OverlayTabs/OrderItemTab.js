@@ -19,7 +19,7 @@ import {useModal} from "react-native-modalfy";
 
 const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, supplierId = "", onAddProductItems = ()=>{}}) =>{
     
-    const modal = useModal();
+    const modal = useModal(); 
 
     const recordsPerPage = 15;
 
@@ -108,14 +108,18 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
     }
 
     const onQuantityChange = (item) => (action) =>{
+        const { amount = 0, productId = {} } = item
+        const { inventoryId = "" } = productId
 
         const updatedObj = {
             ...item,
-            amount: action === 'add' ? item.amount + 1 : item.amount === 0 ? item.amount : item.amount - 1
+            amount: action === 'add' ? amount + 1 : amount === 0 ? amount : amount - 1
         };
 
+
         const updatedData = orders.map(item => {
-            return item._id === updatedObj._id
+            // console.log("Order: ", item.p)
+            return item.productId?.inventoryId === inventoryId
                 ? {...updatedObj}
                 : {...item}
         })
@@ -125,13 +129,16 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
 
     const onAmountChange = (item) => (value) => {
 
+        const { productId = {} } = item
+        const { inventoryId = "" } = productId
+
         const updatedObj = {
             ...item,
-            amount: value === '' ? 0 : parseFloat(value) < 0 ? 0 : parseInt(value)
+            amount: value === '' ? "" : parseFloat(value) < 0 ? 0 : parseInt(value)
         };
 
         const updatedData = orders.map(item => {
-            return item._id === updatedObj._id
+            return item.productId?.inventoryId === inventoryId
                 ? {...updatedObj}
                 : {...item}
         })

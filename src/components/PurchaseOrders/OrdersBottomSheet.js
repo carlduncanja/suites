@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
+import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 
 
@@ -9,6 +9,7 @@ import OrderDetailsTab from '../OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../OverlayTabs/OrderItemTab';
 import OrderSuppliersTab from '../OverlayTabs/OrderSuppliersTab';
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
+import { updatePurchaseOrder } from '../../api/network';
 
 function OrdersBottomSheet({order = {}, isOpenEditable}) {
 
@@ -27,6 +28,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     const [selectedOrder, setSelectedOrder] = useState({})
     const [orderItems, setOrderItems] = useState([])
     const [fields, setFields] = useState({})
+    const [isUpdateDone, setIsUpdateDone] = useState(false)
 
     const [popoverList, setPopoverList] = useState([])
 
@@ -44,6 +46,37 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     const onEditPress = (tab) => {
         setEditableTab(tab)
         setEditMode(!isEditMode)
+
+        if(isEditMode && isUpdateDone){
+            if(currentTab === "Items"){
+                console.log("Edit Press: ", orderItems)
+                let dataToSend = orderItems.map(item => {
+                    const { amount = 0, productId = {} } = item
+                    return{
+                        amount,
+                        productId : productId?._id || ""
+                    }
+                })
+                // console.log("Updated Data: ", dataToSend)
+                // console.log("Order Id: ", _id)
+                updatePurchaseOrderItems(dataToSend, _id)
+            }
+            
+
+        }
+        
+    }
+
+    const updatePurchaseOrderItems = (data, purchaseOrderId) => {
+        updatePurchaseOrder(purchaseOrderId, data)
+            .then(data => {
+                console.log("DB data: ", data)
+            })
+            .catch(error => {
+                console.log("Failed to update order", error)
+                Alert.alert('Sorry', 'Failed to update order, please try again.')
+                //TODO handle error cases.
+            })
     }
 
     const onFieldChange = (fieldName) => (value) => {
@@ -79,6 +112,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
 
     const onItemChange = (data) => {
         setOrderItems(data)
+        setIsUpdateDone(true)
     }
 
     const onAddProductItems = (data) =>{
@@ -92,8 +126,9 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
             }
         })
         let itemsList = [...orderItems, ...updatedList]
-
+        // console.log("Items: ", itemsList)
         setOrderItems(itemsList)
+        setIsUpdateDone(true)
      
     }
 

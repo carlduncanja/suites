@@ -32,7 +32,6 @@ function SearchableOptionsField({
     const textInputRef = useRef(); 
 
     const [selectedValue, setSelectedValue] = useState(value);
-    console.log("Selected Value: ", selectedValue)
 
     useEffect(() => {
         setSelectedValue(value);

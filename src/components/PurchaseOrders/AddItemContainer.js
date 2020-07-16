@@ -62,10 +62,9 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
     }, [searchInventoryValue]); 
  
     const fetchProducts = () => {
-        console.log("Id: ", supplierId)
         getSupplierProducts(supplierId,searchInventoryValue, 5)
             .then((productsInfo = {}) => {
-                console.log("Data: ", productsInfo)
+                // console.log("Data: ", productsInfo)
                 // const results = data.map(item => ({
                 //     ...item
                 // }));
@@ -133,7 +132,7 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
 
         const updatedObj = {
             ...item,
-            amount: value === '' ? 0 : parseFloat(value) < 0 ? 0 : parseInt(value)
+            amount: value === '' ? '' : parseFloat(value) < 0 ? 0 : parseInt(value)
         };
 
         const updatedData = itemstoAdd.map(item => {

@@ -25,6 +25,7 @@ import {
     updateProductsEndpoint,
     purchaseOrdersEndpoint,
     purchaseOrderEndpoint,
+    updatePurchaseOrderEndpoint,
     createOrderInvoice,
     storageLocationEndpoint,
     categoriesEndpoint,
@@ -363,5 +364,10 @@ export const createInvoiceViaOrders = async (quotationId) => {
         .catch(handleError)
 }
 
+export const updatePurchaseOrder = async (purchaseOrderId, data) => {
+    return suitesAxiosInstance.put(updatePurchaseOrderEndpoint(purchaseOrderId), data)
+        .then(handleResponse)
+        .catch(handleError)
+}
 
 
