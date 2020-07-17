@@ -159,7 +159,7 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
     const validateGroup = () => {
         let isValid = true
         let requiredFields = ['name']
-        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unit', 'unitOfMeasure']
+        // selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unit', 'unitOfMeasure']
         // const requiredFields = ['name', 'unitPrice']
     
         let errorObj = {...errorFields} || {}
@@ -185,9 +185,10 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
             .then(data => {
                 // addInventory(data)
                 modal.closeAllModals();
+                Alert.alert("Success", `Inventory group ${fields['name'] || ""} created successfully.`)
                 setTimeout(() => {
                     onCreated(data)
-                }, 200);
+                }, 400);
             })
             .catch(error => {
                 // todo handle error
@@ -239,7 +240,7 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
                         onSearchChangeText = {(value)=> setCategorySearchValue(value)}
                         onClear={()=>{setCategorySearchValue('')}}
                         handlePopovers = {(value)=>handlePopovers(value)('category')}
-                        isPopoverOpen = {catPop[0].status}
+                        isPopoverOpen = {categorySearchQuery}
                     />
                 </View>
 

@@ -1,5 +1,5 @@
 import React,{ useState,useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import Table from '../common/Table/Table';
 import Search from '../common/Search';
 import Item from '../common/Table/Item';
@@ -219,10 +219,11 @@ const SupplierProductsTab = ({modal, supplierId, addCartItem, cart, products, on
             createPurchaseOrder(newPO)
                 .then(data => {
                     console.log("DB data: ", data)
+                    Alert.alert("Success", "Purchase order successfully created.")
                 })
                 .catch(error => {
                     console.log("Failed to create PO", error)
-                    
+                    Alert.alert("Failed", "Purchase order was not created, please try again.")
                     //TODO handle error cases.
                 })
             console.log("Purchase Order: ", newPO)

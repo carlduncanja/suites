@@ -282,7 +282,8 @@ function Inventory(props) {
                     'OverlayModal',
                     {
                         content: <CreateInventoryDialogContainer
-                            onCreated={(item) => onItemPress(item)()}
+                            // onCreated={(item) => onItemPress(item)()}
+                            onCreated = {()=>{setFloatingAction(false)}}
                             onCancel={() => setFloatingAction(false)}
                         />,
                         onClose: () => setFloatingAction(false)
@@ -296,7 +297,7 @@ function Inventory(props) {
             modal.openModal('OverlayModal',
                 {
                     content: <CreateInventoryGroupDialogContainer
-                        onCreated={()=>{}}
+                        onCreated={()=>{onRefresh(); setFloatingAction(false)}}
                         onCancel={() => setFloatingAction(false)}
                     />,
                     onClose: () => setFloatingAction(false)

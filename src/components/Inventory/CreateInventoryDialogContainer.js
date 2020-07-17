@@ -15,6 +15,7 @@ import {createInventoryVariant, getInventories, getCategories, getSuppliers,} fr
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import _ from "lodash";
+import { currencyFormatter } from '../../utils/formatter';
 
 
 /**
@@ -256,9 +257,10 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
             .then(data => {
                 addInventory(data)
                 modal.closeAllModals();
+                Alert.alert("Success","The inventory item has been successfully created.")
                 setTimeout(() => {
                     onCreated(data)
-                }, 200);
+                }, 400);
             })
             .catch(error => {
                 // todo handle error
@@ -282,7 +284,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
     let refPop = popoverList.filter( item => item.name === 'product')
     let supplierPop = popoverList.filter( item => item.name === 'supplier')
 
-    let markupPrice = fields['unitCost']*((100 + parseFloat(fields['markup']))/100) || 0
+    let markupPrice = currencyFormatter(fields['unitCost']*((100 + parseFloat(fields['markup']))/100) || 0) 
 
     const detailsTab = (
         <View style={styles.sectionContainer}>
@@ -303,7 +305,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                         }}
                         options={inventorySearchResults}
                         handlePopovers = {(value)=>handlePopovers(value)('product')}
-                        isPopoverOpen = {refPop[0].status}
+                        isPopoverOpen = {inventorySearchQuery}
                         errorMessage = "Reference must be given."
                         hasError = {errorFields['product']}
                     />
@@ -337,7 +339,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                         }}
                         options={supplierSearchResults}
                         handlePopovers = {(value)=>handlePopovers(value)('supplier')}
-                        isPopoverOpen = {supplierPop[0].status}
+                        isPopoverOpen = {supplierSearchQuery}
                         hasError = {errorFields['supplier']}
                         errorMessage = "Select the supplier for item."
                     />
