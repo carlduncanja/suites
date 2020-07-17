@@ -135,36 +135,66 @@ export const root = {
     '--color-blue-700': '#2b6cb0',
     '--color-blue-800': '#2c5282',
     '--color-blue-900': '#2a4365',
-//   /* Indigo */
-//   --color-indigo-100: #ebf4ff;
-//   --color-indigo-200: #c3dafe;
-//   --color-indigo-300: #a3bffa;
-//   --color-indigo-400: #7f9cf5;
-//   --color-indigo-500: #667eea;
-//   --color-indigo-600: #5a67d8;
-//   --color-indigo-700: #4c51bf;
-//   --color-indigo-800: #434190;
-//   --color-indigo-900: #3c366b;
-//   /* Purple */
-//   --color-purple-100: #faf5ff;
-//   --color-purple-200: #e9d8fd;
-//   --color-purple-300: #d6bcfa;
-//   --color-purple-400: #b794f4;
-//   --color-purple-500: #9f7aea;
-//   --color-purple-600: #805ad5;
-//   --color-purple-700: #6b46c1;
-//   --color-purple-800: #553c9a;
-//   --color-purple-900: #44337a;
-//   /* Pink */
-//   --color-pink-100: #fff5f7;
-//   --color-pink-200: #fed7e2;
-//   --color-pink-300: #fbb6ce;
-//   --color-pink-400: #f687b3;
-//   --color-pink-500: #ed64a6;
-//   --color-pink-600: #d53f8c;
-//   --color-pink-700: #b83280;
-//   --color-pink-800: #97266d;
-//   --color-pink-900: #702459;
+        /* Indigo */
+    '--color-indigo-100': '#ebf4ff',
+    '--color-indigo-200': '#c3dafe',
+    '--color-indigo-300': '#a3bffa',
+    '--color-indigo-400': '#7f9cf5',
+    '--color-indigo-500': '#667eea',
+    '--color-indigo-600': '#5a67d8',
+    '--color-indigo-700': '#4c51bf',
+    '--color-indigo-800': '#434190',
+    '--color-indigo-900': '#3c366b',
+        /* Purple */
+    '--color-purple-100': '#faf5ff',
+    '--color-purple-200': '#e9d8fd',
+    '--color-purple-300': '#d6bcfa',
+    '--color-purple-400': '#b794f4',
+    '--color-purple-500': '#9f7aea',
+    '--color-purple-600': '#805ad5',
+    '--color-purple-700': '#6b46c1',
+    '--color-purple-800': '#553c9a',
+    '--color-purple-900': '#44337a',
+        /* Pink */
+    '--color-pink-100': '#fff5f7',
+    '--color-pink-200': '#fed7e2',
+    '--color-pink-300': '#fbb6ce',
+    '--color-pink-400': '#f687b3',
+    '--color-pink-500': '#ed64a6',
+    '--color-pink-600': '#d53f8c',
+    '--color-pink-700': '#b83280',
+    '--color-pink-800': '#97266d',
+    '--color-pink-900': '#702459',
+
+        // ##### SUITES
+    colors : {
+        '--company': '#104587',
+        '--company-pale': '#769AC7',
+        '--accent-button': '#0CB0E7',
+        '--accent-line': '#00A9CE',
+            // WHITE
+        '--default-shade-white': '#FFFFFF',
+
+            // GREY
+        '--default-gray-100': '#F8FAFB',
+        '--default-gray-300': '#E3E8EF',
+        '--default-gray-400': '#CCD6E0',
+        '--default-gray-500': '#A0AEC0',
+        '--default-gray-600': '#718096',
+        '--default-gray-700': '#4E5664',
+        '--default-gray-800': '#323843',
+
+        '--default-neutral-gray-100': '#FAFAFA',
+    },
+    font : {
+        'text-3xl-medium' : {
+            fontSize : 30,
+            fontWeight : '500',
+            fontStyle : 'normal',
+            lineHeight : 30,
+            fontFamily : 'Metropolis'
+        }
+    }
 }
 
 export const colors = {
