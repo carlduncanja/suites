@@ -185,15 +185,95 @@ export const root = {
         '--default-gray-800': '#323843',
 
         '--default-neutral-gray-100': '#FAFAFA',
+            // CHARCOAL
+        '--color-ui--charcoal': '#313539'
     },
     font : {
-        'text-3xl-medium' : {
+            // BASE
+        '--text-base-regular' : {
+            fontSize : 16,
+            fontWeight : 'normal',
+            fontStyle : 'normal',
+            lineHeight : 16,
+        },
+        '--text-base-medium' : {
+            fontSize : 16,
+            fontWeight : '500',
+            fontStyle : 'normal',
+            lineHeight : 16,
+        },
+            // XS - SMALL
+        '--text-xs-regular' : {
+            fontSize : 12,
+            fontWeight : 'normal',
+            fontStyle : 'normal',
+            lineHeight : 12,
+        },
+        '--text-xs-light' : {
+            fontSize : 12,
+            fontWeight : '300',
+            fontStyle : 'normal',
+            lineHeight : 12,
+        },
+        '--text-xs-medium' : {
+            fontSize : 12,
+            fontWeight : '500',
+            fontStyle : 'normal',
+            lineHeight : 12,
+        },
+        '--text-xs-bold' : {
+            fontSize : 12,
+            fontWeight : 'bold',
+            fontStyle : 'normal',
+            lineHeight : 12,
+        },
+            // SM - SMALL
+        '--text-sm-regular' : {
+            fontSize : 14,
+            fontWeight : 'normal',
+            fontStyle : 'normal',
+            lineHeight : 14,
+        },
+        '--text-sm-medium' : {
+            fontSize : 14,
+            fontWeight : '500',
+            fontStyle : 'normal',
+            lineHeight : 14,
+        },
+        '--text-sm-bold' : {
+            fontSize : 14,
+            fontWeight : 'bold',
+            fontStyle : 'normal',
+            lineHeight : 14,
+        },
+            // XL - LARGE
+        '--text-xl-medium' : {
+            fontSize : 20,
+            fontWeight : '500',
+            fontStyle : 'normal',
+            lineHeight : 20,
+        },
+            // 2XL - LARGE
+        '--text-2xl-medium' : {
+            fontSize : 24,
+            fontWeight : '500',
+            fontStyle : 'normal',
+            lineHeight : 24,
+        },
+            // 3XL - LARGE
+        '--text-3xl-medium' : {
             fontSize : 30,
             fontWeight : '500',
             fontStyle : 'normal',
             lineHeight : 30,
-            fontFamily : 'Metropolis'
-        }
+        },
+        '--text-3xl-bold' : {
+            fontSize : 30,
+            fontWeight : 'bold',
+            fontStyle : 'normal',
+            lineHeight : 30,
+        },
+
     }
 }
 
