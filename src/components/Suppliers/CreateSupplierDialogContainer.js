@@ -149,7 +149,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
         <View style={styles.sectionContainer}>
 
             <View style={styles.row}>
-                <View style={[styles.inputWrapper,{flex:1}]}>
+                <View style={[styles.inputWrapper,{flex:1,}]}>
                     <InputField2
                         label={"Supplier Name"}
                         onChangeText={onFieldChange('name')}

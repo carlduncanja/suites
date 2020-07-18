@@ -1,28 +1,46 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import InputText from './InputText';
+import InputField2 from './Input Fields/InputField2';
 
-const Search = ({placeholderText, changeText, inputText, backgroundColor = "#FFFFFF"}) =>{
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+
+function Search({placeholderText = "Search", changeText = () => {}, inputText}){
+    
+    const theme = useTheme();
+
+    const SearchWrapper = styled.View`
+        margin-bottom : 24px;
+    `;
+
+    const SearchContainer = styled.View`
+        height: 30px;
+        border : 1px solid ${theme.colors['--color-gray-400']};
+        border-radius : 8px;
+    `
     return (
-        <View style={[styles.container, {backgroundColor:backgroundColor}]}>
-            <InputText
-                onChangeText={changeText}
-                placeholder={placeholderText}
-                placeholderTextColor = {"#A0AEC0"}
-                value = {inputText}
-            />
-        </View>
+        <SearchWrapper>
+            <SearchContainer>
+                <InputField2
+                    onChangeText={changeText}
+                    placeholder={placeholderText}
+                    placeholderTextColor = {theme.colors['--color-gray-500']}
+                    value = {inputText}
+                    backgroundColor = {theme.colors['--color-gray-100']}s
+                />
+
+                {/* <InputText
+                    onChangeText={changeText}
+                    placeholder={placeholderText}
+                    placeholderTextColor = {theme.colors['--color-gray-500']}
+                    value = {inputText}
+                    
+                    backgroundColor = {theme.colors['--color-red-800']}
+                /> */}
+            </SearchContainer>
+        </SearchWrapper>
     )
 };
 
 export default Search
-
-const styles = StyleSheet.create({
-    container:{
-        borderRadius:8,
-        borderWidth:1,
-        borderColor:'#CCD6E0',
-        // backgroundColor:'#FFFFFF',
-        padding:10,
-    }
-});

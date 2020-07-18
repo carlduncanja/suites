@@ -3,10 +3,15 @@ import {View, StyleSheet, ActivityIndicator} from 'react-native';
 import PageTitle from './PageTitle';
 import Search from '../Search';
 import List from '../List/List';
+
+import Wrapper from '../Wrapper';
+import LoadingIndicator from '../LoadingIndicator';
 import {SuitesContext} from '../../../contexts/SuitesContext';
 import {appActions} from '../../../redux/reducers/suitesAppReducer';
 import {colors} from '../../../styles'
 import PropTypes from 'prop-types';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 
 /**
@@ -22,8 +27,9 @@ import PropTypes from 'prop-types';
  * @constructor
  */
 const Page = (props) => {
+    
     const [state, dispatch] = useContext(SuitesContext);
-
+    const theme = useTheme()
     const {
         placeholderText,
         changeText,
@@ -51,51 +57,51 @@ const Page = (props) => {
             newState: event.nativeEvent.layout.height
         })
     };
+   
+    const PageWrapper = styled.View`
+        display : flex;
+        flex-direction : column;
+        margin-left : 0px;
+        padding-left: ${theme.space['--space-32']};
+        padding-top: 28px;
+        padding-right: 32px;
+        padding-bottom: 28px;
+        height : 100%;
+        background-color: ${theme.colors['--color-red-400']};
+    `;
+
+    const PageContainer = styled.View`
+        display: flex;
+        background-color: ${theme.colors['--color-green-400']};
+        height: 100%;
+    `;
 
     return ( 
-        <View style={{flex: 1}}>
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View style={{marginBottom: 25}}
-                          onLayout={(event) => getSlideTop(event)}
-                    >
-                        <PageTitle
-                            pageTitle={routeName}
-                        />
-                    </View>
-                    <View style={{marginBottom: 30}}>
-                        <Search
-                            placeholderText={placeholderText}
-                            changeText={changeText}
-                            inputText={inputText}
-                        />
-                    </View>
-                </View>
-
-                <View style={styles.list}>
+            <PageWrapper>
+                <PageContainer>  
+                    <PageTitle pageTitle={routeName}/>
+                    <Search
+                        placeholderText={placeholderText}
+                        changeText={changeText}
+                        inputText={inputText}
+                    />
                     {
                         isFetchingData ?
-                            <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                                <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                            </View>
-                            : <List
+                            <LoadingIndicator/>
+                            : 
+                            <List
                                 listData={listData}
                                 listHeaders={listHeaders}
                                 itemsSelected={itemsSelected}
                                 onRefresh={onRefresh}
                                 isCheckbox={true}
-                                // routeName={routeName}
                                 onSelectAll={onSelectAll}
-                                // currentPageListMin={currentPageListMin}
-                                // currentPageListMax={currentPageListMax}
                                 listItemFormat={listItemFormat}
                                 refreshing={isFetchingData}
                             />
                     }
-                </View>
-
-            </View>
-        </View>
+                </PageContainer>
+            </PageWrapper>
     );
 };
 

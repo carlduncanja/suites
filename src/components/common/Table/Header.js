@@ -4,29 +4,50 @@ import {CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
 import CheckBoxComponent from "../Checkbox";
 
-const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked, isCheckbox}) => {
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+
+function Header({headers, toggleHeaderCheckbox, isIndeterminate, checked, isCheckbox}){
+
+    const theme = useTheme()
+
+    const HeaderWrapper = styled.View`
+        align-items: flex-start;
+        flex-direction:row;
+        align-items:center;
+        background-color: ${theme.colors['--color-orange-400']};
+    `
+    const HeaderItemWrapper = styled.View`
+        display : flex;
+    `
+    const HeaderItem = styled.Text({
+        ...theme.font['--text-sm-medium'],
+        color : theme.colors['--color-gray-600']
+    })
+        
+    
+
     return (
-        <View style={styles.headersContainer}>
+        <HeaderWrapper>
             {
                 isCheckbox &&
-                <View style={{marginRight: 20}}>
                     <CheckBoxComponent
                         isIndeterminate={isIndeterminate}
                         onPress={toggleHeaderCheckbox}
                         isCheck={checked}
                     />
-                </View>
-            }
 
+            }
+           
             {headers.map((header, index) => {
-                let { fontSize = 16 } = header
                 return (
-                    <View style={[styles.item, {alignItems: header.alignment, flex: header.flex || 1}, header.styles]} key={index}>
-                        <Text style={[styles.headerText,{fontSize:fontSize}]}>{header.name}</Text>
-                    </View>
-                )
-            })}
-        </View>
+                    <HeaderItemWrapper style={[header.styles, {alignItems: header.alignment, flex: header.flex || 1}]} key={index}>
+                        <HeaderItem>{header.name}</HeaderItem>
+                    </HeaderItemWrapper>
+                )}
+            )}
+            
+        </HeaderWrapper>
     );
 }
 
@@ -35,7 +56,7 @@ export default Header;
 const styles = StyleSheet.create({
     headersContainer: {
         //flex:1,
-        marginLeft: 10,
+        // marginLeft: 10,
         flexDirection: 'row',
         //width:'100%'
     },

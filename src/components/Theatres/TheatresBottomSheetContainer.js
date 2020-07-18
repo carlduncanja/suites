@@ -24,7 +24,10 @@ function TheatresBottomSheetContainer({ theatre = {} }) {
 
     useEffect(() => {
         // console.log("Hello")
-        fetchTheatre(theatre._id)
+        setTimeout(()=>{
+            fetchTheatre(theatre._id)
+        },200)
+        
     },[]);
 
     // ##### Event Handlers

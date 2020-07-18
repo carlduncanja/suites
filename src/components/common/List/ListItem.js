@@ -1,8 +1,10 @@
-import React, {useContext} from 'react';
+import React, {useContext} from 'react'; 
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {withModal} from 'react-native-modalfy';
 import CheckBoxComponent from "../Checkbox";
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 /**
  *
@@ -14,28 +16,42 @@ import CheckBoxComponent from "../Checkbox";
  * @returns {*}
  * @constructor
  */
-const ListItem = ({
-                      itemView,
-                      hasCheckBox,
-                      isChecked,
-                      onCheckBoxPress,
-                      onItemPress
-                  }) => {
+function ListItem({
+        itemView = () => {},
+        hasCheckBox = true,
+        isChecked = false,
+        onCheckBoxPress = ()=>{},
+        onItemPress=() => {}
+    }){
 
+    const theme = useTheme();
+
+    const ListItemWrapper = styled.TouchableOpacity`
+        margin-bottom : ${theme.space['--space-12']};
+        height : 46px;
+        background-color: ${theme.colors['--default-shade-white']};
+        flex-direction: row;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: ${theme.colors['--color-gray-300']};
+    `
+
+    const ItemView = styled.View`
+        flex:1;
+        flex-direction: row;
+        background-color: ${theme.colors['--color-blue-500']};
+        align-items: center;
+    `
     return (
-        <TouchableOpacity onPress={onItemPress}>
-            <View style={styles.container}>
-                <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
-                    <CheckBoxComponent
-                        isCheck={isChecked}
-                        onPress={onCheckBoxPress}
-                    />
-                </View>
-                {
-                    itemView
-                }
-            </View>
-        </TouchableOpacity>
+        <ListItemWrapper onPress={onItemPress}>
+            <CheckBoxComponent
+                isCheck={isChecked}
+                onPress={onCheckBoxPress}
+            />
+            <ItemView>
+                {itemView}
+            </ItemView>
+        </ListItemWrapper>
     );
 };
 
@@ -43,23 +59,3 @@ export default ListItem
 
 ListItem.propTypes = {};
 ListItem.defaultProps = {};
-
-const styles = StyleSheet.create({
-    container: {
-        // flex:1,
-        flexDirection: 'row',
-        // flexWrap:'wrap',
-        alignItems: 'center',
-        //justifyContent:'center',
-        // padding:10,
-        paddingBottom: 8,
-        paddingTop: 8,
-        backgroundColor: '#FFFFFF',
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: "#E3E8EF",
-        width: '100%',
-        marginBottom: 10,
-        // justifyContent:'center'
-    },
-})
