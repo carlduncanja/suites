@@ -16,14 +16,16 @@ const indeterminateSvg = <Svg width="8" height="2" viewBox="0 0 8 2" fill="none"
     <Path d="M8 2H0V0H8V2Z" fill="#718096"/>
 </Svg>;
 
-function CheckBoxComponent({isCheck, isIndeterminate, onPress}) {
+function CheckBoxComponent({isCheck, isIndeterminate, onPress}) { 
 
     const theme = useTheme()
      
     const CheckboxWrapper = styled.TouchableOpacity`
         background-color: ${theme.colors['--color-red-500']};
-        padding-left: 15px;
-        padding-right: 15px;
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 19px;
+        padding-bottom: 19px;
         justify-content: center;
         align-items: center;
    

@@ -16,12 +16,13 @@ import { useTheme } from 'emotion-theming';
  //ToggleCheckbox - select page items
 
 function ListHeader({listHeaders = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = false, checked=false, isCheckbox=true}){
-
+ 
     const theme = useTheme()
 
     const ListHeaderWrapper = styled.View`
         margin-bottom: ${theme.space['--space-32']};
     `
+
     return (
         <ListHeaderWrapper>
             <Header
@@ -37,13 +38,3 @@ function ListHeader({listHeaders = [], toggleHeaderCheckbox=()=>{}, isIndetermin
 
 export default ListHeader;
 
-const styles = StyleSheet.create({
-    container:{
-        flexDirection:'row',
-        alignItems:'flex-start',
-        padding:10,
-        paddingLeft: 0,
-        paddingRight: 0
-    },
-
-});

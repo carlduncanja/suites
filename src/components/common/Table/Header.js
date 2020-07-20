@@ -6,30 +6,28 @@ import CheckBoxComponent from "../Checkbox";
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import HeaderItem from './HeaderItem';
 
-function Header({headers, toggleHeaderCheckbox, isIndeterminate, checked, isCheckbox}){
+function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = false, checked=false, isCheckbox=true}){
 
-    const theme = useTheme()
+    const theme = useTheme() 
 
     const HeaderWrapper = styled.View`
+        margin-bottom: ${theme.space['--space-13']};
+  
+    `
+    const HeaderContainer = styled.View`
+        background-color: ${theme.colors['--color-red-200']};
         align-items: flex-start;
         flex-direction:row;
         align-items:center;
-        background-color: ${theme.colors['--color-orange-400']};
+        padding-left:1px;
     `
-    const HeaderItemWrapper = styled.View`
-        display : flex;
-    `
-    const HeaderItem = styled.Text({
-        ...theme.font['--text-sm-medium'],
-        color : theme.colors['--color-gray-600']
-    })
-        
     
-
     return (
         <HeaderWrapper>
-            {
+            <HeaderContainer>
+                {
                 isCheckbox &&
                     <CheckBoxComponent
                         isIndeterminate={isIndeterminate}
@@ -41,12 +39,10 @@ function Header({headers, toggleHeaderCheckbox, isIndeterminate, checked, isChec
            
             {headers.map((header, index) => {
                 return (
-                    <HeaderItemWrapper style={[header.styles, {alignItems: header.alignment, flex: header.flex || 1}]} key={index}>
-                        <HeaderItem>{header.name}</HeaderItem>
-                    </HeaderItemWrapper>
+                    <HeaderItem header={header} index={index}/>
                 )}
             )}
-            
+            </HeaderContainer>
         </HeaderWrapper>
     );
 }

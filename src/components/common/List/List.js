@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
+import Header from '../Table/Header';
 import ListHeader from './ListHeader';
 import ListData from './ListData';
 import {SuitesContext} from '../../../contexts/SuitesContext';
@@ -43,25 +44,29 @@ function List({
         flex:1;
         background-color: ${theme.colors['--color-purple-400']};
     ` 
+    const ListContainer = styled.View`
+        display: flex;
+    `
     return (
-        <ListWrapper>
-            <ListHeader
-                listHeaders={listHeaders}
-                toggleHeaderCheckbox={onSelectAll}
-                checked={itemsSelected.length > 0}
-                isCheckbox={isCheckbox}
-                isIndeterminate={isIndeterminate}
-            />
+        <ListWrapper> 
+            <ListContainer>
+                <Header
+                    headers={listHeaders}
+                    toggleHeaderCheckbox={onSelectAll}
+                    checked={itemsSelected.length > 0}
+                    isCheckbox={isCheckbox}
+                    isIndeterminate={isIndeterminate}
+                />
            
-            <FlatList
-                data={listData}
-                renderItem={({item}) => listItemFormat(item)}
-                keyExtractor={keyExtractor}
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-                // contentContainerStyle={{paddingBottom: 150}}
-            />
-
+                <FlatList
+                    data={listData}
+                    renderItem={({item}) => listItemFormat(item)}
+                    keyExtractor={keyExtractor}
+                    onRefresh={onRefresh}
+                    refreshing={refreshing}
+                    // contentContainerStyle={{paddingBottom: 150}}
+                />
+            </ListContainer>
         </ListWrapper>
     );
 };

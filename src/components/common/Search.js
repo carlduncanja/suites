@@ -8,7 +8,7 @@ import { useTheme } from 'emotion-theming';
 
 function Search({placeholderText = "Search", changeText = () => {}, inputText}){
     
-    const theme = useTheme();
+    const theme = useTheme(); 
 
     const SearchWrapper = styled.View`
         margin-bottom : 24px;
