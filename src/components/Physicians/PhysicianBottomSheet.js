@@ -5,6 +5,7 @@ import PhysiciansDetailsTab from '../OverlayTabs/PhysiciansDetailsTab';
 import EditablePhysiciansDetailsTab from '../OverlayTabs/EditablePhysiciansDetailsTab';
 import CaseFilesTab from '../OverlayTabs/CaseFilesTab';
 import CustomProceduresTab from '../OverlayTabs/CustomProceduresTab';
+import BottomSheetContainer from '../common/BottomSheetContainer';
 import {colors} from "../../styles";
 
 import { getPhysicianById, updatePhysician } from "../../api/network";
@@ -153,25 +154,17 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
     }
 
     return (
-        <View style={{flex: 1}}>
-            {
-                isFetching
-                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                    </View>
-                    :
-                    <SlideOverlay
-                        overlayId={_id}
-                        overlayTitle={name}
-                        onTabPressChange={onTabPress}
-                        currentTabs={currentTabs}
-                        selectedTab={currentTab}
-                        isEditMode={isEditMode}
-                        overlayContent={overlayContent}
-                        onEditPress = {onEditPress}
-                    />
-            }
-        </View>
+        <BottomSheetContainer
+            isFetching = {isFetching}
+            overlayId={_id}
+            overlayTitle={name}
+            onTabPressChange={onTabPress}
+            currentTabs={currentTabs}
+            selectedTab={currentTab}
+            isEditMode={isEditMode}
+            onEditPress = {onEditPress}
+            overlayContent={getTabContent(currentTab)}
+        />
     );
 }
 

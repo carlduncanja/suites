@@ -4,6 +4,8 @@ import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 import SupplierProductsTab from '../OverlayTabs/SupplierProductsTab';
 import SupplierPurshaseOrders from '../OverlayTabs/SupplierPurchaseOrders';
+import BottomSheetContainer from '../common/BottomSheetContainer';
+
   
 import { getSupplierById, createPurchaseOrder, getSupplierProducts } from "../../api/network"; 
 import {colors} from "../../styles";
@@ -184,34 +186,47 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
     };
 
     return (
-        <View style={{flex: 1}}>
-            {
-                isFetching
-                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                    </View>
-                    :
+
+        <BottomSheetContainer
+            isFetching = {isFetching}
+            overlayId={supplierNumber}
+            overlayTitle={name}
+            onTabPressChange={onTabPress}
+            currentTabs={currentTabs}
+            selectedTab={currentTab}
+            isEditMode={isEditMode}
+            onEditPress = {onEditPress}
+            overlayContent={getTabContent(currentTab)}
+        />
+
+        // <View style={{flex: 1}}>
+        //     {
+        //         isFetching
+        //             ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
+        //                 <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
+        //             </View>
+        //             :
                    
-                    // console.log("Selected: ", selectedProcedure)
-                    <SlideOverlay
-                        overlayId={supplierNumber}
-                        overlayTitle={name}
-                        onTabPressChange={onTabPress}
-                        currentTabs={currentTabs}
-                        selectedTab={currentTab}
-                        isEditMode={isEditMode}
-                        onEditPress = {onEditPress}
-                        overlayContent={
-                            <View 
-                                style={{flex: 1, padding:30, paddingBottom:20}}
-                                // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
-                            >
-                                {getTabContent(currentTab)}
-                            </View>
-                        }
-                    />
-            }
-        </View>
+        //             // console.log("Selected: ", selectedProcedure)
+        //             <SlideOverlay
+        //                 overlayId={supplierNumber}
+        //                 overlayTitle={name}
+        //                 onTabPressChange={onTabPress}
+        //                 currentTabs={currentTabs}
+        //                 selectedTab={currentTab}
+        //                 isEditMode={isEditMode}
+        //                 onEditPress = {onEditPress}
+        //                 overlayContent={
+        //                     <View 
+        //                         style={{flex: 1, padding:30, paddingBottom:20}}
+        //                         // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
+        //                     >
+        //                         {getTabContent(currentTab)}
+        //                     </View>
+        //                 }
+        //             />
+        //     }
+        // </View>
     );
 }
 

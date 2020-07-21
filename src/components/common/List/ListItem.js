@@ -39,7 +39,6 @@ function ListItem({
     const ItemView = styled.View`
         flex:1;
         flex-direction: row;
-        background-color: ${theme.colors['--color-blue-500']};
         align-items: center;
     `
     return (

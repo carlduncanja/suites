@@ -146,6 +146,7 @@ export const root = {
         '--company-pale': '#769AC7',
         '--accent-button': '#0CB0E7',
         '--accent-line': '#00A9CE',
+        '--gradient-color': 'linear-gradient(180deg, #99C2E3 0%, #83AED1 100%)',
             // WHITE
         '--default-shade-white': '#FFFFFF',
         // '--default-neutral-gray' : "FAFAFA",
@@ -237,6 +238,7 @@ export const root = {
         },
 
     }
+
 
 }
 

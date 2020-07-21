@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     container: {
         position: 'relative',
         flex: 1,
+        
         flexDirection: 'row',
         // backgroundColor: '#E3E8EF',
         paddingStart: 20,

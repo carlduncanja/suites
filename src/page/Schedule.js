@@ -217,7 +217,7 @@ export default connect(mapStateToProps, mapDispatcherToProp)(Schedule)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FAFAFA'
+        backgroundColor: '#FAFAFA',
     },
 
     scheduleContainer: {

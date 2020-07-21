@@ -11,8 +11,12 @@ import StorageLocationsTab from "../OverlayTabs/StorageLocationsTab";
 import HistoryTabs from "../OverlayTabs/HistoryTabs";
 import {formatDate} from "../../utils/formatter";
 import moment from 'moment';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import BottomSheetContainer from '../common/BottomSheetContainer';
 
 function TheatresBottomSheetContainer({ theatre = {} }) {
+    const theme = useTheme();
     const currentTabs = ["Details", "History", "Storage", "Equipment", "Schedule"];
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
@@ -35,6 +39,10 @@ function TheatresBottomSheetContainer({ theatre = {} }) {
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
+
+    const onEditPress = () => {
+        setEditMode(!isEditMode)
+    }
 
     // ##### Helper functions
 
@@ -140,28 +148,17 @@ function TheatresBottomSheetContainer({ theatre = {} }) {
     const {_id, name} = selectedTheatre;
 
     return (
-        <View style={{flex: 1}}>
-            {
-                isFetching
-                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                    </View>
-                    : <SlideOverlay
-                        overlayId={_id}
-                        overlayTitle={name}
-                        onTabPressChange={onTabPress}
-                        currentTabs={currentTabs}
-                        selectedTab={currentTab}
-                        isEditMode={isEditMode}
-                        overlayContent={
-                            <View style={{flex: 1, padding: 30}}>
-                                {getOverlayScreen(currentTab)}
-                            </View>
-                        }
-                    />
-
-            }
-        </View>
+        <BottomSheetContainer
+            isFetching = {isFetching}
+            overlayId={_id}
+            overlayTitle={name}
+            onTabPressChange={onTabPress}
+            currentTabs={currentTabs}
+            selectedTab={currentTab}
+            isEditMode={isEditMode}
+            onEditPress = {onEditPress}
+            overlayContent={getOverlayScreen(currentTab)}
+        />
     );
 }
 

@@ -4,7 +4,7 @@ import {SuitesContext} from '../../../contexts/SuitesContext';
 import {appActions} from '../../../redux/reducers/suitesAppReducer';
 
 const Button = ({onPress, color, title, backgroundColor}) => {
-
+ 
     return (
         <TouchableOpacity
             style={[styles.button, {backgroundColor: backgroundColor}]}

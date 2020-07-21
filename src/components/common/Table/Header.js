@@ -17,7 +17,6 @@ function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = fa
   
     `
     const HeaderContainer = styled.View`
-        background-color: ${theme.colors['--color-red-200']};
         align-items: flex-start;
         flex-direction:row;
         align-items:center;
@@ -28,20 +27,19 @@ function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = fa
         <HeaderWrapper>
             <HeaderContainer>
                 {
-                isCheckbox &&
-                    <CheckBoxComponent
-                        isIndeterminate={isIndeterminate}
-                        onPress={toggleHeaderCheckbox}
-                        isCheck={checked}
-                    />
-
-            }
+                    isCheckbox &&
+                        <CheckBoxComponent
+                            isIndeterminate={isIndeterminate}
+                            onPress={toggleHeaderCheckbox}
+                            isCheck={checked}
+                        />
+                }
            
-            {headers.map((header, index) => {
-                return (
-                    <HeaderItem header={header} index={index}/>
+                {headers.map((header, index) => {
+                    return (
+                        <HeaderItem header={header} index={index}/>
+                    )}
                 )}
-            )}
             </HeaderContainer>
         </HeaderWrapper>
     );
