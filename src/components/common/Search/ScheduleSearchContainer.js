@@ -6,6 +6,8 @@ import {StyleSheet, View, TouchableWithoutFeedback} from "react-native";
 import SearchBar from "./SearchBar";
 import {formatDate} from "../../../utils/formatter";
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 /**
  * Handling searching logic and ui for appointments
@@ -32,6 +34,8 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
         new Date(2020, 3, 8, 10),
         "Restock Gauze"
     ];
+
+    const theme = useTheme();
 
     //#######  States
     const [currentSearchPosition, setCurrentSearchPosition] = useState(0);
@@ -138,6 +142,10 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
             return `${title}\t\t ${date}\t (${startTime} - ${endTime})`
         });
     };
+
+    // STYLED COMPONENTS
+
+    const ScheduleSearchWrapper = styled.View``
 
     return (
         isOpen

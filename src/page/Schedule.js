@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, Dimensions, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
 import Animated from 'react-native-reanimated'
 import Button from '../components/common/Buttons/Button';
 import moment from 'moment';
@@ -17,6 +17,10 @@ import ScheduleSearchContainer from "../components/common/Search/ScheduleSearchC
 import ScheduleOverlayContainer from "../components/Schedule/ScheduleOverlayContainer";
 import {useModal} from "react-native-modalfy";
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import SchedulePageHeader from '../components/Schedule/SchedulePageHeader';
+
 
 const currentDate = new Date();
 
@@ -28,6 +32,7 @@ const Schedule = (props) => {
     } = props;
     const modal = useModal();
     const screenDimensions = Dimensions.get('window')
+    const theme = useTheme();
 
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
@@ -126,9 +131,61 @@ const Schedule = (props) => {
         setSearchOpen(false)
     };
 
+    // ###### STYLED COMPONENTS
+
+    const ScheduleWrapper = styled.View`
+        flex:1;
+        margin : 0px;
+        background-color: ${theme.colors['--color-neutral-gray-100']};
+        background-color: red;
+        padding-top:26px;
+        padding-bottom:32px;
+
+    `
+
+    const ScheduleContainer = styled.View`
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: flex-start;
+        background-color: orange;
+    `
+
+    const SchedulePageWrapper = styled.View`
+        flex:1;
+        margin:0px;
+        background-color:purple;
+    `
+    const SchedulePageContainer = styled.View`
+        display: flex;
+        width: 100%;
+        height: 100%;
+    `
+
     return (
-        <View style={styles.container}>
-            <Animated.View
+        <ScheduleWrapper>
+            <ScheduleContainer>
+
+                <ScheduleSearchContainer
+                    isOpen={searchOpen}
+                    onSearchResultSelected={(appointment) => {
+                        closeSearch();
+                        handleAppointmentPress(appointment)
+                    }}
+                    onSearchClose={closeSearch}
+                />
+
+                <SchedulePageWrapper>
+                    {/* <SchedulePageContainer> */}
+                        <SchedulePageHeader
+                            searchButtonTitle = ""
+                        />
+                    {/* </SchedulePageContainer> */}
+                </SchedulePageWrapper>
+                
+            </ScheduleContainer>
+
+            {/* <Animated.View
                 style={{
                     ...styles.scheduleContainer
                 }}>
@@ -200,7 +257,8 @@ const Schedule = (props) => {
                 </View>
 
             </Animated.View>
-        </View>
+        */}
+        </ScheduleWrapper>
     )
 };
 
