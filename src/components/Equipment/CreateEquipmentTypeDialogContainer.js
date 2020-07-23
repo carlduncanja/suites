@@ -1,16 +1,15 @@
-import React,{ useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
 
+import { formatDate } from "../../utils/formatter";
+import { useModal } from "react-native-modalfy";
 
-import { formatDate } from '../../utils/formatter'
-import {useModal} from "react-native-modalfy";
-
-import { createEquipmentType } from "../../api/network";
-import {connect} from "react-redux";
-
+import { createEquipmentType, getEquipmentTypes } from "../../api/network";
+import { addEquipment } from "../../redux/actions/equipmentActions";
+import { connect } from "react-redux";
 
 /**
  * Component to handle the create storage process.
@@ -22,175 +21,191 @@ import {connect} from "react-redux";
  * @constructor
  */
 
-const CreateEquipmentTypeDialogContainer = ({onCancel, onCreated, equipmentTypes}) =>{
+const CreateEquipmentTypeDialogContainer = ({
+  onCancel,
+  onCreated,
+  equipmentTypes,
+  addEquipment,
+}) => {
+  const modal = useModal();
+  const dialogTabs = ["Details"];
+  const selectedIndex = 0;
 
-    const modal = useModal();
-    const dialogTabs = ['Details'];
-    const selectedIndex = 0;
+  const [positiveText, setPositiveText] = useState("DONE");
+  const [equipmentTypeArray, setequipmentTypeArray] = useState([
+    equipmentTypes,
+  ]);
 
-    const [positiveText, setPositiveText] = useState("DONE")
+  const [fields, setFields] = useState({
+    name: "",
+    unitPrice: "",
+  });
 
-    const [fields, setFields] = useState({
-        name : '',
-        unitPrice : ''
+  const [errorFields, setErrorFields] = useState({
+    name: false,
+    unitPrice: false,
+  });
+
+  const onFieldChange = (fieldName) => (value) => {
+    setFields({
+      ...fields,
+      [fieldName]: value,
+    });
+  };
+
+  const [unitPriceText, setUnitPriceText] = useState(fields["unitPrice"]);
+
+  const handleCloseDialog = () => {
+    onCancel();
+    modal.closeAllModals();
+  };
+
+  const onPositiveButtonPress = () => {
+    console.log("clicked done!");
+    modal.closeAllModals();
+    let isNameError = errorFields["name"];
+    let isPriceError = errorFields["unitPrice"];
+
+    fields["name"] === "" || null
+      ? (isNameError = true)
+      : (isNameError = false);
+    fields["unitPrice"] === "" || null
+      ? (isPriceError = true)
+      : (isPriceError = false);
+
+    setErrorFields({
+      ...errorFields,
+      name: isNameError,
+      unitPrice: isPriceError,
     });
 
-    const [errorFields, setErrorFields] = useState({
-        name : false,
-        unitPrice : false
-    })
-
-    const onFieldChange = (fieldName) => (value) => {
-        setFields({
-            ...fields,
-            [fieldName]: value
-        })
-    };
-
-    const [unitPriceText, setUnitPriceText] = useState(fields['unitPrice'])
-
-    const handleCloseDialog = () => {
-        onCancel();
-        modal.closeAllModals();
-    };
-
-    const onPositiveButtonPress = () => {
-
-        let isNameError = errorFields['name']
-        let isPriceError = errorFields['unitPrice']
-
-        fields['name'] === '' || null ? isNameError = true : isNameError = false
-        fields['unitPrice'] === '' || null ? isPriceError = true : isPriceError = false
-
-        setErrorFields({
-            ...errorFields,
-            name : isNameError,
-            unitPrice : isPriceError
-        })
-
-        if(isNameError === false && isPriceError === false){
-            console.log("Success: ", fields)
-            createEquipmentTypeCall()
-        } 
-    };
-
-    const handleUnitPrice = (price) => {
-        if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
-            onFieldChange('unitPrice')(price)
-        }
-        setUnitPriceText(price)
+    if (isNameError === false && isPriceError === false) {
+      console.log("Success: ", fields);
+      createEquipmentTypeCall();
     }
-    
-    const getDialogContent = () => {
-        return (
-            <View style={styles.sectionContainer}>
-                <View style={styles.row}>
-                    <View style={styles.inputWrapper}>
-                        <InputField2 
-                            label={"Type Name"}
-                            onChangeText={onFieldChange('name')}
-                            value={fields['name']}
-                            onClear={() => onFieldChange('name')('')}
-                            hasError = {errorFields['name']}
-                            errorMessage = "Name must be filled."
-                        />
-                    </View>
+  };
 
-                    <View style={styles.inputWrapper}>
-                        <InputField2
-                            label={"Unit Price"}
-                            onChangeText={(value) => { handleUnitPrice(value )}}
-                            value={unitPriceText}
-                            keyboardType={'number-pad'}
-                            onClear={() => handleUnitPrice('')}
-                            hasError = {errorFields['unitPrice']}
-                            errorMessage = "Price must be provided."
-                        />
-                    </View>
-                </View>
-            </View>
-        )
-    };
+  const handleUnitPrice = (price) => {
+    if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
+      onFieldChange("unitPrice")(price);
+    }
+    setUnitPriceText(price);
+  };
 
-    const createEquipmentTypeCall = () => {
-        createEquipmentType(fields)
-            .then(data => {
-                modal.closeAllModals();
-                setTimeout(() => {onCreated(data)}, 200);
-            })
-            .catch(error => {
-                console.log("failed to create equipment type", error);
-                // TODO handle error
-            })
-            .finally(_ => {
-            })
-    };
-
+  const getDialogContent = () => {
     return (
-        <OverlayDialog
-            title={"Add Equipment Type"}
-            onPositiveButtonPress={onPositiveButtonPress}
-            onClose={handleCloseDialog}
-            positiveText={positiveText}
+      <View style={styles.sectionContainer}>
+        <View style={styles.row}>
+          <View style={styles.inputWrapper}>
+            <InputField2
+              label={"Group Name"}
+              onChangeText={onFieldChange("name")}
+              value={fields["name"]}
+              onClear={() => onFieldChange("name")("")}
+              hasError={errorFields["name"]}
+              errorMessage="Name must be filled."
+            />
+          </View>
 
-        >
-            <View style = {styles.container}>
-                <DialogTabs
-                    tabs = {dialogTabs}
-                    tab = {selectedIndex}
-                />
-                <TouchableOpacity
-                    activeOpacity = {1}
-                >
-                    {
-                        getDialogContent()
-                    }
-                </TouchableOpacity>
-                    
-            </View>
-        </OverlayDialog>
-    )
+          <View style={styles.inputWrapper}>
+            <InputField2
+              label={"Unit Price"}
+              onChangeText={(value) => {
+                handleUnitPrice(value);
+              }}
+              value={unitPriceText}
+              keyboardType={"number-pad"}
+              onClear={() => handleUnitPrice("")}
+              hasError={errorFields["unitPrice"]}
+              errorMessage="Price must be provided."
+            />
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const createEquipmentTypeCall = () => {
+    createEquipmentType(fields)
+      .then((data) => {
+        addEquipment(data);
+        console.log("new data that's added in equipment :", data);
+        modal.closeAllModals();
+        setTimeout(() => {
+          onCreated(data);
+        }, 200);
+      })
+      .catch((error) => {
+        // todo handle error
+        console.log("failed to create equipment type", error);
+      })
+      .finally((_) => {
+        modal.closeAllModals();
+      });
+  };
+
+  return (
+    <OverlayDialog
+      title={"Add Equipment Group"}
+      onPositiveButtonPress={onPositiveButtonPress}
+      onClose={handleCloseDialog}
+      positiveText={positiveText}
+    >
+      <View style={styles.container}>
+        <DialogTabs tabs={dialogTabs} tab={selectedIndex} />
+        <TouchableOpacity activeOpacity={1}>
+          {getDialogContent()}
+        </TouchableOpacity>
+      </View>
+    </OverlayDialog>
+  );
 };
 
-CreateEquipmentTypeDialogContainer.propTypes = {}
-CreateEquipmentTypeDialogContainer.defaultProps = {}
+CreateEquipmentTypeDialogContainer.propTypes = {};
+CreateEquipmentTypeDialogContainer.defaultProps = {};
 
-export default CreateEquipmentTypeDialogContainer
+const mapDispatcherToProp = {
+  addEquipment,
+};
+
+export default connect(
+  null,
+  mapDispatcherToProp
+)(CreateEquipmentTypeDialogContainer);
 
 const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        width: 636,
-        flexDirection: 'column',
-        backgroundColor: 'white',
-    },
-    sectionContainer: {
-        height: 160,
-        backgroundColor: '#FFFFFF',
-        flexDirection: 'column',
-        padding: 24,
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 20
-    },
-    inputField: {
-        // flex: 1,
-        width: 64,
-        borderWidth: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderColor: '#E3E8EF',
-        borderRadius: 4,
-        height: 32,
-    },
-    inputWrapper: {
-        // flex: 1,
-        width: 260,
-        flexDirection: 'row',
-        // backgroundColor: 'blue'
-    },
-})
-
+  container: {
+    flex: 1,
+    width: 636,
+    flexDirection: "column",
+    backgroundColor: "white",
+  },
+  sectionContainer: {
+    height: 160,
+    backgroundColor: "#FFFFFF",
+    flexDirection: "column",
+    padding: 24,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  inputField: {
+    // flex: 1,
+    width: 64,
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    borderColor: "#E3E8EF",
+    borderRadius: 4,
+    height: 32,
+  },
+  inputWrapper: {
+    // flex: 1,
+    width: 260,
+    flexDirection: "row",
+    // backgroundColor: 'blue'
+  },
+});
