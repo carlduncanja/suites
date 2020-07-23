@@ -30,9 +30,10 @@ import {
   selectAll,
 } from "../helpers/caseFilesHelpers";
 
-import { connect } from "react-redux";
-import { setEquipment } from "../redux/actions/equipmentActions";
-import { getEquipment, getEquipmentTypes } from "../api/network";
+import {connect} from 'react-redux';
+import {setEquipment} from "../redux/actions/equipmentActions";
+import {setEquipmentTypes} from '../redux/actions/equipmentTypesActions';
+import {getEquipment, getEquipmentTypes} from "../api/network";
 
 import { withModal } from "react-native-modalfy";
 import { formatDate } from "../utils/formatter";
@@ -76,8 +77,8 @@ const Equipment = (props) => {
   ];
   const floatingActions = [];
 
-  //  ############ Props
-  const { equipment, setEquipment, navigation, modal } = props;
+    //  ############ Props
+    const {equipment, setEquipment, equipmentTypes, setEquipmentTypes, navigation, modal} = props;
 
   //  ############ State
   const [isFetchingData, setFetchingData] = useState(false);
@@ -92,19 +93,19 @@ const Equipment = (props) => {
   const [searchResults, setSearchResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState({});
 
-  const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([]);
-  const [selectedTypesIds, setSelectedTypesIds] = useState([]);
-  const [equipmentTypes, setEquipmentTypes] = useState([]);
+    const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([])
+    const [selectedTypesIds, setSelectedTypesIds] = useState([])
+    // const [equipmentTypes, setEquipmentTypes] = useState([])
 
   // ############# Lifecycle methods
 
-  useEffect(() => {
-    // console.log("equipments: ", equipment);
-    if (!equipmentTypes.length) {
-      fetchEquipmentData();
-    }
-    setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage));
-  }, []);
+    useEffect(() => {
+        console.log("equipments: ", equipmentTypes);
+        if (!equipmentTypes.length) {
+            fetchEquipmentData()
+        }
+        setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage))
+    }, []);
 
   useEffect(() => {
     if (!searchValue) {
@@ -222,34 +223,35 @@ const Equipment = (props) => {
     });
   };
 
-  // ############# Helper functions
-  const fetchEquipmentData = () => {
-    setFetchingData(true);
-    getEquipmentTypes(searchValue)
-      .then((data) => {
-        let newData = data.map((item) => {
-          return {
-            id: item._id,
-            ...item,
-          };
-        });
-        setEquipmentTypes(equipmentTypes.concat(newData));
-        setTotalPages(Math.ceil(data.length / recordsPerPage));
-      })
-      .catch((error) => {
-        console.log("Failed to get equipment types", error);
-      });
-    getEquipment()
-      .then((data) => {
-        setEquipment(data);
-      })
-      .catch((error) => {
-        console.log("failed to get equipment", error);
-      })
-      .finally((_) => {
-        setFetchingData(false);
-      });
-  };
+    // ############# Helper functions
+    const fetchEquipmentData = () => {
+        setFetchingData(true)
+        getEquipmentTypes(searchValue)
+            .then(data => {
+                let newData = data.map(item => {
+                    return {
+                        ...item
+                    }
+                })
+                console.log("New data: ", newData)
+                setEquipmentTypes(newData)
+                setTotalPages(Math.ceil(newData.length / recordsPerPage))
+            })
+            .catch(error => {
+                console.log("Failed to get equipment types", error)
+            })
+        getEquipment()
+            .then(data => {
+                setEquipment(data);
+
+            })
+            .catch(error => {
+                console.log("failed to get equipment", error);
+            })
+            .finally(_ => {
+                setFetchingData(false)
+            })
+    };
 
   const renderEquipmentFn = (item) => {
     const equipments = item.equipments || [];
@@ -562,18 +564,13 @@ const Equipment = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const equipment = state.equipment.map((item) => {
-    return {
-      ...item,
-      // id: item._id
-    };
-  });
-  return { equipment };
-};
+const mapStateToProps = (state) => ({
+    equipmentTypes : state.equipmentTypes
+})
 
 const mapDispatcherToProp = {
-  setEquipment,
+    setEquipmentTypes,
+    setEquipment
 };
 
 export default connect(

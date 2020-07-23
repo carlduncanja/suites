@@ -2,38 +2,40 @@ import suitesAxiosInstance from "./index";
 import { handleError, handleResponse } from "./apiUtils";
 
 import {
-  inventoriesEndpoint,
-  inventoryEndpoint,
-  theatresEndpoint,
-  theatreEndpoint,
-  physiciansEndpoint,
-  physicianEndpoint,
-  proceduresEndpoint,
-  procedureEndpoint,
-  caseFilesEndpoint,
-  caseFileEndpoint,
-  updateChargeSheetEndpoint,
-  createInvoice,
-  equipmentsEndpoint,
-  equipmentEndpoint,
-  equipmentTypesEndpoint,
-  storageLocationsEndpoint,
-  suppliersEndpoint,
-  supplierEndpoint,
-  supplierProductsEndpoint,
-  updateProductsEndpoint,
-  purchaseOrdersEndpoint,
-  purchaseOrderEndpoint,
-  createOrderInvoice,
-  storageLocationEndpoint,
-  categoriesEndpoint,
-  loginEndpoint,
-  appointmentsEndpoint,
-  appointmentEndpoint,
-  validateCaseProcedureEndpoint,
-  suggestedStartTimeEndpoint,
-  updateQuotationStatusEndpoint,
-  updatePurchaseOrderStatusEndpoint,
+    inventoriesEndpoint,
+    inventoryEndpoint,
+    inventoryVariantEndpoint,
+    theatresEndpoint,
+    theatreEndpoint,
+    physiciansEndpoint,
+    physicianEndpoint,
+    proceduresEndpoint,
+    procedureEndpoint,
+    caseFilesEndpoint,
+    caseFileEndpoint,
+    updateChargeSheetEndpoint,
+    createInvoice,
+    equipmentsEndpoint,
+    equipmentEndpoint,
+    equipmentTypesEndpoint,
+    storageLocationsEndpoint,
+    suppliersEndpoint,
+    supplierEndpoint,
+    supplierProductsEndpoint,
+    updateProductsEndpoint,
+    purchaseOrdersEndpoint,
+    purchaseOrderEndpoint,
+    updatePurchaseOrderEndpoint,
+    createOrderInvoice,
+    storageLocationEndpoint,
+    categoriesEndpoint,
+    loginEndpoint,
+    appointmentsEndpoint,
+    appointmentEndpoint,
+    validateCaseProcedureEndpoint,
+    suggestedStartTimeEndpoint,
+    updateQuotationStatusEndpoint,
+    updatePurchaseOrderStatusEndpoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -137,6 +139,18 @@ export const createInventories = async (inventoryForCreation) => {
     .post(inventoriesEndpoint, inventoryForCreation)
     .then(handleResponse)
     .catch(handleError);
+};
+
+export const createInventoryGroup = async (groupToCreate) => {
+    return suitesAxiosInstance.post(inventoriesEndpoint, groupToCreate)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+export const createInventoryVariant = async (referenceId, itemToCreate) => {
+    return suitesAxiosInstance.post(inventoryVariantEndpoint(referenceId), itemToCreate)
+        .then(handleResponse)
+        .catch(handleError);
 };
 
 // ################# Case Files Endpoints
@@ -287,11 +301,10 @@ export const updatePhysician = async (id, data) => {
 };
 
 // ################# Storage Endpoints
-export const getStorage = async () => {
-  return suitesAxiosInstance
-    .get(storageLocationsEndpoint)
-    .then(handleResponse)
-    .catch(handleError);
+export const getStorage = async (query,max) => {
+    return suitesAxiosInstance.get(storageLocationsEndpoint, {params : {query,max}})
+        .then(handleResponse)
+        .catch(handleError)
 };
 
 export const getStorageById = async (id) => {
@@ -412,8 +425,15 @@ export const getPurchaseOrderById = async (id) => {
 };
 
 export const createInvoiceViaOrders = async (quotationId) => {
-  return suitesAxiosInstance
-    .post(createOrderInvoice(quotationId))
-    .then(handleResponse)
-    .catch(handleError);
-};
+    return suitesAxiosInstance.post(createOrderInvoice(quotationId))
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+export const updatePurchaseOrder = async (purchaseOrderId, data) => {
+    return suitesAxiosInstance.put(updatePurchaseOrderEndpoint(purchaseOrderId), data)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+

@@ -1,40 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import SvgIcon from "../../../assets/SvgIcon";
 import ClearList from '../../../assets/svg/clearList';
 import Button from "./Buttons/Button";
 import Table from "./Table/Table"
 import Paginator from './Paginators/Paginator';
+import SearchableOptionsField from './Input Fields/SearchableOptionsField';
 import {useNextPaginator,usePreviousPaginator} from '../../helpers/caseFilesHelpers';
 
 
-const CartCard = (props) =>{
+function AddOverlaywithSearch(props){
 
     const { 
-        title, 
-        isEditMode = false, 
-        onEditDone = ()=>{},
+        title = "", 
         onClearPress = () => {},
-        closeModal, 
-        data, 
-        selectedTab, 
-        listItemFormat, 
-        tabs, 
-        headers, 
-        isCheckBox ,
-        onPressTab,
+        closeModal = () => {}, 
+        data = [], 
+        selectedTab = "", 
+        listItemFormat = () => {},
+        tabs,
+        headers = [], 
+        isCheckBox = false,
+        onPressTab = () => {},
         hasFooter = false,
         onFooterPress = () => {},
-        footerTitle = ""
+        footerTitle = "",
+        searchText = "",
+        searchResults = [],
+        searchQuery,
+        onSearchChange = () => {},
+        onSelectItem = () => {}
     } = props
 
-    const recordsPerPage = 5
+    const recordsPerPage = 4
     const dataLength = data.length
     const totalPages = Math.ceil(dataLength/recordsPerPage)
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
+
+    const [selectedItem, setSelectedItem] = useState(false)
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages){
@@ -54,8 +60,18 @@ const CartCard = (props) =>{
         }
     };
 
+    const onItemSelected = (item) => {
+        setSelectedItem(item)
+        onSelectItem(item)
+    }
+
+    const onClearItem = () => {
+        onSearchChange('')
+        setSelectedItem(false)
+    }
+
     let dataToDisplay = [...data]
-    dataToDisplay = dataToDisplay.slice(currentPageListMin,currentPageListMax)
+    dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax)
 
     return(
         <View style={styles.container}>
@@ -86,61 +102,59 @@ const CartCard = (props) =>{
             
             }
 
-             
+            <View style={{margin: 20}}>
 
-            <View style={styles.list}>
-                <Table
-                    data = {dataToDisplay}
-                    currentListMin = {currentPageListMin}
-                    currentListMax = {currentPageListMax}
-                    listItemFormat = {listItemFormat}
-                    headers = {headers}
-                    isCheckbox = {isCheckBox}
-                />
+                <View style={[styles.search, {zIndex:1}]}>
+                    <SearchableOptionsField
+                        value={selectedItem}
+                        text={searchText}
+                        oneOptionsSelected={(item)=> onItemSelected(item)}
+                        onChangeText={(value) => {onSearchChange(value)}}
+                        onClear={()=>{onClearItem()}}
+                        options={searchResults}
+                        handlePopovers={() => {
+                            // console.log("handle popovers");
+                        }}
+                        isPopoverOpen={searchQuery}
+                    />
+                </View>
+
+                <View style={styles.list}>
+                    <Table
+                        data = {dataToDisplay}
+                        currentListMin = {currentPageListMin}
+                        currentListMax = {currentPageListMax}
+                        listItemFormat = {listItemFormat}
+                        headers = {headers}
+                        isCheckbox = {isCheckBox}
+                    />
+                </View>
+
+                <View style={{justifyContent:'space-between', flexDirection:'row'}}>
+
+                    <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
+                        <Paginator
+                            currentPage = {currentPagePosition}
+                            totalPages = {totalPages}
+                            goToNextPage = {goToNextPage}
+                            goToPreviousPage = {goToPreviousPage}
+                        />
+                    </View>
+                    <TouchableOpacity 
+                        style={styles.clearListStyle}
+                        onPress = {onClearPress}
+                    >
+                        <Text style={{color:'#718096', fontSize:12}}>Clear List</Text>
+                        <ClearList/>
+                    </TouchableOpacity>
+
+                </View>
+            
             </View>
 
             {
-                // isEditMode ?
-                    <View style={{marginLeft:20, marginRight:20, justifyContent:'space-between', flexDirection:'row'}}>
-                        <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
-                            <Paginator
-                                currentPage = {currentPagePosition}
-                                totalPages = {totalPages}
-                                goToNextPage = {goToNextPage}
-                                goToPreviousPage = {goToPreviousPage}
-                            />
-                        </View>
-                        <TouchableOpacity 
-                            style={styles.clearListStyle}
-                            onPress = {onClearPress}
-                        >
-                            <Text style={{color:'#718096', fontSize:12}}>Clear List</Text>
-                            <ClearList/>
-                            {/* <Button
-                                backgroundColor = "#F8FAFB"
-                                title = 'Clear'
-                                buttonPress = {onEditDone}
-                                color = "#4299E1"
-                            /> */}
-                        </TouchableOpacity>
-
-                    </View>
-                    // :
-                    // <View style={{alignItems:'flex-end', justifyContent:'flex-end'}}>
-                    //     <View style={styles.paginationContainer}>
-                    //         <Paginator
-                    //             currentPage = {currentPagePosition}
-                    //             totalPages = {totalPages}
-                    //             goToNextPage = {goToNextPage}
-                    //             goToPreviousPage = {goToPreviousPage}
-                    //         />
-                    //     </View>
-                    // </View>
-            }
-
-            {
                 hasFooter &&
-                <View style={styles.footer}>
+                <View style={[styles.footer,{zIndex:-1}]}>
                     <Button
                         backgroundColor = "#FFFFFF"
                         title = {footerTitle}
@@ -154,14 +168,14 @@ const CartCard = (props) =>{
     )
 }
 
-export default CartCard
+export default AddOverlaywithSearch
 
 const styles = StyleSheet.create({
     container:{
         // flex:1,
         backgroundColor:'#FFFFFF',
         borderRadius:8,
-        width:400,
+        width:550,
         // backgroundColor:'red'
     },
     headerContainer:{
@@ -190,11 +204,13 @@ const styles = StyleSheet.create({
         paddingTop:6
     },
     list:{
-        margin:15,
+        // margin:15,
         borderColor:"#CCD6E0",
         borderWidth:1,
         borderRadius:8,
-        padding:10
+        padding:10,
+        marginTop:15,
+        marginBottom:15
     },
     listDataContainer:{
         flexDirection:'row',
@@ -210,14 +226,6 @@ const styles = StyleSheet.create({
     },
     clearListStyle:{
         flexDirection:'row',
-        // borderColor:'#CCD6E0',
-        // borderWidth:1,
-        // backgroundColor:'#F8FAFB',
-        // borderRadius: 4,
-        // padding:4,
-        // paddingLeft:25,
-        // paddingRight:25,
-        marginBottom:20,
         width:100,
         alignItems:"center",
         justifyContent:'space-evenly',
@@ -229,8 +237,6 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         padding:8,
         alignSelf:'flex-end',
-        marginRight:15,
-        marginBottom:20
     },
     footer:{
         // backgroundColor:'#FFFFFF',
@@ -239,5 +245,12 @@ const styles = StyleSheet.create({
         padding:5,
         paddingBottom:20,
         paddingTop:20
+    },
+    search:{
+        height:40,
+        backgroundColor:'#FFFFFF',
+        // borderColor:'#CCD6E0',
+        // borderWidth:1,
+        // borderRadius:8
     }
 })

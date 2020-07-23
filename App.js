@@ -1,5 +1,7 @@
 import React, {useReducer, useMemo} from 'react';
-import {connect, Provider} from 'react-redux'
+import {connect, Provider} from 'react-redux';
+import { ThemeProvider } from 'emotion-theming';
+import {View, Text} from 'react-native';
 
 import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
 import {initialState, SuitesContext} from './src/SuitesContext';
@@ -9,7 +11,8 @@ import configureStore from "./src/redux/configureStore";
 import {createStackNavigator} from '@react-navigation/stack';
 import RootApplicationNavigator from "./src/RootApplicationNavigator";
 import NotificationRegistry from "./src/components/notifications/NotficationRegistry";
-import {View} from "react-native";
+
+import { root } from './src/styles';
 
 const store = configureStore({});
 
@@ -28,8 +31,13 @@ const App = () => {
             <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
 
                 {/*<RootApplicationContainer/>*/}
-                <RootApplicationNavigator/>
-                <NotificationRegistry/>
+                <ThemeProvider theme = {root}>
+
+                    <RootApplicationNavigator/>
+                    <NotificationRegistry/>
+
+                </ThemeProvider>
+                
 
             </SuitesContextProvider>
         </Provider>

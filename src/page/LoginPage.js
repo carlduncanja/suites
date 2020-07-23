@@ -82,16 +82,18 @@ function LoginPage({ navigation, signIn }) {
             <Logo />
           </View>
 
-          <View style={styles.form}>
-            <View style={styles.row}>
-              <InputFieldwithIcon
-                label="Email"
-                onChangeText={(value) => onFieldChange("email")(value)}
-                value={fields["email"]}
-                onClear={() => onFieldChange("email")("")}
-                icon={<PersonIcon />}
-              />
-            </View>
+                    <View style={styles.form}>
+
+                        <View style={styles.row}>
+                            <InputFieldwithIcon
+                                label="Email"
+                                onChangeText={(value) => onFieldChange('email')(value)}
+                                value={fields['email']}
+                                keyboardType={"email-address"}
+                                onClear={() => onFieldChange('email')('')}
+                                icon={<PersonIcon/>}
+                            />
+                        </View>
 
             <View style={styles.row}>
               <InputFieldwithIcon

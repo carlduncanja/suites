@@ -47,7 +47,7 @@ const CreatePurchaseOrderDialog = ({onCancel, onCreated}) =>{
     }, [storageSearchValue]);
 
     const fetchStorage = () => {
-        getStorage(storageSearchValue)
+        getStorage(storageSearchValue,5)
             .then((data = []) => {
                 // console.log("Data: ", data)
                 // const results = data.map(item => ({
@@ -104,7 +104,10 @@ const CreatePurchaseOrderDialog = ({onCancel, onCreated}) =>{
         let isValid = validatedPO()
 
         if(!isValid){ return }
-        onCreated(fields)
+        setTimeout(()=>{
+            onCreated(fields)
+        },200)
+        
     }
 
     const handleCloseDialog = () =>{

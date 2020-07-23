@@ -32,23 +32,10 @@ function InputFieldwithIcon({label, onChangeText, value, placeholder, keyboardTy
                 <View style={{marginRight:5, justifyContent:'center'}}>
                     {icon}
                 </View>
-                
-                {/* {
-                    value
-                        ? <TouchableOpacity
-                            style={styles.clearIcon}
-                            onPress={onClear}
-                        >
-                            <ClearIcon/>
-                        </TouchableOpacity>
-                        : null
-                } */}
-
-
             </View>
 
 
-            
+
 
         </View>
     );
