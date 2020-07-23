@@ -7,6 +7,7 @@ export default {
     theatres: [],
     inventory : [],
     equipment : [],
+    equipmentTypyes : [],
     suppliers : [],
     orders: [],
     cart:[],
