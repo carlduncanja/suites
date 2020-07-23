@@ -6,6 +6,9 @@ import moment from "moment";
 import { formatDate } from "../../utils/formatter";
 import DayOfMonth from "./DayOfMonth";
 
+import { useTheme } from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+
 /**
  *
  * @param month
@@ -15,8 +18,8 @@ import DayOfMonth from "./DayOfMonth";
  * @returns {*}
  * @constructor
  */
-function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
 
+function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
 
     /**
      * takes an arrays of days and groups them by their week.
@@ -86,18 +89,30 @@ function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
 
     const groupAppointments = groupAppointmentsByDays(appointments);
 
+    const DaysOfMonthWrapper = styled.View`
+        margin: 0;
+    `;
+    const DaysOfMonthContainer = styled.View`
+        width: 100%;
+    `
+    const WeekView = styled.View`
+        align-self: center;
+        flex-direction : row;
+    `
+
     return (
-        <View style={styles.container}>
-
-            {
-                Object.keys(weekDays).map((week, index) => {
-                    return <View key={index} style={styles.week}>
-                        {renderWeek(weekDays[week], selectedDay, month, groupAppointments)}
-                    </View>
-                })
-            }
-
-        </View>
+        <DaysOfMonthWrapper>
+            <DaysOfMonthContainer>
+                {
+                    Object.keys(weekDays).map((week, index) => {
+                        return <WeekView key={index}>
+                            {renderWeek(weekDays[week], selectedDay, month, groupAppointments)}
+                        </WeekView>
+                    })
+                }
+            </DaysOfMonthContainer>
+        </DaysOfMonthWrapper>
+        
     );
 }
 

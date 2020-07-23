@@ -53,6 +53,7 @@ export default () => {
                     ),
                     headerStyle: {
                         height: 100,
+  
                     },
                     headerTitle: ""
                 }}

@@ -1,7 +1,12 @@
 import React, {Component, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, TextInput} from 'react-native';
 import InputText from '../InputText';
-import SvgIcon from '../../../../assets/SvgIcon'
+import SvgIcon from '../../../../assets/SvgIcon';
+
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import SearchBox from './SearchBox';
+import SearchControls from './SearchControls';
 
 /**
  *
@@ -15,15 +20,46 @@ import SvgIcon from '../../../../assets/SvgIcon'
  * @returns {*}
  * @constructor
  */
-const SearchInput = ({changeText, inputText, matchesFound, onPressNextResult, onPressPreviousResult, onPressNewSerch, onPressSubmit}) => {
+
+function SearchInput({changeText, inputText, matchesFound, onPressNextResult, onPressPreviousResult, onPressNewSerch, onPressSubmit}){
+    const theme = useTheme();
+
+    const SearchInputWrapper = styled.View`
+        magin:0;
+        height: 60px;
+        padding:${theme.space['--space-14']};
+        background-color: #FAFAFA;
+    `;
+    const SearchInputContainer = styled.View`
+        height: 100%;
+        width: 100%;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
+    ` 
     return (
-        <View style={styles.searchBar}>
-            <View style={[styles.container, styles.searchContent]}>
+        <SearchInputWrapper>
+            <SearchInputContainer>
+
+            <SearchBox
+                onChangeText = {changeText}
+                inputText = {inputText}
+                matchesFound = {matchesFound}
+                onPressNewSerch = {onPressNewSerch}
+            />
+            <SearchControls
+                onPressNextResult = {onPressNextResult}
+                onPressPreviousResult = {onPressPreviousResult}
+            />
+
+            {/* <View style={[styles.container, styles.searchContent]}>
                 <View style={{flexDirection: 'row', flex: 1}}>
                     <View style={{paddingRight: 15, alignSelf: 'flex-start'}}>
                         <SvgIcon iconName="search" strokeColor="#A0AEC0"/>
                     </View>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, position:'relative'}}>
                         <InputText
                             onChangeText={changeText}
                             inputText={inputText}
@@ -43,9 +79,9 @@ const SearchInput = ({changeText, inputText, matchesFound, onPressNextResult, on
                     </TouchableOpacity>
 
                 </View>
-            </View>
+            </View> */}
 
-            <View style={[styles.container, styles.control]}>
+            {/* <View style={[styles.container, styles.control]}>
                 <TouchableOpacity
                     activeOpacity={1}
                     style={{padding: 8, paddingLeft: 6}}
@@ -63,7 +99,7 @@ const SearchInput = ({changeText, inputText, matchesFound, onPressNextResult, on
                 >
                     <SvgIcon iconName="scheduleMonthRight" strokeColor="#718096"/>
                 </TouchableOpacity>
-            </View>
+            </View> */}
 
             <TouchableOpacity
                 activeOpacity={1}
@@ -72,8 +108,9 @@ const SearchInput = ({changeText, inputText, matchesFound, onPressNextResult, on
             >
                 <Text style={{color: '#0CB0E7', fontSize: 16}}>Done</Text>
             </TouchableOpacity>
-
-        </View>
+           
+            </SearchInputContainer>
+        </SearchInputWrapper>
     )
 }
 export default SearchInput

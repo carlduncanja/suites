@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-import Page from '../../components/common/Page/Page';
+import Page from '../../components/common/Page/Page'; 
 import ListItem from "../../components/common/List/ListItem";
 import RoundedPaginator from '../../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';

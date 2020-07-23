@@ -342,10 +342,13 @@ function Inventory(props) {
             </View>
         </View>
         <View style={[styles.item, {justifyContent: "center"}]}>
-            <IconButton
-                Icon={isCollapsed ? <ActionIcon/> : <ActionCollapseIcon/>}
-                onPress={onActionPress}
-            />
+            <View style={{height:'100%'}}>
+                <IconButton
+                    Icon={isCollapsed ? <ActionIcon/> : <ActionCollapseIcon/>}
+                    onPress={onActionPress}
+                />
+            </View>
+            
         </View>
     </>;
 

@@ -21,6 +21,8 @@ function TabsContainer({tabs, onPressChange, selectedTab, completedTabs}){
         <TabsWrapper>
             <TabsContainer>
                 {tabs.map((tab, index)=>{
+                    console.log("Tab: ", tab)
+                    console.log(" Selected Tab: ", selectedTab)
                     return (
                         <Tab
                             tabName = {tab}
@@ -29,6 +31,7 @@ function TabsContainer({tabs, onPressChange, selectedTab, completedTabs}){
                                 tab === selectedTab ? theme.colors['--color-blue-600'] : 
                                     completedTabs && completedTabs.includes(tab) ? "#4E5664" : "#718096"
                             }
+                            onTabPress = {()=>onPressChange(tab)}
                         />
                     )
                 })}

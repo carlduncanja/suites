@@ -1,58 +1,73 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
-import Button from '../common/Buttons/Button';
-import MonthSelector from "../Calendar/MonthSelector";
+import ScheduleCalendar from './ScheduleCalendar';
+import SchedulesList from "./SchedulesList";
+import LoadingIndicator from '../common/LoadingIndicator';
+
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import ScheduleButton from './ScheduleButton';
 
-function SchedulePageHeader({
-        searchButtonPress = ()=>{},
-        gotoTodayButtonPress = ()=>{},
-        onMonthUpdate = ()=>{},
-        selectedMonth = new Date(),
+function SchedulePageContent({
+        isFetchingAppointment = false,
+        onDaySelected = ()=>{},
+        onAppointmentPress = ()=>{},
+        appointments = [],
+        days = [],
+        month = new Date(),
+        selectedDate = new Date(),
+        selectedDay = new Date(),
+        screenDimensions = {},
+        selectedIndex = 0,
     }){
 
     const theme = useTheme();
 
-    const SchedulePageHeaderWrapper = styled.View`
-        background-color: green;
+    const ContentWrapper = styled.View`
+        flex:1;
+        height: 100%;
+        width:100%;
+        background-color: purple;
+    `;
+    const ContentContainer = styled.View`
+        display:flex;
+        height: 100%;
         width: 100%;
-        padding-left: ${theme.space['--space-32']};
-        padding-top: ${theme.space['--space-26']};
-        padding-bottom: ${theme.space['--space-24']};
-        padding-right: ${theme.space['--space-32']};
-    `
-    const SchedulePageHeaderContainer = styled.View`
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        background-color: yellow;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        background-color:pink;
     `
 
-    return(
-        <SchedulePageHeaderWrapper>
-            <SchedulePageHeaderContainer>
-
-                <ScheduleButton
-                    title = "Search"
-                    onButtonPress = {searchButtonPress}
-                />
-                <MonthSelector
-                    selectedMonth={selectedMonth}
-                    onMonthUpdated={onMonthUpdate}
-                />
-                <ScheduleButton
-                    title = "Go to Today"
-                    onButtonPress = {gotoTodayButtonPress}
-                />
-
-            </SchedulePageHeaderContainer>
-        </SchedulePageHeaderWrapper>
+    return (
+        // <ContentWrapper>
+            // <ContentContainer>
+            <View style={{flex:1}}>
+                <ScheduleCalendar
+                    onDaySelected={onDaySelected}
+                    appointments={appointments}
+                    month={month}
+                    days={days}
+                    selectedDate={selectedDay}
+                    screenDimensions={screenDimensions}
+                /> 
+                {
+                    isFetchingAppointment ?
+                        <LoadingIndicator/>
+                        : 
+                            <SchedulesList
+                                selectedIndex={selectedIndex}
+                                onAppointmentPress={onAppointmentPress}
+                                selectedDay={selectedDay}
+                                month={month}
+                            />
+                } 
+            </View>
+            // </ContentContainer>
+        // </ContentWrapper>
     )
 }
 
-export default SchedulePageHeader
+export default SchedulePageContent
 
 const styles = StyleSheet.create({
     container: {
@@ -86,6 +101,7 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 32,
         paddingTop: 24,
+        backgroundColor:'red',
     },
     searchContainer: {
         ...StyleSheet.absoluteFillObject,

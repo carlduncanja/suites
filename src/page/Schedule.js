@@ -20,6 +20,7 @@ import {useModal} from "react-native-modalfy";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SchedulePageHeader from '../components/Schedule/SchedulePageHeader';
+import SchedulePageContent from '../components/Schedule/SchedulePageContent';
 
 
 const currentDate = new Date();
@@ -133,28 +134,22 @@ const Schedule = (props) => {
 
     // ###### STYLED COMPONENTS
 
-    const ScheduleWrapper = styled.View`
-        flex:1;
-        margin : 0px;
-        background-color: ${theme.colors['--color-neutral-gray-100']};
-        background-color: red;
-        padding-top:26px;
-        padding-bottom:32px;
-
-    `
-
+    const ScheduleWrapper = styled.View({
+        flex:1,
+        backgroundColor: theme.colors['--color-neutral-gray-100'],
+    });
+    
     const ScheduleContainer = styled.View`
         display: flex;
+        flex:1;
         width: 100%;
         height: 100%;
         justify-content: flex-start;
-        background-color: orange;
     `
 
     const SchedulePageWrapper = styled.View`
         flex:1;
         margin:0px;
-        background-color:purple;
     `
     const SchedulePageContainer = styled.View`
         display: flex;
@@ -163,8 +158,8 @@ const Schedule = (props) => {
     `
 
     return (
-        <ScheduleWrapper>
-            <ScheduleContainer>
+        <View style={styles.container}>
+            <Animated.View style={styles.scheduleContainer}>
 
                 <ScheduleSearchContainer
                     isOpen={searchOpen}
@@ -173,35 +168,33 @@ const Schedule = (props) => {
                         handleAppointmentPress(appointment)
                     }}
                     onSearchClose={closeSearch}
-                />
+                />  
 
-                <SchedulePageWrapper>
-                    {/* <SchedulePageContainer> */}
-                        <SchedulePageHeader
-                            searchButtonTitle = ""
-                        />
-                    {/* </SchedulePageContainer> */}
-                </SchedulePageWrapper>
-                
-            </ScheduleContainer>
+                <View style={{flex:1}}>
 
-            {/* <Animated.View
-                style={{
-                    ...styles.scheduleContainer
-                }}>
-
-                <ScheduleSearchContainer
-                    isOpen={searchOpen}
-                    onSearchResultSelected={(appointment) => {
-                        closeSearch();
-                        handleAppointmentPress(appointment)
-                    }}
-                    onSearchClose={closeSearch}
-                />
+                    <SchedulePageHeader
+                        searchButtonPress = {searchPress}
+                        gotoTodayButtonPress = {handleOnGoToToday}
+                        selectedMonth = {selectedMonth}
+                        onMonthUpdate = {handleOnMonthUpdated}
+                    />
+                    <SchedulePageContent
+                        isFetchingAppointment = {isFetchingAppointment}
+                        onDaySelected={handleOnDaySelected}
+                        appointments={appointments}
+                        month={selectedMonth}
+                        days={daysList}
+                        selectedDate={selectedDay}
+                        screenDimensions={screenDimensions}
+                        selectedIndex={sectionListIndex}
+                        onAppointmentPress={handleAppointmentPress}
+                        selectedDay={selectedDay}
+                        month={selectedMonth}
+                    />
 
 
-                <View style={{flex: 1}}>
-                    <View style={styles.scheduleTop}>
+
+                    {/* <View style={styles.scheduleTop}>
                         <View style={styles.buttonContainer}>
                             <Button
                                 title="Search"
@@ -224,7 +217,7 @@ const Schedule = (props) => {
                             />
                         </View>
 
-                    </View>
+                    </View> 
                     <View style={styles.scheduleCalendar}>
                         <View style={{
                             flexDirection: 'row',
@@ -252,13 +245,12 @@ const Schedule = (props) => {
                                         month={selectedMonth}
                                     />
                                 </View>
-                        }
-                    </View>
+                        } 
+                    </View> */}
                 </View>
-
-            </Animated.View>
-        */}
-        </ScheduleWrapper>
+                </Animated.View>
+        </View>
+        
     )
 };
 

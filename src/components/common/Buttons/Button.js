@@ -4,7 +4,7 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-const Button = ({backgroundColor, buttonPress, color, title, fontSize = 12, fontWeight = 'normal'}) => {
+const Button = ({backgroundColor, buttonPress, color, title, font = '--text-sm-medium', fontSize = 12, fontWeight = 'normal'}) => {
 
     const theme = useTheme();
 
@@ -18,11 +18,10 @@ const Button = ({backgroundColor, buttonPress, color, title, fontSize = 12, font
         width: 100%;
         align-items: center;
         justify-content: center;
-        background-color : ${backgroundColor ? backgroundColor : theme.colors['--accent-button']};
     `
 
     const ButtonTitle = styled.Text({
-        ...theme.font['--text-sm-medium'],
+        ...theme.font[font],
         color : color ? color : theme.colors['--accent-button']
     })
     return (

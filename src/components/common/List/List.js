@@ -41,11 +41,11 @@ function List({
     // should list fill remaining space or as much as content ? 
     const ListWrapper = styled.View`
         display : flex;
-        flex:1;
         background-color: ${theme.colors['--color-purple-400']};
     ` 
     const ListContainer = styled.View`
         display: flex;
+        height:100%;
     `
     return (
         <ListWrapper> 

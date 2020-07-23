@@ -7,7 +7,7 @@ import SvgIcon from '../../../../assets/SvgIcon';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-function Tab({backgroundColor, textColor = "", tabName = ""}) {
+function Tab({backgroundColor, textColor = "", tabName = "", onTabPress = ()=>{}}) {
 
     const theme = useTheme();
 
@@ -35,7 +35,7 @@ function Tab({backgroundColor, textColor = "", tabName = ""}) {
     `
 
     return (
-        <TabWrapper>
+        <TabWrapper onPress = {onTabPress} activeOpacity={1}>
             <TabContainer>
                 <TabCorner>
                     <TabLeftCorner fillColor={backgroundColor ? backgroundColor : null}/>

@@ -36,7 +36,7 @@ import CreateEquipmentTypeDialogContainer from "../components/Equipment/CreateEq
 const Equipment = (props) => {
 
     // ############# Const data
-    const recordsPerPage = 15;
+    const recordsPerPage = 10;
     const listHeaders = [
         {
             name: "Assigned",
@@ -90,11 +90,13 @@ const Equipment = (props) => {
     // ############# Lifecycle methods
 
     useEffect(() => {
-        // console.log("equipments: ", equipment);
+        console.log("equipments: ", equipment);
+        console.log("equipments types: ", equipmentTypes);
+
         if (!equipmentTypes.length) {
             fetchEquipmentData()
         }
-        setTotalPages(Math.ceil(equipment.length / recordsPerPage))
+        setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage))
     }, []);
 
     useEffect(() => {
@@ -213,6 +215,7 @@ const Equipment = (props) => {
                     }
                 })
                 setEquipmentTypes(newData)
+                setTotalPages(Math.ceil(newData.length / recordsPerPage))
             })
             .catch(error => {
                 console.log("Failed to get equipment types", error)
@@ -220,7 +223,7 @@ const Equipment = (props) => {
         getEquipment()
             .then(data => {
                 setEquipment(data);
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
+                // setTotalPages(Math.ceil(data.length / recordsPerPage))
             })
             .catch(error => {
                 console.log("failed to get equipment", error);

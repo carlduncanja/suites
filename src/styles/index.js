@@ -14,6 +14,7 @@ export const root = {
         '--space-18': '18px',
         '--space-20': '20px',
         '--space-24': '24px',
+        '--space-26': '26px',
         '--space-28': '28px',
         '--space-32': '32px',
         '--space-40': '40px',
@@ -237,9 +238,14 @@ export const root = {
             lineHeight : 30,
         },
 
+    },
+
+    shadow: {
+        // SUITES
+        '--shadow-identifier' : '0px 1px 4px rgba(63, 199, 244, 0.4)',
+        // shadow-md
+        '--shadow-md' : '0px 4px 6px rgba(0, 0, 0, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.06)',
     }
-
-
 }
 
 export const colors = {

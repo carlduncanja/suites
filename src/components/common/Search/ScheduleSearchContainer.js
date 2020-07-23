@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import _ from "lodash";
 import {searchSchedule} from "../../../api/network";
@@ -8,6 +8,7 @@ import {formatDate} from "../../../utils/formatter";
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import ShadowContainerComponent from '../ShadowContainerComponent';
 
 /**
  * Handling searching logic and ui for appointments
@@ -52,6 +53,8 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
      *
      * https://medium.com/@mikjailsalazar/just-another-searchbar-react-axios-lodash-340efec6933d
      */
+
+    
     const searchChangeText = (textInput) => {
         setSearchInput(textInput);
 
@@ -145,45 +148,50 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
 
     // STYLED COMPONENTS
 
-    const ScheduleSearchWrapper = styled.View``
+    const ScheduleSearchWrapper = styled.View`
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 5;
+    `;
+
+    const SearchContainer = styled.View`
+        display: flex;
+        width: 100%;
+        height: 100%;
+    `;
 
     return (
-        isOpen
-            ? <View style={styles.searchContainer}>
+        isOpen ? 
+            <ScheduleSearchWrapper>
+                <SearchContainer>
                 {/* Background Shadow View*/}
-                <TouchableWithoutFeedback>
-                    <View
-                        pointerEvents={isOpen ? 'auto' : 'none'}
-                        style={[
-                            styles.shadowContainer,
-                            {
-                                opacity: .5,
-                            },
-                        ]}
-                    />
-                </TouchableWithoutFeedback>
+                    <ShadowContainerComponent isOpen = {isOpen}/>
+                    {/* <View style={{
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                        top: 0,
+                    }}> */}
+                        <SearchBar
+                            closeSearch={handleOnSearchClose}
+                            changeText={searchChangeText}
+                            inputText={searchInput}
+                            matchesFound={formatResult(searchResults)}
+                            onPressNextResult={pressNextSearchResult}
+                            onPressPreviousResult={pressPreviousSearchResult}
+                            onPressNewSerch={pressNewSearch}
+                            onPressSubmit={pressSubmit}
+                            onResultSelected={handleOnSearchResultSelected}
+                        />
+                    {/* </View> */}
+                </SearchContainer>
+            </ScheduleSearchWrapper>
 
-                <View style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    top: 0,
-                }}>
-                    <SearchBar
-                        closeSearch={handleOnSearchClose}
-                        changeText={searchChangeText}
-                        inputText={searchInput}
-                        matchesFound={formatResult(searchResults)}
-                        onPressNextResult={pressNextSearchResult}
-                        onPressPreviousResult={pressPreviousSearchResult}
-                        onPressNewSerch={pressNewSearch}
-                        onPressSubmit={pressSubmit}
-                        onResultSelected={handleOnSearchResultSelected}
-                    />
-                </View>
-            </View>
-
-            : <View/>
+            : 
+            <View/>
     );
 }
 

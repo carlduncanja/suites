@@ -9,8 +9,10 @@ import moment from 'moment';
 import ScheduleItem from '../../Schedule/ScheduleItem';
 import { formatDate } from '../../../utils/formatter';
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
-const SearchBar = (props) => {
+function SearchBar(props){
     const {
         changeText,
         closeSearch,
@@ -26,6 +28,7 @@ const SearchBar = (props) => {
     } = props;
 
     const resultsSeen = 5;
+    const theme = useTheme();
     const matchesFoundLength = matchesFound.length;
 
     const [suggestionsOpen, setSuggestionsOpen] = useState(false);
@@ -64,9 +67,21 @@ const SearchBar = (props) => {
         }
     };
 
+    // STYLED COMPONENTS
+
+    const SearchBarWrapper = styled.TouchableOpacity`
+        height: 100%;
+        width: 100%;
+    `;
+    const SearchBarContainer = styled.View`
+        display: flex;
+        height: 100%;
+        width: 100%;
+    `
     return (
-        <TouchableOpacity activeOpacity={1} style={{height: '100%'}} onPress={() => searchClosed()}>
-            <View>
+        <SearchBarWrapper activeOpacity={1} onPress={() => searchClosed()}>
+            <SearchBarContainer>
+                
                 <SearchInput
                     changeText={changeText}
                     inputText={inputText}
@@ -124,7 +139,7 @@ const SearchBar = (props) => {
 
                     </View>
                 }
-            </View>
+            </SearchBarContainer>
 
 
             {/*<BottomSheet*/}
@@ -149,7 +164,8 @@ const SearchBar = (props) => {
             {/*        />*/}
             {/*    }*/}
             {/*/>*/}
-        </TouchableOpacity>
+        </SearchBarWrapper>
+        // </SearchBarWrapper>
     )
 };
 export default SearchBar

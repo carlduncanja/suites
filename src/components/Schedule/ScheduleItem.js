@@ -3,6 +3,10 @@ import {Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'r
 import moment from "moment";
 import { formatDate } from '../../utils/formatter';
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import ScheduleItemTitle from './ScheduleItemTitle';
+
 
 export const SCHEDULE_TYPES = {
     "EQUIPMENT": 1,
@@ -24,45 +28,55 @@ export const SCHEDULE_TYPES = {
  * @returns {*}
  * @constructor
  */
-const ScheduleItem = ({color, title, startTime, endTime, onScheduleClick, isInMonthOpacity}) => {
 
+function ScheduleItem({color, title, startTime, endTime, onScheduleClick, isInMonthOpacity}){
+    const theme = useTheme();
     const getTime = (appointmentTime) => {
         return formatDate(appointmentTime,"h : mm a")
     };
 
+    const ScheduleItemWrapper = styled.View`
+        margin : 0;
+        height: 24px;
+        padding-left: 5px;
+    `;
+    const ScheduleItemContainer = styled.View`
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items:center;
+    `;
+
+    const AppointmentColorIdentifier = styled.View`
+        align-self: center;
+        background-color: ${color || theme.colors['--theme-gray-200']};
+        height: 12px;
+        width: 12px;
+        border-radius: 12px;
+        box-shadow : 0px 1px 4px ${color};
+    `
+
     return (
-        <View style={[styles.card,{opacity:isInMonthOpacity}]}>
-            <View
+        <ScheduleItemWrapper>
+            <ScheduleItemContainer style={[{opacity:isInMonthOpacity}]}>
+        
+            <AppointmentColorIdentifier
                 style={{
-                    alignSelf: 'center',
-                    backgroundColor: color || 'gray',
-                    height: 11,
-                    width: 11,
-                    borderRadius: 11,
-                    shadowColor: color || 'gray',
-                    shadowOffset: {
-                        width: 1,
-                        height: 1,
-                    },
-                    shadowOpacity: 0.35,
-                    shadowRadius: 1.84,
                     elevation: 5,
-                    opacity : isInMonthOpacity
+                    opacity : isInMonthOpacity,
                 }}
             />
-            <TouchableOpacity
-                style={[styles.infoContainer,{}]}
-                onPress={onScheduleClick}
-            >
-                <Text style={styles.title}>
-                    {title}
-                </Text>
-                <Text
-                    style={styles.time}>
-                    {getTime(startTime)} - {getTime(endTime)}
-                </Text>
-            </TouchableOpacity>
-        </View>
+            
+            <ScheduleItemTitle
+                onScheduleClick = {onScheduleClick}
+                title = {title}
+                startTime = {getTime(startTime)}
+                endTime = {getTime(endTime)}
+            />
+          
+            </ScheduleItemContainer>
+        </ScheduleItemWrapper>
     )
 };
 
