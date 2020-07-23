@@ -164,10 +164,6 @@ const CreateEquipmentTypeDialogContainer = ({onCancel, onCreated, equipmentTypes
 CreateEquipmentTypeDialogContainer.propTypes = {};
 CreateEquipmentTypeDialogContainer.defaultProps = {};
 
-const mapDispatcherToProp = {
-    addEquipment,
-};
-
 const mapDispatchToProp = {
     addEquipmentType
 }
