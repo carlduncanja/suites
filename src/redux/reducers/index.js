@@ -8,6 +8,7 @@ import storage from './storageReducer';
 import theatres from './theatresReducer';
 import inventory from "./inventoryReducer";
 import equipment from './equipmentReducer';
+import equipmentTypes from './equipmentTypesReducer';
 import auth from './authReducer';
 import suppliers from './suppliersReducer';
 import orders from './ordersReducers';
@@ -29,6 +30,7 @@ const appReducer = combineReducers({
     storage,
     theatres,
     equipment,
+    equipmentTypes,
     inventory,
     suppliers,
     orders,

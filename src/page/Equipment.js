@@ -21,6 +21,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 
 import {connect} from 'react-redux';
 import {setEquipment} from "../redux/actions/equipmentActions";
+import {setEquipmentTypes} from '../redux/actions/equipmentTypesActions';
 import {getEquipment, getEquipmentTypes} from "../api/network";
 
 import {withModal} from 'react-native-modalfy';
@@ -36,7 +37,7 @@ import CreateEquipmentTypeDialogContainer from "../components/Equipment/CreateEq
 const Equipment = (props) => {
 
     // ############# Const data
-    const recordsPerPage = 15;
+    const recordsPerPage = 10;
     const listHeaders = [
         {
             name: "Assigned",
@@ -68,7 +69,7 @@ const Equipment = (props) => {
     const floatingActions = []
 
     //  ############ Props
-    const {equipment, setEquipment, navigation, modal} = props;
+    const {equipment, setEquipment, equipmentTypes, setEquipmentTypes, navigation, modal} = props;
 
     //  ############ State
     const [isFetchingData, setFetchingData] = useState(false);
@@ -85,16 +86,16 @@ const Equipment = (props) => {
 
     const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([])
     const [selectedTypesIds, setSelectedTypesIds] = useState([])
-    const [equipmentTypes, setEquipmentTypes] = useState([])
+    // const [equipmentTypes, setEquipmentTypes] = useState([])
 
     // ############# Lifecycle methods
 
     useEffect(() => {
-        // console.log("equipments: ", equipment);
+        console.log("equipments: ", equipmentTypes);
         if (!equipmentTypes.length) {
             fetchEquipmentData()
         }
-        setTotalPages(Math.ceil(equipment.length / recordsPerPage))
+        setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage))
     }, []);
 
     useEffect(() => {
@@ -208,11 +209,12 @@ const Equipment = (props) => {
             .then(data => {
                 let newData = data.map(item => {
                     return {
-                        id : item._id,
                         ...item
                     }
                 })
+                console.log("New data: ", newData)
                 setEquipmentTypes(newData)
+                setTotalPages(Math.ceil(newData.length / recordsPerPage))
             })
             .catch(error => {
                 console.log("Failed to get equipment types", error)
@@ -220,7 +222,7 @@ const Equipment = (props) => {
         getEquipment()
             .then(data => {
                 setEquipment(data);
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
+                
             })
             .catch(error => {
                 console.log("failed to get equipment", error);
@@ -485,17 +487,12 @@ const Equipment = (props) => {
     )
 }
 
-const mapStateToProps = (state) => {
-    const equipment = state.equipment.map(item => {
-        return {
-            ...item,
-            // id: item._id
-        }
-    })
-    return {equipment}
-};
+const mapStateToProps = (state) => ({
+    equipmentTypes : state.equipmentTypes
+})
 
 const mapDispatcherToProp = {
+    setEquipmentTypes,
     setEquipment
 };
 

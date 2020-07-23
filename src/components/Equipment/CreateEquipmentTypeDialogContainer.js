@@ -1,5 +1,5 @@
 import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
@@ -10,6 +10,9 @@ import {useModal} from "react-native-modalfy";
 
 import { createEquipmentType } from "../../api/network";
 import {connect} from "react-redux";
+import { addEquipmentType } from "../../redux/actions/equipmentTypesActions";
+import _ from "lodash";
+
 
 
 /**
@@ -22,7 +25,7 @@ import {connect} from "react-redux";
  * @constructor
  */
 
-const CreateEquipmentTypeDialogContainer = ({onCancel, onCreated, equipmentTypes}) =>{
+const CreateEquipmentTypeDialogContainer = ({onCancel, onCreated, equipmentTypes, addEquipmentType}) =>{
 
     const modal = useModal();
     const dialogTabs = ['Details'];
@@ -116,7 +119,10 @@ const CreateEquipmentTypeDialogContainer = ({onCancel, onCreated, equipmentTypes
         createEquipmentType(fields)
             .then(data => {
                 modal.closeAllModals();
+                addEquipmentType(data)
+                Alert.alert("Success", "New Equipment Type has been created");
                 setTimeout(() => {onCreated(data)}, 200);
+
             })
             .catch(error => {
                 console.log("failed to create equipment type", error);
@@ -155,7 +161,12 @@ const CreateEquipmentTypeDialogContainer = ({onCancel, onCreated, equipmentTypes
 CreateEquipmentTypeDialogContainer.propTypes = {}
 CreateEquipmentTypeDialogContainer.defaultProps = {}
 
-export default CreateEquipmentTypeDialogContainer
+const mapDispatchToProp = {
+    addEquipmentType
+}
+
+export default connect(null, mapDispatchToProp)(CreateEquipmentTypeDialogContainer);
+
 
 const styles = StyleSheet.create({
     container:{

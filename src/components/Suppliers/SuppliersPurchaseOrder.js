@@ -141,7 +141,7 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
                 onClearPress = {onClearItems}
             /> 
         </View>
-    )
+    ) 
 }
 
 export default withModal(SuppliersPurchaseOrder) 

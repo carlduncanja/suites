@@ -14,6 +14,7 @@ export const theatreEndpoint =  (id) => `/theatres/${id}`;
 // ##### INVENTORY
 export const inventoriesEndpoint = "/inventories";
 export const inventoryEndpoint = (id) => `/inventories/${id}`;
+export const inventoryVariantEndpoint = (id) => `/inventories/${id}/variants`;
 
 // ##### PHYSICIANS
 export const physiciansEndpoint = "/physicians";
@@ -52,6 +53,7 @@ export const purchaseOrdersEndpoint = "/purchase_orders";
 export const purchaseOrderEndpoint = (id) => `/purchase_orders/${id}`;
 export const createOrderInvoice = (id) => `/purchase_orders/${id}/invoice`;
 export const updatePurchaseOrderStatusEndpoint = (purchaseOrderId) => `/purchase_orders/${purchaseOrderId}/status`;
+export const updatePurchaseOrderEndpoint = (purchaseOrderId) => `/purchase_orders/${purchaseOrderId}/orders`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = "/categories/items";
