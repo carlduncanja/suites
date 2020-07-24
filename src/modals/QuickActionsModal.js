@@ -4,9 +4,8 @@ import {SuitesContext} from '../contexts/SuitesContext';
 import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 import * as Animatable from 'react-native-animatable';
 import ActionItem from "../components/common/ActionItem";
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import AddIcon from "../../assets/svg/addIcon";
-
 
 
 const QuickActionsModal = (props) => {
@@ -23,13 +22,56 @@ const QuickActionsModal = (props) => {
 
     const navigation = useNavigation();
 
-    const getActions = () => {
-        const createCaseAction = <ActionItem key={"create"} icon={<AddIcon/>} title={"Create Case File"} onPress={() => {
-            closeModals(currentModal);
-            navigation.navigate("Case Files", {screen: "CreateCase", initial: false})
-        }}/>
+    const actionConfigs = {
+        schedule: {},
+        caseFile: {
+            key: 'create',
+            title: 'Create Case File',
+            performAction: () => navigation.navigate('Case Files', {screen: 'CreateCase', initial: false})
+        },
+        theatre: {},
+        inventory: {},
+        equipment: {},
+        order: {},
+        supplier: {},
+        invoice: {},
+        storage: {},
+        physician: {},
+        procedure: {},
+        alert: {},
+        help: {},
+        settings: {}
+    }
 
-        return [createCaseAction]
+    const isQuickActionPermitted = action => {
+        // todo: check permission level of currently logged in user to see if quick action can be authorized
+    }
+
+    const getActions = () => {
+        let actions = [];
+        Object.keys(actionConfigs).map(sectionConfig => {
+            if (actionConfigs[sectionConfig].key) {
+                const actionConfig = actionConfigs[sectionConfig];
+                const quickAction = <ActionItem
+                    key={actionConfig.key}
+                    icon={<AddIcon/>}
+                    title={actionConfig.title}
+                    onPress={() => {
+                        closeModals(currentModal)
+                        actionConfig.performAction();
+                    }}/>
+                actions.push(quickAction)
+            }
+        })
+
+        return actions;
+
+        // const createCaseAction = <ActionItem key={"create"} icon={<AddIcon/>} title={"Create Case File"} onPress={() => {
+        //     closeModals(currentModal);
+        //     navigation.navigate("Case Files", {screen: "CreateCase", initial: false})
+        // }}/>
+        //
+        // return [createCaseAction]
     }
 
 
