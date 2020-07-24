@@ -30,10 +30,10 @@ import {
   selectAll,
 } from "../helpers/caseFilesHelpers";
 
-import {connect} from 'react-redux';
-import {setEquipment} from "../redux/actions/equipmentActions";
-import {setEquipmentTypes} from '../redux/actions/equipmentTypesActions';
-import {getEquipment, getEquipmentTypes} from "../api/network";
+import { connect } from "react-redux";
+import { setEquipment } from "../redux/actions/equipmentActions";
+import { setEquipmentTypes } from "../redux/actions/equipmentTypesActions";
+import { getEquipment, getEquipmentTypes } from "../api/network";
 
 import { withModal } from "react-native-modalfy";
 import { formatDate } from "../utils/formatter";
@@ -77,8 +77,15 @@ const Equipment = (props) => {
   ];
   const floatingActions = [];
 
-    //  ############ Props
-    const {equipment, setEquipment, equipmentTypes, setEquipmentTypes, navigation, modal} = props;
+  //  ############ Props
+  const {
+    equipment,
+    setEquipment,
+    equipmentTypes,
+    setEquipmentTypes,
+    navigation,
+    modal,
+  } = props;
 
   //  ############ State
   const [isFetchingData, setFetchingData] = useState(false);
@@ -90,30 +97,38 @@ const Equipment = (props) => {
   const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
   const [searchValue, setSearchValue] = useState("");
+
   const [searchResults, setSearchResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState({});
 
-    const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([])
-    const [selectedTypesIds, setSelectedTypesIds] = useState([])
-    // const [equipmentTypes, setEquipmentTypes] = useState([])
+  const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([]);
+  const [selectedTypesIds, setSelectedTypesIds] = useState([]);
 
   // ############# Lifecycle methods
 
-    useEffect(() => {
-        console.log("equipments: ", equipmentTypes);
-        if (!equipmentTypes.length) {
-            fetchEquipmentData()
-        }
-        setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage))
-    }, []);
+  useEffect(() => {
+    console.log("equipments: ", equipmentTypes);
+    if (!equipmentTypes.length) {
+      fetchEquipmentData();
+    }
+    setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage));
+    console.log("total pages should be:", totalPages);
+  }, []);
 
   useEffect(() => {
     if (!searchValue) {
+      fetchEquipmentData();
       // empty search values and cancel any out going request.
       setSearchResult([]);
       if (searchQuery.cancel) searchQuery.cancel();
       return;
     }
+
+    // useEffect(() => {
+    //   if (searchValue.length === 0) {
+    //     fetchEquipmentData();
+    //   }
+    // }, [searchValue]);
 
     // wait 300ms before search. cancel any prev request before executing current.
 
@@ -223,40 +238,38 @@ const Equipment = (props) => {
     });
   };
 
-    // ############# Helper functions
-    const fetchEquipmentData = () => {
-        setFetchingData(true)
-        getEquipmentTypes(searchValue)
-            .then(data => {
-                let newData = data.map(item => {
-                    return {
-                        ...item
-                    }
-                })
-                console.log("New data: ", newData)
-                setEquipmentTypes(newData)
-                setTotalPages(Math.ceil(newData.length / recordsPerPage))
-            })
-            .catch(error => {
-                console.log("Failed to get equipment types", error)
-            })
-        getEquipment()
-            .then(data => {
-                setEquipment(data);
-
-            })
-            .catch(error => {
-                console.log("failed to get equipment", error);
-            })
-            .finally(_ => {
-                setFetchingData(false)
-            })
-    };
+  // ############# Helper functions
+  const fetchEquipmentData = () => {
+    setFetchingData(true);
+    //console.log("what's being used to search is:", searchValue);
+    getEquipmentTypes(searchValue)
+      .then((data) => {
+        let newData = data.map((item) => {
+          return {
+            ...item,
+          };
+        });
+        //console.log("New data: ", newData);
+        setEquipmentTypes(newData);
+        setTotalPages(Math.ceil(newData.length / recordsPerPage));
+      })
+      .catch((error) => {
+        console.log("Failed to get equipment types", error);
+      });
+    getEquipment()
+      .then((data) => {
+        setEquipment(data);
+      })
+      .catch((error) => {
+        console.log("failed to get equipment", error);
+      })
+      .finally((_) => {
+        setFetchingData(false);
+      });
+  };
 
   const renderEquipmentFn = (item) => {
     const equipments = item.equipments || [];
-
-    // console.log(equipments);
 
     const viewItem = {
       name: item.name,
@@ -565,12 +578,12 @@ const Equipment = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-    equipmentTypes : state.equipmentTypes
-})
+  equipmentTypes: state.equipmentTypes,
+});
 
 const mapDispatcherToProp = {
-    setEquipmentTypes,
-    setEquipment
+  setEquipmentTypes,
+  setEquipment,
 };
 
 export default connect(
