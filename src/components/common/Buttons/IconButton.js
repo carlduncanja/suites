@@ -13,14 +13,14 @@ function IconButton({Icon = ()=>{}, onPress=()=>{}, disabled = false}) {
         padding-right: 10px;
         padding-left: 10px;
         background-color: orange;
-    `
+    `;
     const IconButtonContainer = styled.View`
         height:100%;
         width:100%;
         align-items:center;
         justify-content: center;
 
-    `
+    `;
 
     return (
         <IconButtonWrapper onPress={onPress}>

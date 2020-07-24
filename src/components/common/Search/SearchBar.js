@@ -5,12 +5,13 @@ import {scheduleActions} from '../../../redux/reducers/scheduleReducer';
 import {ScheduleContext} from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../Buttons/Button';
-import moment from 'moment';
+import moment from 'moment'; 
 import ScheduleItem from '../../Schedule/ScheduleItem';
 import { formatDate } from '../../../utils/formatter';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import SuggestionsComponent from './SuggestionsComponent';
 
 function SearchBar(props){
     const {
@@ -67,6 +68,8 @@ function SearchBar(props){
         }
     };
 
+    let matchesToDisplay = [...matchesFound]
+    matchesToDisplay = matchesFound.slice(currentListMin, currentListMax)
     // STYLED COMPONENTS
 
     const SearchBarWrapper = styled.TouchableOpacity`
@@ -93,7 +96,16 @@ function SearchBar(props){
                 />
 
                 {/* Search Results Drop down */}
-                {
+                
+                <SuggestionsComponent
+                    isSuggestionsOpen = {suggestionsOpen}
+                    matchesToDisplay = {matchesToDisplay}
+                    openSearchResult = {openSearchResult}
+                    currentListMin = {currentListMin}
+                    getPreviousResults = {getPreviousResults}
+                    getNextResults = {getNextResults}
+                />
+                {/* {
                     suggestionsOpen &&
                     <View style={styles.matchesFoundContainer}>
                         {
@@ -138,7 +150,7 @@ function SearchBar(props){
                         </View>
 
                     </View>
-                }
+                } */}
             </SearchBarContainer>
 
 

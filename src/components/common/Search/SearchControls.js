@@ -16,50 +16,48 @@ function SearchControls({onPressPreviousResult = ()=>{}, onPressNextResult=()=>{
 
     const theme = useTheme();
 
-    const SearchBoxWrapper = styled.View`
+    const SearchControlsWrapper = styled.View`
         margin : 0 ;
-        width : 498px;
-        height : 32px;
+        margin-right: 12px;
+        width : 66px;
+        height: 100%;
         align-items: center;
         justify-content: center;
     `;
 
-    const SearchBoxContainer = styled.View`
+    const SearchControlsContainer = styled.View`
+        display: flex;
         height: 100%;
         width: 100%;
         flex-direction:row;
-        padding-left: 9px;
-        padding-right: 9px;
-        padding-top: 4px;
-        padding-bottom: 4px;
         background-color: ${theme.colors['--color-gray-100']};
         border-width: 1px;
-        border-color: ${theme.colors['--color-gray-300']},
+        border-color: ${theme.colors['--color-gray-300']};
         border-radius: 8px;
     `;
 
-    
+    const ControlDivider = styled.View`
+        border-width: 1px;
+        border-color: ${theme.colors['--color-gray-300']};
+    `;
 
     return (
-        <View style={[styles.container, styles.control]}>
-            <TouchableOpacity
-                activeOpacity={1}
-                style={{padding: 8, paddingLeft: 6}}
-                onPress={() => onPressPreviousResult()}
-            >
-                <SvgIcon iconName="scheduleMonthLeft" strokeColor="#718096"/>
-            </TouchableOpacity>
+        <SearchControlsWrapper>
+            <SearchControlsContainer>
+                <IconButton
+                    Icon = {<LeftSelector/>}
+                    onPress = {onPressPreviousResult}
+                />
 
-            <View style={{borderWidth: 1, borderColor: '#E3E8EF'}}/>
+                <ControlDivider/>
 
-            <TouchableOpacity
-                activeOpacity={1}
-                style={{padding: 8, paddingRight: 6}}
-                onPress={() => onPressNextResult()}
-            >
-                <SvgIcon iconName="scheduleMonthRight" strokeColor="#718096"/>
-            </TouchableOpacity>
-        </View>
+                <IconButton
+                    Icon = {<RightSelector/>}
+                    onPress = {onPressNextResult}
+                />
+
+            </SearchControlsContainer>
+        </SearchControlsWrapper>
     )
 }
 

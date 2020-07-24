@@ -7,6 +7,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SearchBox from './SearchBox';
 import SearchControls from './SearchControls';
+import SearchComplete from './SearchComplete';
 
 /**
  *
@@ -25,7 +26,7 @@ function SearchInput({changeText, inputText, matchesFound, onPressNextResult, on
     const theme = useTheme();
 
     const SearchInputWrapper = styled.View`
-        magin:0;
+        magin:0; 
         height: 60px;
         padding:${theme.space['--space-14']};
         background-color: #FAFAFA;
@@ -52,6 +53,10 @@ function SearchInput({changeText, inputText, matchesFound, onPressNextResult, on
             <SearchControls
                 onPressNextResult = {onPressNextResult}
                 onPressPreviousResult = {onPressPreviousResult}
+            />
+
+            <SearchComplete
+                onSubmit = {onPressSubmit}
             />
 
             {/* <View style={[styles.container, styles.searchContent]}>
@@ -101,13 +106,6 @@ function SearchInput({changeText, inputText, matchesFound, onPressNextResult, on
                 </TouchableOpacity>
             </View> */}
 
-            <TouchableOpacity
-                activeOpacity={1}
-                style={[styles.container, {marginLeft: 10, paddingLeft: 12, paddingRight: 12}]}
-                onPress={() => onPressSubmit()}
-            >
-                <Text style={{color: '#0CB0E7', fontSize: 16}}>Done</Text>
-            </TouchableOpacity>
            
             </SearchInputContainer>
         </SearchInputWrapper>

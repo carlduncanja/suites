@@ -3,64 +3,57 @@ import {View, StyleSheet, TouchableOpacity, Text, TextInput} from 'react-native'
 import InputText from '../InputText';
 
 import SvgIcon from '../../../../assets/SvgIcon';
-import SearchIcon from '../../../../assets/svg/search';
-import Close from '../../../../assets/svg/clearIcon';
+import LeftSelector from '../../../../assets/svg/leftSelector';
+import RightSelector from '../../../../assets/svg/rightSelector';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import IconButton from '../Buttons/IconButton';
 import SearchInputContainer from './SearchInputContainer';
 import MatchesFoundComponent from './MatchesFound';
+import Button from '../Buttons/Button';
 
-function SearchBox({onChangeText = ()=>{}, inputText = "", matchesFound = [], onPressNewSerch = ()=>{} }){
+function SearchComplete({onSubmit = ()=>{} }){
 
     const theme = useTheme();
 
-    const SearchBoxWrapper = styled.View`
+    const SearchCompleteWrapper = styled.View`
         margin : 0 ;
-        margin-right: 12px;
-        width : 496px;
-        height : 100%;
-        align-items: center;
+        width : 64px;
+        height: 100%;
         justify-content: center;
     `;
 
-    const SearchBoxContainer = styled.View`
-        height: 100%;
+    const SearchCompleteontainer = styled.View`
+       
         width: 100%;
         flex-direction:row;
-        padding-left: 9px;
-        padding-right: 9px;
-        padding-top: 4px;
-        padding-bottom: 4px;
         background-color: ${theme.colors['--color-gray-100']};
         border-width: 1px;
         border-color: ${theme.colors['--color-gray-300']};
-        border-radius: 8px;
+        border-radius: 6px;
+        align-items:center;
+        justify-content: center;
     `;
 
-    
+        
 
     return (
-        <SearchBoxWrapper>
-            <SearchBoxContainer>
-                
-                <SearchInputContainer
-                    onChangeText = {onChangeText}
-                    inputText = {inputText}
-                />
 
-                <MatchesFoundComponent
-                    matchesFound = {matchesFound}
-                    onPressNewSearch = {onPressNewSerch}
+        <SearchCompleteWrapper>
+            <SearchCompleteontainer>
+                <Button
+                    buttonPress = {onSubmit}
+                    color = {theme.colors['--accent-button']}
+                    title = "DONE"
                 />
-                    
-            </SearchBoxContainer>
-        </SearchBoxWrapper>
+            </SearchCompleteontainer>
+        </SearchCompleteWrapper>
+  
     )
 }
 
-export default SearchBox
+export default SearchComplete
 
 const styles = StyleSheet.create({
     container: {

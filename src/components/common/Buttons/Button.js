@@ -10,15 +10,17 @@ const Button = ({backgroundColor, buttonPress, color, title, font = '--text-sm-m
 
     const ButtonWrapper = styled.TouchableOpacity`
         height: 100%;
-        width: 100%; 
+        width: 100%;
+        align-items: center;
     `;
 
     const ButtonContainer = styled.View`
         height: 100%;
         width: 100%;
-        align-items: center;
         justify-content: center;
-    `
+        align-items: center;
+       
+    `;
 
     const ButtonTitle = styled.Text({
         ...theme.font[font],
