@@ -1,9 +1,10 @@
 import React,{ useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView,KeyboardAvoidingView, TouchableOpacity } from "react-native";
 import InputField2 from '../../../common/Input Fields/InputField2';
+import DateInputField from '../../../common/Input Fields/DateInputField';
 import OptionsField from '../../../common/Input Fields/OptionsField';
 import Button from '../../../common/Buttons/Button';
-import { formatDate, transformToSentence, calcAge, isValidEmail } from '../../../../utils/formatter';
+import { formatDate, transformToSentence, calcAge, isValidEmail, numberSingleDecimalFormater } from '../../../../utils/formatter';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 
 const EditablePatientDetails = ({ fields, onFieldChange }) => {
@@ -25,7 +26,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
     const [popoverList, setPopoverList] = useState([
         {
             name : "emergency1",
-            status : false
+            status : false 
         },
         {
             name : "emergency2",
@@ -35,6 +36,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
 
     // ######## Helper Functions
 
+    console.log("Phones: ", fields['contactInfo'].phones)
     const formatTrn = (value) => {
         return value.replace(/(\d{3})(\d{3})(\d{3})/, "$1-$2-$3")
     }
@@ -212,20 +214,20 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
 
     }
 
-    const handleDOB = (date) => {
-        const updatedDob = formatDOB(date)
-        if (/(\d{2})\/(\d{2})\/(\d{4})/g.test(date) || !date){
-            onFieldChange('dob')(updatedDob)
-        }
-        setDateOfBirth(date)
-    }
-    const handleNextVisit = (date) => {
-        const updatedDate = formatDOB(date)
-        if (/(\d{2})\/(\d{2})\/(\d{4})/g.test(date) || !date){
-            onFieldChange('nextVisit')(updatedDate)
-        }
-        setNextVisit(date)
-    }
+    // const handleDOB = (date) => {
+    //     const updatedDob = formatDOB(date)
+    //     if (/(\d{2})\/(\d{2})\/(\d{4})/g.test(date) || !date){
+    //         onFieldChange('dob')(updatedDob)
+    //     }
+    //     setDateOfBirth(date)
+    // }
+    // const handleNextVisit = (date) => {
+    //     const updatedDate = formatDOB(date)
+    //     if (/(\d{2})\/(\d{2})\/(\d{4})/g.test(date) || !date){
+    //         onFieldChange('nextVisit')(updatedDate)
+    //     }
+    //     setNextVisit(date)
+    // }
 
     const openEmergencyName = (index) =>{
         console.log("E indexx:", index)
@@ -264,6 +266,8 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
         setPopoverList(updatedPopovers)
 
     }
+
+    let calcBmi = fields['weight']/Math.pow((fields['height']*0.01),2) || 0;
 
     const demoData = <>
 
@@ -349,8 +353,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     <Text style={styles.title}>BMI</Text>
                 </View>
                 <View style={styles.inputWrapper}>
-                    {/* <Text>{calcBmi() || 0}</Text> */}
-                    <Text>Calc BMI</Text>
+                    <Text>{numberSingleDecimalFormater(calcBmi.toString())}</Text>
                 </View>
             </View>
 
@@ -365,25 +368,17 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2
-                        onChangeText = {(value)=>handleDOB(value)}
-                        value = {dateOfBirth}
-                        onClear = {()=>{handleDOB('')}}
-                        placeholder = {"DD/MM/YYYY"}
+                    <DateInputField
+                        value={fields['dob']}
+                        onClear={() => onFieldChange('dob')('')}
+                        keyboardType="number-pad"
+                        mode={'date'}
+                        format={"DD/MM/YYYY"}
+                        placeholder="DD/MM/YYYY"
+                        onDateChange={(date)=>{onFieldChange('dob')(date)}}
                     />
                 </View>
             </View>
-
-
-
-            {/* <View style={styles.fieldWrapper}>
-                <View style={{ marginBottom:5}}>
-                    <Text style={styles.title}>Age</Text>
-                </View>
-                <View style={styles.inputWrapper}>
-                    <Text>{calcAge(new Date(fields['dob'])) || 0}</Text>
-                </View>
-            </View> */}
 
             <View style={styles.fieldWrapper}>
                 <View style={{ marginBottom:5}}>
@@ -447,15 +442,19 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
 
             <View style={styles.fieldWrapper}>
                 <View style={{ marginBottom:5}}>
-                    <Text style={styles.title}>Next Visity</Text>
+                    <Text style={styles.title}>Next Visit</Text>
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <InputField2
-                        onChangeText = {(value)=>handleNextVisit(value)}
-                        value = {nextVisit}
-                        onClear = {()=>{handleNextVisit('')}}
-                        placeholder = {"DD/MM/YYYY"}
+                    <DateInputField
+                        value={fields['nextVisit']}
+                        onClear={() => onFieldChange('nextVisit')('')}
+                        keyboardType="number-pad"
+                        mode={'date'}
+                        format={"DD/MM/YYYY"}
+                        placeholder="DD/MM/YYYY"
+                        onDateChange={(date)=>{onFieldChange('nextVisit')(date)}}
+                        minDate = {new Date()}
                     />
                 </View>
             </View>
@@ -495,7 +494,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                     </View>
 
                 )
-            })}
+            })} 
         </View>
 
         <View style={styles.row}>
@@ -568,7 +567,7 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
         </View>
 
     </>
-
+   
     const emergencyContactData = <>
         <View style={{}}>
             {emergencyContacts.map(( contact, index)=>{

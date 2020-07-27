@@ -125,6 +125,8 @@ const styles = StyleSheet.create({
         borderColor: '#E3E8EF',
         borderRadius: 4,
         height: 32,
+        paddingLeft:10,
+        alignItems:'flex-start',
     },
     inputField: {
         flex: 1,
