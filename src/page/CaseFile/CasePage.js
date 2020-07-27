@@ -67,7 +67,7 @@ function CasePage({route, addNotification}) {
         },
         {
             name: "Medical History",
-            overlayTabs: ["General", "Family History", "Lifestyle", "Other"],
+            overlayTabs: ["Details", "Family History", "Lifestyle", "Other"],
             selectedIcon: <MedicalSelectedIcon/>,
             disabledIcon: <MedicalDisabledIcon/>
         },

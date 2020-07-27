@@ -336,7 +336,7 @@ export const getEquipmentById = async (id) => {
     .catch(handleError);
 };
 
-export const getEquipmentTypes = async (query) => {
+export const getEquipmentTypes = async (query, max) => {
   return suitesAxiosInstance
     .get(equipmentTypesEndpoint, { params: { query } })
     .then(handleResponse)
@@ -367,9 +367,9 @@ export const getCategories = async (query, max) => {
 };
 
 // ################# Suppliers Endpoints
-export const getSuppliers = async (query, max) => {
+export const getSuppliers = async (query, max, page) => {
   return suitesAxiosInstance
-    .get(suppliersEndpoint, { params: { query, max } })
+    .get(suppliersEndpoint, { params: { query, max, page } })
     .then(handleResponse)
     .catch(handleError);
 };
@@ -403,9 +403,9 @@ export const updateSupplierProducts = async (supplierId, productId, data) => {
 };
 
 // ################# PurchaseOrders Endpoints
-export const getPurchaseOrders = async (query, max) => {
+export const getPurchaseOrders = async (query, max, page) => {
   return suitesAxiosInstance
-    .get(purchaseOrdersEndpoint, { params: { query, max } })
+    .get(purchaseOrdersEndpoint, { params: { query, max, page } })
     .then(handleResponse)
     .catch(handleError);
 };

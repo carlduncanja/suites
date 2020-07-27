@@ -107,12 +107,8 @@ const Equipment = (props) => {
   // ############# Lifecycle methods
 
   useEffect(() => {
-    console.log("equipments: ", equipmentTypes);
-    if (!equipmentTypes.length) {
-      fetchEquipmentData();
-    }
+    if (!equipmentTypes.length) { fetchEquipmentData() };
     setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage));
-    console.log("total pages should be:", totalPages);
   }, []);
 
   useEffect(() => {
@@ -123,12 +119,6 @@ const Equipment = (props) => {
       if (searchQuery.cancel) searchQuery.cancel();
       return;
     }
-
-    // useEffect(() => {
-    //   if (searchValue.length === 0) {
-    //     fetchEquipmentData();
-    //   }
-    // }, [searchValue]);
 
     // wait 300ms before search. cancel any prev request before executing current.
 
@@ -243,19 +233,15 @@ const Equipment = (props) => {
     setFetchingData(true);
     //console.log("what's being used to search is:", searchValue);
     getEquipmentTypes(searchValue)
-      .then((data) => {
-        let newData = data.map((item) => {
-          return {
-            ...item,
-          };
-        });
-        //console.log("New data: ", newData);
-        setEquipmentTypes(newData);
-        setTotalPages(Math.ceil(newData.length / recordsPerPage));
+      .then( equipmentTypesInfo => {
+        const { data = [], pages = 0} = equipmentTypesInfo
+        setEquipmentTypes(data);
+        setTotalPages(pages)
       })
       .catch((error) => {
         console.log("Failed to get equipment types", error);
       });
+      
     getEquipment()
       .then((data) => {
         setEquipment(data);

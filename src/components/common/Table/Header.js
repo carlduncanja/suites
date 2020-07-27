@@ -17,13 +17,14 @@ const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked, isChec
                     />
                 </View>
             }
-
+ 
             {headers.map((header, index) => {
                 let { fontSize = 16 } = header
                 return (
                     <View style={[styles.item, {alignItems: header.alignment, flex: header.flex || 1}, header.styles]} key={index}>
                         <Text style={[styles.headerText,{fontSize:fontSize}]}>{header.name}</Text>
                     </View>
+
                 )
             })}
         </View>

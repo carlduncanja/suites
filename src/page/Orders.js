@@ -65,7 +65,7 @@ const listHeaders = [
 
 const Orders = (props) => {
   // ############# Const data
-  const recordsPerPage = 15;
+  const recordsPerPage = 1;
 
   //  ############ Props
   const {
@@ -93,7 +93,7 @@ const Orders = (props) => {
   // ############# Lifecycle methods
 
   useEffect(() => {
-    if (!purchaseOrders.length) fetchOrdersData();
+    if (!purchaseOrders.length) fetchOrdersData(currentPagePosition);
     setTotalPages(Math.ceil(purchaseOrders.length / recordsPerPage));
   }, []);
 
@@ -117,6 +117,7 @@ const Orders = (props) => {
     });
 
     search();
+    setCurrentPagePosition(1)
   }, [searchValue]);
 
   // ############# Event Handlers
@@ -161,6 +162,8 @@ const Orders = (props) => {
       setCurrentPagePosition(currentPage);
       setCurrentPageListMin(currentListMin);
       setCurrentPageListMax(currentListMax);
+      console.log("Page: ", currentPage)
+      fetchOrdersData(currentPage)
     }
   };
 
@@ -176,6 +179,8 @@ const Orders = (props) => {
     setCurrentPagePosition(currentPage);
     setCurrentPageListMin(currentListMin);
     setCurrentPageListMax(currentListMax);
+    fetchOrdersData(currentPage)
+
   };
 
   const toggleActionButton = () => {
@@ -191,15 +196,17 @@ const Orders = (props) => {
 
   // ############# Helper functions
 
-  const fetchOrdersData = () => {
+  const fetchOrdersData = (pagePosition) => {
+    pagePosition ? pagePosition : 1;
     setFetchingData(true);
-    getPurchaseOrders(searchValue, recordsPerPage)
+    getPurchaseOrders(searchValue, recordsPerPage, pagePosition)
       .then((ordersInfo) => {
         const { data = [], pages = 0 } = ordersInfo;
         // setPurchaseOrders([])
         setPurchaseOrders(data);
         console.log("OrdersInfo: ", data);
-        setTotalPages(Math.ceil(data.length / recordsPerPage));
+        setTotalPages(pages)
+        // setTotalPages(Math.ceil(data.length / recordsPerPage));
       })
       .catch((error) => {
         console.log("failed to get orders", error);
@@ -377,10 +384,10 @@ const Orders = (props) => {
   // ############# Prepare list data
 
   let ordersToDisplay = [...purchaseOrders];
-  ordersToDisplay = ordersToDisplay.slice(
-    currentPageListMin,
-    currentPageListMax
-  );
+  // ordersToDisplay = ordersToDisplay.slice(
+  //   currentPageListMin,
+  //   currentPageListMax
+  // );
 
   return (
     <View style={{ flex: 1 }}>

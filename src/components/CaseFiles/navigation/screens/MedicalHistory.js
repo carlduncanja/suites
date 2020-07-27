@@ -7,10 +7,10 @@ const MedicalHistory = ({ medicalInfo, selectedTab }) => {
     const { medicalHistory = [], familyHistory = [], lifestyles = [] } = medicalInfo
     
     return (
-        selectedTab === 'Family History' ?
+        selectedTab === 'Family History' ? 
             <FamilyHistory tabDetails = {familyHistory}/>
             :
-            selectedTab === 'General' ?
+            selectedTab === 'Details' ?
                 <General tabDetails={medicalHistory} />
                 :
                 selectedTab === 'Lifestyle' ?
