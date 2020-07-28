@@ -4,8 +4,10 @@ import moment from 'moment';
 import RowCalendarDay from "./RowCalenderDay";
 import { formatDate } from '../../utils/formatter';
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
-const ROW_ITEM_WIDTH = 96;
+const ROW_ITEM_WIDTH = 90;
 const ROW_ITEM_HEIGHT = 96;
 
 /**
@@ -18,8 +20,9 @@ const ROW_ITEM_HEIGHT = 96;
  * @returns {*}
  * @constructor
  */
-const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) => {
-    const flatListRef = useRef();
+
+function RowCalendar({month, selectedDay, days, appointmentDays, onDayPress}){
+    const flatListRef = useRef() ;
 
     const generateCalendarData = (days) => {
         return days.map((item, index) => {
@@ -66,31 +69,40 @@ const RowCalendar = ({month, selectedDay, days, appointmentDays, onDayPress}) =>
 
     const initialIndex = getIndexForSelectedDay(formatDate(selectedDay,"YYYY-MM-DD"), days);
 
+    const RowWrapper = styled.View`
+        height: 110px;
+        width: 100%;
+    `
+
+    const RowContainer = styled.View`
+        height: 100%;
+        width: 100%;
+    `
     return (
-        <View
-            style={styles.container}
-        >
-            <FlatList
-                ref={flatListRef}
-                contentContainerStyle={styles.container}
-                getItemLayout={(data, index) => ({length: ROW_ITEM_WIDTH, offset: ROW_ITEM_WIDTH * index - 36, index})}
-                initialScrollIndex={initialIndex}
-                data={generateCalendarData(days)}
-                horizontal={true}
-                keyExtractor={(item, index) => index + ""}
-                renderItem={({item, index}) =>
-                    <View
-                        key={index}
-                        style={styles.day}
-                    >
-                        <RowCalendarDay
-                            key={index}
-                            {...item}
-                        />
-                    </View>
-                }
-            />
-        </View>
+        // <RowWrapper >
+            <View style={styles.container}>
+                <FlatList
+                    ref={flatListRef}
+                    contentContainerStyle={styles.container}
+                    getItemLayout={(data, index) => ({length: ROW_ITEM_WIDTH, offset: ROW_ITEM_WIDTH * index - 36, index})}
+                    initialScrollIndex={initialIndex}
+                    data={generateCalendarData(days)}
+                    horizontal={true}
+                    keyExtractor={(item, index) => index + ""}
+                    renderItem={({item, index}) =>
+                        // <View
+                        //     key={index}
+                        //     style={styles.day}
+                        // >
+                            <RowCalendarDay
+                                key={index}
+                                {...item}
+                            />
+                        // </View>
+                    }
+                />
+            </View>
+        // </RowWrapper>
     )
 };
 

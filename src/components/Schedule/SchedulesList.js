@@ -11,6 +11,10 @@ import {getAppointments} from "../../api/network";
 import {getDaysForMonth} from "../../utils";
 import {formatDate} from "../../utils/formatter";
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import SectionListHeader from './SectionListHeader';
+
 
 /**
  *
@@ -27,6 +31,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
     const daysList = getDaysForMonth(month);
     const sectionListRef = useRef();
     const [isRefreshing, setRefreshing] = useState(false);
+    const theme = useTheme();
 
     useEffect(() => {
         const dayIndex = getSectionIndexForSelectedDay();
@@ -100,51 +105,86 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                 setRefreshing(false)
             })
     };
+        
+    const ListWrapper = styled.View`
+        margin : 0;
+        flex-direction: column;
+        align-self: flex-start;
+        padding: 32px;
+        paddingTop: 24px;
+        backgroundColor:red;
+    `
+    const ListContainer = styled.View({
+        flexDirection: 'column',
+        backgroundColor:"green",
+        borderWidth: 1,
+        borderColor: '#E9E9E9',
+        borderRadius: 16,
+        paddingRight: 24,
+        paddingLeft: 24,
+    })
+
+    const TextView = styled.View({
+        
+    })
+
+    const Seperator = styled.View`
+        border-bottom-color: #CBD5E0;
+        margin-top: 12px;
+        margin-bottom: 12px;
+        border-bottom-width: 1px;
+    `
+ 
 
     return (
-        <View style={styles.container}>
-            <SectionList
-                ref={sectionListRef}
-                onRefresh={onRefresh}
-                refreshing={isRefreshing}
-                keyExtractor={item => {
-                    return item.id + new Date().toString() + Math.random()
-                }}
-                //onLayout={() => scrollToIndex(getSectionIndexForSelectedDay(), false)}
-                // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
-                getItemLayout={sectionListGetItemLayout({
-                    getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
-                    getSeparatorHeight: () => 24,
-                    getSectionHeaderHeight: () => 60,
-                    getSectionFooterHeight: () => 0,
-                    listHeaderHeight: 0
-                })}
-                onScrollToIndexFailed={() => {
+        // <ListWrapper>
+        <View style={styles.scheduleContent}>
+            <View style = {styles.container}>
+                <SectionList
+                    ref={sectionListRef}
+                    onRefresh={onRefresh}
+                    refreshing={isRefreshing}
+                    keyExtractor={item => {
+                        return item.id + new Date().toString() + Math.random()
+                    }}
+                    //onLayout={() => scrollToIndex(getSectionIndexForSelectedDay(), false)}
+                    // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
+                    getItemLayout={sectionListGetItemLayout({
+                        getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
+                        getSeparatorHeight: () => 24,
+                        getSectionHeaderHeight: () => 60,
+                        getSectionFooterHeight: () => 0,
+                        listHeaderHeight: 0
+                    })}
+                    onScrollToIndexFailed={() => {
 
-                }}
-                sections={getSectionListData(daysList, appointments)}
-                stickySectionHeadersEnabled={true}
-                ItemSeparatorComponent={() => <View style={styles.separatorStyle}/>}
-                renderSectionHeader={({section: {title}}) => (
-                    <View style={[styles.dateLabelContainer,{opacity: isInMonth(title)}]}>
-                        <Text style={styles.dateLabel}>
-                            {title}
-                        </Text>
-                    </View>
-                )}
-                renderItem={({item}) => {
-                    return <ScheduleItem
-                        key={item.id}
-                        startTime={item.startTime}
-                        endTime={item.endTime}
-                        title={ `${item.title} - ${item.subject}` }
-                        onScheduleClick={() => onAppointmentPress(item)}
-                        color={item.type && item.type.color || 'gray'}
-                        isInMonthOpacity = {isInMonth(item.startTime)}
-                    />
-                }}
-            />
+                    }}
+                    sections={getSectionListData(daysList, appointments)}
+                    stickySectionHeadersEnabled={true}
+                    ItemSeparatorComponent={() => <Seperator/>}
+                    renderSectionHeader={({section: {title}}) => (
+                        <SectionListHeader title = {title}/>
+                        // <View style={[styles.dateLabelContainer,{opacity: isInMonth(title)}]}>
+                        //     <Text style={styles.dateLabel}>
+                        //         {title}
+                        //     </Text>
+                        // </View>
+                    )}
+                    renderItem={({item}) => {
+                        return <ScheduleItem
+                            key={item.id}
+                            startTime={item.startTime}
+                            endTime={item.endTime}
+                            title={ `${item.title} - ${item.subject}` }
+                            onScheduleClick={() => onAppointmentPress(item)}
+                            color={item.type && item.type.color || 'gray'}
+                            isInMonthOpacity = {isInMonth(item.startTime)}
+                        />
+                    }}
+                /> 
+            </View> 
         </View>
+        // </ListWrapper>
     );
 }
 
@@ -155,7 +195,7 @@ SchedulesList.propTypes = {
     selectedIndex: PropTypes.number,
     setAppointments: PropTypes.func
 };
-
+ 
 SchedulesList.defaultProps = {};
 
 const mapStateToProps = (state) => {
@@ -172,10 +212,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(SchedulesList);
 
 
 const styles = StyleSheet.create({
-    container: {
+    scheduleContent: {
         flex: 1,
         flexDirection: 'column',
-        // backgroundColor: 'rgba(247, 250, 252, 1)',
+        alignSelf: 'flex-start',
+        width: '100%',
+        padding: 32,
+        paddingTop: 24,
+    },
+    container: {
+        flex:1,
+        flexDirection: 'column',
         backgroundColor:"#FFFFFF",
         borderWidth: 1,
         borderColor: '#E9E9E9',

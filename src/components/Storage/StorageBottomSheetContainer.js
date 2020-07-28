@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, View} from "react-native";
+import BottomSheetContainer from '../common/BottomSheetContainer';
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import StorageConsumablesTab from '../OverlayTabs/StorageConsumablesTab';
 import StorageEquipmentTab from '../OverlayTabs/StorageEquipmentTab';
@@ -20,7 +21,9 @@ function StorageBottomSheetContainer({storage}) {
     // ##### Life cycle methods
 
     useEffect(() => {
-        fetchStorageItem(storage._id)
+        setTimeout(()=>{
+            fetchStorageItem(storage._id)
+        }, 200)
     }, []);
 
 
@@ -84,24 +87,17 @@ function StorageBottomSheetContainer({storage}) {
     const {_id, name} = storageItem;
 
     return (
-        <View style={{flex: 1}}>
-            {
-                isFetching
-                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                    </View>
-                    : <SlideOverlay
-                        overlayId={_id}
-                        overlayTitle={name}
-                        onTabPressChange={onTabPress}
-                        currentTabs={currentTabs}
-                        selectedTab={currentTab}
-                        isEditMode={isEditMode}
-                        overlayContent={overlayContent}
-                        onEditPress={onEditPress}
-                    />
-            }
-        </View>
+        <BottomSheetContainer
+            isFetching = {isFetching}
+            overlayId={_id}
+            overlayTitle={name}
+            onTabPressChange={onTabPress}
+            currentTabs={currentTabs}
+            selectedTab={currentTab}
+            isEditMode={isEditMode}
+            onEditPress = {onEditPress}
+            overlayContent={getTabContent(currentTab)}
+        />
     );
 }
 

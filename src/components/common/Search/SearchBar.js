@@ -5,12 +5,15 @@ import {scheduleActions} from '../../../redux/reducers/scheduleReducer';
 import {ScheduleContext} from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../Buttons/Button';
-import moment from 'moment';
+import moment from 'moment'; 
 import ScheduleItem from '../../Schedule/ScheduleItem';
 import { formatDate } from '../../../utils/formatter';
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import SuggestionsComponent from './SuggestionsComponent';
 
-const SearchBar = (props) => {
+function SearchBar(props){
     const {
         changeText,
         closeSearch,
@@ -26,6 +29,7 @@ const SearchBar = (props) => {
     } = props;
 
     const resultsSeen = 5;
+    const theme = useTheme();
     const matchesFoundLength = matchesFound.length;
 
     const [suggestionsOpen, setSuggestionsOpen] = useState(false);
@@ -64,9 +68,23 @@ const SearchBar = (props) => {
         }
     };
 
+    let matchesToDisplay = [...matchesFound]
+    matchesToDisplay = matchesFound.slice(currentListMin, currentListMax)
+    // STYLED COMPONENTS
+
+    const SearchBarWrapper = styled.TouchableOpacity`
+        height: 100%;
+        width: 100%;
+    `;
+    const SearchBarContainer = styled.View`
+        display: flex;
+        height: 100%;
+        width: 100%;
+    `
     return (
-        <TouchableOpacity activeOpacity={1} style={{height: '100%'}} onPress={() => searchClosed()}>
-            <View>
+        <SearchBarWrapper activeOpacity={1} onPress={() => searchClosed()}>
+            <SearchBarContainer>
+                
                 <SearchInput
                     changeText={changeText}
                     inputText={inputText}
@@ -78,7 +96,16 @@ const SearchBar = (props) => {
                 />
 
                 {/* Search Results Drop down */}
-                {
+                
+                <SuggestionsComponent
+                    isSuggestionsOpen = {suggestionsOpen}
+                    matchesToDisplay = {matchesToDisplay}
+                    openSearchResult = {openSearchResult}
+                    currentListMin = {currentListMin}
+                    getPreviousResults = {getPreviousResults}
+                    getNextResults = {getNextResults}
+                />
+                {/* {
                     suggestionsOpen &&
                     <View style={styles.matchesFoundContainer}>
                         {
@@ -123,8 +150,8 @@ const SearchBar = (props) => {
                         </View>
 
                     </View>
-                }
-            </View>
+                } */}
+            </SearchBarContainer>
 
 
             {/*<BottomSheet*/}
@@ -149,7 +176,8 @@ const SearchBar = (props) => {
             {/*        />*/}
             {/*    }*/}
             {/*/>*/}
-        </TouchableOpacity>
+        </SearchBarWrapper>
+        // </SearchBarWrapper>
     )
 };
 export default SearchBar

@@ -1,7 +1,6 @@
 import React, {useReducer, useMemo} from 'react';
 import {connect, Provider} from 'react-redux';
 import { ThemeProvider } from 'emotion-theming';
-import {View, Text} from 'react-native';
 
 import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
 import {initialState, SuitesContext} from './src/SuitesContext';
@@ -30,14 +29,12 @@ const App = () => {
         <Provider store={store}>
             <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
 
-                {/*<RootApplicationContainer/>*/}
                 <ThemeProvider theme = {root}>
-
+                    {/*<RootApplicationContainer/>*/}
                     <RootApplicationNavigator/>
                     <NotificationRegistry/>
-
                 </ThemeProvider>
-                
+
 
             </SuitesContextProvider>
         </Provider>

@@ -1,10 +1,11 @@
 import React from "react";
 import OverlayButton from './OverlayButton'
+import Button from "../Buttons/Button";
 
 export function EditButton ({onPress}){
     return(
-        <OverlayButton
-            backgroundColor="#0CB0E7"
+        <Button
+            backgroundColor="#0CB0E7" 
             color="#FFFFFF"
             title="Edit"
             onPress={onPress}
