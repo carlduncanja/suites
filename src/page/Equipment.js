@@ -90,8 +90,7 @@ const Equipment = (props) => {
     useEffect(() => {
         if (!equipmentTypes.length) {
             fetchEquipmentData()
-        }
-        ;
+        };
         setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage));
     }, []);
 
@@ -372,8 +371,6 @@ const Equipment = (props) => {
             />
         </View>
     </>
-)
-    ;
 
     const getFabActions = () => {
 
@@ -485,15 +482,15 @@ const Equipment = (props) => {
     )
 }
 
-const mapStateToProps = (state) => {
-    const equipment = state.equipment.map(item => {
-        return {
-            ...item,
-            // id: item._id
-        }
-    })
-    return {equipment}
-};
+// const mapStateToProps = (state) => {
+//     const equipment = state.equipment.map(item => {
+//         return {
+//             ...item,
+//             // id: item._id
+//         }
+//     })
+//     return {equipment}
+// };
 
 const mapStateToProps = (state) => ({
     equipmentTypes: state.equipmentTypes,
