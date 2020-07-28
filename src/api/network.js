@@ -154,9 +154,9 @@ export const createInventoryVariant = async (referenceId, itemToCreate) => {
 };
 
 // ################# Case Files Endpoints
-export const getCaseFiles = async () => {
+export const getCaseFiles = async (query, max, page) => {
   return suitesAxiosInstance
-    .get(caseFilesEndpoint)
+    .get(caseFilesEndpoint, { params : { query, max, page}})
     .then(handleResponse)
     .catch(handleError);
 };

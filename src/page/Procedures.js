@@ -166,9 +166,9 @@ const Procedures = (props) => {
         setFetchingData(true)
         getProcedures(searchValue, recordsPerPage, pagePosition)
             .then(procedureResult => {
-                console.log("Result: ", procedureResult)
+                // console.log("Result: ", procedureResult)
                 const { data = [], pages = 0 } = procedureResult
-                console.log("ProData: ", data)
+                // console.log("ProData: ", data)
                 setProcedures(data);
                 setTotalPages(pages)
                 // setTotalPages(Math.ceil(data.length / recordsPerPage))

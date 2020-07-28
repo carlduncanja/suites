@@ -30,6 +30,7 @@ import {useModal, withModal} from "react-native-modalfy";
 import moment from "moment";
 import {formatDate} from "../../utils/formatter";
 import caseFiles from "../../../data/CaseFiles";
+import _ from "lodash";
 
 const listHeaders = [
     {
@@ -61,7 +62,7 @@ const CaseFiles = (props) => {
 
     const {
         // Redux props
-        caseFiles,
+        caseFiles = [],
         setCaseFiles,
 
         // React Navigation Props
@@ -77,6 +78,10 @@ const CaseFiles = (props) => {
 
     const routeName = route.name;
 
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
     // pagination
     const [totalPages, setTotalPages] = useState(0);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
@@ -86,10 +91,35 @@ const CaseFiles = (props) => {
     //######## Life Cycle Methods
     useEffect(() => {
         if (!caseFiles.length) {
-            fetchCaseFilesData()
+            fetchCaseFilesData(currentPagePosition)
         }
         setTotalPages(Math.ceil(caseFiles.length / recordsPerPage))
     }, []);
+
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            fetchCaseFilesData(1)
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchCaseFilesData, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+        setCurrentPagePosition(1)
+    }, [searchValue]);
 
     //######## Event Handlers
 
@@ -99,6 +129,7 @@ const CaseFiles = (props) => {
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
+            fetchCaseFilesData(currentPage)
         }
     };
 
@@ -109,6 +140,8 @@ const CaseFiles = (props) => {
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
+        fetchCaseFilesData(currentPage)
+
     };
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
@@ -149,15 +182,18 @@ const CaseFiles = (props) => {
     //######## Helper Functions
 
     const changeText = (text) => {
-        setTextInput(text)
+        setSearchValue(text)
     };
 
-    const fetchCaseFilesData = () => {
+    const fetchCaseFilesData = (pagePosition) => {
+        pagePosition ? pagePosition : 1;
         setFetchingCaseFiles(true);
-        getCaseFiles()
-            .then(data => {
+        getCaseFiles(searchValue, recordsPerPage, pagePosition)
+            .then(caseResult => {
+                const { data = [], pages = 0 } = caseResult
                 setCaseFiles(data);
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
+                setTotalPages(pages)
+                // setTotalPages(Math.ceil(data.length / recordsPerPage))
             })
             .catch(error => {
                 console.log("failed to get case files", error);
@@ -259,7 +295,7 @@ const CaseFiles = (props) => {
 
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
-    caseFilesToDisplay = caseFilesToDisplay.slice(currentPageListMin, currentPageListMax);
+    // caseFilesToDisplay = caseFilesToDisplay.slice(currentPageListMin, currentPageListMax);
 
 
     return (
@@ -271,7 +307,7 @@ const CaseFiles = (props) => {
                 placeholderText={"Search by any heading or entry below"}
 
                 changeText={changeText}
-                inputText={textInput}
+                inputText={searchValue}
                 routeName={routeName}
                 listData={caseFilesToDisplay}
 

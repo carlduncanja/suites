@@ -200,7 +200,7 @@ function Storage(props) {
                 // const { data = [], pages = 0 } = storageResult
                 console.log("Data:", data)
                 setStorage(data);
-                setTotalPages(pages)
+                // setTotalPages(pages)
                 setTotalPages(Math.ceil(data.length / recordsPerPage))
             })
             .catch(error => {
