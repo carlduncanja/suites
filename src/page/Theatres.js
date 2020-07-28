@@ -335,7 +335,8 @@ function Theatres(props) {
   const fetchTheatres = () => {
     setFetchingData(true);
     getTheatres(searchValue)
-      .then((data) => {
+      .then((result) => {
+        const {data} = result;
         console.log("get theatres search", data);
         setTheatres(data);
         setTotalPages(Math.ceil(data.length / recordsPerPage));
