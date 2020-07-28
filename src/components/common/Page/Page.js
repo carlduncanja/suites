@@ -26,9 +26,10 @@ import { useTheme } from 'emotion-theming';
  * @returns {*}
  * @constructor
  */
-const Page = (props) => {
+
+ function Page (props){
     
-    const [state, dispatch] = useContext(SuitesContext);
+    // const [state, dispatch] = useContext(SuitesContext);
     const theme = useTheme()
     const {
         placeholderText,
@@ -44,36 +45,37 @@ const Page = (props) => {
         itemsSelected
     } = props;
 
-    const getPageMeasure = (event) => {
-        dispatch({
-            type: appActions.SETPAGEMEASURES,
-            newState: event.nativeEvent.layout
-        })
-    };
+    // const getPageMeasure = (event) => {
+    //     dispatch({
+    //         type: appActions.SETPAGEMEASURES,
+    //         newState: event.nativeEvent.layout
+    //     })
+    // };
 
-    const getSlideTop = (event) => {
-        dispatch({
-            type: appActions.SETSLIDEVALUE,
-            newState: event.nativeEvent.layout.height
-        })
-    };
+    // const getSlideTop = (event) => {
+    //     dispatch({
+    //         type: appActions.SETSLIDEVALUE,
+    //         newState: event.nativeEvent.layout.height
+    //     })
+    // };
    
     const PageWrapper = styled.View`
         display : flex;
+        height: 100%;
         flex-direction : column;
         margin-left : 0px;
         padding-left: ${theme.space['--space-32']};
         padding-top: 28px;
         padding-right: 32px;
         padding-bottom: 28px;
-        height : 100%;
         background-color: ${theme.colors['--color-red-400']};
     `;
 
     const PageContainer = styled.View`
         display: flex;
-        background-color: ${theme.colors['--color-green-400']};
         height: 100%;
+        background-color: ${theme.colors['--color-green-400']};
+        
     `;
 
     return ( 

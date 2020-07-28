@@ -1,18 +1,54 @@
 import React,{Component, useContext} from 'react';
 import {TouchableOpacity, StyleSheet} from 'react-native';
-import SvgIcon from '../../../../assets/SvgIcon'
+import SvgIcon from '../../../../assets/SvgIcon';
+import ActionMenu from '../../../../assets/svg/actionMenu';
 import { withModal } from 'react-native-modalfy';
 
-const FloatingActionButton = ({isDisabled,toggleActionButton}) => {
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming'; 
+
+function FloatingActionButton ({isDisabled = false,toggleActionButton = ()=>{}, hasActions = true}){
+
+    const theme = useTheme();
+
+    const FloatingActionButtonWrapper = styled.TouchableOpacity`
+        background-color: red;
+        height : 48px;
+        width: 48px;
+    `;
+    const FloatingActionButtonContainer = styled.View`
+        height: 100%;
+        width: 100%;
+        background-color: ${ hasActions ? 
+            isDisabled ? theme.colors['--color-gray-500'] : theme.colors['--color-blue-500']
+            :
+            theme.colors['--default-shade-white']
+        };
+        border : ${ hasActions ? 
+            null
+            :
+            `1px solid ${theme.colors['--color-gray-300']}`
+        };
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+
+    `;
+
     return (
-        <TouchableOpacity
-            style={[styles.container,{
-                backgroundColor: isDisabled ?  "#A0AEC0" : "#4299E1"
-            }]}
-            onPress={()=>{toggleActionButton();}}
-        >
-            <SvgIcon iconName = "actionMenu" fillColor={"#FFFFFF"}/>
-        </TouchableOpacity>
+        <FloatingActionButtonWrapper onPress={()=>toggleActionButton()}>
+            <FloatingActionButtonContainer>
+                <ActionMenu
+                    fillColor = {
+                        hasActions ? 
+                            theme.colors['--default-shade-white']
+                            :
+                            theme.colors['--color-gray-400']
+                    }
+                />
+            </FloatingActionButtonContainer>
+        </FloatingActionButtonWrapper>
+        
     );
 } 
 

@@ -17,7 +17,7 @@ function SlideHeader({id = "", title = "", selectedTab = "", currentTabs = [], o
     `
     const SlideOverlayHeaderContainer = styled.View`
         height: 100%;
-    `
+    ` 
 
     return (
         <SlideOverlayHeaderWrapper>

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import Heading from './Heading';
-import { DoneButton } from '../OverlayButtons/OverlayButtonStyles'
+import DoneButton from '../OverlayButtons/DoneButton';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming'; 

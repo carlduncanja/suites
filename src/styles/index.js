@@ -245,6 +245,7 @@ export const root = {
         '--shadow-identifier' : '0px 1px 4px rgba(63, 199, 244, 0.4)',
         // shadow-md
         '--shadow-md' : '0px 4px 6px rgba(0, 0, 0, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.06)',
+        '--shadow-lg' : '0px 4px 6px rgba(0, 0, 0, 0.05), 0px 10px 15px rgba(0, 0, 0, 0.1)',
     }
 }
 

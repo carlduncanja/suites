@@ -64,7 +64,7 @@ const BillingCaseProcedure = ({physicians = [], equipments = [], inventories = [
                 })}
             </View>
 
-            <View style={styles.procedureItemContainer}>
+            {/* <View style={styles.procedureItemContainer}>
                 <View style={{marginBottom:6}}>
                     <Text style={styles.procedureItemTitle}>SERVICES</Text>
                 </View>
@@ -78,7 +78,7 @@ const BillingCaseProcedure = ({physicians = [], equipments = [], inventories = [
                         </View>
                     ) 
                 })}
-            </View>
+            </View> */}
         </View>
     )
 }

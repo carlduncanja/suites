@@ -10,7 +10,7 @@ import {withModal} from 'react-native-modalfy';
 import {updateChargeSheet} from "../../../api/network";
 
 const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleEditDone, onCaseProcedureBillablesChange}) => {
-
+    console.log("EDIT mode: ", isEditMode)
     const {
         lastModified = "",
         total = 0,
@@ -141,7 +141,7 @@ const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleE
                 consumables={consumables}
                 equipments={equipments}
                 services={services}
-                tabs={['Consumables', 'Equipments', 'Charges and Fees']}
+                tabs={['Consumables', 'Equipments']}
             />,
         })
     }
@@ -273,7 +273,7 @@ const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleE
     );
 }
 
-export default withModal(BillingCaseCard);
+export default withModal(BillingCaseCard); 
 
 const styles = StyleSheet.create({
     container: {},

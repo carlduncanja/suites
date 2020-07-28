@@ -10,7 +10,7 @@ import AddNew from '../../../../assets/svg/addNewIcon';
 import {useModal} from "react-native-modalfy";
 
 
-const ActionableListCard = (props) =>{ 
+const ActionableListCard = (props) =>{  
 
     const {
         title,
@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#FFFFFF',
         borderRadius:8,
         width:600,
+        height: 200,
     },
     headerContainer:{
         flexDirection:'row',
@@ -165,7 +166,8 @@ const styles = StyleSheet.create({
         alignItems:'center',
         backgroundColor:'#EEF2F6',
         paddingTop:15,
-        paddingBottom:15
+        paddingBottom:15,
+        height: 50,
     },
     tab:{
         borderRadius: 4,

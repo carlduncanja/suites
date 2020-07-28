@@ -28,9 +28,13 @@ import {SuitesContext} from "../../contexts/SuitesContext";
 
 import {useModal, withModal} from "react-native-modalfy";
 import moment from "moment";
+
 import {formatDate} from "../../utils/formatter";
 import caseFiles from "../../../data/CaseFiles";
 import _ from "lodash";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import Footer from "../../components/common/Page/Footer";
 
 const listHeaders = [
     {
@@ -54,6 +58,7 @@ const listHeaders = [
 const CaseFiles = (props) => {
     //######## const
     const modal = useModal();
+    const theme = useTheme();
 
     // const router = useRouter
     const recordsPerPage = 10;
@@ -75,6 +80,9 @@ const CaseFiles = (props) => {
     const [selectedCaseIds, setSelectedCaseIds] = useState([]);
     const [isFetchingCaseFiles, setFetchingCaseFiles] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+    const [hasActions, setHasActions] = useState(false);
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
     const routeName = route.name;
 
@@ -90,9 +98,7 @@ const CaseFiles = (props) => {
 
     //######## Life Cycle Methods
     useEffect(() => {
-        if (!caseFiles.length) {
-            fetchCaseFilesData(currentPagePosition)
-        }
+        if (!caseFiles.length) { fetchCaseFilesData(currentPagePosition) }
         setTotalPages(Math.ceil(caseFiles.length / recordsPerPage))
     }, []);
 
@@ -124,24 +130,26 @@ const CaseFiles = (props) => {
     //######## Event Handlers
 
     const goToNextPage = () => {
+        if(currentPagePosition === totalPages) { setNextDisabled(true); return };
         if (currentPagePosition < totalPages) {
             let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
             fetchCaseFilesData(currentPage)
+            setNextDisabled(false)
         }
     };
 
     const goToPreviousPage = () => {
-        if (currentPagePosition === 1) return;
+        if (currentPagePosition === 1) { setPreviousDisabled(true); return };
 
+        setPreviousDisabled(false)
         let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
         fetchCaseFilesData(currentPage)
-
     };
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
@@ -191,6 +199,7 @@ const CaseFiles = (props) => {
         getCaseFiles(searchValue, recordsPerPage, pagePosition)
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult
+                if(pages === 1){ setNextDisabled(true) }
                 setCaseFiles(data);
                 setTotalPages(pages)
                 // setTotalPages(Math.ceil(data.length / recordsPerPage))
@@ -274,7 +283,6 @@ const CaseFiles = (props) => {
     }
 
     const getFabActions = () => {
-
         const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={() => {
         }}/>;
         const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon/>} onPress={openCreateCaseFile}/>;
@@ -297,45 +305,50 @@ const CaseFiles = (props) => {
     let caseFilesToDisplay = [...caseFiles];
     // caseFilesToDisplay = caseFilesToDisplay.slice(currentPageListMin, currentPageListMax);
 
+    // ##### STYLED COMPONENTS
+
+    const CaseFilesWrapper = styled.View`
+        height: 100%;
+        width: 100%;
+        background-color: green;
+    `;
+    const CaseFilesContainer = styled.View`
+        display: flex;
+        height: 100%;
+    `;
 
     return (
-        <View style={{flex: 1}}>
+        <CaseFilesWrapper>
+            <CaseFilesContainer>
+                <Page
+                    isFetchingData={isFetchingCaseFiles}
+                    onRefresh={handleDataRefresh}
+                    placeholderText={"Search by any heading or entry below"}
+                    changeText={changeText}
+                    inputText={searchValue}
+                    routeName={routeName}
+                    listData={caseFilesToDisplay}
 
-            <Page
-                isFetchingData={isFetchingCaseFiles}
-                onRefresh={handleDataRefresh}
-                placeholderText={"Search by any heading or entry below"}
-
-                changeText={changeText}
-                inputText={searchValue}
-                routeName={routeName}
-                listData={caseFilesToDisplay}
-
-                listHeaders={listHeaders}
-                itemsSelected={selectedCaseIds}
-                onSelectAll={handleOnSelectAll}
-
-                listItemFormat={renderFn}
-            />
-
-
-            <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-
-                <FloatingActionButton
+                    listHeaders={listHeaders}
+                    itemsSelected={selectedCaseIds}
+                    onSelectAll={handleOnSelectAll}
+                    listItemFormat={renderFn}
+                />
+                <Footer
+                    totalPages={totalPages}
+                    currentPage={currentPagePosition}
+                    goToNextPage={goToNextPage}
+                    goToPreviousPage={goToPreviousPage}
                     isDisabled={isFloatingActionDisabled}
                     toggleActionButton={toggleActionButton}
+                    hasPaginator = {true}
+                    hasActionButton = {true}
+                    hasActions = {true}
+                    isNextDisabled = {isNextDisabled}
+                    isPreviousDisabled = {isPreviousDisabled}
                 />
-
-            </View>
-        </View>
+            </CaseFilesContainer>
+        </CaseFilesWrapper>
     );
 };
 

@@ -10,7 +10,7 @@ function ViewModeHeading({id = '',title = '', onButtonPress = ()=>{}}){
     const theme = useTheme();
 
     return( 
-        <Heading
+        <Heading 
             headerId={id} 
             headerName={title}
             backgroundColor={theme.colors['--color-gray-200']}

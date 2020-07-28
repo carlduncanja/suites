@@ -15,7 +15,7 @@ function Heading({headerIdColor, headerId, headerNameColor, headerName, message,
         margin-bottom : ${theme.space['--space-16']};
     `
     const HeadingContainer = styled.View`
-        flex-direction : column;
+        flex-direction : column; 
     `
 
     const HeaderId = styled.Text({

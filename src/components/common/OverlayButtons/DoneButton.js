@@ -4,19 +4,15 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { Text } from 'react-native';
 
-function EditButtonStyle({onPress = ()=>{}}){
+function DoneButton({onPress = ()=>{}}){
 
-    const theme = useTheme(); 
+    const theme = useTheme();
 
-    const press = ()=>{
-        console.log("Press")
-    }
-
-    const EditButtonWrapper = styled.View`
+    const DoneButtonWrapper = styled.View`
         height : 26px;
         width : 53px;
     `;
-    const EditButtonContainer = styled.View`
+    const DoneButtonContainer = styled.View`
         height: 100%;
         width: 100%;
         border-radius : 6px;
@@ -24,23 +20,23 @@ function EditButtonStyle({onPress = ()=>{}}){
         padding-bottom : 6px;
         padding-left: 8px;
         padding-right: 8px;
-        background-color : ${theme.colors['--accent-button']};
+        background-color : ${theme.colors['--default-shade-white']};
         align-items : center;
         justify-content : center;
     `
     return( 
-        <EditButtonWrapper>
-            <EditButtonContainer>
+        <DoneButtonWrapper>
+            <DoneButtonContainer>
                 <Button
-                    backgroundColor="#0CB0E7" 
-                    color="#FFFFFF"
+                    backgroundColor="#FFFFFF" 
+                    color="#0CB0E7"
                     title="Edit"
-                    buttonPress={onPress}
+                    onPress={onPress}
                 />
-            </EditButtonContainer>
-        </EditButtonWrapper>
+            </DoneButtonContainer>
+        </DoneButtonWrapper>
         
     )
 }
 
-export default EditButtonStyle
+export default DoneButton

@@ -1,31 +1,59 @@
 import React, { Component, useContext } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import SvgIcon from "../../../../assets/SvgIcon";
-import { SuitesContext } from "../../../contexts/SuitesContext";
-import { appActions } from "../../../redux/reducers/suitesAppReducer";
+import PaginatorRight from "../../../../assets/svg/paginationRight";
+import PaginatorLeft from "../../../../assets/svg/paginationLeft";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import IconButton from "../Buttons/IconButton";
+import PaginatorNumbers from "./PaginatorNumbers";
 
-const Paginator = ({
-  currentPage,
-  totalPages,
-  goToNextPage,
-  goToPreviousPage,
-}) => {
-  const [state, dispatch] = useContext(SuitesContext);
+function Paginator ({
+    currentPage = 0,
+    totalPages = 0,
+    goToNextPage = ()=>{},
+    goToPreviousPage = ()=>{},
+    isNextDisabled = false, 
+    isPreviousDisabled = false,
+  }){
+
+    const theme = useTheme();
+    
+    const PaginatorWrapper = styled.View`
+      height: 100%;
+      width: 100%;
+    `;
+    const PaginatorContainer = styled.View`
+      height: 100%;
+      flex-direction : row;
+      align-items: center;
+      justify-content: center;
+    `;
+    
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => goToPreviousPage()}>
-        <SvgIcon iconName="paginationPrev" strokeColor="#104587" />
-      </TouchableOpacity>
+    <PaginatorWrapper>
+        <PaginatorContainer>
 
-      <View style={styles.numbersContainer}>
-        <Text style={styles.numbers}>
-          {currentPage} of {totalPages}
-        </Text>
-      </View>
-      <TouchableOpacity onPress={() => goToNextPage()}>
-        <SvgIcon iconName="paginationNext" strokeColor="#104587" />
-      </TouchableOpacity>
-    </View>
+          <IconButton
+            Icon = {<PaginatorLeft strokeColor = { isPreviousDisabled ? theme.colors['--color-gray-400']: theme.colors['--company']}/>}
+            onPress = {goToPreviousPage}
+            disabled = {isPreviousDisabled}
+          />
+
+          <PaginatorNumbers
+            currentPage = {currentPage}
+            totalPages = {totalPages}
+          />
+       
+        <IconButton
+          Icon = {<PaginatorRight strokeColor = {isNextDisabled ? theme.colors['--color-gray-400']: theme.colors['--company']}/>}
+          onPress = {goToNextPage}
+          disabled = {isNextDisabled}
+        />
+
+      </PaginatorContainer>
+    </PaginatorWrapper>
+    
   );
 };
 
@@ -36,6 +64,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: 'yellow',
   },
   numbersContainer: {
     backgroundColor: "#FAFAFA",

@@ -30,7 +30,7 @@ function SlideOverlay ({
 
     return (
         <SlideOverlayWrapper>
-            <SlideOverlayContainer>
+            <SlideOverlayContainer> 
                 <SlideHeader
                     id = {overlayId}
                     title = {overlayTitle}
