@@ -45,7 +45,6 @@ function List({
     ` 
     const ListContainer = styled.View`
         display: flex;
-        height:100%;
     `
     return (
         <ListWrapper> 
@@ -64,7 +63,7 @@ function List({
                     keyExtractor={keyExtractor}
                     onRefresh={onRefresh}
                     refreshing={refreshing}
-                    // contentContainerStyle={{paddingBottom: 150}}
+                    contentContainerStyle={{height:'100%'}}
                 />
             </ListContainer>
         </ListWrapper>
