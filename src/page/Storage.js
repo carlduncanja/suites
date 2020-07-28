@@ -19,6 +19,7 @@ import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
+import _ from "lodash";
 
 
 const listHeaders = [
@@ -39,50 +40,10 @@ const listHeaders = [
     }
 ];
 
-const testData = [
-    {
-        id: "1",
-        name: "OR1: Cabinet 1",
-        stock: 3182,
-        capacity: 5000,
-    },
-    {
-        id: "2",
-        name: "OR1: Cabinet 2",
-        stock: 6192,
-        capacity: 10000,
-    },
-    {
-        id: "3",
-        name: "OR1: Cabinet 3",
-        stock: 2014,
-        capacity: 5000,
-    },
-    {
-        id: "4",
-        name: "OR1: Cabinet 4",
-        stock: 541,
-        capacity: 5000,
-    },
-    {
-        id: "5",
-        name: "OR1: Cabinet 5",
-        stock: 4001,
-        capacity: 5000,
-    },
-    {
-        id: "6",
-        name: "OR1: Cabinet 6",
-        stock: 8921,
-        capacity: 10000,
-    },
-
-];
-
 
 function Storage(props) {
     const {
-        storageLocations = testData,
+        storageLocations = [],
         setStorage,
     } = props;
 
@@ -95,6 +56,9 @@ function Storage(props) {
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+    
     const [selectedIds, setSelectedIds] = useState([]);
 
     // pagination
@@ -107,9 +71,34 @@ function Storage(props) {
     // ############# Life Cycle Methods
 
     useEffect(() => {
-        if (!storageLocations.length) fetchStorageData();
+        if (!storageLocations.length) fetchStorageData(currentPagePosition);
         setTotalPages(Math.ceil(storageLocations.length / recordsPerPage));
     }, []);
+
+    useEffect(() => {
+
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            fetchStorageData(1)
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchStorageData, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+        setCurrentPagePosition(1)
+    }, [searchValue]);
 
 
     // ############# Event Handlers
@@ -118,8 +107,8 @@ function Storage(props) {
         fetchStorageData()
     };
 
-    const onSearchChange = () => {
-
+    const onSearchChange = (input) => {
+        setSearchValue(input)
     };
 
     const goToNextPage = () => {
@@ -128,6 +117,7 @@ function Storage(props) {
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
+            fetchStorageData(currentPage)
         }
     };
 
@@ -138,6 +128,8 @@ function Storage(props) {
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
+        fetchStorageData(currentPage)
+
     };
 
     const onSelectAll = () => {
@@ -200,11 +192,15 @@ function Storage(props) {
         </View>
     </>;
 
-    const fetchStorageData = () => {
+    const fetchStorageData = (pagePosition) => {
+        pagePosition ? pagePosition : 1;
         setFetchingData(true);
-        getStorage()
+        getStorage(searchValue, recordsPerPage, pagePosition)
             .then(data => {
+                // const { data = [], pages = 0 } = storageResult
+                console.log("Data:", data)
                 setStorage(data);
+                setTotalPages(pages)
                 setTotalPages(Math.ceil(data.length / recordsPerPage))
             })
             .catch(error => {
@@ -285,7 +281,7 @@ function Storage(props) {
     };
 
     let storageToDisplay = [...storageLocations];
-    storageToDisplay = storageToDisplay.slice(currentPageListMin, currentPageListMax);
+    // storageToDisplay = storageToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
         <View style={styles.container}>

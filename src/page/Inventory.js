@@ -55,80 +55,6 @@ const listHeaders = [
     }
 ];
 
-const testData = [
-    {
-        id: "1",
-        name: "Agents",
-        stock: 238,
-        levels: {
-            max: 400,
-            min: 0,
-            critical: 100,
-            ideal: 300,
-        },
-        locations: 4,
-    },
-    {
-        id: "2",
-        name: "Suture Kit",
-        stock: 22,
-        levels: {
-            max: 200,
-            min: 0,
-            critical: 50,
-            ideal: 100,
-        },
-        locations: 1
-    },
-    {
-        id: "3",
-        name: "Gauze",
-        stock: 632,
-        levels: {
-            max: 700,
-            min: 0,
-            critical: 100,
-            ideal: 350,
-        },
-        locations: 2
-    },
-    {
-        id: "4",
-        name: "Atracurium",
-        stock: 642,
-        levels: {
-            max: 700,
-            min: 0,
-            critical: 100,
-            ideal: 350,
-        },
-        locations: 7
-    },
-    {
-        id: "5",
-        name: "Atropine",
-        stock: 72,
-        levels: {
-            max: 250,
-            min: 0,
-            critical: 100,
-            ideal: 350,
-        },
-        locations: 3
-    },
-    {
-        id: "6",
-        name: "Bupivacaine 0.25 %",
-        stock: 68,
-        levels: {
-            max: 250,
-            min: 0,
-            critical: 100,
-            ideal: 200
-        },
-        locations: 1
-    },
-];
 
 function Inventory(props) {
 
@@ -146,7 +72,6 @@ function Inventory(props) {
     const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
-    // const [searchValue, setSearchValue] = useState("");
     const [selectedIds, setSelectedIds] = useState([]);
 
     const [searchValue, setSearchValue] = useState("");
@@ -163,7 +88,7 @@ function Inventory(props) {
     // ##### Lifecycle Methods
 
     useEffect(() => {
-        if (!inventory.length) fetchInventory();
+        if (!inventory.length) fetchInventory(currentPagePosition);
         setTotalPages(Math.ceil(inventory.length / recordsPerPage));
     }, []);
 
@@ -172,6 +97,7 @@ function Inventory(props) {
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
+            fetchInventory(1)
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
@@ -188,6 +114,7 @@ function Inventory(props) {
         });
 
         search()
+        setCurrentPagePosition(1)
     }, [searchValue]);
 
     // ##### Handler functions
@@ -217,6 +144,7 @@ function Inventory(props) {
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
+            fetchInventory(currentPage)
         }
     };
 
@@ -227,6 +155,7 @@ function Inventory(props) {
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
+        fetchInventory(currentPage)
     };
 
     const toggleActionButton = () => {
@@ -477,12 +406,15 @@ function Inventory(props) {
         />
     };
 
-    const fetchInventory = () => {
+    const fetchInventory = (pagePosition) => {
+        pagePosition ? pagePosition : 1;
         setFetchingData(true);
-        getInventories(searchValue)
-            .then(data => {
+        getInventories(searchValue, recordsPerPage, pagePosition)
+            .then(inventoryResult => {
+                const { data = [], pages = 0 } = inventoryResult
                 setInventory(data);
-                setTotalPages(Math.ceil(data.length / recordsPerPage));
+                setTotalPages(pages)
+                // setTotalPages(Math.ceil(data.length / recordsPerPage));
             })
             .catch(error => {
                 // todo handle error
@@ -494,7 +426,7 @@ function Inventory(props) {
     };
 
     let inventoryToDisplay = [...inventory];
-    inventoryToDisplay = inventoryToDisplay.slice(currentPageListMin, currentPageListMax);
+    // inventoryToDisplay = inventoryToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
         <View style={styles.container}>

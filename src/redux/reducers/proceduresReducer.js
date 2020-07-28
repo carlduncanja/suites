@@ -7,6 +7,7 @@ export default (state = initialState.procedures, action) => {
 
     switch (type) {
         case SET_PROCEDURES: { 
+       
             const {data} = payload;
             return [...data]
         }

@@ -41,6 +41,7 @@ function List({
     // should list fill remaining space or as much as content ? 
     const ListWrapper = styled.View`
         display : flex;
+        flex:1;
         background-color: ${theme.colors['--color-purple-400']};
     ` 
     const ListContainer = styled.View`
@@ -64,6 +65,7 @@ function List({
                     onRefresh={onRefresh}
                     refreshing={refreshing}
                     contentContainerStyle={{height:'100%'}}
+                    keyboardShouldPersistTaps={'always'}
                 />
             </ListContainer>
         </ListWrapper>

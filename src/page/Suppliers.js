@@ -77,6 +77,7 @@ const Suppliers = (props) => {
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
+            fetchSuppliersData(1)
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }

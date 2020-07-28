@@ -75,7 +75,7 @@ const Physicians = (props) => {
 
     useEffect(() => {
         if (!physicians.length) {
-            fetchPhysiciansData()
+            fetchPhysiciansData(currentPagePosition)
         }
         setTotalPages(Math.ceil(physicians.length / recordsPerPage))
     }, []);
@@ -85,6 +85,7 @@ const Physicians = (props) => {
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
+            fetchPhysiciansData(1)
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
@@ -101,6 +102,7 @@ const Physicians = (props) => {
         });
 
         search()
+        setCurrentPagePosition(1)
     }, [searchValue]);
 
     // ############# Event Handlers
@@ -136,6 +138,7 @@ const Physicians = (props) => {
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
+            fetchPhysiciansData(currentPage)
         }
     };
 
@@ -146,6 +149,8 @@ const Physicians = (props) => {
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
+        fetchPhysiciansData(currentPage)
+
     };
 
     const toggleActionButton = () => {
@@ -162,12 +167,15 @@ const Physicians = (props) => {
 
     // ############# Helper functions
 
-    const fetchPhysiciansData = () => {
+    const fetchPhysiciansData = (pagePosition) => {
+        pagePosition ? pagePosition : 1;
         setFetchingData(true);
-        getPhysicians(searchValue)
-            .then(data => {
+        getPhysicians(searchValue, recordsPerPage, pagePosition)
+            .then(physicianResult => {
+                const { data = [], pages = 0 } = physicianResult
                 setPhysicians(data);
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
+                setTotalPages(pages)
+                // setTotalPages(Math.ceil(data.length / recordsPerPage))
             })
             .catch(error => {
                 console.log("failed to get physicians", error);
@@ -275,7 +283,7 @@ const Physicians = (props) => {
     // ############# Prepare list data
 
     let physiciansToDisplay = [...physicians];
-    physiciansToDisplay = physiciansToDisplay.slice(currentPageListMin, currentPageListMax);
+    // physiciansToDisplay = physiciansToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return(
         <View style={{flex:1}}>

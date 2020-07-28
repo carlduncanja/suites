@@ -98,9 +98,9 @@ export const searchSchedule = async (query) => {
 };
 
 // ################# Theatres Endpoints
-export const getTheatres = async (query, max) => {
+export const getTheatres = async (query, max, page) => {
   return suitesAxiosInstance
-    .get(theatresEndpoint, { params: { query, max } })
+    .get(theatresEndpoint, { params: { query, max, page } })
     .then(handleResponse)
     .catch(handleError);
 };
@@ -120,9 +120,9 @@ export const createTheatre = async (theatreForCreation) => {
 };
 
 // ################# Inventory Endpoints
-export const getInventories = async (query, max) => {
+export const getInventories = async (query, max, page) => {
   return suitesAxiosInstance
-    .get(inventoriesEndpoint, { params: { query, max } })
+    .get(inventoriesEndpoint, { params: { query, max, page } })
     .then(handleResponse)
     .catch(handleError);
 };
@@ -236,9 +236,9 @@ export const createInvoiceViaQuotation = async (caseId, quotationId) => {
 };
 
 // ################# Procedures Endpoints
-export const getProcedures = async (query, max) => {
+export const getProcedures = async (query, max, page) => {
   return suitesAxiosInstance
-    .get(proceduresEndpoint, { params: { query, max } })
+    .get(proceduresEndpoint, { params: { query, max, page } })
     .then(handleResponse)
     .catch(handleError);
 };
@@ -272,9 +272,9 @@ export const updateProcedure = async (id, data) => {
 };
 
 // ################# Physicians Endpoints
-export const getPhysicians = async (query, max) => {
+export const getPhysicians = async (query, max, page) => {
   return suitesAxiosInstance
-    .get(physiciansEndpoint, { params: { query } })
+    .get(physiciansEndpoint, { params: { query, max, page } })
     .then(handleResponse)
     .catch(handleError);
 };
@@ -301,8 +301,8 @@ export const updatePhysician = async (id, data) => {
 };
 
 // ################# Storage Endpoints
-export const getStorage = async (query,max) => {
-    return suitesAxiosInstance.get(storageLocationsEndpoint, {params : {query,max}})
+export const getStorage = async (query,max, page) => {
+    return suitesAxiosInstance.get(storageLocationsEndpoint, {params : {query,max, page}})
         .then(handleResponse)
         .catch(handleError)
 };
@@ -336,9 +336,9 @@ export const getEquipmentById = async (id) => {
     .catch(handleError);
 };
 
-export const getEquipmentTypes = async (query, max) => {
+export const getEquipmentTypes = async (query, max, page) => {
   return suitesAxiosInstance
-    .get(equipmentTypesEndpoint, { params: { query } })
+    .get(equipmentTypesEndpoint, { params: { query, max, page} })
     .then(handleResponse)
     .catch(handleError);
 };

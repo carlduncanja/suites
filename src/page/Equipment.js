@@ -88,9 +88,7 @@ const Equipment = (props) => {
     // ############# Lifecycle methods
 
     useEffect(() => {
-        if (!equipmentTypes.length) {
-            fetchEquipmentData()
-        };
+        if (!equipmentTypes.length) {fetchEquipmentData(currentPagePosition)};
         setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage));
     }, []);
 
@@ -99,6 +97,7 @@ const Equipment = (props) => {
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
+            fetchEquipmentData(1)
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
@@ -115,6 +114,7 @@ const Equipment = (props) => {
         });
 
         search()
+        setCurrentPagePosition(1)
     }, [searchValue]);
     // ############# Event Handlers
 
@@ -173,6 +173,7 @@ const Equipment = (props) => {
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
+            fetchEquipmentData(currentPage)
         }
     };
 
@@ -183,6 +184,7 @@ const Equipment = (props) => {
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
+        fetchEquipmentData(currentPage)
     };
 
     const toggleActionButton = () => {
@@ -199,10 +201,11 @@ const Equipment = (props) => {
     }
 
     // ############# Helper functions
-    const fetchEquipmentData = () => {
+    const fetchEquipmentData = (pagePosition) => {
+        pagePosition ? pagePosition : 1;
         setFetchingData(true);
-        //console.log("what's being used to search is:", searchValue);
-        getEquipmentTypes(searchValue)
+        
+        getEquipmentTypes(searchValue, recordsPerPage, pagePosition)
             .then(equipmentTypesInfo => {
                 const {data = [], pages = 0} = equipmentTypesInfo
                 setEquipmentTypes(data);
@@ -212,6 +215,7 @@ const Equipment = (props) => {
                 console.log("Failed to get equipment types", error);
             });
 
+        
         getEquipment()
             .then((data) => {
                 setEquipment(data);
