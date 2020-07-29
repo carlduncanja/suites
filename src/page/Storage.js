@@ -196,12 +196,12 @@ function Storage(props) {
         pagePosition ? pagePosition : 1;
         setFetchingData(true);
         getStorage(searchValue, recordsPerPage, pagePosition)
-            .then(data => {
-                // const { data = [], pages = 0 } = storageResult
+            .then(storageResult => {
+                const { data = [], pages = 0 } = storageResult
                 console.log("Data:", data)
                 setStorage(data);
-                // setTotalPages(pages)
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
+                setTotalPages(pages)
+                // setTotalPages(Math.ceil(data.length / recordsPerPage))
             })
             .catch(error => {
                 console.log("failed to get storage", error);

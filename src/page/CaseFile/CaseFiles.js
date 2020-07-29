@@ -17,12 +17,7 @@ import {connect} from "react-redux";
 import {setCaseFiles} from "../../redux/actions/caseFilesActions";
 import {getCaseFiles} from "../../api/network";
 
-import {
-    useNextPaginator,
-    usePreviousPaginator,
-    selectAll,
-    checkboxItemPress,
-} from "../../helpers/caseFilesHelpers";
+import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress } from "../../helpers/caseFilesHelpers";
 import {currencyFormatter} from "../../utils/formatter";
 import {SuitesContext} from "../../contexts/SuitesContext";
 
@@ -167,7 +162,7 @@ const CaseFiles = (props) => {
     };
 
     const handleOnSelectAll = () => {
-        let updatedCases = selectAll(caseFiles, selectedCaseIds)
+        let updatedCases = selectAll(caseFiles, selectedCaseIds);
         setSelectedCaseIds(updatedCases)
     };
 
@@ -334,6 +329,7 @@ const CaseFiles = (props) => {
                     onSelectAll={handleOnSelectAll}
                     listItemFormat={renderFn}
                 />
+
                 <Footer
                     totalPages={totalPages}
                     currentPage={currentPagePosition}
