@@ -243,15 +243,11 @@ const Equipment = (props) => {
     setFetchingData(true);
     //console.log("what's being used to search is:", searchValue);
     getEquipmentTypes(searchValue)
-      .then((data) => {
-        let newData = data.map((item) => {
-          return {
-            ...item,
-          };
-        });
-        //console.log("New data: ", newData);
-        setEquipmentTypes(newData);
-        setTotalPages(Math.ceil(newData.length / recordsPerPage));
+      .then((equipmentData) => {
+        const { data = [], pages = 0 } = equipmentData;
+
+        setEquipmentTypes(data);
+        setTotalPages(Math.ceil(data.length / recordsPerPage));
       })
       .catch((error) => {
         console.log("Failed to get equipment types", error);

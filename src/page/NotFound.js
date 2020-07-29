@@ -5,14 +5,16 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { connect } from "react-redux";
 import Notifier from "../components/notifications/Notifier";
 import { bindActionCreators } from "redux";
-
+import ConfirmationComponent from "../components/ConfirmationComponent";
+import { withModal, useModal } from "react-native-modalfy";
 import { signOut } from "../redux/actions/authActions";
 import { addNotification } from "../redux/actions/NotificationActions";
 import { render } from "react-dom";
 
-function NotFound({ addNotification, signOut, route = {} }) {
+function NotFound({ addNotification, signOut, route = {}, modal }) {
   //ensure to destructer redux function
   const { name = "" } = route;
+  // const { openModal, closeModal } = useModal();
 
   const message = "items added to inventory";
   const title = "Group";
@@ -27,6 +29,26 @@ function NotFound({ addNotification, signOut, route = {} }) {
     addNotification(message, title, special);
   };
 
+  const toggleConfirmation = () => {
+    console.log("Opening Modal!");
+    modal.openModal("ConfirmationModal", {
+      content: (
+        <ConfirmationComponent
+          onCancel={cancelClicked}
+          message="Umm are you sure?"
+          action="Save"
+        />
+      ),
+      onClose: () => {},
+    });
+  };
+
+  const cancelClicked = () => {
+    console.log("Gonna close the modal");
+    modal.closeModals("ConfirmationModal");
+    //alert("Are you sure? Your changes won't be reflected");
+  };
+
   return (
     <View
       style={{
@@ -37,9 +59,12 @@ function NotFound({ addNotification, signOut, route = {} }) {
       }}
     >
       <Text style={{ margin: 50 }}> {name} Page Not Found</Text>
+
       {/* <Notif notifications={notifs} /> */}
 
-      <Button onPress={handleNotif} title="toggle Notif" />
+      <Button onPress={toggleConfirmation} title="toggle Confirmation" />
+
+      <Button onPress={cancelClicked} title="Close Modal" />
 
       <Button onPress={handleOnLogout} title="LOGOUT" />
     </View>
@@ -58,4 +83,4 @@ const mapDispatcherToProps = (dispatch) =>
     dispatch
   );
 
-export default connect(null, mapDispatcherToProps)(NotFound);
+export default connect(null, mapDispatcherToProps)(withModal(NotFound));
