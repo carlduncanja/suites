@@ -8,7 +8,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import HeaderItem from './HeaderItem';
 
-function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = false, checked=false, isCheckbox=true}){
+function Header({headers = [], selectedHeader = "", toggleHeaderCheckbox=()=>{}, isIndeterminate = false, checked=false, isCheckbox=true}){
 
     const theme = useTheme()
 
@@ -37,7 +37,7 @@ function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = fa
 
                 {headers.map((header, index) => {
                     return (
-                        <HeaderItem header={header} index={index}/>
+                        <HeaderItem header={header} index={index} selectedHeader = {selectedHeader}/>
                     )}
                 )}
             </HeaderContainer>

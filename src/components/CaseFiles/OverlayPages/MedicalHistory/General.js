@@ -10,6 +10,7 @@ import ProceduresIcon from '../../../../../assets/svg/frameProcedures';
 import DevicesIcon from '../../../../../assets/svg/implantedDevices';
 
 import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
+import Search from '../../../common/Search';
 
 const General = ({tabDetails}) => {
 
@@ -20,6 +21,11 @@ const General = ({tabDetails}) => {
 
     return (
         <ScrollView>
+            <Search
+                placeholderText = "Search by any header or entry below"
+                changeText = {()=>{}}
+                inputText = {""}
+            />
 
             <View style={styles.frameContainer}>
                 <FrameCard

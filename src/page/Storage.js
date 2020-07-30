@@ -19,6 +19,7 @@ import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
+import NavPage from '../components/common/Page/NavPage';
 import _ from "lodash";
 
 
@@ -66,7 +67,8 @@ function Storage(props) {
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
-
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
     // ############# Life Cycle Methods
 
@@ -194,11 +196,29 @@ function Storage(props) {
 
     const fetchStorageData = (pagePosition) => {
         pagePosition ? pagePosition : 1;
+        setCurrentPagePosition(pagePosition)
         setFetchingData(true);
         getStorage(searchValue, recordsPerPage, pagePosition)
             .then(storageResult => {
                 const { data = [], pages = 0 } = storageResult
-                console.log("Data:", data)
+                
+                if(pages === 1){
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                }else if(pagePosition === 1 ){
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                }else if(pagePosition === pages){
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                }else if(pagePosition < pages){
+                    setNextDisabled(false);
+                    setPreviousDisabled(false)
+                }else{
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
+
                 setStorage(data);
                 setTotalPages(pages)
                 // setTotalPages(Math.ceil(data.length / recordsPerPage))
@@ -284,37 +304,30 @@ function Storage(props) {
     // storageToDisplay = storageToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <View style={styles.container}>
-            <Page
-                placeholderText={"Search by heading or entry below."}
-                routeName={pageTitle}
-                listData={storageToDisplay}
-                inputText={searchValue}
-                itemsSelected={selectedIds}
-                listItemFormat={renderItem}
-                listHeaders={listHeaders}
-                changeText={onSearchChange}
-                onRefresh={onRefresh}
-                isFetchingData={isFetchingData}
-                onSelectAll={onSelectAll}
-            />
-
-            <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-
-                <FloatingActionButton
-                    isDisabled={isFloatingActionDisabled}
-                    toggleActionButton={toggleActionButton}
-                />
-            </View>
-        </View>
+        <NavPage
+            placeholderText={"Search by heading or entry below."}
+            routeName={pageTitle}
+            listData={storageToDisplay}
+            inputText={searchValue}
+            itemsSelected={selectedIds}
+            listItemFormat={renderItem}
+            listHeaders={listHeaders}
+            changeText={onSearchChange}
+            onRefresh={onRefresh}
+            isFetchingData={isFetchingData}
+            onSelectAll={onSelectAll}
+            totalPages={totalPages}
+            currentPage={currentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
+            hasPaginator = {true}
+            hasActionButton = {true}
+            hasActions = {true}
+            isNextDisabled = {isNextDisabled}
+            isPreviousDisabled = {isPreviousDisabled}
+        />
     );
 }
 

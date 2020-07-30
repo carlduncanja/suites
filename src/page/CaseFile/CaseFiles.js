@@ -30,6 +30,10 @@ import _ from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import Footer from "../../components/common/Page/Footer";
+import NavPage from "../../components/common/Page/NavPage";
+import Data from "../../components/common/Table/Data";
+import DataItem from "../../components/common/List/DataItem";
+import MultipleTextDataItem from "../../components/common/List/MultipleTextDataItem";
 
 const listHeaders = [
     {
@@ -50,7 +54,7 @@ const listHeaders = [
     },
 ];
 
-const CaseFiles = (props) => {
+function CaseFiles(props){
     //######## const
     const modal = useModal();
     const theme = useTheme();
@@ -71,7 +75,7 @@ const CaseFiles = (props) => {
     } = props;
 
     //######## States
-    const [textInput, setTextInput] = useState("");
+
     const [selectedCaseIds, setSelectedCaseIds] = useState([]);
     const [isFetchingCaseFiles, setFetchingCaseFiles] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
@@ -125,7 +129,6 @@ const CaseFiles = (props) => {
     //######## Event Handlers
 
     const goToNextPage = () => {
-        if(currentPagePosition === totalPages) { setNextDisabled(true); return };
         if (currentPagePosition < totalPages) {
             let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
@@ -137,9 +140,7 @@ const CaseFiles = (props) => {
     };
 
     const goToPreviousPage = () => {
-        if (currentPagePosition === 1) { setPreviousDisabled(true); return };
-
-        setPreviousDisabled(false)
+        if (currentPagePosition === 1) { return };
         let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
@@ -194,10 +195,25 @@ const CaseFiles = (props) => {
         getCaseFiles(searchValue, recordsPerPage, pagePosition)
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult
-                if(pages === 1){ setNextDisabled(true) }
+   
+                if(pages === 1){
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                }else if(pagePosition === 1 ){
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                }else if(pagePosition === pages){
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                }else if(pagePosition < pages){
+                    setNextDisabled(false);
+                    setPreviousDisabled(false)
+                }else{
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
                 setCaseFiles(data);
-                setTotalPages(pages)
-                // setTotalPages(Math.ceil(data.length / recordsPerPage))
+                setTotalPages(pages);
             })
             .catch(error => {
                 console.log("failed to get case files", error);
@@ -260,19 +276,13 @@ const CaseFiles = (props) => {
 
         return (
             <>
-                <View style={styles.item}>
-                    <Text style={{color: "#718096", fontSize: 12}}>#{caseNumber}</Text>
-                    <Text style={{color: "#3182CE", fontSize: 16}}>{name}</Text>
-                </View>
-                <View style={styles.item}>
-                    <Text style={styles.itemText}>$ {currencyFormatter(total)}</Text>
-                </View>
-                <View style={styles.item}>
-                    <Text style={styles.itemText}>{physicianName}</Text>
-                </View>
-                <View style={styles.item}>
-                    <Text style={styles.itemText}>{formatDate(nextVisit, "MMM DD, YYYY")}</Text>
-                </View>
+                <MultipleTextDataItem
+                    primaryText = {`# ${caseNumber}`}
+                    secondaryText = {name}
+                />
+                <DataItem text = {`$ ${currencyFormatter(total)}`}/>
+                <DataItem text = {physicianName}/>
+                <DataItem text = {formatDate(nextVisit, "MMM DD, YYYY") || 'n/a'}/>
             </>
         )
     }
@@ -298,53 +308,66 @@ const CaseFiles = (props) => {
 
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
-    // caseFilesToDisplay = caseFilesToDisplay.slice(currentPageListMin, currentPageListMax);
-
-    // ##### STYLED COMPONENTS
-
-    const CaseFilesWrapper = styled.View`
-        height: 100%;
-        width: 100%;
-        background-color: green;
-    `;
-    const CaseFilesContainer = styled.View`
-        display: flex;
-        height: 100%;
-    `;
 
     return (
-        <CaseFilesWrapper>
-            <CaseFilesContainer>
-                <Page
-                    isFetchingData={isFetchingCaseFiles}
-                    onRefresh={handleDataRefresh}
-                    placeholderText={"Search by any heading or entry below"}
-                    changeText={changeText}
-                    inputText={searchValue}
-                    routeName={routeName}
-                    listData={caseFilesToDisplay}
+        <NavPage
+            isFetchingData={isFetchingCaseFiles}
+            onRefresh={handleDataRefresh}
+            placeholderText={"Search by any heading or entry below"}
+            changeText={changeText}
+            inputText={searchValue}
+            routeName={routeName}
+            listData={caseFilesToDisplay}
 
-                    listHeaders={listHeaders}
-                    itemsSelected={selectedCaseIds}
-                    onSelectAll={handleOnSelectAll}
-                    listItemFormat={renderFn}
-                />
+            listHeaders={listHeaders}
+            itemsSelected={selectedCaseIds}
+            onSelectAll={handleOnSelectAll}
+            listItemFormat={renderFn}
 
-                <Footer
-                    totalPages={totalPages}
-                    currentPage={currentPagePosition}
-                    goToNextPage={goToNextPage}
-                    goToPreviousPage={goToPreviousPage}
-                    isDisabled={isFloatingActionDisabled}
-                    toggleActionButton={toggleActionButton}
-                    hasPaginator = {true}
-                    hasActionButton = {true}
-                    hasActions = {true}
-                    isNextDisabled = {isNextDisabled}
-                    isPreviousDisabled = {isPreviousDisabled}
-                />
-            </CaseFilesContainer>
-        </CaseFilesWrapper>
+            totalPages={totalPages}
+            currentPage={currentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
+            hasPaginator = {true}
+            hasActionButton = {true}
+            hasActions = {true}
+            isNextDisabled = {isNextDisabled}
+            isPreviousDisabled = {isPreviousDisabled}
+        />
+        // <CaseFilesWrapper>
+        //     <CaseFilesContainer>
+        //         <Page
+        //             isFetchingData={isFetchingCaseFiles}
+        //             onRefresh={handleDataRefresh}
+        //             placeholderText={"Search by any heading or entry below"}
+        //             changeText={changeText}
+        //             inputText={searchValue}
+        //             routeName={routeName}
+        //             listData={caseFilesToDisplay}
+
+        //             listHeaders={listHeaders}
+        //             itemsSelected={selectedCaseIds}
+        //             onSelectAll={handleOnSelectAll}
+        //             listItemFormat={renderFn}
+        //         />
+
+        //         <Footer
+        //             totalPages={totalPages}
+        //             currentPage={currentPagePosition}
+        //             goToNextPage={goToNextPage}
+        //             goToPreviousPage={goToPreviousPage}
+        //             isDisabled={isFloatingActionDisabled}
+        //             toggleActionButton={toggleActionButton}
+        //             hasPaginator = {true}
+        //             hasActionButton = {true}
+        //             hasActions = {true}
+        //             isNextDisabled = {isNextDisabled}
+        //             isPreviousDisabled = {isPreviousDisabled}
+        //         />
+        //     </CaseFilesContainer>
+        // </CaseFilesWrapper>
     );
 };
 

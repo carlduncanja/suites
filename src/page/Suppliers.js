@@ -8,6 +8,8 @@ import FloatingActionButton from '../components/common/FloatingAction/FloatingAc
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
+import Footer from "../components/common/Page/Footer";
+import NavPage from '../components/common/Page/NavPage';
 
 import ArchiveIcon from "../../assets/svg/archiveIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -18,6 +20,8 @@ import {connect} from 'react-redux';
 import {setSuppliers} from "../redux/actions/suppliersActions";
 import {getSuppliers} from "../api/network";
 import _ from "lodash";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 import {withModal, useModal} from 'react-native-modalfy';
 import suppliersTest from '../../data/Suppliers'
@@ -57,7 +61,9 @@ const Suppliers = (props) => {
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
-    const [currentPagePosition, setCurrentPagePosition] = useState(1)
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResult] = useState([]);
@@ -166,12 +172,29 @@ const Suppliers = (props) => {
 
     const fetchSuppliersData = (pagePosition) => {
         pagePosition ? pagePosition : 1;
+        setCurrentPagePosition(pagePosition)
         setFetchingData(true)
         getSuppliers(searchValue,recordsPerPage, pagePosition)
             .then(suppliersInfo => {
                 const {data = [], pages = 0} = suppliersInfo
-                // setSuppliers([])
-                console.log("Data: ", data, pages)
+                
+                if(pages === 1){
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                }else if(pagePosition === 1 ){
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                }else if(pagePosition === pages){
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                }else if(pagePosition < pages){
+                    setNextDisabled(false);
+                    setPreviousDisabled(false)
+                }else{
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
+
                 setSuppliers(data);
                 setTotalPages(pages)
                 // setTotalPages(Math.ceil(data.length / recordsPerPage))
@@ -247,42 +270,45 @@ const Suppliers = (props) => {
     let suppliersToDisplay = [...suppliers];
     // suppliersToDisplay = suppliersToDisplay.slice(currentPageListMin, currentPageListMax);
 
+    // ##### STYLED COMPONENTS
+
+    const SuppliersWrapper = styled.View`
+        height: 100%;
+        width: 100%;
+        background-color: green;
+    `;
+    const SuppliersContainer = styled.View`
+        display: flex;
+        height: 100%;
+    `;
 
     return (
-        <View style={{flex: 1}}>
-            <Page
-                isFetchingData={isFetchingData}
-                onRefresh={handleDataRefresh}
-                placeholderText={"Search by Supplier"}
-                changeText={onSearchInputChange}
-                inputText={searchValue}
-                routeName={"Suppliers"}
-                listData={suppliersToDisplay}
+        <NavPage
+            isFetchingData={isFetchingData}
+            onRefresh={handleDataRefresh}
+            placeholderText={"Search by Supplier"}
+            changeText={onSearchInputChange}
+            inputText={searchValue}
+            routeName={"Suppliers"}
+            listData={suppliersToDisplay}
 
-                listHeaders={listHeaders}
-                itemsSelected={selectedSuppliers}
-                onSelectAll={handleOnSelectAll}
+            listHeaders={listHeaders}
+            itemsSelected={selectedSuppliers}
+            onSelectAll={handleOnSelectAll}
 
-                listItemFormat={renderSupplierFn}
-            />
-
-            <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-
-                <FloatingActionButton
-                    isDisabled={isFloatingActionDisabled}
-                    toggleActionButton={toggleActionButton}
-                />
-            </View>
-
-        </View>
+            listItemFormat={renderSupplierFn}
+            totalPages={totalPages}
+            currentPage={currentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
+            hasPaginator = {true}
+            hasActionButton = {true}
+            hasActions = {true}
+            isNextDisabled = {isNextDisabled}
+            isPreviousDisabled = {isPreviousDisabled}
+        />
     )
 }
 

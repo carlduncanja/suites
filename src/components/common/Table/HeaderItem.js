@@ -1,24 +1,35 @@
 import React, {Component, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import DownArrow from '../../../../assets/svg/downArraow';  
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import SortFilter from './SortFilterIcon';
+import HeaderFilterGroup from './HeaderFilterGroup';
 
-function HeaderItem({header,index}){
+function HeaderItem({header,index, selectedHeader = "", onSelectHeader = ()=>{}}){
 
     const theme = useTheme()
 
-    const HeaderItemWrapper = styled.View`
-        display : flex;
-    `
-    const HeaderItem = styled.Text({
-        ...theme.font['--text-sm-medium'],
-        color : theme.colors['--color-gray-600']
-    })
+    const HeaderItemWrapper = styled.TouchableOpacity`
+        flex : ${header.flex ? header.flex.toString() : '1'};
+    `;
+    const HeaderItemContainer = styled.View`
+        flex-direction: row;
+        align-items : ${header.alignment ? header.alignment : 'flex-start'};
+    `;
+
 
     return (
-        <HeaderItemWrapper style={[header.styles, {alignItems: header.alignment, flex: header.flex || 1}]} key={index}>
-            <HeaderItem>{header.name}</HeaderItem>
+        <HeaderItemWrapper key={index} onPress = {onSelectHeader}>
+            <HeaderItemContainer>
+
+                <HeaderFilterGroup
+                    name = {header.name}
+                    isSelected = {header.name === selectedHeader}
+                />
+
+            </HeaderItemContainer>
         </HeaderItemWrapper>
     )
 }

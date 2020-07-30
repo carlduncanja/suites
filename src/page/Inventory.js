@@ -30,6 +30,7 @@ import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
 import TransferIcon from "../../assets/svg/transferIcon";
 import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
 import CreateInventoryGroupDialogContainer from '../components/Inventory/CreateInventoryGroupDialogContainer';
+import NavPage  from "../components/common/Page/NavPage";
 
 const listHeaders = [
     {
@@ -84,6 +85,8 @@ function Inventory(props) {
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
     // ##### Lifecycle Methods
 
@@ -412,6 +415,24 @@ function Inventory(props) {
         getInventories(searchValue, recordsPerPage, pagePosition)
             .then(inventoryResult => {
                 const { data = [], pages = 0 } = inventoryResult
+                
+                if(pages === 1){
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                }else if(pagePosition === 1 ){
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                }else if(pagePosition === pages){
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                }else if(pagePosition < pages){
+                    setNextDisabled(false);
+                    setPreviousDisabled(false)
+                }else{
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
+
                 setInventory(data);
                 setTotalPages(pages)
                 // setTotalPages(Math.ceil(data.length / recordsPerPage));
@@ -429,37 +450,31 @@ function Inventory(props) {
     // inventoryToDisplay = inventoryToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <View style={styles.container}>
-            <Page
-                placeholderText={"Search by heading or entry below."}
-                routeName={pageTitle}
-                listData={inventoryToDisplay}
-                listItemFormat={renderItem}
-                inputText={searchValue}
-                itemsSelected={selectedIds}
-                listHeaders={listHeaders}
-                changeText={onSearchChange}
-                onRefresh={onRefresh}
-                isFetchingData={isFetchingData}
-                onSelectAll={onSelectAll}
-            />
+        <NavPage
+            placeholderText={"Search by heading or entry below."}
+            routeName={pageTitle}
+            listData={inventoryToDisplay}
+            listItemFormat={renderItem}
+            inputText={searchValue}
+            itemsSelected={selectedIds}
+            listHeaders={listHeaders}
+            changeText={onSearchChange}
+            onRefresh={onRefresh}
+            isFetchingData={isFetchingData}
+            onSelectAll={onSelectAll}
+            totalPages={totalPages}
+            currentPage={currentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
+            hasPaginator = {true}
+            hasActionButton = {true}
+            hasActions = {true}
+            isNextDisabled = {isNextDisabled}
+            isPreviousDisabled = {isPreviousDisabled}
 
-            <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-
-                <FloatingActionButton
-                    isDisabled={isFloatingActionDisabled}
-                    toggleActionButton={toggleActionButton}
-                />
-            </View>
-        </View>
+        />
     );
 }
 

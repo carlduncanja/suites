@@ -10,6 +10,7 @@ import ActionContainer from "../components/common/FloatingAction/ActionContainer
 import ActionItem from "../components/common/ActionItem";
 import CreateEquipmentDialog from '../components/Equipment/CreateEquipmentDialogContainer';
 import Item from '../components/common/Table/Item';
+import NavPage from '../components/common/Page/NavPage';
 import _ from "lodash";
 
 import WasteIcon from "../../assets/svg/wasteIcon";
@@ -32,6 +33,7 @@ import IconButton from "../components/common/Buttons/IconButton";
 import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
 import SvgIcon from "../../assets/SvgIcon";
 import CreateEquipmentTypeDialogContainer from "../components/Equipment/CreateEquipmentTypeDialogContainer";
+import ListItem from "../components/common/List/ListItem";
 
 const Equipment = (props) => {
     // ############# Const data
@@ -76,6 +78,8 @@ const Equipment = (props) => {
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResult] = useState([]);
@@ -127,7 +131,8 @@ const Equipment = (props) => {
     };
 
     const handleOnSelectAll = () => {
-        let updatedEquipmentList = selectAll(equipment, selectedTypesIds)
+        console.log("Equipment Types: ", equipmentTypes)
+        let updatedEquipmentList = selectAll(equipmentTypes, selectedTypesIds)
         setSelectedTypesIds(updatedEquipmentList)
 
         // const indeterminate = selectedTypesIds.length >= 0 && selectedTypesIds.length !== equipmentTypes.length;
@@ -208,6 +213,24 @@ const Equipment = (props) => {
         getEquipmentTypes(searchValue, recordsPerPage, pagePosition)
             .then(equipmentTypesInfo => {
                 const {data = [], pages = 0} = equipmentTypesInfo
+                
+                if(pages === 1){
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                }else if(pagePosition === 1 ){
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                }else if(pagePosition === pages){
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                }else if(pagePosition < pages){
+                    setNextDisabled(false);
+                    setPreviousDisabled(false)
+                }else{
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
+
                 setEquipmentTypes(data);
                 setTotalPages(pages)
             })
@@ -448,41 +471,33 @@ const Equipment = (props) => {
     // ############# Prepare list data
 
     let equipmentToDisplay = [...equipmentTypes];
-    equipmentToDisplay = equipmentToDisplay.slice(currentPageListMin, currentPageListMax);
+    // equipmentToDisplay = equipmentToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <View style={{flex: 1}}>
-            <Page
-                isFetchingData={isFetchingData}
-                onRefresh={handleDataRefresh}
-                placeholderText={"Search by Assigned Equipment"}
-                changeText={onSearchInputChange}
-                inputText={searchValue}
-                routeName={"Equipment"}
-                listData={equipmentToDisplay}
-                listHeaders={listHeaders}
-                itemsSelected={selectedTypesIds}
-                onSelectAll={handleOnSelectAll}
-                listItemFormat={renderEquipmentFn}
-            />
-
-            <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-
-                <FloatingActionButton
-                    isDisabled={isFloatingActionDisabled}
-                    toggleActionButton={toggleActionButton}
-                />
-            </View>
-
-        </View>
+        <NavPage
+            isFetchingData={isFetchingData}
+            onRefresh={handleDataRefresh}
+            placeholderText={"Search by Assigned Equipment"}
+            changeText={onSearchInputChange}
+            inputText={searchValue}
+            routeName={"Equipment"}
+            listData={equipmentToDisplay}
+            listHeaders={listHeaders}
+            itemsSelected={selectedTypesIds}
+            onSelectAll={handleOnSelectAll}
+            listItemFormat={renderEquipmentFn}
+            totalPages={totalPages}
+            currentPage={currentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
+            hasPaginator = {true}
+            hasActionButton = {true}
+            hasActions = {true}
+            isNextDisabled = {isNextDisabled}
+            isPreviousDisabled = {isPreviousDisabled}
+        />
     )
 }
 

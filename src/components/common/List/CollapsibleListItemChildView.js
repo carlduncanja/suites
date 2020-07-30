@@ -8,13 +8,15 @@ import { useTheme } from 'emotion-theming';
 
 function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){
     
-    const theme = useTheme()
+    const theme = useTheme() 
 
     const ChildContentWrapper = styled.View`
-        flex: 1;
+        margin : 0;
+    `;
+    const ChildContentContainer = styled.View`
+        display: flex;
         flexDirection: 'column';
-        padding-bottom: ${theme.space['--space-20']};
-    `
+    `;
 
     return (
         <Collapsible collapsed={isCollapsed}>
@@ -23,7 +25,9 @@ function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){
             {
                 !isCollapsed &&
                 <ChildContentWrapper>
-                    {children}
+                    <ChildContentContainer>
+                        {children}
+                    </ChildContentContainer>
                 </ChildContentWrapper>
             }
 
@@ -33,3 +37,34 @@ function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){
 
 
 export default CollapsibleListItemChildView
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'column',
+        width: '100%',
+        marginBottom: 10,
+        borderRadius: 8,
+        borderWidth: 1,
+        backgroundColor: '#FFFFFF',
+        borderColor: "#E3E8EF",
+    },
+    divider: {
+        // flex: 1,
+        width: '100%',
+        height: 2,
+        borderBottomWidth: 1,
+        borderBottomColor: "#E3E8EF",
+        marginBottom: 20
+    },
+    list: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    childContent: {
+        flex: 1,
+        flexDirection: 'column',
+
+        // padding: 8,
+        // marginTop: 0
+    }
+});

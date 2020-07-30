@@ -9,6 +9,7 @@ import ActionContainer from "../components/common/FloatingAction/ActionContainer
 import ActionItem from "../components/common/ActionItem";
 import AddIcon from "../../assets/svg/addIcon";
 import Notifier from "../components/NotificationComponent";
+import NavPage from '../components/common/Page/NavPage';
 
 import {
   useNextPaginator,
@@ -65,7 +66,7 @@ const listHeaders = [
 
 const Orders = (props) => {
   // ############# Const data
-  const recordsPerPage = 1;
+  const recordsPerPage = 10;
 
   //  ############ Props
   const {
@@ -84,6 +85,8 @@ const Orders = (props) => {
   const [currentPageListMin, setCurrentPageListMin] = useState(0);
   const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
   const [currentPagePosition, setCurrentPagePosition] = useState(1);
+  const [isNextDisabled, setNextDisabled] = useState(false);
+  const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResult] = useState([]);
@@ -101,6 +104,7 @@ const Orders = (props) => {
     if (!searchValue) {
       // empty search values and cancel any out going request.
       setSearchResult([]);
+      fetchOrdersData(1)
       if (searchQuery.cancel) searchQuery.cancel();
       return;
     }
@@ -162,7 +166,6 @@ const Orders = (props) => {
       setCurrentPagePosition(currentPage);
       setCurrentPageListMin(currentListMin);
       setCurrentPageListMax(currentListMax);
-      console.log("Page: ", currentPage)
       fetchOrdersData(currentPage)
     }
   };
@@ -198,15 +201,34 @@ const Orders = (props) => {
 
   const fetchOrdersData = (pagePosition) => {
     pagePosition ? pagePosition : 1;
+    setCurrentPagePosition(pagePosition)
     setFetchingData(true);
     getPurchaseOrders(searchValue, recordsPerPage, pagePosition)
       .then((ordersInfo) => {
+       
         const { data = [], pages = 0 } = ordersInfo;
-        // setPurchaseOrders([])
+      
+        if(pages === 1){
+          setPreviousDisabled(true);
+          setNextDisabled(true);
+        }else if(pagePosition === 1 ){
+            setPreviousDisabled(true);
+            setNextDisabled(false);
+        }else if(pagePosition === pages){
+            setNextDisabled(true);
+            setPreviousDisabled(false);
+        }else if(pagePosition < pages){
+            setNextDisabled(false);
+            setPreviousDisabled(false)
+        }else{
+            setNextDisabled(true);
+            setPreviousDisabled(true);
+        }
+
         setPurchaseOrders(data);
         console.log("OrdersInfo: ", data);
         setTotalPages(pages)
-        // setTotalPages(Math.ceil(data.length / recordsPerPage));
+        
       })
       .catch((error) => {
         console.log("failed to get orders", error);
@@ -390,37 +412,61 @@ const Orders = (props) => {
   // );
 
   return (
-    <View style={{ flex: 1 }}>
-      <Page
-        isFetchingData={isFetchingData}
-        onRefresh={handleDataRefresh}
-        placeholderText={"Search by Purchase Order"}
-        changeText={onSearchInputChange}
-        inputText={searchValue}
-        routeName={"Purchase Orders"}
-        listData={ordersToDisplay}
-        listHeaders={listHeaders}
-        itemsSelected={selectedOrders}
-        onSelectAll={handleOnSelectAll}
-        listItemFormat={renderOrderFn}
-      />
+    <NavPage
+      isFetchingData={isFetchingData}
+      onRefresh={handleDataRefresh}
+      placeholderText={"Search by Purchase Order"}
+      changeText={onSearchInputChange}
+      inputText={searchValue}
+      routeName={"Purchase Orders"}
+      listData={ordersToDisplay}
+      listHeaders={listHeaders}
+      itemsSelected={selectedOrders}
+      onSelectAll={handleOnSelectAll}
+      listItemFormat={renderOrderFn}
+      totalPages={totalPages}
+      currentPage={currentPagePosition}
+      goToNextPage={goToNextPage}
+      goToPreviousPage={goToPreviousPage}
+      isDisabled={isFloatingActionDisabled}
+      toggleActionButton={toggleActionButton}
+      hasPaginator = {true}
+      hasActionButton = {true}
+      hasActions = {true}
+      isNextDisabled = {isNextDisabled}
+      isPreviousDisabled = {isPreviousDisabled}
+    />
+    // <View style={{ flex: 1 }}>
+    //   <Page
+    //     isFetchingData={isFetchingData}
+    //     onRefresh={handleDataRefresh}
+    //     placeholderText={"Search by Purchase Order"}
+    //     changeText={onSearchInputChange}
+    //     inputText={searchValue}
+    //     routeName={"Purchase Orders"}
+    //     listData={ordersToDisplay}
+    //     listHeaders={listHeaders}
+    //     itemsSelected={selectedOrders}
+    //     onSelectAll={handleOnSelectAll}
+    //     listItemFormat={renderOrderFn}
+    //   />
 
-      <View style={styles.footer}>
-        <View style={{ alignSelf: "center", marginRight: 10 }}>
-          <RoundedPaginator
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-          />
-        </View>
+    //   <View style={styles.footer}>
+    //     <View style={{ alignSelf: "center", marginRight: 10 }}>
+    //       <RoundedPaginator
+    //         totalPages={totalPages}
+    //         currentPage={currentPagePosition}
+    //         goToNextPage={goToNextPage}
+    //         goToPreviousPage={goToPreviousPage}
+    //       />
+    //     </View>
 
-        <FloatingActionButton
-          isDisabled={isFloatingActionDisabled}
-          toggleActionButton={toggleActionButton}
-        />
-      </View>
-    </View>
+    //     <FloatingActionButton
+    //       isDisabled={isFloatingActionDisabled}
+    //       toggleActionButton={toggleActionButton}
+    //     />
+    //   </View>
+    // </View>
   );
 };
 

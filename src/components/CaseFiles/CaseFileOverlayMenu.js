@@ -6,7 +6,7 @@ const CaseFileOverlayMenu = ({ selectedMenuItem, overlayMenu, handleTabPress }) 
     const [currentTabName, setCurrentTabName] = useState(selectedMenuItem)  
 
     return (
-        <View style={styles.menuBar}>
+        <View style={styles.menuBar}> 
             <View style={styles.iconContainer}>
                 {
                     overlayMenu.map((item, index)=>{

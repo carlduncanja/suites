@@ -29,6 +29,11 @@ import CreateTheatreDialogContainer from "../components/Theatres/CreateTheatreDi
 import AssignIcon from "../../assets/svg/assignIcon";
 import _ from "lodash";
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import Footer from "../components/common/Page/Footer";
+import NavPage from '../components/common/Page/NavPage';
+
 const listHeaders = [
   {
     // id: "1",
@@ -59,7 +64,7 @@ const listHeaders = [
 
 function Theatres(props) {
   const { theatres = [], setTheatres } = props;
-
+  const theme = useTheme();
   const pageTitle = "Theatres";
   const modal = useModal();
   const recordsPerPage = 10;
@@ -79,12 +84,14 @@ function Theatres(props) {
   const [currentPageListMin, setCurrentPageListMin] = useState(0);
   const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
   const [currentPagePosition, setCurrentPagePosition] = useState(1);
+  const [isNextDisabled, setNextDisabled] = useState(false);
+  const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
   // ##### Lifecycle Methods functions
 
   // on mount
   useEffect(() => {
-    if (!theatres.length) fetchTheatres(currentPagePosition);
+    if (!theatres.length) fetchTheatres(1);
     setTotalPages(Math.ceil(theatres.length / recordsPerPage));
   }, []);
 
@@ -134,13 +141,9 @@ function Theatres(props) {
   };
 
   const goToNextPage = () => {
+    
     if (currentPagePosition < totalPages) {
-      let { currentPage, currentListMin, currentListMax } = useNextPaginator(
-        currentPagePosition,
-        recordsPerPage,
-        currentPageListMin,
-        currentPageListMax
-      );
+      let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax);
       setCurrentPagePosition(currentPage);
       setCurrentPageListMin(currentListMin);
       setCurrentPageListMax(currentListMax);
@@ -149,18 +152,15 @@ function Theatres(props) {
   };
 
   const goToPreviousPage = () => {
-    if (currentPagePosition === 1) return;
 
-    let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(
-      currentPagePosition,
-      recordsPerPage,
-      currentPageListMin,
-      currentPageListMax
-    );
+    if (currentPagePosition === 1) { return};
+    
+    let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
     setCurrentPagePosition(currentPage);
     setCurrentPageListMin(currentListMin);
     setCurrentPageListMax(currentListMax);
     fetchTheatres(currentPage)
+
   };
 
   const onCheckBoxPress = (item) => () => {
@@ -284,12 +284,32 @@ function Theatres(props) {
   };
 
   const fetchTheatres = (pagePosition) => {
+   
     pagePosition ? pagePosition  : 1;
+    setCurrentPagePosition(pagePosition)
     setFetchingData(true);
     getTheatres(searchValue, recordsPerPage, pagePosition)
       .then((result) => {
+
         const {data = [], pages = 0} = result;
-        console.log("get theatres search", data);
+
+        if(pages === 1){
+          setPreviousDisabled(true);
+          setNextDisabled(true);
+        }else if(pagePosition === 1 ){
+            setPreviousDisabled(true);
+            setNextDisabled(false);
+        }else if(pagePosition === pages){
+            setNextDisabled(true);
+            setPreviousDisabled(false);
+        }else if(pagePosition < pages){
+            setNextDisabled(false);
+            setPreviousDisabled(false)
+        }else{
+            setNextDisabled(true);
+            setPreviousDisabled(true);
+        }
+       
         setTheatres(data);
         setTotalPages(pages)
         // setTotalPages(Math.ceil(data.length / recordsPerPage));
@@ -304,43 +324,45 @@ function Theatres(props) {
   };
 
   let theatreToDisplay = [...theatres];
-  // theatreToDisplay = theatreToDisplay.slice(
-  //   currentPageListMin,
-  //   currentPageListMax
-  // );
+  
+  // ###### STYLED COMPONENTS
+  const TheatresWrapper = styled.View`
+    height: 100%;
+    width: 100%;
+    background-color: green;
+`;
+  const TheatresContainer = styled.View`
+    display: flex;
+    height: 100%;
+  `;
+
 
   return (
-    <View style={styles.container}>
-      <Page
-        placeholderText={"Search by heading or entry below."}
-        routeName={pageTitle}
-        listData={theatreToDisplay}
-        listItemFormat={renderItem}
-        inputText={searchValue}
-        itemsSelected={selectedIds}
-        listHeaders={listHeaders}
-        changeText={onSearchInputChange}
-        onRefresh={onRefresh}
-        isFetchingData={isFetchingData}
-        onSelectAll={onSelectAll}
-      />
+    <NavPage
+      placeholderText={"Search by heading or entry below."}
+      routeName={pageTitle}
+      listData={theatreToDisplay}
+      listItemFormat={renderItem}
+      inputText={searchValue}
+      itemsSelected={selectedIds}
+      listHeaders={listHeaders}
+      changeText={onSearchInputChange}
+      onRefresh={onRefresh}
+      isFetchingData={isFetchingData}
+      onSelectAll={onSelectAll}
 
-      <View style={styles.footer}>
-        <View style={{ alignSelf: "center", marginRight: 10 }}>
-          <RoundedPaginator
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-          />
-        </View>
-
-        <FloatingActionButton
-          isDisabled={isFloatingActionDisabled}
-          toggleActionButton={toggleActionButton}
-        />
-      </View>
-    </View>
+      totalPages={totalPages}
+      currentPage={currentPagePosition}
+      goToNextPage={goToNextPage}
+      goToPreviousPage={goToPreviousPage}
+      isDisabled={isFloatingActionDisabled}
+      toggleActionButton={toggleActionButton}
+      hasPaginator = {true}
+      hasActionButton = {true}
+      hasActions = {true}
+      isNextDisabled = {isNextDisabled}
+      isPreviousDisabled = {isPreviousDisabled}
+    />
   );
 }
 

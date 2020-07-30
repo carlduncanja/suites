@@ -9,25 +9,30 @@ function CollapsibleListItemParentView ({hasCheckBox = true, isChecked = false, 
     const theme = useTheme()
 
     const CollapsibleParentListItemWrapper = styled.View`
+        width : 100%;
+    `;
+    const CollapsibleParentListItemContainer = styled.View`
         flex-direction : row;
         align-items: center;
-    `
+    `;
 
     return (
         <CollapsibleParentListItemWrapper>
-            {
-                hasCheckBox &&
+            <CollapsibleParentListItemContainer>
+
+                { hasCheckBox &&
                 
                     <CheckBoxComponent
                         isCheck={isChecked}
                         onPress={onCheckBoxPress}
                     />
                 
-            }
+                }
             
-            {
-                render(collapse, isCollapsed)
-            }
+                {
+                    render(collapse, isCollapsed)
+                }
+            </CollapsibleParentListItemContainer>
         </CollapsibleParentListItemWrapper>
     )
 }

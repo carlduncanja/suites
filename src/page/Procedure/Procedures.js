@@ -8,6 +8,7 @@ import FloatingActionButton from '../../components/common/FloatingAction/Floatin
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../../components/common/ActionItem";
+import NavPage from '../../components/common/Page/NavPage';
 
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import AddIcon from "../../../assets/svg/addIcon";
@@ -55,6 +56,8 @@ const Procedures = (props) => {
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResult] = useState([]);
@@ -170,6 +173,24 @@ const Procedures = (props) => {
         getProcedures(searchValue, recordsPerPage, pagePosition)
             .then(proceduresResult => {
                 const { data = [], pages = 0 } = proceduresResult
+                
+                if(pages === 1){
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                }else if(pagePosition === 1 ){
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                }else if(pagePosition === pages){
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                }else if(pagePosition < pages){
+                    setNextDisabled(false);
+                    setPreviousDisabled(false)
+                }else{
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
+
                 setProcedures(data);
                 setTotalPages(pages)
                 // setTotalPages(Math.ceil(data.length / recordsPerPage))
@@ -252,38 +273,30 @@ const Procedures = (props) => {
 
 
     return (
-        <View style={{flex: 1}}>
-            <Page
-                isFetchingData={isFetchingData}
-                onRefresh={handleDataRefresh}
-                placeholderText={"Search by Procedure"}
-                changeText={onSearchInputChange}
-                inputText={searchValue}
-                routeName={"Procedures"}
-                listData={proceduresToDisplay}
-                listHeaders={listHeaders}
-                itemsSelected={selectedProcedures}
-                onSelectAll={handleOnSelectAll}
-                listItemFormat={renderProcedureFn}
-            />
-
-            <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-
-                <FloatingActionButton
-                    isDisabled={isFloatingActionDisabled}
-                    toggleActionButton={toggleActionButton}
-                />
-            </View>
-
-        </View>
+        <NavPage
+            isFetchingData={isFetchingData}
+            onRefresh={handleDataRefresh}
+            placeholderText={"Search by Procedure"}
+            changeText={onSearchInputChange}
+            inputText={searchValue}
+            routeName={"Procedures"}
+            listData={proceduresToDisplay}
+            listHeaders={listHeaders}
+            itemsSelected={selectedProcedures}
+            onSelectAll={handleOnSelectAll}
+            listItemFormat={renderProcedureFn}
+            totalPages={totalPages}
+            currentPage={currentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
+            hasPaginator = {true}
+            hasActionButton = {true}
+            hasActions = {true}
+            isNextDisabled = {isNextDisabled}
+            isPreviousDisabled = {isPreviousDisabled}
+        />
     )
 }
 

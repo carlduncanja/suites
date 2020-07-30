@@ -11,6 +11,7 @@ import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
 import CreateWorkItemDialog from "../components/Physicians/CreateWorkItemDialog";
+import NavPage from '../components/common/Page/NavPage';
 
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -64,6 +65,8 @@ const Physicians = (props) => {
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResult] = useState([]);
@@ -169,10 +172,29 @@ const Physicians = (props) => {
 
     const fetchPhysiciansData = (pagePosition) => {
         pagePosition ? pagePosition : 1;
+        setCurrentPagePosition(pagePosition);
         setFetchingData(true);
         getPhysicians(searchValue, recordsPerPage, pagePosition)
             .then(physicianResult => {
                 const { data = [], pages = 0 } = physicianResult
+                
+                if(pages === 1){
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                }else if(pagePosition === 1 ){
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                }else if(pagePosition === pages){
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                }else if(pagePosition < pages){
+                    setNextDisabled(false);
+                    setPreviousDisabled(false)
+                }else{
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
+
                 setPhysicians(data);
                 setTotalPages(pages)
                 // setTotalPages(Math.ceil(data.length / recordsPerPage))
@@ -286,38 +308,30 @@ const Physicians = (props) => {
     // physiciansToDisplay = physiciansToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return(
-        <View style={{flex:1}}>
-            <Page
-                isFetchingData={isFetchingData}
-                onRefresh={handleDataRefresh}
-                placeholderText={"Search by Physician"}
-                changeText={onSearchInputChange}
-                inputText={searchValue}
-                routeName={"Physicians"}
-                listData={physiciansToDisplay}
-                listHeaders={listHeaders}
-                itemsSelected={selectedPhysiciansId}
-                onSelectAll={handleOnSelectAll}
-                listItemFormat={renderPhysiciansFn}
-            />
-
-            <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
-            </View>
-
-        </View>
+        <NavPage
+            isFetchingData={isFetchingData}
+            onRefresh={handleDataRefresh}
+            placeholderText={"Search by Physician"}
+            changeText={onSearchInputChange}
+            inputText={searchValue}
+            routeName={"Physicians"}
+            listData={physiciansToDisplay}
+            listHeaders={listHeaders}
+            itemsSelected={selectedPhysiciansId}
+            onSelectAll={handleOnSelectAll}
+            listItemFormat={renderPhysiciansFn}
+            totalPages={totalPages}
+            currentPage={currentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            isDisabled = {isFloatingActionDisabled}
+            toggleActionButton = {toggleActionButton}
+            hasPaginator = {true}
+            hasActionButton = {true}
+            hasActions = {true}
+            isNextDisabled = {isNextDisabled}
+            isPreviousDisabled = {isPreviousDisabled}
+        />
     )
 };
 

@@ -19,7 +19,7 @@ import { useTheme } from 'emotion-theming';
 function ListItem({
         itemView = () => {},
         hasCheckBox = true,
-        isChecked = false,
+        isChecked = false, 
         onCheckBoxPress = ()=>{},
         onItemPress=() => {}
     }){
@@ -29,12 +29,17 @@ function ListItem({
     const ListItemWrapper = styled.TouchableOpacity`
         margin-bottom : ${theme.space['--space-12']};
         height : 46px;
-        background-color: ${theme.colors['--default-shade-white']};
+        width : 100%;
+    `;
+    
+    const ListItemContainer = styled.View`
+        height: 100%;
+        width: 100%;
         flex-direction: row;
+        background-color: ${theme.colors['--default-shade-white']};
+        border : 1px solid ${theme.colors['--color-gray-300']};
         border-radius: 8px;
-        border-width: 1px;
-        border-color: ${theme.colors['--color-gray-300']};
-    `
+    `;
 
     const ItemView = styled.View`
         flex:1;
@@ -43,13 +48,16 @@ function ListItem({
     `
     return (
         <ListItemWrapper onPress={onItemPress}>
-            <CheckBoxComponent
-                isCheck={isChecked}
-                onPress={onCheckBoxPress}
-            />
-            <ItemView>
-                {itemView}
-            </ItemView>
+            <ListItemContainer>
+                <CheckBoxComponent
+                    isCheck={isChecked}
+                    onPress={onCheckBoxPress}
+                />
+                <ItemView>
+                    {itemView}
+                </ItemView>
+            </ListItemContainer>
+            
         </ListItemWrapper>
     );
 };

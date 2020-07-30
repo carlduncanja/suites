@@ -40,11 +40,12 @@ const OverlayMenuItems = ({ navigation, handleOverlayMenuPress}) => {
                 </View>
             </View>
             <FloatingActionButton
-                fillColor="#CCD6E0"
-                backgroundColor="#FFFFFF"
-                // fillColor={props.fillColor}
-                // backgroundColor={props.backgroundColor}
+                toggleActionButton = {()=>{}}
+                isDisabled = {false}
+                hasActions = {true}
+
             />
+           
         </View>
 
     );

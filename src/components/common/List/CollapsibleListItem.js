@@ -12,7 +12,7 @@ import CollapsibleListItemChildView from './CollapsibleListItemChildView';
 
 /**
  *
- * @param hasCheckBox{bool}
+ * @param hasCheckBox{bool} 
  * @param isChecked{bool}
  * @param onCheckBoxPress{function}
  * @param onItemPress{function}
@@ -28,7 +28,7 @@ const CollapsibleListItem = ({
         onItemPress = () => {},
         childView,
         render = ()=>{},
-        children = ()=>{}
+        children = ()=>{} 
     }) => {
 
     const [isCollapsed, setCollapsed] = useState(true);
@@ -38,19 +38,22 @@ const CollapsibleListItem = ({
         setCollapsed(!isCollapsed);
     }
 
-    const CollapsibleListItemWrapper = styled.TouchableOpacity`
+    const CollapsibleListItemWrapper = styled.View`
+        width: 100%;
         margin-bottom: ${theme.space['--space-12']};
-    `
+    `;
     const CollapsibleListItemContainer = styled.TouchableOpacity`
+        display: flex;
+        width: 100%;
         flex-direction: column;
         borderRadius: ${theme.space['--space-8']};
-        border-width: 1px;
+        border: 1px solid ${theme.colors['--color-gray-300']};
         background-color: ${theme.colors['--default-shade-white']};
-        border-color: ${theme.colors['--color-gray-300']};
-    `
-    
+    `;
+   
     return (
-        <CollapsibleListItemWrapper onPress={onItemPress}>
+       
+        <CollapsibleListItemWrapper>
             <CollapsibleListItemContainer>
                 <CollapsibleListItemParentView
                     hasCheckBox = {hasCheckBox}
@@ -63,38 +66,34 @@ const CollapsibleListItem = ({
                 <CollapsibleListItemChildView
                     isCollapsed = {isCollapsed}
                     children = {children}
-                />
+                /> 
+                {/* <View style={styles.list}>
+                    {
+                        hasCheckBox &&
+                        <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
+                            <CheckBoxComponent
+                                isCheck={isChecked}
+                                onPress={onCheckBoxPress}
+                            />
+                        </View>
+                    }
+                    {
+                        render(collapse, isCollapsed)
+                    }
+                </View> 
+                <Collapsible collapsed={isCollapsed}>
+                    <View style={styles.divider}/>
+                    {
+                        !isCollapsed &&
+                        <View style={[styles.childContent]}>
+
+                            {children}
+
+                        </View>
+                    }
+                </Collapsible> */}
             </CollapsibleListItemContainer>
         </CollapsibleListItemWrapper>
-
-        // <CollapsibleListItemWrapper onPress={onItemPress}>
-        //     <CollapsibleListItemContainer style={styles.container}>
-        //         <View style={styles.list}>
-        //             {
-        //                 hasCheckBox &&
-        //                 <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
-        //                     <CheckBoxComponent
-        //                         isCheck={isChecked}
-        //                         onPress={onCheckBoxPress}
-        //                     />
-        //                 </View>
-        //             }
-        //             {
-        //                 render(collapse, isCollapsed)
-        //             }
-        //         </View>
-        //         <Collapsible collapsed={isCollapsed}>
-        //             <View style={styles.divider}/>
-        //             {
-        //                 !isCollapsed &&
-        //                 <View style={[styles.childContent]}>
-
-        //                     {children}
-
-        //                 </View>
-        //             }
-        //         </Collapsible>
-        //     </CollapsibleListItemContainer>
         // </CollapsibleListItemWrapper>
     );
 };
@@ -115,9 +114,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         width: '100%',
-        paddingBottom: 8,
         marginBottom: 10,
-        paddingTop: 8,
         borderRadius: 8,
         borderWidth: 1,
         backgroundColor: '#FFFFFF',

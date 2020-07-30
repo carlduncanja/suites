@@ -12,6 +12,7 @@ import RootApplicationNavigator from "./src/RootApplicationNavigator";
 import NotificationRegistry from "./src/components/notifications/NotficationRegistry";
 
 import { root } from './src/styles';
+import Statusbar from './src/components/navigation/Statusbar';
 
 const store = configureStore({});
 
@@ -28,8 +29,8 @@ const App = () => {
     return (
         <Provider store={store}>
             <SuitesContextProvider value={{state: contextValue.state, dispatch: contextValue.dispatch}}>
-
                 <ThemeProvider theme = {root}>
+                    <Statusbar/>
                     {/*<RootApplicationContainer/>*/}
                     <RootApplicationNavigator/>
                     <NotificationRegistry/>
@@ -40,6 +41,5 @@ const App = () => {
         </Provider>
     );
 };
-
 
 export default App
