@@ -1,16 +1,51 @@
 import React,{Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
-const ResponsiveRecord = ({recordTitle, recordValue = "--", valueFontSize = 16, titleFontSize = 14, titleColor = '#718096' , valueColor = '#3182CE', handleRecordPress = ()=>{}}) => {
+function ResponsiveRecord({
+    recordTitle = "", 
+    recordValue = '--', 
+    titleStyle = "--text-sm-regular",
+    valueStyle = "--text-base-medium",
+    valueFontSize = 16, 
+    titleFontSize = 14, 
+    titleColor = '--color-gray-600', 
+    valueColor = '--color-blue-600',
+    handleRecordPress = ()=>{},
+    index
+}){
+
+    const theme = useTheme();
+
+    const RecordWrapper = styled.TouchableOpacity`
+        flex:1;
+        background-color: red;
+        margin-right: ${theme.space['--space-4']};
+    `;
+    const RecordContainer = styled.View`
+        display: flex;
+        flex-direction:column;
+    `;
+
+    const TitleText = styled.Text({
+        ...theme.font[titleStyle],
+        color : theme.colors[titleColor],
+        marginBottom: 10,
+    });
+
+    const ValueText = styled.Text({
+        ...theme.font[valueStyle],
+        color : theme.colors[valueColor]
+    })
+
     return ( 
-        <View style={styles.container}>
-            <Text style={[styles.recordTitle,{color:titleColor, fontSize:titleFontSize}]}>{recordTitle}</Text>
-            <TouchableOpacity activeOpacity={1} onPress={()=>handleRecordPress()}>
-                <Text style={{color:valueColor, fontSize: valueFontSize}}>{recordValue === "" ? "--" : recordValue}</Text>
-            </TouchableOpacity>
-            
-        </View>
+        <RecordWrapper onPress={()=>handleRecordPress()}>
+            <RecordContainer>
+                <TitleText>{recordTitle}</TitleText>
+                <ValueText>{recordValue === "" ? "--" : recordValue}</ValueText>
+            </RecordContainer>
+        </RecordWrapper>
     )
 }
 

@@ -3,7 +3,7 @@ import Record from './Record';
 
 export function PersonalRecord({recordTitle, recordValue, valueFontSize, titleFontSize, titleColor, valueColor}){
     return(
-        <Record 
+        <Record  
             valueFontSize = {valueFontSize}
             titleFontSize = {titleFontSize}
             titleColor = {titleColor}
@@ -33,7 +33,7 @@ export function ContactRecord({recordTitle, recordValue, valueFontSize, titleFon
             valueFontSize = {valueFontSize}
             titleFontSize = {titleFontSize}
             titleColor = {titleColor}
-            valueColor="#3182CE" 
+            valueColor="--color-blue-600" 
             recordTitle={recordTitle}
             recordValue={recordValue}
         />

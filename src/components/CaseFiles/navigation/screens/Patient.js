@@ -5,7 +5,7 @@ import { Details, Diagnosis, Insurance, PatientRisk, EditablePatientDetails} fro
 
 const Patient = ({ patient, selectedTab, isEditMode }) => {
 
-    const {
+    const { 
         firstName = "",
         middleName = "",
         surname = "",
@@ -43,7 +43,7 @@ const Patient = ({ patient, selectedTab, isEditMode }) => {
     })
 
     const onFieldChange = (fieldName) => (value) => {
-        console.log("Fieldname - value: ", fieldName, value)
+        console.log("Fieldname - value: ", fieldName,value)
         setFields({
             ...fields,
             [fieldName] : value

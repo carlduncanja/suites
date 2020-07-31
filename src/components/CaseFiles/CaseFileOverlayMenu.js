@@ -1,38 +1,109 @@
 import React,{ useState,useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import IconButton from "../common/Buttons/IconButton";
 
 const CaseFileOverlayMenu = ({ selectedMenuItem, overlayMenu, handleTabPress }) => {
 
-    const [currentTabName, setCurrentTabName] = useState(selectedMenuItem)  
+    const [currentTabName, setCurrentTabName] = useState(selectedMenuItem) ;
+    const theme = useTheme();
+    
+    const CaseFileOverlayMenuWrapper = styled.View`
+        flex:1;
+        display:flex;
+        margin-right: ${theme.space['--space-8']};
+    `;
+
+    const CaseFileOverlayMenuContainer = styled.View`
+        height: 100%;
+        width: 100%;
+        flex-direction : row;
+        background-color: ${theme.colors['--default-shade-white']};
+        border-radius: 32px;
+        padding-left: ${theme.space['--space-14']};
+        padding-right: ${theme.space['--space-14']};
+        filter : ${theme.shadow['--drop-shadow-md']};
+        box-shadow : 0px 2px 4px rgba(0, 0, 0, 0.08);
+        align-items: center;
+    `;
+
+    const IconGroupWrapper = styled.View`
+        height: 100%;
+    `;
+
+    const IconGroupContainer = styled.View`
+        height: 100%;
+        flex-direction: row;
+        align-items: center;
+    `;
+
+    const IconWrapper = styled.View`
+        margin-right: ${theme.space['--space-12']};
+    `;
+
+    const IconContainer = styled.View`
+        height: 100%;
+        display: flex;
+       
+    `;
+
+    const Divider = styled.View`
+        height: 24px;
+        width : 1px;
+        background-color: ${theme.colors['--color-gray-400']};
+        border-radius: 8px;
+    `;
+
+    const TextContainer = styled.View`
+        margin-left: 20px;
+    `;
+
+    const SelectedIconText = styled.Text({
+        ...theme.font['--text-base-regular'],
+        color: theme.colors['--color-gray-800'],
+        marginLeft : 20
+    })
+
 
     return (
-        <View style={styles.menuBar}> 
-            <View style={styles.iconContainer}>
-                {
-                    overlayMenu.map((item, index)=>{
-                        const { selectedIcon, disabledIcon, name } = item || {};
-                        const icon = selectedMenuItem === name ? selectedIcon : disabledIcon;
+        <CaseFileOverlayMenuWrapper> 
+            <CaseFileOverlayMenuContainer>
 
-                        return (
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setCurrentTabName(name);
-                                    handleTabPress(name)
-                                }}
-                                style={styles.icon}
-                                key={index}
-                            >
-                                {icon}
-                            </TouchableOpacity>
-                        )
-                    })
-                }
+            <IconGroupWrapper> 
+                <IconGroupContainer>
+                    {
+                        overlayMenu.map((item, index)=>{
+                            const { selectedIcon, disabledIcon, name } = item || {};
+                            const icon = selectedMenuItem === name ? selectedIcon : disabledIcon;
 
-            </View>
-            <View style={styles.selectedIconContainer}>
-                <Text style={styles.selectedText}>{currentTabName}</Text>
-            </View>
-        </View>
+                            return (
+                                <IconWrapper>
+                                    <IconContainer>
+                                        <IconButton
+                                    Icon = {icon}
+                                    onPress = {()=>{
+                                        setCurrentTabName(name);
+                                        handleTabPress(name)
+                                    }}
+                                />
+                                    </IconContainer>
+                                </IconWrapper>
+                            )
+                        })
+                    }
+
+                    <Divider/>
+
+                </IconGroupContainer>
+            </IconGroupWrapper>
+
+            <SelectedIconText>{currentTabName}</SelectedIconText>
+
+            </CaseFileOverlayMenuContainer>
+        </CaseFileOverlayMenuWrapper>
+            
+
     )
 }
 

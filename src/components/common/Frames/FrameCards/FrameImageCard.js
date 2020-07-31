@@ -1,28 +1,52 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import FrameTitle from '../FrameTitle'
-import FrameContentImage from '../FrameContents/FrameContentImage';
+import FrameContentImage from '../FrameContents/FrameContentImage'; 
+import { useTheme } from 'emotion-theming';
+import styled, { css } from '@emotion/native';
 
-export default class FrameImageCard extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <View style={styles.title}>
-                    <FrameTitle
-                        color={this.props.frameColor}
-                        borderColor = {this.props.frameBorderColor}
-                        backgroundColor={this.props.titleBackgroundColor}
-                        icon={this.props.icon}
-                        frameTitle={this.props.frameTitle}
-                    />
-                </View>
-                <ScrollView style={styles.content} bounces={false}>
-                    <FrameContentImage cardInformation={this.props.cardInformation}/>
-                </ScrollView>
-            </View>
-        )
-    }
+function FrameImageCard({
+    frameColor,
+    frameBorderColor,
+    titleBackgroundColor,
+    icon = ()=>{},
+    frameTitle = "",
+    cardInformation
+
+}){
+
+    const theme = useTheme();
+
+    const FrameImageCardWrapper = styled.View`
+        width: 100%;
+        margin-bottom : ${theme.space['--space-24']};
+    `;
+    const FrameImageCardContainer = styled.View`
+        width: 100%;
+    `;
+    
+    return(
+        <FrameImageCardWrapper>
+            <FrameImageCardContainer>
+                <FrameTitle
+                    color={frameColor}
+                    borderColor = {frameBorderColor}
+                    backgroundColor={titleBackgroundColor}
+                    icon={icon}
+                    frameTitle={frameTitle}
+                />
+                
+                {/* <ScrollView style={styles.content} bounces={false}> */}
+                    <FrameContentImage cardInformation={cardInformation}/>
+                {/* </ScrollView> */}
+            </FrameImageCardContainer>
+            
+        </FrameImageCardWrapper>
+    )
+    
 }
+
+export default FrameImageCard
 
 const styles = StyleSheet.create({
     container:{

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {View, StyleSheet} from 'react-native';
 import FrameTitle from '../FrameTitle'
 import FrameContentList from '../FrameContents/FrameContentList';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 /**
  * @param frameColor string
@@ -17,7 +19,7 @@ import FrameContentList from '../FrameContents/FrameContentList';
  * @constructor
  */
 
-const FrameCard = (props) => {
+function FrameCard(props){
     const {
         frameColor,
         frameBorderColor,
@@ -31,44 +33,38 @@ const FrameCard = (props) => {
         handleAddNew = () =>{}
     } = props
 
-    return (
-        <View style={styles.container}>
+    const theme = useTheme();
 
-                <View style={styles.title}>
-                    <FrameTitle
-                        color={frameColor}
-                        borderColor = {frameBorderColor}
-                        backgroundColor={titleBackgroundColor}
-                        icon={icon}
-                        frameTitle={frameTitle}
-                    />
-                </View>
+    const FrameCardWrapper = styled.View`
+        width: 100%;
+        margin-bottom : ${theme.space['--space-24']};
+    `;
+    const FrameCardContainer = styled.View`
+        width: 100%;
+    `;
+
+    return (
+        <FrameCardWrapper>
+            <FrameCardContainer>
+                <FrameTitle
+                    color={frameColor}
+                    borderColor = {frameBorderColor}
+                    backgroundColor={titleBackgroundColor}
+                    icon={icon}
+                    frameTitle={frameTitle}
+                />
                
-                <View style={styles.content}>
-                    <FrameContentList
-                        cardInformation={cardInformation}
-                        // frameColor = {frameColor}
-                        isEditMode = {isEditMode}
-                        handleEdit = {handleEdit}
-                        handleAddNew = {handleAddNew}
-                        isAddNew = {isAddNew}
-                    />
-                </View>
-            </View>
+                <FrameContentList
+                    cardInformation={cardInformation}
+                    isEditMode = {isEditMode}
+                    handleEdit = {handleEdit}
+                    handleAddNew = {handleAddNew}
+                    isAddNew = {isAddNew}
+                />
+             
+            </FrameCardContainer>
+        </FrameCardWrapper>
     )
 }
 export default FrameCard 
 
-const styles = StyleSheet.create({
-    container:{
-        backgroundColor:'#F8FAFB',
-
-    },
-    title:{
-        width:'100%'
-    },
-    content:{
-
-        width:'100%'
-    }
-})

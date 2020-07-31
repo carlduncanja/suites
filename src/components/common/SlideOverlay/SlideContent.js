@@ -13,13 +13,12 @@ function SlideContent({overlayContent = ()=>{} }){
         padding-bottom: 32px;
         padding-left: 24px;
         padding-right: 24px;
-        background-color: red;
     `
 
     const SlideContentContainer = styled.View`
         display: flex;
         flex:1;
-        background-color: green;
+        
     `
     return ( 
         <SlideContentWrapper>

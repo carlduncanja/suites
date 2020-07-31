@@ -1,22 +1,82 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
-export default class FrameImageItem extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>
-                        {this.props.image.name}
-                    </Text>
-                </View>
-                <View style={styles.image}>
-                    <Image source={require('../../../../../assets/icon.png')}/>
-                </View>
-            </View>
-        )
-    }
+function FrameImageItem({
+    image = {}
+}){ 
+    const theme = useTheme();
+
+    const FrameImageItemWrapper = styled.View`
+        width : 100%;
+        height : 340px;
+    `;
+    const FrameImageItemContainer = styled.View`
+        height : 100%;
+        border : 1px solid ${theme.colors['--color-gray-400']};
+        border-radius : 4px;
+        background-color : ${theme.colors['--color-gray-300']};
+    `;
+
+    const TitleWrapper = styled.View`
+        width : 100%;
+        height : 30px;
+    `;
+    const TitleContainer = styled.View`
+        width : 100%;
+        height : 100%;
+        background-color : ${theme.colors['--default-shade-white']};
+        border-bottom-color : ${theme.colors['--color-gray-400']};
+        border-bottom-width:1px;
+        border-top-left-radius:4px;
+        border-top-right-radius:4px;
+        justify-content: center;
+        padding-right : ${theme.space['--space-12']};
+        padding-left : ${theme.space['--space-12']};
+    `;
+    const ImageTitle = styled.Text({
+        ...theme.font['--text-sm-medium'],
+        color : theme.colors['--color-blue-600'],
+    });
+
+    const ImageWrapper = styled.View`
+        width: 100%;
+        flex:1;
+        padding-left : ${theme.space['--space-56']};
+        padding-right : ${theme.space['--space-56']};
+    `;
+    const ImageContainer = styled.View`
+        width : 100%;
+        height: 100%;
+        justify-content : center;
+        align-items: center;
+ 
+    `;
+
+    return(
+        <FrameImageItemWrapper>
+            <FrameImageItemContainer>
+
+                <TitleWrapper>
+                    <TitleContainer>
+                        <ImageTitle>{image.name}</ImageTitle>
+                    </TitleContainer>
+                </TitleWrapper>
+
+                <ImageWrapper>
+                    <ImageContainer>
+                        <Image source={require('../../../../../assets/icon.png')}/>
+                    </ImageContainer> 
+                </ImageWrapper>
+
+            </FrameImageItemContainer>
+        </FrameImageItemWrapper>
+    )
+    
 }
+
+export default FrameImageItem
 
 const styles = StyleSheet.create({
     container:{

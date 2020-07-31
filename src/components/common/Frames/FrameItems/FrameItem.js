@@ -1,15 +1,46 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import IconButton from '../../Buttons/IconButton'
+import IconButton from '../../Buttons/IconButton';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
-const FrameItem = ({itemContent = "", icon, backgroundColor = "#FFFFFF", onPressButton = ()=>{}}, isEditMode = false) => {
-        return (
-        <View style={[styles.container,{ backgroundColor:backgroundColor}]}>
-            <Text style={styles.text}>{itemContent}</Text>
-            {
-                isEditMode && <IconButton Icon = {icon} onPress = {onPressButton} />
-            }
-        </View>
+function FrameItem ({itemContent = "", icon, backgroundColor = "#FFFFFF", onPressButton = ()=>{}}, isEditMode = false) {
+    
+    const theme = useTheme();
+    const FrameItemWrapper = styled.View`
+        width: 100%;
+        display:flex;
+        margin-bottom : ${theme.space['--space-12']};
+    `;
+    const FrameItemContainer = styled.View`
+
+        width : 100%;
+        flex-direction : row;
+        border : 1px solid ${theme.colors['--color-gray-400']};
+        border-radius : 4px;
+        background-color : ${theme.colors['--default-shade-white']};
+        padding-top: ${theme.space['--space-8']};
+        padding-bottom: ${theme.space['--space-8']};
+        padding-left: ${theme.space['--space-10']};
+        padding-right: ${theme.space['--space-10']};
+    `;
+
+    const FrameItemContent = styled.Text({
+        ...theme.font['--text-base-regular'],
+        color : theme.colors['--color-gray-900']
+
+    });
+
+    return (
+        <FrameItemWrapper> 
+            <FrameItemContainer>
+                <FrameItemContent>{itemContent}</FrameItemContent>
+                {/* {
+                    isEditMode && <IconButton Icon = {icon} onPress = {onPressButton} />
+                } */}
+            </FrameItemContainer>
+            
+        </FrameItemWrapper>
     ) 
 }
 export default  FrameItem 

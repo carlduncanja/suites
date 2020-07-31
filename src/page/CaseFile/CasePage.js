@@ -39,6 +39,7 @@ import {
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {addNotification} from "../../redux/actions/NotificationActions";
+import CaseFilesBottomSheetContainer from '../../components/CaseFiles/CaseFilesBottomSheetContainer';
 
 
 function CasePage({route, addNotification}) {
@@ -412,43 +413,23 @@ function CasePage({route, addNotification}) {
 
 
     return (
-        <View style={{flex: 1}}>
-            {
-                isFetching
-                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                    </View>
-                    : <>
-                        <SlideOverlay
-                            overlayId={caseNumber}
-                            overlayTitle={name}
-                            onTabPressChange={handleTabPressChange}
-                            currentTabs={currentTabs}
-                            selectedTab={selectedTab}
-                            isEditMode={isEditMode}
-                            onEditPress={onEditPress}
-                            overlayContent={
-                                <View style={{flex: 1, padding: 25, paddingTop: 30, backgroundColor: 'white'}}>
-                                    {getOverlayContent()}
-                                </View>
-                            }
-                        />
-                        <View style={styles.footer}>
-                            <CaseFileOverlayMenu
-                                selectedMenuItem={selectedMenuItem}
-                                overlayMenu={overlayMenu}
-                                handleTabPress={handleOverlayMenuPress}
-                            />
-                        </View>
-                        <View style={styles.actionWrapper}>
-                            <FloatingActionButton
-                                isDisabled={isFloatingActionDisabled}
-                                toggleActionButton={toggleActionButton}
-                            />
-                        </View>
-                    </>
-            }
-        </View>
+        <CaseFilesBottomSheetContainer
+            isFetching = {isFetching}
+            overlayId={caseNumber}
+            overlayTitle={name}
+            onTabPressChange={handleTabPressChange}
+            currentTabs={currentTabs}
+            selectedTab={selectedTab}
+            isEditMode={isEditMode}
+            onEditPress={onEditPress}
+            overlayContent={getOverlayContent()}
+            selectedMenuItem={selectedMenuItem}
+            overlayMenu={overlayMenu}
+            handleTabPress={handleOverlayMenuPress}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
+        />
+        
     );
 }
 

@@ -12,11 +12,15 @@ import ProvisionalIcon from '../../../../../assets/svg/provisionalDiagnosis';
 import FinalDiagnosisIcon from '../../../../../assets/svg/finalDiagnosis';
 import MedicationIcon from '../../../../../assets/svg/medications';
 import DevicesIcon from '../../../../../assets/svg/implantedDevices';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
  
-
+ 
 const Diagnosis = ({tabDetails, fields, isEditMode}) => { 
+    console.log("Edit mode: ", isEditMode)
 
     const [diagnosis, setDiagnosis] = useState([...tabDetails])
+    const theme = useTheme();
 
     const getData = (diagnosisType) => {
         const { notes = [] } = diagnosis.filter(item => { 
@@ -72,111 +76,95 @@ const Diagnosis = ({tabDetails, fields, isEditMode}) => {
     return ( 
         <ScrollView>
 
-            <View style={styles.frameContainer}>
-                <FrameCard
-                    frameColor = "#3182CE"
-                    titleBackgroundColor = "#EBF8FF"
-                    frameBorderColor = "#90CDF4"
-                    frameTitle = "Signs and Symptoms"
-                    cardInformation = {getData("Signs and Symptoms")}
-                    icon = {SignsIcon}
-                    isEditMode = {isEditMode}
-                    handleEdit = {handleEdit('Signs and Symptoms')}
-                    handleAddNew = {handleAddNew('Signs and Symptoms')}
-                />
-            </View>
+            <FrameCard
+                frameColor = {theme.colors['--color-blue-600']}
+                titleBackgroundColor = {theme.colors['--color-blue-100']}
+                frameBorderColor = {theme.colors['--color-blue-300']}
+                frameTitle = "Signs and Symptoms"
+                cardInformation = {getData("Signs and Symptoms")}
+                icon = {SignsIcon}
+                isEditMode = {isEditMode}
+                handleEdit = {handleEdit('Signs and Symptoms')}
+                handleAddNew = {handleAddNew('Signs and Symptoms')}
+            />
 
-            <View style={styles.frameContainer}>
-                <FrameCard
-                    frameColor = "#319795"
-                    titleBackgroundColor = "#E6FFFA"
-                    frameBorderColor = "#4FD1C5"
-                    frameTitle = "Examinations"
-                    cardInformation = {getData('Examinations')}
-                    icon = {ExaminationsIcon}
-                    isEditMode = {isEditMode}
-                    handleEdit = {handleEdit('Examinations')}
-                    handleAddNew = {handleAddNew('Examinations')}
-                />
-            </View>
+            <FrameCard
+                frameColor = {theme.colors['--color-teal-600']}
+                titleBackgroundColor = {theme.colors['--color-teal-100']}
+                frameBorderColor = {theme.colors['--color-teal-300']}
+                frameTitle = "Examinations"
+                cardInformation = {getData('Examinations')}
+                icon = {ExaminationsIcon}
+                isEditMode = {isEditMode}
+                handleEdit = {handleEdit('Examinations')}
+                handleAddNew = {handleAddNew('Examinations')}
+            />
             
-            <View style={styles.frameContainer}>
-                <FrameImageCard
-                    frameColor = "#5A67D8"
-                    titleBackgroundColor = "#EBF4FF"
-                    frameBorderColor = "#A3BFFA"
-                    frameTitle = "Diagnostic Evaluations"
-                    cardInformation = {getData('Diagnostic Evaluations')}
-                    icon = {DiagnosticIcon}
-                    isEditMode = {isEditMode}
-                    handleEdit = {handleEdit('Diagnostic Evaluations')}
-                />
-            </View>
+            <FrameImageCard
+                frameColor = {theme.colors['--color-indigo-600']}
+                titleBackgroundColor = {theme.colors['--color-indigo-100']}
+                frameBorderColor = {theme.colors['--color-indigo-300']}
+                frameTitle = "Diagnostic Evaluations"
+                cardInformation = {getData('Diagnostic Evaluations')}
+                icon = {DiagnosticIcon}
+                isEditMode = {isEditMode}
+                handleEdit = {handleEdit('Diagnostic Evaluations')}
+            />
             
-            <View style={styles.frameContainer}>
-                <FrameCard
-                    frameColor = "#319795"
-                    titleBackgroundColor = "#E6FFFA"
-                    frameBorderColor = "#4FD1C5"
-                    frameTitle = "Laboratory Investigations"
-                    cardInformation = {getData('Laboratory Investigations')}
-                    icon = {LabIcon}
-                    isEditMode = {isEditMode}
-                    handleEdit = {handleEdit('Laboratory Investigations')}
-                />
-            </View>
+            <FrameCard
+                frameColor = {theme.colors['--color-teal-600']}
+                titleBackgroundColor = {theme.colors['--color-teal-100']}
+                frameBorderColor = {theme.colors['--color-teal-300']}
+                frameTitle = "Laboratory Investigations"
+                cardInformation = {getData('Laboratory Investigations')}
+                icon = {LabIcon}
+                isEditMode = {isEditMode}
+                handleEdit = {handleEdit('Laboratory Investigations')}
+            />
             
-            <View style={styles.frameContainer}>
-                <FrameCard
-                    frameColor = "#DD6B20"
-                    titleBackgroundColor = "#FFFAF0"
-                    frameBorderColor = "#FBD38D"
-                    frameTitle = "Provisional Diagnosis"
-                    cardInformation = {getData("Provisional Diagnosis")}
-                    icon = {ProvisionalIcon}
-                    isEditMode = {isEditMode}
-                    handleEdit = {handleEdit('Provisional Diagnosis')}
-                />
-            </View>
+            <FrameCard
+                frameColor = {theme.colors['--color-orange-600']}
+                titleBackgroundColor = {theme.colors['--color-orange-100']}
+                frameBorderColor = {theme.colors['--color-orange-300']}
+                frameTitle = "Provisional Diagnosis"
+                cardInformation = {getData("Provisional Diagnosis")}
+                icon = {ProvisionalIcon}
+                isEditMode = {isEditMode}
+                handleEdit = {handleEdit('Provisional Diagnosis')}
+            />
             
-            <View style={styles.frameContainer}>
-                <FrameCard
-                    frameColor = "#38A169"
-                    titleBackgroundColor = "#F0FFF4"
-                    frameBorderColor = "#9AE6B4"
-                    frameTitle = "Final Diagnosis"
-                    cardInformation = {getData("Final Diagnosis")}
-                    icon = {FinalDiagnosisIcon}
-                    isEditMode = {isEditMode}
-                    handleEdit = {handleEdit('Final Diagnosis')}
-                />
-            </View>
-            
-            <View style={styles.frameContainer}>
-                <FrameCard
-                    frameColor = "#E53E3E"
-                    titleBackgroundColor = "#FFF5F5"
-                    frameBorderColor = "#FEB2B2"
-                    frameTitle = "Medication Prescribed"
-                    cardInformation={getData("Medication Prescribed")} 
-                    icon = {MedicationIcon}
-                    isEditMode = {isEditMode}
-                    handleEdit = {handleEdit('Medication Prescribed')}
-                />
-            </View>
+            <FrameCard
+                frameColor = {theme.colors['--color-green-600']}
+                titleBackgroundColor = {theme.colors['--color-green-100']}
+                frameBorderColor = {theme.colors['--color-green-300']}
+                frameTitle = "Final Diagnosis"
+                cardInformation = {getData("Final Diagnosis")}
+                icon = {FinalDiagnosisIcon}
+                isEditMode = {isEditMode}
+                handleEdit = {handleEdit('Final Diagnosis')}
+            />
+        
+            <FrameCard
+                frameColor = {theme.colors['--color-red-600']}
+                titleBackgroundColor = {theme.colors['--color-red-100']}
+                frameBorderColor = {theme.colors['--color-red-300']}
+                frameTitle = "Medication Prescribed"
+                cardInformation={getData("Medication Prescribed")} 
+                icon = {MedicationIcon}
+                isEditMode = {isEditMode}
+                handleEdit = {handleEdit('Medication Prescribed')}
+            />
 
-            <View style={styles.frameContainer}>
-                <FrameCard
-                    frameColor = "#3182CE"
-                    titleBackgroundColor = "#EBF8FF"
-                    frameBorderColor = "#90CDF4"
-                    frameTitle = "Implanted Devices"
-                    cardInformation={getData("Implanted Devices")} 
-                    icon = {DevicesIcon}
-                    isEditMode = {isEditMode}
-                    handleEdit = {handleEdit('Implanted Devices')}
-                />
-            </View>
+            <FrameCard
+                frameColor = {theme.colors['--color-blue-600']}
+                titleBackgroundColor = {theme.colors['--color-blue-100']}
+                frameBorderColor = {theme.colors['--color-blue-300']}
+                frameTitle = "Implanted Devices"
+                cardInformation={getData("Implanted Devices")} 
+                icon = {DevicesIcon}
+                isEditMode = {isEditMode}
+                handleEdit = {handleEdit('Implanted Devices')}
+            />
          
         </ScrollView>
     );
@@ -184,9 +172,4 @@ const Diagnosis = ({tabDetails, fields, isEditMode}) => {
  
 export default Diagnosis;
 
-const styles = StyleSheet.create({
-    frameContainer:{
-        marginBottom:20
-    }
-})
 
