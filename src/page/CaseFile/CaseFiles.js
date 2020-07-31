@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useContext} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 import Page from '../../components/common/Page/Page';
 import ListItem from "../../components/common/List/ListItem";
@@ -13,20 +13,27 @@ import CreateCaseDialogContainer from "../../components/CaseFiles/CreateCaseDial
 import AddIcon from "../../../assets/svg/addIcon";
 import ArchiveIcon from "../../../assets/svg/archiveIcon";
 
-import {connect} from "react-redux";
-import {setCaseFiles} from "../../redux/actions/caseFilesActions";
-import {getCaseFiles} from "../../api/network";
+import { connect } from "react-redux";
+import { setCaseFiles } from "../../redux/actions/caseFilesActions";
+import { getCaseFiles } from "../../api/network";
+import { isEmpty } from "lodash";
+import _ from "lodash";
 
-import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress } from "../../helpers/caseFilesHelpers";
-import {currencyFormatter} from "../../utils/formatter";
-import {SuitesContext} from "../../contexts/SuitesContext";
 
-import {useModal, withModal} from "react-native-modalfy";
+import {
+  useNextPaginator,
+  usePreviousPaginator,
+  selectAll,
+  checkboxItemPress,
+} from "../../helpers/caseFilesHelpers";
+import { currencyFormatter } from "../../utils/formatter";
+import { SuitesContext } from "../../contexts/SuitesContext";
+
+import { useModal, withModal } from "react-native-modalfy";
 import moment from "moment";
 
 import {formatDate} from "../../utils/formatter";
 import caseFiles from "../../../data/CaseFiles";
-import _ from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import Footer from "../../components/common/Page/Footer";
@@ -95,11 +102,13 @@ function CaseFiles(props){
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
 
-    //######## Life Cycle Methods
-    useEffect(() => {
-        if (!caseFiles.length) { fetchCaseFilesData(currentPagePosition) }
-        setTotalPages(Math.ceil(caseFiles.length / recordsPerPage))
-    }, []);
+  //######## Life Cycle Methods
+  useEffect(() => {
+    if (!caseFiles.length) {
+      fetchCaseFilesData(currentPagePosition);
+    }
+    setTotalPages(Math.ceil(caseFiles.length / recordsPerPage));
+  }, []);
 
     useEffect(() => {
 
@@ -195,7 +204,7 @@ function CaseFiles(props){
         getCaseFiles(searchValue, recordsPerPage, pagePosition)
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult
-   
+
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -371,9 +380,29 @@ function CaseFiles(props){
     );
 };
 
-const mapStateToProps = (state) => ({
-    caseFiles: state.caseFiles
-});
+const mapStateToProps = (state) => {
+  let caseFiles = state.caseFiles;
+
+  console.log("cases format is:", caseFiles);
+
+  console.log("what i'm gonna render in the cases", state.draft);
+
+  if (!isEmpty(state.draft)) {
+    console.log(state.draft.name);
+    const draftCase = {
+      patient: state.draft.patient,
+      chargeSheet: {},
+      staff: state.draft.staff,
+      caseProcedures: state.draft.caseProcedures,
+    };
+
+    caseFiles = [...caseFiles, draftCase];
+  }
+
+  return {
+    caseFiles,
+  };
+};
 
 const mapDispatcherToProp = {
     setCaseFiles

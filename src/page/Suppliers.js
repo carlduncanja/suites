@@ -177,7 +177,7 @@ const Suppliers = (props) => {
         getSuppliers(searchValue,recordsPerPage, pagePosition)
             .then(suppliersInfo => {
                 const {data = [], pages = 0} = suppliersInfo
-                
+
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -196,8 +196,7 @@ const Suppliers = (props) => {
                 }
 
                 setSuppliers(data);
-                setTotalPages(pages)
-                // setTotalPages(Math.ceil(data.length / recordsPerPage))
+                setTotalPages(Math.ceil(data.length / recordsPerPage))
 
             })
             .catch(error => {

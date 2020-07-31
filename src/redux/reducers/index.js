@@ -1,19 +1,20 @@
-import {combineReducers} from "redux";
+import { combineReducers } from "redux";
 
 import appointments from "./appointmentReducer";
 import caseFiles from "./caseReducer";
-import procedures from './proceduresReducer';
-import physicians from './physiciansReducer';
-import storage from './storageReducer';
-import theatres from './theatresReducer';
+import procedures from "./proceduresReducer";
+import physicians from "./physiciansReducer";
+import storage from "./storageReducer";
+import theatres from "./theatresReducer";
 import inventory from "./inventoryReducer";
-import equipment from './equipmentReducer';
-import equipmentTypes from './equipmentTypesReducer';
-import auth from './authReducer';
-import suppliers from './suppliersReducer';
-import orders from './ordersReducers';
-import cart from './cartReducer';
-import notifications from './NotificationReducer'
+import equipment from "./equipmentReducer";
+import equipmentTypes from "./equipmentTypesReducer";
+import auth from "./authReducer";
+import suppliers from "./suppliersReducer";
+import orders from "./ordersReducers";
+import cart from "./cartReducer";
+import notifications from "./NotificationReducer";
+import draft from "./draftReducer";
 
 // import app from "./appReducer"
 // import casesFiles from "./caseFilesReducer"
@@ -23,20 +24,21 @@ import notifications from './NotificationReducer'
 export const RESET_STATE = "RESET_STATE";
 
 const appReducer = combineReducers({
-    appointments,
-    caseFiles,
-    procedures,
-    physicians,
-    storage,
-    theatres,
-    equipment,
-    equipmentTypes,
-    inventory,
-    suppliers,
-    orders,
-    auth,
-    cart,
-    notifications
+  appointments,
+  caseFiles,
+  procedures,
+  physicians,
+  storage,
+  theatres,
+  equipment,
+  equipmentTypes,
+  inventory,
+  suppliers,
+  orders,
+  auth,
+  cart,
+  notifications,
+  draft,
 });
 
 /**
@@ -44,11 +46,10 @@ const appReducer = combineReducers({
  * https://alligator.io/redux/reset-state-redux/
  */
 const rootReducer = (state, action) => {
-    if (action.type === RESET_STATE) {
-        state = undefined;
-    }
-    return appReducer(state, action)
+  if (action.type === RESET_STATE) {
+    state = undefined;
+  }
+  return appReducer(state, action);
 };
 
 export default rootReducer;
-

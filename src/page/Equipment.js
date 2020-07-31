@@ -209,11 +209,11 @@ const Equipment = (props) => {
     const fetchEquipmentData = (pagePosition) => {
         pagePosition ? pagePosition : 1;
         setFetchingData(true);
-        
+
         getEquipmentTypes(searchValue, recordsPerPage, pagePosition)
             .then(equipmentTypesInfo => {
                 const {data = [], pages = 0} = equipmentTypesInfo
-                
+
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -238,7 +238,7 @@ const Equipment = (props) => {
                 console.log("Failed to get equipment types", error);
             });
 
-        
+
         getEquipment()
             .then((data) => {
                 setEquipment(data);
@@ -257,12 +257,19 @@ const Equipment = (props) => {
 
         // console.log(equipments);
 
-        const viewItem = {
-            name: item.name,
-            quantity: item.equipments.length,
-            status: equipments.length === 1 ? "Available" : item.equipments.length > 1 ? "Multiple" : "Unavailable",
-            nextAvailable: new Date(2020, 12, 12)
-        };
+    // console.log(equipments);
+
+    const viewItem = {
+      name: item.name,
+      quantity: item.equipments.length,
+      status:
+        equipments.length === 1
+          ? "Available"
+          : item.equipments.length > 1
+          ? "Multiple"
+          : "Unavailable",
+      nextAvailable: new Date(2020, 12, 12),
+    };
 
 
         return <CollapsibleListItem
@@ -516,7 +523,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatcherToProp = {
-    setEquipment
+  setEquipmentTypes,
+  setEquipment,
 };
 
 export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Equipment))

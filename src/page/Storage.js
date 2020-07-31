@@ -59,7 +59,7 @@ function Storage(props) {
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
-    
+
     const [selectedIds, setSelectedIds] = useState([]);
 
     // pagination
@@ -201,7 +201,7 @@ function Storage(props) {
         getStorage(searchValue, recordsPerPage, pagePosition)
             .then(storageResult => {
                 const { data = [], pages = 0 } = storageResult
-                
+
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -220,8 +220,7 @@ function Storage(props) {
                 }
 
                 setStorage(data);
-                setTotalPages(pages)
-                // setTotalPages(Math.ceil(data.length / recordsPerPage))
+                setTotalPages(Math.ceil(data.length / recordsPerPage))
             })
             .catch(error => {
                 console.log("failed to get storage", error);

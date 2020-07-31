@@ -141,7 +141,7 @@ function Theatres(props) {
   };
 
   const goToNextPage = () => {
-    
+
     if (currentPagePosition < totalPages) {
       let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax);
       setCurrentPagePosition(currentPage);
@@ -154,7 +154,7 @@ function Theatres(props) {
   const goToPreviousPage = () => {
 
     if (currentPagePosition === 1) { return};
-    
+
     let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
     setCurrentPagePosition(currentPage);
     setCurrentPageListMin(currentListMin);
@@ -284,7 +284,7 @@ function Theatres(props) {
   };
 
   const fetchTheatres = (pagePosition) => {
-   
+
     pagePosition ? pagePosition  : 1;
     setCurrentPagePosition(pagePosition)
     setFetchingData(true);
@@ -309,10 +309,10 @@ function Theatres(props) {
             setNextDisabled(true);
             setPreviousDisabled(true);
         }
-       
+
         setTheatres(data);
         setTotalPages(pages)
-        // setTotalPages(Math.ceil(data.length / recordsPerPage));
+        //setTotalPages(Math.ceil(data.length / recordsPerPage));
       })
       .catch((error) => {
         // TODO handle error
@@ -324,7 +324,7 @@ function Theatres(props) {
   };
 
   let theatreToDisplay = [...theatres];
-  
+
   // ###### STYLED COMPONENTS
   const TheatresWrapper = styled.View`
     height: 100%;

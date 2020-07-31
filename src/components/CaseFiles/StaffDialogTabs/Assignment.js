@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
 import OptionsField from "../../common/Input Fields/OptionsField";
 import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField";
 import ChangeSearchableOptionsField from "../../common/Input Fields/ChangeSearchableOptionsField";
 
-import {MenuOptions, MenuOption} from 'react-native-popup-menu';
+import { MenuOptions, MenuOption } from "react-native-popup-menu";
 import _ from "lodash";
-import {getPhysicians} from "../../../api/network";
+import { getPhysicians } from "../../../api/network";
 
 /**
  *
