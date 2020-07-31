@@ -523,7 +523,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatcherToProp = {
-  setEquipmentTypes,
+  // setEquipmentTypes,
   setEquipment,
 };
 
