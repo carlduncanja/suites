@@ -1,8 +1,6 @@
 import React, { useContext, useRef } from "react";
 import { View, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { SuitesContext } from "../contexts/SuitesContext";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { withModal } from "react-native-modalfy";
 
 const ConfirmationModal = (props) => {
   const [state] = useContext(SuitesContext);
@@ -41,7 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   positionContainer: {
-    height: 350,
+    height: 250,
     position: "absolute",
     bottom: 500,
     left: 200,

@@ -32,7 +32,6 @@ import {
 
 import { connect } from "react-redux";
 import { setEquipment } from "../redux/actions/equipmentActions";
-import { setEquipmentTypes } from "../redux/actions/equipmentTypesActions";
 import { getEquipment, getEquipmentTypes } from "../api/network";
 
 import { withModal } from "react-native-modalfy";
@@ -78,14 +77,7 @@ const Equipment = (props) => {
   const floatingActions = [];
 
   //  ############ Props
-  const {
-    equipment,
-    setEquipment,
-    equipmentTypes,
-    setEquipmentTypes,
-    navigation,
-    modal,
-  } = props;
+  const { equipment, setEquipment, navigation, modal } = props;
 
   //  ############ State
   const [isFetchingData, setFetchingData] = useState(false);
@@ -97,38 +89,30 @@ const Equipment = (props) => {
   const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
   const [searchValue, setSearchValue] = useState("");
-
   const [searchResults, setSearchResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState({});
 
   const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([]);
   const [selectedTypesIds, setSelectedTypesIds] = useState([]);
+  const [equipmentTypes, setEquipmentTypes] = useState([]);
 
   // ############# Lifecycle methods
 
   useEffect(() => {
-    console.log("equipments: ", equipmentTypes);
     if (!equipmentTypes.length) {
-      fetchEquipmentData();
+      fetchEquipmentData(currentPagePosition);
     }
     setTotalPages(Math.ceil(equipmentTypes.length / recordsPerPage));
-    console.log("total pages should be:", totalPages);
   }, []);
 
   useEffect(() => {
     if (!searchValue) {
-      fetchEquipmentData();
       // empty search values and cancel any out going request.
       setSearchResult([]);
+      fetchEquipmentData(1);
       if (searchQuery.cancel) searchQuery.cancel();
       return;
     }
-
-    // useEffect(() => {
-    //   if (searchValue.length === 0) {
-    //     fetchEquipmentData();
-    //   }
-    // }, [searchValue]);
 
     // wait 300ms before search. cancel any prev request before executing current.
 
@@ -142,6 +126,7 @@ const Equipment = (props) => {
     });
 
     search();
+    setCurrentPagePosition(1);
   }, [searchValue]);
   // ############# Event Handlers
 
@@ -210,6 +195,7 @@ const Equipment = (props) => {
       setCurrentPagePosition(currentPage);
       setCurrentPageListMin(currentListMin);
       setCurrentPageListMax(currentListMax);
+      fetchEquipmentData(currentPage);
     }
   };
 
@@ -225,6 +211,7 @@ const Equipment = (props) => {
     setCurrentPagePosition(currentPage);
     setCurrentPageListMin(currentListMin);
     setCurrentPageListMax(currentListMax);
+    fetchEquipmentData(currentPage);
   };
 
   const toggleActionButton = () => {
@@ -239,19 +226,20 @@ const Equipment = (props) => {
   };
 
   // ############# Helper functions
-  const fetchEquipmentData = () => {
+  const fetchEquipmentData = (pagePosition) => {
+    pagePosition ? pagePosition : 1;
     setFetchingData(true);
-    //console.log("what's being used to search is:", searchValue);
-    getEquipmentTypes(searchValue)
-      .then((equipmentData) => {
-        const { data = [], pages = 0 } = equipmentData;
 
+    getEquipmentTypes(searchValue, recordsPerPage, pagePosition)
+      .then((equipmentTypesInfo) => {
+        const { data = [], pages = 0 } = equipmentTypesInfo;
         setEquipmentTypes(data);
-        setTotalPages(Math.ceil(data.length / recordsPerPage));
+        setTotalPages(pages);
       })
       .catch((error) => {
         console.log("Failed to get equipment types", error);
       });
+
     getEquipment()
       .then((data) => {
         setEquipment(data);
@@ -266,6 +254,8 @@ const Equipment = (props) => {
 
   const renderEquipmentFn = (item) => {
     const equipments = item.equipments || [];
+
+    // console.log(equipments);
 
     const viewItem = {
       name: item.name,
@@ -464,7 +454,7 @@ const Equipment = (props) => {
     );
     const createEquipmentType = (
       <ActionItem
-        title={"Create Equipment Group"}
+        title={"Create Equipment Type"}
         icon={<AddIcon />}
         onPress={openEquipmentTypeDialog}
       />
@@ -500,9 +490,7 @@ const Equipment = (props) => {
         content: (
           <CreateEquipmentDialog
             onCancel={() => setFloatingAction(false)}
-            onCreated={(item) => {
-              handleOnItemPress(item, true);
-            }}
+            onCreated={(item) => handleOnItemPress(item, true)}
             equipmentTypes={equipmentTypes}
           />
         ),
@@ -520,8 +508,7 @@ const Equipment = (props) => {
         content: (
           <CreateEquipmentTypeDialogContainer
             onCancel={() => setFloatingAction(false)}
-            onCreated={(item) => handleDataRefresh()}
-            equipmentTypes={equipmentTypes}
+            onCreated={() => {}}
             // onCreated={(item) => handleOnItemPress(item, true)}
           />
         ),
@@ -532,7 +519,6 @@ const Equipment = (props) => {
   // ############# Prepare list data
 
   let equipmentToDisplay = [...equipmentTypes];
-  //console.log("equipment types to display on page are:", equipmentToDisplay);
   equipmentToDisplay = equipmentToDisplay.slice(
     currentPageListMin,
     currentPageListMax
@@ -573,12 +559,21 @@ const Equipment = (props) => {
   );
 };
 
+// const mapStateToProps = (state) => {
+//     const equipment = state.equipment.map(item => {
+//         return {
+//             ...item,
+//             // id: item._id
+//         }
+//     })
+//     return {equipment}
+// };
+
 const mapStateToProps = (state) => ({
   equipmentTypes: state.equipmentTypes,
 });
 
 const mapDispatcherToProp = {
-  setEquipmentTypes,
   setEquipment,
 };
 

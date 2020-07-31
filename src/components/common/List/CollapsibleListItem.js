@@ -2,7 +2,12 @@ import React, {useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import CheckBoxComponent from "../Checkbox";
 import Collapsible from 'react-native-collapsible';
+import CollapsibleListItemParentView from './CollapsibleListItemParentView';
 import PropTypes from 'prop-types';
+
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import CollapsibleListItemChildView from './CollapsibleListItemChildView';
 
 
 /**
@@ -17,52 +22,80 @@ import PropTypes from 'prop-types';
  * @constructor
  */
 const CollapsibleListItem = ({
-                                 hasCheckBox,
-                                 isChecked,
-                                 onCheckBoxPress,
-                                 onItemPress,
-                                 childView,
-                                 render,
-                                 children
-                             }) => {
+        hasCheckBox = true,
+        isChecked = false,
+        onCheckBoxPress = ()=>{},
+        onItemPress = () => {},
+        childView,
+        render = ()=>{},
+        children = ()=>{}
+    }) => {
 
     const [isCollapsed, setCollapsed] = useState(true);
-
+    const theme = useTheme();                   
     const collapse = () => {
         console.log("collapse press")
         setCollapsed(!isCollapsed);
     }
 
+    const CollapsibleListItemWrapper = styled.TouchableOpacity`
+        margin-bottom: ${theme.space['--space-12']};
+    `
+    const CollapsibleListItemContainer = styled.TouchableOpacity`
+        flex-direction: column;
+        borderRadius: ${theme.space['--space-8']};
+        border-width: 1px;
+        background-color: ${theme.colors['--default-shade-white']};
+        border-color: ${theme.colors['--color-gray-300']};
+    `
+    
     return (
-        <TouchableOpacity onPress={onItemPress}>
-            <View style={styles.container}>
-                <View style={styles.list}>
-                    {
-                        hasCheckBox &&
-                        <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
-                            <CheckBoxComponent
-                                isCheck={isChecked}
-                                onPress={onCheckBoxPress}
-                            />
-                        </View>
-                    }
-                    {
-                        render(collapse, isCollapsed)
-                    }
-                </View>
-                <Collapsible collapsed={isCollapsed}>
-                    <View style={styles.divider}/>
-                    {
-                        !isCollapsed &&
-                        <View style={[styles.childContent]}>
+        <CollapsibleListItemWrapper onPress={onItemPress}>
+            <CollapsibleListItemContainer>
+                <CollapsibleListItemParentView
+                    hasCheckBox = {hasCheckBox}
+                    isChecked = {isChecked} 
+                    onCheckBoxPress = {onCheckBoxPress}
+                    collapse = {collapse} 
+                    isCollapsed = {isCollapsed}
+                    render = {render}
+                />
+                <CollapsibleListItemChildView
+                    isCollapsed = {isCollapsed}
+                    children = {children}
+                />
+            </CollapsibleListItemContainer>
+        </CollapsibleListItemWrapper>
 
-                            {children}
+        // <CollapsibleListItemWrapper onPress={onItemPress}>
+        //     <CollapsibleListItemContainer style={styles.container}>
+        //         <View style={styles.list}>
+        //             {
+        //                 hasCheckBox &&
+        //                 <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
+        //                     <CheckBoxComponent
+        //                         isCheck={isChecked}
+        //                         onPress={onCheckBoxPress}
+        //                     />
+        //                 </View>
+        //             }
+        //             {
+        //                 render(collapse, isCollapsed)
+        //             }
+        //         </View>
+        //         <Collapsible collapsed={isCollapsed}>
+        //             <View style={styles.divider}/>
+        //             {
+        //                 !isCollapsed &&
+        //                 <View style={[styles.childContent]}>
 
-                        </View>
-                    }
-                </Collapsible>
-            </View>
-        </TouchableOpacity>
+        //                     {children}
+
+        //                 </View>
+        //             }
+        //         </Collapsible>
+        //     </CollapsibleListItemContainer>
+        // </CollapsibleListItemWrapper>
     );
 };
 
@@ -105,7 +138,10 @@ const styles = StyleSheet.create({
     childContent: {
         flex: 1,
         flexDirection: 'column',
-        marginBottom: 6,
+        paddingTop:22,
+        paddingBottom:20,
+        marginBottom: 20,
+
         // padding: 8,
         // marginTop: 0
     }

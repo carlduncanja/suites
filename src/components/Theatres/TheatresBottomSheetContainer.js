@@ -1,227 +1,188 @@
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Button } from "react-native";
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, View} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import InventoryGeneralTabContent from "../OverlayTabs/InventoryGeneralTabContent";
 import TheatresDetailsTab from "../OverlayTabs/TheatresDetailsTab";
-import { colors } from "../../styles";
-import { getAppointments } from "../../api/network";
-import { getTheatreById } from "../../api/network";
+import {colors} from "../../styles";
+import {getTheatreById} from "../../api/network";
 import ProceduresEquipmentTab from "../OverlayTabs/ProceduresEquipmentTab";
 import EquipmentsTab from "../OverlayTabs/EquipmentsTab";
 import ScheduleDisplayComponent from "../ScheduleDisplay/ScheduleDisplayComponent";
 import StorageLocationsTab from "../OverlayTabs/StorageLocationsTab";
 import HistoryTabs from "../OverlayTabs/HistoryTabs";
-import { formatDate } from "../../utils/formatter";
+import {formatDate} from "../../utils/formatter";
 import moment from "moment";
-import { forEach } from "lodash";
+import {forEach} from "lodash";
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import BottomSheetContainer from '../common/BottomSheetContainer';
 
-function TheatresBottomSheetContainer({ theatre = {} }) {
-  const currentTabs = [
-    "Details",
-    "History",
-    "Storage",
-    "Equipment",
-    "Schedule",
-  ];
-  // ##### States
-  const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-  const [selectedTheatre, setTheatre] = useState(theatre);
-  const [relevantAppointment, setrelevantApppointments] = useState([]);
-  const [isFetchingAppointment, setFetchingAppointment] = useState(false);
-  const [isEditMode, setEditMode] = useState(false);
-  const [isFetching, setFetching] = useState(true);
-  const [fetchDate, setfetchDate] = useState(new Date());
-  const [updateDate, setupdateDate] = useState("");
+function TheatresBottomSheetContainer({theatre = {}}) {
+    const theme = useTheme();
+    const currentTabs = [
+        "Details",
+        "History",
+        "Storage",
+        "Equipment",
+        "Schedule",
+    ];
+    // ##### States
+    const [currentTab, setCurrentTab] = useState(currentTabs[0]);
+    const [selectedTheatre, setTheatre] = useState(theatre);
+    const [relevantAppointment, setrelevantApppointments] = useState([]);
+    const [isFetchingAppointment, setFetchingAppointment] = useState(false);
+    const [isEditMode, setEditMode] = useState(false);
+    const [isFetching, setFetching] = useState(true);
+    const [fetchDate, setfetchDate] = useState(new Date());
+    const [updateDate, setupdateDate] = useState("");
 
-  // ##### Lifecycle Methods
+    // ##### Lifecycle Methods
 
-  useEffect(() => {
-    //console.log("Hello");
-    fetchTheatre(theatre._id);
-    // fetchAppointments(theatre._id);
-  }, []);
+    useEffect(() => {
+        // console.log("Hello")
+        setTimeout(() => {
+            fetchTheatre(theatre._id)
+        }, 200)
 
-  // ##### Event Handlers
+    }, []);
 
-  const onTabPress = (selectedTab) => {
-    if (!isEditMode) setCurrentTab(selectedTab);
-  };
+    // ##### Event Handlers
 
-  // //Passing this instance of the below function to retrive the date from the child component
-  // const getDate = (item) => {
-  //   let today = new Date();
-  //   console.log("date to use to query the api:", item);
-  //   if (today == item) {
-  //     return;
-  //   } else setfetchDate(item);
-  //   setupdateDate(fetchDate);
-  //   return item;
-  // };
-  // ##### Helper functions
+    const onTabPress = (selectedTab) => {
+        if (!isEditMode) setCurrentTab(selectedTab);
+    };
 
-  const getOverlayScreen = (selectedOverlay) => {
-    switch (selectedOverlay) {
-      case "Details":
-        // console.log('Theatre:', selectedTheatre);
-        let appointments = selectedTheatre.appointment || [];
-        const availableOn =
-          (appointments &&
-            appointments.length &&
-            formatDate(appointments[0].endTime, "DD/MM/YYYY @ hh:mm a")) ||
-          "--";
-
-        const theatreDetails = {
-          description: selectedTheatre.description,
-          id: selectedTheatre.theatreNumber,
-          name: selectedTheatre.name,
-          status: "Available", // TODO calculate status
-          statusColor: "black",
-
-          physician: "--",
-          availableOn,
-        };
-
-        return <TheatresDetailsTab {...theatreDetails} />;
-      case "History":
-        // console.log("Cases: ", selectedTheatre.cases)
-        const cases = selectedTheatre.cases.map((caseItem) => {
-          let end = caseItem.endTime;
-          let start = caseItem.startTime;
-          let duration = moment.duration(moment(end).diff(moment(start)));
-          duration = duration.asHours();
-          return {
-            name: caseItem.title,
-            duration: duration,
-            date: caseItem.startTime,
-            isRecovery: caseItem.isRecovery || false,
-          };
-        });
-
-        return <HistoryTabs cases={cases} />;
-      case "Storage":
-        const storageLocations = selectedTheatre.storageLocations.map(
-          (item) => {
-            let stock = 0;
-            const levels = {
-              ideal: 0,
-              max: 0,
-              low: 0,
-              min: 0,
-              critical: 0,
-            };
-
-            // get the total stock and levels
-            item.inventoryLocations.forEach((item) => {
-              stock += item.stock;
-
-              levels.ideal += item.levels.ideal;
-              levels.max += item.levels.max;
-              levels.low += item.levels.low;
-              levels.critical += item.levels.critical;
-            });
-
-            return {
-              id: item._id,
-              locationName: item.name,
-              restockDate: new Date(),
-
-              //TODO get this info
-              stock,
-              levels,
-            };
-          }
-        );
-        return <StorageLocationsTab storageLocations={storageLocations} />;
-      case "Equipment":
-        return <EquipmentsTab />;
-      case "Schedule":
-        return (
-          <ScheduleDisplayComponent
-            appointments={Array.from(relevantAppointment)}
-            date={fetchDate}
-            ID={theatre._id}
-            fetchApps={fetchAppointments}
-          />
-        );
-        {
-          console.log(appo);
-        }
-      default:
-        return <View />;
+    const onEditPress = () => {
+        setEditMode(!isEditMode)
     }
-  };
 
-  const fetchTheatre = (id) => {
-    setFetching(true);
+    // //Passing this instance of the below function to retrive the date from the child component
+    // const getDate = (item) => {
+    //   let today = new Date();
+    //   console.log("date to use to query the api:", item);
+    //   if (today == item) {
+    //     return;
+    //   } else setfetchDate(item);
+    //   setupdateDate(fetchDate);
+    //   return item;
+    // };
 
-    getTheatreById(id)
-      .then((data) => {
-        //console.log(data);
-        setTheatre(data);
-      })
-      .catch((error) => {
-        console.log("Failed to get theatre", error);
-        //TODO handle error cases.
-      })
-      .finally((_) => {
-        setFetching(false);
-      });
-  };
+    // ##### Helper functions
 
-  const fetchAppointments = (id, datePassed) => {
-    // console.log("The date i'm gonna use query is:", today);
-    setFetchingAppointment(true);
+    const getOverlayScreen = (selectedOverlay) => {
+        switch (selectedOverlay) {
+            case "Details":
+                // console.log('Theatre:', selectedTheatre);
+                let appointments = selectedTheatre.appointements || []
+                const availableOn = appointments && appointments.length &&
+                    formatDate(appointments[0].endTime, "DD/MM/YYYY @ hh:mm a")
+                    || "--";
 
-    console.log("the date am getting is:", datePassed);
-    setfetchDate(datePassed);
+                const theatreDetails = {
+                    description: selectedTheatre.description,
+                    id: selectedTheatre.theatreNumber,
+                    name: selectedTheatre.name,
+                    status: "Available", // TODO calculate status
+                    statusColor: "black",
 
-    getAppointments("", id, datePassed, datePassed, "", "")
-      .then((data) => {
-        //console.log("Objected values:", Object.values(data));
-        console.log("The appointment data received is:", data);
-        relevantAppointment.length = 0;
+                    physician: "--",
+                    availableOn
+                };
 
-        setrelevantApppointments(relevantAppointment.concat(data));
 
-        //  console.log("Appointment array has:", relevantappointment);
-      })
-      .catch((error) => {
-        console.log("Failed to get desired appointments", error);
-      })
-      .finally((_) => {
-        setFetchingAppointment(false);
-      });
-  };
+                return <TheatresDetailsTab {...theatreDetails}/>;
+            case "History":
+                // console.log("Cases: ", selectedTheatre.cases)
+                const cases = selectedTheatre.cases.map(caseItem => {
+                    let end = caseItem.endTime
+                    let start = caseItem.startTime
+                    let duration = moment.duration(moment(end).diff(moment(start)))
+                    duration = duration.asHours()
+                    return {
+                        name: caseItem.title,
+                        duration: duration,
+                        date: caseItem.startTime,
+                        isRecovery: caseItem.isRecovery || false
+                    }
+                });
 
-  const { _id, name } = selectedTheatre;
+                return <HistoryTabs cases={cases}/>;
+            case "Storage":
 
-  return (
-    <View style={{ flex: 1 }}>
-      {isFetching ? (
-        <View style={{ flex: 1, width: "100%", justifyContent: "center" }}>
-          <ActivityIndicator
-            style={{ alignSelf: "center" }}
-            size="large"
-            color={colors.primary}
-          />
-        </View>
-      ) : (
-        <SlideOverlay
-          overlayId={_id}
-          overlayTitle={name}
-          onTabPressChange={onTabPress}
-          currentTabs={currentTabs}
-          selectedTab={currentTab}
-          isEditMode={isEditMode}
-          overlayContent={
-            <View style={{ flex: 1, padding: 30 }}>
-              {getOverlayScreen(currentTab)}
-            </View>
-          }
+                const storageLocations = selectedTheatre.storageLocations.map(item => {
+
+
+                    let stock = 0;
+                    const levels = {
+                        ideal: 0,
+                        max: 0,
+                        low: 0,
+                        min: 0,
+                        critical: 0
+                    };
+
+                    // get the total stock and levels
+                    item.inventoryLocations.forEach(item => {
+                        stock += item.stock;
+
+                        levels.ideal += item.levels.ideal;
+                        levels.max += item.levels.max;
+                        levels.low += item.levels.low;
+                        levels.critical += item.levels.critical;
+                    });
+
+
+                    return {
+                        id: item._id,
+                        locationName: item.name,
+                        restockDate: new Date(),
+
+                        //TODO get this info
+                        stock,
+                        levels
+                    }
+                });
+                return <StorageLocationsTab storageLocations={storageLocations}/>;
+            case "Equipment":
+                return <EquipmentsTab/>;
+            case "Schedule":
+                return <View/>;
+            default :
+                return <View/>
+        }
+    };
+
+
+    const fetchTheatre = (id) => {
+        setFetching(true);
+        getTheatreById(id)
+            .then(data => {
+                setTheatre(data)
+            })
+            .catch(error => {
+                console.log("Failed to get theatre", error)
+                //TODO handle error cases.
+            })
+            .finally(_ => {
+                setFetching(false)
+            })
+    };
+
+    const {_id, name} = selectedTheatre;
+
+    return (
+        <BottomSheetContainer
+            isFetching={isFetching}
+            overlayId={_id}
+            overlayTitle={name}
+            onTabPressChange={onTabPress}
+            currentTabs={currentTabs}
+            selectedTab={currentTab}
+            isEditMode={isEditMode}
+            onEditPress={onEditPress}
+            overlayContent={getOverlayScreen(currentTab)}
         />
-      )}
-    </View>
-  );
+    );
 }
 
 TheatresBottomSheetContainer.propTypes = {};

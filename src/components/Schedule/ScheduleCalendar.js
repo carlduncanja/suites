@@ -1,11 +1,13 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import moment from 'moment';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import RowCalendar from '../Calendar/RowCalendar';
 import DayOfMonth from "../Calendar/DayOfMonth";
 import Calendar from "../Calendar/Calendar";
 import { formatDate } from '../../utils/formatter';
-
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import Button from '../common/Buttons/Button';
 
 /**
  *
@@ -19,9 +21,12 @@ import { formatDate } from '../../utils/formatter';
  * @returns {*}
  * @constructor
  */
-const ScheduleCalendar = ({month,appointments, days, selectedDate, screenDimensions, onDaySelected}) => {
 
+function ScheduleCalendar ({month,appointments, days, selectedDate, screenDimensions, onDaySelected}){
+
+    const theme = useTheme();
     const [isExpanded, setExpanded] = useState(false);
+    useEffect(()=>{console.log("Updated")})
 
     const onPressDay = (selected) => {
         onDaySelected(selected)
@@ -44,49 +49,78 @@ const ScheduleCalendar = ({month,appointments, days, selectedDate, screenDimensi
 
     // console.log("Appointment: ", appointments)
 
+    const ScheduleCalendarWrapper = styled.View`
+        margin : 0;
+        background-color: purple;
+    `;
+
+    const ScheduleCalendarContainer= styled.View` 
+        height: 100%:
+        width: 100%;
+        flex-direction: column;
+        margin-left : ${screenDimensions.width > screenDimensions.height ? '2%' : '0'};
+        align-items: center;
+        align-self: center;
+
+    `;
+
+    const ButtonContainer = styled.View`
+        height: 22px;
+        justify-content: flex-start;
+        align-self: center;
+        background-color: #FFFFFF;
+        border-width: 1px;
+        border-color: #CCD6E0;
+        border-radius: 4px;
+        margin-top: 12px;
+        padding: 4px;
+        padding-right:12px;
+        padding-left: 12px;
+        
+    `
     return (
-        <View style={{
-            flex: 1,
+
+        <View style={{ 
             marginLeft: screenDimensions.width > screenDimensions.height ? '2%' : 0,
             alignSelf: 'center',
             flexDirection: 'column',
             justifyContent: 'flex-start',
             alignItems: 'center',
-            //     backgroundColor: 'red',
         }}>
-            <View style={styles.calendarContainer}>
-                {
+            
+            {
+                !isExpanded ?
+                    // Row calender view
+                    <RowCalendar
+                        days={days}
+                        month={month}
+                        selectedDay={selectedDate}
+                        appointmentDays={getAppointmentDays(appointments)}
+                        onDayPress={onPressDay}
+                    />
+                    :
+                    // Full calendar view
+                    <Calendar
+                        screenDimensions={screenDimensions}
+                        month={month}
+                        selectedDay={selectedDate}
+                        appointments={appointments}
+                        onDayPress={onPressDay}
+                    />
 
-                    !isExpanded
-                        // Row calender view
-                        ? <RowCalendar
-                            days={days}
-                            month={month}
-                            selectedDay={selectedDate}
-                            appointmentDays={getAppointmentDays(appointments)}
-                            onDayPress={onPressDay}
-
-                        />
-
-                        // Full calendar view
-                        : <Calendar
-                            screenDimensions={screenDimensions}
-                            month={month}
-                            selectedDay={selectedDate}
-                            appointments={appointments}
-                            onDayPress={onPressDay}
-                        />
-
-                }
-            </View>
-
-
-            <TouchableOpacity
-                style={[styles.button]}
-                onPress={onExpandButtonPress}>
-                <Text> { isExpanded ? "Collapse" : "Expand" }</Text>
-            </TouchableOpacity>
+            }
+            
+            <ButtonContainer>
+                <Button
+                    buttonPress = {onExpandButtonPress}
+                    title = {isExpanded ? "Collapse" : "Expand"}
+                    color = {"#4E5664"}
+                    font = {'--text-xs-medium'}
+                />
+            </ButtonContainer>
+            
         </View>
+    
     )
 };
 

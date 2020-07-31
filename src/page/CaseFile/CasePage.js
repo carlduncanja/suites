@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'; 
 import {ActivityIndicator, Alert, StyleSheet, View} from "react-native";
 import {colors} from "../../styles";
 import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
@@ -67,7 +67,7 @@ function CasePage({route, addNotification}) {
         },
         {
             name: "Medical History",
-            overlayTabs: ["General", "Family History", "Lifestyle", "Other"],
+            overlayTabs: ["Details", "Family History", "Lifestyle", "Other"],
             selectedIcon: <MedicalSelectedIcon/>,
             disabledIcon: <MedicalDisabledIcon/>
         },

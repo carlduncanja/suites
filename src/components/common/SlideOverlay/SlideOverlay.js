@@ -1,12 +1,36 @@
 import React, { useContext } from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native'; 
 import SlideContent from './SlideContent'
 import SlideHeader from './SlideHeader';
 
-const SlideOverlay = ({overlayContent, isEditMode, overlayId, overlayTitle, onTabPressChange, onEditPress, currentTabs, selectedTab}) => {
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+
+function SlideOverlay ({
+        isEditMode = false,
+        currentTabs = [], 
+        overlayId = '', 
+        overlayTitle = '',
+        selectedTab = '',
+        onTabPressChange = ()=>{}, 
+        onEditPress = ()=>{}, 
+        overlayContent = ()=>{},      
+    }){
+
+    const theme = useTheme()
+
+    const SlideOverlayWrapper = styled.View`
+        margin:0px;
+        background-color: ${theme.colors['--default-shade-white']};
+    `;
+    const SlideOverlayContainer = styled.View`
+        height:100%;
+        width:100%;
+    `;
+
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
+        <SlideOverlayWrapper>
+            <SlideOverlayContainer> 
                 <SlideHeader
                     id = {overlayId}
                     title = {overlayTitle}
@@ -16,14 +40,29 @@ const SlideOverlay = ({overlayContent, isEditMode, overlayId, overlayTitle, onTa
                     isEditMode = {isEditMode}
                     onEditButtonPress = {onEditPress}
                 />
-            </View>
+                <SlideContent overlayContent = {overlayContent}/>
+            </SlideOverlayContainer>
+        </SlideOverlayWrapper>
+        
+        // <View style={styles.container}>
+        //     <View style={styles.header}>
+        //         <SlideHeader
+        //             id = {overlayId}
+        //             title = {overlayTitle}
+        //             selectedTab = {selectedTab}
+        //             currentTabs = {currentTabs}
+        //             onTabPressChange = {onTabPressChange}
+        //             isEditMode = {isEditMode}
+        //             onEditButtonPress = {onEditPress}
+        //         />
+        //     </View>
 
-            <View style={styles.content}>
-                {
-                    overlayContent
-                }
-            </View>
-        </View>
+        //     <View style={styles.content}>
+        //         {
+        //             overlayContent
+        //         }
+        //     </View>
+        // </View>
     );
 };
 

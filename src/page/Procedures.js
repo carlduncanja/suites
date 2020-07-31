@@ -1,5 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, Alert} from "react-native";
 
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
@@ -49,7 +49,7 @@ const Procedures = (props) => {
     const floatingActions = []
 
     //  ############ Props
-    const {procedures, setProcedures, navigation, modal} = props;
+    const {procedures = [], setProcedures, navigation, modal} = props;
 
     //  ############ State
     const [isFetchingData, setFetchingData] = useState(false);
@@ -69,7 +69,7 @@ const Procedures = (props) => {
     // ############# Lifecycle methods
 
     useEffect(() => {
-        if (!procedures.length) fetchProceduresData()
+        if (!procedures.length) fetchProceduresData(currentPagePosition)
         setTotalPages(Math.ceil(procedures.length / recordsPerPage))
     }, []);
 
@@ -78,6 +78,7 @@ const Procedures = (props) => {
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
+            fetchProceduresData(1)
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
@@ -94,6 +95,7 @@ const Procedures = (props) => {
         });
 
         search()
+        setCurrentPagePosition(1)
     }, [searchValue]);
 
 
@@ -131,6 +133,7 @@ const Procedures = (props) => {
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
+            fetchProceduresData(currentPage)
         }
     };
 
@@ -141,6 +144,7 @@ const Procedures = (props) => {
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
+        fetchProceduresData(currentPage)
     };
 
     const toggleActionButton = () => {
@@ -157,16 +161,22 @@ const Procedures = (props) => {
 
     // ############# Helper functions
 
-    const fetchProceduresData = () => {
+    const fetchProceduresData = (pagePosition) => {
+        pagePosition ? pagePosition : 1;
         setFetchingData(true)
-        getProcedures(searchValue)
-            .then(data => {
+        getProcedures(searchValue, recordsPerPage, pagePosition)
+            .then(procedureResult => {
+                // console.log("Result: ", procedureResult)
+                const { data = [], pages = 0 } = procedureResult
+                // console.log("ProData: ", data)
                 setProcedures(data);
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
+                setTotalPages(pages)
+                // setTotalPages(Math.ceil(data.length / recordsPerPage))
 
             })
             .catch(error => {
-                console.log("failed to get procedures", error);
+                // console.log("failed to get procedures", error);
+                Alert.alert("Failed", "Failure occurred when retrieving Procedure data.")
             })
             .finally(_ => {
                 setFetchingData(false)
@@ -249,7 +259,7 @@ const Procedures = (props) => {
     // ############# Prepare list data
 
     let proceduresToDisplay = [...procedures];
-    proceduresToDisplay = proceduresToDisplay.slice(currentPageListMin, currentPageListMax);
+    // proceduresToDisplay = proceduresToDisplay.slice(currentPageListMin, currentPageListMax);
 
 
     return (
@@ -289,12 +299,6 @@ const Procedures = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-    // const procedures = state.procedures.map(item => {
-    //     return {
-    //         ...item
-    //     }
-    // })
-    // return { procedures }
     procedures: state.procedures
 });
 

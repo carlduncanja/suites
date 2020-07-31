@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-
+import BottomSheetContainer from '../common/BottomSheetContainer';
 
 import {getPurchaseOrderById} from "../../api/network";
 import {colors} from "../../styles";
@@ -173,30 +173,42 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     };
 
     return (
-        <View style={{flex: 1}}>
-            {
-                isFetching
-                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                    </View>
-                    : <SlideOverlay
-                        overlayId={name}
-                        overlayTitle={purchaseOrderNumber}
-                        onTabPressChange={onTabPress}
-                        currentTabs={currentTabs}
-                        selectedTab={currentTab}
-                        isEditMode={isEditMode}
-                        onEditPress={onEditPress}
-                        overlayContent={
-                            <View
-                                style={{flex: 1, padding: 30, paddingBottom: 20}}
-                            >
-                                {getTabContent(currentTab)}
-                            </View>
-                        }
-                    />
-            }
-        </View>
+        <BottomSheetContainer
+            isFetching = {isFetching}
+            overlayId={name}
+            overlayTitle={purchaseOrderNumber}
+            onTabPressChange={onTabPress}
+            currentTabs={currentTabs}
+            selectedTab={currentTab}
+            isEditMode={isEditMode}
+            onEditPress = {onEditPress}
+            overlayContent={getTabContent(currentTab)}
+        />
+
+        // <View style={{flex: 1}}>
+        //     {
+        //         isFetching
+        //             ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
+        //                 <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
+        //             </View>
+        //             : <SlideOverlay
+        //                 overlayId={name}
+        //                 overlayTitle={purchaseOrderNumber}
+        //                 onTabPressChange={onTabPress}
+        //                 currentTabs={currentTabs}
+        //                 selectedTab={currentTab}
+        //                 isEditMode={isEditMode}
+        //                 onEditPress={onEditPress}
+        //                 overlayContent={
+        //                     <View
+        //                         style={{flex: 1, padding: 30, paddingBottom: 20}}
+        //                     >
+        //                         {getTabContent(currentTab)}
+        //                     </View>
+        //                 }
+        //             />
+        //     }
+        // </View>
     );
 }
 

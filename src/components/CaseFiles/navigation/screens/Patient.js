@@ -20,7 +20,7 @@ const Patient = ({ patient, selectedTab, isEditMode }) => {
         contactInfo = {},
         insurance = {} ,
         medicalInfo = {}
-    } = patient
+    } = patient 
 
     const { diagnosis = [], risks = [] } = medicalInfo
 
@@ -43,6 +43,7 @@ const Patient = ({ patient, selectedTab, isEditMode }) => {
     })
 
     const onFieldChange = (fieldName) => (value) => {
+        console.log("Fieldname - value: ", fieldName, value)
         setFields({
             ...fields,
             [fieldName] : value

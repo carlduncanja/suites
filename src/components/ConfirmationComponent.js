@@ -1,11 +1,11 @@
 import React, { Component, useState } from "react";
 import { Modal, Text, StyleSheet } from "react-native";
 import ClearIcon from "../../assets/svg/clearIcon";
+import IconButton from "../components/common/Buttons/IconButton";
+import styled, { css } from "@emotion/native";
+import { useTheme } from "emotion-theming";
 
-import {
-  TouchableHighlight,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { View } from "react-native-animatable";
 
 function ConfirmationComponent({
@@ -13,96 +13,119 @@ function ConfirmationComponent({
   message = "Are you sure you want to?",
   action = "Save",
 }) {
+  const theme = useTheme();
+  const ModalWrapper = styled.View`
+    position: relative;
+    background-color: white;
+    border-radius: 8px;
+    width: 600px;
+    height: 370px;
+    padding-bottom: 67px;
+    box-shadow: ${theme.shadow["--shadow-md"]};
+  `;
+
+  const ModalContainer = styled.View`
+    display: flex;
+    height: 100%;
+  `;
+
+  const HeadingContainer = styled.View`
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 12px;
+    padding-top: 8px;
+    padding-right: 2px;
+    padding-bottom: 8px;
+    border-bottom-width: 0.25px;
+    border-bottom-color: ${theme.colors["--color-gray-1000"]};
+  `;
+
+  const TextHeaderContainer = styled.Text`
+    font: ${theme.font["--text-2xl-medium"]};
+    color: ${theme.colors["--color-gray-600"]};
+  `;
+
+  const MessageContainer = styled.Text`
+    font: ${theme.font["--text-xl-medium"]};
+    color: ${theme.colors["--color-gray-700"]};
+    margin-top: 80px;
+    align-self: center;
+  `;
+
+  const CancelButtonContainer = styled.TouchableOpacity`
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px;
+    border-width: 1px;
+    background-color: ${theme.colors["--color-gray-300"]};
+    margin-right: 260px;
+    margin-left: 20px;
+    width: 150px;
+    height: 70px;
+    border-color: ${theme.colors["--default-shade-white"]};
+  `;
+
+  const ActionButtonContainer = styled.TouchableOpacity`
+    background-color:${theme.colors["--color-blue-600"]};
+    color:${theme.colors["--default-shade-white"]};
+    width:150px;
+    height70px;
+    padding:15px;
+    align-items:center;
+    border-radius:10px;
+    border-width:1px;
+    border-color:${theme.colors["--default-shade-white"]};
+  `;
+
+  const GeneralText = styled.Text`
+    font-size: 30px;
+    font-weight: bold;
+  `;
+
+  const HeaderWrapper = styled.View`
+    height: 45px;
+  `;
+
+  const ButtonView = styled.View`
+    flex-direction: row;
+    margin-top: 120px;
+  `;
+
+  //add a wrapper for header
+
   return (
-    <View style={styles.container}>
-      <View style={styles.headingContainer}>
-        <Text style={{ fontSize: 20 }}>Confirm Action</Text>
+    <ModalWrapper>
+      <ModalContainer>
+        <HeaderWrapper>
+          <HeadingContainer>
+            <TextHeaderContainer>Confirm Action</TextHeaderContainer>
+            <IconButton Icon={<ClearIcon />} onPress={onCancel} />
+          </HeadingContainer>
+        </HeaderWrapper>
 
-        <TouchableOpacity onPress={onCancel()}>
-          <ClearIcon />
-        </TouchableOpacity>
-      </View>
+        <MessageContainer>{message}</MessageContainer>
+        <ButtonView>
+          <CancelButtonContainer onPress={onCancel}>
+            <GeneralText style={{ color: theme.colors["--color-gray-500"] }}>
+              Cancel
+            </GeneralText>
+          </CancelButtonContainer>
 
-      <Text style={styles.messageTxt}>{message}</Text>
-      <View style={styles.buttonView}>
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={() => {
-            onCancel();
-          }}
-        >
-          <Text style={{ color: "#A0AEC0", fontSize: 30 }}>Cancel</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#3182CE",
-            color: "white",
-            width: 130,
-            height: 70,
-            padding: 15,
-
-            alignItems: "center",
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: "#fff",
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 30 }}>{action}</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <ActionButtonContainer>
+            <GeneralText
+              style={{ color: theme.colors["--default-shade-white"] }}
+            >
+              {action}
+            </GeneralText>
+          </ActionButtonContainer>
+        </ButtonView>
+      </ModalContainer>
+    </ModalWrapper>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    position: "relative",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
-    width: 600,
-    paddingBottom: 67,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  messageTxt: {
-    fontSize: 20,
-    alignSelf: "center",
-    marginTop: 100,
-  },
-  cancelButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    backgroundColor: "#E3E8EF",
-    marginRight: 300,
-    marginLeft: 20,
-    width: 130,
-    borderColor: "#fff",
-    height: 70,
-  },
-  headingContainer: {
-    flexDirection: "row",
-    fontSize: 20,
-    justifyContent: "space-between",
-    paddingLeft: 12,
-    paddingRight: 12,
-    paddingTop: 8,
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E3E8EF",
-  },
-  buttonView: {
-    flexDirection: "row",
-    marginTop: 100,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default ConfirmationComponent;

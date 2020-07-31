@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {StyleSheet, View, TouchableOpacity} from "react-native";
 import Svg, {Path} from "react-native-svg";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 
 const tickSVG = (<Svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -14,10 +16,34 @@ const indeterminateSvg = <Svg width="8" height="2" viewBox="0 0 8 2" fill="none"
     <Path d="M8 2H0V0H8V2Z" fill="#718096"/>
 </Svg>;
 
-function CheckBoxComponent({isCheck, isIndeterminate, onPress}) {
+function CheckBoxComponent({isCheck, isIndeterminate, onPress}) { 
+
+    const theme = useTheme()
+     
+    const CheckboxWrapper = styled.TouchableOpacity`
+        background-color: ${theme.colors['--color-red-500']};
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 19px;
+        padding-bottom: 19px;
+        justify-content: center;
+        align-items: center;
+   
+    `
+    const CheckboxContainer = styled.View`
+        background-color: ${theme.colors['--color-gray-100']};
+        border-color: ${theme.colors['--color-gray-400']};
+        border-width: 1px;
+        border-radius: 4px;
+        height: ${theme.space['--space-16']};
+        width: ${theme.space['--space-16']};
+        align-items: center;
+        justify-content: center;
+    `
     return (
-        <TouchableOpacity onPress={onPress}>
-            <View style={styles.container}>
+
+        <CheckboxWrapper onPress = {onPress} activeOpacity = {0.8}>
+            <CheckboxContainer>
                 {
                     isIndeterminate
                         ? indeterminateSvg
@@ -25,25 +51,12 @@ function CheckBoxComponent({isCheck, isIndeterminate, onPress}) {
                             ? tickSVG
                             : <View/>
                 }
-            </View>
-        </TouchableOpacity>
+            </CheckboxContainer>
+        </CheckboxWrapper>
     );
 }
 
 CheckBoxComponent.propTypes = {};
 CheckBoxComponent.defaultProps = {};
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#FFFFFF",
-        borderColor: "#CCD6E0",
-        borderWidth: 1,
-        borderRadius: 4,
-        height: 16,
-        width: 16,
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
-});
 
 export default CheckBoxComponent;

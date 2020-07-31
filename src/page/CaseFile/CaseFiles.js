@@ -16,6 +16,7 @@ import ArchiveIcon from "../../../assets/svg/archiveIcon";
 import { connect } from "react-redux";
 import { setCaseFiles } from "../../redux/actions/caseFilesActions";
 import { getCaseFiles } from "../../api/network";
+import { isEmpty } from "lodash";
 
 import {
   useNextPaginator,
@@ -28,8 +29,13 @@ import { SuitesContext } from "../../contexts/SuitesContext";
 
 import { useModal, withModal } from "react-native-modalfy";
 import moment from "moment";
+
 import { formatDate } from "../../utils/formatter";
 import caseFiles from "../../../data/CaseFiles";
+import _ from "lodash";
+import styled, { css } from "@emotion/native";
+import { useTheme } from "emotion-theming";
+import Footer from "../../components/common/Page/Footer";
 
 const listHeaders = [
   {
@@ -53,6 +59,7 @@ const listHeaders = [
 const CaseFiles = (props) => {
   //######## const
   const modal = useModal();
+  const theme = useTheme();
 
   // const router = useRouter
   const recordsPerPage = 10;
@@ -61,7 +68,7 @@ const CaseFiles = (props) => {
 
   const {
     // Redux props
-    caseFiles,
+    caseFiles = [],
     setCaseFiles,
 
     // React Navigation Props
@@ -74,8 +81,15 @@ const CaseFiles = (props) => {
   const [selectedCaseIds, setSelectedCaseIds] = useState([]);
   const [isFetchingCaseFiles, setFetchingCaseFiles] = useState(false);
   const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+  const [hasActions, setHasActions] = useState(false);
+  const [isNextDisabled, setNextDisabled] = useState(false);
+  const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
   const routeName = route.name;
+
+  const [searchValue, setSearchValue] = useState("");
+  const [searchResults, setSearchResult] = useState([]);
+  const [searchQuery, setSearchQuery] = useState({});
 
   // pagination
   const [totalPages, setTotalPages] = useState(0);
@@ -86,14 +100,42 @@ const CaseFiles = (props) => {
   //######## Life Cycle Methods
   useEffect(() => {
     if (!caseFiles.length) {
-      fetchCaseFilesData();
+      fetchCaseFilesData(currentPagePosition);
     }
     setTotalPages(Math.ceil(caseFiles.length / recordsPerPage));
   }, []);
 
+  useEffect(() => {
+    if (!searchValue) {
+      // empty search values and cancel any out going request.
+      setSearchResult([]);
+      fetchCaseFilesData(1);
+      if (searchQuery.cancel) searchQuery.cancel();
+      return;
+    }
+
+    // wait 300ms before search. cancel any prev request before executing current.
+
+    const search = _.debounce(fetchCaseFilesData, 300);
+
+    setSearchQuery((prevSearch) => {
+      if (prevSearch && prevSearch.cancel) {
+        prevSearch.cancel();
+      }
+      return search;
+    });
+
+    search();
+    setCurrentPagePosition(1);
+  }, [searchValue]);
+
   //######## Event Handlers
 
   const goToNextPage = () => {
+    if (currentPagePosition === totalPages) {
+      setNextDisabled(true);
+      return;
+    }
     if (currentPagePosition < totalPages) {
       let { currentPage, currentListMin, currentListMax } = useNextPaginator(
         currentPagePosition,
@@ -104,12 +146,18 @@ const CaseFiles = (props) => {
       setCurrentPagePosition(currentPage);
       setCurrentPageListMin(currentListMin);
       setCurrentPageListMax(currentListMax);
+      fetchCaseFilesData(currentPage);
+      setNextDisabled(false);
     }
   };
 
   const goToPreviousPage = () => {
-    if (currentPagePosition === 1) return;
+    if (currentPagePosition === 1) {
+      setPreviousDisabled(true);
+      return;
+    }
 
+    setPreviousDisabled(false);
     let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(
       currentPagePosition,
       recordsPerPage,
@@ -119,6 +167,7 @@ const CaseFiles = (props) => {
     setCurrentPagePosition(currentPage);
     setCurrentPageListMin(currentListMin);
     setCurrentPageListMax(currentListMax);
+    fetchCaseFilesData(currentPage);
   };
 
   const handleOnItemPress = (item, isOpenEditable) => () => {
@@ -158,15 +207,21 @@ const CaseFiles = (props) => {
   //######## Helper Functions
 
   const changeText = (text) => {
-    setTextInput(text);
+    setSearchValue(text);
   };
 
-  const fetchCaseFilesData = () => {
+  const fetchCaseFilesData = (pagePosition) => {
+    pagePosition ? pagePosition : 1;
     setFetchingCaseFiles(true);
-    getCaseFiles()
-      .then((data) => {
+    getCaseFiles(searchValue, recordsPerPage, pagePosition)
+      .then((caseResult) => {
+        const { data = [], pages = 0 } = caseResult;
+        if (pages === 1) {
+          setNextDisabled(true);
+        }
         setCaseFiles(data);
-        setTotalPages(Math.ceil(data.length / recordsPerPage));
+        setTotalPages(pages);
+        // setTotalPages(Math.ceil(data.length / recordsPerPage))
       })
       .catch((error) => {
         console.log("failed to get case files", error);
@@ -286,49 +341,78 @@ const CaseFiles = (props) => {
 
   // prepare case files to display
   let caseFilesToDisplay = [...caseFiles];
-  caseFilesToDisplay = caseFilesToDisplay.slice(
-    currentPageListMin,
-    currentPageListMax
-  );
+  // caseFilesToDisplay = caseFilesToDisplay.slice(currentPageListMin, currentPageListMax);
+
+  // ##### STYLED COMPONENTS
+
+  const CaseFilesWrapper = styled.View`
+    height: 100%;
+    width: 100%;
+    background-color: green;
+  `;
+  const CaseFilesContainer = styled.View`
+    display: flex;
+    height: 100%;
+  `;
 
   return (
-    <View style={{ flex: 1 }}>
-      <Page
-        isFetchingData={isFetchingCaseFiles}
-        onRefresh={handleDataRefresh}
-        placeholderText={"Search by any heading or entry below"}
-        changeText={changeText}
-        inputText={textInput}
-        routeName={routeName}
-        listData={caseFilesToDisplay}
-        listHeaders={listHeaders}
-        itemsSelected={selectedCaseIds}
-        onSelectAll={handleOnSelectAll}
-        listItemFormat={renderFn}
-      />
+    <CaseFilesWrapper>
+      <CaseFilesContainer>
+        <Page
+          isFetchingData={isFetchingCaseFiles}
+          onRefresh={handleDataRefresh}
+          placeholderText={"Search by any heading or entry below"}
+          changeText={changeText}
+          inputText={searchValue}
+          routeName={routeName}
+          listData={caseFilesToDisplay}
+          listHeaders={listHeaders}
+          itemsSelected={selectedCaseIds}
+          onSelectAll={handleOnSelectAll}
+          listItemFormat={renderFn}
+        />
 
-      <View style={styles.footer}>
-        <View style={{ alignSelf: "center", marginRight: 10 }}>
-          <RoundedPaginator
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-          />
-        </View>
-
-        <FloatingActionButton
+        <Footer
+          totalPages={totalPages}
+          currentPage={currentPagePosition}
+          goToNextPage={goToNextPage}
+          goToPreviousPage={goToPreviousPage}
           isDisabled={isFloatingActionDisabled}
           toggleActionButton={toggleActionButton}
+          hasPaginator={true}
+          hasActionButton={true}
+          hasActions={true}
+          isNextDisabled={isNextDisabled}
+          isPreviousDisabled={isPreviousDisabled}
         />
-      </View>
-    </View>
+      </CaseFilesContainer>
+    </CaseFilesWrapper>
   );
 };
 
-const mapStateToProps = (state) => ({
-  caseFiles: state.caseFiles,
-});
+const mapStateToProps = (state) => {
+  let caseFiles = state.caseFiles;
+
+  console.log("cases format is:", caseFiles);
+
+  console.log("what i'm gonna render in the cases", state.draft);
+
+  if (!isEmpty(state.draft)) {
+    console.log(state.draft.name);
+    const draftCase = {
+      patient: state.draft.patient,
+      chargeSheet: {},
+      staff: state.draft.staff,
+      caseProcedures: state.draft.caseProcedures,
+    };
+
+    caseFiles = [...caseFiles, draftCase];
+  }
+
+  return {
+    caseFiles,
+  };
+};
 
 const mapDispatcherToProp = {
   setCaseFiles,

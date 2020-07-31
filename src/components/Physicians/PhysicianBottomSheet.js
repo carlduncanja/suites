@@ -1,229 +1,203 @@
-import React, { useState, useEffect } from "react";
-import { View, ActivityIndicator } from "react-native";
+import React, {useState, useEffect} from 'react';
+import {View, ActivityIndicator} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import PhysiciansDetailsTab from "../OverlayTabs/PhysiciansDetailsTab";
 import EditablePhysiciansDetailsTab from "../OverlayTabs/EditablePhysiciansDetailsTab";
 import CaseFilesTab from "../OverlayTabs/CaseFilesTab";
 import CustomProceduresTab from "../OverlayTabs/CustomProceduresTab";
-import { getAppointments } from "../../api/network";
-import { colors } from "../../styles";
+import BottomSheetContainer from '../common/BottomSheetContainer';
+import {getAppointments} from "../../api/network";
+import {colors} from "../../styles";
 import ScheduleDisplayComponent from "../ScheduleDisplay/ScheduleDisplayComponent";
-import { getPhysicianById, updatePhysician } from "../../api/network";
-import { updatePhysicianRecord } from "../../redux/actions/physiciansActions";
-import { connect } from "react-redux";
+import {getPhysicianById, updatePhysician} from "../../api/network";
+import {updatePhysicianRecord} from "../../redux/actions/physiciansActions";
+import {connect} from 'react-redux';
 
-function PhysicianBottomSheet({ physician, isOpenEditable }) {
-  const currentTabs = [
-    "Details",
-    "Case Files",
-    "Custom Procedures",
-    "Schedule",
-  ];
-  const {
-    _id,
-    firstName,
-    middleName,
-    surname,
-    dob,
-    gender,
-    trn,
-    emails,
-    address,
-    phones,
-    emergencyContact,
-  } = physician;
-  const name = `Dr. ${firstName} ${surname}`;
-  // ##### States
+function PhysicianBottomSheet({physician, isOpenEditable}) {
+    const currentTabs = ["Details", "Case Files", "Custom Procedures", "Schedule"];
+    const {
+        _id,
+        firstName,
+        middleName,
+        surname,
+        dob,
+        gender,
+        trn,
+        emails,
+        address,
+        phones,
+        emergencyContact
+    } = physician
+    const name = `Dr. ${firstName} ${surname}`
+    // ##### States
 
-  const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-  const [selectedPhysician, setSelectedPhysician] = useState(physician);
-  const [isEditMode, setEditMode] = useState(isOpenEditable);
-  const [editableTab, setEditableTab] = useState(currentTab);
-  const [isFetching, setFetching] = useState(false);
-  const [appointments, setAppointments] = useState([]);
-  const [isFetchingAppointment, setFetchingAppointment] = useState(false);
-  const [fetchDate, setfetchDate] = useState(new Date());
+    const [currentTab, setCurrentTab] = useState(currentTabs[0]);
+    const [selectedPhysician, setSelectedPhysician] = useState(physician)
+    const [isEditMode, setEditMode] = useState(isOpenEditable);
+    const [editableTab, setEditableTab] = useState(currentTab)
+    const [isFetching, setFetching] = useState(false);
 
-  const [fields, setFields] = useState({
-    firstName: firstName,
-    middleName: middleName,
-    surname: surname,
-    dob: dob,
-    trn: trn,
-    gender: gender,
-    emails: emails,
-    address: address,
-    phones: phones,
-    emergencyContact: emergencyContact,
-  });
 
-  // ##### Lifecycle Methods
-  useEffect(() => {
-    fetchPhysician(_id);
-  }, []);
+    const [fields, setFields] = useState({
+        firstName: firstName,
+        middleName: middleName,
+        surname: surname,
+        dob: dob,
+        trn: trn,
+        gender: gender,
+        emails: emails,
+        address: address,
+        phones: phones,
+        emergencyContact: emergencyContact
+    })
 
-  // ##### Event Handlers
+    // ##### Lifecycle Methods
+    useEffect(() => {
+        fetchPhysician(_id)
+    }, []);
 
-  const onTabPress = (selectedTab) => {
-    if (!isEditMode) setCurrentTab(selectedTab);
-  };
+    // ##### Event Handlers
 
-  const onEditPress = (tab) => {
-    setEditableTab(tab);
-    setEditMode(!isEditMode);
-    if (!isEditMode === false) {
-      let fieldsObject = {
-        ...fields,
-        phones: removeIds(fields["phones"]),
-        emails: removeIds(fields["emails"]),
-        address: removeIds(fields["address"]),
-        emergencyContact: removeIds(fields["emergencyContact"]),
-      };
-      setSelectedPhysician({ ...fieldsObject, _id });
-      updatePhysicianFn(_id, fieldsObject);
+    const onTabPress = (selectedTab) => {
+        if (!isEditMode) setCurrentTab(selectedTab);
+    };
+
+    const onEditPress = (tab) => {
+        setEditableTab(tab)
+        setEditMode(!isEditMode)
+        if (!isEditMode === false) {
+            let fieldsObject = {
+                ...fields,
+                phones: removeIds(fields['phones']),
+                emails: removeIds(fields['emails']),
+                address: removeIds(fields['address']),
+                emergencyContact: removeIds(fields['emergencyContact'])
+            }
+            setSelectedPhysician({...fieldsObject, _id})
+            updatePhysicianFn(_id, fieldsObject)
+        }
     }
-  };
 
-  const fetchPhyAppointments = (id, datePassed) => {
-    // console.log("The date i'm gonna use query is:", today);
-    setFetchingAppointment(true);
+    const fetchPhyAppointments = (id, datePassed) => {
+        // console.log("The date i'm gonna use query is:", today);
+        setFetchingAppointment(true);
 
-    setfetchDate(datePassed);
-    console.log("date being passed is:", fetchDate);
-    console.log(id);
+        setfetchDate(datePassed);
+        console.log("date being passed is:", fetchDate);
+        console.log(id);
 
-    getAppointments("", "", datePassed, datePassed, "", id)
-      .then((data) => {
-        appointments.length = 0;
+        getAppointments("", "", datePassed, datePassed, "", id)
+            .then((data) => {
+                appointments.length = 0;
 
-        setAppointments(appointments.concat(data));
+                setAppointments(appointments.concat(data));
 
-        console.log("Appointment array has:", data);
-      })
-      .catch((error) => {
-        console.log("Failed to get desired appointments", error);
-      })
-      .finally((_) => {
-        setFetchingAppointment(false);
-      });
-  };
+                console.log("Appointment array has:", data);
+            })
+            .catch((error) => {
+                console.log("Failed to get desired appointments", error);
+            })
+            .finally((_) => {
+                setFetchingAppointment(false);
+            });
+    };
 
-  const onFieldChange = (fieldName) => (value) => {
-    // console.log("FIELD NAME: ", fieldName)
-    // console.log("VALUE: ", value)
-    setFields({
-      ...fields,
-      [fieldName]: value,
-    });
-  };
+    const onFieldChange = (fieldName) => (value) => {
+        // console.log("FIELD NAME: ", fieldName)
+        // console.log("VALUE: ", value)
+        setFields({
+            ...fields,
+            [fieldName]: value
+        })
+    };
 
-  // ##### Helper functions
+    // ##### Helper functions
 
-  const removeIds = (array) => {
-    let updatedArray = array.map((obj) => {
-      let newObj = obj;
-      delete newObj["_id"];
-      return { ...newObj };
-    });
+    const removeIds = (array) => {
+        let updatedArray = array.map(obj => {
+            let newObj = obj
+            delete newObj['_id']
+            return {...newObj}
+        })
 
-    return updatedArray;
-  };
-
-  const getTabContent = (selectedTab) => {
-    const { cases = [], procedures = [] } = selectedPhysician;
-    switch (selectedTab) {
-      case "Details":
-        return editableTab === "Details" && isEditMode ? (
-          <EditablePhysiciansDetailsTab
-            fields={fields}
-            onFieldChange={onFieldChange}
-          />
-        ) : (
-          <PhysiciansDetailsTab physician={selectedPhysician} />
-        );
-      case "Case Files":
-        return <CaseFilesTab cases={cases} />;
-      case "Custom Procedures":
-        return <CustomProceduresTab procedures={procedures} />;
-      case "Schedule":
-        return (
-          <ScheduleDisplayComponent
-            appointments={Array.from(appointments)}
-            date={fetchDate}
-            ID={physician._id}
-            fetchApps={fetchPhyAppointments}
-          />
-        );
-      default:
-        return <View />;
+        return updatedArray
     }
-  };
 
-  const overlayContent = (
-    <View style={{ flex: 1, padding: 30 }}>{getTabContent(currentTab)}</View>
-  );
+    const getTabContent = (selectedTab) => {
+        const {cases = [], procedures = []} = selectedPhysician
+        switch (selectedTab) {
+            case "Details":
+                return editableTab === 'Details' && isEditMode ?
+                    <EditablePhysiciansDetailsTab
+                        fields={fields}
+                        onFieldChange={onFieldChange}/>
+                    :
+                    <PhysiciansDetailsTab physician={selectedPhysician}/>
+            case "Case Files":
+                return <CaseFilesTab cases={cases}/>;
+            case "Custom Procedures":
+                return <CustomProceduresTab procedures={procedures}/>;
+            case "Schedule":
+                return <View/>;
+            default :
+                return <View/>
+        }
+    };
 
-  const fetchPhysician = (id) => {
-    setFetching(true);
-    getPhysicianById(id)
-      .then((data) => {
-        setSelectedPhysician(data);
-        // setPhysician(data)
-      })
-      .catch((error) => {
-        console.log("Failed to get physician", error);
-        //TODO handle error cases.
-      })
-      .finally((_) => {
-        setFetching(false);
-      });
-  };
+    const overlayContent = <View style={{flex: 1, padding: 30}}>
+        {getTabContent(currentTab)}
+    </View>;
 
-  const updatePhysicianFn = (id, data) => {
-    updatePhysician(id, data)
-      .then((data, id) => {
-        let newData = {
-          _id: id,
-          ...data,
-        };
-        updatePhysicianRecord(newData);
-      })
-      .catch((error) => {
-        console.log("Failed to update physician", error);
-      });
-  };
+    const fetchPhysician = (id) => {
+        setFetching(true);
+        getPhysicianById(id)
+            .then(data => {
+                setSelectedPhysician(data)
+                // setPhysician(data)
+            })
+            .catch(error => {
+                console.log("Failed to get physician", error)
+                //TODO handle error cases.
+            })
+            .finally(_ => {
+                setFetching(false)
+            })
+    };
 
-  return (
-    <View style={{ flex: 1 }}>
-      {isFetching ? (
-        <View style={{ flex: 1, width: "100%", justifyContent: "center" }}>
-          <ActivityIndicator
-            style={{ alignSelf: "center" }}
-            size="large"
-            color={colors.primary}
-          />
-        </View>
-      ) : (
-        <SlideOverlay
-          overlayId={_id}
-          overlayTitle={name}
-          onTabPressChange={onTabPress}
-          currentTabs={currentTabs}
-          selectedTab={currentTab}
-          isEditMode={isEditMode}
-          overlayContent={overlayContent}
-          onEditPress={onEditPress}
+    const updatePhysicianFn = (id, data) => {
+        updatePhysician(id, data)
+            .then((data, id) => {
+                let newData = {
+                    _id: id,
+                    ...data
+                }
+                updatePhysicianRecord(newData)
+            })
+            .catch(error => {
+                console.log("Failed to update physician", error)
+            })
+    }
+
+    return (
+        <BottomSheetContainer
+            isFetching={isFetching}
+            overlayId={_id}
+            overlayTitle={name}
+            onTabPressChange={onTabPress}
+            currentTabs={currentTabs}
+            selectedTab={currentTab}
+            isEditMode={isEditMode}
+            onEditPress={onEditPress}
+            overlayContent={getTabContent(currentTab)}
         />
-      )}
-    </View>
-  );
+    );
 }
 
 PhysicianBottomSheet.propTypes = {};
 PhysicianBottomSheet.defaultProps = {};
 
 const mapDispatcherToProp = {
-  updatePhysicianRecord,
+    updatePhysicianRecord
 };
 
-export default connect(null, mapDispatcherToProp)(PhysicianBottomSheet);
+export default connect(null, mapDispatcherToProp)(PhysicianBottomSheet)

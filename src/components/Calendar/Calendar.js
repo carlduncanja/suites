@@ -5,6 +5,10 @@ import Days from './Days';
 import moment from 'moment';
 import DaysOfMonth from "./DaysOfMonth";
 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import WeekdaysComponent from './WeekdaysComponent';
+
 /**
  *
  * @param screenDimensions
@@ -13,38 +17,38 @@ import DaysOfMonth from "./DaysOfMonth";
  * @param month: date object
  * @param onDayPress: a function that ta
  * @returns {*}
+ * 
  */
-export default ({screenDimensions, appointments, selectedDay, month, onDayPress}) => {
-    return (
-        <View style={styles.container}>
-            <View style={styles.labelsContainer}>
-                {weekdays.map((day, index) => {
-                    return (
-                        <View key={index}
-                              style={
-                                  [
-                                      styles.labelContainer,
-                                      {width: screenDimensions.width > screenDimensions.height ? 98 : 93}
-                                  ]
-                              }>
-                            <Text key={index} style={styles.label}>{day.toUpperCase()}</Text>
-                        </View>
-                    )
-                })}
-            </View>
+function Calendar ({screenDimensions, appointments, selectedDay, month, onDayPress}) {
+    const theme = useTheme();
 
-            <View style={styles.daysContainer}>
-                <DaysOfMonth
-                    selectedDay={selectedDay}
-                    month={month}
-                    appointments={appointments}
-                    onDayPress={onDayPress}
-                />
-            </View>
-        </View>
+    const CalendarWrapper = styled.View`
+        margin : 0;
+    `;
+    const CalendarContainer = styled.View`
+        align-self: flex-start;
+        flex-direction: column;
+    `
+    return (
+        <CalendarWrapper>
+            <CalendarContainer>
+                <WeekdaysComponent screenDimensions = {screenDimensions}/>
+
+                {/* <View style={styles.daysContainer}> */}
+                    <DaysOfMonth
+                        selectedDay={selectedDay}
+                        month={month}
+                        appointments={appointments}
+                        onDayPress={onDayPress}
+                    />
+                {/* </View> */}
+            </CalendarContainer>
+        </CalendarWrapper>
     )
 
 }
+
+export default Calendar
 
 const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 

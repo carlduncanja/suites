@@ -56,57 +56,6 @@ const listHeaders = [
   },
 ];
 
-const testData = [
-  {
-    id: "1",
-    name: "Operating Room 1",
-    status: "In Use",
-    available: false,
-    isRecovery: true,
-  },
-  {
-    id: "2",
-    name: "Operating Room 2",
-    status: "Available",
-    available: true,
-    isRecovery: "",
-  },
-  {
-    id: "3",
-    name: "Operating Room 3",
-    status: "Available",
-    available: true,
-    isRecovery: "",
-  },
-  {
-    id: "4",
-    name: "Operating Room 4",
-    status: "Available",
-    available: true,
-    isRecovery: "",
-  },
-  {
-    id: "5",
-    name: "Operating Room 5",
-    status: "In Use",
-    available: false,
-    isRecovery: false,
-  },
-  {
-    id: "6",
-    name: "Operating Room 5",
-    status: "In Use",
-    available: false,
-    isRecovery: false,
-  },
-  {
-    id: "7",
-    name: "Operating Room 5",
-    status: "In Use",
-    available: false,
-    isRecovery: false,
-  },
-];
 
 function Theatres(props) {
   const { theatres = [], setTheatres } = props;
@@ -135,7 +84,7 @@ function Theatres(props) {
 
   // on mount
   useEffect(() => {
-    if (!theatres.length) fetchTheatres();
+    if (!theatres.length) fetchTheatres(currentPagePosition);
     setTotalPages(Math.ceil(theatres.length / recordsPerPage));
   }, []);
 
@@ -143,6 +92,7 @@ function Theatres(props) {
     if (!searchValue) {
       // empty search values and cancel any out going request.
       setSearchResult([]);
+      fetchTheatres(1)
       if (searchQuery.cancel) searchQuery.cancel();
       return;
     }
@@ -159,12 +109,12 @@ function Theatres(props) {
     });
 
     search();
+    setCurrentPagePosition(1)
   }, [searchValue]);
 
   // ##### Handler functions
 
   const onItemPress = (item) => () => {
-    // console.log("item press", item);
     modal.openModal("BottomSheetModal", {
       content: <TheatresBottomSheetContainer theatre={item} />,
     });
@@ -194,6 +144,7 @@ function Theatres(props) {
       setCurrentPagePosition(currentPage);
       setCurrentPageListMin(currentListMin);
       setCurrentPageListMax(currentListMax);
+      fetchTheatres(currentPage)
     }
   };
 
@@ -209,6 +160,7 @@ function Theatres(props) {
     setCurrentPagePosition(currentPage);
     setCurrentPageListMin(currentListMin);
     setCurrentPageListMax(currentListMax);
+    fetchTheatres(currentPage)
   };
 
   const onCheckBoxPress = (item) => () => {
@@ -229,8 +181,7 @@ function Theatres(props) {
   };
 
   // ##### Helper functions
-  const theatreItem = (
-    { name, recoveryStatus, recoveryStatusColor, status, statusColor },
+  const theatreItem = ({ name = "", recoveryStatus = "n/a", recoveryStatusColor, status="", statusColor },
     onActionPress
   ) => (
     <>
@@ -332,13 +283,16 @@ function Theatres(props) {
     );
   };
 
-  const fetchTheatres = () => {
+  const fetchTheatres = (pagePosition) => {
+    pagePosition ? pagePosition  : 1;
     setFetchingData(true);
-    getTheatres(searchValue)
-      .then((data) => {
+    getTheatres(searchValue, recordsPerPage, pagePosition)
+      .then((result) => {
+        const {data = [], pages = 0} = result;
         console.log("get theatres search", data);
         setTheatres(data);
-        setTotalPages(Math.ceil(data.length / recordsPerPage));
+        setTotalPages(pages)
+        // setTotalPages(Math.ceil(data.length / recordsPerPage));
       })
       .catch((error) => {
         // TODO handle error
@@ -350,10 +304,10 @@ function Theatres(props) {
   };
 
   let theatreToDisplay = [...theatres];
-  theatreToDisplay = theatreToDisplay.slice(
-    currentPageListMin,
-    currentPageListMax
-  );
+  // theatreToDisplay = theatreToDisplay.slice(
+  //   currentPageListMin,
+  //   currentPageListMax
+  // );
 
   return (
     <View style={styles.container}>

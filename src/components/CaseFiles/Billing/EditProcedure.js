@@ -302,7 +302,7 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
             /> 
         </View>
     )
-}
+} 
 
 export default withModal(EditProcedure) 
 

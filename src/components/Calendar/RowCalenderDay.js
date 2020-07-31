@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import DayIdentifier from '../common/DayIdentifier';
+import RowDayContainer from './RowDayContainer';
 import moment from 'moment';
 import { formatDate } from '../../utils/formatter';
-import {parse} from 'qs';
+import {parse} from 'qs'; 
+
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 /**
  *
@@ -15,8 +19,10 @@ import {parse} from 'qs';
  * @returns {*}
  * @constructor
  */
-const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress, isInSelectMonth}) => {
 
+function RowCalendarDay({day, isSelected, hasAppointment, onDayPress, isInSelectMonth}){
+
+    const theme = useTheme();
     const defaultColor = '#718096';
     const selectedColor = '#323843';
 
@@ -24,37 +30,76 @@ const RowCalendarDay = ({day, isSelected, hasAppointment, onDayPress, isInSelect
     const color = isSelected ? selectedColor : defaultColor;
     const marginTop = 13;
     const fontWeight = isSelected ? 'bold' : 'normal';
+    
+
+    const RowCalendarDayWrapper = styled.TouchableOpacity`
+        width: 90px;
+        height: 98px;
+        margin : 0;
+        padding-top:3px;
+        padding-bottom:3px;
+        padding-right:3px;
+        padding-left:3px;
+        align-items:center;
+
+    `;
+
+    const RowCalendarDayContainer = styled.View`
+        width: ${isSelected ? '90px' : '90px'};
+        height: 100%;
+        align-items: center;
+        padding:3px;
+        backgroundColor: ${theme.colors['--default-shade-white']};
+        border-color: ${theme.colors['--color-gray-300']};
+        border-right-width: 0.5px;
+        border-bottom-width: 0.5px;
+        border-top-width: 0.5px;
+        box-shadow: ${isSelected ? '0px 2px 4px rgba(0, 0, 0, 0.06)' : null};
+        z-index: 3;
+    `;
+
+    const AppointmentIndicator = styled.View`
+        height: 2px;
+        width: 26px;
+        backgroundColor: ${theme.colors['--color-gray-400']};
+        border-radius: 2px;
+    `;
 
     return (
-        <TouchableOpacity style={[ styles.container,]} onPress={onDayPress}>
-            <View style={[styles.dayWrapper, {}, isSelected ? styles.daySelected : {}]}>
-                {
-                    isSelected &&
-                    <DayIdentifier color="#3FC7F4"/>
-                }
-                <Text style={[styles.day, {color: color, opacity,marginTop: marginTop}]}>
-                    {formatDate(day,"D")}
-                </Text>
-                <Text style={{color: defaultColor, opacity,fontWeight: fontWeight}}>
-                    {formatDate(day,"ddd").toUpperCase()}
-                </Text>
+        <RowCalendarDayWrapper onPress={onDayPress}>
+            <RowCalendarDayContainer>
 
-                {
-                    hasAppointment &&
-                    <View
-                        style={{
-                            height: 2,
-                            alignSelf: 'center',
-                            width: 24,
-                            backgroundColor: '#CBD5E0',
-                            borderRadius: 2,
-                            marginTop: 13,
-                            opacity
-                        }}
-                    />
-                }
-            </View>
-        </TouchableOpacity>
+                { isSelected && <DayIdentifier/> }
+                
+                <RowDayContainer
+                    day = {day}
+                    isSelected = {isSelected}
+                    isInSelectMonth = {isInSelectMonth}
+                />
+
+                    {/* <Text style={[styles.day, {color: color, opacity,marginTop: marginTop}]}>
+                        {formatDate(day,"D")}
+                    </Text> */}
+                    {/* <Text style={{color: defaultColor, opacity,fontWeight: fontWeight}}>
+                        {formatDate(day,"ddd").toUpperCase()}
+                    </Text> */}
+
+                    {
+                        hasAppointment && <AppointmentIndicator/>
+                        // <View
+                        //     style={{
+                        //         height: 2,
+                        //         alignSelf: 'center',
+                        //         width: 24,
+                        //         backgroundColor: '#CBD5E0',
+                        //         borderRadius: 2,
+                        //         opacity
+                        //     }}
+                        // />
+                    }
+                {/* </View> */}
+            </RowCalendarDayContainer>
+        </RowCalendarDayWrapper>
     )
 };
 

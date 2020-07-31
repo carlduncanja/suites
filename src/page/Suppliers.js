@@ -68,7 +68,7 @@ const Suppliers = (props) => {
     // ############# Lifecycle methods
 
     useEffect(() => {
-        if (!suppliers.length) fetchSuppliersData()
+        if (!suppliers.length) fetchSuppliersData(currentPagePosition)
         setTotalPages(Math.ceil(suppliers.length / recordsPerPage))
     }, []);
 
@@ -77,6 +77,7 @@ const Suppliers = (props) => {
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
+            fetchSuppliersData(1)
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
@@ -93,6 +94,7 @@ const Suppliers = (props) => {
         });
 
         search()
+        setCurrentPagePosition(1)
     }, [searchValue]);
 
     // ############# Event Handlers
@@ -133,6 +135,7 @@ const Suppliers = (props) => {
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
+            fetchSuppliersData(currentPage)
         }
     };
 
@@ -143,6 +146,8 @@ const Suppliers = (props) => {
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
+        fetchSuppliersData(currentPage)
+
     };
 
     const toggleActionButton = () => {
@@ -159,14 +164,17 @@ const Suppliers = (props) => {
 
     // ############# Helper functions
 
-    const fetchSuppliersData = () => {
+    const fetchSuppliersData = (pagePosition) => {
+        pagePosition ? pagePosition : 1;
         setFetchingData(true)
-        getSuppliers(searchValue,recordsPerPage)
+        getSuppliers(searchValue,recordsPerPage, pagePosition)
             .then(suppliersInfo => {
                 const {data = [], pages = 0} = suppliersInfo
                 // setSuppliers([])
+                console.log("Data: ", data, pages)
                 setSuppliers(data);
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
+                setTotalPages(pages)
+                // setTotalPages(Math.ceil(data.length / recordsPerPage))
 
             })
             .catch(error => {
@@ -237,7 +245,7 @@ const Suppliers = (props) => {
     // ############# Prepare list data
 
     let suppliersToDisplay = [...suppliers];
-    suppliersToDisplay = suppliersToDisplay.slice(currentPageListMin, currentPageListMax);
+    // suppliersToDisplay = suppliersToDisplay.slice(currentPageListMin, currentPageListMax);
 
 
     return (

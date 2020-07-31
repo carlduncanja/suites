@@ -18,6 +18,10 @@ export let numberFormatter = (num) => {
     return numeral(num).format('0,0');
 };
 
+export let numberSingleDecimalFormater = (num) => {
+    return numeral(num).format('0,0.0');
+}
+
 export let numberLetterFormatter = (num) => {
     return numeral(num).format('0.0a');
 };

@@ -4,29 +4,44 @@ import {CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
 import CheckBoxComponent from "../Checkbox";
 
-const Header = ({headers, toggleHeaderCheckbox, isIndeterminate, checked, isCheckbox}) => {
-    return (
-        <View style={styles.headersContainer}>
-            {
-                isCheckbox &&
-                <View style={{marginRight: 20}}>
-                    <CheckBoxComponent
-                        isIndeterminate={isIndeterminate}
-                        onPress={toggleHeaderCheckbox}
-                        isCheck={checked}
-                    />
-                </View>
-            }
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import HeaderItem from './HeaderItem';
 
-            {headers.map((header, index) => {
-                let { fontSize = 16 } = header
-                return (
-                    <View style={[styles.item, {alignItems: header.alignment, flex: header.flex || 1}, header.styles]} key={index}>
-                        <Text style={[styles.headerText,{fontSize:fontSize}]}>{header.name}</Text>
-                    </View>
-                )
-            })}
-        </View>
+function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = false, checked=false, isCheckbox=true}){
+
+    const theme = useTheme()
+
+    const HeaderWrapper = styled.View`
+        margin-bottom: ${theme.space['--space-13']};
+  
+    `
+    const HeaderContainer = styled.View`
+        align-items: flex-start;
+        flex-direction:row;
+        align-items:center;
+        padding-left:1px;
+    `
+
+    return (
+        <HeaderWrapper>
+            <HeaderContainer>
+                {
+                    isCheckbox &&
+                        <CheckBoxComponent
+                            isIndeterminate={isIndeterminate}
+                            onPress={toggleHeaderCheckbox}
+                            isCheck={checked}
+                        />
+                }
+
+                {headers.map((header, index) => {
+                    return (
+                        <HeaderItem header={header} index={index}/>
+                    )}
+                )}
+            </HeaderContainer>
+        </HeaderWrapper>
     );
 }
 
@@ -35,7 +50,7 @@ export default Header;
 const styles = StyleSheet.create({
     headersContainer: {
         //flex:1,
-        marginLeft: 10,
+        // marginLeft: 10,
         flexDirection: 'row',
         //width:'100%'
     },

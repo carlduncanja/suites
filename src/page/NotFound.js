@@ -11,10 +11,10 @@ import { signOut } from "../redux/actions/authActions";
 import { addNotification } from "../redux/actions/NotificationActions";
 import { render } from "react-dom";
 
-function NotFound({ addNotification, signOut, route = {}, modal }) {
+function NotFound({ addNotification, signOut, route = {} }) {
   //ensure to destructer redux function
   const { name = "" } = route;
-  // const { openModal, closeModal } = useModal();
+  const { openModal, closeModals } = useModal();
 
   const message = "items added to inventory";
   const title = "Group";
@@ -31,21 +31,23 @@ function NotFound({ addNotification, signOut, route = {}, modal }) {
 
   const toggleConfirmation = () => {
     console.log("Opening Modal!");
-    modal.openModal("ConfirmationModal", {
+    openModal("ConfirmationModal", {
       content: (
         <ConfirmationComponent
           onCancel={cancelClicked}
-          message="Umm are you sure?"
+          message="Do you want to save your changes?"
           action="Save"
         />
       ),
-      onClose: () => {},
+      onClose: () => {
+        console.log("Modal closed");
+      },
     });
   };
 
   const cancelClicked = () => {
     console.log("Gonna close the modal");
-    modal.closeModals("ConfirmationModal");
+    closeModals("ConfirmationModal");
     //alert("Are you sure? Your changes won't be reflected");
   };
 
@@ -62,9 +64,7 @@ function NotFound({ addNotification, signOut, route = {}, modal }) {
 
       {/* <Notif notifications={notifs} /> */}
 
-      <Button onPress={toggleConfirmation} title="toggle Confirmation" />
-
-      <Button onPress={cancelClicked} title="Close Modal" />
+      <Button onPress={toggleConfirmation} title="Toggle Confirmation" />
 
       <Button onPress={handleOnLogout} title="LOGOUT" />
     </View>

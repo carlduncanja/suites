@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
+import { useTheme } from 'emotion-theming';
+import styled, { css } from '@emotion/native';
 
 /**
  *
@@ -12,13 +14,33 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @param keyboardType
  * @param onClear
  * @param hasError
+ * @param backgroundColor
  * @returns {*}
  * @constructor
  */
-function InputField2({label, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error"}) {
+function InputField2({
+        label, 
+        onChangeText = () => {}, 
+        value, 
+        placeholder = "", 
+        keyboardType,
+        onClear = () => {}, 
+        hasError = false, 
+        errorMessage = "Error", 
+        backgroundColor
+    }){
+    
+    const theme = useTheme() 
+
+    const InputWrapper = styled.View`
+        flex:1;
+        position: relative;
+        flex-direction: row;
+        align-items: center;
+    `
 
     return (
-        <View style={styles.container}> 
+        <View style={[styles.container,]}> 
             {
                 label &&  <Text style={[
                     styles.textLabel, {
@@ -32,9 +54,10 @@ function InputField2({label, onChangeText, value, placeholder, keyboardType, onC
            
             <View style={[styles.inputWrapper, {
                 paddingRight: value ? 4 : 0,
+                
             }]}>
                 <TextInput
-                    style={[styles.inputField, {borderColor: hasError ? 'red' : '#E3E8EF'}]}
+                    style={[styles.inputField, {borderColor: hasError ? 'red' : '#E3E8EF', backgroundColor : backgroundColor ? backgroundColor : theme.colors['--default-shade-white']}]}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}
@@ -85,7 +108,7 @@ const styles = StyleSheet.create({
         paddingBottom: 2,
         borderWidth: 1,
         borderColor: '#E3E8EF',
-        borderRadius: 4,
+        borderRadius: 8,
         height: 32,
     },
     clearIcon: {

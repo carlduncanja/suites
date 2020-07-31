@@ -1,25 +1,59 @@
 import React,{Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';    
 import OverlayButton from '../OverlayButtons/OverlayButton';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import Button from '../Buttons/Button';
+import OverlayButtonContainer from '../OverlayButtons/OverlayButtonContainer';
 
-export default class Heading extends Component{
-    render(){
-        return(
-            <View style={[styles.container,{backgroundColor:this.props.backgroundColor}]}>
-                <Text style={{fontSize:16, marginBottom:5, color:this.props.headerIdColor}}>
-                    {this.props.headerId}
-                </Text>
-                <View style={styles.titleButtonRow}>
-                    <Text style={{fontSize:20, color: this.props.headerNameColor}}>{this.props.headerName}</Text>
-                    <View style={styles.button}>
-                        <Text style={styles.message}>{this.props.editMessage}</Text>
-                        {this.props.button}
-                    </View>
-                </View>
-            </View>
-        )
-    }
+function Heading({headerIdColor, headerId, headerNameColor, headerName, message, button}){ 
+    const theme = useTheme();
+
+    const HeadingWrapper = styled.View`
+        margin-left : ${theme.space['--space-24']};
+        margin-right : ${theme.space['--space-24']};
+        margin-bottom : ${theme.space['--space-16']};
+    `
+    const HeadingContainer = styled.View`
+        flex-direction : column; 
+    `
+
+    const HeaderId = styled.Text({
+        ...theme.font['--text-base-medium'],
+        color : headerIdColor ? headerIdColor : theme.colors['--company']
+    })
+    
+    const HeaderNameContainer = styled.View`
+        display:flex;
+        padding-top : ${theme.space['--space-10']};
+        flex-direction : row;
+        justify-content : space-between;
+        align-items : center;
+    `
+    const HeaderName = styled.Text({
+        ...theme.font['--text-xl-medium'],
+        color : headerNameColor ? headerNameColor : theme.colors['--accent-button']
+    })
+
+
+    return (
+        <HeadingWrapper>
+            <HeadingContainer>
+                <HeaderId>{headerId}</HeaderId>
+                <HeaderNameContainer>
+                    <HeaderName>{headerName}</HeaderName>
+                    <OverlayButtonContainer
+                        message = {message}
+                        button = {button}
+                    />
+                </HeaderNameContainer>
+
+            </HeadingContainer>
+        </HeadingWrapper>
+    )
 }
+
+export default Heading
 
 const styles = StyleSheet.create({
     container:{
