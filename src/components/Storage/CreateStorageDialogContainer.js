@@ -100,7 +100,8 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
 
     const fetchTheatres = () => {
         getTheatres(theatresSearchValue, 5)
-            .then(data => {
+            .then((theatresResult = {} ) => {
+                const { data = [], pages = 0 } = theatresResult
                 console.log("theatres search", data);
                 setTheatreSearchResult(data || []);
             })

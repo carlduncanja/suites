@@ -55,7 +55,8 @@ const
 
         const fetchPhysicians = () => {
             getPhysicians(searchValue, 5)
-                .then((data = []) => {
+                .then((physicianResult = []) => {
+                    const { data = [], pages = 0 } = physicianResult
                     const results = data.map(item => ({
                         name: `Dr. ${item.surname}`,
                         ...item

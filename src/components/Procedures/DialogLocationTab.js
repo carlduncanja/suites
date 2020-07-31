@@ -67,7 +67,8 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
  
     const fetchTheatres = () => {
         getTheatres(searchLocationValue, 5)
-            .then((data = []) => {
+            .then((theatresResult = {}) => {
+                const { data = [], pages = 0} = theatresResult
                 const results = data.map(item => ({
                     // name: `Dr. ${item.surname}`,
                     ...item

@@ -115,7 +115,8 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
 
     const fetchInventories = () => {
         getInventories(inventorySearchValue, 5)
-            .then((data = []) => {
+            .then((inventoryResults = {}) => {
+                const { data = [], pages = 0 } = inventoryResults
                 console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item

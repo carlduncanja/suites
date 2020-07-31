@@ -91,9 +91,11 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
 
         const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {}
-        const caseAppointment = caseProcedure.appointment
+        const caseAppointment = caseProcedure.appointment || {}
 
-        const name = `${caseAppointment.title} (${formatDate(caseAppointment.startTime, "MMM D - h:mm a")})`
+        let title = caseAppointment.title ? caseAppointment.title : "";
+
+        const name = `${title} (${formatDate(caseAppointment.startTime, "MMM D - h:mm a")})`
 
 
         const billingItem = {

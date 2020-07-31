@@ -1,7 +1,7 @@
 import React,{useContext, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import {Low, Moderate, High, VeryHigh} from '../../RiskFrames/RiskLevels' 
-import RiskLevel from '../../RiskFrames/RiskLevel';
+import RiskLevel from '../../RiskFrames/RiskLevel'; 
 
 const PateintRisk = ({tabDetails, isEditMode, fields, onFieldChange}) => { 
 

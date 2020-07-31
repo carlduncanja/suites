@@ -115,7 +115,8 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
 
     const fetchPhysicians = () => {
         getPhysicians(searchValue, 5)
-            .then((data = []) => {
+            .then((physicianResult = {}) => {
+                const { data = [], pages = 0 } = physicianResult
                 const results = data.map(item => ({
                     name: `Dr. ${item.surname}`,
                     ...item
@@ -133,7 +134,8 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
 
     const fetchProcedures = () => {
         getProcedures(searchProcedureValue, 5)
-            .then((data = []) => {
+            .then((proceduresResult = {}) => {
+                const { data = [], pages = 0 } = proceduresResult
                 const results = data.map(item => ({
                     ...item
                 }));
@@ -150,7 +152,8 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
 
     const fetchCategory = () => {
         getCategories(categorySearchValue,5)
-            .then((data = [])=>{
+            .then((categoryResults = {})=>{
+                const { data = [], pages = 0 } = categoryResults
                 const results = data.map(item => ({
                     _id : item,
                     name : item

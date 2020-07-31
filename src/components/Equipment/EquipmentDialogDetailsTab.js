@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react"; 
 import {View, Text, StyleSheet} from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
@@ -145,7 +145,8 @@ const testCategory = [
 
     const fetchTheatres = () => {
         getTheatres(theatresSearchValue, 5)
-            .then(data => {
+            .then((theatresResult = {}) => {
+                const { data = [], pages = 0} = theatresResult
                 console.log("theatres search", data);
                 setTheatreSearchResult(data || []);
             })
@@ -158,7 +159,8 @@ const testCategory = [
 
     const fetchPhysician = () => {
         getPhysicians(physicianSearchValue, 5)
-            .then(data => {
+            .then((physiciansResult = {}) => {
+                const { data = [], pages = 0 } = physiciansResult
                 const refinedResults = data.map(item => ({
                     name: `Dr. ${item.firstName} ${item.surname}`,
                     ...item
@@ -174,7 +176,8 @@ const testCategory = [
 
     const fetchEquipmentTypes = () => {
         getEquipmentTypes(typeSearchValue)
-            .then(data => {
+            .then((equipmentsResult) => {
+                const { data = [], pages = 0 } = equipmentsResult
                 console.log("Equip Data: ", data)
                 setTypeSearchResult(data || []);
             })
@@ -187,7 +190,8 @@ const testCategory = [
 
     const fetchCategory = () => {
         getCategories(categorySearchValue,5)
-            .then(data => {
+            .then((categoriesResult = {}) => {
+                const { data = [], pages = 0 } = categoriesResult
                 const results = data.map(item => ({
                     _id : item,
                     name : item
