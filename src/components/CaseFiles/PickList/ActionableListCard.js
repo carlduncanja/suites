@@ -18,7 +18,7 @@ const ActionableListCard = (props) =>{
         data,
         selectedTab,
         listItemFormat,
-        tabs,
+        tabs, 
         headers,
         onPressTab,
         onFooterPress = () => {},
@@ -104,7 +104,7 @@ const ActionableListCard = (props) =>{
 
             {
                 totalPages > 1 &&
-                    <View style={{marginLeft:20, marginRight:20, justifyContent:'space-between', flexDirection:'row', alignItems:'center',marginBottom:15}}>
+                    <View style={{marginLeft:20, marginRight:20, justifyContent:'space-between', flexDirection:'row', alignItems:'center',marginBottom:15, height: 30}}>
                         <View style={[{alignItems:'center'}]}>
                             <Text style={{color:'#4E5664', fontSize:16}}>Showing
                                 <Text style={{fontWeight:'500'}}> {recordsPerPage}</Text> of <Text style={{fontWeight:'500'}}>{dataLength}</Text>
@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
         backgroundColor:'#FFFFFF',
         borderRadius:8,
         width:600,
-        height: 200,
+        height: 450,
+        
     },
     headerContainer:{
         flexDirection:'row',
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#EEF2F6',
         paddingTop:15,
         paddingBottom:15,
-        height: 50,
+        height: 60,
     },
     tab:{
         borderRadius: 4,
@@ -193,7 +194,8 @@ const styles = StyleSheet.create({
         borderColor:'#CCD6E0',
         borderRadius:4,
         borderWidth:1,
-        margin:15
+        margin:15,
+        height : 30,
     },
     list:{
         margin:15,
@@ -237,7 +239,6 @@ const styles = StyleSheet.create({
         // marginBottom:20,
     },
     footer:{
-        // backgroundColor:'#FFFFFF',
         // backgroundColor:'red',
         borderTopWidth:1,
         borderTopColor:'#CCD6E0',
@@ -245,6 +246,8 @@ const styles = StyleSheet.create({
         padding:5,
         paddingBottom:20,
         paddingTop:20,
-        marginTop:8
+        marginTop:8,
+        height:60
+        
     }
 })

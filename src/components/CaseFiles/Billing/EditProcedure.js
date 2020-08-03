@@ -270,7 +270,6 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
             }
         
        
-        
         onCreated(updatedBilling)
         // console.log("Billing: ", updatedBilling)
         // updateCase(updatedBilling)
@@ -278,7 +277,7 @@ const EditProcedure = ({tabs, procedureName, consumables, equipments, services, 
 
     const handleClose = () => {
         console.log("Close")
-        modal.closeModals("OverlayInfoModal")
+        modal.closeModals("OverlayInfoModal") 
     }
 
     const itemFormat = selectedTab === 'Charges and Fees' ? chargeItemFormat : listItemFormat

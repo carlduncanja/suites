@@ -23,7 +23,7 @@ function SlideHeader({id = "", title = "", selectedTab = "", currentTabs = [], o
         <SlideOverlayHeaderWrapper>
             <SlideOverlayHeaderContainer>
                 {
-                    isEditMode ?
+                    isEditMode ? 
                         <EditModeHeading
                             id={id}
                             title={title}

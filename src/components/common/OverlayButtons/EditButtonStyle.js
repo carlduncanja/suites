@@ -18,7 +18,7 @@ function EditButtonStyle({onPress = ()=>{}}){
     `;
     const EditButtonContainer = styled.View`
         height: 100%;
-        width: 100%;
+        width: 100%; 
         border-radius : 6px;
         padding-top : 6px;
         padding-bottom : 6px;

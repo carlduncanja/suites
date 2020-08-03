@@ -124,6 +124,7 @@ function CasePage({route, addNotification}) {
 
     const onEditPress = (tab) => {
         setEditMode(!isEditMode)
+        console.log("Pressed: ")
         // if (isEditMode === true) {
         //     if (updateInfo.length !== 0) {
         //         // console.log("Record: ", updateInfo)

@@ -19,7 +19,7 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
     const [selectedIndex, setSelectedIndex] = useState(0)
 
     const onSearchInputChange = (input) => {
-        setSearchText(input)
+        setSearchText(input) 
     }
 
     const toggleCheckbox = (item) => () => {

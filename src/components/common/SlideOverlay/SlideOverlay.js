@@ -12,7 +12,7 @@ function SlideOverlay ({
         overlayId = '', 
         overlayTitle = '',
         selectedTab = '',
-        onTabPressChange = ()=>{}, 
+        onTabPressChange = ()=>{},  
         onEditPress = ()=>{}, 
         overlayContent = ()=>{},      
     }){
