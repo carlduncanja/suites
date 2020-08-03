@@ -47,7 +47,6 @@ function CasePage({route, addNotification}) {
     const modal = useModal();
 
     const {caseId, isEdit} = route.params;
-    console.log("Case id: ", caseId)
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([])
@@ -125,7 +124,6 @@ function CasePage({route, addNotification}) {
 
     const onEditPress = (tab) => {
         setEditMode(!isEditMode)
-        console.log("Pressed: ")
         // if (isEditMode === true) {
         //     if (updateInfo.length !== 0) {
         //         // console.log("Record: ", updateInfo)
@@ -366,6 +364,7 @@ function CasePage({route, addNotification}) {
 
     const getOverlayContent = () => {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase
+        // console.log("Case Procedures: ", caseProcedures)
         const {medicalInfo = {}} = patient
 
         switch (selectedMenuItem) {

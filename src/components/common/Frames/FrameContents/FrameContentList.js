@@ -20,6 +20,7 @@ function FrameContentList (props) {
 
     const [value, setValue] = useState("");
     const theme = useTheme();
+    console.log("Info: ", cardInformation)
 
     const FrameContentListWrapper = styled.View`
         width : 100%;

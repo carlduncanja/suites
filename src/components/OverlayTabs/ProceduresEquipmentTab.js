@@ -47,11 +47,11 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
             alignment: "flex-start",
             flex:1,
         },
-        {
-            name :"Unit Price",
-            alignment: "flex-end",
-            flex:1
-        }
+        // {
+        //     name :"Unit Price",
+        //     alignment: "flex-end",
+        //     flex:1
+        // }
     ] 
 
     // ###### EVENT HANDLERS
@@ -110,11 +110,11 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
                     <Text style={[styles.itemText,{color:"#3182CE"}]}>{name}</Text>
                 </View>
                 <View style={[styles.item,{alignItems:'flex-start'}]}>
-                    <Text style={styles.itemText}>{type.name}</Text>
+                    <Text style={styles.itemText}>{type?.name || 'n/a'}</Text>
                 </View>
-                <View style={[styles.item,{alignItems:'flex-end'}]}>
+                {/* <View style={[styles.item,{alignItems:'flex-end'}]}>
                     <Text style={styles.itemText}>$ {currencyFormatter(type.unitPrice)}</Text>
-                </View>      
+                </View>       */}
             </>
         )
     }

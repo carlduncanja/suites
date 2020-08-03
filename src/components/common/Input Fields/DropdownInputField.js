@@ -34,14 +34,15 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions, sele
             >
                 <MenuTrigger>
                     <View style={[styles.inputWrapper]}>
-                        <View style={{flex:1,justifyContent:'space-between', paddingLeft:10, flexDirection:'row', alignItems:'center',paddingRight:8}}>
+                        <View style={{flex:1,justifyContent:'space-between', paddingLeft:10, flexDirection:'row', alignItems:'center',paddingRight:18}}>
                             <Text>{value}</Text>
-                            <View>
+                            <DropdownIcon/>
+                            {/* <View>
                                 <IconButton
                                     Icon = {<DropdownIcon/>}
                                     onPress = {()=>toggleDisplayOptions()}
                                 />
-                            </View>
+                            </View> */}
                             
                         </View>
                     </View>

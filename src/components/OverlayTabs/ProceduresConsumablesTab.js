@@ -17,7 +17,7 @@ import { withModal } from "react-native-modalfy";
 import AddItemDialog from "../Procedures/AddItemDialog";
 
 const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInventoryUpdate, onAddInventory}) => {
-
+    console.log("Data: ", consumablesData)
     const recordsPerPage = 10
     // const [consumables, setConsumbales] = useState(consumablesData)
     const [checkBoxList, setCheckboxList] = useState([])
@@ -82,10 +82,10 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
             name :"Quantity",
             alignment: "center"
         },
-        {
-            name :"Unit Price",
-            alignment: "flex-end"
-        }
+        // {
+        //     name :"Unit Price",
+        //     alignment: "flex-end"
+        // }
     ]
 
     // ###### EVENT HANDLERS
@@ -132,8 +132,8 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
     }
 
     const listItem = (item) => {
-        const { inventory = {}, amount = 0 } = item
-        const { name = "", unitPrice = 0, type = "" } = inventory
+        const { inventory = {}, amount = 0 } = item || {}
+        const { name = "", unitPrice = 0, type = "n/a" } = inventory || {}
         return (
             <>
                 <View style={styles.item}>
@@ -157,9 +157,9 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
 
                 }
 
-                <View style={[styles.item,{alignItems:'flex-end'}]}>
+                {/* <View style={[styles.item,{alignItems:'flex-end'}]}>
                     <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
-                </View>
+                </View> */}
 
             </>
         )
@@ -235,7 +235,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                         isDisabled={isFloatingActionDisabled}
                         toggleActionButton={toggleActionButton}
                     />
-                </View>
+                </View> 
 
         </>
 
@@ -258,9 +258,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         position: 'absolute',
         bottom: 0,
-        marginBottom: 20,
+        // marginBottom: 20,
         right: 0,
-        marginRight: 30,
+        // marginRight: 30,
     },
     addNew:{
         flexDirection:'row',

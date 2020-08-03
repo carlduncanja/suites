@@ -21,12 +21,14 @@ const General = ({tabDetails}) => {
 
     return (
         <ScrollView>
-            <Search
-                placeholderText = "Search by any header or entry below"
-                changeText = {()=>{}}
-                inputText = {""}
-            />
-
+            <View style={{marginBottom:24}}>
+                <Search
+                    placeholderText = "Search by any header or entry below"
+                    changeText = {()=>{}}
+                    inputText = {""}
+                />
+            </View>
+            
             <View style={styles.frameContainer}>
                 <FrameCard
                     frameColor = "#805AD5"

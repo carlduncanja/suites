@@ -96,7 +96,7 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
         <View style={[styles.item, {alignItems: 'center'}]}>
             <Text style={styles.itemText}>{item?.type || 'n/a'}</Text>
         </View>
-        {
+        { 
             isEditMode && selectedOption !== 'All'?
 
             <View style={{flex:1, alignItems:'center'}}>
