@@ -21,7 +21,6 @@ function CheckBoxComponent({isCheck, isIndeterminate, onPress}) {
     const theme = useTheme()
      
     const CheckboxWrapper = styled.TouchableOpacity`
-        background-color: ${theme.colors['--color-red-500']};
         padding-left: 16px;
         padding-right: 16px;
         padding-top: 19px;

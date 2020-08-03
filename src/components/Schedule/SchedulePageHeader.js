@@ -16,7 +16,6 @@ function SchedulePageHeader({
     const theme = useTheme();
 
     const SchedulePageHeaderWrapper = styled.View`
-        background-color: green;
         width: 100%;
         padding-left: ${theme.space['--space-32']};
         padding-top: ${theme.space['--space-26']};
@@ -27,7 +26,6 @@ function SchedulePageHeader({
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        background-color: yellow;
     `
 
     return(

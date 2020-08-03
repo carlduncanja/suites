@@ -68,13 +68,13 @@ import { useTheme } from 'emotion-theming';
         padding-top: 28px;
         padding-right: 32px;
         padding-bottom: 28px;
-        background-color: ${theme.colors['--color-red-400']};
+        background-color : ${theme.colors['--color-gray-100']};
     `;
 
     const PageContainer = styled.View`
         display: flex;
         height: 100%;
-        background-color: ${theme.colors['--color-green-400']};
+        
         
     `;
 

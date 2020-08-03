@@ -18,7 +18,6 @@ function Record({
 
     const RecordWrapper = styled.View`
         flex:${flex.toString()};
-        background-color: red;
         margin-right: ${theme.space['--space-4']};
     `;
     const RecordContainer = styled.View`

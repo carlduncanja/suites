@@ -51,7 +51,6 @@ function ScheduleCalendar ({month,appointments, days, selectedDate, screenDimens
 
     const ScheduleCalendarWrapper = styled.View`
         margin : 0;
-        background-color: purple;
     `;
 
     const ScheduleCalendarContainer= styled.View` 

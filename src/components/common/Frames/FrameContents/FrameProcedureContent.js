@@ -24,10 +24,10 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
                 <FrameTableItem title = "Location" value={name}/>
                 <View style={styles.dateContainer}>
                     <View style={{flex:1}}>
-                        <FrameTableItem title = "Date" value = {formatDate(appointment.startTime,"MMM/D/YYYY")}/>
+                        <FrameTableItem title = "Date" value = {formatDate(appointment?.startTime,"MMM/D/YYYY")}/>
                     </View>
                     <View style={{flex:1}}>
-                        <FrameTableItem title = "" value = {formatDate(appointment.startTime,"h:mm A")}/>
+                        <FrameTableItem title = "" value = {formatDate(appointment?.startTime,"h:mm A")}/>
                     </View>
                     <View style={{flex:1}}>
                         <FrameTableItem title = "Duration" value = {hours}/>
@@ -37,7 +37,7 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
         )
     }
 
-    
+
     return (
         <View style={styles.container}>
             <View style={{paddingBottom:10, borderBottomColor:"#CCD6E0", borderBottomWidth:1}}>
@@ -48,7 +48,7 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
                 {hasRecovery && appointmentView(recovery)}
             </View>
             <View style={{alignItems:"flex-end", marginTop:10}}>
-                <View style={{padding:8, borderRadius:8, backgroundColor:"#E3E8EF"}}>
+                <View style={{padding:8, borderRadius:8, backgroundColor:"#E3E8EF", height: 30}}>
                     <Button
                         backgroundColor = "#E3E8EF"
                         color = "#718096"

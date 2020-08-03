@@ -265,12 +265,11 @@ function CaseFiles(props) {
             chargeSheet = {},
             staff = {},
             caseProcedures = [],
-        } = item
+        } = item || {}
 
         let name, physicianName;
-
-        const { total = 0 } = chargeSheet;
-
+        console.log("Item: ", item.chargeSheet)
+        const { total = 0 } = item.chargeSheet || {}
         let { leadPhysician } = staff
 
         patient ? name = `${patient.firstName} ${patient.surname}` : name = ""
@@ -326,7 +325,7 @@ function CaseFiles(props) {
             placeholderText={"Search by any heading or entry below"}
             changeText={changeText}
             inputText={searchValue}
-            routeName={routeName}
+            routeName={"Case Files"}
             listData={caseFilesToDisplay}
 
             listHeaders={listHeaders}
@@ -393,10 +392,20 @@ const mapStateToProps = (state) => {
             chargeSheet: state.draft.chargeSheet,
             staff: state.draft.staff,
             caseProcedures: state.draft.caseProcedures,
-        };
-
-        caseFiles = [...caseFiles, draftCase];
+        }
     }
+
+    // if (!isEmpty(state.draft)) {
+    //   console.log(state.draft.name);
+    //   const draftCase = {
+    //     patient: state.draft.patient,
+    //     chargeSheet: {},
+    //     staff: state.draft.staff,
+    //     caseProcedures: state.draft.caseProcedures,
+    //   };
+    //
+    //   caseFiles = [...caseFiles, draftCase];
+    // }
 
     return {
         caseFiles,

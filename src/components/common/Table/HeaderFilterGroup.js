@@ -38,7 +38,7 @@ function HeaderFilterGroup({name = "", isSelected = false}){
         <HeaderGoupWrapper>
             <HeaderGroupContainer>
                 <HeaderText>{name}</HeaderText>
-                <SortFilter isSelected = {isSelected}/>
+                {/* <SortFilter isSelected = {isSelected}/> */}
             </HeaderGroupContainer>
         </HeaderGoupWrapper>
     

@@ -45,11 +45,9 @@ function MonthSelector ({selectedMonth = new Date(), onMonthUpdated = ()=>{}}){
         flex-direction:row;
         justify-content:center;
         align-items: center;
-        background-color: red;
     `
 
     const SelectorContainer = styled.View`
-        background-color: blue;
         display:flex;
         height:100%;
     `;
