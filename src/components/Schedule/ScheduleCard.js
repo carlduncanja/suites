@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 
-export default ScheduleCard = (props) => {    
+export default ScheduleCard = (props) => {
         const getTime = (appointment) => {
             let timePeriod;
             let time;
@@ -14,18 +14,18 @@ export default ScheduleCard = (props) => {
                 }else{
                     time = `${(parseInt(hour) - 12).toString()}:${minutes}`
                 }
-            
+
             }else{
                 timePeriod = "am"
                 time = `${(parseInt(hour)).toString()}:${minutes}`
             }
             return (`${time} ${timePeriod}`)
-         
+
         }
 
         return(
             <View style = {styles.card}>
-                <View 
+                <View
                     style = {{
                         alignSelf:'center',
                         backgroundColor:statusColor(props.appointment.level),
@@ -36,28 +36,28 @@ export default ScheduleCard = (props) => {
                 />
 
                 <View  style={{flex:1}}>
-                    <TouchableOpacity 
-                        style={styles.infoContainer} 
+                    <TouchableOpacity
+                        style={styles.infoContainer}
                         onPress = {() => {props.animateSlide(props.displayFullCalendar);props.showScheduleDetails(props.appointment)}}
                     >
                         <Text style={styles.title}>{props.appointment.title} - {props.appointment.responseEntity}</Text>
-                        <Text style={styles.time}>{getTime(props.appointment.startTime)} - {getTime(props.appointment.endTime)}</Text>
-                    </TouchableOpacity>          
+                        <Text style={styles.time}>{getTime(props.appointment?.startTime)} - {getTime(props.appointment.endTime)}</Text>
+                    </TouchableOpacity>
                 </View>
-                
+
             </View>
     )
 
 
-    
-    
+
+
 }
 
 const statusColor = (status) =>{
     status === 1 ? color = '#E53E3E':
         status === 2 ? color = "#ECC94B":
             status === 3 ? color = "#4299E1": color ="#48BB78"
-    
+
     return color
 }
 
@@ -88,5 +88,5 @@ const styles=StyleSheet.create({
         fontSize:12,
         color: 'gray'
     }
-   
+
 })

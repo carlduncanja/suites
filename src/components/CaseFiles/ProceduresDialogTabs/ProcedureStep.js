@@ -109,10 +109,8 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
                 const {startTime: newStart, endTime: newEnd} = tempAppointment;
 
                 for (const appointment of appointments) {
-                    const start = moment(appointment.startTime);
-                    const end = moment(appointment.endTime);
-
-
+                    const start = moment(appointment?.startTime);
+                    const end = moment(appointment?.endTime);
 
                     const hasConflict = moment(start).isBetween(startTime, newEnd)|| moment(end).isBetween(startTime, newEnd);
 

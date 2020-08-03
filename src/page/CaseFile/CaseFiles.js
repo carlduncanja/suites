@@ -387,17 +387,17 @@ const mapStateToProps = (state) => {
 
   console.log("what i'm gonna render in the cases", state.draft);
 
-  if (!isEmpty(state.draft)) {
-    console.log(state.draft.name);
-    const draftCase = {
-      patient: state.draft.patient,
-      chargeSheet: {},
-      staff: state.draft.staff,
-      caseProcedures: state.draft.caseProcedures,
-    };
-
-    caseFiles = [...caseFiles, draftCase];
-  }
+  // if (!isEmpty(state.draft)) {
+  //   console.log(state.draft.name);
+  //   const draftCase = {
+  //     patient: state.draft.patient,
+  //     chargeSheet: {},
+  //     staff: state.draft.staff,
+  //     caseProcedures: state.draft.caseProcedures,
+  //   };
+  //
+  //   caseFiles = [...caseFiles, draftCase];
+  // }
 
   return {
     caseFiles,
