@@ -29,13 +29,20 @@ function NotFound({ addNotification, signOut, route = {} }) {
     addNotification(message, title, special);
   };
 
+  const actionClicked = () => {
+    console.log("Clicked the action");
+  }
+
   const toggleConfirmation = () => {
     console.log("Opening Modal!");
     openModal("ConfirmationModal", {
       content: (
         <ConfirmationComponent
+          error={true}//boolean to show whether an error icon or success icon
+          type=""//use this specification to either get the confirm an edit or update
           onCancel={cancelClicked}
-          message="Do you want to save your changes?"
+          onAction={actionClicked}
+          message="Do you want to save your changes?"//general message you can send to be displayed
           action="Save"
         />
       ),

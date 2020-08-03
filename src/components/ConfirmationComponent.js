@@ -2,14 +2,18 @@ import React, { Component, useState } from "react";
 import { Modal, Text, StyleSheet } from "react-native";
 import ClearIcon from "../../assets/svg/clearIcon";
 import IconButton from "../components/common/Buttons/IconButton";
+import ErrorIcon from "../../assets/svg/ErrorIcon"
 import styled, { css } from "@emotion/native";
 import { useTheme } from "emotion-theming";
-
+import TickIcon from "../../assets/svg/tickIcon";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { View } from "react-native-animatable";
 
 function ConfirmationComponent({
+  type,
+  error,
   onCancel,
+  onAction,
   message = "Are you sure you want to?",
   action = "Save",
 }) {
@@ -21,7 +25,7 @@ function ConfirmationComponent({
     width: 600px;
     height: 370px;
     padding-bottom: 67px;
-    box-shadow: ${theme.shadow["--shadow-md"]};
+    box-shadow: ${theme.shadow["--shadow-lg"]};
   `;
 
   const ModalContainer = styled.View`
@@ -45,43 +49,72 @@ function ConfirmationComponent({
   const TextHeaderContainer = styled.Text`
     font: ${theme.font["--text-2xl-medium"]};
     color: ${theme.colors["--color-gray-600"]};
+    margin-right: 380px;
   `;
 
   const MessageContainer = styled.Text`
-    font: ${theme.font["--text-xl-medium"]};
+    line-height: 20px;
+    font-size: 21px;
+    font-weight: normal;
     color: ${theme.colors["--color-gray-700"]};
-    margin-top: 80px;
+    margin-top: 100px;
     align-self: center;
   `;
 
   const CancelButtonContainer = styled.TouchableOpacity`
     align-items: center;
-    padding: 15px;
+    padding: 10px;
     border-radius: 10px;
     border-width: 1px;
     background-color: ${theme.colors["--color-gray-300"]};
-    margin-right: 260px;
+    margin-right: 310px;
     margin-left: 20px;
-    width: 150px;
-    height: 70px;
+    width: 130px;
+    height: 55px;
     border-color: ${theme.colors["--default-shade-white"]};
   `;
 
   const ActionButtonContainer = styled.TouchableOpacity`
-    background-color:${theme.colors["--color-blue-600"]};
-    color:${theme.colors["--default-shade-white"]};
-    width:150px;
-    height70px;
-    padding:15px;
-    align-items:center;
-    border-radius:10px;
-    border-width:1px;
-    border-color:${theme.colors["--default-shade-white"]};
+    background-color: ${theme.colors["--color-blue-600"]};
+    color: ${theme.colors["--default-shade-white"]};
+    width: 120px;
+    height: 55px;
+    padding: 10px;
+    align-items: center;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: ${theme.colors["--default-shade-white"]};
   `;
 
   const GeneralText = styled.Text`
-    font-size: 30px;
+    font-size: 25px;
     font-weight: bold;
+  `;
+
+  const IconContainer = styled.View`
+  margin-top:50px;
+  align-self:center;
+
+  `;
+
+
+  const DeciderButtonContainer = styled.TouchableOpacity`
+  align-self:center;
+  border-radius: 10px;
+  margin-top:50px;
+  padding:10px;
+  background-color:${theme.colors["--color-blue-600"]};
+  color:${theme.colors["--default-shade-white"]};
+  width:550px;
+
+  `;
+
+  const AlertText = styled.Text`
+    align-self:center;
+    font:${theme.font["--text-2xl-medium"]};
+    color:${theme.colors["--color-gray-800"]};
+    margin-top:50px;
+
   `;
 
   const HeaderWrapper = styled.View`
@@ -92,6 +125,59 @@ function ConfirmationComponent({
     flex-direction: row;
     margin-top: 120px;
   `;
+
+  const typeDecipher = (type) => {
+    if (type === "edit-update") {
+      return (<>
+        <MessageContainer>{message}</MessageContainer>
+        <ButtonView>
+          <CancelButtonContainer onPress={onCancel}>
+            <GeneralText style={{ color: theme.colors["--color-gray-500"] }}>
+              Cancel
+            </GeneralText>
+          </CancelButtonContainer>
+
+          <ActionButtonContainer onPress={onAction}>
+            <GeneralText
+              style={{ color: theme.colors["--default-shade-white"], }}
+            >
+              {action}
+            </GeneralText>
+          </ActionButtonContainer>
+        </ButtonView>
+      </>)
+    } else if (type !== "edit-update" && !error) {
+      return (
+        <>
+          <IconContainer><TickIcon /></IconContainer>
+          <AlertText>Completed Successfully!</AlertText>
+          <DeciderButtonContainer>
+            <GeneralText style={{ color: theme.colors["--default-shade-white"], alignSelf: "center" }}>
+              CONTINUE
+           </GeneralText>
+
+          </DeciderButtonContainer>
+
+        </>
+      )
+    } else if (type !== "edit-update" && error) {
+      return (
+        <>
+          <IconContainer><ErrorIcon /></IconContainer>
+          <AlertText>There was an error performing this action</AlertText>
+          <DeciderButtonContainer>
+            <GeneralText style={{ color: theme.colors["--default-shade-white"], alignSelf: "center" }}>
+              CLOSE
+         </GeneralText>
+
+          </DeciderButtonContainer>
+
+        </>
+      )
+
+    }
+
+  }
 
   //add a wrapper for header
 
@@ -105,22 +191,9 @@ function ConfirmationComponent({
           </HeadingContainer>
         </HeaderWrapper>
 
-        <MessageContainer>{message}</MessageContainer>
-        <ButtonView>
-          <CancelButtonContainer onPress={onCancel}>
-            <GeneralText style={{ color: theme.colors["--color-gray-500"] }}>
-              Cancel
-            </GeneralText>
-          </CancelButtonContainer>
+        {typeDecipher(type)}
 
-          <ActionButtonContainer>
-            <GeneralText
-              style={{ color: theme.colors["--default-shade-white"] }}
-            >
-              {action}
-            </GeneralText>
-          </ActionButtonContainer>
-        </ButtonView>
+
       </ModalContainer>
     </ModalWrapper>
   );
