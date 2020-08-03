@@ -21,10 +21,10 @@ import _ from "lodash";
 
 
 import {
-  useNextPaginator,
-  usePreviousPaginator,
-  selectAll,
-  checkboxItemPress,
+    useNextPaginator,
+    usePreviousPaginator,
+    selectAll,
+    checkboxItemPress,
 } from "../../helpers/caseFilesHelpers";
 import { currencyFormatter } from "../../utils/formatter";
 import { SuitesContext } from "../../contexts/SuitesContext";
@@ -32,7 +32,7 @@ import { SuitesContext } from "../../contexts/SuitesContext";
 import { useModal, withModal } from "react-native-modalfy";
 import moment from "moment";
 
-import {formatDate} from "../../utils/formatter";
+import { formatDate } from "../../utils/formatter";
 import caseFiles from "../../../data/CaseFiles";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -61,7 +61,7 @@ const listHeaders = [
     },
 ];
 
-function CaseFiles(props){
+function CaseFiles(props) {
     //######## const
     const modal = useModal();
     const theme = useTheme();
@@ -102,13 +102,13 @@ function CaseFiles(props){
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
 
-  //######## Life Cycle Methods
-  useEffect(() => {
-    if (!caseFiles.length) {
-      fetchCaseFilesData(currentPagePosition);
-    }
-    setTotalPages(Math.ceil(caseFiles.length / recordsPerPage));
-  }, []);
+    //######## Life Cycle Methods
+    useEffect(() => {
+        if (!caseFiles.length) {
+            fetchCaseFilesData(currentPagePosition);
+        }
+        setTotalPages(Math.ceil(caseFiles.length / recordsPerPage));
+    }, []);
 
     useEffect(() => {
 
@@ -139,7 +139,7 @@ function CaseFiles(props){
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -150,7 +150,7 @@ function CaseFiles(props){
 
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) { return };
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -161,12 +161,12 @@ function CaseFiles(props){
         navigation.navigate('Case Files', {
             screen: 'Case',
             initial: false,
-            params: {caseId: item._id, isEdit: isOpenEditable}
+            params: { caseId: item._id, isEdit: isOpenEditable }
         });
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
-        const {_id} = caseItem;
+        const { _id } = caseItem;
         let updatedCases = checkboxItemPress(caseItem, _id, selectedCaseIds)
         setSelectedCaseIds(updatedCases);
     };
@@ -205,19 +205,19 @@ function CaseFiles(props){
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult
 
-                if(pages === 1){
+                if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                }else if(pagePosition === 1 ){
+                } else if (pagePosition === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                }else if(pagePosition === pages){
+                } else if (pagePosition === pages) {
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                }else if(pagePosition < pages){
+                } else if (pagePosition < pages) {
                     setNextDisabled(false);
                     setPreviousDisabled(false)
-                }else{
+                } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
@@ -269,15 +269,16 @@ function CaseFiles(props){
 
         let name, physicianName;
 
-        const {total = 0} = chargeSheet;
-        let {leadPhysician} = staff
+        const { total = 0 } = chargeSheet;
+
+        let { leadPhysician } = staff
 
         patient ? name = `${patient.firstName} ${patient.surname}` : name = ""
         leadPhysician ? physicianName = `Dr. ${leadPhysician.surname}` : physicianName = ""
 
         const dates = caseProcedures.map(item => {
-            const {appointment} = item
-            const {startTime} = appointment
+            const { appointment } = item
+            const { startTime } = appointment
             return moment(startTime)
         })
 
@@ -286,20 +287,20 @@ function CaseFiles(props){
         return (
             <>
                 <MultipleTextDataItem
-                    primaryText = {`# ${caseNumber}`}
-                    secondaryText = {name}
+                    primaryText={`# ${caseNumber}`}
+                    secondaryText={name}
                 />
-                <DataItem text = {`$ ${currencyFormatter(total)}`}/>
-                <DataItem text = {physicianName}/>
-                <DataItem text = {formatDate(nextVisit, "MMM DD, YYYY") || 'n/a'}/>
+                <DataItem text={`$ ${currencyFormatter(total)}`} />
+                <DataItem text={physicianName} />
+                <DataItem text={formatDate(nextVisit, "MMM DD, YYYY") || 'n/a'} />
             </>
         )
     }
 
     const getFabActions = () => {
-        const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon/>} onPress={() => {
-        }}/>;
-        const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon/>} onPress={openCreateCaseFile}/>;
+        const archiveCase = <ActionItem title={"Archive Case"} icon={<ArchiveIcon />} onPress={() => {
+        }} />;
+        const createNewCase = <ActionItem title={"New Case"} icon={<AddIcon />} onPress={openCreateCaseFile} />;
 
         return <ActionContainer
             floatingActions={[
@@ -312,7 +313,7 @@ function CaseFiles(props){
 
     const openCreateCaseFile = () => {
         modal.closeModals('ActionContainerModal');
-        props.navigation.navigate('Case Files', {screen: 'CreateCase', initial: false});
+        props.navigation.navigate('Case Files', { screen: 'CreateCase', initial: false });
     }
 
     // prepare case files to display
@@ -339,11 +340,11 @@ function CaseFiles(props){
             goToPreviousPage={goToPreviousPage}
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
-            hasPaginator = {true}
-            hasActionButton = {true}
-            hasActions = {true}
-            isNextDisabled = {isNextDisabled}
-            isPreviousDisabled = {isPreviousDisabled}
+            hasPaginator={true}
+            hasActionButton={true}
+            hasActions={true}
+            isNextDisabled={isNextDisabled}
+            isPreviousDisabled={isPreviousDisabled}
         />
         // <CaseFilesWrapper>
         //     <CaseFilesContainer>
@@ -381,27 +382,25 @@ function CaseFiles(props){
 };
 
 const mapStateToProps = (state) => {
-  let caseFiles = state.caseFiles;
+    let caseFiles = state.caseFiles;
 
-  console.log("cases format is:", caseFiles);
+    console.log("what i'm gonna render in the cases", state.draft);
 
-  console.log("what i'm gonna render in the cases", state.draft);
+    if (!isEmpty(state.draft)) {
+        console.log(state.draft.name);
+        const draftCase = {
+            patient: state.draft.patient,
+            chargeSheet: state.draft.chargeSheet,
+            staff: state.draft.staff,
+            caseProcedures: state.draft.caseProcedures,
+        };
 
-  if (!isEmpty(state.draft)) {
-    console.log(state.draft.name);
-    const draftCase = {
-      patient: state.draft.patient,
-      chargeSheet: {},
-      staff: state.draft.staff,
-      caseProcedures: state.draft.caseProcedures,
+        caseFiles = [...caseFiles, draftCase];
+    }
+
+    return {
+        caseFiles,
     };
-
-    caseFiles = [...caseFiles, draftCase];
-  }
-
-  return {
-    caseFiles,
-  };
 };
 
 const mapDispatcherToProp = {

@@ -10,7 +10,7 @@ const ConfirmationModal = (props) => {
     modal: { closeModal, closeModals, currentModal, closeAllModals, params },
   } = props;
 
-  const { content = <View />, onClose = () => {} } = params;
+  const { content = <View />, onClose = () => { } } = params;
   const scroll = useRef();
 
   return (
@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     height: 250,
     position: "absolute",
     bottom: 500,
-    left: 200,
+    left: 165,
+
   },
 });
