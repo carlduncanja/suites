@@ -48,7 +48,7 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
                 {hasRecovery && appointmentView(recovery)}
             </View>
             <View style={{alignItems:"flex-end", marginTop:10}}>
-                <View style={{padding:8, borderRadius:8, backgroundColor:"#E3E8EF"}}>
+                <View style={{padding:8, borderRadius:8, backgroundColor:"#E3E8EF", height: 30}}>
                     <Button
                         backgroundColor = "#E3E8EF"
                         color = "#718096"
