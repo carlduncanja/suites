@@ -37,7 +37,7 @@ function Header({headers = [], selectedHeader = "", toggleHeaderCheckbox=()=>{},
 
                 {headers.map((header, index) => {
                     return (
-                        <HeaderItem header={header} index={index} selectedHeader = {selectedHeader}/>
+                        <HeaderItem header={header} index={index} selectedHeader = {selectedHeader} key={index}/>
                     )}
                 )}
             </HeaderContainer>

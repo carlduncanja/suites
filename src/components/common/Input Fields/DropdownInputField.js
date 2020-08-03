@@ -36,10 +36,13 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions, sele
                     <View style={[styles.inputWrapper]}>
                         <View style={{flex:1,justifyContent:'space-between', paddingLeft:10, flexDirection:'row', alignItems:'center',paddingRight:8}}>
                             <Text>{value}</Text>
-                            <IconButton
-                                Icon = {<DropdownIcon/>}
-                                onPress = {()=>toggleDisplayOptions()}
-                            />
+                            <View>
+                                <IconButton
+                                    Icon = {<DropdownIcon/>}
+                                    onPress = {()=>toggleDisplayOptions()}
+                                />
+                            </View>
+                            
                         </View>
                     </View>
                 </MenuTrigger>

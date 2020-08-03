@@ -16,7 +16,7 @@ function HeaderItem({header,index, selectedHeader = "", onSelectHeader = ()=>{}}
     `;
     const HeaderItemContainer = styled.View`
         flex-direction: row;
-        align-items : ${header.alignment ? header.alignment : 'flex-start'};
+        justify-content : ${header.alignment ? header.alignment : 'flex-start'};
     `;
 
 

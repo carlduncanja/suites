@@ -94,7 +94,7 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{item?.type}</Text>
+            <Text style={styles.itemText}>{item?.type || 'n/a'}</Text>
         </View>
         {
             isEditMode && selectedOption !== 'All'?
@@ -135,7 +135,7 @@ const ChargesheetEquipment = ({headers, equipments = [], caseProceduresFilters =
         <ScrollView>
 
             <View style={{flex:1, justifyContent:'space-between', flexDirection:'row', marginBottom:20}}>
-                <View style={{flex:2, paddingRight:100}}>
+                <View style={{flex:2, paddingRight:100, justifyContent:'center'}}>
                     <Search
                         placeholderText = "Search by equipment item"
                         inputText = {searchText}

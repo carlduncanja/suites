@@ -120,7 +120,7 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
         <ScrollView>
 
             <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
-                <View style={{flex: 2, paddingRight: 100}}>
+                <View style={{flex: 2, paddingRight: 100, justifyContent:'center'}}>
                     <Search
                         placeholderText="Search by inventory item"
                         inputText={searchText}
@@ -128,7 +128,7 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
                         backgroundColor="#FAFAFA"
                     />
                 </View>
-                <View style={{flex: 1}}>
+                <View style={{flex: 1, alignItems:'flex-start'}}>
                     <DropdownInputField
                         onSelectChange={onSelectChange}
                         value={selectedOption}
