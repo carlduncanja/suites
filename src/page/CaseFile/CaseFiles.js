@@ -265,11 +265,11 @@ function CaseFiles(props){
             chargeSheet = {},
             staff = {},
             caseProcedures = [],
-        } = item
+        } = item || {}
 
         let name, physicianName;
-
-        const {total = 0} = chargeSheet;
+        console.log("Item: ", item.chargeSheet)
+        const { total = 0 } = item.chargeSheet || {}
         let {leadPhysician} = staff
 
         patient ? name = `${patient.firstName} ${patient.surname}` : name = ""

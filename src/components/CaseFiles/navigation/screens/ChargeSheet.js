@@ -45,7 +45,7 @@ const headers = [
         alignment: "flex-end"
     }
 ]
-
+ 
 const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, isEditMode, onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
 
 
@@ -53,7 +53,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         inventoryList = [],
         equipmentList = [],
         proceduresBillableItems = [],
-        total,
+        total = 0,
         caseId
     } = chargeSheet
 

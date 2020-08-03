@@ -6,11 +6,11 @@ import InputField2 from './Input Fields/InputField2';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-function Search({placeholderText = "Search", changeText = () => {}, inputText}){
+function Search({placeholderText = "Search", changeText = () => {}, inputText,}){
     
     const theme = useTheme(); 
 
-    const SearchWrapper = styled.View`
+    const SearchWrapper = styled.View` 
         margin-bottom : 24px;
     `;
 

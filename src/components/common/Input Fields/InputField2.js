@@ -62,6 +62,7 @@ function InputField2({
                     value={value}
                     keyboardType={keyboardType}
                     placeholder={placeholder}
+
                 />
                 {
                     hasError && <View style={styles.errorView}>

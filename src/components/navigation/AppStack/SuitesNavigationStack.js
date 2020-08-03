@@ -123,7 +123,6 @@ export const SuitesNavigationStack = () => {
                 }}
             />
 
-
             <SuitesNavigator.Screen
                 name="Storage"
                 component={Storage}

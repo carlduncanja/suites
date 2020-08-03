@@ -6,10 +6,10 @@ import SvgIcon from '../../../assets/SvgIcon';
 
 
 /**
- * Component for the side navigation tabs
+ * Component for the side navigation tabs 
  */
-export default ({tabName, icon, isTabSelected, onTabPress}) => {
-
+export default ({tabName, icon, isTabSelected, onTabPress, hasDivider}) => {
+    console.log("Name: ", tabName)
     const generateIcon = (iconName, colour) => {
         return <SvgIcon iconName={iconName} strokeColor={colour}/>
     };
@@ -44,7 +44,9 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
     const TabIcon = icon;
 
     return (
-        <View style={{...styles.container}}>
+        <View style={{...styles.container, 
+            // borderBottomWidth : hasDivider ? 1 : 0, borderBottomColor : hasDivider ? 'yellow' : 'none', 
+        }}>
             <TouchableOpacity style={styles.navTag} onPress={onTabPress}>
 
                 {
@@ -56,7 +58,7 @@ export default ({tabName, icon, isTabSelected, onTabPress}) => {
                         [
                             styles.iconContainer,
                             {backgroundColor: isTabSelected ? 'white' : 'none'},
-                            isTabSelected ? styles.shadow : {}
+                            isTabSelected ? styles.shadow : {},
                         ]
                     }>
 
