@@ -20,7 +20,6 @@ function ResponsiveRecord({
 
     const RecordWrapper = styled.TouchableOpacity`
         flex:1;
-        background-color: red;
         margin-right: ${theme.space['--space-4']};
     `;
     const RecordContainer = styled.View`

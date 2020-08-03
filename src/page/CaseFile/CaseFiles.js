@@ -325,7 +325,7 @@ function CaseFiles(props){
             placeholderText={"Search by any heading or entry below"}
             changeText={changeText}
             inputText={searchValue}
-            routeName={routeName}
+            routeName={"Case Files"}
             listData={caseFilesToDisplay}
 
             listHeaders={listHeaders}

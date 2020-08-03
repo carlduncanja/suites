@@ -54,7 +54,6 @@ function DayOfMonth({day, isSelected, appointmentColors, onDayPress, isInSelectM
     const DayOfMonthContainer = styled.View`
         align-self: center;
         align-items: flex-start;
-        background-color:yellow;  
     `;
 
     const TextContainer = styled.View`

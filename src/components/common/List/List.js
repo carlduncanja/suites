@@ -42,7 +42,6 @@ function List({
     const ListWrapper = styled.View`
         display : flex;
         flex:1;
-        background-color: ${theme.colors['--color-purple-400']};
     ` 
     const ListContainer = styled.View`
         display: flex;

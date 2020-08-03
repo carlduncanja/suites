@@ -34,7 +34,6 @@ function NavPage({
     const NavPageWrapper = styled.View`
         height: 100%;
         width: 100%;
-        background-color: green;
     `;
     const NavPageContainer = styled.View`
         display: flex;

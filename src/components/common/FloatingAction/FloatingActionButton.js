@@ -12,7 +12,6 @@ function FloatingActionButton ({isDisabled = false,toggleActionButton = ()=>{}, 
     const theme = useTheme();
 
     const FloatingActionButtonWrapper = styled.TouchableOpacity`
-        background-color: red;
         height : 48px;
         width: 48px;
     `;

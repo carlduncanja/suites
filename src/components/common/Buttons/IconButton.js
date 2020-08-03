@@ -12,7 +12,6 @@ function IconButton({Icon = ()=>{}, onPress=()=>{}, disabled = false}) {
         flex:1;
         padding-right: 10px;
         padding-left: 10px;
-        background-color: orange;
     `;
     const IconButtonContainer = styled.View`
         height:100%;

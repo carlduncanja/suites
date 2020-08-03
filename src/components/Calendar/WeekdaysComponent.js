@@ -9,7 +9,6 @@ function WeekdaysComponent({screenDimensions}){
 
     const WeekdaysWrapper = styled.View`
         margin-bottom: ${theme.space['--space-16']};
-        background-color: orange;
     `
     const WeekdaysContainer = styled.View`
         flex-direction: row;

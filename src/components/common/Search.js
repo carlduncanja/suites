@@ -16,10 +16,10 @@ function Search({placeholderText = "Search", changeText = () => {}, inputText}){
 
     const SearchContainer = styled.View`
         height: 30px;
-        border : 1px solid ${theme.colors['--color-gray-400']};
-        border-radius : 8px;
+        
     `;
-
+    // border : 1px solid ${theme.colors['--color-gray-400']};
+    //     border-radius : 8px;
     return (
         <SearchWrapper>
             <SearchContainer>

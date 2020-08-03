@@ -6,7 +6,7 @@ import { useTheme } from 'emotion-theming';
 import styled, { css } from '@emotion/native';
 
 /**
- *
+ * 
  * @param label
  * @param onChangeText
  * @param value
@@ -57,7 +57,7 @@ function InputField2({
                 
             }]}>
                 <TextInput
-                    style={[styles.inputField, {borderColor: hasError ? 'red' : '#E3E8EF', backgroundColor : backgroundColor ? backgroundColor : theme.colors['--default-shade-white']}]}
+                    style={[styles.inputField, {borderColor: hasError ? 'red' : '#CCD6E0', backgroundColor : backgroundColor ? backgroundColor : theme.colors['--default-shade-white']}]}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}
