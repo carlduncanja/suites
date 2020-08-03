@@ -47,7 +47,7 @@ function CasePage({route, addNotification}) {
     const modal = useModal();
 
     const {caseId, isEdit} = route.params;
-
+    console.log("Case id: ", caseId)
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([])
@@ -125,6 +125,7 @@ function CasePage({route, addNotification}) {
 
     const onEditPress = (tab) => {
         setEditMode(!isEditMode)
+        console.log("Pressed: ")
         // if (isEditMode === true) {
         //     if (updateInfo.length !== 0) {
         //         // console.log("Record: ", updateInfo)
@@ -189,6 +190,7 @@ function CasePage({route, addNotification}) {
             })
             .catch(error => {
                 console.log("Failed to get case", error)
+                Alert.alert(("Failed", "Failed to get details for case"))
             })
             .finally(_ => {
                 setFetching(false)

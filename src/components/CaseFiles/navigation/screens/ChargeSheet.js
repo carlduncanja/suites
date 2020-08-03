@@ -53,7 +53,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         inventoryList = [],
         equipmentList = [],
         proceduresBillableItems = [],
-        total = 0,
+        total = 0, 
         caseId
     } = chargeSheet
 
@@ -86,6 +86,13 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         discount: 0.15,
         procedures: []
     }
+
+    // --------------------------- States
+
+    const [caseProcedures, setCaseProcedure] = useState(billing.procedures);
+    const [isUpdated, setUpdated] = useState(false);
+    //const [allConsumables, setAllConsumables] = useState([])
+
 
     for (const proceduresBillableItem of proceduresBillableItems) {
         const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
@@ -156,21 +163,15 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     // --------------------------- Life Cycle
 
     useEffect(() => {
-
+        console.log("Procedures: ", caseProcedures, isEditMode, isUpdated)
         // [HOT FIX] TODO FIND A BETTER WAY TO IMPLEMENT UPDATES
-        if (isUpdated && !isEditMode) {
+        if (isUpdated && !isEditMode ) {
+            console.log("Updeated edit", caseProcedures)
             onUpdateChargeSheet(caseProcedures)
             setUpdated(false);
         }
 
     }, [isEditMode])
-
-
-    // --------------------------- States
-
-    const [caseProcedures, setCaseProcedure] = useState(billing.procedures);
-    const [isUpdated, setUpdated] = useState(false);
-    //const [allConsumables, setAllConsumables] = useState([])
 
 
     // --------------------------- Helper Methods
@@ -216,6 +217,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     }
 
     const handleCaseProcedureUpdate = (caseProcedures) => {
+        console.log("Procedure update: ", caseProcedures)
         setCaseProcedure(caseProcedures)
         setUpdated(true)
     }

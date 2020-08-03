@@ -10,11 +10,12 @@ import SuggestionsFilterContainer from '../SuggestionsFilterContainer';
 
 function DropdownInputField({label, onSelectChange, value, dropdownOptions, selected}) {
 
-    // const [selectedOption, setSelectedOption] = useState(value)
+    // const [selectedOption, setSelectedOption] = useState(value) 
     const [searchText, setSearchText] = useState("")
     const [isOptionsDisplay, setDisplayOptions] = useState(false)
 
     const toggleDisplayOptions = () =>{
+        console.log("Presed to display")
         setDisplayOptions(!isOptionsDisplay)
     }
 
@@ -32,17 +33,18 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions, sele
                 style={{flex: 1,position:"relative"}} 
             >
                 <MenuTrigger>
-
                     <View style={[styles.inputWrapper]}>
                         <View style={{flex:1,justifyContent:'space-between', paddingLeft:10, flexDirection:'row', alignItems:'center',paddingRight:8}}>
                             <Text>{value}</Text>
-                            <IconButton
-                                Icon = {<DropdownIcon/>}
-                                onPress = {()=>toggleDisplayOptions()}
-                            />
+                            <View>
+                                <IconButton
+                                    Icon = {<DropdownIcon/>}
+                                    onPress = {()=>toggleDisplayOptions()}
+                                />
+                            </View>
+                            
                         </View>
                     </View>
-
                 </MenuTrigger>
 
                 

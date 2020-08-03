@@ -20,7 +20,7 @@ import Search from './Search';
 
 const SuggestionsFilterContainer = ({ options = [], searchText, onSearchChangeText, onOptionSelected, selected}) => {
 
-    const [selectedOption, setSelectedOption] = useState(0)
+    const [selectedOption, setSelectedOption] = useState(0) 
 
     return (
         <>
@@ -37,7 +37,6 @@ const SuggestionsFilterContainer = ({ options = [], searchText, onSearchChangeTe
 
             <View style={styles.suggestionsContainer}>
                 {options.map(( option, index)=>{
-
                     return (
                         <TouchableOpacity
                             key={index}

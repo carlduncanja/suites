@@ -11,7 +11,7 @@ function Search({placeholderText = "Search", changeText = () => {}, inputText,})
     const theme = useTheme(); 
 
     const SearchWrapper = styled.View` 
-        margin-bottom : 24px;
+        width: 100%;
     `;
 
     const SearchContainer = styled.View`

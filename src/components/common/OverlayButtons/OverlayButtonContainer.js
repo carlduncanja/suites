@@ -8,7 +8,7 @@ function OverlayButtonContainer({message = "", button = ()=>{}}){
 
     const theme = useTheme();
 
-    const OverlayButtonWrapper = styled.TouchableOpacity`
+    const OverlayButtonWrapper = styled.View`
         display: flex;
     `;
 
@@ -19,11 +19,12 @@ function OverlayButtonContainer({message = "", button = ()=>{}}){
     `;
     const Message = styled.Text({
         ...theme.font['--text-base-medium'],
-        color : theme.colors['--default-shade-white']
+        color : theme.colors['--accent-button'],
+        marginRight : 10,
     });
 
     return (
-        <OverlayButtonWrapper onPress = {()=>{}}>
+        <OverlayButtonWrapper>
             <OverlayButtonContainer>
                 <Message>{message}</Message>
                 {button}

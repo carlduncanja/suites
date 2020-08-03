@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import Button from "../Buttons/Button";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
-function DoneButton({onPress = ()=>{}}){
+function DoneButton({onPress = ()=>{}, message = ""}){
 
     const theme = useTheme();
 
@@ -21,6 +21,7 @@ function DoneButton({onPress = ()=>{}}){
         padding-left: 8px;
         padding-right: 8px;
         background-color : ${theme.colors['--default-shade-white']};
+        border : 1px solid ${theme.colors['--color-gray-400']};
         align-items : center;
         justify-content : center;
     `
@@ -30,12 +31,12 @@ function DoneButton({onPress = ()=>{}}){
                 <Button
                     backgroundColor="#FFFFFF" 
                     color="#0CB0E7"
-                    title="Edit"
-                    onPress={onPress}
+                    title="Done"
+                    buttonPress={onPress}
                 />
             </DoneButtonContainer>
         </DoneButtonWrapper>
-        
+       
     )
 }
 

@@ -9,7 +9,7 @@ function EditModeHeading({id = '',title = '', onButtonPress = ()=>{}}){
     const theme = useTheme();
 
     return(
-        <Heading
+        <Heading 
             headerId={id}
             headerName={title}
             headerIdColor={theme.colors['--company']}

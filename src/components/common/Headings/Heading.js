@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import OverlayButton from '../OverlayButtons/OverlayButton';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import Button from '../Buttons/Button';
+import Button from '../Buttons/Button'; 
 import OverlayButtonContainer from '../OverlayButtons/OverlayButtonContainer';
 
 function Heading({headerIdColor, headerId, headerNameColor, headerName, message, button}){ 
