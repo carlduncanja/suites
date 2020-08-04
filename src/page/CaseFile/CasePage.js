@@ -41,9 +41,10 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {addNotification} from "../../redux/actions/NotificationActions";
 import CaseFilesBottomSheetContainer from '../../components/CaseFiles/CaseFilesBottomSheetContainer';
+import {setCaseEdit} from "../../redux/actions/casePageActions";
 
 
-function CasePage({route, addNotification}) {
+function CasePage({route, addNotification, ...props}) {
     const modal = useModal();
 
     const {caseId, isEdit} = route.params;
@@ -123,7 +124,7 @@ function CasePage({route, addNotification}) {
     }
 
     const onEditPress = (tab) => {
-        setEditMode(!isEditMode)
+        //setEditMode(!isEditMode)
         // if (isEditMode === true) {
         //     if (updateInfo.length !== 0) {
         //         // console.log("Record: ", updateInfo)
@@ -439,7 +440,8 @@ CasePage.propTypes = {};
 CasePage.defaultProps = {};
 
 const mapDispatchTopProp = dispatch => bindActionCreators({
-    addNotification
+    addNotification,
+    setCaseEdit
 }, dispatch);
 
 

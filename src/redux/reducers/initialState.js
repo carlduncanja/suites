@@ -18,4 +18,7 @@ export default {
     userToken: null,
   },
   draft: {},
+  casePage: {
+    isEdit: false
+  }
 };
