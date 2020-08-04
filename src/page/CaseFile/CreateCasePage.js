@@ -42,7 +42,7 @@ const testData = {
         firstName: "John",
         middleName: "",
         surname: "Doe",
-        gender: "female",
+        gender: "Male",
         trn: "42991536",
         dob: "2020-06-02",
         contactInfo: {
