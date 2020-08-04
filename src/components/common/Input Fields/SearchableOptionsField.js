@@ -29,7 +29,7 @@ function SearchableOptionsField({
                                     errorMessage = ""
                                 }) {
 
-    const textInputRef = useRef(); 
+    const textInputRef = useRef();
 
     const [selectedValue, setSelectedValue] = useState(value);
 
@@ -71,6 +71,7 @@ function SearchableOptionsField({
                 {label}
             </Text>
             <View style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}>
+
                 <TextInput
                     style={[styles.inputField, {borderColor: hasError ? 'red' : borderColor, height: 32}]}
                     value={text}
@@ -81,7 +82,6 @@ function SearchableOptionsField({
                     }}
                     ref={textInputRef}
                 />
-
 
                 {
                     (selectedValue ) &&
@@ -113,17 +113,17 @@ function SearchableOptionsField({
 
 
                 {
-                    
+
                     (!selectedValue && text && isPopoverOpen)
-                        ? 
+                        ?
                         <View style={styles.suggestionContainer}>
-                            
+
                             {
                                 options.length === 0 ?
                                     <View style={{marginBottom:10, marginTop:10}}>
                                         <Text style={{color:'#718096',fontSize:14}}>No Suggestions Found</Text>
                                     </View>
-                                    
+
                                     :
                                 <FlatList
                                     keyExtractor={(item, index) => index + ''}
@@ -131,7 +131,7 @@ function SearchableOptionsField({
                                     renderItem={renderOptions}
                                 />
                             }
-                            
+
                         </View>
                         : null
                 }
@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         flex: 1,
         flexDirection: 'column',
+        borderRadius: 8,
         height: 32
     },
     textLabel: {
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         borderWidth: 1,
         borderColor: '#E3E8EF',
-        borderRadius: 4,
+        borderRadius: 8,
         height: 32,
         padding: 10,
         paddingTop: 2,

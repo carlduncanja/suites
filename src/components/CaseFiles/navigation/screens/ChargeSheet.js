@@ -14,6 +14,7 @@ import CaseFiles from '../../../../../data/CaseFiles';
 import IconButton from '../../../common/Buttons/IconButton';
 import RightArrow from '../../../../../assets/svg/rightArrow';
 import LeftArrow from '../../../../../assets/svg/leftArrow';
+import {connect} from 'react-redux';
 
 
 const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices
@@ -45,10 +46,8 @@ const headers = [
         alignment: "flex-end"
     }
 ]
- 
+
 const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, isEditMode, onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
-
-
     let {
         inventoryList = [],
         equipmentList = [],
@@ -86,6 +85,13 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         discount: 0.15,
         procedures: []
     }
+
+    // --------------------------- States
+
+    const [caseProcedures, setCaseProcedure] = useState(billing.procedures);
+    const [isUpdated, setUpdated] = useState(false);
+    //const [allConsumables, setAllConsumables] = useState([])
+
 
     for (const proceduresBillableItem of proceduresBillableItems) {
         const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
@@ -128,9 +134,6 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         }
 
         billingItem.inventories = inventories.map(item => {
-
-            console.log(item);
-
             return {
                 _id: item._id,
                 inventory: item?.inventory?._id,
@@ -156,21 +159,14 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     // --------------------------- Life Cycle
 
     useEffect(() => {
-
+        console.log("Procedures: ", isEditMode, isUpdated)
         // [HOT FIX] TODO FIND A BETTER WAY TO IMPLEMENT UPDATES
-        if (isUpdated && !isEditMode) {
+        if (isUpdated && !isEditMode ) {
+            console.log("Updated edit", caseProcedures)
             onUpdateChargeSheet(caseProcedures)
             setUpdated(false);
         }
-
     }, [isEditMode])
-
-
-    // --------------------------- States
-
-    const [caseProcedures, setCaseProcedure] = useState(billing.procedures);
-    const [isUpdated, setUpdated] = useState(false);
-    //const [allConsumables, setAllConsumables] = useState([])
 
 
     // --------------------------- Helper Methods
@@ -216,6 +212,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     }
 
     const handleCaseProcedureUpdate = (caseProcedures) => {
+        console.log("Procedure update: ", caseProcedures)
         setCaseProcedure(caseProcedures)
         setUpdated(true)
     }
@@ -295,7 +292,14 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     );
 }
 
-export default ChargeSheet;
+
+const mapStateToProps = (state) => {
+    return {
+        isEditMode: state.casePage?.isEdit
+    }
+}
+
+export default connect(mapStateToProps)(ChargeSheet);
 
 const styles = StyleSheet.create({
     item: {

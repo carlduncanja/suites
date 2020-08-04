@@ -81,7 +81,8 @@ const styles = StyleSheet.create({
     },
     optionWrapper : {
         flexDirection : 'row',
-        padding:10
+        // padding:10,
+        alignItems:'center',
     },
     footer:{
         flex:1,

@@ -322,7 +322,7 @@ const SupplierProductsTab = ({modal, supplierId, addCartItem, cart, products, on
             <Text style={styles.itemText}>{item.type}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{item.sku}</Text>
+            <Text style={styles.itemText}>{item?.sku || 'n/a'}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'flex-end'}]}>
             <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>

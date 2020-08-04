@@ -432,7 +432,7 @@ const Orders = (props) => {
       toggleActionButton={toggleActionButton}
       hasPaginator = {true}
       hasActionButton = {true}
-      hasActions = {true}
+      hasActions = {false}
       isNextDisabled = {isNextDisabled}
       isPreviousDisabled = {isPreviousDisabled}
     />

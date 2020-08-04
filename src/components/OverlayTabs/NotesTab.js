@@ -13,7 +13,7 @@ const NotesTab = ({notesData}) => {
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Notes"
-                cardInformation = {[notesData]}
+                cardInformation = {notesData}
                 icon = {NotesIcon}
             />
         </>

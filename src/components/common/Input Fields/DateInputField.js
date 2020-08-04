@@ -26,7 +26,7 @@ function DateInputField({
         mode,
         format,
         maxDate
-    }) { 
+    }) {
 
 
     const handleOnDateChange = (dateString, dateObj) => {
@@ -48,7 +48,7 @@ function DateInputField({
                     }
                 ]}>{label}</Text>
             }
-            
+
             <View
                 style={{
                     flex: 1,
@@ -123,16 +123,19 @@ const styles = StyleSheet.create({
         flex: 1,
         borderWidth: 1,
         borderColor: '#E3E8EF',
-        borderRadius: 4,
         height: 32,
+        borderRadius: 8,
         paddingLeft:10,
         alignItems:'flex-start',
     },
     inputField: {
-        flex: 1,
         padding: 10,
         paddingTop: 2,
         paddingBottom: 2,
+        borderWidth: 1,
+        borderColor: '#E3E8EF',
+        borderRadius: 8,
+        height: 32,
     },
     clearIcon: {
         position: 'absolute',

@@ -65,7 +65,7 @@ const PickListCard = (props) =>{
                     {
                         tabs.map((tab,index)=>{
                             return (
-                                <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null}]} key={index}>
+                                <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null, height: 30}]} key={index}>
                                     <Button
                                         backgroundColor = {tab === selectedTab ? "#FFFFFF" : null}
                                         color = {tab === selectedTab ? "#3182CE" : "#A0AEC0" }
@@ -151,14 +151,13 @@ const styles = StyleSheet.create({
         backgroundColor:'#FFFFFF',
         borderRadius:8,
         width:400,
-        // backgroundColor:'red'
     },
     headerContainer:{
         flexDirection:'row',
         justifyContent:'space-between',
         padding:10,
         borderBottomColor:'#CCD6E0',
-        borderBottomWidth:1
+        borderBottomWidth:1,
     },
     headerTitle:{
         fontSize:16,
@@ -213,9 +212,13 @@ const styles = StyleSheet.create({
         borderColor:'#CCD6E0',
         borderWidth:1,
         backgroundColor:'#FFFFFF',
+        height: 50,
+        width: 150,
         borderRadius: 4,
-        padding:8,
-        alignSelf:'flex-end',
+        // padding:8,
+        // alignSelf:'flex-end',
+        // alignItems:'center',
+        // justifyContent:'center',
         marginRight:15,
         marginBottom:20
     },

@@ -81,8 +81,8 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         text={fields['gender']}
                         oneOptionsSelected={onFieldChange('gender')}
                         menuOption={<MenuOptions>
-                            <MenuOption value={"female"} text='Female'/>
-                            <MenuOption value={"male"} text='Male'/>
+                            <MenuOption value={"Female"} text='Female'/>
+                            <MenuOption value={"Male"} text='Male'/>
                         </MenuOptions>}
                     />
                 </View>
@@ -145,13 +145,13 @@ const styles = StyleSheet.create({
     inputWrapper: {
         width: 260,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     fieldContainer: {
         flex: 1,
         borderWidth: 1,
         borderColor: '#E3E8EF',
-        borderRadius: 4,
+        borderRadius: 8,
         height: 32,
         padding: 10,
         paddingTop: 2,

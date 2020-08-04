@@ -1,5 +1,6 @@
+
 import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
 import {ActivityIndicator, Alert, StyleSheet, View} from "react-native";
 import {colors} from "../../styles";
 import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
@@ -40,13 +41,13 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {addNotification} from "../../redux/actions/NotificationActions";
 import CaseFilesBottomSheetContainer from '../../components/CaseFiles/CaseFilesBottomSheetContainer';
+import {setCaseEdit} from "../../redux/actions/casePageActions";
 
 
-function CasePage({route, addNotification}) {
+function CasePage({route, addNotification, ...props}) {
     const modal = useModal();
 
     const {caseId, isEdit} = route.params;
-
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([])
@@ -123,7 +124,7 @@ function CasePage({route, addNotification}) {
     }
 
     const onEditPress = (tab) => {
-        setEditMode(!isEditMode)
+        //setEditMode(!isEditMode)
         // if (isEditMode === true) {
         //     if (updateInfo.length !== 0) {
         //         // console.log("Record: ", updateInfo)
@@ -188,6 +189,7 @@ function CasePage({route, addNotification}) {
             })
             .catch(error => {
                 console.log("Failed to get case", error)
+                Alert.alert(("Failed", "Failed to get details for case"))
             })
             .finally(_ => {
                 setFetching(false)
@@ -363,6 +365,7 @@ function CasePage({route, addNotification}) {
 
     const getOverlayContent = () => {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase
+        // console.log("Case Procedures: ", caseProcedures)
         const {medicalInfo = {}} = patient
 
         switch (selectedMenuItem) {
@@ -429,7 +432,7 @@ function CasePage({route, addNotification}) {
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
         />
-        
+
     );
 }
 
@@ -437,7 +440,8 @@ CasePage.propTypes = {};
 CasePage.defaultProps = {};
 
 const mapDispatchTopProp = dispatch => bindActionCreators({
-    addNotification
+    addNotification,
+    setCaseEdit
 }, dispatch);
 
 

@@ -34,7 +34,7 @@ const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options,
         // console.log("Updated List: ", updatedList)
         onOptionsSelected(updatedList)
     }
- 
+  
     const toggleCheckBox = () => {
         setIsDisplay(!isDisplay)
     }

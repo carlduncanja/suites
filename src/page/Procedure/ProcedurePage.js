@@ -357,7 +357,7 @@ function ProcedurePage({route}) {
                     handleEquipmentUpdate = {handleEquipmentUpdate}
                 />;
             case "Notes":
-                return <NotesTab notesData = {[notes]}/>;
+                return <NotesTab notesData = {notes === "" ? [] : [notes]}/>;
             case "Theatres" :
                 return <TheatresTab 
                     theatresData = {supportedRooms}
@@ -386,12 +386,12 @@ function ProcedurePage({route}) {
                             isEditMode={isEditMode}
                             onEditPress = {onEditPress}
                             overlayContent={
-                                <View 
-                                    style={{flex: 1, padding:30, backgroundColor:'#FFFFFF'}}
-                                    // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
-                                >
-                                    {getTabContent(currentTab)}
-                                </View>
+                                // <View 
+                                //     style={{flex: 1, padding:30, backgroundColor:'#FFFFFF'}}
+                                //     // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
+                                // >
+                                    getTabContent(currentTab)
+                                // </View>
                             }
                         />
                         {/* <View style={styles.footer}>

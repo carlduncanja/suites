@@ -34,7 +34,7 @@ const Table = (props) => {
     const isIndeterminate = itemSelected.length > 0 && itemSelected.length !== data.length;
     return ( 
         <>
-            <View style={styles.header}>
+            {/* <View style={styles.header}> */}
                 {/* {headerItemFormat()} */}
                 <Header 
                     headers = {headers}
@@ -43,7 +43,7 @@ const Table = (props) => {
                     checked = {itemSelected.length > 0}
                     isCheckbox = {isCheckbox}
                 />
-            </View>
+            {/* </View> */}
             {Divider()}
             <View style={{paddingBottom:5}}>
                 <Data
@@ -63,6 +63,7 @@ const Table = (props) => {
 export default Table;
 const styles = StyleSheet.create({
     header:{
+        backgroundColor:'red'
         //marginBottom:25,
     },
     data:{}

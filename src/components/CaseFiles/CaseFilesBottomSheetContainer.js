@@ -43,7 +43,7 @@ function CaseFilesBottomSheetContainer({
         bottom: 0;
         height: 60px;
     `;
-
+ 
     const FooterContainer = styled.View`
 
         width: 100%;

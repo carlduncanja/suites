@@ -22,7 +22,7 @@ import { useTheme } from 'emotion-theming';
  * @returns {*}
  */
 
-function List({
+function List({ 
         listData = [],
         listHeaders = [],
         itemsSelected = [],

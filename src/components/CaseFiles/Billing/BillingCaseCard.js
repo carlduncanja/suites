@@ -106,7 +106,7 @@ const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleE
         })
 
         // console.log("Procedures: ", billingProcedures)
-        // console.log("Updated Data: ", updatedData1)
+        // console.log("Updated Data: ", updatedData)
         setBillingProcedures(updatedData)
         onCaseProcedureBillablesChange(updatedData);
         // handleEditDone(handleEditData)
@@ -273,7 +273,7 @@ const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleE
     );
 }
 
-export default withModal(BillingCaseCard); 
+export default withModal(BillingCaseCard);  
 
 const styles = StyleSheet.create({
     container: {},

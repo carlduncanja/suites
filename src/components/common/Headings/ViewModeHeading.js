@@ -5,7 +5,7 @@ import { EditButton } from '../OverlayButtons/OverlayButtonStyles';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-function ViewModeHeading({id = '',title = '', onButtonPress = ()=>{}}){
+function ViewModeHeading({id = '',title = '', onButtonPress = ()=>{}}){  
 
     const theme = useTheme();
 
