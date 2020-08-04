@@ -18,9 +18,9 @@ function OptionSearchableField ({onOptionsSelected, label, options, keysToFilter
     const [searchText, setSearchText] = useState("")
     const [checkedList, setCheckedList] = useState([])
 
-    const onSearchChangeText = (text) =>{ 
+    const onSearchChangeText = (text) =>{
         setSearchText(text)
-    } 
+    }
 
     const onCheckboxPress = (item) => () => {
         let updatedList = [item];
@@ -38,10 +38,10 @@ function OptionSearchableField ({onOptionsSelected, label, options, keysToFilter
             ]}>
                 {label}
             </Text>
-            <Menu 
+            <Menu
                 onClose = {()=>onOptionsSelected(checkedList[0]._id)}
-                // onSelect={oneOptionsSelected} 
-                style={{flex: 1,position:"relative"}} 
+                // onSelect={oneOptionsSelected}
+                style={{flex: 1,position:"relative"}}
             >
                 <MenuTrigger>
                     <View style={styles.inputField}>
@@ -56,14 +56,14 @@ function OptionSearchableField ({onOptionsSelected, label, options, keysToFilter
                                     />
                                 </View>
                         }
-                            
+
                         <View style={{flex:1,justifyContent:"flex-end", alignItems:"flex-end"}}>
                             <DropDownIcon/>
                         </View>
-                            
+
                     </View>
                 </MenuTrigger>
-                
+
                 <MenuOptions customStyles={optionsStyles}>
                     <View style={styles.menuOptionsContainer}>
                         <SearchableContainer
@@ -74,7 +74,7 @@ function OptionSearchableField ({onOptionsSelected, label, options, keysToFilter
                             searchText = {searchText}
                             onSearchChangeText = {onSearchChangeText}
                         />
-                        
+
                         <View style={styles.footer}>
                             <View style={{flexDirection:"row", justifyContent:"space-evenly", }}>
                                 <AddIcon/>
@@ -85,7 +85,7 @@ function OptionSearchableField ({onOptionsSelected, label, options, keysToFilter
                             </View>
                         </View>
                     </View>
-                </MenuOptions> 
+                </MenuOptions>
             </Menu>
         </View>
     );
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         borderColor: '#E3E8EF',
-        borderRadius: 4,
+        borderRadius: 8,
         paddingRight:4,
         paddingLeft:4,
         height: 32,
@@ -132,8 +132,8 @@ const styles = StyleSheet.create({
     menuOptionsContainer:{
         // flex:1,
         height:180,
-        backgroundColor:"#FFFFFF", 
-        // top:34, 
+        backgroundColor:"#FFFFFF",
+        // top:34,
         borderRadius:8,
         borderColor:'#CCD6E0',
         borderWidth:1
