@@ -22,7 +22,7 @@ import { useTheme } from 'emotion-theming';
  * @returns {*}
  */
 
-function List({
+function List({ 
         listData = [],
         listHeaders = [],
         itemsSelected = [],
@@ -42,7 +42,6 @@ function List({
     const ListWrapper = styled.View`
         display : flex;
         flex:1;
-        margin-top: ${theme.space['--space-24']};
     ` 
     const ListContainer = styled.View`
         display: flex;

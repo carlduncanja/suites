@@ -127,7 +127,7 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
         const {cases = [], procedures = []} = selectedPhysician
         switch (selectedTab) {
             case "Details":
-                return editableTab === 'Details' && isEditMode ?
+                return editableTab === 'Details' && isEditMode ? 
                     <EditablePhysiciansDetailsTab
                         fields={fields}
                         onFieldChange={onFieldChange}/>
@@ -144,9 +144,6 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
         }
     };
 
-    const overlayContent = <View style={{flex: 1, padding: 30}}>
-        {getTabContent(currentTab)}
-    </View>;
 
     const fetchPhysician = (id) => {
         setFetching(true);

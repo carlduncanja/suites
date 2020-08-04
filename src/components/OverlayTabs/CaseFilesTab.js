@@ -52,7 +52,7 @@ const testData = [
 const CaseFilesTab = ({cases}) => {
 
     const recordsPerPage = 10;
-    
+    console.log("Cases: ", cases)
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
@@ -148,7 +148,7 @@ const CaseFilesTab = ({cases}) => {
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <>
+        <View style={{ flex:1}}>
             <List
                 listData={dataToDisplay}
                 listHeaders={headers}
@@ -167,8 +167,8 @@ const CaseFilesTab = ({cases}) => {
                     />
                 </View>
             </View>
-        
-        </>
+         
+        </View>
     )
 }
 
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        marginBottom: 20,
-        marginRight: 30,
+        // marginBottom: 20,
+        // marginRight: 30,
     }
 })

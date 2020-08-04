@@ -139,7 +139,7 @@ function SuppliersBottomSheet({supplier = {}, isOpenEditable, floatingActions}) 
     const supplierDetails = {supplier, status : ''}
 
     const getTabContent = (selectedTab) => {
-        switch (selectedTab) {
+        switch (selectedTab) { 
             case "Details":
                 return <SupplierDetailsTab order = {supplierDetails}/>
             case "Products":

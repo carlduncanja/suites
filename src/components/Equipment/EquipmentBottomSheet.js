@@ -7,6 +7,7 @@ import moment from 'moment';
 import {colors} from "../../styles";
 import { getEquipmentById } from "../../api/network";
 import { formatDate } from '../../utils/formatter';
+import BottomSheetContainer from '../common/BottomSheetContainer';
 
 function EquipmentBottomSheet({equipment, isOpenEditable}) {
 
@@ -57,7 +58,10 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        fetchEquipment(_id)
+        setTimeout(()=>{
+            fetchEquipment(_id)
+        },200)
+        
     }, []);
 
     // ##### Event Handlers
@@ -114,25 +118,36 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
             })
     };
     return (
-        <View style={{flex: 1}}>
-            {
-                isFetching
-                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                    </View>
-                    :
-                    <SlideOverlay
-                        overlayId={_id}
-                        overlayTitle={name}
-                        onTabPressChange={onTabPress}
-                        currentTabs={currentTabs}
-                        selectedTab={currentTab}
-                        isEditMode={isEditMode}
-                        overlayContent={overlayContent}
-                        onEditPress = {onEditPress}
-                    />
-            }
-        </View>
+        <BottomSheetContainer
+            isFetching = {isFetching}
+            overlayId={_id}
+            overlayTitle={name}
+            onTabPressChange={onTabPress}
+            currentTabs={currentTabs}
+            selectedTab={currentTab}
+            isEditMode={isEditMode}
+            onEditPress = {onEditPress}
+            overlayContent={getTabContent(currentTab)}
+        />
+        // <View style={{flex: 1}}>
+        //     {
+        //         isFetching
+        //             ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
+        //                 <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
+        //             </View>
+        //             :
+        //             <SlideOverlay
+        //                 overlayId={_id}
+        //                 overlayTitle={name}
+        //                 onTabPressChange={onTabPress}
+        //                 currentTabs={currentTabs}
+        //                 selectedTab={currentTab}
+        //                 isEditMode={isEditMode}
+        //                 overlayContent={overlayContent}
+        //                 onEditPress = {onEditPress}
+        //             />
+        //     }
+        // </View>
     );
 }
 

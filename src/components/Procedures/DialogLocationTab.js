@@ -69,7 +69,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
         getTheatres(searchLocationValue, 5)
             .then((theatresResult = {}) => {
                 const { data = [], pages = 0} = theatresResult
-                con
+                
                 const results = data.map(item => ({
                     // name: `Dr. ${item.surname}`,
                     ...item
@@ -176,8 +176,9 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                         searchText = {searchLocationValue}
                         onSearchChangeText = {(value)=> setSearchLocationValue(value)}
                         onClear={()=>{setSearchLocationValue('')}}
-                        handlePopovers = {(value)=>handlePopovers(value)('location')}
-                        isPopoverOpen = {status}
+                        // handlePopovers = {(value)=>handlePopovers(value)('location')}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {searchLocationQuery}
                     />
             </View>
 

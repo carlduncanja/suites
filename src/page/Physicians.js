@@ -26,7 +26,7 @@ import _ from "lodash";
 
 import { withModal } from 'react-native-modalfy';
 import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
-
+ 
 const Physicians = (props) => {
 
     // ############# Const data
