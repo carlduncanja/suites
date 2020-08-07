@@ -9,6 +9,7 @@ import { useTheme } from 'emotion-theming';
 function Search({placeholderText = "Search", changeText = () => {}, inputText, onClear}){
     
     const theme = useTheme(); 
+    
     const [isFocussed, setIsFocussed] = useState(false)
 
     const SearchWrapper = styled.View` 
@@ -25,9 +26,11 @@ function Search({placeholderText = "Search", changeText = () => {}, inputText, o
 
     const onFocus = ()=>{
         setIsFocussed(true)
+        // console.log("Focussed")
     }
     const onEndEditing = () =>{
         setIsFocussed(false)
+        // console.log("Done Edit")
     }
 
     return (

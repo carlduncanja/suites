@@ -35,13 +35,6 @@ function InputField2({
      
     const theme = useTheme();
     const inputRef = useRef();
-    const [hasFocus, setHasFocus] = useState(false)
-
-    useEffect(()=>{
-        console.log("Focus: ", inputRef.current.isFocused())
-        setHasFocus(inputRef.current.isFocused())
-    },[])
-
 
     const InputWrapper = styled.View`
         flex:1;
@@ -83,16 +76,16 @@ function InputField2({
                     ref={inputRef}
 
                 />
+
+
                 
-{
+                {
                     hasError && <View style={styles.errorView}>
                         <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
                     </View>
                 }
-            </View>
 
-            
-            {
+                {
                 !(value === undefined || value === null || value === '') &&
                 <TouchableOpacity
                     style={styles.clearIcon}
@@ -101,6 +94,10 @@ function InputField2({
                     <ClearIcon/>
                 </TouchableOpacity>
             }
+            </View>
+
+            
+            
 
                 
         </View>
@@ -142,7 +139,7 @@ const styles = StyleSheet.create({
             width: 0.5,
             height: 2.5,
         },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.2,
         shadowRadius: 3.84,
         elevation: 3,
         zIndex:3,
@@ -162,8 +159,8 @@ const styles = StyleSheet.create({
     clearIcon: {
         position: 'absolute',
         right: 0,
+        marginTop:6,
         margin: 10,
- 
     },
     errorView: {
         position:'absolute',
