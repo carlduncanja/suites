@@ -29,7 +29,7 @@ function SearchableOptionsField({
                                     errorMessage = ""
                                 }) {
 
-    const textInputRef = useRef(); 
+    const textInputRef = useRef();
 
     const [selectedValue, setSelectedValue] = useState(value);
 
@@ -71,6 +71,7 @@ function SearchableOptionsField({
                 {label}
             </Text>
             <View style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}>
+
                 <TextInput
                     style={[styles.inputField, {borderColor: hasError ? 'red' : borderColor, height: 32}]}
                     value={text}
@@ -82,14 +83,12 @@ function SearchableOptionsField({
                     ref={textInputRef}
                 />
 
-
                 {
                     (selectedValue ) &&
 
                     <View style={styles.valueBox}>
                         <Text numberOfLines = {1} style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
                     </View>
-
                 }
 
 
@@ -113,17 +112,17 @@ function SearchableOptionsField({
 
 
                 {
-                    
+
                     (!selectedValue && text && isPopoverOpen)
-                        ? 
+                        ?
                         <View style={styles.suggestionContainer}>
-                            
+
                             {
                                 options.length === 0 ?
                                     <View style={{marginBottom:10, marginTop:10}}>
                                         <Text style={{color:'#718096',fontSize:14}}>No Suggestions Found</Text>
                                     </View>
-                                    
+
                                     :
                                 <FlatList
                                     keyExtractor={(item, index) => index + ''}
@@ -131,7 +130,7 @@ function SearchableOptionsField({
                                     renderItem={renderOptions}
                                 />
                             }
-                            
+
                         </View>
                         : null
                 }
@@ -157,6 +156,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         height: 32,
         justifyContent:'center'
+        // borderRadius: 8,
+        // height: 32
     },
     textLabel: {
         fontSize: 12,
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         borderWidth: 1,
         borderColor: '#E3E8EF',
-        borderRadius: 4,
+        borderRadius: 8,
         height: 32,
         padding: 10,
         paddingTop: 2,

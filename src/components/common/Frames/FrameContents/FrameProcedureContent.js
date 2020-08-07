@@ -18,6 +18,7 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
         const { name = "" } = location
         let duration = moment.duration(moment(endTime).diff(moment(startTime)))
         let hours = duration.asHours()
+        if (isNaN(hours)) hours = "";
 
         return (
             <View>

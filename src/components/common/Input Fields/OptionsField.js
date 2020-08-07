@@ -15,20 +15,20 @@ function OptionsField({oneOptionsSelected, text, label, menuOption, hasError = f
             ]}>
                 {label}
             </Text>
-            <Menu onSelect={oneOptionsSelected} style={{flex: 1}}>
+            <Menu onSelect={oneOptionsSelected} style={{flex: 1, borderRadius: 8}}>
                 <MenuTrigger>
                     <>
-                        <View style={[styles.inputField,{borderColor : hasError ? 'red' : '#E3E8EF'}]}>
+                        <View style={[styles.inputField, {borderColor: hasError ? 'red' : '#E3E8EF'}]}>
                             <Text>{text}</Text>
                             <DropDownIcon/>
                         </View>
-                        {                      
+                        {
                             hasError && <View style={styles.errorView}>
-                                <Text style={{fontSize:10, color:'red'}}>{errorMessage}</Text>
+                                <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
                             </View>
                         }
                     </>
-                   
+
                 </MenuTrigger>
                 {
                     menuOption
@@ -64,15 +64,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         borderColor: '#E3E8EF',
-        borderRadius: 4,
+        borderRadius: 8,
         paddingLeft: 10,
         paddingRight: 10,
         height: 32,
     },
-    errorView : {
-        paddingTop:3,
-        paddingLeft:15
-        
+    errorView: {
+        paddingTop: 3,
+        paddingLeft: 15
+
     }
 });
 
