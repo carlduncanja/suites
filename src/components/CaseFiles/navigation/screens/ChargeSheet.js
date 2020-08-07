@@ -290,7 +290,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                     />
         // <View/>
     );
-}
+} 
 
 
 const mapStateToProps = (state) => {

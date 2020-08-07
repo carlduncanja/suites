@@ -15,13 +15,13 @@ function HeaderItem({header,index, selectedHeader = "", onSelectHeader = ()=>{}}
         flex : ${header.flex ? header.flex.toString() : '1'};
     `;
     const HeaderItemContainer = styled.View`
-        flex-direction: row;
+        flex-direction: row; 
         justify-content : ${header.alignment ? header.alignment : 'flex-start'};
     `;
 
 
     return (
-        <HeaderItemWrapper key={index} onPress = {onSelectHeader}>
+        <HeaderItemWrapper key={index} onPress = {()=>onSelectHeader(header.name)}>
             <HeaderItemContainer>
 
                 <HeaderFilterGroup

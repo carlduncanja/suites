@@ -26,7 +26,7 @@ function HeaderFilterGroup({name = "", isSelected = false}){
         flex-direction : row;
         justify-content: center;
     `;
-
+ 
     const HeaderText = styled.Text({
         ...theme.font['--text-sm-medium'],
         color : theme.colors['--color-gray-600'],
@@ -38,7 +38,7 @@ function HeaderFilterGroup({name = "", isSelected = false}){
         <HeaderGoupWrapper>
             <HeaderGroupContainer>
                 <HeaderText>{name}</HeaderText>
-                {/* <SortFilter isSelected = {isSelected}/> */}
+                <SortFilter isSelected = {isSelected}/>
             </HeaderGroupContainer>
         </HeaderGoupWrapper>
     

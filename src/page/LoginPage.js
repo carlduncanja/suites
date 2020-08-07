@@ -18,8 +18,11 @@ import NotificationReg from "../components/notifications/NotficationRegistry";
 import Button from "../components/common/Buttons/Button";
 import {connect} from "react-redux";
 import {signIn} from "../redux/actions/authActions";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 function LoginPage({navigation, signIn}) {
+
     const [fields, setFields] = useState({
         email: "",
         password: "",
@@ -73,101 +76,111 @@ function LoginPage({navigation, signIn}) {
             }}
         />
     );
+    
+    const LoginPageWrapper = styled.View`
+        margin : 0;
+    `;
+    const LoginPageContainer = styled.View`
+        height: 100%;
+        width: 100%;
+    `;
 
     return (
-        <View style={{flex: 1}}>
-            <LoginBackground/>
-            <View style={styles.overlay}>
-                <View style={styles.page}>
-                    <View style={styles.logo}>
-                        <Logo/>
-                    </View>
-
-                    <View style={styles.form}>
-
-                        <View style={styles.row}>
-                            <InputFieldwithIcon
-                                label="Email"
-                                onChangeText={(value) => onFieldChange('email')(value)}
-                                value={fields['email']}
-                                keyboardType={"email-address"}
-                                onClear={() => onFieldChange('email')('')}
-                                icon={<PersonIcon/>}
-                            />
+        <LoginPageWrapper>
+            <LoginPageContainer>
+                <LoginBackground/>
+                <View style={styles.overlay}>
+                    <View style={styles.page}>
+                        <View style={styles.logo}>
+                            <Logo/>
                         </View>
 
-                        <View style={styles.row}>
-                            <InputFieldwithIcon
-                                label="Password"
-                                onChangeText={(value) => onFieldChange("password")(value)}
-                                value={fields["password"]}
-                                onClear={() => onFieldChange("password")("")}
-                                icon={<PasswordIcon/>}
-                                secureTextEntry={true}
-                            />
-                        </View>
+                        <View style={styles.form}>
 
-                        <View style={styles.button}>
-                            {isLoading ? (
-                                <ActivityIndicator size="small" color="#00ff00"/>
-                            ) : (
-                                <Button
-                                    backgroundColor="#104587"
-                                    buttonPress={onButtonPress}
-                                    title="Login"
-                                    color="#FFFFFF"
+                            <View style={styles.row}>
+                                <InputFieldwithIcon
+                                    label="Email"
+                                    onChangeText={(value) => onFieldChange('email')(value)}
+                                    value={fields['email']}
+                                    keyboardType={"email-address"}
+                                    onClear={() => onFieldChange('email')('')}
+                                    icon={<PersonIcon/>}
                                 />
-                            )}
-                        </View>
+                            </View>
 
-                        <View style={styles.loginDivider}>
-                            {divider}
-                            <Text
-                                style={{
-                                    color: "#CCD6E0",
-                                    fontSize: 12,
-                                    marginLeft: 4,
-                                    marginRight: 4,
-                                }}
+                            <View style={styles.row}>
+                                <InputFieldwithIcon
+                                    label="Password"
+                                    onChangeText={(value) => onFieldChange("password")(value)}
+                                    value={fields["password"]}
+                                    onClear={() => onFieldChange("password")("")}
+                                    icon={<PasswordIcon/>}
+                                    secureTextEntry={true}
+                                />
+                            </View>
+
+                            <View style={styles.button}>
+                                {isLoading ? (
+                                    <ActivityIndicator size="small" color="#00ff00"/>
+                                ) : (
+                                    <Button
+                                        backgroundColor="#104587"
+                                        buttonPress={onButtonPress}
+                                        title="Login"
+                                        color="#FFFFFF"
+                                    />
+                                )}
+                            </View>
+
+                            <View style={styles.loginDivider}>
+                                {divider}
+                                <Text
+                                    style={{
+                                        color: "#CCD6E0",
+                                        fontSize: 12,
+                                        marginLeft: 4,
+                                        marginRight: 4,
+                                    }}
+                                >
+                                    OR
+                                </Text>
+                                {divider}
+                            </View>
+
+                            <View
+                                style={[
+                                    styles.button,
+                                    {
+                                        backgroundColor: "#F8FAFB",
+                                        borderColor: "#00A9CE",
+                                        borderWidth: 1,
+                                    },
+                                ]}
                             >
-                                OR
-                            </Text>
-                            {divider}
-                        </View>
 
-                        <View
-                            style={[
-                                styles.button,
-                                {
-                                    backgroundColor: "#F8FAFB",
-                                    borderColor: "#00A9CE",
-                                    borderWidth: 1,
-                                },
-                            ]}
-                        >
-
-                            <Button
-                                backgroundColor="#F8FAFB"
-                                buttonPress={() => onGuestButtonPress()}
-                                title="Continue as Guest"
-                                color="#00A9CE"
-                            />
+                                <Button
+                                    backgroundColor="#F8FAFB"
+                                    buttonPress={() => onGuestButtonPress()}
+                                    title="Continue as Guest"
+                                    color="#00A9CE"
+                                />
+                            </View>
                         </View>
                     </View>
+                    <View
+                        style={{
+                            alignItems: "center",
+                            justifyContent: "flex-end",
+                            bottom: 30,
+                        }}
+                    >
+                        <Text style={{color: "#FFFFFF", fontSize: 14}}>
+                            {"\u00A9"} Copyright 2019 The Suites
+                        </Text>
+                    </View>
                 </View>
-                <View
-                    style={{
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                        bottom: 30,
-                    }}
-                >
-                    <Text style={{color: "#FFFFFF", fontSize: 14}}>
-                        {"\u00A9"} Copyright 2019 The Suites
-                    </Text>
-                </View>
-            </View>
-        </View>
+            </LoginPageContainer>
+        </LoginPageWrapper>
     );
 }
 

@@ -63,16 +63,15 @@ function InputField2({
                 </Text>
             }
            
-            <View style={[styles.inputWrapper, {
+            <View style={[styles.inputWrapper, isFocussed ? styles.shadow : null,{
                 borderColor: hasError ? 'red' : '#CCD6E0',
                 backgroundColor : backgroundColor ? backgroundColor : theme.colors['--default-shade-white']
                 // paddingRight: value ? 4 : 0,
                 
             }]}>
                 <TextInput
-                    style={[styles.inputField, isFocussed ? styles.shadow : null,{
+                    style={[styles.inputField, ,{
                         
-                         
                     }]}
                     onChangeText={onChangeText}
                     value={value}
@@ -139,12 +138,11 @@ const styles = StyleSheet.create({
     },
     shadow : {
         shadowColor: "#000",
-        backgroundColor: "blue",
         shadowOffset: {
             width: 0.5,
             height: 2.5,
         },
-        shadowOpacity: 0.5,
+        shadowOpacity: 0.1,
         shadowRadius: 3.84,
         elevation: 3,
         zIndex:3,

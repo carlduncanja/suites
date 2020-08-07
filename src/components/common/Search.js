@@ -6,7 +6,7 @@ import InputField2 from './Input Fields/InputField2';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-function Search({placeholderText = "Search", changeText = () => {}, inputText,}){
+function Search({placeholderText = "Search", changeText = () => {}, inputText, onClear}){
     
     const theme = useTheme(); 
     const [isFocussed, setIsFocussed] = useState(false)
@@ -15,7 +15,7 @@ function Search({placeholderText = "Search", changeText = () => {}, inputText,})
         width: 100%; 
         margin-bottom : ${theme.space['--space-24']};
     `;
-
+ 
     const SearchContainer = styled.View`
         height: 30px;
         
@@ -25,11 +25,9 @@ function Search({placeholderText = "Search", changeText = () => {}, inputText,})
 
     const onFocus = ()=>{
         setIsFocussed(true)
-        // console.log("Focussed")
     }
     const onEndEditing = () =>{
         setIsFocussed(false)
-        // console.log("Done Edit")
     }
 
     return (
@@ -44,6 +42,7 @@ function Search({placeholderText = "Search", changeText = () => {}, inputText,})
                     isFocussed = {isFocussed}
                     onFocus = {onFocus}
                     onEndEditing = {onEndEditing}
+                    onClear = {onClear}
                     
                 />
             </SearchContainer>

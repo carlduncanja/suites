@@ -48,7 +48,7 @@ function List({
     `
     return (
         <ListWrapper> 
-            <ListContainer>
+            <ListContainer> 
                 <Header
                     headers={listHeaders}
                     toggleHeaderCheckbox={onSelectAll}

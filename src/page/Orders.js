@@ -53,7 +53,7 @@ const listHeaders = [
   {
     name: "Delivery Date",
     alignment: "flex-start",
-    flex: 1,
+    flex: 1.5,
     fontSize: 14,
   },
   {
@@ -284,7 +284,7 @@ const Orders = (props) => {
             {transformToSentence(status)}
           </Text>
         </View>
-        <View style={[styles.item, { flex: 1, alignItems: "flex-start" }]}>
+        <View style={[styles.item, { flex: 1.5, alignItems: "flex-start" }]}>
           <Text style={[styles.itemText, { color: "#4E5664", fontSize:15 }]}>
             {deliveryDate}
           </Text>

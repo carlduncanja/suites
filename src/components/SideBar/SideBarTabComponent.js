@@ -44,6 +44,7 @@ export default ({tabName, icon, isTabSelected, onTabPress, hasDivider}) => {
     const TabIcon = icon;
 
     return (
+        <>
         <View style={{...styles.container, 
             // borderBottomWidth : hasDivider ? 1 : 0, borderBottomColor : hasDivider ? 'yellow' : 'none', 
         }}>
@@ -81,7 +82,16 @@ export default ({tabName, icon, isTabSelected, onTabPress, hasDivider}) => {
                 }
 
             </TouchableOpacity>
+            
+            
         </View>
+        {
+            hasDivider &&
+            <View
+                style={{height: 1, backgroundColor : "#4879B7", borderRadius :2, justifyContent:'center', marginLeft:12,marginRight:12}}
+            />
+        }
+        </>
     )
 }
 
