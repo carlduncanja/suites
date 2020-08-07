@@ -285,10 +285,11 @@ function Theatres(props) {
 
   const fetchTheatres = (pagePosition) => {
 
-    pagePosition ? pagePosition  : 1;
-    setCurrentPagePosition(pagePosition)
+    let currentPosition = pagePosition ? pagePosition  : 1;
+    setCurrentPagePosition(currentPosition)
+
     setFetchingData(true);
-    getTheatres(searchValue, recordsPerPage, pagePosition)
+    getTheatres(searchValue, recordsPerPage, currentPosition)
       .then((result) => {
 
         const {data = [], pages = 0} = result;
@@ -296,13 +297,13 @@ function Theatres(props) {
         if(pages === 1){
           setPreviousDisabled(true);
           setNextDisabled(true);
-        }else if(pagePosition === 1 ){
+        }else if(currentPosition === 1 ){
             setPreviousDisabled(true);
             setNextDisabled(false);
-        }else if(pagePosition === pages){
+        }else if(currentPosition === pages){
             setNextDisabled(true);
             setPreviousDisabled(false);
-        }else if(pagePosition < pages){
+        }else if(currentPosition < pages){
             setNextDisabled(false);
             setPreviousDisabled(false)
         }else{
@@ -311,8 +312,8 @@ function Theatres(props) {
         }
 
         setTheatres(data);
-        setTotalPages(pages)
-        //setTotalPages(Math.ceil(data.length / recordsPerPage));
+        data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
+  
       })
       .catch((error) => {
         // TODO handle error

@@ -168,22 +168,25 @@ const Procedures = (props) => {
     // ############# Helper functions
 
     const fetchProceduresData = (pagePosition) => {
-        pagePosition ? pagePosition : 1;
+
+        let currentPosition = pagePosition ? pagePosition  : 1;
+        setCurrentPagePosition(currentPosition)
+
         setFetchingData(true)
-        getProcedures(searchValue, recordsPerPage, pagePosition)
+        getProcedures(searchValue, recordsPerPage, currentPosition)
             .then(proceduresResult => {
                 const { data = [], pages = 0 } = proceduresResult
                 
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                }else if(pagePosition === 1 ){
+                }else if(currentPosition === 1 ){
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                }else if(pagePosition === pages){
+                }else if(currentPosition === pages){
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                }else if(pagePosition < pages){
+                }else if(currentPosition < pages){
                     setNextDisabled(false);
                     setPreviousDisabled(false)
                 }else{
@@ -192,7 +195,7 @@ const Procedures = (props) => {
                 }
 
                 setProcedures(data);
-                setTotalPages(pages)
+                data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
                 // setTotalPages(Math.ceil(data.length / recordsPerPage))
 
             })

@@ -200,10 +200,12 @@ const Orders = (props) => {
   // ############# Helper functions
 
   const fetchOrdersData = (pagePosition) => {
-    pagePosition ? pagePosition : 1;
-    setCurrentPagePosition(pagePosition)
+
+    let currentPosition = pagePosition ? pagePosition  : 1;
+    setCurrentPagePosition(currentPosition)
+
     setFetchingData(true);
-    getPurchaseOrders(searchValue, recordsPerPage, pagePosition)
+    getPurchaseOrders(searchValue, recordsPerPage, currentPosition)
       .then((ordersInfo) => {
        
         const { data = [], pages = 0 } = ordersInfo;
@@ -211,13 +213,13 @@ const Orders = (props) => {
         if(pages === 1){
           setPreviousDisabled(true);
           setNextDisabled(true);
-        }else if(pagePosition === 1 ){
+        }else if(currentPosition === 1 ){
             setPreviousDisabled(true);
             setNextDisabled(false);
-        }else if(pagePosition === pages){
+        }else if(currentPosition === pages){
             setNextDisabled(true);
             setPreviousDisabled(false);
-        }else if(pagePosition < pages){
+        }else if(currentPosition < pages){
             setNextDisabled(false);
             setPreviousDisabled(false)
         }else{
@@ -226,8 +228,7 @@ const Orders = (props) => {
         }
 
         setPurchaseOrders(data);
-        console.log("OrdersInfo: ", data);
-        setTotalPages(pages)
+        data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
         
       })
       .catch((error) => {

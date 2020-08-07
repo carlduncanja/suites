@@ -171,23 +171,25 @@ const Suppliers = (props) => {
     // ############# Helper functions
 
     const fetchSuppliersData = (pagePosition) => {
-        pagePosition ? pagePosition : 1;
-        setCurrentPagePosition(pagePosition)
+
+        let currentPosition = pagePosition ? pagePosition  : 1;
+        setCurrentPagePosition(currentPosition)
+
         setFetchingData(true)
-        getSuppliers(searchValue,recordsPerPage, pagePosition)
+        getSuppliers(searchValue,recordsPerPage, currentPosition)
             .then(suppliersInfo => {
                 const {data = [], pages = 0} = suppliersInfo
 
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                }else if(pagePosition === 1 ){
+                }else if(currentPosition === 1 ){
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                }else if(pagePosition === pages){
+                }else if(currentPosition === pages){
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                }else if(pagePosition < pages){
+                }else if(currentPosition < pages){
                     setNextDisabled(false);
                     setPreviousDisabled(false)
                 }else{
@@ -196,7 +198,7 @@ const Suppliers = (props) => {
                 }
 
                 setSuppliers(data);
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
+                data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
 
             })
             .catch(error => {

@@ -195,23 +195,25 @@ function Storage(props) {
     </>;
 
     const fetchStorageData = (pagePosition) => {
-        pagePosition ? pagePosition : 1;
-        setCurrentPagePosition(pagePosition)
+
+        let currentPosition = pagePosition ? pagePosition  : 1;
+        setCurrentPagePosition(currentPosition)
+
         setFetchingData(true);
-        getStorage(searchValue, recordsPerPage, pagePosition)
+        getStorage(searchValue, recordsPerPage, currentPosition)
             .then(storageResult => {
                 const { data = [], pages = 0 } = storageResult
 
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                }else if(pagePosition === 1 ){
+                }else if(currentPosition === 1 ){
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                }else if(pagePosition === pages){
+                }else if(currentPosition === pages){
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                }else if(pagePosition < pages){
+                }else if(currentPosition < pages){
                     setNextDisabled(false);
                     setPreviousDisabled(false)
                 }else{
@@ -220,7 +222,8 @@ function Storage(props) {
                 }
 
                 setStorage(data);
-                setTotalPages(Math.ceil(data.length / recordsPerPage))
+                data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
+       
             })
             .catch(error => {
                 console.log("failed to get storage", error);
