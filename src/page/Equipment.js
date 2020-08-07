@@ -552,7 +552,7 @@ const Equipment = (props) => {
     <NavPage
       isFetchingData={isFetchingData}
       onRefresh={handleDataRefresh}
-      placeholderText={"Search by Assigned Equipment"}
+      placeholderText={"Search by Assignment, Status, Parent Name"}
       changeText={onSearchInputChange}
       inputText={searchValue}
       routeName={"Equipment"}

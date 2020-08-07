@@ -91,7 +91,7 @@ function Theatres(props) {
 
   // on mount
   useEffect(() => {
-    if (!theatres.length) fetchTheatres(1);
+    if (!theatres.length) fetchTheatres(currentPagePosition);
     setTotalPages(Math.ceil(theatres.length / recordsPerPage));
   }, []);
 
@@ -339,7 +339,7 @@ function Theatres(props) {
 
   return (
     <NavPage
-      placeholderText={"Search by heading or entry below."}
+      placeholderText={"Search by theatre name or status."}
       routeName={pageTitle}
       listData={theatreToDisplay}
       listItemFormat={renderItem}

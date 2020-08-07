@@ -168,11 +168,16 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
     } 
 
     const handlePrice = (price) => {
-        if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
-            console.log("Service Fee: ", price)
-            onFieldChange('serviceFee')(parseFloat(price))
+        let updatedPrice = price.replace(/[^0-9.]/g, "")
+        // console.log("Price: ", price.replace(/[^0-9.]/g, ""))
+        if (/^\d+(\.\d{1,2})?$/g.test(updatedPrice) || /^\d+$/g.test(updatedPrice) || !updatedPrice) {
+            console.log("Service Fee: ", updatedPrice)
+            onFieldChange('serviceFee')(parseFloat(updatedPrice))
         }
-        setFee(price)
+        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(updatedPrice) || !updatedPrice){
+            setFee(updatedPrice)
+        }
+        
     }
 
     const handlePhysician = (value) => {
@@ -318,8 +323,10 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
                 <View style={[styles.inputWrapper]}>
                     <InputField2
                         label={"Service Fee"}
-                        onChangeText={(value) => {handlePrice(value)}}
-                        value={fee.toString()}
+                        onChangeText={(value) => {
+                            handlePrice(value)
+                        }}
+                        value={`$ ${fee.toString()}`}
                         keyboardType={'number-pad'}
                         onClear={() => handlePrice('')}
                         hasError = {errors['serviceFee']}

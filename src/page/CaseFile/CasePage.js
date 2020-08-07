@@ -208,10 +208,12 @@ function CasePage({route, addNotification, ...props}) {
             case "Consumables": {
                 const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {
                 }}/>;
+                const addNewItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={_ => {
+                }}/>;
                 const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
                                                          onPress={_ => {
                                                          }}/>;
-                floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
+                floatingAction.push(addNewLineItemAction, addNewItem, /*removeLineItemAction*/)
                 title = "CONSUMABLE'S ACTIONS"
                 break;
             }

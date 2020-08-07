@@ -322,7 +322,7 @@ function CaseFiles(props) {
         <NavPage
             isFetchingData={isFetchingCaseFiles}
             onRefresh={handleDataRefresh}
-            placeholderText={"Search by any heading or entry below"}
+            placeholderText={"Search by Case ID, Patient, Staff"}
             changeText={changeText}
             inputText={searchValue}
             routeName={"Case Files"}

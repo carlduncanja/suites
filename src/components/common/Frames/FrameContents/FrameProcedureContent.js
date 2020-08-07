@@ -30,7 +30,7 @@ const FrameProcedureContent = ({details,onOpenPickList}) => {
                         <FrameTableItem title = "" value = {formatDate(appointment?.startTime,"h:mm A")}/>
                     </View>
                     <View style={{flex:1}}>
-                        <FrameTableItem title = "Duration" value = {hours}/>
+                        <FrameTableItem title = "Duration" value = {hours || 'n/a'}/>
                     </View>
                 </View>
             </View>

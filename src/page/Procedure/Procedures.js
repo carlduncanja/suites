@@ -276,7 +276,7 @@ const Procedures = (props) => {
         <NavPage
             isFetchingData={isFetchingData}
             onRefresh={handleDataRefresh}
-            placeholderText={"Search by Procedure"}
+            placeholderText={"Search by Procedure, or Physician"}
             changeText={onSearchInputChange}
             inputText={searchValue}
             routeName={"Procedures"}

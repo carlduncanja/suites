@@ -285,7 +285,7 @@ const Orders = (props) => {
           </Text>
         </View>
         <View style={[styles.item, { flex: 1, alignItems: "flex-start" }]}>
-          <Text style={[styles.itemText, { color: "#4E5664" }]}>
+          <Text style={[styles.itemText, { color: "#4E5664", fontSize:15 }]}>
             {deliveryDate}
           </Text>
         </View>
@@ -415,7 +415,7 @@ const Orders = (props) => {
     <NavPage
       isFetchingData={isFetchingData}
       onRefresh={handleDataRefresh}
-      placeholderText={"Search by Purchase Order"}
+      placeholderText={"Search by Purchase Order or Supplier"}
       changeText={onSearchInputChange}
       inputText={searchValue}
       routeName={"Purchase Orders"}

@@ -35,7 +35,7 @@ function DropdownInputField({label, onSelectChange, value, dropdownOptions, sele
                 <MenuTrigger>
                     <View style={[styles.inputWrapper]}>
                         <View style={{flex:1,justifyContent:'space-between', paddingLeft:10, flexDirection:'row', alignItems:'center',paddingRight:18}}>
-                            <Text>{value}</Text>
+                            <Text style={{fontSize:12}}>{value}</Text>
                             <DropdownIcon/>
                             {/* <View>
                                 <IconButton

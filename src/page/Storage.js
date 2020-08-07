@@ -304,7 +304,7 @@ function Storage(props) {
 
     return (
         <NavPage
-            placeholderText={"Search by heading or entry below."}
+            placeholderText={"Search by room name."}
             routeName={pageTitle}
             listData={storageToDisplay}
             inputText={searchValue}

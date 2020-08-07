@@ -5,7 +5,7 @@ import { Details } from '../../OverlayPages/Procedures'
 const Procedures = ({ procedures ,selectedTab }) => { 
    
     return (
-        selectedTab === 'Details' ?
+        selectedTab === 'Details' ? 
             <Details tabDetails = {procedures}/>
             :
             <Details tabDetails = {procedures}/>        

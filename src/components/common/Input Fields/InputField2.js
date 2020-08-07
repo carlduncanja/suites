@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
@@ -27,10 +27,21 @@ function InputField2({
         onClear = () => {}, 
         hasError = false, 
         errorMessage = "Error", 
-        backgroundColor
+        backgroundColor,
+        onFocus = ()=>{},
+        onEndEditing = ()=>{},
+        isFocussed = false
     }){
-    
-    const theme = useTheme() 
+     
+    const theme = useTheme();
+    const inputRef = useRef();
+    const [hasFocus, setHasFocus] = useState(false)
+
+    useEffect(()=>{
+        console.log("Focus: ", inputRef.current.isFocused())
+        setHasFocus(inputRef.current.isFocused())
+    },[])
+
 
     const InputWrapper = styled.View`
         flex:1;
@@ -53,24 +64,35 @@ function InputField2({
             }
            
             <View style={[styles.inputWrapper, {
-                paddingRight: value ? 4 : 0,
+                borderColor: hasError ? 'red' : '#CCD6E0',
+                backgroundColor : backgroundColor ? backgroundColor : theme.colors['--default-shade-white']
+                // paddingRight: value ? 4 : 0,
                 
             }]}>
                 <TextInput
-                    style={[styles.inputField, {borderColor: hasError ? 'red' : '#CCD6E0', backgroundColor : backgroundColor ? backgroundColor : theme.colors['--default-shade-white']}]}
+                    style={[styles.inputField, isFocussed ? styles.shadow : null,{
+                        
+                         
+                    }]}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}
                     placeholder={placeholder}
+                    autoFocus = {isFocussed}
+                    onFocus={onFocus}
+                    onEndEditing = {onEndEditing}
+                    ref={inputRef}
 
                 />
-                {
+                
+{
                     hasError && <View style={styles.errorView}>
                         <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
                     </View>
                 }
-
             </View>
+
+            
             {
                 !(value === undefined || value === null || value === '') &&
                 <TouchableOpacity
@@ -80,6 +102,8 @@ function InputField2({
                     <ClearIcon/>
                 </TouchableOpacity>
             }
+
+                
         </View>
     );
 }
@@ -102,22 +126,50 @@ const styles = StyleSheet.create({
     inputWrapper: {
         flex: 1,
         height: 32,
-    },
-    inputField: {
-        padding: 10,
-        paddingTop: 2,
-        paddingBottom: 2,
+
+        // padding: 10,
+        // paddingTop: 2,
+        // paddingBottom: 2,
         borderWidth: 1,
         borderColor: '#E3E8EF',
         borderRadius: 8,
         height: 32,
+        backgroundColor:'yellow'
+
+    },
+    shadow : {
+        shadowColor: "#000",
+        backgroundColor: "blue",
+        shadowOffset: {
+            width: 0.5,
+            height: 2.5,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
+        elevation: 3,
+        zIndex:3,
+    },
+    inputField: {
+        width : '85%',
+        flex:1,
+        paddingLeft :10,
+        // padding: 10,
+        // paddingTop: 2,
+        // paddingBottom: 2,
+        // borderWidth: 1,
+        // borderColor: '#E3E8EF',
+        // borderRadius: 8,
+        // height: '100%',
     },
     clearIcon: {
         position: 'absolute',
         right: 0,
         margin: 10,
+ 
     },
     errorView: {
+        position:'absolute',
+        top:32,
         paddingTop: 3,
         paddingLeft: 15
     }

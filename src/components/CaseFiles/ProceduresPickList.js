@@ -62,8 +62,8 @@ const ProceduresPickList = ({details, tabs, modal}) => {
     return (
         <View>
             <PickListCard
-                title = "PickList"
-                tabs = {tabs}
+                title = "Picklist" 
+                tabs = {tabs} 
                 selectedTab = {selectedTab}
                 closeModal = {()=>closeModals("OverlayInfoModal")}
                 onPressTab = {handleOnPressTab}

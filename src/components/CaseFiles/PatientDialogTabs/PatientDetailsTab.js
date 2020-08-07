@@ -4,6 +4,8 @@ import InputField2 from "../../common/Input Fields/InputField2";
 import OptionsField from "../../common/Input Fields/OptionsField";
 import {MenuOptions, MenuOption} from 'react-native-popup-menu';
 import DateInputField from "../../common/Input Fields/DateInputField";
+import { isValidDOB } from "../../../utils/formatter";
+import moment from 'moment';
 
 
 const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
@@ -16,7 +18,11 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
     }
 
     const onDateChange = (date) => {
-        onFieldChange("dob")(date)
+        if (isValidDOB(date)){
+            console.log("Date: ", date)
+            onFieldChange("dob")(date)
+        }
+        
     }
 
     return (
@@ -81,8 +87,8 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         text={fields['gender']}
                         oneOptionsSelected={onFieldChange('gender')}
                         menuOption={<MenuOptions>
-                            <MenuOption value={"female"} text='Female'/>
-                            <MenuOption value={"male"} text='Male'/>
+                            <MenuOption value={"Female"} text='Female'/>
+                            <MenuOption value={"Male"} text='Male'/>
                         </MenuOptions>}
                     />
                 </View>
@@ -114,6 +120,7 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         keyboardType="number-pad"
                         placeholder="YYYY/MM/DD"
                         minDate={null}
+                        maxDate = {new Date(moment().subtract(1, 'days'))}
                         onDateChange={onDateChange}
                         hasError={errors['dob']}
                         errorMessage={errors['dob']}

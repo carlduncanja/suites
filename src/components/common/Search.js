@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {View, StyleSheet} from 'react-native';
 import InputText from './InputText';
 import InputField2 from './Input Fields/InputField2';
@@ -9,9 +9,11 @@ import { useTheme } from 'emotion-theming';
 function Search({placeholderText = "Search", changeText = () => {}, inputText,}){
     
     const theme = useTheme(); 
+    const [isFocussed, setIsFocussed] = useState(false)
 
     const SearchWrapper = styled.View` 
-        width: 100%;
+        width: 100%; 
+        margin-bottom : ${theme.space['--space-24']};
     `;
 
     const SearchContainer = styled.View`
@@ -20,6 +22,16 @@ function Search({placeholderText = "Search", changeText = () => {}, inputText,})
     `;
     // border : 1px solid ${theme.colors['--color-gray-400']};
     //     border-radius : 8px;
+
+    const onFocus = ()=>{
+        setIsFocussed(true)
+        // console.log("Focussed")
+    }
+    const onEndEditing = () =>{
+        setIsFocussed(false)
+        // console.log("Done Edit")
+    }
+
     return (
         <SearchWrapper>
             <SearchContainer>
@@ -29,6 +41,10 @@ function Search({placeholderText = "Search", changeText = () => {}, inputText,})
                     placeholderTextColor = {theme.colors['--color-gray-500']}
                     value = {inputText}
                     backgroundColor = {theme.colors['--color-gray-100']}
+                    isFocussed = {isFocussed}
+                    onFocus = {onFocus}
+                    onEndEditing = {onEndEditing}
+                    
                 />
             </SearchContainer>
         </SearchWrapper>

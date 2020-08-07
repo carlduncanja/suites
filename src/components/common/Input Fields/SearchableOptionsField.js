@@ -87,7 +87,7 @@ function SearchableOptionsField({
                     (selectedValue ) &&
 
                     <View style={styles.valueBox}>
-                        <Text style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
+                        <Text numberOfLines = {1} style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
                     </View>
 
                 }
@@ -155,7 +155,8 @@ const styles = StyleSheet.create({
         position: 'relative',
         flex: 1,
         flexDirection: 'column',
-        height: 32
+        height: 32,
+        justifyContent:'center'
     },
     textLabel: {
         fontSize: 12,
@@ -213,9 +214,15 @@ const styles = StyleSheet.create({
         borderRadius: 2,
         zIndex: 2,
         left: 0,
-        margin: 3.5,
+        top:3,
+        bottom:3,
+        // marginTop:10,
+        // paddingBottom:4,
+        // margin: 3.5,
         marginLeft: 10,
         position: 'absolute',
+        width :'80%',
+        // height :32
     },
     clearIcon: {
         position: 'absolute',

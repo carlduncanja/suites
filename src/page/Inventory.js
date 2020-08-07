@@ -451,7 +451,7 @@ function Inventory(props) {
 
     return (
         <NavPage
-            placeholderText={"Search by heading or entry below."}
+            placeholderText={"Search by item name."}
             routeName={pageTitle}
             listData={inventoryToDisplay}
             listItemFormat={renderItem}

@@ -114,6 +114,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
             .then(data => {
                 // addSupplier(data)
                 modal.closeAllModals();
+                Alert.alert("Success",`Supplier, ${fields['name']} is successfully created.`)
                 setTimeout(() => {
                     onCreated(data)
                 }, 200);

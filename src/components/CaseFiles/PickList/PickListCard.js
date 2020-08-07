@@ -8,7 +8,7 @@ import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesH
 
 const PickListCard = (props) =>{
 
-    const { 
+    const {  
         title, 
         isEditMode = false, 
         onEditDone = ()=>{},
@@ -24,14 +24,40 @@ const PickListCard = (props) =>{
         onFooterPress = () => {},
         footerTitle = ""
     } = props
-
-    const recordsPerPage = 6
-    const dataLength = data.length
+   
+    const testData = [
+        {
+            name : "Agents",
+            amount : 5
+        },
+        {
+            name : "Agents",
+            amount : 6
+        },
+        {
+            name : "Agents",
+            amount : 7
+        },
+        {
+            name : "Agents",
+            amount : 8
+        },
+        {
+            name : "Agents",
+            amount : 9
+        },
+        {
+            name : "Agents",
+            amount : 10
+        },
+    ]
+    const recordsPerPage = 5
+    const dataLength = testData.length
     const totalPages = Math.ceil(dataLength/recordsPerPage)
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
-    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
+    const [currentPageListMax, setCurrentPageListMax] = useState(5)
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages){
@@ -50,6 +76,9 @@ const PickListCard = (props) =>{
             setCurrentPageListMax(currentListMax)
         }
     };
+
+    let dataToDisplay = [...testData]
+    dataToDisplay = dataToDisplay.slice(currentPageListMin,currentPageListMax)
 
     return(
         <View style={styles.container}>
@@ -84,7 +113,7 @@ const PickListCard = (props) =>{
 
             <View style={styles.list}>
                 <Table
-                    data = {data}
+                    data = {dataToDisplay}
                     currentListMin = {currentPageListMin}
                     currentListMax = {currentPageListMax}
                     listItemFormat = {listItemFormat}
@@ -115,7 +144,7 @@ const PickListCard = (props) =>{
 
                     </View>
                     :
-                    <View style={{alignItems:'flex-end', justifyContent:'flex-end'}}>
+                    <View style={{alignItems:'flex-start', justifyContent:'flex-start'}}>
                         <View style={styles.paginationContainer}>
                             <Paginator
                                 currentPage = {currentPagePosition}
@@ -219,7 +248,7 @@ const styles = StyleSheet.create({
         // alignSelf:'flex-end',
         // alignItems:'center',
         // justifyContent:'center',
-        marginRight:15,
+        marginLeft:15,
         marginBottom:20
     },
     footer:{

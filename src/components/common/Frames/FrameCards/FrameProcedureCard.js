@@ -15,7 +15,7 @@ const FrameProcedureCard = (props) => {
                     borderColor = "#E3E8EF"
                     backgroundColor="#F8FAFB"
                     icon={icon}
-                    frameTitle={`${title} - ${subject}`}
+                    frameTitle={`${title} - ${subject}`} 
                 />
             </View>
 

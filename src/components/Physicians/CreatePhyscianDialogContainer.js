@@ -1,5 +1,5 @@
 import React,{ useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import { createPhysician } from "../../api/network";
@@ -136,9 +136,11 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
         createPhysician(updatedFields)
             .then(data => {
                 modal.closeAllModals();
+                Alert.alert("Success",`New physician ${fields['name']} has been created.`)
                 setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
+                Alert.alert("Failed","Failed to create physician.")
                 console.log("failed to create physician", error);
                 // TODO handle error
             })
