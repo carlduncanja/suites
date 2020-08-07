@@ -34,7 +34,14 @@ const elipse1 = <View style = {{position:'absolute', right:0, bottom:0}}>
 
 const LoginBackground = () => {
     return (
-        <View style={{flex:1, backgroundColor:'#104587'}}>
+        <View style={{
+            position:'absolute', 
+            flex:1,
+            height: '100%', 
+            width: '100%', 
+            backgroundColor:'#104587',
+            
+            }}>
             {svgVector}
             <View style={styles.elipses}>
                 {elipse4}
@@ -57,10 +64,9 @@ const styles = StyleSheet.create({
         borderRadius:12
     },
     elipses:{
-        flex:1,
+        height:'100%',
         alignSelf:'flex-end',
-        backgroundColor:'green'
-        // position:'absolute',
+        position:'absolute',
         // justifyContent:"flex-end" 
     }
 })

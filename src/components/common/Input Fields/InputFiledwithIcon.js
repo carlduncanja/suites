@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
@@ -14,8 +14,9 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @returns {*}
  * @constructor
  */
-function InputFieldwithIcon({label, onChangeText, value, placeholder, keyboardType, onClear, icon, secureTextEntry}) {
+function InputFieldwithIcon({label, onChangeText, value, placeholder, keyboardType, onClear, icon, secureTextEntry,inputRef = useRef(), isFocus = false,}) {
 
+    
     return (
         <View style={styles.container}>
             <Text style={[styles.textLabel]}>{label}</Text>
@@ -28,6 +29,8 @@ function InputFieldwithIcon({label, onChangeText, value, placeholder, keyboardTy
                     keyboardType={keyboardType}
                     placeholder={placeholder}
                     secureTextEntry = {secureTextEntry}
+                    autoFocus = {isFocus}
+                    ref = {inputRef}
                 />
                 <View style={{marginRight:5, justifyContent:'center'}}>
                     {icon}
