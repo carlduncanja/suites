@@ -1,5 +1,6 @@
 // ##### Auth
-export const loginEndpoint = `/login`
+export const loginEndpoint = `/auth/login`
+export const logoutEndpoint = `/auth/logout`
 export const registrationEndpoint = `/register`
 export const guestLoginEndpoint = `/login/guest`
 

@@ -1,5 +1,5 @@
 import initialState from "./initialState";
-import {RESTORE_TOKEN, SET_AUTH, SIGN_IN, SIGN_OUT, UPDATE_AUTH} from "../actions/authActions";
+import {EXPO_TOKEN, RESTORE_TOKEN, SET_AUTH, SIGN_IN, SIGN_OUT, UPDATE_AUTH} from "../actions/authActions";
 
 export default (prevState = initialState.auth, action) => {
     const {type, payload} = action
@@ -17,6 +17,14 @@ export default (prevState = initialState.auth, action) => {
                 ...prevState,
                 userToken: payload.data,
                 isLoading: false,
+            };
+        case EXPO_TOKEN:
+
+            console.log("set token called", payload);
+
+            return {
+                ...prevState,
+                expoPushToken: payload.data,
             };
         case SIGN_IN:
             return {
