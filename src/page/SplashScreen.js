@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-community/async-storage"
 import LoginBackground from "../components/Onboarding/LoginBackground";
 import {restoreToken, setAuthData} from "../redux/actions/authActions";
 import {connect} from 'react-redux'
+import {setBearerToken} from "../api";
 
 function SplashScreen({restoreToken}) {
     useEffect(() => {
@@ -26,6 +27,10 @@ function SplashScreen({restoreToken}) {
             // screen will be unmounted and thrown away.
 
             console.log('setting user token', userToken);
+
+            if (userToken) {
+                setBearerToken(userToken)
+            }
 
             restoreToken(userToken);
         };
