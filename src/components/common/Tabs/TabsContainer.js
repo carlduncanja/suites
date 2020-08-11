@@ -21,10 +21,11 @@ function TabsContainer({tabs, onPressChange, selectedTab, completedTabs}){
         <TabsWrapper>
             <TabsContainer>
                 {tabs.map((tab, index)=>{
-                    console.log("Tab: ", tab)
-                    console.log(" Selected Tab: ", selectedTab)
+                    // console.log("Tab: ", tab)
+                    // console.log(" Selected Tab: ", selectedTab)
                     return (
                         <Tab
+                            key={index}
                             tabName = {tab}
                             backgroundColor = {tab === selectedTab ? theme.colors['--default-shade-white'] : null}
                             textColor = { 

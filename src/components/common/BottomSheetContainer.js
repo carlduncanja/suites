@@ -15,9 +15,9 @@ function BottomSheetContainer({
         overlayContent = ()=>{},
         onEditPress = ()=>{}
     }){
-
+    
     const theme = useTheme();
-
+    
     const BottomSheetWrapper = styled.View`
         flex:1;
         background-color: ${theme.colors['--default-shade-white']};

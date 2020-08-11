@@ -21,5 +21,8 @@ export default {
   draft: {},
   casePage: {
     isEdit: false
-  }
+  },
+  procedurePage : {
+    isEdit : false,
+  },
 };

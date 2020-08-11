@@ -9,7 +9,7 @@ import SortFilter from './SortFilterIcon';
 function HeaderFilterGroup({name = "", isSelected = false}){
 
     const theme = useTheme()
-    console.log("Name: ", name, isSelected)
+    // console.log("Name: ", name, isSelected)
 
     const HeaderGoupWrapper = styled.View`
         height: 100%;

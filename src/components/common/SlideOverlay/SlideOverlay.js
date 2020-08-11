@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native'; 
 import SlideContent from './SlideContent'
 import SlideHeader from './SlideHeader';
@@ -17,7 +17,7 @@ function SlideOverlay ({
         overlayContent = ()=>{},      
     }){
 
-    const theme = useTheme()
+    const theme = useTheme();
 
     const SlideOverlayWrapper = styled.View`
         margin:0px;
@@ -30,7 +30,7 @@ function SlideOverlay ({
 
     return (
         <SlideOverlayWrapper>
-            <SlideOverlayContainer> 
+            <SlideOverlayContainer>  
                 <SlideHeader
                     id = {overlayId}
                     title = {overlayTitle}

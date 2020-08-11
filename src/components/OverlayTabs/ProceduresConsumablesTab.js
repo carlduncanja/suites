@@ -15,11 +15,11 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 import NumberChangeField from "../common/Input Fields/NumberChangeField";
 import { withModal } from "react-native-modalfy";
 import AddItemDialog from "../Procedures/AddItemDialog";
+import Footer from '../../components/common/Page/Footer';
 
 const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInventoryUpdate, onAddInventory}) => {
-    console.log("Data: ", consumablesData)
+    console.log("Pro: ", consumablesData)
     const recordsPerPage = 10
-    // const [consumables, setConsumbales] = useState(consumablesData)
     const [checkBoxList, setCheckboxList] = useState([])
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
@@ -27,8 +27,6 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
-
-    // console.log("Inventories: ", consumablesData)
 
     useEffect(()=>{
         setTotalPages(Math.ceil(consumablesData.length / recordsPerPage))
@@ -53,7 +51,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
     }
 
     const onAmountChange = (item) => (value) => {
-
+        console.log("Value: ", value)
         const updatedObj = {
             ...item,
             amount: value
@@ -130,8 +128,9 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                 }
             })
     }
-
+    
     const listItem = (item) => {
+
         const { inventory = {}, amount = 0 } = item || {}
         const { name = "", unitPrice = 0, type = "n/a" } = inventory || {}
         return (
@@ -220,7 +219,21 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                 itemSelected = {checkBoxList}
             />
 
-                <View style={styles.footer}>
+            <Footer
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator = {true}
+                hasActionButton = {true}
+                hasActions = {true}
+                isNextDisabled = {false}
+                isPreviousDisabled = {false}
+            />
+
+                {/* <View style={styles.footer}>
 
                     <View style={{alignSelf: "center", marginRight: 10}}>
                         <RoundedPaginator
@@ -235,7 +248,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                         isDisabled={isFloatingActionDisabled}
                         toggleActionButton={toggleActionButton}
                     />
-                </View> 
+                </View>  */}
 
         </>
 

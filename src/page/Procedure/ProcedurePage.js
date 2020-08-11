@@ -11,6 +11,7 @@ import TheatresTab from '../../components/OverlayTabs/TheatresTab';
 import {colors} from "../../styles";
 import { currencyFormatter } from '../../utils/formatter';
 import { updateProcedure } from "../../api/network";
+import { setProcedureEdit } from "../../redux/actions/procedurePageActions";
 
 
 import { getProcedureById } from "../../api/network";
@@ -19,9 +20,12 @@ import ActionItem from "../../components/common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import { withModal } from 'react-native-modalfy';
+import BottomSheetContainer from '../../components/common/BottomSheetContainer';
+import { connect } from 'react-redux';
+import { set } from 'numeral';
 
-function ProcedurePage({route}) {
-    
+function ProcedurePage({route, isEditState, setProcedureEdit}) {
+
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
     
     const { procedure, isOpenEditable } = route.params
@@ -33,26 +37,6 @@ function ProcedurePage({route}) {
         duration,
         physician
     } = procedure;
-
-    
-    // const consumablesHeader = [
-    //     {
-    //         name :"Item Name",
-    //         alignment: "flex-start"
-    //     },
-    //     {
-    //         name :"Type",
-    //         alignment: "center"
-    //     },
-    //     {
-    //         name :"Quantity",
-    //         alignment: "center"
-    //     },
-    //     {
-    //         name :"Unit Price",
-    //         alignment: "flex-end"
-    //     }
-    // ]
 
     // ##### States
 
@@ -76,7 +60,7 @@ function ProcedurePage({route}) {
         custom : true,
         physician : physician
     })
-    // console.log("Physician: ", physician)
+    
 
     const [popoverList, setPopoverList] = useState([
         {
@@ -97,6 +81,9 @@ function ProcedurePage({route}) {
     };
 
     const onEditPress = (tab) => {
+
+        setProcedureEdit(!isEditState)
+
         setEditableTab(tab)
         setEditMode(!isEditMode)
         if(!isEditMode === false){
@@ -147,35 +134,6 @@ function ProcedurePage({route}) {
     
     }
 
-    // const toggleActionButton = () =>{
-    //     setIsDisabled(true)
-    //     modal.openModal("ActionContainerModal",
-    //         {
-    //             actions: getFabActions(),
-    //             title: "CASE ACTIONS",
-    //             onClose: () => {
-    //                 setFloatingAction(false)
-    //             }
-    //         })
-    // }
-
-    // ##### Helper functions
-    // const consumablesListItem = (item) => <>
-    //     <View style={styles.item}>
-    //         <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.item}</Text>
-    //     </View>
-    //     <View style={[styles.item,{alignItems:'flex-start'}]}>
-    //         <Text style={styles.itemText}>{item.type}</Text>
-    //     </View>
-    //     <View style={[styles.item,{alignItems:'center'}]}>
-    //         <Text style={styles.itemText}>{item.quantity}</Text>
-    //     </View>
-    //     <View style={[styles.item,{alignItems:'flex-end'}]}>
-    //         <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
-    //     </View>
-             
-    // </>
-
     const fetchProcdure = (id) => {
         setFetching(true);
         getProcedureById(id)
@@ -220,6 +178,7 @@ function ProcedurePage({route}) {
     const handleInventoryUpdate = (data) => {
         const procedure = {...selectedProcedure, inventories : data}
         const updatedObj = { inventories : data}
+        console.log("Proedure: ", procedure)
         setSelectedProcedure(procedure)
         setIsInfoUpdated(true)
         // Change updated
@@ -312,6 +271,8 @@ function ProcedurePage({route}) {
 
 
     const getTabContent = (selectedTab) => {
+        
+
         const { inventories = [], equipments = [], notes = "", supportedRooms = [] } = selectedProcedure
         
         const consumablesData = inventories.map(item => {
@@ -326,7 +287,7 @@ function ProcedurePage({route}) {
 
         switch (selectedTab) {
             case "Configuration":
-                return currentTab === 'Configuration' && isEditMode ?
+                return currentTab === 'Configuration' && isEditState ?
                     <TouchableOpacity
                         style={{flex: 1}}
                         activeOpacity = {1}
@@ -345,7 +306,7 @@ function ProcedurePage({route}) {
             case "Consumables":
                 return <ProceduresConsumablesTab
                     consumablesData = {inventories}
-                    isEditMode = {isEditMode}
+                    isEditMode = {isEditState}
                     onAddInventory = {onAddInventory}
                     handleInventoryUpdate = {handleInventoryUpdate}
                 />
@@ -367,50 +328,36 @@ function ProcedurePage({route}) {
                 return <View/>
         }
     };
-
+    
     return (
-        <View style={{flex: 1}}>
-            {
-                isFetching
-                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                    </View>
-                    :
-                    <>
-                        <SlideOverlay
-                            overlayId={_id}
-                            overlayTitle={name}
-                            onTabPressChange={onTabPress}
-                            currentTabs={currentTabs}
-                            selectedTab={currentTab}
-                            isEditMode={isEditMode}
-                            onEditPress = {onEditPress}
-                            overlayContent={
-                                // <View 
-                                //     style={{flex: 1, padding:30, backgroundColor:'#FFFFFF'}}
-                                //     // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
-                                // >
-                                    getTabContent(currentTab)
-                                // </View>
-                            }
-                        />
-                        {/* <View style={styles.footer}>
-                            <FloatingActionButton
-                                isDisabled={isFloatingActionDisabled}
-                                toggleActionButton={toggleActionButton}
-                            />
-                        </View> */}
-                        
-                    </>
-            }
-        </View>
+
+        <BottomSheetContainer
+            isFetching = {isFetching}
+            isEditMode = {isEditState}
+            overlayId={_id}
+            overlayTitle={name}
+            currentTabs = {currentTabs}
+            selectedTab = {currentTab}
+            onTabPressChange = {onTabPress}
+            overlayContent = {getTabContent(currentTab)}
+            onEditPress = {onEditPress}
+        />
+
     );
+}
+
+const mapStateToProps = (state) => ({
+    isEditState: state.procedurePage?.isEdit
+});
+
+const mapDispatchToProps = {
+    setProcedureEdit
 }
 
 ProcedurePage.propTypes = {};
 ProcedurePage.defaultProps = {};
 
-export default withModal(ProcedurePage);
+export default connect(mapStateToProps, mapDispatchToProps)(ProcedurePage);
 
 const styles = StyleSheet.create({
     item:{

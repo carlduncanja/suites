@@ -17,9 +17,9 @@ function SlideHeader({
                          onTabPressChange = () => {
                          },
                          isEditMode = false,
-                         // onEditButtonPress = () => {
-                         // },
-                         ...props
+                         onEditButtonPress = () => {
+                         },
+                        // ...props
                      }) {
 
     const theme = useTheme();
@@ -33,9 +33,10 @@ function SlideHeader({
         height: 100%;
     `
 
-    const onEditButtonPress = () => {
-        props.setCaseEdit(!isEditMode);
-    }
+    // const onEditButtonPress = () => {
+    //     props.setCaseEdit(!isEditMode);
+        
+    // }
 
     return (
         <SlideOverlayHeaderWrapper>
@@ -96,8 +97,8 @@ function SlideHeader({
 const mapStateToProps = (state) => {
     return {
         isEditMode: state.casePage?.isEdit
-    }
-}
+    } 
+} 
 
 const mapDispatchToProps = {
     setCaseEdit
