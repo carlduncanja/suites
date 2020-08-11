@@ -12,7 +12,7 @@ import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHe
 import _ from "lodash";
 
 const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) => {
-
+ 
     const [searchInventoriesValue, setSearchInventoriesValue] = useState("")
     const [searchInventoriesResults, setSearchInventoriesResults] = useState([])
     const [searchInventoriesQuery, setSearchInventoriesQuery] = useState({});
@@ -87,7 +87,7 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
 
     return (
         <View style={[styles.sectionContainer]}>
-
+            
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>

@@ -6,7 +6,7 @@ import DialogDetailsTab from "./DialogDetailsTab";
 import DialogLocationTab from "./DialogLocationTab";
 
 import { formatDate } from '../../utils/formatter'
-import {useModal} from "react-native-modalfy";
+import {useModal} from "react-native-modalfy"; 
 import { updateProcedure } from "../../api/network";
 
 import {connect} from "react-redux";

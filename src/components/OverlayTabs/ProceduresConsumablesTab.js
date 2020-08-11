@@ -33,10 +33,9 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
     },[])
 
     const onQuantityChange = (item) => (action) =>  {
-
         const updatedObj = {
             ...item,
-            amount: action === 'add' ? item.amount + 1 : item.amount - 1
+            amount: action === 'add' ? parseInt(item.amount) + 1 : parseInt(item.amount) - 1
         };
 
         const updatedData = consumablesData.map(item => {
@@ -51,7 +50,6 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
     }
 
     const onAmountChange = (item) => (value) => {
-        console.log("Value: ", value)
         const updatedObj = {
             ...item,
             amount: value
@@ -142,6 +140,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                     <Text style={styles.itemText}>{type}</Text>
                 </View>
                 { isEditMode ?
+                
                     <View style={[styles.item,{alignItems:'center'}]}>
                         <NumberChangeField
                             value={amount === 0 ? "" : amount.toString()}

@@ -94,14 +94,16 @@ function SlideHeader({
 };
 
 
-const mapStateToProps = (state) => {
-    return {
-        isEditMode: state.casePage?.isEdit
-    } 
-} 
+// const mapStateToProps = (state) => {
+//     return {
+//         isEditMode: state.casePage?.isEdit
+//     } 
+// } 
 
-const mapDispatchToProps = {
-    setCaseEdit
-}
+// const mapDispatchToProps = {
+//     setCaseEdit
+// }
 
-export default connect(mapStateToProps,mapDispatchToProps)(SlideHeader);
+// export default connect(mapStateToProps,mapDispatchToProps)(SlideHeader);
+
+export default SlideHeader

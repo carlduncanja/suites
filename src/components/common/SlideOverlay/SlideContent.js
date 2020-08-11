@@ -6,19 +6,19 @@ import { useTheme } from 'emotion-theming';
 
 function SlideContent({overlayContent = ()=>{} }){
     
+    const theme = useTheme();
     const SlideContentWrapper = styled.View`
         flex:1;
         margin : 0px;
-        padding-top: 32px;
-        padding-bottom: 32px;
-        padding-left: 24px;
-        padding-right: 24px;
+        padding-top: ${theme.space['--space-32']};
+   
+        padding-left: ${theme.space['--space-24']};
+        padding-right: ${theme.space['--space-24']};
     `
 
     const SlideContentContainer = styled.View`
         display: flex;
         flex:1;
-        
     `
     return ( 
         <SlideContentWrapper>

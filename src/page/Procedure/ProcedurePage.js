@@ -42,7 +42,6 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [isEditMode, setEditMode] = useState(isOpenEditable);
-    const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
     const [selectedProcedure, setSelectedProcedure] = useState({})
     const [isInfoUpdated, setIsInfoUpdated] = useState(false)
@@ -83,14 +82,16 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
     const onEditPress = (tab) => {
 
         setProcedureEdit(!isEditState)
-
-        setEditableTab(tab)
         setEditMode(!isEditMode)
-        if(!isEditMode === false){
+        // console.log("Edit state, updated: ", !isEditState, isInfoUpdated)
+        if(!isEditState === false && isInfoUpdated){
             
             if(currentTab === 'Configuration'){
                 updateProcedureCall(selectedProcedure)
                 // onProcedureUpdate()
+            }else if (currentTab === 'Consumables'){
+                updateProcedureCall(selectedProcedure)
+                // Add confirmation component
             }
             
         }
@@ -178,7 +179,7 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
     const handleInventoryUpdate = (data) => {
         const procedure = {...selectedProcedure, inventories : data}
         const updatedObj = { inventories : data}
-        console.log("Proedure: ", procedure)
+
         setSelectedProcedure(procedure)
         setIsInfoUpdated(true)
         // Change updated
