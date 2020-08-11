@@ -23,7 +23,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import Page from "../components/common/Page/Page";
 
-function LoginPage({navigation, signIn}) {
+function LoginPage({navigation, signIn, expoPushToken}) {
 
     const theme = useTheme();
 
@@ -50,7 +50,7 @@ function LoginPage({navigation, signIn}) {
 
         setLoading(true);
 
-        login(fields.email, fields.password)
+        login(fields.email, fields.password, expoPushToken)
             .then(async (data) => {
                 // save auth data
                 console.log(data);
@@ -85,7 +85,7 @@ function LoginPage({navigation, signIn}) {
             }}
         />
     );
-    
+
     const LoginPageWrapper = styled.View`
         margin : 0;
         flex:1;
@@ -95,7 +95,7 @@ function LoginPage({navigation, signIn}) {
         width: 100%;
         
     `;
-    
+
     const OverlayWrapper = styled.View`
         flex:1;
         position : 'absolute';
@@ -134,7 +134,7 @@ function LoginPage({navigation, signIn}) {
         align-items: center;
         justify-content: center;
     `;
-    
+
     const FormWrapper = styled.View``;
     const FormContainer = styled.View``;
     return (
@@ -231,10 +231,10 @@ function LoginPage({navigation, signIn}) {
                                         />
                                     </View>
                             </View>
-                            
+
                             {/* </PageContainer> */}
                         </View>
-                        
+
                         <View
                             style={{
                                 alignItems: "center",
@@ -247,8 +247,8 @@ function LoginPage({navigation, signIn}) {
                             </Text>
                         </View>
                     {/* </OverlayContainer>  */}
-                </View> 
-        
+                </View>
+
             {/* </LoginPageContainer> */}
         </View>
     );
@@ -312,8 +312,10 @@ const styles = StyleSheet.create({
 LoginPage.propTypes = {};
 LoginPage.defaultProps = {};
 
+const mapStateToProps = (state) => ({expoPushToken: state.auth.expoPushToken})
+
 const mapDispatcherToProps = {
     signIn,
 };
 
-export default connect(null, mapDispatcherToProps)(LoginPage);
+export default connect(mapStateToProps, mapDispatcherToProps)(LoginPage);

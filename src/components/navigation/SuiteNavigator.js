@@ -1,23 +1,23 @@
-import React, { useContext } from "react";
-import { View, StyleSheet, Dimensions, SafeAreaView } from "react-native";
+import React, {useContext} from "react";
+import {View, StyleSheet, Dimensions, SafeAreaView} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import {
-  SuitesContext,
-  SuitesContextProvider,
+    SuitesContext,
+    SuitesContextProvider,
 } from "../../contexts/SuitesContext";
 import {
-  ModalProvider,
-  createModalStack,
-  useModal,
+    ModalProvider,
+    createModalStack,
+    useModal,
 } from "react-native-modalfy";
 import {
-  NavigationHelpersContext,
-  useNavigationBuilder,
-  createNavigatorFactory,
-  TabRouter,
-  TabActions,
+    NavigationHelpersContext,
+    useNavigationBuilder,
+    createNavigatorFactory,
+    TabRouter,
+    TabActions,
 } from "@react-navigation/native";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 
 import SideBarComponent from "../SideBar/SideBarComponent";
 
@@ -27,13 +27,15 @@ import ActionContainerModal from "../../modals/ActionContainerModal";
 import ReportPreviewModal from "../../modals/ReportPreviewModal";
 import OverlayInfoModal from "../../modals/OverlayInfoModal";
 import BottomSheetModal from "../../modals/BottomSheetModal";
-import { MenuProvider } from "react-native-popup-menu";
-import { appActions } from "../../redux/reducers/suitesAppReducer";
-import { signOut } from "../../redux/actions/authActions";
+import {MenuProvider} from "react-native-popup-menu";
+import {appActions} from "../../redux/reducers/suitesAppReducer";
+import {signOut} from "../../redux/actions/authActions";
 import QuickActionsModal from "../../modals/QuickActionsModal";
 import Notifier from "../notifications/Notifier";
 import NotificationRegistry from "../notifications/NotficationRegistry";
 import ConfirmationModal from "../../modals/ConfirmationModal";
+import {logout} from "../../api/network";
+import jwtDecode from "jwt-decode";
 
 /**
  * Custom navigator wrapper for application.
@@ -41,112 +43,123 @@ import ConfirmationModal from "../../modals/ConfirmationModal";
  * https://reactnavigation.org/docs/custom-navigators
  */
 const SuitesCustomNavigator = ({
-  initialRouteName,
-  children,
-  screenOptions,
-  signOut,
-}) => {
-  const screenDimensions = Dimensions.get("window");
-  const [suitesContext, dispatch] = useContext(SuitesContext);
+                                   initialRouteName,
+                                   children,
+                                   screenOptions,
+                                   signOut,
+                                   auth,
+                               }) => {
+    const screenDimensions = Dimensions.get("window");
+    const [suitesContext, dispatch] = useContext(SuitesContext);
 
-  const { state, navigation, descriptors } = useNavigationBuilder(TabRouter, {
-    children,
-    screenOptions,
-    initialRouteName,
-  });
-
-  console.log(`initialRouteName ${initialRouteName} state`, state);
-
-  const modalConfig = {
-    OverlaySlidePanelModal: OverlaySlidePanelModal,
-    OverlayModal: OverlayModal,
-    ActionContainerModal: ActionContainerModal,
-    ReportPreviewModal: ReportPreviewModal,
-    OverlayInfoModal: OverlayInfoModal,
-    BottomSheetModal: BottomSheetModal,
-    QuickActionsModal: QuickActionsModal,
-    ConfirmationModal: ConfirmationModal,
-  };
-
-  const defaultOptions = {
-    backdropOpacity: 0,
-    position: "bottom",
-    containerStyle: {
-      flex: 1,
-      // ...StyleSheet.absoluteFillObject,
-      alignItems: "flex-end",
-    },
-  };
-
-  const stack = createModalStack(modalConfig, defaultOptions);
-
-  // event handlers;
-  const handleOnTabPress = (e, routeName) => {
-    console.log("tab pressed", e, routeName);
-    navigation.navigate(routeName);
-  };
-
-  const handleOnLogout = () => {
-    AsyncStorage.clear()
-      .catch((error) => {
-        console.log("failed to sign out", error);
-      })
-      .finally((_) => {
-        signOut();
-      });
-    // navigation.navigate('Auth')
-  };
-
-  const getPageMeasure = (event) => {
-    dispatch({
-      type: appActions.SETPAGEMEASURES,
-      newState: event.nativeEvent.layout,
+    const {state, navigation, descriptors} = useNavigationBuilder(TabRouter, {
+        children,
+        screenOptions,
+        initialRouteName,
     });
-  };
 
-  return (
-    <NavigationHelpersContext.Provider value={navigation}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-        <MenuProvider>
-          <ModalProvider stack={stack}>
-            <View style={styles.container}>
-              <SideBarComponent
-                routes={state.routes}
-                selectedIndex={state.index}
-                screenDimensions={screenDimensions}
-                navigation={navigation}
-                onTabPressed={handleOnTabPress}
-                onLogout={handleOnLogout}
-                style={styles.navBar}
-              />
+    console.log(`initialRouteName ${initialRouteName} state`, state);
 
-              <View style={styles.pageContent} onLayout={getPageMeasure}>
-                {/*    ACTIVE SCREEN    */}
+    const modalConfig = {
+        OverlaySlidePanelModal: OverlaySlidePanelModal,
+        OverlayModal: OverlayModal,
+        ActionContainerModal: ActionContainerModal,
+        ReportPreviewModal: ReportPreviewModal,
+        OverlayInfoModal: OverlayInfoModal,
+        BottomSheetModal: BottomSheetModal,
+        QuickActionsModal: QuickActionsModal,
+        ConfirmationModal: ConfirmationModal,
+    };
 
-                {descriptors[state.routes[state.index].key].render()}
-              </View>
+    const defaultOptions = {
+        backdropOpacity: 0,
+        position: "bottom",
+        containerStyle: {
+            flex: 1,
+            // ...StyleSheet.absoluteFillObject,
+            alignItems: "flex-end",
+        },
+    };
 
-              <Notifier />
-            </View>
-          </ModalProvider>
-        </MenuProvider>
-      </SafeAreaView>
-    </NavigationHelpersContext.Provider>
-  );
+    const stack = createModalStack(modalConfig, defaultOptions);
+
+    // event handlers;
+    const handleOnTabPress = (e, routeName) => {
+        console.log("tab pressed", e, routeName);
+        navigation.navigate(routeName);
+    };
+
+    const handleOnLogout = () => {
+
+        const {expoPushToken, userToken} = auth;
+        const authInfo = jwtDecode(userToken);
+
+        console.log('authInfo: ', authInfo)
+
+        logout(authInfo['user_id'], expoPushToken).catch(error => {
+            console.log('logout call failed', error)
+        })
+
+        AsyncStorage.clear()
+            .catch((error) => {
+                console.log("failed to sign out", error);
+            })
+            .finally((_) => {
+                signOut();
+            });
+        // navigation.navigate('Auth')
+    };
+
+    const getPageMeasure = (event) => {
+        dispatch({
+            type: appActions.SETPAGEMEASURES,
+            newState: event.nativeEvent.layout,
+        });
+    };
+
+    return (
+        <NavigationHelpersContext.Provider value={navigation}>
+            <SafeAreaView style={{flex: 1, backgroundColor: "#fff"}}>
+                <MenuProvider>
+                    <ModalProvider stack={stack}>
+                        <View style={styles.container}>
+                            <SideBarComponent
+                                routes={state.routes}
+                                selectedIndex={state.index}
+                                screenDimensions={screenDimensions}
+                                navigation={navigation}
+                                onTabPressed={handleOnTabPress}
+                                onLogout={handleOnLogout}
+                                style={styles.navBar}
+                            />
+
+                            <View style={styles.pageContent} onLayout={getPageMeasure}>
+                                {/*    ACTIVE SCREEN    */}
+
+                                {descriptors[state.routes[state.index].key].render()}
+                            </View>
+
+                            <Notifier/>
+                        </View>
+                    </ModalProvider>
+                </MenuProvider>
+            </SafeAreaView>
+        </NavigationHelpersContext.Provider>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    flexDirection: "row",
-  },
-  navBar: {
-    backgroundColor: "blue",
-  },
-  pageContent: {
-    flex: 1,
-  },
+    container: {
+        flex: 1,
+        width: "100%",
+        flexDirection: "row",
+    },
+    navBar: {
+        backgroundColor: "blue",
+    },
+    pageContent: {
+        flex: 1,
+    },
 });
 
 // export const createSidebarNavigator = (routeConfigMap, sidebarNavigatorConfig) => {
@@ -156,8 +169,15 @@ const styles = StyleSheet.create({
 // };
 
 const mapDispatchToProps = {
-  signOut,
+    signOut,
 };
+
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth
+    }
+}
+
 export const createSuitesSidebarNavigator = createNavigatorFactory(
-  connect(null, mapDispatchToProps)(SuitesCustomNavigator)
+    connect(mapStateToProps, mapDispatchToProps)(SuitesCustomNavigator)
 );

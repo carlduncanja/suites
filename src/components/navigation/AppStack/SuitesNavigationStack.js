@@ -15,7 +15,7 @@ import Suppliers from '../../../page/Suppliers';
 import Equipment from '../../../page/Equipment';
 import Orders from '../../../page/Orders'
 
-import ProcedureNavigationStack from "./ProcedureNavigationStack"; 
+import ProcedureNavigationStack from "./ProcedureNavigationStack";
 
 
 /* Providers*/
@@ -72,7 +72,7 @@ export const SuitesNavigationStack = () => {
                 component={Theatres}
                 initialParams={{
                     icon: TheathreIcon,
-                    tabName: 'Theatre',
+                    tabName: 'Theatres',
                 }}/>
 
 

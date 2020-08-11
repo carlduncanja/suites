@@ -16,6 +16,7 @@ export default {
     isLoading: true,
     isSignOut: false,
     userToken: null,
+    expoPushToken: null,
   },
   draft: {},
   casePage: {
