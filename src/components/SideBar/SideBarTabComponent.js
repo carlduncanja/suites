@@ -9,7 +9,7 @@ import SvgIcon from '../../../assets/SvgIcon';
  * Component for the side navigation tabs 
  */
 export default ({tabName, icon, isTabSelected, onTabPress, hasDivider}) => {
-    console.log("Name: ", tabName)
+    // console.log("Name: ", tabName)
     const generateIcon = (iconName, colour) => {
         return <SvgIcon iconName={iconName} strokeColor={colour}/>
     };
