@@ -18,7 +18,7 @@ import AddItemDialog from "../Procedures/AddItemDialog";
 import Footer from '../../components/common/Page/Footer';
 
 const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInventoryUpdate, onAddInventory}) => {
-    console.log("Pro: ", consumablesData)
+
     const recordsPerPage = 10
     const [checkBoxList, setCheckboxList] = useState([])
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
@@ -78,10 +78,10 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
             name :"Quantity",
             alignment: "center"
         },
-        // {
-        //     name :"Unit Price",
-        //     alignment: "flex-end"
-        // }
+        {
+            name :"Unit Price",
+            alignment: "flex-end"
+        }
     ]
 
     // ###### EVENT HANDLERS
@@ -128,9 +128,10 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
     }
     
     const listItem = (item) => {
-
+        
         const { inventory = {}, amount = 0 } = item || {}
         const { name = "", unitPrice = 0, type = "n/a" } = inventory || {}
+        console.log("Item: ", unitPrice)
         return (
             <>
                 <View style={styles.item}>
@@ -140,7 +141,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                     <Text style={styles.itemText}>{type}</Text>
                 </View>
                 { isEditMode ?
-                
+
                     <View style={[styles.item,{alignItems:'center'}]}>
                         <NumberChangeField
                             value={amount === 0 ? "" : amount.toString()}
@@ -155,9 +156,9 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
 
                 }
 
-                {/* <View style={[styles.item,{alignItems:'flex-end'}]}>
+                <View style={[styles.item,{alignItems:'flex-end'}]}>
                     <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
-                </View> */}
+                </View>
 
             </>
         )

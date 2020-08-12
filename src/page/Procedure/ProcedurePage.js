@@ -22,7 +22,6 @@ import ActionContainer from "../../components/common/FloatingAction/ActionContai
 import { withModal } from 'react-native-modalfy';
 import BottomSheetContainer from '../../components/common/BottomSheetContainer';
 import { connect } from 'react-redux';
-import { set } from 'numeral';
 
 function ProcedurePage({route, isEditState, setProcedureEdit}) {
 

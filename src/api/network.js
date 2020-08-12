@@ -126,7 +126,7 @@ export const createTheatre = async (theatreForCreation) => {
         .then(handleResponse)
         .catch(handleError);
 };
-
+ 
 // ################# Inventory Endpoints
 export const getInventories = async (query, max, page) => {
     return suitesAxiosInstance

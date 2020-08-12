@@ -6,7 +6,7 @@ import { withModal } from "react-native-modalfy";
 
 const NotesTab = ({notesData}) => {
  
-    return (
+    return ( 
         <>
             <FrameCard
                 frameColor = "#DD6B20"

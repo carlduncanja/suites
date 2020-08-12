@@ -12,8 +12,8 @@ import { View } from "react-native-animatable";
 function ConfirmationComponent({
   type,
   error,
-  onCancel,
-  onAction,
+  onCancel = ()=>{},
+  onAction = ()=>{},
   message = "Are you sure you want to?",
   action = "Save",
 }) {

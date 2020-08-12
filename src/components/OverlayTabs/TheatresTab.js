@@ -8,6 +8,7 @@ import RoundedPaginator from "../common/Paginators/RoundedPaginator";
 import ActionItem from "../common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
 import AddItemDialog from '../Procedures/AddItemDialog';
+import Footer from '../../components/common/Page/Footer';
 
 import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import { withModal } from "react-native-modalfy";
@@ -16,7 +17,8 @@ import { withModal } from "react-native-modalfy";
 const headers = [
     {
         name : 'Theatre',
-        alignment : 'flex-start'
+        alignment : 'flex-start',
+        flex:2
     },
     {
         name : 'Status',
@@ -84,7 +86,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
         return (
             <>
                 <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
-                    <View style={{flex:1}}>
+                    <View style={{flex:2}}>
                         <Text style={{fontSize:16, color:'#3182CE'}}>{name}</Text>
                     </View>
                     <View style={{flex:1, alignItems:"center"}}>
@@ -94,7 +96,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
                         <Text style={{fontSize:14, color:'#38A169'}}>{isRecovery ? 'Yes' : 'No'}</Text>
                     </View>
                     <View style={{flex:1, alignItems:'flex-end'}}>
-                        <Text style={{fontSize:14, color:'#323843'}}>{availability}</Text>
+                        <Text style={{fontSize:14, color:'#323843'}}>{availability} slots</Text>
                     </View>
                 </View>
             </>
@@ -152,13 +154,28 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 
     return (
         <>
-            <Table
+            <Table 
                 data = {dataToDisplay}
                 listItemFormat = {listItemFormat}
                 headers = {headers}
                 isCheckbox = {false}
             />
-            <View style={styles.footer}>
+
+            <Footer
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage} 
+                goToPreviousPage={goToPreviousPage}
+                isDisabled = {isFloatingActionDisabled}
+                toggleActionButton = {toggleActionButton}
+                hasPaginator = {true}
+                hasActionButton = {true}
+                hasActions = {true}
+                isNextDisabled = {false}
+                isPreviousDisabled = {false}
+            />
+
+            {/* <View style={styles.footer}>
                 <View style={{alignSelf: "center", marginRight: 10}}>
                     <RoundedPaginator
                         totalPages={totalPages}
@@ -171,7 +188,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
                     isDisabled = {isFloatingActionDisabled}
                     toggleActionButton = {toggleActionButton}
                 />
-            </View>
+            </View> */}
         </> 
         
     )

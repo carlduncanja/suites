@@ -6,7 +6,7 @@ import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import DateInputField from "../common/Input Fields/DateInputField";
 import moment from 'moment';
 
-
+ 
 
 const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
 

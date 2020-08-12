@@ -9,7 +9,7 @@ import IconButton from '../../Buttons/IconButton';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-function FrameContentList (props) { 
+function EditableFrameContentList (props) { 
     const {
         cardInformation, 
         isEditMode = false,
@@ -127,7 +127,7 @@ function FrameContentList (props) {
         </FrameContentListWrapper>
     )
 }
-export default  FrameContentList
+export default  EditableFrameContentList
 
 const styles = StyleSheet.create({
     container:{

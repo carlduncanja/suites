@@ -2,6 +2,7 @@ import React,{ useState, useEffect} from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
+import ConfirmationComponent from '../ConfirmationComponent';
 import DialogDetailsTab from "./DialogDetailsTab";
 import DialogLocationTab from "./DialogLocationTab";
 
@@ -27,10 +28,12 @@ import AddTheatreItem from "./AddTheatreItem";
  * @constructor
  */ 
 
-const AddItemDialog = ({onCancel, onCreated, itemType}) =>{ 
+const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = ""}) =>{ 
 
     const modal = useModal();
- 
+    const tabs = ['Details']
+    const selectedIndex = 0;
+
     const [positiveText, setPositiveText] = useState("DONE")
     
     const [popoverList, setPopoverList] = useState([
@@ -44,32 +47,32 @@ const AddItemDialog = ({onCancel, onCreated, itemType}) =>{
 
     const [errors, setErrors] = useState({})
 
-    const [errorFields, setErrorFields] = useState({
-        item : false,
-        amount : false
-    })
+    // const [errorFields, setErrorFields] = useState({
+    //     item : false,
+    //     amount : false
+    // })
 
-    const handlePopovers = (popoverValue) => (popoverItem) =>{
-        let updatedPopovers;
-        if(!popoverItem){
-            updatedPopovers = popoverList.map( item => {return {
-                ...item,
-                status : false
-            }})
+    // const handlePopovers = (popoverValue) => (popoverItem) =>{
+    //     let updatedPopovers;
+    //     if(!popoverItem){
+    //         updatedPopovers = popoverList.map( item => {return {
+    //             ...item,
+    //             status : false
+    //         }})
 
-            // setPopoverList(updatedPopovers)
-        }else{
-            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
-            updatedPopovers = [
-                ...popoverList.slice(0, objIndex),
-                updatedObj,
-                ...popoverList.slice(objIndex + 1),
-            ];
-            // setPopoverList(updatedPopovers)
-        }
-        setPopoverList(updatedPopovers)
-    }
+    //         // setPopoverList(updatedPopovers)
+    //     }else{
+    //         const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+    //         const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+    //         updatedPopovers = [
+    //             ...popoverList.slice(0, objIndex),
+    //             updatedObj,
+    //             ...popoverList.slice(objIndex + 1),
+    //         ];
+    //         // setPopoverList(updatedPopovers)
+    //     }
+    //     setPopoverList(updatedPopovers)
+    // }
 
     const handleCloseDialog = () => {
         onCancel();
@@ -82,6 +85,7 @@ const AddItemDialog = ({onCancel, onCreated, itemType}) =>{
             ...updatedFields,
             [fieldName]: value
         })
+
         const updatedErrors = {...errors}
         delete updatedErrors[fieldName]
         console.log("Update error: ", errors)
@@ -110,33 +114,51 @@ const AddItemDialog = ({onCancel, onCreated, itemType}) =>{
         return isValid
     }
 
+    // const onPositiveButtonPress = () =>{
+    //     setTimeout(() => {
+
+    //         modal
+    //             .openModal(
+    //                 'ConfirmationModal',
+    //                 {
+    //                     content: <ConfirmationComponent
+    //                         type = 'edit-update'
+    //                         onCancel = {()=>{}}
+    //                         onAction = {()=>console.log("Saved")}
+    //                     />
+    //                     ,
+    //                     onClose: () => {}
+    //                 })
+    //     }, 200)
+    // }
+
     const onPositiveButtonPress = () =>{
         let updatedFields = {}
         itemType === 'Consumables' ?
             updatedFields = {
-                amount : parseInt(fields['amount']),
+                amount : parseInt(fields['amount']) || 0,
                 inventory : {
-                    _id : fields['item']._id,
-                    unitPrice : fields['item'].unitPrice,
-                    name : fields['item'].name
+                    _id : fields['item']?._id,
+                    unitPrice : fields['item']?.unitPrice,
+                    name : fields['item']?.name
                 }
             }
             :
         itemType === 'Equipments' ?
             updatedFields = {
-                amount : parseInt(fields['amount']),
+                amount : parseInt(fields['amount']) || 0,
                 equipment : {
-                    _id : fields['item']._id,
-                    type : fields['item'].type,
-                    name : fields['item'].name
+                    _id : fields['item']?._id,
+                    type : fields['item']?.type,
+                    name : fields['item']?.name
                 }
             }
             :
             updatedFields = {
-                _id : fields['item']._id,
-                name : fields['item'].name,
+                _id : fields['item']?._id,
+                name : fields['item']?.name,
                 // status : fields['item'].status,
-                isRecovery : fields['item'].isRecovery
+                isRecovery : fields['item']?.isRecovery
             }
 
         let isValid = validateItem()
@@ -159,13 +181,24 @@ const AddItemDialog = ({onCancel, onCreated, itemType}) =>{
             // handlePopovers = {handlePopovers}
         >
             <View style = {styles.container}>
-                <TouchableOpacity
-                    onPress = {()=>handlePopovers(false)()}
+                <DialogTabs
+                    tabs = {tabs}
+                    tab = {selectedIndex}
+                />
+                <AddItem
+                    category = {itemType}
+                    fields = {fields}
+                    errors = {errors}
+                    onFieldChange = {onFieldChange}
+                />
+                {/* <TouchableOpacity
+                    // onPress = {()=>handlePopovers(false)()}
                     activeOpacity = {1}
                 >
                     {
                         itemType === "Consumables" ?
                             <AddItem
+                                category = "Consumables"
                                 fields = {fields}
                                 handlePopovers = {handlePopovers}
                                 popoverList = {popoverList}
@@ -195,7 +228,7 @@ const AddItemDialog = ({onCancel, onCreated, itemType}) =>{
 
                     }
                     
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </View>
         </OverlayDialog>

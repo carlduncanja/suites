@@ -13,6 +13,8 @@ import ActionItem from "../common/ActionItem";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 import AddItemDialog from '../Procedures/AddItemDialog';
+import Footer from '../../components/common/Page/Footer';
+
 
 import { currencyFormatter } from '../../utils/formatter';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
@@ -47,11 +49,11 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
             alignment: "flex-start",
             flex:1,
         },
-        // {
-        //     name :"Unit Price",
-        //     alignment: "flex-end",
-        //     flex:1
-        // }
+        {
+            name :"Unit Price",
+            alignment: "flex-end",
+            flex:1
+        }
     ] 
 
     // ###### EVENT HANDLERS
@@ -102,8 +104,9 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
 
 
     const listItem = (item) => {
+        console.log("Item List: ", item)
         const { equipment = {} } = item
-        const { name = "", type = {} } =equipment
+        const { name = "", type = {}, unitPrice = 0 } =equipment || {}
         return (
             <>
                 <View style={[styles.item,{flex:2}]}>
@@ -112,9 +115,9 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
                 <View style={[styles.item,{alignItems:'flex-start'}]}>
                     <Text style={styles.itemText}>{type?.name || 'n/a'}</Text>
                 </View>
-                {/* <View style={[styles.item,{alignItems:'flex-end'}]}>
-                    <Text style={styles.itemText}>$ {currencyFormatter(type.unitPrice)}</Text>
-                </View>       */}
+                <View style={[styles.item,{alignItems:'flex-end'}]}>
+                    <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
+                </View>      
             </>
         )
     }
@@ -186,7 +189,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
 
-    return (
+    return ( 
         <>
             <Table
                 isCheckbox = {true}
@@ -196,8 +199,22 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
                 toggleHeaderCheckbox = {handleOnSelectAll} 
                 itemSelected = {checkBoxList}
             />
-            
-            <View style={styles.footer}>
+
+            <Footer
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage} 
+                isDisabled = {isFloatingActionDisabled}
+                toggleActionButton = {toggleActionButton}
+                hasPaginator = {true}
+                hasActionButton = {true}
+                hasActions = {true}
+                isNextDisabled = {false}
+                isPreviousDisabled = {false}
+            />
+
+            {/* <View style={styles.footer}>
                 <View style={{alignSelf: "center", marginRight: 10}}>
                     <RoundedPaginator
                         totalPages={totalPages}
@@ -211,7 +228,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
                     isDisabled = {isFloatingActionDisabled}
                     toggleActionButton = {toggleActionButton}
                 />
-            </View>
+            </View> */}
         </> 
     )
 }

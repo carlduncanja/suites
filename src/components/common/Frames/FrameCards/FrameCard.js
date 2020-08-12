@@ -18,7 +18,7 @@ import { useTheme } from 'emotion-theming';
  * @returns {*}
  * @constructor
  */
-
+ 
 function FrameCard(props){
     const {
         frameColor,
@@ -53,14 +53,26 @@ function FrameCard(props){
                     icon={icon}
                     frameTitle={frameTitle}
                 />
-               
-                <FrameContentList
+               {
+                //    isEditMode ? 
+                    <FrameContentList
+                        cardInformation={cardInformation}
+                        isEditMode = {isEditMode}
+                        handleEdit = {handleEdit}
+                        handleAddNew = {handleAddNew}
+                        isAddNew = {isAddNew}
+                    />
+                    // :
+
+
+               }
+                {/* <FrameContentList
                     cardInformation={cardInformation}
                     isEditMode = {isEditMode}
                     handleEdit = {handleEdit}
                     handleAddNew = {handleAddNew}
                     isAddNew = {isAddNew}
-                />
+                /> */}
              
             </FrameCardContainer>
         </FrameCardWrapper>

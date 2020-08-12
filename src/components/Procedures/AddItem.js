@@ -1,37 +1,40 @@
 import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
+import { View, Text, StyleSheet } from "react-native";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import InputField2 from "../common/Input Fields/InputField2";
+import Row from '../common/Row';
+import AutoFillField from "../common/Input Fields/AutoFillField";
 
-import Table from '../common/Table/Table';
-import Paginator from "../common/Paginators/Paginator";
-import Button from '../common/Buttons/Button'; 
-import { getInventories } from "../../api/network";
-import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
+import { getInventories, getEquipmentTypes, getTheatres } from "../../api/network";
 import _ from "lodash";
 
-const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) => {
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+
+const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
  
-    const [searchInventoriesValue, setSearchInventoriesValue] = useState("")
-    const [searchInventoriesResults, setSearchInventoriesResults] = useState([])
-    const [searchInventoriesQuery, setSearchInventoriesQuery] = useState({});
-     
+    const theme = useTheme();
+
+    const [searchValue, setSearchValue] = useState("")
+    const [searchResults, setSearchResults] = useState([])
+    const [searchQuery, setSearchQuery] = useState({});
+
 
     useEffect(() => {
 
-        if (!searchInventoriesValue) {
+        if (!searchValue) {
             // empty search values and cancel any out going request.
-            setSearchInventoriesResults([]);
-            if (searchInventoriesQuery.cancel) searchInventoriesQuery.cancel();
+            setSearchResults([]);
+            if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
 
         // wait 300ms before search. cancel any prev request before executing current.
+        let searchFunction = category === 'Consumables' ? fetchInventories : category === 'Equipments' ? fetchEquipments : fetchTheatres
 
-        const search = _.debounce(fetchInventories, 300);
+        const search = _.debounce(searchFunction, 300)
 
-        setSearchInventoriesQuery(prevSearch => {
+        setSearchQuery(prevSearch => {
             if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
@@ -39,42 +42,69 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
         });
 
         search()
-    }, [searchInventoriesValue]); 
+    }, [searchValue]); 
  
     const fetchInventories = () => {
-        getInventories(searchInventoriesValue, 5)
-            .then((data = []) => {
-                const results = data.map(item => ({
-                    // name: `Dr. ${item.surname}`,
-                    ...item
-                }));
-                setSearchInventoriesResults(results || []);
-
+        getInventories(searchValue, 5)
+            .then((results = {}) => {
+                const { data = [], pages = 0} = results
+                console.log("Results: ", data)
+                setSearchResults(data || []);
             })
             .catch(error => {
                 // TODO handle error
                 console.log("failed to get inventories");
-                setSearchInventoriesResults([]);
+                setSearchResults([]);
             })
     };
 
+   
+    const fetchEquipments = () => {
+        getEquipmentTypes(searchValue, 5)
+            .then((results = {}) => {
+                const { data = [], pages = 0} = results
+                console.log("Results: ", data)
+                setSearchResults(data || []);
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get equipments");
+                setSearchResults([]);
+            })
+    };
+
+    const fetchTheatres = () =>{
+        getTheatres(searchValue, 5)
+            .then((results = {}) => {
+                const { data = [], pages = 0} = results
+                console.log("Results: ", data)
+                setSearchResults(data || []);
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get theatres");
+                setSearchResults([]);
+            })
+    }
+
+
     const handleItem = (value) => {
-        // console.log("Value: ", value)
-        const item = value ? {
-            _id: value._id,
-            name: value.name,
-            unitPrice : value.unitPrice
-        } : value
+        console.log("Value: ", value)
+        // const item = value ? {
+        //     _id: value._id,
+        //     name: value.name,
+        //     unitPrice : value.unitPrice
+        // } : value
 
         if(value === undefined || null ){
             delete fields['item']
         }else{
-            onFieldChange('item')(item);
+            onFieldChange('item')(value);
         }
         
         // setSearchValue()
-        setSearchInventoriesResults([])
-        setSearchInventoriesQuery(undefined)
+        setSearchResults([])
+        setSearchQuery(undefined)
     }
 
     const handleAmount = (value) => {
@@ -83,12 +113,69 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
         }
     }
 
-    let {status} = popoverList.filter( item => item.name === 'item')[0]
+    // let {status} = popoverList.filter( item => item.name === 'item')[0];
+
+    const AdditemWrapper = styled.View`
+
+    `;
+    const AdditemContainer = styled.View``;
+
 
     return (
         <View style={[styles.sectionContainer]}>
-            
+
             <View style={styles.row}>
+                <View style={styles.inputWrapper}>
+                    <SearchableOptionsField
+                        label={"Item Name"} 
+                        value = {fields['inventory']}
+                        text={searchValue}
+                        oneOptionsSelected={(item) => {handleItem(item)}}
+                        onChangeText={value => setSearchValue(value)}
+                        onClear={handleItem}
+                            // onFieldChange('physician')('');
+                            // setSearchValue('');
+                        // }}
+                        options={searchResults}
+                        // handlePopovers = {(value)=>handlePopovers(value)('item')}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {searchQuery}
+                        hasError = {errors['item']}
+                        errorMessage = "Item must be selected"
+                    />
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <AutoFillField
+                        label={"Category"}
+                        value={category}
+                    />
+                </View>
+            </View>
+
+            <Row zIndex = {-1}>
+                <View style={[styles.inputWrapper]}>
+                    <AutoFillField
+                        label={"Type"}
+                        value={'n/a'}
+                    />
+                </View>
+
+                <View style={[styles.inputWrapper]}>
+                    <InputField2
+                        label={"Quantity"}
+                        onChangeText={(value) => {handleAmount(value)}}
+                        value={fields['amount']}
+                        keyboardType={'number-pad'}
+                        onClear={() => handleAmount('')}
+                        hasError = {errors['amount']}
+                        errorMessage = "Quantity is required."
+                    />
+                </View>
+            </Row>
+            
+
+            {/* <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
@@ -124,7 +211,7 @@ const AddItem = ({fields, handlePopovers, popoverList, errors, onFieldChange}) =
                     />
                 </View>
 
-            </View> 
+            </View>  */}
 
         </View>
     )
