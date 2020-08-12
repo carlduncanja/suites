@@ -19,7 +19,7 @@
     "@react-navigation/stack": "^5.5.1",
     "axios": "^0.19.2",
     "emotion-theming": "^10.0.27",
-    "expo": "^38.0.0",
+    "expo": "^38.0.9",
     "expo-constants": "^9.1.1",
     "expo-notifications": "^0.5.0",
     "expo-permissions": "^9.0.1",

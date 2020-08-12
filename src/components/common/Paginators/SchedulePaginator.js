@@ -1,37 +1,36 @@
-import React, { Component, useContext } from "react";
+import React, { Component, useState, useEffect } from "react";
 import Paginator from "./Paginator";
 import {
   StyleSheet,
   View,
   Text,
-  Dimensions,
   TouchableOpacity,
 } from "react-native";
 import SvgIcon from "../../../../assets/SvgIcon";
 
 const SchedulePaginator = ({
-  currentDay,
+  date = new Date(),
   goToNextDay,
   goToPreviousDay,
-  newday,
 }) => {
-  const display = (newday) => {
-    if (newday == "") {
-      return currentDay;
-    } else return newday;
-  };
+
+
+
+
+
+
 
   return (
     <View style={styles.container}>
       <View style={styles.paginator}>
-        <TouchableOpacity onPress={() => goToPreviousDay()}>
+        <TouchableOpacity onPress={goToPreviousDay}>
           <SvgIcon iconName="paginationPrev" strokeColor="#104587" />
         </TouchableOpacity>
 
         <View style={styles.numbersContainer}>
-          <Text style={styles.numbers}>{display(newday)} </Text>
+          <Text style={styles.numbers}>{date} </Text>
         </View>
-        <TouchableOpacity onPress={() => goToNextDay()}>
+        <TouchableOpacity onPress={goToNextDay}>
           <SvgIcon iconName="paginationNext" strokeColor="#104587" />
         </TouchableOpacity>
       </View>
@@ -43,7 +42,7 @@ const styles = StyleSheet.create({
   container: {
     width: 300,
     position: "absolute",
-    top: -70,
+    top: 800,
     left: 190,
     paddingLeft: 10,
     paddingRight: 10,

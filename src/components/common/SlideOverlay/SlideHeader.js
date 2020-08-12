@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {View} from 'react-native';
 import {ViewModeHeading, EditModeHeading} from '../Headings'
-import TabsContainer from '../Tabs/TabsContainer'
+import TabsContainer from '../Tabs/TabsContainerComponent'
 import {SuitesContext} from '../../../contexts/SuitesContext';
 import {connect} from 'react-redux';
 
@@ -35,7 +35,7 @@ function SlideHeader({
 
     // const onEditButtonPress = () => {
     //     props.setCaseEdit(!isEditMode);
-        
+
     // }
 
     return (
@@ -83,7 +83,7 @@ function SlideHeader({
         //     }
 
         //     <View style={{marginLeft: 20}}>
-        //         <TabsContainer
+        //         <TabsContainerComponent
         //             tabs={currentTabs}
         //             selectedTab={selectedTab}
         //             onPressChange={onTabPressChange}
@@ -97,8 +97,8 @@ function SlideHeader({
 // const mapStateToProps = (state) => {
 //     return {
 //         isEditMode: state.casePage?.isEdit
-//     } 
-// } 
+//     }
+// }
 
 // const mapDispatchToProps = {
 //     setCaseEdit

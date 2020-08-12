@@ -6,7 +6,7 @@ import { Text } from 'react-native';
 
 function EditButtonStyle({onPress = ()=>{}}){
 
-    const theme = useTheme(); 
+    const theme = useTheme();
 
     const press = ()=>{
         console.log("Press")
@@ -15,7 +15,10 @@ function EditButtonStyle({onPress = ()=>{}}){
     const EditButtonWrapper = styled.View`
         height : 26px;
         width : 53px;
+        align-content: center;
+        justify-content: center;
     `;
+
     const EditButtonContainer = styled.View`
         height: 100%;
         width: 100%; 
@@ -24,18 +27,19 @@ function EditButtonStyle({onPress = ()=>{}}){
         align-items : center;
         justify-content : center;
     `
-    return( 
+
+    return(
         <EditButtonWrapper>
             <EditButtonContainer>
                 <Button
-                    backgroundColor="#0CB0E7" 
+                    backgroundColor="#0CB0E7"
                     color="#FFFFFF"
                     title="Edit"
                     buttonPress={onPress}
                 />
             </EditButtonContainer>
         </EditButtonWrapper>
-        
+
     )
 }
 

@@ -1,13 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, StyleSheet, TouchableOpacity} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import styled, { css } from "@emotion/native";
+import { useTheme } from "emotion-theming";
+import SmallLeftTriangle from "../../../../assets/svg/smallLeftTriangle"
 
-function HeaderBackComponent({onPress, label}) {
+function HeaderBackComponent({ onPress, label }) {
+
 
     return (
         <TouchableOpacity style={styles.container} onPress={onPress}>
             <Text style={styles.backText}> Back to {label} </Text>
         </TouchableOpacity>
+        // <IconContainer onPress={onPress}><SmallLeftTriangle /></IconContainer>
     );
 }
 

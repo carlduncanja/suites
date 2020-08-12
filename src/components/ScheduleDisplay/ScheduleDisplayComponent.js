@@ -1,17 +1,31 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, ScrollView, Text, TouchableOpacity} from "react-native";
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from "react-native";
 import moment from 'moment';
-import PropTypes from 'prop-types';
 
-function ScheduleDisplayComponent({appointments = [], date = new Date()}) {
+function ScheduleDisplayComponent({
+    appointments = [],
+    date = new Date()
+}) {
+
+
+
+
+
 
     const timerRef = useRef(0); // using ref to keep track of timer.
 
     const startOfDate = moment(date).startOf('day') // set to 12:00 am
     const isToday = moment().isSame(date, 'day');
-    const timelineDate = []
-
+    const timelineDate = [];
     const [currentTime, setCurrentTime] = useState(moment);
+
+
+
+
+
+
+
+
 
     useEffect(() => {
         updateTime()
@@ -59,6 +73,7 @@ function ScheduleDisplayComponent({appointments = [], date = new Date()}) {
     }
 
     return (
+
         <View style={styles.container}>
             <ScrollView style={styles.timeLineContainer}>
 
@@ -73,14 +88,14 @@ function ScheduleDisplayComponent({appointments = [], date = new Date()}) {
 
                         zIndex: 5,
                     }}>
-                        <CurrentTimeIndicator/>
+                        <CurrentTimeIndicator />
                     </View>
                 }
 
 
                 {/* TIME LINE*/}
                 {
-                    timelineDate.map((item, index) => <TimeBlock key={index} time={item}/>)
+                    timelineDate.map((item, index) => <TimeBlock key={index} time={item} />)
                 }
 
 
@@ -89,12 +104,25 @@ function ScheduleDisplayComponent({appointments = [], date = new Date()}) {
 
 
                     {
-                        appointments.map((item, index) => {
 
+                        appointments.map((item, index) => {
+                            let today = new Date();
                             // const mm = moment(item.startTime);
                             const start = moment(item.startTime);
                             const end = moment(item.endTime);
+
                             const isActive = moment().isBetween(start, end);
+                            if (end < today) {
+                                console.log("appointment has passed");
+                                item.type = 3;
+
+                            } else isActive ? (item.type = 0) : (item.type = 1);
+
+
+                            // const mm = moment(item.startTime);
+                            // const start = moment(item.startTime);
+                            // const end = moment(item.endTime);
+                            // const isActive = moment().isBetween(start, end);
 
                             return (
                                 <View
@@ -113,10 +141,13 @@ function ScheduleDisplayComponent({appointments = [], date = new Date()}) {
                     }
 
 
+
                 </View>
 
             </ScrollView>
         </View>
+
+
     );
 }
 
@@ -185,11 +216,11 @@ const CurrentTimeIndicator = () => (
             shadowOpacity: 0.75,
             shadowRadius: 3,
             elevation: 5,
-        }}/>
+        }} />
     </View>
 )
 
-const TimeBlock = ({time}) => {
+const TimeBlock = ({ time }) => {
 
     const timeToDisplay = moment(time).format('h: mm')
     const hour = moment(time).hour();
@@ -218,7 +249,7 @@ const TimeBlock = ({time}) => {
                 // borderTopWidth: 1,
                 borderBottomWidth: 1,
                 borderColor: '#A0AEC0'
-            }}/>
+            }} />
 
             <View style={{
                 width: 14,
@@ -227,13 +258,13 @@ const TimeBlock = ({time}) => {
                 // borderTopWidth: 1,
                 borderBottomWidth: 1,
                 borderColor: '#A0AEC0'
-            }}/>
+            }} />
         </View>
 
         <View style={{
             flex: 1,
             backgroundColor: isEven ? '#F8FAFB' : '#FFFFFF',
-        }}/>
+        }} />
 
     </View>
 }
@@ -267,7 +298,7 @@ export const EVENT_TYPES = {
     GONE: 3
 }
 
-function Event({startTime, endTime, type, title, subTitle}) {
+function Event({ startTime, endTime, type, title, subTitle }) {
 
     const start = moment(startTime);
     const end = moment(endTime)
@@ -313,7 +344,7 @@ function Event({startTime, endTime, type, title, subTitle}) {
             <View>
                 <Text style={[
                     eventStyleSheet.title,
-                    {color: textColor}
+                    { color: textColor }
                 ]}>{title}</Text>
             </View>
 
@@ -325,7 +356,7 @@ function Event({startTime, endTime, type, title, subTitle}) {
 
                 <Text style={[
                     eventStyleSheet.subTitle,
-                    {color: textColor}
+                    { color: textColor }
                 ]}>
                     {subTitle}
                 </Text>
@@ -364,5 +395,8 @@ const eventStyleSheet = StyleSheet.create({
         fontWeight: '500',
         marginTop: 16,
         color: '#323843'
+    }
+    , paginator: {
+
     }
 })

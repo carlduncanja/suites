@@ -126,8 +126,8 @@ function ConfirmationComponent({
     margin-top: 120px;
   `;
 
-  const typeDecipher = (type) => {
-    if (type === "edit-update") {
+  const typeDecipher = () => {
+    if (editUpdate) {
       return (<>
         <MessageContainer>{message}</MessageContainer>
         <ButtonView>
@@ -146,7 +146,7 @@ function ConfirmationComponent({
           </ActionButtonContainer>
         </ButtonView>
       </>)
-    } else if (type !== "edit-update" && !error) {
+    } else if (!editUpdate && !error) {
       return (
         <>
           <IconContainer><TickIcon /></IconContainer>
@@ -160,7 +160,7 @@ function ConfirmationComponent({
 
         </>
       )
-    } else if (type !== "edit-update" && error) {
+    } else if (!editUpdate && error) {
       return (
         <>
           <IconContainer><ErrorIcon /></IconContainer>
@@ -191,7 +191,7 @@ function ConfirmationComponent({
           </HeadingContainer>
         </HeaderWrapper>
 
-        {typeDecipher(type)}
+        {typeDecipher()}
 
 
       </ModalContainer>

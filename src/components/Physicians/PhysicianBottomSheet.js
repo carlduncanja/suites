@@ -1,19 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import {View, ActivityIndicator} from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, ActivityIndicator } from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import PhysiciansDetailsTab from "../OverlayTabs/PhysiciansDetailsTab";
 import EditablePhysiciansDetailsTab from "../OverlayTabs/EditablePhysiciansDetailsTab";
 import CaseFilesTab from "../OverlayTabs/CaseFilesTab";
 import CustomProceduresTab from "../OverlayTabs/CustomProceduresTab";
 import BottomSheetContainer from '../common/BottomSheetContainer';
-import {getAppointments} from "../../api/network";
-import {colors} from "../../styles";
+import { getAppointments } from "../../api/network";
+import PaginatedSchedule from "../PaginatedSchedule"
+import { colors } from "../../styles";
 import ScheduleDisplayComponent from "../ScheduleDisplay/ScheduleDisplayComponent";
-import {getPhysicianById, updatePhysician} from "../../api/network";
-import {updatePhysicianRecord} from "../../redux/actions/physiciansActions";
-import {connect} from 'react-redux';
+import { getPhysicianById, updatePhysician } from "../../api/network";
+import { updatePhysicianRecord } from "../../redux/actions/physiciansActions";
+import { connect } from 'react-redux';
 
-function PhysicianBottomSheet({physician, isOpenEditable}) {
+function PhysicianBottomSheet({ physician, isOpenEditable }) {
     const currentTabs = ["Details", "Case Files", "Custom Procedures", "Schedule"];
     const {
         _id,
@@ -78,29 +79,6 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
         }
     }
 
-    const fetchPhyAppointments = (id, datePassed) => {
-        // console.log("The date i'm gonna use query is:", today);
-        setFetchingAppointment(true);
-
-        setfetchDate(datePassed);
-        console.log("date being passed is:", fetchDate);
-        console.log(id);
-
-        getAppointments("", "", datePassed, datePassed, "", id)
-            .then((data) => {
-                appointments.length = 0;
-
-                setAppointments(appointments.concat(data));
-
-                console.log("Appointment array has:", data);
-            })
-            .catch((error) => {
-                console.log("Failed to get desired appointments", error);
-            })
-            .finally((_) => {
-                setFetchingAppointment(false);
-            });
-    };
 
     const onFieldChange = (fieldName) => (value) => {
         // console.log("FIELD NAME: ", fieldName)
@@ -127,7 +105,7 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
         const {cases = [], procedures = []} = selectedPhysician
         switch (selectedTab) {
             case "Details":
-                return editableTab === 'Details' && isEditMode ? 
+                return editableTab === 'Details' && isEditMode ?
                     <EditablePhysiciansDetailsTab
                         fields={fields}
                         onFieldChange={onFieldChange}/>
@@ -138,9 +116,9 @@ function PhysicianBottomSheet({physician, isOpenEditable}) {
             case "Custom Procedures":
                 return <CustomProceduresTab procedures={procedures}/>;
             case "Schedule":
-                return <View/>;
-            default :
-                return <View/>
+                return <PaginatedSchedule ID={physician._id} isPhysician={true} />
+            default:
+                return <View />
         }
     };
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {
     Consumables,
@@ -15,6 +15,7 @@ import IconButton from '../../../common/Buttons/IconButton';
 import RightArrow from '../../../../../assets/svg/rightArrow';
 import LeftArrow from '../../../../../assets/svg/leftArrow';
 import {connect} from 'react-redux';
+import {PageContext} from "../../../../contexts/PageContext";
 
 
 const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices
@@ -47,7 +48,7 @@ const headers = [
     }
 ]
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, isEditMode, onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices,  onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
     let {
         inventoryList = [],
         equipmentList = [],
@@ -55,6 +56,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         total = 0,
         caseId
     } = chargeSheet
+
 
     inventoryList = inventoryList.map(item => {
         const {inventory} = item
@@ -76,6 +78,8 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
             unitPrice
         }
     })
+
+    const {isEditMode} = useContext(PageContext);
 
     // preparing billing information
     const billing = {
@@ -290,7 +294,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                     />
         // <View/>
     );
-} 
+}
 
 
 const mapStateToProps = (state) => {

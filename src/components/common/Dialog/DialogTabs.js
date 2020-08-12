@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text, TouchableOpacity} from "react-native";
-import TabsContainer from "../Tabs/TabsContainer";
+import TabsContainer from "../Tabs/TabsContainerComponent";
 import AddTab from "../../../../assets/svg/addTab";
 
 function DialogTabs({tabs, tab, onTabPress, onAddTab, tabName}) {

@@ -1,39 +1,39 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 
-const Button = ({backgroundColor, buttonPress, color, title, font = '--text-sm-medium', fontSize = 12, fontWeight = 'normal'}) => {
-
-    const theme = useTheme();
-
-    const ButtonWrapper = styled.TouchableOpacity`
+const ButtonWrapper = styled.TouchableOpacity`
         height: 100%;
         width: 100%;
         align-items: center;
-    `;
+`;
 
-    const ButtonContainer = styled.View`
+const ButtonContainer = styled.View`
         height: 100%;
         width: 100%;
         justify-content: center;
         align-items: center;
-       
-    `;
+        background-color:${(backgroundColor,) => backgroundColor}
+`;
 
-    const ButtonTitle = styled.Text({
-        ...theme.font[font],
-        color : color ? color : theme.colors['--accent-button']
-    })
+const ButtonTitle = styled.Text(({theme, font, color}) => ({
+    ...theme.font[font],
+    color: color ? color : theme.colors['--accent-button']
+}))
+
+
+const Button = ({backgroundColor, buttonPress, color, title, font = '--text-sm-medium'}) => {
+    const theme = useTheme();
+
     return (
-        
-        <ButtonWrapper onPress={buttonPress}>
-            <ButtonContainer>
-                <ButtonTitle>{title}</ButtonTitle>
-            </ButtonContainer> 
+        <ButtonWrapper theme={theme} onPress={buttonPress}>
+            <ButtonContainer theme={theme} backgroundColor={backgroundColor}>
+                <ButtonTitle theme={theme} font={font} color={color}>{title}</ButtonTitle>
+            </ButtonContainer>
         </ButtonWrapper>
-    ) 
+    )
 }
 
 export default Button
