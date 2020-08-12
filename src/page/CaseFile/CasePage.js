@@ -49,24 +49,45 @@ import styled from "@emotion/native";
 import {PageContext} from "../../contexts/PageContext";
 import {useTheme} from "emotion-theming";
 
+const overlayMenu = [
+    {
+        name: "Patient",
+        overlayTabs: ["Details", "Insurance", "Diagnosis", "Patient Risk"],
+        selectedIcon: <PatientSelectedIcon/>,
+        disabledIcon: <PatientDisabledIcon/>
+    },
+    {
+        name: "Medical Staff",
+        overlayTabs: ["Details"],
+        selectedIcon: <StaffSelectedIcon/>,
+        disabledIcon: <StaffDisabledIcon/>
+    },
+    {
+        name: "Medical History",
+        overlayTabs: ["Details", "Family History", "Lifestyle", "Other"],
+        selectedIcon: <MedicalSelectedIcon/>,
+        disabledIcon: <MedicalDisabledIcon/>
+    },
+    {
+        name: "Procedures",
+        overlayTabs: ["Details"],
+        selectedIcon: <ProcedureSelectedIcon/>,
+        disabledIcon: <ProcedureDisabledIcon/>
+    },
+    {
+        name: "Charge Sheet",
+        overlayTabs: ["Consumables", "Equipment", "Billing", "Quotation", "Invoices"],
+        selectedIcon: <ChargeSheetSelectedIcon/>,
+        disabledIcon: <ChargeSheetDisabledIcon/>
+    }
+]
 
-// const DetailsPageContentContainer = styled.View`
-//         display: flex;
-//         flex:1;
-//     `
-
-const DetailsPageContentWrapper = styled.View`
-        flex:1;
-        margin : 0px;
-        padding-top: ${props => props.theme.space['--space-32']};
-   
-        padding-left: ${props => props.theme.space['--space-24']};
-        padding-right: ${props => props.theme.space['--space-24']};
-    `
+const initialMenuItem = overlayMenu[0].name
+const initialCurrentTabs = overlayMenu[0].overlayTabs
+const initialSelectedTab = initialCurrentTabs[0]
 
 function CasePage({route, addNotification, ...props}) {
     const modal = useModal();
-    const theme = useTheme();
 
     const {caseId, isEdit} = route.params;
 
@@ -75,42 +96,6 @@ function CasePage({route, addNotification, ...props}) {
     const [selectedCaseId, setSelectedCaseId] = useState("")
     const [selectedQuotes, setSelectedQuotes] = useState([])
 
-    const overlayMenu = [
-        {
-            name: "Patient",
-            overlayTabs: ["Details", "Insurance", "Diagnosis", "Patient Risk"],
-            selectedIcon: <PatientSelectedIcon/>,
-            disabledIcon: <PatientDisabledIcon/>
-        },
-        {
-            name: "Medical Staff",
-            overlayTabs: ["Details"],
-            selectedIcon: <StaffSelectedIcon/>,
-            disabledIcon: <StaffDisabledIcon/>
-        },
-        {
-            name: "Medical History",
-            overlayTabs: ["Details", "Family History", "Lifestyle", "Other"],
-            selectedIcon: <MedicalSelectedIcon/>,
-            disabledIcon: <MedicalDisabledIcon/>
-        },
-        {
-            name: "Procedures",
-            overlayTabs: ["Details"],
-            selectedIcon: <ProcedureSelectedIcon/>,
-            disabledIcon: <ProcedureDisabledIcon/>
-        },
-        {
-            name: "Charge Sheet",
-            overlayTabs: ["Consumables", "Equipment", "Billing", "Quotation", "Invoices"],
-            selectedIcon: <ChargeSheetSelectedIcon/>,
-            disabledIcon: <ChargeSheetDisabledIcon/>
-        }
-    ]
-
-    const initialMenuItem = overlayMenu[0].name
-    const initialCurrentTabs = overlayMenu[0].overlayTabs
-    const initialSelectedTab = initialCurrentTabs[0]
 
     // ############### State
 
@@ -118,7 +103,7 @@ function CasePage({route, addNotification, ...props}) {
     const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs)
     const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem)
 
-    const [isEditMode, setEditMode] = useState(isEdit)
+    const [pageState, setPageState] = useState({})
     const [selectedCase, setSelectedCase] = useState({})
     const [isFetching, setFetching] = useState(false);
 
@@ -129,13 +114,13 @@ function CasePage({route, addNotification, ...props}) {
 
     // ############### Event Handlers
     const handleTabPressChange = (tab) => {
-        if (isEditMode === false) {
-        setSelectedTab(tab)
+        if (pageState.isEditMode === false) {
+            setSelectedTab(tab)
         }
     }
 
     const handleOverlayMenuPress = (selectedItem) => {
-        if (isEditMode) return;
+        if (pageState.isEditMode) return;
 
         const selectedMenu = overlayMenu.filter(item => item.name === selectedItem)
         const menuItem = selectedMenu[0].name
@@ -149,6 +134,14 @@ function CasePage({route, addNotification, ...props}) {
     const handleEditDone = (data) => {
         setUpdateInfo(data)
         // setSelectedCaseId(id)
+    }
+
+    const setPageLoading = (value) => {
+        setPageState({
+            ...pageState,
+            isLoading: value,
+            isEdit: false
+        })
     }
 
     const updateCaseChargeSheet = (updateInfo) => {
@@ -189,7 +182,7 @@ function CasePage({route, addNotification, ...props}) {
 
     // ############### Helper Function
     const fetchCase = (id) => {
-        setFetching(true);
+        setPageLoading(true);
         getCaseFileById(id)
             .then(data => {
                 setSelectedCase(data)
@@ -199,7 +192,7 @@ function CasePage({route, addNotification, ...props}) {
                 Alert.alert(("Failed", "Failed to get details for case"))
             })
             .finally(_ => {
-                setFetching(false)
+                setPageLoading(false)
             })
     };
 
@@ -426,11 +419,12 @@ function CasePage({route, addNotification, ...props}) {
 
     return (
         <>
-            <PageContext.Provider value={{isEditMode, setEditMode}}>
+            <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     title={name}
                     subTitle={`#${caseNumber}`}
-                    onBackPress={() => {}}
+                    onBackPress={() => {
+                    }}
                     pageTabs={
                         <TabsContainer
                             tabs={currentTabs}
