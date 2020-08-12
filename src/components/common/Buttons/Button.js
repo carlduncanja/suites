@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, { Component } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-const Button = ({backgroundColor, buttonPress, color, title, font = '--text-sm-medium', fontSize = 12, fontWeight = 'normal'}) => {
+const Button = ({ backgroundColor, buttonPress, color, title, font = '--text-sm-medium', fontSize = 12, fontWeight = 'normal' }) => {
 
     const theme = useTheme();
 
@@ -19,21 +19,22 @@ const Button = ({backgroundColor, buttonPress, color, title, font = '--text-sm-m
         width: 100%;
         justify-content: center;
         align-items: center;
+        background-color:${backgroundColor}
        
     `;
 
     const ButtonTitle = styled.Text({
         ...theme.font[font],
-        color : color ? color : theme.colors['--accent-button']
+        color: color ? color : theme.colors['--accent-button']
     })
     return (
-        
+
         <ButtonWrapper onPress={buttonPress}>
             <ButtonContainer>
                 <ButtonTitle>{title}</ButtonTitle>
-            </ButtonContainer> 
+            </ButtonContainer>
         </ButtonWrapper>
-    ) 
+    )
 }
 
 export default Button

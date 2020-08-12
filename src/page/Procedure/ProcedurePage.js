@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from "react-native";
 import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
 import Configuration from '../../components/OverlayTabs/Configuration';
 import NotesTab from '../../components/OverlayTabs/NotesTab';
@@ -8,7 +8,7 @@ import ConsumablesTab from '../../components/OverlayTabs/ConsumablesTab';
 import ProceduresEquipmentTab from '../../components/OverlayTabs/ProceduresEquipmentTab';
 import EditableProceduresConfig from '../../components/OverlayTabs/EditableProceduresConfig';
 import TheatresTab from '../../components/OverlayTabs/TheatresTab';
-import {colors} from "../../styles";
+import { colors } from "../../styles";
 import { currencyFormatter } from '../../utils/formatter';
 import { updateProcedure } from "../../api/network";
 
@@ -20,21 +20,22 @@ import AddIcon from "../../../assets/svg/addIcon";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import { withModal } from 'react-native-modalfy';
 
-function ProcedurePage({route}) {
-    
+function ProcedurePage({ route }) {
+
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
-    
+
     const { procedure, isOpenEditable } = route.params
 
+
     const {
-        _id = "", 
+        _id = "",
         name,
         hasRecovery,
         duration,
         physician
     } = procedure;
 
-    
+
     // const consumablesHeader = [
     //     {
     //         name :"Item Name",
@@ -65,23 +66,23 @@ function ProcedurePage({route}) {
     const [isFloatingActionDisabled, setIsDisabled] = useState(false)
 
     let updatedPhysician = {
-        name : `Dr. ${physician.firstName} ${physician.surname}` || null,
-        _id : physician._id || null
+        name: `Dr. ${physician.firstName} ${physician.surname}` || null,
+        _id: physician._id || null
     }
 
     const [fields, setFields] = useState({
-        name : name,
-        hasRecovery : hasRecovery,
-        duration : duration.toString(),
-        custom : true,
-        physician : physician
+        name: name,
+        hasRecovery: hasRecovery,
+        duration: duration.toString(),
+        custom: true,
+        physician: physician
     })
     // console.log("Physician: ", physician)
 
     const [popoverList, setPopoverList] = useState([
         {
-            name : "physician",
-            status : false
+            name: "physician",
+            status: false
         }
     ])
 
@@ -99,19 +100,19 @@ function ProcedurePage({route}) {
     const onEditPress = (tab) => {
         setEditableTab(tab)
         setEditMode(!isEditMode)
-        if(!isEditMode === false){
-            
-            if(currentTab === 'Configuration'){
+        if (!isEditMode === false) {
+
+            if (currentTab === 'Configuration') {
                 updateProcedureCall(selectedProcedure)
                 // onProcedureUpdate()
             }
-            
+
         }
         // if(!isEditMode === false && isInfoUpdated){
         //     console.log("Info: ", selectedProcedure)
         //     // updateProcedureCall(selectedProcedure)
         //     // console.log("Fields:", fields)
-            
+
         //     // updatePhysicianFn(_id, fieldsObject)
         // }
     }
@@ -122,29 +123,31 @@ function ProcedurePage({route}) {
             [fieldName]: value
         })
 
-        setSelectedProcedure({...selectedProcedure,[fieldName]:value})
+        setSelectedProcedure({ ...selectedProcedure, [fieldName]: value })
     };
 
-    const handlePopovers = (popoverValue) => (popoverItem) =>{
-        
-        if(!popoverItem){
-            let updatedPopovers = popoverList.map( item => {return {
-                ...item,
-                status : false
-            }})
-            
+    const handlePopovers = (popoverValue) => (popoverItem) => {
+
+        if (!popoverItem) {
+            let updatedPopovers = popoverList.map(item => {
+                return {
+                    ...item,
+                    status: false
+                }
+            })
+
             setPopoverList(updatedPopovers)
-        }else{
+        } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
-            ]; 
+            ];
             setPopoverList(updatedPopovers)
         }
-    
+
     }
 
     // const toggleActionButton = () =>{
@@ -173,7 +176,7 @@ function ProcedurePage({route}) {
     //     <View style={[styles.item,{alignItems:'flex-end'}]}>
     //         <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
     //     </View>
-             
+
     // </>
 
     const fetchProcdure = (id) => {
@@ -193,7 +196,7 @@ function ProcedurePage({route}) {
     };
 
     const onAddInventory = (data) => {
-        let {inventories = [] } = selectedProcedure
+        let { inventories = [] } = selectedProcedure
         // let updatedData = {
         //     amount : data.amount,
         //     inventory : data.inventory._id
@@ -210,7 +213,7 @@ function ProcedurePage({route}) {
         //     inventories : updatedArray
         // }
         let newData = [...inventories, data]
-        let newProcedureData = {...selectedProcedure, inventories:newData}
+        let newProcedureData = { ...selectedProcedure, inventories: newData }
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
         // console.log("Data: ", updatedObj)
@@ -218,8 +221,8 @@ function ProcedurePage({route}) {
     }
 
     const handleInventoryUpdate = (data) => {
-        const procedure = {...selectedProcedure, inventories : data}
-        const updatedObj = { inventories : data}
+        const procedure = { ...selectedProcedure, inventories: data }
+        const updatedObj = { inventories: data }
         setSelectedProcedure(procedure)
         setIsInfoUpdated(true)
         // Change updated
@@ -229,7 +232,7 @@ function ProcedurePage({route}) {
     const onAddEquipment = (data) => {
         let { equipments = [] } = selectedProcedure
         let newData = [...equipments, data]
-        let newProcedureData = {...selectedProcedure, equipments:newData}
+        let newProcedureData = { ...selectedProcedure, equipments: newData }
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
         updateProcedureCall(newProcedureData)
@@ -239,20 +242,20 @@ function ProcedurePage({route}) {
         // console.log("Theatre: ", data)
         let { supportedRooms = [] } = selectedProcedure
         let newData = [...supportedRooms, data]
-        let newProcedureData = {...selectedProcedure, supportedRooms:newData}
+        let newProcedureData = { ...selectedProcedure, supportedRooms: newData }
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
         // updateProcedureCall(newProcedureData)
     }
 
-    const onProcedureUpdate = () =>{
+    const onProcedureUpdate = () => {
         let newProcedureData = {
             ...selectedProcedure,
-            name : fields['name'],
-            hasRecovery : fields['hasRecovery'],
-            duration : parseInt(fields['duration']),
-            custom : fields['custom'],
-            physician : fields['physician']
+            name: fields['name'],
+            hasRecovery: fields['hasRecovery'],
+            duration: parseInt(fields['duration']),
+            custom: fields['custom'],
+            physician: fields['physician']
         }
         // console.log("New Procedure: ", newProcedureData)
         // setSelectedProcedure(newProcedureData)
@@ -260,15 +263,15 @@ function ProcedurePage({route}) {
     }
 
     const handleEquipmentUpdate = (data) => {
-        const procedure = {...selectedProcedure, equipments : data}
-        const updatedObj = { inventories : data}
+        const procedure = { ...selectedProcedure, equipments: data }
+        const updatedObj = { inventories: data }
         setSelectedProcedure(procedure)
         setIsInfoUpdated(true)
         // Change updated
         // updateProcedureCall(updatedObj)
     }
 
-    const updateProcedureCall = (updatedFields) =>{
+    const updateProcedureCall = (updatedFields) => {
         updateProcedure(_id, updatedFields)
             .then(data => {
                 // fetchProcdure(_id)
@@ -282,23 +285,23 @@ function ProcedurePage({route}) {
             })
     }
 
-    const getFabActions = () =>{
+    const getFabActions = () => {
         let title = "Actions";
         let floatingAction = [];
 
         switch (currentTab) {
-            case 0:{
-                const addNewItem = <ActionItem title={"Add Inventory Item"} icon={<AddIcon/>} onPress={_ => {
-                }}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
-                                                         onPress={_ => {
-                                                         }}/>;
+            case 0: {
+                const addNewItem = <ActionItem title={"Add Inventory Item"} icon={<AddIcon />} onPress={_ => {
+                }} />;
+                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon />}
+                    onPress={_ => {
+                    }} />;
                 floatingAction.push(addNewItem, /*removeLineItemAction*/)
                 title = "CONSUMABLE'S ACTIONS"
                 break;
             }
-                
-        
+
+
             default:
                 break;
         }
@@ -307,19 +310,19 @@ function ProcedurePage({route}) {
             floatingActions={floatingAction}
             title={title}
         />
-        
+
     }
 
 
     const getTabContent = (selectedTab) => {
         const { inventories = [], equipments = [], notes = "", supportedRooms = [] } = selectedProcedure
-        
+
         const consumablesData = inventories.map(item => {
             return {
-                item :  item.inventory.name,
-                type : "Anaesthesia",
-                quantity : item.amount,
-                unitPrice : item.inventory.unitPrice
+                item: item.inventory.name,
+                type: "Anaesthesia",
+                quantity: item.amount,
+                unitPrice: item.inventory.unitPrice
             }
         });
 
@@ -328,52 +331,52 @@ function ProcedurePage({route}) {
             case "Configuration":
                 return currentTab === 'Configuration' && isEditMode ?
                     <TouchableOpacity
-                        style={{flex: 1}}
-                        activeOpacity = {1}
-                        onPress = {()=>{handlePopovers(false)()}}
+                        style={{ flex: 1 }}
+                        activeOpacity={1}
+                        onPress={() => { handlePopovers(false)() }}
                     >
-                        <EditableProceduresConfig 
-                        fields = {fields}
-                        onFieldChange = {onFieldChange}
-                        popoverList = {popoverList}
-                        handlePopovers = {handlePopovers}
+                        <EditableProceduresConfig
+                            fields={fields}
+                            onFieldChange={onFieldChange}
+                            popoverList={popoverList}
+                            handlePopovers={handlePopovers}
                         />
                     </TouchableOpacity>
-                    
+
                     :
-                    <Configuration procedure = {selectedProcedure}/>;
+                    <Configuration procedure={selectedProcedure} />;
             case "Consumables":
                 return <ProceduresConsumablesTab
-                    consumablesData = {inventories}
-                    isEditMode = {isEditMode}
-                    onAddInventory = {onAddInventory}
-                    handleInventoryUpdate = {handleInventoryUpdate}
+                    consumablesData={inventories}
+                    isEditMode={isEditMode}
+                    onAddInventory={onAddInventory}
+                    handleInventoryUpdate={handleInventoryUpdate}
                 />
             case "Equipment":
-                return <ProceduresEquipmentTab 
-                    equipmentsData = {equipments}
-                    isEditMode = {isEditMode}
-                    onAddEquipment = {onAddEquipment}
-                    handleEquipmentUpdate = {handleEquipmentUpdate}
+                return <ProceduresEquipmentTab
+                    equipmentsData={equipments}
+                    isEditMode={isEditMode}
+                    onAddEquipment={onAddEquipment}
+                    handleEquipmentUpdate={handleEquipmentUpdate}
                 />;
             case "Notes":
-                return <NotesTab notesData = {[notes]}/>;
-            case "Theatres" :
-                return <TheatresTab 
-                    theatresData = {supportedRooms}
-                    onAddTheatre = {onAddTheatre}
+                return <NotesTab notesData={[notes]} />;
+            case "Theatres":
+                return <TheatresTab
+                    theatresData={supportedRooms}
+                    onAddTheatre={onAddTheatre}
                 />
-            default :
-                return <View/>
+            default:
+                return <View />
         }
     };
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
             {
                 isFetching
-                    ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                        <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
+                    ? <View style={{ flex: 1, width: '100%', justifyContent: 'center' }}>
+                        <ActivityIndicator style={{ alignSelf: 'center' }} size="large" color={colors.primary} />
                     </View>
                     :
                     <>
@@ -384,11 +387,11 @@ function ProcedurePage({route}) {
                             currentTabs={currentTabs}
                             selectedTab={currentTab}
                             isEditMode={isEditMode}
-                            onEditPress = {onEditPress}
+                            onEditPress={onEditPress}
                             overlayContent={
-                                <View 
-                                    style={{flex: 1, padding:30, backgroundColor:'#FFFFFF'}}
-                                    // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
+                                <View
+                                    style={{ flex: 1, padding: 30, backgroundColor: '#FFFFFF' }}
+                                // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
                                 >
                                     {getTabContent(currentTab)}
                                 </View>
@@ -400,7 +403,7 @@ function ProcedurePage({route}) {
                                 toggleActionButton={toggleActionButton}
                             />
                         </View> */}
-                        
+
                     </>
             }
         </View>
@@ -413,14 +416,14 @@ ProcedurePage.defaultProps = {};
 export default withModal(ProcedurePage);
 
 const styles = StyleSheet.create({
-    item:{
-        flex:1,
+    item: {
+        flex: 1,
     },
-    itemText:{
-        fontSize:16,
-        color:"#4A5568",
+    itemText: {
+        fontSize: 16,
+        color: "#4A5568",
     },
-    footer:{
+    footer: {
         // alignSelf: 'flex-end',
         // flexDirection: 'row',
         position: 'absolute',

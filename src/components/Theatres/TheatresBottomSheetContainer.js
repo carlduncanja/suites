@@ -1,23 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, View} from "react-native";
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, View } from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import InventoryGeneralTabContent from "../OverlayTabs/InventoryGeneralTabContent";
 import TheatresDetailsTab from "../OverlayTabs/TheatresDetailsTab";
-import {colors} from "../../styles";
-import {getTheatreById} from "../../api/network";
+import { getTheatreById } from "../../api/network";
 import ProceduresEquipmentTab from "../OverlayTabs/ProceduresEquipmentTab";
 import EquipmentsTab from "../OverlayTabs/EquipmentsTab";
-import ScheduleDisplayComponent from "../ScheduleDisplay/ScheduleDisplayComponent";
+import PaginatedSchedule from "../PaginatedSchedule"
 import StorageLocationsTab from "../OverlayTabs/StorageLocationsTab";
 import HistoryTabs from "../OverlayTabs/HistoryTabs";
-import {formatDate} from "../../utils/formatter";
+import { formatDate } from "../../utils/formatter";
 import moment from "moment";
-import {forEach} from "lodash";
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import { forEach } from "lodash";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 import BottomSheetContainer from '../common/BottomSheetContainer';
+import SchedulePaginator from '../common/Paginators/SchedulePaginator';
 
-function TheatresBottomSheetContainer({theatre = {}}) {
+function TheatresBottomSheetContainer({ theatre = {} }) {
     const theme = useTheme();
     const currentTabs = [
         "Details",
@@ -29,8 +29,7 @@ function TheatresBottomSheetContainer({theatre = {}}) {
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
-    const [relevantAppointment, setrelevantApppointments] = useState([]);
-    const [isFetchingAppointment, setFetchingAppointment] = useState(false);
+
     const [isEditMode, setEditMode] = useState(false);
     const [isFetching, setFetching] = useState(true);
     const [fetchDate, setfetchDate] = useState(new Date());
@@ -39,7 +38,7 @@ function TheatresBottomSheetContainer({theatre = {}}) {
     // ##### Lifecycle Methods
 
     useEffect(() => {
-        // console.log("Hello")
+
         setTimeout(() => {
             fetchTheatre(theatre._id)
         }, 200)
@@ -56,16 +55,8 @@ function TheatresBottomSheetContainer({theatre = {}}) {
         setEditMode(!isEditMode)
     }
 
-    // //Passing this instance of the below function to retrive the date from the child component
-    // const getDate = (item) => {
-    //   let today = new Date();
-    //   console.log("date to use to query the api:", item);
-    //   if (today == item) {
-    //     return;
-    //   } else setfetchDate(item);
-    //   setupdateDate(fetchDate);
-    //   return item;
-    // };
+
+
 
     // ##### Helper functions
 
@@ -90,7 +81,7 @@ function TheatresBottomSheetContainer({theatre = {}}) {
                 };
 
 
-                return <TheatresDetailsTab {...theatreDetails}/>;
+                return <TheatresDetailsTab {...theatreDetails} />;
             case "History":
                 // console.log("Cases: ", selectedTheatre.cases)
                 const cases = selectedTheatre.cases.map(caseItem => {
@@ -106,7 +97,7 @@ function TheatresBottomSheetContainer({theatre = {}}) {
                     }
                 });
 
-                return <HistoryTabs cases={cases}/>;
+                return <HistoryTabs cases={cases} />;
             case "Storage":
 
                 const storageLocations = selectedTheatre.storageLocations.map(item => {
@@ -142,13 +133,15 @@ function TheatresBottomSheetContainer({theatre = {}}) {
                         levels
                     }
                 });
-                return <StorageLocationsTab storageLocations={storageLocations}/>;
+                return <StorageLocationsTab storageLocations={storageLocations} />;
             case "Equipment":
-                return <EquipmentsTab/>;
+                return <EquipmentsTab />;
             case "Schedule":
-                return <View/>;
-            default :
-                return <View/>
+                return (
+                    <PaginatedSchedule ID={theatre._id} isPhysician={false} />
+                );
+            default:
+                return <View />
         }
     };
 
@@ -168,7 +161,8 @@ function TheatresBottomSheetContainer({theatre = {}}) {
             })
     };
 
-    const {_id, name} = selectedTheatre;
+
+    const { _id, name } = selectedTheatre;
 
     return (
         <BottomSheetContainer

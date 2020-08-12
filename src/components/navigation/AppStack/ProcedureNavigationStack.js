@@ -1,11 +1,12 @@
 import React from "react";
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import Procedures from "../../../page/Procedure/Procedures";
 import CreateProcedure from "../../../page/Procedure/CreateProcedure";
 import ProcedurePage from "../../../page/Procedure/ProcedurePage";
 import NotFound from "../../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
+import PageHeader from "../../common/Page/PageHeader";
 
 
 const Stack = createStackNavigator();
@@ -15,7 +16,7 @@ export default () => {
 
     return (
         <Stack.Navigator
-            initialRouteName="Procedures" 
+            initialRouteName="Procedures"
         >
             <Stack.Screen
                 name="Procedures"
@@ -45,21 +46,23 @@ export default () => {
             <Stack.Screen
                 name="Procedure"
                 component={ProcedurePage}
-                options={{
+                options={({ route, navigation }) => ({
                     // headerShown: false
-                    headerLeft: (props) => (
-                        <HeaderBackComponent
-                            {...props}
-                        />
-                    ),
+                    header: props =>
+                        <PageHeader
+                            headerMessage={route.params.procedure.name} specialDetail={` Dr. ${route.params.procedure.physician.firstName} ${route.params.procedure.physician.surname}`} isOpenEditable={route.params.isOpenEditable} onBack={() => navigation.navigate("Procedures")} {...props} />,
+                    // headerLeft: (props) => (<HeaderBackComponent
+                    //     {...props}
+                    // />
+                    // ),
                     headerStyle: {
-                        height: 100,
+                        height: 70,
                     },
                     headerTitle: ""
-                }}
+                })}
             />
 
-            
+
 
         </Stack.Navigator>
     );

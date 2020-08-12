@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Text, View, Button } from "react-native";
+import { Text, View, Button, Alert } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import { connect } from "react-redux";
 import Notifier from "../components/notifications/Notifier";
@@ -10,6 +10,8 @@ import { withModal, useModal } from "react-native-modalfy";
 import { signOut } from "../redux/actions/authActions";
 import { addNotification } from "../redux/actions/NotificationActions";
 import { render } from "react-dom";
+import PageHeader from "../components/common/Page/PageHeader"
+
 
 function NotFound({ addNotification, signOut, route = {} }) {
   //ensure to destructer redux function
@@ -38,8 +40,8 @@ function NotFound({ addNotification, signOut, route = {} }) {
     openModal("ConfirmationModal", {
       content: (
         <ConfirmationComponent
-          error={true}//boolean to show whether an error icon or success icon
-          type=""//use this specification to either get the confirm an edit or update
+          error={false}//boolean to show whether an error icon or success icon
+          editUpdate={false}//use this specification to either get the confirm an edit or update
           onCancel={cancelClicked}
           onAction={actionClicked}
           message="Do you want to save your changes?"//general message you can send to be displayed
@@ -58,23 +60,31 @@ function NotFound({ addNotification, signOut, route = {} }) {
     //alert("Are you sure? Your changes won't be reflected");
   };
 
+  const backClicked = () => {
+    Alert.alert("Back Clicked");
+  }
+
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text style={{ margin: 50 }}> {name} Page Not Found</Text>
+    <>
+      <PageHeader onBack={backClicked} headerMessage="Trevaughn Douglas" />
 
-      {/* <Notif notifications={notifs} /> */}
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ margin: 50 }}> {name} Page Not Found</Text>
 
-      <Button onPress={toggleConfirmation} title="Toggle Confirmation" />
+        {/* <Notif notifications={notifs} /> */}
 
-      <Button onPress={handleOnLogout} title="LOGOUT" />
-    </View>
+        <Button onPress={toggleConfirmation} title="Toggle Confirmation" />
+
+        <Button onPress={handleOnLogout} title="LOGOUT" />
+      </View>
+    </>
   );
 }
 
