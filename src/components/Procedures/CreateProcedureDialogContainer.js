@@ -1,5 +1,5 @@
 import React,{ useState, useEffect} from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import DialogDetailsTab from "./DialogDetailsTab";
@@ -253,10 +253,12 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
             .then(data => {
                 addProcedure(data);
                 modal.closeAllModals();
+                Alert.alert("Success",`New procedure ${fields['name']} has been created.`)
                 setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
                 // todo handle error
+                Alert.alert("Failed","Failed to create new procedure.")
                 console.log("failed to create procedure", error)
             })
             .finally(_ => {

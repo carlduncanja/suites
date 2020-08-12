@@ -40,7 +40,7 @@ function Record({
         <RecordWrapper>
             <RecordContainer>
                 <TitleText>{recordTitle}</TitleText>
-                <ValueText>{recordValue}</ValueText>
+                <ValueText>{recordValue || "--"}</ValueText>
             </RecordContainer>
         </RecordWrapper>
     )

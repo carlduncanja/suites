@@ -1,5 +1,5 @@
 import React,{ useState, useEffect} from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import OverlayDialog from "../../components/common/Dialog/OverlayDialog";
 import DialogTabs from "../../components/common/Dialog/DialogTabs";
 import DialogDetailsTab from "../../components/Procedures/DialogDetailsTab";
@@ -252,6 +252,7 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
             .then(data => {
                 addProcedure(data);
                 // modal.closeAllModals();
+                Alert.alert("Success",`New procedure ${updatedFields['name']} has been created.`)
                 navigation.replace('Procedure', {
                     procedure : data,
                     isOpenEditable : true
@@ -260,6 +261,7 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
             })
             .catch(error => {
                 // todo handle error
+                Alert.alert("Fialed","Failed to create a new procedure.")
                 console.log("failed to create procedure", error)
             })
             // .finally(_ => {

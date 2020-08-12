@@ -48,7 +48,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
             // empty search values and cancel any out going request.
             setSearchLocationResults([]);
             if (searchLocationQuery.cancel) searchLocationQuery.cancel();
-            return;
+            return; 
         }
 
         // wait 300ms before search. cancel any prev request before executing current.
@@ -69,6 +69,7 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
         getTheatres(searchLocationValue, 5)
             .then((theatresResult = {}) => {
                 const { data = [], pages = 0} = theatresResult
+                
                 const results = data.map(item => ({
                     // name: `Dr. ${item.surname}`,
                     ...item
@@ -175,8 +176,9 @@ const DialogLocationTab = ({onFieldChange, fields, getSavedTheatres, savedTheatr
                         searchText = {searchLocationValue}
                         onSearchChangeText = {(value)=> setSearchLocationValue(value)}
                         onClear={()=>{setSearchLocationValue('')}}
-                        handlePopovers = {(value)=>handlePopovers(value)('location')}
-                        isPopoverOpen = {status}
+                        // handlePopovers = {(value)=>handlePopovers(value)('location')}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {searchLocationQuery}
                     />
             </View>
 
@@ -263,7 +265,9 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderRadius:4,
         backgroundColor:'#FFFFFF',
-        padding:4,
+        // padding:4,
+        height:40,
+        width: 150
     },
     buttonContainer:{
         padding:30,

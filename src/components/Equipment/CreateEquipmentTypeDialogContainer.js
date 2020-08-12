@@ -141,6 +141,7 @@ const CreateEquipmentTypeDialogContainer = ({
       })
       .catch((error) => {
         // todo handle error
+        Alert.alert("Failed","Failed to create a new item.")
         console.log("failed to create equipment type", error);
       })
       .finally((_) => {

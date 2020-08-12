@@ -6,6 +6,7 @@ import OptionsField from '../common/Input Fields/OptionsField';
 import Button from '../common/Buttons/Button';
 import { formatDate, transformToSentence, calcAge, isValidEmail } from '../../utils/formatter';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import moment from 'moment';
 
 const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => { 
 
@@ -424,8 +425,8 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                         text={transformToSentence(fields['gender'])}
                         oneOptionsSelected={onFieldChange('gender')}
                         menuOption={<MenuOptions>
-                            <MenuOption value={'male'} text='Male'/>
-                            <MenuOption value={'female'} text='Female'/>
+                            <MenuOption value={'Male'} text='Male'/>
+                            <MenuOption value={'Female'} text='Female'/>
                         </MenuOptions>}
                     />
                 </View>
@@ -445,6 +446,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                         format={"DD/MM/YYYY"}
                         placeholder="DD/MM/YYYY"
                         onDateChange={handleDateValidation}
+                        maxDate = {new Date(moment().subtract(1, 'days'))}
                     />
                 </View>
             </View>

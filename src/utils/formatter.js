@@ -6,6 +6,11 @@ export let isValidEmail = (email) => {
     return re.test(String(email).toLowerCase());
 };
 
+export let isValidDOB = (date) => {
+    let isValid = moment(date).isBefore(new Date())
+    return isValid
+}
+
 export let isValidNumber = (value) => {
     return typeof value === 'number';
 };

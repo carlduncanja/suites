@@ -1,6 +1,7 @@
 import React,{  } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Record from "../common/Information Record/Record";
+import Row from "../common/Row";
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
 import { formatDate } from "../../utils/formatter"; 
 import { formatAmount } from "../../helpers/caseFilesHelpers";
@@ -44,8 +45,66 @@ const OrderDetailsTab = ({order = {} }) =>{
 
     return (
         <View style={{flex:1}}>
+            
+            <Row>
+                <Record
+                    recordTitle = "Description"
+                    recordValue  = {decscription || "--"}
+                />
+            </Row>
 
-            <View style={styles.row}>
+            <Row>
+                <ResponsiveRecord
+                    recordTitle = "Invoice"
+                    recordValue = {invoice || ""}
+                />
+
+                <Record
+                    recordTitle = "Order Total"
+                    recordValue = {formatAmount(total) || 0}
+                />
+
+                <Record
+                    recordTitle = "Status"
+                    recordValue = {transformToSentence(status) || ""}
+                />
+            </Row>
+
+            <Row>
+                <Record
+                    recordTitle = "Ordered On"
+                    recordValue = {formatDate(orderDate, "DD/MM/YYYY") || "--"}
+                />
+
+                <Record
+                    recordTitle = "Delivered On"
+                    recordValue = {formatDate(deliveryDate, "DD/MM/YYYY") || "--"}
+                />
+
+                <ResponsiveRecord
+                    recordTitle = "Storage Location"
+                    recordValue = {name || "--"}
+                />
+            </Row>
+
+            <Row>
+                <ResponsiveRecord
+                    recordTitle = "Requested by"
+                    recordValue = {requestedBy}
+                />
+
+                <ResponsiveRecord
+                    recordTitle = "Approved by"
+                    recordValue = {approvedBy}
+                />
+
+                <ResponsiveRecord
+                    recordTitle = "Received by"
+                    recordValue = {receivedBy}
+                />
+           </Row>
+
+            {/* <View style={styles.row}>
                 <View style={{flex:1}}>
                     <Record
                         recordTitle = "Description"
@@ -121,17 +180,29 @@ const OrderDetailsTab = ({order = {} }) =>{
                         recordValue = {receivedBy}
                    />
                </View>
-           </View>
+           </View> */}
 
            <View style = {{
                 backgroundColor:'#CCD6E0',
                 height:1,
                 borderRadius:2,
-                marginBottom:30
+                marginBottom:30,
+                marginTop:15
             }} />
 
+            <Row>
+                <Record
+                    recordTitle = "Type"
+                    recordValue = {type}
+                />
+                <Record
+                    recordTitle = "Configuration Status"
+                    recordValue = {configStatus}
+                    valueColor = "#38A169"
+                />
+            </Row>
 
-            <View style={[styles.row,{justifyContent:"flex-start"}]}>
+            {/* <View style={[styles.row,{justifyContent:"flex-start"}]}>
                <View style={[styles.inputWrapper,{flex:0, width:'33%'}]}>
                    <Record
                         recordTitle = "Type"
@@ -147,7 +218,7 @@ const OrderDetailsTab = ({order = {} }) =>{
                    />
                </View>
            </View>
-
+ */}
 
         </View>
     )

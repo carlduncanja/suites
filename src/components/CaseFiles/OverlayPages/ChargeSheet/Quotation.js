@@ -102,10 +102,10 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
             name: "Value",
             alignment: "center"
         },
-        {
-            name: "Actions",
-            alignment: "flex-end"
-        }
+        // {
+        //     name: "Actions",
+        //     alignment: "flex-end"
+        // }
     ]
 
     const openModal = (item) => () => {
@@ -137,25 +137,27 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>
                 </View>
-                <View style={[styles.item, {alignItems: 'flex-end', marginRight: 10}]}>
+                {/* <View style={[styles.item, {alignItems: 'flex-end', marginRight: 10}]}>
                     <SvgIcon iconName="actions"/>
-                </View>
+                </View> */}
             </>
 
         )
     }
 
     const toggleCheckbox = (item) => () => {
-        // console.log('Item:', item)
+        // console.log('Checked:', item)
         let updatedQuotes = [...checkBoxList];
 
-        if (updatedQuotes.includes(item)) {
-            updatedQuotes = updatedQuotes.filter(quote => quote !== item)
+        if (updatedQuotes.includes(item?._id)) {
+            updatedQuotes = updatedQuotes.filter(quote => quote?._id !== item?._id)
         } else {
-            updatedQuotes.push(item);
+            updatedQuotes.push(item?._id);
         }
-        setCheckBoxList(updatedQuotes);
+        // console.log("Quotes: ", updatedQuotes)
         handleQuotes(updatedQuotes)
+        console.log("Quote: ", updatedQuotes)
+        setCheckBoxList(updatedQuotes)
         // console.log('Quotes:', updatedQuotes)
     }
 
@@ -163,7 +165,7 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
 
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
         if (indeterminate) {
-            const selectedAllIds = [...tabDetails.map(item => item)]
+            const selectedAllIds = [...tabDetails.map(item => item?._id)]
             setCheckBoxList(selectedAllIds)
         } else {
             setCheckBoxList([])
@@ -175,9 +177,11 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     }
 
     const renderListFn = (item) => {
+        // console.log("List: ", checkBoxList)
+        // console.log("ISchecked: ", checkBoxList.includes(item._id))
         return <Item
             hasCheckBox={true}
-            isChecked={checkBoxList.includes(item)}
+            isChecked={checkBoxList.includes(item?._id)}
             onCheckBoxPress={toggleCheckbox(item)}
             onItemPress={openModal(item)}
             itemView={listItem(item)}

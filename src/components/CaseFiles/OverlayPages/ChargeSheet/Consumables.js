@@ -82,7 +82,7 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{item.type}</Text>
+            <Text style={styles.itemText}>{item?.type || 'n/a'}</Text>
         </View>
         {
             isEditMode && selectedOption !== 'All'

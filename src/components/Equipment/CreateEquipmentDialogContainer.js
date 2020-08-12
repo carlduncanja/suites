@@ -1,5 +1,5 @@
 import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import EquipmentDialogDetailsTab from './EquipmentDialogDetailsTab';
@@ -152,9 +152,11 @@ const CreateEquipmentDialogContainer = ({onCancel, onCreated, addEquipment, equi
         createEquipment(updatedFields)
             .then(data => {
                 modal.closeAllModals();
+                Alert.alert("Success",`New equipment ${fields['name']} has been created.`)
                 setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
+                Alert.alert("Failed","Failed to create a new equipment item.")
                 console.log("failed to create equipment", error);
                 // TODO handle error
             })

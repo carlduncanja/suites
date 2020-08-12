@@ -26,7 +26,7 @@ import _ from "lodash";
 
 import { withModal } from 'react-native-modalfy';
 import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
-
+ 
 const Physicians = (props) => {
 
     // ############# Const data
@@ -171,23 +171,25 @@ const Physicians = (props) => {
     // ############# Helper functions
 
     const fetchPhysiciansData = (pagePosition) => {
-        pagePosition ? pagePosition : 1;
-        setCurrentPagePosition(pagePosition);
+
+        let currentPosition = pagePosition ? pagePosition  : 1;
+        setCurrentPagePosition(currentPosition);
+
         setFetchingData(true);
-        getPhysicians(searchValue, recordsPerPage, pagePosition)
+        getPhysicians(searchValue, recordsPerPage, currentPosition)
             .then(physicianResult => {
                 const { data = [], pages = 0 } = physicianResult
                 
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                }else if(pagePosition === 1 ){
+                }else if(currentPosition === 1 ){
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                }else if(pagePosition === pages){
+                }else if(currentPosition === pages){
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                }else if(pagePosition < pages){
+                }else if(currentPosition < pages){
                     setNextDisabled(false);
                     setPreviousDisabled(false)
                 }else{
@@ -196,8 +198,7 @@ const Physicians = (props) => {
                 }
 
                 setPhysicians(data);
-                setTotalPages(pages)
-                // setTotalPages(Math.ceil(data.length / recordsPerPage))
+                data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
             })
             .catch(error => {
                 console.log("failed to get physicians", error);

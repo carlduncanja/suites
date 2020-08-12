@@ -53,7 +53,7 @@ const listHeaders = [
   {
     name: "Delivery Date",
     alignment: "flex-start",
-    flex: 1,
+    flex: 1.5,
     fontSize: 14,
   },
   {
@@ -200,10 +200,12 @@ const Orders = (props) => {
   // ############# Helper functions
 
   const fetchOrdersData = (pagePosition) => {
-    pagePosition ? pagePosition : 1;
-    setCurrentPagePosition(pagePosition)
+
+    let currentPosition = pagePosition ? pagePosition  : 1;
+    setCurrentPagePosition(currentPosition)
+
     setFetchingData(true);
-    getPurchaseOrders(searchValue, recordsPerPage, pagePosition)
+    getPurchaseOrders(searchValue, recordsPerPage, currentPosition)
       .then((ordersInfo) => {
        
         const { data = [], pages = 0 } = ordersInfo;
@@ -211,13 +213,13 @@ const Orders = (props) => {
         if(pages === 1){
           setPreviousDisabled(true);
           setNextDisabled(true);
-        }else if(pagePosition === 1 ){
+        }else if(currentPosition === 1 ){
             setPreviousDisabled(true);
             setNextDisabled(false);
-        }else if(pagePosition === pages){
+        }else if(currentPosition === pages){
             setNextDisabled(true);
             setPreviousDisabled(false);
-        }else if(pagePosition < pages){
+        }else if(currentPosition < pages){
             setNextDisabled(false);
             setPreviousDisabled(false)
         }else{
@@ -226,8 +228,7 @@ const Orders = (props) => {
         }
 
         setPurchaseOrders(data);
-        console.log("OrdersInfo: ", data);
-        setTotalPages(pages)
+        data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
         
       })
       .catch((error) => {
@@ -284,8 +285,8 @@ const Orders = (props) => {
             {transformToSentence(status)}
           </Text>
         </View>
-        <View style={[styles.item, { flex: 1, alignItems: "flex-start" }]}>
-          <Text style={[styles.itemText, { color: "#4E5664" }]}>
+        <View style={[styles.item, { flex: 1.5, alignItems: "flex-start" }]}>
+          <Text style={[styles.itemText, { color: "#4E5664", fontSize:15 }]}>
             {deliveryDate}
           </Text>
         </View>
@@ -415,7 +416,7 @@ const Orders = (props) => {
     <NavPage
       isFetchingData={isFetchingData}
       onRefresh={handleDataRefresh}
-      placeholderText={"Search by Purchase Order"}
+      placeholderText={"Search by Purchase Order or Supplier"}
       changeText={onSearchInputChange}
       inputText={searchValue}
       routeName={"Purchase Orders"}
@@ -432,7 +433,7 @@ const Orders = (props) => {
       toggleActionButton={toggleActionButton}
       hasPaginator = {true}
       hasActionButton = {true}
-      hasActions = {true}
+      hasActions = {false}
       isNextDisabled = {isNextDisabled}
       isPreviousDisabled = {isPreviousDisabled}
     />

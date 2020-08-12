@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, TouchableOpacity} from "react-native";
+import {View, StyleSheet, Text, TouchableOpacity, Alert} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
@@ -135,6 +135,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
         createStorageLocation(fields)
             .then(data => {
                 modal.closeAllModals();
+                Alert.alert("Success", `New storage location ${fields['name']}, has been created.`)
                 setTimeout(() => {
                     onCreated(data)
                 }, 200);
@@ -143,6 +144,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
             .catch(error => {
                 // todo handle error
                 console.log("failed to create storage location", error)
+                Alert.alert("Failed", `Failed to create new storage location ${fields['name']}.`)
             })
             .finally(_ => {
             });

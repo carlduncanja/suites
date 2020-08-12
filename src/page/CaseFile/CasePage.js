@@ -41,13 +41,14 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {addNotification} from "../../redux/actions/NotificationActions";
 import CaseFilesBottomSheetContainer from '../../components/CaseFiles/CaseFilesBottomSheetContainer';
+import CreateProcedureDialogContainer from '../../components/Procedures/CreateProcedureDialogContainer';
+import {setCaseEdit} from "../../redux/actions/casePageActions";
 
 
-function CasePage({route, addNotification}) {
+function CasePage({route, addNotification, ...props}) {
     const modal = useModal();
 
     const {caseId, isEdit} = route.params;
-    console.log("Case id: ", caseId)
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([])
@@ -124,8 +125,7 @@ function CasePage({route, addNotification}) {
     }
 
     const onEditPress = (tab) => {
-        setEditMode(!isEditMode)
-        console.log("Pressed: ")
+        //setEditMode(!isEditMode)
         // if (isEditMode === true) {
         //     if (updateInfo.length !== 0) {
         //         // console.log("Record: ", updateInfo)
@@ -205,81 +205,95 @@ function CasePage({route, addNotification}) {
         let floatingAction = [];
 
         console.log("getFabActions: selected tab", selectedTab);
-        switch (selectedTab) {
-            case "Consumables": {
-                const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {
-                }}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
-                                                         onPress={_ => {
-                                                         }}/>;
-                floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
-                title = "CONSUMABLE'S ACTIONS"
-                break;
-            }
-            case "Equipment": {
-                const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {
-                }}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>} onPress={_ => {
-                }}/>;
-                floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
-                title = "EQUIPMENT'S ACTIONS"
-                break;
-            }
-            case 'Quotation' : {
-                // Generate Actions depending on the quotation that was selected.
-                if (selectedQuotes.length === 1) {
-                    const quotation = selectedQuotes[0];
-                    // check the status and generate actions depending on status
+        console.log("Selected maenu: ",selectedMenuItem)
+        if(selectedMenuItem === "Charge Sheet"){
+            switch (selectedTab) {
+                case "Consumables": {
+                    const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {
+                    }}/>;
+                    const addNewItem = <ActionItem title={"Add Consumable"} icon={<AddIcon/>} onPress={_ => {
+                    }}/>;
+                    const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
+                                                            onPress={_ => {
+                                                            }}/>;
+                    floatingAction.push(addNewLineItemAction, addNewItem, /*removeLineItemAction*/)
+                    title = "CONSUMABLE'S ACTIONS"
+                    break;
+                }
+                case "Equipment": {
+                    const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {
+                    }}/>;
+                    const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>} onPress={_ => {
+                    }}/>;
+                    floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
+                    title = "EQUIPMENT ACTIONS"
+                    break;
+                }
+                case 'Quotation' : {
+                    // Generate Actions depending on the quotation that was selected.
+                    if (selectedQuotes.length === 1) {
+                        const quotation = selectedQuotes[0];
+                        // check the status and generate actions depending on status
 
-                    console.log("quotation", quotation);
+                        console.log("quotation", quotation);
 
-                    switch (quotation.status) {
-                        case QUOTATION_STATUS.DRAFT:
-                            floatingAction.push(
-                                <ActionItem
-                                    title="Open Quotation" icon={<EditIcon/>}
-                                    onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
-                                />
-                            )
+                        switch (quotation.status) {
+                            case QUOTATION_STATUS.DRAFT:
+                                floatingAction.push(
+                                    <ActionItem
+                                        title="Open Quotation" icon={<EditIcon/>}
+                                        onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
+                                    />
+                                )
 
-                            break;
-                        case QUOTATION_STATUS.OPEN:
-                            floatingAction.push(
-                                <ActionItem
-                                    title="Cancel Quotation"
-                                    icon={<EditIcon/>}
-                                    onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
-                                />
-                            )
+                                break;
+                            case QUOTATION_STATUS.OPEN:
+                                floatingAction.push(
+                                    <ActionItem
+                                        title="Cancel Quotation"
+                                        icon={<EditIcon/>}
+                                        onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
+                                    />
+                                )
 
-                            floatingAction.push(
-                                <ActionItem
-                                    title="Create Invoice"
-                                    icon={<EditIcon/>}
-                                    onPress={onCreateInvoice(caseId, quotation._id)}
-                                />
-                            )
-                            break;
-                        case QUOTATION_STATUS.CANCELLED:
-                            break;
-                        case QUOTATION_STATUS.BILLED:
-                            break;
+                                floatingAction.push(
+                                    <ActionItem
+                                        title="Create Invoice"
+                                        icon={<EditIcon/>}
+                                        onPress={onCreateInvoice(caseId, quotation._id)}
+                                    />
+                                )
+                                break;
+                            case QUOTATION_STATUS.CANCELLED:
+                                break;
+                            case QUOTATION_STATUS.BILLED:
+                                break;
+                        }
+
+                        // const update = <ActionItem title="Create Invoice" icon={<AddIcon/>}
+                        //                            onPress={onCreateInvoice}/>
+
+                    } else if (selectedQuotes.length > 1) {
+                        // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
+                        //                                   onPress={onCreateInvoice}/>
                     }
 
-                    // const update = <ActionItem title="Create Invoice" icon={<AddIcon/>}
-                    //                            onPress={onCreateInvoice}/>
 
-                } else if (selectedQuotes.length > 1) {
-                    // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
-                    //                                   onPress={onCreateInvoice}/>
+                    // floatingAction.push(createInvoice)
+                    title = "QUOTATION ACTIONS"
+                    break;
                 }
-
-
-                // floatingAction.push(createInvoice)
-                title = "QUOTATION ACTIONS"
-                break;
+            }
+        }else if(selectedMenuItem === "Procedures"){
+            switch (selectedTab){
+                case "Details" :
+                    const addNewProcedure = <ActionItem title = {"Add Appointment"} icon = {<AddIcon/>} onPress = {openAddProcedure} />
+                    floatingAction.push(addNewProcedure)
+                    title = "PROCEDURE ACTIONS"
+                    break;
             }
         }
+        
 
 
         return <ActionContainer
@@ -361,11 +375,25 @@ function CasePage({route, addNotification}) {
             })
     }
 
-
+    const openAddProcedure = () =>{
+        modal.closeModals("ActionContainerModal");
+        
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+            modal.openModal("OverlayModal", {
+            content: (
+                <View/>
+            ),
+            onClose: () => setFloatingAction(false),
+            });
+        }, 200);
+        
+    }
     // ############### Data
 
     const getOverlayContent = () => {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase
+        // console.log("Case Procedures: ", caseProcedures)
         const {medicalInfo = {}} = patient
 
         switch (selectedMenuItem) {
@@ -440,7 +468,8 @@ CasePage.propTypes = {};
 CasePage.defaultProps = {};
 
 const mapDispatchTopProp = dispatch => bindActionCreators({
-    addNotification
+    addNotification,
+    setCaseEdit
 }, dispatch);
 
 

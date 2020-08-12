@@ -3,6 +3,7 @@ export const Auth = `[AUTH]`
 export const SET_AUTH = `${Auth} set`
 export const UPDATE_AUTH = `${Auth} update`
 export const RESTORE_TOKEN = `${Auth} restore token`
+export const EXPO_TOKEN = `${Auth} expo token`
 export const SIGN_IN = `${Auth} sign in`
 export const SIGN_OUT = `${Auth} sign out`
 
@@ -29,6 +30,13 @@ export const restoreToken = (token) => ({
     type: RESTORE_TOKEN,
     payload: {
         data: token
+    }
+})
+
+export const setExpoPushToken = (expoPushToken) => ({
+    type: EXPO_TOKEN,
+    payload: {
+        data: expoPushToken
     }
 })
 

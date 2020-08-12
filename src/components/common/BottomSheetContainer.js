@@ -15,15 +15,16 @@ function BottomSheetContainer({
         overlayContent = ()=>{},
         onEditPress = ()=>{}
     }){
-
+    
     const theme = useTheme();
-
+    
     const BottomSheetWrapper = styled.View`
         flex:1;
         background-color: ${theme.colors['--default-shade-white']};
+        
     `
     const SheetContainer = styled.View`
-        height:100%
+        height:100%;
     `
     return (
         <BottomSheetWrapper>

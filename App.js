@@ -35,8 +35,6 @@ const App = () => {
                     <RootApplicationNavigator/>
                     <NotificationRegistry/>
                 </ThemeProvider>
-
-
             </SuitesContextProvider>
         </Provider>
     );

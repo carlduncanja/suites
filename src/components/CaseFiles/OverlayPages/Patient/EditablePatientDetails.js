@@ -400,8 +400,8 @@ const EditablePatientDetails = ({ fields, onFieldChange }) => {
                         // text = {(fields['gender'])}
                         oneOptionsSelected={onFieldChange('gender')}
                         menuOption={<MenuOptions>
-                            <MenuOption value={'male'} text='Male'/>
-                            <MenuOption value={'female'} text='Female'/>
+                            <MenuOption value={'Male'} text='Male'/>
+                            <MenuOption value={'Female'} text='Female'/>
                         </MenuOptions>}
                     />
                 </View>

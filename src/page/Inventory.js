@@ -410,22 +410,25 @@ function Inventory(props) {
     };
 
     const fetchInventory = (pagePosition) => {
-        pagePosition ? pagePosition : 1;
+
+       let currentPosition = pagePosition ? pagePosition  : 1;
+       setCurrentPagePosition(currentPosition)
+
         setFetchingData(true);
-        getInventories(searchValue, recordsPerPage, pagePosition)
+        getInventories(searchValue, recordsPerPage, currentPosition)
             .then(inventoryResult => {
                 const { data = [], pages = 0 } = inventoryResult
                 
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                }else if(pagePosition === 1 ){
+                }else if(currentPosition === 1 ){
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                }else if(pagePosition === pages){
+                }else if(currentPosition === pages){
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                }else if(pagePosition < pages){
+                }else if(currentPosition < pages){
                     setNextDisabled(false);
                     setPreviousDisabled(false)
                 }else{
@@ -434,8 +437,8 @@ function Inventory(props) {
                 }
 
                 setInventory(data);
-                setTotalPages(pages)
-                // setTotalPages(Math.ceil(data.length / recordsPerPage));
+                data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
+                
             })
             .catch(error => {
                 // todo handle error
@@ -451,7 +454,7 @@ function Inventory(props) {
 
     return (
         <NavPage
-            placeholderText={"Search by heading or entry below."}
+            placeholderText={"Search by item name."}
             routeName={pageTitle}
             listData={inventoryToDisplay}
             listItemFormat={renderItem}

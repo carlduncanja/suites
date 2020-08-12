@@ -20,10 +20,6 @@ function EditButtonStyle({onPress = ()=>{}}){
         height: 100%;
         width: 100%; 
         border-radius : 6px;
-        padding-top : 6px;
-        padding-bottom : 6px;
-        padding-left: 8px;
-        padding-right: 8px;
         background-color : ${theme.colors['--accent-button']};
         align-items : center;
         justify-content : center;

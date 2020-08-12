@@ -232,23 +232,25 @@ const Equipment = (props) => {
 
   // ############# Helper functions
   const fetchEquipmentData = (pagePosition) => {
-    pagePosition ? pagePosition : 1;
-    setFetchingData(true);
 
-    getEquipmentTypes(searchValue, recordsPerPage, pagePosition)
+    let currentPosition = pagePosition ? pagePosition  : 1;
+    setCurrentPagePosition(currentPosition)
+
+    setFetchingData(true);
+    getEquipmentTypes(searchValue, recordsPerPage, currentPosition)
       .then((equipmentTypesInfo) => {
         const { data = [], pages = 0 } = equipmentTypesInfo;
 
         if (pages === 1) {
           setPreviousDisabled(true);
           setNextDisabled(true);
-        } else if (pagePosition === 1) {
+        } else if (currentPosition === 1) {
           setPreviousDisabled(true);
           setNextDisabled(false);
-        } else if (pagePosition === pages) {
+        } else if (currentPosition === pages) {
           setNextDisabled(true);
           setPreviousDisabled(false);
-        } else if (pagePosition < pages) {
+        } else if (currentPosition < pages) {
           setNextDisabled(false);
           setPreviousDisabled(false);
         } else {
@@ -257,7 +259,7 @@ const Equipment = (props) => {
         }
 
         setEquipmentTypes(data);
-        setTotalPages(pages);
+        data.length === 0 ? setTotalPages(0) : setTotalPages(pages);
       })
       .catch((error) => {
         console.log("Failed to get equipment types", error);
@@ -552,7 +554,7 @@ const Equipment = (props) => {
     <NavPage
       isFetchingData={isFetchingData}
       onRefresh={handleDataRefresh}
-      placeholderText={"Search by Assigned Equipment"}
+      placeholderText={"Search by Assignment, Status, Parent Name"}
       changeText={onSearchInputChange}
       inputText={searchValue}
       routeName={"Equipment"}

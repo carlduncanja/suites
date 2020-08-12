@@ -37,9 +37,6 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
     const [isEditMode, setEditMode] = useState(isOpenEditable);
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
-    const [isFetchingAppointment, setFetchingAppointment] = useState(false);
-    const [appointments, setAppointments] = useState([]);
-    const [fetchDate, setfetchDate] = useState(new Date());
 
 
     const [fields, setFields] = useState({
@@ -77,7 +74,7 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
                 address: removeIds(fields['address']),
                 emergencyContact: removeIds(fields['emergencyContact'])
             }
-            setSelectedPhysician({ ...fieldsObject, _id })
+            setSelectedPhysician({...fieldsObject, _id})
             updatePhysicianFn(_id, fieldsObject)
         }
     }
@@ -98,26 +95,26 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
         let updatedArray = array.map(obj => {
             let newObj = obj
             delete newObj['_id']
-            return { ...newObj }
+            return {...newObj}
         })
 
         return updatedArray
     }
 
     const getTabContent = (selectedTab) => {
-        const { cases = [], procedures = [] } = selectedPhysician
+        const {cases = [], procedures = []} = selectedPhysician
         switch (selectedTab) {
             case "Details":
                 return editableTab === 'Details' && isEditMode ?
                     <EditablePhysiciansDetailsTab
                         fields={fields}
-                        onFieldChange={onFieldChange} />
+                        onFieldChange={onFieldChange}/>
                     :
-                    <PhysiciansDetailsTab physician={selectedPhysician} />
+                    <PhysiciansDetailsTab physician={selectedPhysician}/>
             case "Case Files":
-                return <CaseFilesTab cases={cases} />;
+                return <CaseFilesTab cases={cases}/>;
             case "Custom Procedures":
-                return <CustomProceduresTab procedures={procedures} />;
+                return <CustomProceduresTab procedures={procedures}/>;
             case "Schedule":
                 return <PaginatedSchedule ID={physician._id} isPhysician={true} />
             default:
@@ -125,9 +122,6 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
         }
     };
 
-    const overlayContent = <View style={{ flex: 1, padding: 30 }}>
-        {getTabContent(currentTab)}
-    </View>;
 
     const fetchPhysician = (id) => {
         setFetching(true);

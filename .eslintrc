@@ -1,0 +1,91 @@
+{
+  "extends": [
+    "react-app",
+    "airbnb"
+  ],
+  "rules": {
+    "indent": ["error", 4],
+    "no-unused-expressions": ["error", {
+      "allowTernary": true
+    }],
+    "no-trailing-spaces": ["error", {
+      "skipBlankLines": true
+    }],
+    "operator-linebreak": ["error", "after"],
+    "no-use-before-define": ["warn", {
+      "functions": false,
+      "classes": true,
+      "variables": true
+    }],
+    "prefer-const": "warn",
+    "no-shadow": "warn",
+    "camelcase": "warn",
+    "no-return-assign": "warn",
+    "no-lonely-if": "warn",
+    "array-callback-return": "warn",
+    "arrow-parens": ["warn", "as-needed"],
+    "arrow-body-style": ["warn", "as-needed"],
+    "object-curly-newline": ["warn", {
+      "multiline": true
+    }],
+    "max-len": ["warn", {
+      "code": 175,
+      "ignoreComments": true,
+      "ignoreTrailingComments": true,
+      "ignoreUrls": true
+    }],
+    "prefer-destructuring": ["warn", {
+      "array": true,
+      "object": true
+    }],
+    "no-plusplus": ["warn", {
+      "allowForLoopAfterthoughts": true
+    }],
+    "no-console": ["warn", {
+      "allow": ["warn", "error"]
+    }],
+    "no-empty": ["warn", {
+      "allowEmptyCatch": true
+    }],
+    "nonblock-statement-body-position": "off",
+    "curly": "off",
+    "consistent-return": "off",
+    "comma-dangle": "off",
+    "one-var": "off",
+    "no-unused-vars": "off",
+    "object-curly-spacing": "off",
+    "import/newline-after-import": "off",
+    "import/no-dynamic-require": "off",
+    "spaced-comment": "off",
+
+    "react/jsx-filename-extension": ["warn", {
+      "extensions": [".js", ".jsx"]
+    }],
+    "react/jsx-wrap-multilines": ["warn", {
+      "declaration": "parens-new-line",
+      "assignment": "parens-new-line",
+      "return": "ignore",
+      "arrow": "parens-new-line",
+      "condition": "parens-new-line",
+      "logical": "ignore",
+      "prop": "parens-new-line"
+    }],
+    "react/jsx-indent": ["warn", 4],
+    "react/jsx-indent-props": ["warn", 4],
+    "react/require-default-props": ["warn", {
+      "forbidDefaultForRequired": true,
+      "ignoreFunctionalComponents": true
+    }],
+    "react/destructuring-assignment": ["warn", "always"],
+    "react/prop-types": "warn",
+    "react/no-array-index-key": "warn",
+    "react/jsx-one-expression-per-line": "off",
+    "react/forbid-prop-types": "off",
+    "react/jsx-closing-tag-location": "off",
+    "react/state-in-constructor": "off",
+    "react/sort-comp": "off",
+    "react/jsx-boolean-value": "off",
+    "react/jsx-tag-spacing": "off",
+    "react/jsx-curly-newline": "off"
+  }
+}

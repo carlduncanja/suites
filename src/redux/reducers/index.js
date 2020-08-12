@@ -15,6 +15,8 @@ import orders from "./ordersReducers";
 import cart from "./cartReducer";
 import notifications from "./NotificationReducer";
 import draft from "./draftReducer";
+import casePage from './casePageReducer';
+import procedurePage from './procedurePageReducer';
 
 // import app from "./appReducer"
 // import casesFiles from "./caseFilesReducer"
@@ -35,10 +37,12 @@ const appReducer = combineReducers({
   inventory,
   suppliers,
   orders,
+  casePage,
   auth,
   cart,
   notifications,
   draft,
+  procedurePage,
 });
 
 /**

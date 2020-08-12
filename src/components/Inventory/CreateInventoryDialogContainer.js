@@ -239,18 +239,26 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
         return isValid
     }
 
-    const handleUnitPrice = (price) => {
-        if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
+    const handleUnitPrice = (value) => {
+        let price = value.replace(/[^0-9.]/g, "")
+        if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
             onFieldChange('unitCost')(parseFloat(price))
         }
-        setUnitPriceText(price)
+        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price){
+            setUnitPriceText(price)
+        }
+        
     }
 
-    const handleCustomPrice = (price) => {
-        if (/^-?[0-9][0-9.]+$/g.test(price) || /^\d+$/g.test(price) || !price) {
+    const handleCustomPrice = (value) => {
+        let price = value.replace(/[^0-9.]/g, "")
+        if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
             onFieldChange('customPrice')(parseFloat(price))
         }
-        setCustomPriceText(price)
+        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price){
+            setCustomPriceText(price)
+        }
+        
     }
 
     const createInventoryCall = (id, itemToCreate) => {
@@ -361,7 +369,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                     <InputField2
                         label={"Unit Price"}
                         onChangeText={(value) => { handleUnitPrice(value )}}
-                        value={unitPriceText.toString()}
+                        value={`$ ${unitPriceText.toString()}`}
                         keyboardType={'number-pad'}
                         onClear={() => handleUnitPrice('')}
                         hasError = {errorFields['unitCost']}
@@ -401,7 +409,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
                     <InputField2
                         label={"Custom Price"}
                         onChangeText={(value) => { handleCustomPrice(value )}}
-                        value={customPriceText.toString()}
+                        value={`$ ${customPriceText.toString()}`}
                         keyboardType={'number-pad'}
                         onClear={() => handleCustomPrice('')}
                     />

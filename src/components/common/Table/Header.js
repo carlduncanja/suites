@@ -1,4 +1,4 @@
-import React, {Component, useContext, useEffect} from 'react';
+import React, {Component, useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
 import Checkbox from '../Checkbox/Checkbox';
@@ -8,10 +8,11 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import HeaderItem from './HeaderItem';
 
-function Header({headers = [], selectedHeader = "", toggleHeaderCheckbox=()=>{}, isIndeterminate = false, checked=false, isCheckbox=true}){
+function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = false, checked=false, isCheckbox=true}){
 
+    const [selectedHeader, setSelectedHeader] = useState("")
     const theme = useTheme()
-
+ 
     const HeaderWrapper = styled.View`
         margin-bottom: ${theme.space['--space-13']};
   
@@ -22,6 +23,10 @@ function Header({headers = [], selectedHeader = "", toggleHeaderCheckbox=()=>{},
         align-items:center;
         padding-left:1px;
     `
+    const onSelectHeader = (name) => {
+        console.log("Header: ", name)
+        setSelectedHeader(name)
+    }
 
     return (
         <HeaderWrapper>
@@ -37,7 +42,13 @@ function Header({headers = [], selectedHeader = "", toggleHeaderCheckbox=()=>{},
 
                 {headers.map((header, index) => {
                     return (
-                        <HeaderItem header={header} index={index} selectedHeader = {selectedHeader} key={index}/>
+                        <HeaderItem 
+                            header={header} 
+                            index={index} 
+                            key={index}
+                            selectedHeader = {selectedHeader} 
+                            onSelectHeader = {onSelectHeader}
+                        />
                     )}
                 )}
             </HeaderContainer>

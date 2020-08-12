@@ -1,10 +1,11 @@
 import React,{ useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
-import { createPhysician } from "../../api/network";
+import {createPhysician} from "../../api/network";
 import {useModal} from "react-native-modalfy";
 import PhysicianDetailsTab from './PhysicianDetailsTab';
+import moment from "moment";
 
 
 /**
@@ -16,7 +17,7 @@ import PhysicianDetailsTab from './PhysicianDetailsTab';
  * @constructor
  */
 
-const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
+const CreatePhysicianDialogContainer = ({onCancel, onCreated}) => {
 
     const modal = useModal();
     const dialogTabs = ['Details'];
@@ -56,20 +57,33 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
         modal.closeAllModals();
     };
 
-    const validatePhysician = () =>{
+    const validatePhysician = () => {
         let isValid = true
-        const requiredFields = ['firstName', 'surname', 'trn', 'gender']
+        const requiredFields = ['firstName', 'surname', 'trn', 'gender', 'dob']
 
         let errorObj = {...errorFields} || {}
 
         for (const requiredField of requiredFields) {
-            if(!fields[requiredField]){
+            if (!fields[requiredField]) {
                 console.log(`${requiredField} is required`)
                 isValid = false
                 errorObj[requiredField] = "Value is required.";
-            }else{
+            } else {
                 delete errorObj[requiredField]
             }
+
+            if (requiredField === "dob") {
+                // check if dob is valid
+                const validaDob = new moment().subtract(5, 'years')
+                const dob = fields[requiredField];
+                const validDob = moment(dob).isBefore(validaDob);
+                if (!validDob) {
+                    isValid = false;
+
+                    errorObj[requiredField] = `Invalid DOB entered.`
+                }
+            }
+
         }
 
         setErrorFields(errorObj)
@@ -87,8 +101,10 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
         }
 
         isValid = validatePhysician()
-        if(!isValid){ return }
-        console.log("Success: ",updatedFields)
+        if (!isValid) {
+            return
+        }
+        console.log("Success: ", updatedFields)
         createPhysicianCall(updatedFields)
 
         // let isFirstError = errorFields['firstName']
@@ -109,23 +125,22 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
         //     gender : isGenderError
         // })
 
-       
-        
+
         // if(isFirstError === false && isSurnameError === false && isTrnError === false && isGenderError === false){
         //     console.log("Success: ",updatedFields)
         //     // createPhysicianCall(updatedFields)
-        // } 
-        
-     
+        // }
+
+
     };
 
     const getDialogContent = (tab) => {
         switch (tab) {
             case "Details":
                 return <PhysicianDetailsTab
-                    onFieldChange = {onFieldChange}
-                    fields = {fields}
-                    errorFields = {errorFields}
+                    onFieldChange={onFieldChange}
+                    fields={fields}
+                    errorFields={errorFields}
                 />;
             default :
                 return <View/>
@@ -136,9 +151,11 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
         createPhysician(updatedFields)
             .then(data => {
                 modal.closeAllModals();
+                Alert.alert("Success",`New physician ${fields['name']} has been created.`)
                 setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
+                Alert.alert("Failed","Failed to create physician.")
                 console.log("failed to create physician", error);
                 // TODO handle error
             })
@@ -153,14 +170,14 @@ const CreatePhysicianDialogContainer = ({ onCancel, onCreated }) => {
             onClose={handleCloseDialog}
             positiveText={positiveText}
         >
-            <View style = {styles.container}>
+            <View style={styles.container}>
                 <DialogTabs
-                    tabs = {dialogTabs}
-                    tab = {selectedIndex}
+                    tabs={dialogTabs}
+                    tab={selectedIndex}
                 />
-                    {
-                        getDialogContent(dialogTabs[selectedIndex])
-                    }
+                {
+                    getDialogContent(dialogTabs[selectedIndex])
+                }
             </View>
         </OverlayDialog>
     )
@@ -172,7 +189,7 @@ CreatePhysicianDialogContainer.defaultProps = {}
 export default CreatePhysicianDialogContainer
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         width: 636,
         flexDirection: 'column',

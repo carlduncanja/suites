@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, Switch, Picker} from "react-native";
+import {View, StyleSheet, Text, Switch, Picker, Alert} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
@@ -78,10 +78,12 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
         createTheatre(fields)
             .then(data => {
                 modal.closeAllModals();
+                Alert.alert("Success", `New theatre, ${fields['name']} successfully created.`)
                 setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
                 console.log("failed to create theatre", error);
+                Alert.alert("Failed","Theatre failed to be created.")
                 // TODO handle error
             })
             .finally(_ => {

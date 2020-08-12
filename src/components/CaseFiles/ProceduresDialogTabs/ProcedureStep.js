@@ -150,7 +150,6 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
 
     }
 
-
     console.log("procedure step", selectedTabIndex, procedures)
 
     const date = currentProcedure?.date || new Date()

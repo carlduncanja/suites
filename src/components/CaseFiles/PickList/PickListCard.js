@@ -8,7 +8,7 @@ import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesH
 
 const PickListCard = (props) =>{
 
-    const { 
+    const {  
         title, 
         isEditMode = false, 
         onEditDone = ()=>{},
@@ -24,14 +24,40 @@ const PickListCard = (props) =>{
         onFooterPress = () => {},
         footerTitle = ""
     } = props
-
-    const recordsPerPage = 6
-    const dataLength = data.length
+   
+    const testData = [
+        {
+            name : "Agents",
+            amount : 5
+        },
+        {
+            name : "Agents",
+            amount : 6
+        },
+        {
+            name : "Agents",
+            amount : 7
+        },
+        {
+            name : "Agents",
+            amount : 8
+        },
+        {
+            name : "Agents",
+            amount : 9
+        },
+        {
+            name : "Agents",
+            amount : 10
+        },
+    ]
+    const recordsPerPage = 5
+    const dataLength = testData.length
     const totalPages = Math.ceil(dataLength/recordsPerPage)
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
-    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
+    const [currentPageListMax, setCurrentPageListMax] = useState(5)
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages){
@@ -51,6 +77,9 @@ const PickListCard = (props) =>{
         }
     };
 
+    let dataToDisplay = [...testData]
+    dataToDisplay = dataToDisplay.slice(currentPageListMin,currentPageListMax)
+
     return(
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -65,7 +94,7 @@ const PickListCard = (props) =>{
                     {
                         tabs.map((tab,index)=>{
                             return (
-                                <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null}]} key={index}>
+                                <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null, height: 30}]} key={index}>
                                     <Button
                                         backgroundColor = {tab === selectedTab ? "#FFFFFF" : null}
                                         color = {tab === selectedTab ? "#3182CE" : "#A0AEC0" }
@@ -84,7 +113,7 @@ const PickListCard = (props) =>{
 
             <View style={styles.list}>
                 <Table
-                    data = {data}
+                    data = {dataToDisplay}
                     currentListMin = {currentPageListMin}
                     currentListMax = {currentPageListMax}
                     listItemFormat = {listItemFormat}
@@ -115,7 +144,7 @@ const PickListCard = (props) =>{
 
                     </View>
                     :
-                    <View style={{alignItems:'flex-end', justifyContent:'flex-end'}}>
+                    <View style={{alignItems:'flex-start', justifyContent:'flex-start'}}>
                         <View style={styles.paginationContainer}>
                             <Paginator
                                 currentPage = {currentPagePosition}
@@ -151,14 +180,13 @@ const styles = StyleSheet.create({
         backgroundColor:'#FFFFFF',
         borderRadius:8,
         width:400,
-        // backgroundColor:'red'
     },
     headerContainer:{
         flexDirection:'row',
         justifyContent:'space-between',
         padding:10,
         borderBottomColor:'#CCD6E0',
-        borderBottomWidth:1
+        borderBottomWidth:1,
     },
     headerTitle:{
         fontSize:16,
@@ -213,10 +241,14 @@ const styles = StyleSheet.create({
         borderColor:'#CCD6E0',
         borderWidth:1,
         backgroundColor:'#FFFFFF',
+        height: 50,
+        width: 150,
         borderRadius: 4,
-        padding:8,
-        alignSelf:'flex-end',
-        marginRight:15,
+        // padding:8,
+        // alignSelf:'flex-end',
+        // alignItems:'center',
+        // justifyContent:'center',
+        marginLeft:15,
         marginBottom:20
     },
     footer:{

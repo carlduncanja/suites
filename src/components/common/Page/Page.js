@@ -42,7 +42,8 @@ import { useTheme } from 'emotion-theming';
         listItemFormat,
         onRefresh,
         onSelectAll,
-        itemsSelected
+        itemsSelected,
+        onClear
     } = props;
 
     // const getPageMeasure = (event) => {
@@ -86,6 +87,7 @@ import { useTheme } from 'emotion-theming';
                         placeholderText={placeholderText}
                         changeText={changeText}
                         inputText={inputText}
+                        onClear = {()=>{changeText("")}}
                     />
                     {
                         isFetchingData ?

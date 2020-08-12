@@ -199,22 +199,25 @@ function CaseFiles(props) {
     };
 
     const fetchCaseFilesData = (pagePosition) => {
-        pagePosition ? pagePosition : 1;
+
+        let currentPosition = pagePosition ? pagePosition  : 1;
+        setCurrentPagePosition(currentPosition);
+
         setFetchingCaseFiles(true);
-        getCaseFiles(searchValue, recordsPerPage, pagePosition)
+        getCaseFiles(searchValue, recordsPerPage, currentPosition)
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                } else if (pagePosition === 1) {
+                } else if (currentPosition === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                } else if (pagePosition === pages) {
+                } else if (currentPosition === pages) {
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                } else if (pagePosition < pages) {
+                } else if (currentPosition < pages) {
                     setNextDisabled(false);
                     setPreviousDisabled(false)
                 } else {
@@ -222,7 +225,7 @@ function CaseFiles(props) {
                     setPreviousDisabled(true);
                 }
                 setCaseFiles(data);
-                setTotalPages(pages);
+                data.length === 0 ? setTotalPages(0) : setTotalPages(pages);
             })
             .catch(error => {
                 console.log("failed to get case files", error);
@@ -322,7 +325,7 @@ function CaseFiles(props) {
         <NavPage
             isFetchingData={isFetchingCaseFiles}
             onRefresh={handleDataRefresh}
-            placeholderText={"Search by any heading or entry below"}
+            placeholderText={"Search by Case ID, Patient, Staff"}
             changeText={changeText}
             inputText={searchValue}
             routeName={"Case Files"}

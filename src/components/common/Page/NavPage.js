@@ -27,7 +27,8 @@ function NavPage({
         hasActionButton = true,
         hasActions = true,
         isNextDisabled = ()=>{},
-        isPreviousDisabled = ()=>{}
+        isPreviousDisabled = ()=>{},
+        onClear = ()=>{}
     }){
     const theme = useTheme()
 
@@ -56,6 +57,7 @@ function NavPage({
                     itemsSelected={itemsSelected}
                     onSelectAll={onSelectAll}
                     listItemFormat={listItemFormat}
+                    // onClear = {onClear}
                 />
 
                 <Footer

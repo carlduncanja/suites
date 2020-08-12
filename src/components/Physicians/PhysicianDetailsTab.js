@@ -2,11 +2,12 @@ import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import OptionsField from "../common/Input Fields/OptionsField";
-import { MenuOptions, MenuOption } from 'react-native-popup-menu'; 
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import DateInputField from "../common/Input Fields/DateInputField";
+import moment from 'moment';
 
 
- 
+
 const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
 
     const templateText = {
@@ -106,7 +107,10 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                         mode={'date'}
                         format={"YYYY-MM-DD"}
                         placeholder="YYYY/MM/DD"
+                        hasError={errorFields['dob']}
+                        errorMessage={errorFields['dob']}
                         onDateChange={handleDateValidation}
+                        maxDate = {new Date(moment().subtract(1, 'days'))}
                     />
                     {/* <DateInputField
                         label= "Date"
@@ -134,8 +138,8 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                         text={fields['gender']}
                         oneOptionsSelected={onFieldChange('gender')}
                         menuOption={<MenuOptions>
-                            <MenuOption value={'male'} text='Male'/>
-                            <MenuOption value={'female'} text='Female'/>
+                            <MenuOption value={'Male'} text='Male'/>
+                            <MenuOption value={'Female'} text='Female'/>
                         </MenuOptions>}
                         hasError = {errorFields['gender']}
                         errorMessage = "Select a gender from list."

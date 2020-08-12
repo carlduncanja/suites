@@ -9,15 +9,15 @@ import ProcedureIcon from '../../../../../assets/svg/frameProcedures';
 
 const Details = ({tabDetails, modal}) => {
     // ############# Data declaration
-    // console.log("Tab Details: ", tabDetails)
+    console.log("Tab Details: ", tabDetails)
     const tabs = ["Consumables", "Equipment"]
 
-    const onOpenPickList = (details) => {
+    const onOpenPickList = (details) => { 
 
         modal.openModal('OverlayInfoModal',{ 
             overlayContent : <ProceduresPickList 
                 details = {details}  
-                tabs = {tabs} 
+                tabs = {tabs}  
             />,
         })
     }
