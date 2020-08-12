@@ -9,6 +9,7 @@ import IconButton from '../../../common/Buttons/IconButton';
 import RightArrow from '../../../../../assets/svg/rightArrow';
 import LeftArrow from '../../../../../assets/svg/leftArrow';
 import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
+import styled, {css} from '@emotion/native';
 
 
 const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onConsumablesUpdate, isEditMode, allItems = []}) => {
@@ -19,7 +20,7 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
     const [selectedIndex, setSelectedIndex] = useState(0)
 
     const onSearchInputChange = (input) => {
-        setSearchText(input) 
+        setSearchText(input)
     }
 
     const toggleCheckbox = (item) => () => {
@@ -57,7 +58,7 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
         }
     }
 
- 
+
 
     const onQuantityChangePress = (item, index) => (action) => {
 
@@ -116,39 +117,46 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
         />
     }
 
+    const TestWrapper = styled.View`
+        flex: 1;
+    `
+
     return (
-        <ScrollView>
+        <TestWrapper>
+            <ScrollView>
 
-            <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
-                <View style={{flex: 2, paddingRight: 100, justifyContent:'center'}}>
-                    <Search
-                        placeholderText="Search by inventory item"
-                        inputText={searchText}
-                        changeText={onSearchInputChange}
-                        backgroundColor="#FAFAFA"
-                    />
+                <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
+                    <View style={{flex: 2, paddingRight: 100, justifyContent:'center'}}>
+                        <Search
+                            placeholderText="Search by inventory item"
+                            inputText={searchText}
+                            changeText={onSearchInputChange}
+                            backgroundColor="#FAFAFA"
+                        />
+                    </View>
+                    <View style={{flex: 1, alignItems:'flex-start'}}>
+                        <DropdownInputField
+                            onSelectChange={onSelectChange}
+                            value={selectedOption}
+                            selected={selectedIndex}
+                            dropdownOptions={caseProceduresFilters}
+                        />
+                    </View>
                 </View>
-                <View style={{flex: 1, alignItems:'flex-start'}}>
-                    <DropdownInputField
-                        onSelectChange={onSelectChange}
-                        value={selectedOption}
-                        selected={selectedIndex}
-                        dropdownOptions={caseProceduresFilters}
-                    />
-                </View>
-            </View>
 
 
-            <Table
-                isCheckbox={true}
-                data={consumables[selectedIndex] || []}
-                listItemFormat={renderListFn}
-                headers={headers}
-                toggleHeaderCheckbox={toggleHeaderCheckbox}
-                itemSelected={checkBoxList}
-                // dataLength = {tabDetails.length}
-            />
-        </ScrollView>
+                <Table
+                    isCheckbox={true}
+                    data={consumables[selectedIndex] || []}
+                    listItemFormat={renderListFn}
+                    headers={headers}
+                    toggleHeaderCheckbox={toggleHeaderCheckbox}
+                    itemSelected={checkBoxList}
+                    // dataLength = {tabDetails.length}
+                />
+            </ScrollView>
+
+        </TestWrapper>
     );
 }
 

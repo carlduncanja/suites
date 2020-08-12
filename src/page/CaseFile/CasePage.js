@@ -1,7 +1,6 @@
-
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {ActivityIndicator, Alert, StyleSheet, View} from "react-native";
+import {ActivityIndicator, Alert, StyleSheet, Text, View} from "react-native";
 import {colors} from "../../styles";
 import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
 import CaseFileOverlayMenu from "../../components/CaseFiles/CaseFileOverlayMenu";
@@ -43,10 +42,31 @@ import {addNotification} from "../../redux/actions/NotificationActions";
 import CaseFilesBottomSheetContainer from '../../components/CaseFiles/CaseFilesBottomSheetContainer';
 import CreateProcedureDialogContainer from '../../components/Procedures/CreateProcedureDialogContainer';
 import {setCaseEdit} from "../../redux/actions/casePageActions";
+import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
+import PageHeader from "../../components/common/DetailsPage/PageHeader";
+import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
+import styled from "@emotion/native";
+import {PageContext} from "../../contexts/PageContext";
+import {useTheme} from "emotion-theming";
 
+
+// const DetailsPageContentContainer = styled.View`
+//         display: flex;
+//         flex:1;
+//     `
+
+const DetailsPageContentWrapper = styled.View`
+        flex:1;
+        margin : 0px;
+        padding-top: ${props => props.theme.space['--space-32']};
+   
+        padding-left: ${props => props.theme.space['--space-24']};
+        padding-right: ${props => props.theme.space['--space-24']};
+    `
 
 function CasePage({route, addNotification, ...props}) {
     const modal = useModal();
+    const theme = useTheme();
 
     const {caseId, isEdit} = route.params;
 
@@ -110,11 +130,13 @@ function CasePage({route, addNotification, ...props}) {
     // ############### Event Handlers
     const handleTabPressChange = (tab) => {
         if (isEditMode === false) {
-            setSelectedTab(tab)
+        setSelectedTab(tab)
         }
     }
 
     const handleOverlayMenuPress = (selectedItem) => {
+        if (isEditMode) return;
+
         const selectedMenu = overlayMenu.filter(item => item.name === selectedItem)
         const menuItem = selectedMenu[0].name
         const currentTabs = selectedMenu[0].overlayTabs
@@ -122,22 +144,6 @@ function CasePage({route, addNotification, ...props}) {
         setSelectedMenuItem(menuItem)
         setCurrentTabs(currentTabs)
         setSelectedTab(selectedTab)
-    }
-
-    const onEditPress = (tab) => {
-        //setEditMode(!isEditMode)
-        // if (isEditMode === true) {
-        //     if (updateInfo.length !== 0) {
-        //         // console.log("Record: ", updateInfo)
-        //         updateCaseChargeSheet()
-        //     } else {
-        //         console.log("No data added")
-        //     }
-        //
-        //     setTimeout(() => {
-        //         fetchCase(caseId)
-        //     }, 500)
-        // }
     }
 
     const handleEditDone = (data) => {
@@ -205,26 +211,29 @@ function CasePage({route, addNotification, ...props}) {
         let floatingAction = [];
 
         console.log("getFabActions: selected tab", selectedTab);
-        console.log("Selected maenu: ",selectedMenuItem)
-        if(selectedMenuItem === "Charge Sheet"){
+        console.log("Selected maenu: ", selectedMenuItem)
+        if (selectedMenuItem === "Charge Sheet") {
             switch (selectedTab) {
                 case "Consumables": {
-                    const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>} onPress={_ => {
-                    }}/>;
+                    const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>}
+                                                             onPress={_ => {
+                                                             }}/>;
                     const addNewItem = <ActionItem title={"Add Consumable"} icon={<AddIcon/>} onPress={_ => {
                     }}/>;
                     const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
-                                                            onPress={_ => {
-                                                            }}/>;
+                                                             onPress={_ => {
+                                                             }}/>;
                     floatingAction.push(addNewLineItemAction, addNewItem, /*removeLineItemAction*/)
                     title = "CONSUMABLE'S ACTIONS"
                     break;
                 }
                 case "Equipment": {
-                    const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>} onPress={_ => {
-                    }}/>;
-                    const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>} onPress={_ => {
-                    }}/>;
+                    const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>}
+                                                             onPress={_ => {
+                                                             }}/>;
+                    const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>}
+                                                             onPress={_ => {
+                                                             }}/>;
                     floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
                     title = "EQUIPMENT ACTIONS"
                     break;
@@ -278,22 +287,20 @@ function CasePage({route, addNotification, ...props}) {
                         //                                   onPress={onCreateInvoice}/>
                     }
 
-
-                    // floatingAction.push(createInvoice)
                     title = "QUOTATION ACTIONS"
                     break;
                 }
             }
-        }else if(selectedMenuItem === "Procedures"){
-            switch (selectedTab){
+        } else if (selectedMenuItem === "Procedures") {
+            switch (selectedTab) {
                 case "Details" :
-                    const addNewProcedure = <ActionItem title = {"Add Appointment"} icon = {<AddIcon/>} onPress = {openAddProcedure} />
+                    const addNewProcedure = <ActionItem title={"Add Appointment"} icon={<AddIcon/>}
+                                                        onPress={openAddProcedure}/>
                     floatingAction.push(addNewProcedure)
                     title = "PROCEDURE ACTIONS"
                     break;
             }
         }
-        
 
 
         return <ActionContainer
@@ -303,30 +310,6 @@ function CasePage({route, addNotification, ...props}) {
 
     }
 
-    // const onCreateInvoice = () => {
-    //     selectedQuotes.forEach( item => {
-    //         createInvoiceViaQuotation(_id, item)
-    //             .then((data) => {
-    //                 console.log("Invoice Record:", data)
-    //             })
-    //             .catch(error => {
-    //                 Alert.alert(
-    //                     "Unsuccessful creation",
-    //                     "Invoice can only be generated for quotations in `Open` status.",
-    //                     [
-    //                         {
-    //                             text : 'Ok',
-    //                             onPress : () => console.log("Ok pressed")
-    //                         }
-    //                     ],
-    //                     {
-    //                         cancelable : false
-    //                     }
-    //
-    //                 )
-    //                 console.log("Failed to create invoice", error)
-    //             })
-    //     })
 
     const onCreateInvoice = (caseId, quotationId) => () => {
         modal.closeAllModals()
@@ -375,25 +358,24 @@ function CasePage({route, addNotification, ...props}) {
             })
     }
 
-    const openAddProcedure = () =>{
+    const openAddProcedure = () => {
         modal.closeModals("ActionContainerModal");
-        
+
         // For some reason there has to be a delay between closing a modal and opening another.
         setTimeout(() => {
             modal.openModal("OverlayModal", {
-            content: (
-                <View/>
-            ),
-            onClose: () => setFloatingAction(false),
+                content: (
+                    <View/>
+                ),
+                onClose: () => setFloatingAction(false),
             });
         }, 200);
-        
+
     }
     // ############### Data
 
-    const getOverlayContent = () => {
+    const getOverlayContent = (isEditMode) => {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase
-        // console.log("Case Procedures: ", caseProcedures)
         const {medicalInfo = {}} = patient
 
         switch (selectedMenuItem) {
@@ -442,25 +424,33 @@ function CasePage({route, addNotification, ...props}) {
     const {patient, caseNumber} = selectedCase;
     const name = patient ? `${patient.firstName} ${patient.surname}` : ""
 
-
     return (
-        <CaseFilesBottomSheetContainer
-            isFetching = {isFetching}
-            overlayId={caseNumber}
-            overlayTitle={name}
-            onTabPressChange={handleTabPressChange}
-            currentTabs={currentTabs}
-            selectedTab={selectedTab}
-            isEditMode={isEditMode}
-            onEditPress={onEditPress}
-            overlayContent={getOverlayContent()}
-            selectedMenuItem={selectedMenuItem}
-            overlayMenu={overlayMenu}
-            handleTabPress={handleOverlayMenuPress}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-        />
+        <>
+            <PageContext.Provider value={{isEditMode, setEditMode}}>
+                <DetailsPage
+                    title={name}
+                    subTitle={`#${caseNumber}`}
+                    onBackPress={() => {}}
+                    pageTabs={
+                        <TabsContainer
+                            tabs={currentTabs}
+                            selectedTab={selectedTab}
+                            onPressChange={handleTabPressChange}
+                        />
+                    }
+                >
 
+                    <CasePageContent
+                        overlayContent={getOverlayContent()}
+                        overlayMenu={overlayMenu}
+                        toggleActionButton={toggleActionButton}
+                        actionDisabled={false}
+                        selectedMenuItem={selectedMenuItem}
+                        onOverlayTabPress={handleOverlayMenuPress}
+                    />
+                </DetailsPage>
+            </PageContext.Provider>
+        </>
     );
 }
 
@@ -476,17 +466,59 @@ const mapDispatchTopProp = dispatch => bindActionCreators({
 export default connect(null, mapDispatchTopProp)(CasePage);
 
 
-const styles = StyleSheet.create({
-    footer: {
-        flexDirection: 'row',
-        flex: 1,
-        position: 'absolute',
-        bottom: 20,
-        alignSelf: 'center'
-    },
-    actionWrapper: {
-        position: 'absolute',
-        bottom: 20,
-        right: 40
-    }
-})
+function CasePageContent({
+                             overlayContent,
+                             overlayMenu,
+                             selectedMenuItem,
+                             onOverlayTabPress,
+                             toggleActionButton,
+                             actionDisabled
+                         }) {
+
+    useEffect(() => {
+        console.log('Case Page Create');
+    }, [])
+
+    useEffect(() => {
+        console.log('Case Page Update');
+    })
+
+    const FooterWrapper = styled.View`
+        width: 100%;
+        padding-right: 30px;
+        padding-left: 30px;
+        padding-bottom: 17px;
+        position : absolute;
+        bottom: 0;
+        height: 60px;
+    `;
+
+    const FooterContainer = styled.View`
+        width: 100%;
+        height: 100%;
+        flex-direction : row;
+    `;
+
+
+    return (
+        <>
+            {
+                overlayContent
+            }
+            <FooterWrapper>
+                <FooterContainer>
+                    <CaseFileOverlayMenu
+                        selectedMenuItem={selectedMenuItem}
+                        overlayMenu={overlayMenu}
+                        handleTabPress={onOverlayTabPress}
+                    />
+                    <FloatingActionButton
+                        isDisabled={actionDisabled}
+                        toggleActionButton={toggleActionButton}
+                    />
+                </FooterContainer>
+            </FooterWrapper>
+        </>
+    )
+
+}

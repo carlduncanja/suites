@@ -4,7 +4,7 @@ import OverlayHeader from './OverlayHeader';
 import OverlayFooter from './OverlayFooter'
 import OverlayDataFields from './OverlayDataFields';
 import ProgressContainer from '../Progress/ProgressContainer'
-import TabsContainer from '../Tabs/TabsContainer'
+import TabsContainer from '../Tabs/TabsContainerComponent'
 import OverlayComplete from './OverlayComplete';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import {caseActions} from '../../../redux/reducers/caseFilesReducer'
