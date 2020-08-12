@@ -184,7 +184,7 @@ const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = ""}) =
                 <DialogTabs
                     tabs = {tabs}
                     tab = {selectedIndex}
-                />
+                /> 
                 <AddItem
                     category = {itemType}
                     fields = {fields}

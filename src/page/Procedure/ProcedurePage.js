@@ -208,7 +208,7 @@ function ProcedurePage({route, setProcedureEdit}) {
         let newProcedureData = {...selectedProcedure, supportedRooms: newData}
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
-        // updateProcedureCall(newProcedureData)
+        updateProcedureCall(newProcedureData)
     }
 
     const onProcedureUpdate = () => {

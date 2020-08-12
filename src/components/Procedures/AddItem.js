@@ -3,13 +3,33 @@ import { View, Text, StyleSheet } from "react-native";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import InputField2 from "../common/Input Fields/InputField2";
 import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent';
 import AutoFillField from "../common/Input Fields/AutoFillField";
 
 import { getInventories, getEquipmentTypes, getTheatres } from "../../api/network";
 import _ from "lodash";
 
 import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import { useTheme } from 'emotion-theming'; 
+
+const AdditemWrapper = styled.View`
+    height: 245px;
+    padding: ${ ({theme}) => theme.space['--space-24']};
+`;
+const AdditemContainer = styled.View`
+    height: 100%;
+    background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
+    flex-direction: column;
+`;
+
+const ItemWrapper = styled.View`
+    flex:1;
+    max-width : 282px;
+`;
+const ItemContainer = styled.View`
+    width : 100%;
+    flex-direction : row;
+`;
 
 const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
  
@@ -115,17 +135,15 @@ const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
 
     // let {status} = popoverList.filter( item => item.name === 'item')[0];
 
-    const AdditemWrapper = styled.View`
-
-    `;
-    const AdditemContainer = styled.View``;
+    
 
 
     return (
-        <View style={[styles.sectionContainer]}>
+        <AdditemWrapper theme = {theme}>
+            <AdditemContainer theme = {theme}>
 
-            <View style={styles.row}>
-                <View style={styles.inputWrapper}>
+            <Row>
+                <FieldContainer>
                     <SearchableOptionsField
                         label={"Item Name"} 
                         value = {fields['inventory']}
@@ -133,9 +151,6 @@ const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
                         oneOptionsSelected={(item) => {handleItem(item)}}
                         onChangeText={value => setSearchValue(value)}
                         onClear={handleItem}
-                            // onFieldChange('physician')('');
-                            // setSearchValue('');
-                        // }}
                         options={searchResults}
                         // handlePopovers = {(value)=>handlePopovers(value)('item')}
                         handlePopovers = {()=>{}}
@@ -143,25 +158,25 @@ const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
                         hasError = {errors['item']}
                         errorMessage = "Item must be selected"
                     />
-                </View>
+                </FieldContainer>
 
-                <View style={styles.inputWrapper}>
+                <FieldContainer>
                     <AutoFillField
                         label={"Category"}
                         value={category}
                     />
-                </View>
-            </View>
+                </FieldContainer>
+            </Row>
 
             <Row zIndex = {-1}>
-                <View style={[styles.inputWrapper]}>
+                <FieldContainer>
                     <AutoFillField
                         label={"Type"}
                         value={'n/a'}
                     />
-                </View>
+                </FieldContainer>
 
-                <View style={[styles.inputWrapper]}>
+                <FieldContainer>
                     <InputField2
                         label={"Quantity"}
                         onChangeText={(value) => {handleAmount(value)}}
@@ -171,49 +186,11 @@ const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
                         hasError = {errors['amount']}
                         errorMessage = "Quantity is required."
                     />
-                </View>
+                </FieldContainer>
             </Row>
-            
-
-            {/* <View style={styles.row}>
-
-                <View style={styles.inputWrapper}>
-                    <SearchableOptionsField
-                        label={"Item Name"} 
-                        value = {fields['inventory']}
-                        text={searchInventoriesValue}
-                        oneOptionsSelected={(item) => {
-                            handleItem(item)
-                            // onFieldChange('physician')(item);
-                        }}
-                        onChangeText={value => setSearchInventoriesValue(value)}
-                        onClear={handleItem}
-                            // onFieldChange('physician')('');
-                            // setSearchValue('');
-                        // }}
-                        options={searchInventoriesResults}
-                        handlePopovers = {(value)=>handlePopovers(value)('item')}
-                        isPopoverOpen = {status}
-                        hasError = {errors['item']}
-                        errorMessage = "Item must be selected"
-                    />
-                </View>
-
-                <View style={[styles.inputWrapper]}>
-                    <InputField2
-                        label={"Amount"}
-                        onChangeText={(value) => {handleAmount(value)}}
-                        value={fields['amount']}
-                        keyboardType={'number-pad'}
-                        onClear={() => handleAmount('')}
-                        hasError = {errors['amount']}
-                        errorMessage = "Amount is required."
-                    />
-                </View>
-
-            </View>  */}
-
-        </View>
+           
+            </AdditemContainer>
+        </AdditemWrapper>
     )
 }
 

@@ -17,6 +17,9 @@ import { withModal } from "react-native-modalfy";
 import AddItemDialog from "../Procedures/AddItemDialog";
 import Footer from '../../components/common/Page/Footer';
 
+
+
+
 const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInventoryUpdate, onAddInventory}) => {
 
     const recordsPerPage = 10
@@ -249,7 +252,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                         toggleActionButton={toggleActionButton}
                     />
                 </View>  */}
-
+ 
         </>
 
     )
