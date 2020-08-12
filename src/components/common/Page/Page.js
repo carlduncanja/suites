@@ -10,25 +10,38 @@ import {SuitesContext} from '../../../contexts/SuitesContext';
 import {appActions} from '../../../redux/reducers/suitesAppReducer';
 import {colors} from '../../../styles'
 import PropTypes from 'prop-types';
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+
+const PageWrapper = styled.View`
+        display : flex;
+        height: 100%;
+        flex-direction : column;
+        margin-left : 0px;
+        padding-left: ${({theme}) => theme.space['--space-32']};
+        padding-top: 28px;
+        padding-right: 32px;
+        padding-bottom: 28px;
+        background-color : ${({theme}) => theme.colors['--color-gray-100']};
+    `;
+
+const PageContainer = styled.View`
+        display: flex;
+        height: 100%;
+    `;
+
+const PageSearchWrapper = styled.View` 
+        width: 100%; 
+        margin-bottom : ${({theme}) => theme.space['--space-24']};
+`;
 
 
 /**
- * @param placeholderText string
- * @param changeText function
- * @param inputText string
- * @param routeName string
- * @param listData array of objects
- * @param listHeaders array of strings
- * @param isFetchingData bool
- * @param listItemFormat object
  * @returns {*}
  * @constructor
  */
+function Page(props) {
 
- function Page (props){
-    
     // const [state, dispatch] = useContext(SuitesContext);
     const theme = useTheme()
     const {
@@ -46,66 +59,40 @@ import { useTheme } from 'emotion-theming';
         onClear
     } = props;
 
-    // const getPageMeasure = (event) => {
-    //     dispatch({
-    //         type: appActions.SETPAGEMEASURES,
-    //         newState: event.nativeEvent.layout
-    //     })
-    // };
+    return (
+        <PageWrapper theme={theme}>
+            <PageContainer theme={theme}>
+                <PageTitle pageTitle={routeName}/>
 
-    // const getSlideTop = (event) => {
-    //     dispatch({
-    //         type: appActions.SETSLIDEVALUE,
-    //         newState: event.nativeEvent.layout.height
-    //     })
-    // };
-   
-    const PageWrapper = styled.View`
-        display : flex;
-        height: 100%;
-        flex-direction : column;
-        margin-left : 0px;
-        padding-left: ${theme.space['--space-32']};
-        padding-top: 28px;
-        padding-right: 32px;
-        padding-bottom: 28px;
-        background-color : ${theme.colors['--color-gray-100']};
-    `;
-
-    const PageContainer = styled.View`
-        display: flex;
-        height: 100%;
-        
-        
-    `;
-
-    return ( 
-            <PageWrapper>
-                <PageContainer>  
-                    <PageTitle pageTitle={routeName}/>
+                <PageSearchWrapper theme={theme}>
                     <Search
                         placeholderText={placeholderText}
                         changeText={changeText}
                         inputText={inputText}
-                        onClear = {()=>{changeText("")}}
+                        onClear={() => {
+                            changeText("")
+                        }}
                     />
-                    {
-                        isFetchingData ?
-                            <LoadingIndicator/>
-                            : 
-                            <List
-                                listData={listData}
-                                listHeaders={listHeaders}
-                                itemsSelected={itemsSelected}
-                                onRefresh={onRefresh}
-                                isCheckbox={true}
-                                onSelectAll={onSelectAll}
-                                listItemFormat={listItemFormat}
-                                refreshing={isFetchingData}
-                            />
-                    }
-                </PageContainer>
-            </PageWrapper>
+                </PageSearchWrapper>
+
+
+                {
+                    isFetchingData ?
+                        <LoadingIndicator/>
+                        :
+                        <List
+                            listData={listData}
+                            listHeaders={listHeaders}
+                            itemsSelected={itemsSelected}
+                            onRefresh={onRefresh}
+                            isCheckbox={true}
+                            onSelectAll={onSelectAll}
+                            listItemFormat={listItemFormat}
+                            refreshing={isFetchingData}
+                        />
+                }
+            </PageContainer>
+        </PageWrapper>
     );
 };
 

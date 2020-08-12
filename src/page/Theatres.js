@@ -10,7 +10,6 @@ import { setTheatres } from "../redux/actions/theatresActions";
 import { connect } from "react-redux";
 import { useModal } from "react-native-modalfy";
 import CaseFileBottomSheet from "../components/CaseFiles/CaseFileBottomSheet";
-import TheatresBottomSheetContainer from "../components/Theatres/TheatresBottomSheetContainer";
 import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
 import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
 import {
@@ -121,10 +120,12 @@ function Theatres(props) {
 
   // ##### Handler functions
 
-  const onItemPress = (item) => () => {
-    modal.openModal("BottomSheetModal", {
-      content: <TheatresBottomSheetContainer theatre={item} />,
-    });
+  const onItemPress = (item, isOpenEditable) => () => {
+    // modal.openModal("BottomSheetModal", {
+    //   content: <TheatresBottomSheetContainer theatre={item} />,
+    // });
+    console.log("clicked a theatre");
+    props.navigation.navigate('TheatresPage', { screen: 'TheatresPage', initial: false, params: { theatre: item, isEdit: isOpenEditable } });
   };
 
   const onSearchInputChange = (input) => {
@@ -143,7 +144,7 @@ function Theatres(props) {
   const goToNextPage = () => {
 
     if (currentPagePosition < totalPages) {
-      let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax);
+      let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
       setCurrentPagePosition(currentPage);
       setCurrentPageListMin(currentListMin);
       setCurrentPageListMax(currentListMax);
@@ -153,7 +154,7 @@ function Theatres(props) {
 
   const goToPreviousPage = () => {
 
-    if (currentPagePosition === 1) { return};
+    if (currentPagePosition === 1) { return };
 
     let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
     setCurrentPagePosition(currentPage);
@@ -181,35 +182,35 @@ function Theatres(props) {
   };
 
   // ##### Helper functions
-  const theatreItem = ({ name = "", recoveryStatus = "n/a", recoveryStatusColor, status="", statusColor },
+  const theatreItem = ({ name = "", recoveryStatus = "n/a", recoveryStatusColor, status = "", statusColor },
     onActionPress
   ) => (
-    <>
-      <View style={[styles.item, { flex: 2, ...styles.rowBorderRight }]}>
-        <Text style={{ color: "#3182CE", fontSize: 16 }}>{name}</Text>
-      </View>
-      <View style={[styles.item, { flex: 1, justifyContent: "center" }]}>
-        <Text style={[styles.itemText, { color: statusColor }]}>{status}</Text>
-      </View>
-      <View style={[styles.item, { flex: 1, justifyContent: "center" }]}>
-        <Text style={[styles.itemText, { color: recoveryStatusColor }]}>
-          {recoveryStatus}
-        </Text>
-      </View>
-      <View style={[styles.item, { flex: 1, justifyContent: "center" }]}>
-        <IconButton Icon={<AssignIcon />} onPress={onActionPress} />
-      </View>
-    </>
-  );
+      <>
+        <View style={[styles.item, { flex: 2, ...styles.rowBorderRight }]}>
+          <Text style={{ color: "#3182CE", fontSize: 16 }}>{name}</Text>
+        </View>
+        <View style={[styles.item, { flex: 1, justifyContent: "center" }]}>
+          <Text style={[styles.itemText, { color: statusColor }]}>{status}</Text>
+        </View>
+        <View style={[styles.item, { flex: 1, justifyContent: "center" }]}>
+          <Text style={[styles.itemText, { color: recoveryStatusColor }]}>
+            {recoveryStatus}
+          </Text>
+        </View>
+        <View style={[styles.item, { flex: 1, justifyContent: "center" }]}>
+          <IconButton Icon={<AssignIcon />} onPress={onActionPress} />
+        </View>
+      </>
+    );
 
   const getFabActions = () => {
     const deleteAction = (
       <View style={{ borderRadius: 6, flex: 1, overflow: "hidden" }}>
-        <LongPressWithFeedback pressTimer={1200} onLongPress={() => {}}>
+        <LongPressWithFeedback pressTimer={1200} onLongPress={() => { }}>
           <ActionItem
             title={"Hold to Delete"}
             icon={<WasteIcon />}
-            onPress={() => {}}
+            onPress={() => { }}
             touchable={false}
           />
         </LongPressWithFeedback>
@@ -259,8 +260,8 @@ function Theatres(props) {
         item.isRecovery && !item.available
           ? "Yes"
           : !item.available
-          ? "No"
-          : "--",
+            ? "No"
+            : "--",
       recoveryStatusColor:
         item.isRecovery && !item.available ? availableColor : "#4E5664",
       status: item.available ? "Available" : "In-Use",
@@ -269,7 +270,7 @@ function Theatres(props) {
 
     // console.log("Formatted Item: ", formattedItem)
 
-    const onActionClick = () => {};
+    const onActionClick = () => { };
 
     const itemView = theatreItem(formattedItem, onActionClick);
 
@@ -277,7 +278,7 @@ function Theatres(props) {
       <ListItem
         isChecked={selectedIds.includes(item._id)}
         onCheckBoxPress={onCheckBoxPress(item)}
-        onItemPress={onItemPress(item)}
+        onItemPress={onItemPress(item, false)}
         itemView={itemView}
       />
     );
@@ -285,35 +286,35 @@ function Theatres(props) {
 
   const fetchTheatres = (pagePosition) => {
 
-    let currentPosition = pagePosition ? pagePosition  : 1;
+    let currentPosition = pagePosition ? pagePosition : 1;
     setCurrentPagePosition(currentPosition)
 
     setFetchingData(true);
     getTheatres(searchValue, recordsPerPage, currentPosition)
       .then((result) => {
 
-        const {data = [], pages = 0} = result;
+        const { data = [], pages = 0 } = result;
 
-        if(pages === 1){
+        if (pages === 1) {
           setPreviousDisabled(true);
           setNextDisabled(true);
-        }else if(currentPosition === 1 ){
-            setPreviousDisabled(true);
-            setNextDisabled(false);
-        }else if(currentPosition === pages){
-            setNextDisabled(true);
-            setPreviousDisabled(false);
-        }else if(currentPosition < pages){
-            setNextDisabled(false);
-            setPreviousDisabled(false)
-        }else{
-            setNextDisabled(true);
-            setPreviousDisabled(true);
+        } else if (currentPosition === 1) {
+          setPreviousDisabled(true);
+          setNextDisabled(false);
+        } else if (currentPosition === pages) {
+          setNextDisabled(true);
+          setPreviousDisabled(false);
+        } else if (currentPosition < pages) {
+          setNextDisabled(false);
+          setPreviousDisabled(false)
+        } else {
+          setNextDisabled(true);
+          setPreviousDisabled(true);
         }
 
         setTheatres(data);
         data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
-  
+
       })
       .catch((error) => {
         // TODO handle error
@@ -358,11 +359,11 @@ function Theatres(props) {
       goToPreviousPage={goToPreviousPage}
       isDisabled={isFloatingActionDisabled}
       toggleActionButton={toggleActionButton}
-      hasPaginator = {true}
-      hasActionButton = {true}
-      hasActions = {true}
-      isNextDisabled = {isNextDisabled}
-      isPreviousDisabled = {isPreviousDisabled}
+      hasPaginator={true}
+      hasActionButton={true}
+      hasActions={true}
+      isNextDisabled={isNextDisabled}
+      isPreviousDisabled={isPreviousDisabled}
     />
   );
 }

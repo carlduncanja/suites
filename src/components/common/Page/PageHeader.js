@@ -69,11 +69,16 @@ const EditModeContainer = styled.Text(({theme}) => ({
 function PageHeader({onBack, title = "User", subTitle = "(200 items)", isOpenEditable = false}) {
     const theme = useTheme();
 
-    const {isEditMode, setEditMode} = useContext(PageContext)
+    const {pageState, setPageState} = useContext(PageContext)
 
     const onEditPress = () => {
-        setEditMode(!isEditMode)
+        setPageState({
+            ...pageState,
+            isEditMode: !pageState.isEditMode
+        })
     }
+
+    const {isEditMode} = pageState;
 
     const buttonProps = !isEditMode
         ? {

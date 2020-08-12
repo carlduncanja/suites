@@ -15,9 +15,11 @@ import { forEach } from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import BottomSheetContainer from '../common/BottomSheetContainer';
-import SchedulePaginator from '../common/Paginators/SchedulePaginator';
+import { PageContext } from "../../contexts/PageContext";
+import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
+import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
 
-function TheatresBottomSheetContainer({ theatre = {} }) {
+function TheatresPage({ route, navigation }) {
     const theme = useTheme();
     const currentTabs = [
         "Details",
@@ -26,14 +28,15 @@ function TheatresBottomSheetContainer({ theatre = {} }) {
         "Equipment",
         "Schedule",
     ];
+    //console.log("what is in route?", route.params.params.theatre);
+    const { theatre } = route.params.params;
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
-
+    const [pageState, setPageState] = useState({});
     const [isEditMode, setEditMode] = useState(false);
     const [isFetching, setFetching] = useState(true);
-    const [fetchDate, setfetchDate] = useState(new Date());
-    const [updateDate, setupdateDate] = useState("");
+
 
     // ##### Lifecycle Methods
 
@@ -54,7 +57,18 @@ function TheatresBottomSheetContainer({ theatre = {} }) {
     const onEditPress = () => {
         setEditMode(!isEditMode)
     }
+    const setPageLoading = (value) => {
+        setPageState({
+            ...pageState,
+            isLoading: value,
+            isEdit: false
+        })
+    }
 
+    const onBackTapped = () => {
+        console.log("tapped the back arrow");
+        navigation.navigate('Theatres');
+    }
 
 
 
@@ -165,21 +179,79 @@ function TheatresBottomSheetContainer({ theatre = {} }) {
     const { _id, name } = selectedTheatre;
 
     return (
-        <BottomSheetContainer
-            isFetching={isFetching}
-            overlayId={_id}
-            overlayTitle={name}
-            onTabPressChange={onTabPress}
-            currentTabs={currentTabs}
-            selectedTab={currentTab}
-            isEditMode={isEditMode}
-            onEditPress={onEditPress}
-            overlayContent={getOverlayScreen(currentTab)}
-        />
+        // <BottomSheetContainer
+        //     isFetching={isFetching}
+        //     overlayId={_id}
+        //     overlayTitle={name}
+        //     onTabPressChange={onTabPress}
+        //     currentTabs={currentTabs}
+        //     selectedTab={currentTab}
+        //     isEditMode={isEditMode}
+        //     onEditPress={onEditPress}
+        //     overlayContent={getOverlayScreen(currentTab)}
+        // />
+        <>
+            <PageContext.Provider value={{ pageState, setPageState }}>
+                <DetailsPage
+                    title={name}
+                    subTitle={`#${_id}`}
+                    onBackPress={onBackTapped}
+                    pageTabs={
+                        <TabsContainer
+                            tabs={currentTabs}
+                            selectedTab={currentTab}
+                            onPressChange={onTabPress}
+                        />
+                    }
+                >
+
+                    <TheatrePageContent
+                        overlayContent={getOverlayScreen(currentTab)}
+                    // overlayMenu={overlayMenu}
+                    // toggleActionButton={toggleActionButton}
+                    // actionDisabled={false}
+                    // selectedMenuItem={selectedMenuItem}
+                    //onOverlayTabPress={handleOverlayMenuPress}
+                    />
+
+
+                </DetailsPage>
+            </PageContext.Provider>
+        </>
     );
 }
 
-TheatresBottomSheetContainer.propTypes = {};
-TheatresBottomSheetContainer.defaultProps = {};
+TheatresPage.propTypes = {};
+TheatresPage.defaultProps = {};
 
-export default TheatresBottomSheetContainer;
+export default TheatresPage;
+function TheatrePageContent({
+    overlayContent,
+
+}) {
+
+
+
+    return (
+        <>
+            {
+                overlayContent
+            }
+            {/* <FooterWrapper>
+                <FooterContainer>
+                    <TheatreOverlayMenu
+                        selectedMenuItem={selectedMenuItem}
+                        overlayMenu={overlayMenu}
+                        handleTabPress={onOverlayTabPress}
+                    />
+                    <FloatingActionButton
+                        isDisabled={actionDisabled}
+                        toggleActionButton={toggleActionButton}
+                    />
+                </FooterContainer>
+            </FooterWrapper> */}
+        </>
+    )
+
+}
+
