@@ -145,7 +145,6 @@ function CasePage({route, addNotification, ...props}) {
     }
 
     const updateCaseChargeSheet = (updateInfo) => {
-        console.log("Selectedcase: ", updateInfo)
         updateChargeSheet(caseId, updateInfo)
             .then((data) => {
                 console.log("Updated Record:", data)

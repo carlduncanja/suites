@@ -35,8 +35,8 @@ const DetailsPageContentContainer = styled.View`
 
 
 function DetailsPage({
-                         title = "--",
-                         subTitle = "",
+                         title = "__",
+                         subTitle = "__",
                          onBackPress = () => {
                          },
                          pageTabs = null,

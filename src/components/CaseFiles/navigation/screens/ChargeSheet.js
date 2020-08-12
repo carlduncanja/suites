@@ -48,7 +48,7 @@ const headers = [
     }
 ]
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices,  onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
     let {
         inventoryList = [],
         equipmentList = [],
@@ -79,7 +79,8 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         }
     })
 
-    const {isEditMode} = useContext(PageContext);
+    const {pageState} = useContext(PageContext);
+    const {isEditMode} = pageState;
 
     // preparing billing information
     const billing = {
@@ -94,7 +95,6 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
     const [caseProcedures, setCaseProcedure] = useState(billing.procedures);
     const [isUpdated, setUpdated] = useState(false);
-    //const [allConsumables, setAllConsumables] = useState([])
 
 
     for (const proceduresBillableItem of proceduresBillableItems) {
@@ -163,10 +163,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     // --------------------------- Life Cycle
 
     useEffect(() => {
-        console.log("Procedures: ", isEditMode, isUpdated)
-        // [HOT FIX] TODO FIND A BETTER WAY TO IMPLEMENT UPDATES
-        if (isUpdated && !isEditMode ) {
-            console.log("Updated edit", caseProcedures)
+        if (isUpdated && !isEditMode) {
             onUpdateChargeSheet(caseProcedures)
             setUpdated(false);
         }
@@ -262,10 +259,10 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
             : selectedTab === 'Equipment' ?
             <ChargesheetEquipment
                 headers={headers}
-                allItems = {equipmentList}
-                equipments = {procedureEquipments}
-                caseProceduresFilters = {consumableProcedures}
-                onEquipmentsUpdate = {handleEquipmentUpdate}
+                allItems={equipmentList}
+                equipments={procedureEquipments}
+                caseProceduresFilters={consumableProcedures}
+                onEquipmentsUpdate={handleEquipmentUpdate}
                 // details={billing.procedures}
                 isEditMode={isEditMode}
                 handleEditDone={handleEditDone}
