@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, Switch, Picker, Alert} from "react-native";
+import { View, StyleSheet, Text, Switch, Picker, Alert } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField from "../common/Input Fields/InputField";
 import InputField2 from "../common/Input Fields/InputField2";
-import {createStorageLocation, createTheatre} from "../../api/network";
+import { createStorageLocation, createTheatre } from "../../api/network";
 import NumberInputField from "../common/Input Fields/NumberInputField";
-import {addStorageLocation} from "../../redux/actions/storageActions";
-import {connect} from "react-redux";
+import { addStorageLocation } from "../../redux/actions/storageActions";
+import { connect } from "react-redux";
 import {
     Menu,
     MenuOptions,
@@ -18,7 +18,7 @@ import {
 } from 'react-native-popup-menu';
 import DropDownIcon from "../../../assets/svg/dropDown";
 import OptionsField from "../common/Input Fields/OptionsField";
-import TheatresBottomSheetContainer from "./TheatresBottomSheetContainer";
+import TheatresPage from "./TheatresPage";
 
 /**
  * Component to handle the create storage process.
@@ -29,7 +29,7 @@ import TheatresBottomSheetContainer from "./TheatresBottomSheetContainer";
  * @returns {*}
  * @constructor
  */
-function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
+function CreateTheatreDialogContainer({ onCancel, onCreated, addTheatre }) {
 
     const modal = useModal();
     const dialogTabs = ['Details'];
@@ -41,8 +41,8 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
     });
 
     const [errorFields, setErrorFields] = useState({
-        name : false,
-        isRecovery : false
+        name: false,
+        isRecovery: false
     })
 
     // useEffect(() => {
@@ -61,7 +61,7 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
             name: nameBool
         })
 
-        if(nameBool === false){
+        if (nameBool === false) {
             console.log("Success")
             createTheatreCall()
         }
@@ -79,11 +79,11 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
             .then(data => {
                 modal.closeAllModals();
                 Alert.alert("Success", `New theatre, ${fields['name']} successfully created.`)
-                setTimeout(() => {onCreated(data)}, 200);
+                setTimeout(() => { onCreated(data) }, 200);
             })
             .catch(error => {
                 console.log("failed to create theatre", error);
-                Alert.alert("Failed","Theatre failed to be created.")
+                Alert.alert("Failed", "Theatre failed to be created.")
                 // TODO handle error
             })
             .finally(_ => {
@@ -117,20 +117,20 @@ function CreateTheatreDialogContainer({onCancel, onCreated, addTheatre}) {
                                 onChangeText={onFieldChange('name')}
                                 value={fields['name']}
                                 onClear={() => onFieldChange('name')('')}
-                                hasError = {errorFields['name']}
-                                errorMessage = "Name must be filled."
+                                hasError={errorFields['name']}
+                                errorMessage="Name must be filled."
                             />
                         </View>
                     </View>
 
-                    <View style={[styles.row, {width: 150}]}>
+                    <View style={[styles.row, { width: 150 }]}>
                         <OptionsField
                             label={"Recovery"}
                             text={recoveryText[fields['isRecovery']]}
                             oneOptionsSelected={onFieldChange('isRecovery')}
                             menuOption={<MenuOptions>
-                                <MenuOption value={true} text='Yes'/>
-                                <MenuOption value={false} text='No'/>
+                                <MenuOption value={true} text='Yes' />
+                                <MenuOption value={false} text='No' />
                             </MenuOptions>}
                         />
                     </View>
@@ -193,4 +193,4 @@ const styles = StyleSheet.create({
 const mapDispatcherToProps = {};
 
 export default
-connect(null, mapDispatcherToProps)(CreateTheatreDialogContainer);
+    connect(null, mapDispatcherToProps)(CreateTheatreDialogContainer);

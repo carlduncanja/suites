@@ -1,5 +1,5 @@
-import {createAppContainer} from 'react-navigation';
-import {createSuitesSidebarNavigator} from '../SuiteNavigator';
+import { createAppContainer } from 'react-navigation';
+import { createSuitesSidebarNavigator } from '../SuiteNavigator';
 
 import React from "react";
 
@@ -39,6 +39,7 @@ import HelpIcon from "../../../../assets/svg/helpIcon";
 import NotificationIcon from "../../../../assets/svg/notificationIcon";
 import Invoices from "../../CaseFiles/OverlayPages/ChargeSheet/Invoices";
 import CaseFileNavigationStack from "./CaseFileNavigationStack";
+import TheatreNavigationStack from "./TheatreNavigationStack"
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
@@ -64,16 +65,16 @@ export const SuitesNavigationStack = () => {
                 initialParams={{
                     icon: CaseFileIcon,
                     tabName: 'Case Files',
-                }}/>
+                }} />
 
 
             <SuitesNavigator.Screen
                 name="Theatres"
-                component={Theatres}
+                component={TheatreNavigationStack}
                 initialParams={{
                     icon: TheathreIcon,
                     tabName: 'Theatres',
-                }}/>
+                }} />
 
 
             <SuitesNavigator.Screen
@@ -82,7 +83,7 @@ export const SuitesNavigationStack = () => {
                 initialParams={{
                     icon: InventoryIcon,
                     tabName: 'Inventory',
-                }}/>
+                }} />
 
 
             <SuitesNavigator.Screen
@@ -91,7 +92,7 @@ export const SuitesNavigationStack = () => {
                 initialParams={{
                     icon: EquipmentIcon,
                     tabName: 'Equipment',
-                }}/>
+                }} />
 
 
             <SuitesNavigator.Screen

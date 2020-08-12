@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, {Component, useEffect, useRef, useState} from "react";
-import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
-import {Snackbar} from "react-native-paper";
+import React, { Component, useEffect, useRef, useState } from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Snackbar } from "react-native-paper";
 // import {removeSnackbar} from '../redux/actions/NotificationActions';
 // import IconButton from "@material-ui/core/IconButton";
 // import Icon from "@material-ui/core/Icon";
-import {View, StyleSheet, Text, SafeAreaView, Vibration} from "react-native";
+import { View, StyleSheet, Text, SafeAreaView, Vibration } from "react-native";
 import * as Animatable from "react-native-animatable";
 import NotificationComponent from "../NotificationComponent";
 import * as Notifications from "expo-notifications";
@@ -15,13 +15,13 @@ import {
     closeNotification,
     removeNotification,
 } from "../../redux/actions/NotificationActions";
-import {not, set} from "react-native-reanimated";
+import { not, set } from "react-native-reanimated";
 
 
 /**
  * This component handles the logic for displaying and removing notifications.
  */
-const  Notifier = (props) => {
+const Notifier = (props) => {
     const [displayed, setDisplayed] = useState([]);
     const notificationListener = useRef();
     const responseListener = useRef();
@@ -50,10 +50,10 @@ const  Notifier = (props) => {
 
 
     useEffect(() => {
-        const {notifications = []} = props;
+        const { notifications = [] } = props;
         console.log("On updated", notifications);
 
-        notifications.forEach(({key, message, action, dismissed = false}) => {
+        notifications.forEach(({ key, message, action, dismissed = false }) => {
             if (dismissed) {
                 return;
             }
@@ -73,7 +73,7 @@ const  Notifier = (props) => {
         Vibration.vibrate([0, 250, 250, 250]);
         console.log("NOTIFICATION RECEIVED", notification);
 
-        const {title, body, data} = notification.request?.content;
+        const { title, body, data } = notification.request?.content;
         const dataObj = data.body;
 
         props.addNotification(body, title, dataObj.count);
@@ -101,7 +101,7 @@ const  Notifier = (props) => {
     return (
         <SafeAreaView
             pointerEvents={"box-none"}
-            style={{...StyleSheet.absoluteFillObject}}
+            style={{ ...StyleSheet.absoluteFillObject }}
         >
             <View
                 pointerEvents={"box-none"}
@@ -115,14 +115,14 @@ const  Notifier = (props) => {
             >
                 {props.notifications.map(
                     (
-                        {key, message, specialItem, title, action, dismissed = false},
+                        { key, message, specialItem, title, action, dismissed = false },
                         index
                     ) => {
                         console.log(key, message, index);
 
                         return (
                             <Animatable.View
-                                style={{marginBottom: 10}}
+                                style={{ marginBottom: 10 }}
                                 key={key}
                                 pointerEvents={"auto"}
                                 onAnimationEnd={(endState) =>
