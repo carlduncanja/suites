@@ -23,15 +23,14 @@ const DetailsPageContentWrapper = styled.View`
         flex:1;
         margin : 0;
         padding-top: ${({theme}) => theme.space['--space-32']};
-   
         padding-left: ${({theme}) => theme.space['--space-24']};
         padding-right: ${({theme}) => theme.space['--space-24']};
-    `
+`
 
 const DetailsPageContentContainer = styled.View`
         display: flex;
         flex:1;
-    `
+`
 
 
 function DetailsPage({

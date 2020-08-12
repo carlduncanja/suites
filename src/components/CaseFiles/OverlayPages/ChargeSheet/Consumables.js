@@ -59,7 +59,6 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
     }
 
 
-
     const onQuantityChangePress = (item, index) => (action) => {
 
         const selectedData = consumables[selectedIndex];
@@ -111,20 +110,16 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={() => {}}
+            onItemPress={() => {
+            }}
             onPressDisabled={true}
             itemView={listItem(item, index)}
         />
     }
 
-    const TestWrapper = styled.View`
-        flex: 1;
-    `
 
     return (
-        <TestWrapper>
             <ScrollView>
-
                 <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
                     <View style={{flex: 2, paddingRight: 100, justifyContent:'center'}}>
                         <Search
@@ -145,18 +140,16 @@ const Consumables = ({headers, consumables = [], caseProceduresFilters = [], onC
                 </View>
 
 
-                <Table
-                    isCheckbox={true}
-                    data={consumables[selectedIndex] || []}
-                    listItemFormat={renderListFn}
-                    headers={headers}
-                    toggleHeaderCheckbox={toggleHeaderCheckbox}
-                    itemSelected={checkBoxList}
-                    // dataLength = {tabDetails.length}
-                />
-            </ScrollView>
-
-        </TestWrapper>
+            <Table
+                isCheckbox={true}
+                data={consumables[selectedIndex] || []}
+                listItemFormat={renderListFn}
+                headers={headers}
+                toggleHeaderCheckbox={toggleHeaderCheckbox}
+                itemSelected={checkBoxList}
+                // dataLength = {tabDetails.length}
+            />
+        </ScrollView>
     );
 }
 
