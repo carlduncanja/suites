@@ -448,6 +448,8 @@ function CasePage({route, addNotification, ...props}) {
                         selectedMenuItem={selectedMenuItem}
                         onOverlayTabPress={handleOverlayMenuPress}
                     />
+
+
                 </DetailsPage>
             </PageContext.Provider>
         </>

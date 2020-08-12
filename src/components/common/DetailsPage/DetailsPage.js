@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styled, {css} from '@emotion/native';
 import PropTypes from 'prop-types';
 import SlideHeader from "../SlideOverlay/SlideHeader";
-import PageHeader from "./PageHeader";
+import PageHeader from "../Page/PageHeader";
 import {useTheme} from "emotion-theming";
 import {Text} from "react-native";
 import TabsContainer from "../Tabs/TabsContainerComponent";

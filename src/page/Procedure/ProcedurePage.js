@@ -9,26 +9,29 @@ import ProceduresEquipmentTab from '../../components/OverlayTabs/ProceduresEquip
 import EditableProceduresConfig from '../../components/OverlayTabs/EditableProceduresConfig';
 import TheatresTab from '../../components/OverlayTabs/TheatresTab';
 import {colors} from "../../styles";
-import { currencyFormatter } from '../../utils/formatter';
-import { updateProcedure } from "../../api/network";
-import { setProcedureEdit } from "../../redux/actions/procedurePageActions";
+import {currencyFormatter} from '../../utils/formatter';
+import {updateProcedure} from "../../api/network";
+import {setProcedureEdit} from "../../redux/actions/procedurePageActions";
 
 
-import { getProcedureById } from "../../api/network";
+import {getProcedureById} from "../../api/network";
 import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
 import ActionItem from "../../components/common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import { withModal } from 'react-native-modalfy';
+import {withModal} from 'react-native-modalfy';
 import BottomSheetContainer from '../../components/common/BottomSheetContainer';
-import { connect } from 'react-redux';
-import { set } from 'numeral';
+import {connect} from 'react-redux';
+import {set} from 'numeral';
+import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
+import {PageContext} from "../../contexts/PageContext";
+import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
 
 function ProcedurePage({route, isEditState, setProcedureEdit}) {
 
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
 
-    const { procedure, isOpenEditable } = route.params
+    const {procedure, isOpenEditable} = route.params
 
     const {
         _id = "",
@@ -48,23 +51,23 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
     const [isFloatingActionDisabled, setIsDisabled] = useState(false)
 
     let updatedPhysician = {
-        name : `Dr. ${physician.firstName} ${physician.surname}` || null,
-        _id : physician._id || null
+        name: `Dr. ${physician.firstName} ${physician.surname}` || null,
+        _id: physician._id || null
     }
 
     const [fields, setFields] = useState({
-        name : name,
-        hasRecovery : hasRecovery,
-        duration : duration.toString(),
-        custom : true,
-        physician : physician
+        name: name,
+        hasRecovery: hasRecovery,
+        duration: duration.toString(),
+        custom: true,
+        physician: physician
     })
 
 
     const [popoverList, setPopoverList] = useState([
         {
-            name : "physician",
-            status : false
+            name: "physician",
+            status: false
         }
     ])
 
@@ -84,12 +87,12 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
         setProcedureEdit(!isEditState)
         setEditMode(!isEditMode)
         // console.log("Edit state, updated: ", !isEditState, isInfoUpdated)
-        if(!isEditState === false && isInfoUpdated){
+        if (!isEditState === false && isInfoUpdated) {
 
-            if(currentTab === 'Configuration'){
+            if (currentTab === 'Configuration') {
                 updateProcedureCall(selectedProcedure)
                 // onProcedureUpdate()
-            }else if (currentTab === 'Consumables'){
+            } else if (currentTab === 'Consumables') {
                 updateProcedureCall(selectedProcedure)
                 // Add confirmation component
             }
@@ -110,21 +113,23 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
             [fieldName]: value
         })
 
-        setSelectedProcedure({...selectedProcedure,[fieldName]:value})
+        setSelectedProcedure({...selectedProcedure, [fieldName]: value})
     };
 
-    const handlePopovers = (popoverValue) => (popoverItem) =>{
+    const handlePopovers = (popoverValue) => (popoverItem) => {
 
-        if(!popoverItem){
-            let updatedPopovers = popoverList.map( item => {return {
-                ...item,
-                status : false
-            }})
+        if (!popoverItem) {
+            let updatedPopovers = popoverList.map(item => {
+                return {
+                    ...item,
+                    status: false
+                }
+            })
 
             setPopoverList(updatedPopovers)
-        }else{
+        } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedObj = {...popoverList[objIndex], status: popoverValue};
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -152,7 +157,7 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
     };
 
     const onAddInventory = (data) => {
-        let {inventories = [] } = selectedProcedure
+        let {inventories = []} = selectedProcedure
         // let updatedData = {
         //     amount : data.amount,
         //     inventory : data.inventory._id
@@ -169,7 +174,7 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
         //     inventories : updatedArray
         // }
         let newData = [...inventories, data]
-        let newProcedureData = {...selectedProcedure, inventories:newData}
+        let newProcedureData = {...selectedProcedure, inventories: newData}
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
         // console.log("Data: ", updatedObj)
@@ -177,8 +182,8 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
     }
 
     const handleInventoryUpdate = (data) => {
-        const procedure = {...selectedProcedure, inventories : data}
-        const updatedObj = { inventories : data}
+        const procedure = {...selectedProcedure, inventories: data}
+        const updatedObj = {inventories: data}
 
         setSelectedProcedure(procedure)
         setIsInfoUpdated(true)
@@ -187,9 +192,9 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
     }
 
     const onAddEquipment = (data) => {
-        let { equipments = [] } = selectedProcedure
+        let {equipments = []} = selectedProcedure
         let newData = [...equipments, data]
-        let newProcedureData = {...selectedProcedure, equipments:newData}
+        let newProcedureData = {...selectedProcedure, equipments: newData}
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
         updateProcedureCall(newProcedureData)
@@ -197,22 +202,22 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
 
     const onAddTheatre = (data) => {
         // console.log("Theatre: ", data)
-        let { supportedRooms = [] } = selectedProcedure
+        let {supportedRooms = []} = selectedProcedure
         let newData = [...supportedRooms, data]
-        let newProcedureData = {...selectedProcedure, supportedRooms:newData}
+        let newProcedureData = {...selectedProcedure, supportedRooms: newData}
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
         // updateProcedureCall(newProcedureData)
     }
 
-    const onProcedureUpdate = () =>{
+    const onProcedureUpdate = () => {
         let newProcedureData = {
             ...selectedProcedure,
-            name : fields['name'],
-            hasRecovery : fields['hasRecovery'],
-            duration : parseInt(fields['duration']),
-            custom : fields['custom'],
-            physician : fields['physician']
+            name: fields['name'],
+            hasRecovery: fields['hasRecovery'],
+            duration: parseInt(fields['duration']),
+            custom: fields['custom'],
+            physician: fields['physician']
         }
         // console.log("New Procedure: ", newProcedureData)
         // setSelectedProcedure(newProcedureData)
@@ -220,15 +225,15 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
     }
 
     const handleEquipmentUpdate = (data) => {
-        const procedure = {...selectedProcedure, equipments : data}
-        const updatedObj = { inventories : data}
+        const procedure = {...selectedProcedure, equipments: data}
+        const updatedObj = {inventories: data}
         setSelectedProcedure(procedure)
         setIsInfoUpdated(true)
         // Change updated
         // updateProcedureCall(updatedObj)
     }
 
-    const updateProcedureCall = (updatedFields) =>{
+    const updateProcedureCall = (updatedFields) => {
         updateProcedure(_id, updatedFields)
             .then(data => {
                 // fetchProcdure(_id)
@@ -242,12 +247,12 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
             })
     }
 
-    const getFabActions = () =>{
+    const getFabActions = () => {
         let title = "Actions";
         let floatingAction = [];
 
         switch (currentTab) {
-            case 0:{
+            case 0: {
                 const addNewItem = <ActionItem title={"Add Inventory Item"} icon={<AddIcon/>} onPress={_ => {
                 }}/>;
                 const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
@@ -274,14 +279,14 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
     const getTabContent = (selectedTab) => {
 
 
-        const { inventories = [], equipments = [], notes = "", supportedRooms = [] } = selectedProcedure
+        const {inventories = [], equipments = [], notes = "", supportedRooms = []} = selectedProcedure
 
         const consumablesData = inventories.map(item => {
             return {
-                item :  item.inventory.name,
-                type : "Anaesthesia",
-                quantity : item.amount,
-                unitPrice : item.inventory.unitPrice
+                item: item.inventory.name,
+                type: "Anaesthesia",
+                quantity: item.amount,
+                unitPrice: item.inventory.unitPrice
             }
         });
 
@@ -291,39 +296,41 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
                 return currentTab === 'Configuration' && isEditState ?
                     <TouchableOpacity
                         style={{flex: 1}}
-                        activeOpacity = {1}
-                        onPress = {()=>{handlePopovers(false)()}}
+                        activeOpacity={1}
+                        onPress={() => {
+                            handlePopovers(false)()
+                        }}
                     >
                         <EditableProceduresConfig
-                        fields = {fields}
-                        onFieldChange = {onFieldChange}
-                        popoverList = {popoverList}
-                        handlePopovers = {handlePopovers}
+                            fields={fields}
+                            onFieldChange={onFieldChange}
+                            popoverList={popoverList}
+                            handlePopovers={handlePopovers}
                         />
                     </TouchableOpacity>
 
                     :
-                    <Configuration procedure = {selectedProcedure}/>;
+                    <Configuration procedure={selectedProcedure}/>;
             case "Consumables":
                 return <ProceduresConsumablesTab
-                    consumablesData = {inventories}
-                    isEditMode = {isEditState}
-                    onAddInventory = {onAddInventory}
-                    handleInventoryUpdate = {handleInventoryUpdate}
+                    consumablesData={inventories}
+                    isEditMode={isEditState}
+                    onAddInventory={onAddInventory}
+                    handleInventoryUpdate={handleInventoryUpdate}
                 />
             case "Equipment":
                 return <ProceduresEquipmentTab
-                    equipmentsData = {equipments}
-                    isEditMode = {isEditMode}
-                    onAddEquipment = {onAddEquipment}
-                    handleEquipmentUpdate = {handleEquipmentUpdate}
+                    equipmentsData={equipments}
+                    isEditMode={isEditMode}
+                    onAddEquipment={onAddEquipment}
+                    handleEquipmentUpdate={handleEquipmentUpdate}
                 />;
             case "Notes":
-                return <NotesTab notesData = {notes === "" ? [] : [notes]}/>;
+                return <NotesTab notesData={notes === "" ? [] : [notes]}/>;
             case "Theatres" :
                 return <TheatresTab
-                    theatresData = {supportedRooms}
-                    onAddTheatre = {onAddTheatre}
+                    theatresData={supportedRooms}
+                    onAddTheatre={onAddTheatre}
                 />
             default :
                 return <View/>
@@ -331,7 +338,6 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
     };
 
     return (
-
         <BottomSheetContainer
             isFetching = {isFetching}
             isEditMode = {isEditState}
@@ -343,7 +349,6 @@ function ProcedurePage({route, isEditState, setProcedureEdit}) {
             overlayContent = {getTabContent(currentTab)}
             onEditPress = {onEditPress}
         />
-
     );
 }
 
@@ -361,14 +366,14 @@ ProcedurePage.defaultProps = {};
 export default connect(mapStateToProps, mapDispatchToProps)(ProcedurePage);
 
 const styles = StyleSheet.create({
-    item:{
-        flex:1,
+    item: {
+        flex: 1,
     },
-    itemText:{
-        fontSize:16,
-        color:"#4A5568",
+    itemText: {
+        fontSize: 16,
+        color: "#4A5568",
     },
-    footer:{
+    footer: {
         // alignSelf: 'flex-end',
         // flexDirection: 'row',
         position: 'absolute',

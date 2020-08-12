@@ -1,108 +1,126 @@
-import React, { Component, useState } from 'react';
-import styled, { css } from "@emotion/native";
-import { useTheme } from "emotion-theming";
+import React, {Component, useContext, useState} from 'react';
+import styled, {css} from "@emotion/native";
+import {useTheme} from "emotion-theming";
 import Button from "../../common/Buttons/Button";
 import SmallLeftTriangle from "../../../../assets/svg/smallLeftTriangle";
+import {PageContext} from "../../../contexts/PageContext";
 
-function PageHeader({ onBack, headerMessage = "User", specialDetail = "(200 items)", isOpenEditable = false }) {
-    const theme = useTheme();
 
-    const [isEditMode, setEditMode] = useState(isOpenEditable);
-
-    const HeaderWrapper = styled.View`
+const HeaderWrapper = styled.View`
     display:flex;
     height:55px;
-    padding:1px;
-    background-color:${theme.colors["--default-shade-white"]};
-    
-    `;
+    background-color : ${(props) => props.isEditMode ? props.theme.colors['--accent-button'] : props.theme.colors['--default-shade-white']};
+`;
 
-    const HeaderContainer = styled.View`
+const HeaderContainer = styled.View`
+    flex:1;
     flex-direction: row;
     justify-content: space-between;
-    margin-top:5px;
-    padding-left: 0px;
-    padding-top: 8px;
-    padding-right: 0px;
-    padding-bottom: 8px;
-    `;
+    align-items: center;
+    padding: 8px;
+`;
 
 
-
-    const TextContainer = styled.View`
+const TextContainer = styled.View`
     align-self:center;
     flex-direction: row;
     align-items:baseline;
-    `;
+`;
 
-    const HeaderText = styled.Text`
-   
-    font:${theme.font["--text-xl-medium"]};
-    color:${theme.colors["--accent-button"]};
-  `;
+const HeaderText = styled.Text`
+    font:${({theme}) => theme.font["--text-xl-medium"]};
+    color:${({theme}) => theme.colors["--accent-button"]};
+`;
 
-    const GeneralText = styled.Text`
-  font:${theme.font["--text-sm-medium"]};
-    align-self:center;
-    font-weight: bold;
-    color:${theme.colors["--default-shade-white"]};
-  `;
+const IconContainer = styled.TouchableOpacity`
+    margin-left:10px;
+    align-self:flex-start;
+`;
 
-    const IconContainer = styled.TouchableOpacity`
-        margin-left:10px;
-        align-self:flex-start;
-    `;
+const SpecialText = styled.Text`
+    margin-left: 8px;
+    font:${({theme}) => theme.font["--text-sm-medium"]};
+    color:${({theme}) => theme.colors["--company"]};
+`;
 
-    const SpecialText = styled.Text`
-    font:${theme.font["--text-sm-medium"]};
-    color:${theme.colors["--company"]};
-  
-  `;
-    const EditButtonWrapper = styled.View`
+const EditButtonWrapper = styled.View`
   height : 26px;
   width : 53px;
   margin-right:10px;
 `;
-    const EditButtonContainer = styled.View`
+
+const EditButtonContainer = styled.View`
   height: 100%;
   width: 100%; 
   border-radius : 6px;
-  padding-top : 6px;
-  padding-bottom : 6px;
-  padding-left: 8px;
-  padding-right: 8px;
-  background-color : ${theme.colors['--accent-button']};
+  padding: 6px 8px;
+  background-color : ${({theme, isEditMode}) => isEditMode ?  theme.colors['--default-shade-white']:  theme.colors['--accent-button']};
   align-items : center;
   justify-content : center;
 `
 
+const EditModeContainer = styled.Text(({theme}) => ({
+    ...theme.font['--text-base-medium'],
+    color: theme.colors['--color-white'],
+    alignItems: 'center',
+    textAlign: 'center'
+}))
+
+function PageHeader({onBack, title = "User", subTitle = "(200 items)", isOpenEditable = false}) {
+    const theme = useTheme();
+
+    const {isEditMode, setEditMode} = useContext(PageContext)
+
+    const onEditPress = () => {
+        setEditMode(!isEditMode)
+    }
+
+    const buttonProps = !isEditMode
+        ? {
+            backgroundColor: theme.colors['--accent-button'],
+            color: theme.colors['--default-shade-white'],
+            title: "Edit",
+        }
+        : {
+            backgroundColor: theme.colors['--default-shade-white'],
+            color: theme.colors['--accent-button'],
+            title: "Done",
+        }
+
 
     return (
-        <HeaderWrapper>
-            <HeaderContainer>
-                <IconContainer onPress={onBack}><SmallLeftTriangle /></IconContainer>
-                <TextContainer>
-                    <HeaderText>{headerMessage}</HeaderText>
-                    <SpecialText>{specialDetail}</SpecialText>
-                </TextContainer>
-                <EditButtonWrapper>
-                    <EditButtonContainer>
-                        <Button
-                            backgroundColor="#0CB0E7"
-                            color="#FFFFFF"
-                            title="Edit"
+        <HeaderWrapper theme={theme} isEditMode={isEditMode}>
+            <HeaderContainer theme={theme}>
 
-                        />
+
+                {
+                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle/></IconContainer>
+                }
+
+                {
+                    !isEditMode &&
+                    <TextContainer theme={theme}>
+                        <HeaderText theme={theme}>{title}</HeaderText>
+                        <SpecialText theme={theme}>{subTitle}</SpecialText>
+                    </TextContainer>
+                }
+
+                {
+                    isEditMode &&
+                    <EditModeContainer theme={theme}>
+                        now in edit mode
+                    </EditModeContainer>
+                }
+
+                <EditButtonWrapper theme={theme}>
+                    <EditButtonContainer theme={theme} isEditMode={isEditMode}>
+                        <Button {...buttonProps} buttonPress={onEditPress}/>
                     </EditButtonContainer>
                 </EditButtonWrapper>
-
 
             </HeaderContainer>
         </HeaderWrapper>
     )
-
-
-
 
 
 }
