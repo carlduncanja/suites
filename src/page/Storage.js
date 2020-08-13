@@ -147,6 +147,7 @@ function Storage(props) {
     };
 
     const onItemPress = (item) => () => {
+        props.navigation.navigate("StoragePage", { initial: false, storage: item });
         // modal.openModal('BottomSheetModal', {
         //     content: <StorageBottomSheetContainer storage={item}/>
         // })

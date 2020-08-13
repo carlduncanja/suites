@@ -42,10 +42,17 @@ const styles = StyleSheet.create({
   },
   positionContainer: {
 
-    height: 250,
-    position: "absolute",
-    bottom: 490,
-    left: 155,
+    // height: 250,
+    // position: "absolute",
+    // bottom: 490,
+    // left: 155,
+    position: 'absolute',
+    top: 0,
+    left: 50,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center'
 
 
   },

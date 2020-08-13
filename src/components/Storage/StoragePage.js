@@ -14,12 +14,15 @@ import TabsContainer from "../common/Tabs/TabsContainerComponent";
 function StoragePage({ route, navigation }) {
     const currentTabs = ["Transfer", "Consumables", "Equipment"];
 
+    const { storage } = route.params;
+
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [storageItem, setStorageItem] = useState(storage);
     const [isEditMode, setEditMode] = useState(false);
     const [isFetching, setFetching] = useState(false);
+    const [pageState, setPageState] = useState({});
 
     // ##### Life cycle methods
 
@@ -39,6 +42,10 @@ function StoragePage({ route, navigation }) {
     const onEditPress = () => {
         setEditMode(!isEditMode);
     };
+
+    const backTapped = () => {
+        navigation.navigate("Storage");
+    }
 
     // ##### Helper functions
 
@@ -116,7 +123,7 @@ function StoragePage({ route, navigation }) {
                     }
                 >
 
-                    <SupplierPageContent
+                    <StoragePageContent
                         overlayContent={getTabContent(currentTab)}
 
                     />
@@ -132,3 +139,21 @@ StoragePage.propTypes = {};
 StoragePage.defaultProps = {};
 
 export default StoragePage;
+
+function StoragePageContent({
+    overlayContent,
+
+}) {
+
+
+
+    return (
+        <>
+            {
+                overlayContent
+            }
+
+        </>
+    )
+
+}
