@@ -207,11 +207,7 @@ function TheatresPage({ route, navigation }) {
 
                     <TheatrePageContent
                         overlayContent={getOverlayScreen(currentTab)}
-                    // overlayMenu={overlayMenu}
-                    // toggleActionButton={toggleActionButton}
-                    // actionDisabled={false}
-                    // selectedMenuItem={selectedMenuItem}
-                    //onOverlayTabPress={handleOverlayMenuPress}
+
                     />
 
 
@@ -237,19 +233,7 @@ function TheatrePageContent({
             {
                 overlayContent
             }
-            {/* <FooterWrapper>
-                <FooterContainer>
-                    <TheatreOverlayMenu
-                        selectedMenuItem={selectedMenuItem}
-                        overlayMenu={overlayMenu}
-                        handleTabPress={onOverlayTabPress}
-                    />
-                    <FloatingActionButton
-                        isDisabled={actionDisabled}
-                        toggleActionButton={toggleActionButton}
-                    />
-                </FooterContainer>
-            </FooterWrapper> */}
+
         </>
     )
 

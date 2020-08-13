@@ -1,5 +1,5 @@
-import React, {useEffect, useContext, useState} from 'react';
-import {View, Text, StyleSheet} from "react-native";
+import React, { useEffect, useContext, useState } from 'react';
+import { View, Text, StyleSheet } from "react-native";
 
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
@@ -14,18 +14,18 @@ import NavPage from '../components/common/Page/NavPage';
 import ArchiveIcon from "../../assets/svg/archiveIcon";
 import AddIcon from "../../assets/svg/addIcon";
 
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
+import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
 
-import {connect} from 'react-redux';
-import {setSuppliers} from "../redux/actions/suppliersActions";
-import {getSuppliers} from "../api/network";
+import { connect } from 'react-redux';
+import { setSuppliers } from "../redux/actions/suppliersActions";
+import { getSuppliers } from "../api/network";
 import _ from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-import {withModal, useModal} from 'react-native-modalfy';
+import { withModal, useModal } from 'react-native-modalfy';
 import suppliersTest from '../../data/Suppliers'
-import SuppliersBottomSheet from '../components/Suppliers/SuppliersBottomSheet';
+import SuppliersBottomSheet from '../components/Suppliers/SupplierPage';
 import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplierDialogContainer';
 
 const Suppliers = (props) => {
@@ -51,7 +51,7 @@ const Suppliers = (props) => {
     ];
 
     //  ############ Props
-    const {suppliers = [], setSuppliers} = props;
+    const { suppliers = [], setSuppliers } = props;
     const modal = useModal();
 
     //  ############ State
@@ -105,7 +105,7 @@ const Suppliers = (props) => {
 
     // ############# Event Handlers
 
-    const onSearchInputChange = (input) =>{
+    const onSearchInputChange = (input) => {
         setSearchValue(input)
     }
 
@@ -119,25 +119,26 @@ const Suppliers = (props) => {
     }
 
     const handleOnCheckBoxPress = (item) => () => {
-        const {_id} = item;
+        const { _id } = item;
         let updatedSuppliersList = checkboxItemPress(item, _id, selectedSuppliers)
 
         setSelectedSuppliers(updatedSuppliersList)
     }
 
-    const handleOnItemPress = (item, isOpenEditable) =>{
-        modal.openModal('BottomSheetModal',{
-            content: <SuppliersBottomSheet
-                supplier = {item}
-                isOpenEditable = {isOpenEditable}
-                floatingActions = {getFabActions}
-            />
-        })
+    const handleOnItemPress = (item, isOpenEditable) => {
+        // modal.openModal('BottomSheetModal',{
+        //     content: <SuppliersBottomSheet
+        //         supplier = {item}
+        //         isOpenEditable = {isOpenEditable}
+        //         floatingActions = {getFabActions}
+        //     />
+        // })
+        props.navigation.navigate("SupplierPage", { screen: "SupplierPage", initial: false, params: { supplier: item, isEdit: isOpenEditable, floatingActions: { getFabActions } } });
     }
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -148,7 +149,7 @@ const Suppliers = (props) => {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -172,27 +173,27 @@ const Suppliers = (props) => {
 
     const fetchSuppliersData = (pagePosition) => {
 
-        let currentPosition = pagePosition ? pagePosition  : 1;
+        let currentPosition = pagePosition ? pagePosition : 1;
         setCurrentPagePosition(currentPosition)
 
         setFetchingData(true)
-        getSuppliers(searchValue,recordsPerPage, currentPosition)
+        getSuppliers(searchValue, recordsPerPage, currentPosition)
             .then(suppliersInfo => {
-                const {data = [], pages = 0} = suppliersInfo
+                const { data = [], pages = 0 } = suppliersInfo
 
-                if(pages === 1){
+                if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                }else if(currentPosition === 1 ){
+                } else if (currentPosition === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                }else if(currentPosition === pages){
+                } else if (currentPosition === pages) {
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                }else if(currentPosition < pages){
+                } else if (currentPosition < pages) {
                     setNextDisabled(false);
                     setPreviousDisabled(false)
-                }else{
+                } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
@@ -223,14 +224,14 @@ const Suppliers = (props) => {
 
         return (
             <>
-                <View style={[styles.item,{...styles.rowBorderRight, flex: 2}]}>
-                    <Text numberOfLines={1} style={[styles.itemText, {color:"#323843"}]}>{item.name}</Text>
+                <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
+                    <Text numberOfLines={1} style={[styles.itemText, { color: "#323843" }]}>{item.name}</Text>
                 </View>
-                <View style={[styles.item, {flex: 1, alignItems: 'center'}]}>
-                    <Text numberOfLines={1} style={[styles.itemText, {color: "#3182CE"}]}>{item.phone}</Text>
+                <View style={[styles.item, { flex: 1, alignItems: 'center' }]}>
+                    <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.phone}</Text>
                 </View>
-                <View style={[styles.item, {flex: 2, alignItems: 'center'}]}>
-                    <Text numberOfLines={1} style={[styles.itemText, {color: "#3182CE"}]}>{item.email}</Text>
+                <View style={[styles.item, { flex: 2, alignItems: 'center' }]}>
+                    <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.email}</Text>
                 </View>
             </>
         )
@@ -239,8 +240,8 @@ const Suppliers = (props) => {
 
     const getFabActions = () => {
 
-        const archiveCase = <ActionItem title={"Archive Supplier"} icon={<ArchiveIcon/>} onPress={()=>{}}/>;
-        const createNewSupplier = <ActionItem title={"Add Supplier"} icon={<AddIcon/>}onPress={onOpenCreateSupplier}/>;
+        const archiveCase = <ActionItem title={"Archive Supplier"} icon={<ArchiveIcon />} onPress={() => { }} />;
+        const createNewSupplier = <ActionItem title={"Add Supplier"} icon={<AddIcon />} onPress={onOpenCreateSupplier} />;
 
 
         return <ActionContainer
@@ -252,7 +253,7 @@ const Suppliers = (props) => {
         />
     };
 
-    const onOpenCreateSupplier = () =>{
+    const onOpenCreateSupplier = () => {
         modal.closeModals('ActionContainerModal');
         setTimeout(() => {
             modal.openModal('OverlayModal',
@@ -304,11 +305,11 @@ const Suppliers = (props) => {
             goToPreviousPage={goToPreviousPage}
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
-            hasPaginator = {true}
-            hasActionButton = {true}
-            hasActions = {true}
-            isNextDisabled = {isNextDisabled}
-            isPreviousDisabled = {isPreviousDisabled}
+            hasPaginator={true}
+            hasActionButton={true}
+            hasActions={true}
+            isNextDisabled={isNextDisabled}
+            isPreviousDisabled={isPreviousDisabled}
         />
     )
 }

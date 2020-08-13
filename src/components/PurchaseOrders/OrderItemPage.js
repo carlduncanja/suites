@@ -1,22 +1,28 @@
-import React, {useState, useEffect} from 'react';
-import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert} from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import BottomSheetContainer from '../common/BottomSheetContainer';
 
-import {getPurchaseOrderById} from "../../api/network";
-import {colors} from "../../styles";
+import { getPurchaseOrderById } from "../../api/network";
+import { colors } from "../../styles";
 import OrderDetailsTab from '../OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../OverlayTabs/OrderItemTab';
 import OrderSuppliersTab from '../OverlayTabs/OrderSuppliersTab';
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 import { updatePurchaseOrder } from '../../api/network';
+import { PageContext } from "../../contexts/PageContext";
+import DetailsPage from "../common/DetailsPage/DetailsPage";
+import TabsContainer from "../common/Tabs/TabsContainerComponent";
 
-function OrdersBottomSheet({order = {}, isOpenEditable}) {
+function OrderItemPage({ route, navigation }) {
+
+    const { order, isOpenEditable } = route.params.params;
+
 
     const currentTabs = ["Details", "Items", "Suppliers"];
     // console.log("Order:", order)
-    const {_id, supplier = {}, purchaseOrderNumber} = order;
-    const {name = ""} = supplier
+    const { _id, supplier = {}, purchaseOrderNumber } = order;
+    const { name = "" } = supplier
 
 
     // ##### States
@@ -26,11 +32,12 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState({})
-    const [orderItems, setOrderItems] = useState([])
-    const [fields, setFields] = useState({})
-    const [isUpdateDone, setIsUpdateDone] = useState(false)
+    const [orderItems, setOrderItems] = useState([]);
+    const [pageState, setPageState] = useState({});
+    const [fields, setFields] = useState({});
+    const [isUpdateDone, setIsUpdateDone] = useState(false);
 
-    const [popoverList, setPopoverList] = useState([])
+    const [popoverList, setPopoverList] = useState([]);
 
     // ##### Lifecycle Methods
     useEffect(() => {
@@ -47,24 +54,24 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
         setEditableTab(tab)
         setEditMode(!isEditMode)
 
-        if(isEditMode && isUpdateDone){
-            if(currentTab === "Items"){
+        if (isEditMode && isUpdateDone) {
+            if (currentTab === "Items") {
                 console.log("Edit Press: ", orderItems)
                 let dataToSend = orderItems.map(item => {
                     const { amount = 0, productId = {} } = item
-                    return{
+                    return {
                         amount,
-                        productId : productId?._id || ""
+                        productId: productId?._id || ""
                     }
                 })
                 // console.log("Updated Data: ", dataToSend)
                 // console.log("Order Id: ", _id)
                 updatePurchaseOrderItems(dataToSend, _id)
             }
-            
+
 
         }
-        
+
     }
 
     const updatePurchaseOrderItems = (data, purchaseOrderId) => {
@@ -100,7 +107,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
             setPopoverList(updatedPopovers)
         } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = {...popoverList[objIndex], status: popoverValue};
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -116,12 +123,16 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
         setIsUpdateDone(true)
     }
 
-    const onAddProductItems = (data) =>{
+    const BackTapped = () => {
+        navigation.navigate("Orders");
+    }
 
-        let updatedList = data.map( item => {
+    const onAddProductItems = (data) => {
+
+        let updatedList = data.map(item => {
             return {
-                amount : item.amount || 0,
-                productId : {
+                amount: item.amount || 0,
+                productId: {
                     ...item
                 }
             }
@@ -130,7 +141,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
         // console.log("Items: ", itemsList)
         setOrderItems(itemsList)
         setIsUpdateDone(true)
-     
+
     }
 
     // ##### Helper functions
@@ -142,7 +153,7 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
                 const { orders = [] } = data
                 setSelectedOrder(data)
                 setOrderItems(orders)
-                
+
             })
             .catch(error => {
                 console.log("Failed to get order", error)
@@ -156,66 +167,69 @@ function OrdersBottomSheet({order = {}, isOpenEditable}) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <OrderDetailsTab order={selectedOrder}/>
+                return <OrderDetailsTab order={selectedOrder} />
             case "Items":
-                return <OrderItemTab 
+                return <OrderItemTab
                     orders={orderItems}
-                    isEditMode = {isEditMode}
-                    onItemChange = {onItemChange}
-                    supplierId = {supplier?._id}
-                    onAddProductItems = {onAddProductItems}
+                    isEditMode={isEditMode}
+                    onItemChange={onItemChange}
+                    supplierId={supplier?._id}
+                    onAddProductItems={onAddProductItems}
                 />
             case "Suppliers":
-                return <SupplierDetailsTab order={selectedOrder}/>;
-            default :
-                return <View/>
+                return <SupplierDetailsTab order={selectedOrder} />;
+            default:
+                return <View />
         }
     };
 
     return (
-        <BottomSheetContainer
-            isFetching = {isFetching}
-            overlayId={name}
-            overlayTitle={purchaseOrderNumber}
-            onTabPressChange={onTabPress}
-            currentTabs={currentTabs}
-            selectedTab={currentTab}
-            isEditMode={isEditMode}
-            onEditPress = {onEditPress}
-            overlayContent={getTabContent(currentTab)}
-        />
+        // <BottomSheetContainer
+        //     isFetching={isFetching}
+        //     overlayId={name}
+        //     overlayTitle={purchaseOrderNumber}
+        //     onTabPressChange={onTabPress}
+        //     currentTabs={currentTabs}
+        //     selectedTab={currentTab}
+        //     isEditMode={isEditMode}
+        //     onEditPress={onEditPress}
+        //     overlayContent={getTabContent(currentTab)}
+        // />
 
-        // <View style={{flex: 1}}>
-        //     {
-        //         isFetching
-        //             ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-        //                 <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-        //             </View>
-        //             : <SlideOverlay
-        //                 overlayId={name}
-        //                 overlayTitle={purchaseOrderNumber}
-        //                 onTabPressChange={onTabPress}
-        //                 currentTabs={currentTabs}
-        //                 selectedTab={currentTab}
-        //                 isEditMode={isEditMode}
-        //                 onEditPress={onEditPress}
-        //                 overlayContent={
-        //                     <View
-        //                         style={{flex: 1, padding: 30, paddingBottom: 20}}
-        //                     >
-        //                         {getTabContent(currentTab)}
-        //                     </View>
-        //                 }
-        //             />
-        //     }
-        // </View>
+        <>
+            <PageContext.Provider value={{ pageState, setPageState }}>
+                <DetailsPage
+                    title={purchaseOrderNumber}
+                    subTitle={``}
+                    onBackPress={BackTapped}
+                    pageTabs={
+                        <TabsContainer
+                            tabs={currentTabs}
+                            selectedTab={currentTab}
+                            onPressChange={onTabPress}
+                        />
+                    }
+                >
+
+                    <OrderPageContent
+                        overlayContent={getTabContent(currentTab)}
+
+                    />
+
+
+                </DetailsPage>
+            </PageContext.Provider>
+        </>
     );
+
+
+
 }
 
-OrdersBottomSheet.propTypes = {};
-OrdersBottomSheet.defaultProps = {};
+OrderItemPage.propTypes = {};
+OrderItemPage.defaultProps = {};
 
-export default OrdersBottomSheet;
+export default OrderItemPage;
 
 const styles = StyleSheet.create({
     item: {
@@ -226,3 +240,22 @@ const styles = StyleSheet.create({
         color: "#4A5568",
     },
 })
+
+function OrderPageContent({
+    overlayContent,
+
+}) {
+
+
+
+    return (
+        <>
+            {
+                overlayContent
+            }
+
+        </>
+    )
+
+}
+

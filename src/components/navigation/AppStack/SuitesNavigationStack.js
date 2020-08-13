@@ -39,7 +39,9 @@ import HelpIcon from "../../../../assets/svg/helpIcon";
 import NotificationIcon from "../../../../assets/svg/notificationIcon";
 import Invoices from "../../CaseFiles/OverlayPages/ChargeSheet/Invoices";
 import CaseFileNavigationStack from "./CaseFileNavigationStack";
-import TheatreNavigationStack from "./TheatreNavigationStack"
+import TheatreNavigationStack from "./TheatreNavigationStack";
+import OrderNavigationStack from "./OrderNavigationStack";
+import SupplierNavigationStack from "./SupplierNavigation Stack";
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
@@ -97,7 +99,7 @@ export const SuitesNavigationStack = () => {
 
             <SuitesNavigator.Screen
                 name="Orders"
-                component={Orders}
+                component={OrderNavigationStack}
                 initialParams={{
                     icon: OrdersIcon,
                     tabName: 'Orders',
@@ -107,7 +109,7 @@ export const SuitesNavigationStack = () => {
 
             <SuitesNavigator.Screen
                 name="Suppliers"
-                component={Suppliers}
+                component={SupplierNavigationStack}
                 initialParams={{
                     icon: DeliveryIcon,
                     tabName: 'Suppliers',
