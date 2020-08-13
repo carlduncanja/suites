@@ -105,7 +105,6 @@ function CasePage({route, addNotification, ...props}) {
 
     const [pageState, setPageState] = useState({})
     const [selectedCase, setSelectedCase] = useState({})
-    const [isFetching, setFetching] = useState(false);
 
     // ############### Lifecycle Methods
     useEffect(() => {
@@ -302,7 +301,6 @@ function CasePage({route, addNotification, ...props}) {
 
     }
 
-
     const onCreateInvoice = (caseId, quotationId) => () => {
         modal.closeAllModals()
         createInvoiceViaQuotation(caseId, quotationId)
@@ -366,7 +364,7 @@ function CasePage({route, addNotification, ...props}) {
     }
     // ############### Data
 
-    const getOverlayContent = (isEditMode) => {
+    const getOverlayContent = () => {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase
         const {medicalInfo = {}} = patient
 
@@ -375,32 +373,26 @@ function CasePage({route, addNotification, ...props}) {
                 return <Patient
                     patient={patient}
                     selectedTab={selectedTab}
-                    isEditMode={isEditMode}
                 />
             case "Medical Staff" :
                 return <MedicalStaff
                     staff={staff}
                     selectedTab={selectedTab}
-                    isEditMode={isEditMode}
                 />
             case "Medical History" :
                 return <MedicalHistory
                     medicalInfo={medicalInfo}
                     selectedTab={selectedTab}
-                    isEditMode={isEditMode}
                 />
             case "Procedures" :
                 return <Procedures
                     procedures={caseProcedures}
-                    selectedTab={selectedTab}
-                    isEditMode={isEditMode}
                 />
             case "Charge Sheet" :
                 return <ChargeSheet
                     chargeSheet={chargeSheet}
                     procedures={caseProcedures}
                     selectedTab={selectedTab}
-                    isEditMode={isEditMode}
                     quotations={quotations}
                     invoices={invoices}
                     onUpdateChargeSheet={(data) => updateCaseChargeSheet(data)}
