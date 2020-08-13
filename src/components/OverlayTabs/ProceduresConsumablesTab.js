@@ -218,7 +218,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
                 toggleHeaderCheckbox = {handleOnSelectAll}
                 itemSelected = {checkBoxList}
             />
-
+ 
             <Footer
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
