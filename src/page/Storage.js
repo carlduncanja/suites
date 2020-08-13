@@ -1,18 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text} from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import Page from "../components/common/Page/Page";
 import ListItem from "../components/common/List/ListItem";
 import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
-import {numberFormatter} from "../utils/formatter";
-import {useModal} from "react-native-modalfy";
-import StorageBottomSheetContainer from "../components/Storage/StorageBottomSheetContainer";
-import {getStorage} from "../api/network";
-import {setStorage} from "../redux/actions/storageActions";
-import {connect} from "react-redux";
+import { numberFormatter } from "../utils/formatter";
+import { useModal } from "react-native-modalfy";
+import { getStorage } from "../api/network";
+import { setStorage } from "../redux/actions/storageActions";
+import { connect } from "react-redux";
 import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
 import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
-import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from "../helpers/caseFilesHelpers";
+import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress } from "../helpers/caseFilesHelpers";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
 import WasteIcon from "../../assets/svg/wasteIcon";
@@ -115,7 +114,7 @@ function Storage(props) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -126,7 +125,7 @@ function Storage(props) {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -141,16 +140,16 @@ function Storage(props) {
     };
 
     const onCheckBoxPress = (item) => () => {
-        const {_id} = item;
+        const { _id } = item;
         let updatedStorage = checkboxItemPress(item, _id, selectedIds)
         setSelectedIds(updatedStorage);
 
     };
 
     const onItemPress = (item) => () => {
-        modal.openModal('BottomSheetModal', {
-            content: <StorageBottomSheetContainer storage={item}/>
-        })
+        // modal.openModal('BottomSheetModal', {
+        //     content: <StorageBottomSheetContainer storage={item}/>
+        // })
     };
 
     const toggleActionButton = () => {
@@ -167,21 +166,21 @@ function Storage(props) {
 
 
     // ##### Helper functions
-    const storageItem = ({name, stock, levels}) => <>
-        <View style={[styles.item, {flex: 1.5, justifyContent: 'space-between', ...styles.rowBorderRight}]}>
-            <Text style={{color: "#3182CE", fontSize: 16}}>
+    const storageItem = ({ name, stock, levels }) => <>
+        <View style={[styles.item, { flex: 1.5, justifyContent: 'space-between', ...styles.rowBorderRight }]}>
+            <Text style={{ color: "#3182CE", fontSize: 16 }}>
                 {name}
             </Text>
         </View>
         <View style={[
-            styles.item, {justifyContent: "center"}
+            styles.item, { justifyContent: "center" }
         ]}>
             <Text style={[styles.itemText]}>
                 {numberFormatter(stock)}
             </Text>
         </View>
         <View style={[
-            styles.item, {justifyContent: "center"}
+            styles.item, { justifyContent: "center" }
         ]}>
             {/*   LEVELS    */}
             <LevelIndicator
@@ -196,7 +195,7 @@ function Storage(props) {
 
     const fetchStorageData = (pagePosition) => {
 
-        let currentPosition = pagePosition ? pagePosition  : 1;
+        let currentPosition = pagePosition ? pagePosition : 1;
         setCurrentPagePosition(currentPosition)
 
         setFetchingData(true);
@@ -204,26 +203,26 @@ function Storage(props) {
             .then(storageResult => {
                 const { data = [], pages = 0 } = storageResult
 
-                if(pages === 1){
+                if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                }else if(currentPosition === 1 ){
+                } else if (currentPosition === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                }else if(currentPosition === pages){
+                } else if (currentPosition === pages) {
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                }else if(currentPosition < pages){
+                } else if (currentPosition < pages) {
                     setNextDisabled(false);
                     setPreviousDisabled(false)
-                }else{
+                } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
 
                 setStorage(data);
                 data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
-       
+
             })
             .catch(error => {
                 console.log("failed to get storage", error);
@@ -261,18 +260,18 @@ function Storage(props) {
     const getFabActions = () => {
 
         const deleteAction =
-            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+            <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
                 <LongPressWithFeedback pressTimer={1200} onLongPress={() => {
                 }}>
-                    <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
-                    }} touchable={false}/>
+                    <ActionItem title={"Hold to Delete"} icon={<WasteIcon />} onPress={() => {
+                    }} touchable={false} />
                 </LongPressWithFeedback>
             </View>;
 
 
-        const createAction = <ActionItem title={"New Location"} icon={<AddIcon/>} onPress={
+        const createAction = <ActionItem title={"New Location"} icon={<AddIcon />} onPress={
             openCreateStorageModel
-        }/>;
+        } />;
 
         return <ActionContainer
             floatingActions={[
@@ -324,11 +323,11 @@ function Storage(props) {
             goToPreviousPage={goToPreviousPage}
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
-            hasPaginator = {true}
-            hasActionButton = {true}
-            hasActions = {true}
-            isNextDisabled = {isNextDisabled}
-            isPreviousDisabled = {isPreviousDisabled}
+            hasPaginator={true}
+            hasActionButton={true}
+            hasActions={true}
+            isNextDisabled={isNextDisabled}
+            isPreviousDisabled={isPreviousDisabled}
         />
     );
 }

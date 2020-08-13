@@ -149,7 +149,7 @@ const Orders = (props) => {
 
   const handleOnItemPress = (item, isOpenEditable) => {
     console.log("Tapped order item");
-    props.navigation.navigate("OrderItemPage", { screen: "OrderItemPage", initial: false, params: { order: item, isEdit: isOpenEditable } });
+    props.navigation.navigate("OrderItemPage", { initial: false, order: item, isEdit: isOpenEditable });
 
     // modal.openModal("BottomSheetModal", {
     //   content: (
