@@ -32,7 +32,7 @@ import _ from "lodash";
 
 import { withModal, useModal } from "react-native-modalfy";
 import { formatDate, transformToSentence } from "../utils/formatter";
-import OrdersBottomSheet from "../components/PurchaseOrders/OrdersBottomSheet";
+import OrderItemPage from "../components/PurchaseOrders/OrderItemPage";
 import { PURCHASE_ORDER_STATUSES } from "../const";
 import EditIcon from "../../assets/svg/editIcon";
 import { addNotification } from "../redux/actions/NotificationActions";
@@ -148,11 +148,14 @@ const Orders = (props) => {
   };
 
   const handleOnItemPress = (item, isOpenEditable) => {
-    modal.openModal("BottomSheetModal", {
-      content: (
-        <OrdersBottomSheet order={item} isOpenEditable={isOpenEditable} />
-      ),
-    });
+    console.log("Tapped order item");
+    props.navigation.navigate("OrderItemPage", { screen: "OrderItemPage", initial: false, params: { order: item, isEdit: isOpenEditable } });
+
+    // modal.openModal("BottomSheetModal", {
+    //   content: (
+    //     <OrdersBottomSheet order={item} isOpenEditable={isOpenEditable} />
+    //   ),
+    // });
   };
 
   const goToNextPage = () => {
@@ -201,35 +204,35 @@ const Orders = (props) => {
 
   const fetchOrdersData = (pagePosition) => {
 
-    let currentPosition = pagePosition ? pagePosition  : 1;
+    let currentPosition = pagePosition ? pagePosition : 1;
     setCurrentPagePosition(currentPosition)
 
     setFetchingData(true);
     getPurchaseOrders(searchValue, recordsPerPage, currentPosition)
       .then((ordersInfo) => {
-       
+
         const { data = [], pages = 0 } = ordersInfo;
-      
-        if(pages === 1){
+
+        if (pages === 1) {
           setPreviousDisabled(true);
           setNextDisabled(true);
-        }else if(currentPosition === 1 ){
-            setPreviousDisabled(true);
-            setNextDisabled(false);
-        }else if(currentPosition === pages){
-            setNextDisabled(true);
-            setPreviousDisabled(false);
-        }else if(currentPosition < pages){
-            setNextDisabled(false);
-            setPreviousDisabled(false)
-        }else{
-            setNextDisabled(true);
-            setPreviousDisabled(true);
+        } else if (currentPosition === 1) {
+          setPreviousDisabled(true);
+          setNextDisabled(false);
+        } else if (currentPosition === pages) {
+          setNextDisabled(true);
+          setPreviousDisabled(false);
+        } else if (currentPosition < pages) {
+          setNextDisabled(false);
+          setPreviousDisabled(false)
+        } else {
+          setNextDisabled(true);
+          setPreviousDisabled(true);
         }
 
         setPurchaseOrders(data);
         data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
-        
+
       })
       .catch((error) => {
         console.log("failed to get orders", error);
@@ -263,10 +266,10 @@ const Orders = (props) => {
       status === "Incomplete"
         ? "#805AD5"
         : status === "Request Sent"
-        ? "#319795"
-        : status === "Payment Due"
-        ? "#C53030"
-        : "#4E5664";
+          ? "#319795"
+          : status === "Payment Due"
+            ? "#C53030"
+            : "#4E5664";
 
     const deliveryDate =
       orderDate === "" || orderDate === null
@@ -286,7 +289,7 @@ const Orders = (props) => {
           </Text>
         </View>
         <View style={[styles.item, { flex: 1.5, alignItems: "flex-start" }]}>
-          <Text style={[styles.itemText, { color: "#4E5664", fontSize:15 }]}>
+          <Text style={[styles.itemText, { color: "#4E5664", fontSize: 15 }]}>
             {deliveryDate}
           </Text>
         </View>
@@ -431,11 +434,11 @@ const Orders = (props) => {
       goToPreviousPage={goToPreviousPage}
       isDisabled={isFloatingActionDisabled}
       toggleActionButton={toggleActionButton}
-      hasPaginator = {true}
-      hasActionButton = {true}
-      hasActions = {false}
-      isNextDisabled = {isNextDisabled}
-      isPreviousDisabled = {isPreviousDisabled}
+      hasPaginator={true}
+      hasActionButton={true}
+      hasActions={false}
+      isNextDisabled={isNextDisabled}
+      isPreviousDisabled={isPreviousDisabled}
     />
     // <View style={{ flex: 1 }}>
     //   <Page
