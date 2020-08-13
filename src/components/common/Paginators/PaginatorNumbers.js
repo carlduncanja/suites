@@ -5,6 +5,31 @@ import { useTheme } from 'emotion-theming';
 import IconButton from "../Buttons/IconButton";
 
 
+const PaginatorNumbersWrapper = styled.View`
+    width: 65px;
+    height: 26px;
+`;
+
+const PaginatorNumbersContainer = styled.View`
+    width : 100%;
+    height: 100%;
+    padding-top: ${ ({theme}) => theme.space['--space-6']};
+    padding-bottom:  ${ ({theme}) => theme.space['--space-6']};
+    justify-content: space-evenly;
+    align-items: center;
+    background-color : ${ ({theme}) => theme.colors['--color-neutral-gray-100']};
+    border : 1px solid ${ ({theme}) => theme.colors['--color-gray-400']};
+    border-radius : ${ ({theme}) => theme.space['--space-4']};
+`;
+
+    const Number = styled.Text( ({theme}) => ({
+        ...theme.font['--text-base-regular'],
+        color : theme.colors['--color-black'],
+    }))
+
+
+
+
 function PaginatorNumbers ({
         currentPage = 0,
         totalPages = 0,
@@ -12,32 +37,12 @@ function PaginatorNumbers ({
 
     const theme = useTheme();
     
-    const PaginatorNumbersWrapper = styled.View`
-        width: 65px;
-        height: 26px;
-        background-color: yellow;
-    `;
-    const PaginatorNumbersContainer = styled.View`
-        width : 100%;
-        height: 100%;
-        padding-top: 6px;
-        padding-bottom: 6px;
-        justify-content: space-evenly;
-        align-items: center;
-        background-color : ${theme.colors['--color-neutral-gray-100']};
-        border : 1px solid ${theme.colors['--color-gray-400']};
-        border-radius : ${theme.space['--space-4']};
-    `;
-
-    const Number = styled.Text({
-        ...theme.font['--text-base-regular'],
-        color : theme.colors['--color-black'],
-    })
+    
     
     return (
         <PaginatorNumbersWrapper>
-            <PaginatorNumbersContainer>
-                <Number>{currentPage} of {totalPages}</Number>
+            <PaginatorNumbersContainer theme = {theme}>
+                <Number theme = {theme}>{currentPage} of {totalPages}</Number>
             </PaginatorNumbersContainer>
         </PaginatorNumbersWrapper>   
     );

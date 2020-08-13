@@ -6,6 +6,18 @@ import FloatingActionButton from "../FloatingAction/FloatingActionButton";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
+const FooterWrapper = styled.View`
+    width: 100%;
+    position : absolute;
+    bottom : 20; 
+    right: 20; 
+`;
+const FooterContainer = styled.View`
+    display: flex;
+    flex-direction: row;
+    align-self: flex-end;
+`;
+
 function Footer({
         totalPages = 0,
         currentPage = 0,
@@ -21,17 +33,7 @@ function Footer({
     }){
         const theme = useTheme();
 
-        const FooterWrapper = styled.View`
-            width: 100%;
-            position : absolute;
-            bottom : 20;
-            right: 20; 
-        `;
-        const FooterContainer = styled.View`
-            display: flex;
-            flex-direction: row;
-            align-self: flex-end;
-        `
+        
     return (
         <FooterWrapper>
             <FooterContainer>

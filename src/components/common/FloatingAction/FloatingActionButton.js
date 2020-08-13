@@ -5,38 +5,41 @@ import ActionMenu from '../../../../assets/svg/actionMenu';
 import { withModal } from 'react-native-modalfy';
  
 import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming'; 
+import { useTheme } from 'emotion-theming';  
+
+const FloatingActionButtonWrapper = styled.TouchableOpacity`
+    height : 48px;
+    width: 48px;
+`;
+
+const FloatingActionButtonContainer = styled.View`
+    height: 100%;
+    width: 100%;
+    background-color: ${ ({hasActions, isDisabled, theme}) => hasActions ? 
+        isDisabled ? theme.colors['--color-gray-500'] : theme.colors['--color-blue-500']
+        :
+        theme.colors['--default-shade-white']
+    };
+    border : ${ ({hasActions, theme}) => hasActions ? 
+        null
+        :
+        `1px solid ${theme.colors['--color-gray-300']}`
+    };
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+
+`;
 
 function FloatingActionButton ({isDisabled = false,toggleActionButton = ()=>{}, hasActions = true}){
 
     const theme = useTheme();
 
-    const FloatingActionButtonWrapper = styled.TouchableOpacity`
-        height : 48px;
-        width: 48px;
-    `;
-    const FloatingActionButtonContainer = styled.View`
-        height: 100%;
-        width: 100%;
-        background-color: ${ hasActions ? 
-            isDisabled ? theme.colors['--color-gray-500'] : theme.colors['--color-blue-500']
-            :
-            theme.colors['--default-shade-white']
-        };
-        border : ${ hasActions ? 
-            null
-            :
-            `1px solid ${theme.colors['--color-gray-300']}`
-        };
-        border-radius: 50%;
-        align-items: center;
-        justify-content: center;
-
-    `;
+    
 
     return (
         <FloatingActionButtonWrapper onPress={()=>toggleActionButton()}>
-            <FloatingActionButtonContainer>
+            <FloatingActionButtonContainer hasActions = {hasActions} isDisabled = {isDisabled} theme = {theme}>
                 <ActionMenu
                     fillColor = {
                         hasActions ? 

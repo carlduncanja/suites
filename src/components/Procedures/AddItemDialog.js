@@ -127,12 +127,13 @@ const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = ""}) =
     //                         onAction = {()=>console.log("Saved")}
     //                     />
     //                     ,
-    //                     onClose: () => {}
+    //                     onClose: () => {} 
     //                 })
     //     }, 200)
     // }
 
     const onPositiveButtonPress = () =>{
+        console.log("Fields: ", fields)
         let updatedFields = {}
         itemType === 'Consumables' ?
             updatedFields = {
@@ -150,7 +151,8 @@ const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = ""}) =
                 equipment : {
                     _id : fields['item']?._id,
                     type : fields['item']?.type,
-                    name : fields['item']?.name
+                    name : fields['item']?.name,
+                    unitPrice : fields['item']?.unitPrice
                 }
             }
             :
@@ -166,9 +168,6 @@ const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = ""}) =
 
         onCreated(updatedFields)
         setTimeout(()=>{onCancel(); modal.closeModals('OverlayModal')},200)
-        
-        // addItemCall(updatedFields)
-        // console.log("Fields: ",updatedFields)
     }
 
 

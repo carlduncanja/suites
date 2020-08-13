@@ -30,7 +30,7 @@ export default () => {
                 name="CreateProcedure"
                 component={CreateProcedure}
                 options={{
-                    // headerShown: false
+                    // headerShown: false,
                     headerLeft: (props) => (
                         <HeaderBackComponent
                             {...props}
@@ -47,7 +47,7 @@ export default () => {
                 name="Procedure"
                 component={ProcedurePage}
                 options={({ route, navigation }) => ({
-                    // headerShown: false
+                    headerShown: false,
                     header: props =>
                         <PageHeader
                             headerMessage={route.params.procedure.name} specialDetail={` Dr. ${route.params.procedure.physician.firstName} ${route.params.procedure.physician.surname}`} isOpenEditable={route.params.isOpenEditable} onBack={() => navigation.navigate("Procedures")} {...props} />,

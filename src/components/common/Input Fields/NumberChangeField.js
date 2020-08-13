@@ -22,7 +22,7 @@ const NumberChangeField = ({ onChangePress = () => {}, onAmountChange = () => {}
                 style={styles.editTextBox}
                 onChangeText = {(value)=>onAmountChange(value)}
                 value = {value}
-                keyboardType = "number-pad"
+                keyboardType = "numeric"
             />
             <View style={{}}>
                 <IconButton

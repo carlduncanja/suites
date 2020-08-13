@@ -14,35 +14,37 @@ const tickSVG = (<Svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns
 
 const indeterminateSvg = <Svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
     <Path d="M8 2H0V0H8V2Z" fill="#718096"/>
-</Svg>;
+</Svg>; 
+
+
+const CheckboxWrapper = styled.TouchableOpacity`
+    padding-left: ${ ({theme}) => theme.space['--space-16']};
+    padding-right: ${ ({theme}) => theme.space['--space-16']};
+    padding-top: ${ ({theme}) => theme.space['--space-20']};
+    padding-bottom: ${ ({theme}) => theme.space['--space-20']};
+    justify-content: center;
+    align-items: center;
+
+`
+const CheckboxContainer = styled.View`
+    background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
+    border-color: ${ ({theme}) => theme.colors['--color-gray-400']};
+    border-width: 1px;
+    border-radius: 4px;
+    height: ${ ({theme}) => theme.space['--space-16']};
+    width: ${ ({theme}) => theme.space['--space-16']};
+    align-items: center;
+    justify-content: center;
+`
 
 function CheckBoxComponent({isCheck, isIndeterminate, onPress}) { 
 
     const theme = useTheme()
      
-    const CheckboxWrapper = styled.TouchableOpacity`
-        padding-left: 16px;
-        padding-right: 16px;
-        padding-top: 19px;
-        padding-bottom: 19px;
-        justify-content: center;
-        align-items: center;
-   
-    `
-    const CheckboxContainer = styled.View`
-        background-color: ${theme.colors['--color-gray-100']};
-        border-color: ${theme.colors['--color-gray-400']};
-        border-width: 1px;
-        border-radius: 4px;
-        height: ${theme.space['--space-16']};
-        width: ${theme.space['--space-16']};
-        align-items: center;
-        justify-content: center;
-    `
     return (
 
-        <CheckboxWrapper onPress = {onPress} activeOpacity = {0.8}>
-            <CheckboxContainer>
+        <CheckboxWrapper onPress = {onPress} activeOpacity = {0.8} theme = {theme}>
+            <CheckboxContainer theme = {theme}>
                 {
                     isIndeterminate
                         ? indeterminateSvg

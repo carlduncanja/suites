@@ -8,6 +8,17 @@ import { useTheme } from 'emotion-theming';
 import IconButton from "../Buttons/IconButton";
 import PaginatorNumbers from "./PaginatorNumbers";
 
+const PaginatorWrapper = styled.View`
+  height: 100%;
+  width: 100%;
+`;
+const PaginatorContainer = styled.View`
+  height: 100%;
+  flex-direction : row;
+  align-items: center;
+  justify-content: center;
+`;
+
 function Paginator ({
     currentPage = 0,
     totalPages = 0,
@@ -18,17 +29,6 @@ function Paginator ({
   }){
 
     const theme = useTheme();
-    
-    const PaginatorWrapper = styled.View`
-      height: 100%;
-      width: 100%;
-    `;
-    const PaginatorContainer = styled.View`
-      height: 100%;
-      flex-direction : row;
-      align-items: center;
-      justify-content: center;
-    `;
     
   return (
     <PaginatorWrapper>

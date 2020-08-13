@@ -8,28 +8,30 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import HeaderItem from './HeaderItem';
 
+const HeaderWrapper = styled.View`
+    margin-bottom: ${ ({theme}) => theme.space['--space-13']};
+
+`
+const HeaderContainer = styled.View`
+    align-items: flex-start;
+    flex-direction:row;
+    align-items:center;
+    padding-left:1px;
+`
+
 function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = false, checked=false, isCheckbox=true}){
 
     const [selectedHeader, setSelectedHeader] = useState("")
     const theme = useTheme()
- 
-    const HeaderWrapper = styled.View`
-        margin-bottom: ${theme.space['--space-13']};
   
-    `
-    const HeaderContainer = styled.View`
-        align-items: flex-start;
-        flex-direction:row;
-        align-items:center;
-        padding-left:1px;
-    `
+    
     const onSelectHeader = (name) => {
-        console.log("Header: ", name)
+        console.log("Header: ", name) 
         setSelectedHeader(name)
     }
 
     return (
-        <HeaderWrapper>
+        <HeaderWrapper theme = {theme}>
             <HeaderContainer>
                 {
                     isCheckbox &&

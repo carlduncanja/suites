@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import RemoveIcon from "../../../../../assets/svg/remove2";
 import IconButton from '../../Buttons/IconButton';
+import TextArea from '../../Input Fields/TextArea';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 /**
  *
@@ -14,30 +17,36 @@ import IconButton from '../../Buttons/IconButton';
  * @returns {*}
  * @constructor
  */
+
+const InputFrameWrapper = styled.View`
+    flex:1;
+    margin-bottom : ${ ({theme}) => theme.space['--space-14']}
+`;
+const InputFrameContinaer = styled.View`
+    height : 100%;
+    width : 100%;
+`;
+
 function InputFrameItem({onChangeText, value, placeholder = "", keyboardType, onClear}) {
 
-    return (
-        <View style={styles.container}>
+    const theme = useTheme();
 
-            <View style={[styles.inputWrapper, {paddingRight: value ? 4 : 0}]}>
-                <TextInput
-                    style={[styles.inputField,{}]}
+    return (
+
+        <InputFrameWrapper theme = {theme}>
+            <InputFrameContinaer>
+                <TextArea
                     onChangeText={onChangeText}
                     value={value}
-                    keyboardType={keyboardType}
+                    keyboardType={keyboardType} 
                     placeholder={placeholder}
+                    multiline = {true}
+                    numberOfLines = {2}
+                    onClear = {onClear}
                 />
-                
-                <View style={{marginRight:5, justifyContent:'center'}}>
-                   <IconButton
-                    Icon ={<RemoveIcon/>}
-                    onPress = {onClear}
-                   />
-                </View>
-
-            </View>
-
-        </View>
+            </InputFrameContinaer>
+            
+        </InputFrameWrapper>
     );
 }
 
@@ -46,8 +55,9 @@ InputFrameItem.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         position: 'relative',
+        height :100
         // marginBottom:12,
         // flexDirection: 'row',
         // alignItems: 'center',
