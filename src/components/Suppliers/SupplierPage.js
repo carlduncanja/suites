@@ -51,9 +51,18 @@ function SupplierPage({ route, navigation }) {
     // }, []);
 
     // ##### Event Handlers
+    const setPageLoading = (value) => {
+        setPageState({
+            ...pageState,
+            isLoading: value,
+            isEdit: false
+        })
+    }
+
 
     const fetchProducts = () => {
         setFetching(true);
+        setPageLoading(true);
         getSupplierProducts(_id, "")
             .then(productsData => {
                 const { data = [], pages = 0 } = productsData
@@ -66,7 +75,8 @@ function SupplierPage({ route, navigation }) {
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setFetching(false)
+                setFetching(false);
+                setPageLoading(false);
             })
     };
 
