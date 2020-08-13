@@ -22,6 +22,15 @@ import { useTheme } from 'emotion-theming';
  * @returns {*}
  */
 
+const ListWrapper = styled.View`
+    display : flex;
+    flex:1;
+`;
+
+const ListContainer = styled.View`
+    display: flex;
+`;  
+
 function List({ 
         listData = [],
         listHeaders = [],
@@ -39,13 +48,7 @@ function List({
     const isIndeterminate = itemsSelected.length > 0 && itemsSelected.length !== listData.length;
     
     // should list fill remaining space or as much as content ? 
-    const ListWrapper = styled.View`
-        display : flex;
-        flex:1;
-    ` 
-    const ListContainer = styled.View`
-        display: flex;
-    `
+    
     return (
         <ListWrapper> 
             <ListContainer> 

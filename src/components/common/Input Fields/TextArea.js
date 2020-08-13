@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
+        backgroundColor:'white',
     },
     textLabel: {
         fontSize: 12,

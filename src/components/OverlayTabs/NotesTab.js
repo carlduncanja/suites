@@ -1,19 +1,27 @@
-import React,{ useState } from "react"; 
+import React,{ useState, useContext } from "react"; 
 import { View, StyleSheet } from "react-native";
-import FrameCard from '../common/Frames/FrameCards/FrameCard';
+import FrameNoteCard from '../common/Frames/FrameCards/FrameNoteCard';
 import NotesIcon from '../../../assets/svg/notes';
 import { withModal } from "react-native-modalfy";
+import FrameNoteContent from "../common/Frames/FrameContents/FrameNoteContent";
 
-const NotesTab = ({notesData}) => {
- 
+const NotesTab = ({notesData, updateNote = ()=>{}}) => { 
+    
+    const [notes, setNotes] = useState(notesData);
+    const handleNotesUpdate = (value) => {
+        console.log("Note: ", value)
+        setNotes(value)
+        updateNote(value)
+    }
     return ( 
         <>
-            <FrameCard
-                frameColor = "#DD6B20"
+            <FrameNoteCard
+                frameColor = "#DD6B20" 
                 titleBackgroundColor = "#FFFAF0"
                 frameBorderColor = "#FBD38D"
                 frameTitle = "Notes"
-                cardInformation = {notesData}
+                cardInformation = {notes}
+                handleUpdate = {handleNotesUpdate}
                 icon = {NotesIcon}
             />
         </>

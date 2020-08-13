@@ -1,36 +1,31 @@
-import React, {useState, useEffect} from 'react';
-import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
-import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
+import React, {useState, useEffect, useContext} from 'react';
+import {View, StyleSheet, TouchableOpacity} from "react-native";
 import Configuration from '../../components/OverlayTabs/Configuration';
 import NotesTab from '../../components/OverlayTabs/NotesTab';
 import ProceduresConsumablesTab from '../../components/OverlayTabs/ProceduresConsumablesTab';
-import ConsumablesTab from '../../components/OverlayTabs/ConsumablesTab';
 import ProceduresEquipmentTab from '../../components/OverlayTabs/ProceduresEquipmentTab';
 import EditableProceduresConfig from '../../components/OverlayTabs/EditableProceduresConfig';
 import TheatresTab from '../../components/OverlayTabs/TheatresTab';
-import {colors} from "../../styles";
-import {currencyFormatter} from '../../utils/formatter';
-import {updateProcedure} from "../../api/network";
-import {setProcedureEdit} from "../../redux/actions/procedurePageActions";
-
-
-import {getProcedureById} from "../../api/network";
-import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
 import ActionItem from "../../components/common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import {withModal} from 'react-native-modalfy';
-import BottomSheetContainer from '../../components/common/BottomSheetContainer';
-import {connect} from 'react-redux';
-import {set} from 'numeral';
 import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
-import {PageContext} from "../../contexts/PageContext";
 import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
-import { bindActionCreators } from 'redux';
 
-function ProcedurePage({route, setProcedureEdit}) {
+import {updateProcedure} from "../../api/network";
+import {setProcedureEdit} from "../../redux/actions/procedurePageActions";
+import {getProcedureById} from "../../api/network";
+import {connect} from 'react-redux';
+import {PageContext} from "../../contexts/PageContext";
+import { bindActionCreators } from 'redux';
+import { useCode } from 'react-native-reanimated';
+
+
+function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
+    // const { pageState } = useContext(PageContext);
+    // const { isEditMode } = pageState;
 
     const {procedure, isOpenEditable} = route.params
 
@@ -45,25 +40,17 @@ function ProcedurePage({route, setProcedureEdit}) {
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [isEditMode, setEditMode] = useState(isOpenEditable);
-    const [isFetching, setFetching] = useState(false);
+    const [pageState, setPageState] = useState({});
     const [selectedProcedure, setSelectedProcedure] = useState({})
     const [isInfoUpdated, setIsInfoUpdated] = useState(false)
-    const [isFloatingActionDisabled, setIsDisabled] = useState(false)
-
-    let updatedPhysician = {
-        name: `Dr. ${physician.firstName} ${physician.surname}` || null,
-        _id: physician._id || null
-    }
 
     const [fields, setFields] = useState({
         name: name,
         hasRecovery: hasRecovery,
         duration: duration.toString(),
         custom: true,
-        physician: physician
+        physician: physician,
     })
-
 
     const [popoverList, setPopoverList] = useState([
         {
@@ -77,36 +64,50 @@ function ProcedurePage({route, setProcedureEdit}) {
         fetchProcdure(_id)
     }, []);
 
+    useEffect(()=>{
+        if(pageState.isEditMode === false && isInfoUpdated === true){
+            updateProcedureCall(selectedProcedure)
+        }
+    },[pageState.isEditMode])
+
     // ##### Event Handlers
 
     const onTabPress = (selectedTab) => {
-        if (!isEditMode) setCurrentTab(selectedTab);
+        if (!pageState.isEditMode) setCurrentTab(selectedTab);
     };
 
-    const onEditPress = (tab) => {
-
-        setProcedureEdit(!isEditMode)
-        setEditMode(!isEditMode)
-        // console.log("Edit state, updated: ", !isEditState, isInfoUpdated)
-        if (!isEditMode === false && isInfoUpdated) {
-
-            if (currentTab === 'Configuration') {
-                updateProcedureCall(selectedProcedure)
-                // onProcedureUpdate()
-            } else if (currentTab === 'Consumables') {
-                updateProcedureCall(selectedProcedure)
-                // Add confirmation component
-            }
-
-        }
-        // if(!isEditMode === false && isInfoUpdated){
-        //     console.log("Info: ", selectedProcedure)
-        //     // updateProcedureCall(selectedProcedure)
-        //     // console.log("Fields:", fields)
-
-        //     // updatePhysicianFn(_id, fieldsObject)
-        // }
+    const setPageLoading = (value) => {
+        setPageState({
+            ...pageState,
+            isLoading : value,
+            isEdit : false
+        })
     }
+
+    // const onEditPress = (tab) => {
+
+    //     setProcedureEdit(!pageState.isEditMode)
+    //     setPageState(!pageState.isEditMode)
+    //     // console.log("Edit state, updated: ", !isEditState, isInfoUpdated)
+    //     if (!pageState.isEditMode === false && isInfoUpdated) {
+
+    //         if (currentTab === 'Configuration') {
+    //             updateProcedureCall(selectedProcedure)
+    //             // onProcedureUpdate()
+    //         } else if (currentTab === 'Consumables') {
+    //             updateProcedureCall(selectedProcedure)
+    //             // Add confirmation component
+    //         }
+
+    //     }
+    //     // if(!isEditMode === false && isInfoUpdated){
+    //     //     console.log("Info: ", selectedProcedure)
+    //     //     // updateProcedureCall(selectedProcedure)
+    //     //     // console.log("Fields:", fields)
+
+    //     //     // updatePhysicianFn(_id, fieldsObject)
+    //     // }
+    // }
 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
@@ -142,7 +143,7 @@ function ProcedurePage({route, setProcedureEdit}) {
     }
 
     const fetchProcdure = (id) => {
-        setFetching(true);
+        setPageLoading(true)
         getProcedureById(id)
             .then(data => {
                 setSelectedProcedure(data)
@@ -153,43 +154,17 @@ function ProcedurePage({route, setProcedureEdit}) {
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setFetching(false)
+                setPageLoading(false)
             })
     };
 
     const onAddInventory = (data) => {
         let {inventories = []} = selectedProcedure
-        // let updatedData = {
-        //     amount : data.amount,
-        //     inventory : data.inventory._id
-        // }
-        // let updatedObj = { inventories : [...inventories, updatedData] }
-        // let newInventories = inventories.map( item => {
-        //     return {
-        //         inventory : item.inventory._id,
-        //         amount : item.amount
-        //     }
-        // })
-        // let updatedArray = [...newInventories, updatedData]
-        // let updatedObj = {
-        //     inventories : updatedArray
-        // }
         let newData = [...inventories, data]
         let newProcedureData = {...selectedProcedure, inventories: newData}
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
-        // console.log("Data: ", updatedObj)
         updateProcedureCall(newProcedureData)
-    }
-
-    const handleInventoryUpdate = (data) => {
-        const procedure = {...selectedProcedure, inventories: data}
-        const updatedObj = {inventories: data}
-
-        setSelectedProcedure(procedure)
-        setIsInfoUpdated(true)
-        // Change updated
-        // updateProcedureCall(updatedObj)
     }
 
     const onAddEquipment = (data) => {
@@ -202,36 +177,34 @@ function ProcedurePage({route, setProcedureEdit}) {
     }
 
     const onAddTheatre = (data) => {
-        // console.log("Theatre: ", data)
         let {supportedRooms = []} = selectedProcedure
         let newData = [...supportedRooms, data]
         let newProcedureData = {...selectedProcedure, supportedRooms: newData}
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
-        // updateProcedureCall(newProcedureData)
+        updateProcedureCall(newProcedureData)
     }
 
-    const onProcedureUpdate = () => {
-        let newProcedureData = {
-            ...selectedProcedure,
-            name: fields['name'],
-            hasRecovery: fields['hasRecovery'],
-            duration: parseInt(fields['duration']),
-            custom: fields['custom'],
-            physician: fields['physician']
-        }
-        // console.log("New Procedure: ", newProcedureData)
-        // setSelectedProcedure(newProcedureData)
-        // updateProcedureCall(newProcedureData)
-    }
-
-    const handleEquipmentUpdate = (data) => {
-        const procedure = {...selectedProcedure, equipments: data}
+    const handleInventoryUpdate = (data) => {
+        const procedure = {...selectedProcedure, inventories: data}
         const updatedObj = {inventories: data}
         setSelectedProcedure(procedure)
         setIsInfoUpdated(true)
         // Change updated
         // updateProcedureCall(updatedObj)
+    };
+
+    const handleEquipmentUpdate = (data) => {
+        const procedure = {...selectedProcedure, equipments: data}
+        setSelectedProcedure(procedure)
+        setIsInfoUpdated(true)
+    };
+
+    const updateNote = (data) => {
+        const procedure = {...selectedProcedure, notes : data}
+        setSelectedProcedure(procedure)
+        setIsInfoUpdated(true)
+        // console.log("Procedure: ", selectedProcedure)
     }
 
     const updateProcedureCall = (updatedFields) => {
@@ -281,20 +254,9 @@ function ProcedurePage({route, setProcedureEdit}) {
 
 
         const {inventories = [], equipments = [], notes = "", supportedRooms = []} = selectedProcedure
-
-        const consumablesData = inventories.map(item => {
-            return {
-                item: item.inventory.name,
-                type: "Anaesthesia",
-                quantity: item.amount,
-                unitPrice: item.inventory.unitPrice
-            }
-        });
-
-
         switch (selectedTab) {
             case "Configuration":
-                return currentTab === 'Configuration' && isEditMode ?
+                return currentTab === 'Configuration' && pageState.isEditMode ?
                     <TouchableOpacity
                         style={{flex: 1}}
                         activeOpacity={1}
@@ -315,19 +277,20 @@ function ProcedurePage({route, setProcedureEdit}) {
             case "Consumables":
                 return <ProceduresConsumablesTab
                     consumablesData={inventories}
-                    isEditMode={isEditMode}
                     onAddInventory={onAddInventory}
                     handleInventoryUpdate={handleInventoryUpdate}
                 />
             case "Equipment":
                 return <ProceduresEquipmentTab
                     equipmentsData={equipments}
-                    isEditMode={isEditMode}
                     onAddEquipment={onAddEquipment}
                     handleEquipmentUpdate={handleEquipmentUpdate}
                 />;
             case "Notes":
-                return <NotesTab notesData={notes === "" ? [] : [notes]}/>;
+                return <NotesTab 
+                    notesData={notes}
+                    updateNote = {updateNote}
+                />;
             case "Theatres" :
                 return <TheatresTab
                     theatresData={supportedRooms}
@@ -338,12 +301,14 @@ function ProcedurePage({route, setProcedureEdit}) {
         }
     };
 
+    let physicianName = `Dr. ${physician?.firstName[0]} . ${physician?.surname}`;
+
     return (
-        <PageContext.Provider value ={{ isEditMode, setEditMode}}>
+        <PageContext.Provider value ={{ pageState, setPageState}}>
             <DetailsPage
                 title = {name}
-                subTitle = {_id}
-                onBackPress = {() =>{}}
+                subTitle = {physicianName}
+                onBackPress = {() =>{navigation.navigate('Procedures')}}
                 pageTabs = {
                     <TabsContainer
                         tabs={currentTabs}
@@ -356,23 +321,8 @@ function ProcedurePage({route, setProcedureEdit}) {
             </DetailsPage>
 
         </PageContext.Provider>
-        // <BottomSheetContainer
-        //     isFetching = {isFetching}
-        //     isEditMode = {isEditState}
-        //     overlayId={_id}
-        //     overlayTitle={name}
-        //     currentTabs = {currentTabs}
-        //     selectedTab = {currentTab}
-        //     onTabPressChange = {onTabPress}
-        //     overlayContent = {getTabContent(currentTab)}
-        //     onEditPress = {onEditPress}
-        // />
     );
 }
-
-// const mapStateToProps = (state) => ({
-//     isEditState: state.procedurePage?.isEdit
-// });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     setProcedureEdit

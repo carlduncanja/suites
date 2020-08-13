@@ -36,7 +36,7 @@ const PageSearchWrapper = styled.View`
 `;
 
 
-/**
+/** 
  * @returns {*}
  * @constructor
  */

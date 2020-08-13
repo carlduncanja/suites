@@ -18,6 +18,14 @@ import styled, { css } from '@emotion/native';
  * @returns {*}
  * @constructor
  */
+
+const InputWrapper = styled.View`
+flex:1;
+position: relative;
+flex-direction: row;
+align-items: center;
+`
+
 function InputField2({
         label, 
         onChangeText = () => {}, 
@@ -36,12 +44,7 @@ function InputField2({
     const theme = useTheme();
     const inputRef = useRef();
 
-    const InputWrapper = styled.View`
-        flex:1;
-        position: relative;
-        flex-direction: row;
-        align-items: center;
-    `
+    
 
     return (
         <View style={[styles.container,]}> 

@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from "react";
+import React,{ useState, useEffect, useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
@@ -16,8 +16,36 @@ import NumberChangeField from "../common/Input Fields/NumberChangeField";
 import { withModal } from "react-native-modalfy";
 import AddItemDialog from "../Procedures/AddItemDialog";
 import Footer from '../../components/common/Page/Footer';
+import { PageContext } from "../../contexts/PageContext";
+import DataItem from "../common/List/DataItem";
+import { useTheme } from 'emotion-theming';
 
-const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInventoryUpdate, onAddInventory}) => {
+
+const headers = [
+    {
+        name :"Item Name",
+        alignment: "flex-start"
+    },
+    {
+        name :"Type",
+        alignment: "center"
+    },
+    {
+        name :"Quantity",
+        alignment: "center"
+    },
+    {
+        name :"Unit Price",
+        alignment: "flex-end"
+    }
+];
+
+const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate, onAddInventory}) => {
+
+    const { pageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
+
+    const theme = useTheme();
 
     const recordsPerPage = 10
     const [checkBoxList, setCheckboxList] = useState([])
@@ -31,58 +59,6 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
     useEffect(()=>{
         setTotalPages(Math.ceil(consumablesData.length / recordsPerPage))
     },[])
-
-    const onQuantityChange = (item) => (action) =>  {
-        const updatedObj = {
-            ...item,
-            amount: action === 'add' ? parseInt(item.amount) + 1 : parseInt(item.amount) - 1
-        };
-
-        const updatedData = consumablesData.map(item => {
-            return item._id === updatedObj._id ?
-                {...updatedObj}
-                :
-                {...item}
-        })
-
-        handleInventoryUpdate(updatedData)
-
-    }
-
-    const onAmountChange = (item) => (value) => {
-        const updatedObj = {
-            ...item,
-            amount: value
-        };
-
-        const updatedData = consumablesData.map(item => {
-            return item._id === updatedObj._id ?
-                {...updatedObj}
-                :
-                {...item}
-        })
-
-        handleInventoryUpdate(updatedData)
-    }
-
-    const headers = [
-        {
-            name :"Item Name",
-            alignment: "flex-start"
-        },
-        {
-            name :"Type",
-            alignment: "center"
-        },
-        {
-            name :"Quantity",
-            alignment: "center"
-        },
-        {
-            name :"Unit Price",
-            alignment: "flex-end"
-        }
-    ]
 
     // ###### EVENT HANDLERS
 
@@ -131,15 +107,12 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
         
         const { inventory = {}, amount = 0 } = item || {}
         const { name = "", unitPrice = 0, type = "n/a" } = inventory || {}
-        console.log("Item: ", unitPrice)
+
         return (
             <>
-                <View style={styles.item}>
-                    <Text style={[styles.itemText,{color:"#3182CE"}]}>{name}</Text>
-                </View>
-                <View style={[styles.item,{alignItems:'center'}]}>
-                    <Text style={styles.itemText}>{type}</Text>
-                </View>
+                <DataItem text = {name} color = {'--color-blue-600'} fontStyle = {'--text-base-medium'}/>
+                <DataItem text = {type} align = "center" fontStyle = {'--text-base-regular'}/>
+
                 { isEditMode ?
 
                     <View style={[styles.item,{alignItems:'center'}]}>
@@ -150,16 +123,10 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                         />
                     </View>
                     :
-                    <View style={[styles.item,{alignItems:'center'}]}>
-                        <Text style={styles.itemText}>{amount}</Text>
-                    </View>
-
+                    <DataItem text = {amount} align = "center" fontStyle = {'--text-base-regular'}/>
                 }
 
-                <View style={[styles.item,{alignItems:'flex-end'}]}>
-                    <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
-                </View>
-
+                <DataItem text = {`$ ${currencyFormatter(unitPrice)}`} align = "flex-end" fontStyle = {'--text-base-regular'}/>
             </>
         )
 
@@ -173,6 +140,39 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
             onItemPress={() => {}}
             itemView={listItem(item)}
         />
+    }
+
+    const onQuantityChange = (item) => (action) =>  {
+        const updatedObj = {
+            ...item,
+            amount: action === 'add' ? parseInt(item.amount) + 1 : parseInt(item.amount) - 1
+        };
+
+        const updatedData = consumablesData.map(item => {
+            return item._id === updatedObj._id ?
+                {...updatedObj}
+                :
+                {...item}
+        })
+
+        handleInventoryUpdate(updatedData)
+
+    } 
+
+    const onAmountChange = (item) => (value) => {
+        const updatedObj = {
+            ...item,
+            amount: value
+        };
+
+        const updatedData = consumablesData.map(item => {
+            return item._id === updatedObj._id ?
+                {...updatedObj}
+                :
+                {...item}
+        })
+
+        handleInventoryUpdate(updatedData)
     }
 
     const getFabActions = () => {
@@ -232,25 +232,7 @@ const ProceduresConsumablesTab = ({consumablesData, isEditMode, modal, handleInv
                 isNextDisabled = {false}
                 isPreviousDisabled = {false}
             />
-
-                {/* <View style={styles.footer}>
-
-                    <View style={{alignSelf: "center", marginRight: 10}}>
-                        <RoundedPaginator
-                            totalPages={totalPages}
-                            currentPage={currentPagePosition}
-                            goToNextPage={goToNextPage}
-                            goToPreviousPage={goToPreviousPage}
-                        />
-                    </View>
-
-                    <FloatingActionButton
-                        isDisabled={isFloatingActionDisabled}
-                        toggleActionButton={toggleActionButton}
-                    />
-                </View>  */}
-
-        </>
+        </> 
 
     )
 }

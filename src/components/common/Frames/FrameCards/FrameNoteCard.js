@@ -6,6 +6,7 @@ import EditableFrameContent from '../FrameContents/EditableFrameContent';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { PageContext } from '../../../../contexts/PageContext';
+import FrameNoteContent from '../FrameContents/FrameNoteContent';
 
 /**
  * @param frameColor string
@@ -21,15 +22,15 @@ import { PageContext } from '../../../../contexts/PageContext';
  * @constructor
  */
 
-const FrameCardWrapper = styled.View`
+const FrameNoteCardWrapper = styled.View`
     width: 100%;
     margin-bottom : ${ ({theme}) => theme.space['--space-24']};
 `;
-const FrameCardContainer = styled.View`
-    width: 100%;
+const FrameNoteCardContainer = styled.View`
+    width: 100%; 
 `;
 
-function FrameCard(props){
+function FrameNoteCard(props){
     const {
         frameColor,
         frameBorderColor,
@@ -37,6 +38,8 @@ function FrameCard(props){
         icon,
         frameTitle,
         cardInformation,
+        handleUpdate = ()=>{},
+        onClear = ()=>{},
         isEditMode = false,
         handleEdit = ()=>{},
         isAddNew = true,
@@ -47,8 +50,8 @@ function FrameCard(props){
 
     
     return (
-        <FrameCardWrapper theme = {theme}>
-            <FrameCardContainer>
+        <FrameNoteCardWrapper theme = {theme}>
+            <FrameNoteCardContainer>
                 <FrameTitle
                     color={frameColor}
                     borderColor = {frameBorderColor}
@@ -56,19 +59,16 @@ function FrameCard(props){
                     icon={icon}
                     frameTitle={frameTitle}
                 />
-
-                <FrameContentList
-                    cardInformation={cardInformation}
-                    // isEditMode = {isEditMode}
-                    handleEdit = {handleEdit}
-                    handleAddNew = {handleAddNew}
-                    isAddNew = {isAddNew}
+                <FrameNoteContent
+                    cardInformation = {cardInformation}
+                    handleUpdate = {handleUpdate}
+                   
                 />
                
              
-            </FrameCardContainer>
-        </FrameCardWrapper>
+            </FrameNoteCardContainer>
+        </FrameNoteCardWrapper>
     )
 }
-export default FrameCard 
+export default FrameNoteCard 
 

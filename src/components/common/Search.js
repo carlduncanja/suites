@@ -6,34 +6,31 @@ import InputField2 from './Input Fields/InputField2';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 
+const SearchWrapper = styled.View` 
+    width: 100%; 
+
+`;
+
+const SearchContainer = styled.View`
+    height: 30px;
+`;
+
 function Search({
-                    placeholderText = "Search", changeText = () => {
-    }, inputText, onClear
-                }) {
+        placeholderText = "Search", 
+        changeText = () => {}, 
+        inputText, 
+        onClear
+}) {
 
     const theme = useTheme();
 
     const [isFocussed, setIsFocussed] = useState(false)
 
-    const SearchWrapper = styled.View` 
-        width: 100%; 
-        //margin-bottom : ${theme.space['--space-24']};
-    `;
-
-    const SearchContainer = styled.View`
-        height: 30px;
-    `;
-
-    // border : 1px solid ${theme.colors['--color-gray-400']};
-    //     border-radius : 8px;
-
     const onFocus = () => {
         setIsFocussed(true)
-        // console.log("Focussed")
     }
     const onEndEditing = () => {
         setIsFocussed(false)
-        // console.log("Done Edit")
     }
 
     return (

@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FrameItem from '../FrameItems/FrameItem';
 import InputFrameItem from '../FrameItems/InputFrameItem'; 
@@ -9,10 +9,28 @@ import IconButton from '../../Buttons/IconButton';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
+import { PageContext } from '../../../../contexts/PageContext';
+
+const FrameContentListWrapper = styled.View`
+    width : 100%;
+`;
+const FrameContentListContainer = styled.View`
+    width : 100%;
+    border-width : 1px;
+    background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
+    border-color : ${ ({theme}) => theme.colors['--color-gray-400']};
+    border-top-width : 0px;
+    border-bottom-left-radius : 8px;
+    border-bottom-right-radius : 8px;
+    padding-top: ${ ({theme}) => theme.space['--space-16']};
+    padding-bottom : ${ ({theme}) => theme.space['--space-4']};
+    padding-left: ${ ({theme}) => theme.space['--space-16']};
+    padding-right: ${ ({theme}) => theme.space['--space-16']};
+`;
+
 function FrameContentList (props) { 
     const {
         cardInformation, 
-        isEditMode = false,
         handleEdit = () =>{},
         handleAddNew = () => {},
         isAddNew = false
@@ -20,37 +38,26 @@ function FrameContentList (props) {
 
     const [value, setValue] = useState("");
     const theme = useTheme();
-    console.log("Info: ", cardInformation)
 
-    const FrameContentListWrapper = styled.View`
-        width : 100%;
-
-    `;
-    const FrameContentListContainer = styled.View`
-        width : 100%;
-        border-width : 1px;
-        background-color: ${theme.colors['--color-gray-100']};
-        border-color : ${theme.colors['--color-gray-400']};
-        border-top-width : 0px;
-        border-bottom-left-radius : 8px;
-        border-bottom-right-radius : 8px;
-        padding-top: ${theme.space['--space-16']};
-        padding-bottom : ${theme.space['--space-4']};
-        padding-left: ${theme.space['--space-16']};
-        padding-right: ${theme.space['--space-16']};
-    `;
-
-    const testCardInformation = [
-        "hELLO",
-        "Its",
-        ""
-    ]
+    const { pageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
+   
     return (
         <FrameContentListWrapper>
-            <FrameContentListContainer>
+            <FrameContentListContainer theme = {theme}>
                 {
                     cardInformation.length === 0 ?
-                        <FrameItem itemContent = "None"/>
+                        
+                            // isEditMode ?
+                            //     <InputFrameItem
+                            //         onChangeText = {()=>{}}
+                            //         value = {value}
+                            //         onClear = {()=>{}}
+                            //         placeholder = "Add new item"
+                            //     /> 
+                            //     :
+                                <FrameItem itemContent = "None"/>
+                        
                         :
                         cardInformation.map((itemContent,index)=>{
                             return(
@@ -61,7 +68,7 @@ function FrameContentList (props) {
                                         onClear = {()=>handleEdit('remove')(index)}
                                         placeholder = "Add new item"
                                     />
-                                    :
+                                    : 
                                     <FrameItem 
                                         itemContent = {itemContent}
                                         icon = {isEditMode ? <RemoveIcon/> : null}

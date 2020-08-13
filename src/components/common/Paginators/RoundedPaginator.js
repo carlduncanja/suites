@@ -4,41 +4,43 @@ import Paginator from './Paginator';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-function RoundedPaginator ({
-        totalPages = 0,
-        currentPage = 0,
-        goToNextPage = ()=>{},
-        goToPreviousPage = ()=>{},
-        isNextDisabled = false,
-        isPreviousDisabled = false
-    }){
-  
-    const theme = useTheme();
-
-    const RoundedPaginatorWrapper = styled.View`
-        width: 145px;
-        height: 48px;
-        margin-right: ${theme.space['--space-10']};
-        justify-content: center;
-       
-    `;
+const RoundedPaginatorWrapper = styled.View`
+    width: 145px;
+    height: 48px;
+    margin-right: ${ ({theme}) => theme.space['--space-10']};
+    justify-content: center;
+    
+`;
     const RoundedPaginatorContainer = styled.View`
         display: flex;
         width: 100%;
         height: 100%;
         align-self: center;
         justify-content: center;
-        background-color: ${theme.colors['--default-shade-white']};
-        padding-top: ${theme.space['--space-10']};
-        padding-left: ${theme.space['--space-12']};
-        padding-right: ${theme.space['--space-12']};
-        padding-bottom: ${theme.space['--space-10']};
+        background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
+        padding-top: ${ ({theme}) => theme.space['--space-10']};
+        padding-left: ${ ({theme}) => theme.space['--space-12']};
+        padding-right: ${ ({theme}) => theme.space['--space-12']};
+        padding-bottom: ${ ({theme}) => theme.space['--space-10']};
         box-shadow : 0px 4px 6px rgba(0, 0, 0, 0.05);
         border-radius: 32px;
     `;
+
+function RoundedPaginator ({
+        totalPages = 0,
+        currentPage = 0,
+        goToNextPage = ()=>{},
+        goToPreviousPage = ()=>{}, 
+        isNextDisabled = false,
+        isPreviousDisabled = false
+    }){
+  
+    const theme = useTheme();
+
+    
     return ( 
-        <RoundedPaginatorWrapper>
-            <RoundedPaginatorContainer>
+        <RoundedPaginatorWrapper theme = {theme}>
+            <RoundedPaginatorContainer theme = {theme}>
                 <Paginator
                     totalPages = {totalPages}
                     currentPage = {currentPage}

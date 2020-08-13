@@ -7,22 +7,21 @@ import { useTheme } from 'emotion-theming';
 import SortFilter from './SortFilterIcon';
 import HeaderFilterGroup from './HeaderFilterGroup';
 
+const HeaderItemWrapper = styled.TouchableOpacity`
+    flex : ${ ({header}) => header.flex ? header.flex.toString() : '1'};
+`;
+const HeaderItemContainer = styled.View`
+    flex-direction: row; 
+    justify-content : ${ ({header}) => header.alignment ? header.alignment : 'flex-start'};
+`;
+
 function HeaderItem({header,index, selectedHeader = "", onSelectHeader = ()=>{}}){
 
-    const theme = useTheme()
-
-    const HeaderItemWrapper = styled.TouchableOpacity`
-        flex : ${header.flex ? header.flex.toString() : '1'};
-    `;
-    const HeaderItemContainer = styled.View`
-        flex-direction: row; 
-        justify-content : ${header.alignment ? header.alignment : 'flex-start'};
-    `;
-
+    const theme = useTheme();
 
     return (
-        <HeaderItemWrapper key={index} onPress = {()=>onSelectHeader(header.name)}>
-            <HeaderItemContainer>
+        <HeaderItemWrapper key={index} onPress = {()=>onSelectHeader(header.name)} header = {header}>
+            <HeaderItemContainer header = {header}>
 
                 <HeaderFilterGroup
                     name = {header.name}

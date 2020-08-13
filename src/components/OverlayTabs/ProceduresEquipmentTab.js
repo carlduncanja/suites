@@ -1,4 +1,4 @@
-import React,{ useState,useEffect } from "react";
+import React,{ useState,useEffect, useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 import Equipment from '../CaseFiles/OverlayPages/ChargeSheet/Equipment';
@@ -19,8 +19,12 @@ import Footer from '../../components/common/Page/Footer';
 import { currencyFormatter } from '../../utils/formatter';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import { withModal } from "react-native-modalfy";
+import { PageContext } from "../../contexts/PageContext";
 
-const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipmentUpdate, onAddEquipment}) => {
+const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, onAddEquipment}) => {
+
+    const { pageState } = useContext(PageContext);
+    const  { isEditMode } = pageState;
 
     const recordsPerPage = 10
     // const [equipments, setEquipments] = useState(equipmentsData)
@@ -158,7 +162,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
 
         return <ActionContainer
             floatingActions={[
-                deleteAction,
+                // deleteAction,
                 addItem
             ]}
             title={"PROCEDURE ACTIONS"}
@@ -214,23 +218,8 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, isEditMode, handleEquipm
                 isPreviousDisabled = {false}
             />
 
-            {/* <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage} 
-                    />
-                </View>
-
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
-            </View> */}
         </> 
-    )
+    ) 
 }
 
 export default withModal(ProceduresEquipmentTab) 
