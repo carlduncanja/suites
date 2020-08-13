@@ -133,7 +133,7 @@ const Suppliers = (props) => {
         //         floatingActions = {getFabActions}
         //     />
         // })
-        props.navigation.navigate("SupplierPage", { screen: "SupplierPage", initial: false, params: { supplier: item, isEdit: isOpenEditable, floatingActions: { getFabActions } } });
+        props.navigation.navigate("SupplierPage", { initial: false, supplier: item, isEdit: isOpenEditable, floatingActions: { getFabActions } });
     }
 
     const goToNextPage = () => {

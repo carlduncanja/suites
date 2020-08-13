@@ -24,7 +24,7 @@ function ConfirmationComponent({
     border-radius: 8px;
     width: 600px;
     height: 370px;
-    padding-bottom: 67px;
+    padding-bottom: 60px;
     box-shadow: ${theme.shadow["--shadow-lg"]};
   `;
 
