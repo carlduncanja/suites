@@ -202,7 +202,7 @@ function CasePage({route, addNotification, ...props}) {
         let floatingAction = [];
 
         console.log("getFabActions: selected tab", selectedTab);
-        console.log("Selected maenu: ", selectedMenuItem)
+        console.log("Selected menu: ", selectedMenuItem)
         if (selectedMenuItem === "Charge Sheet") {
             switch (selectedTab) {
                 case "Consumables": {
@@ -288,7 +288,7 @@ function CasePage({route, addNotification, ...props}) {
                     const addNewProcedure = <ActionItem title={"Add Appointment"} icon={<AddIcon/>}
                                                         onPress={openAddProcedure}/>
                     floatingAction.push(addNewProcedure)
-                    title = "PROCEDURE ACTIONS"
+                    title = "APPOINTMENT ACTIONS"
                     break;
             }
         }

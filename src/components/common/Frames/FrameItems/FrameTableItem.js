@@ -1,47 +1,92 @@
 import React from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native";
+import styled from '@emotion/native'
+import {useTheme} from "emotion-theming";
 
-const FrameTableItem = (props) => { 
-    return ( 
-        <View style={styles.container}>
-            <View style={styles.titleContainer}>
-                <Text style={styles.title}>{props.title.charAt(0).toUpperCase().concat(props.title.substring(1, props.title.length))}</Text>
-            </View>
-            <View style={styles.valueContainer}>
-                <Text style={styles.value}>{props.value}</Text>
-            </View>
-        </View>
+
+const FrameTableItemWrapper = styled.View`
+  flex-direction: row;
+  margin-bottom: 10px;
+  margin-right: 20px;
+`
+
+const TitleContainer = styled.View`
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+`
+
+const Title = styled.Text(({theme}) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-gray-600']
+}))
+
+
+const ValueContainer = styled.View(({theme, enabled = {}}) => ({
+    // ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-gray-900'],
+    flex: 1,
+    backgroundColor: enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'],
+    borderColor: theme.colors['--color-gray-400'],
+    borderWidth: 1,
+    borderRadius: 4,
+    height: 32,
+    justifyContent: 'center',
+    padding: 4,
+    paddingLeft: 12,
+    paddingRight: 12,
+    ...(enabled ? shadow: {})
+}))
+
+const Value = styled.TextInput(({theme}) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-gray-900']
+}))
+
+const FrameTableItem = ({
+                            title = "",
+                            value = "",
+                            selectable = false,
+                            enabled = false,
+                            editable = false,
+                            onPress,
+                            onChangeValue = () => {
+                            },
+                            ...props
+                        }) => {
+    const theme = useTheme();
+
+    return (
+        <TouchableOpacity disabled={!selectable} onPress={onPress}>
+            <FrameTableItemWrapper theme={theme}>
+
+                <TitleContainer theme={theme}>
+                    <Title theme={theme}>{title.charAt(0).toUpperCase().concat(title.substring(1, title.length))}</Title>
+                </TitleContainer>
+
+                <ValueContainer theme={theme} enabled={enabled}>
+                    {/*<Value theme={theme}> {value} </Value>*/}
+
+                    <TextInput value={value + ""} editable={editable} onChangeText={onChangeValue}/>
+
+                </ValueContainer>
+
+            </FrameTableItemWrapper>
+        </TouchableOpacity>
     );
 }
- 
+
 export default FrameTableItem;
 
-const styles = StyleSheet.create({
-    container:{
-        flexDirection:'row',
-        marginBottom:10,
-        marginRight:20,
+
+const shadow = {
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0.2,
+        height: 1.5,
     },
-    titleContainer:{
-        marginRight:10,
-        //width:'32%',
-        alignItems:'flex-start',
-        justifyContent:'center'
-    },
-    title:{
-        color:'#718096',
-        fontSize:16
-    },
-    valueContainer:{
-        flex:1,
-        backgroundColor:'#FFFFFF',
-        borderColor:"#CCD6E0",
-        borderWidth:1,
-        borderRadius:4,
-        padding:4,
-    },
-    value:{
-        color: "#1D2129",
-        fontSize:16
-    }
-})
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+    zIndex: 3,
+};

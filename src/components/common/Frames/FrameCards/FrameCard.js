@@ -1,15 +1,12 @@
 import React, {Component, useContext} from 'react';
-import {View, StyleSheet} from 'react-native';
 import FrameTitle from '../FrameTitle'
 import FrameContentList from '../FrameContents/FrameContentList';
-import EditableFrameContent from '../FrameContents/EditableFrameContent';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import { PageContext } from '../../../../contexts/PageContext';
 
 /**
  * @param frameColor string
- * @param frameBorderColor string 
+ * @param frameBorderColor string
  * @param titleBackgroundColor string
  * @param icon component
  * @param frameTitle string
@@ -45,7 +42,7 @@ function FrameCard(props){
 
     const theme = useTheme();
 
-    
+
     return (
         <FrameCardWrapper theme = {theme}>
             <FrameCardContainer>
@@ -64,11 +61,11 @@ function FrameCard(props){
                     handleAddNew = {handleAddNew}
                     isAddNew = {isAddNew}
                 />
-               
-             
+
+
             </FrameCardContainer>
         </FrameCardWrapper>
     )
 }
-export default FrameCard 
+export default FrameCard
 

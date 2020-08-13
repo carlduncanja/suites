@@ -91,7 +91,7 @@ function DateInputField({
                 }
 
                 {
-                    !(value === undefined || value === null || value === "") &&
+                    !!value &&
                     <TouchableOpacity
                         style={styles.clearIcon}
                         onPress={onClear}

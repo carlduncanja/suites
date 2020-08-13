@@ -29,7 +29,8 @@ const FrameProcedureCard = ({
                                 icon,
                                 onOpenPickList,
                                 onRemoveProcedure,
-                                isEdit
+                                isEdit,
+                                onProcedureUpdate
                             }) => {
 
     const {appointment = {}} = procedureData
@@ -58,6 +59,7 @@ const FrameProcedureCard = ({
 
                 <ProcedureCardContent>
                     <FrameProcedureContent
+                        isEdit={isEdit}
                         details={procedureData}
                         onOpenPickList={onOpenPickList}
                     />
