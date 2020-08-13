@@ -11,6 +11,7 @@ import AddIcon from "../../../assets/svg/addIcon";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
 import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 import {updateProcedure} from "../../api/network";
 import {setProcedureEdit} from "../../redux/actions/procedurePageActions";
@@ -18,12 +19,14 @@ import {getProcedureById} from "../../api/network";
 import {connect} from 'react-redux';
 import {PageContext} from "../../contexts/PageContext";
 import { bindActionCreators } from 'redux';
+import { useModal } from 'react-native-modal';
 import { useCode } from 'react-native-reanimated';
 
 
 function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
+    const modal = useModal();
     // const { pageState } = useContext(PageContext);
     // const { isEditMode } = pageState;
 
@@ -66,7 +69,8 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     useEffect(()=>{
         if(pageState.isEditMode === false && isInfoUpdated === true){
-            updateProcedureCall(selectedProcedure)
+            confirmAction()
+            // updateProcedureCall(selectedProcedure)
         }
     },[pageState.isEditMode])
 
@@ -108,6 +112,24 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     //     //     // updatePhysicianFn(_id, fieldsObject)
     //     // }
     // }
+
+    const confirmAction = () =>{
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            type = 'edit-update'
+                            onCancel = {()=>{}}
+                            onAction = {()=>console.log("Saved")}
+                        />
+                        ,
+                        onClose: () => {} 
+                    })
+        }, 200)
+    }
 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
