@@ -15,7 +15,7 @@ import { colors } from "../../styles";
 
 
 function SupplierPage({ route, navigation }) {
-    const { supplier, isOpenEditable, floatingActions } = route.params.params;
+    const { supplier, isOpenEditable, floatingActions } = route.params;
     const currentTabs = ["Details", "Products", "Purchase Orders"];
     const {
         supplierNumber = "",

@@ -88,30 +88,6 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         })
     }
 
-    // const onEditPress = (tab) => {
-
-    //     setProcedureEdit(!pageState.isEditMode)
-    //     setPageState(!pageState.isEditMode)
-    //     // console.log("Edit state, updated: ", !isEditState, isInfoUpdated)
-    //     if (!pageState.isEditMode === false && isInfoUpdated) {
-
-    //         if (currentTab === 'Configuration') {
-    //             updateProcedureCall(selectedProcedure)
-    //             // onProcedureUpdate()
-    //         } else if (currentTab === 'Consumables') {
-    //             updateProcedureCall(selectedProcedure)
-    //             // Add confirmation component
-    //         }
-
-    //     }
-    //     // if(!isEditMode === false && isInfoUpdated){
-    //     //     console.log("Info: ", selectedProcedure)
-    //     //     // updateProcedureCall(selectedProcedure)
-    //     //     // console.log("Fields:", fields)
-
-    //     //     // updatePhysicianFn(_id, fieldsObject)
-    //     // }
-    // }
 
     const confirmAction = () =>{
         // setTimeout(() => {
@@ -131,7 +107,6 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     }
 
     const onConfirmSave = () =>{
-        // console.log("Saved")
         modal.closeModals('ConfirmationModal');
         setTimeout(()=>{
             updateProcedureCall(selectedProcedure)

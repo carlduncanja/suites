@@ -16,6 +16,7 @@ import _ from "lodash";
 import AddItem from "./AddItem";
 import AddEquipmentItem from "./AddEquipmentItem";
 import AddTheatreItem from "./AddTheatreItem";
+import { PageContext } from "../../contexts/PageContext";
 
 
 /**
@@ -28,7 +29,7 @@ import AddTheatreItem from "./AddTheatreItem";
  * @constructor
  */ 
 
-const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = ""}) =>{ 
+const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = "", }) =>{ 
 
     const modal = useModal();
     const tabs = ['Details']
@@ -114,25 +115,37 @@ const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = ""}) =
         return isValid
     }
 
-    // const onPositiveButtonPress = () =>{
-    //     setTimeout(() => {
-
-    //         modal
-    //             .openModal(
-    //                 'ConfirmationModal',
-    //                 {
-    //                     content: <ConfirmationComponent
-    //                         type = 'edit-update'
-    //                         onCancel = {()=>{}}
-    //                         onAction = {()=>console.log("Saved")}
-    //                     />
-    //                     ,
-    //                     onClose: () => {} 
-    //                 })
-    //     }, 200)
-    // }
-
     const onPositiveButtonPress = () =>{
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {true}
+                            onCancel = {onConfirmCancel}
+                            onAction = {onConfirmSave}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+        }, 200)
+    }
+
+    const onConfirmCancel = () =>{
+        modal.closeModals('ConfirmationModal');
+    }
+
+    const onConfirmSave = () =>{
+        modal.closeModals('ConfirmationModal');
+        setTimeout(()=>{
+            onAddNewItem()
+            console.log("Saved")
+        },200)
+    }
+
+    const onAddNewItem = () =>{
         console.log("Fields: ", fields)
         let updatedFields = {}
         itemType === 'Consumables' ?

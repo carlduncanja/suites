@@ -42,6 +42,7 @@ import CaseFileNavigationStack from "./CaseFileNavigationStack";
 import TheatreNavigationStack from "./TheatreNavigationStack";
 import OrderNavigationStack from "./OrderNavigationStack";
 import SupplierNavigationStack from "./SupplierNavigation Stack";
+import StorageNavigationStack from "./StorageNavigationStack";
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
@@ -128,7 +129,7 @@ export const SuitesNavigationStack = () => {
 
             <SuitesNavigator.Screen
                 name="Storage"
-                component={Storage}
+                component={StorageNavigationStack}
                 initialParams={{
                     icon: StorageIcon,
                     tabName: 'Storage',

@@ -29,7 +29,7 @@ function TheatresPage({ route, navigation }) {
         "Schedule",
     ];
     //console.log("what is in route?", route.params.params.theatre);
-    const { theatre } = route.params.params;
+    const { theatre } = route.params;
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);

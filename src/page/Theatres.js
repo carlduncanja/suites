@@ -125,7 +125,7 @@ function Theatres(props) {
     //   content: <TheatresBottomSheetContainer theatre={item} />,
     // });
     console.log("clicked a theatre");
-    props.navigation.navigate('TheatresPage', { screen: 'TheatresPage', initial: false, params: { theatre: item, isEdit: isOpenEditable } });
+    props.navigation.navigate('TheatresPage', { initial: false, theatre: item, isEdit: isOpenEditable });
   };
 
   const onSearchInputChange = (input) => {

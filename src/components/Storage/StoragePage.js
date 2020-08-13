@@ -1,14 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, View} from "react-native";
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, View } from "react-native";
 import BottomSheetContainer from '../common/BottomSheetContainer';
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import StorageConsumablesTab from '../OverlayTabs/StorageConsumablesTab';
 import StorageEquipmentTab from '../OverlayTabs/StorageEquipmentTab';
 import TransfersOverlayTab from "../OverlayTabs/TransfersOverlayTab";
-import {getStorageById} from "../../api/network";
-import {colors} from "../../styles";
+import { getStorageById } from "../../api/network";
+import { colors } from "../../styles";
+import { PageContext } from "../../contexts/PageContext";
+import DetailsPage from "../common/DetailsPage/DetailsPage";
+import TabsContainer from "../common/Tabs/TabsContainerComponent";
 
-function StorageBottomSheetContainer({storage}) {
+function StoragePage({ route, navigation }) {
     const currentTabs = ["Transfer", "Consumables", "Equipment"];
 
     // ##### States
@@ -21,7 +24,7 @@ function StorageBottomSheetContainer({storage}) {
     // ##### Life cycle methods
 
     useEffect(() => {
-        setTimeout(()=>{
+        setTimeout(() => {
             fetchStorageItem(storage._id)
         }, 200)
     }, []);
@@ -57,7 +60,7 @@ function StorageBottomSheetContainer({storage}) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Transfer":
-                return <TransfersOverlayTab/>;
+                return <TransfersOverlayTab />;
             case "Consumables":
                 // Get Consumables
                 const consumables = storageItem.inventoryLocations.map(item => {
@@ -71,37 +74,61 @@ function StorageBottomSheetContainer({storage}) {
                     }
                 });
 
-                return <StorageConsumablesTab consumables={consumables}/>;
+                return <StorageConsumablesTab consumables={consumables} />;
 
             case "Equipment":
-                return <StorageEquipmentTab/>;
-            default :
-                return <View/>
+                return <StorageEquipmentTab />;
+            default:
+                return <View />
         }
     };
 
-    const overlayContent = <View style={{flex: 1, padding: 30}}>
+    const overlayContent = <View style={{ flex: 1, padding: 30 }}>
         {getTabContent(currentTab)}
     </View>;
 
-    const {_id, name} = storageItem;
+    const { _id, name } = storageItem;
 
     return (
-        <BottomSheetContainer
-            isFetching = {isFetching}
-            overlayId={_id}
-            overlayTitle={name}
-            onTabPressChange={onTabPress}
-            currentTabs={currentTabs}
-            selectedTab={currentTab}
-            isEditMode={isEditMode}
-            onEditPress = {onEditPress}
-            overlayContent={getTabContent(currentTab)}
-        />
+        // <BottomSheetContainer
+        //     isFetching={isFetching}
+        //     overlayId={_id}
+        //     overlayTitle={name}
+        //     onTabPressChange={onTabPress}
+        //     currentTabs={currentTabs}
+        //     selectedTab={currentTab}
+        //     isEditMode={isEditMode}
+        //     onEditPress={onEditPress}
+        //     overlayContent={getTabContent(currentTab)}
+        // />
+        <>
+            <PageContext.Provider value={{ pageState, setPageState }}>
+                <DetailsPage
+                    title={name}
+                    subTitle={``}
+                    onBackPress={backTapped}
+                    pageTabs={
+                        <TabsContainer
+                            tabs={currentTabs}
+                            selectedTab={currentTab}
+                            onPressChange={onTabPress}
+                        />
+                    }
+                >
+
+                    <SupplierPageContent
+                        overlayContent={getTabContent(currentTab)}
+
+                    />
+
+
+                </DetailsPage>
+            </PageContext.Provider>
+        </>
     );
 }
 
-StorageBottomSheetContainer.propTypes = {};
-StorageBottomSheetContainer.defaultProps = {};
+StoragePage.propTypes = {};
+StoragePage.defaultProps = {};
 
-export default StorageBottomSheetContainer;
+export default StoragePage;

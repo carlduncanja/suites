@@ -16,7 +16,7 @@ import TabsContainer from "../common/Tabs/TabsContainerComponent";
 
 function OrderItemPage({ route, navigation }) {
 
-    const { order, isOpenEditable } = route.params.params;
+    const { order, isOpenEditable } = route.params;
 
 
     const currentTabs = ["Details", "Items", "Suppliers"];
@@ -31,7 +31,7 @@ function OrderItemPage({ route, navigation }) {
     const [isEditMode, setEditMode] = useState(isOpenEditable);
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState({})
+    const [selectedOrder, setSelectedOrder] = useState({});
     const [orderItems, setOrderItems] = useState([]);
     const [pageState, setPageState] = useState({});
     const [fields, setFields] = useState({});
