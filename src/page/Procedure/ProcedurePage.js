@@ -19,7 +19,7 @@ import {getProcedureById} from "../../api/network";
 import {connect} from 'react-redux';
 import {PageContext} from "../../contexts/PageContext";
 import { bindActionCreators } from 'redux';
-import { useModal } from 'react-native-modal';
+import { useModal } from "react-native-modalfy";
 import { useCode } from 'react-native-reanimated';
 
 
@@ -69,7 +69,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     useEffect(()=>{
         if(pageState.isEditMode === false && isInfoUpdated === true){
-            confirmAction()
+            confirmAction();
             // updateProcedureCall(selectedProcedure)
         }
     },[pageState.isEditMode])
@@ -114,21 +114,37 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     // }
 
     const confirmAction = () =>{
-        setTimeout(() => {
-
+        // setTimeout(() => {
             modal
                 .openModal(
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            type = 'edit-update'
-                            onCancel = {()=>{}}
-                            onAction = {()=>console.log("Saved")}
+                            isEditUpdate = {true}
+                            onCancel = {onConfirmCancel}
+                            onAction = {onConfirmSave}
                         />
                         ,
-                        onClose: () => {} 
+                        onClose: () => {modal.closeModals("ConfirmationModal")} 
                     })
-        }, 200)
+        // }, 200)
+    }
+
+    const onConfirmSave = () =>{
+        // console.log("Saved")
+        modal.closeModals('ConfirmationModal');
+        setTimeout(()=>{
+            updateProcedureCall(selectedProcedure)
+            setIsInfoUpdated(false)
+        },200)
+    }
+
+    const onConfirmCancel = () => {
+        modal.closeModals('ConfirmationModal');
+        setPageState({
+            ...pageState,
+            isEditMode : true
+        });
     }
 
     const onFieldChange = (fieldName) => (value) => {
