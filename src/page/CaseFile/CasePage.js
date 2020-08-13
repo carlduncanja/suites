@@ -387,6 +387,7 @@ function CasePage({route, addNotification, ...props}) {
             case "Procedures" :
                 return <Procedures
                     procedures={caseProcedures}
+                    caseId={caseId}
                 />
             case "Charge Sheet" :
                 return <ChargeSheet
@@ -410,7 +411,7 @@ function CasePage({route, addNotification, ...props}) {
 
     return (
         <>
-            <PageContext.Provider value={{pageState, setPageState}}>
+            <PageContext.Provider value={{pageState, setPageState, fetchCase}}>
                 <DetailsPage
                     title={name}
                     subTitle={`#${caseNumber}`}

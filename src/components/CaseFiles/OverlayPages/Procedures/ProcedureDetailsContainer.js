@@ -7,14 +7,26 @@ import {useModal, withModal} from 'react-native-modalfy';
 import ProceduresPickList from '../../ProceduresPickList'
 import ProcedureIcon from '../../../../../assets/svg/frameProcedures';
 import {PageContext} from "../../../../contexts/PageContext";
+import {removeCaseProcedureAppointment} from "../../../../api/network";
+import ConfirmationComponent from "../../../ConfirmationComponent";
 
-const ProcedureDetailsContainer = ({tabDetails}) => {
+
+const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
 
     const modal = useModal();
-    const {pageState} = useContext(PageContext);
-    const {isEditMode} = pageState;
+    const {pageState, setPageState, fetchCase} = useContext(PageContext);
+    const {isEditMode, isLoading} = pageState;
 
-    // ############# Data declaration
+
+    const setPageLoading = (isLoading) => {
+        setPageState({
+            ...pageState,
+            isLoading,
+            isEditMode: false
+        })
+    }
+
+    // ############# Event Handlers
 
     const onOpenPickList = (details) => {
         modal.openModal('OverlayInfoModal', {
@@ -29,9 +41,46 @@ const ProcedureDetailsContainer = ({tabDetails}) => {
     const handleRemoveProcedure = (procedure) => () => {
         if (!isEditMode) return;
 
-        // REMOVE PROCEDURE CALL
+        removeProcedureCall(caseId, procedure._id)
+        return
+
+        // bring up confirmation screen.
+        // modal.openModal("ConfirmationModal", {
+        //     content: (
+        //         <ConfirmationComponent
+        //             error={false}//boolean to show whether an error icon or success icon
+        //             onCancel={() => {
+        //                 modal.closeModal('ConfirmationModal')
+        //             }}
+        //             onAction={() => removeProcedureCall(caseId, procedure._id)}
+        //             message="Do you wish to remove this appointment?"//general message you can send to be displayed
+        //             action="Yes"
+        //         />
+        //     ),
+        //     onClose: () => {
+        //         console.log("Modal closed");
+        //     },
+        // });
     }
 
+
+    const removeProcedureCall = (caseId, procedureId) => {
+        // REMOVE PROCEDURE CALL
+        setPageLoading(true);
+        removeCaseProcedureAppointment(caseId, procedureId)
+            .then(_ => {
+                console.log("case procedure appointment removed");
+            })
+            .catch(error => {
+                console.error("Failed to remove case appointment", error);
+            })
+            .finally(_ => {
+                fetchCase(caseId)
+            })
+    }
+
+
+    // ############# Data declaration
 
 
     return (
