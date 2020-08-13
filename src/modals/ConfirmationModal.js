@@ -15,7 +15,7 @@ const ConfirmationModal = (props) => {
 
   return (
     <View
-      style={[{ width: dimensions.width, height: state.pageMeasure.height }]}
+      style={[{ width: dimensions.width, height: dimensions.height }]}
     >
       <TouchableOpacity
         onPress={() => {
@@ -37,12 +37,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "flex-end",
     justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.3)",
+
   },
   positionContainer: {
+
     height: 250,
     position: "absolute",
-    bottom: 500,
-    left: 165,
+    bottom: 490,
+    left: 155,
+
 
   },
 });
