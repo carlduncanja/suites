@@ -14,6 +14,7 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 import AddItemDialog from '../Procedures/AddItemDialog';
 import Footer from '../../components/common/Page/Footer';
+import ConfirmationComponent from '../ConfirmationComponent';
 
 
 import { currencyFormatter } from '../../utils/formatter';
@@ -21,7 +22,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 import { withModal } from "react-native-modalfy";
 import { PageContext } from "../../contexts/PageContext";
 
-const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, onAddEquipment}) => {
+const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, onAddEquipment, handleEquipmentDelete}) => {
 
     const { pageState } = useContext(PageContext);
     const  { isEditMode } = pageState;
@@ -154,7 +155,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
     const getFabActions = () => {
 
         const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
+            <LongPressWithFeedback pressTimer={700} onLongPress={deleteItems}>
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
             </LongPressWithFeedback>;
         const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={ openAddItem }/>;
@@ -162,12 +163,57 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
 
         return <ActionContainer
             floatingActions={[
-                // deleteAction,
+                deleteAction,
                 addItem
             ]}
             title={"PROCEDURE ACTIONS"}
         />
     };
+
+    const deleteItems = () =>{
+        let arr = [...equipmentsData];
+        let dataToDelete = [...checkBoxList];
+
+        arr = arr.filter(item => !dataToDelete.includes(item?.equipment?._id));
+        
+        confirmDelete(arr)
+    }
+
+    const confirmDelete = (data) =>{
+
+        modal .openModal('ConfirmationModal',
+        {
+            content: <ConfirmationComponent
+                isEditUpdate = {true}
+                onCancel = {onConfirmCancel}
+                onAction = {()=>onConfirmSave(data)}
+                message = "Do you wish to delete these items?"
+            />
+            ,
+            onClose: () => {modal.closeModals("ConfirmationModal")} 
+        })
+    }
+
+    const onClose = () =>{
+        setTimeout(()=>{
+            modal.closeModals('ConfirmationModal')
+        },200)
+
+        setTimeout(()=>{
+            modal.closeModals('ActionContainerModal');
+            setFloatingAction(false)
+        },100)
+    }
+
+    const onConfirmCancel = () =>{
+        onClose()
+    }
+
+    const onConfirmSave = (data) =>{
+        handleEquipmentDelete(data)
+        setCheckboxList([])
+        onClose()
+    }
 
     const openAddItem = () => {
         modal.closeModals('ActionContainerModal');
@@ -210,7 +256,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
                 goToNextPage={goToNextPage}
                 goToPreviousPage={goToPreviousPage} 
                 isDisabled = {isFloatingActionDisabled}
-                toggleActionButton = {toggleActionButton}
+                toggleActionButton = {toggleActionButton} 
                 hasPaginator = {true}
                 hasActionButton = {true}
                 hasActions = {true}

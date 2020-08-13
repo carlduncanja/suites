@@ -207,11 +207,29 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         // updateProcedureCall(updatedObj)
     };
 
-    const handleEquipmentUpdate = (data) => {
+    // const handleEquipmentUpdate = (data) => {
+    //     const procedure = {...selectedProcedure, equipments: data}
+    //     setSelectedProcedure(procedure)
+    //     setIsInfoUpdated(true)
+    // };
+
+    const handleEquipmentDelete = (data) => {
         const procedure = {...selectedProcedure, equipments: data}
         setSelectedProcedure(procedure)
-        setIsInfoUpdated(true)
+        updateProcedureCall(procedure)
     };
+
+    const handleConsumablesDelete = (data) => {
+        const procedure = {...selectedProcedure, inventories: data}
+        setSelectedProcedure(procedure)
+        updateProcedureCall(procedure)
+    };
+
+    const handleTheatresDelete = (data) => {
+        const procedure = {...selectedProcedure, supportedRooms: data}
+        setSelectedProcedure(procedure)
+        updateProcedureCall(procedure)
+    }
 
     const updateNote = (data) => {
         const procedure = {...selectedProcedure, notes : data}
@@ -292,12 +310,14 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                     consumablesData={inventories}
                     onAddInventory={onAddInventory}
                     handleInventoryUpdate={handleInventoryUpdate}
+                    handleConsumablesDelete = {handleConsumablesDelete}
                 />
             case "Equipment":
                 return <ProceduresEquipmentTab
                     equipmentsData={equipments}
                     onAddEquipment={onAddEquipment}
-                    handleEquipmentUpdate={handleEquipmentUpdate}
+                    handleEquipmentDelete = {handleEquipmentDelete}
+                    // handleEquipmentUpdate={handleEquipmentUpdate}
                 />;
             case "Notes":
                 return <NotesTab 
@@ -308,6 +328,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                 return <TheatresTab
                     theatresData={supportedRooms}
                     onAddTheatre={onAddTheatre}
+                    handleTheatresDelete = {handleTheatresDelete}
                 />
             default :
                 return <View/>
