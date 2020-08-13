@@ -10,10 +10,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { View } from "react-native-animatable";
 
 function ConfirmationComponent({
-  type,
-  error,
-  onCancel = ()=>{},
-  onAction = ()=>{},
+  isEditUpdate,
+  isError,
+  onCancel = () => { },
+  onAction = () => { },
   message = "Are you sure you want to?",
   action = "Save",
 }) {
@@ -127,7 +127,7 @@ function ConfirmationComponent({
   `;
 
   const typeDecipher = () => {
-    if (editUpdate) {
+    if (isEditUpdate) {
       return (<>
         <MessageContainer>{message}</MessageContainer>
         <ButtonView>
@@ -146,7 +146,7 @@ function ConfirmationComponent({
           </ActionButtonContainer>
         </ButtonView>
       </>)
-    } else if (!editUpdate && !error) {
+    } else if (!isEditUpdate && !isError) {
       return (
         <>
           <IconContainer><TickIcon /></IconContainer>
@@ -160,7 +160,7 @@ function ConfirmationComponent({
 
         </>
       )
-    } else if (!editUpdate && error) {
+    } else if (!isEditUpdate && isError) {
       return (
         <>
           <IconContainer><ErrorIcon /></IconContainer>

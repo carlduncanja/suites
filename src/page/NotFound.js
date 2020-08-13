@@ -40,8 +40,8 @@ function NotFound({ addNotification, signOut, route = {} }) {
     openModal("ConfirmationModal", {
       content: (
         <ConfirmationComponent
-          error={false}//boolean to show whether an error icon or success icon
-          editUpdate={false}//use this specification to either get the confirm an edit or update
+          isError={true}//boolean to show whether an error icon or success icon
+          isEditUpdate={false}//use this specification to either get the confirm an edit or update
           onCancel={cancelClicked}
           onAction={actionClicked}
           message="Do you want to save your changes?"//general message you can send to be displayed
@@ -66,7 +66,7 @@ function NotFound({ addNotification, signOut, route = {} }) {
 
   return (
     <>
-      <PageHeader onBack={backClicked} headerMessage="Trevaughn Douglas" />
+      {/* <PageHeader onBack={backClicked} headerMessage="Trevaughn Douglas" /> */}
 
       <View
         style={{
