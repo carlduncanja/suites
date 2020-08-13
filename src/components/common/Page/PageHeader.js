@@ -34,7 +34,6 @@ const HeaderText = styled.Text`
 
 const IconContainer = styled.TouchableOpacity`
     margin-left:10px;
-    align-self:flex-start;
 `;
 
 const SpecialText = styled.Text`

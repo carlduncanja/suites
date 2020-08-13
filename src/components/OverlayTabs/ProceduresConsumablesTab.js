@@ -184,7 +184,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
             title={"PROCEDURES ACTIONS"}
         />
     }
-
+ 
     const openAddItem = () => {
         modal.closeModals('ActionContainerModal');
 

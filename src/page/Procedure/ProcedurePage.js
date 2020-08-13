@@ -11,6 +11,7 @@ import AddIcon from "../../../assets/svg/addIcon";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
 import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 import {updateProcedure} from "../../api/network";
 import {setProcedureEdit} from "../../redux/actions/procedurePageActions";
@@ -18,12 +19,14 @@ import {getProcedureById} from "../../api/network";
 import {connect} from 'react-redux';
 import {PageContext} from "../../contexts/PageContext";
 import { bindActionCreators } from 'redux';
+import { useModal } from "react-native-modalfy";
 import { useCode } from 'react-native-reanimated';
 
 
 function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
+    const modal = useModal();
     // const { pageState } = useContext(PageContext);
     // const { isEditMode } = pageState;
 
@@ -66,7 +69,8 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     useEffect(()=>{
         if(pageState.isEditMode === false && isInfoUpdated === true){
-            updateProcedureCall(selectedProcedure)
+            confirmAction();
+            // updateProcedureCall(selectedProcedure)
         }
     },[pageState.isEditMode])
 
@@ -84,30 +88,39 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         })
     }
 
-    // const onEditPress = (tab) => {
 
-    //     setProcedureEdit(!pageState.isEditMode)
-    //     setPageState(!pageState.isEditMode)
-    //     // console.log("Edit state, updated: ", !isEditState, isInfoUpdated)
-    //     if (!pageState.isEditMode === false && isInfoUpdated) {
+    const confirmAction = () =>{
+        // setTimeout(() => {
+            modal
+                .openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {true}
+                            onCancel = {onConfirmCancel}
+                            onAction = {onConfirmSave}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals("ConfirmationModal")} 
+                    })
+        // }, 200)
+    }
 
-    //         if (currentTab === 'Configuration') {
-    //             updateProcedureCall(selectedProcedure)
-    //             // onProcedureUpdate()
-    //         } else if (currentTab === 'Consumables') {
-    //             updateProcedureCall(selectedProcedure)
-    //             // Add confirmation component
-    //         }
+    const onConfirmSave = () =>{
+        modal.closeModals('ConfirmationModal');
+        setTimeout(()=>{
+            updateProcedureCall(selectedProcedure)
+            setIsInfoUpdated(false)
+        },200)
+    }
 
-    //     }
-    //     // if(!isEditMode === false && isInfoUpdated){
-    //     //     console.log("Info: ", selectedProcedure)
-    //     //     // updateProcedureCall(selectedProcedure)
-    //     //     // console.log("Fields:", fields)
-
-    //     //     // updatePhysicianFn(_id, fieldsObject)
-    //     // }
-    // }
+    const onConfirmCancel = () => {
+        modal.closeModals('ConfirmationModal');
+        setPageState({
+            ...pageState,
+            isEditMode : true
+        });
+    }
 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
