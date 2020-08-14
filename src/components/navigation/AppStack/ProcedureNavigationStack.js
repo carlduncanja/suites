@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Procedures from "../../../page/Procedure/Procedures";
 import CreateProcedure from "../../../page/Procedure/CreateProcedure";
+import CreateCopy from "../../../page/Procedure/CreateCopy";
 import ProcedurePage from "../../../page/Procedure/ProcedurePage";
 import NotFound from "../../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
@@ -29,6 +30,23 @@ export default () => {
             <Stack.Screen
                 name="CreateProcedure"
                 component={CreateProcedure}
+                options={{
+                    // headerShown: false,
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+                    },
+                    headerTitle: ""
+                }}
+            />
+
+            <Stack.Screen
+                name="CreateCopy"
+                component={CreateCopy}
                 options={{
                     // headerShown: false,
                     headerLeft: (props) => (
