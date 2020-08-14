@@ -2,6 +2,8 @@ import React,{ useState, useEffect, useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
+import LongPressWithFeedback from "../common/LongPressWithFeedback";
+import WasteIcon from "../../../assets/svg/wasteIcon";
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import ActionContainer from "../common/FloatingAction/ActionContainer";
@@ -9,6 +11,7 @@ import ActionItem from "../common/ActionItem";
 import IconButton from "../common/Buttons/IconButton";
 import AddNew from '../../../assets/svg/addNewIcon';
 import AddIcon from "../../../assets/svg/addIcon";
+import ConfirmationComponent from '../ConfirmationComponent';
 
 import { currencyFormatter } from '../../utils/formatter'
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
@@ -40,7 +43,7 @@ const headers = [
     }
 ];
 
-const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate, onAddInventory}) => {
+const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate, onAddInventory, handleConsumablesDelete}) => {
 
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState;
@@ -176,15 +179,67 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
     }
 
     const getFabActions = () => {
+        const deleteAction =
+            <LongPressWithFeedback pressTimer={700} onLongPress={deleteItems}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+            </LongPressWithFeedback>;
         const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={openAddItem}/>;
         return <ActionContainer
             floatingActions={[
+                deleteAction,
                 addItem
             ]}
             title={"PROCEDURES ACTIONS"}
         />
     }
  
+    const deleteItems = () => {
+        let arr = [...consumablesData];
+        let dataToDelete = [...checkBoxList];
+
+        arr = arr.filter(item => !dataToDelete.includes(item?._id));
+
+        confirmDelete(arr)
+        
+    }
+
+    const confirmDelete = (data) =>{
+
+        modal .openModal('ConfirmationModal',
+        {
+            content: <ConfirmationComponent
+                isEditUpdate = {true}
+                onCancel = {onConfirmCancel}
+                onAction = {()=>onConfirmSave(data)}
+                message = "Do you wish to delete these items?"
+            />
+            ,
+            onClose: () => {modal.closeModals("ConfirmationModal")} 
+        })
+        
+    }
+
+    const onClose = () =>{
+        setTimeout(()=>{
+            modal.closeModals('ConfirmationModal')
+        },200)
+
+        setTimeout(()=>{
+            modal.closeModals('ActionContainerModal');
+            setFloatingAction(false)
+        },100)
+    }
+
+    const onConfirmCancel = () =>{
+        onClose()
+    }
+
+    const onConfirmSave = (data) =>{
+        handleConsumablesDelete(data)
+        setCheckboxList([])
+        onClose()
+    }
+
     const openAddItem = () => {
         modal.closeModals('ActionContainerModal');
 
@@ -218,7 +273,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
                 toggleHeaderCheckbox = {handleOnSelectAll}
                 itemSelected = {checkBoxList}
             />
-
+ 
             <Footer
                 totalPages={totalPages}
                 currentPage={currentPagePosition}

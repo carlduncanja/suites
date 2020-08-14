@@ -9,6 +9,8 @@ import ActionItem from "../common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
 import AddItemDialog from '../Procedures/AddItemDialog';
 import Footer from '../../components/common/Page/Footer';
+import LongPressWithFeedback from "../common/LongPressWithFeedback";
+import WasteIcon from "../../../assets/svg/wasteIcon";
 
 import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import { withModal } from "react-native-modalfy";
@@ -116,23 +118,42 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
     }
 
     const getFabActions = () => {
-
+        const deleteAction =
+        <LongPressWithFeedback pressTimer={700} onLongPress={deleteItems}>
+            <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+        </LongPressWithFeedback>;
         const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={ openAddItem }/>;
 
 
         return <ActionContainer
             floatingActions={[
+                // deleteAction,
                 addItem
             ]}
             title={"PROCEDURE ACTIONS"}
         />
     };
 
+    // const deleteItems = () =>{
+    //     let arr = [...theatresData];
+    //     let dataToDelete = [...checkBoxList];
+
+    //     console.log("Arr: ", arr)
+    //     console.log("Checked: ", checkBoxList)
+    //     // arr = arr.filter(item => !dataToDelete.includes(item?.equipment?._id));
+        
+    //     // handleEquipmentDelete(arr)
+
+    //     setTimeout(()=>{
+    //         modal.closeModals('ActionContainerModal')
+    //     },200)
+    // }
+
     const openAddItem = () => {
         modal.closeModals('ActionContainerModal');
 
         // For some reason there has to be a delay between closing a modal and opening another.
-        setTimeout(() => {
+        setTimeout(() => { 
 
             modal
                 .openModal(

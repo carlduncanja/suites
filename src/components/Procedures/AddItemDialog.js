@@ -95,7 +95,7 @@ const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = "", })
 
     const validateItem = () =>{
         let isValid = true
-        const requiredFields = itemType === "Theatres" ? ['item'] : ['item', 'amount']
+        const requiredFields = itemType === "Theatres" || itemType === 'Equipments' ? ['item'] : ['item', 'amount']
 
         let errorObj = {...errors} || {}
 

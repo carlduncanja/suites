@@ -175,18 +175,21 @@ const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
                         value={'n/a'}
                     />
                 </FieldContainer>
-
-                <FieldContainer>
-                    <InputField2
-                        label={"Quantity"}
-                        onChangeText={(value) => {handleAmount(value)}}
-                        value={fields['amount']}
-                        keyboardType={'number-pad'}
-                        onClear={() => handleAmount('')}
-                        hasError = {errors['amount']}
-                        errorMessage = "Quantity is required."
-                    />
-                </FieldContainer>
+                {
+                    category === 'Consumables' &&
+                        <FieldContainer>
+                            <InputField2
+                                label={"Quantity"}
+                                onChangeText={(value) => {handleAmount(value)}}
+                                value={fields['amount']}
+                                keyboardType={'number-pad'}
+                                onClear={() => handleAmount('')}
+                                hasError = {errors['amount']}
+                                errorMessage = "Quantity is required."
+                            />
+                        </FieldContainer>
+                }
+                
             </Row>
            
             </AdditemContainer>
