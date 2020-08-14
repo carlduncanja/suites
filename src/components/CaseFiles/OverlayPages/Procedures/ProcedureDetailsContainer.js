@@ -41,26 +41,30 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
     const handleRemoveProcedure = (procedure) => () => {
         if (!isEditMode) return;
 
-        removeProcedureCall(caseId, procedure._id)
-        return
+        // removeProcedureCall(caseId, procedure._id)
+        // return
 
         // bring up confirmation screen.
-        // modal.openModal("ConfirmationModal", {
-        //     content: (
-        //         <ConfirmationComponent
-        //             error={false}//boolean to show whether an error icon or success icon
-        //             onCancel={() => {
-        //                 modal.closeModal('ConfirmationModal')
-        //             }}
-        //             onAction={() => removeProcedureCall(caseId, procedure._id)}
-        //             message="Do you wish to remove this appointment?"//general message you can send to be displayed
-        //             action="Yes"
-        //         />
-        //     ),
-        //     onClose: () => {
-        //         console.log("Modal closed");
-        //     },
-        // });
+        modal.openModal("ConfirmationModal", {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals()
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals()
+                        removeProcedureCall(caseId, procedure._id)
+                    }}
+                    message="Do you wish to remove this appointment?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log("Modal closed");
+            },
+        });
     }
 
 
