@@ -244,16 +244,15 @@ const Procedures = (props) => {
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
                 }} touchable={false}/>
             </LongPressWithFeedback>;
-        const createCopy = <ActionItem title={"Create Copy"} icon={<AddIcon/>} onPress={() => {
-        }}/>;
+        const createCopy = <ActionItem title={"Create Copy"} icon={<AddIcon/>} onPress={openCreateCopy}/>;
         const createNewProcedure = <ActionItem title={"New Procedure"} icon={<AddIcon/>}
                                                onPress={openCreateProcedure}/>;
 
 
         return <ActionContainer
             floatingActions={[
-                deleteAction,
-                createCopy,
+                // deleteAction,
+                // createCopy,
                 createNewProcedure
             ]}
             title={"PROCEDURES ACTIONS"}
@@ -265,6 +264,15 @@ const Procedures = (props) => {
 
         navigation.navigate('Procedures List', {
             screen : 'CreateProcedure',
+            initial : false,
+        })
+    }
+
+    const openCreateCopy = () => {
+        modal.closeModals('ActionContainerModal');
+
+        navigation.navigate('Procedures List', {
+            screen : 'CreateCopy',
             initial : false,
         })
     }

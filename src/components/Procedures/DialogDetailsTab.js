@@ -39,7 +39,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
     const [fee, setFee] = useState(serviceFee)
     const [selectedPhysicican, setSelectedPhysician] = useState()
 
-    // ######
+    // ###### 
 
     // Handle physicians search
     useEffect(() => {
