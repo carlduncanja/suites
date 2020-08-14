@@ -49,8 +49,18 @@ function StoragePage({ route, navigation }) {
 
     // ##### Helper functions
 
+    const setPageLoading = (value) => {
+        setPageState({
+            ...pageState,
+            isLoading: value,
+            isEdit: false
+        })
+    }
+
+
     const fetchStorageItem = (id) => {
         setFetching(true);
+        setPageLoading(true);
         getStorageById(id)
             .then(data => {
                 setStorageItem(data);
@@ -60,7 +70,8 @@ function StoragePage({ route, navigation }) {
                 // TODO handle error
             })
             .finally(_ => {
-                setFetching(false)
+                setFetching(false);
+                setPageLoading(false);
             })
     };
 

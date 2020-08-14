@@ -1,4 +1,4 @@
-import React,{useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet } from "react-native";
 
 import Page from '../components/common/Page/Page';
@@ -6,7 +6,6 @@ import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
 import PhysicianActionIcon from '../../assets/svg/physicianListAction';
-import PhysicianBottomSheet from '../components/Physicians/PhysicianBottomSheet';
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
@@ -19,14 +18,14 @@ import AssignIcon from "../../assets/svg/assignIcon";
 
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
 
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { setPhysicians } from "../redux/actions/physiciansActions";
 import { getPhysicians } from "../api/network";
 import _ from "lodash";
 
 import { withModal } from 'react-native-modalfy';
 import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
- 
+
 const Physicians = (props) => {
 
     // ############# Const data
@@ -34,27 +33,27 @@ const Physicians = (props) => {
     const recordsPerPage = 10;
     const listHeaders = [
         {
-            name : "Name",
-            alignment : "flex-start"
+            name: "Name",
+            alignment: "flex-start"
         },
         {
-            name : "Type",
-            alignment : "center"
+            name: "Type",
+            alignment: "center"
         },
         {
-            name : "Status",
-            alignment : "center"
+            name: "Status",
+            alignment: "center"
         },
         {
-            name : "Actions",
-            alignment : "center"
+            name: "Actions",
+            alignment: "center"
         }
     ];
     const floatingActions = []
 
     //  ############ Props
 
-    const {physicians, setPhysicians, navigation, modal} = props;
+    const { physicians, setPhysicians, navigation, modal } = props;
 
     //  ############ State
 
@@ -110,7 +109,7 @@ const Physicians = (props) => {
 
     // ############# Event Handlers
 
-    const onSearchInputChange = (input) =>{
+    const onSearchInputChange = (input) => {
         setSearchValue(input)
     }
 
@@ -119,25 +118,26 @@ const Physicians = (props) => {
     };
 
     const handleOnSelectAll = () => {
-        let updatedPhysiciansList = selectAll(physicians,selectedPhysiciansId)
+        let updatedPhysiciansList = selectAll(physicians, selectedPhysiciansId)
         setSelectedPhysiciansId(updatedPhysiciansList)
     }
 
-    const handleOnCheckBoxPress = (item) => () =>{
+    const handleOnCheckBoxPress = (item) => () => {
         const { _id } = item;
         let updatedPhysiciansList = checkboxItemPress(item, _id, selectedPhysiciansId)
         setSelectedPhysiciansId(updatedPhysiciansList)
     }
 
     const handleOnItemPress = (item, isOpenEditable) => {
-        modal.openModal('BottomSheetModal',{
-            content : <PhysicianBottomSheet physician = {item} isOpenEditable = {isOpenEditable}/>
-        })
+        // modal.openModal('BottomSheetModal',{
+        //     content : <PhysicianBottomSheet physician = {item} isOpenEditable = {isOpenEditable}/>
+        // })
+        props.navigation.navigate('PhysicianPage', { initial: false, physician: item, isEdit: isOpenEditable });
     }
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -148,7 +148,7 @@ const Physicians = (props) => {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -172,27 +172,27 @@ const Physicians = (props) => {
 
     const fetchPhysiciansData = (pagePosition) => {
 
-        let currentPosition = pagePosition ? pagePosition  : 1;
+        let currentPosition = pagePosition ? pagePosition : 1;
         setCurrentPagePosition(currentPosition);
 
         setFetchingData(true);
         getPhysicians(searchValue, recordsPerPage, currentPosition)
             .then(physicianResult => {
                 const { data = [], pages = 0 } = physicianResult
-                
-                if(pages === 1){
+
+                if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
-                }else if(currentPosition === 1 ){
+                } else if (currentPosition === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(false);
-                }else if(currentPosition === pages){
+                } else if (currentPosition === pages) {
                     setNextDisabled(true);
                     setPreviousDisabled(false);
-                }else if(currentPosition < pages){
+                } else if (currentPosition < pages) {
                     setNextDisabled(false);
                     setPreviousDisabled(false)
-                }else{
+                } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
@@ -213,7 +213,7 @@ const Physicians = (props) => {
             hasCheckBox={true}
             isChecked={selectedPhysiciansId.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => handleOnItemPress(item,false)}
+            onItemPress={() => handleOnItemPress(item, false)}
             itemView={physiciansItem(item)}
         />
     }
@@ -227,18 +227,18 @@ const Physicians = (props) => {
         const { _id = "", surname = "", type = "Neurosurgeon", status = "Active" } = item
         return (
             <>
-                <View style={[styles.item,{}]}>
-                    <Text numberOfLines={1} style={[styles.itemText,{fontSize: 12, color: "#718096"}]}>#{_id}</Text>
-                    <Text numberOfLines={1} style={[styles.itemText,{fontSize: 16, color: "#3182CE"}]}>Dr. {surname}</Text>
+                <View style={[styles.item, {}]}>
+                    <Text numberOfLines={1} style={[styles.itemText, { fontSize: 12, color: "#718096" }]}>#{_id}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText, { fontSize: 16, color: "#3182CE" }]}>Dr. {surname}</Text>
                 </View>
-                <View style={[styles.item,{alignItems:'center'}]}>
-                    <Text numberOfLines={1} style={[styles.itemText,{fontSize: 16, color: '#4E5664'}]}>{type}</Text>
+                <View style={[styles.item, { alignItems: 'center' }]}>
+                    <Text numberOfLines={1} style={[styles.itemText, { fontSize: 16, color: '#4E5664' }]}>{type}</Text>
                 </View>
-                <View style={[styles.item,{alignItems:'center'}]}>
-                    <Text numberOfLines={1} style={[styles.itemText,{fontSize: 14, color: statusColor(status)}]}>{status}</Text>
+                <View style={[styles.item, { alignItems: 'center' }]}>
+                    <Text numberOfLines={1} style={[styles.itemText, { fontSize: 14, color: statusColor(status) }]}>{status}</Text>
                 </View>
-                <View style={[styles.item,{alignItems:'center'}]}>
-                    <PhysicianActionIcon/>
+                <View style={[styles.item, { alignItems: 'center' }]}>
+                    <PhysicianActionIcon />
                 </View>
             </>
         )
@@ -248,12 +248,12 @@ const Physicians = (props) => {
     const getFabActions = () => {
 
         const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
-                <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+            <LongPressWithFeedback pressTimer={700} onLongPress={() => { }}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon />} onPress={() => { }} touchable={false} />
             </LongPressWithFeedback>;
-        const assignActionCase = <ActionItem title={"Assign Case"} icon={<AssignIcon/>} onPress={()=>{}}/>;
-        const createActionWorkItem = <ActionItem title={"Add Work Item"} icon={<AddIcon/>} onPress={ openCreateNewWorkItem }/>;
-        const createActionPhysician = <ActionItem title={"Add Physician"} icon={<AddIcon/>} onPress={ openCreatePhysicians }/>;
+        const assignActionCase = <ActionItem title={"Assign Case"} icon={<AssignIcon />} onPress={() => { }} />;
+        const createActionWorkItem = <ActionItem title={"Add Work Item"} icon={<AddIcon />} onPress={openCreateNewWorkItem} />;
+        const createActionPhysician = <ActionItem title={"Add Physician"} icon={<AddIcon />} onPress={openCreatePhysicians} />;
 
 
         return <ActionContainer
@@ -308,7 +308,7 @@ const Physicians = (props) => {
     let physiciansToDisplay = [...physicians];
     // physiciansToDisplay = physiciansToDisplay.slice(currentPageListMin, currentPageListMax);
 
-    return(
+    return (
         <NavPage
             isFetchingData={isFetchingData}
             onRefresh={handleDataRefresh}
@@ -325,20 +325,20 @@ const Physicians = (props) => {
             currentPage={currentPagePosition}
             goToNextPage={goToNextPage}
             goToPreviousPage={goToPreviousPage}
-            isDisabled = {isFloatingActionDisabled}
-            toggleActionButton = {toggleActionButton}
-            hasPaginator = {true}
-            hasActionButton = {true}
-            hasActions = {true}
-            isNextDisabled = {isNextDisabled}
-            isPreviousDisabled = {isPreviousDisabled}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
+            hasPaginator={true}
+            hasActionButton={true}
+            hasActions={true}
+            isNextDisabled={isNextDisabled}
+            isPreviousDisabled={isPreviousDisabled}
         />
     )
 };
 
 const mapStateToProps = (state) => {
 
-    const physicians = state.physicians.map( item => {
+    const physicians = state.physicians.map(item => {
         return {
             ...item,
             // type : 'Neurosurgeon',
@@ -360,9 +360,9 @@ export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Physician
 
 const styles = StyleSheet.create({
     item: {
-        flex:1
+        flex: 1
     },
-    itemText:{
+    itemText: {
 
     },
     footer: {

@@ -9,12 +9,16 @@ import BottomSheetContainer from '../common/BottomSheetContainer';
 import { getAppointments } from "../../api/network";
 import PaginatedSchedule from "../PaginatedSchedule"
 import { colors } from "../../styles";
-import ScheduleDisplayComponent from "../ScheduleDisplay/ScheduleDisplayComponent";
 import { getPhysicianById, updatePhysician } from "../../api/network";
 import { updatePhysicianRecord } from "../../redux/actions/physiciansActions";
 import { connect } from 'react-redux';
+import { PageContext } from "../../contexts/PageContext";
+import DetailsPage from "../common/DetailsPage/DetailsPage";
+import TabsContainer from "../common/Tabs/TabsContainerComponent";
 
-function PhysicianBottomSheet({ physician, isOpenEditable }) {
+function PhysicianPage({ route, navigation }) {
+    const { physician, isOpenEditable } = route.params;
+
     const currentTabs = ["Details", "Case Files", "Custom Procedures", "Schedule"];
     const {
         _id,
@@ -37,6 +41,7 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
     const [isEditMode, setEditMode] = useState(isOpenEditable);
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
+    const [pageState, setPageState] = useState({});
 
 
     const [fields, setFields] = useState({
@@ -74,7 +79,7 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
                 address: removeIds(fields['address']),
                 emergencyContact: removeIds(fields['emergencyContact'])
             }
-            setSelectedPhysician({...fieldsObject, _id})
+            setSelectedPhysician({ ...fieldsObject, _id })
             updatePhysicianFn(_id, fieldsObject)
         }
     }
@@ -89,32 +94,36 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
         })
     };
 
+    const backTapped = () => {
+        navigation.navigate("Physicians");
+    }
+
     // ##### Helper functions
 
     const removeIds = (array) => {
         let updatedArray = array.map(obj => {
             let newObj = obj
             delete newObj['_id']
-            return {...newObj}
+            return { ...newObj }
         })
 
         return updatedArray
     }
 
     const getTabContent = (selectedTab) => {
-        const {cases = [], procedures = []} = selectedPhysician
+        const { cases = [], procedures = [] } = selectedPhysician
         switch (selectedTab) {
             case "Details":
                 return editableTab === 'Details' && isEditMode ?
                     <EditablePhysiciansDetailsTab
                         fields={fields}
-                        onFieldChange={onFieldChange}/>
+                        onFieldChange={onFieldChange} />
                     :
-                    <PhysiciansDetailsTab physician={selectedPhysician}/>
+                    <PhysiciansDetailsTab physician={selectedPhysician} />
             case "Case Files":
-                return <CaseFilesTab cases={cases}/>;
+                return <CaseFilesTab cases={cases} />;
             case "Custom Procedures":
-                return <CustomProceduresTab procedures={procedures}/>;
+                return <CustomProceduresTab procedures={procedures} />;
             case "Schedule":
                 return <PaginatedSchedule ID={physician._id} isPhysician={true} />
             default:
@@ -125,6 +134,7 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
 
     const fetchPhysician = (id) => {
         setFetching(true);
+        setPageLoading(true);
         getPhysicianById(id)
             .then(data => {
                 setSelectedPhysician(data)
@@ -135,9 +145,19 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
                 //TODO handle error cases.
             })
             .finally(_ => {
+                setPageLoading(false);
                 setFetching(false)
             })
     };
+
+    const setPageLoading = (value) => {
+        setPageState({
+            ...pageState,
+            isLoading: value,
+            isEdit: false
+        })
+    }
+
 
     const updatePhysicianFn = (id, data) => {
         updatePhysician(id, data)
@@ -154,25 +174,68 @@ function PhysicianBottomSheet({ physician, isOpenEditable }) {
     }
 
     return (
-        <BottomSheetContainer
-            isFetching={isFetching}
-            overlayId={_id}
-            overlayTitle={name}
-            onTabPressChange={onTabPress}
-            currentTabs={currentTabs}
-            selectedTab={currentTab}
-            isEditMode={isEditMode}
-            onEditPress={onEditPress}
-            overlayContent={getTabContent(currentTab)}
-        />
+        // <BottomSheetContainer
+        //     isFetching={isFetching}
+        //     overlayId={_id}
+        //     overlayTitle={name}
+        //     onTabPressChange={onTabPress}
+        //     currentTabs={currentTabs}
+        //     selectedTab={currentTab}
+        //     isEditMode={isEditMode}
+        //     onEditPress={onEditPress}
+        //     overlayContent={getTabContent(currentTab)}
+        // />
+        <>
+            <PageContext.Provider value={{ pageState, setPageState }}>
+                <DetailsPage
+                    title={name}
+                    subTitle={``}
+                    onBackPress={backTapped}
+                    pageTabs={
+                        <TabsContainer
+                            tabs={currentTabs}
+                            selectedTab={currentTab}
+                            onPressChange={onTabPress}
+                        />
+                    }
+                >
+
+                    <PhysicianPageContent
+                        overlayContent={getTabContent(currentTab)}
+
+                    />
+
+
+                </DetailsPage>
+            </PageContext.Provider>
+        </>
     );
 }
 
-PhysicianBottomSheet.propTypes = {};
-PhysicianBottomSheet.defaultProps = {};
+PhysicianPage.propTypes = {};
+PhysicianPage.defaultProps = {};
 
 const mapDispatcherToProp = {
     updatePhysicianRecord
 };
 
-export default connect(null, mapDispatcherToProp)(PhysicianBottomSheet)
+export default connect(null, mapDispatcherToProp)(PhysicianPage)
+
+function PhysicianPageContent({
+    overlayContent,
+
+}) {
+
+
+
+    return (
+        <>
+            {
+                overlayContent
+            }
+
+        </>
+    )
+
+}
+

@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useContext } from "react";
 import Paginator from "./Paginator";
 import {
   StyleSheet,
@@ -7,6 +7,23 @@ import {
   TouchableOpacity,
 } from "react-native";
 import SvgIcon from "../../../../assets/SvgIcon";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+
+const PaginatorContainer = styled.View`
+width:300px;
+display:flex;
+align-self:center;
+margin-top:10px;
+margin-bottom:40px;
+padding-left:10px;
+padding-right: 10px,
+padding-top: 12px,
+padding-bottom: 12px,
+border-radius: 32px,
+background-color: ${ ({ theme }) => theme.colors['--default-shade-white']},
+box-shadow : 0px 4px 6px rgba(0, 0, 0, 0.06);
+`;
 
 const SchedulePaginator = ({
   date = new Date(),
@@ -15,7 +32,7 @@ const SchedulePaginator = ({
 }) => {
 
 
-
+  const theme = useTheme();
 
 
 
@@ -41,9 +58,9 @@ const SchedulePaginator = ({
 const styles = StyleSheet.create({
   container: {
     width: 300,
-    position: "absolute",
-    top: 900,
-    left: 190,
+    alignSelf: "center",
+    marginTop: 10,
+    marginBottom: 40,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 12,
