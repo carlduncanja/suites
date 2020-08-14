@@ -39,7 +39,6 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
 
     const onStartTimeUpdated = (_, date) => {
         const newStartTime = moment(date)
-
         onFieldsUpdated({
             ...fields,
             startTime: newStartTime.toDate(),

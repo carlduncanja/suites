@@ -49,7 +49,7 @@ const FrameProcedureCard = ({
                         frameTitle={`${title} - ${subject}`}
                         ActionComponent={
                             <IconButton
-                                Icon={<WasteIcon/>}
+                                Icon={<WasteIcon strokeColor={!isEdit ? "#B3BDC6" : "#C53030" }/>}
                                 onPress={onRemoveProcedure}
                                 disabled={isEdit}
                             />
