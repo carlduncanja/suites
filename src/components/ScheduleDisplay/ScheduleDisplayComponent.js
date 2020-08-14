@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
 
         flexDirection: 'row',
         // backgroundColor: '#E3E8EF',
-        paddingStart: 20,
+        paddingStart: 10,
     },
     timeLineContainer: {
         // position: 'absolute',

@@ -1,24 +1,31 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator } from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import General from '../OverlayTabs/General';
 import EditableEquipmentDetails from '../OverlayTabs/EditableEquipmentDetails';
 import moment from 'moment';
-import {colors} from "../../styles";
+import { colors } from "../../styles";
 import { getEquipmentById } from "../../api/network";
 import { formatDate } from '../../utils/formatter';
 import BottomSheetContainer from '../common/BottomSheetContainer';
+import { PageContext } from "../../contexts/PageContext";
+import DetailsPage from "../common/DetailsPage/DetailsPage";
+import TabsContainer from "../common/Tabs/TabsContainerComponent";
+import SvgIcon from "../../../assets/SvgIcon";
 
-function EquipmentBottomSheet({equipment, isOpenEditable}) {
+function EquipmentItemPage({ route, navigation }) {
 
-    // console.log("Equipment:", equipment)
+    const { equipment, isOpenEditable, group } = route.params;
+
+
+    console.log("Equipment group has:", group);
     const testData = {
-        description : "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
+        description: "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
         assigned: "Dr.Mansingh",
-        status : equipment.status,
-        supplier : 'Medical Suppliers Ltd.',
-        usage : '12 Hours',
-        availableOn : formatDate(equipment.nextAvailable,"DD/MM/YYYY")
+        status: equipment.status,
+        supplier: 'Medical Suppliers Ltd.',
+        usage: '12 Hours',
+        availableOn: formatDate(equipment.nextAvailable, "DD/MM/YYYY")
     }
 
     const currentTabs = ["Details"];
@@ -30,38 +37,39 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
     const [isEditMode, setEditMode] = useState(isOpenEditable);
     const [editableTab, setEditableTab] = useState()
     const [isFetching, setFetching] = useState(false);
+    const [pageState, setPageState] = useState({});
 
     const {
         // supplier id
         _id = "",
         name,
         // supplier name
-        supplier, 
+        supplier,
         assigned,
         status,
         usage,
         availableOn,
-        categories, 
+        categories,
         description
     } = equipment
 
     const [fields, setFields] = useState({
         // supplier name
-        supplier : supplier, 
-        assigned : assigned,
-        status : status ,
-        usage : usage,
-        availableOn : availableOn,
-        categories : categories, 
-        description : description
+        supplier: supplier,
+        assigned: assigned,
+        status: status,
+        usage: usage,
+        availableOn: availableOn,
+        categories: categories,
+        description: description
     })
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        setTimeout(()=>{
+        setTimeout(() => {
             fetchEquipment(_id)
-        },200)
-        
+        }, 200)
+
     }, []);
 
     // ##### Event Handlers
@@ -82,6 +90,20 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
         setEditMode(!isEditMode)
     }
 
+    const backTapped = () => {
+        navigation.navigate("Equipment");
+    }
+
+    const setPageLoading = (value) => {
+        setPageState({
+            ...pageState,
+            isLoading: value,
+            isEdit: false
+        })
+    }
+
+
+
     // ##### Helper functions
 
     const getTabContent = (selectedTab) => {
@@ -89,20 +111,20 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
         switch (selectedTab) {
             case "Details":
                 return editableTab === 'Details' && isEditMode ?
-                    <EditableEquipmentDetails fields = {fields} onFieldChange = {onFieldChange}/>
+                    <EditableEquipmentDetails fields={fields} onFieldChange={onFieldChange} />
                     :
-                    <General equipment = {selectedEquipment}/>;
-            default :
-                return <View/>
+                    <General equipment={selectedEquipment} />;
+            default:
+                return <View />
         }
     };
 
-    const overlayContent = <View style={{flex: 1, padding:30}}>
+    const overlayContent = <View style={{ flex: 1, padding: 30 }}>
         {getTabContent(currentTab)}
     </View>;
 
     const fetchEquipment = (id) => {
-        setFetching(true);
+        setPageLoading(true);
         getEquipmentById(id)
             .then(data => {
                 // console.log("Data:", data)
@@ -114,21 +136,21 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setFetching(false)
+                setPageLoading(false);
             })
     };
     return (
-        <BottomSheetContainer
-            isFetching = {isFetching}
-            overlayId={_id}
-            overlayTitle={name}
-            onTabPressChange={onTabPress}
-            currentTabs={currentTabs}
-            selectedTab={currentTab}
-            isEditMode={isEditMode}
-            onEditPress = {onEditPress}
-            overlayContent={getTabContent(currentTab)}
-        />
+        // <BottomSheetContainer
+        //     isFetching={isFetching}
+        //     overlayId={_id}
+        //     overlayTitle={name}
+        //     onTabPressChange={onTabPress}
+        //     currentTabs={currentTabs}
+        //     selectedTab={currentTab}
+        //     isEditMode={isEditMode}
+        //     onEditPress={onEditPress}
+        //     overlayContent={getTabContent(currentTab)}
+        // />
         // <View style={{flex: 1}}>
         //     {
         //         isFetching
@@ -148,10 +170,35 @@ function EquipmentBottomSheet({equipment, isOpenEditable}) {
         //             />
         //     }
         // </View>
+        <>
+            <PageContext.Provider value={{ pageState, setPageState }}>
+                <DetailsPage
+                    title={group.name}
+                    hasIcon={<SvgIcon iconName="doctorArrow" strokeColor="#718096" />}
+                    isSpecialHeader={true}
+                    subTitle={name}
+                    onBackPress={backTapped}
+                    pageTabs={
+                        <TabsContainer
+                            tabs={currentTabs}
+                            selectedTab={currentTab}
+                            onPressChange={onTabPress}
+                        />
+                    }
+                >
+
+                    {getTabContent(currentTab)}
+
+
+
+
+                </DetailsPage>
+            </PageContext.Provider>
+        </>
     );
 }
 
-EquipmentBottomSheet.propTypes = {};
-EquipmentBottomSheet.defaultProps = {};
+EquipmentItemPage.propTypes = {};
+EquipmentItemPage.defaultProps = {};
 
-export default EquipmentBottomSheet;
+export default EquipmentItemPage;

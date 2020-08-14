@@ -22,9 +22,9 @@ function ConfirmationComponent({
     position: relative;
     background-color: white;
     border-radius: 8px;
-    width: 600px;
-    height: 370px;
-    padding-bottom: 60px;
+    width: 440px;
+    height: 267px;
+    padding-bottom: 100px;
     box-shadow: ${theme.shadow["--shadow-lg"]};
   `;
 
@@ -34,31 +34,34 @@ function ConfirmationComponent({
   `;
 
   const HeadingContainer = styled.View`
-    display: flex;
-    flex: 1;
+    height:40px;
+    align-items:center;
     flex-direction: row;
     justify-content: space-between;
     padding-left: 12px;
-    padding-top: 8px;
+    padding-top: 10px;
     padding-right: 2px;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     border-bottom-width: 0.25px;
     border-bottom-color: ${theme.colors["--color-gray-1000"]};
   `;
 
   const TextHeaderContainer = styled.Text`
-    font: ${theme.font["--text-2xl-medium"]};
+    font-size:16px;
+    font-weight:600;
+    line-height: 16px;
     color: ${theme.colors["--color-gray-600"]};
-    margin-right: 380px;
+    margin-right: 260px;
   `;
 
   const MessageContainer = styled.Text`
+  display:flex;
     line-height: 20px;
-    font-size: 21px;
+    font-size: 17px;
     font-weight: normal;
     color: ${theme.colors["--color-gray-700"]};
-    margin-top: 100px;
     align-self: center;
+    margin-top:80px;
   `;
 
   const CancelButtonContainer = styled.TouchableOpacity`
@@ -67,18 +70,18 @@ function ConfirmationComponent({
     border-radius: 10px;
     border-width: 1px;
     background-color: ${theme.colors["--color-gray-300"]};
-    margin-right: 310px;
+    margin-right: 230px;
     margin-left: 20px;
-    width: 130px;
-    height: 55px;
+    width: 99px;
+    height: 40px;
     border-color: ${theme.colors["--default-shade-white"]};
   `;
 
   const ActionButtonContainer = styled.TouchableOpacity`
     background-color: ${theme.colors["--color-blue-600"]};
     color: ${theme.colors["--default-shade-white"]};
-    width: 120px;
-    height: 55px;
+    width: 76px;
+    height: 40px;
     padding: 10px;
     align-items: center;
     border-radius: 10px;
@@ -87,12 +90,15 @@ function ConfirmationComponent({
   `;
 
   const GeneralText = styled.Text`
-    font-size: 25px;
+    font-size: 16px;
+    line-height: 16px;
     font-weight: bold;
+    align-self:center;
+   
   `;
 
   const IconContainer = styled.View`
-  margin-top:50px;
+  margin-top:20px;
   align-self:center;
 
   `;
@@ -100,20 +106,23 @@ function ConfirmationComponent({
 
   const DeciderButtonContainer = styled.TouchableOpacity`
   align-self:center;
+  align-items:center;
   border-radius: 10px;
-  margin-top:50px;
-  padding:10px;
+  margin-top:20px;
+  padding:15px;
   background-color:${theme.colors["--color-blue-600"]};
   color:${theme.colors["--default-shade-white"]};
-  width:550px;
+  width:409px;
+  height:46px;
 
   `;
 
   const AlertText = styled.Text`
     align-self:center;
-    font:${theme.font["--text-2xl-medium"]};
+    font-size:18px;
+    font-weight:bold;
     color:${theme.colors["--color-gray-800"]};
-    margin-top:50px;
+    margin-top:25px;
 
   `;
 
@@ -123,7 +132,7 @@ function ConfirmationComponent({
 
   const ButtonView = styled.View`
     flex-direction: row;
-    margin-top: 120px;
+    margin-top: 60px;
   `;
 
   const typeDecipher = () => {

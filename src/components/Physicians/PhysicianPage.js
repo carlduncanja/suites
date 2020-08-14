@@ -133,7 +133,7 @@ function PhysicianPage({ route, navigation }) {
 
 
     const fetchPhysician = (id) => {
-        setFetching(true);
+
         setPageLoading(true);
         getPhysicianById(id)
             .then(data => {
@@ -146,7 +146,7 @@ function PhysicianPage({ route, navigation }) {
             })
             .finally(_ => {
                 setPageLoading(false);
-                setFetching(false)
+
             })
     };
 
@@ -200,10 +200,9 @@ function PhysicianPage({ route, navigation }) {
                     }
                 >
 
-                    <PhysicianPageContent
-                        overlayContent={getTabContent(currentTab)}
+                    {getTabContent(currentTab)}
 
-                    />
+
 
 
                 </DetailsPage>
@@ -220,22 +219,4 @@ const mapDispatcherToProp = {
 };
 
 export default connect(null, mapDispatcherToProp)(PhysicianPage)
-
-function PhysicianPageContent({
-    overlayContent,
-
-}) {
-
-
-
-    return (
-        <>
-            {
-                overlayContent
-            }
-
-        </>
-    )
-
-}
 

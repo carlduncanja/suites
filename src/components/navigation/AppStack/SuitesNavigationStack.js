@@ -44,6 +44,7 @@ import OrderNavigationStack from "./OrderNavigationStack";
 import SupplierNavigationStack from "./SupplierNavigation Stack";
 import StorageNavigationStack from "./StorageNavigationStack";
 import PhysicianNavigationStack from "./PhysiciansNavigationStack";
+import EquipmentNavigationStack from "./EquipmentNavigationStack";
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
@@ -92,7 +93,7 @@ export const SuitesNavigationStack = () => {
 
             <SuitesNavigator.Screen
                 name="Equipment"
-                component={Equipment}
+                component={EquipmentNavigationStack}
                 initialParams={{
                     icon: EquipmentIcon,
                     tabName: 'Equipment',

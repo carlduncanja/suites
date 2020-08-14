@@ -59,7 +59,7 @@ function StoragePage({ route, navigation }) {
 
 
     const fetchStorageItem = (id) => {
-        setFetching(true);
+
         setPageLoading(true);
         getStorageById(id)
             .then(data => {
@@ -70,7 +70,7 @@ function StoragePage({ route, navigation }) {
                 // TODO handle error
             })
             .finally(_ => {
-                setFetching(false);
+
                 setPageLoading(false);
             })
     };
@@ -134,10 +134,9 @@ function StoragePage({ route, navigation }) {
                     }
                 >
 
-                    <StoragePageContent
-                        overlayContent={getTabContent(currentTab)}
+                    {getTabContent(currentTab)}
 
-                    />
+
 
 
                 </DetailsPage>
@@ -151,20 +150,3 @@ StoragePage.defaultProps = {};
 
 export default StoragePage;
 
-function StoragePageContent({
-    overlayContent,
-
-}) {
-
-
-
-    return (
-        <>
-            {
-                overlayContent
-            }
-
-        </>
-    )
-
-}

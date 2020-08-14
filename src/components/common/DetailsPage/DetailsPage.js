@@ -35,6 +35,8 @@ const DetailsPageContentContainer = styled.View`
 
 function DetailsPage({
     title = "__",
+    hasIcon = null,
+    isSpecialHeader = false,
     subTitle = "__",
     onBackPress = () => {
     },
@@ -47,6 +49,8 @@ function DetailsPage({
     const { pageState } = useContext(PageContext);
     const { isLoading } = pageState;
 
+
+
     return (
         <DetailsPageWrapper theme={theme}>
             <DetailsPageContainer theme={theme}>
@@ -56,6 +60,8 @@ function DetailsPage({
                         : <>
                             <PageHeader
                                 title={title}
+                                hasIcon={hasIcon}
+                                isSpecialHeader={isSpecialHeader}
                                 subTitle={subTitle}
                                 onBack={
                                     onBackPress}

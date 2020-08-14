@@ -61,7 +61,6 @@ function SupplierPage({ route, navigation }) {
 
 
     const fetchProducts = () => {
-        setFetching(true);
         setPageLoading(true);
         getSupplierProducts(_id, "")
             .then(productsData => {
@@ -75,7 +74,6 @@ function SupplierPage({ route, navigation }) {
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setFetching(false);
                 setPageLoading(false);
             })
     };
@@ -208,10 +206,10 @@ function SupplierPage({ route, navigation }) {
                     }
                 >
 
-                    <SupplierPageContent
-                        overlayContent={getTabContent(currentTab)}
 
-                    />
+                    {getTabContent(currentTab)}
+
+
 
 
                 </DetailsPage>
@@ -263,20 +261,3 @@ const styles = StyleSheet.create({
     },
 })
 
-function SupplierPageContent({
-    overlayContent,
-
-}) {
-
-
-
-    return (
-        <>
-            {
-                overlayContent
-            }
-
-        </>
-    )
-
-}

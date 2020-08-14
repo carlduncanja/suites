@@ -5,6 +5,7 @@ import moment from 'moment';
 import SchedulePaginator from "./common/Paginators/SchedulePaginator";
 import ScheduleDisplayComponent from "./ScheduleDisplay/ScheduleDisplayComponent"
 import { set } from 'numeral';
+import { View } from 'react-native-animatable';
 
 function PaginatedSchedule({ ID, isPhysician }) {
 
@@ -57,16 +58,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
 
 
     const goToPreviousDayApp = () => {
-        // let today = new Date();
-        // console.log(today.setDate(today.getDate() - 1));
-        // console.log(today);
 
-        // setdateObj(today);
-
-        //setdateObj(dateObj);
-
-
-        // setalteredDate(dateFormatter(dateObj));
 
         settestDate(dateObj.setDate(dateObj.getDate() - 1));
 
@@ -91,14 +83,8 @@ function PaginatedSchedule({ ID, isPhysician }) {
 
     const goToNextDayApp = () => {
 
-
-
-
         dateObj.setDate(dateObj.getDate() + 1);
 
-        // setdateObj(dateObj);
-
-        console.log("what is in altered date:", alteredDate);
         setalteredDate(dateFormatter(dateObj));
 
 
@@ -112,7 +98,6 @@ function PaginatedSchedule({ ID, isPhysician }) {
 
         getAppointments("", !isPhysician ? id : "", datePassed, datePassed, "", !isPhysician ? "" : id)
             .then((data) => {
-                console.log("the date am getting is:", datePassed);
                 //console.log("Objected values:", Object.values(data));
                 console.log("The appointment data received is:", data);
                 relevantAppointment.length = 0;
@@ -141,9 +126,11 @@ function PaginatedSchedule({ ID, isPhysician }) {
     return (
         <>
 
+
             <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate} />
 
             <SchedulePaginator date={alteredDate} goToPreviousDay={goToPreviousDayApp} goToNextDay={goToNextDayApp} />
+
 
         </>
 

@@ -1,9 +1,12 @@
-import React, {Component, useContext, useState} from 'react';
-import styled, {css} from "@emotion/native";
-import {useTheme} from "emotion-theming";
+import React, { Component, useContext, useState } from 'react';
+import styled, { css } from "@emotion/native";
+import { useTheme } from "emotion-theming";
 import Button from "../../common/Buttons/Button";
 import SmallLeftTriangle from "../../../../assets/svg/smallLeftTriangle";
-import {PageContext} from "../../../contexts/PageContext";
+import { PageContext } from "../../../contexts/PageContext";
+import SvgIcon from "../../../../assets/SvgIcon";
+import { View } from 'react-native-animatable';
+import { isEmpty } from 'lodash'
 
 
 const HeaderWrapper = styled.View`
@@ -22,14 +25,16 @@ const HeaderContainer = styled.View`
 
 
 const TextContainer = styled.View`
-    align-self:center;
+    margin-top:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "10px"};
+    align-self:${({ isSpecialHeader }) => !isSpecialHeader ? "center" : "baseline"};
     flex-direction: row;
-    align-items:baseline;
+    align-items:${({ isSpecialHeader }) => !isSpecialHeader ? "baseline" : "center"};
 `;
 
 const HeaderText = styled.Text`
-    font:${({theme}) => theme.font["--text-xl-medium"]};
-    color:${({theme}) => theme.colors["--accent-button"]};
+    margin-bottom:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "10px"};
+    font:${({ theme }) => theme.font["--text-xl-medium"]};
+    color:${({ theme }) => theme.colors["--accent-button"]};
 `;
 
 const IconContainer = styled.TouchableOpacity`
@@ -38,8 +43,8 @@ const IconContainer = styled.TouchableOpacity`
 
 const SpecialText = styled.Text`
     margin-left: 8px;
-    font:${({theme}) => theme.font["--text-sm-medium"]};
-    color:${({theme}) => theme.colors["--company"]};
+    font:${({ theme }) => theme.font["--text-sm-medium"]};
+    color:${({ theme }) => theme.colors["--company"]};
 `;
 
 const EditButtonWrapper = styled.View`
@@ -53,22 +58,23 @@ const EditButtonContainer = styled.View`
   width: 100%; 
   border-radius : 6px;
   padding: 6px 8px;
-  background-color : ${({theme, isEditMode}) => isEditMode ?  theme.colors['--default-shade-white']:  theme.colors['--accent-button']};
+  background-color : ${({ theme, isEditMode }) => isEditMode ? theme.colors['--default-shade-white'] : theme.colors['--accent-button']};
   align-items : center;
   justify-content : center;
 `
 
-const EditModeContainer = styled.Text(({theme}) => ({
+const EditModeContainer = styled.Text(({ theme }) => ({
     ...theme.font['--text-base-medium'],
     color: theme.colors['--color-white'],
     alignItems: 'center',
     textAlign: 'center'
 }))
 
-function PageHeader({onBack, title = "User", subTitle = "(200 items)", isOpenEditable = false}) {
+function PageHeader({ onBack, title = "User", subTitle = "(200 items)", hasIcon, isSpecialHeader = false, isOpenEditable = false }) {
     const theme = useTheme();
 
-    const {pageState, setPageState} = useContext(PageContext)
+
+    const { pageState, setPageState } = useContext(PageContext)
 
     const onEditPress = () => {
         setPageState({
@@ -77,7 +83,7 @@ function PageHeader({onBack, title = "User", subTitle = "(200 items)", isOpenEdi
         })
     }
 
-    const {isEditMode} = pageState;
+    const { isEditMode } = pageState;
 
     const buttonProps = !isEditMode
         ? {
@@ -91,6 +97,14 @@ function PageHeader({onBack, title = "User", subTitle = "(200 items)", isOpenEdi
             title: "Done",
         }
 
+    const showIcon = () => {
+        return (
+
+            <SvgIcon iconName="doctorArrow" strokeColor="#718096" />
+
+        )
+    }
+
 
     return (
         <HeaderWrapper theme={theme} isEditMode={isEditMode}>
@@ -98,13 +112,15 @@ function PageHeader({onBack, title = "User", subTitle = "(200 items)", isOpenEdi
 
 
                 {
-                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle/></IconContainer>
+                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle /></IconContainer>
                 }
 
                 {
                     !isEditMode &&
-                    <TextContainer theme={theme}>
-                        <HeaderText theme={theme}>{title}</HeaderText>
+                    <TextContainer theme={theme} isSpecialHeader={isSpecialHeader}>
+                        <HeaderText theme={theme} isSpecialHeader={isSpecialHeader}>{title}</HeaderText>
+                        {!isEmpty(hasIcon) ? <View style={{ marginLeft: 15, marginRight: 10, marginBottom: 10 }}>
+                            {hasIcon}</View> : <View />}
                         <SpecialText theme={theme}>{subTitle}</SpecialText>
                     </TextContainer>
                 }
@@ -118,7 +134,7 @@ function PageHeader({onBack, title = "User", subTitle = "(200 items)", isOpenEdi
 
                 <EditButtonWrapper theme={theme}>
                     <EditButtonContainer theme={theme} isEditMode={isEditMode}>
-                        <Button {...buttonProps} buttonPress={onEditPress}/>
+                        <Button {...buttonProps} buttonPress={onEditPress} />
                     </EditButtonContainer>
                 </EditButtonWrapper>
 

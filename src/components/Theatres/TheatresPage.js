@@ -161,7 +161,8 @@ function TheatresPage({ route, navigation }) {
 
 
     const fetchTheatre = (id) => {
-        setFetching(true);
+
+        setPageLoading(true);
         getTheatreById(id)
             .then(data => {
                 setTheatre(data)
@@ -171,7 +172,7 @@ function TheatresPage({ route, navigation }) {
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setFetching(false)
+                setPageLoading(false);
             })
     };
 
@@ -205,10 +206,9 @@ function TheatresPage({ route, navigation }) {
                     }
                 >
 
-                    <TheatrePageContent
-                        overlayContent={getOverlayScreen(currentTab)}
+                    {getOverlayScreen(currentTab)}
 
-                    />
+
 
 
                 </DetailsPage>
@@ -221,21 +221,5 @@ TheatresPage.propTypes = {};
 TheatresPage.defaultProps = {};
 
 export default TheatresPage;
-function TheatrePageContent({
-    overlayContent,
 
-}) {
-
-
-
-    return (
-        <>
-            {
-                overlayContent
-            }
-
-        </>
-    )
-
-}
 

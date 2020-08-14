@@ -10,7 +10,6 @@ import {
 import Page from "../components/common/Page/Page";
 import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
 import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
-import EquipmentBottomSheet from "../components/Equipment/EquipmentBottomSheet";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
@@ -91,10 +90,12 @@ const Equipment = (props) => {
   const [currentPagePosition, setCurrentPagePosition] = useState(1);
   const [isNextDisabled, setNextDisabled] = useState(false);
   const [isPreviousDisabled, setPreviousDisabled] = useState(true);
+  const [groupNameSelected, setGroupNameSelected] = useState({});
 
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState({});
+  let groupNameChoice = {};
 
   const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([]);
   const [selectedTypesIds, setSelectedTypesIds] = useState([]);
@@ -178,15 +179,16 @@ const Equipment = (props) => {
     setSelectedEquipmentIds(updatedEquipments);
   };
 
-  const handleOnItemPress = (item, isOpenEditable) => {
-    modal.openModal("BottomSheetModal", {
-      content: (
-        <EquipmentBottomSheet
-          equipment={item}
-          isOpenEditable={isOpenEditable}
-        />
-      ),
-    });
+  const handleOnItemPress = (item, isOpenEditable, type) => {
+    // modal.openModal("BottomSheetModal", {
+    //   content: (
+    //     <EquipmentBottomSheet
+    //       equipment={item}
+    //       isOpenEditable={isOpenEditable}
+    //     />
+    //   ),
+    // });
+    props.navigation.navigate("EquipmentItemPage", { initial: false, equipment: item, isOpenEditable: isOpenEditable, group: type });
   };
 
   const goToNextPage = () => {
@@ -233,7 +235,7 @@ const Equipment = (props) => {
   // ############# Helper functions
   const fetchEquipmentData = (pagePosition) => {
 
-    let currentPosition = pagePosition ? pagePosition  : 1;
+    let currentPosition = pagePosition ? pagePosition : 1;
     setCurrentPagePosition(currentPosition)
 
     setFetchingData(true);
@@ -280,7 +282,6 @@ const Equipment = (props) => {
   const renderEquipmentFn = (item) => {
     const equipments = item.equipments || [];
 
-    // console.log(equipments);
 
     // console.log(equipments);
 
@@ -291,10 +292,13 @@ const Equipment = (props) => {
         equipments.length === 1
           ? "Available"
           : item.equipments.length > 1
-          ? "Multiple"
-          : "Unavailable",
+            ? "Multiple"
+            : "Unavailable",
       nextAvailable: new Date(2020, 12, 12),
     };
+
+
+    //setGroupNameSelected(viewItem);
 
     return (
       <CollapsibleListItem
@@ -302,7 +306,7 @@ const Equipment = (props) => {
         isChecked={selectedTypesIds.includes(item._id)}
         onCheckBoxPress={handleOnCheckBoxPress(item)}
         // onItemPress={() => handleOnItemPress(item, false)}
-        onItemPress={() => {}}
+        onItemPress={() => { }}
         render={(collapse, isCollapsed) =>
           equipmentGroupView(viewItem, collapse, isCollapsed)
         }
@@ -323,19 +327,25 @@ const Equipment = (props) => {
           renderItem={({ item }) => {
             const equipmentGroup = item.items || [];
 
-            // console.log("render children equipment item", item);
+            console.log("render children equipment item has:", viewItem);
+            groupNameChoice = viewItem;
+
+
             const equipmentItem = {
+
               assigmentName: item.id,
               quantity: equipmentGroup.length,
               status: "...",
               dateAvailable: new Date(),
             };
 
-            const onActionPress = () => {};
+            const onActionPress = () => { };
 
             let pressItem = item.items[0];
+            //setGroupNameSelected(viewItem);
 
             return renderItemView(equipmentItem, pressItem, onActionPress);
+
           }}
         />
       </CollapsibleListItem>
@@ -374,10 +384,10 @@ const Equipment = (props) => {
     return status === "Unavailable"
       ? "#C53030"
       : status === "Multiple"
-      ? "#6B46C1"
-      : status === "Available"
-      ? "#4E5664"
-      : "#4E5664";
+        ? "#6B46C1"
+        : status === "Available"
+          ? "#4E5664"
+          : "#4E5664";
   };
 
   const renderItemView = (item, actionItem, onActionPress) => {
@@ -388,7 +398,7 @@ const Equipment = (props) => {
         hasCheckBox={true}
         isChecked={selectedEquipmentIds.includes(_id)}
         onCheckBoxPress={handleOnItemCheckboxPress(actionItem)}
-        onItemPress={() => handleOnItemPress(actionItem, false)}
+        onItemPress={() => handleOnItemPress(actionItem, false, groupNameChoice)}
       />
     );
   };
@@ -397,39 +407,39 @@ const Equipment = (props) => {
     { assigmentName, quantity, status, dateAvailable },
     onActionPress
   ) => (
-    <>
-      {/* <View style={{width: 40, backgroundColor:'yellow'}}/> */}
-      <View
-        style={{
-          flex: 2,
-          flexDirection: "row",
-          alignment: "flex-start",
-          ...styles.rowBorderRight,
-        }}
-      >
-        <SvgIcon iconName="doctorArrow" strokeColor="#718096" />
-        <Text style={{ color: "#3182CE", fontSize: 16, marginLeft: 18 }}>
-          {assigmentName}
-        </Text>
-      </View>
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Text style={{ fontSize: 16, color: "#4E5664" }}>{quantity}</Text>
-      </View>
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Text style={{ fontSize: 14, color: getStatusColor(status) }}>
-          {status}
-        </Text>
-      </View>
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Text style={{ fontSize: 14, color: "#4E5664" }}>
-          {formatDate(dateAvailable, "DD/MM/YYYY")}
-        </Text>
-      </View>
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <IconButton Icon={<AssignIcon />} onPress={onActionPress} />
-      </View>
-    </>
-  );
+      <>
+        {/* <View style={{width: 40, backgroundColor:'yellow'}}/> */}
+        <View
+          style={{
+            flex: 2,
+            flexDirection: "row",
+            alignment: "flex-start",
+            ...styles.rowBorderRight,
+          }}
+        >
+          <SvgIcon iconName="doctorArrow" strokeColor="#718096" />
+          <Text style={{ color: "#3182CE", fontSize: 16, marginLeft: 18 }}>
+            {assigmentName}
+          </Text>
+        </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ fontSize: 16, color: "#4E5664" }}>{quantity}</Text>
+        </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ fontSize: 14, color: getStatusColor(status) }}>
+            {status}
+          </Text>
+        </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ fontSize: 14, color: "#4E5664" }}>
+            {formatDate(dateAvailable, "DD/MM/YYYY")}
+          </Text>
+        </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <IconButton Icon={<AssignIcon />} onPress={onActionPress} />
+        </View>
+      </>
+    );
 
   const equipmentGroupView = (item, onActionPress, isCollapsed) => (
     <>
@@ -460,11 +470,11 @@ const Equipment = (props) => {
 
   const getFabActions = () => {
     const deleteAction = (
-      <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
+      <LongPressWithFeedback pressTimer={700} onLongPress={() => { }}>
         <ActionItem
           title={"Hold to Delete"}
           icon={<WasteIcon />}
-          onPress={() => {}}
+          onPress={() => { }}
           touchable={false}
         />
       </LongPressWithFeedback>
@@ -473,11 +483,11 @@ const Equipment = (props) => {
       <ActionItem
         title={"Assign Equipment"}
         icon={<AssignIcon />}
-        onPress={() => {}}
+        onPress={() => { }}
       />
     );
     const editGroup = (
-      <ActionItem title={"Edit Group"} icon={<EditIcon />} onPress={() => {}} />
+      <ActionItem title={"Edit Group"} icon={<EditIcon />} onPress={() => { }} />
     );
     const createEquipmentType = (
       <ActionItem
@@ -538,7 +548,7 @@ const Equipment = (props) => {
             onCreated={() => {
               handleDataRefresh();
             }}
-            // onCreated={(item) => handleOnItemPress(item, true)}
+          // onCreated={(item) => handleOnItemPress(item, true)}
           />
         ),
         onClose: () => setFloatingAction(false),

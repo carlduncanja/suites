@@ -146,8 +146,18 @@ function OrderItemPage({ route, navigation }) {
 
     // ##### Helper functions
 
+    const setPageLoading = (value) => {
+        setPageState({
+            ...pageState,
+            isLoading: value,
+            isEdit: false
+        })
+    }
+
+
+
     const fetchOrder = async (id) => {
-        setFetching(true);
+        setPageLoading(true);
         getPurchaseOrderById(id)
             .then(data => {
                 const { orders = [] } = data
@@ -160,7 +170,7 @@ function OrderItemPage({ route, navigation }) {
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setFetching(false)
+                setPageLoading(false)
             })
     };
 
@@ -211,10 +221,10 @@ function OrderItemPage({ route, navigation }) {
                     }
                 >
 
-                    <OrderPageContent
-                        overlayContent={getTabContent(currentTab)}
 
-                    />
+                    {getTabContent(currentTab)}
+
+
 
 
                 </DetailsPage>
@@ -241,21 +251,4 @@ const styles = StyleSheet.create({
     },
 })
 
-function OrderPageContent({
-    overlayContent,
-
-}) {
-
-
-
-    return (
-        <>
-            {
-                overlayContent
-            }
-
-        </>
-    )
-
-}
 
