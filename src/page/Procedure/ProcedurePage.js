@@ -13,9 +13,8 @@ import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
 import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 
-import {updateProcedure} from "../../api/network";
+import {updateProcedure, getProcedureById} from "../../api/network";
 import {setProcedureEdit} from "../../redux/actions/procedurePageActions";
-import {getProcedureById} from "../../api/network";
 import {connect} from 'react-redux';
 import {PageContext} from "../../contexts/PageContext";
 import { bindActionCreators } from 'redux';
@@ -241,7 +240,8 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     const updateProcedureCall = (updatedFields) => {
         updateProcedure(_id, updatedFields)
             .then(data => {
-                // fetchProcdure(_id)
+                // getProcedures()
+                fetchProcdure(_id)
                 console.log("Data from db: ", data)
                 // modal.closeAllModals();
                 // setTimeout(() => {onCreated(data)}, 200);

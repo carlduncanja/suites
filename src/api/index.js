@@ -1,10 +1,10 @@
 import axios from "axios";
 
-// const BASE_URL = "http://2d90f82c30ef.ngrok.io/api"; //process.env.SUITES_BASE_URL;
-const BASE_URL = "https://suite-api.azurewebsites.net/api"; //process.env.SUITES_BASE_URL;
+// const BASE_URL = "http://31ab898fbd9d.ngrok.io"; //process.env.SUITES_BASE_URL;
+const BASE_URL = "https://suite-api.azurewebsites.net"; //process.env.SUITES_BASE_URL;
 
 const baseInstance = axios.create({
-    baseURL: BASE_URL,
+    baseURL: `${BASE_URL}/api`,
     // timeout: 15000,
 });
 

@@ -28,16 +28,16 @@ export default () => {
                 name="CreateCase"
                 component={CreateCasePage}
                 options={{
-                    // headerShown: false
-                    headerLeft: (props) => (
-                        <HeaderBackComponent
-                            {...props}
-                        />
-                    ),
-                    headerStyle: {
-                        height: 100,
-                    },
-                    headerTitle: ""
+                    headerShown: false,
+                    // headerLeft: (props) => (
+                    //     <HeaderBackComponent
+                    //         {...props}
+                    //     />
+                    // ),
+                    // headerStyle: {
+                    //     height: 100,
+                    // },
+                    // headerTitle: ""
                 }}
             />
 
@@ -45,17 +45,17 @@ export default () => {
                 name="Case"
                 component={CasePage}
                 options={{
-                    // headerShown: false
-                    headerLeft: (props) => (
-                        <HeaderBackComponent
-                            {...props}
-                        />
-                    ),
-                    headerStyle: {
-                        height: 100,
-  
-                    },
-                    headerTitle: ""
+                    headerShown: false,
+                    // headerLeft: (props) => (
+                    //     <HeaderBackComponent
+                    //         {...props}
+                    //     />
+                    // ),
+                    // headerStyle: {
+                    //     height: 100,
+                    //
+                    // },
+                    // headerTitle: ""
                 }}
             />
 

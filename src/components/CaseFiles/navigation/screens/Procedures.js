@@ -1,16 +1,11 @@
-import React,{useContext} from 'react';
-import { SuitesContext } from '../../../../contexts/SuitesContext';
-import { Details } from '../../OverlayPages/Procedures'
+import React from 'react';
+import ProcedureDetailsContainer from '../../OverlayPages/Procedures/ProcedureDetailsContainer'
 
-const Procedures = ({ procedures ,selectedTab }) => { 
-   
+const Procedures = ({procedures, caseId}) => {
     return (
-        selectedTab === 'Details' ? 
-            <Details tabDetails = {procedures}/>
-            :
-            <Details tabDetails = {procedures}/>        
+        <ProcedureDetailsContainer tabDetails={procedures} caseId={caseId} />
     );
 }
- 
+
 export default Procedures;
 

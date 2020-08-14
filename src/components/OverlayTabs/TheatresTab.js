@@ -119,7 +119,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 
     const getFabActions = () => {
         const deleteAction =
-        <LongPressWithFeedback pressTimer={700} onLongPress={deleteItems}>
+        <LongPressWithFeedback pressTimer={700} onLongPress={()=>{}}>
             <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
         </LongPressWithFeedback>;
         const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={ openAddItem }/>;

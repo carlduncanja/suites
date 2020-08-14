@@ -38,6 +38,7 @@ export const createInvoice = (id) => (quotationId) => `/cases/${id}/quotations/$
 export const suggestedStartTimeEndpoint = '/cases/appointment/suggestions'
 export const validateCaseProcedureEndpoint = '/cases/appointment/isvalid';
 export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${caseId}/quotations/${quotationId}/status`
+export const removeCaseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`
 
 // ##### STORAGE
 export const storageLocationsEndpoint = "/storage-locations";

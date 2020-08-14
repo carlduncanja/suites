@@ -105,7 +105,6 @@ function CasePage({route, addNotification, ...props}) {
 
     const [pageState, setPageState] = useState({})
     const [selectedCase, setSelectedCase] = useState({})
-    const [isFetching, setFetching] = useState(false);
 
     // ############### Lifecycle Methods
     useEffect(() => {
@@ -203,7 +202,7 @@ function CasePage({route, addNotification, ...props}) {
         let floatingAction = [];
 
         console.log("getFabActions: selected tab", selectedTab);
-        console.log("Selected maenu: ", selectedMenuItem)
+        console.log("Selected menu: ", selectedMenuItem)
         if (selectedMenuItem === "Charge Sheet") {
             switch (selectedTab) {
                 case "Consumables": {
@@ -289,7 +288,7 @@ function CasePage({route, addNotification, ...props}) {
                     const addNewProcedure = <ActionItem title={"Add Appointment"} icon={<AddIcon/>}
                                                         onPress={openAddProcedure}/>
                     floatingAction.push(addNewProcedure)
-                    title = "PROCEDURE ACTIONS"
+                    title = "APPOINTMENT ACTIONS"
                     break;
             }
         }
@@ -301,7 +300,6 @@ function CasePage({route, addNotification, ...props}) {
         />
 
     }
-
 
     const onCreateInvoice = (caseId, quotationId) => () => {
         modal.closeAllModals()
@@ -366,7 +364,7 @@ function CasePage({route, addNotification, ...props}) {
     }
     // ############### Data
 
-    const getOverlayContent = (isEditMode) => {
+    const getOverlayContent = () => {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase
         const {medicalInfo = {}} = patient
 
@@ -375,32 +373,27 @@ function CasePage({route, addNotification, ...props}) {
                 return <Patient
                     patient={patient}
                     selectedTab={selectedTab}
-                    isEditMode={isEditMode}
                 />
             case "Medical Staff" :
                 return <MedicalStaff
                     staff={staff}
                     selectedTab={selectedTab}
-                    isEditMode={isEditMode}
                 />
             case "Medical History" :
                 return <MedicalHistory
                     medicalInfo={medicalInfo}
                     selectedTab={selectedTab}
-                    isEditMode={isEditMode}
                 />
             case "Procedures" :
                 return <Procedures
                     procedures={caseProcedures}
-                    selectedTab={selectedTab}
-                    isEditMode={isEditMode}
+                    caseId={caseId}
                 />
             case "Charge Sheet" :
                 return <ChargeSheet
                     chargeSheet={chargeSheet}
                     procedures={caseProcedures}
                     selectedTab={selectedTab}
-                    isEditMode={isEditMode}
                     quotations={quotations}
                     invoices={invoices}
                     onUpdateChargeSheet={(data) => updateCaseChargeSheet(data)}
@@ -418,7 +411,7 @@ function CasePage({route, addNotification, ...props}) {
 
     return (
         <>
-            <PageContext.Provider value={{pageState, setPageState}}>
+            <PageContext.Provider value={{pageState, setPageState, fetchCase}}>
                 <DetailsPage
                     title={name}
                     subTitle={`#${caseNumber}`}

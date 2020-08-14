@@ -35,7 +35,7 @@ import {
     validateCaseProcedureEndpoint,
     suggestedStartTimeEndpoint,
     updateQuotationStatusEndpoint,
-    updatePurchaseOrderStatusEndpoint, logoutEndpoint
+    updatePurchaseOrderStatusEndpoint, logoutEndpoint, removeCaseProcedureAppointmentEndpoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -126,7 +126,7 @@ export const createTheatre = async (theatreForCreation) => {
         .then(handleResponse)
         .catch(handleError);
 };
- 
+
 // ################# Inventory Endpoints
 export const getInventories = async (query, max, page) => {
     return suitesAxiosInstance
@@ -242,6 +242,15 @@ export const createInvoiceViaQuotation = async (caseId, quotationId) => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+// Case procedure appointments
+export const removeCaseProcedureAppointment = async (caseId, caseProcedureId) => {
+    return suitesAxiosInstance
+        .delete(removeCaseProcedureAppointmentEndpoint(caseId, caseProcedureId))
+        .then(handleResponse)
+        .catch(handleError);
+}
+
 
 // ################# Procedures Endpoints
 export const getProcedures = async (query, max, page) => {

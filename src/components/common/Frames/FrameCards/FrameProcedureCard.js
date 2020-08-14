@@ -2,40 +2,84 @@ import React, {Component} from 'react';
 import {View, StyleSheet} from 'react-native';
 import FrameTitle from '../FrameTitle'
 import FrameProcedureContent from '../FrameContents/FrameProcedureContent';
+import styled from "@emotion/native/";
+import IconButton from "../../Buttons/IconButton";
+import WasteIcon from "../../../../../assets/svg/wasteIcon";
 
-const FrameProcedureCard = (props) => { 
-    const { information = {}, icon, onOpenPickList } = props
-    const {appointment = {}} = information
-    const { title = "", subject="" } = appointment
-    return ( 
-        <View style={styles.container}> 
-            <View style={styles.title}>
-                <FrameTitle
-                    color="#718096"  
-                    borderColor = "#E3E8EF"
-                    backgroundColor="#F8FAFB"
-                    icon={icon}
-                    frameTitle={`${title} - ${subject}`} 
-                />
-            </View>
+const ProcedureCardWrapper = styled.View`
+   flex: 1
+`
 
-            <View style={styles.content}>
-                <FrameProcedureContent details = {information} onOpenPickList={onOpenPickList}/>
-            </View> 
-        </View>
+const ProcedureCardContainer = styled.View`
+   flex: 1
+`
+const ProcedureCardHeader = styled.View`
+  height: 41px;
+  width: 100%;
+`
+
+const ProcedureCardContent = styled.View`
+  // background-color: ${({theme}) => {
+    theme.colors['--color-default-white']
+}};
+`
+
+const FrameProcedureCard = ({
+                                procedureData = {},
+                                icon,
+                                onOpenPickList,
+                                onRemoveProcedure,
+                                isEdit,
+                                onProcedureUpdate
+                            }) => {
+
+    const {appointment = {}} = procedureData
+    const {title = "__", subject = "__"} = appointment
+
+    return (
+        <ProcedureCardWrapper>
+            <ProcedureCardContainer>
+
+                <ProcedureCardHeader>
+                    <FrameTitle
+                        color="#718096"
+                        borderColor="#E3E8EF"
+                        backgroundColor="#F8FAFB"
+                        icon={icon}
+                        frameTitle={`${title} - ${subject}`}
+                        ActionComponent={
+                            <IconButton
+                                Icon={<WasteIcon strokeColor={!isEdit ? "#B3BDC6" : "#C53030" }/>}
+                                onPress={onRemoveProcedure}
+                                disabled={isEdit}
+                            />
+                        }
+                    />
+                </ProcedureCardHeader>
+
+                <ProcedureCardContent>
+                    <FrameProcedureContent
+                        isEdit={isEdit}
+                        details={procedureData}
+                        onOpenPickList={onOpenPickList}
+                    />
+                </ProcedureCardContent>
+
+            </ProcedureCardContainer>
+        </ProcedureCardWrapper>
     );
 }
- 
+
 export default FrameProcedureCard;
 
 const styles = StyleSheet.create({
-    container:{
-        backgroundColor:'#F8FAFB',
+    container: {
+        backgroundColor: '#F8FAFB',
     },
-    title:{
-        width:'100%'
+    title: {
+        width: '100%'
     },
-    content:{
-        width:'100%'
+    content: {
+        width: '100%'
     }
 })

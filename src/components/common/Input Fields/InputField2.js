@@ -6,7 +6,7 @@ import { useTheme } from 'emotion-theming';
 import styled, { css } from '@emotion/native';
 
 /**
- * 
+ *
  * @param label
  * @param onChangeText
  * @param value
@@ -27,27 +27,27 @@ align-items: center;
 `
 
 function InputField2({
-        label, 
-        onChangeText = () => {}, 
-        value, 
-        placeholder = "", 
+        label,
+        onChangeText = () => {},
+        value,
+        placeholder = "",
         keyboardType,
-        onClear = () => {}, 
-        hasError = false, 
-        errorMessage = "Error", 
+        onClear = () => {},
+        hasError = false,
+        errorMessage = "Error",
         backgroundColor,
         onFocus = ()=>{},
         onEndEditing = ()=>{},
         isFocussed = false
     }){
-     
+
     const theme = useTheme();
     const inputRef = useRef();
 
-    
+
 
     return (
-        <View style={[styles.container,]}> 
+        <View style={[styles.container,]}>
             {
                 label &&  <Text style={[
                     styles.textLabel, {
@@ -58,16 +58,16 @@ function InputField2({
                     {label}
                 </Text>
             }
-           
+
             <View style={[styles.inputWrapper, isFocussed ? styles.shadow : null,{
                 borderColor: hasError ? 'red' : '#CCD6E0',
                 backgroundColor : backgroundColor ? backgroundColor : theme.colors['--default-shade-white']
                 // paddingRight: value ? 4 : 0,
-                
+
             }]}>
                 <TextInput
                     style={[styles.inputField, ,{
-                        
+
                     }]}
                     onChangeText={onChangeText}
                     value={value}
@@ -81,7 +81,7 @@ function InputField2({
                 />
 
 
-                
+
                 {
                     hasError && <View style={styles.errorView}>
                         <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
@@ -99,10 +99,10 @@ function InputField2({
             }
             </View>
 
-            
-            
 
-                
+
+
+
         </View>
     );
 }
@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#E3E8EF',
         borderRadius: 8,
-        height: 32,
         backgroundColor:'yellow'
 
     },
