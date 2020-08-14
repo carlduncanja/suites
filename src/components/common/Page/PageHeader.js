@@ -6,11 +6,26 @@ import SmallLeftTriangle from "../../../../assets/svg/smallLeftTriangle";
 import {PageContext} from "../../../contexts/PageContext";
 
 
-const HeaderWrapper = styled.View`
-    display:flex;
-    height:55px;
-    background-color : ${(props) => props.isEditMode ? props.theme.colors['--accent-button'] : props.theme.colors['--default-shade-white']};
-`;
+const shadow = {
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0.2,
+        height: 1.5,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+    zIndex: 3,
+};
+
+const HeaderWrapper = styled.View(({isEditMode, theme}) =>
+    ({
+        display: 'flex',
+        height: 55,
+        ...(isEditMode ? shadow : {}),
+        backgroundColor: isEditMode ? theme.colors['--accent-button'] : theme.colors['--default-shade-white']
+    })
+);
 
 const HeaderContainer = styled.View`
     flex:1;
@@ -53,7 +68,7 @@ const EditButtonContainer = styled.View`
   width: 100%; 
   border-radius : 6px;
   padding: 6px 8px;
-  background-color : ${({theme, isEditMode}) => isEditMode ?  theme.colors['--default-shade-white']:  theme.colors['--accent-button']};
+  background-color : ${({theme, isEditMode}) => isEditMode ? theme.colors['--default-shade-white'] : theme.colors['--accent-button']};
   align-items : center;
   justify-content : center;
 `
