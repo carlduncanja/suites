@@ -22,6 +22,7 @@ import {signIn} from "../redux/actions/authActions";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import Page from "../components/common/Page/Page";
+import {setBearerToken} from "../api";
 
 function LoginPage({navigation, signIn, expoPushToken}) {
 
@@ -58,6 +59,10 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                 try {
                     await AsyncStorage.setItem("userToken", token);
                     // navigation.navigate("App")
+                    if (token) {
+                        setBearerToken(token)
+                    }
+
                     signIn(token);
                 } catch (error) {
                     // Error saving data
