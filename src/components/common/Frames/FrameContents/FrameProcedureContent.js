@@ -13,8 +13,12 @@ import InputFrameItem from "../FrameItems/InputFrameItem";
 import DateInput from "../../Input Fields/DateInput";
 import DateInputField from "../../Input Fields/DateInputField";
 import FrameTableDateItem from "../FrameItems/FrameTableDateItem";
-import {updateCaseProcedureAppointmentCall} from "../../../../api/network";
+import {getTheatres, updateCaseProcedureAppointmentCall} from "../../../../api/network";
 import LoadingComponent from "../../../LoadingComponent";
+import OptionSearchableField from "../../Input Fields/OptionSearchableField";
+import SearchableOptionsField from "../../Input Fields/SearchableOptionsField";
+import FrameTableSearchableItem from "../FrameItems/FrameTableSearchableItem";
+import _ from "lodash";
 
 
 const getAppointmentFields = ({location, startTime, endTime}) => {
@@ -117,10 +121,76 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
         })
     }
 
+    const [searchLocationValue, setSearchLocationValue] = useState(location);
+    const [searchLocationResult, setSearchLocationResult] = useState([]);
+    const [searchLocationQuery, setSearchLocationQuery] = useState({});
+
+    useEffect(() => {
+        if (!searchLocationValue) {
+            // empty search values and cancel any out going request.
+            setSearchLocationResult([]);
+            if (searchLocationQuery.cancel) searchLocationQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchLocations, 300);
+
+        setSearchLocationQuery((prevSearch) => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+    }, [searchLocationValue]);
+
+    const fetchLocations = () => {
+        getTheatres(searchLocationValue, 5)
+            .then((locationsInfo) => {
+                const { data = [], pages } = locationsInfo;
+                setSearchLocationResult(data || []);
+            })
+            .catch((error) => {
+                // TODO handle error
+                console.log("failed to get procedures");
+                setSearchLocationResult([]);
+            });
+    };
+
+    const handleLocationChange = (value) => {
+        const location = value
+            ? {
+                _id: value._id,
+                name: value.name,
+            }
+            : value;
+
+        setSearchLocationValue(location);
+
+        setSearchLocationResult([]);
+        setSearchLocationQuery(undefined);
+    };
+
     return (
         <View>
-
-            <FrameTableItem title="Location" value={name}/>
+            <View style={{zIndex: 2}}>
+                <FrameTableSearchableItem
+                    title="Location"
+                    selectable={true}
+                    enabled={isEdit}
+                    onChangeValue={handleLocationChange}
+                    label="Location"
+                    value={searchLocationValue}
+                    text={searchLocationQuery}
+                    oneOptionsSelected={handleLocationChange}
+                    onChangeText={(value) => setSearchLocationQuery(value)}
+                    onClear={handleLocationChange}
+                    options={searchLocationResult}
+                />
+            </View>
 
             <View style={styles.dateContainer}>
                 <View style={{flex: 1}}>
@@ -128,8 +198,6 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                     <FrameTableDateItem
                         enabled={isEdit}
                         title="Date"
-                        onDateChange={() => {
-                        }}
                         value={moment(startTime).toDate()}
                         format={"MMM/DD/YYYY"}
                         mode={"date"}
@@ -145,8 +213,6 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                     <FrameTableDateItem
                         enabled={isEdit}
                         title=""
-                        onDateChange={() => {
-                        }}
                         value={moment(startTime).toDate()}
                         format={"h:mm A"}
                         mode={"time"}
@@ -168,7 +234,6 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                     />
                 </View>
             </View>
-
         </View>
     )
 }

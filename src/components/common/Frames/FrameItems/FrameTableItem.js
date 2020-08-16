@@ -11,9 +11,10 @@ const FrameTableItemWrapper = styled.View`
 `
 
 const TitleContainer = styled.View`
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   margin-right: 10px;
+  min-width: 70px;
 `
 
 const Title = styled.Text(({theme}) => ({
@@ -35,7 +36,7 @@ const ValueContainer = styled.View(({theme, enabled = {}}) => ({
     padding: 4,
     paddingLeft: 12,
     paddingRight: 12,
-    ...(enabled ? shadow: {})
+    ...(enabled ? shadow : {})
 }))
 
 const Value = styled.TextInput(({theme}) => ({
@@ -60,9 +61,13 @@ const FrameTableItem = ({
         <TouchableOpacity disabled={!selectable} onPress={onPress}>
             <FrameTableItemWrapper theme={theme}>
 
-                <TitleContainer theme={theme}>
-                    <Title theme={theme}>{title.charAt(0).toUpperCase().concat(title.substring(1, title.length))}</Title>
-                </TitleContainer>
+                {
+                    !!title &&
+                    <TitleContainer theme={theme}>
+                        <Title
+                            theme={theme}>{title.charAt(0).toUpperCase().concat(title.substring(1, title.length))}</Title>
+                    </TitleContainer>
+                }
 
                 <ValueContainer theme={theme} enabled={enabled}>
                     {/*<Value theme={theme}> {value} </Value>*/}

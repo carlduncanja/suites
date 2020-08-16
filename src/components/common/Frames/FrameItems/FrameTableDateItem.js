@@ -10,10 +10,12 @@ const FrameTableItemWrapper = styled.View`
   margin-right: 20px;
 `
 
+
 const TitleContainer = styled.View`
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   margin-right: 10px;
+  min-width: 70px;
 `
 
 const Title = styled.Text(({theme}) => ({
@@ -21,27 +23,6 @@ const Title = styled.Text(({theme}) => ({
     color: theme.colors['--color-gray-600']
 }))
 
-
-// const ValueContainer = styled.View(({theme, shadow = {}}) => ({
-//     // ...theme.font['--text-base-regular'],
-//     color: theme.colors['--color-gray-900'],
-//     flex: 1,
-//     backgroundColor: theme.colors['--default-shade-white'],
-//     borderColor: theme.colors['--color-gray-400'],
-//     borderWidth: 1,
-//     borderRadius: 4,
-//     height: 32,
-//     justifyContent: 'center',
-//     padding: 4,
-//     paddingLeft: 12,
-//     paddingRight: 12,
-//     ...shadow
-// }))
-//
-// const Value = styled.TextInput(({theme}) => ({
-//     ...theme.font['--text-base-regular'],
-//     color: theme.colors['--color-gray-900']
-// }))
 
 const FrameTableItem = ({
                             title = "",
@@ -61,10 +42,12 @@ const FrameTableItem = ({
     return (
         <FrameTableItemWrapper theme={theme}>
 
-            <TitleContainer theme={theme}>
-                <Title
-                    theme={theme}>{title.charAt(0).toUpperCase().concat(title.substring(1, title.length))}</Title>
-            </TitleContainer>
+            {
+                !!title &&
+                <TitleContainer theme={theme}>
+                    <Title theme={theme}>{title.charAt(0).toUpperCase().concat(title.substring(1, title.length))}</Title>
+                </TitleContainer>
+            }
 
             <DatePicker
                 style={{flex: 1, height: 32}}
