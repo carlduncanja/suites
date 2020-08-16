@@ -187,7 +187,7 @@ function CasePage({route, addNotification, ...props}) {
             })
             .catch(error => {
                 console.log("Failed to get case", error)
-                Alert.alert(("Failed", "Failed to get details for case"))
+                Alert.alert(("Failed","Failed to get details for case"))
             })
             .finally(_ => {
                 setPageLoading(false)

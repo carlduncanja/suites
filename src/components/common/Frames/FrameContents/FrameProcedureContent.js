@@ -13,13 +13,85 @@ import InputFrameItem from "../FrameItems/InputFrameItem";
 import DateInput from "../../Input Fields/DateInput";
 import DateInputField from "../../Input Fields/DateInputField";
 import FrameTableDateItem from "../FrameItems/FrameTableDateItem";
+import {updateCaseProcedureAppointmentCall} from "../../../../api/network";
+import LoadingComponent from "../../../LoadingComponent";
+
+
+const getAppointmentFields = ({location, startTime, endTime}) => {
+    return {
+        location,
+        startTime,
+        duration: getAppointmentDurations({startTime, endTime})
+    }
+}
+
+const FrameProcedureContent = ({
+                                   isEdit,
+                                   isUpdated,
+                                   isUpdating,
+                                   procedure,
+                                   appointmentFields,
+                                   recoveryAppointment,
+                                   onSavePress,
+                                   onOpenPickList,
+                                   onAppointmentFieldsUpdate,
+                               }) => {
+
+    return (
+        <View style={styles.container}>
+            <View style={{paddingBottom: 10, borderBottomColor: "#CCD6E0", borderBottomWidth: 1}}>
+
+                {
+                    <AppointmentFields
+                        isEdit={isEdit}
+                        fields={appointmentFields}
+                        onFieldsUpdated={onAppointmentFieldsUpdate}
+                    />
+                }
+                <View style={styles.recovery}>
+                    <FrameCheckboxItem title="Recovery" status={!!recoveryAppointment}/>
+                </View>
+                {
+                    // recoveryAppointment &&
+                    // <AppointmentView isEdit={isEdit} appointment={recoveryAppointment}/>
+                }
+
+            </View>
+            <View style={{flexDirection: "row", justifyContent: "flex-end", marginTop: 10}}>
+
+                {
+                    isEdit && isUpdated &&
+                    <View style={{marginRight: 8, padding: 8, borderRadius: 8, backgroundColor: "#E3E8EF", height: 30}}>
+                        <Button
+                            backgroundColor="#E3E8EF"
+                            color="#718096"
+                            title="Save"
+                            buttonPress={onSavePress}
+                        />
+                    </View>
+                }
+
+                <View style={{padding: 8, borderRadius: 8, backgroundColor: "#E3E8EF", height: 30}}>
+                    <Button
+                        backgroundColor="#E3E8EF"
+                        color="#718096"
+                        title="View Picklist"
+                        buttonPress={() => onOpenPickList(procedure)}
+                    />
+                </View>
+
+            </View>
+        </View>
+    );
+}
+
+export default FrameProcedureContent;
 
 
 /**
  *
  * @param isEdit
  * @param appointmentField
- * @param onAppointmentUpdate
  * @return {*}
  * @constructor
  */
@@ -96,80 +168,17 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                     />
                 </View>
             </View>
+
         </View>
     )
 }
 
 const getAppointmentDurations = ({startTime, endTime}) => moment.duration(moment(endTime).diff(moment(startTime))).asHours()
 
-const getAppointmentFields = ({location, startTime, endTime}) => {
-    return {
-        location,
-        startTime,
-        duration: getAppointmentDurations({startTime, endTime})
-    }
-}
-
-const FrameProcedureContent = ({details, onOpenPickList, isEdit}) => {
-    const {appointment, procedure, recovery} = details
-    const recoveryAppointment = recovery?.appointment || false
-
-    const [appointmentFields, setAppointmentFields] = useState(getAppointmentFields(appointment));
-
-    const onAppointmentFieldsUpdate = (data) => setAppointmentFields(data)
-
-    return (
-        <View style={styles.container}>
-            <View style={{paddingBottom: 10, borderBottomColor: "#CCD6E0", borderBottomWidth: 1}}>
-
-                {
-                    <AppointmentFields
-                        isEdit={isEdit}
-                        fields={appointmentFields}
-                        onFieldsUpdated={onAppointmentFieldsUpdate}
-                    />
-                }
-                <View style={styles.recovery}>
-                    <FrameCheckboxItem title="Recovery" status={!!recoveryAppointment}/>
-                </View>
-                {
-                    // recoveryAppointment &&
-                    // <AppointmentView isEdit={isEdit} appointment={recoveryAppointment}/>
-                }
-
-            </View>
-            <View style={{flexDirection: "row", justifyContent: "flex-end", marginTop: 10}}>
-
-                {
-                    isEdit &&
-                    <View style={{marginRight: 8, padding: 8, borderRadius: 8, backgroundColor: "#E3E8EF", height: 30}}>
-                        <Button
-                            backgroundColor="#E3E8EF"
-                            color="#718096"
-                            title="Save"
-                            buttonPress={() => {
-                            }}
-                        />
-                    </View>
-                }
-
-                <View style={{padding: 8, borderRadius: 8, backgroundColor: "#E3E8EF", height: 30}}>
-                    <Button
-                        backgroundColor="#E3E8EF"
-                        color="#718096"
-                        title="View Picklist"
-                        buttonPress={() => onOpenPickList(procedure)}
-                    />
-                </View>
-            </View>
-        </View>
-    );
-}
-
-export default FrameProcedureContent;
 
 const styles = StyleSheet.create({
     container: {
+        position: 'relative',
         padding: 16,
         borderWidth: 1,
         borderColor: '#CCD6E0',

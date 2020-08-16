@@ -1,13 +1,11 @@
 import React, {useContext, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, Modal, TouchableHighlight} from "react-native";
+import {View, StyleSheet, ScrollView, Modal, TouchableHighlight, Alert} from "react-native";
 import FrameProcedureCard from '../../../common/Frames/FrameCards/FrameProcedureCard';
-import {SuitesContext} from '../../../../contexts/SuitesContext';
-import PickListCard from '../../PickList/PickListCard';
-import {useModal, withModal} from 'react-native-modalfy';
+import {useModal} from 'react-native-modalfy';
 import ProceduresPickList from '../../ProceduresPickList'
 import ProcedureIcon from '../../../../../assets/svg/frameProcedures';
 import {PageContext} from "../../../../contexts/PageContext";
-import {removeCaseProcedureAppointment} from "../../../../api/network";
+import {removeCaseProcedureAppointment, updateCaseProcedureAppointmentCall} from "../../../../api/network";
 import ConfirmationComponent from "../../../ConfirmationComponent";
 
 
@@ -15,8 +13,9 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
 
     const modal = useModal();
     const {pageState, setPageState, fetchCase} = useContext(PageContext);
-    const {isEditMode, isLoading} = pageState;
+    const {isEditMode, setEditMode} = pageState;
 
+    const [procedureAppointments, setProcedureAppointment] = useState(tabDetails);
 
     const setPageLoading = (isLoading) => {
         setPageState({
@@ -36,7 +35,6 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
             />,
         })
     }
-
 
     const handleRemoveProcedure = (procedure) => () => {
         if (!isEditMode) return;
@@ -67,7 +65,6 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
         });
     }
 
-
     const removeProcedureCall = (caseId, procedureId) => {
         // REMOVE PROCEDURE CALL
         setPageLoading(true);
@@ -80,20 +77,20 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
             })
             .finally(_ => {
                 fetchCase(caseId)
+                setPageLoading(false);
             })
     }
 
-
     // ############# Data declaration
-
 
     return (
         <ScrollView style={{flex: 1, paddingTop: 5}}>
             {
-                tabDetails.map((item, index) => {
+                procedureAppointments.map((item, index) => {
                     return (
                         <View key={index} style={styles.procedureContainer}>
                             <FrameProcedureCard
+                                caseId={caseId}
                                 procedureData={item}
                                 icon={ProcedureIcon}
                                 isEdit={isEditMode}
