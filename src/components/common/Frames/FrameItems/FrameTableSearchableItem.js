@@ -51,7 +51,7 @@ const FrameTableSearchableItem = ({
                             text,
                             label,
                             options,
-                            enabled,
+                            enabled = false,
                             oneOptionsSelected,
                             onChangeText,
                             onClear,
@@ -130,7 +130,7 @@ const FrameTableSearchableItem = ({
                                 paddingRight: 12,
                             }}
                             value={
-                                selectedValue.name || text
+                                selectedValue?.name || text
                             }
                             editable={enabled}
                             onChangeText={(value) => {
