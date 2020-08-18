@@ -259,7 +259,6 @@ export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId
         .catch(handleError);
 }
 
-
 // ################# Procedures Endpoints
 export const getProcedures = async (query, max, page) => {
     return suitesAxiosInstance
