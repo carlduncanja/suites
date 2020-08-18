@@ -23,6 +23,7 @@ const OverlayFooterWrapper = styled.TouchableOpacity`
   width : 100%;
   position : absolute;
   bottom:0;
+  z-index : 3,
 `;
 
 const OverlayFooterContainer = styled.View`
@@ -37,7 +38,7 @@ const OverlayFooterContainer = styled.View`
   border-top-color : ${ ({theme}) => theme.colors['--color-gray-400']};
   
 `;
-
+ 
 const FooterText = styled.Text( ({theme}) =>({
   ...theme.font['--text-base-bold'],
   color: theme.colors['--color-blue-600'],
@@ -45,10 +46,12 @@ const FooterText = styled.Text( ({theme}) =>({
 }));
 
 
-function OverlayDialogFooter({ onPositiveButtonPress = () => {}, positiveText = "DONE", buttonIcon = <View />}) {
+function OverlayDialogFooter({ 
+  onPositiveButtonPress = () => {}, 
+  positiveText = "DONE", buttonIcon = <View />}) {
 
   const theme = useTheme();
-
+  
   return (
    
     <OverlayFooterWrapper onPress = {onPositiveButtonPress}>

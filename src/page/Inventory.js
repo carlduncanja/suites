@@ -211,7 +211,21 @@ function Inventory(props) {
         if(updatedInventory.length !== 0){
             variants.map( variant => variantIds.push(variant?._id));
             setSelectedChildIs(variantIds);
+        }else{
+            setSelectedChildIs([])
         }
+    };
+
+    // ####### CHILD CHECKBOXPRESS
+
+    const onChildCheckBoxPress = (item, parentItem) => () => {
+        const { _id } = item;
+
+        let updatedChildIds = checkboxItemPress(item, _id, selectedChildIds);
+        let updatedParentIds = checkboxItemPress(parentItem, _id, selectedIds);
+        setSelectedChildIs(updatedChildIds)
+        setSelectedIds(updatedParentIds)
+
     };
 
     // ##### Helper functions
@@ -352,7 +366,7 @@ function Inventory(props) {
             </View>
     </>;
 
-    const storageItemView = ({itemName, stock, levels, locations}, isChecked, onActionPress) => <View
+    const storageItemView = ({itemName, stock, levels, locations}, onActionPress) => <View
         style={{flexDirection: 'row', alignItems: 'center'}}>
 
         <View style={[styles.item, {justifyContent: 'flex-start', flex: 1.5}]}>
@@ -395,23 +409,23 @@ function Inventory(props) {
         </View>
     </View>;
 
-    const renderChildItemView = (item, isChecked, onActionPress) => {
+    const renderChildItemView = (item, parentItem, onActionPress) => {
         let { _id } = item
         return (
             <Item
-                itemView = {storageItemView(item, isChecked, onActionPress)}
+                itemView = {storageItemView(item, onActionPress)}
                 hasCheckBox = {true}
                 isChecked = {selectedChildIds.includes(_id)}
-                onCheckBoxPress = {()=>{}}
+                onCheckBoxPress = {onChildCheckBoxPress(item, parentItem)}
                 onItemPress = {()=>{}}
             />
         )
     };
 
-    
     const renderItem = (item) => {
 
         const formattedItem = {
+            _id : item?._id,
             name: item?.name || "",
             stock: item?.stock || 0,
             locations: item?.locations || 0,
@@ -435,7 +449,7 @@ function Inventory(props) {
                 }
             )
         })
-
+     
         return <CollapsibleListItem
             isChecked={selectedIds.includes(item._id)}
             onCheckBoxPress={onCheckBoxPress(item)}
@@ -446,7 +460,7 @@ function Inventory(props) {
             <FlatList
                 data={variants}
                 renderItem={({item}) => {
-                    return renderChildItemView(item, false, () => {
+                    return renderChildItemView(item, formattedItem, () => {
                     })
                 }}
                 keyExtractor={(item, index) => "" + index}
@@ -638,7 +652,7 @@ const mapStateToProps = (state) => {
 
         return {
             ...item,
-            id: item._id,
+            // id: item._id,
             stock,
             locations,
             levels

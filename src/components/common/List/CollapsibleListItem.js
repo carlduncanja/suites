@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, ScrollView} from 'react-native';
 import CheckBoxComponent from "../Checkbox";
 import Collapsible from 'react-native-collapsible';
@@ -42,7 +42,7 @@ function CollapsibleListItem ({
         onItemPress = () => {},
         childView, 
         render = ()=>{},
-        children = ()=>{} 
+        children = ()=>{}  
     }) {
 
     const [isCollapsed, setCollapsed] = useState(true);

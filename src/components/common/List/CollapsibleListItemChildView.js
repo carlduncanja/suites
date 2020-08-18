@@ -10,12 +10,11 @@ const ChildContentWrapper = styled.View`
     margin : 0;
 `;
 const ChildContentContainer = styled.ScrollView`
-    height : 400px;
+    height : ${ ({children}) => children.props.data.length > 0 ? `400px` : '20px'};
 `;
 
 function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){
-    
-    const theme = useTheme();
+    const theme = useTheme(); 
 
     return (
 
@@ -26,7 +25,7 @@ function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){
                 
                 // <ChildContentWrapper>
                 //     <ChildContentContainer>
-                <ChildContentContainer>
+                <ChildContentContainer children = {children}>
                     {children}
                 </ChildContentContainer>
                         

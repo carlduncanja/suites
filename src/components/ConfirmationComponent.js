@@ -174,7 +174,7 @@ function ConfirmationComponent({
         <>
           <IconContainer><ErrorIcon /></IconContainer>
           <AlertText>There was an error performing this action</AlertText>
-          <DeciderButtonContainer>
+          <DeciderButtonContainer onPress = {onCancel}>
             <GeneralText style={{ color: theme.colors["--default-shade-white"], alignSelf: "center" }}>
               CLOSE
          </GeneralText>

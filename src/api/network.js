@@ -160,7 +160,7 @@ export const createInventories = async (inventoryForCreation) => {
 };
 
 export const createInventoryGroup = async (groupToCreate) => {
-    return suitesAxiosInstance.post(inventoriesEndpoint, groupToCreate)
+    return suitesAxiosInstance.post(inventoryGroups, groupToCreate)
         .then(handleResponse)
         .catch(handleError);
 };

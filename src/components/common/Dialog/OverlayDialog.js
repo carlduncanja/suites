@@ -31,55 +31,6 @@ const OverlayDialogContainer = styled.View`
     background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
 `;
 
-const OverlayHeaderWrapper = styled.View`
-  height : 33px;
-  width : 100%;
-`;
-const OverlayHeaderContainer = styled.View`
-  height: 100%;
-  width : 100%;
-  flex-direction : row;
-  padding : ${ ({theme}) => `${theme.space['--space-8']} ${theme.space['--space-12']}`};
-  border-bottom-width : 1px;
-  border-bottom-color : ${ ({theme}) => theme.colors['--color-gray-400']};
-  justify-content : space-between;
-`;
-
-const DialogText = styled.Text( ({theme}) =>({
-  ...theme.font['--text-base-regular'],
-  color: theme.colors['--color-gray-800'],
-}))
-
-const IconContainer = styled.View`
-  flex:1;
-  align-items: flex-end;
-`;
-
-const OverlayFooterWrapper = styled.TouchableOpacity`
-  height : 57px;
-  width : 100%;
-  position : absolute;
-  bottom:0;
-`;
-
-const OverlayFooterContainer = styled.View`
-  height: 100%;
-  width: 100%;
-  flex-direction : row;
-  align-items: center;
-  justify-content: center;
-  border-bottom-right-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-top-width : 1px;
-  border-top-color : ${ ({theme}) => theme.colors['--color-gray-400']};
-  
-`;
-
-const FooterText = styled.Text( ({theme}) =>({
-  ...theme.font['--text-base-bold'],
-  color: theme.colors['--color-blue-600'],
-  marginRight : 10
-}));
 
 const OverlayContentWrapper = styled.View`
   width : 100%;
@@ -94,7 +45,7 @@ function OverlayDialog(props) {
   const {
     title = " ",
     onClose = () => {},
-    onPositiveButtonPress = () => {},
+    onPositiveButtonPress = () => {}, 
     positiveText = "DONE",
     buttonIcon = <View />,
     // handlePopovers = () =>{}
@@ -111,6 +62,7 @@ function OverlayDialog(props) {
           onClose = {onClose}
         />
 
+        
         <OverlayDialogFooter
           onPositiveButtonPress = {onPositiveButtonPress}
           positiveText = {positiveText}
