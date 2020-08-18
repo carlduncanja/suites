@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import RowCalendar from '../Calendar/RowCalendar';
 import DayOfMonth from "../Calendar/DayOfMonth";
 import Calendar from "../Calendar/Calendar";
@@ -22,19 +22,16 @@ import Button from '../common/Buttons/Button';
  * @constructor
  */
 
-function ScheduleCalendar ({month,appointments, days, selectedDate, screenDimensions, onDaySelected}){
+function ScheduleCalendar({ Expanded, month, appointments, days, selectedDate, screenDimensions, onDaySelected }) {
 
     const theme = useTheme();
-    const [isExpanded, setExpanded] = useState(false);
-    useEffect(()=>{console.log("Updated")})
+    useEffect(() => { console.log("Updated") })
 
     const onPressDay = (selected) => {
         onDaySelected(selected)
     };
 
-    const onExpandButtonPress = () => {
-        setExpanded(!isExpanded);
-    };
+
 
     /***
      *
@@ -43,7 +40,7 @@ function ScheduleCalendar ({month,appointments, days, selectedDate, screenDimens
      */
     const getAppointmentDays = (appointments) => {
         const appointmentDays = [];
-        appointments.forEach(item => appointmentDays.push((formatDate(item.startTime,"YYYY-MM-DD"))));
+        appointments.forEach(item => appointmentDays.push((formatDate(item.startTime, "YYYY-MM-DD"))));
         return appointmentDays;
     };
 
@@ -53,7 +50,7 @@ function ScheduleCalendar ({month,appointments, days, selectedDate, screenDimens
         margin : 0;
     `;
 
-    const ScheduleCalendarContainer= styled.View` 
+    const ScheduleCalendarContainer = styled.View` 
         height: 100%:
         width: 100%;
         flex-direction: column;
@@ -79,16 +76,16 @@ function ScheduleCalendar ({month,appointments, days, selectedDate, screenDimens
     `
     return (
 
-        <View style={{ 
+        <View style={{
             marginLeft: screenDimensions.width > screenDimensions.height ? '2%' : 0,
             alignSelf: 'center',
             flexDirection: 'column',
             justifyContent: 'flex-start',
             alignItems: 'center',
         }}>
-            
+
             {
-                !isExpanded ?
+                !Expanded ?
                     // Row calender view
                     <RowCalendar
                         days={days}
@@ -108,18 +105,18 @@ function ScheduleCalendar ({month,appointments, days, selectedDate, screenDimens
                     />
 
             }
-            
-            <ButtonContainer>
+
+            {/* <ButtonContainer>
                 <Button
                     buttonPress = {onExpandButtonPress}
                     title = {isExpanded ? "Collapse" : "Expand"}
                     color = {"#4E5664"}
                     font = {'--text-xs-medium'}
                 />
-            </ButtonContainer>
-            
+            </ButtonContainer> */}
+
         </View>
-    
+
     )
 };
 

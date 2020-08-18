@@ -1,6 +1,6 @@
-import React, {useContext} from 'react'; 
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {withModal} from 'react-native-modalfy';
+import React, { useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { withModal } from 'react-native-modalfy';
 import CheckBoxComponent from "../Checkbox";
 
 import styled, { css } from '@emotion/native';
@@ -17,12 +17,13 @@ import { useTheme } from 'emotion-theming';
  * @constructor
  */
 function ListItem({
-        itemView = () => {},
-        hasCheckBox = true,
-        isChecked = false, 
-        onCheckBoxPress = ()=>{},
-        onItemPress=() => {}
-    }){
+
+    itemView = () => { },
+    hasCheckBox = true,
+    isChecked = false,
+    onCheckBoxPress = () => { },
+    onItemPress = () => { }
+}) {
 
     const theme = useTheme();
 
@@ -31,7 +32,7 @@ function ListItem({
         height : 46px;
         width : 100%;
     `;
-    
+
     const ListItemContainer = styled.View`
         height: 100%;
         width: 100%;
@@ -53,11 +54,14 @@ function ListItem({
                     isCheck={isChecked}
                     onPress={onCheckBoxPress}
                 />
-                <ItemView>
+                <ItemView >
                     {itemView}
+
                 </ItemView>
+
+
             </ListItemContainer>
-            
+
         </ListItemWrapper>
     );
 };

@@ -12,11 +12,12 @@ import CreateCaseDialogContainer from "../../components/CaseFiles/CreateCaseDial
 
 import AddIcon from "../../../assets/svg/addIcon";
 import ArchiveIcon from "../../../assets/svg/archiveIcon";
+import DraftItem from "../../components/common/List/DraftItem";
 
 import { connect } from "react-redux";
 import { setCaseFiles } from "../../redux/actions/caseFilesActions";
 import { getCaseFiles } from "../../api/network";
-import { isEmpty } from "lodash";
+import { isEmpty, forEach } from "lodash";
 import _ from "lodash";
 
 
@@ -41,6 +42,7 @@ import NavPage from "../../components/common/Page/NavPage";
 import Data from "../../components/common/Table/Data";
 import DataItem from "../../components/common/List/DataItem";
 import MultipleTextDataItem from "../../components/common/List/MultipleTextDataItem";
+import patient from "../../../assets/svg/newCasePatient";
 
 const listHeaders = [
     {
@@ -75,6 +77,7 @@ function CaseFiles(props) {
         // Redux props
         caseFiles = [],
         setCaseFiles,
+        draft = {},
 
         // React Navigation Props
         navigation,
@@ -89,6 +92,7 @@ function CaseFiles(props) {
     const [hasActions, setHasActions] = useState(false);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
+    const [hasDraft, setHasDraft] = useState(true);
 
     const routeName = route.name;
 
@@ -158,11 +162,14 @@ function CaseFiles(props) {
     };
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
-        navigation.navigate('Case Files', {
-            screen: 'Case',
-            initial: false,
-            params: { caseId: item._id, isEdit: isOpenEditable }
-        });
+        console.log("what is tapped is:", item);
+
+        isEmpty(item.patient.medicalInfo) ? navigation.navigate("CreateCase", { initial: false, draftItem: item }) :
+            navigation.navigate('Case Files', {
+                screen: 'Case',
+                initial: false,
+                params: { caseId: item._id, isEdit: isOpenEditable }
+            });
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
@@ -200,7 +207,7 @@ function CaseFiles(props) {
 
     const fetchCaseFilesData = (pagePosition) => {
 
-        let currentPosition = pagePosition ? pagePosition  : 1;
+        let currentPosition = pagePosition ? pagePosition : 1;
         setCurrentPagePosition(currentPosition);
 
         setFetchingCaseFiles(true);
@@ -235,14 +242,31 @@ function CaseFiles(props) {
             })
     };
 
+
+
     const renderFn = (item) => {
-        return <ListItem
-            hasCheckBox={true}
-            isChecked={selectedCaseIds.includes(item._id)}
-            onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={handleOnItemPress(item, false)}
-            itemView={caseItem(item)}
-        />
+
+
+        // console.log("what's pssed to render?", item.patient);
+
+        return (<>
+
+            <ListItem
+
+                hasCheckBox={true}
+                isChecked={selectedCaseIds.includes(item._id)}
+                onCheckBoxPress={handleOnCheckBoxPress(item)}
+                onItemPress={handleOnItemPress(item, false)}
+                itemView={isEmpty(item.patient.medicalInfo) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
+            //items passed here should be deciphered whether it is a draft or not
+
+            />
+            {/* */}
+
+
+        </>
+
+        )
     };
 
     const getDate = (dates) => {
@@ -261,7 +285,21 @@ function CaseFiles(props) {
         }
     }
 
+    const renderDraft = (item) => {
+
+        console.log("rendering the draft item");
+
+        return (<DraftItem text={`${item.patient.firstName} ${item.patient.surname}`} />)
+
+
+
+
+    }
+
     const caseItem = (item) => {
+
+        //console.log("being passed in tempdraft is", item);
+
         const {
             caseNumber,
             patient = {},
@@ -271,7 +309,8 @@ function CaseFiles(props) {
         } = item || {}
 
         let name, physicianName;
-        console.log("Item: ", item.chargeSheet)
+        // console.log("Item: ", item.chargeSheet)
+
         const { total = 0 } = item.chargeSheet || {}
         let { leadPhysician } = staff
 
@@ -296,6 +335,10 @@ function CaseFiles(props) {
                 <DataItem text={physicianName} />
                 <DataItem text={formatDate(nextVisit, "MMM DD, YYYY") || 'n/a'} />
             </>
+
+
+
+
         )
     }
 
@@ -315,39 +358,44 @@ function CaseFiles(props) {
 
     const openCreateCaseFile = () => {
         modal.closeModals('ActionContainerModal');
-        props.navigation.navigate('Case Files', { screen: 'CreateCase', initial: false });
+        props.navigation.navigate('Case Files', { screen: 'CreateCase', initial: false, params: { draftItem: null } });
     }
 
     // prepare case files to display
     let caseFilesToDisplay = [...caseFiles];
 
     return (
-        <NavPage
-            isFetchingData={isFetchingCaseFiles}
-            onRefresh={handleDataRefresh}
-            placeholderText={"Search by Case ID, Patient, Staff"}
-            changeText={changeText}
-            inputText={searchValue}
-            routeName={"Case Files"}
-            listData={caseFilesToDisplay}
+        <>
 
-            listHeaders={listHeaders}
-            itemsSelected={selectedCaseIds}
-            onSelectAll={handleOnSelectAll}
-            listItemFormat={renderFn}
+            <NavPage
+                isFetchingData={isFetchingCaseFiles}
+                onRefresh={handleDataRefresh}
+                placeholderText={"Search by Case ID, Patient, Staff"}
+                changeText={changeText}
+                inputText={searchValue}
+                routeName={"Case Files"}
+                listData={caseFilesToDisplay}
 
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+                listHeaders={listHeaders}
+                itemsSelected={selectedCaseIds}
+                onSelectAll={handleOnSelectAll}
+                listItemFormat={renderFn}
+
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+            />
+
+
+        </>
         // <CaseFilesWrapper>
         //     <CaseFilesContainer>
         //         <Page
@@ -386,16 +434,38 @@ function CaseFiles(props) {
 const mapStateToProps = (state) => {
     let caseFiles = state.caseFiles;
 
-    console.log("what i'm gonna render in the cases", state.draft);
+    //console.log("what i'm gonna render in the cases draft is", state.draft);
+
+    const tempDraft = [
+
+        {
+            id: 10,
+            patient: {
+                firstName: "Treston",
+                middleName: "Sire",
+                surname: "G"
+            }
+
+        },
+        {
+            id: 5,
+            patient: {
+                firstName: "Sally",
+                middleName: "Samantha",
+                surname: "Gordon"
+            }
+        },
+
+    ];
+
+    //console.log("what is in temp draft is", tempDraft.patient.firstName);
+
+
+
 
     if (!isEmpty(state.draft)) {
-        console.log(state.draft.name);
-        const draftCase = {
-            patient: state.draft.patient,
-            chargeSheet: state.draft.chargeSheet,
-            staff: state.draft.staff,
-            caseProcedures: state.draft.caseProcedures,
-        }
+        console.log("what draft is being passed to case files", state.draft);
+        caseFiles = [...state.draft, ...caseFiles];
     }
 
     // if (!isEmpty(state.draft)) {

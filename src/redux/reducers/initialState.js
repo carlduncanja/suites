@@ -18,11 +18,11 @@ export default {
     userToken: null,
     expoPushToken: null,
   },
-  draft: {},
+  draft: [],
   casePage: {
     isEdit: false
   },
-  procedurePage : {
-    isEdit : false,
+  procedurePage: {
+    isEdit: false,
   },
 };

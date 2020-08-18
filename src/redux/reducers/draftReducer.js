@@ -7,7 +7,7 @@ export default (state = InitialState.draft, action) => {
   switch (type) {
     case SAVE_DRAFT: {
       const { data } = payload;
-      return data;
+      return [...data];
     }
     default:
       return state;

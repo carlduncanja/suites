@@ -1,5 +1,5 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, StyleSheet, Dimensions, ActivityIndicator, Text } from 'react-native';
 import ScheduleCalendar from './ScheduleCalendar';
 import SchedulesList from "./SchedulesList";
 import LoadingIndicator from '../common/LoadingIndicator';
@@ -8,17 +8,19 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
 function SchedulePageContent({
-        isFetchingAppointment = false,
-        onDaySelected = ()=>{},
-        onAppointmentPress = ()=>{},
-        appointments = [],
-        days = [],
-        month = new Date(),
-        selectedDate = new Date(),
-        selectedDay = new Date(),
-        screenDimensions = {},
-        selectedIndex = 0,
-    }){
+    onExpand = () => { },
+    Expanded = false,
+    isFetchingAppointment = false,
+    onDaySelected = () => { },
+    onAppointmentPress = () => { },
+    appointments = [],
+    days = [],
+    month = new Date(),
+    selectedDate = new Date(),
+    selectedDay = new Date(),
+    screenDimensions = {},
+    selectedIndex = 0,
+}) {
 
     const theme = useTheme();
 
@@ -40,29 +42,31 @@ function SchedulePageContent({
 
     return (
         // <ContentWrapper>
-            // <ContentContainer>
-            <View style={{flex:1}}>
-                <ScheduleCalendar
-                    onDaySelected={onDaySelected}
-                    appointments={appointments}
-                    month={month}
-                    days={days}
-                    selectedDate={selectedDay}
-                    screenDimensions={screenDimensions}
-                /> 
-                {
-                    isFetchingAppointment ?
-                        <LoadingIndicator/>
-                        : 
-                            <SchedulesList
-                                selectedIndex={selectedIndex}
-                                onAppointmentPress={onAppointmentPress}
-                                selectedDay={selectedDay}
-                                month={month}
-                            />
-                } 
-            </View>
-            // </ContentContainer>
+        // <ContentContainer>
+        <View style={{ flex: 1 }}>
+            <ScheduleCalendar
+                onDaySelected={onDaySelected}
+                appointments={appointments}
+                month={month}
+                days={days}
+                selectedDate={selectedDay}
+                screenDimensions={screenDimensions}
+                onExpand={onExpand}
+                Expanded={Expanded}
+            />
+            {
+                isFetchingAppointment ?
+                    <LoadingIndicator />
+                    :
+                    <SchedulesList
+                        selectedIndex={selectedIndex}
+                        onAppointmentPress={onAppointmentPress}
+                        selectedDay={selectedDay}
+                        month={month}
+                    />
+            }
+        </View>
+        // </ContentContainer>
         // </ContentWrapper>
     )
 }
@@ -101,7 +105,7 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 32,
         paddingTop: 24,
-        backgroundColor:'red',
+        backgroundColor: 'red',
     },
     searchContainer: {
         ...StyleSheet.absoluteFillObject,

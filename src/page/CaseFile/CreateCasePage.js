@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from "react";
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, { useState, useEffect } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import PropTypes from "prop-types";
-import {useModal} from "react-native-modalfy";
-import {createCaseFile, createTheatre} from "../../api/network";
+import { useModal } from "react-native-modalfy";
+import { createCaseFile, createTheatre } from "../../api/network";
 import OverlayDialog from "../../components/common/Dialog/OverlayDialog";
 import DialogTabs from "../../components/common/Dialog/DialogTabs";
 import InputField2 from "../../components/common/Input Fields/InputField2";
 import OptionsField from "../../components/common/Input Fields/OptionsField";
-import {MenuOption, MenuOptions} from "react-native-popup-menu";
+import { MenuOption, MenuOptions } from "react-native-popup-menu";
 import PatientIcon from "../../../assets/svg/newCasePatient";
 import MedicalIcon from "../../../assets/svg/newCaseMedical";
 import ProcedureIcon from "../../../assets/svg/newCaseProcedure";
@@ -16,10 +16,10 @@ import StaffStep from "../../components/CaseFiles/StaffDialogTabs/StaffStep";
 import ProcedureStep from "../../components/CaseFiles/ProceduresDialogTabs/ProcedureStep";
 import CompleteCreateCase from "../../components/CaseFiles/CompleteCreateCase";
 import ProgressContainer from "../../components/common/Progress/ProgressContainer";
-import {addCaseFile} from "../../redux/actions/caseFilesActions";
-import {saveDraft} from "../../redux/actions/draftActions";
-import {connect} from "react-redux";
-import {isEmpty} from "lodash";
+import { addCaseFile } from "../../redux/actions/caseFilesActions";
+import { saveDraft } from "../../redux/actions/draftActions";
+import { connect } from "react-redux";
+import { isEmpty } from "lodash";
 import moment from "moment";
 
 const PATIENT_TABS = {
@@ -93,17 +93,17 @@ const testData = {
     ],
 };
 
-function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
+function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }) {
     // ########### CONST
     const [wizard, setWizard] = useState([
         {
             step: {
                 name: "Patient",
                 selectedIcon: (
-                    <PatientIcon fillColor={"#0CB0E7"} strokeColor={"#64D8FF"}/>
+                    <PatientIcon fillColor={"#0CB0E7"} strokeColor={"#64D8FF"} />
                 ),
                 disabledIcon: (
-                    <PatientIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"}/>
+                    <PatientIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"} />
                 ),
                 progress: 0,
             },
@@ -117,8 +117,8 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
         {
             step: {
                 name: "Medical Team",
-                selectedIcon: <MedicalIcon fillColor={"#E53E3E"}/>,
-                disabledIcon: <MedicalIcon fillColor={"#CBD5E0"}/>,
+                selectedIcon: <MedicalIcon fillColor={"#E53E3E"} />,
+                disabledIcon: <MedicalIcon fillColor={"#CBD5E0"} />,
                 progress: 0,
             },
             tabs: ["Assignment 1"],
@@ -139,10 +139,10 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
             step: {
                 name: "Procedures",
                 selectedIcon: (
-                    <ProcedureIcon fillColor={"#319795"} strokeColor={"#81E6D9"}/>
+                    <ProcedureIcon fillColor={"#319795"} strokeColor={"#81E6D9"} />
                 ),
                 disabledIcon: (
-                    <ProcedureIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"}/>
+                    <ProcedureIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"} />
                 ),
                 progress: 0,
             },
@@ -163,15 +163,15 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
     ]);
     const steps = [...wizard.map((step) => step.step)];
     const modal = useModal();
+    const { draftItem } = route.params;
 
+    //console.log("what's in route", route.params);
     // ########### STATES
 
-    const [patientFields, setPatientFields] = useState(() => {
-        // if (draftprop !== null && loadDraft) {
-        //   return draftprop;
-        // } else return testData.patient;
-        return testData.patient;
-    });
+    const [patientFields, setPatientFields] = useState(
+        !isEmpty(draftItem) ? draftItem.patient : testData.patient
+        //testData.patient
+    );
     const [patientFieldErrors, setPatientErrors] = useState({});
 
     const [staffInfo, setStaffInfo] = useState([]);
@@ -192,7 +192,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
 
     const [completedSteps, setCompletedSteps] = useState([]);
     const [completedTabs, setCompletedTabs] = useState([]);
-    const [draft, setDraft] = useState(null);
+    const [draft, setDraft] = useState([]);
 
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
@@ -202,11 +202,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
     //console.log("the patient draft is:", saveDraft(draft).payload.data);
 
     useEffect(() => {
-        if (draftprop !== null && !isEmpty(draftprop)) {
-            // console.log("what's in the draft?", draftprop);
-            permissiontoloadDraft();
-            //console.log("is load draft true?", loadDraft);
-        }
+        // if (draftprop !== null && !isEmpty(draftprop)) {
+        //     // console.log("what's in the draft?", draftprop);
+        //     permissiontoloadDraft();
+        //     //console.log("is load draft true?", loadDraft);
+        // }
     }, []);
 
     //   const loadDraft = () => {
@@ -219,20 +219,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
 
     // ########### EVENT HANDLERS
 
-    const permissiontoloadDraft = () =>
-        Alert.alert(
-            "Saved Draft",
-            "Would you like to load draft of previously started case entry?",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => setPatientFields(testData.patient),
-                    style: "cancel",
-                },
-                {text: "OK", onPress: () => setPatientFields(draftprop.patient)},
-            ],
-            {cancelable: false}
-        );
     const onPatientInfoUpdate = (value) => {
         // if (fieldName === 'patient') {
         //     const {firstName = "", surname = ""} = patientFields['patient'];
@@ -249,6 +235,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
         // setPatientErrors(errors);
 
         setPatientFields(value);
+
         // setDraft(value);
         // console.log("redux save has:", saveDraft(draft));
     };
@@ -309,6 +296,13 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
     };
 
     const onPositiveButtonPress = () => {
+        setDraft([{ patient: patientFields }], ...draft);
+
+        saveDraft([{ patient: patientFields }], ...draft);
+        console.log(
+            "what case file data has and is being saved in draft is:",
+            draft
+        );
         const incrementTab = () => {
             const updatedTabIndex = selectedTabIndex + 1;
             setCompletedTabs([...completedTabs, tabs[selectedTabIndex]]);
@@ -420,7 +414,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
             }
         }
 
-        let updateErrors = {...patientFieldErrors};
+        let updateErrors = { ...patientFieldErrors };
 
         console.log(patientFields);
 
@@ -550,7 +544,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
             setPopoverList(updatedPopovers);
         } else {
             const objIndex = popoverList.findIndex((obj) => obj.name === popoverItem);
-            const updatedObj = {...popoverList[objIndex], status: popoverValue};
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -599,13 +593,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
 
         console.log("handleOnComplete: caseProcedure Info", caseFileData);
 
-        setDraft(caseFileData);
 
-        saveDraft(caseFileData);
-        console.log(
-            "what case file data has and is being saved in draf is:",
-            draft
-        );
         createCaseFile(caseFileData)
             .then((data) => {
                 addCaseFile(data);
@@ -619,6 +607,10 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
                 Alert.alert("Sorry", "Something went wrong when creating case.");
             });
     };
+
+    const onClose = () => {
+        navigation.navigate("CaseFiles");
+    }
 
     const getTabContent = () => {
         switch (selectedIndex) {
@@ -679,9 +671,12 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
         <View style={styles.container}>
             <View style={styles.headingContainer}>
                 <Text>{title}</Text>
+                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                    <Text style={{ color: "#718096" }}>Close</Text>
+                </TouchableOpacity>
             </View>
 
-            <View style={{height: 140}}>
+            <View style={{ height: 140 }}>
                 <ProgressContainer
                     steps={steps}
                     handleStepPress={handleStepPress}
@@ -691,8 +686,8 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
                 />
             </View>
 
-            <View style={{flex: 1}}>
-                <View style={{height: 40}}>
+            <View style={{ flex: 1 }}>
+                <View style={{ height: 40 }}>
                     <DialogTabs
                         tabs={tabs}
                         tab={selectedTabIndex}
@@ -707,7 +702,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop}) {
                 {/*    onPress={() => handlePopovers(false)()}*/}
                 {/*    activeOpacity={1}*/}
                 {/*>*/}
-                <View style={{flex: 1}}>{getTabContent()}</View>
+                <View style={{ flex: 1 }}>{getTabContent()}</View>
                 {/*</TouchableOpacity>*/}
             </View>
 
@@ -725,7 +720,7 @@ CreateCasePage.propTypes = {};
 CreateCasePage.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-    draftprop: state.draft,
+    draftprop: [...state.draft],
 });
 
 const mapDispatchToProp = {
@@ -753,6 +748,14 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         zIndex: 0,
+    },
+    closeButton: {
+        borderRadius: 6,
+        padding: 4,
+        alignItems: "center",
+        width: 64,
+        height: 26,
+        backgroundColor: "#E3E8EF"
     },
     footerText: {
         fontSize: 16,

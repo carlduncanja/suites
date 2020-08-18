@@ -1,5 +1,5 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, StyleSheet, Dimensions, ActivityIndicator, Text } from 'react-native';
 import Button from '../common/Buttons/Button';
 import MonthSelector from "../Calendar/MonthSelector";
 import styled, { css } from '@emotion/native';
@@ -7,13 +7,16 @@ import { useTheme } from 'emotion-theming';
 import ScheduleButton from './ScheduleButton';
 
 function SchedulePageHeader({
-        searchButtonPress = ()=>{},
-        gotoTodayButtonPress = ()=>{},
-        onMonthUpdate = ()=>{},
-        selectedMonth = new Date(),
-    }){
+    searchButtonPress = () => { },
+    gotoTodayButtonPress = () => { },
+    onMonthUpdate = () => { },
+    selectedMonth = new Date(),
+    onExpand = () => { }
+}) {
 
     const theme = useTheme();
+
+
 
     const SchedulePageHeaderWrapper = styled.View`
         width: 100%;
@@ -21,31 +24,91 @@ function SchedulePageHeader({
         padding-top: ${theme.space['--space-26']};
         padding-bottom: ${theme.space['--space-24']};
         padding-right: ${theme.space['--space-32']};
+    
+       
+       
     `
     const SchedulePageHeaderContainer = styled.View`
         flex-direction: row;
+        height:40px;
         justify-content: space-between;
-        align-items: center;
-    `
+        align-self: flex-start;
+        align-items:center;
+        margin-bottom:15px;
+        margin-top:5px;
+        
+        
+        
+    `;
 
-    return(
+    const TextView = styled.Text`
+    font:${theme.font["--text-2xl-medium"]};
+    color:${theme.colors["--company"]};
+    margin-right:270px;
+    
+
+    `;
+
+    const ButtonView = styled.View`
+    flex-direction:row;
+    padding:15px;
+    borderTopWidth:1px;
+        borderTopColor:${theme.colors["--color-gray-400"]};
+    
+    `;
+
+    const ExpandButtonWrapper = styled.View`
+    height: 24px;
+    margin-left:15px;
+    width: 128px;
+    `;
+    const ExpandButton = styled.View`
+        height: 100%;
+        weight: 100%;
+        background-color: ${theme.colors['--default-shade-white']};
+        border-color: ${theme.colors['--color-gray-400']};
+        border-radius: 4px;
+        border-width: 1px;
+    `;
+
+    return (
         <SchedulePageHeaderWrapper>
-            <SchedulePageHeaderContainer>
 
-                <ScheduleButton
-                    title = "Search"
-                    onButtonPress = {searchButtonPress}
-                />
+            <SchedulePageHeaderContainer>
+                <TextView>Schedule</TextView>
+
                 <MonthSelector
                     selectedMonth={selectedMonth}
                     onMonthUpdated={onMonthUpdate}
                 />
-                <ScheduleButton
-                    title = "Go to Today"
-                    onButtonPress = {gotoTodayButtonPress}
-                />
-
             </SchedulePageHeaderContainer>
+            <ButtonView>
+                <View style={{ marginRight: 340 }}>
+                    <ScheduleButton
+                        title="Search"
+                        onButtonPress={searchButtonPress}
+                    />
+                </View>
+
+
+                <ScheduleButton
+                    title="Go to Today"
+                    onButtonPress={gotoTodayButtonPress}
+                />
+                <ExpandButtonWrapper>
+                    <ExpandButton>
+                        <Button
+                            title={"Expand Calendar"}
+                            buttonPress={onExpand}
+                            color={theme.colors['--color-gray-700']}
+                        />
+                    </ExpandButton>
+                </ExpandButtonWrapper>
+
+
+            </ButtonView>
+
+
         </SchedulePageHeaderWrapper>
     )
 }
