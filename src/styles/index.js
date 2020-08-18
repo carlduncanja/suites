@@ -254,11 +254,24 @@ export const root = {
     // shadow-md
     "--shadow-md": "0px 4px 6px rgba(0, 0, 0, 0.1))",
     "--shadow-lg": "0px 4px 6px rgba(0, 0, 0, 0.05)",
-    "--drop-shadow-md":
-      "drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.06)), drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))",
+    "--drop-shadow-md": "drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.06)), drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))",
   },
 };
 
 export const colors = {
   primary: "#104587",
+};
+
+
+
+export const shadow = {
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0.2,
+    height: 1.5,
+  },
+  shadowOpacity: 0.3,
+  shadowRadius: 2,
+  elevation: 2,
+  zIndex: 3,
 };

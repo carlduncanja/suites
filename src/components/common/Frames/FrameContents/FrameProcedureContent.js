@@ -99,8 +99,8 @@ export default FrameProcedureContent;
  * @constructor
  */
 const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
-    const {duration, location, startTime} = fields;
-    const {name = ""} = location
+    const {duration = {}, location, startTime} = fields;
+    const {name = ""} = location || {}
 
     const onDurationUpdated = (duration) => {
         // validate num
@@ -120,11 +120,21 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
         })
     }
 
-    const [searchLocationValue, setSearchLocationValue] = useState(location);
+    const onLocationFieldUpdated = (location) => {
+        onFieldsUpdated({
+            ...fields,
+            location
+        })
+    }
+
+    const [searchLocationValue, setSearchLocationValue] = useState("");
     const [searchLocationResult, setSearchLocationResult] = useState([]);
     const [searchLocationQuery, setSearchLocationQuery] = useState({});
 
     useEffect(() => {
+
+        console.log('search location change', searchLocationValue)
+
         if (!searchLocationValue) {
             // empty search values and cancel any out going request.
             setSearchLocationResult([]);
@@ -167,10 +177,12 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
             }
             : value;
 
-        setSearchLocationValue(location);
+        setSearchLocationValue("");
 
         setSearchLocationResult([]);
-        setSearchLocationQuery(undefined);
+        setSearchLocationQuery({});
+
+        onLocationFieldUpdated(location);
     };
 
     return (
@@ -180,12 +192,13 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                     title="Location"
                     selectable={true}
                     enabled={isEdit}
-                    onChangeValue={handleLocationChange}
                     label="Location"
-                    value={searchLocationValue}
-                    text={searchLocationQuery}
+                    value={location}
+                    text={searchLocationValue}
                     oneOptionsSelected={handleLocationChange}
-                    onChangeText={(value) => setSearchLocationQuery(value)}
+                    onChangeText={(value) => {
+                        setSearchLocationValue(value)
+                    }}
                     onClear={handleLocationChange}
                     options={searchLocationResult}
                 />

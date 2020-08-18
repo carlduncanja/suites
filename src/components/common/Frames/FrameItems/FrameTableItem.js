@@ -52,9 +52,8 @@ const FrameTableItem = ({
                             editable = false,
                             onPress,
                             onChangeValue = () => {
-                            },
-                            ...props
-                        }) => {
+                            }
+}) => {
     const theme = useTheme();
 
     return (
@@ -82,7 +81,6 @@ const FrameTableItem = ({
 }
 
 export default FrameTableItem;
-
 
 const shadow = {
     shadowColor: "#000",
