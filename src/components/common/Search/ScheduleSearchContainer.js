@@ -103,20 +103,20 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
 
     const pressNewSearch = () => {
         setSearchInput("");
-        dispatch({
-            type: 'SETNEWSEARCH',
-            newState: {
-                searchValue: "",
-                searchMatchesFound: []
-            }
-        })
+        // dispatch({
+        //     type: 'SETNEWSEARCH',
+        //     newState: {
+        //         searchValue: "",
+        //         searchMatchesFound: []
+        //     }
+        // })
     };
 
     const pressSubmit = () => {
-        dispatch({
-            type: 'GETSEARCHRESULT',
-            newState: searchInput
-        })
+        // dispatch({
+        //     type: 'GETSEARCHRESULT',
+        //     newState: searchInput
+        // })
     };
 
     const handleOnSearchResultSelected = (selectedIndex) => {

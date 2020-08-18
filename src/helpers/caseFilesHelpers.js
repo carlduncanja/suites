@@ -83,7 +83,7 @@ export const useCheckBox = (item, checkBoxList) => {
     : [...checkBoxList, item];
 };
 
-export const checkboxItemPress = (item, id, checkBoxList) => {
+export const checkboxItemPress = (item, id, checkBoxList) => { 
   let updatedList = [...checkBoxList];
   return updatedList.includes(id)
     ? updatedList.filter((id) => id !== item._id)

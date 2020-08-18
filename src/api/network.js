@@ -2,6 +2,7 @@ import suitesAxiosInstance from "./index";
 import {handleError, handleResponse} from "./apiUtils";
 
 import {
+    inventoriesGroupEndpoint,
     inventoriesEndpoint,
     inventoryEndpoint,
     inventoryVariantEndpoint,
@@ -116,7 +117,7 @@ export const getTheatres = async (query, max, page) => {
 
 export const getTheatreById = async (id) => {
     return suitesAxiosInstance
-        .get(theatreEndpoint(id))
+        .get(theatreEndpoint(id)) 
         .then(handleResponse)
         .catch(handleError);
 };
@@ -129,6 +130,14 @@ export const createTheatre = async (theatreForCreation) => {
 };
 
 // ################# Inventory Endpoints
+
+export const getInventoriesGroup = async (query, max, page) => {
+    return suitesAxiosInstance
+        .get(inventoriesGroupEndpoint, {params: {query, max, page}})
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 export const getInventories = async (query, max, page) => {
     return suitesAxiosInstance
         .get(inventoriesEndpoint, {params: {query, max, page}})

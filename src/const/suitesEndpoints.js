@@ -13,7 +13,8 @@ export const theatresEndpoint =  "/theatres";
 export const theatreEndpoint =  (id) => `/theatres/${id}`;
 
 // ##### INVENTORY
-export const inventoriesEndpoint = "/inventories";
+export const inventoriesEndpoint = "/inventories"; 
+export const inventoriesGroupEndpoint = './inventory_groups';
 export const inventoryEndpoint = (id) => `/inventories/${id}`;
 export const inventoryVariantEndpoint = (id) => `/inventories/${id}/variants`;
 

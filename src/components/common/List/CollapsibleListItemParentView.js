@@ -4,17 +4,19 @@ import styled, { css } from '@emotion/native';
 import CheckBoxComponent from "../Checkbox";
 import { useTheme } from 'emotion-theming';
 
+
+const CollapsibleParentListItemWrapper = styled.View`
+    width : 100%;
+    height: 54px;
+`;
+const CollapsibleParentListItemContainer = styled.View`
+    flex-direction : row;
+    align-items: center; 
+`;
+
 function CollapsibleListItemParentView ({hasCheckBox = true, isChecked = false, onCheckBoxPress = ()=>{}, collapse = ()=>{}, isCollapsed=false, render = ()=>{}}){
     
-    const theme = useTheme()
-
-    const CollapsibleParentListItemWrapper = styled.View`
-        width : 100%;
-    `;
-    const CollapsibleParentListItemContainer = styled.View`
-        flex-direction : row;
-        align-items: center;
-    `;
+    const theme = useTheme();
 
     return (
         <CollapsibleParentListItemWrapper>

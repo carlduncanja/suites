@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, FlatList} from "react-native";
+import {View, StyleSheet, Text, FlatList, ScrollView} from "react-native";
 import Page from "../components/common/Page/Page";
 import IconButton from "../components/common/Buttons/IconButton";
-import ActionIcon from "../../assets/svg/ActionIcon";
+// import ActionIcon from "../../assets/svg/ActionIcon";
+import CollapsedIcon from "../../assets/svg/closeArrow";
+import ActionIcon from "../../assets/svg/dropdownIcon";
 import ListItem from "../components/common/List/ListItem";
 import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
 import {numberFormatter} from "../utils/formatter";
@@ -11,7 +13,7 @@ import _ from "lodash";
 
 import {setInventory} from "../redux/actions/InventorActions";
 import {connect} from "react-redux";
-import {getInventories} from "../api/network";
+import {getInventoriesGroup} from "../api/network";
 import {useModal} from "react-native-modalfy";
 import InventoryBottomSheetContainer from "../components/Inventory/InventoryBottomSheetContainer";
 import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
@@ -31,19 +33,24 @@ import TransferIcon from "../../assets/svg/transferIcon";
 import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
 import CreateInventoryGroupDialogContainer from '../components/Inventory/CreateInventoryGroupDialogContainer';
 import NavPage  from "../components/common/Page/NavPage";
+import Item from '../components/common/Table/Item';
+import DataItem from '../components/common/List/DataItem';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming'; 
+
 
 const listHeaders = [
     {
         name: "Item Name",
         alignment: "flex-start",
-        flex: 2
+        flex: 1.5
     },
     {
         name: "In Stock",
         alignment: "center"
     },
     {
-        name: "Levels",
+        name: "Capacity",
         alignment: "center"
     },
     {
@@ -51,10 +58,30 @@ const listHeaders = [
         alignment: "center"
     },
     {
-        name: "Actions",
+        name : '',
         alignment: "center"
     }
 ];
+
+const LocationsWrapper = styled.View`
+    flex:1;
+    align-items: center; 
+`;
+
+const LocationsContainer = styled.View`
+    height : 24px;
+    width : 28px;
+    background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
+    border-radius : 4px;
+    box-shadow : ${ ({theme}) => theme.shadow['--shadow-lg']};
+    align-items: center;
+    justify-content: center;
+`;
+
+const LocationText = styled.Text( ({theme})=> ({
+    ...theme.font['--text-base-regular'],
+    color : theme.colors['--color-gray-700'],
+}));
 
 
 function Inventory(props) {
@@ -66,6 +93,7 @@ function Inventory(props) {
 
     const pageTitle = "Inventory";
     const modal = useModal();
+    const theme = useTheme();
     const recordsPerPage = 10;
 
     // ##### States
@@ -74,6 +102,7 @@ function Inventory(props) {
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [selectedIds, setSelectedIds] = useState([]);
+    const [selectedChildIds, setSelectedChildIs] = useState([]);
 
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResult] = useState([]);
@@ -170,10 +199,19 @@ function Inventory(props) {
             })
     };
 
+    // ####### PARENT CHECKBOXPRESS
+
     const onCheckBoxPress = (item) => () => {
-        const {_id} = item;
+        const {_id, variants = [] } = item;
+        let variantIds = []
+
         let updatedInventory = checkboxItemPress(item, _id, selectedIds);
         setSelectedIds(updatedInventory);
+
+        if(updatedInventory.length !== 0){
+            variants.map( variant => variantIds.push(variant?._id));
+            setSelectedChildIs(variantIds);
+        }
     };
 
     // ##### Helper functions
@@ -236,67 +274,91 @@ function Inventory(props) {
                 })
         }, 200)
     };
+   
+    const getLevels = (locations = []) => {
+        const levelsTotal = {
+            max: 0,
+            min: 0,
+            critical: 0,
+            ideal: 0,
+        };
 
-    const inventoryItemView = ({name, stock, locations, levels}, onActionPress, isCollapsed) => <>
-        <View style={[styles.item, {justifyContent: 'space-between', flex: 2}]}>
-            <Text style={{color: "#3182CE", fontSize: 16}}>
-                {name}
-            </Text>
+        locations.forEach(location => {
+            const { levels = {} } = location
 
-            <View style={{
-                width: 1,
-                height: 24,
-                backgroundColor: "#E3E8EF",
-                marginLeft: 20
-            }}/>
-        </View>
-        <View style={[styles.item, {justifyContent: "center"}]}>
-            <Text style={[styles.itemText]}>
-                {numberFormatter(stock)}
-            </Text>
-        </View>
-        <View style={[styles.item, {justifyContent: "center"}]}>
-            {/*   LEVELS    */}
-            <LevelIndicator
-                max={levels.max}
-                min={0}
-                level={stock}
-                ideal={levels.ideal}
-                critical={levels.critical}
-            />
-        </View>
-        <View style={[
-            styles.item, {justifyContent: "center"}
-        ]}>
-            <View style={styles.locationBox}>
-                <Text style={[styles.itemText]}>
-                    {locations}
-                </Text>
-            </View>
-        </View>
-        <View style={[styles.item, {justifyContent: "center"}]}>
-            <View style={{height:'100%'}}>
-                <IconButton
-                    Icon={isCollapsed ? <ActionIcon/> : <ActionCollapseIcon/>}
-                    onPress={onActionPress}
+            levelsTotal.max += levels.max || 0
+            levelsTotal.min += levels.min || 0
+            levelsTotal.critical += levels.critical || 0
+            levelsTotal.ideal += levels.ideal || 0
+            
+        });
+
+        return levelsTotal;
+    };
+    
+    const getStock = (locations) => {
+        return locations.reduce((acc, curr)=>{ return acc + curr.stock }, 0)
+    }
+
+    const inventoryItemView = ({name, stock, locations, levels}, onActionPress, isCollapsed) => 
+        <>
+
+            <DataItem text = {name} flex = {1.5} color="--color-gray-800" fontStyle = "--text-base-regular"/>
+            <DataItem text = {numberFormatter(stock)} color="--color-gray-700" fontStyle = "--text-base-regular" align="center"/>
+            <View style={[styles.item, {justifyContent: "center"}]}>
+                {/*   LEVELS    */}
+                <LevelIndicator
+                    max={levels.max}
+                    min={0}
+                    level={stock}
+                    ideal={levels.ideal}
+                    critical={levels.critical}
                 />
             </View>
-            
-        </View>
+
+            <LocationsWrapper>
+                <LocationsContainer theme = {theme}>
+                    <LocationText theme = {theme}>{locations}</LocationText>
+                </LocationsContainer>
+            </LocationsWrapper>
+
+            {/* <View style={[styles.item, {justifyContent: 'space-between', flex: 2, ...styles.rowBorderRight}]}>
+                <Text style={{color: "#3182CE", fontSize: 16}}>
+                    {name}
+                </Text>
+            </View> */}
+
+            {/* <View style={[styles.item, {justifyContent: "center"}]}>
+                <Text style={[styles.itemText]}>
+                    {numberFormatter(stock)}
+                </Text>
+            </View> */}
+
+            {/* <View style={[
+                styles.item, {justifyContent: "center"}
+            ]}>
+                <View style={styles.locationBox}>
+                    <Text style={[styles.itemText]}>
+                        {locations}
+                    </Text>
+                </View>
+            </View> */}
+
+            <View style={[styles.item, {justifyContent: "center"}]}>
+                <IconButton
+                    Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
+                    onPress={onActionPress}
+                />  
+            </View>
     </>;
 
-    const storageItemView = ({locationName, stock, levels}, isChecked, onActionPress) => <View
+    const storageItemView = ({itemName, stock, levels, locations}, isChecked, onActionPress) => <View
         style={{flexDirection: 'row', alignItems: 'center'}}>
-        <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
-            <CheckBoxComponent
-                isCheck={isChecked}
-                onPress={onCheckBoxPress}
-            />
-        </View>
-        <View style={[styles.item, {justifyContent: 'flex-start', flex: 2}]}>
+
+        <View style={[styles.item, {justifyContent: 'flex-start', flex: 1.5}]}>
             <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
             <Text style={{color: "#3182CE", fontSize: 16, marginLeft: 10}}>
-                {locationName}
+                {itemName}
             </Text>
         </View>
         <View style={[
@@ -316,50 +378,75 @@ function Inventory(props) {
                 critical={levels.critical}
             />
         </View>
+
         <View style={[
             styles.item, {justifyContent: "center"}
         ]}>
             <Text style={[styles.itemText]}>
-                ...
+                {locations}
             </Text>
         </View>
+        
         <View style={[styles.item, {justifyContent: "center"}]}>
-            <IconButton
+            {/* <IconButton
                 Icon={<TransferIcon/>}
                 onPress={onActionPress}
-            />
+            /> */}
         </View>
     </View>;
 
+    const renderChildItemView = (item, isChecked, onActionPress) => {
+        let { _id } = item
+        return (
+            <Item
+                itemView = {storageItemView(item, isChecked, onActionPress)}
+                hasCheckBox = {true}
+                isChecked = {selectedChildIds.includes(_id)}
+                onCheckBoxPress = {()=>{}}
+                onItemPress = {()=>{}}
+            />
+        )
+    };
+
+    
     const renderItem = (item) => {
 
         const formattedItem = {
-            name: item.name,
-            stock: item.stock,
-            locations: item.locations,
-            levels: item.levels
+            name: item?.name || "",
+            stock: item?.stock || 0,
+            locations: item?.locations || 0,
+            levels: item?.levels
         };
 
-        let {storageLocations = []} = item;
+        let {variants = []} = item;
+        
+        variants = variants.map( item => {
+            let { storageLocations = [] } = item
+            let levels = getLevels(storageLocations);
+            let stock = getStock(storageLocations) || 0;
 
-        storageLocations = storageLocations.map(item => ({
-            id: item._id,
-            locationName: item.locationName,
-            stock: item.stock,
-            levels: item.levels || {}
-        }))
+            return (
+                {
+                    _id: item?._id,
+                    itemName: item?.name || "",
+                    stock: stock,
+                    locations : storageLocations.length,
+                    levels: levels || {}
+                }
+            )
+        })
 
         return <CollapsibleListItem
-            isChecked={selectedIds.includes(item.id)}
+            isChecked={selectedIds.includes(item._id)}
             onCheckBoxPress={onCheckBoxPress(item)}
             hasCheckBox={true}
             onItemPress={onItemPress(item)}
             render={(collapse, isCollapsed) => inventoryItemView(formattedItem, collapse, isCollapsed)}
         >
             <FlatList
-                data={storageLocations}
+                data={variants}
                 renderItem={({item}) => {
-                    return storageItemView(item, false, () => {
+                    return renderChildItemView(item, false, () => {
                     })
                 }}
                 keyExtractor={(item, index) => "" + index}
@@ -371,51 +458,13 @@ function Inventory(props) {
         </CollapsibleListItem>
     };
 
-    const secondaryRender = () => {
-
-        return <FlatList
-            data={[
-                {
-                    id: "1",
-                    locationName: "OR1: Cabinet 6",
-                    stock: 138,
-                    levels: {
-                        max: 400,
-                        min: 0,
-                        critical: 100,
-                        ideal: 300,
-                    },
-                },
-                {
-                    id: "2",
-                    locationName: "OR1: Cabinet 8",
-                    stock: 22,
-                    levels: {
-                        max: 200,
-                        min: 0,
-                        critical: 50,
-                        ideal: 100,
-                    },
-                    locations: 1
-                },
-            ]}
-            renderItem={({item}) => {
-                return storageItemView(item, () => {
-                })
-            }}
-            ItemSeparatorComponent={() =>
-                <View style={{flex: 1, margin: 10, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
-            }
-        />
-    };
-
     const fetchInventory = (pagePosition) => {
 
        let currentPosition = pagePosition ? pagePosition  : 1;
        setCurrentPagePosition(currentPosition)
 
         setFetchingData(true);
-        getInventories(searchValue, recordsPerPage, currentPosition)
+        getInventoriesGroup(searchValue, recordsPerPage, currentPosition)
             .then(inventoryResult => {
                 const { data = [], pages = 0 } = inventoryResult
                 
@@ -435,7 +484,7 @@ function Inventory(props) {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
-
+               
                 setInventory(data);
                 data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
                 
@@ -524,47 +573,76 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginRight: 30,
     },
+    rowBorderRight: {
+        borderRightColor: "#E3E8EF",
+        borderRightWidth: 1,
+    
+        // marginRight: 20,
+        // flex: 2
+      },
 });
 
 
 const mapStateToProps = (state) => {
-    const getLevels = (inventoryLocations = []) => {
+
+    const getLevels = (variants = []) => {
+
         const levelsTotal = {
             max: 0,
             min: 0,
             critical: 0,
             ideal: 0,
         };
-        inventoryLocations.forEach(location => {
-            const {levels = {}} = location;
 
-            levelsTotal.max += levels.max || 0
-            levelsTotal.min += levels.min || 0
-            levelsTotal.critical += levels.critical || 0
-            levelsTotal.ideal += levels.ideal || 0
+        variants.forEach(variant => {
+            const { storageLocations = [] } = variant
+            storageLocations.map( location => {
+                const { levels = {} } = location
+
+                levelsTotal.max += levels.max || 0
+                levelsTotal.min += levels.min || 0
+                levelsTotal.critical += levels.critical || 0
+                levelsTotal.ideal += levels.ideal || 0
+            })
         });
 
         return levelsTotal;
     };
-    const getTotalStock = (accumulator, currentValue) => {
-        return accumulator + currentValue.stock
-    };
+
+    // const getTotalStock = (accumulator, currentValue) => {
+    //     return accumulator + currentValue.stock
+    // };
+
+    const getLocations = (variant) => {
+        let count = 0
+        variant.map( item => {count += item?.storageLocations?.length })
+        return count
+    }
+
+    const getStock = (variant) => {
+        let count = 0
+        variant.map( item => {
+            count += item.storageLocations.reduce((acc, curr)=>{ return acc + curr.stock }, 0)
+        })
+        return count
+    }
 
     // REMAPPING INVENTORY ITEMS
     const inventory = state.inventory.map(item => {
 
-        const {inventoryLocations = []} = item;
-        const stock = inventoryLocations.reduce(getTotalStock, 0);
-        const locations = inventoryLocations.length;
-        const levels = getLevels(inventoryLocations);
+        const { variants = [] } = item;
+
+        const stock = getStock(variants);
+        const locations = getLocations(variants)
+        const levels = getLevels(variants);
 
         return {
             ...item,
             id: item._id,
             stock,
             locations,
-            levels,
-            storageLocations: inventoryLocations
+            levels
+            // storageLocations: inventoryLocations
         }
     });
 
