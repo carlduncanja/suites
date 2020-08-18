@@ -12,10 +12,52 @@ import { createFilter } from 'react-native-search-filter';
 import SearchableContainer from '../SearchableContainer';
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options, searchText, onSearchChangeText, onClear, handlePopovers, isPopoverOpen}) => {
+import { useTheme } from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+import InputLabelComponent from "../InputLablel";
+
+const InputFieldWrapper = styled.View`
+    flex:1;
+    position: relative;
+`;
+
+const InputFieldContainer = styled.View`
+    width : 100%;
+    flex-direction: row;
+    align-items: center;
+`;
+
+const TextInputWrapper = styled.View`
+    flex:1;
+    height : 32px;
+`;
+const TextInputContainer = styled.View`
+    height : 100%;
+    width : 100%;
+    border-width: 1px;
+    border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
+    background-color : ${ ({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    border-radius: 4px;
+`;
+
+
+
+function MultipleSelectionsField({
+    onOptionsSelected, 
+    label, 
+    value = [], 
+    options, 
+    searchText, 
+    onSearchChangeText, 
+    onClear, 
+    handlePopovers, 
+    isPopoverOpen,
+    hasError = false
+}){
 
     // console.log("Value: ", value)
     let { name = "" } = value[0] || {}
+    const theme = useTheme();
 
     const [selectedOption, setSelectedOption] = useState(name)
     const [checkedList, setCheckedList] = useState(value)
@@ -40,16 +82,24 @@ const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options,
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={[
-                styles.textLabel, {
-                    marginRight: label ? 20 : 0
+        <InputFieldWrapper>
+            <InputFieldContainer>
+
+                {
+                    label && <InputLabelComponent label = {label}/>
                 }
-            ]}>
-                {label}
-            </Text>
-           
-            <View style={styles.inputWrapper}>
+                {/* <Text style={[
+                    styles.textLabel, {
+                        marginRight: label ? 20 : 0
+                    }
+                ]}>
+                    {label}
+                </Text>
+                */}
+
+            <TextInputWrapper>
+                <TextInputContainer theme = {theme} hasError = {hasError}>
+               
                 <TouchableOpacity 
                     onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
                     style={[styles.inputField,{}]}
@@ -87,8 +137,9 @@ const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options,
                     </View> 
                         
                 </TouchableOpacity>
-            
-            </View>
+
+                </TextInputContainer>
+            </TextInputWrapper>
                     
                
             { isDisplay && isPopoverOpen &&
@@ -118,8 +169,9 @@ const MultipleSelectionsField = ({onOptionsSelected, label, value = [], options,
                 </View>
 
             }
-              
-        </View>
+            
+            </InputFieldContainer>
+        </InputFieldWrapper>
     )
 }
 

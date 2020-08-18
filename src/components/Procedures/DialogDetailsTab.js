@@ -6,7 +6,7 @@ import InputUnitField from "../common/Input Fields/InputUnitFields";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import _ from "lodash";
 import {getPhysicians, getTheatres, getProcedures, getCategories} from "../../api/network";
-import OptionSearchableField from "../common/Input Fields/OptionSearchableField";
+import OptionSearchableField from "../common/InputFields/OptionSearchableField";
 import OptionsField from "../common/Input Fields/OptionsField";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';

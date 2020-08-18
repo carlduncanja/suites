@@ -9,14 +9,21 @@ import InputUnitField from "../common/Input Fields/InputUnitFields";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import OptionsField from "../common/Input Fields/OptionsField";
+import AutoFillField from "../common/Input Fields/AutoFillField";
+
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 import {createInventoryGroup, getInventories, getCategories, getSuppliers,} from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import TextArea from '../common/Input Fields/TextArea';
+import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent';
 import _ from "lodash";
 
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import OverlayDialogContent from '../common/Dialog/OverlayContent';
 
 /**
  * Component to handle the create storage process.
@@ -27,11 +34,20 @@ import _ from "lodash";
  * @constructor
  */
 
+ 
+const Divider = styled.View`
+    border-width : 1px;
+    border-color : ${ ({theme}) => theme.colors['--color-gray-300']};
+    margin-top : ${ ({theme}) => theme.space['--space-20']};
+    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+`;
+
 function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
 
     // ######### CONST
     const modal = useModal();
-    const dialogTabs = ['Details', 'Configuration'];
+    const dialogTabs = ['Details'];
+    const theme = useTheme();
 
     // ######### STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
@@ -210,12 +226,92 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
     };
 
     let catPop = popoverList.filter( item => item.name === 'category')
+
+    
     
     const detailsTab = (
 
-        <View style={styles.sectionContainer}>
+        <OverlayDialogContent>
 
-            <View style={styles.row}>
+            <Row>
+                <FieldContainer>
+                    <AutoFillField
+                        label = "Reference"
+                        value = "No Data"
+                    />
+                </FieldContainer>
+
+                <FieldContainer>
+                    <InputField2
+                        label={"Item Name"}
+                        onChangeText={onFieldChange('name')}
+                        value={fields['name']}
+                        onClear={() => onFieldChange('name')('')}
+                        hasError = {errorFields['name']}
+                        errorMessage = "Name must be filled."
+                    />
+                </FieldContainer>
+            </Row>
+
+            <Row>
+                <FieldContainer>
+                    <MultipleSelectionsField
+                        label={"Category"}
+                        onOptionsSelected={onFieldChange('category')}
+                        options = {categorySearchResults}
+                        searchText = {categorySearchValue}
+                        onSearchChangeText = {(value)=> setCategorySearchValue(value)}
+                        onClear={()=>{setCategorySearchValue('')}}
+                        handlePopovers = {(value)=>handlePopovers(value)('category')}
+                        isPopoverOpen = {categorySearchQuery}
+                    />
+                </FieldContainer>
+            </Row>
+
+            <Divider theme = {theme}/>
+
+            <Row zIndex={-1}>
+
+                <FieldContainer>
+                    <InputField2
+                        label={"Unit"}
+                        onChangeText={onFieldChange('unit')}
+                        value={fields['unit']}
+                        onClear={() => onFieldChange('unit')('')}
+                    />
+                </FieldContainer>
+
+                <FieldContainer>
+                    <OptionsField
+                        label={"Unit of Measure"}
+                        text={fields['unitOfMeasure']}
+                        oneOptionsSelected={onFieldChange('unitOfMeasure')}
+                        menuOption={<MenuOptions>
+                            <MenuOption value={'Glove Boxes'} text='Glove Boxes'/>
+                            <MenuOption value={'Pack'} text='Pack'/>
+                        </MenuOptions>}
+                    />
+                </FieldContainer>
+            </Row>
+
+            <Row zIndex={-1}>
+                <FieldContainer>
+                    <InputUnitField
+                        label={"Markup"}
+                        onChangeText={(value)=>{
+                            if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
+                                onFieldChange('markup')(value)
+                            }
+                        }}
+                        value={fields['markup']}
+                        units={['%']}
+                        keyboardType="number-pad"
+                    />
+                </FieldContainer>
+            </Row>
+
+
+            {/* <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
 
@@ -244,95 +340,82 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
                     />
                 </View>
 
-            </View>
-
-            {/* <View style={styles.row}>
-                <View style={styles.inputWrapper}>
-                    <TextArea
-                        label = "Description"
-                        onChangeText={onFieldChange('description')}
-                        value={fields['description']}
-                        onClear = {()=> onFieldChange('description')('')}
-                    />
-                </View>
-                
             </View> */}
 
-        </View>
+        </OverlayDialogContent>
     );
 
-    const configTab = (
+    // const configTab = (
 
-        <View style={styles.sectionContainer}>
+    //     <View style={styles.sectionContainer}>
 
-            <View style={styles.row}>
+    //         <View style={styles.row}>
 
-                <View style={styles.inputWrapper}>
-                    <InputField2
-                        label={"Unit"}
-                        onChangeText={onFieldChange('unit')}
-                        value={fields['unit']}
-                        onClear={() => onFieldChange('unit')('')}
-                    />
-                </View>
+    //             <View style={styles.inputWrapper}>
+    //                 <InputField2
+    //                     label={"Unit"}
+    //                     onChangeText={onFieldChange('unit')}
+    //                     value={fields['unit']}
+    //                     onClear={() => onFieldChange('unit')('')}
+    //                 />
+    //             </View>
 
-                <View style={styles.inputWrapper}>
-                    <OptionsField
-                        label={"Unit of Measure"}
-                        text={fields['unitOfMeasure']}
-                        oneOptionsSelected={onFieldChange('unitOfMeasure')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={'Glove Boxes'} text='Glove Boxes'/>
-                            <MenuOption value={'Pack'} text='Pack'/>
-                        </MenuOptions>}
-                    />
-                </View>
+    //             <View style={styles.inputWrapper}>
+    //                 <OptionsField
+    //                     label={"Unit of Measure"}
+    //                     text={fields['unitOfMeasure']}
+    //                     oneOptionsSelected={onFieldChange('unitOfMeasure')}
+    //                     menuOption={<MenuOptions>
+    //                         <MenuOption value={'Glove Boxes'} text='Glove Boxes'/>
+    //                         <MenuOption value={'Pack'} text='Pack'/>
+    //                     </MenuOptions>}
+    //                 />
+    //             </View>
 
-            </View>
+    //         </View>
 
-            <View style={styles.row}>
-                <View style={styles.inputWrapper}>
-                    <InputUnitField
-                        label={"Markup"}
-                        onChangeText={(value)=>{
-                            if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
-                                onFieldChange('markup')(value)
-                            }
-                        }}
-                        value={fields['markup']}
-                        units={['%']}
-                        keyboardType="number-pad"
-                    />
-                </View>
+    //         <View style={styles.row}>
+    //             <View style={styles.inputWrapper}>
+    //                 <InputUnitField
+    //                     label={"Markup"}
+    //                     onChangeText={(value)=>{
+    //                         if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
+    //                             onFieldChange('markup')(value)
+    //                         }
+    //                     }}
+    //                     value={fields['markup']}
+    //                     units={['%']}
+    //                     keyboardType="number-pad"
+    //                 />
+    //             </View>
                
-            </View>
-        </View>
-    );
+    //         </View>
+    //     </View>
+    // );
 
     return (
         <OverlayDialog
-            title={"New Location"}
+            title={"Create Group"}
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
-            positiveText={selectedIndex === (dialogTabs.length - 1) ? "DONE" : "NEXT"}
+            positiveText={"DONE"}
             // handlePopovers = {handlePopovers}
             // buttonIcon={<ArrowRightIcon/>}
         >
 
-            <View style={styles.container}>
+            <>
                 <DialogTabs
                     tabs={dialogTabs}
                     tab={selectedIndex}
-                    onTabPress={onTabChange}
                 />
                 <TouchableOpacity
                     onPress = {()=>handlePopovers(false)()}
                     activeOpacity = {1}
                 >
-                    {getTabContent()}
+                    {detailsTab}
                 </TouchableOpacity>
 
-            </View>
+            </>
 
 
         </OverlayDialog>
@@ -353,7 +436,7 @@ const styles = StyleSheet.create({
         height:200,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
-        padding: 24,
+        // padding: 24,
     },
     row: {
         flexDirection: 'row',
