@@ -43,7 +43,7 @@ function CollapsibleListItem ({
         childView, 
         render = ()=>{},
         children = ()=>{}  
-    }) {
+    }) { 
 
     const [isCollapsed, setCollapsed] = useState(true);
     const theme = useTheme();                   
@@ -55,7 +55,7 @@ function CollapsibleListItem ({
     return (
        
         <CollapsibleListItemWrapper theme = {theme}>
-            <CollapsibleListItemContainer theme = {theme}>
+            <CollapsibleListItemContainer theme = {theme} onPress = {onItemPress}>
                 <CollapsibleListItemParentView
                     hasCheckBox = {hasCheckBox}
                     isChecked = {isChecked} 

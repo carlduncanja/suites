@@ -6,7 +6,7 @@ import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 import AutoFillField from "../common/Input Fields/AutoFillField";
 
-import { getInventories, getEquipmentTypes, getTheatres } from "../../api/network";
+import { getInventoriesGroup, getEquipmentTypes, getTheatres } from "../../api/network";
 import _ from "lodash";
 
 import styled, { css } from '@emotion/native';
@@ -65,7 +65,7 @@ const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
     }, [searchValue]); 
  
     const fetchInventories = () => {
-        getInventories(searchValue, 5)
+        getInventoriesGroup(searchValue, 5)
             .then((results = {}) => {
                 const { data = [], pages = 0} = results
                 console.log("Results: ", data)

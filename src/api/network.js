@@ -3,6 +3,7 @@ import {handleError, handleResponse} from "./apiUtils";
 
 import {
     inventoryGroups,
+    inventoryGroup,
     inventoriesEndpoint,
     inventoryEndpoint,
     inventoryVariantEndpoint,
@@ -145,9 +146,9 @@ export const getInventories = async (query, max, page) => {
         .catch(handleError);
 };
 
-export const getInventoryById = async (id) => {
+export const getInventoryGroupById = async (id) => {
     return suitesAxiosInstance
-        .get(inventoryEndpoint(id))
+        .get(inventoryGroup(id))
         .then(handleResponse)
         .catch(handleError);
 };

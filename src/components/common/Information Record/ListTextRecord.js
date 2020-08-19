@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
@@ -13,6 +13,10 @@ const RecordContainer = styled.View`
     flex-direction:column;
 `;
 
+const ValueContainer = styled.View`
+    flex-direction : row;  
+`;
+
 const TitleText = styled.Text( ({theme, titleColor, titleStyle}) => ({
     ...theme.font[titleStyle],
     color : theme.colors[titleColor],
@@ -21,36 +25,47 @@ const TitleText = styled.Text( ({theme, titleColor, titleStyle}) => ({
 
 const ValueText = styled.Text( ({theme, valueStyle, valueColor}) => ({
     ...theme.font[valueStyle],
-    color : theme.colors[valueColor]
+    color : theme.colors[valueColor],
 }));
 
 
-function Record({
+function ListTextRecord({
     recordTitle = "", 
-    recordValue = '--', 
     titleStyle = "--text-sm-regular",
     valueStyle = "--text-base-regular",
-    valueFontSize = 16, 
-    titleFontSize = 14, 
+    values = [],
     titleColor = '--color-gray-600', 
     valueColor = '--color-gray-900',
     flex = 1
 }){
     const theme = useTheme();
 
-    
-
     return ( 
         <RecordWrapper flex = {flex} theme = {theme}>
             <RecordContainer>
                 <TitleText theme = {theme} titleColor = {titleColor} titleStyle = {titleStyle}>{recordTitle}</TitleText>
-                <ValueText theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>{recordValue || "--"}</ValueText>
+                {
+                    values.length === 0 && <ValueText theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>--</ValueText>
+                }
+                <ValueContainer>
+                    {
+                        values.map( (value,index) => {
+                            return index === values.length-1 ? 
+                                <ValueText key = {index} theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>{value}</ValueText>
+                                :
+                                <ValueText key = {index} theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>{value}, </ValueText>
+                            
+                        })
+                    }
+                </ValueContainer>
+                
+                
             </RecordContainer>
         </RecordWrapper>
     )
 }
 
-export default Record 
+export default ListTextRecord 
 
 const styles = StyleSheet.create({
     container:{
