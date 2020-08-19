@@ -3,7 +3,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
 const RowWrapper = styled.View`
-        margin-bottom: ${({theme}) => theme.space['--space-20']};
+        margin-bottom: ${({theme}) => theme.space['--space-32']};
         width: 100%;
         position: relative;
         z-index : ${ ({zIndex}) => zIndex.toString()};

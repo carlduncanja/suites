@@ -5,83 +5,69 @@ import Table from "../common/Table/Table";
 import moment from "moment";
 import LevelIndicator from "../common/LevelIndicator/LevelIndicator";
 import Item from "../common/Table/Item";
+import DataItem from '../common/List/DataItem';
+import ContentDataItem from '../common/List/ContentDataItem';
 
-const UiData = [
-    {
-        id: "1",
-        locationName: "OR1: Cabinet 1",
-        stock: 150,
-        levels: {
-            ideal: 150,
-            max: 300,
-            low: 100,
-            min: 0,
-            critical: 100
-        }
-    },
-    {
-        id: "2",
-        locationName: "OR1: Cabinet 2",
-        stock: 50,
-        levels: {
-            ideal: 150,
-            max: 300,
-            low: 100,
-            min: 0,
-            critical: 100
-        }
-    }
-];
 
 const storageHeader = [
     {
         name: 'Location',
         alignment: 'flex-start',
-        styles: {
-            flex: 3
-        }
+        flex: 1.5
     },
     {
-        name: 'InStock',
+        name: 'In-Stock',
         alignment: 'center',
-        styles: {
-            flex: 1
-        }
+        flex: 1
     },
     {
-        name: 'Levels',
+        name: 'Capacity',
         alignment: 'center',
-        styles: {
-            flex: 1
-        }
+        flex: 1
     }
 ];
 
 function InventoryStorageLocationsTab({
-                                 storageLocations = [],
-                                 selectedItems = [],
-                                 onCheckBoxPress = () => {
-                                 }
-                             }) {
+        storageLocations = [],
+        selectedItems = [],
+        onCheckBoxPress = () => {
+        }
+    }) {
+
+    console.log("Locations: ", storageLocations)
+
+    // ####### HELPER FUNCTIONS
 
     const storageItem = ({locationName, stock, levels}) => {
+        let updatedLevels = {
+            ...levels,
+            min : 0
+        };
         return <>
-            <View style={[styles.item, {flex: 3,justifyContent: "flex-start"}]}>
+
+            <DataItem text = {locationName} flex = {1.5} color = {"--color-blue-600"} fontStyle = {"--text-base-medium"}/>
+            <DataItem text = {stock} color = {"--color-gray-700"} fontStyle = {"--text-base-medium"} align={"center"}/>
+            <ContentDataItem 
+                align = {'center'}
+                content = {
+                    <LevelIndicator
+                        {...updatedLevels}
+                        level={stock}
+                    />
+                }
+            />
+                
+            {/* <View style={[styles.item, {flex: 3,justifyContent: "flex-start"}]}>
                 <Text style={[styles.itemText, styles.linkText]}>
                     {locationName}
                 </Text>
-            </View>
-           <View style={[styles.item, {justifyContent: "center"}]}>
+            </View> */}
+           {/* <View style={[styles.item, {justifyContent: "center"}]}>
                 <Text style={styles.itemText}>
                     {stock}
                 </Text>
-            </View>
-            <View style={[styles.item, {justifyContent: "center"}]}>
-                <LevelIndicator
-                    {...levels}
-                    level={stock}
-                />
-            </View>
+            </View> */}
+            
         </>
     };
 
@@ -97,7 +83,7 @@ function InventoryStorageLocationsTab({
 
 
     return (
-        <View style={styles.container}>
+        <>
             <Table
                 data={storageLocations}
                 listItemFormat={renderStorageLocation}
@@ -105,7 +91,7 @@ function InventoryStorageLocationsTab({
                 isCheckbox={true}
                 itemSelected={selectedItems}
             />
-        </View>
+        </>
     );
 }
 

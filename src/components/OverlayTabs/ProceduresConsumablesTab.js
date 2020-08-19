@@ -37,7 +37,7 @@ const headers = [
         name :"Quantity",
         alignment: "center"
     },
-    {
+    { 
         name :"Unit Price",
         alignment: "flex-end"
     }

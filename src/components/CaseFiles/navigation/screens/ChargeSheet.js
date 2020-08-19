@@ -238,7 +238,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
         return {
             ...item,
             unitPrice: item.cost
-        }
+        } 
     }))
 
     const consumables = [groupedInventories, ...inventories];
@@ -252,6 +252,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                 allItems={inventoryList}
                 consumables={consumables}
                 caseProceduresFilters={consumableProcedures}
+                caseProcedures = {caseProcedures}
                 onConsumablesUpdate={handleConsumableUpdate}
                 isEditMode={isEditMode}
                 handleEditDone={handleEditDone}
