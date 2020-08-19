@@ -5,6 +5,7 @@ import MonthSelector from "../Calendar/MonthSelector";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import ScheduleButton from './ScheduleButton';
+import { SuitesContext } from "../../contexts/SuitesContext";
 
 function SchedulePageHeader({
     searchButtonPress = () => { },
@@ -13,13 +14,14 @@ function SchedulePageHeader({
     selectedMonth = new Date(),
     onExpand = () => { }
 }) {
+    const [state] = useContext(SuitesContext);
 
     const theme = useTheme();
 
 
 
     const SchedulePageHeaderWrapper = styled.View`
-        width: 100%;
+        width: ${state.pageMeasure.width};
         padding-left: ${theme.space['--space-32']};
         padding-top: ${theme.space['--space-26']};
         padding-bottom: ${theme.space['--space-24']};
@@ -44,7 +46,7 @@ function SchedulePageHeader({
     const TextView = styled.Text`
     font:${theme.font["--text-2xl-medium"]};
     color:${theme.colors["--company"]};
-    margin-right:270px;
+    margin-right:250px;
     
 
     `;

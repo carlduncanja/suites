@@ -1,11 +1,11 @@
-import React, {Component, useState, useEffect, useRef, useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text, Animated, SectionList} from 'react-native';
+import React, { Component, useState, useEffect, useRef, useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, Animated, SectionList } from 'react-native';
 import SearchInput from './SearchInput'
-import {scheduleActions} from '../../../redux/reducers/scheduleReducer';
-import {ScheduleContext} from '../../../contexts/ScheduleContext';
+import { scheduleActions } from '../../../redux/reducers/scheduleReducer';
+import { ScheduleContext } from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../Buttons/Button';
-import moment from 'moment'; 
+import moment from 'moment';
 import ScheduleItem from '../../Schedule/ScheduleItem';
 import { formatDate } from '../../../utils/formatter';
 
@@ -13,7 +13,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SuggestionsComponent from './SuggestionsComponent';
 
-function SearchBar(props){
+function SearchBar(props) {
     const {
         changeText,
         closeSearch,
@@ -82,9 +82,10 @@ function SearchBar(props){
         width: 100%;
     `
     return (
+
         <SearchBarWrapper activeOpacity={1} onPress={() => searchClosed()}>
             <SearchBarContainer>
-                
+
                 <SearchInput
                     changeText={changeText}
                     inputText={inputText}
@@ -95,15 +96,19 @@ function SearchBar(props){
                     onPressSubmit={onPressSubmit}
                 />
 
+                <TouchableOpacity style={{ width: 35, height: 30 }}>
+                    <Text>Filter</Text>
+                </TouchableOpacity>
+
                 {/* Search Results Drop down */}
-                
+
                 <SuggestionsComponent
-                    isSuggestionsOpen = {suggestionsOpen}
-                    matchesToDisplay = {matchesToDisplay}
-                    openSearchResult = {openSearchResult}
-                    currentListMin = {currentListMin}
-                    getPreviousResults = {getPreviousResults}
-                    getNextResults = {getNextResults}
+                    isSuggestionsOpen={suggestionsOpen}
+                    matchesToDisplay={matchesToDisplay}
+                    openSearchResult={openSearchResult}
+                    currentListMin={currentListMin}
+                    getPreviousResults={getPreviousResults}
+                    getNextResults={getNextResults}
                 />
                 {/* {
                     suggestionsOpen &&

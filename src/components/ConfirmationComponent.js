@@ -160,7 +160,7 @@ function ConfirmationComponent({
         <>
           <IconContainer><TickIcon /></IconContainer>
           <AlertText>Completed Successfully!</AlertText>
-          <DeciderButtonContainer>
+          <DeciderButtonContainer onPress={onAction}>
             <GeneralText style={{ color: theme.colors["--default-shade-white"], alignSelf: "center" }}>
               CONTINUE
            </GeneralText>
@@ -174,7 +174,7 @@ function ConfirmationComponent({
         <>
           <IconContainer><ErrorIcon /></IconContainer>
           <AlertText>There was an error performing this action</AlertText>
-          <DeciderButtonContainer onPress = {onCancel}>
+          <DeciderButtonContainer onPress={onCancel}>
             <GeneralText style={{ color: theme.colors["--default-shade-white"], alignSelf: "center" }}>
               CLOSE
          </GeneralText>
