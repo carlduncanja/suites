@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from "lodash";
-import {searchSchedule} from "../../../api/network";
-import {StyleSheet, View, TouchableWithoutFeedback} from "react-native";
+import { searchSchedule } from "../../../api/network";
+import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
 import SearchBar from "./SearchBar";
-import {formatDate} from "../../../utils/formatter";
+import { formatDate } from "../../../utils/formatter";
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -21,7 +21,7 @@ import ShadowContainerComponent from '../ShadowContainerComponent';
  * @returns {*}
  * @constructor
  */
-function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}) {
+function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose }) {
 
     const matchesFound = [
         "Coronary Bypass Graft",
@@ -54,7 +54,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
      * https://medium.com/@mikjailsalazar/just-another-searchbar-react-axios-lodash-340efec6933d
      */
 
-    
+
     const searchChangeText = (textInput) => {
         setSearchInput(textInput);
 
@@ -93,12 +93,12 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
 
     const pressNextSearchResult = () => {
         currentSearchPosition < matchesFound &&
-        setCurrentSearchPosition(currentSearchPosition + 1)
+            setCurrentSearchPosition(currentSearchPosition + 1)
     };
 
     const pressPreviousSearchResult = () => {
         currentSearchPosition > 0 &&
-        setCurrentSearchPosition(currentSearchPosition - 1)
+            setCurrentSearchPosition(currentSearchPosition - 1)
     };
 
     const pressNewSearch = () => {
@@ -139,8 +139,8 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
         return result.map(item => {
             const title = item.title;
             const date = formatDate(item.startTime, "MMM D")
-            const startTime = formatDate(item.startTime,"h : mm a")
-            const endTime = formatDate(item.endTime,"h : mm a")
+            const startTime = formatDate(item.startTime, "h : mm a")
+            const endTime = formatDate(item.endTime, "h : mm a")
 
             return `${title}\t\t ${date}\t (${startTime} - ${endTime})`
         });
@@ -162,36 +162,36 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
         width: 100%;
         height: 100%;
     `;
- 
+
     return (
-        isOpen ? 
+        isOpen ?
             <ScheduleSearchWrapper>
                 <SearchContainer>
-                {/* Background Shadow View*/}
-                    <ShadowContainerComponent isOpen = {isOpen}/>
+                    {/* Background Shadow View*/}
+                    <ShadowContainerComponent isOpen={isOpen} />
                     {/* <View style={{
                         position: 'absolute',
                         width: '100%',
                         height: '100%',
                         top: 0,
                     }}> */}
-                        <SearchBar
-                            closeSearch={handleOnSearchClose}
-                            changeText={searchChangeText}
-                            inputText={searchInput}
-                            matchesFound={formatResult(searchResults)}
-                            onPressNextResult={pressNextSearchResult}
-                            onPressPreviousResult={pressPreviousSearchResult}
-                            onPressNewSerch={pressNewSearch}
-                            onPressSubmit={pressSubmit}
-                            onResultSelected={handleOnSearchResultSelected}
-                        />
+                    <SearchBar
+                        closeSearch={handleOnSearchClose}
+                        changeText={searchChangeText}
+                        inputText={searchInput}
+                        matchesFound={formatResult(searchResults)}
+                        onPressNextResult={pressNextSearchResult}
+                        onPressPreviousResult={pressPreviousSearchResult}
+                        onPressNewSerch={pressNewSearch}
+                        onPressSubmit={pressSubmit}
+                        onResultSelected={handleOnSearchResultSelected}
+                    />
                     {/* </View> */}
                 </SearchContainer>
             </ScheduleSearchWrapper>
 
-            : 
-            <View/>
+            :
+            <View />
     );
 }
 

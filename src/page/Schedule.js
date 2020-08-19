@@ -1,21 +1,21 @@
-import React, {useState, useContext, useEffect} from 'react'; 
-import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, StyleSheet, Dimensions, ActivityIndicator, Text } from 'react-native';
 import Animated from 'react-native-reanimated'
 import Button from '../components/common/Buttons/Button';
 import moment from 'moment';
 import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import MonthSelector from "../components/Calendar/MonthSelector";
 import SchedulesList from "../components/Schedule/SchedulesList";
-import {ScheduleContext} from '../contexts/ScheduleContext';
-import {getAppointments} from "../api/network";
-import {getDaysForMonth} from "../utils";
-import {formatDate} from "../utils/formatter";
-import {connect} from 'react-redux'
-import {setAppointments} from "../redux/actions/appointmentActions"
-import {colors} from '../styles'
+import { ScheduleContext } from '../contexts/ScheduleContext';
+import { getAppointments } from "../api/network";
+import { getDaysForMonth } from "../utils";
+import { formatDate } from "../utils/formatter";
+import { connect } from 'react-redux'
+import { setAppointments } from "../redux/actions/appointmentActions"
+import { colors } from '../styles'
 import ScheduleSearchContainer from "../components/common/Search/ScheduleSearchContainer";
 import ScheduleOverlayContainer from "../components/Schedule/ScheduleOverlayContainer";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -38,7 +38,7 @@ const Schedule = (props) => {
 
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialDaysList = getDaysForMonth(currentDate);
-    const initialIndex = getSelectedIndex(formatDate(currentDate,"YYYY-MM-DD").toString(), initialDaysList);
+    const initialIndex = getSelectedIndex(formatDate(currentDate, "YYYY-MM-DD").toString(), initialDaysList);
 
     //########### States
     // const [dimensions, setDimensions] = useState(Dimensions.get('window'));
@@ -55,6 +55,12 @@ const Schedule = (props) => {
 
     // search states
     const [searchOpen, setSearchOpen] = useState(false);
+    const [isExpanded, setisExpanded] = useState(false);
+
+    const onExpandButtonPress = () => {
+        console.log("expand clicked");
+        setisExpanded(!isExpanded);
+    };
 
     // animated states
 
@@ -71,7 +77,7 @@ const Schedule = (props) => {
             setFetchingAppointments(true);
             getAppointments()
                 .then(data => {
-                    console.log("appointments",data);
+                    console.log("appointments", data);
                     setAppointments(data);
                 })
                 .catch(error => {
@@ -99,7 +105,7 @@ const Schedule = (props) => {
 
     const handleOnGoToToday = () => {
         const currentDate = new Date();
-        let date = formatDate(currentDate,"YYYY-MM-DD").toString();
+        let date = formatDate(currentDate, "YYYY-MM-DD").toString();
         let currentDaysList = getDaysForMonth(currentDate);
 
         setDaysList(getDaysForMonth(currentDate));
@@ -117,7 +123,7 @@ const Schedule = (props) => {
     const handleAppointmentPress = (appointment) => {
         modal.openModal('BottomSheetModal', {
             // content: <ScheduleOverlayContainer appointment={appointment}/>,
-            content: <ScheduleOverlayContainer appointment={appointment}/>,
+            content: <ScheduleOverlayContainer appointment={appointment} />,
             initialSnap: 2,
             snapPoints: [600, 500, 0]
         })
@@ -135,10 +141,10 @@ const Schedule = (props) => {
     // ###### STYLED COMPONENTS
 
     const ScheduleWrapper = styled.View({
-        flex:1,
+        flex: 1,
         backgroundColor: theme.colors['--color-neutral-gray-100'],
     });
-    
+
     const ScheduleContainer = styled.View`
         display: flex;
         flex:1;
@@ -168,18 +174,21 @@ const Schedule = (props) => {
                         handleAppointmentPress(appointment)
                     }}
                     onSearchClose={closeSearch}
-                />  
+                />
 
-                <View style={{flex:1}}>
+                <View style={{ flex: 1 }}>
 
                     <SchedulePageHeader
-                        searchButtonPress = {searchPress}
-                        gotoTodayButtonPress = {handleOnGoToToday}
-                        selectedMonth = {selectedMonth}
-                        onMonthUpdate = {handleOnMonthUpdated}
+                        searchButtonPress={searchPress}
+                        gotoTodayButtonPress={handleOnGoToToday}
+                        selectedMonth={selectedMonth}
+                        onMonthUpdate={handleOnMonthUpdated}
+                        onExpand={onExpandButtonPress}
+
                     />
                     <SchedulePageContent
-                        isFetchingAppointment = {isFetchingAppointment}
+                        Expanded={isExpanded}
+                        isFetchingAppointment={isFetchingAppointment}
                         onDaySelected={handleOnDaySelected}
                         appointments={appointments}
                         month={selectedMonth}
@@ -248,9 +257,9 @@ const Schedule = (props) => {
                         } 
                     </View> */}
                 </View>
-                </Animated.View>
+            </Animated.View>
         </View>
-        
+
     )
 };
 

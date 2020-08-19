@@ -1,11 +1,11 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, StyleSheet, Dimensions, ActivityIndicator, Text } from 'react-native';
 import Button from '../common/Buttons/Button';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-function ScheduleButton({title = '', onButtonPress = ()=>{}, color}){
+function ScheduleButton({ title = '', onButtonPress = () => { }, color }) {
 
     const theme = useTheme();
 

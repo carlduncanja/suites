@@ -21,7 +21,7 @@ const shadow = {
     zIndex: 3,
 };
 
-const HeaderWrapper = styled.View(({isEditMode, theme}) =>
+const HeaderWrapper = styled.View(({ isEditMode, theme }) =>
     ({
         display: 'flex',
         height: 55,
@@ -73,11 +73,7 @@ const EditButtonContainer = styled.View`
   width: 100%; 
   border-radius : 6px;
   padding: 6px 8px;
-<<<<<<< HEAD
   background-color : ${({ theme, isEditMode }) => isEditMode ? theme.colors['--default-shade-white'] : theme.colors['--accent-button']};
-=======
-  background-color : ${({theme, isEditMode}) => isEditMode ? theme.colors['--default-shade-white'] : theme.colors['--accent-button']};
->>>>>>> 9aff15142abf1e3bf5482eb905c079db92506d68
   align-items : center;
   justify-content : center;
 `

@@ -40,7 +40,7 @@ function NotFound({ addNotification, signOut, route = {} }) {
     openModal("ConfirmationModal", {
       content: (
         <ConfirmationComponent
-          isError={false}//boolean to show whether an error icon or success icon
+          isError={true}//boolean to show whether an error icon or success icon
           isEditUpdate={false}//use this specification to either get the confirm an edit or update
           onCancel={cancelClicked}
           onAction={actionClicked}

@@ -1,11 +1,11 @@
-import React, {Component, useState, useEffect, useRef, useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text, Animated, SectionList} from 'react-native';
+import React, { Component, useState, useEffect, useRef, useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, Animated, SectionList } from 'react-native';
 import SearchInput from './SearchInput'
-import {scheduleActions} from '../../../redux/reducers/scheduleReducer';
-import {ScheduleContext} from '../../../contexts/ScheduleContext';
+import { scheduleActions } from '../../../redux/reducers/scheduleReducer';
+import { ScheduleContext } from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../Buttons/Button';
-import moment from 'moment'; 
+import moment from 'moment';
 import ScheduleItem from '../../Schedule/ScheduleItem';
 import { formatDate } from '../../../utils/formatter';
 
@@ -13,11 +13,11 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
 function Suggestion({
-        openSearchResult = ()=>{},
-        suggestion = {},
-        index 
-    }){
-    
+    openSearchResult = () => { },
+    suggestion = {},
+    index
+}) {
+
 
     const theme = useTheme();
     // STYLED COMPONENTS
@@ -27,7 +27,7 @@ function Suggestion({
         background-color: red;
         padding-bottom: ${theme.space['--space-14']};
     `;
-    
+
     const SuggestionContainer = styled.View`
         display: flex;
         width: 100%;
@@ -36,17 +36,17 @@ function Suggestion({
 
     const SuggestionText = styled.Text({
         ...theme.font['--text-base-medium'],
-        color : theme.colors['--color-gray-300']
+        color: theme.colors['--color-gray-300']
     })
 
     return (
-        
+
         <SuggestionWrapper>
             <SuggestionContainer>
-    
+
                 <SuggestionText>
                     {(suggestion) instanceof Date ?
-                        formatDate(suggestion,"MMMM D, YYYY")
+                        formatDate(suggestion, "MMMM D, YYYY")
                         :
                         suggestion
                     }
@@ -55,7 +55,7 @@ function Suggestion({
             </SuggestionContainer>
         </SuggestionWrapper>
 
-       
+
     )
 };
 export default Suggestion
