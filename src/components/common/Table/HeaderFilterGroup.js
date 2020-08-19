@@ -35,7 +35,7 @@ function HeaderFilterGroup({name = "", isSelected = false}){
     // console.log("Name: ", name, isSelected)
 
     return (
-       
+       name !=="" &&
         <HeaderGoupWrapper>
             <HeaderGroupContainer theme = {theme} isSelected = {isSelected}>
                 <HeaderText theme = {theme}>{name}</HeaderText>

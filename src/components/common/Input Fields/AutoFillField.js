@@ -4,6 +4,7 @@ import {View, StyleSheet, Text} from "react-native";
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import InputLabelComponent from '../InputLablel';
 
 /**
  *
@@ -12,73 +13,60 @@ import { useTheme } from 'emotion-theming';
  * @returns {*}
  * @constructor 
  */
+
+const AutoFillFieldWrapper = styled.View`
+    flex : ${ ({flex}) => flex.toString()};
+    height : ${ ({theme}) => theme.space['--space-30']};
+`;
+const AutoFillContainer = styled.View`
+    height : 100%;
+    position : relative;
+    flex-direction : row;
+    align-items : center;
+`;
+
+const FieldWrapper = styled.View`
+    display : flex;
+    flex : ${ ({flex}) => flex.toString()};
+    height: 100%;
+`;
+const FieldContainer = styled.View`
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
+    padding-left: ${ ({theme}) => theme.space['--space-10']};
+    padding-right: ${ ({theme}) => theme.space['--space-10']};
+    padding-top: ${ ({theme}) => theme.space['--space-2']};
+    padding-bottom: ${ ({theme}) =>theme.space['--space-2']};
+    border-width: 1px;
+    border-color: ${ ({theme}) => theme.colors['--color-gray-300']}
+    border-radius: 4px;
+`;
+
+const Value = styled.Text( ({theme}) => ({
+    ...theme.font['--text-sm-regular'],
+    color : theme.colors['--color-gray-500'],
+}));
+
+
 function AutoFillField({label, value = "", flex = 1}) {
 
     const theme = useTheme();
 
-    const AutoFillFieldWrapper = styled.View`
-        flex : ${flex.toString()};
-        height : ${theme.space['--space-32']};
-    `;
-    const AutoFillContainer = styled.View`
-        height : 100%;
-        position : relative;
-        flex-direction : row;
-        align-items : center;
-    `;
-
-    const Label = styled.Text({
-        ...theme.font['--text-xs-medium'],
-        color : theme.colors['--color-gray-600'],
-        marginRight : label ? 20 : 0,
-        minWidth : 60
-    });
-
-    const FieldWrapper = styled.View`
-        display : flex;
-        flex : ${flex.toString()};
-        height: 100%;
-    `;
-    const FieldContainer = styled.View`
-        width: 100%;
-        height: 100%;
-        justify-content: center;
-        background-color: ${theme.colors['--color-gray-200']};
-        padding-left: ${theme.space['--space-10']};
-        padding-right: ${theme.space['--space-10']};
-        padding-top: ${theme.space['--space-2']};
-        padding-bottom: ${theme.space['--space-2']};
-        border-width: 1px;
-        border-color: ${theme.colors['--color-gray-300']}
-        border-radius: 4px;
-    `;
-
+    
     return (
-        <AutoFillFieldWrapper>
+        <AutoFillFieldWrapper flex = {flex} theme = {theme}>
             <AutoFillContainer>
 
-            <Label numberOfLines={1}>{label}</Label>
-
-            {/* <Text style={[
-                styles.textLabel, {
-                    minWidth: 60,
-                    marginRight: label ? 20 : 0
-                }
-            ]}>{label}</Text> */}
+            <InputLabelComponent label = {label}/>
             
-            <FieldWrapper>
-                <FieldContainer>
-                    <Text>{value}</Text>
+            <FieldWrapper flex = {flex}>
+                <FieldContainer theme = {theme}>
+                    <Value theme = {theme} >{value}</Value>
                 </FieldContainer>
             </FieldWrapper>
 
-            {/* <View style={[styles.inputWrapper, {
-                paddingRight: value ? 4 : 0,
-            }]}>
-                <View style = {styles.inputField}>
-                    <Text>{value}</Text>
-                </View>
-            </View> */}
             </AutoFillContainer>
         </AutoFillFieldWrapper>
     );

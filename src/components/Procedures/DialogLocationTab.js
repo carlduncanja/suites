@@ -14,7 +14,7 @@ import { getTheatres } from "../../api/network";
 import _ from "lodash";
 
 import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
-import SearchableMultipleOptionField from "../common/Input Fields/SearchableMultipleOptionField";
+// import SearchableMultipleOptionField from "../common/InputFields/SearchableMultipleOptionField";
 
 
 

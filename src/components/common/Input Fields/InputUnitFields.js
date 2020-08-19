@@ -2,6 +2,11 @@ import React,{ useState } from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
+import InputContainerComponent from '../InputContainerComponent';
+import InputLabelComponent from '../InputLablel';
+import { useTheme } from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+import InputErrorComponent from '../InputErrorComponent';
 
 /**
  *
@@ -11,11 +16,52 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @param placeholder
  * @param keyboardType
  * @param units
- * @returns {*}
+ * @returns {*} 
  * @constructor
  */
+
+const TextInputWrapper = styled.View`
+    flex:1;
+    height : 32px;
+`;
+const TextInputContainer = styled.View`
+    height : 100%;
+    width : 100%;
+    border-width: 1px;
+    border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
+    background-color : ${ ({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    border-radius: 4px;
+`;
+
+const InputContainer = styled.View`
+    flex:1;
+    flex-direction : row;
+`;
+
+const Input = styled.TextInput`
+    flex:1;
+    padding-left : ${ ({theme}) => theme.space['--space-10']};  
+`;
+
+const UnitContainer = styled.View`
+    width : 50px;
+    background-color : ${ ({theme}) => theme.colors['--color-gray-100']};
+    align-items : center;
+    justify-content : center;
+    border-left-width : 1px;
+    border-top-right-radius : 4px;
+    border-bottom-right-radius : 4px;
+    border-color : ${ ({theme}) => theme.colors['--color-gray-300']};
+`;
+
+const Unit = styled.Text( ({theme}) => ({
+    ...theme.font['--text-sm-regular'],
+    color : theme.colors['--color-black']
+}));
+
 function InputUnitField({label, onChangeText, value, placeholder, keyboardType, units, hasError = false, errorMessage = "" }) {
 
+    const theme = useTheme();
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [selectedUnit, setSelectedUnit] = useState(units[selectedIndex])
     
@@ -31,89 +77,43 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={[
-                styles.textLabel, {
-                    marginRight: label ? 20 : 0
-                }
-            ]}>{label}</Text>
+        <InputContainerComponent>
 
-            <View style={{flex:1, height:32}}>
-                <View style={[styles.inputWrapper,{borderColor: hasError ? 'red' : '#E3E8EF'}]}>
-                    <TextInput
-                        style={[styles.inputField]}
-                        onChangeText={onChangeText}
-                        value={value}
-                        keyboardType={keyboardType}
-                        placeholder={placeholder}
-                    />
-                    <TouchableOpacity 
-                        onPress={()=>changeUnit()}
-                        style={{
-                            backgroundColor:"#F8FAFB", 
-                            alignItems:'center', 
-                            justifyContent:'center',
-                            paddingRight:10,
-                            paddingLeft:10,
-                            borderLeftWidth:1,
-                            borderColor:'#E3E8EF'
-                        }}
-                    >
-                        <Text style={{alignSelf:'center'}}>{selectedUnit}</Text>
-                    </TouchableOpacity>
+            {
+                label && <InputLabelComponent label = {label}/>
+            }
+            
+            <TextInputWrapper>
+                <TextInputContainer theme = {theme}>
+
+                    <InputContainer>
+                        <Input
+                            theme = {theme}
+                            onChangeText={onChangeText}
+                            value={value}
+                            keyboardType={keyboardType}
+                            placeholder={placeholder}
+                        />
+                        <UnitContainer theme = {theme}>
+                            <Unit>{selectedUnit}</Unit>
+                        </UnitContainer>
+                    </InputContainer>
                     
-                </View>
-                {
-                    hasError && <View style={styles.errorView}>
-                        <Text style={{fontSize:10, color:'red'}}>{errorMessage}</Text>
-                    </View>
-                }
+                    
+                    {
+                        hasError && <InputErrorComponent errorMessage = {errorMessage}/>
+                    }
 
-            </View>
-        </View>
+                </TextInputContainer>
+            </TextInputWrapper>
+
+        </InputContainerComponent>
+
     );
 }
 
 InputUnitField.propTypes = {};
 InputUnitField.defaultProps = {};
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        position: 'relative',
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    textLabel: {
-        fontSize: 12,
-        color: '#718096',
-        fontWeight: '500',
-    },
-    inputWrapper: {
-        flexDirection:'row',
-        // flex: 1,
-        borderWidth: 1,
-        borderColor: '#E3E8EF',
-        borderRadius: 4,
-        height: 32,
-    },
-    inputField: {
-        flex: 1,
-        padding: 10,
-        paddingTop: 2,
-        paddingBottom: 2,
-        
-    },
-    clearIcon: {
-        position: 'absolute',
-        right: 0,
-        margin: 5
-    },
-    errorView : {
-        paddingTop:3,
-        paddingLeft:15
-        
-    }
-});
 
 export default InputUnitField;

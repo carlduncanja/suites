@@ -2,20 +2,30 @@
 export const loginEndpoint = `/auth/login`
 export const logoutEndpoint = `/auth/logout`
 export const registrationEndpoint = `/register`
-export const guestLoginEndpoint = `/login/guest`
+export const guestLoginEndpoint = `/auth/login/guest`
 
 // ##### Appointments
 export const appointmentsEndpoint = `/appointments/`
 export const appointmentEndpoint = (id) => `/appointments/${id}`;
 
 // ##### Theatre
-export const theatresEndpoint =  "/theatres";
-export const theatreEndpoint =  (id) => `/theatres/${id}`;
+export const theatresEndpoint = "/theatres";
+export const theatreEndpoint = (id) => `/theatres/${id}`;
 
 // ##### INVENTORY
-export const inventoriesEndpoint = "/inventories";
+export const inventoriesEndpoint = "/inventories"; 
+// export const inventoriesGroupEndpoint = './inventory_groups';
 export const inventoryEndpoint = (id) => `/inventories/${id}`;
 export const inventoryVariantEndpoint = (id) => `/inventories/${id}/variants`;
+export const inventoryGroups = `/inventory_groups`;
+export const inventoryGroup = (groupId) => `/inventory_groups/${groupId}`;
+export const inventoryGroupVariants = (groupId) => `/inventory_groups/${groupId}/variants`;
+export const inventoryGroupVariant = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}`;
+
+// ##### INVENTORY TRANSFERS
+export const inventoryGroupVariantTransfers = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}/transfers`;
+export const inventoryGroupVariantTransfer = (groupId, variantId, transferId) => `/inventory_groups/${groupId}/variants/${variantId}/transfers/${transferId}`;
+
 
 // ##### PHYSICIANS
 export const physiciansEndpoint = "/physicians";

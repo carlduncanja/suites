@@ -7,7 +7,7 @@ import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField from "../common/Input Fields/InputField";
 import InputField2 from "../common/Input Fields/InputField2";
 import { createStorageLocation, createTheatre } from "../../api/network";
-import NumberInputField from "../common/Input Fields/NumberInputField";
+// import NumberInputField from "../common/Input Fields/NumberInputField";
 import { addStorageLocation } from "../../redux/actions/storageActions";
 import { connect } from "react-redux";
 import {

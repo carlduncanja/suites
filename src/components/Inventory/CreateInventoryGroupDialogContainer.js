@@ -9,14 +9,22 @@ import InputUnitField from "../common/Input Fields/InputUnitFields";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import OptionsField from "../common/Input Fields/OptionsField";
+import AutoFillField from "../common/Input Fields/AutoFillField";
+
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 import {createInventoryGroup, getInventories, getCategories, getSuppliers,} from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import TextArea from '../common/Input Fields/TextArea';
+import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent';
+import ConfirmationComponent from '../ConfirmationComponent';
 import _ from "lodash";
 
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import OverlayDialogContent from '../common/Dialog/OverlayContent';
 
 /**
  * Component to handle the create storage process.
@@ -27,11 +35,20 @@ import _ from "lodash";
  * @constructor
  */
 
+ 
+const Divider = styled.View`
+    border-width : 1px;
+    border-color : ${ ({theme}) => theme.colors['--color-gray-300']};
+    margin-top : ${ ({theme}) => theme.space['--space-20']};
+    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+`;
+
 function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
 
     // ######### CONST
     const modal = useModal();
-    const dialogTabs = ['Details', 'Configuration'];
+    const dialogTabs = ['Details'];
+    const theme = useTheme();
 
     // ######### STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
@@ -123,24 +140,12 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
     };
 
     const onPositiveClick = () => {
-        
+        console.log("Clicked")
         let isValid = validateGroup()
 
         if(!isValid){ return }
-        
-        if (selectedIndex < dialogTabs.length - 1) {
-            setSelectedTabIndex(selectedIndex + 1)
-        } else {
 
-            console.log("Success:", fields)
-            createGroupCall()
-        }
-    };
-
-    const onTabChange = (tab) => {
-        let isValid = validateGroup()
-        if(!isValid) {return}
-        setSelectedTabIndex(dialogTabs.indexOf(tab))
+        goToConfirmationScreen()
     };
 
     const onFieldChange = (fieldName) => (value) => {
@@ -159,8 +164,6 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
     const validateGroup = () => {
         let isValid = true
         let requiredFields = ['name']
-        // selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unit', 'unitOfMeasure']
-        // const requiredFields = ['name', 'unitPrice']
     
         let errorObj = {...errorFields} || {}
 
@@ -180,12 +183,52 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
         return isValid
     }
 
+    const goToConfirmationScreen = () =>{
+        setTimeout(() => {
+
+            modal
+                .openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {true}
+                            onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                            onAction = {onActionSave}
+                            message = "Do you want to save your changes?"
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+        }, 200)
+    };
+
+    const onActionSave = () => {
+        createGroupCall()
+    };
+
+    const errorScreen = () => {
+        setTimeout(() => {
+            modal
+                .openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onCancel = {()=> modal.closeAllModals()}
+                            message = "There was an issue performing this action"
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+        }, 200)
+    }
+
     const createGroupCall = () => {
         createInventoryGroup(fields)
             .then(data => {
                 // addInventory(data)
                 modal.closeAllModals();
-                Alert.alert("Success", `Inventory group ${fields['name'] || ""} created successfully.`)
                 setTimeout(() => {
                     onCreated(data)
                 }, 400);
@@ -193,32 +236,25 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
             .catch(error => {
                 // todo handle error
                 console.log("failed to create inventory group", error);
-                Alert.alert("Failed", "failed to create inventory group")
+                errorScreen()
+                // Alert.alert("Failed", "failed to create inventory group")
             })
             .finally()
     };
 
-    const getTabContent = () => {
-        switch (dialogTabs[selectedIndex]) {
-            case "Configuration":
-                return configTab;
-            case "Details":
-                return detailsTab;
-            default:
-                return <View/>
-        }
-    };
-
-    let catPop = popoverList.filter( item => item.name === 'category')
-    
     const detailsTab = (
 
-        <View style={styles.sectionContainer}>
+        <OverlayDialogContent>
 
-            <View style={styles.row}>
+            <Row>
+                <FieldContainer>
+                    <AutoFillField
+                        label = "Reference"
+                        value = "No Data"
+                    />
+                </FieldContainer>
 
-                <View style={styles.inputWrapper}>
-
+                <FieldContainer>
                     <InputField2
                         label={"Item Name"}
                         onChangeText={onFieldChange('name')}
@@ -227,11 +263,11 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
                         hasError = {errorFields['name']}
                         errorMessage = "Name must be filled."
                     />
+                </FieldContainer>
+            </Row>
 
-                </View>
-
-                <View style={styles.inputWrapper}>
-
+            {/* <Row>
+                <FieldContainer>
                     <MultipleSelectionsField
                         label={"Category"}
                         onOptionsSelected={onFieldChange('category')}
@@ -242,56 +278,37 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
                         handlePopovers = {(value)=>handlePopovers(value)('category')}
                         isPopoverOpen = {categorySearchQuery}
                     />
-                </View>
+                </FieldContainer>
+            </Row> */}
 
-            </View>
+            <Divider theme = {theme}/>
 
-            {/* <View style={styles.row}>
-                <View style={styles.inputWrapper}>
-                    <TextArea
-                        label = "Description"
-                        onChangeText={onFieldChange('description')}
-                        value={fields['description']}
-                        onClear = {()=> onFieldChange('description')('')}
-                    />
-                </View>
-                
-            </View> */}
+            <Row zIndex={-1}>
 
-        </View>
-    );
-
-    const configTab = (
-
-        <View style={styles.sectionContainer}>
-
-            <View style={styles.row}>
-
-                <View style={styles.inputWrapper}>
+                <FieldContainer>
                     <InputField2
                         label={"Unit"}
                         onChangeText={onFieldChange('unit')}
                         value={fields['unit']}
                         onClear={() => onFieldChange('unit')('')}
                     />
-                </View>
+                </FieldContainer>
 
-                <View style={styles.inputWrapper}>
+                <FieldContainer>
                     <OptionsField
                         label={"Unit of Measure"}
-                        text={fields['unitOfMeasure']}
-                        oneOptionsSelected={onFieldChange('unitOfMeasure')}
+                        text={fields['unitOfMeasurement']}
+                        oneOptionsSelected={onFieldChange('unitOfMeasurement')}
                         menuOption={<MenuOptions>
                             <MenuOption value={'Glove Boxes'} text='Glove Boxes'/>
                             <MenuOption value={'Pack'} text='Pack'/>
                         </MenuOptions>}
                     />
-                </View>
+                </FieldContainer>
+            </Row>
 
-            </View>
-
-            <View style={styles.row}>
-                <View style={styles.inputWrapper}>
+            <Row zIndex={-1}>
+                <FieldContainer>
                     <InputUnitField
                         label={"Markup"}
                         onChangeText={(value)=>{
@@ -303,36 +320,35 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
                         units={['%']}
                         keyboardType="number-pad"
                     />
-                </View>
-               
-            </View>
-        </View>
+                </FieldContainer>
+            </Row>
+
+        </OverlayDialogContent>
     );
 
     return (
         <OverlayDialog
-            title={"New Location"}
+            title={"Create Group"}
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
-            positiveText={selectedIndex === (dialogTabs.length - 1) ? "DONE" : "NEXT"}
+            positiveText={"DONE"}
             // handlePopovers = {handlePopovers}
             // buttonIcon={<ArrowRightIcon/>}
         >
 
-            <View style={styles.container}>
+            <>
                 <DialogTabs
                     tabs={dialogTabs}
                     tab={selectedIndex}
-                    onTabPress={onTabChange}
                 />
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress = {()=>handlePopovers(false)()}
                     activeOpacity = {1}
-                >
-                    {getTabContent()}
-                </TouchableOpacity>
+                > */}
+                    {detailsTab}
+                {/* </TouchableOpacity> */}
 
-            </View>
+            </>
 
 
         </OverlayDialog>
@@ -353,7 +369,7 @@ const styles = StyleSheet.create({
         height:200,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
-        padding: 24,
+        // padding: 24,
     },
     row: {
         flexDirection: 'row',

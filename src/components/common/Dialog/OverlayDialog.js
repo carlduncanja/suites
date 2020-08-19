@@ -2,6 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
+import RightArrow from "../../../../assets/svg/rightArrow";
+
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import IconButton from "../Buttons/IconButton";
+import OverlayDialogHeader from "./OverlayDialogHeader";
+import OverlayDialogFooter from "./OverlayDialogFooter";
 
 /**
  * Dialog component used in overlay modal.
@@ -10,19 +17,67 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @returns {*}
  * @constructor
  */
+
+const OverlayDialogWrapper = styled.View`
+    flex : 1;
+    width : 636px;
+    backgound-color: red;
+`;
+const OverlayDialogContainer = styled.View`
+    display : flex;
+    width : 100%;
+    position : relative;
+    border-radius: 8px;
+    background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
+`;
+
+
+const OverlayContentWrapper = styled.View`
+  width : 100%;
+`;
+const OverlayContentContainer = styled.View`
+  flex-direction : column;
+  padding-bottom: ${ ({theme}) => theme.space['--space-56']};
+`;
+
+
 function OverlayDialog(props) {
   const {
     title = " ",
     onClose = () => {},
-    onPositiveButtonPress = () => {},
+    onPositiveButtonPress = () => {}, 
     positiveText = "DONE",
     buttonIcon = <View />,
     // handlePopovers = () =>{}
   } = props;
 
+  const theme = useTheme();
+
   return (
-    <View style={styles.container}>
-      <View style={styles.headingContainer}>
+    <OverlayDialogWrapper>
+      <OverlayDialogContainer theme = {theme}>
+
+        <OverlayDialogHeader
+          title = {title}
+          onClose = {onClose}
+        />
+
+        
+        <OverlayDialogFooter
+          onPositiveButtonPress = {onPositiveButtonPress}
+          positiveText = {positiveText}
+          buttonIcon = {buttonIcon}
+        />
+      
+        <OverlayContentWrapper>
+          <OverlayContentContainer theme = {theme}> 
+            {props.children}
+          </OverlayContentContainer>
+        </OverlayContentWrapper>
+
+     
+    
+      {/* <View style={styles.headingContainer}>
         <Text>{title}</Text>
 
         <TouchableOpacity onPress={onClose}>
@@ -49,7 +104,9 @@ function OverlayDialog(props) {
       >
         {props.children}
       </TouchableOpacity>
-    </View>
+       */}
+      </OverlayDialogContainer>
+    </OverlayDialogWrapper>
   );
 }
 

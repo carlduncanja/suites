@@ -1,34 +1,37 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text, ScrollView} from 'react-native';
 import LineDivider from '../LineDivider';
 import Collapsible from 'react-native-collapsible';
 import styled, { css } from '@emotion/native';
 import CheckBoxComponent from "../Checkbox";
 import { useTheme } from 'emotion-theming';
 
-function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){
-    
-    const theme = useTheme() 
+const ChildContentWrapper = styled.View`
+    margin : 0;
+`;
+const ChildContentContainer = styled.ScrollView`
+    height : ${ ({children}) => children.props.data.length > 0 ? `400px` : '20px'};
+`;
 
-    const ChildContentWrapper = styled.View`
-        margin : 0;
-    `;
-    const ChildContentContainer = styled.View`
-        display: flex;
-        flexDirection: 'column';
-    `;
+function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){
+    const theme = useTheme(); 
 
     return (
+
         <Collapsible collapsed={isCollapsed}>
             <LineDivider/>
-
-            {
+            { 
                 !isCollapsed &&
-                <ChildContentWrapper>
-                    <ChildContentContainer>
-                        {children}
-                    </ChildContentContainer>
-                </ChildContentWrapper>
+                
+                // <ChildContentWrapper>
+                //     <ChildContentContainer>
+                <ChildContentContainer children = {children}>
+                    {children}
+                </ChildContentContainer>
+                        
+                //     </ChildContentContainer>
+                // </ChildContentWrapper>
+                
             }
 
         </Collapsible>

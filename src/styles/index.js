@@ -22,6 +22,9 @@ export const root = {
     "--space-56": "56px",
     "--space-64": "64px",
     "--space-72": "72px",
+
+    // SUITES
+    "--space-30": "30px",
   },
 
   /* colors */
@@ -163,6 +166,12 @@ export const root = {
     "--text-base-medium": {
       fontSize: 16,
       fontWeight: "500",
+      fontStyle: "normal",
+      lineHeight: 16,
+    },
+    "--text-base-bold": {
+      fontSize: 16,
+      fontWeight: "bold",
       fontStyle: "normal",
       lineHeight: 16,
     },

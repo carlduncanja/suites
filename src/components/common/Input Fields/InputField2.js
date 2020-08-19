@@ -4,6 +4,10 @@ import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native"
 import ClearIcon from "../../../../assets/svg/clearIcon";
 import { useTheme } from 'emotion-theming';
 import styled, { css } from '@emotion/native';
+import IconButton from '../Buttons/IconButton';
+import InputLabelComponent from '../InputLablel';
+import InputContainerComponent from '../InputContainerComponent';
+import InputErrorComponent from '../InputErrorComponent';
 
 /**
  *
@@ -19,12 +23,60 @@ import styled, { css } from '@emotion/native';
  * @constructor
  */
 
-const InputWrapper = styled.View`
-flex:1;
-position: relative;
-flex-direction: row;
-align-items: center;
-`
+const InputFieldWrapper = styled.View`
+    flex:1;
+    position: relative;
+`;
+
+const InputFieldContainer = styled.View`
+    width : 100%;
+    flex-direction: row;
+    align-items: center;
+`;
+
+// const InputLabel = styled.Text( ({theme, label}) => ({
+//     ...theme.font['--text-xs-medium'],
+//     color : theme.colors['--color-gray-600'],
+//     width : 98,
+// }));
+
+const TextInputWrapper = styled.View`
+    flex:1;
+    height : 32px;
+`;
+const TextInputContainer = styled.View`
+    height : 100%;
+    width : 100%;
+    border-width: 1px;
+    border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
+    background-color : ${ ({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    border-radius: 4px;
+    box-shadow : ${ ({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null};
+`;
+
+const Input = styled.TextInput`
+    flex:1;
+    width : 85%;
+    padding-left : ${ ({theme}) => theme.space['--space-10']};
+`;
+
+const ErrorContainer = styled.View`
+    postion : absolute;
+    top : 16;
+    padding-left : 15px;
+`;
+
+const ErrorText = styled.Text( ({theme}) => ({
+    ...theme.font['--text-xs-regular'],
+    color : theme.colors['--color-red-700']
+}));
+
+const IconContainer = styled.View`
+    position: absolute;
+    height: 100%;
+    right : 0;
+`;
+
 
 function InputField2({
         label,
@@ -47,28 +99,17 @@ function InputField2({
 
 
     return (
-        <View style={[styles.container,]}>
+        <InputContainerComponent>
+
             {
-                label &&  <Text style={[
-                    styles.textLabel, {
-                        minWidth: 60,
-                        marginRight: label ? 20 : 0
-                    }
-                ]}>
-                    {label}
-                </Text>
+                label && <InputLabelComponent label = {label}/>
             }
 
-            <View style={[styles.inputWrapper, isFocussed ? styles.shadow : null,{
-                borderColor: hasError ? 'red' : '#CCD6E0',
-                backgroundColor : backgroundColor ? backgroundColor : theme.colors['--default-shade-white']
-                // paddingRight: value ? 4 : 0,
-
-            }]}>
-                <TextInput
-                    style={[styles.inputField, ,{
-
-                    }]}
+            <TextInputWrapper>
+                <TextInputContainer theme = {theme} style = {isFocussed ? styles.shadow : null}>
+            
+                <Input
+                    theme = {theme}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}
@@ -80,30 +121,25 @@ function InputField2({
 
                 />
 
-
-
                 {
-                    hasError && <View style={styles.errorView}>
-                        <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
-                    </View>
+                    hasError && 
+                    <InputErrorComponent errorMessage = {errorMessage}/>
                 }
 
                 {
-                !(value === undefined || value === null || value === '') &&
-                <TouchableOpacity
-                    style={styles.clearIcon}
-                    onPress={onClear}
-                >
-                    <ClearIcon/>
-                </TouchableOpacity>
-            }
-            </View>
+                    !(value === undefined || value === null || value === '') &&
+                    <IconContainer>
+                        <IconButton
+                            Icon = {<ClearIcon/>}
+                            onPress = {onClear}
+                        />
+                    </IconContainer>
+                }
 
+                </TextInputContainer>
+            </TextInputWrapper>
 
-
-
-
-        </View>
+        </InputContainerComponent>
     );
 }
 

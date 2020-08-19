@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import SlideHeader from "../SlideOverlay/SlideHeader";
 import PageHeader from "../Page/PageHeader";
 import { useTheme } from "emotion-theming";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import TabsContainer from "../Tabs/TabsContainerComponent";
 import LoadingIndicator from "../LoadingIndicator";
 import { PageContext } from "../../../contexts/PageContext";
@@ -31,6 +31,11 @@ const DetailsPageContentContainer = styled.View`
         display: flex;
         flex:1;
 `
+
+const TabsViewContainer = styled.View`
+    height: 54px;
+`;
+
 
 
 function DetailsPage({
@@ -67,10 +72,8 @@ function DetailsPage({
                                     onBackPress}
                             />
 
-                            {
-                                pageTabs
-                            }
-
+                            <TabsViewContainer>{pageTabs}</TabsViewContainer>
+  
                             <DetailsPageContentWrapper>
                                 <DetailsPageContentContainer>
                                     {

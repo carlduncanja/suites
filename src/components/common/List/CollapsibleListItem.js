@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet, TouchableOpacity, Text, ScrollView} from 'react-native';
 import CheckBoxComponent from "../Checkbox";
 import Collapsible from 'react-native-collapsible';
 import CollapsibleListItemParentView from './CollapsibleListItemParentView';
@@ -21,15 +21,29 @@ import CollapsibleListItemChildView from './CollapsibleListItemChildView';
  * @returns {*}
  * @constructor
  */
-const CollapsibleListItem = ({
+
+const CollapsibleListItemWrapper = styled.View`
+    width: 100%;
+    margin-bottom: ${ ({theme}) => theme.space['--space-12']};
+`;
+const CollapsibleListItemContainer = styled.TouchableOpacity`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    borderRadius: ${ ({theme}) => theme.space['--space-8']};
+    border: 1px solid ${ ({theme}) => theme.colors['--color-gray-300']};
+    background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
+`;
+
+function CollapsibleListItem ({
         hasCheckBox = true,
         isChecked = false,
         onCheckBoxPress = ()=>{},
         onItemPress = () => {},
-        childView,
+        childView, 
         render = ()=>{},
-        children = ()=>{} 
-    }) => {
+        children = ()=>{}  
+    }) {
 
     const [isCollapsed, setCollapsed] = useState(true);
     const theme = useTheme();                   
@@ -38,23 +52,10 @@ const CollapsibleListItem = ({
         setCollapsed(!isCollapsed);
     }
 
-    const CollapsibleListItemWrapper = styled.View`
-        width: 100%;
-        margin-bottom: ${theme.space['--space-12']};
-    `;
-    const CollapsibleListItemContainer = styled.TouchableOpacity`
-        display: flex;
-        width: 100%;
-        flex-direction: column;
-        borderRadius: ${theme.space['--space-8']};
-        border: 1px solid ${theme.colors['--color-gray-300']};
-        background-color: ${theme.colors['--default-shade-white']};
-    `;
-   
     return (
        
-        <CollapsibleListItemWrapper>
-            <CollapsibleListItemContainer>
+        <CollapsibleListItemWrapper theme = {theme}>
+            <CollapsibleListItemContainer theme = {theme}>
                 <CollapsibleListItemParentView
                     hasCheckBox = {hasCheckBox}
                     isChecked = {isChecked} 
@@ -63,10 +64,12 @@ const CollapsibleListItem = ({
                     isCollapsed = {isCollapsed}
                     render = {render}
                 />
+                
                 <CollapsibleListItemChildView
                     isCollapsed = {isCollapsed}
                     children = {children}
                 /> 
+
                 {/* <View style={styles.list}>
                     {
                         hasCheckBox &&
