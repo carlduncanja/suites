@@ -10,7 +10,7 @@ const ChildContentWrapper = styled.View`
     margin : 0;
 `;
 const ChildContentContainer = styled.ScrollView`
-    height : ${ ({children}) => children.props.data.length > 0 ? `400px` : '20px'};
+    max-height : ${ ({children}) => children.props.data.length > 0 ? `400px` : '20px'};
 `;
 
 function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){

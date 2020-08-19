@@ -1,42 +1,44 @@
 import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
 import {View, StyleSheet, Text, FlatList, ScrollView} from "react-native";
-import Page from "../components/common/Page/Page";
-import IconButton from "../components/common/Buttons/IconButton";
-// import ActionIcon from "../../assets/svg/ActionIcon";
-import CollapsedIcon from "../../assets/svg/closeArrow";
-import ActionIcon from "../../assets/svg/dropdownIcon";
-import ListItem from "../components/common/List/ListItem";
-import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
-import {numberFormatter} from "../utils/formatter";
-import _ from "lodash";
 
-import {setInventory} from "../redux/actions/InventorActions";
+import IconButton from "../../components/common/Buttons/IconButton";
+import LevelIndicator from "../../components/common/LevelIndicator/LevelIndicator";
+import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
+import ActionItem from "../../components/common/ActionItem";
+import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
+import CreateInventoryDialogContainer from "../../components/Inventory/CreateInventoryDialogContainer";
+import CollapsibleListItem from "../../components/common/List/CollapsibleListItem";
+import CreateInventoryGroupDialogContainer from '../../components/Inventory/CreateInventoryGroupDialogContainer';
+import NavPage  from "../../components/common/Page/NavPage";
+import Item from '../../components/common/Table/Item';
+import DataItem from '../../components/common/List/DataItem';
+
+import CollapsedIcon from "../../../assets/svg/closeArrow";
+import ActionIcon from "../../../assets/svg/dropdownIcon";
+import SvgIcon from "../../../assets/SvgIcon";
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import AddIcon from "../../../assets/svg/addIcon";
+
+import {numberFormatter} from "../../utils/formatter";
+import {setInventory} from "../../redux/actions/InventorActions";
 import {connect} from "react-redux";
-import {getInventoriesGroup} from "../api/network";
+import {getInventoriesGroup} from "../../api/network";
 import {useModal} from "react-native-modalfy";
-import InventoryBottomSheetContainer from "../components/Inventory/InventoryBottomSheetContainer";
-import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
-import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
-import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from "../helpers/caseFilesHelpers";
-import CheckBoxComponent from "../components/common/Checkbox";
-import SvgIcon from "../../assets/SvgIcon";
-import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
-import ActionItem from "../components/common/ActionItem";
-import WasteIcon from "../../assets/svg/wasteIcon";
-import AddIcon from "../../assets/svg/addIcon";
-import ActionContainer from "../components/common/FloatingAction/ActionContainer";
-import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
-import CreateInventoryDialogContainer from "../components/Inventory/CreateInventoryDialogContainer";
-import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
-import TransferIcon from "../../assets/svg/transferIcon";
-import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
-import CreateInventoryGroupDialogContainer from '../components/Inventory/CreateInventoryGroupDialogContainer';
-import NavPage  from "../components/common/Page/NavPage";
-import Item from '../components/common/Table/Item';
-import DataItem from '../components/common/List/DataItem';
+import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from "../../helpers/caseFilesHelpers";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming'; 
+import _ from "lodash";
+
+
+import InventoryBottomSheetContainer from "../../components/Inventory/InventoryBottomSheetContainer";
+import RoundedPaginator from "../../components/common/Paginators/RoundedPaginator";
+import FloatingActionButton from "../../components/common/FloatingAction/FloatingActionButton";
+import CheckBoxComponent from "../../components/common/Checkbox";
+import CreateStorageDialogContainer from "../../components/Storage/CreateStorageDialogContainer";
+import TransferIcon from "../../../assets/svg/transferIcon";
+import ActionCollapseIcon from "../../../assets/svg/actionCollapseIcon";
+
+
 
 
 const listHeaders = [
@@ -88,7 +90,9 @@ function Inventory(props) {
 
     const {
         inventory,
-        setInventory
+        setInventory,
+        route,
+        navigation
     } = props;
 
     const pageTitle = "Inventory";
@@ -156,9 +160,16 @@ function Inventory(props) {
     };
 
     const onItemPress = (item) => () => {
-        modal.openModal('BottomSheetModal', {
-            content: <InventoryBottomSheetContainer inventory={item}/>
-        })
+        navigation.navigate("InventoryPage",{
+            screen : "InventoryPage",
+            initial: false, 
+            // params : {
+                data: item, 
+                isGroup : true,
+                isEdit: false
+            // }
+        });
+        
     };
 
     const onRefresh = () => {
@@ -207,12 +218,16 @@ function Inventory(props) {
 
         let updatedInventory = checkboxItemPress(item, _id, selectedIds);
         setSelectedIds(updatedInventory);
-
-        if(updatedInventory.length !== 0){
-            variants.map( variant => variantIds.push(variant?._id));
-            setSelectedChildIs(variantIds);
+    
+        if(selectedIds.includes(_id)){
+            let removeChildren = selectedChildIds.filter( obj => obj.groupId !== _id)
+            setSelectedChildIs(removeChildren)
+            // console.log("Remove children: ", removeChildren)
         }else{
-            setSelectedChildIs([])
+            variants.map( variant => variantIds.push(variant?._id));
+            let updatedIds = [...selectedChildIds, { groupId : _id,variantIds}]
+            setSelectedChildIs(updatedIds);
+            // console.log("Included: ", updatedIds)
         }
     };
 
@@ -220,11 +235,29 @@ function Inventory(props) {
 
     const onChildCheckBoxPress = (item, parentItem) => () => {
         const { _id } = item;
+        let { variantIds = [] } = selectedChildIds.filter( obj => obj.groupId === parentItem?._id)[0] || {}
+        let updatedChildIds = checkboxItemPress(item, _id, variantIds);
 
-        let updatedChildIds = checkboxItemPress(item, _id, selectedChildIds);
-        let updatedParentIds = checkboxItemPress(parentItem, _id, selectedIds);
-        setSelectedChildIs(updatedChildIds)
-        setSelectedIds(updatedParentIds)
+        if(variantIds.length === 0){
+            
+            let updatedParentIds = checkboxItemPress(parentItem, _id, selectedIds);
+            let selectedChild = {groupId : parentItem?._id, variantIds : updatedChildIds}
+        
+            setSelectedChildIs([...selectedChildIds,selectedChild])
+            setSelectedIds(updatedParentIds)
+
+            // console.log("Included: ", [...selectedChildIds,selectedChild])
+        }else{
+
+            let updatedChildList = selectedChildIds.map( obj => obj.groupId === parentItem?._id ? 
+                { ...obj, variantIds : updatedChildIds} 
+                : 
+                obj
+            )
+            setSelectedChildIs(updatedChildList) 
+
+            // console.log("Updated item: ", updatedChildList)
+        }
 
     };
 
@@ -411,11 +444,13 @@ function Inventory(props) {
 
     const renderChildItemView = (item, parentItem, onActionPress) => {
         let { _id } = item
+        let { variantIds = [] } = selectedChildIds.filter( obj => obj.groupId === parentItem?._id)[0] || {}
+
         return (
             <Item
                 itemView = {storageItemView(item, onActionPress)}
                 hasCheckBox = {true}
-                isChecked = {selectedChildIds.includes(_id)}
+                isChecked = {variantIds.includes(_id)}
                 onCheckBoxPress = {onChildCheckBoxPress(item, parentItem)}
                 onItemPress = {()=>{}}
             />

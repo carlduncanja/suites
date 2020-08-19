@@ -11,7 +11,7 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import OptionsField from "../common/Input Fields/OptionsField";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import {createInventoryVariant, getInventories, getCategories, getSuppliers,} from "../../api/network";
+import {createInventoryVariant, getInventoriesGroup, getCategories, getSuppliers,} from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import _ from "lodash";
@@ -114,7 +114,7 @@ function CreateInventoryDialogContainer({onCancel, onCreated, addInventory}) {
 
 
     const fetchInventories = () => {
-        getInventories(inventorySearchValue, 5)
+        getInventoriesGroup(inventorySearchValue, 5)
             .then((inventoryResults = {}) => {
                 const { data = [], pages = 0 } = inventoryResults
                 console.log("Data: ", data)

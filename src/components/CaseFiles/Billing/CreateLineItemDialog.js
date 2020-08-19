@@ -5,7 +5,7 @@ import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsF
 import OverlayDialog from "../../common/Dialog/OverlayDialog";
 import DialogTabs from "../../common/Dialog/DialogTabs";
 import {useModal} from "react-native-modalfy";
-import { getInventories, getEquipmentTypes } from "../../../api/network"; 
+import { getInventoriesGroup, getEquipmentTypes } from "../../../api/network"; 
 import _ from "lodash";
 import AutoFillField from "../../common/Input Fields/AutoFillField"; 
 import { currencyFormatter } from "../../../utils/formatter";
@@ -72,7 +72,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
     }, [inventorySearchValue]);
 
     const fetchInventories = () => {
-        getInventories(inventorySearchValue, 5)
+        getInventoriesGroup(inventorySearchValue, 5)
             .then((data = []) => {
                 // console.log("Data: ", data)
                 const results = data.map(item => ({

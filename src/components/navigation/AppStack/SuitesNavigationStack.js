@@ -7,7 +7,7 @@ import React from "react";
 /* Screens */
 import Schedule from '../../../page/Schedule';
 import Theatres from "../../../page/Theatres";
-import Inventory from "../../../page/Inventory";
+import Inventory from "../../../page/Inventory/Inventory";
 import Storage from "../../../page/Storage";
 import Procedures from '../../../page/Procedures';
 import Physicians from '../../../page/Physicians';
@@ -16,7 +16,14 @@ import Equipment from '../../../page/Equipment';
 import Orders from '../../../page/Orders'
 
 import ProcedureNavigationStack from "./ProcedureNavigationStack";
-
+import CaseFileNavigationStack from "./CaseFileNavigationStack";
+import TheatreNavigationStack from "./TheatreNavigationStack";
+import OrderNavigationStack from "./OrderNavigationStack";
+import SupplierNavigationStack from "./SupplierNavigation Stack";
+import StorageNavigationStack from "./StorageNavigationStack";
+import PhysicianNavigationStack from "./PhysiciansNavigationStack";
+import EquipmentNavigationStack from "./EquipmentNavigationStack";
+import InventoryNavigationStack from "./InventoryNavigationStack";
 
 /* Providers*/
 import NotFound from "../../../page/NotFound";
@@ -38,13 +45,7 @@ import SettingsIcon from "../../../../assets/svg/settingsIcon";
 import HelpIcon from "../../../../assets/svg/helpIcon";
 import NotificationIcon from "../../../../assets/svg/notificationIcon";
 import Invoices from "../../CaseFiles/OverlayPages/ChargeSheet/Invoices";
-import CaseFileNavigationStack from "./CaseFileNavigationStack";
-import TheatreNavigationStack from "./TheatreNavigationStack";
-import OrderNavigationStack from "./OrderNavigationStack";
-import SupplierNavigationStack from "./SupplierNavigation Stack";
-import StorageNavigationStack from "./StorageNavigationStack";
-import PhysicianNavigationStack from "./PhysiciansNavigationStack";
-import EquipmentNavigationStack from "./EquipmentNavigationStack";
+
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
@@ -84,7 +85,7 @@ export const SuitesNavigationStack = () => {
 
             <SuitesNavigator.Screen
                 name="Inventory"
-                component={Inventory}
+                component={InventoryNavigationStack}
                 initialParams={{
                     icon: InventoryIcon,
                     tabName: 'Inventory',

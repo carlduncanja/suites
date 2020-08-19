@@ -3,7 +3,7 @@ import {ActivityIndicator, View} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import InventoryGeneralTabContent from "../OverlayTabs/InventoryGeneralTabContent";
 import {colors} from "../../styles";
-import {getInventoryById} from "../../api/network";
+import {getInventoryGroupById} from "../../api/network";
 import TransfersOverlayTab from "../OverlayTabs/TransfersOverlayTab";
 import StorageLocationsTab from "../OverlayTabs/StorageLocationsTab";
 import SuppliersTab from "../OverlayTabs/SuppliersTab";
@@ -112,7 +112,7 @@ function InventoryBottomSheetContainer({inventory}) {
 
     const fetchInventoryItem = (id) => {
         setFetching(true);
-        getInventoryById(id)
+        getInventoryGroupById(id)
             .then(data => {
                 // console.log("Data: ", data)
                 setInventoryItem(data);
