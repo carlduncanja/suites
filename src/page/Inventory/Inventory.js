@@ -172,6 +172,19 @@ function Inventory(props) {
         
     };
 
+    const onItemVariantPress = (item, parentItem) => () =>{
+        console.log("parent: ", parentItem)
+        let updatedItem = {...item, name : item?.itemName, groupId : parentItem?._id , groupName : parentItem?.name}
+        navigation.navigate("InventoryVariantPage",{
+            screen : "InventoryVariantPage",
+            initial: false, 
+            // params : {
+                data: updatedItem, 
+                isEdit: false
+            // }
+        });
+    }
+
     const onRefresh = () => {
         fetchInventory()
     };
@@ -452,7 +465,7 @@ function Inventory(props) {
                 hasCheckBox = {true}
                 isChecked = {variantIds.includes(_id)}
                 onCheckBoxPress = {onChildCheckBoxPress(item, parentItem)}
-                onItemPress = {()=>{}}
+                onItemPress = {onItemVariantPress(item, parentItem)}
             />
         )
     };

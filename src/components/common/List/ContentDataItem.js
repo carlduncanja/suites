@@ -14,23 +14,18 @@ const DataItemContainer = styled.View`
     align-items: ${ ({align}) => align};
 `;
 
-const DataText = styled.Text( ({theme, fontStyle, color}) => ({
-    ...theme.font[fontStyle],
-    color : theme.colors[color],
-}))
 
-
-function DataItem({text = "", flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-gray-700', }){
+function ContentDataItem({flex = 1, align = 'flex-start', content = ()=>{}}){
     const theme = useTheme();
     
     return (
         <DataItemWrapper flex = {flex}>
             <DataItemContainer align = {align}>
-                <DataText fontStyle = {fontStyle} color = {color} theme = {theme}>{text}</DataText>
+                {content}
             </DataItemContainer>
         </DataItemWrapper>
     )
 }
 
-export default DataItem
+export default ContentDataItem
 

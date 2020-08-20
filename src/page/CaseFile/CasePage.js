@@ -86,7 +86,7 @@ const initialMenuItem = overlayMenu[0].name
 const initialCurrentTabs = overlayMenu[0].overlayTabs
 const initialSelectedTab = initialCurrentTabs[0]
 
-function CasePage({route, addNotification, ...props}) {
+function CasePage({route, addNotification, navigation, ...props}) {
     const modal = useModal();
 
     const {caseId, isEdit} = route.params;
@@ -113,7 +113,7 @@ function CasePage({route, addNotification, ...props}) {
 
     // ############### Event Handlers
     const handleTabPressChange = (tab) => {
-        if (pageState.isEditMode === false) {
+        if (pageState.isEdit === false) {
             setSelectedTab(tab)
         }
     }
@@ -203,6 +203,7 @@ function CasePage({route, addNotification, ...props}) {
 
         console.log("getFabActions: selected tab", selectedTab);
         console.log("Selected menu: ", selectedMenuItem)
+        
         if (selectedMenuItem === "Charge Sheet") {
             switch (selectedTab) {
                 case "Consumables": {
@@ -214,7 +215,7 @@ function CasePage({route, addNotification, ...props}) {
                     const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
                                                              onPress={_ => {
                                                              }}/>;
-                    floatingAction.push(addNewLineItemAction, addNewItem, /*removeLineItemAction*/)
+                    floatingAction.push(/*addNewLineItemAction,*/ addNewItem, /*removeLineItemAction*/)
                     title = "CONSUMABLE'S ACTIONS"
                     break;
                 }
@@ -415,8 +416,7 @@ function CasePage({route, addNotification, ...props}) {
                 <DetailsPage
                     title={name}
                     subTitle={`#${caseNumber}`}
-                    onBackPress={() => {
-                    }}
+                    onBackPress={() => {navigation.navigate('CaseFiles')}}
                     pageTabs={
                         <TabsContainer
                             tabs={currentTabs}
