@@ -9,10 +9,10 @@ import { SuitesContext } from "../../contexts/SuitesContext";
 
 const SchedulePageHeaderWrapper = styled.View`
     width: 100%;
-    padding-left: ${ ({theme}) => theme.space['--space-32']};
-    padding-top: ${ ({theme}) =>theme.space['--space-24']};
-    padding-bottom: ${ ({theme}) => theme.space['--space-24']};
-    padding-right: ${ ({theme}) =>theme.space['--space-32']};
+    padding-left: ${ ({ theme }) => theme.space['--space-32']};
+    padding-top: ${ ({ theme }) => theme.space['--space-24']};
+    padding-bottom: ${ ({ theme }) => theme.space['--space-24']};
+    padding-right: ${ ({ theme }) => theme.space['--space-32']};
 `;
 
 const ScheduleHeaderContainer = styled.View`
@@ -23,18 +23,18 @@ const ScheduleHeaderContainer = styled.View`
 const SchedulePageHeaderContainer = styled.View`
     width : 100%;
     flex-direction: row;
-    // height:40px;
+     height:40px;
     justify-content: space-between;
-    // align-self: flex-start;
-    // align-items:center;
+     align-self: flex-start;
+     align-items:center;
     margin-bottom:15px;
     margin-top:5px;
 `;
 
 const TextView = styled.Text`
-    font:${ ({theme}) => theme.font["--text-2xl-medium"]};
-    color:${ ({theme}) => theme.colors["--company"]};
-    // margin-right:250px;
+    font:${ ({ theme }) => theme.font["--text-2xl-medium"]};
+    color:${ ({ theme }) => theme.colors["--company"]};
+     margin-right:250px;
 `;
 
 const ButtonView = styled.View`
@@ -43,7 +43,7 @@ const ButtonView = styled.View`
     padding-bottom:15px;
     // padding:15px;
     borderTopWidth:1px;
-    borderTopColor:${ ({theme}) => theme.colors["--color-gray-400"]};
+    borderTopColor:${ ({ theme }) => theme.colors["--color-gray-400"]};
     // background-color: yellow;
     justify-content: space-between;
 `;
@@ -61,8 +61,8 @@ const ExpandButtonWrapper = styled.View`
 const ExpandButton = styled.View`
     height: 100%;
     weight: 100%;
-    background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
-    border-color: ${ ({theme}) => theme.colors['--color-gray-400']};
+    background-color: ${ ({ theme }) => theme.colors['--default-shade-white']};
+    border-color: ${ ({ theme }) => theme.colors['--color-gray-400']};
     border-radius: 4px;
     border-width: 1px;
 `;
@@ -80,48 +80,48 @@ function SchedulePageHeader({
     const theme = useTheme();
 
     return (
-        <SchedulePageHeaderWrapper theme = {theme}>
+        <SchedulePageHeaderWrapper theme={theme}>
             <ScheduleHeaderContainer>
 
-            <SchedulePageHeaderContainer>
-                <TextView theme = {theme}>Schedule</TextView>
+                <SchedulePageHeaderContainer>
+                    <TextView theme={theme}>Schedule</TextView>
 
-                <MonthSelector
-                    selectedMonth={selectedMonth}
-                    onMonthUpdated={onMonthUpdate}
-                />
-                
-            </SchedulePageHeaderContainer>
+                    <MonthSelector
+                        selectedMonth={selectedMonth}
+                        onMonthUpdated={onMonthUpdate}
+                    />
 
-            
-            <ButtonView theme = {theme}>
-                {/* <View style={{ marginRight: 340 }}> */}
+                </SchedulePageHeaderContainer>
+
+
+                <ButtonView theme={theme}>
+                    {/* <View style={{ marginRight: 340 }}> */}
                     <ScheduleButton
                         title="Search"
                         onButtonPress={searchButtonPress}
                     />
-                {/* </View> */}
+                    {/* </View> */}
 
 
-                <GroupButtonContainer>
-                    <ScheduleButton
-                        title="Go to Today"
-                        onButtonPress={gotoTodayButtonPress}
-                    />
-                    <ExpandButtonWrapper>
-                        <ExpandButton theme = {theme}>
-                            <Button
-                                title={"Expand Calendar"}
-                                buttonPress={onExpand}
-                                color={theme.colors['--color-gray-700']}
-                            />
-                        </ExpandButton>
-                    </ExpandButtonWrapper>
-                </GroupButtonContainer>
-                
+                    <GroupButtonContainer>
+                        <ScheduleButton
+                            title="Go to Today"
+                            onButtonPress={gotoTodayButtonPress}
+                        />
+                        <ExpandButtonWrapper>
+                            <ExpandButton theme={theme}>
+                                <Button
+                                    title={"Expand Calendar"}
+                                    buttonPress={onExpand}
+                                    color={theme.colors['--color-gray-700']}
+                                />
+                            </ExpandButton>
+                        </ExpandButtonWrapper>
+                    </GroupButtonContainer>
 
 
-            </ButtonView> 
+
+                </ButtonView>
 
             </ScheduleHeaderContainer>
         </SchedulePageHeaderWrapper>

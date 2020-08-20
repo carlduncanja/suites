@@ -96,9 +96,6 @@ function SearchBar(props) {
                     onPressSubmit={onPressSubmit}
                 />
 
-                <TouchableOpacity style={{ width: 35, height: 30 }}>
-                    <Text>Filter</Text>
-                </TouchableOpacity>
 
                 {/* Search Results Drop down */}
 
