@@ -27,8 +27,22 @@ import { withModal, useModal } from 'react-native-modalfy';
 import suppliersTest from '../../data/Suppliers'
 import SuppliersBottomSheet from '../components/Suppliers/SupplierPage';
 import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplierDialogContainer';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+const ArchiveButton = styled.TouchableOpacity`
+align-items:center;
+border-width:1px;
+justify-content:center;
+border-color:#A0AEC0;
+width:100px;
+height:30px;
+border-radius:6px;
+margin-left:470px;
+
+`
 
 const Suppliers = (props) => {
+    const theme = useTheme();
 
     // ############# Const data
     const recordsPerPage = 10;
@@ -69,7 +83,7 @@ const Suppliers = (props) => {
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
 
-    const [selectedSuppliers, setSelectedSuppliers] = useState([])
+    const [selectedSuppliers, setSelectedSuppliers] = useState([]);
 
     // ############# Lifecycle methods
 
@@ -253,6 +267,10 @@ const Suppliers = (props) => {
         />
     };
 
+    const goToArchives = () => {
+        props.navigation.navigate("ArchivedSuppliers");
+    }
+
     const onOpenCreateSupplier = () => {
         modal.closeModals('ActionContainerModal');
         setTimeout(() => {
@@ -284,7 +302,10 @@ const Suppliers = (props) => {
         height: 100%;
     `;
 
+
+
     return (
+
         <NavPage
             isFetchingData={isFetchingData}
             onRefresh={handleDataRefresh}
@@ -293,11 +314,15 @@ const Suppliers = (props) => {
             inputText={searchValue}
             routeName={"Suppliers"}
             listData={suppliersToDisplay}
+            TopButton={() => {
+                return (<ArchiveButton onPress={goToArchives}>
+                    <Text style={{ alignItems: "center", color: "#A0AEC0" }}>View Archive</Text>
+                </ArchiveButton>)
+            }}
 
             listHeaders={listHeaders}
             itemsSelected={selectedSuppliers}
             onSelectAll={handleOnSelectAll}
-
             listItemFormat={renderSupplierFn}
             totalPages={totalPages}
             currentPage={currentPagePosition}
@@ -311,6 +336,7 @@ const Suppliers = (props) => {
             isNextDisabled={isNextDisabled}
             isPreviousDisabled={isPreviousDisabled}
         />
+
     )
 }
 

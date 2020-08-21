@@ -5,6 +5,7 @@ import Suppliers from "../../../page/Suppliers";
 import SupplierPage from "../../Suppliers/SupplierPage";
 import NotFound from "../../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
+import ArchivedSuppliers from "../../../page/ArchivedSuppliersPage";
 
 
 const Stack = createStackNavigator();
@@ -28,6 +29,23 @@ export default () => {
             <Stack.Screen
                 name="SupplierPage"
                 component={SupplierPage}
+                options={{
+                    headerShown: false,
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+
+                    },
+                    headerTitle: ""
+                }}
+            />
+            <Stack.Screen
+                name="ArchivedSuppliers"
+                component={ArchivedSuppliers}
                 options={{
                     headerShown: false,
                     headerLeft: (props) => (

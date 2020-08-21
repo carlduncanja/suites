@@ -47,7 +47,8 @@ margin-right:7px;
 margin-left:-7px;
 justifyContent:center;
 color:${({ theme }) => theme.colors["--default-shade-white"]};
-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+border-radius:2.6px;
 
 `
 
@@ -66,10 +67,11 @@ align-items:flex-start;
 position:absolute;
 padding:5px;
 top:50px;
-height:180px;
+height:175px;
 background-color:${({ theme }) => theme.colors["--default-shade-white"]};
 z-index:10;
-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+border-radius:3.6px;
 
 `
 
@@ -88,6 +90,15 @@ width:15px;
 height:15px;
 border-radius:7.5px;
 margin-right:10px;
+`;
+
+const OptionContainer = styled.View`
+background-color:${({ item }) => item.color};
+border-radius:4.6px;
+height:25px;
+margin:1.8px;
+align-items:center;
+justify-content:center
 `;
 
 
@@ -143,10 +154,9 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
                             />
 
                         </RadioContainer>
-                        <View key={index} style={{ backgroundColor: `${item.color}`, borderRadius: 4, height: 30, alignItems: "center", justifyContent: "center" }}>
-
-                            <Text style={{ color: "white", fontSize: 16 }}>{item.name}</Text>
-                        </View>
+                        <OptionContainer key={index} item={item}>
+                            <Text style={{ color: "white", fontSize: 15 }}>{item.name}</Text>
+                        </OptionContainer>
                     </PopupContainer>
 
 

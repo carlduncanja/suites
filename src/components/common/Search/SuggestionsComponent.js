@@ -1,11 +1,11 @@
-import React, {Component, useState, useEffect, useRef, useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text, Animated, SectionList} from 'react-native';
+import React, { Component, useState, useEffect, useRef, useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, Animated, SectionList } from 'react-native';
 import SearchInput from './SearchInput'
-import {scheduleActions} from '../../../redux/reducers/scheduleReducer';
-import {ScheduleContext} from '../../../contexts/ScheduleContext';
+import { scheduleActions } from '../../../redux/reducers/scheduleReducer';
+import { ScheduleContext } from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../Buttons/Button';
-import moment from 'moment'; 
+import moment from 'moment';
 import ScheduleItem from '../../Schedule/ScheduleItem';
 import { formatDate } from '../../../utils/formatter';
 
@@ -16,14 +16,14 @@ import SuggestionsMatchesComponent from './SuggestionsMatchesComponent';
 import SuggestionsControllerComponent from './SuggestionsControllerComponent';
 
 function SuggestionsComponent({
-        isSuggestionsOpen = false,
-        matchesToDisplay = [],
-        currentListMin = 0,
-        openSearchResult = ()=>{},
-        getPreviousResults = ()=>{},
-        getNextResults = ()=>{}
-    }){
-    
+    isSuggestionsOpen = false,
+    matchesToDisplay = [],
+    currentListMin = 0,
+    openSearchResult = () => { },
+    getPreviousResults = () => { },
+    getNextResults = () => { }
+}) {
+
 
     const theme = useTheme();
     // STYLED COMPONENTS
@@ -39,36 +39,36 @@ function SuggestionsComponent({
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
         background-color: #FAFAFA;
-        background-color: red;
+       
 
     `;
     const SuggestionsComponentContainer = styled.View`
         display: flex;
         height: 100%;
         width: 100%;
-        background-color: yellow;
+       
         justify-content: flex-start;
     `
     return (
-        
-                
+
+
         isSuggestionsOpen &&
-            <SuggestionsComponentWrapper>
-                <SuggestionsComponentContainer>
+        <SuggestionsComponentWrapper>
+            <SuggestionsComponentContainer>
 
-                    <SuggestionsMatchesComponent
-                        matchesToDisplay = {matchesToDisplay}
-                        openSearchResult = {openSearchResult}
-                    />
+                <SuggestionsMatchesComponent
+                    matchesToDisplay={matchesToDisplay}
+                    openSearchResult={openSearchResult}
+                />
 
-                    <SuggestionsControllerComponent
-                        currentListMin = {currentListMin}
-                        getPreviousResults = {getPreviousResults}
-                        getNextResults = {getNextResults}
-                    />
-                
-                </SuggestionsComponentContainer>
-            </SuggestionsComponentWrapper>
+                <SuggestionsControllerComponent
+                    currentListMin={currentListMin}
+                    getPreviousResults={getPreviousResults}
+                    getNextResults={getNextResults}
+                />
+
+            </SuggestionsComponentContainer>
+        </SuggestionsComponentWrapper>
 
     )
 };

@@ -14,34 +14,35 @@ const NavPageContainer = styled.View`
 `;
 
 function NavPage({
-        isFetchingData = ()=>{},
-        onRefresh = ()=>{},
-        placeholderText = "",
-        changeText = ()=>{},
-        inputText = "",
-        routeName = "",
-        listData = [],
-        listHeaders = [],
-        itemsSelected = [],
-        onSelectAll = ()=>{},
-        listItemFormat = ()=>{},
+    isFetchingData = () => { },
+    TopButton = null,
+    onRefresh = () => { },
+    placeholderText = "",
+    changeText = () => { },
+    inputText = "",
+    routeName = "",
+    listData = [],
+    listHeaders = [],
+    itemsSelected = [],
+    onSelectAll = () => { },
+    listItemFormat = () => { },
 
-        totalPages = 0,
-        currentPage = 0,
-        goToNextPage = ()=>{},
-        goToPreviousPage = ()=>{},
-        isDisabled = false,
-        toggleActionButton = ()=>{},
-        hasPaginator = true,
-        hasActionButton = true,
-        hasActions = true,
-        isNextDisabled = ()=>{},
-        isPreviousDisabled = ()=>{},
-        onClear = ()=>{}
-    }){
+    totalPages = 0,
+    currentPage = 0,
+    goToNextPage = () => { },
+    goToPreviousPage = () => { },
+    isDisabled = false,
+    toggleActionButton = () => { },
+    hasPaginator = true,
+    hasActionButton = true,
+    hasActions = true,
+    isNextDisabled = () => { },
+    isPreviousDisabled = () => { },
+    onClear = () => { }
+}) {
     const theme = useTheme()
 
-    
+
     return (
 
         <NavPageWrapper>
@@ -54,12 +55,12 @@ function NavPage({
                     inputText={inputText}
                     routeName={routeName}
                     listData={listData}
-
+                    TopButton={TopButton}
                     listHeaders={listHeaders}
                     itemsSelected={itemsSelected}
                     onSelectAll={onSelectAll}
                     listItemFormat={listItemFormat}
-                    // onClear = {onClear}
+                // onClear = {onClear}
                 />
 
                 <Footer
@@ -69,11 +70,11 @@ function NavPage({
                     goToPreviousPage={goToPreviousPage}
                     isDisabled={isDisabled}
                     toggleActionButton={toggleActionButton}
-                    hasPaginator = {hasPaginator}
-                    hasActionButton = {hasActionButton}
-                    hasActions = {hasActions}
-                    isNextDisabled = {isNextDisabled}
-                    isPreviousDisabled = {isPreviousDisabled}
+                    hasPaginator={hasPaginator}
+                    hasActionButton={hasActionButton}
+                    hasActions={hasActions}
+                    isNextDisabled={isNextDisabled}
+                    isPreviousDisabled={isPreviousDisabled}
                 />
             </NavPageContainer>
         </NavPageWrapper>
