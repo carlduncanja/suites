@@ -28,6 +28,8 @@ const PageWrapper = styled.View`
 const PageContainer = styled.View`
         display: flex;
         height: 100%;
+       
+       
     `;
 
 const PageSearchWrapper = styled.View` 
@@ -39,6 +41,7 @@ const PageHeader = styled.View`
 flex-direction:row;
 width:100%
 `
+
 
 
 /** 
@@ -70,7 +73,9 @@ function Page(props) {
             <PageContainer theme={theme}>
                 <PageHeader>
                     <PageTitle pageTitle={routeName} />
-                    {TopButton ? <TopButton></TopButton> : <View />}
+
+                    {TopButton ? <TopButton /> : <View />}
+
                 </PageHeader>
 
                 <PageSearchWrapper theme={theme}>

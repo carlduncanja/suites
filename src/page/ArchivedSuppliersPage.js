@@ -1,13 +1,18 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { useTheme } from 'emotion-theming';
 import RestoreIcon from "../../assets/svg/RestoreIcon";
+import ListItem from '../components/common/List/ListItem';
 import styled, { css } from '@emotion/native';
 import NavPage from '../components/common/Page/NavPage';
-import { Text } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { withModal, useModal } from 'react-native-modalfy';
 import ActionItem from "../components/common/ActionItem";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
+import { SetArchivedSuppliers } from "../redux/actions/archivedSupplierActions"
+import { getArchivedSuppliers } from "../api/network";
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from "../helpers/caseFilesHelpers";
+import Button from '../components/common/OverlayButtons/OverlayButton';
+import { connect } from 'react-redux';
 
 
 const ArchiveButton = styled.TouchableOpacity`
@@ -22,10 +27,16 @@ border-radius:6px;
 margin-left:380px;
 
 
-`
+`;
+const ButtonContainer = styled.View`
+width:70%;
+height:100%;
+align-items:flex-end;
+`;
+
 
 function ArchivedSuppliersPage(props) {
-    const { suppliers = [], setSuppliers } = props;
+    const { archivedSuppliers = [], SetArchivedSuppliers } = props;
     const theme = useTheme();
     const modal = useModal();
 
@@ -46,6 +57,11 @@ function ArchivedSuppliersPage(props) {
             flex: 2
         }
     ];
+
+    useEffect(() => {
+        if (!archivedSuppliers.length) fetchArchivedSuppliersData(currentPagePosition)
+        setTotalPages(Math.ceil(archivedSuppliers.length / recordsPerPage))
+    }, []);
 
     const recordsPerPage = 5;
 
@@ -71,7 +87,7 @@ function ArchivedSuppliersPage(props) {
 
 
     const handleOnSelectAll = () => {
-        let updatedSuppliersList = selectAll(suppliers, selectedSuppliers)
+        let updatedSuppliersList = selectAll(archivedSuppliers, selectedSuppliers)
         setSelectedSuppliers(updatedSuppliersList)
     }
 
@@ -88,7 +104,7 @@ function ArchivedSuppliersPage(props) {
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
-            fetchSuppliersData(currentPage)
+            fetchArchivedSuppliersData(currentPage)
         }
     };
 
@@ -99,9 +115,50 @@ function ArchivedSuppliersPage(props) {
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
-        fetchSuppliersData(currentPage)
+        fetchArchivedSuppliersData(currentPage)
 
     };
+
+    const fetchArchivedSuppliersData = (pagePosition) => {
+
+        let currentPosition = pagePosition ? pagePosition : 1;
+        setCurrentPagePosition(currentPosition)
+
+        setFetchingData(true)
+        getArchivedSuppliers()
+            .then(suppliersInfo => {
+                const { data = [] } = suppliersInfo
+                console.log("Archived suppliers received is:", data);
+
+                // if (pages === 1) {
+                //     setPreviousDisabled(true);
+                //     setNextDisabled(true);
+                // } else if (currentPosition === 1) {
+                //     setPreviousDisabled(true);
+                //     setNextDisabled(false);
+                // } else if (currentPosition === pages) {
+                //     setNextDisabled(true);
+                //     setPreviousDisabled(false);
+                // } else if (currentPosition < pages) {
+                //     setNextDisabled(false);
+                //     setPreviousDisabled(false)
+                // } else {
+                //     setNextDisabled(true);
+                //     setPreviousDisabled(true);
+                // }
+
+                SetArchivedSuppliers(data);
+                //data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
+
+            })
+            .catch(error => {
+                console.log("failed to get archived suppliers", error);
+            })
+            .finally(_ => {
+                setFetchingData(false)
+            })
+    };
+
 
     const toggleActionButton = () => {
         setFloatingAction(true)
@@ -161,6 +218,7 @@ function ArchivedSuppliersPage(props) {
             title={"SUPPLIER ACTIONS"}
         />
     };
+    let suppliersToDisplay = [...archivedSuppliers];
 
     return (
         <NavPage
@@ -170,11 +228,11 @@ function ArchivedSuppliersPage(props) {
             changeText={onSearchInputChange}
             inputText={searchValue}
             routeName={"Archived Suppliers"}
-            listData={[]}
+            listData={suppliersToDisplay}
             TopButton={() => {
-                return (<ArchiveButton theme={theme} onPress={backToSuppliers}>
+                return (<ButtonContainer><ArchiveButton theme={theme} onPress={backToSuppliers}>
                     <Text style={{ alignItems: "center", color: "white", fontSize: 14 }}>Close Archive</Text>
-                </ArchiveButton>)
+                </ArchiveButton></ButtonContainer>)
             }}
             listHeaders={listHeaders}
             itemsSelected={selectedSuppliers}
@@ -196,4 +254,36 @@ function ArchivedSuppliersPage(props) {
     )
 }
 
-export default withModal(ArchivedSuppliersPage);
+const mapStateToProps = (state) => ({
+    archivedSuppliers: state.archivedSuppliers
+});
+
+const mapDispatcherToProp = {
+    SetArchivedSuppliers
+};
+
+export default connect(mapStateToProps, mapDispatcherToProp)(withModal(ArchivedSuppliersPage));
+
+const styles = StyleSheet.create({
+    item: {
+        // flex:1
+    },
+    itemText: {
+        fontSize: 16
+    },
+    footer: {
+        flex: 1,
+        alignSelf: 'flex-end',
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 20,
+        right: 0,
+        marginRight: 30,
+    },
+    rowBorderRight: {
+        borderRightColor: "#E3E8EF",
+        borderRightWidth: 1,
+        // marginRight: 20,
+    }
+})

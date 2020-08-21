@@ -28,6 +28,8 @@ import suppliersTest from '../../data/Suppliers'
 import SuppliersBottomSheet from '../components/Suppliers/SupplierPage';
 import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplierDialogContainer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Button from '../components/common/OverlayButtons/OverlayButton';
+
 
 const ArchiveButton = styled.TouchableOpacity`
 align-items:center;
@@ -37,9 +39,14 @@ border-color:#A0AEC0;
 width:100px;
 height:30px;
 border-radius:6px;
-margin-left:470px;
 
-`
+
+`;
+const ButtonContainer = styled.View`
+width:85%;
+height:100%;
+align-items:flex-end;
+`;
 
 const Suppliers = (props) => {
     const theme = useTheme();
@@ -315,9 +322,9 @@ const Suppliers = (props) => {
             routeName={"Suppliers"}
             listData={suppliersToDisplay}
             TopButton={() => {
-                return (<ArchiveButton onPress={goToArchives}>
+                return (<ButtonContainer><ArchiveButton onPress={goToArchives}>
                     <Text style={{ alignItems: "center", color: "#A0AEC0" }}>View Archive</Text>
-                </ArchiveButton>)
+                </ArchiveButton></ButtonContainer>)
             }}
 
             listHeaders={listHeaders}

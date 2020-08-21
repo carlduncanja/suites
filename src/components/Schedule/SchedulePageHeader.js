@@ -21,7 +21,7 @@ const ScheduleHeaderContainer = styled.View`
 `;
 
 const SchedulePageHeaderContainer = styled.View`
-    width : 100%;
+    width : 85%;
     flex-direction: row;
      height:40px;
     justify-content: space-between;
