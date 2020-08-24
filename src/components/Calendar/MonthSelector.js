@@ -32,7 +32,7 @@ function MonthSelector ({selectedMonth = new Date(), onMonthUpdated = ()=>{}}){
         const newMonth = moment(selectedMonth).subtract(1, "month");
         onMonthUpdated(newMonth);
     };
-    
+
     const MONTH = formatDate(selectedMonth,"MMMM YYYY");
 
     // ###### STYLED COMPONENTS
@@ -63,9 +63,9 @@ function MonthSelector ({selectedMonth = new Date(), onMonthUpdated = ()=>{}}){
                         Icon = {<LeftSelector/>}
                     />
                 </SelectorContainer>
-            
+
                 <MonthTitleContainer month = {MONTH}/>
-                
+
                 <SelectorContainer>
                     <IconButton
                         onPress = {handleOnMonthIncrement}
@@ -75,9 +75,8 @@ function MonthSelector ({selectedMonth = new Date(), onMonthUpdated = ()=>{}}){
 
             </MonthSelectorContainer>
         </MonthSelectorWrapper>
-
     )
-};
+}
 
 export default MonthSelector
 
