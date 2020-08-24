@@ -296,9 +296,9 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
     };
 
     const onPositiveButtonPress = () => {
-        setDraft([{ patient: patientFields }], ...draft);
+        //setDraft([{ patient: patientFields }], ...draft);
 
-        saveDraft([{ patient: patientFields }], ...draft);
+        saveDraft([{ patient: patientFields }]);
         console.log(
             "what case file data has and is being saved in draft is:",
             draft
