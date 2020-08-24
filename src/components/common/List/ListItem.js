@@ -36,6 +36,7 @@ const ItemView = styled.View`
     flex:1;
     flex-direction: row;
     align-items: center;
+    // margin-right:4px;
 `
 function ListItem({
         itemView = () => {},
@@ -48,7 +49,7 @@ function ListItem({
     const theme = useTheme();
 
 
-    return (
+    return ( 
         <ListItemWrapper onPress={onItemPress} theme = {theme}>
             <ListItemContainer theme = {theme}>
                 <CheckBoxComponent
