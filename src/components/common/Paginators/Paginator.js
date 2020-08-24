@@ -19,9 +19,10 @@ const PaginatorContainer = styled.View`
   justify-content: center;
 `;
 
-function Paginator ({
+function Paginator ({ 
     currentPage = 0,
     totalPages = 0,
+    hasNumberBorder = true,
     goToNextPage = ()=>{},
     goToPreviousPage = ()=>{},
     isNextDisabled = false, 
@@ -43,6 +44,7 @@ function Paginator ({
           <PaginatorNumbers
             currentPage = {currentPage}
             totalPages = {totalPages}
+            hasNumberBorder = {hasNumberBorder}
           />
        
         <IconButton

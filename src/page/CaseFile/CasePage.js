@@ -48,6 +48,7 @@ import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
 import styled from "@emotion/native";
 import {PageContext} from "../../contexts/PageContext";
 import {useTheme} from "emotion-theming";
+import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
 
 const overlayMenu = [
     {
@@ -194,6 +195,23 @@ function CasePage({route, addNotification, navigation, ...props}) {
             })
     };
 
+    const openAddItem = (itemToAdd) => {
+
+        modal.closeModals('ActionContainerModal')
+
+        setTimeout( () => {
+             modal.openModal('OverlayModal', {
+
+                content: <AddNewItem
+                    itemToAdd = {itemToAdd}
+                />,
+                onClose: () => setFloatingAction(false)
+
+            })
+        },200)
+       
+    }
+
     /**
      * Get the list of actions based on the current tab and sections
      */
@@ -210,8 +228,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
                     const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>}
                                                              onPress={_ => {
                                                              }}/>;
-                    const addNewItem = <ActionItem title={"Add Consumable"} icon={<AddIcon/>} onPress={_ => {
-                    }}/>;
+                    const addNewItem = <ActionItem title={"Add Consumable"} icon={<AddIcon/>} onPress={()=>openAddItem("Consumable")} />;
                     const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
                                                              onPress={_ => {
                                                              }}/>;

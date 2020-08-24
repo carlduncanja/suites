@@ -63,7 +63,7 @@ const ConsumableText = styled.Text( ({theme}) => ({
     ...theme.font['--text-sm-medium'],
     color : theme.colors['--color-blue-600'],
     paddingLeft : 4,
-}));
+})); 
 
 function Consumables ({headers, consumables = [], caseProceduresFilters = [], caseProcedures = [] ,onConsumablesUpdate, allItems = []}) {
 
