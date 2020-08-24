@@ -17,6 +17,7 @@ import notifications from "./NotificationReducer";
 import draft from "./draftReducer";
 import casePage from './casePageReducer';
 import procedurePage from './procedurePageReducer';
+import archivedSuppliers from './archivedSupplierReducer';
 
 // import app from "./appReducer"
 // import casesFiles from "./caseFilesReducer"
@@ -42,6 +43,7 @@ const appReducer = combineReducers({
   cart,
   notifications,
   draft,
+  archivedSuppliers,
   procedurePage,
 });
 

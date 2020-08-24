@@ -1,39 +1,47 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {View, StyleSheet, ActivityIndicator} from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import PageTitle from './PageTitle';
 import Search from '../Search';
 import List from '../List/List';
 
 import Wrapper from '../Wrapper';
 import LoadingIndicator from '../LoadingIndicator';
-import {SuitesContext} from '../../../contexts/SuitesContext';
-import {appActions} from '../../../redux/reducers/suitesAppReducer';
-import {colors} from '../../../styles'
+import { SuitesContext } from '../../../contexts/SuitesContext';
+import { appActions } from '../../../redux/reducers/suitesAppReducer';
+import { colors } from '../../../styles'
 import PropTypes from 'prop-types';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 const PageWrapper = styled.View`
         display : flex;
         height: 100%;
         flex-direction : column;
         margin-left : 0px;
-        padding-left: ${({theme}) => theme.space['--space-32']};
+        padding-left: ${({ theme }) => theme.space['--space-32']};
         padding-top: 28px;
         padding-right: 32px;
         padding-bottom: 28px;
-        background-color : ${({theme}) => theme.colors['--color-gray-100']};
+        background-color : ${({ theme }) => theme.colors['--color-gray-100']};
     `;
 
 const PageContainer = styled.View`
         display: flex;
         height: 100%;
+       
+       
     `;
 
 const PageSearchWrapper = styled.View` 
         width: 100%; 
-        margin-bottom : ${({theme}) => theme.space['--space-24']};
+        margin-bottom : ${({ theme }) => theme.space['--space-24']};
 `;
+
+const PageHeader = styled.View`
+flex-direction:row;
+width:100%
+`
+
 
 
 /** 
@@ -56,13 +64,19 @@ function Page(props) {
         onRefresh,
         onSelectAll,
         itemsSelected,
-        onClear
+        onClear,
+        TopButton
     } = props;
 
     return (
         <PageWrapper theme={theme}>
             <PageContainer theme={theme}>
-                <PageTitle pageTitle={routeName}/>
+                <PageHeader>
+                    <PageTitle pageTitle={routeName} />
+
+                    {TopButton ? <TopButton /> : <View />}
+
+                </PageHeader>
 
                 <PageSearchWrapper theme={theme}>
                     <Search
@@ -78,7 +92,7 @@ function Page(props) {
 
                 {
                     isFetchingData ?
-                        <LoadingIndicator/>
+                        <LoadingIndicator />
                         :
                         <List
                             listData={listData}

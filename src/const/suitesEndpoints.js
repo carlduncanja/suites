@@ -13,7 +13,7 @@ export const theatresEndpoint = "/theatres";
 export const theatreEndpoint = (id) => `/theatres/${id}`;
 
 // ##### INVENTORY
-export const inventoriesEndpoint = "/inventories"; 
+export const inventoriesEndpoint = "/inventories";
 // export const inventoriesGroupEndpoint = './inventory_groups';
 export const inventoryEndpoint = (id) => `/inventories/${id}`;
 export const inventoryVariantEndpoint = (id) => `/inventories/${id}/variants`;
@@ -59,6 +59,8 @@ export const suppliersEndpoint = "/suppliers";
 export const supplierEndpoint = (id) => `/suppliers/${id}`;
 export const supplierProductsEndpoint = (id) => `/suppliers/${id}/products`
 export const updateProductsEndpoint = (id) => (productId) => `/suppliers/${id}/products/${productId}`
+export const archiveSupplierEndpoint = (id) => `/suppliers/${id}/archive`
+export const getArchivedSuppliersEndPoint = "/suppliers/archived"
 
 // ##### PURCHASE ORDERS
 export const purchaseOrdersEndpoint = "/purchase_orders";

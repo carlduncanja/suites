@@ -19,6 +19,7 @@ export default {
     expoPushToken: null,
   },
   draft: [],
+  archivedSuppliers: [],
   casePage: {
     isEdit: false
   },

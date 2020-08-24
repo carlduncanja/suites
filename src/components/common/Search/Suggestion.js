@@ -24,14 +24,13 @@ function Suggestion({
 
     const SuggestionWrapper = styled.TouchableOpacity`
         width: 100%;
-        background-color: red;
         padding-bottom: ${theme.space['--space-14']};
     `;
 
     const SuggestionContainer = styled.View`
         display: flex;
         width: 100%;
-        background-color: green;
+     
     `;
 
     const SuggestionText = styled.Text({

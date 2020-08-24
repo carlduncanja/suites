@@ -21,7 +21,7 @@ const ScheduleHeaderContainer = styled.View`
 `;
 
 const SchedulePageHeaderContainer = styled.View`
-    width : 100%;
+    width : 102%;
     flex-direction: row;
      height:40px;
     justify-content: space-between;
@@ -34,7 +34,6 @@ const SchedulePageHeaderContainer = styled.View`
 const TextView = styled.Text`
     font:${ ({ theme }) => theme.font["--text-2xl-medium"]};
     color:${ ({ theme }) => theme.colors["--company"]};
-     margin-right:250px;
 `;
 
 const ButtonView = styled.View`
@@ -90,7 +89,6 @@ function SchedulePageHeader({
                         selectedMonth={selectedMonth}
                         onMonthUpdated={onMonthUpdate}
                     />
-
                 </SchedulePageHeaderContainer>
 
 

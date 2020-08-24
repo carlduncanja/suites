@@ -1,11 +1,11 @@
-import React, {Component, useState, useEffect, useRef, useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text, Animated, SectionList} from 'react-native';
+import React, { Component, useState, useEffect, useRef, useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, Animated, SectionList } from 'react-native';
 import SearchInput from './SearchInput'
-import {scheduleActions} from '../../../redux/reducers/scheduleReducer';
-import {ScheduleContext} from '../../../contexts/ScheduleContext';
+import { scheduleActions } from '../../../redux/reducers/scheduleReducer';
+import { ScheduleContext } from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../Buttons/Button';
-import moment from 'moment'; 
+import moment from 'moment';
 import ScheduleItem from '../../Schedule/ScheduleItem';
 import { formatDate } from '../../../utils/formatter';
 
@@ -14,10 +14,10 @@ import { useTheme } from 'emotion-theming';
 import Suggestion from './Suggestion';
 
 function SuggestionsMatchesComponent({
-        matchesToDisplay = [],
-        openSearchResult = ()=>{}
-    }){
-    
+    matchesToDisplay = [],
+    openSearchResult = () => { }
+}) {
+
 
     const theme = useTheme();
     // STYLED COMPONENTS
@@ -25,32 +25,32 @@ function SuggestionsMatchesComponent({
     const SuggestionsMatchesComponentWrapper = styled.View`
         margin: 0;
         height: 180px;
-        background-color: blue;
+      
 
     `;
     const SuggestionsMatchesComponentContainer = styled.View`
         display: flex;
         height: 100%;
         width: 100%;
-        background-color: orange;
+        
         justify-content: space-between;
     `
     return (
-    
+
         <SuggestionsMatchesComponentWrapper>
             <SuggestionsMatchesComponentContainer>
-            {
-                matchesToDisplay
-                    .map((suggestion, index) => {
-                        return (
-                            <Suggestion
-                                openSearchResult = {openSearchResult}
-                                suggestion = {suggestion}
-                                index = {index}
-                            />
-                        )
-                    })
-            }
+                {
+                    matchesToDisplay
+                        .map((suggestion, index) => {
+                            return (
+                                <Suggestion
+                                    openSearchResult={openSearchResult}
+                                    suggestion={suggestion}
+                                    index={index}
+                                />
+                            )
+                        })
+                }
             </SuggestionsMatchesComponentContainer>
         </SuggestionsMatchesComponentWrapper>
 

@@ -1,9 +1,9 @@
 import suitesAxiosInstance from "./index";
-import {handleError, handleResponse} from "./apiUtils";
+import { handleError, handleResponse } from "./apiUtils";
 
 import {
     inventoryGroups,
-    inventoryGroup, 
+    inventoryGroup,
     inventoriesEndpoint,
     inventoryEndpoint,
     inventoryVariantEndpoint,
@@ -39,11 +39,13 @@ import {
     suggestedStartTimeEndpoint,
     updateQuotationStatusEndpoint,
     updatePurchaseOrderStatusEndpoint, logoutEndpoint,
-    caseProcedureAppointmentEndpoint
+    caseProcedureAppointmentEndpoint,
+    archiveSupplierEndpoint,
+    getArchivedSuppliersEndPoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
-import {appointments} from "../../data/Appointments";
+import { appointments } from "../../data/Appointments";
 import caseFiles from "../../data/CaseFiles";
 import procedures from "../../data/Procedures";
 import physicians from "../../data/Physicians";
@@ -53,14 +55,14 @@ import equipment from "../../data/Equipment";
 // ################# Auth Endpoints
 export const login = async (email, password, pushToken) => {
     return suitesAxiosInstance
-        .post(loginEndpoint, {email, password, pushToken})
+        .post(loginEndpoint, { email, password, pushToken })
         .then(handleResponse)
         .catch(handleError);
 };
 
 export const logout = async (userId, pushToken) => {
     return suitesAxiosInstance
-        .put(logoutEndpoint, {"user_id": userId, pushToken})
+        .put(logoutEndpoint, { "user_id": userId, pushToken })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -77,7 +79,7 @@ export const getAppointments = async (
 ) => {
     return suitesAxiosInstance
         .get(appointmentsEndpoint, {
-            params: {query, location, from, to, type, user},
+            params: { query, location, from, to, type, user },
         })
         .then(handleResponse)
         .catch(handleError);
@@ -112,14 +114,14 @@ export const searchSchedule = async (query) => {
 // ################# Theatres Endpoints
 export const getTheatres = async (query, max, page) => {
     return suitesAxiosInstance
-        .get(theatresEndpoint, {params: {query, max, page}})
+        .get(theatresEndpoint, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError);
 };
 
 export const getTheatreById = async (id) => {
     return suitesAxiosInstance
-        .get(theatreEndpoint(id)) 
+        .get(theatreEndpoint(id))
         .then(handleResponse)
         .catch(handleError);
 };
@@ -135,14 +137,14 @@ export const createTheatre = async (theatreForCreation) => {
 
 export const getInventoriesGroup = async (query, max, page) => {
     return suitesAxiosInstance
-        .get(inventoryGroups, {params: {query, max, page}})
+        .get(inventoryGroups, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError);
 };
 
 export const getInventories = async (query, max, page) => {
     return suitesAxiosInstance
-        .get(inventoriesEndpoint, {params: {query, max, page}})
+        .get(inventoriesEndpoint, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -163,7 +165,7 @@ export const removeInventoryGroup = async (id) => {
 
 export const getInventoryVariantByGroup = async (id, groupId) => {
     return suitesAxiosInstance
-        .get(inventoryGroupVariant(groupId,id))
+        .get(inventoryGroupVariant(groupId, id))
         .then(handleResponse)
         .catch(handleError);
 };
@@ -190,7 +192,7 @@ export const createInventoryVariant = async (referenceId, itemToCreate) => {
 // ################# Case Files Endpoints
 export const getCaseFiles = async (query, max, page) => {
     return suitesAxiosInstance
-        .get(caseFilesEndpoint, {params: {query, max, page}})
+        .get(caseFilesEndpoint, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -217,7 +219,7 @@ export const isValidCaseProcedureAppointment = async (
 ) => {
     return suitesAxiosInstance
         .get(validateCaseProcedureEndpoint, {
-            params: {procedure, location, duration, startTime},
+            params: { procedure, location, duration, startTime },
         })
         .then(handleResponse)
         .catch(handleError);
@@ -257,7 +259,7 @@ export const updateCaseQuotationStatus = async (
     status
 ) => {
     return suitesAxiosInstance
-        .put(updateQuotationStatusEndpoint(caseId, quotationId), {status})
+        .put(updateQuotationStatusEndpoint(caseId, quotationId), { status })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -279,7 +281,7 @@ export const removeCaseProcedureAppointment = async (caseId, caseProcedureId) =>
 
 export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId, data) => {
     return suitesAxiosInstance
-        .put(caseProcedureAppointmentEndpoint(caseId, caseProcedureId),data)
+        .put(caseProcedureAppointmentEndpoint(caseId, caseProcedureId), data)
         .then(handleResponse)
         .catch(handleError);
 }
@@ -287,7 +289,7 @@ export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId
 // ################# Procedures Endpoints
 export const getProcedures = async (query, max, page) => {
     return suitesAxiosInstance
-        .get(proceduresEndpoint, {params: {query, max, page}})
+        .get(proceduresEndpoint, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -308,7 +310,7 @@ export const createNewProcedure = async (procedureToCreate) => {
 
 export const updatePurchaseOrderStatus = async (purchaseOrderId, status) => {
     return suitesAxiosInstance
-        .put(updatePurchaseOrderStatusEndpoint(purchaseOrderId), {status})
+        .put(updatePurchaseOrderStatusEndpoint(purchaseOrderId), { status })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -323,7 +325,7 @@ export const updateProcedure = async (id, data) => {
 // ################# Physicians Endpoints
 export const getPhysicians = async (query, max, page) => {
     return suitesAxiosInstance
-        .get(physiciansEndpoint, {params: {query, max, page}})
+        .get(physiciansEndpoint, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -351,7 +353,7 @@ export const updatePhysician = async (id, data) => {
 
 // ################# Storage Endpoints
 export const getStorage = async (query, max, page) => {
-    return suitesAxiosInstance.get(storageLocationsEndpoint, {params: {query, max, page}})
+    return suitesAxiosInstance.get(storageLocationsEndpoint, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError)
 };
@@ -373,7 +375,7 @@ export const createStorageLocation = async (storageForCreation) => {
 // ################# Equipment Endpoint
 export const getEquipment = async (query) => {
     return suitesAxiosInstance
-        .get(equipmentsEndpoint, {params: {query}})
+        .get(equipmentsEndpoint, { params: { query } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -387,7 +389,7 @@ export const getEquipmentById = async (id) => {
 
 export const getEquipmentTypes = async (query, max, page) => {
     return suitesAxiosInstance
-        .get(equipmentTypesEndpoint, {params: {query, max, page}})
+        .get(equipmentTypesEndpoint, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -410,7 +412,7 @@ export const createEquipmentType = async (equipmentTypeToCreate) => {
 
 export const getCategories = async (query, max) => {
     return suitesAxiosInstance
-        .get(categoriesEndpoint, {params: {query}})
+        .get(categoriesEndpoint, { params: { query } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -418,7 +420,7 @@ export const getCategories = async (query, max) => {
 // ################# Suppliers Endpoints
 export const getSuppliers = async (query, max, page) => {
     return suitesAxiosInstance
-        .get(suppliersEndpoint, {params: {query, max, page}})
+        .get(suppliersEndpoint, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -439,7 +441,7 @@ export const getSupplierById = async (id) => {
 
 export const getSupplierProducts = async (id, query, max) => {
     return suitesAxiosInstance
-        .get(supplierProductsEndpoint(id), {params: {query, max}})
+        .get(supplierProductsEndpoint(id), { params: { query, max } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -451,10 +453,17 @@ export const updateSupplierProducts = async (supplierId, productId, data) => {
         .catch(handleError);
 };
 
+export const getArchivedSuppliers = async () => {
+    return suitesAxiosInstance
+        .get(getArchivedSuppliersEndPoint)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 // ################# PurchaseOrders Endpoints
 export const getPurchaseOrders = async (query, max, page) => {
     return suitesAxiosInstance
-        .get(purchaseOrdersEndpoint, {params: {query, max, page}})
+        .get(purchaseOrdersEndpoint, { params: { query, max, page } })
         .then(handleResponse)
         .catch(handleError);
 };
