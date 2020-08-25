@@ -50,15 +50,9 @@ function ListItem({
     const theme = useTheme();
 
 
-<<<<<<< HEAD
     return (
         <ListItemWrapper onPress={onItemPress} theme={theme}>
             <ListItemContainer theme={theme} isArchive={isArchive}>
-=======
-    return ( 
-        <ListItemWrapper onPress={onItemPress} theme = {theme}>
-            <ListItemContainer theme = {theme}>
->>>>>>> 469cd824ba4ba0b6c3ff4a35c4ac84229db5b736
                 <CheckBoxComponent
                     isCheck={isChecked}
                     onPress={onCheckBoxPress}
