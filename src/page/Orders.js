@@ -10,6 +10,10 @@ import ActionItem from "../components/common/ActionItem";
 import AddIcon from "../../assets/svg/addIcon";
 import Notifier from "../components/NotificationComponent";
 import NavPage from '../components/common/Page/NavPage';
+import DataItem from '../components/common/List/DataItem';
+
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 import {
   useNextPaginator,
@@ -36,31 +40,28 @@ import OrderItemPage from "../components/PurchaseOrders/OrderItemPage";
 import { PURCHASE_ORDER_STATUSES } from "../const";
 import EditIcon from "../../assets/svg/editIcon";
 import { addNotification } from "../redux/actions/NotificationActions";
+import RightBorderDataItem from "../components/common/List/RightBorderDataItem";
 
 const listHeaders = [
   {
     name: "Purchase Orders",
     alignment: "flex-start",
     flex: 1.5,
-    fontSize: 14,
   },
   {
     name: "Status",
-    alignment: "center",
+    alignment: "flex-start",
     flex: 1,
-    fontSize: 14,
   },
   {
     name: "Delivery Date",
     alignment: "flex-start",
     flex: 1.5,
-    fontSize: 14,
   },
   {
     name: "Supplier",
     alignment: "flex-start",
-    flex: 2,
-    fontSize: 14,
+    flex: 1.5,
   },
 ];
 
@@ -76,6 +77,7 @@ const Orders = (props) => {
     addNotification,
   } = props;
   const modal = useModal();
+  const theme = useTheme();
 
   //  ############ State
   const [isFetchingData, setFetchingData] = useState(false);
@@ -264,12 +266,12 @@ const Orders = (props) => {
     const { name = "" } = supplier;
     const statusColor =
       status === "Incomplete"
-        ? "#805AD5"
+        ? "--color-purple-600"
         : status === "Request Sent"
-          ? "#319795"
+          ? "--color-teal-600"
           : status === "Payment Due"
-            ? "#C53030"
-            : "#4E5664";
+            ? "--color-red-700"
+            : "--color-gray-700";
 
     const deliveryDate =
       orderDate === "" || orderDate === null
@@ -278,24 +280,29 @@ const Orders = (props) => {
 
     return (
       <>
-        <View style={[styles.item, { ...styles.rowBorderRight, flex: 1.5 }]}>
+        <RightBorderDataItem text = {purchaseOrderNumber} fontStyle = "--text-sm-medium" flex = {1.5}/>
+        <DataItem text = {transformToSentence(status)} fontStyle = "--text-sm-medium" flex = {1} color={statusColor}/>
+        <DataItem text = {deliveryDate} fontStyle = "--text-sm-medium" flex = {1.5}/>
+        <DataItem text = {name} fontStyle = "--text-sm-medium" flex = {1.5} color = "--color-blue-600"/>
+
+        {/* <View style={[styles.item, { ...styles.rowBorderRight, flex: 1.5 }]}>
           <Text style={[styles.itemText, { color: "#4E5664" }]}>
             {purchaseOrderNumber}
           </Text>
-        </View>
+        </View> 
         <View style={[styles.item, { flex: 1, alignItems: "center" }]}>
           <Text style={[styles.itemText, { color: statusColor }]}>
             {transformToSentence(status)}
           </Text>
         </View>
-        <View style={[styles.item, { flex: 1.5, alignItems: "flex-start" }]}>
+        <View style={[styles.item, { flex: 1, alignItems: "flex-start" }]}>
           <Text style={[styles.itemText, { color: "#4E5664", fontSize: 15 }]}>
             {deliveryDate}
           </Text>
         </View>
-        <View style={[styles.item, { flex: 2 }]}>
+        <View style={[styles.item, { flex: 1 }]}>
           <Text style={[styles.itemText, { color: "#3182CE" }]}>{name}</Text>
-        </View>
+        </View> */}
       </>
     );
   };
@@ -304,8 +311,7 @@ const Orders = (props) => {
     const actions = [];
     if (selectedOrders.length === 1) {
       const orderId = selectedOrders[0];
-      const purchaseOrder =
-        purchaseOrders.find((item) => item._id === orderId) || {};
+      const purchaseOrder = purchaseOrders.find((item) => item._id === orderId) || {};
 
       switch (purchaseOrder.status) {
         case PURCHASE_ORDER_STATUSES.DRAFTED: {
@@ -356,6 +362,7 @@ const Orders = (props) => {
 
       // actions.push(createInvoice);
     } else {
+   
     }
 
     return (
@@ -436,7 +443,7 @@ const Orders = (props) => {
       toggleActionButton={toggleActionButton}
       hasPaginator={true}
       hasActionButton={true}
-      hasActions={false}
+      hasActions={true}
       isNextDisabled={isNextDisabled}
       isPreviousDisabled={isPreviousDisabled}
     />

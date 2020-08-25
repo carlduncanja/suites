@@ -17,12 +17,12 @@ const PaginatorNumbersContainer = styled.View`
     padding-bottom:  ${ ({theme}) => theme.space['--space-6']};
     justify-content: space-evenly;
     align-items: center;
-    background-color : ${ ({theme}) => theme.colors['--color-neutral-gray-100']};
-    border : 1px solid ${ ({theme}) => theme.colors['--color-gray-400']};
-    border-radius : ${ ({theme}) => theme.space['--space-4']};
+    background-color : ${ ({theme, hasNumberBorder}) => hasNumberBorder && theme.colors['--color-neutral-gray-100']};
+    border : ${ ({theme, hasNumberBorder}) => hasNumberBorder && `1px solid ${theme.colors['--color-gray-400']}`} ;
+    border-radius : ${ ({theme, hasNumberBorder}) => hasNumberBorder && theme.space['--space-4']};
 `;
 
-    const Number = styled.Text( ({theme}) => ({
+    const Number = styled.Text( ({theme}) => ({ 
         ...theme.font['--text-base-regular'],
         color : theme.colors['--color-black'],
     }))
@@ -33,6 +33,7 @@ const PaginatorNumbersContainer = styled.View`
 function PaginatorNumbers ({
         currentPage = 0,
         totalPages = 0,
+        hasNumberBorder = true,
     }){
 
     const theme = useTheme();
@@ -41,7 +42,7 @@ function PaginatorNumbers ({
     
     return (
         <PaginatorNumbersWrapper>
-            <PaginatorNumbersContainer theme = {theme}>
+            <PaginatorNumbersContainer theme = {theme} hasNumberBorder = {hasNumberBorder}>
                 <Number theme = {theme}>{currentPage} of {totalPages}</Number>
             </PaginatorNumbersContainer>
         </PaginatorNumbersWrapper>   

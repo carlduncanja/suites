@@ -12,6 +12,7 @@ import CreateInventoryGroupDialogContainer from '../../components/Inventory/Crea
 import NavPage  from "../../components/common/Page/NavPage";
 import Item from '../../components/common/Table/Item';
 import DataItem from '../../components/common/List/DataItem';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 import CollapsedIcon from "../../../assets/svg/closeArrow";
 import ActionIcon from "../../../assets/svg/dropdownIcon";
@@ -22,7 +23,7 @@ import AddIcon from "../../../assets/svg/addIcon";
 import {numberFormatter} from "../../utils/formatter";
 import {setInventory} from "../../redux/actions/InventorActions";
 import {connect} from "react-redux";
-import {getInventoriesGroup} from "../../api/network";
+import { getInventoriesGroup, removeInventoryGroup } from "../../api/network";
 import {useModal} from "react-native-modalfy";
 import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from "../../helpers/caseFilesHelpers";
 import styled, { css } from '@emotion/native';
@@ -280,8 +281,7 @@ function Inventory(props) {
 
         const deleteAction =
             <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
-                <LongPressWithFeedback pressTimer={1200} onLongPress={() => {
-                }}>
+                <LongPressWithFeedback pressTimer={1200} onLongPress={removeGroup}>
                     <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
                     }} touchable={false}/>
                 </LongPressWithFeedback>
@@ -297,9 +297,19 @@ function Inventory(props) {
                 createAction,
                 createGroup
             ]}
-            title={"STORAGE ACTIONS"}
+            title={"INVENTORY ACTIONS"}
         />
     };
+
+    const removeGroup = () => {
+        // Done with one id selected
+        if (selectedIds.length == 1){
+            let idToDelete = selectedIds[0] || "";
+            openConfirmationScreen(idToDelete);
+        }else{
+            openErrorConfirmation();
+        }
+    }
 
     const openCreateInventoryModel = () => {
         modal.closeModals('ActionContainerModal');
@@ -520,6 +530,38 @@ function Inventory(props) {
         </CollapsibleListItem>
     };
 
+    const openConfirmationScreen = (id) => {
+        modal
+            .openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {true}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=>removeGroupCall(id)}
+                        message = {"Do you want to delete these item(s)?"}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                })
+    }
+
+    const openErrorConfirmation = () =>{
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError = {true}
+                    isEditUpdate = {false}
+                    onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')} 
+            })
+    }
+
+
     const fetchInventory = (pagePosition) => {
 
        let currentPosition = pagePosition ? pagePosition  : 1;
@@ -560,8 +602,29 @@ function Inventory(props) {
             })
     };
 
+    const removeGroupCall = (id) => {
+        removeInventoryGroup(id)
+            .then(_ => {
+                setTimeout(()=>{
+                    modal.closeModals('ConfirmationModal');
+                },200);
+                modal.closeModals("ActionContainerModal");
+                setSelectedIds([]);
+                onRefresh();
+            })
+            .catch( error => {
+                openErrorConfirmation();
+                setTimeout(()=>{
+                    modal.closeModals("ActionContainerModal");
+                },200);
+                console.log("Failed to remove group: ", error);
+            })
+            .finally (_ =>{
+                setFloatingAction(false);
+            })
+    }
+
     let inventoryToDisplay = [...inventory];
-    // inventoryToDisplay = inventoryToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
         <NavPage
