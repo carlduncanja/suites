@@ -16,6 +16,7 @@ import AddIcon from "../../../assets/svg/addIcon";
 import { currencyFormatter } from "../../utils/formatter";
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import {useModal} from "react-native-modalfy";
+import Footer from "../common/Page/Footer";
 
 const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, supplierId = "", onAddProductItems = ()=>{}}) =>{
     
@@ -203,10 +204,10 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
 
         return <ActionContainer
             floatingActions={[
-                deleteItem,
+                // deleteItem,
                 addItem,
             ]}
-            title={"SUPPLIER ACTIONS"}
+            title={"ORDERS ACTIONS"}
         />
     }
 
@@ -237,7 +238,7 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
     itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax); 
     
     return (
-        <View style={{flex:1}}>
+        <>
             <Table
                 data = {itemsToDisplay}
                 listItemFormat = {renderItemFn}
@@ -246,23 +247,18 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
                 toggleHeaderCheckbox = {handleOnSelectAll}
                 itemSelected = {selectedItems}
             />
+            <Footer
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                isNextDisabled = {true}
+                isPreviousDisabled = {true}
+            />
 
-            <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-
-                <FloatingActionButton
-                    isDisabled={isFloatingActionDisabled}
-                    toggleActionButton={toggleActionButton}
-                />
-            </View>
-        </View>
+        </>
     )
 }
 

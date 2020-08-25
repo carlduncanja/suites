@@ -4,7 +4,7 @@ import Header from './Header';
 import Data from './Data';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
-const Divider = () =>{
+const Divider = () =>{ 
     return( 
         <View
             style={{
