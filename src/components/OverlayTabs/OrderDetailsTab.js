@@ -6,22 +6,18 @@ import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
 import { formatDate } from "../../utils/formatter"; 
 import { formatAmount } from "../../helpers/caseFilesHelpers";
 import { transformToSentence } from "../../hooks/useTextEditHook";
+import LineDivider from "../common/LineDivider";
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 
-// const order = {
-//     decscription : "",
-//     invoiceNumber : "IN-00000023",
-//     orderTotal : 63467.56,
-//     status : 'Complete',
-//     orderDate : new Date(2019, 11, 20),
-//     deliveryDate : new Date(2019, 11, 23),
-//     storageLocation : 'Warehouse',
-//     requestedBy : 'Anthony Brown',
-//     approvedBy : "Sandra Smith",
-//     receivedBy : "Anthony Brown",
-//     type: 'Repeating',
-//     configStatus : 'Active',
-// }
+
+const LineDividerContainer = styled.View`
+    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+`;
+
 const OrderDetailsTab = ({order = {} }) =>{ 
+
+    const theme = useTheme();
 
     const {
         orderDate = "",
@@ -44,7 +40,7 @@ const OrderDetailsTab = ({order = {} }) =>{
     const { name = "" } = storageLocation
 
     return (
-        <View style={{flex:1}}>
+        <>
             
             <Row>
                 <Record
@@ -103,6 +99,25 @@ const OrderDetailsTab = ({order = {} }) =>{
                     recordValue = {receivedBy}
                 />
            </Row>
+
+            <LineDividerContainer theme={theme}>
+                <LineDivider/>
+            </LineDividerContainer>
+            
+
+            <Row>
+                <Record
+                    recordTitle = "Type"
+                    recordValue = {type}
+                    flex = {0.5}
+                />
+                <Record
+                    recordTitle = "Configuration Status"
+                    recordValue = {configStatus}
+                    valueColor = "#38A169"
+                />
+                
+            </Row>
 
             {/* <View style={styles.row}>
                 <View style={{flex:1}}>
@@ -182,26 +197,7 @@ const OrderDetailsTab = ({order = {} }) =>{
                </View>
            </View> */}
 
-           <View style = {{
-                backgroundColor:'#CCD6E0',
-                height:1,
-                borderRadius:2,
-                marginBottom:30,
-                marginTop:15
-            }} />
-
-            <Row>
-                <Record
-                    recordTitle = "Type"
-                    recordValue = {type}
-                />
-                <Record
-                    recordTitle = "Configuration Status"
-                    recordValue = {configStatus}
-                    valueColor = "#38A169"
-                />
-            </Row>
-
+           
             {/* <View style={[styles.row,{justifyContent:"flex-start"}]}>
                <View style={[styles.inputWrapper,{flex:0, width:'33%'}]}>
                    <Record
@@ -220,7 +216,7 @@ const OrderDetailsTab = ({order = {} }) =>{
            </View>
  */}
 
-        </View>
+        </>
     )
 }
 

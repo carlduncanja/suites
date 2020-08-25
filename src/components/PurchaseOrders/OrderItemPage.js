@@ -13,10 +13,13 @@ import { updatePurchaseOrder } from '../../api/network';
 import { PageContext } from "../../contexts/PageContext";
 import DetailsPage from "../common/DetailsPage/DetailsPage";
 import TabsContainer from "../common/Tabs/TabsContainerComponent";
+import ConfirmationComponent from '../ConfirmationComponent';
+import { useModal } from 'react-native-modalfy';
 
 function OrderItemPage({ route, navigation }) {
 
     const { order, isOpenEditable } = route.params;
+    const modal = useModal();
 
 
     const currentTabs = ["Details", "Items", "Suppliers"];
@@ -153,20 +156,45 @@ function OrderItemPage({ route, navigation }) {
             isEdit: false
         })
     }
+    
+    const errorScreen = () => {
+        setTimeout(() => {
+            modal
+                .openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onCancel = {onCancelErrorScreen}
+                            message = "There was an issue performing this action."
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+        }, 100);
+    }
 
-
+    const onCancelErrorScreen = () =>{
+        modal.closeAllModals();
+        setTimeout(()=>{
+            BackTapped()
+        },200)
+    }
 
     const fetchOrder = async (id) => {
         setPageLoading(true);
-        getPurchaseOrderById(id)
+        getPurchaseOrderById()
             .then(data => {
                 const { orders = [] } = data
                 setSelectedOrder(data)
                 setOrderItems(orders)
-
             })
             .catch(error => {
                 console.log("Failed to get order", error)
+                errorScreen();
+                
+                // Add confirmation componenet
                 //TODO handle error cases.
             })
             .finally(_ => {
