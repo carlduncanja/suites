@@ -178,13 +178,13 @@ function OrderItemPage({ route, navigation }) {
     const onCancelErrorScreen = () =>{
         modal.closeAllModals();
         setTimeout(()=>{
-            BackTapped()
+            BackTapped();
         },200)
     }
 
     const fetchOrder = async (id) => {
         setPageLoading(true);
-        getPurchaseOrderById()
+        getPurchaseOrderById(id)
             .then(data => {
                 const { orders = [] } = data
                 setSelectedOrder(data)

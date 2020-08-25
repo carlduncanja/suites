@@ -11,6 +11,7 @@ import AddIcon from "../../assets/svg/addIcon";
 import Notifier from "../components/NotificationComponent";
 import NavPage from '../components/common/Page/NavPage';
 import DataItem from '../components/common/List/DataItem';
+import ConfirmationComponent from '../components/ConfirmationComponent';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -208,6 +209,30 @@ const Orders = (props) => {
 
   // ############# Helper functions
 
+  const errorScreen = () => {
+    setTimeout(() => {
+      modal.openModal(
+      'ConfirmationModal',
+      {
+          content: <ConfirmationComponent
+              isEditUpdate = {false}
+              isError = {true}
+              onCancel = {onCancelErrorScreen}
+              message = "There was an issue performing this action."
+          />
+          ,
+          onClose: () => {modal.closeModals('ConfirmationModal')} 
+      })
+    }, 100);
+}
+
+const onCancelErrorScreen = () =>{
+    modal.closeAllModals();
+    setTimeout(()=>{
+      handleDataRefresh();
+    },200)
+}
+
   const fetchOrdersData = (pagePosition) => {
 
     let currentPosition = pagePosition ? pagePosition : 1;
@@ -242,6 +267,7 @@ const Orders = (props) => {
       })
       .catch((error) => {
         console.log("failed to get orders", error);
+        errorScreen();
       })
       .finally((_) => {
         setFetchingData(false);

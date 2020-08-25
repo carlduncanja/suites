@@ -1,7 +1,7 @@
 import React,{ useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Table from "../common/Table/Table";
-import Item from '../common/Table/Item';
+import Item from '../common/Table/Item'; 
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import LongPressWithFeedback from "../common/LongPressWithFeedback";
