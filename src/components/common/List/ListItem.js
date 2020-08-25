@@ -1,6 +1,6 @@
-import React, {useContext} from 'react'; 
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {withModal} from 'react-native-modalfy';
+import React, { useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { withModal } from 'react-native-modalfy';
 import CheckBoxComponent from "../Checkbox";
 
 import styled, { css } from '@emotion/native';
@@ -18,7 +18,7 @@ import { useTheme } from 'emotion-theming';
  */
 
 const ListItemWrapper = styled.TouchableOpacity`
-    margin-bottom : ${ ({theme}) => theme.space['--space-12']};
+    margin-bottom : ${ ({ theme }) => theme.space['--space-12']};
     height : 46px;
     width : 100%;
 `;
@@ -27,8 +27,8 @@ const ListItemContainer = styled.View`
     height: 100%;
     width: 100%; 
     flex-direction: row;
-    background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
-    border : 1px solid ${ ({theme}) => theme.colors['--color-gray-300']};
+    background-color: ${ ({ theme, isArchive }) => isArchive ? theme.colors["--color-gray-200"] : theme.colors['--default-shade-white']};
+    border : 1px solid ${ ({ theme }) => theme.colors['--color-gray-300']};
     border-radius: 8px;
 `;
 
@@ -38,28 +38,29 @@ const ItemView = styled.View`
     align-items: center;
 `
 function ListItem({
-        itemView = () => {},
-        hasCheckBox = true,
-        isChecked = false,
-        onCheckBoxPress = ()=>{},
-        onItemPress=() => {}
-}){
+    isArchive = false,
+    itemView = () => { },
+    hasCheckBox = true,
+    isChecked = false,
+    onCheckBoxPress = () => { },
+    onItemPress = () => { }
+}) {
 
     const theme = useTheme();
 
 
     return (
-        <ListItemWrapper onPress={onItemPress} theme = {theme}>
-            <ListItemContainer theme = {theme}>
+        <ListItemWrapper onPress={onItemPress} theme={theme}>
+            <ListItemContainer theme={theme} isArchive={isArchive}>
                 <CheckBoxComponent
                     isCheck={isChecked}
                     onPress={onCheckBoxPress}
                 />
-                <ItemView>
+                <ItemView >
                     {itemView}
                 </ItemView>
             </ListItemContainer>
-            
+
         </ListItemWrapper>
     );
 };

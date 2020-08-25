@@ -453,6 +453,13 @@ export const getArchivedSuppliers = async () => {
         .catch(handleError);
 };
 
+export const archiveSupplier = async (supplierId) => {
+    return suitesAxiosInstance
+        .delete(archiveSupplierEndpoint(supplierId))
+        .then(handleResponse)
+        .catch(handleError);
+}
+
 // ################# PurchaseOrders Endpoints
 export const getPurchaseOrders = async (query, max, page) => {
     return suitesAxiosInstance

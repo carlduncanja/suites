@@ -82,7 +82,8 @@ function ConfirmationComponent({
     color: ${theme.colors["--default-shade-white"]};
     width: 76px;
     height: 40px;
-    padding: 10px;
+    padding: 5px;
+    justify-content:center;
     align-items: center;
     border-radius: 10px;
     border-width: 1px;

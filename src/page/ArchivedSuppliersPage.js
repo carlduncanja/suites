@@ -24,7 +24,6 @@ background-color:${({ theme }) => theme.colors["--accent-line"]};
 width:100px;
 height:26px;
 border-radius:6px;
-margin-left:380px;
 
 
 `;
@@ -59,6 +58,7 @@ function ArchivedSuppliersPage(props) {
     ];
 
     useEffect(() => {
+        fetchArchivedSuppliersData(currentPagePosition);
         if (!archivedSuppliers.length) fetchArchivedSuppliersData(currentPagePosition)
         setTotalPages(Math.ceil(archivedSuppliers.length / recordsPerPage))
     }, []);
@@ -83,6 +83,10 @@ function ArchivedSuppliersPage(props) {
     };
     const onSearchInputChange = (input) => {
         setSearchValue(input)
+    }
+
+    const handleOnItemPress = (item) => {
+        console.log("item clicked is", item);
     }
 
 
@@ -174,6 +178,7 @@ function ArchivedSuppliersPage(props) {
 
     const renderArchivedSupplierFn = (item) => {
         return <ListItem
+            isArchive={true}
             hasCheckBox={true}
             isChecked={selectedSuppliers.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
@@ -267,6 +272,7 @@ export default connect(mapStateToProps, mapDispatcherToProp)(withModal(ArchivedS
 const styles = StyleSheet.create({
     item: {
         // flex:1
+
     },
     itemText: {
         fontSize: 16
@@ -283,7 +289,7 @@ const styles = StyleSheet.create({
     },
     rowBorderRight: {
         borderRightColor: "#E3E8EF",
-        borderRightWidth: 1,
+        borderRightWidth: 2,
         // marginRight: 20,
     }
 })

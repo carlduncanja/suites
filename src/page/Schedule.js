@@ -16,7 +16,6 @@ import { colors } from '../styles'
 import ScheduleSearchContainer from "../components/common/Search/ScheduleSearchContainer";
 import ScheduleOverlayContainer from "../components/Schedule/ScheduleOverlayContainer";
 import { useModal } from "react-native-modalfy";
-
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SchedulePageHeader from '../components/Schedule/SchedulePageHeader';
@@ -53,6 +52,10 @@ const Schedule = (props) => {
     const [sectionListIndex, setSectionListIndex] = useState(initialIndex);
     const [isFetchingAppointment, setFetchingAppointments] = useState(false);
 
+    //filter state
+    const [checkedRadioButton, setcheckedButton] = useState("");
+    const [type, setType] = useState(0);
+
     // search states
     const [searchOpen, setSearchOpen] = useState(false);
     const [isExpanded, setisExpanded] = useState(false);
@@ -61,6 +64,40 @@ const Schedule = (props) => {
         console.log("expand clicked");
         setisExpanded(!isExpanded);
     };
+
+    const radioClicked = (item) => {
+        console.log("them item clicked", item);
+        setcheckedButton(item);
+        filterBy(item);
+
+
+    }
+
+    const filterBy = (category) => {
+        if (category === "Procedure") {
+            setType(1);
+        } else if (category === "Delivery") {
+            setType(2);
+        }
+
+
+    }
+
+    const fetchAppointments = (query) => {
+        setFetchingAppointments(true);
+        console.log("Type currently has:", query)
+        getAppointments("", "", "", "", query, "")
+            .then(data => {
+                console.log("appointments", data);
+                setAppointments(data);
+            })
+            .catch(error => {
+                console.log("failed to get appointments", error);
+            })
+            .finally(_ => {
+                setFetchingAppointments(false);
+            })
+    }
 
     // animated states
 
@@ -75,6 +112,7 @@ const Schedule = (props) => {
     useEffect(() => {
         if (!appointments.length) {
             setFetchingAppointments(true);
+
             getAppointments()
                 .then(data => {
                     console.log("appointments", data);
@@ -86,8 +124,11 @@ const Schedule = (props) => {
                 .finally(_ => {
                     setFetchingAppointments(false)
                 })
+
+        } else {
+            fetchAppointments(type);
         }
-    }, []);
+    }, [type]);
 
     //########### Functions
     // const onChange = (dimensions) => {
@@ -179,6 +220,9 @@ const Schedule = (props) => {
                 <View style={{ flex: 1 }}>
 
                     <SchedulePageHeader
+                        Expanded={isExpanded}
+                        checkedRadioButton={checkedRadioButton}
+                        onradioClick={radioClicked}
                         searchButtonPress={searchPress}
                         gotoTodayButtonPress={handleOnGoToToday}
                         selectedMonth={selectedMonth}

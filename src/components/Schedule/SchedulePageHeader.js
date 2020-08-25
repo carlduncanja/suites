@@ -6,6 +6,9 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import ScheduleButton from './ScheduleButton';
 import { SuitesContext } from "../../contexts/SuitesContext";
+import FilterIcon from "../../../assets/svg/filterIcon";
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { RadioButton } from 'react-native-paper';
 
 const SchedulePageHeaderWrapper = styled.View`
     width: 100%;
@@ -13,6 +16,7 @@ const SchedulePageHeaderWrapper = styled.View`
     padding-top: ${ ({ theme }) => theme.space['--space-24']};
     padding-bottom: ${ ({ theme }) => theme.space['--space-24']};
     padding-right: ${ ({ theme }) => theme.space['--space-32']};
+    z-index:10;
 `;
 
 const ScheduleHeaderContainer = styled.View`
@@ -41,7 +45,7 @@ const ButtonView = styled.View`
     flex-direction:row;
     padding-top:15px;
     padding-bottom:15px;
-    // padding:15px;
+     padding:15px;
     borderTopWidth:1px;
     borderTopColor:${ ({ theme }) => theme.colors["--color-gray-400"]};
     // background-color: yellow;
@@ -54,30 +58,139 @@ const GroupButtonContainer = styled.View`
 `;
 const ExpandButtonWrapper = styled.View`
     height: 24px;
-    margin-left:15px;
+    margin-left:10px;
+    margin-right:10px;
     width: 128px;
 `;
 
 const ExpandButton = styled.View`
     height: 100%;
     weight: 100%;
-    background-color: ${ ({ theme }) => theme.colors['--default-shade-white']};
+    background-color: ${ ({ theme, Expanded }) => Expanded ? theme.colors["--accent-button"] : theme.colors['--default-shade-white']};
     border-color: ${ ({ theme }) => theme.colors['--color-gray-400']};
     border-radius: 4px;
     border-width: 1px;
 `;
 
+const PopUp = styled.View`
+width:180px;
+align-self:center;
+align-items:flex-start;
+position:absolute;
+padding:5px;
+top:30px;
+left:100px;
+height:175px;
+background-color:${({ theme }) => theme.colors["--default-shade-white"]};
+z-index:10;
+box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+border-radius:3.6px;
+
+`
+
+const PopupContainer = styled.View`
+align-items:center;
+flex-direction:row;
+margin:2px;
+
+`
+
+const RadioContainer = styled.View`
+background-color:${({ checkedButton, name, theme }) => checkedButton === name ? theme.colors["--color-blue-600"] : "white"};
+border-color:${({ theme }) => theme.colors["--color-neutral-gray-300"]};
+border-width:1px;
+width:15px;
+height:15px;
+border-radius:7.5px;
+margin-right:10px;
+`;
+
+const OptionContainer = styled.View`
+background-color:${({ item }) => item.color};
+border-radius:4.6px;
+height:25px;
+margin:1.8px;
+align-items:center;
+justify-content:center
+`;
+
 
 function SchedulePageHeader({
+    Expanded = false,
+    checkedRadioButton = "",
+    onradioClick = () => { },
     searchButtonPress = () => { },
     gotoTodayButtonPress = () => { },
     onMonthUpdate = () => { },
     selectedMonth = new Date(),
     onExpand = () => { }
 }) {
+
+    const optionList = [
+        {
+            name: "Delivery",
+            color: "#38A169"
+
+        },
+        {
+            name: "Inventory Re-Stock",
+            color: "#D69E2E"
+        },
+        {
+            name: "Inventory Audit",
+            color: "#D53F8C"
+        },
+        {
+            name: "Equipment",
+            color: "#3182CE"
+        },
+        {
+            name: "Procedure",
+            color: "#C53030"
+        }
+
+    ]
+
+
     const [state] = useContext(SuitesContext);
+    const [showDropDown, setShowDropDown] = useState(false);
+
 
     const theme = useTheme();
+
+    const renderDropDown = () => {
+        console.log(checkedRadioButton)
+
+        const options = [...optionList];
+        return (
+
+            <PopUp theme={theme}>
+
+                {options.map((item, index) => {
+                    return (<PopupContainer>
+                        <RadioContainer theme={theme} checkedButton={checkedRadioButton} name={item.name}>
+                            <RadioButton
+                                value={item.name}
+                                status={checkedRadioButton === item.name ? 'checked' : 'unchecked'}
+                                onPress={() => onradioClick(item.name)}
+                                color="blue"
+                            />
+
+                        </RadioContainer>
+                        <OptionContainer key={index} item={item}>
+                            <Text style={{ color: "white", fontSize: 15 }}>{item.name}</Text>
+                        </OptionContainer>
+                    </PopupContainer>
+
+
+
+
+                    )
+
+                })}</PopUp>
+
+        )
+    }
 
     return (
         <SchedulePageHeaderWrapper theme={theme}>
@@ -109,14 +222,19 @@ function SchedulePageHeader({
                             onButtonPress={gotoTodayButtonPress}
                         />
                         <ExpandButtonWrapper>
-                            <ExpandButton theme={theme}>
+                            <ExpandButton theme={theme} Expanded={Expanded}>
                                 <Button
-                                    title={"Expand Calendar"}
+                                    title={Expanded ? "Collapse Calendar" : "Expand Calendar"}
                                     buttonPress={onExpand}
-                                    color={theme.colors['--color-gray-700']}
+                                    color={Expanded ? theme.colors["--default-shade-white"] : theme.colors['--color-gray-700']}
                                 />
                             </ExpandButton>
                         </ExpandButtonWrapper>
+                        <TouchableOpacity onPress={() => { setShowDropDown(!showDropDown) }}>
+                            <FilterIcon />
+
+                        </TouchableOpacity>
+                        {showDropDown ? renderDropDown() : <View />}
                     </GroupButtonContainer>
 
 

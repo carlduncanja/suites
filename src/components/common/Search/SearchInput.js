@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, TextInput, CheckBox } from 'react-native';
 import InputText from '../InputText';
 import SvgIcon from '../../../../assets/SvgIcon';
-import { RadioButton } from 'react-native-paper';
+
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -36,28 +36,6 @@ align-items: center;
 flex-direction: row;
 justify-content: space-between;
 box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
-`
-const FilterBox = styled.View`
-flex-direction:row;
-width:70px;
-height:40px;
-background-color:${({ theme }) => theme.colors["--color-blue-500"]};
-alignItems:center;
-margin-right:7px;
-margin-left:-7px;
-justifyContent:center;
-color:${({ theme }) => theme.colors["--default-shade-white"]};
-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-border-radius:2.6px;
-
-`
-
-const FilterText = styled.Text`
-font:${({ theme }) => theme.colors["--text-sm-medium"]};
-color:${({ theme }) => theme.colors["--default-shade-white"]};
-align-self:center;
-margin-right:5px;
-
 `
 
 const PopUp = styled.View`
@@ -131,8 +109,7 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
 
     ]
 
-    const [showDropDown, setShowDropDown] = useState(false);
-    const [checkedRadioButton, setcheckedButton] = useState("Delivery");
+
 
 
     const renderDropDown = () => {
@@ -181,14 +158,14 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
                     matchesFound={matchesFound}
                     onPressNewSerch={onPressNewSerch}
                 />
-                <TouchableOpacity onPress={() => { setShowDropDown(!showDropDown) }}>
+                {/* <TouchableOpacity onPress={() => { setShowDropDown(!showDropDown) }}>
                     <FilterBox theme={theme}>
 
                         <FilterText theme={theme}>Filter</FilterText><DropDown fillColor="#FFFFFF" />
 
                     </FilterBox>
                     {showDropDown ? renderDropDown() : <View />}
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <SearchControls
                     onPressNextResult={onPressNextResult}
                     onPressPreviousResult={onPressPreviousResult}

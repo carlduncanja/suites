@@ -10,7 +10,7 @@ import ActionContainer from "../components/common/FloatingAction/ActionContainer
 import ActionItem from "../components/common/ActionItem";
 import Footer from "../components/common/Page/Footer";
 import NavPage from '../components/common/Page/NavPage';
-
+import ConfirmationComponent from "../components/ConfirmationComponent";
 import ArchiveIcon from "../../assets/svg/archiveIcon";
 import AddIcon from "../../assets/svg/addIcon";
 
@@ -18,7 +18,7 @@ import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } 
 
 import { connect } from 'react-redux';
 import { setSuppliers } from "../redux/actions/suppliersActions";
-import { getSuppliers } from "../api/network";
+import { getSuppliers, archiveSupplier } from "../api/network";
 import _ from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -259,9 +259,56 @@ const Suppliers = (props) => {
 
     }
 
+    const cancelClicked = () => {
+        modal.closeAllModals("ConfirmationModal");
+    }
+
+    const toggleConfirmArchive = () => {
+        modal.openModal("ConfirmationModal", {
+            content: (
+                <ConfirmationComponent
+                    isError={true}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}//use this specification to either get the confirm an edit or update
+                    onCancel={cancelClicked}
+                    onAction={ArchiveSupplier}
+                    message="Are you sure you want to Archive the supplier(s)"//general message you can send to be displayed
+                    action="Archive"
+                />
+            )
+        })
+    }
+
+    const ArchiveSupplier = () => {
+        //fetchSuppliersData(currentPagePosition);
+        const selected = [...selectedSuppliers];
+        modal.closeAllModals("ConfirmationModal");
+        selected.map((item, index) => {
+            archiveSupplier(item).then(fetchSuppliersData(currentPagePosition))
+                .catch(error => {
+                    console.log("failed to archive suppliers", error);
+                    modal.openModal("ConfirmationModal", {
+                        content: (
+                            <ConfirmationComponent
+                                isError={true}//boolean to show whether an error icon or success icon
+                                isEditUpdate={false}//use this specification to either get the confirm an edit or update
+                                onCancel={cancelClicked}
+                                onAction={ArchiveSupplier}
+                                message="Are you sure you want to Archive the supplier(s)"//general message you can send to be displayed
+                                action="Archive"
+                            />
+                        )
+                    })
+                }).finally(_ => {
+                    setFetchingData(false);
+                })
+        })
+
+
+    }
+
     const getFabActions = () => {
 
-        const archiveCase = <ActionItem title={"Archive Supplier"} icon={<ArchiveIcon />} onPress={() => { }} />;
+        const archiveCase = <ActionItem title={"Archive Supplier"} icon={<ArchiveIcon />} onPress={toggleConfirmArchive} />;
         const createNewSupplier = <ActionItem title={"Add Supplier"} icon={<AddIcon />} onPress={onOpenCreateSupplier} />;
 
 
