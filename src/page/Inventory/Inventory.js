@@ -302,15 +302,12 @@ function Inventory(props) {
     };
 
     const removeGroup = () => {
-        
+        // Done with one id selected
         if (selectedIds.length == 1){
-            let idToDelete = selectedIds[0] || ""
-            openConfirmationScreen(idToDelete)
-            // removeGroupCall(idToDelete)
-            console.log("Delete: ", selectedIds)
+            let idToDelete = selectedIds[0] || "";
+            openConfirmationScreen(idToDelete);
         }else{
-            openErrorConfirmation()
-            console.log("Must select")
+            openErrorConfirmation();
         }
     }
 
@@ -534,22 +531,20 @@ function Inventory(props) {
     };
 
     const openConfirmationScreen = (id) => {
-        // setTimeout(() => {
-            modal
-                .openModal(
-                    'ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isError = {false}
-                            isEditUpdate = {true}
-                            onCancel = {()=> modal.closeModals('ConfirmationModal')}
-                            onAction = {()=>removeGroupCall(id)}
-                            message = {"Do you want to delete these item(s)?"}
-                        />
-                        ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
-                    })
-        // }, 200)
+        modal
+            .openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {true}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=>removeGroupCall(id)}
+                        message = {"Do you want to delete these item(s)?"}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                })
     }
 
     const openErrorConfirmation = () =>{
@@ -560,8 +555,6 @@ function Inventory(props) {
                     isError = {true}
                     isEditUpdate = {false}
                     onCancel = {()=> modal.closeModals('ConfirmationModal')}
-                    // onAction = {onAction}
-                    // message = {message}
                 />
                 ,
                 onClose: () => {modal.closeModals('ConfirmationModal')} 
@@ -610,7 +603,6 @@ function Inventory(props) {
     };
 
     const removeGroupCall = (id) => {
-        console.log("Id: ", id)
         removeInventoryGroup(id)
             .then(_ => {
                 setTimeout(()=>{
@@ -622,10 +614,10 @@ function Inventory(props) {
             })
             .catch( error => {
                 openErrorConfirmation();
-                console.log("Failed to remove group: ", error)
+                console.log("Failed to remove group: ", error);
             })
             .finally (_ =>{
-                setFloatingAction(false)
+                setFloatingAction(false);
             })
     }
 
