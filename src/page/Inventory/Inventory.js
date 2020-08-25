@@ -614,6 +614,9 @@ function Inventory(props) {
             })
             .catch( error => {
                 openErrorConfirmation();
+                setTimeout(()=>{
+                    modal.closeModals("ActionContainerModal");
+                },200);
                 console.log("Failed to remove group: ", error);
             })
             .finally (_ =>{
@@ -622,7 +625,6 @@ function Inventory(props) {
     }
 
     let inventoryToDisplay = [...inventory];
-    // inventoryToDisplay = inventoryToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
         <NavPage
