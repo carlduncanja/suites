@@ -18,7 +18,7 @@ import ChargeSheetSelectedIcon from "../../../assets/svg/overlayChargeSheetSelec
 import ChargeSheetDisabledIcon from "../../../assets/svg/overlayChargeSheetDisabled";
 import {
     createInvoiceViaQuotation, generateQuotationCall,
-    getCaseFileById,
+    getCaseFileById, removeQuotationCall,
     updateCaseQuotationStatus,
     updateChargeSheet
 } from "../../api/network";
@@ -51,6 +51,8 @@ import {useTheme} from "emotion-theming";
 import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
 import GenerateIcon from "../../../assets/svg/generateIcon";
 import ConfirmationComponent from "../../components/ConfirmationComponent";
+import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
+import WasteIcon from "../../../assets/svg/wasteIcon";
 
 const overlayMenu = [
     {
@@ -97,7 +99,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([])
     const [selectedCaseId, setSelectedCaseId] = useState("")
-    const [selectedQuotes, setSelectedQuotes] = useState([])
+    const [selectedQuoteIds, setSelectedQuoteIds] = useState([])
 
 
     // ############### State
@@ -162,7 +164,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
 
     const handleQuotes = (quotes) => {
         // const quoteIds = quotes.map(item => item._id)
-        setSelectedQuotes(quotes)
+        setSelectedQuoteIds(quotes)
     }
 
     const onGenerateQuotation = () => {
@@ -187,8 +189,6 @@ function CasePage({route, addNotification, navigation, ...props}) {
             },
         })
     }
-
-
 
 
     /**
@@ -270,7 +270,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
                     },
                 })
             })
-            .finally( _ => {
+            .finally(_ => {
                 setPageLoading(false)
             })
     }
@@ -279,6 +279,13 @@ function CasePage({route, addNotification, navigation, ...props}) {
         const {quotations = []} = selectedCase;
         const updatedCase = {...selectedCase};
         updatedCase.quotations = [...quotations, newQuotations]
+        setSelectedCase(updatedCase);
+    }
+
+    const removeQuotationFromState = quotationId => {
+        const {quotations = []} = selectedCase;
+        const updatedCase = {...selectedCase};
+        updatedCase.quotations = quotations.filter(item => item._id === quotationId)
         setSelectedCase(updatedCase);
     }
 
@@ -297,6 +304,58 @@ function CasePage({route, addNotification, navigation, ...props}) {
             })
         }, 200)
 
+    }
+
+    const onRemoveQuotations = (quotation) => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals()
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals()
+                        removeQuotation(caseId, quotation)
+                    }}
+                    message={"Are you sure you want to remove this quotation?"}
+                />
+            ),
+            onClose: () => {
+                console.log("Modal closed");
+            },
+        })
+    }
+
+    const removeQuotation = (caseId, quotationId) => {
+        setPageLoading(true)
+        removeQuotationCall(caseId, quotationId)
+            .then(r => {
+                removeQuotationFromState(caseId, quotationId);
+            })
+            .catch(error => {
+                console.log("failed to remove quotation", error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .finally( _ => {
+                setPageLoading(false)
+            })
     }
 
     /**
@@ -337,52 +396,22 @@ function CasePage({route, addNotification, navigation, ...props}) {
                 }
                 case 'Quotation' : {
                     // Generate Actions depending on the quotation that was selected.
-                    if (selectedQuotes.length === 1) {
-                        const quotation = selectedQuotes[0];
-                        // check the status and generate actions depending on status
 
-                        console.log("quotation", quotation);
+                    if (selectedQuoteIds.length === 1) {
+                        const quotation = selectedQuoteIds[0];
+                        const removeQuotations =  <LongPressWithFeedback pressTimer={700} onLongPress={() => onRemoveQuotations(quotation)}>
+                            <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+                        </LongPressWithFeedback>;
 
-                        switch (quotation.status) {
-                            case QUOTATION_STATUS.DRAFT:
-                                floatingAction.push(
-                                    <ActionItem
-                                        title="Open Quotation" icon={<EditIcon/>}
-                                        onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
-                                    />
-                                )
+                        console.log("selected quote id", quotation);
 
-                                break;
-                            case QUOTATION_STATUS.OPEN:
-                                floatingAction.push(
-                                    <ActionItem
-                                        title="Cancel Quotation"
-                                        icon={<EditIcon/>}
-                                        onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
-                                    />
-                                )
-
-                                floatingAction.push(
-                                    <ActionItem
-                                        title="Create Invoice"
-                                        icon={<EditIcon/>}
-                                        onPress={onCreateInvoice(caseId, quotation._id)}
-                                    />
-                                )
-                                break;
-                            case QUOTATION_STATUS.CANCELLED:
-                                break;
-                            case QUOTATION_STATUS.BILLED:
-                                break;
-                        }
-
-                        // const update = <ActionItem title="Create Invoice" icon={<AddIcon/>}
-                        //                            onPress={onCreateInvoice}/>
-
-                    } else if (selectedQuotes.length > 1) {
+                        floatingAction.push(removeQuotations);
+                    } else if (selectedQuoteIds.length > 1) {
                         // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
                         //                                   onPress={onCreateInvoice}/>
                     }
+
+
 
                     title = "QUOTATION ACTIONS"
                     break;
