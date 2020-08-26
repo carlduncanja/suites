@@ -228,6 +228,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
         generateQuotationCall(caseId)
             .then(quotation => {
                 console.log("quotation created", quotation);
+                addQuotationToCaseState(quotation);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -272,6 +273,13 @@ function CasePage({route, addNotification, navigation, ...props}) {
             .finally( _ => {
                 setPageLoading(false)
             })
+    }
+
+    const addQuotationToCaseState = newQuotations => {
+        const {quotations = []} = selectedCase;
+        const updatedCase = {...selectedCase};
+        updatedCase.quotations = [...quotations, newQuotations]
+        setSelectedCase(updatedCase);
     }
 
     const openAddItem = (itemToAdd) => {
