@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView, Text} from "react-native";
 import Table from '../../../common/Table/Table';
-import SvgIcon from '../../../../../assets/SvgIcon'
 import {useModal, withModal} from 'react-native-modalfy';
-import {formatDate, currencyFormatter, transformToSentence} from '../../../../utils/formatter';
-import Item from '../../../common/Table/Item';
+import {formatDate, currencyFormatter} from '../../../../utils/formatter';
 import ReportPreview from '../../Reports/ReportPreview';
+import ListItem from "../../../common/List/ListItem";
 
 
 const reportTestData = {
@@ -77,7 +76,7 @@ const reportTestData = {
                 unitPrice: 500.00
             }
         ]
-    } 
+    }
 }
 
 const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
@@ -95,17 +94,9 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
             alignment: "flex-start"
         },
         {
-            name: "Status",
-            alignment: "flex-start"
-        },
-        {
             name: "Value",
             alignment: "center"
-        },
-        // {
-        //     name: "Actions",
-        //     alignment: "flex-end"
-        // }
+        }
     ]
 
     const openModal = (item) => () => {
@@ -120,26 +111,18 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     }
 
     const listItem = (item) => {
-
-        const {quotationNumber = "", amountDue = 0, dateGenerated = ""} = item
+        const {quotationNumber = "", amountDue = 0, createdAt = ""} = item
         return (
-
             <>
                 <View style={styles.item}>
                     <Text style={[styles.itemText]}>{quotationNumber}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'flex-start'}]}>
-                    <Text style={styles.itemText}>{formatDate(dateGenerated, 'DD/MM/YYYY')}</Text>
-                </View>
-                <View style={[styles.item, {alignItems: 'flex-start'}]}>
-                    <Text style={styles.itemText}>{transformToSentence(item.status)}</Text>
+                    <Text style={styles.itemText}>{formatDate(createdAt, 'DD/MM/YYYY')}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>
                 </View>
-                {/* <View style={[styles.item, {alignItems: 'flex-end', marginRight: 10}]}>
-                    <SvgIcon iconName="actions"/>
-                </View> */}
             </>
 
         )
@@ -179,7 +162,7 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     const renderListFn = (item) => {
         // console.log("List: ", checkBoxList)
         // console.log("ISchecked: ", checkBoxList.includes(item._id))
-        return <Item
+        return <ListItem
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item?._id)}
             onCheckBoxPress={toggleCheckbox(item)}
