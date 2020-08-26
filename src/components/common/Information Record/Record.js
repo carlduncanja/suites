@@ -7,6 +7,7 @@ import { useTheme } from 'emotion-theming';
 const RecordWrapper = styled.View`
     flex:${ ({flex}) => flex.toString()};
     margin-right: ${ ({theme}) => theme.space['--space-4']};
+
 `;
 const RecordContainer = styled.View`
     display: flex;
@@ -30,8 +31,6 @@ function Record({
     recordValue = '--', 
     titleStyle = "--text-sm-regular",
     valueStyle = "--text-base-regular",
-    valueFontSize = 16, 
-    titleFontSize = 14, 
     titleColor = '--color-gray-600', 
     valueColor = '--color-gray-900',
     flex = 1

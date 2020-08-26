@@ -40,7 +40,10 @@ const HeaderContainer = styled.View`
 
 
 const TextContainer = styled.View`
-    margin-top:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "10px"};
+    flex:1;
+    margin-top:${({ isSpecialHeader, theme }) => !isSpecialHeader ? "0px" : `${theme.space['--space-10']}`};
+    padding-left: ${ ({theme}) => theme.space['--space-14']};
+    // padding-left:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "20px"};
     align-self:${({ isSpecialHeader }) => !isSpecialHeader ? "center" : "baseline"};
     flex-direction: row;
     align-items:${({ isSpecialHeader }) => !isSpecialHeader ? "baseline" : "center"};

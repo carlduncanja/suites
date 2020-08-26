@@ -7,8 +7,12 @@ import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import FloatingActionAnnotated from '../common/FloatingAction/FloatingActionAnnotated';
 import SuppliersPurchaseOrder from '../Suppliers/SuppliersPurchaseOrder';
-import Cart from '../../../assets/svg/cart';
+import CreatePurchaseOrderDialog from "../Suppliers/CreatePurchaseOrderDialog";
+import CreateInventoryDialogContainer from "../Inventory/CreateInventoryDialogContainer";
+import DataItem from "../common/List/DataItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
+
+import Cart from '../../../assets/svg/cart';
 import ActionItem from "../common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
 
@@ -19,14 +23,20 @@ import { getSupplierProducts, createPurchaseOrder } from "../../api/network";
 import { addCartItem } from "../../redux/actions/cartActions";
 import {connect} from "react-redux";
 import _ from "lodash";
-import CreatePurchaseOrderDialog from "../Suppliers/CreatePurchaseOrderDialog";
-import CreateInventoryDialogContainer from "../Inventory/CreateInventoryDialogContainer";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import Footer from "../common/Page/Footer";
 
 
-const SupplierProductsTab = ({modal, supplierId, addCartItem, cart, products, onAddProducts}) => {
+const SearchContainer = styled.View`
+    margin-bottom : ${ ({theme}) => theme.space['--space-20']};
+`;
+
+function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, onAddProducts}){
 
     // ######## STATES
     console.log("Productsss: ",products)
+    const theme =  useTheme();
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFetching, setFetching] = useState(false);
@@ -51,7 +61,8 @@ const SupplierProductsTab = ({modal, supplierId, addCartItem, cart, products, on
     const headers = [
         {
             name :"Product",
-            alignment : "flex-start"
+            alignment : "flex-start",
+            flex : 2
         },
         {
             name :"Category",
@@ -242,7 +253,7 @@ const SupplierProductsTab = ({modal, supplierId, addCartItem, cart, products, on
         return <ActionContainer
             floatingActions={[
                 addCart,
-                addProduct
+                // addProduct
             ]}
             title={"SUPPLIER ACTIONS"}
         />
@@ -315,7 +326,12 @@ const SupplierProductsTab = ({modal, supplierId, addCartItem, cart, products, on
     }
 
     const listItemFormat = (item) => <>
-        <View style={styles.item}>
+        <DataItem text = {item?.name} flex = {2} fontStyle = "--text-base-medium" color = "--color-blue-600" />
+        <DataItem text = {item?.type}/>
+        <DataItem text = {item?.sku || 'n/a'} align = "center"/>
+        <DataItem text = {`$ ${currencyFormatter(item.unitPrice)}`} align = "flex-end"/>
+
+        {/* <View style={styles.item}>
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'flex-start'}]}>
@@ -326,7 +342,7 @@ const SupplierProductsTab = ({modal, supplierId, addCartItem, cart, products, on
         </View>
         <View style={[styles.item, {alignItems: 'flex-end'}]}>
             <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
-        </View>
+        </View> */}
     </>;
 
     const renderListFn = (item) =>{
@@ -343,27 +359,36 @@ const SupplierProductsTab = ({modal, supplierId, addCartItem, cart, products, on
     productsToDisplay = productsToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return(
-        <View style={{flex:1}}>
-            <View style={{marginBottom:25}}>
+        <>
+            <SearchContainer theme = {theme}>
                 <Search
                     placeholderText = "Search by Product"
                     changeText = {onSearchChange}
                     inputText = {searchValue}
                 />
-            </View>
+            </SearchContainer>
 
-            <ScrollView>
-                <Table
-                    data = {productsToDisplay}
-                    listItemFormat = {renderListFn}
-                    headers = {headers}
-                    isCheckbox = {true}
-                    toggleHeaderCheckbox = {toggleHeaderCheckbox}
-                    itemSelected = {checkBoxList}
-                />
-            </ScrollView>
+            <Table
+                data = {productsToDisplay}
+                listItemFormat = {renderListFn}
+                headers = {headers}
+                isCheckbox = {true}
+                toggleHeaderCheckbox = {toggleHeaderCheckbox}
+                itemSelected = {checkBoxList}
+            />
+
+            <Footer
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                isNextDisabled = {true}
+                isPreviousDisabled = {true}
+            />
             
-            <View style={styles.footer}>
+            {/* <View style={styles.footer}>
                 <View>
                     <FloatingActionAnnotated
                         toggleActionButton={toggleCartActionButton}
@@ -389,15 +414,15 @@ const SupplierProductsTab = ({modal, supplierId, addCartItem, cart, products, on
                     />
                 </View>
 
-            </View>
-        </View>
+            </View> */}
+        </>
     )
 }
 
 SupplierProductsTab.propTypes = {};
 SupplierProductsTab.defaultProps = {};
 
-const mapStateToProps = (state) => ({ 
+const mapStateToProps = (state) => ({  
     cart: state.cart
 });
  

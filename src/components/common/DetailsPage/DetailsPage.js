@@ -37,7 +37,6 @@ const TabsViewContainer = styled.View`
 `;
 
 
-
 function DetailsPage({
     title = "__",
     hasIcon = null,
@@ -53,8 +52,6 @@ function DetailsPage({
 
     const { pageState } = useContext(PageContext);
     const { isLoading } = pageState;
-
-
 
     return (
         <DetailsPageWrapper theme={theme}>
