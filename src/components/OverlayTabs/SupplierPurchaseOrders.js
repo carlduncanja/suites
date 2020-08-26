@@ -6,9 +6,13 @@ import { formatDate } from "../../utils/formatter";
 import ImageIcon from '../../../assets/svg/imageIcon';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
+import Footer from "../common/Page/Footer";
 
 import { withModal } from 'react-native-modalfy';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import DataItem from "../common/List/DataItem";
+import TouchableDataItem from "../common/List/TouchableDataItem";
+import DataItemWithIcon from "../common/List/DataItemWithIcon";
 
 
 const testData = [
@@ -56,7 +60,7 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
         {
             name :"Invoice No.",
             alignment : "flex-start",
-            flex:1
+            flex:1.2
         },
         {
             name :"Status",
@@ -144,10 +148,32 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
 
         const {invoiceNumber, order, status, orderDate, deliveryDate} = item
         let invoice = invoiceNumber === '' ? 'n/a' : invoiceNumber
-        let statusColor = status === 'Payment Due' ? '#C53030' : '#319795'
+        let invoiceColor = invoiceNumber === '' ? '--color-gray-500' : '--color-blue-600';
+        let statusColor = status === 'Payment Due' ? '--color-red-700' : '--color-teal-600'
         return (
             <>
-                <View style={[styles.item,{flex:1}]}>
+                <TouchableDataItem 
+                    text = {order} 
+                    onPress = {()=>{}} 
+                    fontStyle = "--text-base-medium" 
+                />
+                <DataItemWithIcon 
+                    text = {invoice} 
+                    onPress = {()=>{}} 
+                    fontStyle = "--text-base-medium" 
+                    icon = {invoiceNumber !== "" ? <ImageIcon/> : null} 
+                    color = {invoiceColor}
+                    flex = {1.2}
+                />
+                <DataItem 
+                    text = {status} 
+                    color = {statusColor} 
+                    fontStyle = "--text-sm-medium" 
+                />
+                <DataItem text = {formatDate(orderDate,'DD/MM/YYYY')} />
+                <DataItem text = {formatDate(deliveryDate,'DD/MM/YYYY')} />
+                
+                {/* <View style={[styles.item,{flex:1}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{order}</Text>
                 </View>
                 <View style={[styles.item, {flexDirection:'row',alignItems: 'flex-start', flex:1, marginRight:15}]}>
@@ -162,7 +188,7 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
                 </View>
                 <View style={[styles.item, {alignItems: 'flex-start',flex:1}]}>
                     <Text style={styles.itemText}>{formatDate(deliveryDate,'DD/MM/YYYY')}</Text>
-                </View>
+                </View> */}
             </>
         )
         
@@ -179,7 +205,7 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
     }
 
     return(
-        <View style={{flex:1}}>
+        <>
             <Table
                 data = {testData}
                 listItemFormat = {renderListFn}
@@ -188,7 +214,16 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
                 toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 itemSelected = {checkBoxList}
             />
-            <View style={styles.footer}>
+
+            <Footer
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+            />
+            {/* <View style={styles.footer}>
                 <View style={{alignSelf: "center", marginRight: 10}}>
                     <RoundedPaginator
                         totalPages={totalPages}
@@ -202,8 +237,8 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
                     isDisabled={isFloatingActionDisabled}
                     toggleActionButton={toggleActionButton}
                 />
-            </View>
-        </View>
+            </View>  */}
+        </>
     )
 }
 

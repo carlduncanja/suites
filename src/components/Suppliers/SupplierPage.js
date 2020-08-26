@@ -8,14 +8,18 @@ import BottomSheetContainer from '../common/BottomSheetContainer';
 import { PageContext } from "../../contexts/PageContext";
 import DetailsPage from "../common/DetailsPage/DetailsPage";
 import TabsContainer from "../common/Tabs/TabsContainerComponent";
+import ConfirmationComponent from '../ConfirmationComponent';
 
 
 import { getSupplierById, createPurchaseOrder, getSupplierProducts } from "../../api/network";
 import { colors } from "../../styles";
+import { useModal } from 'react-native-modalfy';
+import { set } from 'numeral';
 
 
 function SupplierPage({ route, navigation }) {
     const { supplier, isOpenEditable, floatingActions } = route.params;
+    const modal = useModal();
     const currentTabs = ["Details", "Products", "Purchase Orders"];
     const {
         supplierNumber = "",
@@ -31,6 +35,7 @@ function SupplierPage({ route, navigation }) {
     const [isFetching, setFetching] = useState(false);
     const [selectedSupplier, setSelectedSupplier] = useState({});
     const [pageState, setPageState] = useState({});
+    const [hasFetchProducts, setHasFetchProducts] = useState(false)
     // const [cartOrderItems, setCartOrderItems] = useState([])
     const [products, setProducts] = useState([])
 
@@ -40,15 +45,14 @@ function SupplierPage({ route, navigation }) {
     // ##### Lifecycle Methods
     useEffect(() => {
         setTimeout(() => {
-            if (!products.length) fetchProducts()
+            if (!products.length){
+                fetchProducts();
+                fetchSupplier(_id);
+            } 
+            
         }, 200)
         // fetchSupplier(_id)
     }, []);
-
-    // useEffect(() => {
-    //     if (!products.length) fetchProducts()
-    //     // setTotalPages(Math.ceil(products.length / recordsPerPage))
-    // }, []);
 
     // ##### Event Handlers
     const setPageLoading = (value) => {
@@ -59,24 +63,12 @@ function SupplierPage({ route, navigation }) {
         })
     }
 
-
-    const fetchProducts = () => {
-        setPageLoading(true);
-        getSupplierProducts(_id, "")
-            .then(productsData => {
-                const { data = [], pages = 0 } = productsData
-                setProducts(data)
-                // console.log("Products data: ", data)
-                // setTotalPages(Math.ceil(data.length / recordsPerPage))
-            })
-            .catch(error => {
-                console.log("Failed to get products", error)
-                //TODO handle error cases.
-            })
-            .finally(_ => {
-                setPageLoading(false);
-            })
-    };
+    const onCancelErrorScreen = () =>{
+        modal.closeAllModals();
+        setTimeout(()=>{
+            backTapped();
+        },200)
+    }
 
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
@@ -138,28 +130,72 @@ function SupplierPage({ route, navigation }) {
     }
 
     // ##### Helper functions
+    
+    const errorScreen = () => {
+        setTimeout(() => {
+            modal
+                .openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onCancel = {onCancelErrorScreen}
+                            message = "There was an issue performing this action."
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+        }, 100);
+    }
+
+    const fetchProducts = () => {
+        setPageLoading(true);
+
+        getSupplierProducts(_id, "")
+            .then(productsData => {
+                const { data = [], pages = 0 } = productsData
+                setProducts(data)
+                setHasFetchProducts(true)
+            })
+            .catch(error => {
+                console.log("Failed to get products", error)
+                //TODO handle error cases.
+                errorScreen();
+                //CONFIRAMTION SCREEN 
+            })
+            // .finally(_ => {
+            //     setPageLoading(false);
+            // })
+    };
 
     const fetchSupplier = (id) => {
-        setFetching(true);
+        // setFetching(true);
         getSupplierById(id)
             .then(data => {
+                console.log("Data: ", data)
                 setSelectedSupplier(data)
             })
             .catch(error => {
                 console.log("Failed to get supplier", error)
+                if(hasFetchProducts === false){
+                    setTimeout(()=>{modal.closeModals('ConfirmationModal');},100)
+                    errorScreen();
+                }
+                
+                // confirmation screeen 
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setFetching(false)
+                setPageLoading(false)
             })
     };
 
-    const supplierDetails = { supplier, status: '' }
-
+    // const supplierDetails = { supplier, status: '' }
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <SupplierDetailsTab order={supplierDetails} />
+                return <SupplierDetailsTab order={{supplier : selectedSupplier, status: ''}} />
             case "Products":
                 return <SupplierProductsTab
                     floatingActions={floatingActions}
@@ -206,11 +242,7 @@ function SupplierPage({ route, navigation }) {
                     }
                 >
 
-
                     {getTabContent(currentTab)}
-
-
-
 
                 </DetailsPage>
             </PageContext.Provider>

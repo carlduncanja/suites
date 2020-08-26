@@ -13,6 +13,8 @@ import NavPage from '../components/common/Page/NavPage';
 import ConfirmationComponent from "../components/ConfirmationComponent";
 import ArchiveIcon from "../../assets/svg/archiveIcon";
 import AddIcon from "../../assets/svg/addIcon";
+import RightBorderDataItem from '../components/common/List/RightBorderDataItem';
+import DataItem from '../components/common/List/DataItem';
 
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
 
@@ -29,23 +31,23 @@ import SuppliersBottomSheet from '../components/Suppliers/SupplierPage';
 import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplierDialogContainer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Button from '../components/common/OverlayButtons/OverlayButton';
+import TouchableDataItem from '../components/common/List/TouchableDataItem';
 
 
 const ArchiveButton = styled.TouchableOpacity`
-align-items:center;
-border-width:1px;
-justify-content:center;
-border-color:#A0AEC0;
-width:100px;
-height:30px;
-border-radius:6px;
-
-
+    align-items:center;
+    border-width:1px;
+    justify-content:center;
+    border-color: ${ ({theme}) => theme.colors['--color-gray-500']};
+    width:100px;
+    height:30px;
+    border-radius:6px;
 `;
+
 const ButtonContainer = styled.View`
-width:85%;
-height:100%;
-align-items:flex-end;
+    width:85%;
+    height:100%;
+    align-items:flex-end;
 `;
 
 const Suppliers = (props) => {
@@ -61,12 +63,12 @@ const Suppliers = (props) => {
         },
         {
             name: "Phone",
-            alignment: "center",
+            alignment: "flex-start",
             flex: 1
         },
         {
             name: "Email",
-            alignment: "center",
+            alignment: "flex-start",
             flex: 2
         }
     ];
@@ -245,15 +247,29 @@ const Suppliers = (props) => {
 
         return (
             <>
-                <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
+                <RightBorderDataItem
+                    text = {item.name}
+                    flex = {2}
+                    color = "--color-gray-800"
+                />
+                <TouchableDataItem
+                    text = {item.phone}
+                    onPress = {()=>{}}
+                />
+                <TouchableDataItem
+                    text = {item.email}
+                    onPress = {()=>{}}
+                    flex = {2}
+                />
+                {/* <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
                     <Text numberOfLines={1} style={[styles.itemText, { color: "#323843" }]}>{item.name}</Text>
-                </View>
+                </View> 
                 <View style={[styles.item, { flex: 1, alignItems: 'center' }]}>
                     <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.phone}</Text>
                 </View>
                 <View style={[styles.item, { flex: 2, alignItems: 'center' }]}>
                     <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.email}</Text>
-                </View>
+                </View> */}
             </>
         )
 
@@ -356,8 +372,6 @@ const Suppliers = (props) => {
         height: 100%;
     `;
 
-
-
     return (
 
         <NavPage
@@ -369,9 +383,12 @@ const Suppliers = (props) => {
             routeName={"Suppliers"}
             listData={suppliersToDisplay}
             TopButton={() => {
-                return (<ButtonContainer><ArchiveButton onPress={goToArchives}>
-                    <Text style={{ alignItems: "center", color: "#A0AEC0" }}>View Archive</Text>
-                </ArchiveButton></ButtonContainer>)
+                return (
+                <ButtonContainer>
+                    <ArchiveButton onPress={goToArchives} theme={theme}>
+                        <Text style={{ alignItems: "center", color: "#A0AEC0" }}>View Archive</Text>
+                    </ArchiveButton>
+                </ButtonContainer>)
             }}
 
             listHeaders={listHeaders}
