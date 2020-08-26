@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {
     Consumables,
+    ConsumablesPostEditNurseView,
     Equipment,
     Invoices,
     Quotation,
@@ -247,7 +248,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
     return (
         selectedTab === 'Consumables'
-            ? <Consumables
+            ? <ConsumablesPostEditNurseView
                 headers={headers}
                 allItems={inventoryList}
                 consumables={consumables}
@@ -294,7 +295,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     );
 }
 
-
+ 
 const mapStateToProps = (state) => {
     return {
         isEditMode: state.casePage?.isEdit
