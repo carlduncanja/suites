@@ -21,8 +21,15 @@ import { useTheme } from 'emotion-theming';
 import SchedulePageHeader from '../components/Schedule/SchedulePageHeader';
 import SchedulePageContent from '../components/Schedule/SchedulePageContent';
 
+const ScheduleWrapper = styled.View`
+flex:1;
+background-color:${({ theme }) => theme.colors['--default-neutral-gray']}
+`;
 
-const currentDate = new Date();
+const BodyContainer = styled.View`
+flex:1;
+`
+
 
 const Schedule = (props) => {
     const {
@@ -34,7 +41,7 @@ const Schedule = (props) => {
     const screenDimensions = Dimensions.get('window')
     const theme = useTheme();
 
-
+    const currentDate = new Date();
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialDaysList = getDaysForMonth(currentDate);
     const initialIndex = getSelectedIndex(formatDate(currentDate, "YYYY-MM-DD").toString(), initialDaysList);
@@ -51,10 +58,13 @@ const Schedule = (props) => {
     const [selectedAppointment, setSelectedAppointment] = useState();
     const [sectionListIndex, setSectionListIndex] = useState(initialIndex);
     const [isFetchingAppointment, setFetchingAppointments] = useState(false);
+    const [filteredAppointments, setFilteredAppointments] = useState([]);
 
     //filter state
     const [checkedRadioButton, setcheckedButton] = useState("");
-    const [type, setType] = useState(0);
+    const [showDropDown, setShowDropDown] = useState(false);
+
+    // const [type, setType] = useState(0);
 
     // search states
     const [searchOpen, setSearchOpen] = useState(false);
@@ -65,31 +75,69 @@ const Schedule = (props) => {
         setisExpanded(!isExpanded);
     };
 
+    const showFilterMenu = () => {
+        setShowDropDown(!showDropDown);
+    }
+
     const radioClicked = (item) => {
         console.log("them item clicked", item);
+
         setcheckedButton(item);
-        filterBy(item);
+        // filterBy(item);
 
 
     }
 
-    const filterBy = (category) => {
-        if (category === "Procedure") {
-            setType(1);
-        } else if (category === "Delivery") {
-            setType(2);
-        }
+    // const filterBy = (category) => {
+    //     if (category === "Procedure") {
+    //         setType(1);
+    //     } else if (category === "Delivery") {
+    //         setType(2);
+    //     } else if (category === "Inventory Re-stock") {
+    //         setType(3);
+    //     } else if (category === "Inventory Audit") {
+    //         setType(4);
+    //     } else if (category === "Equipment") {
+    //         setType(5);
+    //     }
 
 
-    }
+    // }
 
-    const fetchAppointments = (query) => {
+    const filter = () => {
         setFetchingAppointments(true);
-        console.log("Type currently has:", query)
-        getAppointments("", "", "", "", query, "")
+
+        getAppointments()
             .then(data => {
-                console.log("appointments", data);
+                //console.log("appointments", data);
+                if (checkedRadioButton === "") {
+                    setAppointments(data);
+                } else {
+                    setAppointments([...data.filter(item => item.type.name === checkedRadioButton)]);
+                }
+            })
+            .catch(error => {
+                console.log("failed to get appointments", error);
+            })
+            .finally(_ => {
+                setFetchingAppointments(false);
+            })
+        // console.log("what is in filtered is", filterd);
+
+
+
+
+
+
+    }
+
+    const fetchAppointments = () => {
+        setFetchingAppointments(true);
+        getAppointments()
+            .then(data => {
+                //console.log("appointments", data);
                 setAppointments(data);
+
             })
             .catch(error => {
                 console.log("failed to get appointments", error);
@@ -110,25 +158,21 @@ const Schedule = (props) => {
     // });
 
     useEffect(() => {
-        if (!appointments.length) {
-            setFetchingAppointments(true);
+        // console.log("filtered appointments state has:", filteredAppointments);
+        console.log("what is in appointment state?", appointments);
 
-            getAppointments()
-                .then(data => {
-                    console.log("appointments", data);
-                    setAppointments(data);
-                })
-                .catch(error => {
-                    console.log("failed to get appointments", error);
-                })
-                .finally(_ => {
-                    setFetchingAppointments(false)
-                })
 
-        } else {
-            fetchAppointments(type);
+        filter();
+
+
+    }, [checkedRadioButton]);
+
+    useEffect(() => {
+        if (showDropDown === false) {
+            setcheckedButton("");
+
         }
-    }, [type]);
+    }, [showDropDown])
 
     //########### Functions
     // const onChange = (dimensions) => {
@@ -205,7 +249,7 @@ const Schedule = (props) => {
     `
 
     return (
-        <View style={styles.container}>
+        <ScheduleWrapper theme={theme}>
             <Animated.View style={styles.scheduleContainer}>
 
                 <ScheduleSearchContainer
@@ -217,10 +261,12 @@ const Schedule = (props) => {
                     onSearchClose={closeSearch}
                 />
 
-                <View style={{ flex: 1 }}>
+                <BodyContainer >
 
                     <SchedulePageHeader
                         Expanded={isExpanded}
+                        showDropDown={showDropDown}
+                        showFilterMenu={showFilterMenu}
                         checkedRadioButton={checkedRadioButton}
                         onradioClick={radioClicked}
                         searchButtonPress={searchPress}
@@ -300,9 +346,9 @@ const Schedule = (props) => {
                                 </View>
                         } 
                     </View> */}
-                </View>
+                </BodyContainer>
             </Animated.View>
-        </View>
+        </ScheduleWrapper>
 
     )
 };

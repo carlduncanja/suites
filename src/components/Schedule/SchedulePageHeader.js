@@ -116,6 +116,8 @@ justify-content:center
 
 function SchedulePageHeader({
     Expanded = false,
+    showDropDown = false,
+    showFilterMenu = () => { },
     checkedRadioButton = "",
     onradioClick = () => { },
     searchButtonPress = () => { },
@@ -152,7 +154,7 @@ function SchedulePageHeader({
 
 
     const [state] = useContext(SuitesContext);
-    const [showDropDown, setShowDropDown] = useState(false);
+
 
 
     const theme = useTheme();
@@ -167,7 +169,7 @@ function SchedulePageHeader({
 
                 {options.map((item, index) => {
                     return (<PopupContainer>
-                        <RadioContainer theme={theme} checkedButton={checkedRadioButton} name={item.name}>
+                        <RadioContainer key={index} theme={theme} checkedButton={checkedRadioButton} name={item.name}>
                             <RadioButton
                                 value={item.name}
                                 status={checkedRadioButton === item.name ? 'checked' : 'unchecked'}
@@ -176,7 +178,7 @@ function SchedulePageHeader({
                             />
 
                         </RadioContainer>
-                        <OptionContainer key={index} item={item}>
+                        <OptionContainer item={item}>
                             <Text style={{ color: "white", fontSize: 15 }}>{item.name}</Text>
                         </OptionContainer>
                     </PopupContainer>
@@ -228,7 +230,7 @@ function SchedulePageHeader({
                                 />
                             </ExpandButton>
                         </ExpandButtonWrapper>
-                        <TouchableOpacity onPress={() => { setShowDropDown(!showDropDown) }}>
+                        <TouchableOpacity onPress={showFilterMenu}>
                             <FilterIcon />
 
                         </TouchableOpacity>
