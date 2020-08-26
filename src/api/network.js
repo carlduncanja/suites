@@ -41,7 +41,7 @@ import {
     updatePurchaseOrderStatusEndpoint, logoutEndpoint,
     caseProcedureAppointmentEndpoint,
     archiveSupplierEndpoint,
-    getArchivedSuppliersEndPoint
+    getArchivedSuppliersEndPoint, caseQuotationEndpoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -263,6 +263,13 @@ export const updateCaseQuotationStatus = async (
         .then(handleResponse)
         .catch(handleError);
 };
+
+export const generateQuotationCall = async (caseId) => {
+    return suitesAxiosInstance
+        .post(caseQuotationEndpoint(caseId))
+        .then(handleResponse)
+        .catch(handleError)
+}
 
 export const createInvoiceViaQuotation = async (caseId, quotationId) => {
     return suitesAxiosInstance

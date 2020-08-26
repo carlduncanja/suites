@@ -17,7 +17,7 @@ import ProcedureDisabledIcon from "../../../assets/svg/overlayProcedureDisabled"
 import ChargeSheetSelectedIcon from "../../../assets/svg/overlayChargeSheetSelected";
 import ChargeSheetDisabledIcon from "../../../assets/svg/overlayChargeSheetDisabled";
 import {
-    createInvoiceViaQuotation,
+    createInvoiceViaQuotation, generateQuotationCall,
     getCaseFileById,
     updateCaseQuotationStatus,
     updateChargeSheet
@@ -49,6 +49,8 @@ import styled from "@emotion/native";
 import {PageContext} from "../../contexts/PageContext";
 import {useTheme} from "emotion-theming";
 import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
+import GenerateIcon from "../../../assets/svg/generateIcon";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
 
 const overlayMenu = [
     {
@@ -163,6 +165,32 @@ function CasePage({route, addNotification, navigation, ...props}) {
         setSelectedQuotes(quotes)
     }
 
+    const onGenerateQuotation = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals()
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals()
+                        generateQuotation(caseId);
+                    }}
+                    message="Do you wish to generate a new quotation?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log("Modal closed");
+            },
+        })
+    }
+
+
+
+
     /**
      * Displays floating actions
      */
@@ -188,28 +216,79 @@ function CasePage({route, addNotification, navigation, ...props}) {
             })
             .catch(error => {
                 console.log("Failed to get case", error)
-                Alert.alert(("Failed","Failed to get details for case"))
+                Alert.alert(("Failed", "Failed to get details for case"))
             })
             .finally(_ => {
                 setPageLoading(false)
             })
     };
 
+    const generateQuotation = caseId => {
+        setPageLoading(true)
+        generateQuotationCall(caseId)
+            .then(quotation => {
+                console.log("quotation created", quotation);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                            message="Failed to Generate Quotation?"
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .catch(error => {
+                console.log("failed to create", error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                            message="Failed to Generate Quotation?"
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .finally( _ => {
+                setPageLoading(false)
+            })
+    }
+
     const openAddItem = (itemToAdd) => {
 
         modal.closeModals('ActionContainerModal')
 
-        setTimeout( () => {
-             modal.openModal('OverlayModal', {
+        setTimeout(() => {
+            modal.openModal('OverlayModal', {
 
                 content: <AddNewItem
-                    itemToAdd = {itemToAdd}
+                    itemToAdd={itemToAdd}
                 />,
                 onClose: () => setFloatingAction(false)
 
             })
-        },200)
-       
+        }, 200)
+
     }
 
     /**
@@ -221,14 +300,15 @@ function CasePage({route, addNotification, navigation, ...props}) {
 
         console.log("getFabActions: selected tab", selectedTab);
         console.log("Selected menu: ", selectedMenuItem)
-        
+
         if (selectedMenuItem === "Charge Sheet") {
             switch (selectedTab) {
                 case "Consumables": {
                     const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>}
                                                              onPress={_ => {
                                                              }}/>;
-                    const addNewItem = <ActionItem title={"Add Consumable"} icon={<AddIcon/>} onPress={()=>openAddItem("Consumable")} />;
+                    const addNewItem = <ActionItem title={"Add Consumable"} icon={<AddIcon/>}
+                                                   onPress={() => openAddItem("Consumable")}/>;
                     const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
                                                              onPress={_ => {
                                                              }}/>;
@@ -295,6 +375,18 @@ function CasePage({route, addNotification, navigation, ...props}) {
                         // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
                         //                                   onPress={onCreateInvoice}/>
                     }
+
+                    title = "QUOTATION ACTIONS"
+                    break;
+                }
+                case 'Billing' : {
+                    const addNewItem = <ActionItem
+                        title={"Generate Quotation"}
+                        icon={<GenerateIcon/>}
+                        onPress={() => onGenerateQuotation()}
+                    />;
+
+                    floatingAction.push(addNewItem);
 
                     title = "QUOTATION ACTIONS"
                     break;
@@ -433,7 +525,9 @@ function CasePage({route, addNotification, navigation, ...props}) {
                 <DetailsPage
                     title={name}
                     subTitle={`#${caseNumber}`}
-                    onBackPress={() => {navigation.navigate('CaseFiles')}}
+                    onBackPress={() => {
+                        navigation.navigate('CaseFiles')
+                    }}
                     pageTabs={
                         <TabsContainer
                             tabs={currentTabs}
