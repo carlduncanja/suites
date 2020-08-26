@@ -153,7 +153,7 @@ export const root = {
     "--gradient-color": "linear-gradient(180deg, #99C2E3 0%, #83AED1 100%)",
     // WHITE
     "--default-shade-white": "#FFFFFF",
-    // '--default-neutral-gray' : "FAFAFA",
+    '--default-neutral-gray': "FAFAFA",
   },
   font: {
     // BASE

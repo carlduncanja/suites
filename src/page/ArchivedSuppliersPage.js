@@ -6,13 +6,17 @@ import styled, { css } from '@emotion/native';
 import NavPage from '../components/common/Page/NavPage';
 import { Text, View, StyleSheet } from 'react-native';
 import { withModal, useModal } from 'react-native-modalfy';
+import DataItem from '../components/common/List/DataItem';
 import ActionItem from "../components/common/ActionItem";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import { SetArchivedSuppliers } from "../redux/actions/archivedSupplierActions"
 import { getArchivedSuppliers } from "../api/network";
+import { formatDate, transformToSentence } from "../utils/formatter";
+import RightBorderDataItem from "../components/common/List/RightBorderDataItem";
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from "../helpers/caseFilesHelpers";
 import Button from '../components/common/OverlayButtons/OverlayButton';
 import { connect } from 'react-redux';
+
 
 
 const ArchiveButton = styled.TouchableOpacity`
@@ -72,7 +76,7 @@ function ArchivedSuppliersPage(props) {
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
-    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isNextDisabled, setNextDisabled] = useState(true);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
@@ -192,7 +196,11 @@ function ArchivedSuppliersPage(props) {
 
         return (
             <>
-                <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
+                <RightBorderDataItem text={item.name} fontStyle="--text-sm-medium" flex={2} />
+                <DataItem text={item.phone} fontStyle="--text-sm-medium" flex={1} color={"--color-blue-600"} />
+                <DataItem text={item.email} fontStyle="--text-sm-medium" flex={2} color={"--color-blue-600"} />
+
+                {/* <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
                     <Text numberOfLines={1} style={[styles.itemText, { color: "#323843" }]}>{item.name}</Text>
                 </View>
                 <View style={[styles.item, { flex: 1, alignItems: 'center' }]}>
@@ -200,7 +208,7 @@ function ArchivedSuppliersPage(props) {
                 </View>
                 <View style={[styles.item, { flex: 2, alignItems: 'center' }]}>
                     <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.email}</Text>
-                </View>
+                </View> */}
             </>
         )
 
