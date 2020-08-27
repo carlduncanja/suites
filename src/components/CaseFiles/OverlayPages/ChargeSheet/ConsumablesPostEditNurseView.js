@@ -9,6 +9,10 @@ import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
 import Header from '../../../common/Table/Header';
 import CollapsibleListItem from "../../../common/List/CollapsibleListItem";
 import IconButton from '../../../common/Buttons/IconButton';
+import BrokenLineDivider from '../../../common/BrokenLineDivider';
+import DataItem from '../../../common/List/DataItem';
+import ContentDataItem from '../../../common/List/ContentDataItem';
+import ComparisonDataItem from '../../../common/List/ComparisonDataItem';
 
 import RightArrow from '../../../../../assets/svg/rightArrow';
 import LeftArrow from '../../../../../assets/svg/leftArrow';
@@ -19,9 +23,9 @@ import ActionIcon from "../../../../../assets/svg/dropdownIcon";
 import {currencyFormatter} from '../../../../utils/formatter';
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import DataItem from '../../../common/List/DataItem';
-import ContentDataItem from '../../../common/List/ContentDataItem';
+
 import { PageContext } from '../../../../contexts/PageContext';
+import Data from '../../../common/Table/Data';
 
 
 const headers = [
@@ -65,7 +69,12 @@ const ConsumableText = styled.Text( ({theme}) => ({
     paddingLeft : 14,
 }));  
 
-function Consumables ({headers, consumables = [], caseProceduresFilters = [], caseProcedures = [] ,onConsumablesUpdate, allItems = []}) {
+const IconButtonContainer = styled.View`
+   flex : 0.2;
+`;
+
+
+function ConsumablesPostEditNurseView ({headers, consumables = [], caseProceduresFilters = [], caseProcedures = [] ,onConsumablesUpdate, allItems = []}) {
 
     // console.log("Cae: ", caseProcedures)
     const theme = useTheme();
@@ -107,35 +116,6 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         }
     }
 
-    const onSelectChange = (index) => {
-
-        console.log("Index:", index)
-        if (index === 0) {
-            setSelectedIndex(0)
-            setSelectedOption('All')
-        } else {
-            setSelectedOption(caseProceduresFilters[index])
-            setSelectedIndex(index)
-        }
-    }
-
-    const onQuantityChangePress = (item, index) => (action) => {
-
-        const selectedData = consumables[selectedIndex];
-
-        const updatedObj = {
-            ...item,
-            amount: action === 'add' ? item.amount + 1 : item.amount - 1
-        };
-
-        const updatedData = selectedData.map(item => {
-            return item._id === updatedObj._id
-                ? {...updatedObj}
-                : {...item}
-        })
-
-        onConsumablesUpdate(selectedIndex - 1, updatedData);
-    }
 
     const listItem = ({ name }, onActionPress, isCollapsed, index) => <>
 
@@ -145,31 +125,19 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
             Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
             onPress={onActionPress}
         />  
+    </>
+
+    const changeListItem = ({ name }, onActionPress, isCollapsed, index) => <>
+
+        <DataItem text = {name} flex = {1} color="--color-blue-900" fontStyle = "--text-base-medium"/>
+        <DataItem text = "Last Edited: Jan 12, 2020 @ 12:30pm" flex = {1} color="--color-blue-900" fontStyle = "--text-xs-regular" align="flex-end"/>
+        <IconButtonContainer>
+            <IconButton
+                Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
+                onPress={onActionPress}
+            />  
+        </IconButtonContainer>
         
-        {/* <View style={styles.item}>
-            <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
-        </View>
-        <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{item?.type || 'n/a'}</Text>
-        </View>
-        {
-            isEditMode && selectedOption !== 'All'
-                ? <View style={{flex: 1, alignItems: 'center'}}>
-                    <NumberChangeField
-                        onChangePress={onQuantityChangePress(item, index)}
-                        // onAmountChange={onAmountChange(item, index)}
-                        value={item.amount === 0 ? "" : item.amount.toString()}
-                    />
-                </View>
-
-                : <View style={[styles.item, {alignItems: 'center'}]}>
-                    <Text style={styles.itemText}>{item.amount}</Text>
-                </View>
-
-        }
-        <View style={[styles.item, {alignItems: 'flex-end'}]}>
-            <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
-        </View> */}
     </>
 
     const childViewItem = (item, index) => {
@@ -239,18 +207,32 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
             </>
         )
     }
-    // const renderListFn = (item, index) => {
-    //     return <Item
-    //         hasCheckBox={true}
-    //         isChecked={checkBoxList.includes(item)}
-    //         onCheckBoxPress={toggleCheckbox(item)}
-    //         onItemPress={() => {
-    //         }}
-    //         onPressDisabled={true}
-    //         itemView={listItem(item, index)}
-    //     />
-    // }
 
+    const changeChildViewItem = (item, index) => {
+        const { amount = 0, cost = 0, name = "" } = item
+        return (
+            <>
+                <ContentDataItem
+                    flex = {1}
+                    content = {
+                        <ConsumableTextContainer>
+                            <ItemArrow strokeColor = { theme.colors['--color-gray-600']}/>
+                            <ConsumableText>{name}</ConsumableText>
+                        </ConsumableTextContainer>
+                    }
+                />
+
+                <DataItem text = "n/a" align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                <ComparisonDataItem
+                    prevText = {amount} nextText = {10} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"
+                />
+                <DataItem text = {`$ ${currencyFormatter(cost)}`} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+               
+
+            </>
+        )
+    }
+    
     const renderChildItemView = (item, index) => {
         let { _id } = item
 
@@ -265,15 +247,27 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         )
     };
 
+    const renderChangeChildItemView = (item, index) => {
+        let { _id } = item
+
+        return (
+            <Item
+                itemView = {changeChildViewItem(item, index)}
+                hasCheckBox = {false}
+                isChecked = {variantsCheckboxList.includes(_id)}
+                onCheckBoxPress = {()=>{}}
+                onItemPress = {()=>{}}
+            />
+        )
+    };
+
     const renderCollapsible = (item, index) => {
         
         const { procedure, inventories} = item
         let procedureItem = {
             name : procedure?.name
         };
-        // let procedures = [...caseProcedures]
-        
-        
+
         return (
             <CollapsibleListItem
                 isChecked={checkBoxList.includes(item._id)}
@@ -297,6 +291,37 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         )
     }
 
+    const renderChangeCollapsible = (item, index) => {
+        
+        const { procedure, inventories} = item
+        let procedureItem = {
+            name : procedure?.name
+        };
+
+        return (
+            <CollapsibleListItem
+                isChecked={checkBoxList.includes(item._id)}
+                onCheckBoxPress={ ()=> {}}
+                hasCheckBox={true}
+                onItemPress={ ()=> {}}
+                render={(collapse, isCollapsed) => changeListItem(procedureItem, collapse, isCollapsed, index)}
+                backgroundColor = "--color-gray-200"
+            >
+            <FlatList
+                data={inventories}
+                renderItem={({item, index}) => {
+                    return renderChangeChildItemView(item, index)
+                }}
+                keyExtractor={(item, index) => "" + index}
+                ItemSeparatorComponent={() =>
+                    <View style={{flex: 1, margin: 5, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
+                }
+            />
+
+        </CollapsibleListItem>
+        )
+    }
+    
 
     return (
         <ConsumablesWrapper>
@@ -314,10 +339,12 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                     <Table
                         isCheckbox={true}
                         data={caseProcedures}
-                        listItemFormat={renderCollapsible}
+                        listItemFormat={renderChangeCollapsible}
                         headers={headers}
                         toggleHeaderCheckbox={()=>{}}
                         itemSelected={checkBoxList}
+                        hasBanner = {true}
+                        bannerText = "Find your change submission below"
                     /> 
 
                 </TableContainer> 
@@ -359,59 +386,5 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
     );
 }
 
-export default Consumables;
+export default ConsumablesPostEditNurseView;
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'row',
-        padding: 10,
-        backgroundColor: '#FFFFFF',
-        alignItems: 'center',
-        marginBottom: 10
-    },
-    dataContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: "flex-start",
-        justifyContent: "space-between"
-    },
-    item: {
-        flex: 1,
-    },
-    itemText: {
-        fontSize: 16,
-        color: "#4A5568",
-    },
-    headersContainer: {
-        //flex:1,
-        marginLeft: 10,
-        flexDirection: 'row',
-        //width:'100%'
-    },
-    headerItem: {
-        flex: 1,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-    },
-    headerText: {
-        fontSize: 12,
-        color: '#718096'
-    },
-    editItem: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    editTextBox: {
-        backgroundColor: '#F8FAFB',
-        borderColor: '#CCD6E0',
-        borderWidth: 1,
-        borderRadius: 4,
-        padding: 6,
-        paddingTop: 2,
-        paddingBottom: 2,
-        marginLeft: 10,
-        marginRight: 10
-    },
-})

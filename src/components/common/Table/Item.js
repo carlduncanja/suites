@@ -35,6 +35,7 @@ const ItemView = styled.View`
     flex-direction: row;
     align-items: center;
     border-bottom : 1px solid ${ ({theme}) => theme.colors['--color-gray-300']};
+    margin-left : ${ ({hasCheckBox, theme}) => !hasCheckBox && theme.space['--space-48']};
 `;
 function Item({
         itemView = () => {},
@@ -50,11 +51,15 @@ function Item({
     return (
         <ItemWrapper onPress={onItemPress}>
             <ItemContainer theme = {theme}>
-                <CheckBoxComponent
-                    isCheck={isChecked}
-                    onPress={onCheckBoxPress}
-                />
-                <ItemView theme = {theme}>
+                {
+                    hasCheckBox &&
+                        <CheckBoxComponent
+                            isCheck={isChecked}
+                            onPress={onCheckBoxPress}
+                        />
+                }
+                
+                <ItemView theme = {theme} hasCheckBox = {hasCheckBox}>
                     {itemView}
                 </ItemView>
             </ItemContainer>

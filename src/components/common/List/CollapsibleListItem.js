@@ -30,7 +30,7 @@ const CollapsibleListItemContainer = styled.TouchableOpacity`
     display: flex;
     width: 100%;
     flex-direction: column;
-    borderRadius: ${ ({theme}) => theme.space['--space-8']};
+    border-radius: ${ ({theme}) => theme.space['--space-8']};
     border: 1px solid ${ ({theme}) => theme.colors['--color-gray-300']};
     background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
 `;
@@ -42,8 +42,9 @@ function CollapsibleListItem ({
         onItemPress = () => {},
         childView, 
         render = ()=>{},
-        children = ()=>{}  
-    }) { 
+        children = ()=>{}  ,
+        backgroundColor,
+    }) {  
 
     const [isCollapsed, setCollapsed] = useState(true);
     const theme = useTheme();                   
@@ -63,6 +64,7 @@ function CollapsibleListItem ({
                     collapse = {collapse} 
                     isCollapsed = {isCollapsed}
                     render = {render}
+                    backgroundColor = {backgroundColor}
                 />
                 
                 <CollapsibleListItemChildView
