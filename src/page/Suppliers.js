@@ -37,6 +37,7 @@ import TouchableDataItem from '../components/common/List/TouchableDataItem';
 const ArchiveButton = styled.TouchableOpacity`
     align-items:center;
     border-width:1px;
+    margin-right:5px;
     justify-content:center;
     border-color: ${ ({ theme }) => theme.colors['--color-gray-500']};
     width:100px;

@@ -19,7 +19,7 @@ import ProcedureNavigationStack from "./ProcedureNavigationStack";
 import CaseFileNavigationStack from "./CaseFileNavigationStack";
 import TheatreNavigationStack from "./TheatreNavigationStack";
 import OrderNavigationStack from "./OrderNavigationStack";
-import SupplierNavigationStack from "./SupplierNavigation Stack";
+import SupplierNavigationStack from "./SupplierNavigationStack";
 import StorageNavigationStack from "./StorageNavigationStack";
 import PhysicianNavigationStack from "./PhysiciansNavigationStack";
 import EquipmentNavigationStack from "./EquipmentNavigationStack";

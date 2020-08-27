@@ -100,12 +100,13 @@ const Schedule = (props) => {
     // }
 
     const filter = () => {
-        setFetchingAppointments(true);
+
 
         getAppointments()
             .then(data => {
                 //console.log("appointments", data);
                 if (checkedRadioButton === "") {
+
                     setAppointments(data);
                 } else {
                     setAppointments([...data.filter(item => item.type.name === checkedRadioButton)]);
@@ -126,21 +127,6 @@ const Schedule = (props) => {
 
     }
 
-    const fetchAppointments = () => {
-        setFetchingAppointments(true);
-        getAppointments()
-            .then(data => {
-                //console.log("appointments", data);
-                setAppointments(data);
-
-            })
-            .catch(error => {
-                console.log("failed to get appointments", error);
-            })
-            .finally(_ => {
-                setFetchingAppointments(false);
-            })
-    }
 
     // animated states
 
@@ -155,7 +141,7 @@ const Schedule = (props) => {
     useEffect(() => {
         // console.log("filtered appointments state has:", filteredAppointments);
 
-
+        checkedRadioButton === "" ? setFetchingAppointments(true) : setFetchingAppointments(false);
         filter();
 
 

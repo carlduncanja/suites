@@ -72,14 +72,14 @@ const ExpandButton = styled.View`
 `;
 
 const PopUp = styled.View`
-width:180px;
+width:185px;
 align-self:center;
 align-items:flex-start;
 position:absolute;
-padding:5px;
+padding:12px 8px;
 top:30px;
 left:100px;
-height:175px;
+height:185px;
 background-color:${({ theme }) => theme.colors["--default-shade-white"]};
 z-index:10;
 box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
@@ -97,20 +97,27 @@ margin:2px;
 const RadioContainer = styled.View`
 background-color:${({ checkedButton, name, theme }) => checkedButton === name ? theme.colors["--color-blue-600"] : "white"};
 border-color:${({ theme }) => theme.colors["--color-neutral-gray-300"]};
-border-width:1px;
+border-width:2px;
 width:15px;
 height:15px;
 border-radius:7.5px;
 margin-right:10px;
+
 `;
 
-const OptionContainer = styled.View`
+const OptionContainer = styled.TouchableOpacity`
 background-color:${({ item }) => item.color};
 border-radius:4.6px;
 height:25px;
 margin:1.8px;
 align-items:center;
-justify-content:center
+justify-content:center;
+padding:2px 6px;
+`;
+
+const OptionText = styled.Text`
+color:${({ theme }) => theme.colors["--default-shade-white"]};
+font:${({ theme }) => theme.font["--text-sm-regular"]}
 `;
 
 
@@ -178,8 +185,8 @@ function SchedulePageHeader({
                             />
 
                         </RadioContainer>
-                        <OptionContainer item={item}>
-                            <Text style={{ color: "white", fontSize: 15 }}>{item.name}</Text>
+                        <OptionContainer item={item} onPress={() => onradioClick(item.name)}>
+                            <OptionText theme={theme}>{item.name}</OptionText>
                         </OptionContainer>
                     </PopupContainer>
 
