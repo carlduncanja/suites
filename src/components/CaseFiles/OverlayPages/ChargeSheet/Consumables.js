@@ -121,11 +121,9 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         }
     }
 
-    const onQuantityChangePress = (item, index) => (action) => {
+    const onQuantityChangePress = (item, index, sectionIndex) => (action) => {
 
-        console.log("item update: ", item, index);
-
-        const selectedData = consumables[selectedIndex];
+        const selectedData = caseProcedures[sectionIndex].inventories;
 
         const updatedObj = {
             ...item,
@@ -138,7 +136,7 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                 : {...item}
         })
 
-        onConsumablesUpdate(index, updatedData);
+        onConsumablesUpdate(sectionIndex, updatedData);
     }
 
     const listItem = ({ name }, onActionPress, isCollapsed, index) => <>
@@ -150,7 +148,7 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         />
     </>
 
-    const childViewItem = (item, index) => {
+    const childViewItem = (item, itemIndex, sectionIndex) => {
         const { amount = 0, cost = 0, name = "" , type = ""} = item
 
         return (
@@ -173,7 +171,7 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                         align = "center"
                         content = {
                             <NumberChangeField
-                                onChangePress={onQuantityChangePress(item, index)}
+                                onChangePress={onQuantityChangePress(item, itemIndex, sectionIndex)}
                                 value={amount === 0 ? "" : amount.toString()}
                             />
                         }
@@ -229,12 +227,12 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
     //     />
     // }
 
-    const renderChildItemView = (item, index) => {
+    const renderChildItemView = (item, itemIndex, sectionIndex) => {
         let { _id } = item
 
         return (
             <Item
-                itemView = {childViewItem(item, index)}
+                itemView = {childViewItem(item, itemIndex, sectionIndex)}
                 hasCheckBox = {true}
                 isChecked = {variantsCheckboxList.includes(_id)}
                 onCheckBoxPress = {()=>{}}
@@ -243,7 +241,7 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         )
     };
 
-    const renderCollapsible = (item, index) => {
+    const renderCollapsible = (item, sectionIndex) => {
         const { procedure, inventories} = item
 
         let procedureItem = {
@@ -256,12 +254,12 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                 onCheckBoxPress={ ()=> {}}
                 hasCheckBox={true}
                 onItemPress={ ()=> {}}
-                render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, index)}
+                render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, sectionIndex)}
             >
             <FlatList
                 data={inventories}
                 renderItem={({item, index}) => {
-                    return renderChildItemView(item, index)
+                    return renderChildItemView(item, index, sectionIndex)
                 }}
                 keyExtractor={(item, index) => "" + index}
                 ItemSeparatorComponent={() =>

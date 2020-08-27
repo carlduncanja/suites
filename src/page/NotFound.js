@@ -80,7 +80,7 @@ function NotFound({ addNotification, signOut, route = {} }) {
 
         {/* <Notif notifications={notifs} /> */}
 
-        <Button onPress={toggleConfirmation} title="Toggle Confirmation" />
+        {/* <Button onPress={toggleConfirmation} title="Toggle Confirmation" /> */}
 
         <Button onPress={handleOnLogout} title="LOGOUT" />
       </View>

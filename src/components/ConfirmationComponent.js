@@ -14,7 +14,7 @@ function ConfirmationComponent({
   isError,
   onCancel = () => { },
   onAction = () => { },
-  message = "Are you sure you want to?",
+  message = "There was an issue performing this action.",
   action = "Save",
 }) {
   const theme = useTheme();
@@ -114,17 +114,21 @@ function ConfirmationComponent({
   `;
 
   const IconContainer = styled.View`
-  margin-top:20px;
   align-self:center;
+  margin:15px;
 
   `;
 
-
   const DeciderButtonContainer = styled.TouchableOpacity`
+  height:45%;
+  justifyContent:flex-end;
+  
+  `
+
+  const DeciderButton = styled.View`
   align-self:center;
-  align-items:center;
+  
   border-radius: 10px;
-  margin-top:20px;
   padding:15px;
   background-color:${theme.colors["--color-blue-600"]};
   color:${theme.colors["--default-shade-white"]};
@@ -135,10 +139,11 @@ function ConfirmationComponent({
 
   const AlertText = styled.Text`
     align-self:center;
+    justifyContent:center;
     font-size:18px;
     font-weight:bold;
     color:${theme.colors["--color-gray-800"]};
-    margin-top:25px;
+   
 
   `;
 
@@ -181,10 +186,12 @@ function ConfirmationComponent({
           <IconContainer><TickIcon /></IconContainer>
           <AlertText>Completed Successfully!</AlertText>
           <DeciderButtonContainer onPress={onAction}>
-            <GeneralText style={{ color: theme.colors["--default-shade-white"], alignSelf: "center" }}>
-              CONTINUE
+            <DeciderButton >
+              <GeneralText style={{ color: theme.colors["--default-shade-white"], alignSelf: "center" }}>
+                CONTINUE
            </GeneralText>
 
+            </DeciderButton>
           </DeciderButtonContainer>
 
         </>
@@ -193,12 +200,14 @@ function ConfirmationComponent({
       return (
         <>
           <IconContainer><ErrorIcon /></IconContainer>
-          <AlertText>There was an error performing this action</AlertText>
+          <AlertText>{message}</AlertText>
           <DeciderButtonContainer onPress={onCancel}>
-            <GeneralText style={{ color: theme.colors["--default-shade-white"], alignSelf: "center" }}>
-              CLOSE
+            <DeciderButton >
+              <GeneralText style={{ color: theme.colors["--default-shade-white"], alignSelf: "center" }}>
+                CLOSE
          </GeneralText>
 
+            </DeciderButton>
           </DeciderButtonContainer>
 
         </>
