@@ -17,6 +17,7 @@ import IconButton from '../../../common/Buttons/IconButton';
 import RightArrow from '../../../../../assets/svg/rightArrow';
 import LeftArrow from '../../../../../assets/svg/leftArrow';
 import {PageContext} from '../../../../contexts/PageContext';
+import PostEditView from '../../OverlayPages/ChargeSheet/PostEditView';
 
 const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices;
 const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation;
@@ -227,7 +228,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
     return (
         selectedTab === 'Consumables' ? (
-            <ConsumablesPostEditNurseView
+            <PostEditView
                 headers={headers}
                 allItems={inventoryList}
                 consumables={consumables}
