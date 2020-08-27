@@ -5,8 +5,8 @@ import Suppliers from "../../../page/Suppliers";
 import SupplierPage from "../../Suppliers/SupplierPage";
 import NotFound from "../../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
-import ArchivedSuppliers from "../../../page/ArchivedSuppliers/ArchivedSuppliersPage";
-import ArchivedSupplier from "../../../page/ArchivedSuppliers/ArchivedSupplier";
+// import ArchivedSuppliers from "../../../page/ArchivedSuppliers/ArchivedSuppliersPage";
+// import ArchivedSupplier from "../../../page/ArchivedSuppliers/ArchivedSupplier";
 
 
 const Stack = createStackNavigator();
