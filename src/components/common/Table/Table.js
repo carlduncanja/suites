@@ -27,8 +27,8 @@ const BannerText = styled.Text( ({theme}) => ({
     ...theme.font['--text-sm-medium'],
     color : theme.colors['--default-shade-white'],
 }));
- 
-const Table = (props) => { 
+
+const Table = (props) => {
 
     const {
         data = [],
@@ -39,35 +39,35 @@ const Table = (props) => {
         itemSelected = isCheckbox ? itemSelected : [],
         hasBanner = false,
         bannerText = ""
-       
-    } = props  
+
+    } = props
 
     const theme = useTheme();
     // const toggleHeaderCheckbox = isCheckbox ? toggleHeaderCheckbox : ()=>{};
-    // const itemSelected = isCheckbox ? itemSelected : []; 
-    
+    // const itemSelected = isCheckbox ? itemSelected : [];
+
     const isIndeterminate = itemSelected.length > 0 && itemSelected.length !== data.length;
-    return ( 
+    return (
         <>
-            <Header 
+            <Header
                 headers = {headers}
                 toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 isIndeterminate = {isIndeterminate}
                 checked = {itemSelected.length > 0}
                 isCheckbox = {isCheckbox}
             />
-            
+
             <DividerContainer theme = {theme}>
                 <LineDivider/>
             </DividerContainer>
-            
+
             {
                 hasBanner &&
                 <TableContainerContainer theme = {theme}>
                     <BannerText theme = {theme}>{bannerText}</BannerText>
                 </TableContainerContainer>
             }
-        
+
             <Data
                 listItemFormat = {listItemFormat}
                 data = {data}
@@ -75,7 +75,7 @@ const Table = (props) => {
         </>
     );
 }
- 
+
 export default Table;
 const styles = StyleSheet.create({
     header:{

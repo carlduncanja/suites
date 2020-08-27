@@ -1,37 +1,35 @@
 import React, {Component, useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
-import Checkbox from '../Checkbox/Checkbox';
-import CheckBoxComponent from "../Checkbox";
-
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import {CheckedBox, PartialCheckbox} from '../Checkbox/Checkboxes';
+import Checkbox from '../Checkbox/Checkbox';
+import CheckBoxComponent from '../Checkbox';
+
 import HeaderItem from './HeaderItem';
 
 const HeaderWrapper = styled.View`
-    margin-bottom: ${ ({theme}) => theme.space['--space-13']};
+    margin-bottom: ${({theme}) => theme.space['--space-13']};
 
-`
+`;
 const HeaderContainer = styled.View`
     align-items: flex-start;
     flex-direction:row;
     align-items:center;
     padding-left:1px;
-`
+`;
 
-function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = false, checked=false, isCheckbox=true}){
+function Header({headers = [], toggleHeaderCheckbox = () => {}, isIndeterminate = false, checked = false, isCheckbox = true}) {
+    const [selectedHeader, setSelectedHeader] = useState('');
+    const theme = useTheme();
 
-    const [selectedHeader, setSelectedHeader] = useState("")
-    const theme = useTheme()
-  
-    
-    const onSelectHeader = (name) => {
-        console.log("Header: ", name) 
-        setSelectedHeader(name)
-    }
+    const onSelectHeader = name => {
+        console.log('Header: ', name);
+        setSelectedHeader(name);
+    };
 
     return (
-        <HeaderWrapper theme = {theme}>
+        <HeaderWrapper theme={theme}>
             <HeaderContainer>
                 {
                     isCheckbox &&
@@ -42,17 +40,15 @@ function Header({headers = [], toggleHeaderCheckbox=()=>{}, isIndeterminate = fa
                         />
                 }
 
-                {headers.map((header, index) => {
-                    return (
-                        <HeaderItem 
-                            header={header} 
-                            index={index} 
-                            key={index}
-                            selectedHeader = {selectedHeader} 
-                            onSelectHeader = {onSelectHeader}
-                        />
-                    )}
-                )}
+                {headers.map((header, index) => (
+                    <HeaderItem
+                        header={header}
+                        index={index}
+                        key={index}
+                        selectedHeader={selectedHeader}
+                        onSelectHeader={onSelectHeader}
+                    />
+                ))}
             </HeaderContainer>
         </HeaderWrapper>
     );
