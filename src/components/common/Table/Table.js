@@ -31,7 +31,7 @@ const BannerText = styled.Text( ({theme}) => ({
 const Table = (props) => {
 
     const {
-        data = [],
+        data = [], 
         listItemFormat = ()=>{},
         headers = [],
         isCheckbox = true,

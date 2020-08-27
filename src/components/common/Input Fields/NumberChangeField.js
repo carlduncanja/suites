@@ -5,9 +5,9 @@ import LeftArrow from '../../../../assets/svg/leftArrow';
 import IconButton from '../Buttons/IconButton'
 
 
-const NumberChangeField = ({ onChangePress = () => {}, onAmountChange = () => {}, value=0 }) =>{
+const NumberChangeField = ({ onChangePress = () => {}, onAmountChange = () => {}, value=0, backgroundColor  }) =>{
     return ( 
-
+ 
         <View style={styles.inputWrapper}>
             <View style={{}}>
                 <IconButton
@@ -19,7 +19,7 @@ const NumberChangeField = ({ onChangePress = () => {}, onAmountChange = () => {}
             
 
             <TextInput 
-                style={styles.editTextBox}
+                style={[styles.editTextBox,{backgroundColor : backgroundColor ? backgroundColor : '#F8FAFB'}] }
                 onChangeText = {(value)=>onAmountChange(value)}
                 value = {value}
                 keyboardType = "numeric"
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         // backgroundColor:'red'
     },
     editTextBox:{
-        backgroundColor:'#F8FAFB',
+        // backgroundColor:'#F8FAFB',
         borderColor:'#CCD6E0',
         borderWidth:1,
         borderRadius:4,

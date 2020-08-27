@@ -135,9 +135,11 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
             }
         }
 
+
         billingItem.inventories = inventories.map(item => ({
             _id: item._id,
             inventory: item?.inventory?._id,
+            type: item.inventory?.inventoryGroup?.name || "",
             amount: item.amount,
             name: item.inventory?.name,
             cost: item.inventory?.unitCost || 0,
@@ -168,14 +170,11 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     const handleConsumableUpdate = (index, procedureInventories) => {
         console.log('onConsumablesUpdate', index, procedureInventories);
         const updatedCaseProcedures = [...caseProcedures];
-
-        //
-        // if (updatedCaseProcedures[index]) {
-        updatedCaseProcedures[index].inventories = procedureInventories;
-        // }
-
-        setCaseProcedure(updatedCaseProcedures);
-        setUpdated(true);
+        if (updatedCaseProcedures[index]) {
+            updatedCaseProcedures[index].inventories = procedureInventories;
+            setCaseProcedure(updatedCaseProcedures);
+            setUpdated(true);
+        }
     };
 
     const handleEquipmentUpdate = (index, procedureEquipments) => {
@@ -214,7 +213,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
     const inventories = caseProcedures.map(({inventories}) => inventories.map(item => ({
         ...item,
-        unitPrice: item.cost
+        unitPrice: item.unitCost
     })));
 
     const equipments = caseProcedures.map(({equipments}) => equipments.map(item => ({
@@ -228,6 +227,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
 
     return (
         selectedTab === 'Consumables' ? (
+
             <PostEditView
                 headers={headers}
                 allItems={inventoryList}
@@ -238,6 +238,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                 isEditMode={isEditMode}
                 handleEditDone={handleEditDone}
             />
+
         ) :
             selectedTab === 'Equipment' ? (
                 <ChargesheetEquipment
