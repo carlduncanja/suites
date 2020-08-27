@@ -13,12 +13,12 @@ const HeaderGoupWrapper = styled.View`
 
 const HeaderGroupContainer = styled.View`
     display: flex;
-    padding-top: ${ ({theme, isSelected}) => isSelected ? theme.space['--space-4'] : 0};
-    padding-bottom: ${ ({theme, isSelected}) => isSelected ?  theme.space['--space-4'] : 0};
-    padding-left: ${ ({theme, isSelected}) => isSelected ? theme.space['--space-8'] : 0};
-    padding-right: ${ ({theme, isSelected}) => isSelected ?  theme.space['--space-8'] : 0};
-    background-color: ${ ({theme, isSelected}) => isSelected ?  theme.colors['--color-gray-300'] : null };
-    border-radius : ${ ({isSelected}) => isSelected ?  '12px' : null };
+    padding-top: ${ ({theme, isSelected, hasSort}) => isSelected && hasSort? theme.space['--space-4'] : 0};
+    padding-bottom: ${ ({theme, isSelected, hasSort}) => isSelected && hasSort ?  theme.space['--space-4'] : 0};
+    padding-left: ${ ({theme, isSelected, hasSort}) => isSelected && hasSort ? theme.space['--space-8'] : 0};
+    padding-right: ${ ({theme, isSelected, hasSort}) => isSelected && hasSort ?  theme.space['--space-8'] : 0};
+    background-color: ${ ({theme, isSelected, hasSort}) => isSelected && hasSort ?  theme.colors['--color-gray-300'] : null };
+    border-radius : ${ ({isSelected, hasSort}) => isSelected && hasSort ?  '12px' : null };
     flex-direction : row;
     justify-content: center;
 `;
@@ -29,7 +29,7 @@ const HeaderText = styled.Text( ({theme}) =>({
     paddingRight: 12,
 }))
 
-function HeaderFilterGroup({name = "", isSelected = false}){
+function HeaderFilterGroup({name = "", isSelected = false, hasSort = false}){
 
     const theme = useTheme()
     // console.log("Name: ", name, isSelected)
@@ -37,9 +37,12 @@ function HeaderFilterGroup({name = "", isSelected = false}){
     return (
        name !=="" &&
         <HeaderGoupWrapper>
-            <HeaderGroupContainer theme = {theme} isSelected = {isSelected}>
+            <HeaderGroupContainer theme = {theme} isSelected = {isSelected} hasSort = {hasSort}>
                 <HeaderText theme = {theme}>{name}</HeaderText>
-                <SortFilter isSelected = {isSelected}/>
+                {
+                    hasSort && <SortFilter isSelected = {isSelected}/>
+                }
+                
             </HeaderGroupContainer>
         </HeaderGoupWrapper>
     
