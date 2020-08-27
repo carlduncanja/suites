@@ -13,7 +13,7 @@ const DataItemWrapper = styled.View`
 const DataItemContainer = styled.View` 
     display: flex;
     height:100%; 
-    margin-right: ${ ({theme}) => theme.space['--space-10']};
+    /* margin-right: ${ ({theme}) => theme.space['--space-2']}; */
     justify-content: center;
     align-items: ${ ({align}) => align};
     border-right-width : 1px;

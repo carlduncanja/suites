@@ -44,8 +44,6 @@ import TransferIcon from "../../../assets/svg/transferIcon";
 import ActionCollapseIcon from "../../../assets/svg/actionCollapseIcon";
 
 
-
-
 const listHeaders = [
     {
         name: "Item Name",
@@ -79,6 +77,7 @@ const listHeaders = [
 const LocationsWrapper = styled.View`
     flex:1;
     align-items: center; 
+    /* background-color:yellowgreen; */
 `;
 
 const LocationsContainer = styled.View`
@@ -94,6 +93,18 @@ const LocationText = styled.Text( ({theme, isCollapsed})=> ({
     ...theme.font['--text-base-regular'],
     color :  isCollapsed === false ? theme.colors['--color-gray-500'] : theme.colors['--color-gray-700'],
 }));
+
+const ChildItemNameContainer = styled.View`
+    width : 100%;
+    background-color : yellow;
+    flex-direction : row;
+`;
+
+const ChildItemName = styled.Text( ({theme}) => ({
+    font : theme.font['--text-sm-medium'],
+    color : theme.colors['--color-blue-500'],
+}));
+ 
 
 const shadows = [
     {
@@ -404,7 +415,6 @@ function Inventory(props) {
             }
             <DataItem text = {numberFormatter(stock)} color="--color-gray-700" fontStyle = "--text-base-regular" align="center"/>
             <ContentDataItem 
-                flex = {1}
                 align = "center"
                 content = {
                     <LevelIndicator
@@ -434,23 +444,32 @@ function Inventory(props) {
                 />  
                 }
             />
-            
-
-            {/* <View style={[styles.item, {justifyContent: "center"}]}> */}
-                
-            {/* </View> */}
+        
     </>;
 
-    const storageItemView = ({itemName, stock, levels, locations}, onActionPress) => <View
-        style={{flexDirection: 'row', alignItems: 'center'}}>
+    const storageItemView = ({itemName, stock, levels, locations}, onActionPress) => 
+    <>
 
-        <View style={[styles.item, {justifyContent: 'flex-start', flex: 1.5}]}>
-            <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
-            <Text style={{color: "#3182CE", fontSize: 16, marginLeft: 10}}>
-                {itemName}
-            </Text>
-        </View>
-        <View style={[
+        <RightBorderDataItem text = {itemName} flex = {1.5} color="--color-blue-600" fontStyle = "--text-sm-medium"/>
+        <DataItem text = {numberFormatter(stock)} color="--color-gray-700" fontStyle = "--text-base-regular" align="center"/>
+        <ContentDataItem 
+            flex = {1}
+            align = "center"
+            content = {
+                <LevelIndicator
+                    max={levels.max}
+                    min={0}
+                    level={stock}
+                    ideal={levels.ideal}
+                    critical={levels.critical}
+                />
+            }
+        />
+        
+        <DataItem text = {locations} color="--color-blue-600" fontStyle = "--text-base-regular" align="center"/>
+        <DataItem flex = {0.4}/>
+        
+        {/* <View style={[
             styles.item, {justifyContent: "center"}
         ]}>
             <Text style={[styles.itemText]}>
@@ -458,7 +477,7 @@ function Inventory(props) {
             </Text>
         </View>
         <View style={[styles.item, {justifyContent: "center"}]}>
-            {/*   LEVELS    */}
+            {/*   LEVELS    *
             <LevelIndicator
                 max={levels.max}
                 min={0}
@@ -477,12 +496,8 @@ function Inventory(props) {
         </View>
         
         <View style={[styles.item, {justifyContent: "center"}]}>
-            {/* <IconButton
-                Icon={<TransferIcon/>}
-                onPress={onActionPress}
-            /> */}
-        </View>
-    </View>;
+        </View> */}
+    </>;
 
     const renderChildItemView = (item, parentItem, onActionPress) => {
         let { _id } = item
