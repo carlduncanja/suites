@@ -48,6 +48,7 @@ export const createInvoice = (id) => (quotationId) => `/cases/${id}/quotations/$
 export const suggestedStartTimeEndpoint = '/cases/appointment/suggestions'
 export const validateCaseProcedureEndpoint = '/cases/appointment/isvalid';
 export const caseQuotationEndpoint = (caseId) => `/cases/${caseId}/quotations`
+export const caseInvoicesEndpoint = (caseId) => `/cases/${caseId}/invoices`
 export const quotationEndpoint = (caseId, quotationId) => `/cases/${caseId}/quotations/${quotationId}`
 export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${caseId}/quotations/${quotationId}/status`
 export const caseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`

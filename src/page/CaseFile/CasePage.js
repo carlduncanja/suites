@@ -17,7 +17,7 @@ import ProcedureDisabledIcon from "../../../assets/svg/overlayProcedureDisabled"
 import ChargeSheetSelectedIcon from "../../../assets/svg/overlayChargeSheetSelected";
 import ChargeSheetDisabledIcon from "../../../assets/svg/overlayChargeSheetDisabled";
 import {
-    createInvoiceViaQuotation, generateQuotationCall,
+    createInvoiceViaQuotation, generateInvoiceCall, generateQuotationCall,
     getCaseFileById, removeQuotationCall,
     updateCaseQuotationStatus,
     updateChargeSheet
@@ -190,6 +190,29 @@ function CasePage({route, addNotification, navigation, ...props}) {
         })
     }
 
+    const onGenerateInvoice = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals()
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals()
+                        generateInvoice(caseId);
+                    }}
+                    message="Do you wish to generate a new Invoice? This will remove Inventory Items from the system."//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log("Modal closed");
+            },
+        })
+    }
+
 
     /**
      * Displays floating actions
@@ -275,10 +298,68 @@ function CasePage({route, addNotification, navigation, ...props}) {
             })
     }
 
+    const generateInvoice = caseId => {
+        setPageLoading(true)
+        generateInvoiceCall(caseId)
+            .then(invoice => {
+                console.log("invoice created", invoice);
+                addInvoiceToCaseState(invoice);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .catch(error => {
+                console.log("failed to create", error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                            message="Failed to Generate Invoices."
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .finally(_ => {
+                setPageLoading(false)
+            })
+    }
+
     const addQuotationToCaseState = newQuotations => {
         const {quotations = []} = selectedCase;
         const updatedCase = {...selectedCase};
         updatedCase.quotations = [...quotations, newQuotations]
+        setSelectedCase(updatedCase);
+    }
+
+    const addInvoiceToCaseState = newInvoices => {
+        const {invoices = []} = selectedCase;
+        const updatedCase = {...selectedCase};
+        updatedCase.invoices = [...invoices, newInvoices]
         setSelectedCase(updatedCase);
     }
 
@@ -417,13 +498,18 @@ function CasePage({route, addNotification, navigation, ...props}) {
                     break;
                 }
                 case 'Billing' : {
-                    const addNewItem = <ActionItem
+                    const generateQuotationAction = <ActionItem
                         title={"Generate Quotation"}
                         icon={<GenerateIcon/>}
                         onPress={() => onGenerateQuotation()}
                     />;
+                    const generateInvoiceAction = <ActionItem
+                        title={"Generate Invoice"}
+                        icon={<GenerateIcon/>}
+                        onPress={() => onGenerateInvoice()}
+                    />;
 
-                    floatingAction.push(addNewItem);
+                    floatingAction.push(generateQuotationAction, generateInvoiceAction);
 
                     title = "QUOTATION ACTIONS"
                     break;
