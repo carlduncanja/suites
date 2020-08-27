@@ -17,14 +17,20 @@ const HeaderItemContainer = styled.View`
 
 function HeaderItem({header, index, selectedHeader = '', onSelectHeader = () => {}}) {
     const theme = useTheme();
-
+ 
     return (
-        <HeaderItemWrapper key={index} onPress={() => onSelectHeader(header.name)} header={header}>
+        <HeaderItemWrapper 
+            key={index} 
+            onPress={() => onSelectHeader(header.name)}
+            header={header} 
+            activeOpacity = { header.hasSort ? 0.5 : 1}
+        >
             <HeaderItemContainer header={header}>
 
                 <HeaderFilterGroup
                     name={header.name}
                     isSelected={header.name === selectedHeader}
+                    hasSort = {header.hasSort}
                 />
 
             </HeaderItemContainer>

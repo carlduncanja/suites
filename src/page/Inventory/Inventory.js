@@ -12,7 +12,10 @@ import CreateInventoryGroupDialogContainer from '../../components/Inventory/Crea
 import NavPage  from "../../components/common/Page/NavPage";
 import Item from '../../components/common/Table/Item';
 import DataItem from '../../components/common/List/DataItem';
+import RightBorderDataItem from '../../components/common/List/RightBorderDataItem';
+import ContentDataItem from '../../components/common/List/ContentDataItem';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
+import MultipleShadowsContainer from '../../components/common/MultipleShadowContainer';
 
 import CollapsedIcon from "../../../assets/svg/closeArrow";
 import ActionIcon from "../../../assets/svg/dropdownIcon";
@@ -31,6 +34,7 @@ import { useTheme } from 'emotion-theming';
 import _ from "lodash";
 
 
+
 import InventoryBottomSheetContainer from "../../components/Inventory/InventoryBottomSheetContainer";
 import RoundedPaginator from "../../components/common/Paginators/RoundedPaginator";
 import FloatingActionButton from "../../components/common/FloatingAction/FloatingActionButton";
@@ -40,52 +44,82 @@ import TransferIcon from "../../../assets/svg/transferIcon";
 import ActionCollapseIcon from "../../../assets/svg/actionCollapseIcon";
 
 
-
-
 const listHeaders = [
     {
         name: "Item Name",
         alignment: "flex-start",
-        flex: 1.5
+        flex: 1.5,
+        hasSort : true
     },
     {
         name: "In Stock",
-        alignment: "center"
+        alignment: "center",
+        flex:1,
+        hasSort : true
     },
     {
         name: "Capacity",
-        alignment: "center"
+        alignment: "center",
+        flex:1,
     },
     {
         name: "Locations",
-        alignment: "center"
+        alignment: "center",
+        flex:1
     },
     {
         name : '',
-        alignment: "center"
+        alignment: "center",
+        flex:0.5
     }
 ];
 
 const LocationsWrapper = styled.View`
     flex:1;
     align-items: center; 
+    /* background-color:yellowgreen; */
 `;
 
 const LocationsContainer = styled.View`
     height : 24px;
     width : 28px;
-    background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
+    background-color : ${ ({theme, isCollapsed}) => isCollapsed === false ?  theme.colors['--color-gray-100']:theme.colors['--default-shade-white']};
     border-radius : 4px;
-    box-shadow : ${ ({theme}) => theme.shadow['--shadow-lg']};
     align-items: center;
     justify-content: center;
 `;
 
-const LocationText = styled.Text( ({theme})=> ({
+const LocationText = styled.Text( ({theme, isCollapsed})=> ({
     ...theme.font['--text-base-regular'],
-    color : theme.colors['--color-gray-700'],
+    color :  isCollapsed === false ? theme.colors['--color-gray-500'] : theme.colors['--color-gray-700'],
 }));
 
+const ChildItemNameContainer = styled.View`
+    width : 100%;
+    background-color : yellow;
+    flex-direction : row;
+`;
+
+const ChildItemName = styled.Text( ({theme}) => ({
+    font : theme.font['--text-sm-medium'],
+    color : theme.colors['--color-blue-500'],
+}));
+ 
+
+const shadows = [
+    {
+        shadowColor: 'black',
+        shadowOffset: {width: 1, height: 0},
+        shadowOpacity : 0.06,
+        shadowRadius : 2
+    },
+    {
+        shadowColor: 'black',
+        shadowOffset: {width: 1, height: 0},
+        shadowOpacity  :0.1,
+        shadowRadius : 3
+    },
+]
 
 function Inventory(props) {
 
@@ -372,11 +406,56 @@ function Inventory(props) {
 
     const inventoryItemView = ({name, stock, locations, levels}, onActionPress, isCollapsed) => 
         <>
+            {
+                isCollapsed ?
+                    <DataItem text = {name} flex = {1.5} color="--color-gray-800" fontStyle = "--text-base-regular"/>
+                    :
+                    <RightBorderDataItem text = {name} flex = {1.5} color="--color-gray-800" fontStyle = "--text-base-regular"/>
 
-            <DataItem text = {name} flex = {1.5} color="--color-gray-800" fontStyle = "--text-base-regular"/>
+            }
             <DataItem text = {numberFormatter(stock)} color="--color-gray-700" fontStyle = "--text-base-regular" align="center"/>
-            <View style={[styles.item, {justifyContent: "center"}]}>
-                {/*   LEVELS    */}
+            <ContentDataItem 
+                align = "center"
+                content = {
+                    <LevelIndicator
+                    max={levels.max}
+                    min={0}
+                    level={stock}
+                    ideal={levels.ideal}
+                    critical={levels.critical}
+                />
+                }
+            />
+            <LocationsWrapper>
+                <MultipleShadowsContainer shadows = {shadows}>
+                    <LocationsContainer theme = {theme} isCollapsed = {isCollapsed}>
+                            <LocationText theme = {theme} isCollapsed = {isCollapsed}>{locations}</LocationText>
+                        </LocationsContainer>
+                </MultipleShadowsContainer>
+            </LocationsWrapper>
+            
+            <ContentDataItem
+                align = "center"
+                flex = {0.5}
+                content = {
+                    <IconButton
+                    Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
+                    onPress={onActionPress}
+                />  
+                }
+            />
+        
+    </>;
+
+    const storageItemView = ({itemName, stock, levels, locations}, onActionPress) => 
+    <>
+
+        <RightBorderDataItem text = {itemName} flex = {1.5} color="--color-blue-600" fontStyle = "--text-sm-medium"/>
+        <DataItem text = {numberFormatter(stock)} color="--color-gray-700" fontStyle = "--text-base-regular" align="center"/>
+        <ContentDataItem 
+            flex = {1}
+            align = "center"
+            content = {
                 <LevelIndicator
                     max={levels.max}
                     min={0}
@@ -384,54 +463,13 @@ function Inventory(props) {
                     ideal={levels.ideal}
                     critical={levels.critical}
                 />
-            </View>
-
-            <LocationsWrapper>
-                <LocationsContainer theme = {theme}>
-                    <LocationText theme = {theme}>{locations}</LocationText>
-                </LocationsContainer>
-            </LocationsWrapper>
-
-            {/* <View style={[styles.item, {justifyContent: 'space-between', flex: 2, ...styles.rowBorderRight}]}>
-                <Text style={{color: "#3182CE", fontSize: 16}}>
-                    {name}
-                </Text>
-            </View> */}
-
-            {/* <View style={[styles.item, {justifyContent: "center"}]}>
-                <Text style={[styles.itemText]}>
-                    {numberFormatter(stock)}
-                </Text>
-            </View> */}
-
-            {/* <View style={[
-                styles.item, {justifyContent: "center"}
-            ]}>
-                <View style={styles.locationBox}>
-                    <Text style={[styles.itemText]}>
-                        {locations}
-                    </Text>
-                </View>
-            </View> */}
-
-            <View style={[styles.item, {justifyContent: "center"}]}>
-                <IconButton
-                    Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
-                    onPress={onActionPress}
-                />  
-            </View>
-    </>;
-
-    const storageItemView = ({itemName, stock, levels, locations}, onActionPress) => <View
-        style={{flexDirection: 'row', alignItems: 'center'}}>
-
-        <View style={[styles.item, {justifyContent: 'flex-start', flex: 1.5}]}>
-            <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
-            <Text style={{color: "#3182CE", fontSize: 16, marginLeft: 10}}>
-                {itemName}
-            </Text>
-        </View>
-        <View style={[
+            }
+        />
+        
+        <DataItem text = {locations} color="--color-blue-600" fontStyle = "--text-base-regular" align="center"/>
+        <DataItem flex = {0.4}/>
+        
+        {/* <View style={[
             styles.item, {justifyContent: "center"}
         ]}>
             <Text style={[styles.itemText]}>
@@ -439,7 +477,7 @@ function Inventory(props) {
             </Text>
         </View>
         <View style={[styles.item, {justifyContent: "center"}]}>
-            {/*   LEVELS    */}
+            {/*   LEVELS    *
             <LevelIndicator
                 max={levels.max}
                 min={0}
@@ -458,12 +496,8 @@ function Inventory(props) {
         </View>
         
         <View style={[styles.item, {justifyContent: "center"}]}>
-            {/* <IconButton
-                Icon={<TransferIcon/>}
-                onPress={onActionPress}
-            /> */}
-        </View>
-    </View>;
+        </View> */}
+    </>;
 
     const renderChildItemView = (item, parentItem, onActionPress) => {
         let { _id } = item

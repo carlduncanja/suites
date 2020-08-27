@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from '@emotion/native';
+import styled, { css } from '@emotion/native'; 
 import { useTheme } from 'emotion-theming';
 import { Text } from 'react-native';
 
