@@ -1,95 +1,103 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {ActivityIndicator, Alert, StyleSheet, Text, View} from "react-native";
-import {colors} from "../../styles";
-import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
-import CaseFileOverlayMenu from "../../components/CaseFiles/CaseFileOverlayMenu";
-import FloatingActionButton from "../../components/common/FloatingAction/FloatingActionButton";
-import {useModal} from "react-native-modalfy";
-import PatientSelectedIcon from "../../../assets/svg/overlayPatientSelected";
-import PatientDisabledIcon from "../../../assets/svg/overlayPatientDisabled";
-import StaffSelectedIcon from "../../../assets/svg/overlayMedicalStaffSelected";
-import StaffDisabledIcon from "../../../assets/svg/overlayMedicalStaffDisabled";
-import MedicalSelectedIcon from "../../../assets/svg/overlayMedicalHistorySelected";
-import MedicalDisabledIcon from "../../../assets/svg/overlayMedicalHistoryDisabled";
-import ProcedureSelectedIcon from "../../../assets/svg/overlayProcedureSelected";
-import ProcedureDisabledIcon from "../../../assets/svg/overlayProcedureDisabled";
-import ChargeSheetSelectedIcon from "../../../assets/svg/overlayChargeSheetSelected";
-import ChargeSheetDisabledIcon from "../../../assets/svg/overlayChargeSheetDisabled";
+import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import {useModal} from 'react-native-modalfy';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import styled from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import {colors} from '../../styles';
+import SlideOverlay from '../../components/common/SlideOverlay/SlideOverlay';
+import CaseFileOverlayMenu from '../../components/CaseFiles/CaseFileOverlayMenu';
+import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
+import PatientSelectedIcon from '../../../assets/svg/overlayPatientSelected';
+import PatientDisabledIcon from '../../../assets/svg/overlayPatientDisabled';
+import StaffSelectedIcon from '../../../assets/svg/overlayMedicalStaffSelected';
+import StaffDisabledIcon from '../../../assets/svg/overlayMedicalStaffDisabled';
+import MedicalSelectedIcon from '../../../assets/svg/overlayMedicalHistorySelected';
+import MedicalDisabledIcon from '../../../assets/svg/overlayMedicalHistoryDisabled';
+import ProcedureSelectedIcon from '../../../assets/svg/overlayProcedureSelected';
+import ProcedureDisabledIcon from '../../../assets/svg/overlayProcedureDisabled';
+import ChargeSheetSelectedIcon from '../../../assets/svg/overlayChargeSheetSelected';
+import ChargeSheetDisabledIcon from '../../../assets/svg/overlayChargeSheetDisabled';
 import {
-    createInvoiceViaQuotation, generateInvoiceCall, generateQuotationCall,
-    getCaseFileById, removeQuotationCall,
+    createInvoiceViaQuotation,
+    generateInvoiceCall,
+    generateQuotationCall,
+    generateDocumentLink,
+    getCaseFileById,
+    removeQuotationCall,
     updateCaseQuotationStatus,
     updateChargeSheet
-} from "../../api/network";
-import ActionItem from "../../components/common/ActionItem";
-import AddIcon from "../../../assets/svg/addIcon";
-import DeleteIcon from "../../../assets/svg/deleteIcon";
-import RemoveIcon from "../../../assets/svg/remove2";
-import {QUOTATION_STATUS} from "../../const";
-import EditIcon from "../../../assets/svg/editIcon";
-import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
+} from '../../api/network';
+import ActionItem from '../../components/common/ActionItem';
+import AddIcon from '../../../assets/svg/addIcon';
+import DeleteIcon from '../../../assets/svg/deleteIcon';
+import RemoveIcon from '../../../assets/svg/remove2';
+import {QUOTATION_STATUS} from '../../const';
+import EditIcon from '../../../assets/svg/editIcon';
+import DownloadIcon from '../../../assets/svg/DownloadIcon';
+import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
 import {
     ChargeSheet,
     MedicalHistory,
     MedicalStaff,
     Patient,
     Procedures
-} from "../../components/CaseFiles/navigation/screens";
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {addNotification} from "../../redux/actions/NotificationActions";
+} from '../../components/CaseFiles/navigation/screens';
+import {addNotification} from '../../redux/actions/NotificationActions';
 import CaseFilesBottomSheetContainer from '../../components/CaseFiles/CaseFilesBottomSheetContainer';
 import CreateProcedureDialogContainer from '../../components/Procedures/CreateProcedureDialogContainer';
-import {setCaseEdit} from "../../redux/actions/casePageActions";
-import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
-import PageHeader from "../../components/common/DetailsPage/PageHeader";
-import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
-import styled from "@emotion/native";
-import {PageContext} from "../../contexts/PageContext";
-import {useTheme} from "emotion-theming";
+import {setCaseEdit} from '../../redux/actions/casePageActions';
+import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
+import PageHeader from '../../components/common/DetailsPage/PageHeader';
+import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
+import {PageContext} from '../../contexts/PageContext';
 import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
-import GenerateIcon from "../../../assets/svg/generateIcon";
-import ConfirmationComponent from "../../components/ConfirmationComponent";
-import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
-import WasteIcon from "../../../assets/svg/wasteIcon";
+import GenerateIcon from '../../../assets/svg/generateIcon';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
+import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
+import WasteIcon from '../../../assets/svg/wasteIcon';
+import {currencyFormatter, formatDate} from '../../utils/formatter';
 
 const overlayMenu = [
     {
-        name: "Patient",
-        overlayTabs: ["Details", "Insurance", "Diagnosis", "Patient Risk"],
+        name: 'Patient',
+        overlayTabs: ['Details', 'Insurance', 'Diagnosis', 'Patient Risk'],
         selectedIcon: <PatientSelectedIcon/>,
         disabledIcon: <PatientDisabledIcon/>
     },
     {
-        name: "Medical Staff",
-        overlayTabs: ["Details"],
+        name: 'Medical Staff',
+        overlayTabs: ['Details'],
         selectedIcon: <StaffSelectedIcon/>,
         disabledIcon: <StaffDisabledIcon/>
     },
     {
-        name: "Medical History",
-        overlayTabs: ["Details", "Family History", "Lifestyle", "Other"],
+        name: 'Medical History',
+        overlayTabs: ['Details', 'Family History', 'Lifestyle', 'Other'],
         selectedIcon: <MedicalSelectedIcon/>,
         disabledIcon: <MedicalDisabledIcon/>
     },
     {
-        name: "Procedures",
-        overlayTabs: ["Details"],
+        name: 'Procedures',
+        overlayTabs: ['Details'],
         selectedIcon: <ProcedureSelectedIcon/>,
         disabledIcon: <ProcedureDisabledIcon/>
     },
     {
-        name: "Charge Sheet",
-        overlayTabs: ["Consumables", "Equipment", "Billing", "Quotation", "Invoices"],
+        name: 'Charge Sheet',
+        overlayTabs: ['Consumables', 'Equipment', 'Billing', 'Quotation', 'Invoices'],
         selectedIcon: <ChargeSheetSelectedIcon/>,
         disabledIcon: <ChargeSheetDisabledIcon/>
     }
-]
+];
 
-const initialMenuItem = overlayMenu[0].name
-const initialCurrentTabs = overlayMenu[0].overlayTabs
-const initialSelectedTab = initialCurrentTabs[0]
+const initialMenuItem = overlayMenu[0].name;
+const initialCurrentTabs = overlayMenu[0].overlayTabs;
+const initialSelectedTab = initialCurrentTabs[0];
 
 function CasePage({route, addNotification, navigation, ...props}) {
     const modal = useModal();
@@ -97,75 +105,74 @@ function CasePage({route, addNotification, navigation, ...props}) {
     const {caseId, isEdit} = route.params;
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
-    const [updateInfo, setUpdateInfo] = useState([])
-    const [selectedCaseId, setSelectedCaseId] = useState("")
-    const [selectedQuoteIds, setSelectedQuoteIds] = useState([])
-
+    const [updateInfo, setUpdateInfo] = useState([]);
+    const [selectedCaseId, setSelectedCaseId] = useState('');
+    const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
 
     // ############### State
 
-    const [selectedTab, setSelectedTab] = useState(initialSelectedTab)
-    const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs)
-    const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem)
+    const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
+    const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs);
+    const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem);
 
-    const [pageState, setPageState] = useState({})
-    const [selectedCase, setSelectedCase] = useState({})
+    const [pageState, setPageState] = useState({});
+    const [selectedCase, setSelectedCase] = useState({});
 
     // ############### Lifecycle Methods
     useEffect(() => {
-        fetchCase(caseId)
+        fetchCase(caseId);
     }, []);
 
     // ############### Event Handlers
-    const handleTabPressChange = (tab) => {
+    const handleTabPressChange = tab => {
         if (pageState.isEdit === false) {
-            setSelectedTab(tab)
+            setSelectedTab(tab);
         }
-    }
+    };
 
-    const handleOverlayMenuPress = (selectedItem) => {
+    const handleOverlayMenuPress = selectedItem => {
         if (pageState.isEditMode) return;
 
-        const selectedMenu = overlayMenu.filter(item => item.name === selectedItem)
-        const menuItem = selectedMenu[0].name
-        const currentTabs = selectedMenu[0].overlayTabs
-        const selectedTab = currentTabs[0]
-        setSelectedMenuItem(menuItem)
-        setCurrentTabs(currentTabs)
-        setSelectedTab(selectedTab)
-    }
+        const selectedMenu = overlayMenu.filter(item => item.name === selectedItem);
+        const menuItem = selectedMenu[0].name;
+        const currentTabs = selectedMenu[0].overlayTabs;
+        const selectedTab = currentTabs[0];
+        setSelectedMenuItem(menuItem);
+        setCurrentTabs(currentTabs);
+        setSelectedTab(selectedTab);
+    };
 
-    const handleEditDone = (data) => {
-        setUpdateInfo(data)
+    const handleEditDone = data => {
+        setUpdateInfo(data);
         // setSelectedCaseId(id)
-    }
+    };
 
-    const setPageLoading = (value) => {
+    const setPageLoading = value => {
         setPageState({
             ...pageState,
             isLoading: value,
             isEdit: false
-        })
-    }
+        });
+    };
 
-    const updateCaseChargeSheet = (updateInfo) => {
+    const updateCaseChargeSheet = updateInfo => {
         updateChargeSheet(caseId, updateInfo)
-            .then((data) => {
-                console.log("Updated Record:", data)
+            .then(data => {
+                console.log('Updated Record:', data);
             })
             .catch(error => {
-                console.log("Failed to update chargesheet", error)
-                Alert.alert("Sorry", "Failed to update case file");
+                console.log('Failed to update chargesheet', error);
+                Alert.alert('Sorry', 'Failed to update case file');
             })
             .finally(_ => {
-                fetchCase(caseId)
-            })
-    }
+                fetchCase(caseId);
+            });
+    };
 
-    const handleQuotes = (quotes) => {
+    const handleQuotes = quotes => {
         // const quoteIds = quotes.map(item => item._id)
-        setSelectedQuoteIds(quotes)
-    }
+        setSelectedQuoteIds(quotes);
+    };
 
     const onGenerateQuotation = () => {
         modal.openModal('ConfirmationModal', {
@@ -174,10 +181,10 @@ function CasePage({route, addNotification, navigation, ...props}) {
                     error={false}//boolean to show whether an error icon or success icon
                     isEditUpdate={true}
                     onCancel={() => {
-                        modal.closeAllModals()
+                        modal.closeAllModals();
                     }}
                     onAction={() => {
-                        modal.closeAllModals()
+                        modal.closeAllModals();
                         generateQuotation(caseId);
                     }}
                     message="Do you wish to generate a new quotation?"//general message you can send to be displayed
@@ -185,10 +192,10 @@ function CasePage({route, addNotification, navigation, ...props}) {
                 />
             ),
             onClose: () => {
-                console.log("Modal closed");
+                console.log('Modal closed');
             },
-        })
-    }
+        });
+    };
 
     const onGenerateInvoice = () => {
         modal.openModal('ConfirmationModal', {
@@ -197,10 +204,10 @@ function CasePage({route, addNotification, navigation, ...props}) {
                     error={false}//boolean to show whether an error icon or success icon
                     isEditUpdate={true}
                     onCancel={() => {
-                        modal.closeAllModals()
+                        modal.closeAllModals();
                     }}
                     onAction={() => {
-                        modal.closeAllModals()
+                        modal.closeAllModals();
                         generateInvoice(caseId);
                     }}
                     message="Do you wish to generate a new Invoice? This will remove Inventory Items from the system."//general message you can send to be displayed
@@ -208,171 +215,168 @@ function CasePage({route, addNotification, navigation, ...props}) {
                 />
             ),
             onClose: () => {
-                console.log("Modal closed");
+                console.log('Modal closed');
             },
-        })
-    }
-
+        });
+    };
 
     /**
      * Displays floating actions
      */
     const toggleActionButton = () => {
-        setFloatingAction(true)
-        modal.openModal("ActionContainerModal",
+        setFloatingAction(true);
+        modal.openModal('ActionContainerModal',
             {
                 actions: getFabActions(),
-                title: "CASE ACTIONS",
+                title: 'CASE ACTIONS',
                 onClose: () => {
-                    setFloatingAction(false)
+                    setFloatingAction(false);
                 }
-            })
-    }
-
+            });
+    };
 
     // ############### Helper Function
-    const fetchCase = (id) => {
+    const fetchCase = id => {
         setPageLoading(true);
         getCaseFileById(id)
             .then(data => {
-                setSelectedCase(data)
+                setSelectedCase(data);
             })
             .catch(error => {
-                console.log("Failed to get case", error)
-                Alert.alert(("Failed", "Failed to get details for case"))
+                console.log('Failed to get case', error);
+                Alert.alert(('Failed', 'Failed to get details for case'));
             })
             .finally(_ => {
-                setPageLoading(false)
-            })
+                setPageLoading(false);
+            });
     };
 
     const generateQuotation = caseId => {
-        setPageLoading(true)
+        setPageLoading(true);
         generateQuotationCall(caseId)
             .then(quotation => {
-                console.log("quotation created", quotation);
+                console.log('quotation created', quotation);
                 addQuotationToCaseState(quotation);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
                             isEditUpdate={false}
                             onCancel={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             onAction={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             message="Failed to Generate Quotation?"
                             action="Ok"
                         />
                     ),
                     onClose: () => {
-                        console.log("Modal closed");
+                        console.log('Modal closed');
                     },
-                })
+                });
             })
             .catch(error => {
-                console.log("failed to create", error);
+                console.log('failed to create', error);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
                             isError={true}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
                             onCancel={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             onAction={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             message="Failed to Generate Quotation?"
                             action="Ok"
                         />
                     ),
                     onClose: () => {
-                        console.log("Modal closed");
+                        console.log('Modal closed');
                     },
-                })
+                });
             })
             .finally(_ => {
-                setPageLoading(false)
-            })
-    }
+                setPageLoading(false);
+            });
+    };
 
     const generateInvoice = caseId => {
-        setPageLoading(true)
+        setPageLoading(true);
         generateInvoiceCall(caseId)
             .then(invoice => {
-                console.log("invoice created", invoice);
+                console.log('invoice created', invoice);
                 addInvoiceToCaseState(invoice);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
                             isEditUpdate={false}
                             onCancel={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             onAction={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             action="Ok"
                         />
                     ),
                     onClose: () => {
-                        console.log("Modal closed");
+                        console.log('Modal closed');
                     },
-                })
+                });
             })
             .catch(error => {
-                console.log("failed to create", error);
+                console.log('failed to create', error);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
                             isError={true}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
                             onCancel={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             onAction={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             message="Failed to Generate Invoices."
                             action="Ok"
                         />
                     ),
                     onClose: () => {
-                        console.log("Modal closed");
+                        console.log('Modal closed');
                     },
-                })
+                });
             })
             .finally(_ => {
-                setPageLoading(false)
-            })
-    }
+                setPageLoading(false);
+            });
+    };
 
     const addQuotationToCaseState = newQuotations => {
         const {quotations = []} = selectedCase;
         const updatedCase = {...selectedCase};
-        updatedCase.quotations = [...quotations, newQuotations]
+        updatedCase.quotations = [...quotations, newQuotations];
         setSelectedCase(updatedCase);
-    }
+    };
 
     const addInvoiceToCaseState = newInvoices => {
         const {invoices = []} = selectedCase;
         const updatedCase = {...selectedCase};
-        updatedCase.invoices = [...invoices, newInvoices]
+        updatedCase.invoices = [...invoices, newInvoices];
         setSelectedCase(updatedCase);
-    }
+    };
 
     const removeQuotationFromState = quotationId => {
         const {quotations = []} = selectedCase;
         const updatedCase = {...selectedCase};
-        updatedCase.quotations = quotations.filter(item => item._id === quotationId)
+        updatedCase.quotations = quotations.filter(item => item._id === quotationId);
         setSelectedCase(updatedCase);
-    }
+    };
 
-    const openAddItem = (itemToAdd) => {
-
-        modal.closeModals('ActionContainerModal')
+    const openAddItem = itemToAdd => {
+        modal.closeModals('ActionContainerModal');
 
         setTimeout(() => {
             modal.openModal('OverlayModal', {
@@ -382,265 +386,497 @@ function CasePage({route, addNotification, navigation, ...props}) {
                 />,
                 onClose: () => setFloatingAction(false)
 
-            })
-        }, 200)
+            });
+        }, 200);
+    };
 
-    }
-
-    const onRemoveQuotations = (quotation) => {
+    const onRemoveQuotations = quotation => {
         modal.openModal('ConfirmationModal', {
             content: (
                 <ConfirmationComponent
                     isEditUpdate={true}
                     onCancel={() => {
-                        modal.closeAllModals()
+                        modal.closeAllModals();
                     }}
                     onAction={() => {
-                        modal.closeAllModals()
-                        removeQuotation(caseId, quotation)
+                        modal.closeAllModals();
+                        removeQuotation(caseId, quotation);
                     }}
-                    message={"Are you sure you want to remove this quotation?"}
+                    message="Are you sure you want to remove this quotation?"
                 />
             ),
             onClose: () => {
-                console.log("Modal closed");
+                console.log('Modal closed');
             },
-        })
-    }
+        });
+    };
 
     const removeQuotation = (caseId, quotationId) => {
-        setPageLoading(true)
+        setPageLoading(true);
         removeQuotationCall(caseId, quotationId)
             .then(r => {
                 removeQuotationFromState(caseId, quotationId);
             })
             .catch(error => {
-                console.log("failed to remove quotation", error);
+                console.log('failed to remove quotation', error);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
                             isError={true}
                             isEditUpdate={false}
                             onCancel={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             onAction={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                         />
                     ),
                     onClose: () => {
-                        console.log("Modal closed");
+                        console.log('Modal closed');
                     },
-                })
+                });
             })
-            .finally( _ => {
-                setPageLoading(false)
-            })
-    }
+            .finally(_ => {
+                setPageLoading(false);
+            });
+    };
 
     /**
      * Get the list of actions based on the current tab and sections
      */
     const getFabActions = () => {
-        let title = "Actions";
-        let floatingAction = [];
+        let title = 'Actions';
+        const floatingAction = [];
 
-        console.log("getFabActions: selected tab", selectedTab);
-        console.log("Selected menu: ", selectedMenuItem)
+        console.log('getFabActions: selected tab', selectedTab);
+        console.log('Selected menu: ', selectedMenuItem);
 
-        if (selectedMenuItem === "Charge Sheet") {
+        if (selectedMenuItem === 'Charge Sheet') {
             switch (selectedTab) {
-                case "Consumables": {
-                    const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>}
-                                                             onPress={_ => {
-                                                             }}/>;
-                    const addNewItem = <ActionItem title={"Add Consumable"} icon={<AddIcon/>}
-                                                   onPress={() => openAddItem("Consumable")}/>;
-                    const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
-                                                             onPress={_ => {
-                                                             }}/>;
-                    floatingAction.push(/*addNewLineItemAction,*/ addNewItem, /*removeLineItemAction*/)
-                    title = "CONSUMABLE'S ACTIONS"
+                case 'Consumables': {
+                    const addNewLineItemAction = (
+                        <ActionItem
+                            title="Update Consumable"
+                            icon={<AddIcon/>}
+                            onPress={_ => {
+                            }}
+                        />
+                    );
+                    const addNewItem = (
+                        <ActionItem
+                            title="Add Consumable"
+                            icon={<AddIcon/>}
+                            onPress={() => openAddItem('Consumable')}
+                        />
+                    );
+                    const removeLineItemAction = (
+                        <ActionItem
+                            title="Remove Consumable"
+                            icon={<DeleteIcon/>}
+                            onPress={_ => {
+                            }}
+                        />
+                    );
+                    floatingAction.push(/*addNewLineItemAction,*/ addNewItem, /*removeLineItemAction*/);
+                    title = "CONSUMABLE'S ACTIONS";
                     break;
                 }
-                case "Equipment": {
-                    const addNewLineItemAction = <ActionItem title={"Update Equipments"} icon={<AddIcon/>}
-                                                             onPress={_ => {
-                                                             }}/>;
-                    const removeLineItemAction = <ActionItem title={"Remove Equipment"} icon={<RemoveIcon/>}
-                                                             onPress={_ => {
-                                                             }}/>;
-                    floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/)
-                    title = "EQUIPMENT ACTIONS"
+                case 'Equipment': {
+                    const addNewLineItemAction = (
+                        <ActionItem
+                            title="Update Equipments"
+                            icon={<AddIcon/>}
+                            onPress={_ => {
+                            }}
+                        />
+                    );
+                    const removeLineItemAction = (
+                        <ActionItem
+                            title="Remove Equipment"
+                            icon={<RemoveIcon/>}
+                            onPress={_ => {
+                            }}
+                        />
+                    );
+                    floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/);
+                    title = 'EQUIPMENT ACTIONS';
                     break;
                 }
-                case 'Quotation' : {
+                case 'Quotation': {
                     // Generate Actions depending on the quotation that was selected.
 
                     if (selectedQuoteIds.length === 1) {
                         const quotation = selectedQuoteIds[0];
-                        const removeQuotations =  <LongPressWithFeedback pressTimer={700} onLongPress={() => onRemoveQuotations(quotation)}>
-                            <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
-                        </LongPressWithFeedback>;
+                        const removeQuotations = (
+                            <LongPressWithFeedback
+                                pressTimer={700}
+                                onLongPress={() => onRemoveQuotations(quotation)}
+                            >
+                                <ActionItem
+                                    title="Hold to Delete"
+                                    icon={<WasteIcon/>}
+                                    onPress={() => {
+                                    }}
+                                    touchable={false}
+                                />
+                            </LongPressWithFeedback>
+                        );
+                        const downloadQuotation = (
+                            <ActionItem
+                                title="Download Quotation"
+                                icon={<DownloadIcon/>}
+                                onPress={() => downloadQuotationDocument(quotation)}
+                            />
+                        );
 
-                        console.log("selected quote id", quotation);
+                        console.log('selected quote id', quotation);
 
                         floatingAction.push(removeQuotations);
+                        floatingAction.push(downloadQuotation);
                     } else if (selectedQuoteIds.length > 1) {
                         // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
                         //                                   onPress={onCreateInvoice}/>
                     }
 
-
-
-                    title = "QUOTATION ACTIONS"
+                    title = 'QUOTATION ACTIONS';
                     break;
                 }
-                case 'Billing' : {
-                    const generateQuotationAction = <ActionItem
-                        title={"Generate Quotation"}
-                        icon={<GenerateIcon/>}
-                        onPress={() => onGenerateQuotation()}
-                    />;
-                    const generateInvoiceAction = <ActionItem
-                        title={"Generate Invoice"}
-                        icon={<GenerateIcon/>}
-                        onPress={() => onGenerateInvoice()}
-                    />;
+                case 'Billing': {
+                    const generateQuotationAction = (
+                        <ActionItem
+                            title="Generate Quotation"
+                            icon={<GenerateIcon/>}
+                            onPress={() => onGenerateQuotation()}
+                        />
+                    );
+                    const generateInvoiceAction = (
+                        <ActionItem
+                            title="Generate Invoice"
+                            icon={<GenerateIcon/>}
+                            onPress={() => onGenerateInvoice()}
+                        />
+                    );
 
                     floatingAction.push(generateQuotationAction, generateInvoiceAction);
 
-                    title = "QUOTATION ACTIONS"
+                    title = 'QUOTATION ACTIONS';
                     break;
                 }
             }
-        } else if (selectedMenuItem === "Procedures") {
+        } else if (selectedMenuItem === 'Procedures') {
             switch (selectedTab) {
-                case "Details" :
-                    const addNewProcedure = <ActionItem title={"Add Appointment"} icon={<AddIcon/>}
-                                                        onPress={openAddProcedure}/>
-                    floatingAction.push(addNewProcedure)
-                    title = "APPOINTMENT ACTIONS"
+                case 'Details':
+                    const addNewProcedure = (
+                        <ActionItem
+                            title="Add Appointment"
+                            icon={<AddIcon/>}
+                            onPress={openAddProcedure}
+                        />
+                    );
+                    floatingAction.push(addNewProcedure);
+                    title = 'APPOINTMENT ACTIONS';
                     break;
             }
         }
 
-
         return <ActionContainer
             floatingActions={floatingAction}
             title={title}
-        />
-
-    }
+        />;
+    };
 
     const onCreateInvoice = (caseId, quotationId) => () => {
-        modal.closeAllModals()
+        modal.closeAllModals();
         createInvoiceViaQuotation(caseId, quotationId)
-            .then((data) => {
-                console.log("Invoice Record:", data)
+            .then(data => {
+                console.log('Invoice Record:', data);
 
-                addNotification("Inventory items have been removed.", "Inventory")
+                addNotification('Inventory items have been removed.', 'Inventory');
 
-                fetchCase(caseId)
+                fetchCase(caseId);
             })
             .catch(error => {
-                console.log("Failed to create invoice", error)
-                Alert.alert("Sorry", 'Failed to generate invoice, please try again');
-            })
-            .finally(_ => {
-                modal.closeAllModals()
-            })
-    }
-
-    const updateQuotationStatus = (caseId, quotationId, status) => () => {
-        updateCaseQuotationStatus(caseId, quotationId, status)
-            .then((data) => {
-                console.log("Invoice Record:", data)
-
-                // update the quotation in state
-                const updatedCase = {...selectedCase}
-                let {quotations} = updatedCase;
-
-                quotations = quotations.map(item => {
-                    return item._id === quotationId
-                        ? {...item, status}
-                        : {...item}
-                })
-
-                updatedCase.quotations = quotations;
-                setSelectedCase(updatedCase);
-
-            })
-            .catch(error => {
-                console.log("Failed to update status", error)
-                Alert.alert("Sorry", "Failed to open quotation, please try again.")
+                console.log('Failed to create invoice', error);
+                Alert.alert('Sorry', 'Failed to generate invoice, please try again');
             })
             .finally(_ => {
                 modal.closeAllModals();
+            });
+    };
+
+    const updateQuotationStatus = (caseId, quotationId, status) => () => {
+        updateCaseQuotationStatus(caseId, quotationId, status)
+            .then(data => {
+                console.log('Invoice Record:', data);
+
+                // update the quotation in state
+                const updatedCase = {...selectedCase};
+                let {quotations} = updatedCase;
+
+                quotations = quotations.map(item => (item._id === quotationId ?
+                    {...item, status} :
+                    {...item}));
+
+                updatedCase.quotations = quotations;
+                setSelectedCase(updatedCase);
             })
-    }
+            .catch(error => {
+                console.log('Failed to update status', error);
+                Alert.alert('Sorry', 'Failed to open quotation, please try again.');
+            })
+            .finally(_ => {
+                modal.closeAllModals();
+            });
+    };
 
     const openAddProcedure = () => {
-        modal.closeModals("ActionContainerModal");
+        modal.closeModals('ActionContainerModal');
 
         // For some reason there has to be a delay between closing a modal and opening another.
         setTimeout(() => {
-            modal.openModal("OverlayModal", {
+            modal.openModal('OverlayModal', {
                 content: (
                     <View/>
                 ),
                 onClose: () => setFloatingAction(false),
             });
         }, 200);
+    };
 
-    }
+    const downloadQuotationDocument = async quotation => {
+        const {quotations, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
+        const {proceduresBillableItems = [], total = 0} = chargeSheet;
+
+        // preparing billing information
+        const LINE_ITEM_TYPES = {
+            DISCOUNT: 'discount',
+            SERVICE: 'service',
+            PROCEDURES: 'procedures',
+            PHYSICIANS: 'physician',
+        };
+
+        const billing = {
+            total,
+            hasDiscount: true,
+            discount: 0.15,
+            procedures: []
+        };
+
+        // todo: eval what's actually needed here
+        for (const proceduresBillableItem of proceduresBillableItems) {
+            const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
+
+            const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {};
+            const caseAppointment = caseProcedure.appointment || {};
+
+            const title = caseAppointment.title ? caseAppointment.title : '';
+
+            const name = `${title} (${formatDate(caseAppointment.startTime, 'MMM D - h:mm a')})`;
+
+            const billingItem = {
+                caseProcedureId,
+                discounts: [],
+                physicians: [],
+                services: [],
+                procedures: [],
+                procedure: {
+                    name: name || proceduresBillableItem.caseProcedureId,
+                    cost: proceduresBillableItem.total
+                },
+            };
+
+            for (const lineItem of lineItems) {
+                switch (lineItem.type) {
+                    case LINE_ITEM_TYPES.PHYSICIANS:
+                        billingItem.physicians.push(lineItem);
+                        break;
+                    case LINE_ITEM_TYPES.SERVICE:
+                        billingItem.services.push(lineItem);
+                        break;
+                    case LINE_ITEM_TYPES.PROCEDURES:
+                        billingItem.procedures.push(lineItem);
+                        break;
+                    case LINE_ITEM_TYPES.DISCOUNT:
+                        billingItem.discounts.push(lineItem);
+                        break;
+                }
+            }
+
+            billingItem.inventories = inventories.map(item => ({
+                _id: item._id,
+                inventory: item?.inventory?._id,
+                amount: item.amount,
+                name: item.inventory?.name,
+                cost: item.inventory?.unitCost || 0,
+            }));
+
+            billingItem.equipments = equipments.map(item => ({
+                _id: item?._id,
+                equipment: item.equipment?._id,
+                amount: item.amount,
+                name: item.equipment?.name,
+                cost: item.equipment?.unitPrice || 0,
+            }));
+
+            billing.procedures.push(billingItem);
+        }
+
+        const {discount = 0, hasDiscount = false, tax = 0} = billing;
+
+        let data = {
+            key: 'suites_quotation_generated',
+            is_pdf: true,
+            from_html: true,
+        };
+        const args = {
+            suites_contact_number: '876-324-9087',
+            suites_email: 'thesuites@gmail.com',
+            suites_website: 'thesuites.com',
+            suites_address_line_1: '12 Ruthven Road',
+            suites_address_line_2: 'Half Way Tree Road',
+            suites_address_line_3: 'Kingston 10'
+        };
+
+        quotations.map(q => {
+            if (q._id === quotation) {
+                const total = hasDiscount ? (q.amountDue - (q.amountDue * discount)) * (1 + tax) : (q.amountDue) * (1 + tax);
+                const formatDiscount = q.amountDue * discount;
+
+                const physiciansArray = [];
+                const proceduresArray = [];
+                const servicesArray = [];
+                let inventoriesArray = [];
+
+                billing.procedures.map(item => {
+                    const {physicians = [], services = [], procedures = [], inventories = []} = item;
+                    physicians.map(physician => {
+                        physiciansArray.push({
+                            name: physician.name || '',
+                            cost: physician.cost || 0
+                        });
+                    });
+                    procedures.map(procedure => {
+                        proceduresArray.push({
+                            name: procedure.name || '',
+                            cost: procedure.cost || 0
+                        });
+                    });
+                    services.map(service => {
+                        servicesArray.push({
+                            name: service.name || '',
+                            cost: service.cost || 0
+                        });
+                    });
+
+                    inventoriesArray = [...inventories];
+                });
+
+                const summarydetails = [...physiciansArray, ...proceduresArray, ...servicesArray];
+                const consumabledetails = [];
+
+                inventoriesArray.map(inventory => {
+                    const {name, cost, amount} = inventory;
+
+                    consumabledetails.push({
+                        name,
+                        quantity: amount,
+                        price: `$${currencyFormatter(cost)}`,
+                        total: `$${currencyFormatter(cost * amount)}`
+                    })
+                });
+
+                args.total = `$${currencyFormatter(total)}`;
+                args.customer_name = q.billingDetails.name;
+                args.customer_address_line_1 = q.billingDetails.address.line1;
+                args.customer_address_line_2 = q.billingDetails.address.line2;
+                args.customer_address_line_3 = q.billingDetails.address.city;
+                args.quotation_number = q.quotationNumber;
+                args.quotation_purpose = 'Medical Supplies';
+                args.date = formatDate(q.dateGenerated, 'DD/MM/YYYY');
+                args.summarydetails = summarydetails;
+                args.consumabledetails = consumabledetails;
+                args.subtotal = `$${currencyFormatter(q.amountDue)}`;
+                args.discount = `-$${currencyFormatter(formatDiscount)}`;
+                args.tax = `${tax * 100}%`;
+            }
+        });
+
+        data = {...data, args};
+
+        // build args to pass to document generation endpoint; pass result of that endpoint to downloadAsync
+        try {
+            const response = await generateDocumentLink(data);
+
+            const fileUrl = response?.url;
+            const filenameParts = fileUrl.split('/');
+            const filename = filenameParts[filenameParts.length - 1];
+
+            FileSystem.downloadAsync(
+                fileUrl,
+                `${FileSystem.cacheDirectory}${filename}`
+            )
+                .then(({uri}) => {
+                    console.info(`download.path::${uri}`);
+
+                    Sharing.shareAsync(uri, {UTI: 'pdf'})
+                        .then(result => console.info('sharing.success', result))
+                        .catch(error => console.error('sharing.error', error));
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+                .finally(_ => modal.closeAllModals());
+        } catch (error) {
+            console.error(error); // todo: show error message
+            modal.closeAllModals();
+        }
+    };
     // ############### Data
 
     const getOverlayContent = () => {
-        const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase
-        const {medicalInfo = {}} = patient
+        const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase;
+        const {medicalInfo = {}} = patient;
 
         switch (selectedMenuItem) {
-            case "Patient" :
+            case 'Patient':
                 return <Patient
                     patient={patient}
                     selectedTab={selectedTab}
-                />
-            case "Medical Staff" :
+                />;
+            case 'Medical Staff':
                 return <MedicalStaff
                     staff={staff}
                     selectedTab={selectedTab}
-                />
-            case "Medical History" :
+                />;
+            case 'Medical History':
                 return <MedicalHistory
                     medicalInfo={medicalInfo}
                     selectedTab={selectedTab}
-                />
-            case "Procedures" :
+                />;
+            case 'Procedures':
                 return <Procedures
                     procedures={caseProcedures}
                     caseId={caseId}
-                />
-            case "Charge Sheet" :
+                />;
+            case 'Charge Sheet':
                 return <ChargeSheet
                     chargeSheet={chargeSheet}
                     procedures={caseProcedures}
                     selectedTab={selectedTab}
                     quotations={quotations}
                     invoices={invoices}
-                    onUpdateChargeSheet={(data) => updateCaseChargeSheet(data)}
+                    onUpdateChargeSheet={data => updateCaseChargeSheet(data)}
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
-                />
-            default :
-                return <View/>
+                />;
+            default:
+                return <View/>;
         }
-
-    }
+    };
 
     const {patient, caseNumber} = selectedCase;
-    const name = patient ? `${patient.firstName} ${patient.surname}` : ""
+    const name = patient ? `${patient.firstName} ${patient.surname}` : '';
 
     return (
         <>
@@ -649,15 +885,15 @@ function CasePage({route, addNotification, navigation, ...props}) {
                     title={name}
                     subTitle={`#${caseNumber}`}
                     onBackPress={() => {
-                        navigation.navigate('CaseFiles')
+                        navigation.navigate('CaseFiles');
                     }}
-                    pageTabs={
+                    pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}
                             selectedTab={selectedTab}
                             onPressChange={handleTabPressChange}
                         />
-                    }
+                    )}
                 >
 
                     <CasePageContent
@@ -668,7 +904,6 @@ function CasePage({route, addNotification, navigation, ...props}) {
                         selectedMenuItem={selectedMenuItem}
                         onOverlayTabPress={handleOverlayMenuPress}
                     />
-
 
                 </DetailsPage>
             </PageContext.Provider>
@@ -684,9 +919,7 @@ const mapDispatchTopProp = dispatch => bindActionCreators({
     setCaseEdit
 }, dispatch);
 
-
 export default connect(null, mapDispatchTopProp)(CasePage);
-
 
 function CasePageContent({
                              overlayContent,
@@ -696,14 +929,13 @@ function CasePageContent({
                              toggleActionButton,
                              actionDisabled
                          }) {
-
     useEffect(() => {
         console.log('Case Page Create');
-    }, [])
+    }, []);
 
     useEffect(() => {
         console.log('Case Page Update');
-    })
+    });
 
     const FooterWrapper = styled.View`
         width: 100%;
@@ -720,7 +952,6 @@ function CasePageContent({
         height: 100%;
         flex-direction : row;
     `;
-
 
     return (
         <>
@@ -741,6 +972,5 @@ function CasePageContent({
                 </FooterContainer>
             </FooterWrapper>
         </>
-    )
-
+    );
 }
