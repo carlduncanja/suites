@@ -11,16 +11,17 @@ const CollapsibleParentListItemWrapper = styled.View`
 `;
 const CollapsibleParentListItemContainer = styled.View`
     flex-direction : row;
-    align-items: center; 
+    align-items: center;  
+    background-color : ${ ({backgroundColor, theme}) => theme.colors[backgroundColor]};
 `;
 
-function CollapsibleListItemParentView ({hasCheckBox = true, isChecked = false, onCheckBoxPress = ()=>{}, collapse = ()=>{}, isCollapsed=false, render = ()=>{}}){
+function CollapsibleListItemParentView ({hasCheckBox = true, isChecked = false, onCheckBoxPress = ()=>{}, collapse = ()=>{}, isCollapsed=false, render = ()=>{}, backgroundColor = 'default-shade-white'}){
     
     const theme = useTheme();
 
     return (
         <CollapsibleParentListItemWrapper>
-            <CollapsibleParentListItemContainer>
+            <CollapsibleParentListItemContainer backgroundColor = {backgroundColor} theme = {theme}>
 
                 { hasCheckBox &&
                 

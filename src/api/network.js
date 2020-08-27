@@ -41,7 +41,7 @@ import {
     updatePurchaseOrderStatusEndpoint, logoutEndpoint,
     caseProcedureAppointmentEndpoint,
     archiveSupplierEndpoint,
-    getArchivedSuppliersEndPoint
+    getArchivedSuppliersEndPoint, caseQuotationEndpoint, quotationEndpoint, caseInvoicesEndpoint
 } from "../const/suitesEndpoints";
 
 // ################# Mock Data
@@ -263,6 +263,27 @@ export const updateCaseQuotationStatus = async (
         .then(handleResponse)
         .catch(handleError);
 };
+
+export const generateQuotationCall = async (caseId) => {
+    return suitesAxiosInstance
+        .post(caseQuotationEndpoint(caseId))
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+export const removeQuotationCall = async (caseId, quotationsId) => {
+    return suitesAxiosInstance
+        .delete(quotationEndpoint(caseId, quotationsId))
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+export const generateInvoiceCall = async (caseId) => {
+    return suitesAxiosInstance
+        .post(caseInvoicesEndpoint(caseId))
+        .then(handleResponse)
+        .catch(handleError)
+}
 
 export const createInvoiceViaQuotation = async (caseId, quotationId) => {
     return suitesAxiosInstance

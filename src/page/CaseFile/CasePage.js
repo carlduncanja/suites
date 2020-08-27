@@ -17,8 +17,8 @@ import ProcedureDisabledIcon from "../../../assets/svg/overlayProcedureDisabled"
 import ChargeSheetSelectedIcon from "../../../assets/svg/overlayChargeSheetSelected";
 import ChargeSheetDisabledIcon from "../../../assets/svg/overlayChargeSheetDisabled";
 import {
-    createInvoiceViaQuotation,
-    getCaseFileById,
+    createInvoiceViaQuotation, generateInvoiceCall, generateQuotationCall,
+    getCaseFileById, removeQuotationCall,
     updateCaseQuotationStatus,
     updateChargeSheet
 } from "../../api/network";
@@ -49,6 +49,10 @@ import styled from "@emotion/native";
 import {PageContext} from "../../contexts/PageContext";
 import {useTheme} from "emotion-theming";
 import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
+import GenerateIcon from "../../../assets/svg/generateIcon";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
+import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
+import WasteIcon from "../../../assets/svg/wasteIcon";
 
 const overlayMenu = [
     {
@@ -95,7 +99,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([])
     const [selectedCaseId, setSelectedCaseId] = useState("")
-    const [selectedQuotes, setSelectedQuotes] = useState([])
+    const [selectedQuoteIds, setSelectedQuoteIds] = useState([])
 
 
     // ############### State
@@ -160,8 +164,55 @@ function CasePage({route, addNotification, navigation, ...props}) {
 
     const handleQuotes = (quotes) => {
         // const quoteIds = quotes.map(item => item._id)
-        setSelectedQuotes(quotes)
+        setSelectedQuoteIds(quotes)
     }
+
+    const onGenerateQuotation = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals()
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals()
+                        generateQuotation(caseId);
+                    }}
+                    message="Do you wish to generate a new quotation?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log("Modal closed");
+            },
+        })
+    }
+
+    const onGenerateInvoice = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals()
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals()
+                        generateInvoice(caseId);
+                    }}
+                    message="Do you wish to generate a new Invoice? This will remove Inventory Items from the system."//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log("Modal closed");
+            },
+        })
+    }
+
 
     /**
      * Displays floating actions
@@ -188,28 +239,204 @@ function CasePage({route, addNotification, navigation, ...props}) {
             })
             .catch(error => {
                 console.log("Failed to get case", error)
-                Alert.alert(("Failed","Failed to get details for case"))
+                Alert.alert(("Failed", "Failed to get details for case"))
             })
             .finally(_ => {
                 setPageLoading(false)
             })
     };
 
+    const generateQuotation = caseId => {
+        setPageLoading(true)
+        generateQuotationCall(caseId)
+            .then(quotation => {
+                console.log("quotation created", quotation);
+                addQuotationToCaseState(quotation);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                            message="Failed to Generate Quotation?"
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .catch(error => {
+                console.log("failed to create", error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                            message="Failed to Generate Quotation?"
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .finally(_ => {
+                setPageLoading(false)
+            })
+    }
+
+    const generateInvoice = caseId => {
+        setPageLoading(true)
+        generateInvoiceCall(caseId)
+            .then(invoice => {
+                console.log("invoice created", invoice);
+                addInvoiceToCaseState(invoice);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .catch(error => {
+                console.log("failed to create", error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                            message="Failed to Generate Invoices."
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .finally(_ => {
+                setPageLoading(false)
+            })
+    }
+
+    const addQuotationToCaseState = newQuotations => {
+        const {quotations = []} = selectedCase;
+        const updatedCase = {...selectedCase};
+        updatedCase.quotations = [...quotations, newQuotations]
+        setSelectedCase(updatedCase);
+    }
+
+    const addInvoiceToCaseState = newInvoices => {
+        const {invoices = []} = selectedCase;
+        const updatedCase = {...selectedCase};
+        updatedCase.invoices = [...invoices, newInvoices]
+        setSelectedCase(updatedCase);
+    }
+
+    const removeQuotationFromState = quotationId => {
+        const {quotations = []} = selectedCase;
+        const updatedCase = {...selectedCase};
+        updatedCase.quotations = quotations.filter(item => item._id === quotationId)
+        setSelectedCase(updatedCase);
+    }
+
     const openAddItem = (itemToAdd) => {
 
         modal.closeModals('ActionContainerModal')
 
-        setTimeout( () => {
-             modal.openModal('OverlayModal', {
+        setTimeout(() => {
+            modal.openModal('OverlayModal', {
 
                 content: <AddNewItem
-                    itemToAdd = {itemToAdd}
+                    itemToAdd={itemToAdd}
                 />,
                 onClose: () => setFloatingAction(false)
 
             })
-        },200)
-       
+        }, 200)
+
+    }
+
+    const onRemoveQuotations = (quotation) => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals()
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals()
+                        removeQuotation(caseId, quotation)
+                    }}
+                    message={"Are you sure you want to remove this quotation?"}
+                />
+            ),
+            onClose: () => {
+                console.log("Modal closed");
+            },
+        })
+    }
+
+    const removeQuotation = (caseId, quotationId) => {
+        setPageLoading(true)
+        removeQuotationCall(caseId, quotationId)
+            .then(r => {
+                removeQuotationFromState(caseId, quotationId);
+            })
+            .catch(error => {
+                console.log("failed to remove quotation", error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals()
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        console.log("Modal closed");
+                    },
+                })
+            })
+            .finally( _ => {
+                setPageLoading(false)
+            })
     }
 
     /**
@@ -221,14 +448,15 @@ function CasePage({route, addNotification, navigation, ...props}) {
 
         console.log("getFabActions: selected tab", selectedTab);
         console.log("Selected menu: ", selectedMenuItem)
-        
+
         if (selectedMenuItem === "Charge Sheet") {
             switch (selectedTab) {
                 case "Consumables": {
                     const addNewLineItemAction = <ActionItem title={"Update Consumable"} icon={<AddIcon/>}
                                                              onPress={_ => {
                                                              }}/>;
-                    const addNewItem = <ActionItem title={"Add Consumable"} icon={<AddIcon/>} onPress={()=>openAddItem("Consumable")} />;
+                    const addNewItem = <ActionItem title={"Add Consumable"} icon={<AddIcon/>}
+                                                   onPress={() => openAddItem("Consumable")}/>;
                     const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
                                                              onPress={_ => {
                                                              }}/>;
@@ -249,52 +477,39 @@ function CasePage({route, addNotification, navigation, ...props}) {
                 }
                 case 'Quotation' : {
                     // Generate Actions depending on the quotation that was selected.
-                    if (selectedQuotes.length === 1) {
-                        const quotation = selectedQuotes[0];
-                        // check the status and generate actions depending on status
 
-                        console.log("quotation", quotation);
+                    if (selectedQuoteIds.length === 1) {
+                        const quotation = selectedQuoteIds[0];
+                        const removeQuotations =  <LongPressWithFeedback pressTimer={700} onLongPress={() => onRemoveQuotations(quotation)}>
+                            <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+                        </LongPressWithFeedback>;
 
-                        switch (quotation.status) {
-                            case QUOTATION_STATUS.DRAFT:
-                                floatingAction.push(
-                                    <ActionItem
-                                        title="Open Quotation" icon={<EditIcon/>}
-                                        onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
-                                    />
-                                )
+                        console.log("selected quote id", quotation);
 
-                                break;
-                            case QUOTATION_STATUS.OPEN:
-                                floatingAction.push(
-                                    <ActionItem
-                                        title="Cancel Quotation"
-                                        icon={<EditIcon/>}
-                                        onPress={updateQuotationStatus(caseId, quotation._id, QUOTATION_STATUS.OPEN)}
-                                    />
-                                )
-
-                                floatingAction.push(
-                                    <ActionItem
-                                        title="Create Invoice"
-                                        icon={<EditIcon/>}
-                                        onPress={onCreateInvoice(caseId, quotation._id)}
-                                    />
-                                )
-                                break;
-                            case QUOTATION_STATUS.CANCELLED:
-                                break;
-                            case QUOTATION_STATUS.BILLED:
-                                break;
-                        }
-
-                        // const update = <ActionItem title="Create Invoice" icon={<AddIcon/>}
-                        //                            onPress={onCreateInvoice}/>
-
-                    } else if (selectedQuotes.length > 1) {
+                        floatingAction.push(removeQuotations);
+                    } else if (selectedQuoteIds.length > 1) {
                         // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
                         //                                   onPress={onCreateInvoice}/>
                     }
+
+
+
+                    title = "QUOTATION ACTIONS"
+                    break;
+                }
+                case 'Billing' : {
+                    const generateQuotationAction = <ActionItem
+                        title={"Generate Quotation"}
+                        icon={<GenerateIcon/>}
+                        onPress={() => onGenerateQuotation()}
+                    />;
+                    const generateInvoiceAction = <ActionItem
+                        title={"Generate Invoice"}
+                        icon={<GenerateIcon/>}
+                        onPress={() => onGenerateInvoice()}
+                    />;
+
+                    floatingAction.push(generateQuotationAction, generateInvoiceAction);
 
                     title = "QUOTATION ACTIONS"
                     break;
@@ -433,7 +648,9 @@ function CasePage({route, addNotification, navigation, ...props}) {
                 <DetailsPage
                     title={name}
                     subTitle={`#${caseNumber}`}
-                    onBackPress={() => {navigation.navigate('CaseFiles')}}
+                    onBackPress={() => {
+                        navigation.navigate('CaseFiles')
+                    }}
                     pageTabs={
                         <TabsContainer
                             tabs={currentTabs}
