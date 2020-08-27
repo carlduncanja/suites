@@ -39,6 +39,12 @@ align-items:flex-end;
 
 `;
 
+const ArchiveButtonText = styled.Text`
+align-items: center; 
+color:${({ theme }) => theme.colors["--default-shade-white"]}; 
+ font:${({ theme }) => theme.font["--text-sm-regular"]}
+`
+
 
 function ArchivedSuppliersPage(props) {
     const { archivedSuppliers = [], SetArchivedSuppliers } = props;
@@ -262,7 +268,7 @@ function ArchivedSuppliersPage(props) {
             listData={suppliersToDisplay}
             TopButton={() => {
                 return (<ButtonContainer><ArchiveButton theme={theme} onPress={backToSuppliers}>
-                    <Text style={{ alignItems: "center", color: "white", fontSize: 14 }}>Close Archive</Text>
+                    <ArchiveButtonText>Close Archive</ArchiveButtonText>
                 </ArchiveButton></ButtonContainer>)
             }}
             listHeaders={listHeaders}

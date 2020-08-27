@@ -1,4 +1,4 @@
-import React,{ useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import Table from '../common/Table/Table';
 import Search from '../common/Search';
@@ -18,10 +18,10 @@ import AddIcon from "../../../assets/svg/addIcon";
 
 import { currencyFormatter } from "../../utils/formatter";
 import { withModal } from 'react-native-modalfy';
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
 import { getSupplierProducts, createPurchaseOrder } from "../../api/network";
 import { addCartItem } from "../../redux/actions/cartActions";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import _ from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -29,17 +29,18 @@ import Footer from "../common/Page/Footer";
 
 
 const SearchContainer = styled.View`
-    margin-bottom : ${ ({theme}) => theme.space['--space-20']};
+    margin-bottom : ${ ({ theme }) => theme.space['--space-20']};
 `;
 
-function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, onAddProducts}){
+function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false }) {
 
     // ######## STATES
-    console.log("Productsss: ",products)
-    const theme =  useTheme();
+    console.log("Productsss: ", products)
+    const theme = useTheme();
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFetching, setFetching] = useState(false);
+    const [hasActionButton, setHasActionButton] = useState(!isArchive);
 
     const recordsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
@@ -60,33 +61,33 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
 
     const headers = [
         {
-            name :"Product",
-            alignment : "flex-start",
-            flex : 2
+            name: "Product",
+            alignment: "flex-start",
+            flex: 2
         },
         {
-            name :"Category",
-            alignment : "flex-start"
+            name: "Category",
+            alignment: "flex-start"
         },
         {
-            name :"SKU",
-            alignment : "center"
+            name: "SKU",
+            alignment: "center"
         },
         {
-            name :"Price",
-            alignment : "flex-end"
+            name: "Price",
+            alignment: "flex-end"
         }
     ]
 
     // ######## LIFECYCLE METHODS
 
-    useEffect(()=>{
-        setTimeout(()=>{
+    useEffect(() => {
+        setTimeout(() => {
             setCartItems(cart)
             // onUpdateItems(cart);
             setTotalPages(Math.ceil(products.length / recordsPerPage))
-        },200) 
-    },[])
+        }, 200)
+    }, [])
 
     // useEffect(() => {
     //     // if (!products.length) fetchProducts()
@@ -95,13 +96,13 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
 
     // ######## EVENT HANDLERS
 
-    const onSearchChange = (input) =>{
+    const onSearchChange = (input) => {
         setSearchValue(input)
     }
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -111,7 +112,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -128,11 +129,11 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         setCheckBoxList(updatedCases);
     }
 
-    const toggleHeaderCheckbox = () =>{
+    const toggleHeaderCheckbox = () => {
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
 
         if (indeterminate) {
-            const selectedAllIds = [...tabDetails.map( item => item )]
+            const selectedAllIds = [...tabDetails.map(item => item)]
             setCheckBoxList(selectedAllIds)
         } else {
             setCheckBoxList([])
@@ -151,21 +152,21 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
             })
     }
 
-    const toggleCartActionButton = () =>{
+    const toggleCartActionButton = () => {
 
-        setTimeout(()=>{
-            modal.openModal('OverlayInfoModal',{
-                overlayContent : <SuppliersPurchaseOrder
-                    details = {cartItems}
-                    onUpdateItems = {onUpdateItems}
-                    onClearPress = {onClearPress}
-                    onListFooterPress = {onListFooterPress}
+        setTimeout(() => {
+            modal.openModal('OverlayInfoModal', {
+                overlayContent: <SuppliersPurchaseOrder
+                    details={cartItems}
+                    onUpdateItems={onUpdateItems}
+                    onClearPress={onClearPress}
+                    onListFooterPress={onListFooterPress}
                 />,
             })
-        },200)
+        }, 200)
     }
 
-    const onClearPress = () =>{
+    const onClearPress = () => {
         // setCartItems([])
         // updateCartItems([])
         addCartItem([])
@@ -175,15 +176,16 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     }
 
     const onUpdateItems = (data) => {
-        const total = data.reduce((acc, curr) => acc + (curr.amount || 0),0)
-        let updatedData = data.map( item => { return {...item, amount : item.amount ? item.amount : 0}
+        const total = data.reduce((acc, curr) => acc + (curr.amount || 0), 0)
+        let updatedData = data.map(item => {
+            return { ...item, amount: item.amount ? item.amount : 0 }
         })
         setCartItems(data)
         addCartItem(data)
         // updateCartItems(data)
         // console.log("Data: ", data)
         // setCartTotal(total)
-        
+
     }
 
     const onListFooterPress = (data) => {
@@ -201,10 +203,10 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
                         onCancel={() => setFloatingAction(false)}
                         onCreated={(fields) => {
                             modal.closeModals('OverlayModal');
-                            setTimeout(()=>{
+                            setTimeout(() => {
                                 onOrderComplete(fields, data)
                                 // onCompleted(fields, data)
-                            },200)
+                            }, 200)
                         }}
                     />,
                     onClose: () => setFloatingAction(false)
@@ -212,20 +214,20 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         }, 200)
     }
 
-    const onOrderComplete = (fields,data) =>{
+    const onOrderComplete = (fields, data) => {
         modal.closeModals('OverlayModal')
 
-        setTimeout(()=>{
+        setTimeout(() => {
             const { name = "", storageLocation = {} } = fields
             const updatedOrders = data
-                    .filter(item => { if(item.amount || item.amount !==0) {return true}})
-                    .map( item => {return { amount: item.amount, productId : item._id }})
+                .filter(item => { if (item.amount || item.amount !== 0) { return true } })
+                .map(item => { return { amount: item.amount, productId: item._id } })
             let newPO = {
-                name : name,
-                storageLocation : storageLocation._id,
-                supplier : supplierId,
-                orders : updatedOrders,
-                orderDate : new Date()
+                name: name,
+                storageLocation: storageLocation._id,
+                supplier: supplierId,
+                orders: updatedOrders,
+                orderDate: new Date()
             }
             createPurchaseOrder(newPO)
                 .then(data => {
@@ -239,17 +241,17 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
                 })
             console.log("Purchase Order: ", newPO)
             // console.log("Cart Items: ", cartOrderItems)
-        },200)
-        
+        }, 200)
+
     }
 
-    
+
 
     // ######## HELPER FUNCTIONS
 
-    const actions = () =>{
-        const addCart = <ActionItem title={"Add to Cart"} icon={<AddIcon/>} onPress={openCartDailog}/>;
-        const addProduct = <ActionItem title={"Add Product"} icon={<AddIcon/>} onPress={openAddProduct}/>;
+    const actions = () => {
+        const addCart = <ActionItem title={"Add to Cart"} icon={<AddIcon />} onPress={openCartDailog} />;
+        const addProduct = <ActionItem title={"Add Product"} icon={<AddIcon />} onPress={openAddProduct} />;
         return <ActionContainer
             floatingActions={[
                 addCart,
@@ -259,20 +261,20 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         />
     }
 
-    const openCartDailog = () => { 
+    const openCartDailog = () => {
 
         let cartArray = []
         let updatedCheck = [...checkBoxList]
-        if(updatedCheck.length === 0){
+        if (updatedCheck.length === 0) {
             cartArray = cartItems
-        }else{
+        } else {
 
             cartItems.map(item => {
-                let isFilterCheck = checkBoxList.filter( checkItem => checkItem._id === item._id)
-                if(isFilterCheck){
+                let isFilterCheck = checkBoxList.filter(checkItem => checkItem._id === item._id)
+                if (isFilterCheck) {
                     cartArray.push(item)
                 }
-                let index = updatedCheck.findIndex( checkItem => checkItem._id === item._id)
+                let index = updatedCheck.findIndex(checkItem => checkItem._id === item._id)
                 updatedCheck = [
                     ...updatedCheck.slice(0, index),
                     ...updatedCheck.slice(index + 1),
@@ -281,7 +283,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
             })
 
         }
-        cartArray = [...cartArray,...updatedCheck]
+        cartArray = [...cartArray, ...updatedCheck]
 
         modal.closeModals('ActionContainerModal')
 
@@ -303,17 +305,17 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
 
     }
 
-    const addItemComplete = (data) =>{
+    const addItemComplete = (data) => {
         modal.closeModals('OverlayModal')
-        setTimeout(()=>{
+        setTimeout(() => {
             onAddProducts(data)
-        },200)
+        }, 200)
     }
 
     const openAddProduct = () => {
         modal.closeModals('ActionContainerModal')
 
-        setTimeout(()=>{
+        setTimeout(() => {
             modal.openModal('OverlayModal',
                 {
                     content: <CreateInventoryDialogContainer
@@ -322,14 +324,14 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
                     />,
                     onClose: () => setFloatingAction(false)
                 })
-        },200)
+        }, 200)
     }
 
     const listItemFormat = (item) => <>
-        <DataItem text = {item?.name} flex = {2} fontStyle = "--text-base-medium" color = "--color-blue-600" />
-        <DataItem text = {item?.type}/>
-        <DataItem text = {item?.sku || 'n/a'} align = "center"/>
-        <DataItem text = {`$ ${currencyFormatter(item.unitPrice)}`} align = "flex-end"/>
+        <DataItem text={item?.name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600" />
+        <DataItem text={item?.type} />
+        <DataItem text={item?.sku || 'n/a'} align="center" />
+        <DataItem text={`$ ${currencyFormatter(item.unitPrice)}`} align="flex-end" />
 
         {/* <View style={styles.item}>
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
@@ -345,12 +347,12 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         </View> */}
     </>;
 
-    const renderListFn = (item) =>{
+    const renderListFn = (item) => {
         return <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={()=>{}}
+            onItemPress={() => { }}
             itemView={listItemFormat(item)}
         />
     }
@@ -358,36 +360,37 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     let productsToDisplay = [...products];
     productsToDisplay = productsToDisplay.slice(currentPageListMin, currentPageListMax);
 
-    return(
+    return (
         <>
-            <SearchContainer theme = {theme}>
+            <SearchContainer theme={theme}>
                 <Search
-                    placeholderText = "Search by Product"
-                    changeText = {onSearchChange}
-                    inputText = {searchValue}
+                    placeholderText="Search by Product"
+                    changeText={onSearchChange}
+                    inputText={searchValue}
                 />
             </SearchContainer>
 
             <Table
-                data = {productsToDisplay}
-                listItemFormat = {renderListFn}
-                headers = {headers}
-                isCheckbox = {true}
-                toggleHeaderCheckbox = {toggleHeaderCheckbox}
-                itemSelected = {checkBoxList}
+                data={productsToDisplay}
+                listItemFormat={renderListFn}
+                headers={headers}
+                isCheckbox={true}
+                toggleHeaderCheckbox={toggleHeaderCheckbox}
+                itemSelected={checkBoxList}
             />
 
             <Footer
+                hasActionButton={hasActionButton}
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
                 goToPreviousPage={goToPreviousPage}
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
-                isNextDisabled = {true}
-                isPreviousDisabled = {true}
+                isNextDisabled={true}
+                isPreviousDisabled={true}
             />
-            
+
             {/* <View style={styles.footer}>
                 <View>
                     <FloatingActionAnnotated
@@ -422,10 +425,10 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
 SupplierProductsTab.propTypes = {};
 SupplierProductsTab.defaultProps = {};
 
-const mapStateToProps = (state) => ({  
+const mapStateToProps = (state) => ({
     cart: state.cart
 });
- 
+
 const mapDispatchToProp = {
     addCartItem
 }
@@ -442,7 +445,7 @@ const styles = StyleSheet.create({
     },
     footer: {
         flex: 1,
-        width:'100%',
+        width: '100%',
         alignSelf: 'flex-end',
         flexDirection: 'row',
         position: 'absolute',
@@ -451,6 +454,6 @@ const styles = StyleSheet.create({
         right: 0,
         // marginRight: 30,
         // backgroundColor:'red',
-        justifyContent:'space-between'
+        justifyContent: 'space-between'
     },
 })
