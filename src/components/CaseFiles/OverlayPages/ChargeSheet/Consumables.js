@@ -63,7 +63,7 @@ const ConsumableText = styled.Text( ({theme}) => ({
     ...theme.font['--text-sm-medium'],
     color : theme.colors['--color-blue-600'],
     paddingLeft : 14,
-}));  
+}));
 
 function Consumables ({headers, consumables = [], caseProceduresFilters = [], caseProcedures = [] ,onConsumablesUpdate, allItems = []}) {
 
@@ -71,6 +71,8 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
     const theme = useTheme();
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState
+
+    console.log("caseProcedures: ", caseProcedures);
 
 
     const [checkBoxList, setCheckBoxList] = useState([]);
@@ -83,7 +85,7 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
     const onSearchInputChange = (input) => {
         setSearchText(input)
     }
- 
+
     const toggleCheckbox = (item) => () => {
         let updatedInventories = [...checkBoxList];
 
@@ -119,9 +121,9 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         }
     }
 
-    const onQuantityChangePress = (item, index) => (action) => {
+    const onQuantityChangePress = (item, index, sectionIndex) => (action) => {
 
-        const selectedData = consumables[selectedIndex];
+        const selectedData = caseProcedures[sectionIndex].inventories;
 
         const updatedObj = {
             ...item,
@@ -134,49 +136,24 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                 : {...item}
         })
 
-        onConsumablesUpdate(selectedIndex - 1, updatedData);
+        onConsumablesUpdate(sectionIndex, updatedData);
     }
 
     const listItem = ({ name }, onActionPress, isCollapsed, index) => <>
-
         <DataItem text = {name} flex = {10} color="--color-gray-800" fontStyle = "--text-base-regular"/>
 
         <IconButton
             Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
             onPress={onActionPress}
-        />  
-        
-        {/* <View style={styles.item}>
-            <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
-        </View>
-        <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{item?.type || 'n/a'}</Text>
-        </View>
-        {
-            isEditMode && selectedOption !== 'All'
-                ? <View style={{flex: 1, alignItems: 'center'}}>
-                    <NumberChangeField
-                        onChangePress={onQuantityChangePress(item, index)}
-                        // onAmountChange={onAmountChange(item, index)}
-                        value={item.amount === 0 ? "" : item.amount.toString()}
-                    />
-                </View>
-
-                : <View style={[styles.item, {alignItems: 'center'}]}>
-                    <Text style={styles.itemText}>{item.amount}</Text>
-                </View>
-
-        }
-        <View style={[styles.item, {alignItems: 'flex-end'}]}>
-            <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
-        </View> */}
+        />
     </>
 
-    const childViewItem = (item, index) => {
-        const { amount = 0, cost = 0, name = "" } = item
+    const childViewItem = (item, itemIndex, sectionIndex) => {
+        const { amount = 0, cost = 0, name = "" , type = ""} = item
+
         return (
 
-        
+
             <>
                 <ContentDataItem
                     flex = {1}
@@ -187,15 +164,14 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                         </ConsumableTextContainer>
                     }
                 />
-                <DataItem text = "n/a" align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                <DataItem text ={type} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                 {
                     isEditMode === true ?
                     <ContentDataItem
                         align = "center"
                         content = {
                             <NumberChangeField
-                                onChangePress={onQuantityChangePress(item, index)}
-                                // onAmountChange={onAmountChange(item, index)}
+                                onChangePress={onQuantityChangePress(item, itemIndex, sectionIndex)}
                                 value={amount === 0 ? "" : amount.toString()}
                             />
                         }
@@ -204,6 +180,7 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                     <DataItem text = {amount} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                 }
                 <DataItem text = {`$ ${currencyFormatter(cost)}`} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+
                 {/* <View style={[styles.item, {justifyContent: 'flex-start', flex: 1.5}]}>
                     <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
                     <ItemArrow strokeColor = "#718096"/>
@@ -235,7 +212,6 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                         {`$ ${currencyFormatter(cost)}`}
                     </Text>
                 </View> */}
-
             </>
         )
     }
@@ -251,12 +227,12 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
     //     />
     // }
 
-    const renderChildItemView = (item, index) => {
+    const renderChildItemView = (item, itemIndex, sectionIndex) => {
         let { _id } = item
 
         return (
             <Item
-                itemView = {childViewItem(item, index)}
+                itemView = {childViewItem(item, itemIndex, sectionIndex)}
                 hasCheckBox = {true}
                 isChecked = {variantsCheckboxList.includes(_id)}
                 onCheckBoxPress = {()=>{}}
@@ -265,27 +241,25 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         )
     };
 
-    const renderCollapsible = (item, index) => {
-        
+    const renderCollapsible = (item, sectionIndex) => {
         const { procedure, inventories} = item
+
         let procedureItem = {
             name : procedure?.name
         };
-        // let procedures = [...caseProcedures]
-        
-        
+
         return (
             <CollapsibleListItem
                 isChecked={checkBoxList.includes(item._id)}
                 onCheckBoxPress={ ()=> {}}
                 hasCheckBox={true}
                 onItemPress={ ()=> {}}
-                render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, index)}
+                render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, sectionIndex)}
             >
             <FlatList
                 data={inventories}
                 renderItem={({item, index}) => {
-                    return renderChildItemView(item, index)
+                    return renderChildItemView(item, index, sectionIndex)
                 }}
                 keyExtractor={(item, index) => "" + index}
                 ItemSeparatorComponent={() =>
@@ -296,7 +270,6 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         </CollapsibleListItem>
         )
     }
-
 
     return (
         <ConsumablesWrapper>
@@ -318,42 +291,10 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                         headers={headers}
                         toggleHeaderCheckbox={()=>{}}
                         itemSelected={checkBoxList}
-                    /> 
+                    />
 
-                </TableContainer> 
-                
-                
+                </TableContainer>
 
-                {/* <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20, }}>
-                    <View style={{flex: 2, paddingRight: 100, justifyContent:'center'}}>
-                        <Search
-                            placeholderText="Search by inventory item"
-                            inputText={searchText}
-                            changeText={onSearchInputChange}
-                            backgroundColor="#FAFAFA"
-                        />
-                    </View>
-                    <View style={{flex: 1, alignItems:'flex-start'}}>
-                        <DropdownInputField
-                            onSelectChange={onSelectChange}
-                            value={selectedOption}
-                            selected={selectedIndex}
-                            dropdownOptions={caseProceduresFilters}
-                        />
-                    </View>
-                </View>
-
-
-                <Table
-                    isCheckbox={true}
-                    data={consumables[selectedIndex] || []}
-                    listItemFormat={renderListFn}
-                    headers={headers}
-                    toggleHeaderCheckbox={toggleHeaderCheckbox}
-                    itemSelected={checkBoxList}
-                    // dataLength = {tabDetails.length}
-                /> */}
-              
             </ConsumablesContainer>
         </ConsumablesWrapper>
     );

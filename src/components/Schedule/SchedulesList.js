@@ -79,7 +79,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
 
     const scrollToIndex = (index, animated) => {
         if (!sectionListRef) return;
-        sectionListRef.current.scrollToLocation({
+        sectionListRef.current?.scrollToLocation({
             animated: animated,
             sectionIndex: index,
             itemIndex: 0,
@@ -105,7 +105,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                 setRefreshing(false)
             })
     };
-        
+
     const ListWrapper = styled.View`
         margin : 0;
         flex-direction: column;
@@ -125,7 +125,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
     })
 
     const TextView = styled.View({
-        
+
     })
 
     const Seperator = styled.View`
@@ -134,7 +134,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
         margin-bottom: 12px;
         border-bottom-width: 1px;
     `
- 
+
 
     return (
         // <ListWrapper>
@@ -181,8 +181,8 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                             isInMonthOpacity = {isInMonth(item.startTime)}
                         />
                     }}
-                /> 
-            </View> 
+                />
+            </View>
         </View>
         // </ListWrapper>
     );
@@ -195,7 +195,7 @@ SchedulesList.propTypes = {
     selectedIndex: PropTypes.number,
     setAppointments: PropTypes.func
 };
- 
+
 SchedulesList.defaultProps = {};
 
 const mapStateToProps = (state) => {
