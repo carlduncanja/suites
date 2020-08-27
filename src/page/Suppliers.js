@@ -21,7 +21,7 @@ import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } 
 import { connect } from 'react-redux';
 import { setSuppliers } from "../redux/actions/suppliersActions";
 import { getSuppliers, archiveSupplier } from "../api/network";
-import _ from "lodash";
+import _, { isEmpty } from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
@@ -279,18 +279,30 @@ const Suppliers = (props) => {
     }
 
     const toggleConfirmArchive = () => {
-        modal.openModal("ConfirmationModal", {
-            content: (
-                <ConfirmationComponent
-                    isError={true}//boolean to show whether an error icon or success icon
-                    isEditUpdate={true}//use this specification to either get the confirm an edit or update
-                    onCancel={cancelClicked}
-                    onAction={ArchiveSupplier}
-                    message="Are you sure you want to Archive the supplier(s)"//general message you can send to be displayed
-                    action="Archive"
-                />
-            )
-        })
+        !isEmpty(selectedSuppliers) ?
+            modal.openModal("ConfirmationModal", {
+                content: (
+                    <ConfirmationComponent
+                        isError={true}//boolean to show whether an error icon or success icon
+                        isEditUpdate={true}//use this specification to either get the confirm an edit or update
+                        onCancel={cancelClicked}
+                        onAction={ArchiveSupplier}
+                        message="Are you sure you want to Archive the supplier(s)"//general message you can send to be displayed
+                        action="Archive"
+                    />
+                )
+            }) : modal.openModal("ConfirmationModal", {
+                content: (
+                    <ConfirmationComponent
+                        isError={true}//boolean to show whether an error icon or success icon
+                        isEditUpdate={false}//use this specification to either get the confirm an edit or update
+                        onCancel={cancelClicked}
+                        onAction={ArchiveSupplier}
+                        message="Please choose a supplier "//general message you can send to be displayed
+                        action="Archive"
+                    />
+                )
+            })
     }
 
     const ArchiveSupplier = () => {

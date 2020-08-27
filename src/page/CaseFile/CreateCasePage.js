@@ -296,13 +296,9 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
     };
 
     const onPositiveButtonPress = () => {
-        //setDraft([{ patient: patientFields }], ...draft);
 
-        saveDraft([{ patient: patientFields }]);
-        console.log(
-            "what case file data has and is being saved in draft is:",
-            draft
-        );
+        saveDraft([{ id: Math.floor(Math.random() * 10000), patient: patientFields }]);
+
         const incrementTab = () => {
             const updatedTabIndex = selectedTabIndex + 1;
             setCompletedTabs([...completedTabs, tabs[selectedTabIndex]]);
