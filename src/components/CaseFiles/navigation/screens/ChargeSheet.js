@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import {
     Consumables,
-    ConsumablesPostEditNurseView,
     Equipment,
     Invoices,
     Quotation,
@@ -228,7 +227,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     return (
         selectedTab === 'Consumables' ? (
 
-            <PostEditView
+            <Consumables
                 headers={headers}
                 allItems={inventoryList}
                 consumables={consumables}
