@@ -40,11 +40,11 @@ const testData = [
 
 ]
 
-const SupplierPurchaseOrders = ({ modal, floatingActions }) => {
+const SupplierPurchaseOrders = ({ modal, floatingActions, isArchive = false }) => {
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
-
+    const [hasActionButton, setHasActionButton] = useState(!isArchive);
     const recordsPerPage = 15;
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
@@ -216,6 +216,7 @@ const SupplierPurchaseOrders = ({ modal, floatingActions }) => {
             />
 
             <Footer
+                hasActionButton={hasActionButton}
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}

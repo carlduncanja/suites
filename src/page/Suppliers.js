@@ -50,6 +50,10 @@ const ButtonContainer = styled.View`
     height:100%;
     align-items:flex-end;
 `;
+const ArchiveButtonText = styled.Text`
+align-items: center; 
+color: #A0AEC0
+`
 
 const Suppliers = (props) => {
     const theme = useTheme();
@@ -381,7 +385,7 @@ const Suppliers = (props) => {
                 return (
                     <ButtonContainer>
                         <ArchiveButton onPress={goToArchives} theme={theme}>
-                            <Text style={{ alignItems: "center", color: "#A0AEC0" }}>View Archive</Text>
+                            <ArchiveButtonText >View Archive</ArchiveButtonText>
                         </ArchiveButton>
                     </ButtonContainer>)
             }}
