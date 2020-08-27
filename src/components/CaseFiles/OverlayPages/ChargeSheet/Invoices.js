@@ -13,6 +13,7 @@ import ReportPreview from '../../Reports/ReportPreview';
 import Item from '../../../common/Table/Item';
 
 import { formatDate, currencyFormatter, transformToSentence } from '../../../../utils/formatter';
+import ListItem from "../../../common/List/ListItem";
 
 const reportTestData = {
     billing : {
@@ -109,12 +110,7 @@ const Invoices = ({tabDetails = [], reportDetails}) => {
         {
             name :"Value",
             alignment : "center"
-        },
-        {
-            name :"Actions",
-            alignment : "flex-end"
-        },
-
+        }
     ]
 
     const openModal = (item) => () => {
@@ -137,8 +133,8 @@ const Invoices = ({tabDetails = [], reportDetails}) => {
 
     const listItem = (item) => {
 
-        const { invoiceNumber = "", status = "", billing = {}, date = "" } = item
-        const { subTotal = 0 } = billing
+        const { invoiceNumber = "", status = "", billingDetails = {}, createdAt = "" } = item
+        const { subTotal = 0 } = billingDetails
 
         return (
             <>
@@ -152,33 +148,11 @@ const Invoices = ({tabDetails = [], reportDetails}) => {
                     <View style={[styles.item,{alignItems:'center'}]}>
                         <Text style={[styles.itemText,{color: item.status === 'Complete' ? "#319795" : "#DD6B20"}]}>{transformToSentence(status)}</Text>
                     </View>
-                    <View style={[styles.item,{alignItems:'flex-start'}]}>
-                        <Text style={styles.itemText}>{formatDate(date,'DD/MM/YYYY') }</Text>
+                    <View style={[styles.item,{alignItems:'center'}]}>
+                        <Text style={styles.itemText}>{formatDate(createdAt,'DD/MM/YYYY') }</Text>
                     </View>
                     <View style={[styles.item,{alignItems:'center'}]}>
                         <Text style={styles.itemText}>{`$ ${currencyFormatter(subTotal)}`}</Text>
-                    </View>
-                    <View style={[styles.item,{alignItems:'flex-end', marginRight:10}]}>
-                        {/* <TouchableOpacity
-                            style={{}}
-                            onPress={()=>{
-                                dispatch({
-                                    type : caseActions.SETREPORTDETAILS,
-                                    newState:{
-                                        reportStatus :true,
-                                        // reportId : reportId,
-                                        billingDetails : billingDetails,
-                                        reportList : reportList,
-                                        reportTable : reportTable,
-                                        billingSummary :billingSummary
-                                    }
-                                })
-                                openModal();
-                                // this.openModal(props);
-                                // openReportAction(props.fields.recordId)
-                            }}> */}
-                            <SvgIcon iconName = "actions"/>
-                        {/* </TouchableOpacity> */}
                     </View>
                 {/* </View> */}
             </>
@@ -207,7 +181,7 @@ const Invoices = ({tabDetails = [], reportDetails}) => {
     }
 
     const renderListFn = (item) => {
-        return <Item
+        return <ListItem
             hasCheckBox = {true}
             isChecked = {checkBoxList.includes(item)}
             onCheckBoxPress = {toggleCheckbox(item)}
