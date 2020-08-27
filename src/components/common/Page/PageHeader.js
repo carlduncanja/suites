@@ -7,6 +7,7 @@ import { PageContext } from "../../../contexts/PageContext";
 import SvgIcon from "../../../../assets/SvgIcon";
 import { View } from 'react-native-animatable';
 import { isEmpty } from 'lodash'
+import { Text } from 'react-native';
 
 
 const shadow = {
@@ -42,7 +43,7 @@ const HeaderContainer = styled.View`
 const TextContainer = styled.View`
     flex:1;
     margin-top:${({ isSpecialHeader, theme }) => !isSpecialHeader ? "0px" : `${theme.space['--space-10']}`};
-    padding-left: ${ ({theme}) => theme.space['--space-14']};
+    padding-left: ${ ({ theme }) => theme.space['--space-14']};
     // padding-left:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "20px"};
     align-self:${({ isSpecialHeader }) => !isSpecialHeader ? "center" : "baseline"};
     flex-direction: row;
@@ -79,7 +80,21 @@ const EditButtonContainer = styled.View`
   background-color : ${({ theme, isEditMode }) => isEditMode ? theme.colors['--default-shade-white'] : theme.colors['--accent-button']};
   align-items : center;
   justify-content : center;
-`
+`;
+
+const DisabledEditContainer = styled.View`
+background-color:${({ theme }) => theme.colors["--default-shade-white"]};
+height:26px;
+width:53px;
+align-items : center;
+justify-content : center;
+border-radius : 6px;
+border:1px #E3E8EF
+`;
+
+const DisabledText = styled.Text`
+color:#A0AEC0;
+`;
 
 const EditModeContainer = styled.Text(({ theme }) => ({
     ...theme.font['--text-base-medium'],
@@ -88,7 +103,7 @@ const EditModeContainer = styled.Text(({ theme }) => ({
     textAlign: 'center'
 }))
 
-function PageHeader({ onBack, title = "User", subTitle = "(200 items)", hasIcon, isSpecialHeader = false, isOpenEditable = false }) {
+function PageHeader({ onBack, title = "User", subTitle = "(200 items)", hasIcon, isSpecialHeader = false, isOpenEditable = false, isArchive = false }) {
     const theme = useTheme();
 
 
@@ -149,13 +164,16 @@ function PageHeader({ onBack, title = "User", subTitle = "(200 items)", hasIcon,
                         now in edit mode
                     </EditModeContainer>
                 }
-
-                <EditButtonWrapper theme={theme}>
-                    <EditButtonContainer theme={theme} isEditMode={isEditMode}>
-                        <Button {...buttonProps} buttonPress={onEditPress} />
-                    </EditButtonContainer>
-                </EditButtonWrapper>
-
+                {!isArchive ?
+                    <EditButtonWrapper theme={theme}>
+                        <EditButtonContainer theme={theme} isEditMode={isEditMode}>
+                            <Button {...buttonProps} buttonPress={onEditPress} />
+                        </EditButtonContainer>
+                    </EditButtonWrapper>
+                    : <DisabledEditContainer>
+                        <DisabledText>Edit</DisabledText>
+                    </DisabledEditContainer>
+                }
             </HeaderContainer>
         </HeaderWrapper>
     )

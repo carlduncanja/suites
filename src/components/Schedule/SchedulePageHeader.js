@@ -208,12 +208,12 @@ function SchedulePageHeader({
 
 
                 <ButtonView theme={theme}>
-                    {/* <View style={{ marginRight: 340 }}> */}
+
                     <ScheduleButton
                         title="Search"
                         onButtonPress={searchButtonPress}
                     />
-                    {/* </View> */}
+
 
 
                     <GroupButtonContainer>

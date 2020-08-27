@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   container: {
     width: 300,
     position: "absolute",
-    top: 900,
+    top: 800,
     left: 190,
     paddingLeft: 10,
     paddingRight: 10,

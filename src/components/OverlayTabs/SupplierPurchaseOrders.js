@@ -1,7 +1,7 @@
-import React,{ useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Table from '../common/Table/Table';
-import Item from '../common/Table/Item'; 
+import Item from '../common/Table/Item';
 import { formatDate } from "../../utils/formatter";
 import ImageIcon from '../../../assets/svg/imageIcon';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
@@ -9,7 +9,7 @@ import FloatingActionButton from '../common/FloatingAction/FloatingActionButton'
 import Footer from "../common/Page/Footer";
 
 import { withModal } from 'react-native-modalfy';
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
 import DataItem from "../common/List/DataItem";
 import TouchableDataItem from "../common/List/TouchableDataItem";
 import DataItemWithIcon from "../common/List/DataItemWithIcon";
@@ -17,30 +17,30 @@ import DataItemWithIcon from "../common/List/DataItemWithIcon";
 
 const testData = [
     {
-        order:'PO-0000023',
-        invoiceNumber:'IN-00009675',
-        status:'Payment Due',
+        order: 'PO-0000023',
+        invoiceNumber: 'IN-00009675',
+        status: 'Payment Due',
         orderDate: new Date(2019, 11, 12),
-        deliveryDate : new Date(2019, 11, 16)
+        deliveryDate: new Date(2019, 11, 16)
     },
     {
-        order:'PO-0000024',
-        invoiceNumber:'IN-00009685',
-        status:'Payment Due',
+        order: 'PO-0000024',
+        invoiceNumber: 'IN-00009685',
+        status: 'Payment Due',
         orderDate: new Date(2019, 11, 12),
-        deliveryDate : new Date(2019, 11, 16)
+        deliveryDate: new Date(2019, 11, 16)
     },
     {
-        order:'PO-0000024',
-        invoiceNumber:'',
-        status:'Request Sent',
+        order: 'PO-0000024',
+        invoiceNumber: '',
+        status: 'Request Sent',
         orderDate: new Date(2019, 11, 12),
-        deliveryDate : new Date(2019, 11, 16)
+        deliveryDate: new Date(2019, 11, 16)
     },
-     
+
 ]
 
-const SupplierPurchaseOrders = ({modal, floatingActions}) => { 
+const SupplierPurchaseOrders = ({ modal, floatingActions }) => {
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
@@ -53,33 +53,33 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
 
     const headers = [
         {
-            name :"Purchase Orders",
-            alignment : "flex-start",
-            flex:1
+            name: "Purchase Orders",
+            alignment: "flex-start",
+            flex: 1
         },
         {
-            name :"Invoice No.",
-            alignment : "flex-start",
-            flex:1.2
+            name: "Invoice No.",
+            alignment: "flex-start",
+            flex: 1.2
         },
         {
-            name :"Status",
-            alignment : "flex-start",
-            flex:1
+            name: "Status",
+            alignment: "flex-start",
+            flex: 1
 
         },
         {
-            name :"Order Date",
-            alignment : "flex-start",
-            flex:1
+            name: "Order Date",
+            alignment: "flex-start",
+            flex: 1
 
         },
         {
-            name :"Delivery Date",
-            alignment : "flex-start",
-            flex:1
+            name: "Delivery Date",
+            alignment: "flex-start",
+            flex: 1
 
-        }     
+        }
     ]
 
     useEffect(() => {
@@ -89,7 +89,7 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -99,7 +99,7 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -127,12 +127,12 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
         }
         setCheckBoxList(updatedCases);
     }
-    
-    const toggleHeaderCheckbox = () =>{
+
+    const toggleHeaderCheckbox = () => {
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
-        
+
         if (indeterminate) {
-            const selectedAllIds = [...tabDetails.map( item => item )]
+            const selectedAllIds = [...tabDetails.map(item => item)]
             setCheckBoxList(selectedAllIds)
         } else {
             setCheckBoxList([])
@@ -146,33 +146,33 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
 
     const listItemFormat = (item) => {
 
-        const {invoiceNumber, order, status, orderDate, deliveryDate} = item
+        const { invoiceNumber, order, status, orderDate, deliveryDate } = item
         let invoice = invoiceNumber === '' ? 'n/a' : invoiceNumber
         let invoiceColor = invoiceNumber === '' ? '--color-gray-500' : '--color-blue-600';
         let statusColor = status === 'Payment Due' ? '--color-red-700' : '--color-teal-600'
         return (
             <>
-                <TouchableDataItem 
-                    text = {order} 
-                    onPress = {()=>{}} 
-                    fontStyle = "--text-base-medium" 
+                <TouchableDataItem
+                    text={order}
+                    onPress={() => { }}
+                    fontStyle="--text-base-medium"
                 />
-                <DataItemWithIcon 
-                    text = {invoice} 
-                    onPress = {()=>{}} 
-                    fontStyle = "--text-base-medium" 
-                    icon = {invoiceNumber !== "" ? <ImageIcon/> : null} 
-                    color = {invoiceColor}
-                    flex = {1.2}
+                <DataItemWithIcon
+                    text={invoice}
+                    onPress={() => { }}
+                    fontStyle="--text-base-medium"
+                    icon={invoiceNumber !== "" ? <ImageIcon /> : null}
+                    color={invoiceColor}
+                    flex={1.2}
                 />
-                <DataItem 
-                    text = {status} 
-                    color = {statusColor} 
-                    fontStyle = "--text-sm-medium" 
+                <DataItem
+                    text={status}
+                    color={statusColor}
+                    fontStyle="--text-sm-medium"
                 />
-                <DataItem text = {formatDate(orderDate,'DD/MM/YYYY')} />
-                <DataItem text = {formatDate(deliveryDate,'DD/MM/YYYY')} />
-                
+                <DataItem text={formatDate(orderDate, 'DD/MM/YYYY')} />
+                <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} />
+
                 {/* <View style={[styles.item,{flex:1}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{order}</Text>
                 </View>
@@ -191,28 +191,28 @@ const SupplierPurchaseOrders = ({modal, floatingActions}) => {
                 </View> */}
             </>
         )
-        
+
     };
 
-    const renderListFn = (item) =>{ 
+    const renderListFn = (item) => {
         return <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={() => {}}
+            onItemPress={() => { }}
             itemView={listItemFormat(item)}
         />
     }
 
-    return(
+    return (
         <>
             <Table
-                data = {testData}
-                listItemFormat = {renderListFn}
-                headers = {headers}
-                isCheckbox = {true}
-                toggleHeaderCheckbox = {toggleHeaderCheckbox}
-                itemSelected = {checkBoxList}
+                data={testData}
+                listItemFormat={renderListFn}
+                headers={headers}
+                isCheckbox={true}
+                toggleHeaderCheckbox={toggleHeaderCheckbox}
+                itemSelected={checkBoxList}
             />
 
             <Footer

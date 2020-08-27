@@ -71,7 +71,6 @@ const Schedule = (props) => {
     const [isExpanded, setisExpanded] = useState(false);
 
     const onExpandButtonPress = () => {
-        console.log("expand clicked");
         setisExpanded(!isExpanded);
     };
 
@@ -80,11 +79,7 @@ const Schedule = (props) => {
     }
 
     const radioClicked = (item) => {
-        console.log("them item clicked", item);
-
         setcheckedButton(item);
-        // filterBy(item);
-
 
     }
 
@@ -159,7 +154,6 @@ const Schedule = (props) => {
 
     useEffect(() => {
         // console.log("filtered appointments state has:", filteredAppointments);
-        console.log("what is in appointment state?", appointments);
 
 
         filter();
@@ -168,10 +162,9 @@ const Schedule = (props) => {
     }, [checkedRadioButton]);
 
     useEffect(() => {
-        if (showDropDown === false) {
-            setcheckedButton("");
 
-        }
+        !showDropDown ? setcheckedButton("") : "";
+
     }, [showDropDown])
 
     //########### Functions

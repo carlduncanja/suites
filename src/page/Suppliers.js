@@ -38,7 +38,7 @@ const ArchiveButton = styled.TouchableOpacity`
     align-items:center;
     border-width:1px;
     justify-content:center;
-    border-color: ${ ({theme}) => theme.colors['--color-gray-500']};
+    border-color: ${ ({ theme }) => theme.colors['--color-gray-500']};
     width:100px;
     height:30px;
     border-radius:6px;
@@ -149,14 +149,8 @@ const Suppliers = (props) => {
     }
 
     const handleOnItemPress = (item, isOpenEditable) => {
-        // modal.openModal('BottomSheetModal',{
-        //     content: <SuppliersBottomSheet
-        //         supplier = {item}
-        //         isOpenEditable = {isOpenEditable}
-        //         floatingActions = {getFabActions}
-        //     />
-        // })
-        props.navigation.navigate("SupplierPage", { initial: false, supplier: item, isEdit: isOpenEditable, floatingActions: { getFabActions } });
+
+        props.navigation.navigate("SupplierPage", { initial: false, supplier: item, isEdit: isOpenEditable, floatingActions: getFabActions });
     }
 
     const goToNextPage = () => {
@@ -248,18 +242,18 @@ const Suppliers = (props) => {
         return (
             <>
                 <RightBorderDataItem
-                    text = {item.name}
-                    flex = {2}
-                    color = "--color-gray-800"
+                    text={item.name}
+                    flex={2}
+                    color="--color-gray-800"
                 />
                 <TouchableDataItem
-                    text = {item.phone}
-                    onPress = {()=>{}}
+                    text={item.phone}
+                    onPress={() => { }}
                 />
                 <TouchableDataItem
-                    text = {item.email}
-                    onPress = {()=>{}}
-                    flex = {2}
+                    text={item.email}
+                    onPress={() => { }}
+                    flex={2}
                 />
                 {/* <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
                     <Text numberOfLines={1} style={[styles.itemText, { color: "#323843" }]}>{item.name}</Text>
@@ -384,11 +378,11 @@ const Suppliers = (props) => {
             listData={suppliersToDisplay}
             TopButton={() => {
                 return (
-                <ButtonContainer>
-                    <ArchiveButton onPress={goToArchives} theme={theme}>
-                        <Text style={{ alignItems: "center", color: "#A0AEC0" }}>View Archive</Text>
-                    </ArchiveButton>
-                </ButtonContainer>)
+                    <ButtonContainer>
+                        <ArchiveButton onPress={goToArchives} theme={theme}>
+                            <Text style={{ alignItems: "center", color: "#A0AEC0" }}>View Archive</Text>
+                        </ArchiveButton>
+                    </ButtonContainer>)
             }}
 
             listHeaders={listHeaders}

@@ -38,6 +38,7 @@ const TabsViewContainer = styled.View`
 
 
 function DetailsPage({
+    isArchive = false,
     title = "__",
     hasIcon = null,
     isSpecialHeader = false,
@@ -61,6 +62,7 @@ function DetailsPage({
                         ? <LoadingIndicator />
                         : <>
                             <PageHeader
+                                isArchive={isArchive}
                                 title={title}
                                 hasIcon={hasIcon}
                                 isSpecialHeader={isSpecialHeader}
@@ -70,7 +72,7 @@ function DetailsPage({
                             />
 
                             <TabsViewContainer>{pageTabs}</TabsViewContainer>
-  
+
                             <DetailsPageContentWrapper>
                                 <DetailsPageContentContainer>
                                     {
