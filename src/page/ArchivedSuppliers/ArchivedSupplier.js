@@ -193,6 +193,7 @@ function SupplierPage({ route, navigation }) {
                 return <SupplierDetailsTab order={{ supplier: selectedSupplier, status: '' }} />
             case "Products":
                 return <SupplierProductsTab
+                    isArchive={true}
                     floatingActions={floatingActions}
                     products={products}
                     onAddProducts={onAddProducts}
@@ -200,6 +201,7 @@ function SupplierPage({ route, navigation }) {
                 />
             case "Purchase Orders":
                 return <SupplierPurshaseOrders
+                    isArchive={true}
                     floatingActions={floatingActions}
                 />;
             default:

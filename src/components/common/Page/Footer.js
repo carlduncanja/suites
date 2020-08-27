@@ -1,8 +1,8 @@
-import React,{ useState } from 'react';
-import {View, Text, StyleSheet} from "react-native";
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from "react-native";
 import RoundedPaginator from "../Paginators/RoundedPaginator";
 import FloatingActionButton from "../FloatingAction/FloatingActionButton";
-
+import DisabledFloatingButton from "../../../../assets/svg/disabledFloatingButton";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
@@ -19,47 +19,50 @@ const FooterContainer = styled.View`
 `;
 
 function Footer({
-        totalPages = 0,
-        currentPage = 0,
-        goToNextPage = ()=>{},
-        goToPreviousPage = () => {},
-        toggleActionButton = () => {},
-        isDisabled = false,
-        hasPaginator = true,
-        hasActionButton = true,
-        hasActions = true,
-        isNextDisabled = false,
-        isPreviousDisabled = false,
-    }){
-        const theme = useTheme();
+    totalPages = 0,
+    currentPage = 0,
+    goToNextPage = () => { },
+    goToPreviousPage = () => { },
+    toggleActionButton = () => { },
+    isDisabled = false,
+    hasPaginator = true,
+    hasActionButton = true,
+    hasActions = true,
+    isNextDisabled = false,
+    isPreviousDisabled = false,
+}) {
+    const theme = useTheme();
 
-        
+
     return (
         <FooterWrapper>
             <FooterContainer>
                 {
-                    hasPaginator && 
-                        <RoundedPaginator
-                            totalPages={totalPages}
-                            currentPage={currentPage}
-                            goToNextPage={goToNextPage}
-                            goToPreviousPage={goToPreviousPage}
-                            isNextDisabled = {isNextDisabled}
-                            isPreviousDisabled = {isPreviousDisabled}
-                        />
+                    hasPaginator &&
+                    <RoundedPaginator
+                        totalPages={totalPages}
+                        currentPage={currentPage}
+                        goToNextPage={goToNextPage}
+                        goToPreviousPage={goToPreviousPage}
+                        isNextDisabled={isNextDisabled}
+                        isPreviousDisabled={isPreviousDisabled}
+                    />
                 }
                 {
-                    hasActionButton &&                
-                        <FloatingActionButton
-                            isDisabled={isDisabled}
-                            toggleActionButton={toggleActionButton}
-                            hasActions = {hasActions}
-                        />
+                    hasActionButton &&
+                    <FloatingActionButton
+                        isDisabled={isDisabled}
+                        toggleActionButton={toggleActionButton}
+                        hasActions={hasActions}
+                    />
                 }
-                
+                {
+                    !hasActionButton ? <DisabledFloatingButton /> : <View />
+                }
+
             </FooterContainer>
         </FooterWrapper>
-        
+
 
     )
 }

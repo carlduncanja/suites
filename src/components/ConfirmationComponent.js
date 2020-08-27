@@ -33,6 +33,10 @@ function ConfirmationComponent({
     height: 100%;
   `;
 
+  const ClearIconContainer = styled.View`
+  align-items:flex-end;
+  `;
+
   const HeadingContainer = styled.View`
     height:40px;
     align-items:center;
@@ -51,17 +55,24 @@ function ConfirmationComponent({
     font-weight:600;
     line-height: 16px;
     color: ${theme.colors["--color-gray-600"]};
-    margin-right: 260px;
+  
   `;
 
-  const MessageContainer = styled.Text`
-  display:flex;
+  const MessageContainer = styled.View`
+  height:100%;
+  justify-content:center;
+  align-content: center;
+  padding:10px;
+  `;
+
+  const MessageText = styled.Text`
+  align-self:center;
     line-height: 20px;
     font-size: 17px;
     font-weight: normal;
     color: ${theme.colors["--color-gray-700"]};
-    align-self: center;
-    margin-top:80px;
+    
+  
   `;
 
   const CancelButtonContainer = styled.TouchableOpacity`
@@ -70,25 +81,29 @@ function ConfirmationComponent({
     border-radius: 10px;
     border-width: 1px;
     background-color: ${theme.colors["--color-gray-300"]};
-    margin-right: 230px;
-    margin-left: 20px;
     width: 99px;
     height: 40px;
     border-color: ${theme.colors["--default-shade-white"]};
+    margin-left:5px;
   `;
 
-  const ActionButtonContainer = styled.TouchableOpacity`
+  const ActionButton = styled.TouchableOpacity`
     background-color: ${theme.colors["--color-blue-600"]};
     color: ${theme.colors["--default-shade-white"]};
     width: 76px;
     height: 40px;
     padding: 5px;
     justify-content:center;
-    align-items: center;
     border-radius: 10px;
     border-width: 1px;
     border-color: ${theme.colors["--default-shade-white"]};
   `;
+
+  const ActionButtonContainer = styled.View`
+  align-items:flex-end;
+  width:75%;
+  
+  `
 
   const GeneralText = styled.Text`
     font-size: 16px;
@@ -133,26 +148,30 @@ function ConfirmationComponent({
 
   const ButtonView = styled.View`
     flex-direction: row;
-    margin-top: 60px;
+   
+  
   `;
 
   const typeDecipher = () => {
     if (isEditUpdate) {
       return (<>
-        <MessageContainer>{message}</MessageContainer>
+        <MessageContainer>
+          <MessageText>{message}</MessageText>
+        </MessageContainer>
         <ButtonView>
           <CancelButtonContainer onPress={onCancel}>
             <GeneralText style={{ color: theme.colors["--color-gray-500"] }}>
               Cancel
             </GeneralText>
           </CancelButtonContainer>
-
-          <ActionButtonContainer onPress={onAction}>
-            <GeneralText
-              style={{ color: theme.colors["--default-shade-white"], }}
-            >
-              {action}
-            </GeneralText>
+          <ActionButtonContainer>
+            <ActionButton onPress={onAction}>
+              <GeneralText
+                style={{ color: theme.colors["--default-shade-white"], }}
+              >
+                {action}
+              </GeneralText>
+            </ActionButton>
           </ActionButtonContainer>
         </ButtonView>
       </>)
@@ -197,7 +216,9 @@ function ConfirmationComponent({
         <HeaderWrapper>
           <HeadingContainer>
             <TextHeaderContainer>Confirm Action</TextHeaderContainer>
-            <IconButton Icon={<ClearIcon />} onPress={onCancel} />
+            <ClearIconContainer>
+              <IconButton Icon={<ClearIcon />} onPress={onCancel} />
+            </ClearIconContainer>
           </HeadingContainer>
         </HeaderWrapper>
 
