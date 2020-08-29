@@ -48,7 +48,7 @@ const headers = [
     }
 ];
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, onUpdateChargeSheet, handleEditDone, handleQuotes, handleInvoices}) => {
     let {
         inventoryList = [],
         equipmentList = [],
@@ -255,6 +255,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                     <Invoices
                         tabDetails={invoices}
                         reportDetails={billing}
+                        handleInvoices={handleInvoices}
                     />
                 ) :
                     selectedTab === 'Quotation' ? (
