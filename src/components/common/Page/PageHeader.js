@@ -1,13 +1,13 @@
-import React, { Component, useContext, useState } from 'react';
-import styled, { css } from "@emotion/native";
-import { useTheme } from "emotion-theming";
+import React, {Component, useContext, useState} from 'react';
+import styled, {css} from "@emotion/native";
+import {useTheme} from "emotion-theming";
 import Button from "../../common/Buttons/Button";
 import SmallLeftTriangle from "../../../../assets/svg/smallLeftTriangle";
-import { PageContext } from "../../../contexts/PageContext";
+import {PageContext} from "../../../contexts/PageContext";
 import SvgIcon from "../../../../assets/SvgIcon";
-import { View } from 'react-native-animatable';
-import { isEmpty } from 'lodash'
-import { Text } from 'react-native';
+import {View} from 'react-native-animatable';
+import {isEmpty} from 'lodash'
+import {Text} from 'react-native';
 
 
 const shadow = {
@@ -22,12 +22,14 @@ const shadow = {
     zIndex: 3,
 };
 
-const HeaderWrapper = styled.View(({ isEditMode, theme }) =>
+const HeaderWrapper = styled.View(({isEditMode, theme, isEditBackground}) =>
     ({
         display: 'flex',
         height: 55,
         ...(isEditMode ? shadow : {}),
-        backgroundColor: isEditMode ? theme.colors['--accent-button'] : theme.colors['--default-shade-white']
+        backgroundColor: isEditMode
+            ? isEditBackground
+            : theme.colors['--default-shade-white']
     })
 );
 
@@ -42,18 +44,18 @@ const HeaderContainer = styled.View`
 
 const TextContainer = styled.View`
     flex:1;
-    margin-top:${({ isSpecialHeader, theme }) => !isSpecialHeader ? "0px" : `${theme.space['--space-10']}`};
-    padding-left: ${ ({ theme }) => theme.space['--space-14']};
-    // padding-left:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "20px"};
-    align-self:${({ isSpecialHeader }) => !isSpecialHeader ? "center" : "baseline"};
+    margin-top:${({isSpecialHeader, theme}) => !isSpecialHeader ? "0px" : `${theme.space['--space-10']}`};
+    padding-left: ${({theme}) => theme.space['--space-14']};
+    // padding-left:${({isSpecialHeader}) => !isSpecialHeader ? "0px" : "20px"};
+    align-self:${({isSpecialHeader}) => !isSpecialHeader ? "center" : "baseline"};
     flex-direction: row;
-    align-items:${({ isSpecialHeader }) => !isSpecialHeader ? "baseline" : "center"};
+    align-items:${({isSpecialHeader}) => !isSpecialHeader ? "baseline" : "center"};
 `;
 
 const HeaderText = styled.Text`
-    margin-bottom:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "10px"};
-    font:${({ theme }) => theme.font["--text-xl-medium"]};
-    color:${({ theme }) => theme.colors["--accent-button"]};
+    margin-bottom:${({isSpecialHeader}) => !isSpecialHeader ? "0px" : "10px"};
+    font:${({theme}) => theme.font["--text-xl-medium"]};
+    color:${({theme}) => theme.colors["--accent-button"]};
 `;
 
 const IconContainer = styled.TouchableOpacity`
@@ -62,8 +64,8 @@ const IconContainer = styled.TouchableOpacity`
 
 const SpecialText = styled.Text`
     margin-left: 8px;
-    font:${({ theme }) => theme.font["--text-sm-medium"]};
-    color:${({ theme }) => theme.colors["--company"]};
+    font:${({theme}) => theme.font["--text-sm-medium"]};
+    color:${({theme}) => theme.colors["--company"]};
 `;
 
 const EditButtonWrapper = styled.View`
@@ -77,13 +79,13 @@ const EditButtonContainer = styled.View`
   width: 100%; 
   border-radius : 6px;
   padding: 6px 8px;
-  background-color : ${({ theme, isEditMode }) => isEditMode ? theme.colors['--default-shade-white'] : theme.colors['--accent-button']};
+  background-color : ${({theme, isEditMode}) => isEditMode ? theme.colors['--default-shade-white'] : theme.colors['--accent-button']};
   align-items : center;
   justify-content : center;
 `;
 
 const DisabledEditContainer = styled.View`
-background-color:${({ theme }) => theme.colors["--default-shade-white"]};
+background-color:${({theme}) => theme.colors["--default-shade-white"]};
 height:26px;
 width:53px;
 align-items : center;
@@ -96,18 +98,25 @@ const DisabledText = styled.Text`
 color:#A0AEC0;
 `;
 
-const EditModeContainer = styled.Text(({ theme }) => ({
+const EditModeContainer = styled.Text(({theme, isReview}) => ({
     ...theme.font['--text-base-medium'],
     color: theme.colors['--color-white'],
     alignItems: 'center',
     textAlign: 'center'
 }))
 
-function PageHeader({ onBack, title = "User", subTitle = "(200 items)", hasIcon, isSpecialHeader = false, isOpenEditable = false, isArchive = false }) {
+function PageHeader({
+                        onBack,
+                        title = "",
+                        subTitle = "",
+                        hasIcon,
+                        isSpecialHeader = false,
+                        isArchive = false,
+                        editMessage = "now in edit mode"
+                    }) {
     const theme = useTheme();
 
-
-    const { pageState, setPageState } = useContext(PageContext)
+    const {pageState, setPageState} = useContext(PageContext)
 
     const onEditPress = () => {
         setPageState({
@@ -116,7 +125,7 @@ function PageHeader({ onBack, title = "User", subTitle = "(200 items)", hasIcon,
         })
     }
 
-    const { isEditMode } = pageState;
+    const {isEditMode, isReview = true} = pageState;
 
     const buttonProps = !isEditMode
         ? {
@@ -126,53 +135,55 @@ function PageHeader({ onBack, title = "User", subTitle = "(200 items)", hasIcon,
         }
         : {
             backgroundColor: theme.colors['--default-shade-white'],
-            color: theme.colors['--accent-button'],
+            color: isReview ?  theme.colors['--color-gray-600'] :theme.colors['--accent-button'],
             title: "Done",
         }
 
     const showIcon = () => {
         return (
 
-            <SvgIcon iconName="doctorArrow" strokeColor="#718096" />
+            <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
 
         )
     }
 
+    const editColor = isReview ? theme.colors['--color-gray-600'] : theme.colors['--accent-button'];
 
     return (
-        <HeaderWrapper theme={theme} isEditMode={isEditMode}>
+        <HeaderWrapper theme={theme} isEditMode={isEditMode} isEditBackground={editColor}>
             <HeaderContainer theme={theme}>
 
 
                 {
-                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle /></IconContainer>
+                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle/></IconContainer>
                 }
 
                 {
                     !isEditMode &&
                     <TextContainer theme={theme} isSpecialHeader={isSpecialHeader}>
                         <HeaderText theme={theme} isSpecialHeader={isSpecialHeader}>{title}</HeaderText>
-                        {!isEmpty(hasIcon) ? <View style={{ marginLeft: 15, marginRight: 10, marginBottom: 10 }}>
-                            {hasIcon}</View> : <View />}
+                        {!isEmpty(hasIcon) ? <View style={{marginLeft: 15, marginRight: 10, marginBottom: 10}}>
+                            {hasIcon}</View> : <View/>}
                         <SpecialText theme={theme}>{subTitle}</SpecialText>
                     </TextContainer>
                 }
 
                 {
                     isEditMode &&
-                    <EditModeContainer theme={theme}>
-                        now in edit mode
+                    <EditModeContainer theme={theme} isReview={isReview}>
+                        {editMessage}
                     </EditModeContainer>
                 }
-                {!isArchive ?
-                    <EditButtonWrapper theme={theme}>
-                        <EditButtonContainer theme={theme} isEditMode={isEditMode}>
-                            <Button {...buttonProps} buttonPress={onEditPress} />
-                        </EditButtonContainer>
-                    </EditButtonWrapper>
-                    : <DisabledEditContainer>
-                        <DisabledText>Edit</DisabledText>
-                    </DisabledEditContainer>
+                {
+                    !isArchive
+                        ? <EditButtonWrapper theme={theme}>
+                            <EditButtonContainer theme={theme} isEditMode={isEditMode}>
+                                <Button {...buttonProps} buttonPress={onEditPress}/>
+                            </EditButtonContainer>
+                        </EditButtonWrapper>
+                        : <DisabledEditContainer>
+                            <DisabledText>Edit</DisabledText>
+                        </DisabledEditContainer>
                 }
             </HeaderContainer>
         </HeaderWrapper>
