@@ -125,7 +125,7 @@ function PageHeader({
         })
     }
 
-    const {isEditMode, isReview = true} = pageState;
+    const {isEditMode, isReview} = pageState;
 
     const buttonProps = !isEditMode
         ? {
