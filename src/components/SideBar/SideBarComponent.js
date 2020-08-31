@@ -29,9 +29,12 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
         );
     }
 
-    const authInfo = auth.userToken && jwtDecode(auth.userToken);
-    // console.log(auth)
-    console.log(authInfo)
+    let authInfo = {};
+    try {
+        authInfo = auth.userToken && jwtDecode(auth.userToken);
+    } catch(e) {
+        console.log("Failed to parse auth token", e);
+    }
 
 
     const showQuickMenuModal = () => {
@@ -95,7 +98,7 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                                         tabName={tabName}
                                         isTabSelected={tabIndex === selectedIndex}
                                         onTabPress={(e) => onTabPressed(e, name)}
-                                        hasDivider = {
+                                        hasDivider={
                                             tabName === 'Theatre' || tabName === 'Invoices' ? true : false
                                         }
                                     />

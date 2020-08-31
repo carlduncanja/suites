@@ -11,18 +11,11 @@ import {
 } from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard';
 import {currencyFormatter, formatDate} from '../../../../utils/formatter';
-import CaseFiles from '../../../../../data/CaseFiles';
-import IconButton from '../../../common/Buttons/IconButton';
-import RightArrow from '../../../../../assets/svg/rightArrow';
-import LeftArrow from '../../../../../assets/svg/leftArrow';
 import {PageContext} from '../../../../contexts/PageContext';
 import PostEditView from '../../OverlayPages/ChargeSheet/PostEditView';
 import moment from "moment";
-import inventory from "../../../../../assets/svg/inventory";
-
-const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices;
-const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation;
-const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing;
+import jwtDecode from 'jwt-decode'
+import {ROLES} from "../../../../const";
 
 const LINE_ITEM_TYPES = {
     DISCOUNT: 'discount',
@@ -68,6 +61,7 @@ const headers = [
 ];
 
 const ChargeSheet = ({
+                         auth = {},
                          chargeSheet = {},
                          selectedTab,
                          procedures,
@@ -98,6 +92,7 @@ const ChargeSheet = ({
             type: 'Anaesthesia'
         };
     });
+
     equipmentList = equipmentList.map(item => {
         const {equipment} = item;
         const {name = '', unitPrice = 0, type = ''} = equipment;
@@ -108,6 +103,14 @@ const ChargeSheet = ({
             unitPrice
         };
     });
+
+    const {expoPushToken, userToken} = auth;
+    let authInfo = {}
+    try {
+        authInfo = jwtDecode(userToken);
+    } catch (e) {
+        console.log("failed to decode token", e);
+    }
 
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode} = pageState;
@@ -131,10 +134,33 @@ const ChargeSheet = ({
     }, [isEditMode]);
 
     useEffect(() => {
-        setPageState({
+        console.log("console hello auth", authInfo);
+        const isPending = chargeSheet.status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
+
+        if (!isPending) return;
+
+        const isAdmin = authInfo['role_name'] === ROLES.ADMIN
+        const isOwner = chargeSheet.updatedBy?._id === authInfo['user_id'];
+
+        const isReview = isAdmin;
+        const locked = !isAdmin && !isOwner
+
+        const pageState = {
             ...pageState,
-            isReview: chargeSheet.status === CHARGE_SHEET_STATUSES.PENDING_CHANGES
-        })
+            isReview,
+            locked,
+            editMsg: isReview ? "now in edit mode (please review changes)" : undefined
+        };
+
+        setPageState(pageState)
+
+        return () => {
+            setPageState({
+                ...pageState,
+                isReview: false,
+                locked: false,
+            })
+        }
     }, [])
 
     // --------------------------- Helper Methods
@@ -200,19 +226,20 @@ const ChargeSheet = ({
     switch (selectedTab) {
         case 'Consumables':
             const {status, updatedBy = {}} = chargeSheet;
-            if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES) {
+
+            console.log("auth", authInfo);
+            const isAdmin = authInfo['role_name'] === ROLES.ADMIN
+            const isOwner = chargeSheet.updatedBy?._id === authInfo['user_id'];
+
+            if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
 
                 const firstName = updatedBy['first_name'] || "";
                 const lastName = updatedBy['last_name'];
 
-                const bannerText = `${firstName[0]}.${lastName} changes require your attention`
+                const bannerText = isAdmin ? `${firstName[0]}.${lastName} changes require your attention` : undefined
+
                 const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
-                // const caseProcedureChanges = billingUpdates.procedures;
                 const caseProcedureChanges = calculateChangesProcedureChanges(caseProcedures, billingUpdates.procedures)
-
-                console.log("value: ", caseProcedures);
-                console.log("changes: ", caseProcedureChanges);
-
 
                 return <PostEditView
                     headers={headers}
@@ -368,13 +395,15 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
     for (const newBillableItems of newProcedures) {
         const inventoryChanges = []
         const equipmentChanges = []
+        const hasChange = false;
         const updatedBillableItems = {...newBillableItems};
 
         const {lineItems: newlineItems = [], inventories: newInventories = [], equipments: newEquipments = [], caseProcedureId} = newBillableItems;
         const prvBillableItems = prvProcedures.find(item => item.caseProcedureId === caseProcedureId) || {};
         const {inventories: prvInventories = [], equipments: prvEquipments = []} = prvBillableItems;
 
-
+        // TODO check if prv and new amount diff
+        // TODO only insert procedures that has changes.
         for (const newInventoryItem of newInventories) {
             const prvItem = prvInventories.find(item => item.inventory === newInventoryItem.inventory)
             let initialAmount = prvItem?.amount || 0;
@@ -405,42 +434,6 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
 
         updatedProcedures.push(updatedBillableItems)
     }
-
-    // const inventoryChanges = []
-    // const equipmentChanges = []
-    //
-    // const {inventories: prvInventories = [], equipments: prvEquipments = []} = prvProcedures;
-    // const {inventories: newInventories = [], equipments: newEquipments = []} = newProcedures;
-    //
-    //
-    // for (const newInventoryItem of newInventories) {
-    //     const prvItem = prvInventories.find(item => item.inventory === newInventoryItem.inventory)
-    //     let initialAmount = prvItem?.amount || 0;
-    //
-    //     const update = {
-    //         ...newInventoryItem,
-    //         initialAmount
-    //     };
-    //
-    //     inventoryChanges.push(update);
-    // }
-    //
-    // for (const newEquipment of newEquipments) {
-    //     const prvItem = prvEquipments.find(item => item.equipment === newEquipment.equipment)
-    //     let initialAmount = prvItem?.amount || 0;
-    //
-    //     const update = {
-    //         ...newEquipment,
-    //         initialAmount
-    //     };
-    //
-    //     equipmentChanges.push(update);
-    // }
-    //
-    // updatedProcedures.inventory = inventoryChanges;
-    // updatedProcedures.equipments = equipmentChanges;
-    //
-    // console.log("updates", updatedProcedures)
 
     return updatedProcedures;
 }

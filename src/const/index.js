@@ -73,3 +73,11 @@ export const PURCHASE_ORDER_STATUSES = {
      */
     VOIDED: "voided",
 }
+
+
+export const ROLES = {
+    GUEST: 'Guest',
+    ADMIN: 'Admin',
+    NURSE: 'Nurse',
+    ASSISTANT: 'Assistant'
+};
