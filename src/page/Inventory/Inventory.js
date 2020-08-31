@@ -585,6 +585,7 @@ function Inventory(props) {
                         isEditUpdate = {true}
                         onCancel = {()=> modal.closeModals('ConfirmationModal')}
                         onAction = {()=>removeGroupCall(id)}
+                        // onAction = { () => confirmAction()}
                         message = {"Do you want to delete these item(s)?"}
                     />
                     ,
@@ -650,12 +651,16 @@ function Inventory(props) {
     const removeGroupCall = (id) => {
         removeInventoryGroup(id)
             .then(_ => {
-                setTimeout(()=>{
-                    modal.closeModals('ConfirmationModal');
-                },200);
-                modal.closeModals("ActionContainerModal");
+                // setTimeout(()=>{
+                //     modal.closeModals('ConfirmationModal');
+                    
+                // },200);
+                // modal.closeModals("ActionContainerModal");
+                // onRefresh();
+                confirmAction()
+
                 setSelectedIds([]);
-                onRefresh();
+                
             })
             .catch( error => {
                 openErrorConfirmation();
@@ -666,6 +671,27 @@ function Inventory(props) {
             })
             .finally (_ =>{
                 setFloatingAction(false);
+            })
+    }
+
+    const confirmAction = () =>{
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError = {false}
+                    isEditUpdate = {false}
+                    onAction = {()=> {
+                        modal.closeModals('ConfirmationModal');
+                        setTimeout(()=>{
+                            modal.closeModals("ActionContainerModal");
+                            onRefresh();
+                            
+                        },200);
+                    }}
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')} 
             })
     }
 
