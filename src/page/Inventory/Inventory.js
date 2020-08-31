@@ -254,8 +254,10 @@ function Inventory(props) {
         modal.openModal("ActionContainerModal",
             {
                 actions: getFabActions(),
-                title: "INVENTORY ACTIONS"
+                title: "INVENTORY ACTIONS",
+                onClose : ()=> setFloatingAction(false)
             })
+            
     };
 
     // ####### PARENT CHECKBOXPRESS
@@ -315,9 +317,18 @@ function Inventory(props) {
 
         const deleteAction =
             <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
-                <LongPressWithFeedback pressTimer={1200} onLongPress={removeGroup}>
-                    <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
-                    }} touchable={false}/>
+                <LongPressWithFeedback 
+                    pressTimer={1200} 
+                    onLongPress={removeGroup}
+                    isDisabled = {selectedIds.length === 0 ? true : false}
+                >
+                    <ActionItem 
+                        title={"Hold to Delete"} 
+                        icon={<WasteIcon strokeColor = {selectedIds.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>} 
+                        onPress={() => {}} 
+                        disabled = {selectedIds.length === 0 ? true : false}
+                        touchable={false}
+                    />
                 </LongPressWithFeedback>
             </View>;
 

@@ -4,7 +4,7 @@ import {
     View,
     TouchableWithoutFeedback,
     StyleSheet,
-    Text,
+    Text, 
     Animated
 } from "react-native";
 // import Animated from "react-native-reanimated";

@@ -1,6 +1,7 @@
-import React from 'react';
+import React from 'react'; 
 import Svg, {Path, Rect} from "react-native-svg";
 import {View} from "react-native";
+
 
 const WasteIcon = ({strokeColor = "#C53030"}) => (<View>
         <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
