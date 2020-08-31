@@ -1,15 +1,15 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import {SectionList, StyleSheet, Text, View} from "react-native";
+import { SectionList, StyleSheet, Text, View } from "react-native";
 
 import moment from "moment";
 import ScheduleItem from "./ScheduleItem";
 import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
-import {connect} from "react-redux";
-import {setAppointments} from "../../redux/actions/appointmentActions"
-import {getAppointments} from "../../api/network";
-import {getDaysForMonth} from "../../utils";
-import {formatDate} from "../../utils/formatter";
+import { connect } from "react-redux";
+import { setAppointments } from "../../redux/actions/appointmentActions"
+import { getAppointments } from "../../api/network";
+import { getDaysForMonth } from "../../utils";
+import { formatDate } from "../../utils/formatter";
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -26,7 +26,7 @@ import SectionListHeader from './SectionListHeader';
  * @constructor
  */
 
-function SchedulesList({appointments, selectedDay, month, onAppointmentPress, setAppointments}) {
+function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, setAppointments }) {
 
     const daysList = getDaysForMonth(month);
     const sectionListRef = useRef();
@@ -48,7 +48,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
 
         // find the appointments for the day and group them.
         return days.map((sectionDay => {
-            const title = formatDate(sectionDay,"dddd - MMM D");
+            const title = formatDate(sectionDay, "dddd - MMM D");
 
             let appointmentForDay = [];
             let index = appointmentList.length - 1;
@@ -74,7 +74,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
     };
 
     const isInMonth = (day) => {
-        return formatDate(new Date(day),"MM") === formatDate(month,"MM") ? 1 : 0.6
+        return formatDate(new Date(day), "MM") === formatDate(month, "MM") ? 1 : 0.6
     };
 
     const scrollToIndex = (index, animated) => {
@@ -116,7 +116,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
     `
     const ListContainer = styled.View({
         flexDirection: 'column',
-        backgroundColor:"green",
+        backgroundColor: "green",
         borderWidth: 1,
         borderColor: '#E9E9E9',
         borderRadius: 16,
@@ -139,7 +139,7 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
     return (
         // <ListWrapper>
         <View style={styles.scheduleContent}>
-            <View style = {styles.container}>
+            <View style={styles.container}>
                 <SectionList
                     ref={sectionListRef}
                     onRefresh={onRefresh}
@@ -161,24 +161,24 @@ function SchedulesList({appointments, selectedDay, month, onAppointmentPress, se
                     }}
                     sections={getSectionListData(daysList, appointments)}
                     stickySectionHeadersEnabled={true}
-                    ItemSeparatorComponent={() => <Seperator/>}
-                    renderSectionHeader={({section: {title}}) => (
-                        <SectionListHeader title = {title}/>
+                    ItemSeparatorComponent={() => <Seperator />}
+                    renderSectionHeader={({ section: { title } }) => (
+                        <SectionListHeader title={title} />
                         // <View style={[styles.dateLabelContainer,{opacity: isInMonth(title)}]}>
                         //     <Text style={styles.dateLabel}>
                         //         {title}
                         //     </Text>
                         // </View>
                     )}
-                    renderItem={({item}) => {
+                    renderItem={({ item }) => {
                         return <ScheduleItem
                             key={item.id}
                             startTime={item.startTime}
                             endTime={item.endTime}
-                            title={ `${item.title} - ${item.subject}` }
+                            title={`${item.title} - ${item.subject}`}
                             onScheduleClick={() => onAppointmentPress(item)}
                             color={item.type && item.type.color || 'gray'}
-                            isInMonthOpacity = {isInMonth(item.startTime)}
+                            isInMonthOpacity={isInMonth(item.startTime)}
                         />
                     }}
                 />
@@ -198,17 +198,8 @@ SchedulesList.propTypes = {
 
 SchedulesList.defaultProps = {};
 
-const mapStateToProps = (state) => {
-    return {
-        appointments: state.appointments
-    }
-};
 
-const mapDispatchToProps = {
-    setAppointments
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SchedulesList);
+export default SchedulesList;
 
 
 const styles = StyleSheet.create({
@@ -221,9 +212,9 @@ const styles = StyleSheet.create({
         paddingTop: 24,
     },
     container: {
-        flex:1,
+        flex: 1,
         flexDirection: 'column',
-        backgroundColor:"#FFFFFF",
+        backgroundColor: "#FFFFFF",
         borderWidth: 1,
         borderColor: '#E9E9E9',
         borderRadius: 16,
@@ -242,7 +233,7 @@ const styles = StyleSheet.create({
     },
     dateLabelContainer: {
         // backgroundColor: 'rgba(247, 250, 252, 1)',
-        backgroundColor:'#FFFFFF',
+        backgroundColor: '#FFFFFF',
         borderBottomColor: '#718096',
         borderBottomWidth: 1,
         paddingBottom: 5,

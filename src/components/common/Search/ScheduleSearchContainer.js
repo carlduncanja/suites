@@ -21,6 +21,21 @@ import ShadowContainerComponent from '../ShadowContainerComponent';
  * @returns {*}
  * @constructor
  */
+
+const ScheduleSearchWrapper = styled.View`
+position: absolute;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+z-index: 5;
+`;
+
+const SearchContainer = styled.View`
+display: flex;
+width: 100%;
+height: 100%;
+`;
 function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose }) {
 
     const matchesFound = [
@@ -148,20 +163,7 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
     // STYLED COMPONENTS
 
-    const ScheduleSearchWrapper = styled.View`
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 5;
-    `;
 
-    const SearchContainer = styled.View`
-        display: flex;
-        width: 100%;
-        height: 100%;
-    `;
 
     return (
         isOpen ?
