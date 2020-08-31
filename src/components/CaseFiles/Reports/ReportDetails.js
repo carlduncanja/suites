@@ -16,19 +16,19 @@ const ReportDetails = ({reportList, reportTable, listItemFormat, headers}) => {
         physicians.map(physician => {
             physiciansArray.push({
                 name: physician.name || '',
-                cost: physician.cost || 0
+                cost: physician.unitPrice * physician.quantity || 0
             });
         });
         procedures.map(procedure => {
             proceduresArray.push({
                 name: procedure.name || '',
-                cost: procedure.cost || 0
+                cost: procedure.unitPrice * procedure.quantity || 0
             });
         });
         services.map(service => {
             servicesArray.push({
                 name: service.name || '',
-                cost: service.cost || 0
+                cost: service.unitPrice * service.quantity || 0
             });
         });
         inventoriesArray = [...inventories];

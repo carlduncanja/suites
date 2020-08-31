@@ -60,6 +60,7 @@ function SchedulePageContent({
                     <LoadingIndicator />
                     :
                     <SchedulesList
+                        appointments={appointments}
                         selectedIndex={selectedIndex}
                         onAppointmentPress={onAppointmentPress}
                         selectedDay={selectedDay}

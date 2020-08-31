@@ -108,6 +108,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
     const [updateInfo, setUpdateInfo] = useState([]);
     const [selectedCaseId, setSelectedCaseId] = useState('');
     const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
+    const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
 
     // ############### State
 
@@ -173,6 +174,10 @@ function CasePage({route, addNotification, navigation, ...props}) {
         // const quoteIds = quotes.map(item => item._id)
         setSelectedQuoteIds(quotes);
     };
+
+    const handleInvoices = invoices => {
+        setSelectedInvoiceIds(invoices);
+    }
 
     const onGenerateQuotation = () => {
         modal.openModal('ConfirmationModal', {
@@ -542,6 +547,41 @@ function CasePage({route, addNotification, navigation, ...props}) {
                     title = 'QUOTATION ACTIONS';
                     break;
                 }
+                case 'Invoices': {
+                    if (selectedInvoiceIds.length === 1) {
+                        const invoice = selectedInvoiceIds[0];
+                        // const removeInvoices = (
+                        //     <LongPressWithFeedback
+                        //         pressTimer={700}
+                        //         onLongPress={() => onRemoveInvoices(invoice)}
+                        //     >
+                        //         <ActionItem
+                        //             title="Hold to Delete"
+                        //             icon={<WasteIcon/>}
+                        //             onPress={() => {
+                        //             }}
+                        //             touchable={false}
+                        //         />
+                        //     </LongPressWithFeedback>
+                        // );
+                        const downloadInvoice = (
+                            <ActionItem
+                                title="Download Invoice"
+                                icon={<DownloadIcon/>}
+                                onPress={() => downloadInvoiceDocument(invoice)}
+                            />
+                        );
+
+                        // floatingAction.push(removeInvoices);
+                        floatingAction.push(downloadInvoice);
+                    } else if (selectedInvoiceIds.length > 1) {
+                        // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
+                        //                                   onPress={onCreateInvoice}/>
+                    }
+
+                    title = 'INVOICE ACTIONS';
+                    break;
+                }
                 case 'Billing': {
                     const generateQuotationAction = (
                         <ActionItem
@@ -560,7 +600,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
 
                     floatingAction.push(generateQuotationAction, generateInvoiceAction);
 
-                    title = 'QUOTATION ACTIONS';
+                    title = 'BILLING ACTIONS';
                     break;
                 }
             }
@@ -643,6 +683,9 @@ function CasePage({route, addNotification, navigation, ...props}) {
             });
         }, 200);
     };
+
+    const downloadInvoiceDocument = async invoice => {
+    }
 
     const downloadQuotationDocument = async quotation => {
         const {quotations, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
@@ -753,19 +796,19 @@ function CasePage({route, addNotification, navigation, ...props}) {
                     physicians.map(physician => {
                         physiciansArray.push({
                             name: physician.name || '',
-                            cost: physician.cost || 0
+                            cost: `$${currencyFormatter(physician.unitPrice * physician.quantity)}` || 0
                         });
                     });
                     procedures.map(procedure => {
                         proceduresArray.push({
                             name: procedure.name || '',
-                            cost: procedure.cost || 0
+                            cost: `$${currencyFormatter(procedure.unitPrice * procedure.quantity)}` || 0
                         });
                     });
                     services.map(service => {
                         servicesArray.push({
                             name: service.name || '',
-                            cost: service.cost || 0
+                            cost: `$${currencyFormatter(service.unitPrice * service.quantity)}` || 0
                         });
                     });
 
@@ -787,13 +830,13 @@ function CasePage({route, addNotification, navigation, ...props}) {
                 });
 
                 args.total = `$${currencyFormatter(total)}`;
-                args.customer_name = q.billingDetails.name;
-                args.customer_address_line_1 = q.billingDetails.address.line1;
-                args.customer_address_line_2 = q.billingDetails.address.line2;
-                args.customer_address_line_3 = q.billingDetails.address.city;
+                args.customer_name = q.customerDetails.name;
+                args.customer_address_line_1 = q.customerDetails.address.line1;
+                args.customer_address_line_2 = q.customerDetails.address.line2;
+                args.customer_address_line_3 = q.customerDetails.address.city;
                 args.quotation_number = q.quotationNumber;
                 args.quotation_purpose = 'Medical Supplies';
-                args.date = formatDate(q.dateGenerated, 'DD/MM/YYYY');
+                args.date = formatDate(q.createdAt, 'DD/MM/YYYY');
                 args.summarydetails = summarydetails;
                 args.consumabledetails = consumabledetails;
                 args.subtotal = `$${currencyFormatter(q.amountDue)}`;
@@ -806,6 +849,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
 
         // build args to pass to document generation endpoint; pass result of that endpoint to downloadAsync
         try {
+            setPageLoading(true);
             const response = await generateDocumentLink(data);
 
             const fileUrl = response?.url;
@@ -815,20 +859,21 @@ function CasePage({route, addNotification, navigation, ...props}) {
             FileSystem.downloadAsync(
                 fileUrl,
                 `${FileSystem.cacheDirectory}${filename}`
-            )
-                .then(({uri}) => {
-                    console.info(`download.path::${uri}`);
+            ).then(({uri}) => {
+                console.info(`download.path::${uri}`);
 
-                    Sharing.shareAsync(uri, {UTI: 'pdf'})
-                        .then(result => console.info('sharing.success', result))
-                        .catch(error => console.error('sharing.error', error));
-                })
-                .catch(error => {
-                    console.error(error);
-                })
-                .finally(_ => modal.closeAllModals());
+                Sharing.shareAsync(uri, {UTI: 'pdf'})
+                    .then(result => console.info('sharing.success', result))
+                    .catch(error => console.error('sharing.error', error));
+            }).catch(error => {
+                console.error(error);
+            }).finally(_ => {
+                setPageLoading(false);
+                modal.closeAllModals();
+            });
         } catch (error) {
             console.error(error); // todo: show error message
+            setPageLoading(false);
             modal.closeAllModals();
         }
     };
@@ -869,6 +914,7 @@ function CasePage({route, addNotification, navigation, ...props}) {
                     onUpdateChargeSheet={data => updateCaseChargeSheet(data)}
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
+                    handleInvoices={handleInvoices}
                 />;
             default:
                 return <View/>;
