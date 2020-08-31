@@ -72,7 +72,7 @@ const listHeaders = [
         alignment: "center",
         flex:0.5
     }
-];
+]; 
 
 const LocationsWrapper = styled.View`
     flex:1;
