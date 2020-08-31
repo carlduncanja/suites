@@ -20,7 +20,7 @@ const DataItemContainer = styled.View`
 
 const DataText = styled.Text( ({theme, fontStyle, color}) => ({
     ...theme.font[fontStyle],
-    color : theme.colors[color], 
+    color : theme.colors[color],
 }))
 
 const DataTextContainer = styled.View`
@@ -42,31 +42,42 @@ const ArrowContainer = styled.View`
 
 
 function ComparisonDataItem({
-    prevText = "", 
-    nextText = "",
-    flex = 1, 
-    align = 'flex-start', 
-    fontStyle = '--text-base-regular', 
-    color = '--color-gray-700', 
+    prevValue = 0,
+    nextValue = 0,
+    flex = 1,
+    align = 'flex-start',
+    fontStyle = '--text-base-regular',
+    color = '--color-gray-700',
 
 }){
     const theme = useTheme();
-    
+
+    const borderProps = +prevValue < +nextValue ?
+        {
+            backgroundColor : "--color-green-100",
+            borderColor :"--color-green-400"
+        }
+        : {
+            backgroundColor : "--color-red-100",
+            borderColor :"--color-red-400"
+        }
+
+
     return (
         <DataItemWrapper flex = {flex} theme={theme}>
             <DataItemContainer align = {align}>
 
                 <DataTextContainer theme = {theme} backgroundColor = "--color-gray-100" borderColor = "--color-gray-400">
-                    <DataText numberOfLines = {1} fontStyle = {fontStyle} color = {color} theme = {theme}>{prevText}</DataText>
+                    <DataText numberOfLines = {1} fontStyle = {fontStyle} color = {color} theme = {theme}>{prevValue}</DataText>
                 </DataTextContainer>
 
                 <ArrowContainer>
                     <RightArrow strokeColor = {theme.colors['--color-black']}/>
                 </ArrowContainer>
-                
 
-                <DataTextContainer theme = {theme} backgroundColor = "--color-green-100" borderColor = "--color-green-400">
-                    <DataText numberOfLines = {1} fontStyle = {fontStyle} color = {color} theme = {theme}>{nextText}</DataText>
+
+                <DataTextContainer theme = {theme} {...borderProps}>
+                    <DataText numberOfLines = {1} fontStyle = {fontStyle} color = {color} theme = {theme}>{nextValue}</DataText>
                 </DataTextContainer>
 
             </DataItemContainer>
