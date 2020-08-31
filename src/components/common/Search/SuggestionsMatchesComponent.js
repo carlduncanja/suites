@@ -13,6 +13,18 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import Suggestion from './Suggestion';
 
+const SuggestionsMatchesComponentWrapper = styled.View`
+    margin: 0;
+    height: 180px;
+`;
+
+const SuggestionsMatchesComponentContainer = styled.View`
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+`;
+
 function SuggestionsMatchesComponent({
     matchesToDisplay = [],
     openSearchResult = () => { }
@@ -22,19 +34,7 @@ function SuggestionsMatchesComponent({
     const theme = useTheme();
     // STYLED COMPONENTS
 
-    const SuggestionsMatchesComponentWrapper = styled.View`
-        margin: 0;
-        height: 180px;
-      
-
-    `;
-    const SuggestionsMatchesComponentContainer = styled.View`
-        display: flex;
-        height: 100%;
-        width: 100%;
-        
-        justify-content: space-between;
-    `
+    
     return (
 
         <SuggestionsMatchesComponentWrapper>

@@ -12,38 +12,36 @@ import IconButton from '../Buttons/IconButton';
 import SearchInputContainer from './SearchInputContainer';
 import MatchesFoundComponent from './MatchesFound';
 
+const SearchBoxWrapper = styled.View`
+    margin : 0 ;
+    margin-right: 12px;
+    width : 496px;
+    height : 100%;
+    align-items: center;
+    justify-content: center;
+`;
+
+const SearchBoxContainer = styled.View`
+    height: 100%;
+    width: 100%;
+    flex-direction:row;
+    padding-left: 9px;
+    padding-right: 9px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
+    border-width: 1px;
+    border-color: ${ ({theme}) => theme.colors['--color-gray-300']};
+    border-radius: 8px;
+`;
+
 function SearchBox({onChangeText = ()=>{}, inputText = "", matchesFound = [], onPressNewSerch = ()=>{} }){
 
     const theme = useTheme();
 
-    const SearchBoxWrapper = styled.View`
-        margin : 0 ;
-        margin-right: 12px;
-        width : 496px;
-        height : 100%;
-        align-items: center;
-        justify-content: center;
-    `;
-
-    const SearchBoxContainer = styled.View`
-        height: 100%;
-        width: 100%;
-        flex-direction:row;
-        padding-left: 9px;
-        padding-right: 9px;
-        padding-top: 4px;
-        padding-bottom: 4px;
-        background-color: ${theme.colors['--color-gray-100']};
-        border-width: 1px;
-        border-color: ${theme.colors['--color-gray-300']};
-        border-radius: 8px;
-    `;
-
-    
-
     return (
         <SearchBoxWrapper>
-            <SearchBoxContainer>
+            <SearchBoxContainer theme = {theme}>
                 
                 <SearchInputContainer
                     onChangeText = {onChangeText}

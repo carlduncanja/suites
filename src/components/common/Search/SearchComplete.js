@@ -13,35 +13,33 @@ import SearchInputContainer from './SearchInputContainer';
 import MatchesFoundComponent from './MatchesFound';
 import Button from '../Buttons/Button';
 
+const SearchCompleteWrapper = styled.View`
+    margin : 0 ;
+    width : 64px;
+    height: 100%;
+    justify-content: center;
+`;
+
+const SearchCompleteontainer = styled.View`
+    
+    width: 100%;
+    flex-direction:row;
+    background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
+    border-width: 1px;
+    border-color: ${ ({theme}) => theme.colors['--color-gray-300']};
+    border-radius: 6px;
+    align-items:center;
+    justify-content: center;
+`;
+
 function SearchComplete({onSubmit = ()=>{} }){
 
     const theme = useTheme();
 
-    const SearchCompleteWrapper = styled.View`
-        margin : 0 ;
-        width : 64px;
-        height: 100%;
-        justify-content: center;
-    `;
-
-    const SearchCompleteontainer = styled.View`
-       
-        width: 100%;
-        flex-direction:row;
-        background-color: ${theme.colors['--color-gray-100']};
-        border-width: 1px;
-        border-color: ${theme.colors['--color-gray-300']};
-        border-radius: 6px;
-        align-items:center;
-        justify-content: center;
-    `;
-
-        
-
     return (
 
         <SearchCompleteWrapper>
-            <SearchCompleteontainer>
+            <SearchCompleteontainer theme = {theme}>
                 <Button
                     buttonPress = {onSubmit}
                     color = {theme.colors['--accent-button']}

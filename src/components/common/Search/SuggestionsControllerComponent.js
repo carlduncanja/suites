@@ -14,6 +14,31 @@ import { useTheme } from 'emotion-theming';
 import Suggestion from './Suggestion';
 import SuggestionsMatchesComponent from './SuggestionsMatchesComponent';
 
+const SuggestionsControllerWrapper = styled.View`
+    width: 100%;
+    flex:1;
+    margin: 0;
+    align-items: center;
+`;
+const SuggestionsControllerContainer = styled.View`
+    display: flex;
+    width: 50%;
+    height:100%;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-evenly;
+`;
+
+const ButtonContainer = styled.View`
+    height: 28px;
+    width: 98px;
+    border-color: ${ ({theme}) => theme.colors['--color-gray-300']};
+    border-radius: 4px;
+    border-width: 1px;
+    align-items: center;
+    justify-content: center;
+`
+
 function SuggestionsControllerComponent({
         currentListMin = 0,
         getPreviousResults = ()=>{},
@@ -24,36 +49,13 @@ function SuggestionsControllerComponent({
     const theme = useTheme();
     // STYLED COMPONENTS
 
-    const SuggestionsControllerWrapper = styled.View`
-        width: 100%;
-        flex:1;
-        margin: 0;
-        align-items: center;
-    `;
-    const SuggestionsControllerContainer = styled.View`
-        display: flex;
-        width: 50%;
-        height:100%;
-        flex-direction: row;
-        align-items: flex-end;
-        justify-content: space-evenly;
-    `;
-
-    const ButtonContainer = styled.View`
-        height: 28px;
-        width: 98px;
-        border-color: ${theme.colors['--color-gray-300']};
-        border-radius: 4px;
-        border-width: 1px;
-        align-items: center;
-        justify-content: center;
-    `
+   
     return (
         
         <SuggestionsControllerWrapper>
             <SuggestionsControllerContainer>
 
-                <ButtonContainer>
+                <ButtonContainer theme = {theme}>
                     <Button
                         title="Go Back"
                         buttonPress={getPreviousResults}

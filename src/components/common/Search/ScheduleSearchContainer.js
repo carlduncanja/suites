@@ -40,7 +40,7 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
     const matchesFound = [
         "Coronary Bypass Graft",
-        "Cardioplastic Surgery",
+        "Cardioplastic Surgery", 
         "Colon Screening",
         new Date(2020, 2, 11, 9),
         "Restock Cotton Swabs",

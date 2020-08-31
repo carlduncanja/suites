@@ -13,8 +13,18 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SuggestionsComponent from './SuggestionsComponent';
 
+const SearchBarWrapper = styled.TouchableOpacity`
+    height: 100%;
+    width: 100%;
+`;
+const SearchBarContainer = styled.View`
+    display: flex;
+    height: 100%;
+    width: 100%;
+`;
+
 function SearchBar(props) {
-    const {
+    const { 
         changeText,
         closeSearch,
 
@@ -72,15 +82,7 @@ function SearchBar(props) {
     matchesToDisplay = matchesFound.slice(currentListMin, currentListMax)
     // STYLED COMPONENTS
 
-    const SearchBarWrapper = styled.TouchableOpacity`
-        height: 100%;
-        width: 100%;
-    `;
-    const SearchBarContainer = styled.View`
-        display: flex;
-        height: 100%;
-        width: 100%;
-    `
+
     return (
 
         <SearchBarWrapper activeOpacity={1} onPress={() => searchClosed()}>

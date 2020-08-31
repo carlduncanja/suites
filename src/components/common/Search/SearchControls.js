@@ -12,44 +12,46 @@ import IconButton from '../Buttons/IconButton';
 import SearchInputContainer from './SearchInputContainer';
 import MatchesFoundComponent from './MatchesFound';
 
+const SearchControlsWrapper = styled.View`
+    margin : 0 ;
+    margin-right: 12px;
+    width : 66px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+`;
+
+const SearchControlsContainer = styled.View`
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction:row;
+    background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
+    border-width: 1px;
+    border-color: ${ ({theme}) => theme.colors['--color-gray-300']};
+    border-radius: 8px;
+`;
+
+const ControlDivider = styled.View`
+    border-width: 1px;
+    border-color: ${ ({theme}) => theme.colors['--color-gray-300']};
+`;
+
+
 function SearchControls({onPressPreviousResult = ()=>{}, onPressNextResult=()=>{}}){
 
     const theme = useTheme();
 
-    const SearchControlsWrapper = styled.View`
-        margin : 0 ;
-        margin-right: 12px;
-        width : 66px;
-        height: 100%;
-        align-items: center;
-        justify-content: center;
-    `;
-
-    const SearchControlsContainer = styled.View`
-        display: flex;
-        height: 100%;
-        width: 100%;
-        flex-direction:row;
-        background-color: ${theme.colors['--color-gray-100']};
-        border-width: 1px;
-        border-color: ${theme.colors['--color-gray-300']};
-        border-radius: 8px;
-    `;
-
-    const ControlDivider = styled.View`
-        border-width: 1px;
-        border-color: ${theme.colors['--color-gray-300']};
-    `;
-
+   
     return (
         <SearchControlsWrapper>
-            <SearchControlsContainer>
+            <SearchControlsContainer theme = {theme}>
                 <IconButton
                     Icon = {<LeftSelector/>}
                     onPress = {onPressPreviousResult}
                 />
 
-                <ControlDivider/>
+                <ControlDivider theme = {theme}/>
 
                 <IconButton
                     Icon = {<RightSelector/>}
