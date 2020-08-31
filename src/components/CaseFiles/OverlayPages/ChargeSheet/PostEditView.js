@@ -13,6 +13,7 @@ import BrokenLineDivider from '../../../common/BrokenLineDivider';
 import DataItem from '../../../common/List/DataItem';
 import ContentDataItem from '../../../common/List/ContentDataItem';
 import ComparisonDataItem from '../../../common/List/ComparisonDataItem';
+import LineDivider from '../../../common/LineDivider';
 
 import RightArrow from '../../../../../assets/svg/rightArrow';
 import LeftArrow from '../../../../../assets/svg/leftArrow';
@@ -73,8 +74,39 @@ const IconButtonContainer = styled.View`
    flex : 0.2;
 `;
 
+const DividerContainer = styled.View`
+    margin-bottom : ${ ({theme}) => theme.space['--space-20']};
+`;
 
-function ConsumablesPostEditNurseView ({headers, consumables = [], caseProceduresFilters = [], caseProcedures = [] ,onConsumablesUpdate, allItems = []}) {
+const TableBannerContainer = styled.View`
+    width : 100%;
+    height : 38px;
+    background-color : ${ ({theme}) => theme.colors['--accent-button']};
+    justify-content : center;
+    align-items : center;
+    margin-bottom : ${ ({theme}) => theme.space['--space-8']};
+    border-radius : 8px;
+`;
+
+const BannerText = styled.Text( ({theme}) => ({
+    ...theme.font['--text-sm-medium'],
+    color : theme.colors['--default-shade-white'],
+}));
+
+const ChangesDataContainer = styled.View`
+    margin-bottom : ${ ({theme}) => theme.space['--space-12']};
+`
+
+
+
+function PostEditView ({
+    headers, 
+    consumables = [], 
+    caseProceduresFilters = [], 
+    caseProcedures = [],
+    bannerText = "Find your change submission below",
+    role = "Nurse"
+}) {
 
     // console.log("Cae: ", caseProcedures)
     const theme = useTheme();
@@ -140,11 +172,10 @@ function ConsumablesPostEditNurseView ({headers, consumables = [], caseProcedure
         
     </>
 
+
     const childViewItem = (item, index) => {
         const { amount = 0, cost = 0, name = "" } = item
         return (
-
-        
             <>
                 <ContentDataItem
                     flex = {1}
@@ -157,52 +188,21 @@ function ConsumablesPostEditNurseView ({headers, consumables = [], caseProcedure
                 />
                 <DataItem text = "n/a" align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                 {
-                    isEditMode === true ?
-                    <ContentDataItem
-                        align = "center"
-                        content = {
-                            <NumberChangeField
-                                onChangePress={onQuantityChangePress(item, index)}
-                                // onAmountChange={onAmountChange(item, index)}
-                                value={amount === 0 ? "" : amount.toString()}
-                            />
-                        }
-                    />
-                    :
+                    // isEditMode === true && role === 'Admin'?
+                    // <ContentDataItem
+                    //     align = "center"
+                    //     content = {
+                    //         <NumberChangeField
+                    //             onChangePress={onQuantityChangePress(item, index)}
+                    //             // onAmountChange={onAmountChange(item, index)}
+                    //             value={amount === 0 ? "" : amount.toString()}
+                    //         />
+                    //     }
+                    // />
+                    // :
                     <DataItem text = {amount} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                 }
                 <DataItem text = {`$ ${currencyFormatter(cost)}`} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
-                {/* <View style={[styles.item, {justifyContent: 'flex-start', flex: 1.5}]}>
-                    <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
-                    <ItemArrow strokeColor = "#718096"/>
-                    <Text style={{color: "#3182CE", fontSize: 16, marginLeft: 10}}>
-                        {name}
-                    </Text>
-                </View> */}
-
-                {/* <View style={[
-                    styles.item, {justifyContent: "center"}
-                ]}>
-                    <Text style={[styles.itemText]}>
-                        n/a
-                    </Text>
-                </View> */}
-
-                {/* <View style={[
-                    styles.item, {justifyContent: "center"}
-                ]}>
-                    <Text style={[styles.itemText]}>
-                        {amount}
-                    </Text>
-                </View>
-
-                <View style={[
-                    styles.item, {justifyContent: "center"}
-                ]}>
-                    <Text style={[styles.itemText]}>
-                        {`$ ${currencyFormatter(cost)}`}
-                    </Text>
-                </View> */}
 
             </>
         )
@@ -223,9 +223,23 @@ function ConsumablesPostEditNurseView ({headers, consumables = [], caseProcedure
                 />
 
                 <DataItem text = "n/a" align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
-                <ComparisonDataItem
-                    prevText = {amount} nextText = {10} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"
-                />
+                {
+                    isEditMode === true && role === 'Admin'?
+                        <ContentDataItem
+                            align = "center"
+                            content = {
+                                <NumberChangeField
+                                    backgroundColor = "#48BB78"
+                                    onChangePress={()=>{}}
+                                    // onAmountChange={onAmountChange(item, index)}
+                                    value={amount === 0 ? "" : amount.toString()}
+                                />
+                            }
+                        />
+                    :
+                    <ComparisonDataItem prevText = {amount} nextText = {10} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                }
+                
                 <DataItem text = {`$ ${currencyFormatter(cost)}`} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                
 
@@ -233,6 +247,7 @@ function ConsumablesPostEditNurseView ({headers, consumables = [], caseProcedure
         )
     }
     
+
     const renderChildItemView = (item, index) => {
         let { _id } = item
 
@@ -260,6 +275,7 @@ function ConsumablesPostEditNurseView ({headers, consumables = [], caseProcedure
             />
         )
     };
+
 
     const renderCollapsible = (item, index) => {
         
@@ -334,57 +350,43 @@ function ConsumablesPostEditNurseView ({headers, consumables = [], caseProcedure
                     backgroundColor="#FAFAFA"
                 />
 
-                <TableContainer theme = {theme}>
+                <TableContainer>
+                    <Header
+                        headers = {headers}
+                        toggleHeaderCheckbox = {()=>{}}
+                        isCheckbox = {true}
+                    />
 
-                    <Table
-                        isCheckbox={true}
-                        data={caseProcedures}
-                        listItemFormat={renderChangeCollapsible}
-                        headers={headers}
-                        toggleHeaderCheckbox={()=>{}}
-                        itemSelected={checkBoxList}
-                        hasBanner = {true}
-                        bannerText = "Find your change submission below"
-                    /> 
+                    <DividerContainer theme = {theme}>
+                        <LineDivider/>
+                    </DividerContainer>
 
-                </TableContainer> 
-                
-                
+                    <TableBannerContainer theme = {theme}>
+                        <BannerText theme = {theme}>{bannerText}</BannerText>
+                    </TableBannerContainer>
 
-                {/* <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20, }}>
-                    <View style={{flex: 2, paddingRight: 100, justifyContent:'center'}}>
-                        <Search
-                            placeholderText="Search by inventory item"
-                            inputText={searchText}
-                            changeText={onSearchInputChange}
-                            backgroundColor="#FAFAFA"
+                    <ChangesDataContainer theme = {theme}>
+                        <Data
+                            listItemFormat = {renderChangeCollapsible}
+                            data = {caseProcedures}
                         />
-                    </View>
-                    <View style={{flex: 1, alignItems:'flex-start'}}>
-                        <DropdownInputField
-                            onSelectChange={onSelectChange}
-                            value={selectedOption}
-                            selected={selectedIndex}
-                            dropdownOptions={caseProceduresFilters}
-                        />
-                    </View>
-                </View>
+                    </ChangesDataContainer>
+                    
+                    <DividerContainer theme = {theme}>
+                        <BrokenLineDivider/>
+                    </DividerContainer>
 
+                    <Data
+                        listItemFormat = {renderCollapsible}
+                        data = {caseProcedures}
+                    />
 
-                <Table
-                    isCheckbox={true}
-                    data={consumables[selectedIndex] || []}
-                    listItemFormat={renderListFn}
-                    headers={headers}
-                    toggleHeaderCheckbox={toggleHeaderCheckbox}
-                    itemSelected={checkBoxList}
-                    // dataLength = {tabDetails.length}
-                /> */}
-              
+                </TableContainer>
+
             </ConsumablesContainer>
         </ConsumablesWrapper>
     );
 }
 
-export default ConsumablesPostEditNurseView;
+export default PostEditView;
 

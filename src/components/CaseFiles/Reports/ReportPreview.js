@@ -21,8 +21,8 @@ const Rectangle = () => (
 );
 
 const ReportPreview = ({type = '', details = {}, reportDetails }) => {
-    const { billingDetails = {}, dateGenerated = '', amountDue = 0 } = details;
-    const { address = {}, email = '', name = '', phone = '', billedFor = '' } = billingDetails;
+    const { billingDetails = {}, customerDetails = {}, createdAt = '', amountDue = 0 } = details;
+    const { address = {}, email = '', name = '', phone = '', billedFor = 'Medical Supplies' } = customerDetails;
 
     const reportNumber = type === 'Invoice' ? details.invoiceNumber : details.quotationNumber;
     const purchaseOrderNumber = details.purchaseOrderNumber || '';
@@ -85,7 +85,7 @@ const ReportPreview = ({type = '', details = {}, reportDetails }) => {
                     reportNumber={reportNumber}
                     total={amountDue}
                     type={type}
-                    reportDate={dateGenerated}
+                    reportDate={createdAt}
                     purchaseOrderNo={purchaseOrderNumber}
                 />
 

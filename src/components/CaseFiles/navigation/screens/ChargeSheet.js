@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import {
     Consumables,
-    ConsumablesPostEditNurseView,
     Equipment,
     Invoices,
     Quotation,
@@ -17,6 +16,7 @@ import IconButton from '../../../common/Buttons/IconButton';
 import RightArrow from '../../../../../assets/svg/rightArrow';
 import LeftArrow from '../../../../../assets/svg/leftArrow';
 import {PageContext} from '../../../../contexts/PageContext';
+import PostEditView from '../../OverlayPages/ChargeSheet/PostEditView';
 
 const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices;
 const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation;
@@ -48,7 +48,7 @@ const headers = [
     }
 ];
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, onUpdateChargeSheet, handleEditDone, handleQuotes}) => {
+const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, onUpdateChargeSheet, handleEditDone, handleQuotes, handleInvoices}) => {
     let {
         inventoryList = [],
         equipmentList = [],
@@ -227,17 +227,6 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
     return (
         selectedTab === 'Consumables' ? (
 
-            // <ConsumablesPostEditNurseView
-            //     headers={headers}
-            //     allItems={inventoryList}
-            //     consumables={consumables}
-            //     caseProceduresFilters={consumableProcedures}
-            //     caseProcedures={caseProcedures}
-            //     onConsumablesUpdate={handleConsumableUpdate}
-            //     isEditMode={isEditMode}
-            //     handleEditDone={handleEditDone}
-            // />
-
             <Consumables
                 headers={headers}
                 allItems={inventoryList}
@@ -266,6 +255,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                     <Invoices
                         tabDetails={invoices}
                         reportDetails={billing}
+                        handleInvoices={handleInvoices}
                     />
                 ) :
                     selectedTab === 'Quotation' ? (

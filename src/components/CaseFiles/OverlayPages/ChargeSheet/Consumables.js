@@ -173,6 +173,8 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                             <NumberChangeField
                                 onChangePress={onQuantityChangePress(item, itemIndex, sectionIndex)}
                                 value={amount === 0 ? "" : amount.toString()}
+                                borderColor = '--color-green-500'
+                                backgroundColor = '--color-green-100'
                             />
                         }
                     />
