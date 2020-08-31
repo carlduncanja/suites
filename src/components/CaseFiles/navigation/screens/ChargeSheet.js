@@ -32,15 +32,19 @@ const LINE_ITEM_TYPES = {
 const headers = [
     {
         name: 'Item Name',
-        alignment: 'flex-start'
+        alignment: 'flex-start',
+        hasSort : true
+        
     },
     {
         name: 'Type',
-        alignment: 'center'
+        alignment: 'center',
+        hasSort : true
+
     },
     {
         name: 'Quantity',
-        alignment: 'center'
+        alignment: 'center',
     },
     {
         name: 'Unit Price',
@@ -48,7 +52,7 @@ const headers = [
     }
 ];
 
-const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, onUpdateChargeSheet, handleEditDone, handleQuotes, handleInvoices}) => {
+function ChargeSheet ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, onUpdateChargeSheet, handleEditDone, handleQuotes, handleInvoices}) {
     let {
         inventoryList = [],
         equipmentList = [],
@@ -245,6 +249,7 @@ const ChargeSheet = ({chargeSheet = {}, selectedTab, procedures, quotations, inv
                     allItems={equipmentList}
                     equipments={procedureEquipments}
                     caseProceduresFilters={consumableProcedures}
+                    caseProcedures = {caseProcedures}
                     onEquipmentsUpdate={handleEquipmentUpdate}
                     // details={billing.procedures}
                     isEditMode={isEditMode}
