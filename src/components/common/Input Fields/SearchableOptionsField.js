@@ -4,12 +4,22 @@ import {View, StyleSheet, Text, TextInput, FlatList, TouchableOpacity, SafeAreaV
 import IconButton from "../Buttons/IconButton";
 import RemoveIcon from "../../../../assets/svg/removeIcon";
 import ClearIcon from "../../../../assets/svg/clearIcon";
+import {useTheme} from "emotion-theming";
+import Styled from "@emotion/native";
 
 const optionsStyles = {
     optionsContainer: {
         backgroundColor: "rgba(255, 255, 255, 0)"
     }
 };
+
+const LabelContainer = Styled.Text(({theme, label}) => ({
+    ...theme.font['--text-xs-medium'],
+    color: theme.colors['--color-gray-600'],
+    minWidth: 60,
+    marginRight: label ? 20 : 0
+}))
+
 
 function SearchableOptionsField({
                                     text,
@@ -30,6 +40,8 @@ function SearchableOptionsField({
                                 }) {
 
     const textInputRef = useRef();
+    const theme = useTheme()
+
 
     const [selectedValue, setSelectedValue] = useState(value);
 
@@ -63,13 +75,10 @@ function SearchableOptionsField({
 
     return (
         <View style={styles.container}>
-            <Text style={[
-                styles.textLabel, {
-                    marginRight: label ? 20 : 0
-                }
-            ]}>
-                {label}
-            </Text>
+            {
+                label && <LabelContainer theme={theme} lable={!!label}>{label}</LabelContainer>
+            }
+
             <View style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}>
 
                 <TextInput
@@ -84,7 +93,7 @@ function SearchableOptionsField({
                 />
 
                 {
-                    (selectedValue ) &&
+                    !!selectedValue &&
 
                     <View style={styles.valueBox}>
                         <Text numberOfLines = {1} style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
@@ -172,7 +181,7 @@ const styles = StyleSheet.create({
         paddingBottom: 2,
         width: '100%',
         maxHeight: 300,
-        borderRadius: 8,
+        borderRadius: 4,
         // border: 1px solid #CCD6E0;
         borderWidth: 1,
         borderColor: '#CCD6E0',
@@ -197,7 +206,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         borderWidth: 1,
         borderColor: '#E3E8EF',
-        borderRadius: 8,
+        borderRadius: 4,
         height: 32,
         padding: 10,
         paddingTop: 2,

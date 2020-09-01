@@ -13,21 +13,11 @@ import InputFrameItem from "../FrameItems/InputFrameItem";
 import DateInputField from "../../Input Fields/DateInputField";
 import FrameTableDateItem from "../FrameItems/FrameTableDateItem";
 import {getTheatres, updateCaseProcedureAppointmentCall} from "../../../../api/network";
+import LoadingComponent from "../../../LoadingComponent";
+// import OptionSearchableField from "../../InputFields/OptionSearchableField";
 import SearchableOptionsField from "../../Input Fields/SearchableOptionsField";
-import styled from "@emotion/native";
+import FrameTableSearchableItem from "../FrameItems/FrameTableSearchableItem";
 import _ from "lodash";
-import {useTheme} from "emotion-theming";
-import DateInputField2 from "../../InputFields/DateInputField2";
-import InputUnitField from "../../Input Fields/InputUnitFields";
-import OptionsField from "../../Input Fields/OptionsField";
-import {MenuOption, MenuOptions} from "react-native-popup-menu";
-
-
-const RowWrapper = styled.View`
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: ${({theme}) => theme.space['--space-16']};
-`
 
 
 const getAppointmentFields = ({location, startTime, endTime}) => {
@@ -50,9 +40,6 @@ const FrameProcedureContent = ({
                                    onAppointmentFieldsUpdate,
                                }) => {
 
-    const theme = useTheme();
-    const [hasRecovery, setRecovery] = useState(!!recoveryAppointment);
-
     return (
         <View style={styles.container}>
             <View style={{paddingBottom: 10, borderBottomColor: "#CCD6E0", borderBottomWidth: 1}}>
@@ -64,24 +51,9 @@ const FrameProcedureContent = ({
                         onFieldsUpdated={onAppointmentFieldsUpdate}
                     />
                 }
-
-                <RowWrapper theme={theme}>
-                    <OptionsField
-                        label={"Recovery"}
-                        text={hasRecovery ? 'Yes' : 'No'}
-                        oneOptionsSelected={(value) => {
-                            setRecovery(value)
-                        }}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={true} text='Yes'/>
-                            <MenuOption value={false} text='No'/>
-                        </MenuOptions>}
-                    />
-
-                    <View style={{width: 20}}/>
-                    <View style={{flex: 1}}/>
-
-                </RowWrapper>
+                <View style={styles.recovery}>
+                    <FrameCheckboxItem title="Recovery" status={!!recoveryAppointment}/>
+                </View>
                 {
                     // recoveryAppointment &&
                     // <AppointmentView isEdit={isEdit} appointment={recoveryAppointment}/>
@@ -127,7 +99,6 @@ export default FrameProcedureContent;
  * @constructor
  */
 const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
-    const theme = useTheme();
     const {duration = {}, location, startTime} = fields;
     const {name = ""} = location || {}
 
@@ -188,7 +159,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
     const fetchLocations = () => {
         getTheatres(searchLocationValue, 5)
             .then((locationsInfo) => {
-                const {data = [], pages} = locationsInfo;
+                const { data = [], pages } = locationsInfo;
                 setSearchLocationResult(data || []);
             })
             .catch((error) => {
@@ -216,8 +187,8 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
 
     return (
         <View>
-            <RowWrapper theme={theme} style={{zIndex: 2}}>
-                <SearchableOptionsField
+            <View style={{zIndex: 2}}>
+                <FrameTableSearchableItem
                     title="Location"
                     selectable={true}
                     enabled={isEdit}
@@ -231,14 +202,14 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                     onClear={handleLocationChange}
                     options={searchLocationResult}
                 />
+            </View>
 
-                <View style={{width: 24}}/>
-
+            <View style={styles.dateContainer}>
                 <View style={{flex: 1}}>
 
-                    <DateInputField
+                    <FrameTableDateItem
                         enabled={isEdit}
-                        label="Date"
+                        title="Date"
                         value={moment(startTime).toDate()}
                         format={"MMM/DD/YYYY"}
                         mode={"date"}
@@ -249,15 +220,11 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                     {/*    EDIT DATE    */}
 
                 </View>
+                <View style={{width: 120}}>
 
-            </RowWrapper>
-
-            <RowWrapper theme={theme}>
-                <View style={{flex: 1}}>
-
-                    <DateInputField
+                    <FrameTableDateItem
                         enabled={isEdit}
-                        label="Time"
+                        title=""
                         value={moment(startTime).toDate()}
                         format={"h:mm A"}
                         mode={"time"}
@@ -268,22 +235,17 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                     {/*    EDIT TIME    */}
 
                 </View>
-
-                <View style={{width: 24}}/>
-
                 <View style={{flex: 1}}>
-
-                    <InputUnitField
-                        label={"Duration"}
-                        onChangeText={onDurationUpdated}
-                        value={duration || 0}
-                        units={['hrs']}
-                        keyboardType="number-pad"
-                        errorMessage="Input estimated time (hours)."
+                    <FrameTableItem
+                        selectable={false}
+                        enabled={isEdit}
+                        editable={isEdit}
+                        title="Duration"
+                        value={duration || ""}
+                        onChangeValue={onDurationUpdated}
                     />
                 </View>
-
-            </RowWrapper>
+            </View>
         </View>
     )
 }

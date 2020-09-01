@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from "react-native";
 import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
-import DropDownIcon from "../../../../assets/svg/dropDown"; 
+import DropDownIcon from "../../../../assets/svg/dropDown";
 import { useTheme } from 'emotion-theming';
 import styled, { css } from '@emotion/native';
 import InputContainerComponent from '../InputContainerComponent';
@@ -12,11 +12,12 @@ import InputErrorComponent from '../InputErrorComponent';
 
 const TextInputWrapper = styled.View`
     flex:1;
-    height : 32px;
+    //height : 32px;
 `;
 const TextInputContainer = styled.View`
     height : 100%;
     width : 100%;
+    min-height: 32px;
     border-width: 1px;
     padding-left : ${ ({theme}) => theme.space['--space-10'] };
     padding-right : ${ ({theme}) => theme.space['--space-10'] };
@@ -55,7 +56,7 @@ function OptionsField({oneOptionsSelected, text, label, menuOption, hasError = f
             {
                 label && <InputLabelComponent label = {label}/>
             }
-           
+
             <Menu onSelect={oneOptionsSelected} style={{flex: 1}}>
                 <MenuTrigger>
 
@@ -68,7 +69,7 @@ function OptionsField({oneOptionsSelected, text, label, menuOption, hasError = f
                             </Input>
 
                             {
-                                hasError && 
+                                hasError &&
                                 <Error>
                                     <InputErrorComponent errorMessage = {errorMessage}/>
                                 </Error>
@@ -82,14 +83,14 @@ function OptionsField({oneOptionsSelected, text, label, menuOption, hasError = f
                         </TextInputContainer>
                     </TextInputWrapper>
 
-                    
+
                     {/* <>
                         <View style={[styles.inputField, {borderColor: hasError ? 'red' : '#E3E8EF'}]}>
                             <Text>{text}</Text>
                             <DropDownIcon/>
                         </View>
                         {
-                            hasError && 
+                            hasError &&
                             // <InputErrorComponent errorMessage = {errorMessage}/>
                             <View style={styles.errorView}>
                                  <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>

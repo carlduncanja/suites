@@ -3,6 +3,16 @@ import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 import DatePicker from "react-native-datepicker";
+import {useTheme} from "emotion-theming";
+import Styled from "@emotion/native"
+
+
+const LabelContainer = Styled.Text(({theme, label}) => ({
+    ...theme.font['--text-xs-medium'],
+    color: theme.colors['--color-gray-600'],
+    minWidth: 60,
+    marginRight: label ? 20 : 0
+}))
 
 /**
  *
@@ -15,19 +25,20 @@ import DatePicker from "react-native-datepicker";
  * @constructor
  */
 function DateInputField({
-        label,
-        onDateChange,
-        value,
-        placeholder,
-        onClear,
-        hasError = false,
-        errorMessage = "",
-        minDate,
-        mode,
-        format,
-        maxDate
-    }) {
+                            label,
+                            onDateChange,
+                            value,
+                            placeholder,
+                            onClear,
+                            hasError = false,
+                            errorMessage = "",
+                            minDate,
+                            mode,
+                            format,
+                            maxDate
+                        }) {
 
+    const theme = useTheme();
 
     const handleOnDateChange = (dateString, dateObj) => {
         // if (!onDateChange) {
@@ -40,13 +51,7 @@ function DateInputField({
     return (
         <View style={styles.container}>
             {
-                label && <Text style={[
-                    styles.textLabel,
-                    {
-                        minWidth: 60,
-                        marginRight: label ? 20 : 0
-                    }
-                ]}>{label}</Text>
+                label && <LabelContainer theme={theme} lable={!!label}>{label}</LabelContainer>
             }
 
             <View
@@ -58,7 +63,7 @@ function DateInputField({
                 }}
             >
                 <DatePicker
-                    style={{flex: 1}}
+                    style={{flex: 1, height: 32}}
                     date={value}
                     mode={mode}
                     format={format}
@@ -72,7 +77,9 @@ function DateInputField({
                         dateInput: {
                             ...styles.inputWrapper,
                             flex: 1,
-                            borderColor: hasError ? 'red' : '#E3E8EF'
+                            alignSelf: 'flex-start',
+                            borderColor: hasError ? 'red' : '#E3E8EF',
+                            marginBottom: 0,
                         }
                     }}
                     onDateChange={handleOnDateChange}
@@ -110,7 +117,6 @@ DateInputField.defaultProps = {};
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -122,25 +128,15 @@ const styles = StyleSheet.create({
     inputWrapper: {
         flex: 1,
         borderWidth: 1,
-        borderColor: '#E3E8EF',
         height: 32,
-        borderRadius: 8,
-        paddingLeft:10,
-        alignItems:'flex-start',
-    },
-    inputField: {
-        padding: 10,
-        paddingTop: 2,
-        paddingBottom: 2,
-        borderWidth: 1,
-        borderColor: '#E3E8EF',
-        borderRadius: 8,
-        height: 32,
+        borderRadius: 4,
+        paddingLeft: 10,
+        alignItems: 'flex-start',
     },
     clearIcon: {
         position: 'absolute',
         right: 0,
-        margin: 5
+        margin: 9
     },
     errorView: {
         paddingTop: 3,

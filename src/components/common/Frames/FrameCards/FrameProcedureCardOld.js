@@ -128,11 +128,12 @@ const FrameProcedureCard = ({
     return (
         <ProcedureCardWrapper>
             <ProcedureCardContainer>
+
                 <ProcedureCardHeader>
                     <FrameTitle
-                        color={theme.colors['--color-teal-600']}
-                        borderColor={theme.colors['--color-teal-300']}
-                        backgroundColor={theme.colors['--color-teal-100']}
+                        color="#718096"
+                        borderColor="#E3E8EF"
+                        backgroundColor="#F8FAFB"
                         icon={icon}
                         frameTitle={`${title} - ${subject}`}
                         ActionComponent={

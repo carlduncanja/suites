@@ -16,7 +16,7 @@ import InputErrorComponent from '../InputErrorComponent';
  * @param placeholder
  * @param keyboardType
  * @param units
- * @returns {*} 
+ * @returns {*}
  * @constructor
  */
 
@@ -64,16 +64,16 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
     const theme = useTheme();
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [selectedUnit, setSelectedUnit] = useState(units[selectedIndex])
-    
+
     const changeUnit = () => {
-        
+
         if (units.length - 1 === selectedIndex){
-            setSelectedIndex(0) 
+            setSelectedIndex(0)
             setSelectedUnit(units[0])
         }else{
             setSelectedIndex(selectedIndex + 1)
             setSelectedUnit(units[selectedIndex + 1])
-        }    
+        }
     }
 
     return (
@@ -82,7 +82,7 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
             {
                 label && <InputLabelComponent label = {label}/>
             }
-            
+
             <TextInputWrapper>
                 <TextInputContainer theme = {theme}>
 
@@ -90,7 +90,7 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
                         <Input
                             theme = {theme}
                             onChangeText={onChangeText}
-                            value={value}
+                            value={value.toString()}
                             keyboardType={keyboardType}
                             placeholder={placeholder}
                         />
@@ -98,8 +98,8 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
                             <Unit>{selectedUnit}</Unit>
                         </UnitContainer>
                     </InputContainer>
-                    
-                    
+
+
                     {
                         hasError && <InputErrorComponent errorMessage = {errorMessage}/>
                     }

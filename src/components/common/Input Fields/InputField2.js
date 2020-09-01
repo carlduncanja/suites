@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
-import { useTheme } from 'emotion-theming';
-import styled, { css } from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import styled, {css} from '@emotion/native';
 import IconButton from '../Buttons/IconButton';
 import InputLabelComponent from '../InputLablel';
 import InputContainerComponent from '../InputContainerComponent';
@@ -34,11 +34,11 @@ const InputFieldContainer = styled.View`
     align-items: center;
 `;
 
-// const InputLabel = styled.Text( ({theme, label}) => ({
-//     ...theme.font['--text-xs-medium'],
-//     color : theme.colors['--color-gray-600'],
-//     width : 98,
-// }));
+
+const LabelWrapper = styled.View(({theme, label}) => ({
+    minWidth: 60,
+    marginRight: label ? 20 : 0
+}))
 
 const TextInputWrapper = styled.View`
     flex:1;
@@ -48,27 +48,27 @@ const TextInputContainer = styled.View`
     height : 100%;
     width : 100%;
     border-width: 1px;
-    border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
-    background-color : ${ ({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    border-color: ${({theme, hasError}) => hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
+    background-color : ${({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
     border-radius: 4px;
-    box-shadow : ${ ({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null};
+    box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null};
 `;
 
 const Input = styled.TextInput`
     flex:1;
     width : 85%;
-    padding-left : ${ ({theme}) => theme.space['--space-10']};
+    padding-left : ${({theme}) => theme.space['--space-10']};
 `;
 
 const ErrorContainer = styled.View`
     postion : absolute;
-    top : 16;
+    top : 16px;
     padding-left : 15px;
 `;
 
-const ErrorText = styled.Text( ({theme}) => ({
+const ErrorText = styled.Text(({theme}) => ({
     ...theme.font['--text-xs-regular'],
-    color : theme.colors['--color-red-700']
+    color: theme.colors['--color-red-700']
 }));
 
 const IconContainer = styled.View`
@@ -79,62 +79,69 @@ const IconContainer = styled.View`
 
 
 function InputField2({
-        label,
-        onChangeText = () => {},
-        value,
-        placeholder = "",
-        keyboardType,
-        onClear = () => {},
-        hasError = false,
-        errorMessage = "Error",
-        backgroundColor, 
-        onFocus = ()=>{},
-        onEndEditing = ()=>{},
-        isFocussed = false
-    }){
+                         label,
+                         onChangeText = () => {
+                         },
+                         value,
+                         placeholder = "",
+                         keyboardType,
+                         onClear = () => {
+                         },
+                         hasError = false,
+                         errorMessage = "Error",
+                         backgroundColor,
+                         onFocus = () => {
+                         },
+                         onEndEditing = () => {
+                         },
+                         isFocussed = false
+                     }) {
 
     const theme = useTheme();
     const inputRef = useRef();
-
 
 
     return (
         <InputContainerComponent>
 
             {
-                label && <InputLabelComponent label = {label}/>
+                label &&
+                <LabelWrapper>
+                    <InputLabelComponent label={label}/>
+                </LabelWrapper>
             }
 
             <TextInputWrapper>
-                <TextInputContainer backgroundColor = {backgroundColor} theme = {theme} style = {isFocussed ? styles.shadow : null}>
-            
-                <Input
-                    theme = {theme}
-                    onChangeText={onChangeText}
-                    value={value}
-                    keyboardType={keyboardType}
-                    placeholder={placeholder}
-                    autoFocus = {isFocussed}
-                    onFocus={onFocus}
-                    onEndEditing = {onEndEditing}
-                    ref={inputRef}
+                <TextInputContainer backgroundColor={backgroundColor} theme={theme}
+                                    style={isFocussed ? styles.shadow : null}>
 
-                />
+                    <Input
+                        theme={theme}
+                        onChangeText={onChangeText}
+                        value={value}
+                        keyboardType={keyboardType}
+                        placeholder={placeholder}
+                        autoFocus={isFocussed}
+                        onFocus={onFocus}
+                        onEndEditing={onEndEditing}
+                        ref={inputRef}
 
-                {
-                    hasError && 
-                    <InputErrorComponent errorMessage = {errorMessage}/>
-                }
+                    />
 
-                {
-                    !(value === undefined || value === null || value === '') &&
-                    <IconContainer>
-                        <IconButton
-                            Icon = {<ClearIcon/>}
-                            onPress = {onClear}
-                        />
-                    </IconContainer>
-                }
+                    {
+                        hasError &&
+                        <InputErrorComponent errorMessage={errorMessage}/>
+                    }
+
+                    {
+                        !(value === undefined || value === null || value === '') &&
+                        <IconContainer>
+                            <IconButton
+                                Icon={<ClearIcon/>}
+                                onPress={onClear}
+                            />
+                        </IconContainer>
+                    }
 
                 </TextInputContainer>
             </TextInputWrapper>
@@ -168,10 +175,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#E3E8EF',
         borderRadius: 8,
-        backgroundColor:'yellow'
-
     },
-    shadow : {
+    shadow: {
         shadowColor: "#000",
         shadowOffset: {
             width: 0.5,
@@ -180,12 +185,12 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3.84,
         elevation: 3,
-        zIndex:3,
+        zIndex: 3,
     },
     inputField: {
-        width : '85%',
-        flex:1,
-        paddingLeft :10,
+        width: '85%',
+        flex: 1,
+        paddingLeft: 10,
         // padding: 10,
         // paddingTop: 2,
         // paddingBottom: 2,
@@ -197,12 +202,12 @@ const styles = StyleSheet.create({
     clearIcon: {
         position: 'absolute',
         right: 0,
-        marginTop:6,
+        marginTop: 6,
         margin: 10,
     },
     errorView: {
-        position:'absolute',
-        top:32,
+        position: 'absolute',
+        top: 32,
         paddingTop: 3,
         paddingLeft: 15
     }
