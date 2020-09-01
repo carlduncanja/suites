@@ -316,7 +316,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     const chargeSheetApproval = (params) => {
         setPageLoading(true);
-        return;
+        // return;
         approveChargeSheetCall(caseId, params)
             .then(_ => {
                 modal.openModal('ConfirmationModal', {

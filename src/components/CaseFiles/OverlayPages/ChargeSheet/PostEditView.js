@@ -177,7 +177,7 @@ function PostEditView ({
 
 
     const childViewItem = (item, index) => {
-        const { amount = 0, cost = 0, name = "" } = item
+        const { amount = 0, cost = 0, name = "" , type = ""} = item
         return (
             <>
                 <ContentDataItem
@@ -189,7 +189,7 @@ function PostEditView ({
                         </ConsumableTextContainer>
                     }
                 />
-                <DataItem text = "n/a" align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                <DataItem text ={type} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                 {
                     // isEditMode === true && role === 'Admin'?
                     // <ContentDataItem
@@ -212,7 +212,7 @@ function PostEditView ({
     }
 
     const changeChildViewItem = (item, index) => {
-        const { amount = 0, cost = 0, name = "" , initialAmount = 0} = item
+        const { amount = 0, cost = 0, name = "" , initialAmount = 0, type} = item
         return (
             <>
                 <ContentDataItem
@@ -225,7 +225,7 @@ function PostEditView ({
                     }
                 />
 
-                <DataItem text = "n/a" align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                <DataItem text ={type} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                 {
                     isEditMode === true && role === 'Admin'?
                         <ContentDataItem
@@ -294,7 +294,7 @@ function PostEditView ({
         return (
             <CollapsibleListItem
                 isChecked={checkBoxList.includes(item._id)}
-                onCheckBoxPress={ ()=> {}}
+                onCheckBoxPress={ (collapse)=> {collapse()}}
                 hasCheckBox={true}
                 onItemPress={ ()=> {}}
                 render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, index)}
@@ -326,7 +326,7 @@ function PostEditView ({
                 isChecked={checkBoxList.includes(item._id)}
                 onCheckBoxPress={ ()=> {}}
                 hasCheckBox={true}
-                onItemPress={ ()=> {}}
+                onItemPress={(collapse)=> { collapse()}}
                 render={(collapse, isCollapsed) => changeListItem(procedureItem, collapse, isCollapsed, index, timeUpdated)}
                 backgroundColor = "--color-gray-200"
             >

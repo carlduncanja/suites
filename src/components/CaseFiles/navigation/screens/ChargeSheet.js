@@ -117,7 +117,7 @@ const ChargeSheet = ({
     }
 
     const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode} = pageState;
+    const {isEditMode, isLoading} = pageState;
 
     // preparing billing information
     const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
@@ -138,9 +138,7 @@ const ChargeSheet = ({
     }, [isEditMode]);
 
     useEffect(() => {
-        console.log("console hello auth", authInfo);
         const isPending = chargeSheet.status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
-
         if (!isPending) return;
 
         const isAdmin = authInfo['role_name'] === ROLES.ADMIN
@@ -152,20 +150,23 @@ const ChargeSheet = ({
         const pageState = {
             ...pageState,
             isReview,
-            locked: false,
+            locked,
             editMsg: isReview ? "now in edit mode (please review changes)" : undefined
         };
 
         setPageState(pageState)
 
         return () => {
+
+            console.log("on dismount", pageState);
+
             setPageState({
                 ...pageState,
                 isReview: false,
                 locked: false,
             })
         }
-    }, [])
+    }, [isLoading])
 
     // --------------------------- Helper Methods
 
@@ -231,7 +232,6 @@ const ChargeSheet = ({
         case 'Consumables':
             const {status, updatedBy = {}, updatedAt} = chargeSheet;
 
-            console.log("auth", authInfo);
             const isAdmin = authInfo['role_name'] === ROLES.ADMIN
             const isOwner = updatedBy?._id === authInfo['user_id'];
 
