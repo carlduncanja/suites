@@ -27,6 +27,7 @@ import { useTheme } from 'emotion-theming';
 
 import { PageContext } from '../../../../contexts/PageContext';
 import Data from '../../../common/Table/Data';
+import moment from "moment";
 
 
 const headers = [
@@ -104,6 +105,7 @@ function PostEditView ({
     consumables = [],
     caseProceduresFilters = [],
     caseProcedures = [],
+    lastEdited = new Date(),
     caseProcedureChanges = [],
     bannerText = "Find your change submission below",
     role = "Nurse"
@@ -160,10 +162,10 @@ function PostEditView ({
         />
     </>
 
-    const changeListItem = ({ name }, onActionPress, isCollapsed, index) => <>
+    const changeListItem = ({ name }, onActionPress, isCollapsed, index, timeUpdated) => <>
 
         <DataItem text = {name} flex = {1} color="--color-blue-900" fontStyle = "--text-base-medium"/>
-        <DataItem text = "Last Edited: Jan 12, 2020 @ 12:30pm" flex = {1} color="--color-blue-900" fontStyle = "--text-xs-regular" align="flex-end"/>
+        <DataItem text ={`Last Edited: ${timeUpdated}`} flex = {1} color="--color-blue-900" fontStyle = "--text-xs-regular" align="flex-end"/>
         <IconButtonContainer>
             <IconButton
                 Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
@@ -315,9 +317,9 @@ function PostEditView ({
     const renderChangeCollapsible = (item, index) => {
 
         const { procedure, inventories} = item
-        let procedureItem = {
-            name : procedure?.name
-        };
+        let procedureItem = {name : procedure?.name};
+        //Jan 12, 2020 @ 12:30pm
+        const timeUpdated = moment(lastEdited).add(3, 'hours').format('MMM DD, yyyy @ hh:mma')
 
         return (
             <CollapsibleListItem
@@ -325,7 +327,7 @@ function PostEditView ({
                 onCheckBoxPress={ ()=> {}}
                 hasCheckBox={true}
                 onItemPress={ ()=> {}}
-                render={(collapse, isCollapsed) => changeListItem(procedureItem, collapse, isCollapsed, index)}
+                render={(collapse, isCollapsed) => changeListItem(procedureItem, collapse, isCollapsed, index, timeUpdated)}
                 backgroundColor = "--color-gray-200"
             >
             <FlatList

@@ -229,11 +229,11 @@ const ChargeSheet = ({
 
     switch (selectedTab) {
         case 'Consumables':
-            const {status, updatedBy = {}} = chargeSheet;
+            const {status, updatedBy = {}, updatedAt} = chargeSheet;
 
             console.log("auth", authInfo);
             const isAdmin = authInfo['role_name'] === ROLES.ADMIN
-            const isOwner = chargeSheet.updatedBy?._id === authInfo['user_id'];
+            const isOwner = updatedBy?._id === authInfo['user_id'];
 
             if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
 
@@ -247,6 +247,7 @@ const ChargeSheet = ({
 
                 return <PostEditView
                     headers={headers}
+                    lastEdited={updatedAt}
                     allItems={inventoryList}
                     consumables={consumables}
                     caseProceduresFilters={consumableProcedures}
@@ -412,6 +413,8 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
             const prvItem = prvInventories.find(item => item.inventory === newInventoryItem.inventory)
             let initialAmount = prvItem?.amount || 0;
 
+            if(initialAmount === newInventoryItem?.amount) continue;
+
             const update = {
                 ...newInventoryItem,
                 initialAmount
@@ -424,6 +427,8 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
             const prvItem = prvEquipments.find(item => item.equipment === newEquipment.equipment)
             let initialAmount = prvItem?.amount || 0;
 
+            if(initialAmount === newEquipment?.amount) continue;
+
             const update = {
                 ...newEquipment,
                 initialAmount
@@ -431,6 +436,8 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
 
             equipmentChanges.push(update);
         }
+
+        if(!inventoryChanges.length && !equipmentChanges.length) continue
 
         updatedBillableItems.inventories = inventoryChanges;
         updatedBillableItems.equipments = equipmentChanges;
