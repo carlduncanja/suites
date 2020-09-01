@@ -44,6 +44,7 @@ export const equipmentTypesEndpoint = "/equipment-types"
 export const caseFilesEndpoint = "/cases";
 export const caseFileEndpoint = (id) => `/cases/${id}`;
 export const updateChargeSheetEndpoint = (id) => `/cases/${id}/chargesheets`;
+export const chargeSheetApprovalEndpoint = (caseId) => `/cases/${caseId}/chargesheets/approval`
 export const createInvoice = (id) => (quotationId) => `/cases/${id}/quotations/${quotationId}/invoices`;
 export const suggestedStartTimeEndpoint = '/cases/appointment/suggestions'
 export const validateCaseProcedureEndpoint = '/cases/appointment/isvalid';
