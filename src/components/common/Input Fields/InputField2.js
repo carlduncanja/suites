@@ -87,7 +87,7 @@ function InputField2({
         onClear = () => {},
         hasError = false,
         errorMessage = "Error",
-        backgroundColor,
+        backgroundColor, 
         onFocus = ()=>{},
         onEndEditing = ()=>{},
         isFocussed = false
@@ -106,7 +106,7 @@ function InputField2({
             }
 
             <TextInputWrapper>
-                <TextInputContainer theme = {theme} style = {isFocussed ? styles.shadow : null}>
+                <TextInputContainer backgroundColor = {backgroundColor} theme = {theme} style = {isFocussed ? styles.shadow : null}>
             
                 <Input
                     theme = {theme}

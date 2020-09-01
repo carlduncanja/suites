@@ -19,8 +19,9 @@ function Search({
         placeholderText = "Search", 
         changeText = () => {}, 
         inputText, 
-        onClear
-}) {
+        onClear,
+        backgroundColor
+}) { 
 
     const theme = useTheme();
 
@@ -41,7 +42,7 @@ function Search({
                     placeholder={placeholderText}
                     placeholderTextColor={theme.colors['--color-gray-500']}
                     value={inputText}
-                    backgroundColor={theme.colors['--color-gray-100']}
+                    backgroundColor={backgroundColor ? backgroundColor : theme.colors['--color-gray-100']}
                     isFocussed={isFocussed}
                     onFocus={onFocus}
                     onEndEditing={onEndEditing}

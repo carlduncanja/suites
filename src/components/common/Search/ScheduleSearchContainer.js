@@ -21,11 +21,26 @@ import ShadowContainerComponent from '../ShadowContainerComponent';
  * @returns {*}
  * @constructor
  */
+
+const ScheduleSearchWrapper = styled.View`
+position: absolute;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+z-index: 5;
+`;
+
+const SearchContainer = styled.View`
+display: flex;
+width: 100%;
+height: 100%;
+`;
 function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose }) {
 
     const matchesFound = [
         "Coronary Bypass Graft",
-        "Cardioplastic Surgery",
+        "Cardioplastic Surgery", 
         "Colon Screening",
         new Date(2020, 2, 11, 9),
         "Restock Cotton Swabs",
@@ -148,20 +163,7 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
     // STYLED COMPONENTS
 
-    const ScheduleSearchWrapper = styled.View`
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 5;
-    `;
 
-    const SearchContainer = styled.View`
-        display: flex;
-        width: 100%;
-        height: 100%;
-    `;
 
     return (
         isOpen ?

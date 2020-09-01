@@ -5,10 +5,12 @@ import {
     TouchableWithoutFeedback,
     StyleSheet,
     Text,
-    TouchableOpacity,
+    TouchableOpacity, 
     Animated
 } from "react-native";
 // import Animated from "react-native-reanimated";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming'; 
 
 const COLORS = ['rgba(255,255,255,1)', 'rgba(0,0,0,0.16)'];
 
@@ -23,21 +25,40 @@ const COLORS = ['rgba(255,255,255,1)', 'rgba(0,0,0,0.16)'];
  * @returns {*}
  * @constructor
  */
+
+const ActionItemWrapper = styled.TouchableOpacity`
+    flex : 1;
+    margin : 0;
+    width : 100%;
+`;
+
+const ActionItemContainer = styled.View`
+    flex-direction: row;
+    min-width: 200px;
+    padding: ${ ({theme}) => theme.space['--space-6']};
+    border-radius: 6px;
+`;
+
+const ActionTitle = styled.Text( ({theme, disabled}) => ({
+    font : theme.font['--text-base-regular'],
+    color : disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-gray-800'],
+    marginLeft : 13
+}));
+
 function ActionItem({icon, title, disabled, touchable = true, onPress}) {
+
+    const theme = useTheme();
+
     return (
-        <TouchableOpacity
+        <ActionItemWrapper
             onPress={onPress}
             disabled={!touchable}
         >
-            <View style={styles.container}>
-                <View style={{marginRight: 13}}>
-                    {icon}
-                </View>
-                <Text style={{color: disabled ? "#A0AEC0" : "#323843"}}>
-                    {title}
-                </Text>
-            </View>
-        </TouchableOpacity>
+            <ActionItemContainer theme = {theme}>
+                {icon}
+                <ActionTitle theme = {theme} disabled = {disabled}>{title}</ActionTitle>
+            </ActionItemContainer>
+        </ActionItemWrapper>
     );
 }
 

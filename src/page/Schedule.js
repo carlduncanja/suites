@@ -20,6 +20,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SchedulePageHeader from '../components/Schedule/SchedulePageHeader';
 import SchedulePageContent from '../components/Schedule/SchedulePageContent';
+import { isEmpty } from 'lodash';
 
 const ScheduleWrapper = styled.View`
 flex:1;
@@ -28,6 +29,24 @@ background-color:${({ theme }) => theme.colors['--default-neutral-gray']}
 
 const BodyContainer = styled.View`
 flex:1;
+`
+
+const ScheduleContainer = styled.View`
+    display: flex;
+    flex:1;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start;
+`
+
+const SchedulePageWrapper = styled.View`
+    flex:1;
+    margin:0px;
+`
+const SchedulePageContainer = styled.View`
+    display: flex;
+    width: 100%;
+    height: 100%;
 `
 
 
@@ -78,8 +97,9 @@ const Schedule = (props) => {
         setShowDropDown(!showDropDown);
     }
 
-    const radioClicked = (item) => {
-        setcheckedButton(item);
+    const radioClicked = (item = "") => {
+        item.valueOf() === checkedRadioButton.valueOf() ? setcheckedButton("") :
+            setcheckedButton(item);
 
     }
 
@@ -99,18 +119,15 @@ const Schedule = (props) => {
 
     // }
 
-    const filter = () => {
-
+    const fetchAppointments = () => {
+        setFetchingAppointments(true);
 
         getAppointments()
             .then(data => {
                 //console.log("appointments", data);
-                if (checkedRadioButton === "") {
 
-                    setAppointments(data);
-                } else {
-                    setAppointments([...data.filter(item => item.type.name === checkedRadioButton)]);
-                }
+                setAppointments(data);
+
             })
             .catch(error => {
                 console.log("failed to get appointments", error);
@@ -127,6 +144,11 @@ const Schedule = (props) => {
 
     }
 
+    const filter = (appointmentArray = []) => {
+        setFilteredAppointments([...appointmentArray.filter(item => item.type.name === checkedRadioButton)]);
+
+    }
+
 
     // animated states
 
@@ -139,19 +161,17 @@ const Schedule = (props) => {
     // });
 
     useEffect(() => {
-        // console.log("filtered appointments state has:", filteredAppointments);
+        console.log("filtered appointments state has:", filteredAppointments);
 
-        checkedRadioButton === "" ? setFetchingAppointments(true) : setFetchingAppointments(false);
-        filter();
-
+        checkedRadioButton === "" ? fetchAppointments() : filter(appointments);
 
     }, [checkedRadioButton]);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        !showDropDown ? setcheckedButton("") : "";
+    //     !showDropDown ? setcheckedButton("") : "";
 
-    }, [showDropDown])
+    // }, [showDropDown])
 
     //########### Functions
     // const onChange = (dimensions) => {
@@ -204,28 +224,7 @@ const Schedule = (props) => {
 
     // ###### STYLED COMPONENTS
 
-    const ScheduleWrapper = styled.View({
-        flex: 1,
-        backgroundColor: theme.colors['--color-neutral-gray-100'],
-    });
 
-    const ScheduleContainer = styled.View`
-        display: flex;
-        flex:1;
-        width: 100%;
-        height: 100%;
-        justify-content: flex-start;
-    `
-
-    const SchedulePageWrapper = styled.View`
-        flex:1;
-        margin:0px;
-    `
-    const SchedulePageContainer = styled.View`
-        display: flex;
-        width: 100%;
-        height: 100%;
-    `
 
     return (
         <ScheduleWrapper theme={theme}>
@@ -259,7 +258,7 @@ const Schedule = (props) => {
                         Expanded={isExpanded}
                         isFetchingAppointment={isFetchingAppointment}
                         onDaySelected={handleOnDaySelected}
-                        appointments={appointments}
+                        appointments={checkedRadioButton === "" ? appointments : filteredAppointments}
                         month={selectedMonth}
                         days={daysList}
                         selectedDate={selectedDay}

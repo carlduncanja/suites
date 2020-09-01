@@ -12,8 +12,23 @@ import { formatDate } from '../../../utils/formatter';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
+const SuggestionWrapper = styled.TouchableOpacity`
+    width: 100%;
+    padding-bottom: ${ ({theme}) => theme.space['--space-14']};
+`;
+
+const SuggestionContainer = styled.View`
+    display: flex;
+    width: 100%;
+`;
+
+const SuggestionText = styled.Text( ({theme}) => ({
+    ...theme.font['--text-base-medium'],
+    color: theme.colors['--color-gray-300']
+}))
+
 function Suggestion({
-    openSearchResult = () => { },
+    openSearchResult = () => { }, 
     suggestion = {},
     index
 }) {
@@ -22,28 +37,14 @@ function Suggestion({
     const theme = useTheme();
     // STYLED COMPONENTS
 
-    const SuggestionWrapper = styled.TouchableOpacity`
-        width: 100%;
-        padding-bottom: ${theme.space['--space-14']};
-    `;
 
-    const SuggestionContainer = styled.View`
-        display: flex;
-        width: 100%;
-     
-    `;
-
-    const SuggestionText = styled.Text({
-        ...theme.font['--text-base-medium'],
-        color: theme.colors['--color-gray-300']
-    })
 
     return (
 
-        <SuggestionWrapper>
+        <SuggestionWrapper theme = {theme}>
             <SuggestionContainer>
 
-                <SuggestionText>
+                <SuggestionText theme = {theme}>
                     {(suggestion) instanceof Date ?
                         formatDate(suggestion, "MMMM D, YYYY")
                         :

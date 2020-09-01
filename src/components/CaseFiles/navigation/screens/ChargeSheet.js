@@ -44,15 +44,19 @@ export const CHARGE_SHEET_STATUSES = {
 const headers = [
     {
         name: 'Item Name',
-        alignment: 'flex-start'
+        alignment: 'flex-start',
+        hasSort : true
+
     },
     {
         name: 'Type',
-        alignment: 'center'
+        alignment: 'center',
+        hasSort : true
+
     },
     {
         name: 'Quantity',
-        alignment: 'center'
+        alignment: 'center',
     },
     {
         name: 'Unit Price',
@@ -256,8 +260,8 @@ const ChargeSheet = ({
             } else {
                 return <Consumables
                     headers={headers}
-                    allItems={inventoryList}
-                    consumables={consumables}
+                    allItems={equipmentList}
+                    equipments={procedureEquipments}
                     caseProceduresFilters={consumableProcedures}
                     caseProcedures={caseProcedures}
                     onConsumablesUpdate={handleConsumableUpdate}

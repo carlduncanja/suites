@@ -55,7 +55,7 @@ const TableContainer = styled.View`
     margin-top : ${ ({theme}) => theme.space['--space-12']};
 `;
 
-const ConsumableTextContainer = styled.View`
+const ConsumableTextContainer = styled.View` 
     flex-direction : row;
     justify-content : center;
 `;
@@ -65,14 +65,21 @@ const ConsumableText = styled.Text( ({theme}) => ({
     paddingLeft : 14,
 }));
 
-function Consumables ({headers, consumables = [], caseProceduresFilters = [], caseProcedures = [] ,onConsumablesUpdate, allItems = []}) {
+function Consumables ({
+    headers, 
+    consumables = [], 
+    caseProceduresFilters = [], 
+    caseProcedures = [] ,
+    onConsumablesUpdate, 
+    allItems = []
+}) {
 
     // console.log("Cae: ", caseProcedures)
     const theme = useTheme();
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState
 
-    console.log("caseProcedures: ", caseProcedures);
+    // console.log("caseProcedures: ", caseProcedures);
 
 
     const [checkBoxList, setCheckBoxList] = useState([]);
@@ -152,18 +159,8 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
         const { amount = 0, cost = 0, name = "" , type = ""} = item
 
         return (
-
-
             <>
-                <ContentDataItem
-                    flex = {1}
-                    content = {
-                        <ConsumableTextContainer>
-                            <ItemArrow strokeColor = { theme.colors['--color-gray-600']}/>
-                            <ConsumableText>{name}</ConsumableText>
-                        </ConsumableTextContainer>
-                    }
-                />
+                <DataItem text ={name} fontStyle = {'--text-sm-medium'} color = "--color-blue-600"/>
                 <DataItem text ={type} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                 {
                     isEditMode === true ?
@@ -281,7 +278,7 @@ function Consumables ({headers, consumables = [], caseProceduresFilters = [], ca
                     placeholderText="Search by inventory item"
                     inputText={searchText}
                     changeText={onSearchInputChange}
-                    backgroundColor="#FAFAFA"
+                    backgroundColor={theme.colors['--color-neutral-gray-100']}
                 />
 
                 <TableContainer theme = {theme}>

@@ -72,7 +72,7 @@ const listHeaders = [
         alignment: "center",
         flex:0.5
     }
-];
+]; 
 
 const LocationsWrapper = styled.View`
     flex:1;
@@ -254,8 +254,10 @@ function Inventory(props) {
         modal.openModal("ActionContainerModal",
             {
                 actions: getFabActions(),
-                title: "INVENTORY ACTIONS"
+                title: "INVENTORY ACTIONS",
+                onClose : ()=> setFloatingAction(false)
             })
+            
     };
 
     // ####### PARENT CHECKBOXPRESS
@@ -315,9 +317,18 @@ function Inventory(props) {
 
         const deleteAction =
             <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
-                <LongPressWithFeedback pressTimer={1200} onLongPress={removeGroup}>
-                    <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
-                    }} touchable={false}/>
+                <LongPressWithFeedback 
+                    pressTimer={1200} 
+                    onLongPress={removeGroup}
+                    isDisabled = {selectedIds.length === 0 ? true : false}
+                >
+                    <ActionItem 
+                        title={"Hold to Delete"} 
+                        icon={<WasteIcon strokeColor = {selectedIds.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>} 
+                        onPress={() => {}} 
+                        disabled = {selectedIds.length === 0 ? true : false}
+                        touchable={false}
+                    />
                 </LongPressWithFeedback>
             </View>;
 
@@ -574,6 +585,7 @@ function Inventory(props) {
                         isEditUpdate = {true}
                         onCancel = {()=> modal.closeModals('ConfirmationModal')}
                         onAction = {()=>removeGroupCall(id)}
+                        // onAction = { () => confirmAction()}
                         message = {"Do you want to delete these item(s)?"}
                     />
                     ,
@@ -639,12 +651,16 @@ function Inventory(props) {
     const removeGroupCall = (id) => {
         removeInventoryGroup(id)
             .then(_ => {
-                setTimeout(()=>{
-                    modal.closeModals('ConfirmationModal');
-                },200);
-                modal.closeModals("ActionContainerModal");
+                // setTimeout(()=>{
+                //     modal.closeModals('ConfirmationModal');
+                    
+                // },200);
+                // modal.closeModals("ActionContainerModal");
+                // onRefresh();
+                confirmAction()
+
                 setSelectedIds([]);
-                onRefresh();
+                
             })
             .catch( error => {
                 openErrorConfirmation();
@@ -655,6 +671,27 @@ function Inventory(props) {
             })
             .finally (_ =>{
                 setFloatingAction(false);
+            })
+    }
+
+    const confirmAction = () =>{
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError = {false}
+                    isEditUpdate = {false}
+                    onAction = {()=> {
+                        modal.closeModals('ConfirmationModal');
+                        setTimeout(()=>{
+                            modal.closeModals("ActionContainerModal");
+                            onRefresh();
+                            
+                        },200);
+                    }}
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')} 
             })
     }
 
