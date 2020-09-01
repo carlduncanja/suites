@@ -17,12 +17,16 @@ import CreateEquipmentDialog from "../components/Equipment/CreateEquipmentDialog
 import Item from "../components/common/Table/Item";
 import NavPage from "../components/common/Page/NavPage";
 import _ from "lodash";
-
+import DataItem from "../components/common/List/DataItem";
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
 import AssignIcon from "../../assets/svg/assignIcon";
 import EditIcon from "../../assets/svg/editIcon";
-
+import MultipleShadowsContainer from '../components/common/MultipleShadowContainer';
+import ContentDataItem from "../components/common/List/ContentDataItem";
+import RightBorderDataItem from "../components/common/List/RightBorderDataItem";
+import CollapsedIcon from "../../assets/svg/closeArrow";
+import ActionIcon from "../../assets/svg/dropdownIcon";
 import {
   useNextPaginator,
   usePreviousPaginator,
@@ -36,26 +40,64 @@ import { getEquipment, getEquipmentTypes } from "../api/network";
 
 import { withModal } from "react-native-modalfy";
 import { formatDate } from "../utils/formatter";
-
+import { numberFormatter } from "../utils/formatter";
 import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
-import ActionIcon from "../../assets/svg/ActionIcon";
 import IconButton from "../components/common/Buttons/IconButton";
 import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
 import SvgIcon from "../../assets/SvgIcon";
 import CreateEquipmentTypeDialogContainer from "../components/Equipment/CreateEquipmentTypeDialogContainer";
 import ListItem from "../components/common/List/ListItem";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
+
+const QuantityWrapper = styled.View`
+    flex:1;
+    align-items: center; 
+   
+`;
+const QuantityContainer = styled.View`
+    height : 24px;
+    width : 28px;
+    background-color : ${ ({ theme, isCollapsed }) => isCollapsed === false ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
+    border-radius : 4px;
+    align-items: center;
+    justify-content: center;
+`;
+
+const GroupEquipmentView = styled.TouchableOpacity`
+flex:1;
+flex-direction:row;
+padding:15px;
+`;
+
+
+const QuantityText = styled.Text(({ theme, isCollapsed }) => ({
+  ...theme.font['--text-base-regular'],
+  color: isCollapsed === false ? theme.colors['--color-gray-500'] : theme.colors['--color-gray-700'],
+}));
+const shadows = [
+  {
+    shadowColor: 'black',
+    shadowOffset: { width: 1, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 2
+  },
+  {
+    shadowColor: 'black',
+    shadowOffset: { width: 1, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3
+  },
+]
 const Equipment = (props) => {
+  const theme = useTheme();
   // ############# Const data
   const recordsPerPage = 10;
   const listHeaders = [
+
     {
-      name: "Assigned",
-      alignment: "flex-start",
-      flex: 2,
-    },
-    {
-      name: "Quantity",
+      name: "Item ID",
       alignment: "center",
       flex: 1,
     },
@@ -65,14 +107,15 @@ const Equipment = (props) => {
       flex: 1,
     },
     {
-      name: "Available on",
+      name: "In Stock",
       alignment: "center",
       flex: 1,
     },
+
     {
-      name: "Actions",
-      alignment: "center",
-      flex: 1,
+      name: "Assigned",
+      alignment: "flex-start",
+      flex: 2,
     },
   ];
   const floatingActions = [];
@@ -282,12 +325,13 @@ const Equipment = (props) => {
   const renderEquipmentFn = (item) => {
     const equipments = item.equipments || [];
 
+    const assignmentStored = equipments.assignments || [];
 
-    // console.log(equipments);
 
     const viewItem = {
       name: item.name,
       quantity: item.equipments.length,
+      assignment: assignmentStored.length === 0 ? "Not currently assigned" : assignmentStored,
       status:
         equipments.length === 1
           ? "Available"
@@ -332,14 +376,14 @@ const Equipment = (props) => {
 
 
             const equipmentItem = {
-
+              assignment: viewItem.assignment,
               assigmentName: item.id,
               quantity: equipmentGroup.length,
-              status: "...",
+              status: viewItem.status,
               dateAvailable: new Date(),
             };
 
-            const onActionPress = () => { };
+            const onActionPress = () => { console.log("Clicked group") };
 
             let pressItem = item.items[0];
             //setGroupNameSelected(viewItem);
@@ -360,7 +404,7 @@ const Equipment = (props) => {
     // group equipment by assignment
     equipments.forEach((item) => {
       // console.log("EEq Item: ", item)
-      const assignmentName = item.assigment && !item.assigment.name;
+      const assignmentName = item.assignment && !item.assignment.name;
       if (!assignmentName) {
         return (assignmentGroupedEquipments[item.name] = [item]);
       }
@@ -380,15 +424,7 @@ const Equipment = (props) => {
     return data;
   };
 
-  const getStatusColor = (status) => {
-    return status === "Unavailable"
-      ? "#C53030"
-      : status === "Multiple"
-        ? "#6B46C1"
-        : status === "Available"
-          ? "#4E5664"
-          : "#4E5664";
-  };
+
 
   const renderItemView = (item, actionItem, onActionPress) => {
     let { _id } = actionItem;
@@ -404,68 +440,47 @@ const Equipment = (props) => {
   };
 
   const equipmentItemView = (
-    { assigmentName, quantity, status, dateAvailable },
+    { assigmentName, quantity, status, dateAvailable, assignment },
     onActionPress
   ) => (
+
       <>
-        {/* <View style={{width: 40, backgroundColor:'yellow'}}/> */}
-        <View
-          style={{
-            flex: 2,
-            flexDirection: "row",
-            alignment: "flex-start",
-            ...styles.rowBorderRight,
-          }}
-        >
-          <SvgIcon iconName="doctorArrow" strokeColor="#718096" />
-          <Text style={{ color: "#3182CE", fontSize: 16, marginLeft: 18 }}>
-            {assigmentName}
-          </Text>
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={{ fontSize: 16, color: "#4E5664" }}>{quantity}</Text>
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={{ fontSize: 14, color: getStatusColor(status) }}>
-            {status}
-          </Text>
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={{ fontSize: 14, color: "#4E5664" }}>
-            {formatDate(dateAvailable, "DD/MM/YYYY")}
-          </Text>
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <IconButton Icon={<AssignIcon />} onPress={onActionPress} />
-        </View>
+
+        <DataItem text={assigmentName} flex={.25} color="--color-blue-600" fontStyle="--text-sm-medium" />
+        <DataItem text={status} flex={.25} color="--color-gray-800" fontStyle="--text-sm-regular" />
+        <DataItem text={quantity} flex={.15} color="--color-gray-800" fontStyle="--text-sm-regular" />
+        <DataItem text={assignment} flex={.3} color="--color-gray-800" fontStyle="--text-sm-regular" />
+
       </>
+
+
+
+
     );
 
   const equipmentGroupView = (item, onActionPress, isCollapsed) => (
-    <>
-      <View style={{ flex: 2, flexDirection: "row", ...styles.rowBorderRight }}>
-        <Text style={{ fontSize: 16, color: "#323843" }}>{item.name}</Text>
-      </View>
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Text style={{ fontSize: 16, color: "#4E5664" }}>{item.quantity}</Text>
-      </View>
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Text style={{ fontSize: 14, color: getStatusColor(item.status) }}>
-          {item.status}
-        </Text>
-      </View>
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Text style={{ fontSize: 14, color: "#4E5664" }}>
-          {formatDate(item.nextAvailable, "DD/MM/YYYY")}
-        </Text>
-      </View>
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <IconButton
-          Icon={isCollapsed ? <ActionIcon /> : <ActionCollapseIcon />}
-          onPress={onActionPress}
-        />
-      </View>
-    </>
+    <GroupEquipmentView onPress={onActionPress}>
+
+      <DataItem text={item.name} flex={.5} color="--color-gray-800" fontStyle="--text-base-regular" />
+
+      <QuantityWrapper>
+        <MultipleShadowsContainer shadows={shadows}>
+          <QuantityContainer theme={theme} isCollapsed={isCollapsed}>
+            <QuantityText theme={theme} isCollapsed={isCollapsed}>{item.quantity}</QuantityText>
+          </QuantityContainer>
+        </MultipleShadowsContainer>
+      </QuantityWrapper>
+      <ContentDataItem
+        align="flex-end"
+        flex={0.5}
+        content={
+          <IconButton
+            Icon={isCollapsed ? <ActionIcon /> : <CollapsedIcon />}
+            onPress={onActionPress}
+          />
+        }
+      />
+    </GroupEquipmentView>
   );
 
   const getFabActions = () => {
