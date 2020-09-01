@@ -11,16 +11,11 @@ import {
 } from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard';
 import {currencyFormatter, formatDate} from '../../../../utils/formatter';
-import CaseFiles from '../../../../../data/CaseFiles';
-import IconButton from '../../../common/Buttons/IconButton';
-import RightArrow from '../../../../../assets/svg/rightArrow';
-import LeftArrow from '../../../../../assets/svg/leftArrow';
 import {PageContext} from '../../../../contexts/PageContext';
 import PostEditView from '../../OverlayPages/ChargeSheet/PostEditView';
-
-const invoiceTestData = CaseFiles[0].caseFileDetails.chargeSheet.invoices;
-const quotationTestData = CaseFiles[0].caseFileDetails.chargeSheet.quotation;
-const billingTestData = CaseFiles[0].caseFileDetails.chargeSheet.billing;
+import moment from "moment";
+import jwtDecode from 'jwt-decode'
+import {ROLES} from "../../../../const";
 
 const LINE_ITEM_TYPES = {
     DISCOUNT: 'discount',
@@ -29,12 +24,29 @@ const LINE_ITEM_TYPES = {
     PHYSICIANS: 'physician',
 };
 
+export const CHARGE_SHEET_STATUSES = {
+    /**
+     * Initial State of charge sheet. In this state the change sheet can be edited.
+     */
+    OPEN: "open",
+
+    /**
+     * At this state the charge sheet can no longer be adjusted.
+     */
+    CLOSED: "closed",
+
+    /**
+     * Charge Sheet has changes that needs to be committed by an admin.
+     */
+    PENDING_CHANGES: "pending_changes"
+}
+
 const headers = [
     {
         name: 'Item Name',
         alignment: 'flex-start',
         hasSort : true
-        
+
     },
     {
         name: 'Type',
@@ -52,11 +64,24 @@ const headers = [
     }
 ];
 
-function ChargeSheet ({chargeSheet = {}, selectedTab, procedures, quotations, invoices, onUpdateChargeSheet, handleEditDone, handleQuotes, handleInvoices}) {
+const ChargeSheet = ({
+                         auth = {},
+                         chargeSheet = {},
+                         selectedTab,
+                         procedures,
+                         quotations,
+                         invoices,
+                         onUpdateChargeSheet,
+                         handleEditDone,
+                         handleQuotes,
+                         handleInvoices
+                     }) => {
+
     let {
         inventoryList = [],
         equipmentList = [],
         proceduresBillableItems = [],
+        proceduresBillableItemsChanges = [],
         total = 0,
         caseId
     } = chargeSheet;
@@ -71,6 +96,7 @@ function ChargeSheet ({chargeSheet = {}, selectedTab, procedures, quotations, in
             type: 'Anaesthesia'
         };
     });
+
     equipmentList = equipmentList.map(item => {
         const {equipment} = item;
         const {name = '', unitPrice = 0, type = ''} = equipment;
@@ -82,82 +108,25 @@ function ChargeSheet ({chargeSheet = {}, selectedTab, procedures, quotations, in
         };
     });
 
-    const {pageState} = useContext(PageContext);
+    const {expoPushToken, userToken} = auth;
+    let authInfo = {}
+    try {
+        authInfo = jwtDecode(userToken);
+    } catch (e) {
+        console.log("failed to decode token", e);
+    }
+
+    const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode} = pageState;
 
     // preparing billing information
-    const billing = {
-        total,
-        lastModified: new Date(2019, 11, 11),
-        hasDiscount: true,
-        discount: 0.15,
-        procedures: []
-    };
+    const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
 
     // --------------------------- States
 
     const [caseProcedures, setCaseProcedure] = useState(billing.procedures);
     const [isUpdated, setUpdated] = useState(false);
 
-    for (const proceduresBillableItem of proceduresBillableItems) {
-        const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
-
-        const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {};
-        const caseAppointment = caseProcedure.appointment || {};
-
-        const title = caseAppointment.title ? caseAppointment.title : '';
-
-        const name = `${title} (${formatDate(caseAppointment.startTime, 'MMM D - h:mm a')})`;
-
-        const billingItem = {
-            caseProcedureId,
-            discounts: [],
-            physicians: [],
-            services: [],
-            procedures: [],
-            procedure: {
-                name: name || proceduresBillableItem.caseProcedureId,
-                cost: proceduresBillableItem.total
-            },
-        };
-
-        for (const lineItem of lineItems) {
-            switch (lineItem.type) {
-            case LINE_ITEM_TYPES.PHYSICIANS:
-                billingItem.physicians.push(lineItem);
-                break;
-            case LINE_ITEM_TYPES.SERVICE:
-                billingItem.services.push(lineItem);
-                break;
-            case LINE_ITEM_TYPES.PROCEDURES:
-                billingItem.procedures.push(lineItem);
-                break;
-            case LINE_ITEM_TYPES.DISCOUNT:
-                billingItem.discounts.push(lineItem);
-                break;
-            }
-        }
-
-
-        billingItem.inventories = inventories.map(item => ({
-            _id: item._id,
-            inventory: item?.inventory?._id,
-            type: item.inventory?.inventoryGroup?.name || "",
-            amount: item.amount,
-            name: item.inventory?.name,
-            cost: item.inventory?.unitCost || 0,
-        }));
-
-        billingItem.equipments = equipments.map(item => ({
-            _id: item?._id,
-            equipment: item.equipment?._id,
-            amount: item.amount,
-            name: item.equipment?.name,
-            cost: item.equipment?.unitPrice || 0,
-        }));
-
-        billing.procedures.push(billingItem);
-    }
 
     // --------------------------- Life Cycle
 
@@ -167,6 +136,36 @@ function ChargeSheet ({chargeSheet = {}, selectedTab, procedures, quotations, in
             setUpdated(false);
         }
     }, [isEditMode]);
+
+    useEffect(() => {
+        console.log("console hello auth", authInfo);
+        const isPending = chargeSheet.status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
+
+        if (!isPending) return;
+
+        const isAdmin = authInfo['role_name'] === ROLES.ADMIN
+        const isOwner = chargeSheet.updatedBy?._id === authInfo['user_id'];
+
+        const isReview = isAdmin;
+        const locked = !isAdmin && !isOwner
+
+        const pageState = {
+            ...pageState,
+            isReview,
+            locked: false,
+            editMsg: isReview ? "now in edit mode (please review changes)" : undefined
+        };
+
+        setPageState(pageState)
+
+        return () => {
+            setPageState({
+                ...pageState,
+                isReview: false,
+                locked: false,
+            })
+        }
+    }, [])
 
     // --------------------------- Helper Methods
 
@@ -228,85 +227,217 @@ function ChargeSheet ({chargeSheet = {}, selectedTab, procedures, quotations, in
     const procedureEquipments = [groupedEquipments, ...equipments];
     const consumableProcedures = ['All', ...caseProcedures.map(item => item.procedure.name)];
 
-    return (
-        selectedTab === 'Consumables' ? (
+    switch (selectedTab) {
+        case 'Consumables':
+            const {status, updatedBy = {}} = chargeSheet;
 
-            <Consumables
-                headers={headers}
-                allItems={inventoryList}
-                consumables={consumables}
-                caseProceduresFilters={consumableProcedures}
-                caseProcedures={caseProcedures}
-                onConsumablesUpdate={handleConsumableUpdate}
-                isEditMode={isEditMode}
-                handleEditDone={handleEditDone}
-            />
+            console.log("auth", authInfo);
+            const isAdmin = authInfo['role_name'] === ROLES.ADMIN
+            const isOwner = chargeSheet.updatedBy?._id === authInfo['user_id'];
 
-        ) :
-            selectedTab === 'Equipment' ? (
-                <ChargesheetEquipment
+            if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
+
+                const firstName = updatedBy['first_name'] || "";
+                const lastName = updatedBy['last_name'];
+
+                const bannerText = isAdmin ? `${firstName[0]}.${lastName} changes require your attention` : undefined
+
+                const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
+                const caseProcedureChanges = calculateChangesProcedureChanges(caseProcedures, billingUpdates.procedures)
+
+                return <PostEditView
+                    headers={headers}
+                    allItems={inventoryList}
+                    consumables={consumables}
+                    caseProceduresFilters={consumableProcedures}
+                    caseProcedures={caseProcedures}
+                    caseProcedureChanges={caseProcedureChanges}
+                    onConsumablesUpdate={handleConsumableUpdate}
+                    isEditMode={isEditMode}
+                    bannerText={bannerText}
+                    handleEditDone={handleEditDone}
+                />
+            } else {
+                return <Consumables
                     headers={headers}
                     allItems={equipmentList}
                     equipments={procedureEquipments}
                     caseProceduresFilters={consumableProcedures}
-                    caseProcedures = {caseProcedures}
-                    onEquipmentsUpdate={handleEquipmentUpdate}
-                    // details={billing.procedures}
+                    caseProcedures={caseProcedures}
+                    onConsumablesUpdate={handleConsumableUpdate}
                     isEditMode={isEditMode}
                     handleEditDone={handleEditDone}
                 />
-            ) :
-                selectedTab === 'Invoices' ? (
-                    <Invoices
-                        tabDetails={invoices}
-                        reportDetails={billing}
-                        handleInvoices={handleInvoices}
-                    />
-                ) :
-                    selectedTab === 'Quotation' ? (
-                        <Quotation
-                            tabDetails={quotations}
-                            reportDetails={billing}
-                            handleQuotes={handleQuotes}
-                        />
-                    ) : (
-                        <BillingCaseCard
-                            tabDetails={billing}
-                            caseProcedures={caseProcedures}
-                            isEditMode={isEditMode}
-                            caseId={caseId}
-                            onCaseProcedureBillablesChange={handleCaseProcedureUpdate}
-                            handleEditDone={handleEditDone}
-                        />
-                    )
-    // <View/>
-    );
+            }
+
+            return
+
+        case 'Equipment':
+            return <ChargesheetEquipment
+                headers={headers}
+                allItems={equipmentList}
+                equipments={procedureEquipments}
+                caseProceduresFilters={consumableProcedures}
+                onEquipmentsUpdate={handleEquipmentUpdate}
+                // details={billing.procedures}
+                isEditMode={isEditMode}
+                handleEditDone={handleEditDone}
+            />;
+        case 'Invoices':
+            return <Invoices
+                tabDetails={invoices}
+                reportDetails={billing}
+                handleInvoices={handleInvoices}
+            />;
+        case 'Quotation':
+            return <Quotation
+                tabDetails={quotations}
+                reportDetails={billing}
+                handleQuotes={handleQuotes}
+            />;
+        case 'Billing':
+            return <BillingCaseCard
+                tabDetails={billing}
+                caseProcedures={caseProcedures}
+                isEditMode={isEditMode}
+                caseId={caseId}
+                onCaseProcedureBillablesChange={handleCaseProcedureUpdate}
+                handleEditDone={handleEditDone}
+            />;
+        default:
+            return null;
+
+    }
 };
 
-const mapStateToProps = state => ({isEditMode: state.casePage?.isEdit});
+const mapStateToProps = state => ({
+    isEditMode: state.casePage?.isEdit,
+    pageState: state.casePage,
+    auth: state.auth
+});
 
 export default connect(mapStateToProps)(ChargeSheet);
 
-const styles = StyleSheet.create({
-    item: {flex: 1, },
-    editItem: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    editTextBox: {
-        backgroundColor: '#F8FAFB',
-        borderColor: '#CCD6E0',
-        borderWidth: 1,
-        borderRadius: 4,
-        padding: 6,
-        paddingTop: 2,
-        paddingBottom: 2,
-        marginLeft: 10,
-        marginRight: 10
-    },
-    itemText: {
-        fontSize: 16,
-        color: '#4A5568',
-    },
-});
+//
+const configureBillableItems = (lastModified, total, updatedBy = {}, procedures, proceduresBillableItems) => {
+
+    const billing = {
+        total,
+        lastModified: new moment(lastModified).toDate(),
+        hasDiscount: true,
+        discount: 0.15,
+        updatedBy,
+        procedures: []
+    };
+
+
+    for (const proceduresBillableItem of proceduresBillableItems) {
+        const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
+
+        const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {};
+        const caseAppointment = caseProcedure.appointment || {};
+
+        const title = caseAppointment.title ? caseAppointment.title : '';
+
+        const name = `${title} (${formatDate(caseAppointment.startTime, 'MMM D - h:mm a')})`;
+
+        const billingItem = {
+            caseProcedureId,
+            discounts: [],
+            physicians: [],
+            services: [],
+            procedures: [],
+            procedure: {
+                name: name || proceduresBillableItem.caseProcedureId,
+                cost: proceduresBillableItem.total
+            },
+        };
+
+        for (const lineItem of lineItems) {
+            switch (lineItem.type) {
+                case LINE_ITEM_TYPES.PHYSICIANS:
+                    billingItem.physicians.push(lineItem);
+                    break;
+                case LINE_ITEM_TYPES.SERVICE:
+                    billingItem.services.push(lineItem);
+                    break;
+                case LINE_ITEM_TYPES.PROCEDURES:
+                    billingItem.procedures.push(lineItem);
+                    break;
+                case LINE_ITEM_TYPES.DISCOUNT:
+                    billingItem.discounts.push(lineItem);
+                    break;
+            }
+        }
+
+        billingItem.inventories = inventories.map(item => ({
+            _id: item._id,
+            inventory: item?.inventory?._id,
+            type: item.inventory?.inventoryGroup?.name || "",
+            amount: item.amount,
+            name: item.inventory?.name,
+            cost: item.inventory?.unitCost || 0,
+        }));
+
+        billingItem.equipments = equipments.map(item => ({
+            _id: item?._id,
+            equipment: item.equipment?._id,
+            amount: item.amount,
+            name: item.equipment?.name,
+            cost: item.equipment?.unitPrice || 0,
+        }));
+
+        billing.procedures.push(billingItem);
+    }
+
+    return billing;
+}
+
+const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []) => {
+    const updatedProcedures = [];
+
+    for (const newBillableItems of newProcedures) {
+        const inventoryChanges = []
+        const equipmentChanges = []
+        const hasChange = false;
+        const updatedBillableItems = {...newBillableItems};
+
+        const {lineItems: newlineItems = [], inventories: newInventories = [], equipments: newEquipments = [], caseProcedureId} = newBillableItems;
+        const prvBillableItems = prvProcedures.find(item => item.caseProcedureId === caseProcedureId) || {};
+        const {inventories: prvInventories = [], equipments: prvEquipments = []} = prvBillableItems;
+
+        // TODO check if prv and new amount diff
+        // TODO only insert procedures that has changes.
+        for (const newInventoryItem of newInventories) {
+            const prvItem = prvInventories.find(item => item.inventory === newInventoryItem.inventory)
+            let initialAmount = prvItem?.amount || 0;
+
+            const update = {
+                ...newInventoryItem,
+                initialAmount
+            };
+
+            inventoryChanges.push(update);
+        }
+
+        for (const newEquipment of newEquipments) {
+            const prvItem = prvEquipments.find(item => item.equipment === newEquipment.equipment)
+            let initialAmount = prvItem?.amount || 0;
+
+            const update = {
+                ...newEquipment,
+                initialAmount
+            };
+
+            equipmentChanges.push(update);
+        }
+
+        updatedBillableItems.inventories = inventoryChanges;
+        updatedBillableItems.equipments = equipmentChanges;
+
+
+        updatedProcedures.push(updatedBillableItems)
+    }
+
+    return updatedProcedures;
+}

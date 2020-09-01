@@ -36,7 +36,7 @@ import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
 import DeleteIcon from '../../../assets/svg/deleteIcon';
 import RemoveIcon from '../../../assets/svg/remove2';
-import {QUOTATION_STATUS} from '../../const';
+import {QUOTATION_STATUS, ROLES} from '../../const';
 import EditIcon from '../../../assets/svg/editIcon';
 import DownloadIcon from '../../../assets/svg/DownloadIcon';
 import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
@@ -61,6 +61,9 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
 import WasteIcon from '../../../assets/svg/wasteIcon';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
+import jwtDecode from "jwt-decode";
+import AcceptIcon from "../../../assets/svg/acceptIcon";
+import {CHARGE_SHEET_STATUSES} from "../../components/CaseFiles/navigation/screens/ChargeSheet";
 
 const overlayMenu = [
     {
@@ -99,8 +102,16 @@ const initialMenuItem = overlayMenu[0].name;
 const initialCurrentTabs = overlayMenu[0].overlayTabs;
 const initialSelectedTab = initialCurrentTabs[0];
 
-function CasePage({route, addNotification, navigation, ...props}) {
+function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const modal = useModal();
+
+    const { userToken} = auth;
+    let authInfo = {}
+    try {
+        authInfo = jwtDecode(userToken);
+    } catch (e) {
+        console.log("failed to decode token", e);
+    }
 
     const {caseId, isEdit} = route.params;
 
@@ -460,31 +471,85 @@ function CasePage({route, addNotification, navigation, ...props}) {
         if (selectedMenuItem === 'Charge Sheet') {
             switch (selectedTab) {
                 case 'Consumables': {
-                    const addNewLineItemAction = (
-                        <ActionItem
-                            title="Update Consumable"
-                            icon={<AddIcon/>}
-                            onPress={_ => {
-                            }}
-                        />
-                    );
-                    const addNewItem = (
-                        <ActionItem
-                            title="Add Consumable"
-                            icon={<AddIcon/>}
-                            onPress={() => openAddItem('Consumable')}
-                        />
-                    );
-                    const removeLineItemAction = (
-                        <ActionItem
-                            title="Remove Consumable"
-                            icon={<DeleteIcon/>}
-                            onPress={_ => {
-                            }}
-                        />
-                    );
-                    floatingAction.push(/*addNewLineItemAction,*/ addNewItem, /*removeLineItemAction*/);
+
+                    const { chargeSheet } = selectedCase;
+                    const status = chargeSheet.status;
+                    const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES
+
+                    if (isPending) {
+
+                        const isAdmin = authInfo['role_name'] === ROLES.ADMIN
+                        const isOwner = chargeSheet.updatedBy?._id === authInfo['user_id'];
+
+                        if (isAdmin) {
+                            const RevertChanges = (
+                                <ActionItem
+                                    title="Revert Changes"
+                                    icon={<WasteIcon/>}
+                                    onPress={_ => {
+                                    }}
+                                />
+                            );
+
+                            const AcceptChanges = (
+                                <ActionItem
+                                    title="Accept Changes"
+                                    icon={<AcceptIcon/>}
+                                    onPress={_ => {}}
+                                />
+                            );
+                            floatingAction.push(RevertChanges, AcceptChanges);
+                        }
+
+                        if (isOwner) {
+                            const WithdrawChanges = (
+                                <LongPressWithFeedback
+                                    pressTimer={700}
+                                    onLongPress={() => {}}
+                                >
+                                    <ActionItem
+                                        title="Hold to Withdraw"
+                                        icon={<WasteIcon/>}
+                                        onPress={() => {
+                                        }}
+                                        touchable={false}
+                                    />
+                                </LongPressWithFeedback>
+                            );
+                            floatingAction.push(WithdrawChanges);
+                        }
+
+                    } else {
+                        const addNewLineItemAction = (
+                            <ActionItem
+                                title="Update Consumable"
+                                icon={<AddIcon/>}
+                                onPress={_ => {
+                                }}
+                            />
+                        );
+                        const addNewItem = (
+                            <ActionItem
+                                title="Add Consumable"
+                                icon={<AddIcon/>}
+                                onPress={() => openAddItem('Consumable')}
+                            />
+                        );
+                        const removeLineItemAction = (
+                            <ActionItem
+                                title="Remove Consumable"
+                                icon={<DeleteIcon/>}
+                                onPress={_ => {
+                                }}
+                            />
+                        );
+                        floatingAction.push(/*addNewLineItemAction,*/ addNewItem, /*removeLineItemAction*/);
+                    }
                     title = "CONSUMABLE'S ACTIONS";
+
+
+
+
                     break;
                 }
                 case 'Equipment': {
@@ -965,7 +1030,11 @@ const mapDispatchTopProp = dispatch => bindActionCreators({
     setCaseEdit
 }, dispatch);
 
-export default connect(null, mapDispatchTopProp)(CasePage);
+const mapStateToProps = (state) => ({
+    auth: state.auth
+})
+
+export default connect(mapStateToProps, mapDispatchTopProp)(CasePage);
 
 function CasePageContent({
                              overlayContent,

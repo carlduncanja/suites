@@ -68,7 +68,7 @@ const ConsumableText = styled.Text( ({theme}) => ({
     ...theme.font['--text-sm-medium'],
     color : theme.colors['--color-blue-600'],
     paddingLeft : 14,
-}));  
+}));
 
 const IconButtonContainer = styled.View`
    flex : 0.2;
@@ -100,10 +100,11 @@ const ChangesDataContainer = styled.View`
 
 
 function PostEditView ({
-    headers, 
-    consumables = [], 
-    caseProceduresFilters = [], 
+    headers,
+    consumables = [],
+    caseProceduresFilters = [],
     caseProcedures = [],
+    caseProcedureChanges = [],
     bannerText = "Find your change submission below",
     role = "Nurse"
 }) {
@@ -124,7 +125,7 @@ function PostEditView ({
     const onSearchInputChange = (input) => {
         setSearchText(input)
     }
- 
+
     const toggleCheckbox = (item) => () => {
         let updatedInventories = [...checkBoxList];
 
@@ -156,7 +157,7 @@ function PostEditView ({
         <IconButton
             Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
             onPress={onActionPress}
-        />  
+        />
     </>
 
     const changeListItem = ({ name }, onActionPress, isCollapsed, index) => <>
@@ -167,9 +168,9 @@ function PostEditView ({
             <IconButton
                 Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
                 onPress={onActionPress}
-            />  
+            />
         </IconButtonContainer>
-        
+
     </>
 
 
@@ -209,7 +210,7 @@ function PostEditView ({
     }
 
     const changeChildViewItem = (item, index) => {
-        const { amount = 0, cost = 0, name = "" } = item
+        const { amount = 0, cost = 0, name = "" , initialAmount = 0} = item
         return (
             <>
                 <ContentDataItem
@@ -236,17 +237,21 @@ function PostEditView ({
                                 />
                             }
                         />
-                    :
-                    <ComparisonDataItem prevText = {amount} nextText = {10} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                    : <ComparisonDataItem
+                        prevValue = {initialAmount}
+                        nextValue = {amount}
+                        align = "center"
+                        fontStyle = {'--text-base-regular'}
+                        color = "--color-gray-700"
+                    />
                 }
-                
+
                 <DataItem text = {`$ ${currencyFormatter(cost)}`} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
-               
 
             </>
         )
     }
-    
+
 
     const renderChildItemView = (item, index) => {
         let { _id } = item
@@ -278,7 +283,7 @@ function PostEditView ({
 
 
     const renderCollapsible = (item, index) => {
-        
+
         const { procedure, inventories} = item
         let procedureItem = {
             name : procedure?.name
@@ -308,7 +313,7 @@ function PostEditView ({
     }
 
     const renderChangeCollapsible = (item, index) => {
-        
+
         const { procedure, inventories} = item
         let procedureItem = {
             name : procedure?.name
@@ -337,7 +342,7 @@ function PostEditView ({
         </CollapsibleListItem>
         )
     }
-    
+
 
     return (
         <ConsumablesWrapper>
@@ -368,10 +373,10 @@ function PostEditView ({
                     <ChangesDataContainer theme = {theme}>
                         <Data
                             listItemFormat = {renderChangeCollapsible}
-                            data = {caseProcedures}
+                            data = {caseProcedureChanges}
                         />
                     </ChangesDataContainer>
-                    
+
                     <DividerContainer theme = {theme}>
                         <BrokenLineDivider/>
                     </DividerContainer>
