@@ -148,7 +148,7 @@ const ChargeSheet = ({
         const pageState = {
             ...pageState,
             isReview,
-            locked,
+            locked: false,
             editMsg: isReview ? "now in edit mode (please review changes)" : undefined
         };
 

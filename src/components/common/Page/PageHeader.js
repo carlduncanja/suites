@@ -8,6 +8,8 @@ import SvgIcon from "../../../../assets/SvgIcon";
 import {View} from 'react-native-animatable';
 import {isEmpty} from 'lodash'
 import {Text} from 'react-native';
+import LockIcon from "../../../../assets/svg/lockIcon";
+import EditLockIcon from "../../../../assets/svg/editLockedIcon";
 
 
 const shadow = {
@@ -72,14 +74,17 @@ const EditButtonWrapper = styled.View`
   height : 26px;
   width : 53px;
   margin-right:10px;
+
 `;
 
 const EditButtonContainer = styled.View`
   height: 100%;
   width: 100%; 
+  flex-direction: row;
   border-radius : 6px;
-  padding: 6px 8px;
-  background-color : ${({theme, isEditMode}) => isEditMode ? theme.colors['--default-shade-white'] : theme.colors['--accent-button']};
+  padding: 4px;
+  
+  background-color : ${({backgroundColor}) => backgroundColor};
   align-items : center;
   justify-content : center;
 `;
@@ -111,7 +116,7 @@ function PageHeader({
                         subTitle = "",
                         hasIcon,
                         isSpecialHeader = false,
-                        isArchive = false,
+                        isArchive: isEditDisabled = false,
                         editMessage = "now in edit mode"
                     }) {
     const theme = useTheme();
@@ -125,7 +130,9 @@ function PageHeader({
         })
     }
 
-    const {isEditMode, isReview} = pageState;
+    const {isEditMode, isReview, locked, editMsg, editDisabled} = pageState;
+
+    console.log('page state', pageState);
 
     const buttonProps = !isEditMode
         ? {
@@ -135,7 +142,7 @@ function PageHeader({
         }
         : {
             backgroundColor: theme.colors['--default-shade-white'],
-            color: isReview ?  theme.colors['--color-gray-600'] :theme.colors['--accent-button'],
+            color: isReview ? theme.colors['--color-gray-600'] : theme.colors['--accent-button'],
             title: "Done",
         }
 
@@ -145,6 +152,50 @@ function PageHeader({
             <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
 
         )
+    }
+
+    const getButtonProps = () => {
+        const editModeProps = {
+            backgroundColor: theme.colors['--default-shade-white'],
+            color: isReview ? theme.colors['--color-gray-600'] : theme.colors['--accent-button'],
+            title: "Done",
+        }
+
+        const defaultProps = {
+            backgroundColor: theme.colors['--accent-button'],
+            color: theme.colors['--default-shade-white'],
+            title: "Edit",
+        }
+
+        const lockedProps = {
+            backgroundColor: theme.colors['--color-gray-400'],
+            color: theme.colors['--color-gray-600'],
+            title: "Edit",
+        }
+
+        console.log("is locked", locked);
+
+        if (locked) {
+            return lockedProps
+        } else if (isEditMode) {
+            return editModeProps
+        } else {
+            return defaultProps
+        }
+    }
+
+    const getEditBtnBackground = () => {
+        const defaultColor = theme.colors['--accent-button'];
+        const editMode = theme.colors['--default-shade-white'];
+        const lockedBackground = theme.colors['--color-gray-400']
+
+        if (locked) {
+            return lockedBackground
+        } else if (isEditMode) {
+            return editMode
+        } else {
+            return defaultColor
+        }
     }
 
     const editColor = isReview ? theme.colors['--color-gray-600'] : theme.colors['--accent-button'];
@@ -171,16 +222,27 @@ function PageHeader({
                 {
                     isEditMode &&
                     <EditModeContainer theme={theme} isReview={isReview}>
-                        {editMessage}
+                        {editMsg || editMessage}
                     </EditModeContainer>
                 }
                 {
-                    !isArchive
+                    !isEditDisabled
                         ? <EditButtonWrapper theme={theme}>
-                            <EditButtonContainer theme={theme} isEditMode={isEditMode}>
-                                <Button {...buttonProps} buttonPress={onEditPress}/>
+                            <EditButtonContainer
+                                theme={theme}
+                                backgroundColor={getEditBtnBackground()}
+                                // backgroundColor={'yellow'}
+                            >
+                                <Button
+                                    {...getButtonProps()}
+                                    buttonPress={onEditPress}
+                                    font={theme.font['--text-sm-medium']}
+                                />
+                                { locked && <EditLockIcon/>}
                             </EditButtonContainer>
                         </EditButtonWrapper>
+
+
                         : <DisabledEditContainer>
                             <DisabledText>Edit</DisabledText>
                         </DisabledEditContainer>
