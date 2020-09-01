@@ -74,7 +74,8 @@ const ChargeSheet = ({
                          onUpdateChargeSheet,
                          handleEditDone,
                          handleQuotes,
-                         handleInvoices
+                         handleInvoices,
+                         onSelectEquipments,
                      }) => {
 
     let {
@@ -183,14 +184,14 @@ const ChargeSheet = ({
     const handleEquipmentUpdate = (index, procedureEquipments) => {
         // console.log("onConsumablesUpdate", index, procedureInventories);
         const updatedCaseProcedures = [...caseProcedures];
-
+        if(updatedCaseProcedures[index]){
+            updatedCaseProcedures[index].equipments = procedureEquipments;
+            setCaseProcedure(updatedCaseProcedures);
+            setUpdated(true);
+        }
         //
         // if (updatedCaseProcedures[index]) {
-        updatedCaseProcedures[index].equipments = procedureEquipments;
         // }
-
-        setCaseProcedure(updatedCaseProcedures);
-        setUpdated(true);
     };
 
     const handleLineItemsUpdate = (procedureIndex, procedureLineItem) => {
@@ -281,6 +282,7 @@ const ChargeSheet = ({
                 caseProcedures = {caseProcedures}
                 caseProceduresFilters={consumableProcedures}
                 onEquipmentsUpdate={handleEquipmentUpdate}
+                onSelectEquipments = {onSelectEquipments}
                 // details={billing.procedures}
                 isEditMode={isEditMode}
                 handleEditDone={handleEditDone}

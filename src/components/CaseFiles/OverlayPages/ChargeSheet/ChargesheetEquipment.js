@@ -6,6 +6,8 @@ import Search from '../../../common/Search';
 import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
 import DropdownInputField from '../../../common/Input Fields/DropdownInputField';
 
+
+
 import ItemArrow from '../../../../../assets/svg/itemArrow';
 import CollapsedIcon from "../../../../../assets/svg/closeArrow";
 import ActionIcon from "../../../../../assets/svg/dropdownIcon";
@@ -19,6 +21,7 @@ import { PageContext } from '../../../../contexts/PageContext';
 
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import { useModal } from 'react-native-modalfy';
 
 const EquipmentsWrapper = styled.View`
     flex:1;
@@ -41,12 +44,13 @@ const EquipmentText = styled.Text( ({theme}) => ({
     color : theme.colors['--color-blue-600'],
     paddingLeft : 14,
 }));
- 
+  
 function ChargesheetEquipment({ 
     headers, 
     equipments = [], 
     caseProceduresFilters = [], 
     onEquipmentsUpdate, 
+    onSelectEquipments,
     // handleEditDone = () => {}, 
     // isEditMode = false, 
     allItems = [],
@@ -55,6 +59,7 @@ function ChargesheetEquipment({
 //  console.log("Procedures: ", caseProcedures)
 
     const theme = useTheme();
+    const modal = useModal();
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState
 
@@ -80,6 +85,7 @@ function ChargesheetEquipment({
                 variants : [item?.equipment]
             }]);
             setCheckBoxList([...checkBoxList, parentId]);
+            onSelectEquipments([...checkBoxList, parentId])
         }else{
             let { variants = [], _parentId } = variantsArray[0] || {}
             let variantsInList = variants.filter( id => id === item?.equipment);
@@ -99,6 +105,7 @@ function ChargesheetEquipment({
                 if(updatedVariants.length === 0){
                     setVariantsCheckBoxList([...updatedChildList]);
                     setCheckBoxList([...checkBoxList.filter( id => id !== _parentId)]);
+                    onSelectEquipments([...checkBoxList.filter( id => id !== _parentId)])
                     // Remove from header list if none remain and from childlist
                 }else{
                     let newVariantObj = {_parentId, variants : updatedVariants};
@@ -134,9 +141,11 @@ function ChargesheetEquipment({
             });
         setVariantsCheckBoxList(updatedVariants)
         setCheckBoxList(updatedChecboxList)
+        onSelectEquipments(updatedChecboxList)
 
         }else{
             setCheckBoxList([])
+            onSelectEquipments([])
         }
 
     }
@@ -149,12 +158,14 @@ function ChargesheetEquipment({
  
         if(parentCheckboxList.includes(itemId)){
             setCheckBoxList(parentCheckboxList.filter( id => id !== itemId ));
+            onSelectEquipments(parentCheckboxList.filter( id => id !== itemId ))
             console.log("itemId: ", itemId)
             let updatedList = [...variantsCheckboxList].filter( obj => obj?._parentId !== itemId)
             setVariantsCheckBoxList(updatedList)
             console.log("Updated varaint: ", updatedList)
         }else{
             setCheckBoxList([...parentCheckboxList, itemId])
+            onSelectEquipments([...parentCheckboxList, itemId])
             setVariantsCheckBoxList([...variantsCheckboxList,{
                 _parentId : itemId,
                 variants : [...equipments.map( item => item?.equipment)]
@@ -163,20 +174,9 @@ function ChargesheetEquipment({
 
     }
 
-    const onSelectChange = (index) => {
+    const onQuantityChangePress = (item,index, sectionIndex) => (action) =>{
 
-        if (index === 0) {
-            setSelectedIndex(0)
-            setSelectedOption('All')
-        } else {
-            setSelectedOption(caseProceduresFilters[index])
-            setSelectedIndex(index)
-        }
-    }
-
-    const onQuantityChangePress = (item,index) => (action) =>{
-
-        const selectedData = equipments[selectedIndex];
+        const selectedData = caseProcedures[sectionIndex].equipments;
 
         const updatedObj = {
             ...item,
@@ -188,8 +188,7 @@ function ChargesheetEquipment({
                 ? {...updatedObj}
                 : {...item}
         })
-
-        onEquipmentsUpdate(selectedIndex - 1, updatedData);
+        onEquipmentsUpdate(selectedIndex, updatedData);
     }
 
     const onAmountInputChange = (item,index) => (value) => {
@@ -333,79 +332,11 @@ function ChargesheetEquipment({
 
             </EquipmentsContainer>
         </EquipmentsWrapper>
-        // <ScrollView>
-
-        //     <View style={{flex:1, justifyContent:'space-between', flexDirection:'row', marginBottom:20}}>
-        //         <View style={{flex:2, paddingRight:100, justifyContent:'center'}}>
-        //             <Search
-        //                 placeholderText = "Search by equipment item"
-        //                 inputText = {searchText}
-        //                 changeText = {onSearchInputChange}
-        //                 backgroundColor = "#FAFAFA"
-        //             />
-        //         </View>
-        //         <View style={{flex:1}}>
-        //             <DropdownInputField
-        //                 onSelectChange = {onSelectChange}
-        //                 value = {selectedOption}
-        //                 selected = {selectedIndex}
-        //                 dropdownOptions = {caseProceduresFilters}
-        //             />
-        //         </View>
-
-        //     </View>
-
-        //     <Table
-        //         isCheckbox = {true}
-        //         data = {equipments[selectedIndex] || []}
-        //         listItemFormat = {renderListFn}
-        //         headers = {headers}
-        //         toggleHeaderCheckbox = {toggleHeaderCheckbox}
-        //         itemSelected = {checkBoxList}
-        //         // dataLength = {tabDetails.length}
-        //     />
-        // </ScrollView>
+   
     
     );
 }
 
 export default ChargesheetEquipment;
 
-const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        flexDirection:'row',
-        padding:10,
-        backgroundColor:'#FFFFFF',
-        alignItems:'center',
-        marginBottom:10
-    },
-    dataContainer:{
-        flex:1,
-        flexDirection:'row',
-        alignItems:"flex-start",
-        justifyContent:"space-between"
-    },
-    item:{
-        flex:1,
-    },
-    itemText:{
-        fontSize:16,
-        color:"#4A5568",
-    },
-    headersContainer:{
-        //flex:1,
-        marginLeft:10,
-        flexDirection:'row',
-        //width:'100%'
-    },
-    headerItem:{
-        flex:1,
-        alignItems:'flex-start',
-        justifyContent:'center',
-    },
-    headerText:{
-        fontSize:12,
-        color:'#718096'
-    }
-})
+

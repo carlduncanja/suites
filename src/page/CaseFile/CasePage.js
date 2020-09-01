@@ -86,7 +86,7 @@ const overlayMenu = [
     },
     {
         name: 'Procedures',
-        overlayTabs: ['Details'],
+        overlayTabs: ['Details'], 
         selectedIcon: <ProcedureSelectedIcon/>,
         disabledIcon: <ProcedureDisabledIcon/>
     },
@@ -104,6 +104,7 @@ const initialSelectedTab = initialCurrentTabs[0];
 
 function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const modal = useModal();
+    const theme = useTheme();
 
     const {userToken} = auth;
     let authInfo = {}
@@ -120,6 +121,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [selectedCaseId, setSelectedCaseId] = useState('');
     const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
     const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
+    const [selectedEquipments, setSelectedEquipments] = useState([])
 
     // ############### State
 
@@ -237,6 +239,34 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             isEdit: false
         });
     };
+
+    const handleConfirmChargeSheetChanges = (updateInfo) => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError = {false}
+                    isEditUpdate = {true}
+                    onCancel = {()=> {
+                        modal.closeModals('ConfirmationModal');
+                        setPageState({
+                            ...pageState,
+                            isEditMode : true,
+                        })
+                    }}
+                    onAction = {()=>{
+                        updateCaseChargeSheet(updateInfo)
+                        setTimeout(()=>{
+                            modal.closeModals('ConfirmationModal');
+                        },200)
+                    }}
+                    message = {"Confirm changes made"}
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')} 
+            })
+
+    }
 
     const updateCaseChargeSheet = updateInfo => {
         updateChargeSheet(caseId, updateInfo)
@@ -722,21 +752,29 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 case 'Equipment': {
                     const addNewLineItemAction = (
                         <ActionItem
-                            title="Update Equipments"
+                            title="Add Equipment"
                             icon={<AddIcon/>}
-                            onPress={_ => {
-                            }}
+                            onPress={_ => {}}
                         />
                     );
                     const removeLineItemAction = (
-                        <ActionItem
-                            title="Remove Equipment"
-                            icon={<RemoveIcon/>}
-                            onPress={_ => {
-                            }}
-                        />
+                        <LongPressWithFeedback
+                            pressTimer={700}
+                            onLongPress={_ => {}}
+                            isDisabled = {selectedEquipments.length === 0 ? true : false}
+                            
+                        >
+                            <ActionItem
+                                title="Hold to Delete"
+                                icon={<WasteIcon strokeColor = {selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
+                                onPress={() => {}}
+                                touchable={false}
+                                disabled = {selectedEquipments.length === 0 ? true : false}
+                            />
+
+                        </LongPressWithFeedback>
                     );
-                    floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/);
+                    floatingAction.push(removeLineItemAction,addNewLineItemAction);
                     title = 'EQUIPMENT ACTIONS';
                     break;
                 }
@@ -1143,10 +1181,11 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     selectedTab={selectedTab}
                     quotations={quotations}
                     invoices={invoices}
-                    onUpdateChargeSheet={data => updateCaseChargeSheet(data)}
+                    onUpdateChargeSheet={data => handleConfirmChargeSheetChanges(data)}
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
                     handleInvoices={handleInvoices}
+                    onSelectEquipments = {(equipments)=>{setSelectedEquipments(equipments)}}
                 />;
             default:
                 return <View/>;
