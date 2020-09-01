@@ -1,21 +1,21 @@
 import React,{ useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import InputField2 from '../../common/Input Fields/InputField2';
-import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField"; 
+import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsField";
 import OverlayDialog from "../../common/Dialog/OverlayDialog";
 import DialogTabs from "../../common/Dialog/DialogTabs";
 import {useModal} from "react-native-modalfy";
-import { getInventoriesGroup, getEquipmentTypes } from "../../../api/network"; 
+import { getInventoriesGroup, getEquipmentTypes } from "../../../api/network";
 import _ from "lodash";
-import AutoFillField from "../../common/Input Fields/AutoFillField"; 
+import AutoFillField from "../../common/Input Fields/AutoFillField";
 import { currencyFormatter } from "../../../utils/formatter";
 
-const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => { 
+const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
 
     const modal = useModal();
     const [selectedItem, setSelectedItem] = useState({})
 
-    const [fields, setFields] = useState({ 
+    const [fields, setFields] = useState({
         name : '',
         // type : '',
         // unitPrice : '',
@@ -25,7 +25,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
 
     const [popoverList, setPopoverList] = useState([
         {
-            name : "name", 
+            name : "name",
             status : false
         },
     ])
@@ -90,7 +90,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
     };
 
     useEffect(() => {
-       
+
         if (!equipmentSearchValue) {
             // empty search values and cancel any out going request.
             setEquipmentSearchResult([]);
@@ -171,13 +171,13 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
         if( isNameError === false && isAmountError === false){
             let updatedFields = {
                 ...fields,
-                cost : selectedItem.unitPrice
+                unitPrice : selectedItem.unitPrice
             }
             onCreated(updatedFields)
             modal.closeModals("OverlayModal")
             // console.log("Add Item: ",fields)
         }
-        
+
     }
 
     const handleCloseDialog = () => {
@@ -195,7 +195,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
             setSelectedItem(value);
             onFieldChange('name')(value.name);
         }
-        
+
     }
 
     const onFieldChange = (fieldName) => (value) => {
@@ -264,7 +264,7 @@ const CreateLineItemDialog = ({selectedTab, onCreated, onCancel}) => {
                         </View>
 
                         <View style={styles.inputWrapper}>
-                            
+
                             <AutoFillField
                                 label={"Item Type"}
                                 value={selectedItem.type || ''}

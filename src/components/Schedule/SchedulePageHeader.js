@@ -31,8 +31,8 @@ const SchedulePageHeaderContainer = styled.View`
     justify-content: space-between;
      align-self: flex-start;
      align-items:center;
-    margin-bottom:15px;
-    margin-top:5px;
+    margin-bottom:${({ theme }) => theme.space["--space-16"]};
+    margin-top:${({ theme }) => theme.space["--space-6"]};
 `;
 
 const TextView = styled.Text`
@@ -57,8 +57,8 @@ const GroupButtonContainer = styled.View`
 `;
 const ExpandButtonWrapper = styled.View`
     height: 24px;
-    margin-left:10px;
-    margin-right:10px;
+    margin-left:${({ theme }) => theme.space["--space-10"]};
+    margin-right:${({ theme }) => theme.space["--space-10"]};
     width: 128px;
 `;
 
@@ -90,7 +90,7 @@ border-radius:3.6px;
 const PopupContainer = styled.View`
 align-items:center;
 flex-direction:row;
-margin:2px;
+margin:${({ theme }) => theme.space["--space-2"]};
 
 `
 
@@ -101,7 +101,7 @@ border-width:2px;
 width:15px;
 height:15px;
 border-radius:7.5px;
-margin-right:10px;
+margin-right:${({ theme }) => theme.space["--space-10"]};
 
 `;
 
@@ -109,7 +109,7 @@ const OptionContainer = styled.TouchableOpacity`
 background-color:${({ item }) => item.color};
 border-radius:4.6px;
 height:25px;
-margin:1.8px;
+margin:${({ theme }) => theme.space["--space-2"]};
 align-items:center;
 justify-content:center;
 padding:2px 6px;
@@ -133,28 +133,29 @@ function SchedulePageHeader({
     selectedMonth = new Date(),
     onExpand = () => { }
 }) {
+    const theme = useTheme();
 
     const optionList = [
         {
             name: "Delivery",
-            color: "#38A169"
+            color: theme.colors["--color-green-600"]
 
         },
         {
             name: "Inventory Re-Stock",
-            color: "#D69E2E"
+            color: theme.colors["--color-yellow-600"]
         },
         {
             name: "Inventory Audit",
-            color: "#D53F8C"
+            color: theme.colors["--color-pink-600"]
         },
         {
             name: "Equipment",
-            color: "#3182CE"
+            color: theme.colors["--color-blue-600"]
         },
         {
             name: "Procedure",
-            color: "#C53030"
+            color: theme.colors["--color-red-700"]
         }
 
     ]
@@ -164,7 +165,7 @@ function SchedulePageHeader({
 
 
 
-    const theme = useTheme();
+
 
     const renderDropDown = () => {
         console.log(checkedRadioButton)
