@@ -66,11 +66,11 @@ const ConsumableText = styled.Text( ({theme}) => ({
 }));
 
 function Consumables ({
-    headers, 
-    consumables = [], 
-    caseProceduresFilters = [], 
+    headers,
+    consumables = [],
+    caseProceduresFilters = [],
     caseProcedures = [] ,
-    onConsumablesUpdate, 
+    onConsumablesUpdate,
     allItems = []
 }) {
 
@@ -129,9 +129,7 @@ function Consumables ({
     }
 
     const onQuantityChangePress = (item, index, sectionIndex) => (action) => {
-
         const selectedData = caseProcedures[sectionIndex].inventories;
-
         const updatedObj = {
             ...item,
             amount: action === 'add' ? item.amount + 1 : item.amount - 1

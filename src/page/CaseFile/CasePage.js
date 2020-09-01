@@ -30,7 +30,7 @@ import {
     getCaseFileById,
     removeQuotationCall,
     updateCaseQuotationStatus,
-    updateChargeSheet
+    updateChargeSheet, approveChargeSheetCall
 } from '../../api/network';
 import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
@@ -105,7 +105,7 @@ const initialSelectedTab = initialCurrentTabs[0];
 function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const modal = useModal();
 
-    const { userToken} = auth;
+    const {userToken} = auth;
     let authInfo = {}
     try {
         authInfo = jwtDecode(userToken);
@@ -141,6 +141,53 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             setSelectedTab(tab);
         }
     };
+
+    const handleAcceptChargeSheetChange = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        chargeSheetApproval({approve: true})
+                    }}
+                    message="Do you want to accept changes submitted?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+
+    }
+
+    const handleRevertChargeSheetChanges = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        chargeSheetApproval({approve: false})
+                    }}
+                    message="Are you sure you want to revert changes submitted?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+    }
 
     const handleOverlayMenuPress = selectedItem => {
         if (pageState.isEditMode) return;
@@ -266,6 +313,55 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 setPageLoading(false);
             });
     };
+
+    const chargeSheetApproval = (params) => {
+        setPageLoading(true);
+        // return;
+        approveChargeSheetCall(caseId, params)
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch(error => {
+                console.log("Failed to approve charge sheet", error)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Failed to Make Changes?"
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+
+            })
+            .finally(_ => fetchCase(caseId))
+    }
 
     const generateQuotation = caseId => {
         setPageLoading(true);
@@ -472,7 +568,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             switch (selectedTab) {
                 case 'Consumables': {
 
-                    const { chargeSheet } = selectedCase;
+                    const {chargeSheet} = selectedCase;
                     const status = chargeSheet.status;
                     const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES
 
@@ -486,8 +582,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                                 <ActionItem
                                     title="Revert Changes"
                                     icon={<WasteIcon/>}
-                                    onPress={_ => {
-                                    }}
+                                    onPress={handleRevertChargeSheetChanges}
                                 />
                             );
 
@@ -495,7 +590,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                                 <ActionItem
                                     title="Accept Changes"
                                     icon={<AcceptIcon/>}
-                                    onPress={_ => {}}
+                                    onPress={handleAcceptChargeSheetChange}
                                 />
                             );
                             floatingAction.push(RevertChanges, AcceptChanges);
@@ -505,7 +600,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             const WithdrawChanges = (
                                 <LongPressWithFeedback
                                     pressTimer={700}
-                                    onLongPress={() => {}}
+                                    onLongPress={handleRevertChargeSheetChanges}
                                 >
                                     <ActionItem
                                         title="Hold to Withdraw"
@@ -546,8 +641,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         floatingAction.push(/*addNewLineItemAction,*/ addNewItem, /*removeLineItemAction*/);
                     }
                     title = "CONSUMABLE'S ACTIONS";
-
-
 
 
                     break;
