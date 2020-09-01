@@ -11,6 +11,10 @@ const ChildContentWrapper = styled.View`
 `;
 const ChildContentContainer = styled.ScrollView`
     max-height : ${ ({children}) => children.props.data.length > 0 ? `400px` : '20px'};
+    border-bottom-width : 1px;
+    border-bottom-color : ${ ({theme}) => theme.colors['--color-gray-300']};
+    border-bottom-right-radius : 8px;
+    border-bottom-left-radius : 8px;
 `;
 
 function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){
