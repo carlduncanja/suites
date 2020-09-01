@@ -46,7 +46,7 @@ import {
     caseQuotationEndpoint,
     quotationEndpoint,
     caseInvoicesEndpoint,
-    chargeSheetApprovalEndpoint
+    chargeSheetApprovalEndpoint, chargeSheetWithdrawChangesEndpoint
 } from "../const/suitesEndpoints";
 import {createDocumentLink} from "../const/documentGenerationEndpoints";
 
@@ -263,6 +263,13 @@ export const updateChargeSheet = async (id, data) => {
 export const approveChargeSheetCall = async (id, params) => {
     return suitesAxiosInstance
         .put(chargeSheetApprovalEndpoint(id), params)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+export const withdrawChargeSheetChangesCall = async (id) => {
+    return suitesAxiosInstance
+        .put(chargeSheetWithdrawChangesEndpoint(id))
         .then(handleResponse)
         .catch(handleError);
 };

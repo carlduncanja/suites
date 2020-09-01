@@ -30,7 +30,7 @@ import {
     getCaseFileById,
     removeQuotationCall,
     updateCaseQuotationStatus,
-    updateChargeSheet, approveChargeSheetCall
+    updateChargeSheet, approveChargeSheetCall, withdrawChargeSheetChangesCall
 } from '../../api/network';
 import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
@@ -188,6 +188,30 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             },
         });
     }
+
+    const handleWithdrawChargeSheetChanges = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        chargeSheetWithdrawChanges({approve: false})
+                    }}
+                    message="Are you sure you want to withdraw changes submitted?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+    }
+
 
     const handleOverlayMenuPress = selectedItem => {
         if (pageState.isEditMode) return;
@@ -362,6 +386,56 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             })
             .finally(_ => fetchCase(caseId))
     }
+
+    const chargeSheetWithdrawChanges = () => {
+        setPageLoading(true);
+        // return;
+        withdrawChargeSheetChangesCall(caseId)
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch(error => {
+                console.log("Failed to approve charge sheet", error)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Failed to Make Changes?"
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+
+            })
+            .finally(_ => fetchCase(caseId))
+    }
+
 
     const generateQuotation = caseId => {
         setPageLoading(true);
@@ -600,7 +674,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             const WithdrawChanges = (
                                 <LongPressWithFeedback
                                     pressTimer={700}
-                                    onLongPress={handleRevertChargeSheetChanges}
+                                    onLongPress={handleWithdrawChargeSheetChanges}
                                 >
                                     <ActionItem
                                         title="Hold to Withdraw"
