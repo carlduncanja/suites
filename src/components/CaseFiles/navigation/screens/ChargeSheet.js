@@ -278,6 +278,7 @@ const ChargeSheet = ({
                 headers={headers}
                 allItems={equipmentList}
                 equipments={procedureEquipments}
+                caseProcedures = {caseProcedures}
                 caseProceduresFilters={consumableProcedures}
                 onEquipmentsUpdate={handleEquipmentUpdate}
                 // details={billing.procedures}
