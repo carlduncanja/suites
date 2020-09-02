@@ -23,7 +23,7 @@ const OverlayContainer = styled.View`
 `;
 const ContentWrapper = styled.View`
     height : 435px;
-    padding : ${ ({theme}) => theme.space['--space-40']} ${ ({theme}) => theme.space['--space-24']};
+    padding : ${ ({theme}) => theme.space['--space-32']} ${ ({theme}) => theme.space['--space-24']};
 `;
 const ContentContainer = styled.View`
     height : 100%;
@@ -90,7 +90,7 @@ function AddOverlayDialog(props){
         onClearPress = () => {},
         closeModal = () => {}, 
         data = [], 
-        selectedTab = "", 
+        selectedTab = 0, 
         listItemFormat = () => {},
         tabs,
         headers = [], 
@@ -98,13 +98,14 @@ function AddOverlayDialog(props){
         onPressTab = () => {},
         hasFooter = false,
         onFooterPress = () => {},
-        footerTitle = "",
+        footerTitle = "DONE",
         searchText = "",
         searchResults = [],
         searchQuery,
         onSearchChange = () => {},
         onSelectItem = () => {},
         handleCloseDialog = () => {},
+        hasSearch = true, 
     } = props
 
     const theme = useTheme();
@@ -156,35 +157,40 @@ function AddOverlayDialog(props){
             <OverlayContainer>
 
                 <OverlayDialog
-                    title={"Add Items"}
+                    title={title}
                     onPositiveButtonPress={onFooterPress}
                     onClose={closeModal}
-                    positiveText={"DONE"}
+                    positiveText={footerTitle}
                 >
-                    <CreationDialogTabs
-                        tabs = { ["Add item"] }
-                        tab = {0}
-                    />
+                    {tabs &&
+                        <CreationDialogTabs
+                            tabs = {tabs}
+                            tab = {selectedTab}
+                        />
+                    }
+                    
 
                     <ContentWrapper theme = {theme}>
                         <ContentContainer>
-
-                            <SearchableFieldContainer>
-                                <SearchableOptionsField
-                                    value={selectedItem}
-                                    text={searchText}
-                                    oneOptionsSelected={(item)=> onItemSelected(item)}
-                                    onChangeText={(value) => {onSearchChange(value)}}
-                                    onClear={()=>{onClearItem()}}
-                                    options={searchResults}
-                                    handlePopovers={() => {
-                                        // console.log("handle popovers");
-                                    }}
-                                    isPopoverOpen={searchQuery}
-                                    borderColor = {theme.colors['--color-gray-400']}
-                                />
-
-                            </SearchableFieldContainer>
+                            {
+                                hasSearch &&
+                                <SearchableFieldContainer>
+                                    <SearchableOptionsField
+                                        value={selectedItem}
+                                        text={searchText}
+                                        oneOptionsSelected={(item)=> onItemSelected(item)}
+                                        onChangeText={(value) => {onSearchChange(value)}}
+                                        onClear={()=>{onClearItem()}}
+                                        options={searchResults}
+                                        handlePopovers={() => {
+                                            // console.log("handle popovers");
+                                        }}
+                                        isPopoverOpen={searchQuery}
+                                        borderColor = {theme.colors['--color-gray-400']}
+                                    />
+                                </SearchableFieldContainer>
+                            }
+                            
                             
                             <ListContainerWrapper theme = {theme}>
                                 <ListContentContainer>

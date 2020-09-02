@@ -11,7 +11,7 @@ import {useNextPaginator,usePreviousPaginator} from '../../helpers/caseFilesHelp
 const CartCard = (props) =>{
 
     const { 
-        title, 
+        title,  
         isEditMode = false, 
         onEditDone = ()=>{},
         onClearPress = () => {},
@@ -102,7 +102,7 @@ const CartCard = (props) =>{
             {
                 // isEditMode ?
                     <View style={{marginLeft:20, marginRight:20, justifyContent:'space-between', flexDirection:'row'}}>
-                        <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
+                        <View style={[styles.paginationContainer,{alignSelf:'flex-start', height:32}]}>
                             <Paginator
                                 currentPage = {currentPagePosition}
                                 totalPages = {totalPages}
@@ -140,7 +140,7 @@ const CartCard = (props) =>{
 
             {
                 hasFooter &&
-                <View style={styles.footer}>
+                <View style={[styles.footer,{height:32}]}>
                     <Button
                         backgroundColor = "#FFFFFF"
                         title = {footerTitle}

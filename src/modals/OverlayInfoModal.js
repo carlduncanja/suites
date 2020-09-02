@@ -33,12 +33,16 @@ const OverlayInfoModal = (props) => {
         )
     };
 
-    
-
     return ( 
         <View style={[styles.container,{width:state.pageMeasure.width, height: state.pageMeasure.height}]}>
             {renderShadow()}
-            <View style={{height:500, width:500, alignItems:'center',justifyContent:'center'}}>
+            <View style={{
+                height:600, 
+                width:600, 
+                alignItems:'center',
+                justifyContent:'center', 
+                }}
+            >
                 {params.overlayContent}
             </View>
         </View> 
