@@ -48,7 +48,7 @@ const FrameProcedureCard = ({
                                 icon,
                                 onOpenPickList,
                                 onRemoveProcedure,
-                                isEdit,
+                                isEdit = false,
                             }) => {
     const modal = useModal();
     const theme = useTheme();

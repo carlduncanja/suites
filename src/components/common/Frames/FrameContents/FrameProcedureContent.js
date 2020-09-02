@@ -142,7 +142,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
         })
     }
 
-    const onStartTimeUpdated = (_, date) => {
+    const onStartTimeUpdated = (date) => {
         const newStartTime = moment(date)
         onFieldsUpdated({
             ...fields,
@@ -243,7 +243,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                         value={moment(startTime).toDate()}
                         format={"MMM/DD/YYYY"}
                         mode={"date"}
-                        handleOnDateChange={onStartTimeUpdated}
+                        onDateChange={onStartTimeUpdated}
                         placeholder="MMM/D/YYYY"
                     />
 
@@ -262,7 +262,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                         value={moment(startTime).toDate()}
                         format={"h:mm A"}
                         mode={"time"}
-                        handleOnDateChange={onStartTimeUpdated}
+                        onDateChange={onStartTimeUpdated}
                         placeholder="HH:MM"
                     />
 
