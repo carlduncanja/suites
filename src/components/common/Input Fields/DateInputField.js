@@ -28,6 +28,7 @@ function DateInputField({
                             label,
                             onDateChange,
                             value,
+                            enabled=true,
                             placeholder,
                             onClear,
                             hasError = false,
@@ -67,6 +68,7 @@ function DateInputField({
                     date={value}
                     mode={mode}
                     format={format}
+                    disabled={!enabled}
                     placeholder={placeholder}
                     minDate={minDate}
                     maxDate={maxDate}
@@ -77,9 +79,20 @@ function DateInputField({
                         dateInput: {
                             ...styles.inputWrapper,
                             flex: 1,
+                            backgroundColor: theme.colors['--default-shade-white'],
+                            borderColor: theme.colors['--color-gray-300'],
+                            justifyContent: 'center',
                             alignSelf: 'flex-start',
-                            borderColor: hasError ? 'red' : '#E3E8EF',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            height: 32,
+                            padding: 4,
+                            paddingLeft: 12,
+                            paddingRight: 12,
                             marginBottom: 0,
+                        },
+                        disabled:  {
+                            backgroundColor: theme.colors['--color-gray-100'],
                         }
                     }}
                     onDateChange={handleOnDateChange}
@@ -98,7 +111,7 @@ function DateInputField({
                 }
 
                 {
-                    !!value &&
+                    !!value && enabled &&
                     <TouchableOpacity
                         style={styles.clearIcon}
                         onPress={onClear}

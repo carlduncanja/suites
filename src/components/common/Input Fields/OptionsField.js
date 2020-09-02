@@ -23,7 +23,7 @@ const TextInputContainer = styled.View`
     padding-right : ${ ({theme}) => theme.space['--space-10'] };
     
     border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
-    background-color : ${ ({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    background-color : ${ ({theme, enabled}) => !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
     border-radius: 4px;
     box-shadow : ${ ({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null};
 `;
@@ -46,7 +46,7 @@ const Error = styled.View`
 `;
 
 
-function OptionsField({oneOptionsSelected, text, label, menuOption, hasError = false, errorMessage = ""}) {
+function OptionsField({oneOptionsSelected, enabled = true, text, label, menuOption, hasError = false, errorMessage = ""}) {
 
     const theme = useTheme();
     return (
@@ -57,11 +57,11 @@ function OptionsField({oneOptionsSelected, text, label, menuOption, hasError = f
                 label && <InputLabelComponent label = {label}/>
             }
 
-            <Menu onSelect={oneOptionsSelected} style={{flex: 1}}>
-                <MenuTrigger>
+            <Menu disabled={!!enabled} onSelect={oneOptionsSelected} style={{flex: 1}}>
+                <MenuTrigger disabled={!enabled}>
 
                     <TextInputWrapper>
-                        <TextInputContainer theme = {theme} hasError = {hasError}>
+                        <TextInputContainer theme = {theme} hasError = {hasError} enabled = {enabled}>
 
                             <Input>
                                 <SelectedValue>{text}</SelectedValue>

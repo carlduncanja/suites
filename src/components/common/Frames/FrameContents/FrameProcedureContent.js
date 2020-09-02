@@ -68,6 +68,7 @@ const FrameProcedureContent = ({
                 <RowWrapper theme={theme}>
                     <OptionsField
                         label={"Recovery"}
+                        enabled={isEdit}
                         text={hasRecovery ? 'Yes' : 'No'}
                         oneOptionsSelected={(value) => {
                             setRecovery(value)
@@ -277,6 +278,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                         label={"Duration"}
                         onChangeText={onDurationUpdated}
                         value={duration || 0}
+                        enabled={isEdit}
                         units={['hrs']}
                         keyboardType="number-pad"
                         errorMessage="Input estimated time (hours)."

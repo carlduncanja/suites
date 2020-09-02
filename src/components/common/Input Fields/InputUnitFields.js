@@ -29,7 +29,7 @@ const TextInputContainer = styled.View`
     width : 100%;
     border-width: 1px;
     border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
-    background-color : ${ ({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    background-color : ${ ({theme, enabled}) => !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
     border-radius: 4px;
 `;
 
@@ -59,7 +59,7 @@ const Unit = styled.Text( ({theme}) => ({
     color : theme.colors['--color-black']
 }));
 
-function InputUnitField({label, onChangeText, value, placeholder, keyboardType, units, hasError = false, errorMessage = "" }) {
+function InputUnitField({label, onChangeText, value,enabled = true, placeholder, keyboardType, units, hasError = false, errorMessage = "" }) {
 
     const theme = useTheme();
     const [selectedIndex, setSelectedIndex] = useState(0)
@@ -84,10 +84,11 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
             }
 
             <TextInputWrapper>
-                <TextInputContainer theme = {theme}>
+                <TextInputContainer theme = {theme} enabled={enabled}>
 
                     <InputContainer>
                         <Input
+                            editable={enabled}
                             theme = {theme}
                             onChangeText={onChangeText}
                             value={value.toString()}

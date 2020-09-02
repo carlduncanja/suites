@@ -6,6 +6,8 @@ import RemoveIcon from "../../../../assets/svg/removeIcon";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 import {useTheme} from "emotion-theming";
 import Styled from "@emotion/native";
+import styled from "@emotion/native";
+import {shadow} from "../../../styles";
 
 const optionsStyles = {
     optionsContainer: {
@@ -20,6 +22,18 @@ const LabelContainer = Styled.Text(({theme, label}) => ({
     marginRight: label ? 20 : 0
 }))
 
+const ValueContainer = styled.View(({theme, enabled = {}}) => ({
+    // ...theme.font['--text-base-regular'],
+    flex: 1,
+    flexDirection: 'column',
+    color: theme.colors['--color-gray-900'],
+    backgroundColor: enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'],
+    borderColor: theme.colors['--color-gray-300'],
+    borderWidth: 1,
+    borderRadius: 4,
+    height: 32,
+    justifyContent: 'center'
+}))
 
 function SearchableOptionsField({
                                     text,
@@ -28,6 +42,7 @@ function SearchableOptionsField({
                                     oneOptionsSelected,
                                     onChangeText,
                                     onClear,
+                                    enabled = true,
                                     value,
                                     isPopoverOpen = () => {
                                     },
@@ -79,38 +94,52 @@ function SearchableOptionsField({
                 label && <LabelContainer theme={theme} lable={!!label}>{label}</LabelContainer>
             }
 
-            <View style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}>
+            <ValueContainer
+                theme={theme}
+                enabled={enabled}
+                //style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}
+            >
 
-                <TextInput
-                    style={[styles.inputField, {borderColor: hasError ? 'red' : borderColor, height: 32}]}
-                    value={text}
-                    editable={!selectedValue}
-                    onChangeText={(value) => {
-                        onChangeText(value);
-                        handlePopovers(true)
-                    }}
-                    ref={textInputRef}
-                />
 
-                {
-                    !!selectedValue &&
+                {/*{*/}
+                {/*    !!selectedValue &&*/}
 
-                    <View style={styles.valueBox}>
-                        <Text numberOfLines = {1} style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
-                    </View>
-                }
-
+                {/*    <View style={styles.valueBox}>*/}
+                {/*        <Text numberOfLines = {1} style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>*/}
+                {/*    </View>*/}
+                {/*}*/}
 
                 {
-                    (selectedValue) &&
+                    (enabled && !!selectedValue)
+                        ? <>
+                            <View style={styles.valueBox}>
+                                <Text numberOfLines={1}
+                                      style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
+                            </View>
 
-                    <TouchableOpacity
-                        style={styles.clearIcon}
-                        onPress={onClearPress}
-                    >
-                        <ClearIcon/>
-                    </TouchableOpacity>
-
+                            <TouchableOpacity
+                                style={styles.clearIcon}
+                                onPress={onClearPress}
+                            >
+                                <ClearIcon/>
+                            </TouchableOpacity>
+                        </>
+                        : <TextInput
+                            style={{
+                                padding: 4,
+                                paddingLeft: 12,
+                                paddingRight: 12,
+                            }}
+                            value={
+                                selectedValue?.name || text
+                            }
+                            editable={enabled}
+                            onChangeText={(value) => {
+                                onChangeText(value);
+                                handlePopovers(true)
+                            }}
+                            ref={textInputRef}
+                        />
                 }
 
                 {
@@ -143,7 +172,7 @@ function SearchableOptionsField({
                         </View>
                         : null
                 }
-            </View>
+            </ValueContainer>
         </View>
     );
 }
