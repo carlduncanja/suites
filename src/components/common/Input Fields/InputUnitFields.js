@@ -91,7 +91,7 @@ function InputUnitField({label, onChangeText, value,enabled = true, placeholder,
                             editable={enabled}
                             theme = {theme}
                             onChangeText={onChangeText}
-                            value={value.toString()}
+                            value={value?.toString()}
                             keyboardType={keyboardType}
                             placeholder={placeholder}
                         />
