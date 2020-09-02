@@ -61,7 +61,7 @@ const Input = styled.TextInput`
 `;
 
 const ErrorContainer = styled.View`
-    postion : absolute;
+    position : absolute;
     top : 16;
     padding-left : 15px;
 `;

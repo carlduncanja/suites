@@ -249,11 +249,7 @@ function OrderItemPage({ route, navigation }) {
                     }
                 >
 
-
                     {getTabContent(currentTab)}
-
-
-
 
                 </DetailsPage>
             </PageContext.Provider>
