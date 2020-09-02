@@ -55,7 +55,7 @@ const TableContainer = styled.View`
     margin-top : ${ ({theme}) => theme.space['--space-12']};
 `;
 
-const ConsumableTextContainer = styled.View` 
+const ConsumableTextContainer = styled.View`  
     flex-direction : row;
     justify-content : center;
 `;

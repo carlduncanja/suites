@@ -6,6 +6,8 @@ import Search from '../../../common/Search';
 import NumberChangeField from '../../../common/Input Fields/NumberChangeField';
 import DropdownInputField from '../../../common/Input Fields/DropdownInputField';
 
+
+
 import ItemArrow from '../../../../../assets/svg/itemArrow';
 import CollapsedIcon from "../../../../../assets/svg/closeArrow";
 import ActionIcon from "../../../../../assets/svg/dropdownIcon";
@@ -19,6 +21,7 @@ import { PageContext } from '../../../../contexts/PageContext';
 
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import { useModal } from 'react-native-modalfy';
 
 const EquipmentsWrapper = styled.View`
     flex:1;
@@ -41,20 +44,22 @@ const EquipmentText = styled.Text( ({theme}) => ({
     color : theme.colors['--color-blue-600'],
     paddingLeft : 14,
 }));
- 
-function ChargesheetEquipment({
+  
+function ChargesheetEquipment({ 
     headers, 
     equipments = [], 
     caseProceduresFilters = [], 
     onEquipmentsUpdate, 
+    onSelectEquipments,
     // handleEditDone = () => {}, 
     // isEditMode = false, 
     allItems = [],
     caseProcedures = [],
 }) {
+//  console.log("Procedures: ", caseProcedures)
 
-    console.log("Case procedures: ", caseProcedures)
     const theme = useTheme();
+    const modal = useModal();
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState
 
@@ -69,43 +74,109 @@ function ChargesheetEquipment({
         setSearchText(input)
     }
 
-    const toggleCheckbox = (item) => () => {
-        let updateEquipment = [...checkBoxList];
+    const toggleCheckbox = (item, parentId) => () => {
 
-        if (updateEquipment.includes(item)) {
-            updateEquipment = updateEquipment.filter(caseItem => caseItem !== item)
-        } else {
-            updateEquipment.push(item);
+        let childCheckboxList = [...variantsCheckboxList];
+        let variantsArray = childCheckboxList.filter(obj => obj?._parentId === parentId)
+
+        if(variantsArray.length === 0){
+            setVariantsCheckBoxList([...variantsCheckboxList,{
+                _parentId : parentId,
+                variants : [item?.equipment]
+            }]);
+            setCheckBoxList([...checkBoxList, parentId]);
+            onSelectEquipments([...checkBoxList, parentId])
+        }else{
+            let { variants = [], _parentId } = variantsArray[0] || {}
+            let variantsInList = variants.filter( id => id === item?.equipment);
+            let updatedChildList = childCheckboxList.filter( obj => obj?._parentId !== parentId);
+
+            if(variantsInList.length === 0){
+                let newObj = {
+                    _parentId, 
+                    variants : [...variants, item?.equipment] 
+                }
+                let newChildList = [...updatedChildList,newObj]
+                setVariantsCheckBoxList(newChildList)
+            }else{
+                let updatedVariants = variants.filter( id => id !== item?.equipment)
+                let updatedChildList = childCheckboxList.filter( obj => obj?._parentId !== parentId);
+
+                if(updatedVariants.length === 0){
+                    setVariantsCheckBoxList([...updatedChildList]);
+                    setCheckBoxList([...checkBoxList.filter( id => id !== _parentId)]);
+                    onSelectEquipments([...checkBoxList.filter( id => id !== _parentId)])
+                    // Remove from header list if none remain and from childlist
+                }else{
+                    let newVariantObj = {_parentId, variants : updatedVariants};
+                    setVariantsCheckBoxList([...updatedChildList, newVariantObj]);
+                }
+
+            }
+
         }
-        setCheckBoxList(updateEquipment);
+
     }
 
     const toggleHeaderCheckbox = () =>{
-        const selectedData = equipments[selectedIndex]
-        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== selectedData.length;
 
-        if (indeterminate) {
-            const selectedAllIds = [...selectedData.map( item => item )]
-            setCheckBoxList(selectedAllIds)
-        } else {
+        let updatedChecboxList = []
+        let updatedVariants = []
+        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== caseProcedures.length
+
+        if(indeterminate){
+            caseProcedures.map(procedure => {
+                let { equipments = [] } = procedure;
+                updatedChecboxList.push(procedure?.caseProcedureId);
+
+                let variantCheckboxList = [...equipments.map( item => item?.equipment)]
+
+                updatedVariants.push(
+                    {
+                        _parentId : procedure?.caseProcedureId,
+                        variants : variantCheckboxList
+                    }
+                )
+                
+            });
+        setVariantsCheckBoxList(updatedVariants)
+        setCheckBoxList(updatedChecboxList)
+        onSelectEquipments(updatedChecboxList)
+
+        }else{
             setCheckBoxList([])
+            onSelectEquipments([])
         }
+
     }
 
-    const onSelectChange = (index) => {
-
-        if (index === 0) {
-            setSelectedIndex(0)
-            setSelectedOption('All')
-        } else {
-            setSelectedOption(caseProceduresFilters[index])
-            setSelectedIndex(index)
+    const toggleParentCheckBox = (item) => {
+        
+        let { equipments = [] } = item
+        let itemId = item?.caseProcedureId
+        let parentCheckboxList = [...checkBoxList];
+ 
+        if(parentCheckboxList.includes(itemId)){
+            setCheckBoxList(parentCheckboxList.filter( id => id !== itemId ));
+            onSelectEquipments(parentCheckboxList.filter( id => id !== itemId ))
+            console.log("itemId: ", itemId)
+            let updatedList = [...variantsCheckboxList].filter( obj => obj?._parentId !== itemId)
+            setVariantsCheckBoxList(updatedList)
+            console.log("Updated varaint: ", updatedList)
+        }else{
+            setCheckBoxList([...parentCheckboxList, itemId])
+            onSelectEquipments([...parentCheckboxList, itemId])
+            setVariantsCheckBoxList([...variantsCheckboxList,{
+                _parentId : itemId,
+                variants : [...equipments.map( item => item?.equipment)]
+            }])
         }
+
     }
 
-    const onQuantityChangePress = (item,index) => (action) =>{
+    const onQuantityChangePress = (item,index, sectionIndex) => (action) =>{
 
-        const selectedData = equipments[selectedIndex];
+        const selectedData = caseProcedures[sectionIndex].equipments;
 
         const updatedObj = {
             ...item,
@@ -117,8 +188,7 @@ function ChargesheetEquipment({
                 ? {...updatedObj}
                 : {...item}
         })
-
-        onEquipmentsUpdate(selectedIndex - 1, updatedData);
+        onEquipmentsUpdate(selectedIndex, updatedData);
     }
 
     const onAmountInputChange = (item,index) => (value) => {
@@ -148,47 +218,6 @@ function ChargesheetEquipment({
         />
     </>
 
-    // const listItem = (item,index) => <>
-    //     <View style={styles.item}>
-    //         <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
-    //     </View>
-    //     <View style={[styles.item, {alignItems: 'center'}]}>
-    //         <Text style={styles.itemText}>{item?.type || 'n/a'}</Text>
-    //     </View>
-    //     { 
-    //         isEditMode && selectedOption !== 'All'?
-
-    //         <View style={{flex:1, alignItems:'center'}}>
-    //             <NumberChangeField
-    //                 onChangePress = {onQuantityChangePress(item,index)}
-    //                 onAmountChange = {onAmountInputChange(item,index)}
-    //                 value = {item.amount === 0 ? "" : item.amount.toString()}
-    //             />
-    //         </View>
-
-    //         :
-    //         <View style={[styles.item, {alignItems: 'center'}]}>
-    //             <Text style={styles.itemText}>{item.amount}</Text>
-    //         </View>
-
-    //     }
-    //     <View style={[styles.item, {alignItems: 'flex-end'}]}>
-    //         <Text style={styles.itemText}>{`$ ${currencyFormatter(item.cost)}`}</Text>
-    //     </View>
-
-    // </>
-
-
-    // const renderListFn = (item,index) =>{
-    //     return <Item
-    //         hasCheckBox={true}
-    //         isChecked={checkBoxList.includes(item)}
-    //         onCheckBoxPress={toggleCheckbox(item)}
-    //         onItemPress={() => {}}
-    //         onPressDisabled = {true}
-    //         itemView={listItem(item,index)}
-    //     />
-    // }
 
     const childViewItem = (item, itemIndex, sectionIndex) => {
         const { amount = 0, cost = 0, name = "" , type = "n/a"} = item
@@ -230,22 +259,23 @@ function ChargesheetEquipment({
         )
     }
 
-    const renderChildItemView = (item, itemIndex, sectionIndex) => {
-        let { _id } = item
-
+    const renderChildItemView = (item, parentId, itemIndex, sectionIndex) => {
+        
+        let { _id, equipment } = item
+        let { variants = [] } = variantsCheckboxList?.filter( obj => obj._parentId === parentId)[0] || {};
         return (
             <Item
                 itemView = {childViewItem(item, itemIndex, sectionIndex)}
                 hasCheckBox = {true}
-                isChecked = {variantsCheckboxList.includes(_id)}
-                onCheckBoxPress = {()=>{}}
+                isChecked = {variants.includes(equipment)}
+                onCheckBoxPress = {toggleCheckbox(item,parentId)}
                 onItemPress = {()=>{}}
             />
         )
     };
 
     const renderCollapsible = (item, sectionIndex) => {
-        const { procedure, equipments} = item
+        const { procedure, equipments, caseProcedureId} = item
 
         let procedureItem = {
             name : procedure?.name
@@ -253,8 +283,8 @@ function ChargesheetEquipment({
 
         return (
             <CollapsibleListItem
-                isChecked={checkBoxList.includes(item._id)}
-                onCheckBoxPress={ ()=> {}}
+                isChecked={checkBoxList.includes(item?.caseProcedureId)}
+                onCheckBoxPress={()=>toggleParentCheckBox(item)}
                 hasCheckBox={true}
                 onItemPress={ ()=> {}}
                 render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, sectionIndex)}
@@ -262,7 +292,7 @@ function ChargesheetEquipment({
             <FlatList
                 data={equipments}
                 renderItem={({item, index}) => {
-                    return renderChildItemView(item, index, sectionIndex)
+                    return renderChildItemView(item, caseProcedureId, index, sectionIndex)
                 }}
                 keyExtractor={(item, index) => "" + index}
                 ItemSeparatorComponent={() =>
@@ -294,7 +324,7 @@ function ChargesheetEquipment({
                         listItemFormat = {renderCollapsible}
                         // listItemFormat = {()=>{}}
                         headers = {headers}
-                        toggleHeaderCheckbox = { ()=> {} }
+                        toggleHeaderCheckbox = {toggleHeaderCheckbox}
                         itemSelected = {checkBoxList}
                     />
 
@@ -302,79 +332,11 @@ function ChargesheetEquipment({
 
             </EquipmentsContainer>
         </EquipmentsWrapper>
-        // <ScrollView>
-
-        //     <View style={{flex:1, justifyContent:'space-between', flexDirection:'row', marginBottom:20}}>
-        //         <View style={{flex:2, paddingRight:100, justifyContent:'center'}}>
-        //             <Search
-        //                 placeholderText = "Search by equipment item"
-        //                 inputText = {searchText}
-        //                 changeText = {onSearchInputChange}
-        //                 backgroundColor = "#FAFAFA"
-        //             />
-        //         </View>
-        //         <View style={{flex:1}}>
-        //             <DropdownInputField
-        //                 onSelectChange = {onSelectChange}
-        //                 value = {selectedOption}
-        //                 selected = {selectedIndex}
-        //                 dropdownOptions = {caseProceduresFilters}
-        //             />
-        //         </View>
-
-        //     </View>
-
-        //     <Table
-        //         isCheckbox = {true}
-        //         data = {equipments[selectedIndex] || []}
-        //         listItemFormat = {renderListFn}
-        //         headers = {headers}
-        //         toggleHeaderCheckbox = {toggleHeaderCheckbox}
-        //         itemSelected = {checkBoxList}
-        //         // dataLength = {tabDetails.length}
-        //     />
-        // </ScrollView>
+   
     
     );
 }
 
 export default ChargesheetEquipment;
 
-const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        flexDirection:'row',
-        padding:10,
-        backgroundColor:'#FFFFFF',
-        alignItems:'center',
-        marginBottom:10
-    },
-    dataContainer:{
-        flex:1,
-        flexDirection:'row',
-        alignItems:"flex-start",
-        justifyContent:"space-between"
-    },
-    item:{
-        flex:1,
-    },
-    itemText:{
-        fontSize:16,
-        color:"#4A5568",
-    },
-    headersContainer:{
-        //flex:1,
-        marginLeft:10,
-        flexDirection:'row',
-        //width:'100%'
-    },
-    headerItem:{
-        flex:1,
-        alignItems:'flex-start',
-        justifyContent:'center',
-    },
-    headerText:{
-        fontSize:12,
-        color:'#718096'
-    }
-})
+

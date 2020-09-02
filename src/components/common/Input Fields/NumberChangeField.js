@@ -17,7 +17,7 @@ const ChangeFieldContainer = styled.View`
     display: flex;
     height:100%; 
     justify-content: center;
-    align-items: ${ ({align}) => align};
+    align-items: ${ ({align}) => align}; 
     flex-direction : row;
 
 `;
@@ -43,17 +43,21 @@ function NumberChangeField({
     value=0, 
     backgroundColor = '--color-gray-100',
     borderColor = '--color-gray-400',
+    leftArrowColor = '--color-gray-600',
+    rightArrowColor = '--color-green-600',
     flex = 1,
     align = "center" 
 }){
+
+    const theme = useTheme();
     return ( 
  
         <ChangeFieldWrapper flex = {flex} >
-            <ChangeFieldContainer align = {align}>
+            <ChangeFieldContainer align = {align} theme = {theme}>
 
                 <IconContainer>
                     <IconButton
-                        Icon = {<LeftArrow strokeColor = {'#718096'}/>}
+                        Icon = {<LeftArrow strokeColor = {theme.colors[leftArrowColor]}/>}
                         onPress = {()=>onChangePress('sub')}
                         disabled = {false}
                     />
@@ -61,6 +65,7 @@ function NumberChangeField({
             
                 <NumberContainer 
                     backgroundColor = {backgroundColor}
+                    theme = {theme}
                     borderColor = {borderColor}
                     onChangeText = {(value)=>onAmountChange(value)}
                     value = {value}
@@ -68,7 +73,7 @@ function NumberChangeField({
                 />
                 <IconContainer>
                     <IconButton
-                        Icon = {<RightArrow strokeColor="#718096"/>}
+                        Icon = {<RightArrow strokeColor={theme.colors[rightArrowColor]}/>}
                         onPress = {()=>{onChangePress('add')}}
                         disabled = {false}
                     />
