@@ -57,9 +57,12 @@ const FrameProcedureCard = ({
     const {appointment, procedure, recovery} = procedureData
     const recoveryAppointment = recovery?.appointment || false
 
+    const [hasRecovery, setRecovery] = useState(!!recoveryAppointment);
+
 
     // STATES
     const [appointmentFields, setAppointmentFields] = useState(getAppointmentFields(appointment));
+    const [recoveryAppointmentFields, setRecoveryAppointmentFields] = useState(getAppointmentFields(recoveryAppointment));
     const [isUpdated, setUpdated] = useState(false);
     const [updating, setUpdating] = useState(false);
 
@@ -70,6 +73,12 @@ const FrameProcedureCard = ({
         setUpdated(true);
         setAppointmentFields(data)
     }
+
+    const onRecoveryAppointmentFieldsUpdate = (data) => {
+        setUpdated(true);
+        setAppointmentFields(data)
+    }
+
 
     const handleSaveProcedure = () => {
         const data = {
@@ -152,10 +161,13 @@ const FrameProcedureCard = ({
                         isUpdated={isUpdated}
                         procedure={procedure}
                         appointmentFields={appointmentFields}
-                        recoveryAppointment={recoveryAppointment}
+                        recoveryAppointment={recoveryAppointmentFields}
                         onOpenPickList={onOpenPickList}
                         onAppointmentFieldsUpdate={onAppointmentFieldsUpdate}
+                        onRecoveryFieldUpdate={onRecoveryAppointmentFieldsUpdate}
                         onSavePress={handleSaveProcedure}
+                        hasRecovery={hasRecovery}
+                        updateRecovery={(value) => setRecovery(value)}
                     />
                 </ProcedureCardContent>
 

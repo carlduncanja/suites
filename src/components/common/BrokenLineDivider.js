@@ -15,8 +15,8 @@ const DividerContainer = styled.View`
 `;
 
 function BrokenLineDivider(){
-    const theme = useTheme(); 
-    
+    const theme = useTheme();
+
     return (
         <DividerWrapper>
             <DividerContainer theme = {theme}/>
