@@ -1,13 +1,13 @@
-import React, {Component, useContext, useState} from 'react';
-import styled, {css} from "@emotion/native";
-import {useTheme} from "emotion-theming";
+import React, { Component, useContext, useState } from 'react';
+import styled, { css } from "@emotion/native";
+import { useTheme } from "emotion-theming";
 import Button from "../../common/Buttons/Button";
 import SmallLeftTriangle from "../../../../assets/svg/smallLeftTriangle";
-import {PageContext} from "../../../contexts/PageContext";
+import { PageContext } from "../../../contexts/PageContext";
 import SvgIcon from "../../../../assets/SvgIcon";
-import {View} from 'react-native-animatable';
-import {isEmpty} from 'lodash'
-import {Text} from 'react-native';
+import { View } from 'react-native-animatable';
+import { isEmpty } from 'lodash'
+import { Text } from 'react-native';
 import LockIcon from "../../../../assets/svg/lockIcon";
 import EditLockIcon from "../../../../assets/svg/editLockedIcon";
 
@@ -24,7 +24,7 @@ const shadow = {
     zIndex: 3,
 };
 
-const HeaderWrapper = styled.View(({isEditMode, theme, isEditBackground}) =>
+const HeaderWrapper = styled.View(({ isEditMode, theme, isEditBackground }) =>
     ({
         display: 'flex',
         height: 55,
@@ -46,18 +46,18 @@ const HeaderContainer = styled.View`
 
 const TextContainer = styled.View`
     flex:1;
-    margin-top:${({isSpecialHeader, theme}) => !isSpecialHeader ? "0px" : `${theme.space['--space-10']}`};
-    padding-left: ${({theme}) => theme.space['--space-14']};
-    // padding-left:${({isSpecialHeader}) => !isSpecialHeader ? "0px" : "20px"};
-    align-self:${({isSpecialHeader}) => !isSpecialHeader ? "center" : "baseline"};
+    margin-top:${({ isSpecialHeader, theme }) => !isSpecialHeader ? "0px" : `${theme.space['--space-10']}`};
+    padding-left: ${({ theme }) => theme.space['--space-14']};
+    // padding-left:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "20px"};
+    align-self:${({ isSpecialHeader }) => !isSpecialHeader ? "center" : "baseline"};
     flex-direction: row;
-    align-items:${({isSpecialHeader}) => !isSpecialHeader ? "baseline" : "center"};
+    align-items:${({ isSpecialHeader }) => !isSpecialHeader ? "baseline" : "center"};
 `;
 
 const HeaderText = styled.Text`
-    margin-bottom:${({isSpecialHeader}) => !isSpecialHeader ? "0px" : "10px"};
-    font:${({theme}) => theme.font["--text-xl-medium"]};
-    color:${({theme}) => theme.colors["--accent-button"]};
+    margin-bottom:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "10px"};
+    font:${({ theme }) => theme.font["--text-xl-medium"]};
+    color:${({ theme }) => theme.colors["--accent-button"]};
 `;
 
 const IconContainer = styled.TouchableOpacity`
@@ -66,8 +66,8 @@ const IconContainer = styled.TouchableOpacity`
 
 const SpecialText = styled.Text`
     margin-left: 8px;
-    font:${({theme}) => theme.font["--text-sm-medium"]};
-    color:${({theme}) => theme.colors["--company"]};
+    font:${({ theme }) => theme.font["--text-sm-medium"]};
+    color:${({ theme }) => theme.colors["--company"]};
 `;
 
 const EditButtonWrapper = styled.View`
@@ -84,13 +84,13 @@ const EditButtonContainer = styled.View`
   border-radius : 6px;
   padding: 4px;
   
-  background-color : ${({backgroundColor}) => backgroundColor};
+  background-color : ${({ backgroundColor }) => backgroundColor};
   align-items : center;
   justify-content : center;
 `;
 
 const DisabledEditContainer = styled.View`
-background-color:${({theme}) => theme.colors["--default-shade-white"]};
+background-color:${({ theme }) => theme.colors["--default-shade-white"]};
 height:26px;
 width:53px;
 align-items : center;
@@ -103,7 +103,7 @@ const DisabledText = styled.Text`
 color:#A0AEC0;
 `;
 
-const EditModeContainer = styled.Text(({theme, isReview}) => ({
+const EditModeContainer = styled.Text(({ theme, isReview }) => ({
     ...theme.font['--text-base-medium'],
     color: theme.colors['--color-white'],
     alignItems: 'center',
@@ -111,17 +111,17 @@ const EditModeContainer = styled.Text(({theme, isReview}) => ({
 }))
 
 function PageHeader({
-                        onBack,
-                        title = "",
-                        subTitle = "",
-                        hasIcon,
-                        isSpecialHeader = false,
-                        isArchive: isEditDisabled = false,
-                        editMessage = "now in edit mode"
-                    }) {
+    onBack,
+    title = "",
+    subTitle = "",
+    hasIcon,
+    isSpecialHeader = false,
+    isArchive: isEditDisabled = false,
+    editMessage = "now in edit mode"
+}) {
     const theme = useTheme();
 
-    const {pageState, setPageState} = useContext(PageContext)
+    const { pageState, setPageState } = useContext(PageContext)
 
     const onEditPress = () => {
         setPageState({
@@ -130,7 +130,7 @@ function PageHeader({
         })
     }
 
-    const {isEditMode, isReview, locked, editMsg, editDisabled} = pageState;
+    const { isEditMode, isReview, locked, editMsg, editDisabled } = pageState;
 
     console.log('page state', pageState);
 
@@ -149,7 +149,7 @@ function PageHeader({
     const showIcon = () => {
         return (
 
-            <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
+            <SvgIcon iconName="doctorArrow" strokeColor="#718096" />
 
         )
     }
@@ -206,15 +206,15 @@ function PageHeader({
 
 
                 {
-                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle/></IconContainer>
+                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle /></IconContainer>
                 }
 
                 {
                     !isEditMode &&
                     <TextContainer theme={theme} isSpecialHeader={isSpecialHeader}>
                         <HeaderText theme={theme} isSpecialHeader={isSpecialHeader}>{title}</HeaderText>
-                        {!isEmpty(hasIcon) ? <View style={{marginLeft: 15, marginRight: 10, marginBottom: 10}}>
-                            {hasIcon}</View> : <View/>}
+                        {!isEmpty(hasIcon) ? <View style={{ marginLeft: 10, marginRight: 5, marginBottom: 5 }}>
+                            {hasIcon}</View> : <View />}
                         <SpecialText theme={theme}>{subTitle}</SpecialText>
                     </TextContainer>
                 }
@@ -231,14 +231,14 @@ function PageHeader({
                             <EditButtonContainer
                                 theme={theme}
                                 backgroundColor={getEditBtnBackground()}
-                                // backgroundColor={'yellow'}
+                            // backgroundColor={'yellow'}
                             >
                                 <Button
                                     {...getButtonProps()}
                                     buttonPress={onEditPress}
                                     font={theme.font['--text-sm-medium']}
                                 />
-                                { locked && <EditLockIcon/>}
+                                {locked && <EditLockIcon />}
                             </EditButtonContainer>
                         </EditButtonWrapper>
 
