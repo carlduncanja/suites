@@ -66,16 +66,6 @@ export default () => {
                 component={ProcedurePage}
                 options={({ route, navigation }) => ({
                     headerShown: false,
-                    header: props =>
-                        <PageHeader
-                            headerMessage={route.params.procedure.name} specialDetail={` Dr. ${route.params.procedure.physician.firstName} ${route.params.procedure.physician.surname}`} isOpenEditable={route.params.isOpenEditable} onBack={() => navigation.navigate("Procedures")} {...props} />,
-                    // headerLeft: (props) => (<HeaderBackComponent
-                    //     {...props}
-                    // />
-                    // ),
-                    headerStyle: {
-                        height: 70,
-                    },
                     headerTitle: ""
                 })}
             />
