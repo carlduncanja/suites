@@ -8,6 +8,8 @@ import {Text, View} from "react-native";
 import TabsContainer from "../Tabs/TabsContainerComponent";
 import LoadingIndicator from "../LoadingIndicator";
 import {PageContext} from "../../../contexts/PageContext";
+import SvgIcon from "../../../../assets/SvgIcon";
+import BreadCrumbIcon from "../../../../assets/svg/BreadCrumbIcon";
 
 const DetailsPageWrapper = styled.View`
         margin:0;
@@ -67,12 +69,9 @@ function DetailsPage({
                         : <>
                             <PageHeader
                                 isArchive={isArchive}
-                                title={title}
-                                hasIcon={hasIcon}
-                                isSpecialHeader={isSpecialHeader}
-                                subTitle={subTitle}
-                                onBack={
-                                    onBackPress}
+                                headerChildren={[title,subTitle]}
+                                separator={<BreadCrumbIcon/>}
+                                onBack={onBackPress}
                             />
 
                             <TabsViewContainer>{pageTabs}</TabsViewContainer>

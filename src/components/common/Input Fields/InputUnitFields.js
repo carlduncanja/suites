@@ -16,7 +16,7 @@ import InputErrorComponent from '../InputErrorComponent';
  * @param placeholder
  * @param keyboardType
  * @param units
- * @returns {*} 
+ * @returns {*}
  * @constructor
  */
 
@@ -29,7 +29,7 @@ const TextInputContainer = styled.View`
     width : 100%;
     border-width: 1px;
     border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
-    background-color : ${ ({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    background-color : ${ ({theme, enabled}) => !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
     border-radius: 4px;
 `;
 
@@ -59,21 +59,21 @@ const Unit = styled.Text( ({theme}) => ({
     color : theme.colors['--color-black']
 }));
 
-function InputUnitField({label, onChangeText, value, placeholder, keyboardType, units, hasError = false, errorMessage = "" }) {
+function InputUnitField({label, onChangeText, value,enabled = true, placeholder, keyboardType, units, hasError = false, errorMessage = "" }) {
 
     const theme = useTheme();
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [selectedUnit, setSelectedUnit] = useState(units[selectedIndex])
-    
+
     const changeUnit = () => {
-        
+
         if (units.length - 1 === selectedIndex){
-            setSelectedIndex(0) 
+            setSelectedIndex(0)
             setSelectedUnit(units[0])
         }else{
             setSelectedIndex(selectedIndex + 1)
             setSelectedUnit(units[selectedIndex + 1])
-        }    
+        }
     }
 
     return (
@@ -82,15 +82,16 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
             {
                 label && <InputLabelComponent label = {label}/>
             }
-            
+
             <TextInputWrapper>
-                <TextInputContainer theme = {theme}>
+                <TextInputContainer theme = {theme} enabled={enabled}>
 
                     <InputContainer>
                         <Input
+                            editable={enabled}
                             theme = {theme}
                             onChangeText={onChangeText}
-                            value={value}
+                            value={value?.toString()}
                             keyboardType={keyboardType}
                             placeholder={placeholder}
                         />
@@ -98,8 +99,8 @@ function InputUnitField({label, onChangeText, value, placeholder, keyboardType, 
                             <Unit>{selectedUnit}</Unit>
                         </UnitContainer>
                     </InputContainer>
-                    
-                    
+
+
                     {
                         hasError && <InputErrorComponent errorMessage = {errorMessage}/>
                     }

@@ -174,7 +174,7 @@ function EquipmentItemPage({ route, navigation }) {
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
                     title={group.name}
-                    hasIcon={<SvgIcon iconName="doctorArrow" strokeColor="#718096" />}
+                    hasIcon={<SvgIcon iconName='paginationNext' strokeColor="#718096" />}
                     isSpecialHeader={true}
                     subTitle={name}
                     onBackPress={backTapped}

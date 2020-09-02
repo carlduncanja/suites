@@ -7,6 +7,7 @@ import ProcedureIcon from '../../../../../assets/svg/frameProcedures';
 import {PageContext} from "../../../../contexts/PageContext";
 import {removeCaseProcedureAppointment, updateCaseProcedureAppointmentCall} from "../../../../api/network";
 import ConfirmationComponent from "../../../ConfirmationComponent";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 
 const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
@@ -84,7 +85,12 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
     // ############# Data declaration
 
     return (
-        <ScrollView style={{flex: 1, paddingTop: 5}}>
+        <KeyboardAwareScrollView
+            style={{flex: 1, paddingBottom: 520, backgroundColor: 'none'}}
+            contentInset={{bottom: 50}}
+            pagingEnabled={true}
+            extraScrollHeight={50}
+        >
             {
                 procedureAppointments.map((item, index) => {
                     return (
@@ -101,7 +107,7 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
                     )
                 })
             }
-        </ScrollView>
+        </KeyboardAwareScrollView>
 
     );
 }
