@@ -79,6 +79,10 @@ const FrameProcedureCard = ({
         setRecoveryAppointmentFields(data)
     }
 
+    const handleRecoveryOptionUpdated = (value) => {
+        setUpdated(true);
+        setRecovery(value);
+    }
 
     const handleSaveProcedure = () => {
         const data = {
@@ -86,9 +90,9 @@ const FrameProcedureCard = ({
             location: appointmentFields.location?._id,
             startTime: appointmentFields.startTime,
             recovery: (!hasRecovery ? null : {
-                duration: recoveryAppointment.duration,
-                location: appointmentFields.location?._id,
-                startTime: appointmentFields.startTime
+                duration: recoveryAppointmentFields.duration,
+                location: recoveryAppointmentFields.location?._id,
+                startTime: recoveryAppointmentFields.startTime
             })
         }
 
@@ -173,7 +177,7 @@ const FrameProcedureCard = ({
                         onRecoveryFieldUpdate={onRecoveryAppointmentFieldsUpdate}
                         onSavePress={handleSaveProcedure}
                         hasRecovery={hasRecovery}
-                        updateRecovery={(value) => setRecovery(value)}
+                        updateRecovery={handleRecoveryOptionUpdated}
                     />
                 </ProcedureCardContent>
 
