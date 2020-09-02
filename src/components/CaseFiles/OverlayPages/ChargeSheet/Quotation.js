@@ -5,6 +5,7 @@ import Table from '../../../common/Table/Table';
 import {formatDate, currencyFormatter} from '../../../../utils/formatter';
 import ReportPreview from '../../Reports/ReportPreview';
 import ListItem from '../../../common/List/ListItem';
+import Button from '../../../common/Buttons/Button';
 
 const reportTestData = {
     billing: {
@@ -168,6 +169,7 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     );
 
     return (
+
         <ScrollView>
             <Table
                 isCheckbox={true}

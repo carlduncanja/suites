@@ -21,7 +21,8 @@ import styled, { css } from '@emotion/native';
  */
 
 const InputLabelWrapper = styled.View`
-    width : 98px;
+    //width : 98px;
+    min-width: 60px;
     height : 32px;
 `;
 
@@ -44,13 +45,12 @@ function InputLabelComponent({
     const theme = useTheme();
 
     return (
-        
         <InputLabelWrapper>
             <InputLabelContainer>
                 <InputLabel theme = {theme} numberOfLines={1}>{label}</InputLabel>
             </InputLabelContainer>
         </InputLabelWrapper>
-        
+
     );
 }
 

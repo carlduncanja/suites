@@ -4,12 +4,36 @@ import {View, StyleSheet, Text, TextInput, FlatList, TouchableOpacity, SafeAreaV
 import IconButton from "../Buttons/IconButton";
 import RemoveIcon from "../../../../assets/svg/removeIcon";
 import ClearIcon from "../../../../assets/svg/clearIcon";
+import {useTheme} from "emotion-theming";
+import Styled from "@emotion/native";
+import styled from "@emotion/native";
+import {shadow} from "../../../styles";
 
 const optionsStyles = {
     optionsContainer: {
         backgroundColor: "rgba(255, 255, 255, 0)"
     }
 };
+
+const LabelContainer = Styled.Text(({theme, label}) => ({
+    ...theme.font['--text-xs-medium'],
+    color: theme.colors['--color-gray-600'],
+    minWidth: 60,
+    marginRight: label ? 20 : 0
+}))
+
+const ValueContainer = styled.View(({theme, enabled = {}}) => ({
+    // ...theme.font['--text-base-regular'],
+    flex: 1,
+    flexDirection: 'column',
+    color: theme.colors['--color-gray-900'],
+    backgroundColor: enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'],
+    borderColor: theme.colors['--color-gray-300'],
+    borderWidth: 1,
+    borderRadius: 4,
+    height: 32,
+    justifyContent: 'center'
+}))
 
 function SearchableOptionsField({
                                     text,
@@ -18,6 +42,7 @@ function SearchableOptionsField({
                                     oneOptionsSelected,
                                     onChangeText,
                                     onClear,
+                                    enabled = true,
                                     value,
                                     isPopoverOpen = () => {
                                     },
@@ -30,6 +55,8 @@ function SearchableOptionsField({
                                 }) {
 
     const textInputRef = useRef();
+    const theme = useTheme()
+
 
     const [selectedValue, setSelectedValue] = useState(value);
 
@@ -63,45 +90,56 @@ function SearchableOptionsField({
 
     return (
         <View style={styles.container}>
-            <Text style={[
-                styles.textLabel, {
-                    marginRight: label ? 20 : 0
-                }
-            ]}>
-                {label}
-            </Text>
-            <View style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}>
+            {
+                label && <LabelContainer theme={theme} lable={!!label}>{label}</LabelContainer>
+            }
 
-                <TextInput
-                    style={[styles.inputField, {borderColor: hasError ? 'red' : borderColor, height: 32}]}
-                    value={text}
-                    editable={!selectedValue}
-                    onChangeText={(value) => {
-                        onChangeText(value);
-                        handlePopovers(true)
-                    }}
-                    ref={textInputRef}
-                />
+            <ValueContainer
+                theme={theme}
+                enabled={enabled}
+                //style={[styles.inputFieldWrapper, {backgroundColor: backgroundColor}]}
+            >
 
-                {
-                    (selectedValue ) &&
 
-                    <View style={styles.valueBox}>
-                        <Text numberOfLines = {1} style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
-                    </View>
-                }
+                {/*{*/}
+                {/*    !!selectedValue &&*/}
 
+                {/*    <View style={styles.valueBox}>*/}
+                {/*        <Text numberOfLines = {1} style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>*/}
+                {/*    </View>*/}
+                {/*}*/}
 
                 {
-                    (selectedValue) &&
+                    (enabled && !!selectedValue)
+                        ? <>
+                            <View style={styles.valueBox}>
+                                <Text numberOfLines={1}
+                                      style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
+                            </View>
 
-                    <TouchableOpacity
-                        style={styles.clearIcon}
-                        onPress={onClearPress}
-                    >
-                        <ClearIcon/>
-                    </TouchableOpacity>
-
+                            <TouchableOpacity
+                                style={styles.clearIcon}
+                                onPress={onClearPress}
+                            >
+                                <ClearIcon/>
+                            </TouchableOpacity>
+                        </>
+                        : <TextInput
+                            style={{
+                                padding: 4,
+                                paddingLeft: 12,
+                                paddingRight: 12,
+                            }}
+                            value={
+                                selectedValue?.name || text
+                            }
+                            editable={enabled}
+                            onChangeText={(value) => {
+                                onChangeText(value);
+                                handlePopovers(true)
+                            }}
+                            ref={textInputRef}
+                        />
                 }
 
                 {
@@ -134,7 +172,7 @@ function SearchableOptionsField({
                         </View>
                         : null
                 }
-            </View>
+            </ValueContainer>
         </View>
     );
 }
@@ -172,7 +210,7 @@ const styles = StyleSheet.create({
         paddingBottom: 2,
         width: '100%',
         maxHeight: 300,
-        borderRadius: 8,
+        borderRadius: 4,
         // border: 1px solid #CCD6E0;
         borderWidth: 1,
         borderColor: '#CCD6E0',
@@ -197,7 +235,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         borderWidth: 1,
         borderColor: '#E3E8EF',
-        borderRadius: 8,
+        borderRadius: 4,
         height: 32,
         padding: 10,
         paddingTop: 2,

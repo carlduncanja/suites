@@ -1,10 +1,33 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native"; 
 import { currencyFormatter } from "../../../utils/formatter";
 
-const BillingDetails = ({subtotal, discount, tax, total}) =>{
-    console.log("Sub: ", subtotal)
-    
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import DataItem from "../../common/List/DataItem";
+
+const BillingDetailsWrapper = styled.View`
+    width : 100%;
+    align-items : flex-end;
+`;
+const BillingDetailsContainer = styled.View`
+    width : 245px;
+    flex-direction : column;
+    justify-content : space-evenly;
+`;
+
+const DataRow = styled.View`
+    width : 100%;
+    height : 18px;
+    margin-bottom : ${ ({theme}) => theme.space['--space-12']};
+    flex-direction : row;
+    justify-content : space-between;
+`;
+
+const BillingDetails = ({subtotal = 0, discount = 0, tax = 0, total = 0}) =>{
+
+    const theme = useTheme();
+
     const billingDetails = [
         {
             name: "Subtotal",
@@ -16,7 +39,7 @@ const BillingDetails = ({subtotal, discount, tax, total}) =>{
         },
         {
             name: "Tax",
-            value : tax*100
+            value : `${tax*100}%`
         },
         {
             name: "Total",
@@ -24,22 +47,22 @@ const BillingDetails = ({subtotal, discount, tax, total}) =>{
         }
     ] 
     return(
-        <View style={styles.container}>
-            {
-                billingDetails.map((detail, index)=>{
-                    return(
-                        <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:10}} key={index}>
-                            <View style={{flex:1}}>
-                                <Text style={{fontWeight:'500', fontSize:16, color:'#3182CE'}}>{detail.name}</Text>
-                            </View>
-                            <View style={{flex:1, alignItems:'flex-end'}}>
-                                <Text style={{fontSize:16, color:'#323843'}}>{detail.value}</Text>
-                            </View>
-                        </View>
-                    )})
-            }
-            
-        </View>
+        <BillingDetailsWrapper>
+            <BillingDetailsContainer>
+
+                {
+                    billingDetails.map((detail, index)=>{
+                        return (
+                            <DataRow theme = {theme} key = {index}>
+                                <DataItem text = {detail.name} fontStyle = "--text-base-medium" color = "--color-blue-600"/>
+                                <DataItem text = {detail.value} align = "flex-end" fontStyle = "--text-lg-regular" color = "--color-gray-800"/>
+                            </DataRow>
+                        )
+                    })
+                }
+
+            </BillingDetailsContainer>
+        </BillingDetailsWrapper>
     )
 }
 

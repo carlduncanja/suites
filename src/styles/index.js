@@ -219,6 +219,15 @@ export const root = {
       fontStyle: "normal",
       lineHeight: 14,
     },
+
+    //  - LARGE
+    "--text-lg-regular":{
+      fontSize: 18,
+      fontWeight: "normal",
+      fontStyle: "normal",
+      lineHeight: 18,
+    },
+
     // XL - LARGE
     "--text-xl-medium": {
       fontSize: 20,

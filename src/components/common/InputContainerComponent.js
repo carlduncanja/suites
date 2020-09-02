@@ -24,7 +24,7 @@ const InputFieldWrapper = styled.View`
 const InputFieldContainer = styled.View`
     width : 100%;
     flex-direction: row;
-    align-items: center;
+    //align-items: center;
 `;
 
 
@@ -33,7 +33,7 @@ function InputContainerComponent({
 }){
 
     const theme = useTheme();
-   
+
     return (
         <InputFieldWrapper>
             <InputFieldContainer>

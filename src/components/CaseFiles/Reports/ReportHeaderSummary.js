@@ -3,87 +3,136 @@ import { View, Text, StyleSheet } from "react-native";
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import moment from "moment";
-import { formatDate, currencyFormatter } from '../../../utils/formatter'; 
+import { formatDate, currencyFormatter } from '../../../utils/formatter';  
 
-const ReportHeaderSummary = ({billedTo = "", address = {}, billedFor = "", reportNumber = "",reportDate = "", type = "", purchaseOrderNo = "", total}) => { 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+
+const BillingWrapper = styled.View`
+    width : 100%;
+    height : 154px;
+    border : 0;
+    border-bottom-color : ${ ({theme}) => theme.colors['--color-gray-400']};
+    border-bottom-width : 1px;
+    margin-bottom : ${ ({theme}) => theme.space['--space-24']};
+`
+const BillingContainer = styled.View`
+    height : 130px;
+    width : 100%;
+    flex-direction : row;
+    justify-content : space-between;
+`;
+
+const ContentContainer = styled.View`
+    flex : 1;
+    height : 100%;
+    justify-content : space-between;
+    flex-direction : column;
+    align-items : ${ ({align}) => align };
+`;
+
+const ContentHeading = styled.Text( ({theme}) => ({
+    ...theme.font['--text-base-regular'],
+    color : theme.colors['--color-gray-600']
+}));
+
+const ContentItem = styled.Text( ({theme}) => ({
+    ...theme.font['--text-base-medium'],
+    color : theme.colors['--color-gray-800']
+}));
+
+const BillingDescriptionContainer = styled.View`
+    height : 44px;
+    justify-content : space-between;
+    align-self : ${ ({align}) => align ? align : 'flex-start'};
+`
+
+
+function ReportHeaderSummary ({
+    billedTo = "", 
+    address = {}, 
+    billedFor = "", 
+    reportNumber = "",
+    reportDate = "", 
+    type = "", 
+    purchaseOrderNo = "", 
+    total
+
+}){ 
    
-    const { city = "", country = "", line1 = "", line2 = "", parish="", postalCode="" } = address
+    const { 
+        city = "", 
+        country = "", 
+        line1 = "23 Bedford Avenue", 
+        line2 = "Kingston 8", 
+        parish="", 
+        postalCode="JMKIN08" 
+    } = address
+
+    const theme = useTheme();
 
     return (  
-        <View style={styles.container}>
-            <View style={styles.billing}>
-                <Text style={styles.contentHeader}>Billed To</Text>
-                <Text style={styles.text}>{billedTo}</Text>
-                <Text style={styles.text}>{line1}</Text>
-                <Text style={styles.text}>{line2}</Text>
-                <Text style={styles.text}>{city}</Text>
-                <Text style={styles.text}>{postalCode}</Text>
-            </View>
-            
-            <View style={styles.billing}>
-                {type === 'Quotation' ?
-                    <View style={{justifyContent:'space-between'}}>
-                        <>
-                            <Text style={styles.contentHeader}>For</Text>
-                            <Text style={styles.text}>{billedFor}</Text>
-                        </>
-                        <>
-                            <Text style={styles.contentHeader}>Quotation Number</Text>
-                            <Text style={styles.text}>{reportNumber}</Text>
-                        </>
-                    </View>
-                    
-                    :
-                    <View style={{justifyContent:'space-between'}}>
-                        <>
-                            <Text style={styles.contentHeader}>Invoice No</Text>
-                            <Text style={styles.text}>{reportNumber}</Text>
-                        </>
-                        {
-                            purchaseOrderNo !== "" && <>
-                            <Text style={styles.contentHeader}>Purchase Order No</Text>
-                            <Text style={styles.text}>{purchaseOrderNo}</Text>
-                            </>
-                        }
-                        
+        <BillingWrapper theme = {theme}>
+            <BillingContainer theme = {theme}>
 
-                    </View>
-                }
+            
+                <ContentContainer align = "flex-start">
+                    <ContentHeading theme = {theme}>Billed To</ContentHeading>
+
+                    <ContentItem theme = {theme}>{billedTo}</ContentItem>
+                    <ContentItem theme = {theme}>{line1}</ContentItem>
+                    <ContentItem theme = {theme}>{line2}</ContentItem>
+                    <ContentItem theme = {theme}>{postalCode}</ContentItem>
+
+                </ContentContainer>
+
+                <ContentContainer>
+
+                    {
+                        type === 'Quotation' ?
+                            <BillingDescriptionContainer>
+                                <ContentHeading theme = {theme}>For</ContentHeading>
+                                <ContentItem theme = {theme}>{billedFor}</ContentItem>
+                            </BillingDescriptionContainer>
+                        :
+
+                            <>
+                                <BillingDescriptionContainer>
+                                    <ContentHeading theme = {theme}>Invoice No</ContentHeading>
+                                    <ContentItem theme = {theme}>{reportNumber}</ContentItem>
+                                </BillingDescriptionContainer>
+
+                                {
+                                    purchaseOrderNo !== "" &&
+                                    <BillingDescriptionContainer>
+                                        <ContentHeading theme = {theme}>Purchase Order No</ContentHeading>
+                                        <ContentItem theme = {theme}>{purchaseOrderNo}</ContentItem>
+                                    </BillingDescriptionContainer>
+                                }
+
+                            </>
+                    }
+
+                </ContentContainer>
+
+                <ContentContainer align = "flex-end">
                 
-            </View>
-           
-            <View style={[styles.billing,{alignItems:"flex-end", justifyContent:'space-between'}]}>
-                <>
-                    <Text style={styles.contentHeader}>Date</Text>
-                    <Text style={styles.text}>{formatDate(reportDate,"DD/MM/YYYY")}</Text>
-                </>
-                <>
-                    <Text style={styles.contentHeader}>Total</Text>
-                    <Text style={styles.text}>$ {currencyFormatter(total)}</Text>
-                </>
-            </View>
-        </View>
+                    <BillingDescriptionContainer align = "flex-end">
+                        <ContentHeading theme = {theme}>Date</ContentHeading>
+                        <ContentItem theme = {theme}>{formatDate(reportDate,"DD/MM/YYYY")}</ContentItem>
+                    </BillingDescriptionContainer>
+
+                    <BillingDescriptionContainer align = "flex-end">
+                        <ContentHeading theme = {theme}>Total</ContentHeading>
+                        <ContentItem theme = {theme}>$ {currencyFormatter(total)}</ContentItem>
+                    </BillingDescriptionContainer>
+                        
+                </ContentContainer>
+
+            
+            </BillingContainer>
+        </BillingWrapper>
     );
 }
  
 export default ReportHeaderSummary;
-
-const styles = StyleSheet.create({
-    container:{
-        //flex:1,
-        flexDirection:'row',
-        justifyContent:'space-evenly'
-        //paddingBottom:20,
-    },
-    contentHeader:{
-        color:'#718096',
-        fontSize:16,
-        paddingBottom:8
-    },
-    billing:{
-        flex:1,
-    },
-    text:{
-        paddingBottom:8
-    }
-})

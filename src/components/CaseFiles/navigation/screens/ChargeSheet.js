@@ -74,7 +74,8 @@ const ChargeSheet = ({
                          onUpdateChargeSheet,
                          handleEditDone,
                          handleQuotes,
-                         handleInvoices
+                         handleInvoices,
+                         onSelectEquipments,
                      }) => {
 
     let {
@@ -117,7 +118,7 @@ const ChargeSheet = ({
     }
 
     const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode} = pageState;
+    const {isEditMode, isLoading} = pageState;
 
     // preparing billing information
     const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
@@ -138,9 +139,7 @@ const ChargeSheet = ({
     }, [isEditMode]);
 
     useEffect(() => {
-        console.log("console hello auth", authInfo);
         const isPending = chargeSheet.status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
-
         if (!isPending) return;
 
         const isAdmin = authInfo['role_name'] === ROLES.ADMIN
@@ -152,20 +151,23 @@ const ChargeSheet = ({
         const pageState = {
             ...pageState,
             isReview,
-            locked: false,
+            locked,
             editMsg: isReview ? "now in edit mode (please review changes)" : undefined
         };
 
         setPageState(pageState)
 
         return () => {
+
+            console.log("on dismount", pageState);
+
             setPageState({
                 ...pageState,
                 isReview: false,
                 locked: false,
             })
         }
-    }, [])
+    }, [isLoading])
 
     // --------------------------- Helper Methods
 
@@ -182,14 +184,14 @@ const ChargeSheet = ({
     const handleEquipmentUpdate = (index, procedureEquipments) => {
         // console.log("onConsumablesUpdate", index, procedureInventories);
         const updatedCaseProcedures = [...caseProcedures];
-
+        if(updatedCaseProcedures[index]){
+            updatedCaseProcedures[index].equipments = procedureEquipments;
+            setCaseProcedure(updatedCaseProcedures);
+            setUpdated(true);
+        }
         //
         // if (updatedCaseProcedures[index]) {
-        updatedCaseProcedures[index].equipments = procedureEquipments;
         // }
-
-        setCaseProcedure(updatedCaseProcedures);
-        setUpdated(true);
     };
 
     const handleLineItemsUpdate = (procedureIndex, procedureLineItem) => {
@@ -229,11 +231,10 @@ const ChargeSheet = ({
 
     switch (selectedTab) {
         case 'Consumables':
-            const {status, updatedBy = {}} = chargeSheet;
+            const {status, updatedBy = {}, updatedAt} = chargeSheet;
 
-            console.log("auth", authInfo);
             const isAdmin = authInfo['role_name'] === ROLES.ADMIN
-            const isOwner = chargeSheet.updatedBy?._id === authInfo['user_id'];
+            const isOwner = updatedBy?._id === authInfo['user_id'];
 
             if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
 
@@ -247,6 +248,7 @@ const ChargeSheet = ({
 
                 return <PostEditView
                     headers={headers}
+                    lastEdited={updatedAt}
                     allItems={inventoryList}
                     consumables={consumables}
                     caseProceduresFilters={consumableProcedures}
@@ -277,8 +279,10 @@ const ChargeSheet = ({
                 headers={headers}
                 allItems={equipmentList}
                 equipments={procedureEquipments}
+                caseProcedures = {caseProcedures}
                 caseProceduresFilters={consumableProcedures}
                 onEquipmentsUpdate={handleEquipmentUpdate}
+                onSelectEquipments = {onSelectEquipments}
                 // details={billing.procedures}
                 isEditMode={isEditMode}
                 handleEditDone={handleEditDone}
@@ -412,6 +416,8 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
             const prvItem = prvInventories.find(item => item.inventory === newInventoryItem.inventory)
             let initialAmount = prvItem?.amount || 0;
 
+            if(initialAmount === newInventoryItem?.amount) continue;
+
             const update = {
                 ...newInventoryItem,
                 initialAmount
@@ -424,6 +430,8 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
             const prvItem = prvEquipments.find(item => item.equipment === newEquipment.equipment)
             let initialAmount = prvItem?.amount || 0;
 
+            if(initialAmount === newEquipment?.amount) continue;
+
             const update = {
                 ...newEquipment,
                 initialAmount
@@ -431,6 +439,8 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
 
             equipmentChanges.push(update);
         }
+
+        if(!inventoryChanges.length && !equipmentChanges.length) continue
 
         updatedBillableItems.inventories = inventoryChanges;
         updatedBillableItems.equipments = equipmentChanges;

@@ -38,10 +38,15 @@ import {
     validateCaseProcedureEndpoint,
     suggestedStartTimeEndpoint,
     updateQuotationStatusEndpoint,
-    updatePurchaseOrderStatusEndpoint, logoutEndpoint,
+    updatePurchaseOrderStatusEndpoint,
+    logoutEndpoint,
     caseProcedureAppointmentEndpoint,
     archiveSupplierEndpoint,
-    getArchivedSuppliersEndPoint, caseQuotationEndpoint, quotationEndpoint, caseInvoicesEndpoint
+    getArchivedSuppliersEndPoint,
+    caseQuotationEndpoint,
+    quotationEndpoint,
+    caseInvoicesEndpoint,
+    chargeSheetApprovalEndpoint, chargeSheetWithdrawChangesEndpoint
 } from "../const/suitesEndpoints";
 import {createDocumentLink} from "../const/documentGenerationEndpoints";
 
@@ -250,6 +255,21 @@ export const getSuggestedStartTimes = async (
 export const updateChargeSheet = async (id, data) => {
     return suitesAxiosInstance
         .put(updateChargeSheetEndpoint(id), data)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+
+export const approveChargeSheetCall = async (id, params) => {
+    return suitesAxiosInstance
+        .put(chargeSheetApprovalEndpoint(id), params)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+export const withdrawChargeSheetChangesCall = async (id) => {
+    return suitesAxiosInstance
+        .put(chargeSheetWithdrawChangesEndpoint(id))
         .then(handleResponse)
         .catch(handleError);
 };

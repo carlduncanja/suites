@@ -30,7 +30,7 @@ import {
     getCaseFileById,
     removeQuotationCall,
     updateCaseQuotationStatus,
-    updateChargeSheet
+    updateChargeSheet, approveChargeSheetCall, withdrawChargeSheetChangesCall
 } from '../../api/network';
 import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
@@ -86,7 +86,7 @@ const overlayMenu = [
     },
     {
         name: 'Procedures',
-        overlayTabs: ['Details'],
+        overlayTabs: ['Details'], 
         selectedIcon: <ProcedureSelectedIcon/>,
         disabledIcon: <ProcedureDisabledIcon/>
     },
@@ -104,8 +104,9 @@ const initialSelectedTab = initialCurrentTabs[0];
 
 function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const modal = useModal();
+    const theme = useTheme();
 
-    const { userToken} = auth;
+    const {userToken} = auth;
     let authInfo = {}
     try {
         authInfo = jwtDecode(userToken);
@@ -120,6 +121,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [selectedCaseId, setSelectedCaseId] = useState('');
     const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
     const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
+    const [selectedEquipments, setSelectedEquipments] = useState([])
 
     // ############### State
 
@@ -141,6 +143,77 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             setSelectedTab(tab);
         }
     };
+
+    const handleAcceptChargeSheetChange = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        chargeSheetApproval({approve: true})
+                    }}
+                    message="Do you want to accept changes submitted?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+
+    }
+
+    const handleRevertChargeSheetChanges = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        chargeSheetApproval({approve: false})
+                    }}
+                    message="Are you sure you want to revert changes submitted?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+    }
+
+    const handleWithdrawChargeSheetChanges = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        chargeSheetWithdrawChanges({approve: false})
+                    }}
+                    message="Are you sure you want to withdraw changes submitted?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+    }
+
 
     const handleOverlayMenuPress = selectedItem => {
         if (pageState.isEditMode) return;
@@ -166,6 +239,34 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             isEdit: false
         });
     };
+
+    const handleConfirmChargeSheetChanges = (updateInfo) => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError = {false}
+                    isEditUpdate = {true}
+                    onCancel = {()=> {
+                        modal.closeModals('ConfirmationModal');
+                        setPageState({
+                            ...pageState,
+                            isEditMode : true,
+                        })
+                    }}
+                    onAction = {()=>{
+                        updateCaseChargeSheet(updateInfo)
+                        setTimeout(()=>{
+                            modal.closeModals('ConfirmationModal');
+                        },200)
+                    }}
+                    message = {"Confirm changes made"}
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')} 
+            })
+
+    }
 
     const updateCaseChargeSheet = updateInfo => {
         updateChargeSheet(caseId, updateInfo)
@@ -266,6 +367,105 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 setPageLoading(false);
             });
     };
+
+    const chargeSheetApproval = (params) => {
+        setPageLoading(true);
+        // return;
+        approveChargeSheetCall(caseId, params)
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch(error => {
+                console.log("Failed to approve charge sheet", error)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Failed to Make Changes?"
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+
+            })
+            .finally(_ => fetchCase(caseId))
+    }
+
+    const chargeSheetWithdrawChanges = () => {
+        setPageLoading(true);
+        // return;
+        withdrawChargeSheetChangesCall(caseId)
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch(error => {
+                console.log("Failed to approve charge sheet", error)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Failed to Make Changes?"
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+
+            })
+            .finally(_ => fetchCase(caseId))
+    }
+
 
     const generateQuotation = caseId => {
         setPageLoading(true);
@@ -472,7 +672,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             switch (selectedTab) {
                 case 'Consumables': {
 
-                    const { chargeSheet } = selectedCase;
+                    const {chargeSheet} = selectedCase;
                     const status = chargeSheet.status;
                     const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES
 
@@ -486,8 +686,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                                 <ActionItem
                                     title="Revert Changes"
                                     icon={<WasteIcon/>}
-                                    onPress={_ => {
-                                    }}
+                                    onPress={handleRevertChargeSheetChanges}
                                 />
                             );
 
@@ -495,7 +694,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                                 <ActionItem
                                     title="Accept Changes"
                                     icon={<AcceptIcon/>}
-                                    onPress={_ => {}}
+                                    onPress={handleAcceptChargeSheetChange}
                                 />
                             );
                             floatingAction.push(RevertChanges, AcceptChanges);
@@ -505,7 +704,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             const WithdrawChanges = (
                                 <LongPressWithFeedback
                                     pressTimer={700}
-                                    onLongPress={() => {}}
+                                    onLongPress={handleWithdrawChargeSheetChanges}
                                 >
                                     <ActionItem
                                         title="Hold to Withdraw"
@@ -548,28 +747,34 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     title = "CONSUMABLE'S ACTIONS";
 
 
-
-
                     break;
                 }
                 case 'Equipment': {
                     const addNewLineItemAction = (
                         <ActionItem
-                            title="Update Equipments"
+                            title="Add Equipment"
                             icon={<AddIcon/>}
-                            onPress={_ => {
-                            }}
+                            onPress={_ => {}}
                         />
                     );
                     const removeLineItemAction = (
-                        <ActionItem
-                            title="Remove Equipment"
-                            icon={<RemoveIcon/>}
-                            onPress={_ => {
-                            }}
-                        />
+                        <LongPressWithFeedback
+                            pressTimer={700}
+                            onLongPress={_ => {}}
+                            isDisabled = {selectedEquipments.length === 0 ? true : false}
+                            
+                        >
+                            <ActionItem
+                                title="Hold to Delete"
+                                icon={<WasteIcon strokeColor = {selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
+                                onPress={() => {}}
+                                touchable={false}
+                                disabled = {selectedEquipments.length === 0 ? true : false}
+                            />
+
+                        </LongPressWithFeedback>
                     );
-                    floatingAction.push(addNewLineItemAction, /*removeLineItemAction*/);
+                    floatingAction.push(removeLineItemAction,addNewLineItemAction);
                     title = 'EQUIPMENT ACTIONS';
                     break;
                 }
@@ -976,10 +1181,11 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     selectedTab={selectedTab}
                     quotations={quotations}
                     invoices={invoices}
-                    onUpdateChargeSheet={data => updateCaseChargeSheet(data)}
+                    onUpdateChargeSheet={data => handleConfirmChargeSheetChanges(data)}
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
                     handleInvoices={handleInvoices}
+                    onSelectEquipments = {(equipments)=>{setSelectedEquipments(equipments)}}
                 />;
             default:
                 return <View/>;

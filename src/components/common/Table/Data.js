@@ -3,13 +3,8 @@ import {View, ScrollView} from 'react-native';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import Item from './Item';
 
-const Data = (props) => {
-    const {
-        data,
-        listItemFormat,
-        // currentListMax,
-        // currentListMin, 
-    } = props 
+const Data = ({data = [], listItemFormat = ()=>{}}) => {
+    
 
     // const sliceMin = currentListMin ? currentListMin : 0
     // const sliceMax = currentListMax ? currentListMax : data.length

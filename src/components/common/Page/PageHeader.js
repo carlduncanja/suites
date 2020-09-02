@@ -46,16 +46,12 @@ const HeaderContainer = styled.View`
 
 const TextContainer = styled.View`
     flex:1;
-    margin-top:${({ isSpecialHeader, theme }) => !isSpecialHeader ? "0px" : `${theme.space['--space-10']}`};
     padding-left: ${({ theme }) => theme.space['--space-14']};
-    // padding-left:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "20px"};
-    align-self:${({ isSpecialHeader }) => !isSpecialHeader ? "center" : "baseline"};
     flex-direction: row;
-    align-items:${({ isSpecialHeader }) => !isSpecialHeader ? "baseline" : "center"};
+    align-items: center
 `;
 
 const HeaderText = styled.Text`
-    margin-bottom:${({ isSpecialHeader }) => !isSpecialHeader ? "0px" : "10px"};
     font:${({ theme }) => theme.font["--text-xl-medium"]};
     color:${({ theme }) => theme.colors["--accent-button"]};
 `;
@@ -112,11 +108,9 @@ const EditModeContainer = styled.Text(({ theme, isReview }) => ({
 
 function PageHeader({
     onBack,
-    title = "",
-    subTitle = "",
-    hasIcon,
-    isSpecialHeader = false,
     isArchive: isEditDisabled = false,
+    headerChildren = [],
+    separator = null,
     editMessage = "now in edit mode"
 }) {
     const theme = useTheme();
@@ -148,9 +142,7 @@ function PageHeader({
 
     const showIcon = () => {
         return (
-
             <SvgIcon iconName="doctorArrow" strokeColor="#718096" />
-
         )
     }
 
@@ -204,20 +196,41 @@ function PageHeader({
         <HeaderWrapper theme={theme} isEditMode={isEditMode} isEditBackground={editColor}>
             <HeaderContainer theme={theme}>
 
-
                 {
                     !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle /></IconContainer>
                 }
 
                 {
                     !isEditMode &&
-                    <TextContainer theme={theme} isSpecialHeader={isSpecialHeader}>
-                        <HeaderText theme={theme} isSpecialHeader={isSpecialHeader}>{title}</HeaderText>
-                        {!isEmpty(hasIcon) ? <View style={{ marginLeft: 10, marginRight: 5, marginBottom: 5 }}>
-                            {hasIcon}</View> : <View />}
-                        <SpecialText theme={theme}>{subTitle}</SpecialText>
+
+                    <TextContainer>
+                        {/*<TextContainer theme={theme} isSpecialHeader={isSpecialHeader}>*/}
+                        {/*    <HeaderText theme={theme} isSpecialHeader={isSpecialHeader}>{title}</HeaderText>*/}
+                        {/*    {!isEmpty(hasIcon) ? <View style={{marginLeft: 15, marginRight: 10, marginBottom: 10}}>*/}
+                        {/*        {hasIcon}</View> : <View/>}*/}
+                        {/*    <SpecialText theme={theme}>{subTitle}</SpecialText>*/}
+                        {/*</TextContainer>*/}
+
+                        {
+                            headerChildren.map((item, index) => {
+
+                                const lastItem = (index === headerChildren.length - 1)
+
+                                return lastItem
+                                    ? <HeaderText theme={theme}>{item}</HeaderText>
+                                    : <>
+                                        <SpecialText theme={theme}>{item}</SpecialText>
+                                        <View style={{ marginLeft: 15, marginRight: 10 }}>
+                                            {separator}
+                                        </View>
+                                    </>
+                            })
+                        }
                     </TextContainer>
+
+
                 }
+
 
                 {
                     isEditMode &&
@@ -225,6 +238,7 @@ function PageHeader({
                         {editMsg || editMessage}
                     </EditModeContainer>
                 }
+
                 {
                     !isEditDisabled
                         ? <EditButtonWrapper theme={theme}>

@@ -5,7 +5,62 @@ import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import { formatAmount } from '../../../helpers/caseFilesHelpers';
 import { currencyFormatter } from '../../../utils/formatter';
 
-const ReportDetails = ({reportList, reportTable, listItemFormat, headers}) => {
+
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import Header from '../../common/Table/Header';
+import Data from '../../common/Table/Data';
+
+const ReportDetailsContainer = styled.View`
+    width : 100%;
+    border-bottom-width : 1px;
+    border-bottom-color : ${ ({theme}) => theme.colors['--color-gray-400']};
+    padding-bottom : ${ ({theme}) => theme.space['--space-24']};
+    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+`;
+
+const DetailsWrapper = styled.View`
+    flex : 1;
+    width : 100%;
+    margin-bottom : ${ ({theme}) => theme.space['--space-16']};
+`;
+
+const DetailItemWrapper = styled.View`
+    width : 100%;
+    height : 48px;
+    padding : 0px ${ ({theme}) => theme.space['--space-16']};
+    background-color : ${ ({backgroundColor}) => backgroundColor };
+`;
+const DetailItemContainer = styled.View`
+    width : 100%;
+    height : 100%;
+    flex-direction : row;
+    align-items : center;
+    justify-content : space-between;
+`;
+
+const DetailText = styled.Text( ({theme, fontStyle}) => ({
+    ...theme.font[fontStyle],
+    color : theme.colors['--color-gray-700']
+}));
+
+const HeadersWrapper = styled.View`
+    width : 100%;
+    border-bottom-width : 1px;
+    border-bottom-color : ${ ({theme}) => theme.colors['--color-gray-400']};
+    margin-bottom : ${ ({theme}) => theme.space['--space-16']};
+`;
+const HeadersContainer = styled.View`
+    width : 100%;
+    padding : ${ ({theme}) => theme.space['--space-16']};
+    padding-top : 0px;
+`;
+
+
+
+function ReportDetails ({reportList, reportTable, listItemFormat, headers}) { 
+
+    const theme = useTheme();
     const physiciansArray = [];
     const proceduresArray = [];
     const servicesArray = [];
@@ -35,37 +90,43 @@ const ReportDetails = ({reportList, reportTable, listItemFormat, headers}) => {
         // console.log("In:", inventories)
     });
 
+    let costList = [...physiciansArray, ...proceduresArray, ...servicesArray];
+
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.summaryDetails}>
-                {physiciansArray.map((detail, index) => (
-                    <View style={[styles.summaryItem, {backgroundColor: index % 2 === 0 ? '#F8FAFB' : '#FFFFFF'}]} key={index}>
-                        <Text style={styles.detailText}>{detail.name}</Text>
-                        <Text style={styles.detailText}>$ {currencyFormatter(detail.cost)}</Text>
-                    </View>
-                ))}
-                {proceduresArray.map((detail, index) => (
-                    <View style={[styles.summaryItem, {backgroundColor: index % 2 === 0 ? '#F8FAFB' : '#FFFFFF'}]} key={index}>
-                        <Text style={styles.detailText}>{detail.name}</Text>
-                        <Text style={styles.detailText}>$ {currencyFormatter(detail.cost)}</Text>
-                    </View>
-                ))}
-                {servicesArray.map((detail, index) => (
-                    <View style={[styles.summaryItem, {backgroundColor: index % 2 === 0 ? '#F8FAFB' : '#FFFFFF'}]} key={index}>
-                        <Text style={styles.detailText}>{detail.name}</Text>
-                        <Text style={styles.detailText}>$ {currencyFormatter(detail.cost)}</Text>
-                    </View>
-                ))}
-            </View>
-            <View style={styles.consumablesDetails}>
-                <Table
-                    isCheckbox={false}
-                    data={inventoriesArray}
-                    listItemFormat={listItemFormat}
-                    headers={headers}
-                />
-            </View>
-        </ScrollView>
+        <ReportDetailsContainer theme = {theme}>
+            <DetailsWrapper theme = {theme}>
+                {
+                    costList.map(( detail, index) => {
+                        return(
+                            <DetailItemWrapper
+                                theme = {theme}
+                                backgroundColor = {index % 2 === 0 ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']}
+                            >
+                                <DetailItemContainer>
+                                    <DetailText theme = {theme} fontStyle = "--text-base-regular">{detail?.name}</DetailText>
+                                    <DetailText theme = {theme} fontStyle = "--text-lg-regular">$ {currencyFormatter(detail?.cost || 0)}</DetailText>
+                                </DetailItemContainer>
+                            </DetailItemWrapper>
+                        )
+                    })
+                }
+            </DetailsWrapper>
+            
+            <HeadersWrapper theme = {theme}>
+                <HeadersContainer theme = {theme}>
+                    <Header
+                        headers = {headers}
+                        isCheckbox = {false}
+                    />
+                </HeadersContainer>
+            </HeadersWrapper>
+            
+            <Data
+                data = {inventoriesArray}
+                listItemFormat = {listItemFormat}
+            />
+       
+        </ReportDetailsContainer>
     );
 };
 

@@ -12,7 +12,7 @@ import CollapsibleListItemChildView from './CollapsibleListItemChildView';
 
 /**
  *
- * @param hasCheckBox{bool} 
+ * @param hasCheckBox{bool}
  * @param isChecked{bool}
  * @param onCheckBoxPress{function}
  * @param onItemPress{function}
@@ -32,7 +32,9 @@ const CollapsibleListItemContainer = styled.TouchableOpacity`
     flex-direction: column;
     border-radius: ${ ({theme}) => theme.space['--space-8']};
     border: 1px solid ${ ({theme}) => theme.colors['--color-gray-300']};
+    border-bottom-width : ${ ({isCollapsed}) => isCollapsed ===true ? 0 : null};
     background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
+
 `;
 
 function CollapsibleListItem ({
@@ -40,37 +42,37 @@ function CollapsibleListItem ({
         isChecked = false,
         onCheckBoxPress = ()=>{},
         onItemPress = () => {},
-        childView, 
+        childView,
         render = ()=>{},
         children = ()=>{}  ,
         backgroundColor,
-    }) {  
+    }) {
 
     const [isCollapsed, setCollapsed] = useState(true);
-    const theme = useTheme();                   
+    const theme = useTheme();
     const collapse = () => {
         console.log("collapse press")
         setCollapsed(!isCollapsed);
     }
 
     return (
-       
+
         <CollapsibleListItemWrapper theme = {theme}>
-            <CollapsibleListItemContainer theme = {theme} onPress = {onItemPress}>
+            <CollapsibleListItemContainer theme = {theme} onPress = {() => onItemPress(collapse)} isCollapsed = {isCollapsed}>
                 <CollapsibleListItemParentView
                     hasCheckBox = {hasCheckBox}
-                    isChecked = {isChecked} 
+                    isChecked = {isChecked}
                     onCheckBoxPress = {onCheckBoxPress}
-                    collapse = {collapse} 
+                    collapse = {collapse}
                     isCollapsed = {isCollapsed}
                     render = {render}
                     backgroundColor = {backgroundColor}
                 />
-                
+
                 <CollapsibleListItemChildView
                     isCollapsed = {isCollapsed}
                     children = {children}
-                /> 
+                />
 
                 {/* <View style={styles.list}>
                     {
@@ -85,7 +87,7 @@ function CollapsibleListItem ({
                     {
                         render(collapse, isCollapsed)
                     }
-                </View> 
+                </View>
                 <Collapsible collapsed={isCollapsed}>
                     <View style={styles.divider}/>
                     {
