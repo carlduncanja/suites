@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from "react-native";
-import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import InventoryGeneralTabContent from "../OverlayTabs/InventoryGeneralTabContent";
-import TheatresDetailsTab from "../OverlayTabs/TheatresDetailsTab";
+import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
+import InventoryGeneralTabContent from "../../components/OverlayTabs/InventoryGeneralTabContent";
+import TheatresDetailsTab from "../../components/OverlayTabs/TheatresDetailsTab";
 import { getTheatreById } from "../../api/network";
-import ProceduresEquipmentTab from "../OverlayTabs/ProceduresEquipmentTab";
-import EquipmentsTab from "../OverlayTabs/EquipmentsTab";
-import PaginatedSchedule from "../PaginatedSchedule"
-import StorageLocationsTab from "../OverlayTabs/StorageLocationsTab";
-import HistoryTabs from "../OverlayTabs/HistoryTabs";
+import ProceduresEquipmentTab from "../../components/OverlayTabs/ProceduresEquipmentTab";
+import EquipmentsTab from "../../components/OverlayTabs/EquipmentsTab";
+import PaginatedSchedule from "../../components/PaginatedSchedule"
+import StorageLocationsTab from "../../components/OverlayTabs/StorageLocationsTab";
+import HistoryTabs from "../../components/OverlayTabs/HistoryTabs";
 import { formatDate } from "../../utils/formatter";
 import moment from "moment";
 import { forEach } from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import BottomSheetContainer from '../common/BottomSheetContainer';
+import BottomSheetContainer from '../../components/common/BottomSheetContainer';
 import { PageContext } from "../../contexts/PageContext";
 import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
 import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
