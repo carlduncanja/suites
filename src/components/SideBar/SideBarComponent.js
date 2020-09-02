@@ -99,7 +99,7 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                                         isTabSelected={tabIndex === selectedIndex}
                                         onTabPress={(e) => onTabPressed(e, name)}
                                         hasDivider={
-                                            tabName === 'Theatre' || tabName === 'Invoices' ? true : false
+                                            tabName === 'Theatres' || tabName === 'Procedures' || tabName === 'Invoices' ? true : false
                                         }
                                     />
 

@@ -420,7 +420,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
             </View> */}
         </>
     )
-}
+} 
 
 SupplierProductsTab.propTypes = {};
 SupplierProductsTab.defaultProps = {};
