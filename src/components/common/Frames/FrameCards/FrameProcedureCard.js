@@ -76,7 +76,7 @@ const FrameProcedureCard = ({
 
     const onRecoveryAppointmentFieldsUpdate = (data) => {
         setUpdated(true);
-        setAppointmentFields(data)
+        setRecoveryAppointmentFields(data)
     }
 
 

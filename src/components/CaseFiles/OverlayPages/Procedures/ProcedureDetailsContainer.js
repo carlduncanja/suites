@@ -93,12 +93,10 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
 
     return (
         <KeyboardAwareScrollView
-            style={{flex: 1, paddingBottom: 520, backgroundColor: 'none'}}
-            contentInset={{bottom: 50}}
-            pagingEnabled={true}
-            extraScrollHeight={50}
+            style={{flex: 1, backgroundColor: 'none'}}
+            contentInset={{bottom: 300}}
+            extraScrollHeight={200}
         >
-            <View style={{flex: 1}}>
                 {
                     procedureAppointments.map((item) => {
                         return (
@@ -115,7 +113,6 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
                         )
                     })
                 }
-            </View>
         </KeyboardAwareScrollView>
 
     );

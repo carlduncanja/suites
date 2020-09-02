@@ -62,6 +62,8 @@ const FrameProcedureContent = ({
 
     const theme = useTheme();
 
+    console.log("recovery app", recoveryAppointment);
+
     return (
         <View style={styles.container}>
             <View style={{paddingBottom: 10, borderBottomColor: "#CCD6E0", borderBottomWidth: 1}}>
