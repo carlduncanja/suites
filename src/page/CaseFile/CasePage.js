@@ -86,7 +86,7 @@ const overlayMenu = [
     },
     {
         name: 'Procedures',
-        overlayTabs: ['Details'], 
+        overlayTabs: ['Details'],
         selectedIcon: <ProcedureSelectedIcon/>,
         disabledIcon: <ProcedureDisabledIcon/>
     },
@@ -263,7 +263,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     message = {"Confirm changes made"}
                 />
                 ,
-                onClose: () => {modal.closeModals('ConfirmationModal')} 
+                onClose: () => {modal.closeModals('ConfirmationModal')}
             })
 
     }
@@ -762,7 +762,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             pressTimer={700}
                             onLongPress={_ => {}}
                             isDisabled = {selectedEquipments.length === 0 ? true : false}
-                            
+
                         >
                             <ActionItem
                                 title="Hold to Delete"

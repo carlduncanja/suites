@@ -8,6 +8,7 @@ import {PageContext} from "../../../../contexts/PageContext";
 import {removeCaseProcedureAppointment, updateCaseProcedureAppointmentCall} from "../../../../api/network";
 import ConfirmationComponent from "../../../ConfirmationComponent";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import {reload} from "expo/build/Updates/Updates";
 
 
 const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
@@ -35,6 +36,12 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
                 tabs={["Consumables", "Equipment"]}
             />,
         })
+    }
+
+    const removeProcedureAppointment = (procedureId) => {
+        let updated = [...procedureAppointments]
+        updated = updated.filter(item => item._id !== procedureId)
+        setProcedureAppointment(updated)
     }
 
     const handleRemoveProcedure = (procedure) => () => {
@@ -71,10 +78,10 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
         setPageLoading(true);
         removeCaseProcedureAppointment(caseId, procedureId)
             .then(_ => {
-                console.log("case procedure appointment removed");
+                removeProcedureAppointment(procedureId);
             })
             .catch(error => {
-                console.error("Failed to remove case appointment", error);
+                console.log("Failed to remove case appointment", error);
             })
             .finally(_ => {
                 fetchCase(caseId)
@@ -86,27 +93,26 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
 
     return (
         <KeyboardAwareScrollView
-            style={{flex: 1, paddingBottom: 520, backgroundColor: 'none'}}
-            contentInset={{bottom: 50}}
-            pagingEnabled={true}
-            extraScrollHeight={50}
+            style={{flex: 1, backgroundColor: 'none'}}
+            contentInset={{bottom: 300}}
+            extraScrollHeight={200}
         >
-            {
-                procedureAppointments.map((item, index) => {
-                    return (
-                        <View key={index} style={styles.procedureContainer}>
-                            <FrameProcedureCard
-                                caseId={caseId}
-                                procedureData={item}
-                                icon={ProcedureIcon}
-                                isEdit={isEditMode}
-                                onOpenPickList={onOpenPickList}
-                                onRemoveProcedure={handleRemoveProcedure(item)}
-                            />
-                        </View>
-                    )
-                })
-            }
+                {
+                    procedureAppointments.map((item) => {
+                        return (
+                            <View key={item._id} style={styles.procedureContainer}>
+                                <FrameProcedureCard
+                                    caseId={caseId}
+                                    procedureData={item}
+                                    icon={ProcedureIcon}
+                                    isEdit={isEditMode}
+                                    onOpenPickList={onOpenPickList}
+                                    onRemoveProcedure={handleRemoveProcedure(item)}
+                                />
+                            </View>
+                        )
+                    })
+                }
         </KeyboardAwareScrollView>
 
     );
@@ -116,7 +122,8 @@ export default ProcedureDetailsContainer;
 
 const styles = StyleSheet.create({
     procedureContainer: {
-        marginBottom: 25
+        marginBottom: 25,
+        flex: 1
     },
     shadowContainer: {
         ...StyleSheet.absoluteFillObject,

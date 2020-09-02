@@ -1,8 +1,8 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Theatres from "../../../page/Theatres";
-import TheatresPage from "../../Theatres/TheatresPage";
+import Theatres from "../../../page/Theatres/Theatres";
+import TheatresPage from "../../../page/Theatres/TheatresPage";
 import NotFound from "../../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 

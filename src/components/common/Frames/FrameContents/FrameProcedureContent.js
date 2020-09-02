@@ -22,6 +22,9 @@ import InputUnitField from "../../Input Fields/InputUnitFields";
 import OptionsField from "../../Input Fields/OptionsField";
 import {MenuOption, MenuOptions} from "react-native-popup-menu";
 import TextButton from "../../Buttons/TextButton";
+import Divider from "../../Divider";
+import Seperator from "../../Seperator";
+import BrokenLineDivider from "../../BrokenLineDivider";
 
 
 const RowWrapper = styled.View`
@@ -29,6 +32,10 @@ const RowWrapper = styled.View`
     justify-content: space-between;
     margin-bottom: ${({theme}) => theme.space['--space-16']};
 `
+
+const DividerContainer = styled.View`
+    margin-bottom : ${({theme}) => theme.space['--space-24']};
+`;
 
 
 const getAppointmentFields = ({location, startTime, endTime}) => {
@@ -42,17 +49,18 @@ const getAppointmentFields = ({location, startTime, endTime}) => {
 const FrameProcedureContent = ({
                                    isEdit,
                                    isUpdated,
-                                   isUpdating,
                                    procedure,
                                    appointmentFields,
                                    recoveryAppointment,
                                    onSavePress,
                                    onOpenPickList,
                                    onAppointmentFieldsUpdate,
+                                   onRecoveryFieldUpdate,
+                                   hasRecovery,
+                                   updateRecovery
                                }) => {
 
     const theme = useTheme();
-    const [hasRecovery, setRecovery] = useState(!!recoveryAppointment);
 
     return (
         <View style={styles.container}>
@@ -71,9 +79,7 @@ const FrameProcedureContent = ({
                         label={"Recovery"}
                         enabled={isEdit}
                         text={hasRecovery ? 'Yes' : 'No'}
-                        oneOptionsSelected={(value) => {
-                            setRecovery(value)
-                        }}
+                        oneOptionsSelected={updateRecovery}
                         menuOption={<MenuOptions>
                             <MenuOption value={true} text='Yes'/>
                             <MenuOption value={false} text='No'/>
@@ -85,8 +91,18 @@ const FrameProcedureContent = ({
 
                 </RowWrapper>
                 {
-                    // recoveryAppointment &&
-                    // <AppointmentView isEdit={isEdit} appointment={recoveryAppointment}/>
+                    hasRecovery &&
+                    <>
+                        <DividerContainer theme={theme}>
+                            <BrokenLineDivider/>
+                        </DividerContainer>
+
+                        <AppointmentFields
+                            isEdit={isEdit}
+                            fields={recoveryAppointment}
+                            onFieldsUpdated={onRecoveryFieldUpdate}
+                        />
+                    </>
                 }
 
             </View>
