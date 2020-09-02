@@ -171,9 +171,33 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
                         isError = {false}
                         isEditUpdate = {true}
                         onCancel = {()=> modal.closeModals('ConfirmationModal')}
-                        onAction = {()=>onDeletePress(item)}
+                        onAction = {()=>{
+                            onDeletePress(item);
+                            setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
+                        }}
                         // onAction = { () => confirmAction()}
                         message = {"Do you want to delete this item ?"}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                })
+    };
+
+    const handleClearList = () => {
+        modal
+            .openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {true}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=>{
+                            onClearItems();
+                            setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
+                        }}
+                        // onAction = { () => confirmAction()}
+                        message = {"Do you want to delete these item(s) ?"}
                     />
                     ,
                     onClose: () => {modal.closeModals('ConfirmationModal')} 
@@ -187,6 +211,29 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
 
     const onClearItems = () => {
         setItems([])
+    }
+
+    const handlePositiveButtonPress = () => {
+        modal
+            .openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {true}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=>{
+                            onFooterPress();
+                            setTimeout(()=>{
+                                modal.closeModals('ConfirmationModal')
+                            }, 100);
+                        }}
+                        // onAction = { () => confirmAction()}
+                        message = {"Do you want to save your changes ? "}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                })
     }
 
     const onFooterPress = () => {
@@ -255,8 +302,8 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
                 data = {itemstoAdd}
                 // hasFooter = {true}
                 // footerTitle = "DONE"
-                onFooterPress = {onFooterPress}
-                onClearPress = {onClearItems}
+                onFooterPress = {handlePositiveButtonPress}
+                onClearPress = {handleClearList}
                 searchText = {searchInventoryValue}
                 searchResults = {searchInventoryResults}
                 onSearchChange = {onSearchChange}  

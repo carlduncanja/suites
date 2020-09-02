@@ -32,6 +32,7 @@ const ContentContainer = styled.View`
 
 const SearchableFieldContainer = styled.View`
     z-index : 1;
+    margin-bottom : 24px;
 `
 
 const ListContainerWrapper = styled.View`
@@ -39,7 +40,7 @@ const ListContainerWrapper = styled.View`
     border : 1px solid ${ ({theme}) => theme.colors['--color-gray-400']};
     background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
     padding : ${ ({theme}) => theme.space['--space-16']};
-    margin-top : ${ ({theme}) => theme.space['--space-24']};
+    /* margin-top : ${ ({theme}) => theme.space['--space-24']}; */
     border-radius : 8px;
 `;
 const ListContentContainer = styled.View`

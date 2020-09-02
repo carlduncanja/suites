@@ -47,45 +47,108 @@ function OrderItemPage({ route, navigation }) {
         setTimeout(() => fetchOrder(_id), 200);
     }, []);
 
+    useEffect(()=>{
+        if(pageState.isEditMode === false && isUpdateDone){
+            handleSaveEdit();
+        }
+    },[pageState.isEditMode])
     // ##### Event Handlers
 
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
-    const onEditPress = (tab) => {
-        setEditableTab(tab)
-        setEditMode(!isEditMode)
+    // const onEditPress = (tab) => {
+    //     setEditableTab(tab)
+    //     setEditMode(!isEditMode)
 
-        if (isEditMode && isUpdateDone) {
-            if (currentTab === "Items") {
-                console.log("Edit Press: ", orderItems)
-                let dataToSend = orderItems.map(item => {
-                    const { amount = 0, productId = {} } = item
-                    return {
-                        amount,
-                        productId: productId?._id || ""
-                    }
-                })
-                // console.log("Updated Data: ", dataToSend)
-                // console.log("Order Id: ", _id)
-                updatePurchaseOrderItems(dataToSend, _id)
+    //     if (isEditMode && isUpdateDone) {
+    //         if (currentTab === "Items") {
+    //             console.log("Edit Press: ", orderItems)
+    //             let dataToSend = orderItems.map(item => {
+    //                 const { amount = 0, productId = {} } = item
+    //                 return {
+    //                     amount,
+    //                     productId: productId?._id || ""
+    //                 }
+    //             })
+    //             console.log("Updated Data: ", dataToSend)
+    //             console.log("Order Id: ", _id)
+    //             updatePurchaseOrderItems(dataToSend, _id)
+    //         }
+
+
+    //     }
+
+    
+
+    const handleSaveEdit = () => {
+        let dataToSend = orderItems.map(item => {
+            const { amount = 0, productId = {} } = item
+            return {
+                amount,
+                productId: productId?._id || ""
             }
+        })
+        modal.openModal(
+            'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {true}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=>{
+                            updatePurchaseOrderItems(dataToSend, _id)
+                            setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
+                        }}
+                        // onAction = { () => confirmAction()}
+                        message = {"Do you want to save your changes ?"}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+            })
+    }
 
+    const handleCompletion = (isError) => {
+        modal.openModal(
+            'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {isError}
+                        isEditUpdate = {false}
+                        onAction = {()=>{
+                            if (!isError){
+                                setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
+                            }
+                        }}
 
-        }
+                        onCancel = {()=>{
+                            if (isError){
+                                setPageState({
+                                    ...pageState,
+                                    isEditMode : true
+                                });
+                                setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
+                            }
+                        }}
 
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+            })
     }
 
     const updatePurchaseOrderItems = (data, purchaseOrderId) => {
-        updatePurchaseOrder(purchaseOrderId, data)
+        updatePurchaseOrder(purchaseOrderNumber, data)
             .then(data => {
                 console.log("DB data: ", data)
-                Alert.alert('Success', 'Purchase Order has been successfully updated.')
+                handleCompletion(false)
+                // Alert.alert('Success', 'Purchase Order has been successfully updated.')
             })
             .catch(error => {
                 console.log("Failed to update order", error)
-                Alert.alert('Sorry', 'Failed to update order, please try again.')
+                handleCompletion(true)
+                // Alert.alert('Sorry', 'Failed to update order, please try again.')
                 //TODO handle error cases.
             })
     }
@@ -122,6 +185,7 @@ function OrderItemPage({ route, navigation }) {
     }
 
     const onItemChange = (data) => {
+        // console.log("Change")
         setOrderItems(data)
         setIsUpdateDone(true)
     }

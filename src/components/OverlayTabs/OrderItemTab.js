@@ -173,8 +173,8 @@ const OrderItemTab = ({
                 {
                     isEditMode ?
                         <NumberChangeField
-                            onChangePress={onQuantityChangePress(item)}
-                            value={amount === 0 ? "" : amount.toString()}
+                            onChangePress={onQuantityChange(item)}
+                            value={amount === 0 ? "0" : amount.toString()}
                             borderColor = '--color-gray-400'
                             backgroundColor = '--color-gray-100'
                         />
