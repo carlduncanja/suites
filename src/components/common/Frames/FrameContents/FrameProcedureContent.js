@@ -21,6 +21,7 @@ import DateInputField2 from "../../InputFields/DateInputField2";
 import InputUnitField from "../../Input Fields/InputUnitFields";
 import OptionsField from "../../Input Fields/OptionsField";
 import {MenuOption, MenuOptions} from "react-native-popup-menu";
+import TextButton from "../../Buttons/TextButton";
 
 
 const RowWrapper = styled.View`
@@ -93,20 +94,16 @@ const FrameProcedureContent = ({
 
                 {
                     isEdit && isUpdated &&
-                    <View style={{marginRight: 8, padding: 8, borderRadius: 8, backgroundColor: "#E3E8EF", height: 30}}>
-                        <Button
-                            backgroundColor="#E3E8EF"
-                            color="#718096"
+                    <View style={{padding: 8, marginRight: 8, height: 30}}>
+                        <TextButton
                             title="Save"
                             buttonPress={onSavePress}
                         />
                     </View>
                 }
 
-                <View style={{padding: 8, borderRadius: 8, backgroundColor: "#E3E8EF", height: 30}}>
-                    <Button
-                        backgroundColor="#E3E8EF"
-                        color="#718096"
+                <View style={{padding: 8, height: 30}}>
+                    <TextButton
                         title="View Picklist"
                         buttonPress={() => onOpenPickList(procedure)}
                     />
@@ -277,7 +274,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
                     <InputUnitField
                         label={"Duration"}
                         onChangeText={onDurationUpdated}
-                        value={duration || 0}
+                        value={duration}
                         enabled={isEdit}
                         units={['hrs']}
                         keyboardType="number-pad"
