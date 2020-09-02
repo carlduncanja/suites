@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from "react";
+import React,{ useEffect, useState, useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Table from "../common/Table/Table";
 import Item from '../common/Table/Item'; 
@@ -16,11 +16,26 @@ import AddIcon from "../../../assets/svg/addIcon";
 import { currencyFormatter } from "../../utils/formatter";
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import {useModal} from "react-native-modalfy";
+import {PageContext} from '../../contexts/PageContext';
 import Footer from "../common/Page/Footer";
+import Search from "../common/Search";
 
-const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, supplierId = "", onAddProductItems = ()=>{}}) =>{
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import DataItem from "../common/List/DataItem";
+
+const OrderItemTab = ({
+    orders = [], 
+    // isEditMode = false, 
+    onItemChange = ()=>{}, 
+    supplierId = "", 
+    onAddProductItems = ()=>{}
+}) =>{
     
-    const modal = useModal(); 
+    const modal = useModal();  
+    const theme = useTheme();
+    const {pageState, setPageState} = useContext(PageContext);
+    const {isEditMode, isLoading} = pageState;
 
     const recordsPerPage = 15;
 
@@ -28,7 +43,7 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
         {
             name : 'Item Name',
             alignment : 'flex-start',
-            flex : 1,
+            flex : 2,
         },
         {
             name : 'SKU',
@@ -42,12 +57,12 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
         },
         {
             name : 'Unit',
-            alignment : 'flex-start',
+            alignment : 'center',
             flex : 1,
         },
         {
             name : 'Unit Price',
-            alignment : 'flex-start',
+            alignment : 'flex-end',
             flex : 1,
         },
     ]
@@ -153,15 +168,32 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
         
         return (
             <>
-                <View style={styles.item}>
+                <DataItem text = {name} flex = {2} fontStyle = "--text-base-medium" color = "--color-blue-600" />
+                <DataItem text = {sku === "" ? `n/a` : sku} align = "center" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
+                {
+                    isEditMode ?
+                        <NumberChangeField
+                            onChangePress={onQuantityChange(item)}
+                            value={amount === 0 ? "0" : amount.toString()}
+                            borderColor = '--color-gray-400'
+                            backgroundColor = '--color-gray-100'
+                        />
+                        :
+                        <DataItem text = {amount} align = "center" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
+
+                }
+                <DataItem text = {unit} align = "center" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
+                <DataItem text = {`$ ${currencyFormatter(unitPrice)}`} align = "flex-end" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
+
+                {/* <View style={styles.item}>
                     <Text style={[styles.itemText,{color:'#3182CE'}]}>{name}</Text>
                 </View>
 
                 <View style={[styles.item,{alignItems:'center'}]}>
                     <Text style={styles.itemText}>{sku === "" ? `n/a` : sku}</Text>
-                </View>
+                </View> */}
 
-                {
+                {/* {
                     isEditMode ?
                         <NumberChangeField
                             onChangePress = {onQuantityChange(item)}
@@ -173,14 +205,14 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
                             <Text style={styles.itemText}>{amount}</Text>
                         </View>
                 }
-                
-                <View style={[styles.item,{alignItems:'flex-start'}]}>
+                 */}
+                {/* <View style={[styles.item,{alignItems:'flex-start'}]}>
                     <Text style={styles.itemText}>{unit}</Text>
                 </View>
 
                 <View style={styles.item}>
                     <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
-                </View>
+                </View> */}
             </>
         )
     }
@@ -196,10 +228,30 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
     }
 
     const floatingActions = () =>{
+        let isDisabled = selectedItems.length === 0 ? true : false;
+        let isDisabledColor = selectedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
+        const addItem = 
+            <ActionItem 
+                title={"Add Item"} 
+                icon={<AddIcon strokeColor = {isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']}/>}
+                onPress={onAddItem}
+                disabled = {isEditMode ? false : true}
+                touchable = {isEditMode ? true : false}
+        />;
 
-        const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>}onPress={onAddItem}/>;
-        const deleteItem = <LongPressWithFeedback pressTimer={700} onLongPress={() => {}}>
-            <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
+        const deleteItem = 
+        <LongPressWithFeedback 
+            pressTimer={700} 
+            onLongPress={() => {}}
+            isDisabled = {isDisabled}
+        >
+            <ActionItem 
+                title={"Hold to Delete"} 
+                icon={<WasteIcon strokeColor = {isDisabledColor}/>} 
+                onPress={() => {}} 
+                disabled = {isDisabled}
+                touchable={false}
+            />
         </LongPressWithFeedback>;
 
         return <ActionContainer
@@ -239,6 +291,13 @@ const OrderItemTab = ({orders = [], isEditMode = false, onItemChange = ()=>{}, s
     
     return (
         <>
+            <Search
+                placeholderText = "Search by Item Name or SKU"
+                changeText = {()=>{}}
+                inputText = {""}
+                onClear = {()=>{}}
+            />
+
             <Table
                 data = {itemsToDisplay}
                 listItemFormat = {renderItemFn}

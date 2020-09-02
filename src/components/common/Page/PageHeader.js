@@ -1,13 +1,13 @@
-import React, {Component, useContext, useState} from 'react';
-import styled, {css} from "@emotion/native";
-import {useTheme} from "emotion-theming";
+import React, { Component, useContext, useState } from 'react';
+import styled, { css } from "@emotion/native";
+import { useTheme } from "emotion-theming";
 import Button from "../../common/Buttons/Button";
 import SmallLeftTriangle from "../../../../assets/svg/smallLeftTriangle";
-import {PageContext} from "../../../contexts/PageContext";
+import { PageContext } from "../../../contexts/PageContext";
 import SvgIcon from "../../../../assets/SvgIcon";
-import {View} from 'react-native-animatable';
-import {isEmpty} from 'lodash'
-import {Text} from 'react-native';
+import { View } from 'react-native-animatable';
+import { isEmpty } from 'lodash'
+import { Text } from 'react-native';
 import LockIcon from "../../../../assets/svg/lockIcon";
 import EditLockIcon from "../../../../assets/svg/editLockedIcon";
 
@@ -24,7 +24,7 @@ const shadow = {
     zIndex: 3,
 };
 
-const HeaderWrapper = styled.View(({isEditMode, theme, isEditBackground}) =>
+const HeaderWrapper = styled.View(({ isEditMode, theme, isEditBackground }) =>
     ({
         display: 'flex',
         height: 55,
@@ -46,14 +46,14 @@ const HeaderContainer = styled.View`
 
 const TextContainer = styled.View`
     flex:1;
-    padding-left: ${({theme}) => theme.space['--space-14']};
+    padding-left: ${({ theme }) => theme.space['--space-14']};
     flex-direction: row;
     align-items: center
 `;
 
 const HeaderText = styled.Text`
-    font:${({theme}) => theme.font["--text-xl-medium"]};
-    color:${({theme}) => theme.colors["--accent-button"]};
+    font:${({ theme }) => theme.font["--text-xl-medium"]};
+    color:${({ theme }) => theme.colors["--accent-button"]};
 `;
 
 const IconContainer = styled.TouchableOpacity`
@@ -62,8 +62,8 @@ const IconContainer = styled.TouchableOpacity`
 
 const SpecialText = styled.Text`
     margin-left: 8px;
-    font:${({theme}) => theme.font["--text-sm-medium"]};
-    color:${({theme}) => theme.colors["--company"]};
+    font:${({ theme }) => theme.font["--text-sm-medium"]};
+    color:${({ theme }) => theme.colors["--company"]};
 `;
 
 const EditButtonWrapper = styled.View`
@@ -80,13 +80,13 @@ const EditButtonContainer = styled.View`
   border-radius : 6px;
   padding: 4px;
   
-  background-color : ${({backgroundColor}) => backgroundColor};
+  background-color : ${({ backgroundColor }) => backgroundColor};
   align-items : center;
   justify-content : center;
 `;
 
 const DisabledEditContainer = styled.View`
-background-color:${({theme}) => theme.colors["--default-shade-white"]};
+background-color:${({ theme }) => theme.colors["--default-shade-white"]};
 height:26px;
 width:53px;
 align-items : center;
@@ -99,7 +99,7 @@ const DisabledText = styled.Text`
 color:#A0AEC0;
 `;
 
-const EditModeContainer = styled.Text(({theme, isReview}) => ({
+const EditModeContainer = styled.Text(({ theme, isReview }) => ({
     ...theme.font['--text-base-medium'],
     color: theme.colors['--color-white'],
     alignItems: 'center',
@@ -107,15 +107,15 @@ const EditModeContainer = styled.Text(({theme, isReview}) => ({
 }))
 
 function PageHeader({
-                        onBack,
-                        isArchive: isEditDisabled = false,
-                        headerChildren = [],
-                        separator = null,
-                        editMessage = "now in edit mode"
-                    }) {
+    onBack,
+    isArchive: isEditDisabled = false,
+    headerChildren = [],
+    separator = null,
+    editMessage = "now in edit mode"
+}) {
     const theme = useTheme();
 
-    const {pageState, setPageState} = useContext(PageContext)
+    const { pageState, setPageState } = useContext(PageContext)
 
     const onEditPress = () => {
         setPageState({
@@ -124,7 +124,7 @@ function PageHeader({
         })
     }
 
-    const {isEditMode, isReview, locked, editMsg, editDisabled} = pageState;
+    const { isEditMode, isReview, locked, editMsg, editDisabled } = pageState;
 
     console.log('page state', pageState);
 
@@ -142,7 +142,7 @@ function PageHeader({
 
     const showIcon = () => {
         return (
-            <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
+            <SvgIcon iconName="doctorArrow" strokeColor="#718096" />
         )
     }
 
@@ -197,7 +197,7 @@ function PageHeader({
             <HeaderContainer theme={theme}>
 
                 {
-                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle/></IconContainer>
+                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle /></IconContainer>
                 }
 
                 {
@@ -214,13 +214,13 @@ function PageHeader({
                         {
                             headerChildren.map((item, index) => {
 
-                                const lastItem = (index === headerChildren.length-1)
+                                const lastItem = (index === headerChildren.length - 1)
 
                                 return lastItem
                                     ? <HeaderText theme={theme}>{item}</HeaderText>
                                     : <>
                                         <SpecialText theme={theme}>{item}</SpecialText>
-                                        <View style={{marginLeft: 15, marginRight: 10}}>
+                                        <View style={{ marginLeft: 15, marginRight: 10 }}>
                                             {separator}
                                         </View>
                                     </>
@@ -245,14 +245,14 @@ function PageHeader({
                             <EditButtonContainer
                                 theme={theme}
                                 backgroundColor={getEditBtnBackground()}
-                                // backgroundColor={'yellow'}
+                            // backgroundColor={'yellow'}
                             >
                                 <Button
                                     {...getButtonProps()}
                                     buttonPress={onEditPress}
                                     font={theme.font['--text-sm-medium']}
                                 />
-                                {locked && <EditLockIcon/>}
+                                {locked && <EditLockIcon />}
                             </EditButtonContainer>
                         </EditButtonWrapper>
 

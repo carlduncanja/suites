@@ -335,7 +335,8 @@ const Suppliers = (props) => {
 
     const getFabActions = () => {
 
-        const archiveCase = <ActionItem title={"Archive Supplier"} icon={<ArchiveIcon />} onPress={toggleConfirmArchive} />;
+        const archiveCase = !isEmpty(selectedSuppliers) ? <ActionItem title={"Archive Supplier"} icon={<ArchiveIcon />} onPress={toggleConfirmArchive} />
+            : <ActionItem title={"Archive Supplier"} disabled={true} icon={<ArchiveIcon strokeColor="#A0AEC0" />} onPress={() => { }} />
         const createNewSupplier = <ActionItem title={"Add Supplier"} icon={<AddIcon />} onPress={onOpenCreateSupplier} />;
 
 

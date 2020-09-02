@@ -36,7 +36,7 @@ const InputFieldContainer = styled.View`
 
 
 const LabelWrapper = styled.View(({theme, label}) => ({
-    minWidth: 60,
+    minWidth: 70,
     marginRight: label ? 20 : 0
 }))
 
@@ -61,8 +61,8 @@ const Input = styled.TextInput`
 `;
 
 const ErrorContainer = styled.View`
-    postion : absolute;
-    top : 16px;
+    position : absolute;
+    top : 16;
     padding-left : 15px;
 `;
 
