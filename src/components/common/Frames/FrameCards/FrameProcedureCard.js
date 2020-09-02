@@ -84,8 +84,14 @@ const FrameProcedureCard = ({
         const data = {
             duration: appointmentFields.duration,
             location: appointmentFields.location?._id,
-            startTime: appointmentFields.startTime
+            startTime: appointmentFields.startTime,
+            recovery: (!hasRecovery ? null : {
+                duration: recoveryAppointment.duration,
+                location: appointmentFields.location?._id,
+                startTime: appointmentFields.startTime
+            })
         }
+
         saveProcedureCall(caseId, procedureData?._id, data);
     }
 
