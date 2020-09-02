@@ -86,7 +86,9 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
 
     return (
         <KeyboardAwareScrollView
-            style={{flex: 1, paddingTop: 2}}
+            style={{flex: 1, paddingBottom: 520, backgroundColor: 'none'}}
+            contentInset={{bottom: 50}}
+            pagingEnabled={true}
             extraScrollHeight={50}
         >
             {
