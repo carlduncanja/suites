@@ -113,18 +113,18 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
     ];
 
     const openModal = item => () => {
-        const report = tabDetails[0] || {};
-        const { billing = {}, customer = {} } = report;
-        const { subTotal = 0 } = billing;
-        const details = {
-            amountDue: subTotal,
-            billingDetails: customer,
-            ...report
-        };
+        // const report = tabDetails[0] || {};
+        // const { billing = {}, customer = {} } = report;
+        // const { subTotal = 0 } = billing;
+        // const details = {
+        //     amountDue: subTotal,
+        //     billingDetails: customer,
+        //     ...report
+        // };
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Invoice"
-                details={details}
+                details={item}
                 reportDetails={reportDetails}
             />
         });
