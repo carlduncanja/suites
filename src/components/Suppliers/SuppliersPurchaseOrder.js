@@ -72,6 +72,7 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
     }
 
     const onChangeField = (id) => (value)=>{
+        console.log("Change")
         const findIndex = purchaseOrders.findIndex(obj => obj._id === id);
         let objQuantity = purchaseOrders[findIndex].amount || 0
         const updatedObj = { 

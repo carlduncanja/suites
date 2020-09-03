@@ -11,6 +11,7 @@ import CreatePurchaseOrderDialog from "../Suppliers/CreatePurchaseOrderDialog";
 import CreateInventoryDialogContainer from "../Inventory/CreateInventoryDialogContainer";
 import DataItem from "../common/List/DataItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
+import ConfirmationComponent from '../ConfirmationComponent';
 
 import Cart from '../../../assets/svg/cart';
 import ActionItem from "../common/ActionItem";
@@ -56,7 +57,7 @@ const PaginatorActionsContainer = styled.View`
 function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false }) {
 
     // ######## STATES
-    console.log("Productsss: ", products)
+    // console.log("Productsss: ", products)
     const theme = useTheme();
 
     const [checkBoxList, setCheckBoxList] = useState([])
@@ -181,7 +182,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                     details={cartItems}
                     onUpdateItems={onUpdateItems}
                     onClearPress={onClearPress}
-                    onListFooterPress={onListFooterPress}
+                    onListFooterPress={onConfirmChanges}
                 />,
             })
         }, 200)
@@ -216,23 +217,69 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
         setCartItems(data)
         setCheckBoxList([])
 
-        modal.closeModals('OverlayInfoModal');
-        setTimeout(() => {
-            modal.openModal('OverlayModal',
-                {
-                    content: <CreatePurchaseOrderDialog
-                        onCancel={() => setFloatingAction(false)}
-                        onCreated={(fields) => {
-                            modal.closeModals('OverlayModal');
-                            setTimeout(() => {
-                                onOrderComplete(fields, data)
-                                // onCompleted(fields, data)
-                            }, 200)
-                        }}
-                    />,
-                    onClose: () => setFloatingAction(false)
-                })
-        }, 200)
+        console.log("Card data: ", data)
+
+        // setTimeout(() => {
+        //     modal.openModal('OverlayModal',
+        //         {
+        //             content: <CreatePurchaseOrderDialog
+        //                 onCancel={() => setFloatingAction(false)}
+        //                 onCreated={(fields) => {
+        //                     modal.closeModals('OverlayModal');
+        //                     setTimeout(() => {
+        //                         onOrderComplete(fields, data)
+        //                         // onCompleted(fields, data)
+        //                     }, 200)
+        //                 }}
+        //             />,
+        //             onClose: () => setFloatingAction(false)
+        //         })
+        // }, 200)
+    }
+
+    const onConfirmChanges = (data) => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError = {false}
+                    isEditUpdate = {true}
+                    onAction = {()=> {
+                        modal.closeModals('ConfirmationModal');
+                        setTimeout(()=>{
+                            modal.closeModals('OverlayInfoModal');
+                            onListFooterPress(data);
+                        },200);
+
+                        setTimeout(()=>{
+                            onShowSuccessScreen();
+                        },200)
+                        
+                    }}
+                    onCancel = {()=>{
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    message = "Do you want to save your changes ?"
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')} 
+            })
+    };
+
+    const onShowSuccessScreen = () =>{
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError = {false}
+                    isEditUpdate = {false}
+                    onAction = {()=> {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')} 
+            })
     }
 
     const onOrderComplete = (fields, data) => {
@@ -266,12 +313,18 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
     }
 
-
-
     // ######## HELPER FUNCTIONS
 
     const actions = () => {
-        const addCart = <ActionItem title={"Add to Cart"} icon={<AddIcon />} onPress={openCartDailog} />;
+        let isDisabled = checkBoxList.length === 0 ? true : false;
+        const addCart = 
+            <ActionItem 
+                title={"Add to Cart"} 
+                icon={<AddIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>} 
+                disabled = {isDisabled}
+                touchable = {!isDisabled}
+                onPress={openCartDailog} 
+            />;
         const addProduct = <ActionItem title={"Add Product"} icon={<AddIcon />} onPress={openAddProduct} />;
         return <ActionContainer
             floatingActions={[

@@ -156,24 +156,11 @@ export const root = {
     '--default-neutral-gray': "FAFAFA",
   },
   font: {
-    // BASE
-    "--text-base-regular": {
-      fontSize: 16,
+    "--cart-text":{
+      fontSize: 10,
       fontWeight: "normal",
       fontStyle: "normal",
-      lineHeight: 16,
-    },
-    "--text-base-medium": {
-      fontSize: 16,
-      fontWeight: "500",
-      fontStyle: "normal",
-      lineHeight: 16,
-    },
-    "--text-base-bold": {
-      fontSize: 16,
-      fontWeight: "bold",
-      fontStyle: "normal",
-      lineHeight: 16,
+      lineHeight: 10,
     },
     // XS - SMALL
     "--text-xs-regular": {
@@ -182,7 +169,7 @@ export const root = {
       fontStyle: "normal",
       lineHeight: 12,
     },
-    "--text-xs-light": {
+    "--text-xs-light": { 
       fontSize: 12,
       fontWeight: "300",
       fontStyle: "normal",
@@ -218,6 +205,26 @@ export const root = {
       fontWeight: "bold",
       fontStyle: "normal",
       lineHeight: 14,
+    },
+
+    // BASE
+    "--text-base-regular": {
+      fontSize: 16,
+      fontWeight: "normal",
+      fontStyle: "normal",
+      lineHeight: 16,
+    },
+    "--text-base-medium": {
+      fontSize: 16,
+      fontWeight: "500",
+      fontStyle: "normal",
+      lineHeight: 16,
+    },
+    "--text-base-bold": {
+      fontSize: 16,
+      fontWeight: "bold",
+      fontStyle: "normal",
+      lineHeight: 16,
     },
 
     //  - LARGE
