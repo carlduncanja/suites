@@ -40,7 +40,7 @@ const testData = [
 
 ]
 
-const SupplierPurchaseOrders = ({ modal, floatingActions, isArchive = false }) => {
+const SupplierPurchaseOrders = ({ modal, floatingActions, isArchive = false, data = [] }) => {
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
@@ -84,7 +84,7 @@ const SupplierPurchaseOrders = ({ modal, floatingActions, isArchive = false }) =
 
     useEffect(() => {
         // if (!suppliers.length) fetchSuppliersData()
-        setTotalPages(Math.ceil(testData.length / recordsPerPage))
+        setTotalPages(Math.ceil(data.length / recordsPerPage))
     }, []);
 
     const goToNextPage = () => {
@@ -207,7 +207,7 @@ const SupplierPurchaseOrders = ({ modal, floatingActions, isArchive = false }) =
     return (
         <>
             <Table
-                data={testData}
+                data={data}
                 listItemFormat={renderListFn}
                 headers={headers}
                 isCheckbox={true}
@@ -241,7 +241,7 @@ const SupplierPurchaseOrders = ({ modal, floatingActions, isArchive = false }) =
             </View>  */}
         </>
     )
-}
+} 
 
 SupplierPurchaseOrders.propTypes = {};
 SupplierPurchaseOrders.defaultProps = {};
