@@ -9,29 +9,40 @@ const CollapsibleParentListItemWrapper = styled.View`
     width : 100%;
     height: 54px;
 `;
+
 const CollapsibleParentListItemContainer = styled.View`
     flex-direction : row;
     align-items: center;  
+    height:  ${({isCollapsed}) => isCollapsed ? '54px' : '55px'};
+    align-self: flex-start;
+    justify-self: flex-start;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: ${({isCollapsed, theme}) => isCollapsed ? theme.space['--space-8'] : '0'};
+    border-bottom-left-radius: ${({isCollapsed, theme}) => isCollapsed ? theme.space['--space-8'] : '0'};
+    
+    //border: 1px solid ${ ({theme}) => theme.colors['--color-gray-300']};
+    
     background-color : ${ ({backgroundColor, theme}) => theme.colors[backgroundColor]};
 `;
 
 function CollapsibleListItemParentView ({hasCheckBox = true, isChecked = false, onCheckBoxPress = ()=>{}, collapse = ()=>{}, isCollapsed=false, render = ()=>{}, backgroundColor = 'default-shade-white'}){
-    
+
     const theme = useTheme();
 
     return (
         <CollapsibleParentListItemWrapper>
-            <CollapsibleParentListItemContainer backgroundColor = {backgroundColor} theme = {theme}>
+            <CollapsibleParentListItemContainer isCollapsed={isCollapsed} backgroundColor = {backgroundColor} theme = {theme}>
 
                 { hasCheckBox &&
-                
+
                     <CheckBoxComponent
                         isCheck={isChecked}
                         onPress={onCheckBoxPress}
                     />
-                
+
                 }
-            
+
                 {
                     render(collapse, isCollapsed)
                 }

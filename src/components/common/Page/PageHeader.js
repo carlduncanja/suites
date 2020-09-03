@@ -10,6 +10,7 @@ import { isEmpty } from 'lodash'
 import { Text } from 'react-native';
 import LockIcon from "../../../../assets/svg/lockIcon";
 import EditLockIcon from "../../../../assets/svg/editLockedIcon";
+import DeleteIcon from "../../../../assets/svg/wasteIcon";
 
 
 const shadow = {
@@ -70,7 +71,6 @@ const EditButtonWrapper = styled.View`
   height : 26px;
   width : 53px;
   margin-right:10px;
-
 `;
 
 const EditButtonContainer = styled.View`
@@ -118,6 +118,12 @@ function PageHeader({
     const { pageState, setPageState } = useContext(PageContext)
 
     const onEditPress = () => {
+
+        if (locked) {
+            // todo show user locked messaged
+            return;
+        }
+
         setPageState({
             ...pageState,
             isEditMode: !pageState.isEditMode
@@ -250,9 +256,11 @@ function PageHeader({
                                 <Button
                                     {...getButtonProps()}
                                     buttonPress={onEditPress}
+                                    disabled={locked}
                                     font={theme.font['--text-sm-medium']}
+                                    Icon = { locked && <EditLockIcon/> }
                                 />
-                                {locked && <EditLockIcon />}
+
                             </EditButtonContainer>
                         </EditButtonWrapper>
 

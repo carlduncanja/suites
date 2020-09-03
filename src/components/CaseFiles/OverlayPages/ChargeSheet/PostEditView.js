@@ -191,18 +191,6 @@ function PostEditView ({
                 />
                 <DataItem text ={type} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                 {
-                    // isEditMode === true && role === 'Admin'?
-                    // <ContentDataItem
-                    //     align = "center"
-                    //     content = {
-                    //         <NumberChangeField
-                    //             onChangePress={onQuantityChangePress(item, index)}
-                    //             // onAmountChange={onAmountChange(item, index)}
-                    //             value={amount === 0 ? "" : amount.toString()}
-                    //         />
-                    //     }
-                    // />
-                    // :
                     <DataItem text = {amount} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
                 }
                 <DataItem text = {`$ ${currencyFormatter(cost)}`} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
