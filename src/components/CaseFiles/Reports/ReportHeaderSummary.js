@@ -59,10 +59,10 @@ function ReportHeaderSummary({
     const {
         city = '',
         country = '',
-        line1 = '23 Bedford Avenue',
-        line2 = 'Kingston 8',
+        line1 = '',
+        line2 = '',
         parish = '',
-        postalCode = 'JMKIN08'
+        postalCode = ''
     } = address;
 
     const theme = useTheme();
@@ -76,8 +76,8 @@ function ReportHeaderSummary({
 
                     <ContentItem theme={theme}>{billedTo}</ContentItem>
                     <ContentItem theme={theme}>{line1}</ContentItem>
-                    <ContentItem theme={theme}>{line2}</ContentItem>
-                    <ContentItem theme={theme}>{postalCode}</ContentItem>
+                    <ContentItem theme={theme}>{line2 || parish}</ContentItem>
+                    <ContentItem theme={theme}>{postalCode || city}</ContentItem>
 
                 </ContentContainer>
 
