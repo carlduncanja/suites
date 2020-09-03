@@ -131,8 +131,8 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
     };
 
     const listItem = item => {
-        const { invoiceNumber = '', status = '', billingDetails = {}, createdAt = '' } = item;
-        const { subTotal = 0 } = billingDetails;
+        const { invoiceNumber = '', status = '', billingDetails = {}, createdAt = '', amountDue = 0 } = item;
+        // const { subTotal = 0 } = billingDetails;
 
         return (
             <>
@@ -150,7 +150,7 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
                     <Text style={styles.itemText}>{formatDate(createdAt, 'DD/MM/YYYY') }</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
-                    <Text style={styles.itemText}>{`$ ${currencyFormatter(subTotal)}`}</Text>
+                    <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>
                 </View>
                 {/* </View> */}
             </>
