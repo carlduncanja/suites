@@ -66,9 +66,10 @@ const QuantityContainer = styled.View`
 `;
 
 const GroupEquipmentView = styled.TouchableOpacity`
-flex:1;
-flex-direction:row;
-padding:15px;
+  flex:1;
+  flex-direction:row;
+  align-items : center;
+
 `;
 
 
