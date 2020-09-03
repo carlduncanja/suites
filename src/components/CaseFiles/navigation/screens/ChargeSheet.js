@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import {
@@ -45,13 +45,13 @@ const headers = [
     {
         name: 'Item Name',
         alignment: 'flex-start',
-        hasSort : true
+        hasSort: true
 
     },
     {
         name: 'Type',
         alignment: 'center',
-        hasSort : true
+        hasSort: true
 
     },
     {
@@ -86,6 +86,8 @@ const ChargeSheet = ({
         total = 0,
         caseId
     } = chargeSheet;
+
+    let pageStateRef = useRef();
 
     inventoryList = inventoryList.map(item => {
         const {inventory} = item;
@@ -139,6 +141,13 @@ const ChargeSheet = ({
     }, [isEditMode]);
 
     useEffect(() => {
+        pageStateRef.current = pageState;
+
+        console.log("Page State Update", pageStateRef);
+
+    }, [pageState])
+
+    useEffect(() => {
         const isPending = chargeSheet.status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
         if (!isPending) return;
 
@@ -158,16 +167,16 @@ const ChargeSheet = ({
         setPageState(pageState)
 
         return () => {
-
-            console.log("on dismount", pageState);
-
+            const currentState = pageStateRef.current || {}
+            console.log("on dismount", pageState, currentState);
             setPageState({
                 ...pageState,
+                ...currentState,
                 isReview: false,
                 locked: false,
             })
         }
-    }, [isLoading])
+    }, [])
 
     // --------------------------- Helper Methods
 
@@ -184,7 +193,7 @@ const ChargeSheet = ({
     const handleEquipmentUpdate = (index, procedureEquipments) => {
         // console.log("onConsumablesUpdate", index, procedureInventories);
         const updatedCaseProcedures = [...caseProcedures];
-        if(updatedCaseProcedures[index]){
+        if (updatedCaseProcedures[index]) {
             updatedCaseProcedures[index].equipments = procedureEquipments;
             setCaseProcedure(updatedCaseProcedures);
             setUpdated(true);
@@ -279,10 +288,10 @@ const ChargeSheet = ({
                 headers={headers}
                 allItems={equipmentList}
                 equipments={procedureEquipments}
-                caseProcedures = {caseProcedures}
+                caseProcedures={caseProcedures}
                 caseProceduresFilters={consumableProcedures}
                 onEquipmentsUpdate={handleEquipmentUpdate}
-                onSelectEquipments = {onSelectEquipments}
+                onSelectEquipments={onSelectEquipments}
                 // details={billing.procedures}
                 isEditMode={isEditMode}
                 handleEditDone={handleEditDone}
@@ -416,7 +425,7 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
             const prvItem = prvInventories.find(item => item.inventory === newInventoryItem.inventory)
             let initialAmount = prvItem?.amount || 0;
 
-            if(initialAmount === newInventoryItem?.amount) continue;
+            if (initialAmount === newInventoryItem?.amount) continue;
 
             const update = {
                 ...newInventoryItem,
@@ -430,7 +439,7 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
             const prvItem = prvEquipments.find(item => item.equipment === newEquipment.equipment)
             let initialAmount = prvItem?.amount || 0;
 
-            if(initialAmount === newEquipment?.amount) continue;
+            if (initialAmount === newEquipment?.amount) continue;
 
             const update = {
                 ...newEquipment,
@@ -440,7 +449,7 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
             equipmentChanges.push(update);
         }
 
-        if(!inventoryChanges.length && !equipmentChanges.length) continue
+        if (!inventoryChanges.length && !equipmentChanges.length) continue
 
         updatedBillableItems.inventories = inventoryChanges;
         updatedBillableItems.equipments = equipmentChanges;
