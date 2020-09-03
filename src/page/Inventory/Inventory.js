@@ -149,7 +149,7 @@ function Inventory(props) {
 
 
     // pagination
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
@@ -636,12 +636,15 @@ function Inventory(props) {
                 }
                
                 setInventory(data);
-                data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages)
                 
             })
             .catch(error => {
                 // todo handle error
                 console.log("Failed to fetch inventory", error);
+                setTotalPages(1)
+                setPreviousDisabled(true)
+                setNextDisabled(true)
             })
             .finally(_ => {
                 setFetchingData(false);

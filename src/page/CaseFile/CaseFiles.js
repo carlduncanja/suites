@@ -101,7 +101,7 @@ function CaseFiles(props) {
     const [searchQuery, setSearchQuery] = useState({});
 
     // pagination
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
@@ -232,10 +232,13 @@ function CaseFiles(props) {
                     setPreviousDisabled(true);
                 }
                 setCaseFiles(data);
-                data.length === 0 ? setTotalPages(0) : setTotalPages(pages);
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
                 console.log("failed to get case files", error);
+                setTotalPages(1)
+                setPreviousDisabled(true)
+                setNextDisabled(true)
             })
             .finally(_ => {
                 setFetchingCaseFiles(false)

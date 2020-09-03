@@ -52,8 +52,8 @@ const ButtonContainer = styled.View`
 `;
 const ArchiveButtonText = styled.Text`
 align-items: center; 
-color: #A0AEC0
-`
+color: #A0AEC0;
+`;
 
 const Suppliers = (props) => {
     const theme = useTheme();
@@ -86,7 +86,7 @@ const Suppliers = (props) => {
     const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
 
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
@@ -221,11 +221,14 @@ const Suppliers = (props) => {
                 }
 
                 setSuppliers(data);
-                data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages)
 
             })
             .catch(error => {
                 console.log("failed to get suppliers", error);
+                setTotalPages(1)
+                setPreviousDisabled(true)
+                setNextDisabled(true)
             })
             .finally(_ => {
                 setFetchingData(false)

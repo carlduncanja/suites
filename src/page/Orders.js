@@ -84,7 +84,7 @@ const Orders = (props) => {
   const [isFetchingData, setFetchingData] = useState(false);
   const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [currentPageListMin, setCurrentPageListMin] = useState(0);
   const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
   const [currentPagePosition, setCurrentPagePosition] = useState(1);
@@ -262,12 +262,15 @@ const onCancelErrorScreen = () =>{
         }
 
         setPurchaseOrders(data);
-        data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
+        data.length === 0 ? setTotalPages(1) : setTotalPages(pages)
 
       })
       .catch((error) => {
         console.log("failed to get orders", error);
-        errorScreen();
+        setTotalPages(1)
+        setPreviousDisabled(true)
+        setNextDisabled(true)
+        // errorScreen();
       })
       .finally((_) => {
         setFetchingData(false);

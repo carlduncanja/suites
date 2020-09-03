@@ -56,7 +56,7 @@ const listHeaders = [
     // id: "3",
     name: "Actions",
     alignment: "center",
-    flex: 1,
+    flex: 1, 
   },
 ];
 
@@ -79,7 +79,7 @@ function Theatres(props) {
   const [searchQuery, setSearchQuery] = useState({});
 
   // pagination
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [currentPageListMin, setCurrentPageListMin] = useState(0);
   const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
   const [currentPagePosition, setCurrentPagePosition] = useState(1);
@@ -311,14 +311,17 @@ function Theatres(props) {
           setNextDisabled(true);
           setPreviousDisabled(true);
         }
-
+        console.log("Theatre data:", data)
         setTheatres(data);
-        data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
+        data.length === 0 ? setTotalPages(1) : setTotalPages(pages)
 
       })
       .catch((error) => {
         // TODO handle error
         console.log("failed to fetch theatres", error);
+        setTotalPages(1)
+        setPreviousDisabled(true)
+        setNextDisabled(true)
       })
       .finally((_) => {
         setFetchingData(false);
@@ -357,6 +360,7 @@ function Theatres(props) {
       currentPage={currentPagePosition}
       goToNextPage={goToNextPage}
       goToPreviousPage={goToPreviousPage}
+
       isDisabled={isFloatingActionDisabled}
       toggleActionButton={toggleActionButton}
       hasPaginator={true}
