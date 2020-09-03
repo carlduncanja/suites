@@ -87,8 +87,6 @@ const ChargeSheet = ({
         caseId
     } = chargeSheet;
 
-    let pageStateRef = useRef();
-
     inventoryList = inventoryList.map(item => {
         const {inventory} = item;
         const {name = '', unitCost = 1} = inventory;
@@ -141,13 +139,6 @@ const ChargeSheet = ({
     }, [isEditMode]);
 
     useEffect(() => {
-        pageStateRef.current = pageState;
-
-        console.log("Page State Update", pageStateRef);
-
-    }, [pageState])
-
-    useEffect(() => {
         const isPending = chargeSheet.status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
         if (!isPending) return;
 
@@ -167,11 +158,8 @@ const ChargeSheet = ({
         setPageState(pageState)
 
         return () => {
-            const currentState = pageStateRef.current || {}
-            console.log("on dismount", pageState, currentState);
             setPageState({
                 ...pageState,
-                ...currentState,
                 isReview: false,
                 locked: false,
             })
