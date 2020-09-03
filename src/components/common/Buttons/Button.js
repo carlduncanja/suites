@@ -16,12 +16,12 @@ const ButtonContainer = styled.View`
         width: 100%;
         justify-content: center;
         align-items: center;
-        background-color:${(backgroundColor,) => backgroundColor}
+        background-color:${(backgroundColor,) => backgroundColor};
 `;
 
 const ButtonTitle = styled.Text(({theme, font, color}) => ({
     ...theme.font[font],
-    color: color ? color : theme.colors['--accent-button']
+    color: color ? color : theme.colors['--accent-button'],
 }))
 
 

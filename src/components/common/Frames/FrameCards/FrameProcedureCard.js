@@ -57,9 +57,12 @@ const FrameProcedureCard = ({
     const {appointment, procedure, recovery} = procedureData
     const recoveryAppointment = recovery?.appointment || false
 
+    const [hasRecovery, setRecovery] = useState(!!recoveryAppointment);
+
 
     // STATES
     const [appointmentFields, setAppointmentFields] = useState(getAppointmentFields(appointment));
+    const [recoveryAppointmentFields, setRecoveryAppointmentFields] = useState(getAppointmentFields(recoveryAppointment));
     const [isUpdated, setUpdated] = useState(false);
     const [updating, setUpdating] = useState(false);
 
@@ -71,12 +74,28 @@ const FrameProcedureCard = ({
         setAppointmentFields(data)
     }
 
+    const onRecoveryAppointmentFieldsUpdate = (data) => {
+        setUpdated(true);
+        setRecoveryAppointmentFields(data)
+    }
+
+    const handleRecoveryOptionUpdated = (value) => {
+        setUpdated(true);
+        setRecovery(value);
+    }
+
     const handleSaveProcedure = () => {
         const data = {
             duration: appointmentFields.duration,
             location: appointmentFields.location?._id,
-            startTime: appointmentFields.startTime
+            startTime: appointmentFields.startTime,
+            recovery: (!hasRecovery ? null : {
+                duration: recoveryAppointmentFields.duration,
+                location: recoveryAppointmentFields.location?._id,
+                startTime: recoveryAppointmentFields.startTime
+            })
         }
+
         saveProcedureCall(caseId, procedureData?._id, data);
     }
 
@@ -152,10 +171,13 @@ const FrameProcedureCard = ({
                         isUpdated={isUpdated}
                         procedure={procedure}
                         appointmentFields={appointmentFields}
-                        recoveryAppointment={recoveryAppointment}
+                        recoveryAppointment={recoveryAppointmentFields}
                         onOpenPickList={onOpenPickList}
                         onAppointmentFieldsUpdate={onAppointmentFieldsUpdate}
+                        onRecoveryFieldUpdate={onRecoveryAppointmentFieldsUpdate}
                         onSavePress={handleSaveProcedure}
+                        hasRecovery={hasRecovery}
+                        updateRecovery={handleRecoveryOptionUpdated}
                     />
                 </ProcedureCardContent>
 

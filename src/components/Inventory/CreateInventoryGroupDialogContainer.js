@@ -323,7 +323,7 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
                 </FieldContainer>
             </Row>
 
-        </OverlayDialogContent>
+        </OverlayDialogContent> 
     );
 
     return (

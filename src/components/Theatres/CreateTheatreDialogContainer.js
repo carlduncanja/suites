@@ -18,7 +18,7 @@ import {
 } from 'react-native-popup-menu';
 import DropDownIcon from "../../../assets/svg/dropDown";
 import OptionsField from "../common/Input Fields/OptionsField";
-import TheatresPage from "./TheatresPage";
+import TheatresPage from "../../page/Theatres/TheatresPage";
 
 /**
  * Component to handle the create storage process.

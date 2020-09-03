@@ -34,7 +34,7 @@ export default class Days extends Component {
         const filterLevels = (date, day) => {
             //console.log("Date: ", day)
             let result = appointments.filter(
-                appointment => parseInt(formatDate(appointment.startTime,"D")) === date && formatDate(appointment.startTime,"MM") === day.format("MM") && formatDate(appointment.startTime,"YYYY") === day.format("YYYY"));
+                appointment => parseInt(formatDate(appointment?.startTime,"D")) === date && formatDate(appointment?.startTime,"MM") === day.format("MM") && formatDate(appointment.startTime,"YYYY") === day.format("YYYY"));
             return result;
         }
 

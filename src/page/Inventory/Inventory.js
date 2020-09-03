@@ -565,7 +565,7 @@ function Inventory(props) {
                 renderItem={({item}) => {
                     return renderChildItemView(item, formattedItem, () => {
                     })
-                }}
+                }} 
                 keyExtractor={(item, index) => "" + index}
                 ItemSeparatorComponent={() =>
                     <View style={{flex: 1, margin: 10, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>

@@ -1,37 +1,37 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet, Text } from "react-native";
-import Page from "../components/common/Page/Page";
-import IconButton from "../components/common/Buttons/IconButton";
-import ActionIcon from "../../assets/svg/ActionIcon";
-import ListItem from "../components/common/List/ListItem";
-import { getTheatres } from "../api/network";
-import { setTheatres } from "../redux/actions/theatresActions";
+import Page from "../../components/common/Page/Page";
+import IconButton from "../../components/common/Buttons/IconButton";
+import ActionIcon from "../../../assets/svg/ActionIcon";
+import ListItem from "../../components/common/List/ListItem";
+import { getTheatres } from "../../api/network";
+import { setTheatres } from "../../redux/actions/theatresActions";
 import { connect } from "react-redux";
 import { useModal } from "react-native-modalfy";
-import CaseFileBottomSheet from "../components/CaseFiles/CaseFileBottomSheet";
-import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
-import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
+import CaseFileBottomSheet from "../../components/CaseFiles/CaseFileBottomSheet";
+import RoundedPaginator from "../../components/common/Paginators/RoundedPaginator";
+import FloatingActionButton from "../../components/common/FloatingAction/FloatingActionButton";
 import {
   useNextPaginator,
   usePreviousPaginator,
   selectAll,
   checkboxItemPress,
-} from "../helpers/caseFilesHelpers";
-import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
-import ActionItem from "../components/common/ActionItem";
-import WasteIcon from "../../assets/svg/wasteIcon";
-import AddIcon from "../../assets/svg/addIcon";
-import ActionContainer from "../components/common/FloatingAction/ActionContainer";
-import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
-import CreateTheatreDialogContainer from "../components/Theatres/CreateTheatreDialogContainer";
-import AssignIcon from "../../assets/svg/assignIcon";
+} from "../../helpers/caseFilesHelpers";
+import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
+import ActionItem from "../../components/common/ActionItem";
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import AddIcon from "../../../assets/svg/addIcon";
+import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
+import CreateStorageDialogContainer from "../../components/Storage/CreateStorageDialogContainer";
+import CreateTheatreDialogContainer from "../../components/Theatres/CreateTheatreDialogContainer";
+import AssignIcon from "../../../assets/svg/assignIcon";
 import _ from "lodash";
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import Footer from "../components/common/Page/Footer";
-import NavPage from '../components/common/Page/NavPage';
+import Footer from "../../components/common/Page/Footer";
+import NavPage from '../../components/common/Page/NavPage';
 
 const listHeaders = [
   {

@@ -3,17 +3,30 @@ import { View, Text, StyleSheet, Alert } from "react-native";
 import DeleteIcon from '../../../assets/svg/wasteIcon';
 import NumberChangeField from '../common/Input Fields/NumberChangeField';
 import IconButton from "../common/Buttons/IconButton";
-import AddOverlaywithSearch from "../common/AddOverlaywithSearch";
+import AddOverlayDialog from "../common/AddOverlayDialog";
+import ConfirmationComponent from '../ConfirmationComponent';
 
 import { getSupplierProducts } from "../../api/network";
 import _ from "lodash";
+import styled, {css} from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 import { withModal } from "react-native-modalfy";
+import DataItem from "../common/List/DataItem";
+import ContentDataItem from "../common/List/ContentDataItem";
 
+const Row = styled.View`
+    /* width : 100%; */
+    height : 20px;
+    flex-direction : row;
+    margin-bottom : ${ ({theme}) => theme.space['--space-24']};
+
+`
 
 function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, orders = [], onCancel = () => {}}){
 
-    const { closeModals } = modal
+    const { closeModals } = modal;
+    const theme = useTheme();
 
     const [itemstoAdd, setItems] = useState([])
 
@@ -25,10 +38,15 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
         {
             name : 'Item',
             alignment : "flex-start",
-            flex : 2,
+            flex : 1,
         },
         {
             name : 'Quantity',
+            alignment : "center",
+            flex:1
+        },
+        {
+            name : 'Unit',
             alignment : "center",
             flex:1
         },
@@ -144,6 +162,48 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
         setItems(updatedData)
     }
 
+    const handleDeleteItem = (item) => {
+        modal
+            .openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {true}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=>{
+                            onDeletePress(item);
+                            setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
+                        }}
+                        // onAction = { () => confirmAction()}
+                        message = {"Do you want to delete this item ?"}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                })
+    };
+
+    const handleClearList = () => {
+        modal
+            .openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {true}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=>{
+                            onClearItems();
+                            setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
+                        }}
+                        // onAction = { () => confirmAction()}
+                        message = {"Do you want to delete these item(s) ?"}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                })
+    }
+
     const onDeletePress = (item) => {
        const filterItems = itemstoAdd.filter( obj => obj._id !== item._id)
        setItems(filterItems)
@@ -151,6 +211,29 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
 
     const onClearItems = () => {
         setItems([])
+    }
+
+    const handlePositiveButtonPress = () => {
+        modal
+            .openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {true}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=>{
+                            onFooterPress();
+                            setTimeout(()=>{
+                                modal.closeModals('ConfirmationModal')
+                            }, 100);
+                        }}
+                        // onAction = { () => confirmAction()}
+                        message = {"Do you want to save your changes ? "}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                })
     }
 
     const onFooterPress = () => {
@@ -163,50 +246,69 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
     }
 
     const listItemFormat = (item) => { 
-        const { _id = "", name = "", amount = 0 } = item
+        const { _id = "", name = "", amount = 0, unit = "n/a" } = item
         return (
-            <View style={[styles.listDataContainer,{marginBottom:10}]}>
+            <Row theme = {theme}>
+                <DataItem text = {name} flex = {1} fontStyle = "--text-base-medium" color = "--color-blue-600" />
+                <NumberChangeField
+                    onChangePress = {onQuantityChange(item)}
+                    onAmountChange = {onAmountChange(item)}
+                    value = {amount.toString()}
+                />
+                <DataItem text = {unit} flex = {1}  align = "center" fontStyle = "--text-sm-regular" color = "--color-gray-800" />
+                <ContentDataItem
+                    align = "flex-end"
+                    content = {
+                        <IconButton
+                            Icon = {<DeleteIcon/>}
+                            onPress = {()=>handleDeleteItem(item)}
+                        />
+                    }
+                />
+            </Row>
 
-                <View style={{flex:2,justifyContent:"flex-start", justifyContent:'center'}}>
-                    <Text style={[styles.dataText,{color:"#3182CE"}]}>{name}</Text>
-                </View>
-                <View style={{flex:1,alignItems:'center'}}>
-                    <NumberChangeField
-                        onChangePress = {onQuantityChange(item)}
-                        onAmountChange = {onAmountChange(item)}
-                        value = {amount.toString()}
-                    />
-                </View>
-                <View style={{flex:1,alignItems:'flex-end'}}>
-                    <IconButton
-                        Icon = {<DeleteIcon/>}
-                        onPress = {()=>onDeletePress(item)}
-                    />
+            // <View style={[styles.listDataContainer,{marginBottom:10}]}>
+
+            //     <View style={{flex:2,justifyContent:"flex-start", justifyContent:'center'}}>
+            //         <Text style={[styles.dataText,{color:"#3182CE"}]}>{name}</Text>
+            //     </View>
+            //     <View style={{flex:1,alignItems:'center'}}>
+            //         <NumberChangeField
+            //             onChangePress = {onQuantityChange(item)}
+            //             onAmountChange = {onAmountChange(item)}
+            //             value = {amount.toString()}
+            //         />
+            //     </View>
+            //     <View style={{flex:1,alignItems:'flex-end'}}>
+            //         <IconButton
+            //             Icon = {<DeleteIcon/>}
+            //             onPress = {()=>onDeletePress(item)}
+            //         />
                     
-                </View>
-            </View>
+            //     </View>
+            // </View>
         )
         
     }
 
     return (
         <View>
-            <AddOverlaywithSearch
+            <AddOverlayDialog
                 title = "Add Items"  
                 closeModal = {onCloseModal}
                 listItemFormat = {listItemFormat}
                 headers = {headers}
                 isCheckBox = {false}
                 data = {itemstoAdd}
-                hasFooter = {true}
-                footerTitle = "DONE"
-                onFooterPress = {onFooterPress}
-                onClearPress = {onClearItems}
+                // hasFooter = {true}
+                // footerTitle = "DONE"
+                onFooterPress = {handlePositiveButtonPress}
+                onClearPress = {handleClearList}
                 searchText = {searchInventoryValue}
                 searchResults = {searchInventoryResults}
                 onSearchChange = {onSearchChange}  
                 searchQuery = {searchInventoryQuery}
-                onSelectItem = {onSelectItem}
+                onSelectItem = {onSelectItem} 
 
             /> 
         </View>
