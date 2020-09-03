@@ -228,7 +228,7 @@ const Physicians = (props) => {
         return (
             <>
                 <View style={[styles.item, {}]}>
-                    <Text numberOfLines={1} style={[styles.itemText, { fontSize: 12, color: "#718096" }]}>#{_id}</Text>
+                    {/*<Text numberOfLines={1} style={[styles.itemText, { fontSize: 12, color: "#718096" }]}>#{_id}</Text>*/}
                     <Text numberOfLines={1} style={[styles.itemText, { fontSize: 16, color: "#3182CE" }]}>Dr. {surname}</Text>
                 </View>
                 <View style={[styles.item, { alignItems: 'center' }]}>
