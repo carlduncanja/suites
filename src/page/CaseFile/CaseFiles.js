@@ -111,7 +111,10 @@ function CaseFiles(props) {
         if (!caseFiles.length) {
             fetchCaseFilesData(currentPagePosition);
         }
-        setTotalPages(Math.ceil(caseFiles.length / recordsPerPage));
+        setTotalPages(
+            caseFiles.length === 0 ? 1 :
+            Math.ceil(caseFiles.length / recordsPerPage)
+        );
     }, []);
 
     useEffect(() => {
@@ -248,7 +251,7 @@ function CaseFiles(props) {
 
 
     const renderFn = (item) => {
-
+        let { patient = {} } = item
 
         // console.log("what's pssed to render?", item.patient);
 
@@ -260,7 +263,7 @@ function CaseFiles(props) {
                 isChecked={selectedCaseIds.includes(item._id)}
                 onCheckBoxPress={handleOnCheckBoxPress(item)}
                 onItemPress={handleOnItemPress(item, false)}
-                itemView={isEmpty(item.patient.medicalInfo) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
+                itemView={isEmpty(item?.patient?.medicalInfo) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
             //items passed here should be deciphered whether it is a draft or not
 
             />
@@ -292,7 +295,7 @@ function CaseFiles(props) {
 
         console.log("rendering the draft item");
 
-        return (<DraftItem text={`${item.patient.firstName} ${item.patient.surname}`} />)
+        return (<DraftItem text={`${item?.patient?.firstName || ""} ${item?.patient?.surname || ""}`} />)
 
 
 
