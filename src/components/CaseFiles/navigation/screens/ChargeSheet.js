@@ -118,14 +118,12 @@ const ChargeSheet = ({
     }
 
     const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode, isLoading} = pageState;
+    const {isEditMode} = pageState;
 
-    // preparing billing information
-    const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
 
     // --------------------------- States
 
-    const [caseProcedures, setCaseProcedure] = useState(billing.procedures);
+    const [caseProcedures, setCaseProcedure] = useState([]);
     const [isUpdated, setUpdated] = useState(false);
 
 
@@ -137,6 +135,12 @@ const ChargeSheet = ({
             setUpdated(false);
         }
     }, [isEditMode]);
+
+    useEffect(() => {
+        // preparing billing information
+        const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
+        setCaseProcedure(billing.procedures)
+    }, [chargeSheet])
 
     useEffect(() => {
         const isPending = chargeSheet.status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
@@ -179,16 +183,12 @@ const ChargeSheet = ({
     };
 
     const handleEquipmentUpdate = (index, procedureEquipments) => {
-        // console.log("onConsumablesUpdate", index, procedureInventories);
         const updatedCaseProcedures = [...caseProcedures];
         if (updatedCaseProcedures[index]) {
             updatedCaseProcedures[index].equipments = procedureEquipments;
             setCaseProcedure(updatedCaseProcedures);
             setUpdated(true);
         }
-        //
-        // if (updatedCaseProcedures[index]) {
-        // }
     };
 
     const handleLineItemsUpdate = (procedureIndex, procedureLineItem) => {
@@ -397,6 +397,9 @@ const configureBillableItems = (lastModified, total, updatedBy = {}, procedures,
 const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []) => {
     const updatedProcedures = [];
 
+    console.log('calculateChangesProcedureChanges: prv ', prvProcedures);
+    console.log('calculateChangesProcedureChanges: new ', newProcedures);
+
     for (const newBillableItems of newProcedures) {
         const inventoryChanges = []
         const equipmentChanges = []
@@ -445,6 +448,9 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
 
         updatedProcedures.push(updatedBillableItems)
     }
+
+
+    console.log('calculateChangesProcedureChanges: updates ', updatedProcedures);
 
     return updatedProcedures;
 }

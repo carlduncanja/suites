@@ -354,6 +354,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
 
     // ############### Helper Function
     const fetchCase = id => {
+        console.log("fetching case");
         setPageLoading(true);
         getCaseFileById(id)
             .then(data => {
