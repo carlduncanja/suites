@@ -32,6 +32,27 @@ const SearchContainer = styled.View`
     margin-bottom : ${ ({ theme }) => theme.space['--space-20']};
 `;
 
+const FooterWrapper = styled.View`
+    width: 100%;
+    position : absolute;
+    bottom : 20; 
+`;
+const FooterContainer = styled.View`
+    width :100%;
+    display: flex;
+    flex-direction: row;
+    align-self: flex-end;
+    justify-content: space-between;
+`;
+
+const PaginatorActionsContainer = styled.View`
+    display : flex;
+    justify-content : space-between;
+    align-items : center;
+    flex-direction : row;
+`
+
+
 function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false }) {
 
     // ######## STATES
@@ -379,18 +400,35 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                 itemSelected={checkBoxList}
             />
 
-            <Footer
-                hasActionButton={hasActionButton}
-                totalPages={totalPages}
-                currentPage={currentPagePosition}
-                goToNextPage={goToNextPage}
-                goToPreviousPage={goToPreviousPage}
-                isDisabled={isFloatingActionDisabled}
-                toggleActionButton={toggleActionButton}
-                isNextDisabled={true}
-                isPreviousDisabled={true}
-            />
+            <FooterWrapper>
+                <FooterContainer>
 
+                    <FloatingActionAnnotated
+                        toggleActionButton={toggleCartActionButton}
+                        icon = {Cart}
+                        value = {cartTotal}
+                        showValue =  {cartTotal !== 0}
+                    />
+                    
+                    <PaginatorActionsContainer>
+                        <RoundedPaginator
+                            totalPages={totalPages}
+                            currentPage={currentPagePosition}
+                            goToNextPage={goToNextPage}
+                            goToPreviousPage={goToPreviousPage}
+                            isNextDisabled={false}
+                            isPreviousDisabled={false}
+                        />
+                    
+                        <FloatingActionButton
+                            isDisabled={isFloatingActionDisabled}
+                            toggleActionButton={toggleActionButton}
+                        />
+        
+                    </PaginatorActionsContainer>
+                    
+                </FooterContainer>
+            </FooterWrapper>
             {/* <View style={styles.footer}>
                 <View>
                     <FloatingActionAnnotated

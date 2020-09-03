@@ -2,12 +2,54 @@ import React, {Component, useContext} from 'react';
 import {TouchableOpacity, StyleSheet, View, Text} from 'react-native';
 import SvgIcon from '../../../../assets/SvgIcon'
 import {withModal} from 'react-native-modalfy';
+import MultipleShadowsContainer from '../MultipleShadowContainer';
 
-const FloatingActionAnnotated = ({toggleActionButton, icon, value, showValue = true}) => {
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+
+const ActionButtonWrapper = styled.TouchableOpacity`
+    height : 48px;
+    width : 48px;
+`;
+const ActionButtonContainer = styled.View`
+    height : 100%;
+    width : 100%;
+    border-radius : 24px;
+    background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
+    justify-content : center;
+    align-items : center;
+`;
+
+const shadows = [
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: 10, height: 0 },
+        shadowOpacity: 0.1,
+        shadowRadius: 15
+      },
+      {
+        shadowColor: 'black',
+        shadowOffset: { width: 4, height: 0 },
+        shadowOpacity: 0.05,
+        shadowRadius: 6
+      },
+]
+
+function FloatingActionAnnotated ({toggleActionButton, icon, value, showValue = true}) {
     const Icon = icon
+    const theme = useTheme();
     return (
         <>
-            <TouchableOpacity
+            <MultipleShadowsContainer shadows = {shadows}>
+                <ActionButtonWrapper onPress = {()=>{toggleActionButton();}}>
+                    <ActionButtonContainer>
+                        <Icon/>
+                    </ActionButtonContainer>
+                </ActionButtonWrapper>
+            </MultipleShadowsContainer>
+            
+
+            {/* <TouchableOpacity
                 style={[styles.container, styles.shadow, {
                     // backgroundColor: isDisabled ?  "#A0AEC0" : "#4299E1"
                 }]}
@@ -16,8 +58,8 @@ const FloatingActionAnnotated = ({toggleActionButton, icon, value, showValue = t
                 }}
             >
                 <Icon/>
-            </TouchableOpacity>
-            {
+            </TouchableOpacity> */}
+            { 
                 showValue &&
                 <View style={styles.valueBox}>
                     <Text style={styles.textStyle}>{value}</Text>

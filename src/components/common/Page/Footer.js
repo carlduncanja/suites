@@ -4,7 +4,7 @@ import RoundedPaginator from "../Paginators/RoundedPaginator";
 import FloatingActionButton from "../FloatingAction/FloatingActionButton";
 import DisabledFloatingButton from "../../../../assets/svg/disabledFloatingButton";
 import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import { useTheme } from 'emotion-theming'; 
 
 const FooterWrapper = styled.View`
     width: 100%;

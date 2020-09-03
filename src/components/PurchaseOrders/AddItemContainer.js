@@ -300,7 +300,9 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
                 headers = {headers}
                 isCheckBox = {false}
                 data = {itemstoAdd}
+                tabs = {["Add Item"]}
                 // hasFooter = {true}
+                selectedTab = {0}
                 // footerTitle = "DONE"
                 onFooterPress = {handlePositiveButtonPress}
                 onClearPress = {handleClearList}
