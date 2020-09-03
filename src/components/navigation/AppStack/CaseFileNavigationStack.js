@@ -1,7 +1,8 @@
 import React from "react";
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import CaseFiles from "../../../page/CaseFile/CaseFiles";
+import AddAppointmentPage from "../../../page/CaseFile/AddAppointmentPage";
 import NotFound from "../../../page/NotFound";
 import CreateCasePage from "../../../page/CaseFile/CreateCasePage";
 import HeaderBackComponent from "../components/HeaderBackComponent";
@@ -44,6 +45,23 @@ export default () => {
             <Stack.Screen
                 name="Case"
                 component={CasePage}
+                options={{
+                    headerShown: false,
+                    // headerLeft: (props) => (
+                    //     <HeaderBackComponent
+                    //         {...props}
+                    //     />
+                    // ),
+                    // headerStyle: {
+                    //     height: 100,
+                    //
+                    // },
+                    // headerTitle: ""
+                }}
+            />
+            <Stack.Screen
+                name="AddAppointmentPage"
+                component={AddAppointmentPage}
                 options={{
                     headerShown: false,
                     // headerLeft: (props) => (
