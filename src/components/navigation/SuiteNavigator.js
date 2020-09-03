@@ -1,6 +1,8 @@
 import React, {useContext} from "react";
 import {View, StyleSheet, Dimensions, SafeAreaView} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
+import * as Notifications from "expo-notifications";
+
 import {
     SuitesContext,
     SuitesContextProvider,

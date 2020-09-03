@@ -180,22 +180,10 @@ function TheatresPage({ route, navigation }) {
     const { _id, name } = selectedTheatre;
 
     return (
-        // <BottomSheetContainer
-        //     isFetching={isFetching}
-        //     overlayId={_id}
-        //     overlayTitle={name}
-        //     onTabPressChange={onTabPress}
-        //     currentTabs={currentTabs}
-        //     selectedTab={currentTab}
-        //     isEditMode={isEditMode}
-        //     onEditPress={onEditPress}
-        //     overlayContent={getOverlayScreen(currentTab)}
-        // />
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
-                    title={name}
-                    subTitle={`#${_id}`}
+                    headerChildren={[name, `#${_id}`]}
                     onBackPress={onBackTapped}
                     pageTabs={
                         <TabsContainer
@@ -205,12 +193,7 @@ function TheatresPage({ route, navigation }) {
                         />
                     }
                 >
-
                     {getOverlayScreen(currentTab)}
-
-
-
-
                 </DetailsPage>
             </PageContext.Provider>
         </>

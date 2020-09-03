@@ -15,7 +15,7 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
 
     const modal = useModal();
     const {pageState, setPageState, fetchCase} = useContext(PageContext);
-    const {isEditMode, setEditMode} = pageState;
+    const {isEditMode} = pageState;
 
     const [procedureAppointments, setProcedureAppointment] = useState(tabDetails);
 

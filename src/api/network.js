@@ -118,9 +118,9 @@ export const searchSchedule = async (query) => {
 };
 
 // ################# Theatres Endpoints
-export const getTheatres = async (query, max, page) => {
+export const getTheatres = async (query, max, page, isRecovery) => {
     return suitesAxiosInstance
-        .get(theatresEndpoint, {params: {query, max, page}})
+        .get(theatresEndpoint, {params: {query, max, page, isRecovery}})
         .then(handleResponse)
         .catch(handleError);
 };

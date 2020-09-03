@@ -113,26 +113,26 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
     ];
 
     const openModal = item => () => {
-        const report = tabDetails[0] || {};
-        const { billing = {}, customer = {} } = report;
-        const { subTotal = 0 } = billing;
-        const details = {
-            amountDue: subTotal,
-            billingDetails: customer,
-            ...report
-        };
+        // const report = tabDetails[0] || {};
+        // const { billing = {}, customer = {} } = report;
+        // const { subTotal = 0 } = billing;
+        // const details = {
+        //     amountDue: subTotal,
+        //     billingDetails: customer,
+        //     ...report
+        // };
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Invoice"
-                details={details}
+                details={item}
                 reportDetails={reportDetails}
             />
         });
     };
 
     const listItem = item => {
-        const { invoiceNumber = '', status = '', billingDetails = {}, createdAt = '' } = item;
-        const { subTotal = 0 } = billingDetails;
+        const { invoiceNumber = '', status = '', billingDetails = {}, createdAt = '', amountDue = 0 } = item;
+        // const { subTotal = 0 } = billingDetails;
 
         return (
             <>
@@ -150,7 +150,7 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
                     <Text style={styles.itemText}>{formatDate(createdAt, 'DD/MM/YYYY') }</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
-                    <Text style={styles.itemText}>{`$ ${currencyFormatter(subTotal)}`}</Text>
+                    <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>
                 </View>
                 {/* </View> */}
             </>

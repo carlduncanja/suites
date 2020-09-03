@@ -297,8 +297,6 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
 
     const onPositiveButtonPress = () => {
 
-        saveDraft([{ id: Math.floor(Math.random() * 10000), patient: patientFields }]);
-
         const incrementTab = () => {
             const updatedTabIndex = selectedTabIndex + 1;
             setCompletedTabs([...completedTabs, tabs[selectedTabIndex]]);
@@ -605,7 +603,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
     };
 
     const onClose = () => {
-        navigation.navigate("CaseFiles");
+
+        let progress = getTabsProgress();
+        progress < 60 ? saveDraft([{ id: Math.floor(Math.random() * 10000), patient: patientFields }]) &&
+            navigation.navigate("CaseFiles") : navigation.navigate("CaseFiles");
     }
 
     const getTabContent = () => {

@@ -5,23 +5,28 @@ import {useTheme} from 'emotion-theming';
 
 const LoadingIndicatorWrapper = styled.View`
     // margin-top: ${({theme}) => theme.space['--space-20']}
+    position: absolute;
     display: flex;
-    flex: 1
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
 `
 
 const LoadingIndicatorContainer = styled.View`
     flex: 1;
     align-items: center;
     justify-content: center;
+    background-color: ${({backgroundColor}) =>  backgroundColor ? backgroundColor : 'none'};
 `
 
-function LoadingIndicator({size = 'large', color}) {
+function LoadingIndicator({size = 'large', color, backgroundColor}) {
 
     const theme = useTheme();
 
     return (
         <LoadingIndicatorWrapper theme={theme}>
-            <LoadingIndicatorContainer theme={theme}>
+            <LoadingIndicatorContainer theme={theme} backgroundColor={backgroundColor}>
                 <ActivityIndicator
                     style={{alignSelf: 'center'}} size={size}
                     color={color ? color : theme.colors['--company']}

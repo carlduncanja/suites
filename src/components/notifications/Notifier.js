@@ -44,7 +44,7 @@ const Notifier = (props) => {
         notificationListener.current = Notifications.addNotificationReceivedListener(_handleNotification);
 
         return () => {
-            Notifications.removeNotificationSubscription(notificationListener);
+            Notifications.removeNotificationSubscription(notificationListener.current);
         }
     }, [])
 

@@ -14,17 +14,19 @@ class NotificationRegistry extends React.Component {
 
     registerForPushNotificationsAsync = async () => {
         if (Constants.isDevice) {
+
             const {status: existingStatus} = await Permissions.getAsync(
                 Permissions.NOTIFICATIONS
             );
+
             let finalStatus = existingStatus;
-            console.log(existingStatus);
             if (existingStatus !== "granted") {
                 const {status} = await Permissions.askAsync(
                     Permissions.NOTIFICATIONS
                 );
                 finalStatus = status;
             }
+
             if (finalStatus !== "granted") {
                 alert("Please enable notifications in settings");
                 return;
@@ -48,29 +50,6 @@ class NotificationRegistry extends React.Component {
         }
     };
 
-    sendPushNotification = async (token) => {
-        const message = {
-            to: token,
-            sound: "default",
-            title: "Tite",
-            body: "Any!",
-            data: {data: "goes here"},
-        };
-
-        const response = await fetch("https://exp.host/--/api/v2/push/send", {
-            method: "POST",
-            headers: {
-                accept: "application/json",
-                "accept-encoding": "gzip, deflate",
-                "content-Type": "application/json",
-            },
-            body: JSON.stringify(message),
-        });
-        // const data = response._bodyInit;
-        // console.log(`Status & Response ID-> ${data}`);
-        console.log("Sending!");
-    };
-
     componentDidMount() {
         this.registerForPushNotificationsAsync();
 
@@ -83,7 +62,6 @@ class NotificationRegistry extends React.Component {
     }
 
     componentWillUnmount() {
-        this.sendPushNotification();
         this.props.setExpoPushToken(null);
     }
 

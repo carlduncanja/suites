@@ -245,25 +245,27 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             'ConfirmationModal',
             {
                 content: <ConfirmationComponent
-                    isError = {false}
-                    isEditUpdate = {true}
-                    onCancel = {()=> {
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
                         modal.closeModals('ConfirmationModal');
                         setPageState({
                             ...pageState,
-                            isEditMode : true,
+                            isEditMode: true,
                         })
                     }}
-                    onAction = {()=>{
+                    onAction={() => {
                         updateCaseChargeSheet(updateInfo)
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             modal.closeModals('ConfirmationModal');
-                        },200)
+                        }, 200)
                     }}
-                    message = {"Confirm changes made"}
+                    message={"Confirm changes made"}
                 />
                 ,
-                onClose: () => {modal.closeModals('ConfirmationModal')}
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal')
+                }
             })
 
     }
@@ -354,6 +356,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     // ############### Helper Function
     const fetchCase = id => {
+        console.log("fetching case");
         setPageLoading(true);
         getCaseFileById(id)
             .then(data => {
@@ -754,27 +757,31 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         <ActionItem
                             title="Add Equipment"
                             icon={<AddIcon/>}
-                            onPress={_ => {}}
+                            onPress={_ => {
+                            }}
                         />
                     );
                     const removeLineItemAction = (
                         <LongPressWithFeedback
                             pressTimer={700}
-                            onLongPress={_ => {}}
-                            isDisabled = {selectedEquipments.length === 0 ? true : false}
+                            onLongPress={_ => {
+                            }}
+                            isDisabled={selectedEquipments.length === 0 ? true : false}
 
                         >
                             <ActionItem
                                 title="Hold to Delete"
-                                icon={<WasteIcon strokeColor = {selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
-                                onPress={() => {}}
+                                icon={<WasteIcon
+                                    strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
+                                onPress={() => {
+                                }}
                                 touchable={false}
-                                disabled = {selectedEquipments.length === 0 ? true : false}
+                                disabled={selectedEquipments.length === 0 ? true : false}
                             />
 
                         </LongPressWithFeedback>
                     );
-                    floatingAction.push(removeLineItemAction,addNewLineItemAction);
+                    floatingAction.push(removeLineItemAction, addNewLineItemAction);
                     title = 'EQUIPMENT ACTIONS';
                     break;
                 }
@@ -943,18 +950,199 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const openAddProcedure = () => {
         modal.closeModals('ActionContainerModal');
 
-        // For some reason there has to be a delay between closing a modal and opening another.
-        setTimeout(() => {
-            modal.openModal('OverlayModal', {
-                content: (
-                    <View/>
-                ),
-                onClose: () => setFloatingAction(false),
-            });
-        }, 200);
+        navigation.navigate("AddAppointmentPage");
+
     };
 
     const downloadInvoiceDocument = async invoice => {
+        const {invoices, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
+        const {proceduresBillableItems = [], total = 0} = chargeSheet;
+
+        // preparing billing information
+        const LINE_ITEM_TYPES = {
+            DISCOUNT: 'discount',
+            SERVICE: 'service',
+            PROCEDURES: 'procedures',
+            PHYSICIANS: 'physician',
+        };
+
+        const billing = {
+            total,
+            hasDiscount: true,
+            discount: 0.15,
+            procedures: []
+        };
+
+        // todo: eval what's actually needed here
+        for (const proceduresBillableItem of proceduresBillableItems) {
+            const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
+
+            const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {};
+            const caseAppointment = caseProcedure.appointment || {};
+
+            const title = caseAppointment.title ? caseAppointment.title : '';
+
+            const name = `${title} (${formatDate(caseAppointment.startTime, 'MMM D - h:mm a')})`;
+
+            const billingItem = {
+                caseProcedureId,
+                discounts: [],
+                physicians: [],
+                services: [],
+                procedures: [],
+                procedure: {
+                    name: name || proceduresBillableItem.caseProcedureId,
+                    cost: proceduresBillableItem.total
+                },
+            };
+
+            for (const lineItem of lineItems) {
+                switch (lineItem.type) {
+                    case LINE_ITEM_TYPES.PHYSICIANS:
+                        billingItem.physicians.push(lineItem);
+                        break;
+                    case LINE_ITEM_TYPES.SERVICE:
+                        billingItem.services.push(lineItem);
+                        break;
+                    case LINE_ITEM_TYPES.PROCEDURES:
+                        billingItem.procedures.push(lineItem);
+                        break;
+                    case LINE_ITEM_TYPES.DISCOUNT:
+                        billingItem.discounts.push(lineItem);
+                        break;
+                }
+            }
+
+            billingItem.inventories = inventories.map(item => ({
+                _id: item._id,
+                inventory: item?.inventory?._id,
+                amount: item.amount,
+                name: item.inventory?.name,
+                cost: item.inventory?.unitCost || 0,
+            }));
+
+            billingItem.equipments = equipments.map(item => ({
+                _id: item?._id,
+                equipment: item.equipment?._id,
+                amount: item.amount,
+                name: item.equipment?.name,
+                cost: item.equipment?.unitPrice || 0,
+            }));
+
+            billing.procedures.push(billingItem);
+        }
+
+        const {discount = 0, hasDiscount = false, tax = 0} = billing;
+
+        let data = {
+            key: 'suites_invoice_generated',
+            is_pdf: true,
+            from_html: true,
+        };
+        const args = {
+            suites_contact_number: '876-324-9087',
+            suites_email: 'thesuites@gmail.com',
+            suites_website: 'thesuites.com',
+            suites_address_line_1: '12 Ruthven Road',
+            suites_address_line_2: 'Half Way Tree Road',
+            suites_address_line_3: 'Kingston 10'
+        };
+
+        invoices.map(inv => {
+            if (inv._id === invoice._id) {
+                const total = hasDiscount ? (inv.amountDue - (inv.amountDue * discount)) * (1 + tax) : (inv.amountDue) * (1 + tax);
+                const formatDiscount = inv.amountDue * discount;
+
+                const physiciansArray = [];
+                const proceduresArray = [];
+                const servicesArray = [];
+                let inventoriesArray = [];
+
+                billing.procedures.map(item => {
+                    const {physicians = [], services = [], procedures = [], inventories = [], equipments = []} = item;
+                    physicians.map(physician => {
+                        physiciansArray.push({
+                            name: physician.name || '',
+                            cost: `$${currencyFormatter(physician.unitPrice * physician.quantity)}` || 0
+                        });
+                    });
+                    procedures.map(procedure => {
+                        proceduresArray.push({
+                            name: procedure.name || '',
+                            cost: `$${currencyFormatter(procedure.unitPrice * procedure.quantity)}` || 0
+                        });
+                    });
+                    services.map(service => {
+                        servicesArray.push({
+                            name: service.name || '',
+                            cost: `$${currencyFormatter(service.unitPrice * service.quantity)}` || 0
+                        });
+                    });
+
+                    inventoriesArray = [...inventories, ...equipments];
+                });
+
+                const summarydetails = [...physiciansArray, ...proceduresArray, ...servicesArray];
+                const consumabledetails = [];
+
+                inventoriesArray.map(inventory => {
+                    const {name, cost, amount} = inventory;
+
+                    consumabledetails.push({
+                        name,
+                        quantity: amount,
+                        price: `$${currencyFormatter(cost)}`,
+                        total: `$${currencyFormatter(cost * amount)}`
+                    })
+                });
+
+                args.total = `$${currencyFormatter(total)}`;
+                args.customer_name = inv.customerDetails.name;
+                args.customer_address_line_1 = inv.customerDetails.address.line1;
+                args.customer_address_line_2 = inv.customerDetails.address.line2 || inv.customerDetails.address.parish;
+                args.customer_address_line_3 = inv.customerDetails.address.postalCode || inv.customerDetails.address.city;
+                args.invoice_number = inv.invoiceNumber;
+                args.quotation_purpose = 'Medical Supplies';
+                args.date = formatDate(inv.createdAt, 'DD/MM/YYYY');
+                args.summarydetails = summarydetails;
+                args.consumabledetails = consumabledetails;
+                args.subtotal = `$${currencyFormatter(inv.amountDue)}`;
+                args.discount = `-$${currencyFormatter(formatDiscount)}`;
+                args.tax = `${tax * 100}%`;
+            }
+        });
+
+        data = {...data, args};
+
+        // build args to pass to document generation endpoint; pass result of that endpoint to downloadAsync
+        try {
+            setPageLoading(true);
+            const response = await generateDocumentLink(data);
+
+            const fileUrl = response?.url;
+            const filenameParts = fileUrl.split('/');
+            const filename = filenameParts[filenameParts.length - 1];
+
+            FileSystem.downloadAsync(
+                fileUrl,
+                `${FileSystem.cacheDirectory}${filename}`
+            ).then(({uri}) => {
+                console.info(`download.path::${uri}`);
+
+                Sharing.shareAsync(uri, {UTI: 'pdf'})
+                    .then(result => console.info('sharing.success', result))
+                    .catch(error => console.error('sharing.error', error));
+            }).catch(error => {
+                console.error(error);
+            }).finally(_ => {
+                setPageLoading(false);
+                modal.closeAllModals();
+            });
+        } catch (error) {
+            console.error(error); // todo: show error message
+            setPageLoading(false);
+            modal.closeAllModals();
+        }
     }
 
     const downloadQuotationDocument = async quotation => {
@@ -1062,7 +1250,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 let inventoriesArray = [];
 
                 billing.procedures.map(item => {
-                    const {physicians = [], services = [], procedures = [], inventories = []} = item;
+                    const {physicians = [], services = [], procedures = [], inventories = [], equipments = []} = item;
                     physicians.map(physician => {
                         physiciansArray.push({
                             name: physician.name || '',
@@ -1082,7 +1270,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         });
                     });
 
-                    inventoriesArray = [...inventories];
+                    inventoriesArray = [...inventories, ...equipments];
                 });
 
                 const summarydetails = [...physiciansArray, ...proceduresArray, ...servicesArray];
@@ -1102,8 +1290,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 args.total = `$${currencyFormatter(total)}`;
                 args.customer_name = q.customerDetails.name;
                 args.customer_address_line_1 = q.customerDetails.address.line1;
-                args.customer_address_line_2 = q.customerDetails.address.line2;
-                args.customer_address_line_3 = q.customerDetails.address.city;
+                args.customer_address_line_2 = q.customerDetails.address.line2 || q.customerDetails.address.parish;
+                args.customer_address_line_3 = q.customerDetails.address.postalCode || q.customerDetails.address.city;
                 args.quotation_number = q.quotationNumber;
                 args.quotation_purpose = 'Medical Supplies';
                 args.date = formatDate(q.createdAt, 'DD/MM/YYYY');
@@ -1185,7 +1373,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
                     handleInvoices={handleInvoices}
-                    onSelectEquipments = {(equipments)=>{setSelectedEquipments(equipments)}}
+                    onSelectEquipments={(equipments) => {
+                        setSelectedEquipments(equipments)
+                    }}
                 />;
             default:
                 return <View/>;
@@ -1199,8 +1389,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         <>
             <PageContext.Provider value={{pageState, setPageState, fetchCase}}>
                 <DetailsPage
-                    title={name}
-                    subTitle={`#${caseNumber}`}
+                    headerChildren={[name,`#${caseNumber}`]}
                     onBackPress={() => {
                         navigation.navigate('CaseFiles');
                     }}

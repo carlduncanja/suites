@@ -80,7 +80,7 @@ function OrderItemPage({ route, navigation }) {
 
     //     }
 
-    
+
 
     const handleSaveEdit = () => {
         let dataToSend = orderItems.map(item => {
@@ -105,7 +105,7 @@ function OrderItemPage({ route, navigation }) {
                         message = {"Do you want to save your changes ?"}
                     />
                     ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    onClose: () => {modal.closeModals('ConfirmationModal')}
             })
     }
 
@@ -134,7 +134,7 @@ function OrderItemPage({ route, navigation }) {
 
                     />
                     ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    onClose: () => {modal.closeModals('ConfirmationModal')}
             })
     }
 
@@ -220,7 +220,7 @@ function OrderItemPage({ route, navigation }) {
             isEdit: false
         })
     }
-    
+
     const errorScreen = () => {
         setTimeout(() => {
             modal
@@ -234,7 +234,7 @@ function OrderItemPage({ route, navigation }) {
                             message = "There was an issue performing this action."
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                        onClose: () => {modal.closeModals('ConfirmationModal')}
                     })
         }, 100);
     }
@@ -257,7 +257,7 @@ function OrderItemPage({ route, navigation }) {
             .catch(error => {
                 console.log("Failed to get order", error)
                 errorScreen();
-                
+
                 // Add confirmation componenet
                 //TODO handle error cases.
             })
@@ -301,8 +301,7 @@ function OrderItemPage({ route, navigation }) {
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
-                    title={purchaseOrderNumber}
-                    subTitle={``}
+                    headerChildren={[purchaseOrderNumber]}
                     onBackPress={BackTapped}
                     pageTabs={
                         <TabsContainer

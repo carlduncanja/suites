@@ -1,35 +1,34 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, {useContext} from 'react';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import Table from '../../common/Table/Table';
-import { CaseFileContext } from '../../../contexts/CaseFileContext';
-import { formatAmount } from '../../../helpers/caseFilesHelpers';
-import { currencyFormatter } from '../../../utils/formatter';
+import {CaseFileContext} from '../../../contexts/CaseFileContext';
+import {formatAmount} from '../../../helpers/caseFilesHelpers';
+import {currencyFormatter} from '../../../utils/formatter';
 
-
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
 import Header from '../../common/Table/Header';
 import Data from '../../common/Table/Data';
 
 const ReportDetailsContainer = styled.View`
     width : 100%;
     border-bottom-width : 1px;
-    border-bottom-color : ${ ({theme}) => theme.colors['--color-gray-400']};
-    padding-bottom : ${ ({theme}) => theme.space['--space-24']};
-    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+    border-bottom-color : ${({theme}) => theme.colors['--color-gray-400']};
+    padding-bottom : ${({theme}) => theme.space['--space-24']};
+    margin-bottom : ${({theme}) => theme.space['--space-32']};
 `;
 
 const DetailsWrapper = styled.View`
     flex : 1;
     width : 100%;
-    margin-bottom : ${ ({theme}) => theme.space['--space-16']};
+    margin-bottom : ${({theme}) => theme.space['--space-16']};
 `;
 
 const DetailItemWrapper = styled.View`
     width : 100%;
     height : 48px;
-    padding : 0px ${ ({theme}) => theme.space['--space-16']};
-    background-color : ${ ({backgroundColor}) => backgroundColor };
+    padding : 0px ${({theme}) => theme.space['--space-16']};
+    background-color : ${({backgroundColor}) => backgroundColor};
 `;
 const DetailItemContainer = styled.View`
     width : 100%;
@@ -39,35 +38,34 @@ const DetailItemContainer = styled.View`
     justify-content : space-between;
 `;
 
-const DetailText = styled.Text( ({theme, fontStyle}) => ({
+const DetailText = styled.Text(({theme, fontStyle}) => ({
     ...theme.font[fontStyle],
-    color : theme.colors['--color-gray-700']
+    color: theme.colors['--color-gray-700']
 }));
 
 const HeadersWrapper = styled.View`
     width : 100%;
     border-bottom-width : 1px;
-    border-bottom-color : ${ ({theme}) => theme.colors['--color-gray-400']};
-    margin-bottom : ${ ({theme}) => theme.space['--space-16']};
+    border-bottom-color : ${({theme}) => theme.colors['--color-gray-400']};
+    margin-bottom : ${({theme}) => theme.space['--space-16']};
 `;
 const HeadersContainer = styled.View`
     width : 100%;
-    padding : ${ ({theme}) => theme.space['--space-16']};
+    padding : ${({theme}) => theme.space['--space-16']};
     padding-top : 0px;
 `;
 
-
-
-function ReportDetails ({reportList, reportTable, listItemFormat, headers}) { 
-
+function ReportDetails({reportList, reportTable, listItemFormat, headers}) {
     const theme = useTheme();
     const physiciansArray = [];
     const proceduresArray = [];
     const servicesArray = [];
+    const equipmentsArray = [];
     let inventoriesArray = [];
 
     reportList.map(item => {
-        const {physicians = [], services = [], procedures = [], inventories = [] } = item;
+        console.log('watch the item here nuh please', item);
+        const {physicians = [], services = [], procedures = [], inventories = [], equipments = []} = item;
         physicians.map(physician => {
             physiciansArray.push({
                 name: physician.name || '',
@@ -86,49 +84,60 @@ function ReportDetails ({reportList, reportTable, listItemFormat, headers}) {
                 cost: service.unitPrice * service.quantity || 0
             });
         });
-        inventoriesArray = [...inventories];
+
+        equipments.map(equipment => {
+            equipmentsArray.push({
+                name: equipment.name || '',
+                cost: equipment.unitPrice * equipment.amount || 0
+            });
+        });
+
+        inventoriesArray = [...inventories, ...equipments];
         // console.log("In:", inventories)
     });
 
-    let costList = [...physiciansArray, ...proceduresArray, ...servicesArray];
+    const costList = [...physiciansArray, ...proceduresArray, ...servicesArray];
 
     return (
-        <ReportDetailsContainer theme = {theme}>
-            <DetailsWrapper theme = {theme}>
+        <ReportDetailsContainer theme={theme}>
+            <DetailsWrapper theme={theme}>
                 {
-                    costList.map(( detail, index) => {
-                        return(
-                            <DetailItemWrapper
-                                theme = {theme}
-                                backgroundColor = {index % 2 === 0 ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']}
-                            >
-                                <DetailItemContainer>
-                                    <DetailText theme = {theme} fontStyle = "--text-base-regular">{detail?.name}</DetailText>
-                                    <DetailText theme = {theme} fontStyle = "--text-lg-regular">$ {currencyFormatter(detail?.cost || 0)}</DetailText>
-                                </DetailItemContainer>
-                            </DetailItemWrapper>
-                        )
-                    })
+                    costList.map((detail, index) => (
+                        <DetailItemWrapper
+                            theme={theme}
+                            backgroundColor={index % 2 === 0 ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']}
+                        >
+                            <DetailItemContainer>
+                                <DetailText theme={theme} fontStyle="--text-base-regular">{detail?.name}</DetailText>
+                                <DetailText
+                                    theme={theme}
+                                    fontStyle="--text-lg-regular"
+                                >
+                                    $ {currencyFormatter(detail?.cost || 0)}
+                                </DetailText>
+                            </DetailItemContainer>
+                        </DetailItemWrapper>
+                    ))
                 }
             </DetailsWrapper>
-            
-            <HeadersWrapper theme = {theme}>
-                <HeadersContainer theme = {theme}>
+
+            <HeadersWrapper theme={theme}>
+                <HeadersContainer theme={theme}>
                     <Header
-                        headers = {headers}
-                        isCheckbox = {false}
+                        headers={headers}
+                        isCheckbox={false}
                     />
                 </HeadersContainer>
             </HeadersWrapper>
-            
+
             <Data
-                data = {inventoriesArray}
-                listItemFormat = {listItemFormat}
+                data={inventoriesArray}
+                listItemFormat={listItemFormat}
             />
-       
+
         </ReportDetailsContainer>
     );
-};
+}
 
 export default ReportDetails;
 
