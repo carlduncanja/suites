@@ -1,29 +1,16 @@
-import React, {Component, useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Modal, TextInput} from 'react-native';
-import FrameTableItem from '../FrameItems/FrameTableItem';
-import FrameCheckboxItem from '../FrameItems/FrameCheckboxItem';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet} from 'react-native';
 import moment from "moment";
-import Button from '../../Buttons/Button';
-import {withModal} from 'react-native-modalfy';
-import {formatDate} from '../../../../utils/formatter';
-import {Input} from "react-native-elements";
-import InputField from "../../Input Fields/InputField";
-import InputField2 from "../../Input Fields/InputField2";
-import InputFrameItem from "../FrameItems/InputFrameItem";
 import DateInputField from "../../Input Fields/DateInputField";
-import FrameTableDateItem from "../FrameItems/FrameTableDateItem";
-import {getTheatres, updateCaseProcedureAppointmentCall} from "../../../../api/network";
+import {getTheatres} from "../../../../api/network";
 import SearchableOptionsField from "../../Input Fields/SearchableOptionsField";
 import styled from "@emotion/native";
 import _ from "lodash";
 import {useTheme} from "emotion-theming";
-import DateInputField2 from "../../InputFields/DateInputField2";
 import InputUnitField from "../../Input Fields/InputUnitFields";
 import OptionsField from "../../Input Fields/OptionsField";
 import {MenuOption, MenuOptions} from "react-native-popup-menu";
 import TextButton from "../../Buttons/TextButton";
-import Divider from "../../Divider";
-import Seperator from "../../Seperator";
 import BrokenLineDivider from "../../BrokenLineDivider";
 
 
@@ -31,6 +18,7 @@ const RowWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: ${({theme}) => theme.space['--space-16']};
+    z-index: ${({zIndex}) => zIndex};
 `
 
 const DividerContainer = styled.View`
@@ -66,6 +54,8 @@ const FrameProcedureContent = ({
         <View style={styles.container}>
             <View style={{paddingBottom: 10, borderBottomColor: "#CCD6E0", borderBottomWidth: 1}}>
 
+                <View style={{zIndex: 3}}>
+
                 {
                     <AppointmentFields
                         isEdit={isEdit}
@@ -73,6 +63,7 @@ const FrameProcedureContent = ({
                         onFieldsUpdated={onAppointmentFieldsUpdate}
                     />
                 }
+                </View>
 
                 <RowWrapper theme={theme}>
                     <OptionsField
@@ -100,6 +91,7 @@ const FrameProcedureContent = ({
                         <AppointmentFields
                             isEdit={isEdit}
                             fields={recoveryAppointment}
+                            isRecovery={true}
                             onFieldsUpdated={onRecoveryFieldUpdate}
                         />
                     </>
@@ -140,7 +132,7 @@ export default FrameProcedureContent;
  * @return {*}
  * @constructor
  */
-const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
+const AppointmentFields = ({isEdit, fields, onFieldsUpdated, isRecovery = false}) => {
     const theme = useTheme();
     const {duration = {}, location, startTime} = fields;
     const {name = ""} = location || {}
@@ -200,7 +192,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
     }, [searchLocationValue]);
 
     const fetchLocations = () => {
-        getTheatres(searchLocationValue, 5)
+        getTheatres(searchLocationValue, 5, 1, isRecovery ? 1 : 0)
             .then((locationsInfo) => {
                 const {data = [], pages} = locationsInfo;
                 setSearchLocationResult(data || []);
@@ -230,7 +222,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated}) => {
 
     return (
         <View>
-            <RowWrapper theme={theme} style={{zIndex: 2}}>
+            <RowWrapper theme={theme} zIndex={3}>
                 <SearchableOptionsField
                     title="Location"
                     selectable={true}
