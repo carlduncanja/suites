@@ -9,6 +9,7 @@ const CollapsibleParentListItemWrapper = styled.View`
     width : 100%;
     height: 54px;
 `;
+
 const CollapsibleParentListItemContainer = styled.View`
     flex-direction : row;
     align-items: center;  
