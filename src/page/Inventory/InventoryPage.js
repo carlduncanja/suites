@@ -64,8 +64,7 @@ function InventoryPage({ route, navigation }){
 
         <PageContext.Provider value = {{ pageState, setPageState }}>
             <DetailsPage
-                title = {name}
-                subTitle = ""
+                headerChildren={[name]}
                 onBackPress = { () => navigation.navigate("Inventory")}
                 pageTabs = {
                     <TabsContainerComponent

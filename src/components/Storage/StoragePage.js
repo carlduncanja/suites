@@ -122,8 +122,7 @@ function StoragePage({ route, navigation }) {
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
-                    title={name}
-                    subTitle={``}
+                    headerChildren={[name]}
                     onBackPress={backTapped}
                     pageTabs={
                         <TabsContainer
@@ -133,12 +132,7 @@ function StoragePage({ route, navigation }) {
                         />
                     }
                 >
-
                     {getTabContent(currentTab)}
-
-
-
-
                 </DetailsPage>
             </PageContext.Provider>
         </>

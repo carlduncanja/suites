@@ -157,7 +157,7 @@ function SupplierPage({ route, navigation }) {
                 console.log("Failed to get products", error)
                 //TODO handle error cases.
                 errorScreen();
-                //CONFIRAMTION SCREEN 
+                //CONFIRAMTION SCREEN
             })
         // .finally(_ => {
         //     setPageLoading(false);
@@ -178,7 +178,7 @@ function SupplierPage({ route, navigation }) {
                     errorScreen();
                 }
 
-                // confirmation screeen 
+                // confirmation screeen
                 //TODO handle error cases.
             })
             .finally(_ => {
@@ -215,8 +215,7 @@ function SupplierPage({ route, navigation }) {
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
                     isArchive={true}
-                    title={name}
-                    subTitle={``}
+                    headerChildren={[name]}
                     onBackPress={backTapped}
                     pageTabs={
                         <TabsContainer

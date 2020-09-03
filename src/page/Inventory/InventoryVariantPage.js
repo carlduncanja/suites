@@ -64,8 +64,8 @@ function InventoryVariantPage({ route, navigation }){
                     inventoryVariant = {selectedVariant}
                     selectedData = {data}
                 />;
-            
-            case "Storage Locations" : 
+
+            case "Storage Locations" :
                 return <InventoryStorageLocationsTab
                     storageLocations = {selectedVariant?.storageLocations || [] }
                 />
@@ -78,8 +78,7 @@ function InventoryVariantPage({ route, navigation }){
 
         <PageContext.Provider value = {{ pageState, setPageState }}>
             <DetailsPage
-                title = {groupName}
-                subTitle = {name}
+                headerChildren={[groupName, name]}
                 onBackPress = { () => navigation.navigate("Inventory")}
                 pageTabs = {
                     <TabsContainerComponent

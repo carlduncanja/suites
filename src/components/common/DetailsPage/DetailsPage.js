@@ -10,6 +10,7 @@ import LoadingIndicator from "../LoadingIndicator";
 import {PageContext} from "../../../contexts/PageContext";
 import SvgIcon from "../../../../assets/SvgIcon";
 import BreadCrumbIcon from "../../../../assets/svg/BreadCrumbIcon";
+import {sub} from "react-native-reanimated";
 
 const DetailsPageWrapper = styled.View`
         margin:0;
@@ -41,10 +42,11 @@ const TabsViewContainer = styled.View`
 
 function DetailsPage({
                          isArchive = false,
-                         title = "__",
                          hasIcon = null,
-                         isSpecialHeader = false,
+                         title = "__",
                          subTitle = "__",
+                         headerChildren,
+                         isSpecialHeader = false,
                          onBackPress = () => {
                          },
                          pageTabs = null,
@@ -69,7 +71,7 @@ function DetailsPage({
                         : <>
                             <PageHeader
                                 isArchive={isArchive}
-                                headerChildren={[title,subTitle]}
+                                headerChildren={headerChildren || [title, subTitle]}
                                 separator={<BreadCrumbIcon/>}
                                 onBack={onBackPress}
                             />

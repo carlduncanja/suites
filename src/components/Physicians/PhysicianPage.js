@@ -190,6 +190,7 @@ function PhysicianPage({ route, navigation }) {
                 <DetailsPage
                     title={name}
                     subTitle={``}
+                    headerChildren={[name]}
                     onBackPress={backTapped}
                     pageTabs={
                         <TabsContainer

@@ -140,43 +140,11 @@ function EquipmentItemPage({ route, navigation }) {
             })
     };
     return (
-        // <BottomSheetContainer
-        //     isFetching={isFetching}
-        //     overlayId={_id}
-        //     overlayTitle={name}
-        //     onTabPressChange={onTabPress}
-        //     currentTabs={currentTabs}
-        //     selectedTab={currentTab}
-        //     isEditMode={isEditMode}
-        //     onEditPress={onEditPress}
-        //     overlayContent={getTabContent(currentTab)}
-        // />
-        // <View style={{flex: 1}}>
-        //     {
-        //         isFetching
-        //             ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-        //                 <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-        //             </View>
-        //             :
-        //             <SlideOverlay
-        //                 overlayId={_id}
-        //                 overlayTitle={name}
-        //                 onTabPressChange={onTabPress}
-        //                 currentTabs={currentTabs}
-        //                 selectedTab={currentTab}
-        //                 isEditMode={isEditMode}
-        //                 overlayContent={overlayContent}
-        //                 onEditPress = {onEditPress}
-        //             />
-        //     }
-        // </View>
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
-                    title={group.name}
                     hasIcon={<SvgIcon iconName='paginationNext' strokeColor="#718096" />}
-                    isSpecialHeader={true}
-                    subTitle={name}
+                    headerChildren={[group.name, name]}
                     onBackPress={backTapped}
                     pageTabs={
                         <TabsContainer
@@ -186,12 +154,7 @@ function EquipmentItemPage({ route, navigation }) {
                         />
                     }
                 >
-
                     {getTabContent(currentTab)}
-
-
-
-
                 </DetailsPage>
             </PageContext.Provider>
         </>

@@ -100,7 +100,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                             onAction = {onConfirmSave}
                         />
                         ,
-                        onClose: () => {modal.closeModals("ConfirmationModal")} 
+                        onClose: () => {modal.closeModals("ConfirmationModal")}
                     })
         // }, 200)
     }
@@ -320,7 +320,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                     // handleEquipmentUpdate={handleEquipmentUpdate}
                 />;
             case "Notes":
-                return <NotesTab 
+                return <NotesTab
                     notesData={notes}
                     updateNote = {updateNote}
                 />;
@@ -340,8 +340,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     return (
         <PageContext.Provider value ={{ pageState, setPageState}}>
             <DetailsPage
-                title = {name}
-                subTitle = {physicianName}
+                headerChildren={[name, physicianName]}
                 onBackPress = {() =>{navigation.navigate('Procedures')}}
                 pageTabs = {
                     <TabsContainer
