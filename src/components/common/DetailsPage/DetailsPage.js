@@ -65,28 +65,31 @@ function DetailsPage({
     return (
         <DetailsPageWrapper theme={theme}>
             <DetailsPageContainer theme={theme}>
+
                 {
-                    isLoading
-                        ? <LoadingIndicator/>
-                        : <>
-                            <PageHeader
-                                isArchive={isArchive}
-                                headerChildren={headerChildren || [title, subTitle]}
-                                separator={<BreadCrumbIcon/>}
-                                onBack={onBackPress}
-                            />
-
-                            <TabsViewContainer>{pageTabs}</TabsViewContainer>
-
-                            <DetailsPageContentWrapper>
-                                <DetailsPageContentContainer>
-                                    {
-                                        props.children
-                                    }
-                                </DetailsPageContentContainer>
-                            </DetailsPageContentWrapper>
-                        </>
+                    isLoading &&
+                    < LoadingIndicator backgroundColor={theme.colors['--default-shade-white']}/>
                 }
+
+                <>
+                    <PageHeader
+                        isArchive={isArchive}
+                        headerChildren={headerChildren || [title, subTitle]}
+                        separator={<BreadCrumbIcon/>}
+                        onBack={onBackPress}
+                    />
+
+                    <TabsViewContainer>{pageTabs}</TabsViewContainer>
+
+                    <DetailsPageContentWrapper>
+                        <DetailsPageContentContainer>
+                            {
+                                props.children
+                            }
+                        </DetailsPageContentContainer>
+                    </DetailsPageContentWrapper>
+                </>
+
 
             </DetailsPageContainer>
         </DetailsPageWrapper>
