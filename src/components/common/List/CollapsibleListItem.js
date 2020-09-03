@@ -29,12 +29,12 @@ const CollapsibleListItemWrapper = styled.View`
 const CollapsibleListItemContainer = styled.TouchableOpacity`
     display: flex;
     width: 100%;
+    
     flex-direction: column;
-    border-radius: ${ ({theme}) => theme.space['--space-8']};
-    border: 1px solid ${ ({theme}) => theme.colors['--color-gray-300']};
-    border-bottom-width : ${ ({isCollapsed}) => isCollapsed ===true ? 0 : null};
+    border-radius: ${ ({theme, isCollapsed}) => theme.space['--space-8']};
+    border: ${ ({theme, isCollapsed}) => `${isCollapsed ? '1px': '1px'} solid ${theme.colors['--color-gray-300']}`};
+    //border-bottom-width : ${ ({isCollapsed}) => isCollapsed ===true ? 0 : null};
     background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
-
 `;
 
 function CollapsibleListItem ({
