@@ -1388,8 +1388,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         <>
             <PageContext.Provider value={{pageState, setPageState, fetchCase}}>
                 <DetailsPage
-                    title={name}
-                    subTitle={`#${caseNumber}`}
+                    headerChildren={[name,`#${caseNumber}`]}
                     onBackPress={() => {
                         navigation.navigate('CaseFiles');
                     }}
