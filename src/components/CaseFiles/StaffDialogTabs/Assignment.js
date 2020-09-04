@@ -6,6 +6,24 @@ import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsF
 import { MenuOptions, MenuOption } from "react-native-popup-menu";
 import _ from "lodash";
 import { getPhysicians } from "../../../api/network";
+import styled from "@emotion/native";
+import {useTheme} from "emotion-theming";
+
+
+const RowWrapper = styled.View`
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: ${({theme}) => theme.space['--space-20']};
+    z-index: ${({zIndex}) => zIndex};
+`
+
+const InputWrapper = styled.View`
+    width: 300px;
+    flex-direction: row;
+    align-items: center;
+    z-index: ${({zIndex}) => zIndex};
+
+`
 
 /**
  *
@@ -17,11 +35,12 @@ import { getPhysicians } from "../../../api/network";
  * @returns {*}
  * @constructor
  */
-const
-    Assignment = ({value, type, onStaffChange, errors = {}, onErrorUpdate}) => {
+const Assignment = ({value, type, onStaffChange, errors = {}, onErrorUpdate}) => {
         // Fields is an object of arrays - Nurses and Physicians.
         // To change the field - add the item object to the specific araay depending on type
         // Eg: Type is Physician, check if exists, if not add the physicians.
+
+        const theme = useTheme();
 
         const [searchValue, setSearchValue] = useState('')
         const [searchQuery, setSearchQuery] = useState({})
@@ -98,10 +117,11 @@ const
 
         return (
             <View style={styles.sectionContainer}>
-                <View style={styles.row}>
-                    <View style={styles.inputWrapper}>
+                <RowWrapper theme={theme} >
+                    <InputWrapper >
                         <OptionsField
                             label={"Type"}
+                            labelWidth={30}
                             text={selectedType}
                             oneOptionsSelected={(value) => {
                                 onSelectType(value)
@@ -111,8 +131,8 @@ const
                                 <MenuOption value={"Nurse"} text='Nurse'/>
                             </MenuOptions>}
                         />
-                    </View>
-                </View>
+                    </InputWrapper>
+                </RowWrapper>
 
                 <View style={styles.row}>
                     <View style={[styles.inputWrapper, {justifyContent: 'flex-start'}]}>
@@ -120,11 +140,11 @@ const
                     </View>
                 </View>
 
-
-                <View style={styles.row}>
-                    <View style={styles.inputWrapper}>
+                <RowWrapper theme={theme} >
+                    <InputWrapper style={styles.inputWrapper}>
                         <SearchableOptionsField
                             label="Select"
+                            labelWidth={30}
                             value={value}
                             text={searchValue}
                             oneOptionsSelected={(value) => {
@@ -143,9 +163,8 @@ const
                             errorMessage={errors['name']}
                             hasError={errors['name']}
                         />
-                    </View>
-                </View>
-
+                    </InputWrapper>
+                </RowWrapper>
             </View>
         )
     }
