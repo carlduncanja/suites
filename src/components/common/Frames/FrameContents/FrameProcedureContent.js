@@ -68,6 +68,7 @@ const FrameProcedureContent = ({
                 <RowWrapper theme={theme}>
                     <OptionsField
                         label={"Recovery"}
+                        labelWidth={70}
                         enabled={isEdit}
                         text={hasRecovery ? 'Yes' : 'No'}
                         oneOptionsSelected={updateRecovery}
@@ -226,7 +227,8 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated, isRecovery = false}
                 <SearchableOptionsField
                     title="Location"
                     selectable={true}
-                    enabled={isEdit}
+                    labelWidth={70}
+                    enabled={false}
                     label="Location"
                     value={location}
                     text={searchLocationValue}
@@ -245,6 +247,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated, isRecovery = false}
                     <DateInputField
                         enabled={isEdit}
                         label="Date"
+                        labelWidth={70}
                         value={moment(startTime).toDate()}
                         format={"MMM/DD/YYYY"}
                         mode={"date"}
@@ -264,6 +267,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated, isRecovery = false}
                     <DateInputField
                         enabled={isEdit}
                         label="Time"
+                        labelWidth={70}
                         value={moment(startTime).toDate()}
                         format={"h:mm A"}
                         mode={"time"}
@@ -281,6 +285,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated, isRecovery = false}
 
                     <InputUnitField
                         label={"Duration"}
+                        labelWidth={70}
                         onChangeText={onDurationUpdated}
                         value={duration}
                         enabled={isEdit}

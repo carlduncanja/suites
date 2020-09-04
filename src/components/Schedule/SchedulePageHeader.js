@@ -57,9 +57,11 @@ const GroupButtonContainer = styled.View`
 `;
 const ExpandButtonWrapper = styled.View`
     height: 24px;
-    margin-left:${({ theme }) => theme.space["--space-10"]};
-    margin-right:${({ theme }) => theme.space["--space-10"]};
-    width: 128px;
+     margin-left:${({ theme }) => theme.space["--space-10"]};
+     margin-right:${({ theme }) => theme.space["--space-10"]};
+    width: 140px;
+   
+  
 `;
 
 const ExpandButton = styled.View`

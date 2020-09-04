@@ -100,12 +100,12 @@ const Equipment = (props) => {
     {
       name: "Item ID",
       alignment: "center",
-      flex: 1,
+      flex: .5,
     },
     {
       name: "Status",
       alignment: "center",
-      flex: 1,
+      flex: 1.3,
     },
     {
       name: "In Stock",
@@ -334,12 +334,14 @@ const Equipment = (props) => {
 
     const viewItem = {
       name: item.name,
+      _id: item._id,
+      equipments: equipments,
       quantity: item.equipments.length,
       assignment: assignmentStored.length === 0 ? "Not currently assigned" : assignmentStored,
       status:
-        equipments.length === 1
+        assignmentStored.length === 0
           ? "Available"
-          : item.equipments.length > 1
+          : assignmentStored.length > 1 && assignmentStored != 0
             ? "Multiple"
             : "Unavailable",
       nextAvailable: new Date(2020, 12, 12),
@@ -354,7 +356,7 @@ const Equipment = (props) => {
         isChecked={selectedTypesIds.includes(item._id)}
         onCheckBoxPress={handleOnCheckBoxPress(item)}
         // onItemPress={() => handleOnItemPress(item, false)}
-        onItemPress={() => { }}
+        onItemPress={() => { console.log("group clicked") }}
         render={(collapse, isCollapsed) =>
           equipmentGroupView(viewItem, collapse, isCollapsed)
         }
@@ -450,9 +452,9 @@ const Equipment = (props) => {
 
       <>
 
-        <DataItem text={assigmentName} flex={.25} color="--color-blue-600" fontStyle="--text-sm-medium" />
+        <DataItem text={assigmentName} flex={.2} color="--color-blue-600" fontStyle="--text-sm-medium" />
         <DataItem text={status} flex={.25} color="--color-gray-800" fontStyle="--text-sm-regular" />
-        <DataItem text={quantity} flex={.15} color="--color-gray-800" fontStyle="--text-sm-regular" />
+        <DataItem text={quantity} flex={.13} color="--color-gray-800" fontStyle="--text-sm-regular" />
         <DataItem text={assignment} flex={.3} color="--color-gray-800" fontStyle="--text-sm-regular" />
 
       </>
@@ -462,10 +464,14 @@ const Equipment = (props) => {
 
     );
 
-  const equipmentGroupView = (item, onActionPress, isCollapsed) => (
-    <GroupEquipmentView onPress={onActionPress}>
+  const gotoGroupDetails = (item) => {
+    props.navigation.navigate("EquipmentGroupDetailsPage", { data: item })
+  }
 
-      <DataItem text={item.name} flex={.5} color="--color-gray-800" fontStyle="--text-base-regular" />
+  const equipmentGroupView = (item, onActionPress, isCollapsed) => (
+    <GroupEquipmentView onPress={() => gotoGroupDetails(item)}>
+
+      <DataItem text={item.name} flex={.75} color="--color-gray-800" fontStyle="--text-base-regular" />
 
       <QuantityWrapper>
         <MultipleShadowsContainer shadows={shadows}>
@@ -476,7 +482,7 @@ const Equipment = (props) => {
       </QuantityWrapper>
       <ContentDataItem
         align="flex-end"
-        flex={0.5}
+        flex={1}
         content={
           <IconButton
             Icon={isCollapsed ? <ActionIcon /> : <CollapsedIcon />}

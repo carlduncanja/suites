@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
 
-import { useTheme } from 'emotion-theming';
-import styled, { css } from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import styled, {css} from '@emotion/native';
 
 
 /**
@@ -32,22 +32,28 @@ const InputLabelContainer = styled.View`
     justify-content : center;
 `;
 
-const InputLabel = styled.Text( ({theme, label}) => ({
+const InputLabel = styled.Text(({theme, minWidth, label}) => ({
     ...theme.font['--text-xs-medium'],
-    color : theme.colors['--color-gray-600'],
+    minWidth: minWidth || 70,
+    color: theme.colors['--color-gray-600'],
 }));
 
 
 function InputLabelComponent({
-    label,
-}){
+                                 label,
+                                 width
+                             }) {
 
     const theme = useTheme();
+
+    console.log("width hello", width);
+
+    const minWidth = isNaN(width) ? 50 : width
 
     return (
         <InputLabelWrapper>
             <InputLabelContainer>
-                <InputLabel theme = {theme} numberOfLines={1}>{label}</InputLabel>
+                <InputLabel minWidth={minWidth} theme={theme} numberOfLines={1}>{label}</InputLabel>
             </InputLabelContainer>
         </InputLabelWrapper>
 
@@ -56,7 +62,6 @@ function InputLabelComponent({
 
 InputLabelComponent.propTypes = {};
 InputLabelComponent.defaultProps = {};
-
 
 
 export default InputLabelComponent;

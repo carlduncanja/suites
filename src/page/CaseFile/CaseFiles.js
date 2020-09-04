@@ -9,7 +9,6 @@ import CaseFileBottomSheet from "../../components/CaseFiles/CaseFileBottomSheet"
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../../components/common/ActionItem";
 import CreateCaseDialogContainer from "../../components/CaseFiles/CreateCaseDialogContainer";
-
 import AddIcon from "../../../assets/svg/addIcon";
 import ArchiveIcon from "../../../assets/svg/archiveIcon";
 import DraftItem from "../../components/common/List/DraftItem";
@@ -77,7 +76,7 @@ function CaseFiles(props) {
         // Redux props
         caseFiles = [],
         setCaseFiles,
-        draft = {},
+        draft = [],
 
         // React Navigation Props
         navigation,
@@ -113,7 +112,7 @@ function CaseFiles(props) {
         }
         setTotalPages(
             caseFiles.length === 0 ? 1 :
-            Math.ceil(caseFiles.length / recordsPerPage)
+                Math.ceil(caseFiles.length / recordsPerPage)
         );
     }, []);
 
@@ -165,14 +164,15 @@ function CaseFiles(props) {
     };
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
-        console.log("what is tapped is:", item);
 
-        isEmpty(item.patient.medicalInfo) ? navigation.navigate("CreateCase", { initial: false, draftItem: item }) :
-            navigation.navigate('Case Files', {
-                screen: 'Case',
-                initial: false,
-                params: { caseId: item._id, isEdit: isOpenEditable }
-            });
+        if (item !== null) {
+            isEmpty(item?.patient?.medicalInfo) ? navigation.navigate("CreateCase", { initial: false, draftItem: item }) :
+                navigation.navigate('Case Files', {
+                    screen: 'Case',
+                    initial: false,
+                    params: { caseId: item._id, isEdit: isOpenEditable }
+                });
+        } else return;
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
@@ -263,7 +263,7 @@ function CaseFiles(props) {
                 isChecked={selectedCaseIds.includes(item._id)}
                 onCheckBoxPress={handleOnCheckBoxPress(item)}
                 onItemPress={handleOnItemPress(item, false)}
-                itemView={isEmpty(item?.patient?.medicalInfo) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
+                itemView={isEmpty(patient?.medicalInfo) && !isEmpty(draft) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
             //items passed here should be deciphered whether it is a draft or not
 
             />
@@ -292,10 +292,12 @@ function CaseFiles(props) {
     }
 
     const renderDraft = (item) => {
+        if (item !== null) {
+            let { patient = {} } = item || {};
+            console.log("rendering the draft item");
 
-        console.log("rendering the draft item");
-
-        return (<DraftItem text={`${item?.patient?.firstName || ""} ${item?.patient?.surname || ""}`} />)
+            return (<DraftItem text={`${patient?.firstName || ""} ${patient?.surname || ""}`} />)
+        } else return;
 
 
 
@@ -439,7 +441,7 @@ function CaseFiles(props) {
 
 const mapStateToProps = (state) => {
     let caseFiles = state.caseFiles;
-
+    let draft = state.draft;
     //console.log("what i'm gonna render in the cases draft is", state.draft);
 
     const tempDraft = [
@@ -488,6 +490,7 @@ const mapStateToProps = (state) => {
 
     return {
         caseFiles,
+        draft
     };
 };
 
