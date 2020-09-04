@@ -120,6 +120,8 @@ const ChargeSheet = ({
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode} = pageState;
 
+    // preparing billing information
+    const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
 
     // --------------------------- States
 
