@@ -18,7 +18,7 @@ const ReportPreviewWrapper = styled.View`
     flex : 1;
 `;
 
-const ReportPreviewContainer = styled.View`
+const ReportPreviewContainer = styled.ScrollView`
     height : 100%;
     width : 100%;
     background-color : ${({theme}) => theme.colors['--default-shade-white']};
@@ -28,7 +28,7 @@ const ContentWrapper = styled.ScrollView`
     padding : ${({theme}) => `${theme.space['--space-30']} ${theme.space['--space-32']}`};
 `;
 
-const ContentContainer = styled.ScrollView`
+const ContentContainer = styled.View`
     height : 100%;
     width : 100%;
 `;

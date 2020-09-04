@@ -1,5 +1,7 @@
 import React, { Component, useState, useEffect, useContext } from "react";
 import Paginator from "./Paginator";
+import { SuitesContext } from "../../../contexts/SuitesContext";
+
 import {
   StyleSheet,
   View,
@@ -7,13 +9,49 @@ import {
   TouchableOpacity,
 } from "react-native";
 import SvgIcon from "../../../../assets/SvgIcon";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+
+const PaginatorWrapper = styled.View`
+position:absolute;
+width:100%;
+height:100%;
+top:88%;
+left:30%
+`;
+const PaginatorContainer = styled.View`
+width:279px;
+padding:10px 12px;
+background-color:${({ theme }) => theme.colors["--default-shade-white"]};
+box-shadow:${({ theme }) => theme.shadow["--shadow-lg"]};
+border-radius:32px;
+`;
+
+const PaginatorView = styled.View`
+flex-direction:row;
+align-items:center;
+justify-content:center;
+`;
+
+const NumberContainer = styled.View`
+background-color:${({ theme }) => theme.colors["--color-neutral-gray-100"]};
+border:1px solid ${({ theme }) => theme.colors["--color-gray-400"]};
+border-radius:4px;
+padding:6px 12px;
+width:199px;
+height:35px;
+margin-left:10px;
+margin-right:10px
+
+`
 
 const SchedulePaginator = ({
   date = new Date(),
   goToNextDay,
   goToPreviousDay,
 }) => {
-
+  const [state] = useContext(SuitesContext);
+  const theme = useTheme();
 
 
 
@@ -21,20 +59,22 @@ const SchedulePaginator = ({
 
 
   return (
-    <View style={styles.container}>
-      <View style={styles.paginator}>
-        <TouchableOpacity onPress={goToPreviousDay}>
-          <SvgIcon iconName="paginationPrev" strokeColor="#104587" />
-        </TouchableOpacity>
+    <PaginatorWrapper>
+      <PaginatorContainer theme={theme}>
+        <PaginatorView>
+          <TouchableOpacity onPress={goToPreviousDay}>
+            <SvgIcon iconName="paginationPrev" strokeColor="#104587" />
+          </TouchableOpacity>
 
-        <View style={styles.numbersContainer}>
-          <Text style={styles.numbers}>{date} </Text>
-        </View>
-        <TouchableOpacity onPress={goToNextDay}>
-          <SvgIcon iconName="paginationNext" strokeColor="#104587" />
-        </TouchableOpacity>
-      </View>
-    </View>
+          <NumberContainer>
+            <Text style={styles.numbers}>{date} </Text>
+          </NumberContainer>
+          <TouchableOpacity onPress={goToNextDay}>
+            <SvgIcon iconName="paginationNext" strokeColor="#104587" />
+          </TouchableOpacity>
+        </PaginatorView>
+      </PaginatorContainer>
+    </PaginatorWrapper>
   );
 };
 
@@ -42,8 +82,7 @@ const styles = StyleSheet.create({
   container: {
     width: 300,
     position: "absolute",
-    top: 800,
-    left: 190,
+    justifyContent: "flex-end",
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 12,

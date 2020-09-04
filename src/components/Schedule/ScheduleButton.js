@@ -17,8 +17,8 @@ function ScheduleButton({ title = '', onButtonPress = () => { }, color }) {
     //     backgroundColor: "#FFFFFF"
 
     const ScheduleButtonWrapper = styled.View`
-        height: 24px;
-        width: 91px;
+        height: 25px;
+        width: 95px;
     `
     const ScheduleButtonContainer = styled.View`
         height: 100%;
