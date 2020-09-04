@@ -6,9 +6,32 @@ import {MenuOptions, MenuOption} from 'react-native-popup-menu';
 import DateInputField from "../../common/Input Fields/DateInputField";
 import { isValidDOB } from "../../../utils/formatter";
 import moment from 'moment';
+import styled from '@emotion/native'
+import {useTheme} from "emotion-theming";
 
+const Space = styled.View`
+   width:  ${({theme}) => theme.space['--space-24']}
+`;
+
+const RowWrapper = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: ${({theme}) => theme.space['--space-20']};
+    z-index: ${({zIndex}) => zIndex};
+`
+
+const InputWrapper = styled.View`
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    z-index: ${({zIndex}) => zIndex};
+
+`
 
 const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
+    const theme = useTheme();
+
     const handleTrnValidation = (trnValue) => {
         if (trnValue.toString().length > 9) return
 
@@ -22,50 +45,55 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
             console.log("Date: ", date)
             onFieldChange("dob")(date)
         }
-        
     }
 
     return (
         <View style={styles.sectionContainer}>
 
-            <View style={styles.row}>
-
-                <View style={styles.inputWrapper}>
+            <RowWrapper style={styles.row}>
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"First Name"}
+                        labelWidth={98}
                         onChangeText={onFieldChange('firstName')}
                         value={fields['firstName']}
                         onClear={() => onFieldChange('firstName')('')}
                         hasError={errors['firstName']}
                         errorMessage={errors['firstName']}
                     />
-                </View>
+                </InputWrapper>
+                <Space theme={theme}/>
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Middle Name"}
+                        labelWidth={98}
                         onChangeText={onFieldChange('middleName')}
                         value={fields['middleName']}
                         onClear={() => onFieldChange('middleName')('')}
                     />
                 </View>
 
-            </View>
+            </RowWrapper>
 
-            <View style={[styles.row, {zIndex: -1}]}>
+            <RowWrapper theme={theme} zIndex={-1}>
 
-                <View style={styles.inputWrapper}>
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Last Name"}
                         onChangeText={onFieldChange('surname')}
+                        labelWidth={98}
                         value={fields['surname']}
                         onClear={() => onFieldChange('surname')('')}
                         hasError={errors['surname']}
                         errorMessage={errors['surname']}
                     />
-                </View>
-                <View style={styles.inputWrapper}>
+                </InputWrapper>
+                <Space theme={theme}/>
+
+                <InputWrapper style={styles.inputWrapper}>
                     <OptionsField
                         label={"Title"}
+                        labelWidth={98}
                         text={fields['title']}
                         oneOptionsSelected={onFieldChange('title')}
                         menuOption={<MenuOptions>
@@ -75,15 +103,16 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                             <MenuOption value={"Dr."} text='Dr.'/>
                         </MenuOptions>}
                     />
-                </View>
+                </InputWrapper>
 
-            </View>
+            </RowWrapper>
 
-            <View style={[styles.row, {zIndex: -2}]}>
+            <RowWrapper heme={theme} zIndex={-2}>
 
-                <View style={styles.inputWrapper}>
+                <InputWrapper style={styles.inputWrapper}>
                     <OptionsField
                         label={"Gender"}
+                        labelWidth={98}
                         text={fields['gender']}
                         oneOptionsSelected={onFieldChange('gender')}
                         menuOption={<MenuOptions>
@@ -91,10 +120,13 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                             <MenuOption value={"Male"} text='Male'/>
                         </MenuOptions>}
                     />
-                </View>
-                <View style={styles.inputWrapper}>
+                </InputWrapper>
+                <Space theme={theme}/>
+
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"TRN"}
+                        labelWidth={98}
                         onChangeText={(value) => {
                             handleTrnValidation(value)
                         }}
@@ -104,15 +136,17 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         hasError={errors['trn']}
                         errorMessage={errors['trn']}
                     />
-                </View>
+                </InputWrapper>
 
-            </View>
 
-            <View style={[styles.row, {zIndex: -3}]}>
+            </RowWrapper>
 
-                <View style={styles.inputWrapper}>
+            <RowWrapper heme={theme} zIndex={-3}>
+
+                <InputWrapper style={styles.inputWrapper}>
                     <DateInputField
                         label={"Date of Birth"}
+                        labelWidth={98}
                         value={fields['dob']}
                         onClear={() => onFieldChange('dob')('')}
                         mode={'date'}
@@ -125,8 +159,12 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         hasError={errors['dob']}
                         errorMessage={errors['dob']}
                     />
-                </View>
-            </View>
+                </InputWrapper>
+
+                <Space/>
+                <InputWrapper/>
+
+            </RowWrapper>
 
         </View>
     )
@@ -150,7 +188,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     inputWrapper: {
-        width: 260,
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
     },

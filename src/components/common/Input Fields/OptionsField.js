@@ -46,7 +46,7 @@ const Error = styled.View`
 `;
 
 
-function OptionsField({oneOptionsSelected, enabled = true, text, label, menuOption, hasError = false, errorMessage = ""}) {
+function OptionsField({oneOptionsSelected, labelWidth, enabled = true, text, label, menuOption, hasError = false, errorMessage = ""}) {
 
     const theme = useTheme();
     return (
@@ -54,7 +54,7 @@ function OptionsField({oneOptionsSelected, enabled = true, text, label, menuOpti
         <InputContainerComponent>
 
             {
-                label && <InputLabelComponent label = {label}/>
+                label && <InputLabelComponent width={labelWidth} label = {label}/>
             }
 
             <Menu disabled={!!enabled} onSelect={oneOptionsSelected} style={{flex: 1}}>

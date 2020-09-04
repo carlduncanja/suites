@@ -80,6 +80,7 @@ const IconContainer = styled.View`
 
 function InputField2({
                          label,
+                         labelWidth,
                          onChangeText = () => {
                          },
                          value,
@@ -107,7 +108,7 @@ function InputField2({
             {
                 label &&
                 <LabelWrapper>
-                    <InputLabelComponent label={label}/>
+                    <InputLabelComponent label={label} width={labelWidth}/>
                 </LabelWrapper>
             }
 

@@ -5,12 +5,11 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
 import DatePicker from "react-native-datepicker";
 import {useTheme} from "emotion-theming";
 import Styled from "@emotion/native"
+import InputLabelComponent from "../InputLablel";
 
 
-const LabelContainer = Styled.Text(({theme, label}) => ({
-    ...theme.font['--text-xs-medium'],
-    color: theme.colors['--color-gray-600'],
-    minWidth: 60,
+const LabelContainer = Styled.View(({theme, label}) => ({
+    minWidth: 70,
     marginRight: label ? 20 : 0
 }))
 
@@ -26,9 +25,10 @@ const LabelContainer = Styled.Text(({theme, label}) => ({
  */
 function DateInputField({
                             label,
+                            labelWidth,
                             onDateChange,
                             value,
-                            enabled=true,
+                            enabled = true,
                             placeholder,
                             onClear,
                             hasError = false,
@@ -46,13 +46,17 @@ function DateInputField({
         //     setDate(dateObj)
         // } else {
         onDateChange(dateObj)
+
         // }
     }
 
     return (
         <View style={styles.container}>
             {
-                label && <LabelContainer theme={theme} lable={!!label}>{label}</LabelContainer>
+                label &&
+                <LabelContainer theme={theme} lable={!!label}>
+                    <InputLabelComponent label={label} width={labelWidth}/>
+                </LabelContainer>
             }
 
             <View
@@ -91,7 +95,7 @@ function DateInputField({
                             paddingRight: 12,
                             marginBottom: 0,
                         },
-                        disabled:  {
+                        disabled: {
                             backgroundColor: theme.colors['--color-gray-100'],
                         }
                     }}
