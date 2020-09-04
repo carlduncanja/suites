@@ -21,6 +21,7 @@ import { saveDraft } from "../../redux/actions/draftActions";
 import { connect } from "react-redux";
 import { isEmpty } from "lodash";
 import moment from "moment";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
 
 const PATIENT_TABS = {
     DETAILS: "Details",
@@ -602,11 +603,28 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
             });
     };
 
-    const onClose = () => {
+    const createDraft = () => {
+        saveDraft([{ id: Math.floor(Math.random() * 10000), patient: patientFields }]);
+        navigation.navigate("CaseFiles");
+        modal.closeAllModals()
+    }
 
-        let progress = getTabsProgress();
-        progress < 60 ? saveDraft([{ id: Math.floor(Math.random() * 10000), patient: patientFields }]) &&
-            navigation.navigate("CaseFiles") : navigation.navigate("CaseFiles");
+
+    const onClose = () => {
+        modal.openModal("ConfirmationModal", {
+            content: (
+                <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onAction={createDraft}
+                    action={"Save"}
+                    onCancel={() => { navigation.navigate("CaseFiles"); modal.closeAllModals() }}
+                    message={`You haven't completed creating the case file for "${patientFields?.firstName}" ,Do you wish to save your progress?`}
+                />
+            ),
+        });
+
+
     }
 
     const getTabContent = () => {
