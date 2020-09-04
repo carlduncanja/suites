@@ -22,7 +22,6 @@ const InputWrapper = styled.View`
     flex-direction: row;
     align-items: center;
     z-index: ${({zIndex}) => zIndex};
-
 `
 
 /**
