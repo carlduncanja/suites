@@ -132,7 +132,7 @@ const TextInputContainer = styled.View`
     width : 100%;
     border-width: 1px;
     border-color: ${({theme, hasError}) => hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
-    background-color : ${({theme, backgroundColor, enabled}) => enabled ? theme.colors['--default-shade-white'] : backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    background-color : ${({theme, enabled}) => enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100']};
     border-radius: 4px;
     justify-content : center;
     /* box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null}; */
@@ -164,8 +164,6 @@ function SearchableOptionsField({
                                     },
                                     handlePopovers = () => {
                                     },
-                                    backgroundColor = "#FFFFFF",
-                                    borderColor = "#E3E8EF",
                                     hasError = false,
                                     errorMessage = ""
                                 }) {

@@ -34,7 +34,7 @@ const InputLabelContainer = styled.View`
 
 const InputLabel = styled.Text(({theme, minWidth, label}) => ({
     ...theme.font['--text-xs-medium'],
-    minWidth,
+    minWidth: minWidth || 70,
     color: theme.colors['--color-gray-600'],
 }));
 
