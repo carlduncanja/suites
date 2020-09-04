@@ -109,47 +109,54 @@ function OrderItemPage({ route, navigation }) {
             })
     }
 
-    const handleCompletion = (isError) => {
-        modal.openModal(
-            'ConfirmationModal',
-                {
-                    content: <ConfirmationComponent
-                        isError = {isError}
-                        isEditUpdate = {false}
-                        onAction = {()=>{
-                            if (!isError){
-                                setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
-                            }
-                        }}
-
-                        onCancel = {()=>{
-                            if (isError){
-                                setPageState({
-                                    ...pageState,
-                                    isEditMode : true
-                                });
-                                setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
-                            }
-                        }}
-
-                    />
-                    ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')}
-            })
-    }
-
     const updatePurchaseOrderItems = (data, purchaseOrderId) => {
-        updatePurchaseOrder(purchaseOrderNumber, data)
+        updatePurchaseOrder(purchaseOrderId, data)
             .then(data => {
                 console.log("DB data: ", data)
-                handleCompletion(false)
-                // Alert.alert('Success', 'Purchase Order has been successfully updated.')
+                modal.openModal(
+                    'ConfirmationModal',
+                        {
+                            content: <ConfirmationComponent
+                                isError = {false}
+                                isEditUpdate = {false}
+                                onAction = {()=>{
+                                  modal.closeModals('ConfirmationModal')
+                                }}
+        
+                                onCancel = {()=>{
+                                    modal.closeModals('ConfirmationModal')
+                                    
+                                }}
+        
+                            />
+                            ,
+                            onClose: () => {modal.closeModals('ConfirmationModal')}
+                    })
             })
             .catch(error => {
-                console.log("Failed to update order", error)
-                handleCompletion(true)
-                // Alert.alert('Sorry', 'Failed to update order, please try again.')
-                //TODO handle error cases.
+                console.log("Failed to update order", error);
+                modal.openModal(
+                    'ConfirmationModal',
+                        {
+                            content: <ConfirmationComponent
+                                isError = {isError}
+                                isEditUpdate = {false}
+                                onAction = {()=>{
+                                   modal.closeModals('ConfirmationModal')
+                                }}
+        
+                                onCancel = {()=>{
+                                   setPageState({
+                                        ...pageState,
+                                        isEditMode : true
+                                    });
+                                    modal.closeModals('ConfirmationModal')
+                                    
+                                }}
+                            />
+                            ,
+                            onClose: () => {modal.closeModals('ConfirmationModal')}
+                    })
             })
     }
 

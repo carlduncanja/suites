@@ -223,10 +223,11 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
                         isEditUpdate = {true}
                         onCancel = {()=> modal.closeModals('ConfirmationModal')}
                         onAction = {()=>{
-                            onFooterPress();
                             setTimeout(()=>{
                                 modal.closeModals('ConfirmationModal')
                             }, 100);
+                            onFooterPress();
+                            
                         }}
                         // onAction = { () => confirmAction()}
                         message = {"Do you want to save your changes ? "}
@@ -237,12 +238,15 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
     }
 
     const onFooterPress = () => {
-        onAddProductItems(itemstoAdd)
+        onAddProductItems(itemstoAdd);
+        setTimeout(()=>{
+            modal.closeModals('OverlayInfoModal');
+        },200);
     }
 
     const onCloseModal = () => {
         closeModals("OverlayInfoModal");
-        onCancel()
+        onCancel();
     }
 
     const listItemFormat = (item) => { 
@@ -294,7 +298,7 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
     return (
         <View>
             <AddOverlayDialog
-                title = "Add Items"  
+                title = "Add Items"   
                 closeModal = {onCloseModal}
                 listItemFormat = {listItemFormat}
                 headers = {headers}
@@ -313,7 +317,7 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
                 onSelectItem = {onSelectItem} 
 
             /> 
-        </View>
+        </View> 
     )
 }
 

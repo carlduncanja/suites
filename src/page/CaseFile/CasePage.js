@@ -121,8 +121,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [selectedCaseId, setSelectedCaseId] = useState('');
     const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
     const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
-    const [selectedEquipments, setSelectedEquipments] = useState([])
-
+    const [selectedEquipments, setSelectedEquipments] = useState([]);
+    const [selectedConsumables, setSelectedConsumables] = useState([]);
     // ############### State
 
     const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
@@ -550,7 +550,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 console.log('failed to create', error);
                 modal.openModal('ConfirmationModal', {
                     content: (
-                        <ConfirmationComponent
+                        <ConfirmationComponent 
                             isError={true}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
                             onCancel={() => {
@@ -738,12 +738,30 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             />
                         );
                         const removeLineItemAction = (
-                            <ActionItem
-                                title="Remove Consumable"
-                                icon={<DeleteIcon/>}
-                                onPress={_ => {
+                            <LongPressWithFeedback
+                                pressTimer={700}
+                                onLongPress={_ => {
                                 }}
-                            />
+                                isDisabled={selectedConsumables.length === 0 ? true : false}
+
+                            >
+                                <ActionItem
+                                    title="Hold to Delete"
+                                    icon={<WasteIcon
+                                        strokeColor={selectedConsumables.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
+                                    onPress={() => {
+                                    }}
+                                    touchable={false}
+                                    disabled={selectedConsumables.length === 0 ? true : false}
+                                />
+
+                            </LongPressWithFeedback>
+                            // <ActionItem
+                            //     title="Remove Consumable"
+                            //     icon={<DeleteIcon/>}
+                            //     onPress={_ => {
+                            //     }}
+                            // />
                         );
                         floatingAction.push(/*addNewLineItemAction,*/ addNewItem, /*removeLineItemAction*/);
                     }
@@ -1375,6 +1393,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     handleInvoices={handleInvoices}
                     onSelectEquipments={(equipments) => {
                         setSelectedEquipments(equipments)
+                    }}
+                    onSelectConsumables={(consumables)=>{
+                        setSelectedConsumables(consumables)
                     }}
                 />;
             default:
