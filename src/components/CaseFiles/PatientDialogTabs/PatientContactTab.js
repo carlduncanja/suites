@@ -1,11 +1,36 @@
-import React,{ useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, {useState} from "react";
+import {View, Text, StyleSheet} from "react-native";
 import InputField2 from "../../common/Input Fields/InputField2";
-import { isValidEmail } from "../../../utils/formatter";
+import {isValidEmail} from "../../../utils/formatter";
+import styled from "@emotion/native";
+import Row from "../../common/Row";
+import {useTheme} from "emotion-theming";
+
+
+const Space = styled.View`
+   width:  ${({theme}) => theme.space['--space-24']}
+`;
+
+const RowWrapper = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: ${({theme}) => theme.space['--space-20']};
+    z-index: ${({zIndex}) => zIndex};
+`
+
+const InputWrapper = styled.View`
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    z-index: ${({zIndex}) => zIndex};
+
+`
 
 const PatientContactTab = ({onFieldChange, fields}) => {
-    const { contactInfo = {} } = fields
-    const { 
+    const theme = useTheme();
+    const {contactInfo = {}} = fields
+    const {
         phones = [],
         emails = [],
         emergencyContact = []
@@ -27,31 +52,31 @@ const PatientContactTab = ({onFieldChange, fields}) => {
 
     const [phoneValues, setPhones] = useState([
         {
-            type : 'cell',
-            phone : cellPhone
+            type: 'cell',
+            phone: cellPhone
         },
         {
-            type : 'work',
-            phone : workPhone
+            type: 'work',
+            phone: workPhone
         }
     ])
-     
+
     const [emailValues, setEmails] = useState([
         {
-            type : 'primary',
-            email : primaryEmail
+            type: 'primary',
+            email: primaryEmail
         },
         {
-            type : 'work',
-            email : workEmail
+            type: 'work',
+            email: workEmail
         },
     ])
 
     const [emergencyValues, setEmergency] = useState({
-        name : emergency.name || "",
-        relation : emergency.relation || "",
-        phone : emergency.phone || "",
-        email : emergency.email || ""
+        name: emergency.name || "",
+        relation: emergency.relation || "",
+        phone: emergency.phone || "",
+        email: emergency.email || ""
     })
 
     const formatNumber = (value) => {
@@ -60,14 +85,14 @@ const PatientContactTab = ({onFieldChange, fields}) => {
 
     const handlePhone = (type) => (value) => {
         const objIndex = phoneValues.findIndex(obj => obj.type === type);
-        const updatedObj = { ...phoneValues[objIndex], phone: value};
+        const updatedObj = {...phoneValues[objIndex], phone: value};
         const updatedPhones = [
             ...phoneValues.slice(0, objIndex),
             updatedObj,
             ...phoneValues.slice(objIndex + 1),
-        ]; 
+        ];
 
-        if (/^\d{10}$/g.test(value) || !value){
+        if (/^\d{10}$/g.test(value) || !value) {
             onFieldChange('contactInfo')({...fields['contactInfo'], phones: updatedPhones})
         }
 
@@ -77,15 +102,15 @@ const PatientContactTab = ({onFieldChange, fields}) => {
     const handleEmail = (type) => (value) => {
 
         const objIndex = emailValues.findIndex(obj => obj.type === type);
-        const updatedObj = { ...emailValues[objIndex], email: value};
+        const updatedObj = {...emailValues[objIndex], email: value};
         const updatedEmails = [
             ...emailValues.slice(0, objIndex),
             updatedObj,
             ...emailValues.slice(objIndex + 1),
-        ]; 
+        ];
 
-        if (isValidEmail(value) || !value){
-            onFieldChange('contactInfo')({...fields['contactInfo'], emails : updatedEmails})
+        if (isValidEmail(value) || !value) {
+            onFieldChange('contactInfo')({...fields['contactInfo'], emails: updatedEmails})
         }
 
         setEmails(updatedEmails)
@@ -94,116 +119,134 @@ const PatientContactTab = ({onFieldChange, fields}) => {
     const handleEmergency = (type) => (value) => {
         let updatedEmegency = {
             ...emergencyValues,
-            [type] : value
+            [type]: value
         }
-        if(type === 'email'){
-           (isValidEmail(value) || !value) && onFieldChange('contactInfo')({...fields['contactInfo'], emergencyContact:[updatedEmegency]})
-        }else if (type === 'phone'){
-            if (/^\d{10}$/g.test(value) || !value) onFieldChange('contactInfo')({...fields['contactInfo'], emergencyContact:[updatedEmegency]})
-        }else{
-            onFieldChange('contactInfo')({...fields['contactInfo'], emergencyContact:[updatedEmegency]})
+        if (type === 'email') {
+            (isValidEmail(value) || !value) && onFieldChange('contactInfo')({
+                ...fields['contactInfo'],
+                emergencyContact: [updatedEmegency]
+            })
+        } else if (type === 'phone') {
+            if (/^\d{10}$/g.test(value) || !value) onFieldChange('contactInfo')({
+                ...fields['contactInfo'],
+                emergencyContact: [updatedEmegency]
+            })
+        } else {
+            onFieldChange('contactInfo')({...fields['contactInfo'], emergencyContact: [updatedEmegency]})
         }
         setEmergency(updatedEmegency)
-        
+
     }
 
     return (
         <View style={styles.sectionContainer}>
 
-            <View style={[styles.row, {zIndex: 0}]}>
+            <RowWrapper theme={theme} zIndex={0}>
 
-                <View style={styles.inputWrapper}> 
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Cell"}
-                        onChangeText={(value)=>handlePhone('cell')(value)}
+                        labelWidth={98}
+                        onChangeText={(value) => handlePhone('cell')(value)}
                         value={formatNumber(phoneValues.filter(item => item.type === 'cell')[0].phone)}
                         onClear={() => handlePhone('cell')('')}
-                        keyboardType = "number-pad"
+                        keyboardType="number-pad"
                     />
-                </View>
-                <View style={styles.inputWrapper}>
+                </InputWrapper>
+                <Space/>
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Work"}
-                        onChangeText={(value)=>handlePhone('work')(value)}
+                        labelWidth={98}
+                        onChangeText={(value) => handlePhone('work')(value)}
                         value={formatNumber(phoneValues.filter(item => item.type === 'work')[0].phone)}
                         onClear={() => handlePhone('work')('')}
-                        keyboardType = "number-pad"
+                        keyboardType="number-pad"
                     />
-                </View>
+                </InputWrapper>
 
-            </View>
+            </RowWrapper>
 
-            <View style={[styles.row, {zIndex: -1}]}>
+            <RowWrapper theme={theme} zIndex={-1}>
 
-                <View style={styles.inputWrapper}>
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Primary Email"}
-                        onChangeText={(value)=>handleEmail('primary')(value)}
+                        labelWidth={98}
+                        onChangeText={(value) => handleEmail('primary')(value)}
                         value={emailValues.filter(item => item.type === 'primary')[0].email}
                         onClear={() => handleEmail('primary')('')}
-                        keyboardType = "email-address"
+                        keyboardType="email-address"
                     />
-                </View>
-                <View style={styles.inputWrapper}>
+                </InputWrapper>
+                <Space/>
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Work Email"}
-                        onChangeText={(value)=>handleEmail('work')(value)}
+                        labelWidth={98}
+                        onChangeText={(value) => handleEmail('work')(value)}
                         value={emailValues.filter(item => item.type === 'work')[0].email}
                         onClear={() => handleEmail('work')('')}
-                        keyboardType = "email-address"
+                        keyboardType="email-address"
                     />
-                </View>
-                
-            </View>
+                </InputWrapper>
 
-            <View style={{marginBottom:20}}>
-                <Text style={{fontWeight:'500', fontSize:14, color:"#323843"}}>Emergency Contact</Text>
-            </View>
-            
+            </RowWrapper>
 
-            <View style={[styles.row, {zIndex: -2}]}>
+            <RowWrapper theme={theme}>
+                <Text style={{fontWeight: '500', fontSize: 14, color: "#323843"}}>Emergency Contact</Text>
+            </RowWrapper>
 
-                <View style={styles.inputWrapper}>
+
+            <RowWrapper theme={theme} zIndex={-2}>
+
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Name"}
-                        onChangeText={(value)=>handleEmergency('name')(value)}
+                        labelWidth={98}
+                        onChangeText={(value) => handleEmergency('name')(value)}
                         value={emergencyValues['name']}
                         onClear={() => handleEmergency('name')('')}
                     />
-                </View>
-                <View style={styles.inputWrapper}>
+                </InputWrapper>
+                <Space/>
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Relationship"}
-                        onChangeText={(value)=>handleEmergency('relation')(value)}
+                        labelWidth={98}
+                        onChangeText={(value) => handleEmergency('relation')(value)}
                         value={emergencyValues['relation']}
                         onClear={() => onFieldChange('relation')('')}
                     />
-                </View>
+                </InputWrapper>
 
-            </View>
+            </RowWrapper>
 
-            <View style={[styles.row, {zIndex: -2}]}>
+            <RowWrapper theme={theme} zIndex={-2}>
 
-                <View style={styles.inputWrapper}>
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Cell"}
-                        onChangeText={(value)=>handleEmergency('phone')(value)}
+                        labelWidth={98}
+                        onChangeText={(value) => handleEmergency('phone')(value)}
                         value={formatNumber(emergencyValues['phone'])}
                         onClear={() => onFieldChange('phone')('')}
-                        keyboardType = "number-pad"
+                        keyboardType="number-pad"
                     />
-                </View>
-                <View style={styles.inputWrapper}>
+                </InputWrapper>
+                <Space/>
+                <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Email"}
-                        onChangeText={(value)=>handleEmergency('email')(value)}
+                        labelWidth={98}
+                        onChangeText={(value) => handleEmergency('email')(value)}
                         value={emergencyValues['email']}
                         onClear={() => onFieldChange('email')('')}
-                        keyboardType = "email-address"
+                        keyboardType="email-address"
                     />
-                </View>
+                </InputWrapper>
 
-            </View>
+            </RowWrapper>
 
         </View>
     )
