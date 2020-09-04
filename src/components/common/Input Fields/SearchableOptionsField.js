@@ -9,7 +9,7 @@ import InputContainerComponent from '../InputContainerComponent';
 import InputErrorComponent from '../InputErrorComponent';
 
 import styled, {css} from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import {useTheme} from 'emotion-theming';
 import MultipleShadowsContainer from '../MultipleShadowContainer';
 
 import Styled from "@emotion/native";
@@ -18,23 +18,23 @@ import {shadow} from "../../../styles";
 const optionsStyles = {
     optionsContainer: {
         backgroundColor: "rgba(255, 255, 255, 0)"
-    } 
+    }
 };
 
 const shadows = [
     {
-      shadowColor: 'black',
-      shadowOffset: { width: 10, height: 0 },
-      shadowOpacity: 0.1,
-      shadowRadius: 15
+        shadowColor: 'black',
+        shadowOffset: {width: 10, height: 0},
+        shadowOpacity: 0.1,
+        shadowRadius: 15
     },
     {
-      shadowColor: 'black',
-      shadowOffset: { width: 4, height: 0 },
-      shadowOpacity: 0.05,
-      shadowRadius: 6
+        shadowColor: 'black',
+        shadowOffset: {width: 4, height: 0},
+        shadowOpacity: 0.05,
+        shadowRadius: 6
     },
-  ]
+]
 
 const IconContainer = styled.View`
     position: absolute;
@@ -53,19 +53,19 @@ const InputContainer = styled.View`
     align-items : center;
 `;
 
-const Label = styled.Text( ({theme,label}) => ({
+const Label = styled.Text(({theme, label}) => ({
     ...theme.font['--text-xs-medium'],
-    color : theme.colors['--color-gray-600'],
-    marginRight : label ? 20 : 0,
+    color: theme.colors['--color-gray-600'],
+    marginRight: label ? 20 : 0,
 }));
 
 const Input = styled.TextInput`
     /* flex:1; */
-    padding: ${ ({theme}) => theme.space['--space-4']};
+    padding: ${({theme}) => theme.space['--space-4']};
     /* paddingLeft: 12, */
-    padding-right: ${ ({theme}) => theme.space['--space-12']};
+    padding-right: ${({theme}) => theme.space['--space-12']};
     /* width : 85%; */
-    padding-left : ${ ({theme}) => theme.space['--space-12']};
+    padding-left : ${({theme}) => theme.space['--space-12']};
 `;
 
 const SuggestionsContainer = styled.View`
@@ -74,26 +74,26 @@ const SuggestionsContainer = styled.View`
     position: absolute;
     top: 5px;
     border-radius : 8px;
-    border : 1px solid ${ ({theme}) => theme.colors['--color-gray-400']};
-    background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
+    border : 1px solid ${({theme}) => theme.colors['--color-gray-400']};
+    background-color : ${({theme}) => theme.colors['--default-shade-white']};
     z-index : 1;
 `;
 
 const NoSuggestionsContainer = styled.View`
-    margin : ${ ({theme}) => theme.space['--space-10']} ${ ({theme}) => theme.space['--space-6']} ;
+    margin : ${({theme}) => theme.space['--space-10']} ${({theme}) => theme.space['--space-6']} ;
 `;
 
-const InputText = styled.Text( ({theme, fontStyle, textColor}) => ({
+const InputText = styled.Text(({theme, fontStyle, textColor}) => ({
     ...theme.font[fontStyle],
-    color : theme.colors[textColor]
+    color: theme.colors[textColor]
 }));
 
 const OptionContainer = styled.TouchableOpacity`
     width : 100%;
     height : 32px;
-    padding-left: ${ ({theme}) => theme.space['--space-12']};
-    padding-right: ${ ({theme}) => theme.space['--space-12']};
-    background-color : ${ ({theme, backgroundColor}) => theme.colors[backgroundColor]};
+    padding-left: ${({theme}) => theme.space['--space-12']};
+    padding-right: ${({theme}) => theme.space['--space-12']};
+    background-color : ${({theme, backgroundColor}) => theme.colors[backgroundColor]};
     justify-content: center;
 
 `;
@@ -108,13 +108,12 @@ const ValueContainer = styled.View`
     margin-left : 10px;
     /* alignSelf: 'center', */
     align-items: center;
-    padding-right: ${ ({theme}) => theme.space['space-4']};
+    padding-right: ${({theme}) => theme.space['space-4']};
     width : 80%;
-   
 `;
- /* border : 1px solid ${ ({theme}) => theme.colors['--color-red-300']};
-    background-color : ${ ({theme}) => theme.colors['--color-red-100']};
-    border-radius: 2px; */
+/* border : 1px solid ${ ({theme}) => theme.colors['--color-red-300']};
+   background-color : ${ ({theme}) => theme.colors['--color-red-100']};
+   border-radius: 2px; */
 
 const LabelContainer = Styled.View(({theme, label}) => ({
     // ...theme.font['--text-xs-medium'],
@@ -128,14 +127,15 @@ const TextInputWrapper = styled.View`
     height : 32px;
 `;
 const TextInputContainer = styled.View`
+    position: relative;
     height : 100%;
     width : 100%;
     border-width: 1px;
-    border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
-    background-color : ${ ({theme, backgroundColor, enabled}) => enabled ? theme.colors['--default-shade-white'] : backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    border-color: ${({theme, hasError}) => hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
+    background-color : ${({theme, backgroundColor, enabled}) => enabled ? theme.colors['--default-shade-white'] : backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
     border-radius: 4px;
     justify-content : center;
-    /* box-shadow : ${ ({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null}; */
+    /* box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null}; */
 `;
 
 // const ValueContainer = styled.View(({theme, enabled = {}}) => ({
@@ -198,227 +198,98 @@ function SearchableOptionsField({
     };
 
     const renderOptions = ({item}) => {
-        return <OptionContainer onPress={() => onOptionPress(item)} theme = {theme}>
-            <InputText numberOfLines = {1} theme = {theme} textColor = "--color-gray-800" fontStyle = "--text-sm-regular">{item?.name ||""}</InputText>
+        return <OptionContainer onPress={() => onOptionPress(item)} theme={theme}>
+            <InputText numberOfLines={1} theme={theme} textColor="--color-gray-800"
+                       fontStyle="--text-sm-regular">{item?.name || ""}</InputText>
         </OptionContainer>
     };
 
     return (
-        // <InputContainerComponent>
-
-        //     {
-        //         label && 
-        //             <LabelContainer>
-        //                 <InputLabelComponent label = {label}/>
-        //             </LabelContainer>
-        //     }
-
-
-        //     <TextInputWrapper>
-        //         <TextInputContainer
-        //             backgroundColor = {backgroundColor}
-        //             theme = {theme}
-        //         >
-
-        //             <Input
-        //                 theme = {theme}
-        //                 onChangeText={(value) => {
-        //                     onChangeText(value);
-        //                     handlePopovers(true)
-        //                 }}
-        //                 editable={!selectedValue}
-        //                 value={text}
-        //                 ref={textInputRef}
-        //             />
-
-        //             {
-        //                 hasError && <InputErrorComponent errorMessage = {errorMessage}/>
-        //             }
-
-        //             {
-        //                 selectedValue  &&
-        //                     <ValueContainer>
-        //                         <InputText numberOfLines = {1} fontStyle = "--text-sm-regular" textColor = "--color-gray-700">{selectedValue?.name || ""}</InputText>
-        //                     </ValueContainer>
-        //             }
-
-        //             {
-        //                 selectedValue && 
-        //                 <IconContainer>
-        //                     <IconButton
-        //                         Icon = {<ClearIcon/>}
-        //                         onPress = {onClearPress}
-        //                     />
-        //                 </IconContainer>
-        //             }
-
-        //             {
-        //             (!selectedValue && text && isPopoverOpen)
-        //                 ?
-        //                 <MultipleShadowsContainer shadows = {shadows}>
-        //                     <SuggestionsContainer theme = {theme}>
-        //                         {
-        //                             options.length === 0 ?
-
-        //                                 <NoSuggestionsContainer theme = {theme}>
-        //                                     <InputText theme = {theme} textColor = "--color-gray-300" fontStyle = "--text-xs-medium">No Suggestions Found</InputText>
-        //                                 </NoSuggestionsContainer>
-
-        //                                 :
-
-        //                                 <FlatList
-        //                                     keyExtractor={(item, index) => index + ''}
-        //                                     data={options}
-        //                                     renderItem={renderOptions}
-        //                                 />
-        //                         }
-
-        //                     </SuggestionsContainer>
-
-        //                 </MultipleShadowsContainer>
-
-        //                 :
-        //                 null
-                        
-        //             }
-
-        //         </TextInputContainer>
-        //     </TextInputWrapper>
-        // </InputContainerComponent>
-            
         <InputContainerComponent>
             {
-                label && 
-                    <LabelContainer>
-                        <InputLabelComponent label = {label}/>
-                    </LabelContainer>
-                // <LabelContainer theme={theme} lable={!!label}>{label}</LabelContainer>
+                label &&
+                <LabelContainer>
+                    <InputLabelComponent label={label}/>
+                </LabelContainer>
             }
 
             <TextInputWrapper theme={theme} enabled={enabled}>
                 <TextInputContainer>
 
-                {
-                    (enabled && !!selectedValue)
-                        ? <>
-                            <ValueContainer>
-                                <InputText numberOfLines = {1} fontStyle = "--text-sm-regular" textColor = "--color-gray-700">{selectedValue?.name || ""}</InputText>
-                            </ValueContainer>
+                    {
+                        (enabled && !!selectedValue)
 
-                            <IconContainer>
-                                <IconButton
-                                    Icon = {<ClearIcon/>}
-                                    onPress = {onClearPress}
+                            // true
+                            ? <>
+                                <ValueContainer>
+                                    <InputText numberOfLines={1} fontStyle="--text-sm-regular"
+                                               textColor="--color-gray-700">{selectedValue?.name || ""}</InputText>
+                                </ValueContainer>
+
+                                <IconContainer>
+                                    <IconButton
+                                        Icon={<ClearIcon/>}
+                                        onPress={onClearPress}
+                                    />
+                                </IconContainer>
+                            </>
+                            :
+                            <View>
+                                <Input
+                                    theme={theme}
+                                    onChangeText={(value) => {
+                                        onChangeText(value);
+                                        handlePopovers(true)
+                                    }}
+                                    editable={enabled}
+                                    value={selectedValue?.name || text}
+                                    ref={textInputRef}
                                 />
-                            </IconContainer>
 
-                            {/* <View style={styles.valueBox}>
-                                <Text numberOfLines={1}
-                                      style={{padding: 3, paddingLeft: 5, marginRight: 5}}>{selectedValue.name}</Text>
-                            </View> 
-                            
-                            <TouchableOpacity
-                                style={styles.clearIcon}
-                                onPress={onClearPress}
-                            >
-                                <ClearIcon/>
-                            </TouchableOpacity> */}
-                        </>
-                        : 
-                        <Input
-                            theme = {theme}
-                            onChangeText={(value) => {
-                                onChangeText(value);
-                                handlePopovers(true)
-                            }}
-                            editable={enabled}
-                            value={selectedValue?.name || text}
-                            ref={textInputRef}
-                        />
-
-                        // <TextInput
-                        //     style={{
-                        //         padding: 4,
-                        //         paddingLeft: 12,
-                        //         paddingRight: 12,
-                        //     }}
-                        //     value={
-                        //         selectedValue?.name || text
-                        //     }
-                        //     editable={enabled}
-                        //     onChangeText={(value) => {
-                        //         onChangeText(value);
-                        //         handlePopovers(true)
-                        //     }}
-                        //     ref={textInputRef}
-                        // />
-                }
-
-                {
-                    hasError && <InputErrorComponent errorMessage = {errorMessage}/>
-                }
-
-                {/* {
-                    hasError && <View style={styles.errorView}>
-                        <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
-                    </View>
-                } */}
-
-
-                {
-
-                    (!selectedValue && text && isPopoverOpen)
-                        ?
-                        <MultipleShadowsContainer shadows = {shadows}>
-                             <SuggestionsContainer theme = {theme}>
-                                 {
-                                    options.length === 0 ?
-
-                                        <NoSuggestionsContainer theme = {theme}>
-                                            <InputText theme = {theme} textColor = "--color-gray-300" fontStyle = "--text-xs-medium">No Suggestions Found</InputText>
-                                        </NoSuggestionsContainer>
-
-                                        :
-
-                                        <FlatList
-                                            keyExtractor={(item, index) => index + ''}
-                                            data={options}
-                                            renderItem={renderOptions}
-                                        />
+                                {
+                                    hasError &&
+                                    <View style={{position: 'absolute'}}>
+                                        <InputErrorComponent errorMessage={errorMessage}/>
+                                    </View>
                                 }
 
-                            </SuggestionsContainer>
-                        </MultipleShadowsContainer>
+                            </View>
 
-                        // <View style={styles.suggestionContainer}>
+                    }
 
-                        //     {
-                        //         options.length === 0 ?
-                        //             <View style={{marginBottom:10, marginTop:10}}>
-                        //                 <Text style={{color:'#718096',fontSize:14}}>No Suggestions Found</Text>
-                        //             </View>
+                    {
 
-                        //             :
-                        //         <FlatList
-                        //             keyExtractor={(item, index) => index + ''}
-                        //             data={options}
-                        //             renderItem={renderOptions}
-                        //         />
-                        //     }
-                        // </View>
+                        (!selectedValue && text && isPopoverOpen)
+                            ?
+                            <MultipleShadowsContainer shadows={shadows}>
+                                <SuggestionsContainer theme={theme}>
+                                    {
+                                        options.length === 0 ?
+
+                                            <NoSuggestionsContainer theme={theme}>
+                                                <InputText theme={theme} textColor="--color-gray-300"
+                                                           fontStyle="--text-xs-medium">No Suggestions Found</InputText>
+                                            </NoSuggestionsContainer>
+
+                                            :
+
+                                            <FlatList
+                                                keyExtractor={(item, index) => index + ''}
+                                                data={options}
+                                                renderItem={renderOptions}
+                                            />
+                                    }
+
+                                </SuggestionsContainer>
+                            </MultipleShadowsContainer>
                             : null
-                        
-                }
-
+                    }
                 </TextInputContainer>
             </TextInputWrapper>
 
         </InputContainerComponent>
 
-                   
 
-           
-                        
     );
 }
 
@@ -438,7 +309,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         height: 32,
-        justifyContent:'center'
+        justifyContent: 'center'
         // borderRadius: 8,
         // height: 32
     },
@@ -498,14 +369,14 @@ const styles = StyleSheet.create({
         borderRadius: 2,
         zIndex: 2,
         left: 0,
-        top:3,
-        bottom:3,
+        top: 3,
+        bottom: 3,
         // marginTop:10,
         // paddingBottom:4,
         // margin: 3.5,
         marginLeft: 10,
         position: 'absolute',
-        width :'80%',
+        width: '80%',
         // height :32
     },
     clearIcon: {
