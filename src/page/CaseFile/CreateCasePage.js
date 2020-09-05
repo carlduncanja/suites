@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, {useState, useEffect} from "react";
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import PropTypes from "prop-types";
-import { useModal } from "react-native-modalfy";
-import { createCaseFile, createTheatre } from "../../api/network";
-import OverlayDialog from "../../components/common/Dialog/OverlayDialog";
+import {useModal} from "react-native-modalfy";
+import {createCaseFile, createTheatre} from "../../api/network";
 import DialogTabs from "../../components/common/Dialog/DialogTabs";
-import InputField2 from "../../components/common/Input Fields/InputField2";
-import OptionsField from "../../components/common/Input Fields/OptionsField";
-import { MenuOption, MenuOptions } from "react-native-popup-menu";
 import PatientIcon from "../../../assets/svg/newCasePatient";
 import MedicalIcon from "../../../assets/svg/newCaseMedical";
 import ProcedureIcon from "../../../assets/svg/newCaseProcedure";
@@ -16,12 +12,19 @@ import StaffStep from "../../components/CaseFiles/StaffDialogTabs/StaffStep";
 import ProcedureStep from "../../components/CaseFiles/ProceduresDialogTabs/ProcedureStep";
 import CompleteCreateCase from "../../components/CaseFiles/CompleteCreateCase";
 import ProgressContainer from "../../components/common/Progress/ProgressContainer";
-import { addCaseFile } from "../../redux/actions/caseFilesActions";
-import { saveDraft } from "../../redux/actions/draftActions";
-import { connect } from "react-redux";
-import { isEmpty } from "lodash";
+import {addCaseFile} from "../../redux/actions/caseFilesActions";
+import {saveDraft} from "../../redux/actions/draftActions";
+import {connect} from "react-redux";
+import {isEmpty} from "lodash";
 import moment from "moment";
+import styled from "@emotion/native"
 import ConfirmationComponent from "../../components/ConfirmationComponent";
+import {useTheme} from "emotion-theming";
+import PageButton from "../../components/common/Page/PageButton";
+import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
+import ChevronRight from "../../../assets/svg/ChevronRight";
+import ChevronLeft from "../../../assets/svg/ChevronLeft";
+import Divider from "../../components/common/Divider";
 
 const PATIENT_TABS = {
     DETAILS: "Details",
@@ -94,17 +97,74 @@ const testData = {
     ],
 };
 
-function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }) {
+const PageWrapper = styled.View`
+  flex: 1;
+  display: flex;  
+  margin:0;
+  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+`
+const PageContentWrapper = styled.View`
+  flex: 1;
+  //padding: ${({theme}) => theme.space['--space-32']}
+`
+
+const HeaderWrapper = styled.View`
+  display: flex;
+  height: 47px;
+  width: 100%;
+  justify-content: center;
+  padding-left: ${({theme}) => theme.space['--space-24']};
+  padding-right: ${({theme}) => theme.space['--space-24']};
+  
+`
+
+const HeaderContainer = styled.View`
+  //flex: 1;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const PageTitle = styled.Text(({theme}) => ({
+    ...theme.font['--text-xl-medium'],
+    color: theme.colors['--company']
+}))
+
+const FooterWrapper = styled.View`
+  bottom: 0;
+  border: 1px solid ${({theme}) => theme.colors['--color-gray-300']};
+  border-bottom-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+  padding-top: ${({theme}) => theme.space['--space-24']}; 
+  padding-bottom: ${({theme}) => theme.space['--space-24']}; 
+  margin-left: ${({theme}) => theme.space['--space-24']}; 
+  margin-right: ${({theme}) => theme.space['--space-24']}; 
+ 
+`
+
+const FooterContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`
+
+const FooterButtonContainer =styled.View`
+  width: 145px;
+  height: 48px;
+`
+
+
+function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) {
     // ########### CONST
     const [wizard, setWizard] = useState([
         {
             step: {
                 name: "Patient",
                 selectedIcon: (
-                    <PatientIcon fillColor={"#0CB0E7"} strokeColor={"#64D8FF"} />
+                    <PatientIcon fillColor={"#0CB0E7"} strokeColor={"#64D8FF"}/>
                 ),
                 disabledIcon: (
-                    <PatientIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"} />
+                    <PatientIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"}/>
                 ),
                 progress: 0,
             },
@@ -118,8 +178,8 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
         {
             step: {
                 name: "Medical Team",
-                selectedIcon: <MedicalIcon fillColor={"#E53E3E"} />,
-                disabledIcon: <MedicalIcon fillColor={"#CBD5E0"} />,
+                selectedIcon: <MedicalIcon fillColor={"#E53E3E"}/>,
+                disabledIcon: <MedicalIcon fillColor={"#CBD5E0"}/>,
                 progress: 0,
             },
             tabs: ["Assignment 1"],
@@ -140,10 +200,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
             step: {
                 name: "Procedures",
                 selectedIcon: (
-                    <ProcedureIcon fillColor={"#319795"} strokeColor={"#81E6D9"} />
+                    <ProcedureIcon fillColor={"#319795"} strokeColor={"#81E6D9"}/>
                 ),
                 disabledIcon: (
-                    <ProcedureIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"} />
+                    <ProcedureIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"}/>
                 ),
                 progress: 0,
             },
@@ -162,9 +222,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
             },
         },
     ]);
+    const theme = useTheme();
     const steps = [...wizard.map((step) => step.step)];
     const modal = useModal();
-    const { draftItem } = route.params;
+    const {draftItem} = route.params;
 
     //console.log("what's in route", route.params);
     // ########### STATES
@@ -409,7 +470,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
             }
         }
 
-        let updateErrors = { ...patientFieldErrors };
+        let updateErrors = {...patientFieldErrors};
 
         console.log(patientFields);
 
@@ -539,7 +600,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
             setPopoverList(updatedPopovers);
         } else {
             const objIndex = popoverList.findIndex((obj) => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
+            const updatedObj = {...popoverList[objIndex], status: popoverValue};
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -604,11 +665,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
     };
 
     const createDraft = () => {
-        saveDraft([{ id: Math.floor(Math.random() * 10000), patient: patientFields }]);
+        saveDraft([{id: Math.floor(Math.random() * 10000), patient: patientFields}]);
         navigation.navigate("CaseFiles");
         modal.closeAllModals()
     }
-
 
     const onClose = () => {
         modal.openModal("ConfirmationModal", {
@@ -618,7 +678,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
                     isEditUpdate={true}
                     onAction={createDraft}
                     action={"Save"}
-                    onCancel={() => { navigation.navigate("CaseFiles"); modal.closeAllModals() }}
+                    onCancel={() => {
+                        navigation.navigate("CaseFiles");
+                        modal.closeAllModals()
+                    }}
                     message={`You haven't completed creating the case file for "${patientFields?.firstName}" ,Do you wish to save your progress?`}
                 />
             ),
@@ -683,15 +746,20 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
     const title = name === "" ? "New Case" : name;
 
     return (
-        <View style={styles.container}>
-            <View style={styles.headingContainer}>
-                <Text>{title}</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                    <Text style={{ color: "#718096" }}>Close</Text>
-                </TouchableOpacity>
-            </View>
+        <PageWrapper theme={theme}>
 
-            <View style={{ height: 140 }}>
+            <HeaderWrapper theme={theme}>
+                <HeaderContainer theme={theme}>
+                    <PageTitle>{title}</PageTitle>
+
+                    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                        <Text style={{color: "#718096"}}>Close</Text>
+                    </TouchableOpacity>
+
+                </HeaderContainer>
+            </HeaderWrapper>
+
+            <View style={{height: 140}}>
                 <ProgressContainer
                     steps={steps}
                     handleStepPress={handleStepPress}
@@ -701,33 +769,52 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
                 />
             </View>
 
-            <View style={{ flex: 1 }}>
-                <View style={{ height: 40 }}>
-                    <DialogTabs
-                        tabs={tabs}
-                        tab={selectedTabIndex}
-                        tabName={wizard[selectedIndex] && wizard[selectedIndex].tabName}
-                        onAddTab={wizard[selectedIndex] && wizard[selectedIndex].onAdd}
-                        onTabPress={handleTabPress}
-                    />
-                </View>
-
-                {/*<TouchableOpacity*/}
-                {/*    style={{flex: 1}}*/}
-                {/*    onPress={() => handlePopovers(false)()}*/}
-                {/*    activeOpacity={1}*/}
-                {/*>*/}
-                <View style={{ flex: 1 }}>{getTabContent()}</View>
-                {/*</TouchableOpacity>*/}
+            <View style={{height: 40}}>
+                <DialogTabs
+                    tabs={tabs}
+                    tab={selectedTabIndex}
+                    tabName={wizard[selectedIndex] && wizard[selectedIndex].tabName}
+                    onAddTab={wizard[selectedIndex] && wizard[selectedIndex].onAdd}
+                    onTabPress={handleTabPress}
+                />
             </View>
 
-            <TouchableOpacity
-                style={styles.footerButton}
-                onPress={onPositiveButtonPress}
-            >
-                <Text style={styles.footerText}>{positiveText}</Text>
-            </TouchableOpacity>
-        </View>
+            <PageContentWrapper>
+                <View style={{flex: 1}}>{getTabContent()}</View>
+            </PageContentWrapper>
+
+            <Divider/>
+
+            <FooterWrapper>
+                <FooterContainer>
+                    <FooterButtonContainer>
+                        <PageButton
+                            backgroundColor={theme.colors['--color-gray-200']}
+                            fontColor={theme.colors['--color-gray-600']}
+                            text={"PREVIOUS"}
+                            onPress={() => {
+                            }}
+                            IconLeft={<ChevronLeft strokeColor={theme.colors['--color-gray-600']}/>}
+                        />
+                    </FooterButtonContainer>
+
+
+                    <FooterButtonContainer>
+                        <PageButton
+                            backgroundColor={theme.colors['--color-blue-500']}
+                            fontColor={theme.colors['--default-shade-white']}
+                            text={"NEXT"}
+                            onPress={onPositiveButtonPress}
+                            IconRight={<ChevronRight strokeColor={theme.colors['--default-shade-white']}/>}
+                        />
+                    </FooterButtonContainer>
+                </FooterContainer>
+            </FooterWrapper>
+
+
+
+
+        </PageWrapper>
     );
 }
 
