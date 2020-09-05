@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import PropTypes from "prop-types";
 import {useModal} from "react-native-modalfy";
-import {createCaseFile, createTheatre} from "../../api/network";
+import {createCaseFile} from "../../api/network";
 import DialogTabs from "../../components/common/Dialog/DialogTabs";
 import PatientIcon from "../../../assets/svg/newCasePatient";
 import MedicalIcon from "../../../assets/svg/newCaseMedical";
@@ -21,10 +20,10 @@ import styled from "@emotion/native"
 import ConfirmationComponent from "../../components/ConfirmationComponent";
 import {useTheme} from "emotion-theming";
 import PageButton from "../../components/common/Page/PageButton";
-import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 import ChevronRight from "../../../assets/svg/ChevronRight";
 import ChevronLeft from "../../../assets/svg/ChevronLeft";
 import Divider from "../../components/common/Divider";
+import Snackbar from "react-native-paper/src/components/Snackbar";
 
 const PATIENT_TABS = {
     DETAILS: "Details",
@@ -148,7 +147,7 @@ const FooterContainer = styled.View`
   justify-content: space-between;
 `
 
-const FooterButtonContainer =styled.View`
+const FooterButtonContainer = styled.View`
   width: 145px;
   height: 48px;
 `
@@ -255,6 +254,8 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
     const [completedSteps, setCompletedSteps] = useState([]);
     const [completedTabs, setCompletedTabs] = useState([]);
     const [draft, setDraft] = useState([]);
+
+    const [snackbar, setSnackbar] = useState({visible: false, message: ""})
 
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
@@ -464,7 +465,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
             setSelectedTabIndex(updatedTabIndex);
         } else {
             const updatedIndex = selectedIndex - 1;
-            const steps= [...completedSteps];
+            const steps = [...completedSteps];
             steps.pop()
             setCompletedSteps(steps);
             setSelectedIndex(updatedIndex);
@@ -636,6 +637,13 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         }
     };
 
+    const clearSnackBar = () => {
+        setSnackbar({
+            visible: false,
+            message: ""
+        })
+    }
+
     const handleOnComplete = () => {
         // prepare request create case file request
         console.log("handleOnComplete", patientFields);
@@ -675,7 +683,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 
         console.log("handleOnComplete: caseProcedure Info", caseFileData);
 
-
         createCaseFile(caseFileData)
             .then((data) => {
                 addCaseFile(data);
@@ -685,7 +692,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                 });
             })
             .catch((error) => {
-                console.log("failed to create case file", error);
+                console.log("failed to create case file", error.message);
                 Alert.alert("Sorry", "Something went wrong when creating case.");
             });
     };
@@ -835,6 +842,27 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                     </FooterButtonContainer>
                 </FooterContainer>
             </FooterWrapper>
+
+            <Snackbar
+                visible={snackbar?.visible}
+                onDismiss={clearSnackBar}
+                duration={Snackbar.DURATION_MEDIUM}
+                theme={{
+                    colors: {
+                        accent: theme.colors['--color-red-700'],
+                        surface: theme.colors['--color-red-700'],
+                    }
+                }}
+                style={{
+                    backgroundColor: theme.colors['--color-red-200'],
+                    color: theme.colors['--color-red-700']
+                }}
+                action={{
+                    label: "X",
+                    onPress: clearSnackBar,
+                }}>
+                {snackbar?.message || "Something went wrong"}
+            </Snackbar>
 
         </PageWrapper>
     );
