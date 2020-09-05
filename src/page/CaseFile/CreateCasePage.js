@@ -451,6 +451,32 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         }
     };
 
+    const onPreviousButtonPress = () => {
+
+        if (selectedIndex === 0 && selectedTabIndex === 0) {
+
+        } else if (selectedTabIndex !== 0) {
+            const updatedTabIndex = selectedTabIndex - 1;
+            const tabs = [...completedTabs]
+            tabs.pop()
+            setCompletedTabs(tabs);
+
+            setSelectedTabIndex(updatedTabIndex);
+        } else {
+            const updatedIndex = selectedIndex - 1;
+            const steps= [...completedSteps];
+            steps.pop()
+            setCompletedSteps(steps);
+            setSelectedIndex(updatedIndex);
+            setSelectedStep(steps[updatedIndex]?.name);
+
+            const tabs = wizard[updatedIndex].tabs;
+            setTabs(tabs);
+            setSelectedTabIndex(0);
+            setCompletedTabs([]);
+        }
+    };
+
     const validatePatientDetailsTab = (tab) => {
         let isValid = true;
 
@@ -792,8 +818,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                             backgroundColor={theme.colors['--color-gray-200']}
                             fontColor={theme.colors['--color-gray-600']}
                             text={"PREVIOUS"}
-                            onPress={() => {
-                            }}
+                            onPress={onPreviousButtonPress}
                             IconLeft={<ChevronLeft strokeColor={theme.colors['--color-gray-600']}/>}
                         />
                     </FooterButtonContainer>
@@ -810,9 +835,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                     </FooterButtonContainer>
                 </FooterContainer>
             </FooterWrapper>
-
-
-
 
         </PageWrapper>
     );
