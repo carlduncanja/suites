@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {useModal} from "react-native-modalfy";
-import {createCaseFile} from "../../api/network";
+import {createCaseFile, isValidCaseProcedureAppointment} from "../../api/network";
 import DialogTabs from "../../components/common/Dialog/DialogTabs";
 import PatientIcon from "../../../assets/svg/newCasePatient";
 import MedicalIcon from "../../../assets/svg/newCaseMedical";
@@ -139,7 +139,12 @@ const FooterWrapper = styled.View`
   padding-bottom: ${({theme}) => theme.space['--space-24']}; 
   margin-left: ${({theme}) => theme.space['--space-24']}; 
   margin-right: ${({theme}) => theme.space['--space-24']}; 
- 
+`
+
+const SnackBarsWrapper = styled.View`
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
 `
 
 const FooterContainer = styled.View`
@@ -243,7 +248,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
     const [procedureErrors, setProcedureErrors] = useState([]);
 
     const [positiveText, setPositiveText] = useState("NEXT");
-    const [popoverList, setPopoverList] = useState([]);
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -262,45 +266,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
     //create new state in redux
     const [name, setName] = useState("");
 
-    //console.log("the patient draft is:", saveDraft(draft).payload.data);
 
-    useEffect(() => {
-        // if (draftprop !== null && !isEmpty(draftprop)) {
-        //     // console.log("what's in the draft?", draftprop);
-        //     permissiontoloadDraft();
-        //     //console.log("is load draft true?", loadDraft);
-        // }
-    }, []);
-
-    //   const loadDraft = () => {
-    //     if (draft !== null) {
-    //       console.log("What's in draft?", draft);
-    //       console.log("what's in draft prop?", draftprop);
-    //       setPatientFields(draft);
-    //     }
-    //   };
-
-    // ########### EVENT HANDLERS
+    //#region Event Handlers
 
     const onPatientInfoUpdate = (value) => {
-        // if (fieldName === 'patient') {
-        //     const {firstName = "", surname = ""} = patientFields['patient'];
-        //     setName(`${firstName} ${surname}'s Case`)
-        // }
-        //
-        // setPatientFields({
-        //     ...patientFields,
-        //     [fieldName]: value
-        // })
-        //
-        // const errors = {...patientFieldErrors}
-        // delete errors[fieldName];
-        // setPatientErrors(errors);
-
         setPatientFields(value);
-
-        // setDraft(value);
-        // console.log("redux save has:", saveDraft(draft));
     };
 
     const onStaffUpdate = (value) => {
@@ -358,8 +328,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         }
     };
 
-    const onPositiveButtonPress = () => {
-
+    const onPositiveButtonPress = async () => {
         const incrementTab = () => {
             const updatedTabIndex = selectedTabIndex + 1;
             setCompletedTabs([...completedTabs, tabs[selectedTabIndex]]);
@@ -395,7 +364,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                 break;
             }
             case CASE_PROCEDURE_TABS.PROCEDURES: {
-                isValid = validateProcedureInfo(selectedTabIndex);
+                isValid = await validateProcedureInfo(selectedTabIndex);
                 break;
             }
             case CASE_PROCEDURE_TABS.MEDICAL_STAFF: {
@@ -552,11 +521,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         return isValid;
     };
 
-    const validateProcedureInfo = (procedureIndex) => {
+    const validateProcedureInfo = async (procedureIndex) => {
         let isValid = true;
-        const requiredParams = ["date", "startTime", "location", "procedure"];
+        const requiredParams = ["date", "startTime", "location", "procedure", "duration"];
 
-        const procedure = caseProceduresInfo[procedureIndex] || {};
+        const procedureInfo = caseProceduresInfo[procedureIndex] || {};
 
         let updateErrors = [...procedureErrors];
         let errorObj = updateErrors[procedureIndex] || {};
@@ -564,7 +533,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         console.log("error index at", procedureIndex);
 
         for (const requiredParam of requiredParams) {
-            if (!procedure[requiredParam]) {
+            if (!procedureInfo[requiredParam]) {
                 console.log(`${requiredParam} is required`);
                 isValid = false;
                 errorObj[requiredParam] = "Please enter a value";
@@ -576,7 +545,16 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         }
 
         setProcedureErrors(updateErrors);
-        console.log("procedure errors", procedureErrors);
+        // console.log("procedure errors", procedureErrors);
+        if (!isValid) return isValid
+
+        // TODO validate time.
+        const {procedure, location, startTime, duration} = procedureInfo;
+        isValid = await validateProcedureAsync(procedure._id, location._id, startTime, duration);
+
+        // TODO validate theatre location.
+        // TODO validate recovery.
+        // TODO validate equipment and inventory.
 
         return isValid;
     };
@@ -608,33 +586,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         console.log("staff errors", staffErrors);
 
         return isValid;
-    };
-
-    const handleCloseDialog = () => {
-        onCancel();
-        modal.closeAllModals();
-    };
-
-    const handlePopovers = (popoverValue) => (popoverItem) => {
-        if (!popoverItem) {
-            let updatedPopovers = popoverList.map((item) => {
-                return {
-                    ...item,
-                    status: false,
-                };
-            });
-
-            setPopoverList(updatedPopovers);
-        } else {
-            const objIndex = popoverList.findIndex((obj) => obj.name === popoverItem);
-            const updatedObj = {...popoverList[objIndex], status: popoverValue};
-            const updatedPopovers = [
-                ...popoverList.slice(0, objIndex),
-                updatedObj,
-                ...popoverList.slice(objIndex + 1),
-            ];
-            setPopoverList(updatedPopovers);
-        }
     };
 
     const clearSnackBar = () => {
@@ -775,6 +726,28 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
     const getTabsProgress = () => {
         return ((selectedTabIndex + 1) / tabs.length) * 100;
     };
+
+    const validateProcedureAsync = (procedure, location, startTime, duration) => {
+
+        return isValidCaseProcedureAppointment(procedure, location, startTime, duration)
+            .then(results => {
+                const {errors = [], isValid} = results;
+
+                // loop through and show all errors.
+                let messages = errors.map(item => item.message)
+                let message = messages.join('\n')
+                setSnackbar({visible: true, message})
+
+                return isValid;
+            })
+            .catch(error => {
+                console.log("Failed to validate procedure", error);
+                setSnackbar({visible: true, message: "Something went wrong"})
+                return false
+            })
+    }
+
+    //#endregion
 
     const title = name === "" ? "New Case" : name;
 
