@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import PropTypes from "prop-types";
-import { useModal } from "react-native-modalfy";
-import { createCaseFile, createTheatre } from "../../api/network";
-import OverlayDialog from "../../components/common/Dialog/OverlayDialog";
+import React, {useState, useEffect} from "react";
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {useModal} from "react-native-modalfy";
+import {createCaseFile, isValidCaseProcedureAppointment} from "../../api/network";
 import DialogTabs from "../../components/common/Dialog/DialogTabs";
-import InputField2 from "../../components/common/Input Fields/InputField2";
-import OptionsField from "../../components/common/Input Fields/OptionsField";
-import { MenuOption, MenuOptions } from "react-native-popup-menu";
 import PatientIcon from "../../../assets/svg/newCasePatient";
 import MedicalIcon from "../../../assets/svg/newCaseMedical";
 import ProcedureIcon from "../../../assets/svg/newCaseProcedure";
@@ -16,12 +11,19 @@ import StaffStep from "../../components/CaseFiles/StaffDialogTabs/StaffStep";
 import ProcedureStep from "../../components/CaseFiles/ProceduresDialogTabs/ProcedureStep";
 import CompleteCreateCase from "../../components/CaseFiles/CompleteCreateCase";
 import ProgressContainer from "../../components/common/Progress/ProgressContainer";
-import { addCaseFile } from "../../redux/actions/caseFilesActions";
-import { saveDraft } from "../../redux/actions/draftActions";
-import { connect } from "react-redux";
-import { isEmpty } from "lodash";
+import {addCaseFile} from "../../redux/actions/caseFilesActions";
+import {saveDraft} from "../../redux/actions/draftActions";
+import {connect} from "react-redux";
+import {isEmpty} from "lodash";
 import moment from "moment";
+import styled from "@emotion/native"
 import ConfirmationComponent from "../../components/ConfirmationComponent";
+import {useTheme} from "emotion-theming";
+import PageButton from "../../components/common/Page/PageButton";
+import ChevronRight from "../../../assets/svg/ChevronRight";
+import ChevronLeft from "../../../assets/svg/ChevronLeft";
+import Divider from "../../components/common/Divider";
+import Snackbar from "react-native-paper/src/components/Snackbar";
 
 const PATIENT_TABS = {
     DETAILS: "Details",
@@ -94,17 +96,79 @@ const testData = {
     ],
 };
 
-function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }) {
+const PageWrapper = styled.View`
+  flex: 1;
+  display: flex;  
+  margin:0;
+  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+`
+const PageContentWrapper = styled.View`
+  flex: 1;
+  //padding: ${({theme}) => theme.space['--space-32']}
+`
+
+const HeaderWrapper = styled.View`
+  display: flex;
+  height: 47px;
+  width: 100%;
+  justify-content: center;
+  padding-left: ${({theme}) => theme.space['--space-24']};
+  padding-right: ${({theme}) => theme.space['--space-24']};
+  
+`
+
+const HeaderContainer = styled.View`
+  //flex: 1;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const PageTitle = styled.Text(({theme}) => ({
+    ...theme.font['--text-xl-medium'],
+    color: theme.colors['--company']
+}))
+
+const FooterWrapper = styled.View`
+  bottom: 0;
+  border: 1px solid ${({theme}) => theme.colors['--color-gray-300']};
+  border-bottom-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+  padding-top: ${({theme}) => theme.space['--space-24']}; 
+  padding-bottom: ${({theme}) => theme.space['--space-24']}; 
+  margin-left: ${({theme}) => theme.space['--space-24']}; 
+  margin-right: ${({theme}) => theme.space['--space-24']}; 
+`
+
+const SnackBarsWrapper = styled.View`
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+`
+
+const FooterContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`
+
+const FooterButtonContainer = styled.View`
+  width: 145px;
+  height: 48px;
+`
+
+
+function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) {
     // ########### CONST
     const [wizard, setWizard] = useState([
         {
             step: {
                 name: "Patient",
                 selectedIcon: (
-                    <PatientIcon fillColor={"#0CB0E7"} strokeColor={"#64D8FF"} />
+                    <PatientIcon fillColor={"#0CB0E7"} strokeColor={"#64D8FF"}/>
                 ),
                 disabledIcon: (
-                    <PatientIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"} />
+                    <PatientIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"}/>
                 ),
                 progress: 0,
             },
@@ -118,8 +182,8 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
         {
             step: {
                 name: "Medical Team",
-                selectedIcon: <MedicalIcon fillColor={"#E53E3E"} />,
-                disabledIcon: <MedicalIcon fillColor={"#CBD5E0"} />,
+                selectedIcon: <MedicalIcon fillColor={"#E53E3E"}/>,
+                disabledIcon: <MedicalIcon fillColor={"#CBD5E0"}/>,
                 progress: 0,
             },
             tabs: ["Assignment 1"],
@@ -140,10 +204,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
             step: {
                 name: "Procedures",
                 selectedIcon: (
-                    <ProcedureIcon fillColor={"#319795"} strokeColor={"#81E6D9"} />
+                    <ProcedureIcon fillColor={"#319795"} strokeColor={"#81E6D9"}/>
                 ),
                 disabledIcon: (
-                    <ProcedureIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"} />
+                    <ProcedureIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"}/>
                 ),
                 progress: 0,
             },
@@ -162,9 +226,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
             },
         },
     ]);
+    const theme = useTheme();
     const steps = [...wizard.map((step) => step.step)];
     const modal = useModal();
-    const { draftItem } = route.params;
+    const {draftItem} = route.params;
 
     //console.log("what's in route", route.params);
     // ########### STATES
@@ -183,7 +248,6 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
     const [procedureErrors, setProcedureErrors] = useState([]);
 
     const [positiveText, setPositiveText] = useState("NEXT");
-    const [popoverList, setPopoverList] = useState([]);
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -195,50 +259,18 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
     const [completedTabs, setCompletedTabs] = useState([]);
     const [draft, setDraft] = useState([]);
 
+    const [snackbar, setSnackbar] = useState({visible: false, message: ""})
+
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
     //create new state in redux
     const [name, setName] = useState("");
 
-    //console.log("the patient draft is:", saveDraft(draft).payload.data);
 
-    useEffect(() => {
-        // if (draftprop !== null && !isEmpty(draftprop)) {
-        //     // console.log("what's in the draft?", draftprop);
-        //     permissiontoloadDraft();
-        //     //console.log("is load draft true?", loadDraft);
-        // }
-    }, []);
-
-    //   const loadDraft = () => {
-    //     if (draft !== null) {
-    //       console.log("What's in draft?", draft);
-    //       console.log("what's in draft prop?", draftprop);
-    //       setPatientFields(draft);
-    //     }
-    //   };
-
-    // ########### EVENT HANDLERS
+    //#region Event Handlers
 
     const onPatientInfoUpdate = (value) => {
-        // if (fieldName === 'patient') {
-        //     const {firstName = "", surname = ""} = patientFields['patient'];
-        //     setName(`${firstName} ${surname}'s Case`)
-        // }
-        //
-        // setPatientFields({
-        //     ...patientFields,
-        //     [fieldName]: value
-        // })
-        //
-        // const errors = {...patientFieldErrors}
-        // delete errors[fieldName];
-        // setPatientErrors(errors);
-
         setPatientFields(value);
-
-        // setDraft(value);
-        // console.log("redux save has:", saveDraft(draft));
     };
 
     const onStaffUpdate = (value) => {
@@ -296,8 +328,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
         }
     };
 
-    const onPositiveButtonPress = () => {
-
+    const onPositiveButtonPress = async () => {
         const incrementTab = () => {
             const updatedTabIndex = selectedTabIndex + 1;
             setCompletedTabs([...completedTabs, tabs[selectedTabIndex]]);
@@ -333,7 +364,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
                 break;
             }
             case CASE_PROCEDURE_TABS.PROCEDURES: {
-                isValid = validateProcedureInfo(selectedTabIndex);
+                isValid = await validateProcedureInfo(selectedTabIndex);
                 break;
             }
             case CASE_PROCEDURE_TABS.MEDICAL_STAFF: {
@@ -390,6 +421,32 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
         }
     };
 
+    const onPreviousButtonPress = () => {
+
+        if (selectedIndex === 0 && selectedTabIndex === 0) {
+
+        } else if (selectedTabIndex !== 0) {
+            const updatedTabIndex = selectedTabIndex - 1;
+            const tabs = [...completedTabs]
+            tabs.pop()
+            setCompletedTabs(tabs);
+
+            setSelectedTabIndex(updatedTabIndex);
+        } else {
+            const updatedIndex = selectedIndex - 1;
+            const steps = [...completedSteps];
+            steps.pop()
+            setCompletedSteps(steps);
+            setSelectedIndex(updatedIndex);
+            setSelectedStep(steps[updatedIndex]?.name);
+
+            const tabs = wizard[updatedIndex].tabs;
+            setTabs(tabs);
+            setSelectedTabIndex(0);
+            setCompletedTabs([]);
+        }
+    };
+
     const validatePatientDetailsTab = (tab) => {
         let isValid = true;
 
@@ -409,7 +466,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
             }
         }
 
-        let updateErrors = { ...patientFieldErrors };
+        let updateErrors = {...patientFieldErrors};
 
         console.log(patientFields);
 
@@ -464,11 +521,11 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
         return isValid;
     };
 
-    const validateProcedureInfo = (procedureIndex) => {
+    const validateProcedureInfo = async (procedureIndex) => {
         let isValid = true;
-        const requiredParams = ["date", "startTime", "location", "procedure"];
+        const requiredParams = ["date", "startTime", "location", "procedure", "duration"];
 
-        const procedure = caseProceduresInfo[procedureIndex] || {};
+        const procedureInfo = caseProceduresInfo[procedureIndex] || {};
 
         let updateErrors = [...procedureErrors];
         let errorObj = updateErrors[procedureIndex] || {};
@@ -476,7 +533,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
         console.log("error index at", procedureIndex);
 
         for (const requiredParam of requiredParams) {
-            if (!procedure[requiredParam]) {
+            if (!procedureInfo[requiredParam]) {
                 console.log(`${requiredParam} is required`);
                 isValid = false;
                 errorObj[requiredParam] = "Please enter a value";
@@ -488,7 +545,16 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
         }
 
         setProcedureErrors(updateErrors);
-        console.log("procedure errors", procedureErrors);
+        // console.log("procedure errors", procedureErrors);
+        if (!isValid) return isValid
+
+        // TODO validate time.
+        const {procedure, location, startTime, duration} = procedureInfo;
+        isValid = await validateProcedureAsync(procedure._id, location._id, startTime, duration);
+
+        // TODO validate theatre location.
+        // TODO validate recovery.
+        // TODO validate equipment and inventory.
 
         return isValid;
     };
@@ -522,32 +588,12 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
         return isValid;
     };
 
-    const handleCloseDialog = () => {
-        onCancel();
-        modal.closeAllModals();
-    };
-
-    const handlePopovers = (popoverValue) => (popoverItem) => {
-        if (!popoverItem) {
-            let updatedPopovers = popoverList.map((item) => {
-                return {
-                    ...item,
-                    status: false,
-                };
-            });
-
-            setPopoverList(updatedPopovers);
-        } else {
-            const objIndex = popoverList.findIndex((obj) => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
-            const updatedPopovers = [
-                ...popoverList.slice(0, objIndex),
-                updatedObj,
-                ...popoverList.slice(objIndex + 1),
-            ];
-            setPopoverList(updatedPopovers);
-        }
-    };
+    const clearSnackBar = () => {
+        setSnackbar({
+            visible: false,
+            message: ""
+        })
+    }
 
     const handleOnComplete = () => {
         // prepare request create case file request
@@ -588,7 +634,6 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
 
         console.log("handleOnComplete: caseProcedure Info", caseFileData);
 
-
         createCaseFile(caseFileData)
             .then((data) => {
                 addCaseFile(data);
@@ -598,17 +643,16 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
                 });
             })
             .catch((error) => {
-                console.log("failed to create case file", error);
+                console.log("failed to create case file", error.message);
                 Alert.alert("Sorry", "Something went wrong when creating case.");
             });
     };
 
     const createDraft = () => {
-        saveDraft([{ id: Math.floor(Math.random() * 10000), patient: patientFields }]);
+        saveDraft([{id: Math.floor(Math.random() * 10000), patient: patientFields}]);
         navigation.navigate("CaseFiles");
         modal.closeAllModals()
     }
-
 
     const onClose = () => {
         modal.openModal("ConfirmationModal", {
@@ -618,7 +662,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
                     isEditUpdate={true}
                     onAction={createDraft}
                     action={"Save"}
-                    onCancel={() => { navigation.navigate("CaseFiles"); modal.closeAllModals() }}
+                    onCancel={() => {
+                        navigation.navigate("CaseFiles");
+                        modal.closeAllModals()
+                    }}
                     message={`You haven't completed creating the case file for "${patientFields?.firstName}" ,Do you wish to save your progress?`}
                 />
             ),
@@ -680,18 +727,48 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
         return ((selectedTabIndex + 1) / tabs.length) * 100;
     };
 
+    const validateProcedureAsync = (procedure, location, startTime, duration) => {
+
+        return isValidCaseProcedureAppointment(procedure, location, startTime, duration)
+            .then(results => {
+                const {errors = [], isValid} = results;
+
+                // loop through and show all errors.
+                let messages = errors.map(item => item.message)
+
+                if (messages.length) {
+                    let message = messages.join('\n')
+                    setSnackbar({visible: true, message})
+                }
+
+                return isValid;
+            })
+            .catch(error => {
+                console.log("Failed to validate procedure", error);
+                setSnackbar({visible: true, message: "Something went wrong"})
+                return false
+            })
+    }
+
+    //#endregion
+
     const title = name === "" ? "New Case" : name;
 
     return (
-        <View style={styles.container}>
-            <View style={styles.headingContainer}>
-                <Text>{title}</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                    <Text style={{ color: "#718096" }}>Close</Text>
-                </TouchableOpacity>
-            </View>
+        <PageWrapper theme={theme}>
 
-            <View style={{ height: 140 }}>
+            <HeaderWrapper theme={theme}>
+                <HeaderContainer theme={theme}>
+                    <PageTitle>{title}</PageTitle>
+
+                    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                        <Text style={{color: "#718096"}}>Close</Text>
+                    </TouchableOpacity>
+
+                </HeaderContainer>
+            </HeaderWrapper>
+
+            <View style={{height: 140}}>
                 <ProgressContainer
                     steps={steps}
                     handleStepPress={handleStepPress}
@@ -701,33 +778,69 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, draftprop, route }
                 />
             </View>
 
-            <View style={{ flex: 1 }}>
-                <View style={{ height: 40 }}>
-                    <DialogTabs
-                        tabs={tabs}
-                        tab={selectedTabIndex}
-                        tabName={wizard[selectedIndex] && wizard[selectedIndex].tabName}
-                        onAddTab={wizard[selectedIndex] && wizard[selectedIndex].onAdd}
-                        onTabPress={handleTabPress}
-                    />
-                </View>
-
-                {/*<TouchableOpacity*/}
-                {/*    style={{flex: 1}}*/}
-                {/*    onPress={() => handlePopovers(false)()}*/}
-                {/*    activeOpacity={1}*/}
-                {/*>*/}
-                <View style={{ flex: 1 }}>{getTabContent()}</View>
-                {/*</TouchableOpacity>*/}
+            <View style={{height: 40}}>
+                <DialogTabs
+                    tabs={tabs}
+                    tab={selectedTabIndex}
+                    tabName={wizard[selectedIndex] && wizard[selectedIndex].tabName}
+                    onAddTab={wizard[selectedIndex] && wizard[selectedIndex].onAdd}
+                    onTabPress={handleTabPress}
+                />
             </View>
 
-            <TouchableOpacity
-                style={styles.footerButton}
-                onPress={onPositiveButtonPress}
-            >
-                <Text style={styles.footerText}>{positiveText}</Text>
-            </TouchableOpacity>
-        </View>
+            <PageContentWrapper>
+                <View style={{flex: 1}}>{getTabContent()}</View>
+            </PageContentWrapper>
+
+            <Divider/>
+
+            <FooterWrapper>
+                <FooterContainer>
+                    <FooterButtonContainer>
+                        <PageButton
+                            backgroundColor={theme.colors['--color-gray-200']}
+                            fontColor={theme.colors['--color-gray-600']}
+                            text={"PREVIOUS"}
+                            onPress={onPreviousButtonPress}
+                            IconLeft={<ChevronLeft strokeColor={theme.colors['--color-gray-600']}/>}
+                        />
+                    </FooterButtonContainer>
+
+
+                    <FooterButtonContainer>
+                        <PageButton
+                            backgroundColor={theme.colors['--color-blue-500']}
+                            fontColor={theme.colors['--default-shade-white']}
+                            text={"NEXT"}
+                            onPress={onPositiveButtonPress}
+                            IconRight={<ChevronRight strokeColor={theme.colors['--default-shade-white']}/>}
+                        />
+                    </FooterButtonContainer>
+                </FooterContainer>
+            </FooterWrapper>
+
+            <Snackbar
+                visible={snackbar?.visible}
+                onDismiss={clearSnackBar}
+                duration={Snackbar.DURATION_MEDIUM}
+                theme={{
+                    colors: {
+                        accent: theme.colors['--color-red-700'],
+                        surface: theme.colors['--color-red-700'],
+                    }
+                }}
+                style={{
+                    backgroundColor: theme.colors['--color-red-200'],
+                    color: theme.colors['--color-red-700']
+                }}
+                action={{
+                    label: "X",
+                    onPress: clearSnackBar,
+                }}>
+                {snackbar?.message || "Something went wrong"}
+            </Snackbar>
+
+        </PageWrapper>
     );
 }
 

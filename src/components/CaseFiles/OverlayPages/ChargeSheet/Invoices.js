@@ -90,7 +90,7 @@ const reportTestData = {
 const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
     const modal = useModal();
 
-    console.log('Invoices: ', tabDetails);
+    console.log('Invoices: ', tabDetails); 
     const [checkBoxList, setCheckBoxList] = useState([]);
 
     const headers = [
@@ -121,6 +121,7 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
         //     billingDetails: customer,
         //     ...report
         // };
+        console.log("Item: ", item)
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Invoice"

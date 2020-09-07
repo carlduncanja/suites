@@ -9,6 +9,28 @@ import InputField2 from "../../common/Input Fields/InputField2";
 import SuggestedTimesPopover from "../../common/SuggestedTimesPopover";
 import { useModal } from "react-native-modalfy";
 import ScheduleDisplayComponent from "../../ScheduleDisplay/ScheduleDisplayComponent";
+import styled from "@emotion/native";
+import {useTheme} from "emotion-theming";
+
+const Space = styled.View`
+   width:  ${({theme}) => theme.space['--space-24']}
+`;
+
+const RowWrapper = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: ${({theme}) => theme.space['--space-20']};
+    z-index: ${({zIndex}) => zIndex};
+`
+
+const InputWrapper = styled.View`
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    z-index: ${({zIndex}) => zIndex};
+
+`
 
 const ProcedureTab = ({
   onProcedureInfoChange,
@@ -17,6 +39,7 @@ const ProcedureTab = ({
   onErrorUpdate,
 }) => {
   const modal = useModal();
+  const theme = useTheme()
   // const [procedure, setProcedure] = useState(undefined)
   // const [location, setLocation] = useState(undefined)
 
@@ -222,8 +245,6 @@ const ProcedureTab = ({
     });
   };
 
-  console.log("errors", errors);
-
   const handleSuggestedTimeSelected = (time) => {
     console.log("suggested time selected", time);
     modal.closeModals("BottomSheetModal");
@@ -249,8 +270,8 @@ const ProcedureTab = ({
 
   return (
     <View style={styles.sectionContainer}>
-      <View style={styles.row}>
-        <View style={styles.inputWrapper}>
+      <RowWrapper theme={theme} style={styles.row}>
+        <InputWrapper style={styles.inputWrapper}>
           <SearchableOptionsField
             label={"Procedure"}
             value={procedure}
@@ -266,8 +287,9 @@ const ProcedureTab = ({
             hasError={errors["procedure"]}
             errorMessage={errors["procedure"]}
           />
-        </View>
-        <View style={styles.inputWrapper}>
+        </InputWrapper>
+        <Space/>
+        <InputWrapper style={styles.inputWrapper}>
           <SearchableOptionsField
             label={"Location"}
             value={location}
@@ -281,11 +303,11 @@ const ProcedureTab = ({
             hasError={errors["location"]}
             errorMessage={errors["location"]}
           />
-        </View>
-      </View>
+        </InputWrapper>
+      </RowWrapper>
 
-      <View style={[styles.row, { zIndex: -2 }]}>
-        <View style={[styles.inputWrapper]}>
+      <RowWrapper theme={theme} style={[styles.row, { zIndex: -2 }]}>
+        <InputWrapper style={[styles.inputWrapper]}>
           <InputField2
             label={"Duration"}
             onChangeText={handleInfoChange("duration")}
@@ -296,9 +318,9 @@ const ProcedureTab = ({
             errorMessage={errors["duration"]}
             hasError={errors["duration"]}
           />
-        </View>
-
-        <View style={styles.inputWrapper}>
+        </InputWrapper>
+        <Space/>
+        <InputWrapper style={styles.inputWrapper}>
           <InputField2
             label={"Category"}
             onChangeText={handleInfoChange("category")}
@@ -306,16 +328,14 @@ const ProcedureTab = ({
             onClear={handleInfoChange("category")}
             placeholder={""}
           />
-        </View>
-      </View>
+        </InputWrapper>
+      </RowWrapper>
 
-      <View
-        style={[
+      <RowWrapper theme={theme} style={[
           styles.row,
           { zIndex: -1, height: 90, alignItems: "flex-start" },
-        ]}
-      >
-        <View style={styles.inputWrapper}>
+        ]}>
+        <InputWrapper style={styles.inputWrapper}>
           <DateInputField
             label={"Date"}
             onDateChange={onDateUpdate}
@@ -327,17 +347,15 @@ const ProcedureTab = ({
             errorMessage={errors["date"]}
             hasError={errors["date"]}
           />
-        </View>
-
-        <View
-          style={[
+        </InputWrapper>
+        <Space/>
+        <InputWrapper style={[
             styles.inputWrapper,
             {
               flexDirection: "column",
               justifyContent: "flex-end",
             },
-          ]}
-        >
+          ]}>
           <DateInputField
             label={"Start Time"}
             onDateChange={onTimeUpdate("startTime")}
@@ -367,8 +385,10 @@ const ProcedureTab = ({
               )
             }
           </View>
-        </View>
-      </View>
+        </InputWrapper>
+
+
+      </RowWrapper>
     </View>
   );
 };

@@ -10,15 +10,20 @@ const { width } = Dimensions.get("window");
 
 const ReportPreviewModal = (props) => {
     
-    const { modal: {closeModals, currentModal, params : {content}}} = props
+    const { modal: {closeModals, currentModal, params : {content, onClose}}} = props
+    
+    let closePreview = () =>{
+        closeModals(currentModal);
+        onClose();
+    }
     return (  
             <SimpleAnimation duration={2000} direction="left" fade={false} delay={1000} movementType="slide" easing={Easing.ease}>
                 <View style={{flex:1, width:width}}>
                     {/* <ReportPreview/> */}
                     { content }
                 </View>
-                <TouchableOpacity style={styles.button} onPress={()=>{
-                    closeModals(currentModal)}}
+                <TouchableOpacity style={styles.button} 
+                    onPress={()=>closePreview()}
                     activeOpacity={1}
                 >
                     <Text style={[styles.buttonText,{marginRight:10}]}>Close Preview</Text>

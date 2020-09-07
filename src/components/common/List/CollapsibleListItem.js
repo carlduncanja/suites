@@ -10,7 +10,7 @@ import { useTheme } from 'emotion-theming';
 import CollapsibleListItemChildView from './CollapsibleListItemChildView';
 
 
-/**
+/** 
  *
  * @param hasCheckBox{bool}
  * @param isChecked{bool}

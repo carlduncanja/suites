@@ -138,18 +138,6 @@ const TextInputContainer = styled.View`
     /* box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null}; */
 `;
 
-// const ValueContainer = styled.View(({theme, enabled = {}}) => ({
-//     // ...theme.font['--text-base-regular'],
-//     flex: 1,
-//     flexDirection: 'column',
-//     color: theme.colors['--color-gray-900'],
-//     backgroundColor: enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'],
-//     borderColor: theme.colors['--color-gray-300'],
-//     borderWidth: 1,
-//     borderRadius: 4,
-//     height: 32,
-//     justifyContent: 'center',
-// }));
 
 function SearchableOptionsField({
                                     text,
@@ -212,7 +200,7 @@ function SearchableOptionsField({
             }
 
             <TextInputWrapper theme={theme} enabled={enabled}>
-                <TextInputContainer>
+                <TextInputContainer enabled={enabled}>
 
                     {
                         (enabled && !!selectedValue)

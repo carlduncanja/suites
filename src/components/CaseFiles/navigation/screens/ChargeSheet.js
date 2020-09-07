@@ -76,6 +76,7 @@ const ChargeSheet = ({
                          handleQuotes,
                          handleInvoices,
                          onSelectEquipments,
+                         onSelectConsumables,
                      }) => {
 
     let {
@@ -268,6 +269,7 @@ const ChargeSheet = ({
                     onConsumablesUpdate={handleConsumableUpdate}
                     isEditMode={isEditMode}
                     handleEditDone={handleEditDone}
+                    onSelectConsumables = {onSelectConsumables}
                 />
             }
 

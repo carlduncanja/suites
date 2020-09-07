@@ -46,8 +46,6 @@ function InputLabelComponent({
 
     const theme = useTheme();
 
-    console.log("width hello", width);
-
     const minWidth = isNaN(width) ? 50 : width
 
     return (

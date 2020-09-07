@@ -43,7 +43,7 @@ const EquipmentText = styled.Text( ({theme}) => ({
     ...theme.font['--text-sm-medium'],
     color : theme.colors['--color-blue-600'],
     paddingLeft : 14,
-}));
+})); 
   
 function ChargesheetEquipment({ 
     headers, 
@@ -145,6 +145,7 @@ function ChargesheetEquipment({
 
         }else{
             setCheckBoxList([])
+            setVariantsCheckBoxList([])
             onSelectEquipments([])
         }
 

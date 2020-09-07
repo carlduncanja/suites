@@ -77,7 +77,7 @@ const reportTestData = {
             }
         ]
     }
-};
+}; 
 
 const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     const modal = useModal();
@@ -100,7 +100,7 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     ];
 
     const openModal = item => () => {
-        console.log('Item: ', item);
+        console.log('Item: ', item, reportDetails);
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Quotation"
