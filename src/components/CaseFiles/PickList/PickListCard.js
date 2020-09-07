@@ -106,7 +106,6 @@ const PickListCard = (props) =>{
                         })
                     }
                 </View>
-
             }
 
 

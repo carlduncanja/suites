@@ -13,30 +13,6 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 
 const AppointmentTab = ({ fields, onFieldChange }) => {
 
-    // const {
-    //     // supplier id
-    //     _id,
-    //     // supplier name
-    //     supplier,
-    //     assigned,
-    //     status,
-    //     usage,
-    //     availableOn,
-    //     categories,
-    //     description
-    // } = equipment
-
-    // const [fields, setFields] = useState({
-    //     // supplier name
-    //     supplier : supplier,
-    //     assigned : assigned,
-    //     status : status ,
-    //     usage : usage,
-    //     availableOn : availableOn,
-    //     categories : categories,
-    //     description : description
-    // })
-
     // Physicians Search
     const [searchValue, setSearchValue] = useState();
     const [searchResults, setSearchResult] = useState([]);
