@@ -1,5 +1,5 @@
-import React, {useState, useRef, useEffect, createRef} from "react";
-import PropTypes from "prop-types";
+import React, {useState, useRef, useEffect, createRef} from 'react';
+import PropTypes from 'prop-types';
 import {
     View,
     StyleSheet,
@@ -8,59 +8,59 @@ import {
     ActivityIndicator,
     Text,
     Keyboard,
-} from "react-native";
-import {login} from "../api/network";
-import LoginBackground from "../components/Onboarding/LoginBackground";
-import Logo from "../../assets/svg/logo";
-import InputFieldwithIcon from "../components/common/Input Fields/InputFiledwithIcon";
-import PersonIcon from "../../assets/svg/personIcon";
-import PasswordIcon from "../../assets/svg/lockIcon";
-import NotificationReg from "../components/notifications/NotficationRegistry";
-import Button from "../components/common/Buttons/Button";
-import {connect} from "react-redux";
-import {signIn} from "../redux/actions/authActions";
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
-import Page from "../components/common/Page/Page";
-import {setBearerToken} from "../api";
+} from 'react-native';
+import {connect} from 'react-redux';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import {login} from '../api/network';
+import LoginBackground from '../components/Onboarding/LoginBackground';
+import Logo from '../../assets/svg/logo';
+import InputFieldWithIcon from '../components/common/Input Fields/InputFieldWithIcon';
+import PersonIcon from '../../assets/svg/personIcon';
+import PasswordIcon from '../../assets/svg/lockIcon';
+import NotificationReg from '../components/notifications/NotficationRegistry';
+import Button from '../components/common/Buttons/Button';
+import {signIn} from '../redux/actions/authActions';
+import Page from '../components/common/Page/Page';
+import {setBearerToken} from '../api';
 
 function LoginPage({navigation, signIn, expoPushToken}) {
-
     const theme = useTheme();
 
     const emailRef = useRef();
     const passwordRef = useRef();
 
     const [fields, setFields] = useState({
-        email: "",
-        password: "",
+        email: '',
+        password: '',
     });
 
-    useEffect(()=>{},[])
+    useEffect(() => {
+    }, []);
 
     const [isLoading, setLoading] = useState(false);
 
-    const onFieldChange = (fieldName) => (value) => {
+    const onFieldChange = fieldName => value => {
         setFields({
             ...fields,
             [fieldName]: value,
         });
     };
     const onButtonPress = () => {
-        console.log("Fields: ", fields);
+        console.log('Fields: ', fields);
 
         setLoading(true);
 
         login(fields.email, fields.password, expoPushToken)
-            .then(async (data) => {
+            .then(async data => {
                 // save auth data
                 console.log(data);
                 const {token = null} = data;
                 try {
-                    await AsyncStorage.setItem("userToken", token);
+                    await AsyncStorage.setItem('userToken', token);
                     // navigation.navigate("App")
                     if (token) {
-                        setBearerToken(token)
+                        setBearerToken(token);
                     }
 
                     signIn(token);
@@ -68,11 +68,11 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                     // Error saving data
                 }
             })
-            .catch((e) => {
-                console.log("login failed", e);
-                Alert.alert("Failed to login");
+            .catch(e => {
+                console.log('login failed', e);
+                Alert.alert('Failed to login');
             })
-            .finally((_) => {
+            .finally(_ => {
                 setLoading(false);
             });
     };
@@ -85,15 +85,15 @@ function LoginPage({navigation, signIn, expoPushToken}) {
             style={{
                 flex: 1,
                 borderWidth: 1,
-                borderColor: "#CCD6E0",
+                borderColor: '#CCD6E0',
                 height: 0,
             }}
         />
     );
 
     const LoginPageWrapper = styled.View`
-        margin : 0;
-        flex:1;
+        margin: 0;
+        flex: 1;
     `;
     const LoginPageContainer = styled.View`
         height: 100%;
@@ -102,12 +102,12 @@ function LoginPage({navigation, signIn, expoPushToken}) {
     `;
 
     const OverlayWrapper = styled.View`
-        flex:1;
-        position : 'absolute';
+        flex: 1;
+        position: absolute;
         height: 100%;
         width: 100%;
-        top:0;
-        bottom:0;
+        top: 0;
+        bottom: 0;
     `;
     const OverlayContainer = styled.View`
         height: 100%;
@@ -117,14 +117,14 @@ function LoginPage({navigation, signIn, expoPushToken}) {
     const PageWrapper = styled.View`
         height: 100%;
         width: 100%;
-        bottom :50;
-    `
+        bottom: 50;
+    `;
     const PageContainer = styled.View`
         height: 100%;
         width: 100%;
         align-items: center;
         justify-content: center;
-    `
+    `;
 
     const LogoWrapper = styled.View`
         height: 116px;
@@ -143,116 +143,117 @@ function LoginPage({navigation, signIn, expoPushToken}) {
     const FormWrapper = styled.View``;
     const FormContainer = styled.View``;
     return (
-        <View style={{flex:1}}>
+        <View style={{flex: 1}}>
             {/* <LoginPageContainer> */}
 
-                <LoginBackground/>
+            <LoginBackground/>
 
-                <View style={styles.overlay}>
-                    {/* <OverlayContainer>  */}
+            <View style={styles.overlay}>
+                {/* <OverlayContainer>  */}
 
-                        <View style={styles.page}>
-                            {/* <PageContainer> */}
+                <View style={styles.page}>
+                    {/* <PageContainer> */}
 
-                                <LogoWrapper>
-                                    <LogoContainer>
-                                        <Logo/>
-                                    </LogoContainer>
-                                </LogoWrapper>
+                    <LogoWrapper>
+                        <LogoContainer>
+                            <Logo/>
+                        </LogoContainer>
+                    </LogoWrapper>
 
-                                <View style={styles.form}>
+                    <View style={styles.form}>
 
-                                    <View style={styles.row}>
-                                        <InputFieldwithIcon
-                                            label="Email"
-                                            onChangeText={(value) => onFieldChange('email')(value)}
-                                            value={fields['email']}
-                                            keyboardType={"email-address"}
-                                            onClear={() => onFieldChange('email')('')}
-                                            icon={<PersonIcon/>}
-                                            inputRef = {emailRef}
-                                            isFocus = {emailRef?.current?.isFocused() || false}
-                                            // onFocus = {onFocus}
-                                        />
-                                    </View>
+                        <View style={styles.row}>
+                            <InputFieldWithIcon
+                                label="Email"
+                                onChangeText={value => onFieldChange('email')(value)}
+                                value={fields.email}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                onClear={() => onFieldChange('email')('')}
+                                icon={<PersonIcon/>}
+                                inputRef={emailRef}
+                                isFocus={emailRef?.current?.isFocused() || false}
+                                // onFocus = {onFocus}
+                            />
+                        </View>
 
-                                    <View style={styles.row}>
-                                        <InputFieldwithIcon
-                                            label="Password"
-                                            onChangeText={(value) => onFieldChange("password")(value)}
-                                            value={fields["password"]}
-                                            onClear={() => onFieldChange("password")("")}
-                                            icon={<PasswordIcon/>}
-                                            secureTextEntry={true}
-                                            inputRef = {passwordRef}
-                                            isFocus ={passwordRef?.current?.isFocused() || false}
-                                        />
-                                    </View>
+                        <View style={styles.row}>
+                            <InputFieldWithIcon
+                                label="Password"
+                                onChangeText={value => onFieldChange('password')(value)}
+                                value={fields.password}
+                                onClear={() => onFieldChange('password')('')}
+                                icon={<PasswordIcon/>}
+                                secureTextEntry={true}
+                                inputRef={passwordRef}
+                                isFocus={passwordRef?.current?.isFocused() || false}
+                            />
+                        </View>
 
-                                    <View style={styles.button}>
-                                        {isLoading ? (
-                                            <ActivityIndicator size="small" color="#00ff00"/>
-                                        ) : (
-                                            <Button
-                                                backgroundColor="#104587"
-                                                buttonPress={onButtonPress}
-                                                title="Login"
-                                                color="#FFFFFF"
-                                            />
-                                        )}
-                                    </View>
+                        <View style={styles.button}>
+                            {isLoading ? (
+                                <ActivityIndicator size="small" color="#00ff00"/>
+                            ) : (
+                                <Button
+                                    backgroundColor="#104587"
+                                    buttonPress={onButtonPress}
+                                    title="Login"
+                                    color="#FFFFFF"
+                                />
+                            )}
+                        </View>
 
-                                    <View style={styles.loginDivider}>
-                                        {divider}
-                                        <Text
-                                            style={{
-                                                color: "#CCD6E0",
-                                                fontSize: 12,
-                                                marginLeft: 4,
-                                                marginRight: 4,
-                                            }}
-                                        >
-                                            OR
-                                        </Text>
-                                        {divider}
-                                    </View>
-
-                                    <View
-                                        style={[
-                                            styles.button,
-                                            {
-                                                backgroundColor: "#F8FAFB",
-                                                borderColor: "#00A9CE",
-                                                borderWidth: 1,
-                                            },
-                                        ]}
-                                    >
-
-                                        <Button
-                                            backgroundColor="#F8FAFB"
-                                            buttonPress={() => onGuestButtonPress()}
-                                            title="Continue as Guest"
-                                            color="#00A9CE"
-                                        />
-                                    </View>
-                            </View>
-
-                            {/* </PageContainer> */}
+                        <View style={styles.loginDivider}>
+                            {divider}
+                            <Text
+                                style={{
+                                    color: '#CCD6E0',
+                                    fontSize: 12,
+                                    marginLeft: 4,
+                                    marginRight: 4,
+                                }}
+                            >
+                                OR
+                            </Text>
+                            {divider}
                         </View>
 
                         <View
-                            style={{
-                                alignItems: "center",
-                                justifyContent: "flex-end",
-                                bottom: 30,
-                            }}
+                            style={[
+                                styles.button,
+                                {
+                                    backgroundColor: '#F8FAFB',
+                                    borderColor: '#00A9CE',
+                                    borderWidth: 1,
+                                },
+                            ]}
                         >
-                            <Text style={{color: "#FFFFFF", fontSize: 14}}>
-                                {"\u00A9"} Copyright 2019 The Suites
-                            </Text>
+
+                            <Button
+                                backgroundColor="#F8FAFB"
+                                buttonPress={() => onGuestButtonPress()}
+                                title="Continue as Guest"
+                                color="#00A9CE"
+                            />
                         </View>
-                    {/* </OverlayContainer>  */}
+                    </View>
+
+                    {/* </PageContainer> */}
                 </View>
+
+                <View
+                    style={{
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        bottom: 30,
+                    }}
+                >
+                    <Text style={{color: '#FFFFFF', fontSize: 14}}>
+                        {'\u00A9'} Copyright 2019 The Suites
+                    </Text>
+                </View>
+                {/* </OverlayContainer>  */}
+            </View>
 
             {/* </LoginPageContainer> */}
         </View>
@@ -261,32 +262,32 @@ function LoginPage({navigation, signIn, expoPushToken}) {
 
 const styles = StyleSheet.create({
     overlay: {
-        position: "absolute",
+        position: 'absolute',
         flex: 1,
-        width: "100%",
-        height: "100%",
+        width: '100%',
+        height: '100%',
     },
     page: {
         // position:'absolute',
         flex: 1,
         // width:'100%',
         // height:'100%',
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         bottom: 50,
     },
     logo: {
-        backgroundColor: "#FFFFFF",
+        backgroundColor: '#FFFFFF',
         // padding:10,
         borderRadius: 58,
         marginBottom: 30,
         height: 116,
         width: 116,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     form: {
-        backgroundColor: "#FFFFFF",
+        backgroundColor: '#FFFFFF',
         padding: 30,
         height: 356,
         width: 325,
@@ -297,17 +298,17 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     button: {
-        width: "100%",
+        width: '100%',
         borderRadius: 6,
-        backgroundColor: "#104587",
+        backgroundColor: '#104587',
         paddingTop: 8,
         paddingBottom: 8,
         height: 35,
     },
     loginDivider: {
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
         margin: 20,
         marginLeft: 0,
         marginRight: 0,
@@ -317,10 +318,8 @@ const styles = StyleSheet.create({
 LoginPage.propTypes = {};
 LoginPage.defaultProps = {};
 
-const mapStateToProps = (state) => ({expoPushToken: state.auth.expoPushToken})
+const mapStateToProps = state => ({expoPushToken: state.auth.expoPushToken});
 
-const mapDispatcherToProps = {
-    signIn,
-};
+const mapDispatcherToProps = {signIn,};
 
 export default connect(mapStateToProps, mapDispatcherToProps)(LoginPage);
