@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
-import ClearIcon from "../../../../assets/svg/clearIcon";
+import {View, TextInput, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import ClearIcon from '../../../../assets/svg/clearIcon';
 
 /**
  *
@@ -14,38 +14,34 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @returns {*}
  * @constructor
  */
-function InputFieldwithIcon({label, onChangeText, value, placeholder, keyboardType, onClear, icon, secureTextEntry,inputRef = useRef(), isFocus = false,}) {
-
-    
+function InputFieldWithIcon({label, onChangeText, value, placeholder, keyboardType, autoCapitalize = 'sentences', onClear, icon, secureTextEntry, inputRef = useRef(), isFocus = false,}) {
     return (
         <View style={styles.container}>
             <Text style={[styles.textLabel]}>{label}</Text>
 
             <View style={[styles.inputWrapper, {paddingRight: value ? 4 : 0}]}>
                 <TextInput
-                    style={[styles.inputField,{}]}
+                    style={[styles.inputField, {}]}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}
+                    autoCapitalize={autoCapitalize}
                     placeholder={placeholder}
-                    secureTextEntry = {secureTextEntry}
-                    autoFocus = {isFocus}
-                    ref = {inputRef}
+                    secureTextEntry={secureTextEntry}
+                    autoFocus={isFocus}
+                    ref={inputRef}
                 />
-                <View style={{marginRight:5, justifyContent:'center'}}>
+                <View style={{marginRight: 5, justifyContent: 'center'}}>
                     {icon}
                 </View>
             </View>
-
-
-
 
         </View>
     );
 }
 
-InputFieldwithIcon.propTypes = {};
-InputFieldwithIcon.defaultProps = {};
+InputFieldWithIcon.propTypes = {};
+InputFieldWithIcon.defaultProps = {};
 
 const styles = StyleSheet.create({
     container: {
@@ -58,16 +54,16 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#718096',
         fontWeight: '500',
-        marginBottom:8
+        marginBottom: 8
     },
     inputWrapper: {
         flex: 1,
-        flexDirection:'row',
+        flexDirection: 'row',
         borderWidth: 1,
         borderColor: '#E3E8EF',
         borderRadius: 4,
         height: 32,
-        justifyContent:'center'
+        justifyContent: 'center'
     },
     inputField: {
         flex: 1,
@@ -82,4 +78,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default InputFieldwithIcon;
+export default InputFieldWithIcon;
