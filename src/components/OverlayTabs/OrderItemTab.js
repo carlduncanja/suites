@@ -27,7 +27,7 @@ import DataItem from "../common/List/DataItem";
 const OrderItemTab = ({
     orders = [], 
     // isEditMode = false, 
-    onItemChange = ()=>{}, 
+    onItemChange = ()=>{},  
     supplierId = "", 
     onAddProductItems = ()=>{}
 }) =>{
@@ -174,6 +174,7 @@ const OrderItemTab = ({
                     isEditMode ?
                         <NumberChangeField
                             onChangePress={onQuantityChange(item)}
+                            onAmountChange = {onAmountChange(item)}
                             value={amount === 0 ? "0" : amount.toString()}
                             borderColor = '--color-gray-400'
                             backgroundColor = '--color-gray-100'
@@ -264,7 +265,7 @@ const OrderItemTab = ({
     }
 
     const onAddItemsToList = (items) => {
-        modal.closeModals('OverlayInfoModal');
+        // modal.closeModals('OverlayInfoModal');
         setFloatingAction(false)
         onAddProductItems(items)
     }

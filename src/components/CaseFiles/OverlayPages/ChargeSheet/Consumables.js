@@ -39,7 +39,7 @@ const headers = [
     },
     {
         name: "Unit Price",
-        alignment: "flex-end"
+        alignment: "flex-end" 
     }
 ];
 
@@ -71,6 +71,7 @@ function Consumables ({
     caseProceduresFilters = [],
     caseProcedures = [] ,
     onConsumablesUpdate,
+    onSelectConsumables,
     allItems = []
 }) {
 
@@ -93,27 +94,122 @@ function Consumables ({
         setSearchText(input)
     }
 
-    const toggleCheckbox = (item) => () => {
-        let updatedInventories = [...checkBoxList];
+    const toggleCheckbox = (item, parentId) => () => {
 
-        if (updatedInventories.includes(item)) {
-            updatedInventories = updatedInventories.filter(caseItem => caseItem !== item)
-        } else {
-            updatedInventories.push(item);
+        let childCheckboxList = [...variantsCheckboxList];
+        let variantsArray = childCheckboxList.filter(obj => obj?._parentId === parentId)
+
+        if(variantsArray.length === 0){
+            setVariantsCheckBoxList([...variantsCheckboxList,{
+                _parentId : parentId,
+                variants : [item?.inventory]
+            }]);
+            setCheckBoxList([...checkBoxList, parentId]);
+            onSelectConsumables([...checkBoxList, parentId])
+        }else{
+            let { variants = [], _parentId } = variantsArray[0] || {}
+            let variantsInList = variants.filter( id => id === item?.inventory);
+            let updatedChildList = childCheckboxList.filter( obj => obj?._parentId !== parentId);
+
+            if(variantsInList.length === 0){
+                let newObj = {
+                    _parentId, 
+                    variants : [...variants, item?.inventory] 
+                }
+                let newChildList = [...updatedChildList,newObj]
+                setVariantsCheckBoxList(newChildList)
+            }else{
+                let updatedVariants = variants.filter( id => id !== item?.inventory)
+                let updatedChildList = childCheckboxList.filter( obj => obj?._parentId !== parentId);
+
+                if(updatedVariants.length === 0){
+                    setVariantsCheckBoxList([...updatedChildList]);
+                    setCheckBoxList([...checkBoxList.filter( id => id !== _parentId)]);
+                    onSelectConsumables([...checkBoxList.filter( id => id !== _parentId)])
+                    // Remove from header list if none remain and from childlist
+                }else{
+                    let newVariantObj = {_parentId, variants : updatedVariants};
+                    setVariantsCheckBoxList([...updatedChildList, newVariantObj]);
+                }
+
+            }
+
         }
-        setCheckBoxList(updatedInventories);
+
+        // let updatedInventories = [...checkBoxList];
+
+        // if (updatedInventories.includes(item)) {
+        //     updatedInventories = updatedInventories.filter(caseItem => caseItem !== item)
+        // } else {
+        //     updatedInventories.push(item);
+        // }
+        // setCheckBoxList(updatedInventories);
     }
 
     const toggleHeaderCheckbox = () => {
-        const selectedData = consumables[selectedIndex];
-        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== selectedData.length;
 
-        if (indeterminate) {
-            const selectedAllIds = [...selectedData.map(item => item)]
-            setCheckBoxList(selectedAllIds)
-        } else {
+        let updatedChecboxList = []
+        let updatedVariants = []
+        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== caseProcedures.length
+
+        if(indeterminate){
+            caseProcedures.map(procedure => {
+                let { inventories = [] } = procedure;
+                updatedChecboxList.push(procedure?.caseProcedureId);
+
+                let variantCheckboxList = [...inventories.map( item => item?.inventory)]
+
+                updatedVariants.push(
+                    {
+                        _parentId : procedure?.caseProcedureId,
+                        variants : variantCheckboxList
+                    }
+                )
+                
+            });
+        setVariantsCheckBoxList(updatedVariants)
+        setCheckBoxList(updatedChecboxList)
+        onSelectConsumables(updatedChecboxList)
+
+        }else{
             setCheckBoxList([])
+            setVariantsCheckBoxList([])
+            onSelectConsumables([])
         }
+
+        // const selectedData = consumables[selectedIndex];
+        // const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== selectedData.length;
+
+        // if (indeterminate) {
+        //     const selectedAllIds = [...selectedData.map(item => item)]
+        //     setCheckBoxList(selectedAllIds)
+        // } else {
+        //     setCheckBoxList([])
+        // }
+    }
+
+    const toggleParentCheckBox = (item) => {
+        
+        let { inventories = [] } = item
+        let itemId = item?.caseProcedureId
+        let parentCheckboxList = [...checkBoxList];
+ 
+        if(parentCheckboxList.includes(itemId)){
+            setCheckBoxList(parentCheckboxList.filter( id => id !== itemId ));
+            onSelectConsumables(parentCheckboxList.filter( id => id !== itemId ))
+            console.log("itemId: ", itemId)
+            let updatedList = [...variantsCheckboxList].filter( obj => obj?._parentId !== itemId)
+            setVariantsCheckBoxList(updatedList)
+            console.log("Updated varaint: ", updatedList)
+        }else{
+            setCheckBoxList([...parentCheckboxList, itemId])
+            onSelectConsumables([...parentCheckboxList, itemId])
+            setVariantsCheckBoxList([...variantsCheckboxList,{
+                _parentId : itemId,
+                variants : [...inventories.map( item => item?.inventory)]
+            }])
+        }
+
     }
 
     const onSelectChange = (index) => {
@@ -224,22 +320,23 @@ function Consumables ({
     //     />
     // }
 
-    const renderChildItemView = (item, itemIndex, sectionIndex) => {
-        let { _id } = item
+    const renderChildItemView = (item, parentId, itemIndex, sectionIndex) => {
+        let { _id, inventory } = item
+        let { variants = [] } = variantsCheckboxList?.filter( obj => obj._parentId === parentId)[0] || {};
 
         return (
             <Item
                 itemView = {childViewItem(item, itemIndex, sectionIndex)}
                 hasCheckBox = {true}
-                isChecked = {variantsCheckboxList.includes(_id)}
-                onCheckBoxPress = {()=>{}}
+                isChecked = {variants.includes(inventory)}
+                onCheckBoxPress = {toggleCheckbox(item,parentId)}
                 onItemPress = {()=>{}}
             />
         )
     };
 
     const renderCollapsible = (item, sectionIndex) => {
-        const { procedure, inventories} = item
+        const { procedure, inventories, caseProcedureId} = item
 
         let procedureItem = {
             name : procedure?.name
@@ -247,8 +344,8 @@ function Consumables ({
 
         return (
             <CollapsibleListItem
-                isChecked={checkBoxList.includes(item._id)}
-                onCheckBoxPress={ ()=> {}}
+                isChecked={checkBoxList.includes(item?.caseProcedureId)}
+                onCheckBoxPress={ ()=> toggleParentCheckBox(item)}
                 hasCheckBox={true}
                 onItemPress={ ()=> {}}
                 render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, sectionIndex)}
@@ -256,7 +353,7 @@ function Consumables ({
             <FlatList
                 data={inventories}
                 renderItem={({item, index}) => {
-                    return renderChildItemView(item, index, sectionIndex)
+                    return renderChildItemView(item, caseProcedureId ,index, sectionIndex)
                 }}
                 keyExtractor={(item, index) => "" + index}
                 ItemSeparatorComponent={() =>
@@ -286,7 +383,7 @@ function Consumables ({
                         data={caseProcedures}
                         listItemFormat={renderCollapsible}
                         headers={headers}
-                        toggleHeaderCheckbox={()=>{}}
+                        toggleHeaderCheckbox={toggleHeaderCheckbox}
                         itemSelected={checkBoxList}
                     />
 

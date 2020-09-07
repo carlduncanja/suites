@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, FlatList, ScrollView} from "react-native";
-
+ 
 import IconButton from "../../components/common/Buttons/IconButton";
 import LevelIndicator from "../../components/common/LevelIndicator/LevelIndicator";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
@@ -114,7 +114,7 @@ const shadows = [
 function Inventory(props) {
 
     const {
-        inventory,
+        inventory, 
         setInventory,
         route,
         navigation
@@ -537,7 +537,7 @@ function Inventory(props) {
         </CollapsibleListItem>
     };
 
-    const openConfirmationScreen = (id) => {
+    const openConfirmationScreen = (id) => { 
         modal
             .openModal(
                 'ConfirmationModal',
@@ -546,7 +546,10 @@ function Inventory(props) {
                         isError = {false}
                         isEditUpdate = {true}
                         onCancel = {()=> modal.closeModals('ConfirmationModal')}
-                        onAction = {()=>removeGroupCall(id)}
+                        onAction = {()=>{
+                            modal.closeModals('ConfirmationModal');
+                            removeGroupCall(id)}
+                        }
                         // onAction = { () => confirmAction()}
                         message = {"Do you want to delete these item(s)?"}
                     />
@@ -622,7 +625,23 @@ function Inventory(props) {
                 // },200);
                 // modal.closeModals("ActionContainerModal");
                 // onRefresh();
-                confirmAction()
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError = {false}
+                            isEditUpdate = {false}
+                            onAction = {()=> {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(()=>{
+                                    modal.closeModals("ActionContainerModal");
+                                    onRefresh();
+                                },200);
+                            }}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
 
                 setSelectedIds([]);
 

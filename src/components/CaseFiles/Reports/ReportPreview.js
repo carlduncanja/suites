@@ -38,7 +38,7 @@ const ItemRow = styled.View`
     width  : 100%;
     padding: 0px ${({theme}) => theme.space['--space-16']};
     height : 48px;
-    align-items : center;
+    align-items : center; 
 `;
 
 const Rectangle = () => (
