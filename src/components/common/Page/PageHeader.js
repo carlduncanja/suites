@@ -69,13 +69,13 @@ const SpecialText = styled.Text`
 
 const EditButtonWrapper = styled.View`
   height : 26px;
-  width : 53px;
+  width : 56px;
   margin-right:10px;
 `;
 
 const EditButtonContainer = styled.View`
   height: 100%;
-  width: 100%; 
+  //width: 100%; 
   flex-direction: row;
   border-radius : 6px;
   padding: 4px;
@@ -210,13 +210,6 @@ function PageHeader({
                     !isEditMode &&
 
                     <TextContainer>
-                        {/*<TextContainer theme={theme} isSpecialHeader={isSpecialHeader}>*/}
-                        {/*    <HeaderText theme={theme} isSpecialHeader={isSpecialHeader}>{title}</HeaderText>*/}
-                        {/*    {!isEmpty(hasIcon) ? <View style={{marginLeft: 15, marginRight: 10, marginBottom: 10}}>*/}
-                        {/*        {hasIcon}</View> : <View/>}*/}
-                        {/*    <SpecialText theme={theme}>{subTitle}</SpecialText>*/}
-                        {/*</TextContainer>*/}
-
                         {
                             headerChildren.map((item, index) => {
 
@@ -251,7 +244,6 @@ function PageHeader({
                             <EditButtonContainer
                                 theme={theme}
                                 backgroundColor={getEditBtnBackground()}
-                            // backgroundColor={'yellow'}
                             >
                                 <Button
                                     {...getButtonProps()}

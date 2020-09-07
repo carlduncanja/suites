@@ -13,19 +13,6 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
     const [isLoading, setLoading] = useState(true);
     const [appointments, setAppointments] = useState([])
     const [currentProcedure, setCurrentProcedure] = useState(procedures[selectedTabIndex]);
-    // const [date, setDate] = useState(new Date());
-    // const [location, setLocation] = useState("");
-    // const [duration, setDuration] = useState(0)
-    // const [startTime, setStartTime] = useState()
-    // const [procedure, setProcedure] = useState()
-
-    // useEffect(() => {
-    //     refreshAppointments()
-    // }, [location, date])
-    //
-    // useEffect(() => {
-    //     refreshTempAppointment()
-    // }, [procedure, duration, startTime])
 
     useEffect(() => {
         const currentProcedure = procedures[selectedTabIndex];

@@ -45,6 +45,7 @@ const TextInputWrapper = styled.View`
     height : 32px;
 `;
 const TextInputContainer = styled.View`
+    position: relative;
     height : 100%;
     width : 100%;
     border-width: 1px;
@@ -131,7 +132,9 @@ function InputField2({
 
                     {
                         hasError &&
-                        <InputErrorComponent errorMessage={errorMessage}/>
+                            <View style={{position: "absolute"}}>
+                                <InputErrorComponent errorMessage={errorMessage}/>
+                            </View>
                     }
 
                     {

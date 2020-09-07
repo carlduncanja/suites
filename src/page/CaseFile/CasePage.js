@@ -119,7 +119,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([]);
-    const [selectedCaseId, setSelectedCaseId] = useState('');
     const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
     const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
     const [selectedEquipments, setSelectedEquipments] = useState([]);
