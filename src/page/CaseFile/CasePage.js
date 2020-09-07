@@ -57,6 +57,7 @@ import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 import {PageContext} from '../../contexts/PageContext';
 import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
 import GenerateIcon from '../../../assets/svg/generateIcon';
+import PreviewIcon from '../../../assets/svg/previewIcon';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
 import WasteIcon from '../../../assets/svg/wasteIcon';
@@ -338,6 +339,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             },
         });
     };
+
+    const onPreviewInvoice = () =>{
+
+    }
 
     /**
      * Displays floating actions
@@ -893,7 +898,15 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         />
                     );
 
-                    floatingAction.push(generateQuotationAction, generateInvoiceAction);
+                    const previewInvoice = (
+                        <ActionItem
+                            title="Preview Invoice"
+                            icon={<PreviewIcon/>}
+                            onPress={() => onPreviewInvoice()}
+                        />
+                    );
+
+                    floatingAction.push(generateQuotationAction, generateInvoiceAction, previewInvoice);
 
                     title = 'BILLING ACTIONS';
                     break;

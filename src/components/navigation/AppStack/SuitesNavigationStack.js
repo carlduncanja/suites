@@ -121,14 +121,14 @@ export const SuitesNavigationStack = () => {
             />
 
 
-            <SuitesNavigator.Screen
+            {/* <SuitesNavigator.Screen
                 name="Invoices"
                 component={NotFound}
                 initialParams={{
                     icon: InvoiceIcon,
                     tabName: 'Invoices',
                 }}
-            />
+            /> */}
 
             <SuitesNavigator.Screen
                 name="Storage"
