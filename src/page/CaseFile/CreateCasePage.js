@@ -735,8 +735,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 
                 // loop through and show all errors.
                 let messages = errors.map(item => item.message)
-                let message = messages.join('\n')
-                setSnackbar({visible: true, message})
+
+                if (messages.length) {
+                    let message = messages.join('\n')
+                    setSnackbar({visible: true, message})
+                }
 
                 return isValid;
             })

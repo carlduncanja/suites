@@ -30,18 +30,8 @@ import { getInventoriesGroup, removeInventoryGroup } from "../../api/network";
 import {useModal} from "react-native-modalfy";
 import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from "../../helpers/caseFilesHelpers";
 import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming'; 
+import { useTheme } from 'emotion-theming';
 import _ from "lodash";
-
-
-
-import InventoryBottomSheetContainer from "../../components/Inventory/InventoryBottomSheetContainer";
-import RoundedPaginator from "../../components/common/Paginators/RoundedPaginator";
-import FloatingActionButton from "../../components/common/FloatingAction/FloatingActionButton";
-import CheckBoxComponent from "../../components/common/Checkbox";
-import CreateStorageDialogContainer from "../../components/Storage/CreateStorageDialogContainer";
-import TransferIcon from "../../../assets/svg/transferIcon";
-import ActionCollapseIcon from "../../../assets/svg/actionCollapseIcon";
 
 
 const listHeaders = [
@@ -72,7 +62,7 @@ const listHeaders = [
         alignment: "center",
         flex:0.5
     }
-]; 
+];
 
 const LocationsWrapper = styled.View`
     flex:1;
@@ -104,7 +94,7 @@ const ChildItemName = styled.Text( ({theme}) => ({
     font : theme.font['--text-sm-medium'],
     color : theme.colors['--color-blue-500'],
 }));
- 
+
 
 const shadows = [
     {
@@ -197,14 +187,14 @@ function Inventory(props) {
     const onItemPress = (item) => () => {
         navigation.navigate("InventoryPage",{
             screen : "InventoryPage",
-            initial: false, 
+            initial: false,
             // params : {
-                data: item, 
+                data: item,
                 isGroup : true,
                 isEdit: false
             // }
         });
-        
+
     };
 
     const onItemVariantPress = (item, parentItem) => () =>{
@@ -212,9 +202,9 @@ function Inventory(props) {
         let updatedItem = {...item, name : item?.itemName, groupId : parentItem?._id , groupName : parentItem?.name}
         navigation.navigate("InventoryVariantPage",{
             screen : "InventoryVariantPage",
-            initial: false, 
+            initial: false,
             // params : {
-                data: updatedItem, 
+                data: updatedItem,
                 isEdit: false
             // }
         });
@@ -257,7 +247,7 @@ function Inventory(props) {
                 title: "INVENTORY ACTIONS",
                 onClose : ()=> setFloatingAction(false)
             })
-            
+
     };
 
     // ####### PARENT CHECKBOXPRESS
@@ -268,7 +258,7 @@ function Inventory(props) {
 
         let updatedInventory = checkboxItemPress(item, _id, selectedIds);
         setSelectedIds(updatedInventory);
-    
+
         if(selectedIds.includes(_id)){
             let removeChildren = selectedChildIds.filter( obj => obj.groupId !== _id)
             setSelectedChildIs(removeChildren)
@@ -289,22 +279,22 @@ function Inventory(props) {
         let updatedChildIds = checkboxItemPress(item, _id, variantIds);
 
         if(variantIds.length === 0){
-            
+
             let updatedParentIds = checkboxItemPress(parentItem, _id, selectedIds);
             let selectedChild = {groupId : parentItem?._id, variantIds : updatedChildIds}
-        
+
             setSelectedChildIs([...selectedChildIds,selectedChild])
             setSelectedIds(updatedParentIds)
 
             // console.log("Included: ", [...selectedChildIds,selectedChild])
         }else{
 
-            let updatedChildList = selectedChildIds.map( obj => obj.groupId === parentItem?._id ? 
-                { ...obj, variantIds : updatedChildIds} 
-                : 
+            let updatedChildList = selectedChildIds.map( obj => obj.groupId === parentItem?._id ?
+                { ...obj, variantIds : updatedChildIds}
+                :
                 obj
             )
-            setSelectedChildIs(updatedChildList) 
+            setSelectedChildIs(updatedChildList)
 
             // console.log("Updated item: ", updatedChildList)
         }
@@ -317,15 +307,15 @@ function Inventory(props) {
 
         const deleteAction =
             <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
-                <LongPressWithFeedback 
-                    pressTimer={1200} 
+                <LongPressWithFeedback
+                    pressTimer={1200}
                     onLongPress={removeGroup}
                     isDisabled = {selectedIds.length === 0 ? true : false}
                 >
-                    <ActionItem 
-                        title={"Hold to Delete"} 
-                        icon={<WasteIcon strokeColor = {selectedIds.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>} 
-                        onPress={() => {}} 
+                    <ActionItem
+                        title={"Hold to Delete"}
+                        icon={<WasteIcon strokeColor = {selectedIds.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
+                        onPress={() => {}}
                         disabled = {selectedIds.length === 0 ? true : false}
                         touchable={false}
                     />
@@ -389,7 +379,7 @@ function Inventory(props) {
                 })
         }, 200)
     };
-   
+
     const getLevels = (locations = []) => {
         const levelsTotal = {
             max: 0,
@@ -405,17 +395,17 @@ function Inventory(props) {
             levelsTotal.min += levels.min || 0
             levelsTotal.critical += levels.critical || 0
             levelsTotal.ideal += levels.ideal || 0
-            
+
         });
 
         return levelsTotal;
     };
-    
+
     const getStock = (locations) => {
         return locations.reduce((acc, curr)=>{ return acc + curr.stock }, 0)
     }
 
-    const inventoryItemView = ({name, stock, locations, levels}, onActionPress, isCollapsed) => 
+    const inventoryItemView = ({name, stock, locations, levels}, onActionPress, isCollapsed) =>
         <>
             {
                 isCollapsed ?
@@ -425,7 +415,7 @@ function Inventory(props) {
 
             }
             <DataItem text = {numberFormatter(stock)} color="--color-gray-700" fontStyle = "--text-base-regular" align="center"/>
-            <ContentDataItem 
+            <ContentDataItem
                 align = "center"
                 content = {
                     <LevelIndicator
@@ -444,7 +434,7 @@ function Inventory(props) {
                         </LocationsContainer>
                 </MultipleShadowsContainer>
             </LocationsWrapper>
-            
+
             <ContentDataItem
                 align = "center"
                 flex = {0.5}
@@ -452,18 +442,18 @@ function Inventory(props) {
                     <IconButton
                     Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
                     onPress={onActionPress}
-                />  
+                />
                 }
             />
-        
+
     </>;
 
-    const storageItemView = ({itemName, stock, levels, locations}, onActionPress) => 
+    const storageItemView = ({itemName, stock, levels, locations}, onActionPress) =>
     <>
 
         <RightBorderDataItem text = {itemName} flex = {1.5} color="--color-blue-600" fontStyle = "--text-sm-medium"/>
         <DataItem text = {numberFormatter(stock)} color="--color-gray-700" fontStyle = "--text-base-regular" align="center"/>
-        <ContentDataItem 
+        <ContentDataItem
             flex = {1}
             align = "center"
             content = {
@@ -476,38 +466,9 @@ function Inventory(props) {
                 />
             }
         />
-        
+
         <DataItem text = {locations} color="--color-blue-600" fontStyle = "--text-base-regular" align="center"/>
         <DataItem flex = {0.4}/>
-        
-        {/* <View style={[
-            styles.item, {justifyContent: "center"}
-        ]}>
-            <Text style={[styles.itemText]}>
-                {numberFormatter(stock)}
-            </Text>
-        </View>
-        <View style={[styles.item, {justifyContent: "center"}]}>
-            {/*   LEVELS    *
-            <LevelIndicator
-                max={levels.max}
-                min={0}
-                level={stock}
-                ideal={levels.ideal}
-                critical={levels.critical}
-            />
-        </View>
-
-        <View style={[
-            styles.item, {justifyContent: "center"}
-        ]}>
-            <Text style={[styles.itemText]}>
-                {locations}
-            </Text>
-        </View>
-        
-        <View style={[styles.item, {justifyContent: "center"}]}>
-        </View> */}
     </>;
 
     const renderChildItemView = (item, parentItem, onActionPress) => {
@@ -536,7 +497,7 @@ function Inventory(props) {
         };
 
         let {variants = []} = item;
-        
+
         variants = variants.map( item => {
             let { storageLocations = [] } = item
             let levels = getLevels(storageLocations);
@@ -552,7 +513,7 @@ function Inventory(props) {
                 }
             )
         })
-     
+
         return <CollapsibleListItem
             isChecked={selectedIds.includes(item._id)}
             onCheckBoxPress={onCheckBoxPress(item)}
@@ -562,10 +523,11 @@ function Inventory(props) {
         >
             <FlatList
                 data={variants}
+                nestedScrollEnabled={true}
                 renderItem={({item}) => {
                     return renderChildItemView(item, formattedItem, () => {
                     })
-                }} 
+                }}
                 keyExtractor={(item, index) => "" + index}
                 ItemSeparatorComponent={() =>
                     <View style={{flex: 1, margin: 10, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
@@ -592,7 +554,7 @@ function Inventory(props) {
                         message = {"Do you want to delete these item(s)?"}
                     />
                     ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    onClose: () => {modal.closeModals('ConfirmationModal')}
                 })
     }
 
@@ -606,7 +568,7 @@ function Inventory(props) {
                     onCancel = {()=> modal.closeModals('ConfirmationModal')}
                 />
                 ,
-                onClose: () => {modal.closeModals('ConfirmationModal')} 
+                onClose: () => {modal.closeModals('ConfirmationModal')}
             })
     }
 
@@ -620,7 +582,7 @@ function Inventory(props) {
         getInventoriesGroup(searchValue, recordsPerPage, currentPosition)
             .then(inventoryResult => {
                 const { data = [], pages = 0 } = inventoryResult
-                
+
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -637,10 +599,10 @@ function Inventory(props) {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
-               
+
                 setInventory(data);
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages)
-                
+
             })
             .catch(error => {
                 // todo handle error
@@ -659,7 +621,7 @@ function Inventory(props) {
             .then(_ => {
                 // setTimeout(()=>{
                 //     modal.closeModals('ConfirmationModal');
-                    
+
                 // },200);
                 // modal.closeModals("ActionContainerModal");
                 // onRefresh();
@@ -682,7 +644,7 @@ function Inventory(props) {
                     })
 
                 setSelectedIds([]);
-                
+
             })
             .catch( error => {
                 openErrorConfirmation();
@@ -708,12 +670,12 @@ function Inventory(props) {
                         setTimeout(()=>{
                             modal.closeModals("ActionContainerModal");
                             onRefresh();
-                            
+
                         },200);
                     }}
                 />
                 ,
-                onClose: () => {modal.closeModals('ConfirmationModal')} 
+                onClose: () => {modal.closeModals('ConfirmationModal')}
             })
     }
 
@@ -743,7 +705,6 @@ function Inventory(props) {
             hasActions = {true}
             isNextDisabled = {isNextDisabled}
             isPreviousDisabled = {isPreviousDisabled}
-
         />
     );
 }
@@ -794,7 +755,7 @@ const styles = StyleSheet.create({
     rowBorderRight: {
         borderRightColor: "#E3E8EF",
         borderRightWidth: 1,
-    
+
         // marginRight: 20,
         // flex: 2
       },

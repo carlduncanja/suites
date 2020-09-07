@@ -8,7 +8,7 @@ import {useCheckBox} from '../../../helpers/caseFilesHelpers';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
- 
+
 /**
  * @param listData array of objects
  * @param listHeaders array of objects
@@ -29,9 +29,9 @@ const ListWrapper = styled.View`
 
 const ListContainer = styled.View`
     display: flex;
-`;  
+`;
 
-function List({ 
+function List({
         listData = [],
         listHeaders = [],
         itemsSelected = [],
@@ -44,14 +44,14 @@ function List({
     }){
 
     const theme = useTheme()
-    
+
     const isIndeterminate = itemsSelected.length > 0 && itemsSelected.length !== listData.length;
-    
-    // should list fill remaining space or as much as content ? 
-    
+
+    // should list fill remaining space or as much as content ?
+
     return (
-        <ListWrapper> 
-            <ListContainer> 
+        <ListWrapper>
+            <ListContainer>
                 <Header
                     headers={listHeaders}
                     toggleHeaderCheckbox={onSelectAll}
@@ -59,9 +59,10 @@ function List({
                     isCheckbox={isCheckbox}
                     isIndeterminate={isIndeterminate}
                 />
-           
+
                 <FlatList
                     data={listData}
+                    nestedScrollEnabled={true}
                     renderItem={({item}) => listItemFormat(item)}
                     keyExtractor={keyExtractor}
                     onRefresh={onRefresh}
