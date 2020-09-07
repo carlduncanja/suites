@@ -8,7 +8,7 @@ import PageButton from "../../components/common/Page/PageButton";
 import ChevronLeft from "../../../assets/svg/ChevronLeft";
 import ChevronRight from "../../../assets/svg/ChevronRight";
 import moment from "moment";
-import {getAppointments, getTheatres} from "../../api/network";
+import {getAppointments, getTheatres, isValidCaseProcedureAppointment} from "../../api/network";
 import ScheduleDisplayComponent, {EVENT_TYPES} from "../../components/ScheduleDisplay/ScheduleDisplayComponent";
 import ProcedureTab from "../../components/CaseFiles/ProceduresDialogTabs/ProcedureTab";
 import _ from "lodash";
@@ -20,6 +20,7 @@ import {MenuOption, MenuOptions} from "react-native-popup-menu";
 import Table from "../../components/common/Table/Table";
 import Paginator from "../../components/common/Paginators/Paginator";
 import Button from "../../components/common/Buttons/Button";
+import Snackbar from "react-native-paper/src/components/Snackbar";
 
 
 const HeaderText = styled.Text`
@@ -102,7 +103,6 @@ const FooterButtonContainer = styled.View`
   height: 48px;
 `
 
-
 const TabsViewContainer = styled.View`
     height: 54px;
 `;
@@ -150,7 +150,10 @@ function AppointmentPage({navigation}) {
     const [isEditMode, setEditMode] = useState(false);
 
     const [caseProceduresInfo, setCaseProceduresInfo] = useState({});
-    const [procedureErrors, setProcedureErrors] = useState([]);
+    const [procedureErrors, setProcedureErrors] = useState({});
+
+    const [snackbar, setSnackbar] = useState({visible: false, message: ""})
+
 
     useEffect(() => {
 
@@ -167,9 +170,24 @@ function AppointmentPage({navigation}) {
 
     };
 
-    const onNextButtonPress = () => {
+    let valid;
+    const onNextButtonPress = async () => {
 
         // Validate Fields
+        switch (currentTabs[currentTabIndex]) {
+            case PAGE_TABS.APPOINTMENT:
+                valid = await validateProcedureInfo(caseProceduresInfo)
+                break
+            case PAGE_TABS.RECOVERY:
+                break
+            default:
+                break
+
+        }
+
+        if (!valid) {
+            return
+        }
 
         //
         const isFinalTab = currentTabIndex === currentTabs.length - 1
@@ -202,12 +220,17 @@ function AppointmentPage({navigation}) {
 
     }
 
+    const clearSnackBar = () => {
+        setSnackbar({
+            visible: false,
+            message: ""
+        })
+    }
 
     //#endregion
 
 
     //#region Helper Methods
-
 
     const testData = [
         {
@@ -266,6 +289,60 @@ function AppointmentPage({navigation}) {
         }
     };
 
+
+    const validateProcedureInfo = async (procedureInfo) => {
+        let isValid = true;
+        const requiredParams = ["date", "startTime", "location", "procedure", "duration"];
+
+        let errorObj = {...procedureErrors} || {};
+
+        for (const requiredParam of requiredParams) {
+            if (!procedureInfo[requiredParam]) {
+                console.log(`${requiredParam} is required`);
+                isValid = false;
+                errorObj[requiredParam] = "Please enter a value";
+            } else {
+                delete errorObj[requiredParam];
+            }
+        }
+
+        setProcedureErrors(errorObj);
+        // console.log("procedure errors", procedureErrors);
+        if (!isValid) return isValid
+
+        // TODO validate time.
+        const {procedure, location, startTime, duration} = procedureInfo;
+        isValid = await validateProcedureAsync(procedure._id, location._id, startTime, duration);
+
+        // TODO validate theatre location.
+        // TODO validate recovery.
+        // TODO validate equipment and inventory.
+
+        return isValid;
+    };
+
+    const validateProcedureAsync = (procedure, location, startTime, duration) => {
+        return isValidCaseProcedureAppointment(procedure, location, startTime, duration)
+            .then(results => {
+                const {errors = [], isValid} = results;
+
+                // loop through and show all errors.
+                let messages = errors.map(item => item.message)
+
+                if (messages.length) {
+                    let message = messages.join('\n')
+                    setSnackbar({visible: true, message})
+                }
+
+                return isValid;
+            })
+            .catch(error => {
+                console.log("Failed to validate procedure", error);
+                setSnackbar({visible: true, message: "Something went wrong"})
+                return false
+            })
+    }
+
     //endregion
 
     return (
@@ -322,6 +399,27 @@ function AppointmentPage({navigation}) {
                     </FooterButtonContainer>
                 </FooterContainer>
             </FooterWrapper>
+
+            <Snackbar
+                visible={snackbar?.visible}
+                onDismiss={clearSnackBar}
+                duration={Snackbar.DURATION_MEDIUM}
+                theme={{
+                    colors: {
+                        accent: theme.colors['--color-red-700'],
+                        surface: theme.colors['--color-red-700'],
+                    }
+                }}
+                style={{
+                    backgroundColor: theme.colors['--color-red-200'],
+                    color: theme.colors['--color-red-700']
+                }}
+                action={{
+                    label: "X",
+                    onPress: clearSnackBar,
+                }}>
+                {snackbar?.message || "Something went wrong"}
+            </Snackbar>
 
         </PageWrapper>
     );
