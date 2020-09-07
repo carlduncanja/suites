@@ -6,12 +6,11 @@ import TabsContainerComponent from '../components/common/Tabs/TabsContainerCompo
 import { getEquipmentTypeById } from '../api/network';
 import EquipmentGroupGeneralTab from '../components/OverlayTabs/EquipmentGroupGeneralTab';
 
-function EquipmentGroupDetailsPage({ route, navigation }) {
+function EquipmentGroupDetailsPage(props) {
 
-    const { data = {}, equipments = [] } = route.params;
-    //console.log("data being received,", data);
-    const { name = "", _id = "" } = data
-    const tabs = ["Details"]
+    const { data = {} } = props.route.params;
+    const { name = "", _id = "", equipments = [], suppliers = [] } = data
+    const tabs = ["Details", "Items"]
 
     const [currentTab, setCurrentTab] = useState(tabs[0])
     const [pageState, setPageState] = useState({});
@@ -48,13 +47,26 @@ function EquipmentGroupDetailsPage({ route, navigation }) {
         })
     }
 
+    const onTabPress = (selectedTab) => {
+        if (!pageState.isEditMode) setCurrentTab(selectedTab);
+    };
+
+    const goToAddEquipment = () => {
+        props.navigation.navigate("AddEquipment");
+
+    }
+
     const getContentData = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
                 return <EquipmentGroupGeneralTab
+                    goToAddEquipment={goToAddEquipment}
                     equipmentGroup={selectedEquipment}
-                    equipmentChildren={equipments}
+                    equipments={equipments}
+                    suppliers={suppliers}
                 />
+            case "Items":
+                return
             default:
                 break;
         }
@@ -70,7 +82,7 @@ function EquipmentGroupDetailsPage({ route, navigation }) {
                     <TabsContainerComponent
                         tabs={tabs}
                         selectedTab={currentTab}
-                        onPressChange={() => { }}
+                        onPressChange={onTabPress}
                     />
                 }
             >

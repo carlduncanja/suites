@@ -115,7 +115,7 @@ const Equipment = (props) => {
 
     {
       name: "Assigned",
-      alignment: "flex-start",
+      alignment: "center",
       flex: 2,
     },
   ];
@@ -336,6 +336,7 @@ const Equipment = (props) => {
       name: item.name,
       _id: item._id,
       equipments: equipments,
+      suppliers: item.suppliers,
       quantity: item.equipments.length,
       assignment: assignmentStored.length === 0 ? "Not currently assigned" : assignmentStored,
       status:
@@ -454,8 +455,8 @@ const Equipment = (props) => {
 
         <DataItem text={assigmentName} flex={.2} color="--color-blue-600" fontStyle="--text-sm-medium" />
         <DataItem text={status} flex={.25} color="--color-gray-800" fontStyle="--text-sm-regular" />
-        <DataItem text={quantity} flex={.13} color="--color-gray-800" fontStyle="--text-sm-regular" />
-        <DataItem text={assignment} flex={.3} color="--color-gray-800" fontStyle="--text-sm-regular" />
+        <DataItem text={quantity} flex={.2} color="--color-gray-800" fontStyle="--text-sm-regular" />
+        <DataItem text={assignment} flex={.3} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
 
       </>
 
