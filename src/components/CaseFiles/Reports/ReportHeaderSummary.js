@@ -48,7 +48,7 @@ const BillingDescriptionContainer = styled.View`
 
 function ReportHeaderSummary({
     billedTo = '',
-    address = {},
+    address = {}, 
     billedFor = '',
     reportNumber = '',
     reportDate = '',

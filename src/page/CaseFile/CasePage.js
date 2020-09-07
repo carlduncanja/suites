@@ -56,6 +56,7 @@ import PageHeader from '../../components/common/DetailsPage/PageHeader';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 import {PageContext} from '../../contexts/PageContext';
 import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
+import ReportPreview from '../../components/CaseFiles/Reports/ReportPreview';
 import GenerateIcon from '../../../assets/svg/generateIcon';
 import PreviewIcon from '../../../assets/svg/previewIcon';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
@@ -340,7 +341,18 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const onPreviewInvoice = () =>{
+        let billingData = getBillingData()
+        let { total = 0 } = getBillingData();
+        let { createdAt } = selectedCase?.chargeSheet || {};
 
+        modal.openModal('ReportPreviewModal', {
+            content: <ReportPreview
+                type="Invoice"
+                details={{amountDue : total, createdAt}}
+                reportDetails={billingData}
+            />,
+            onClose : ()=>{modal.closeModals('ActionContainerModal')}
+        });
     }
 
     /**
@@ -983,6 +995,87 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         navigation.navigate("AddAppointmentPage");
 
     };
+
+    const getBillingData = () => {
+        const {invoices, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
+        const {proceduresBillableItems = [], total = 0} = chargeSheet;
+
+        const LINE_ITEM_TYPES = {
+            DISCOUNT: 'discount',
+            SERVICE: 'service',
+            PROCEDURES: 'procedures',
+            PHYSICIANS: 'physician',
+        };
+
+        const billing = {
+            total,
+            hasDiscount: true,
+            discount: 0.15,
+            procedures: []
+        };
+
+        // todo: eval what's actually needed here
+        for (const proceduresBillableItem of proceduresBillableItems) {
+            const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
+
+            const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {};
+            const caseAppointment = caseProcedure.appointment || {};
+
+            const title = caseAppointment.title ? caseAppointment.title : '';
+
+            const name = `${title} (${formatDate(caseAppointment.startTime, 'MMM D - h:mm a')})`;
+
+            const billingItem = {
+                caseProcedureId,
+                discounts: [],
+                physicians: [],
+                services: [],
+                procedures: [],
+                procedure: {
+                    name: name || proceduresBillableItem.caseProcedureId,
+                    cost: proceduresBillableItem.total
+                },
+            };
+
+            for (const lineItem of lineItems) {
+                switch (lineItem.type) {
+                    case LINE_ITEM_TYPES.PHYSICIANS:
+                        billingItem.physicians.push(lineItem);
+                        break;
+                    case LINE_ITEM_TYPES.SERVICE:
+                        billingItem.services.push(lineItem);
+                        break;
+                    case LINE_ITEM_TYPES.PROCEDURES:
+                        billingItem.procedures.push(lineItem);
+                        break;
+                    case LINE_ITEM_TYPES.DISCOUNT:
+                        billingItem.discounts.push(lineItem);
+                        break;
+                }
+            }
+
+            billingItem.inventories = inventories.map(item => ({
+                _id: item._id,
+                inventory: item?.inventory?._id,
+                amount: item.amount,
+                name: item.inventory?.name,
+                cost: item.inventory?.unitCost || 0,
+            }));
+
+            billingItem.equipments = equipments.map(item => ({
+                _id: item?._id,
+                equipment: item.equipment?._id,
+                amount: item.amount,
+                name: item.equipment?.name,
+                cost: item.equipment?.unitPrice || 0,
+            }));
+
+            billing.procedures.push(billingItem);
+        }
+
+        return billing
+
+    }
 
     const downloadInvoiceDocument = async invoice => {
         const {invoices, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
