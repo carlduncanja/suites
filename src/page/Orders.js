@@ -152,10 +152,10 @@ const Orders = (props) => {
 
   const handleOnItemPress = (item, isOpenEditable) => {
     console.log("Tapped order item");
-    props.navigation.navigate("OrderItemPage", { 
-      initial: false, 
-      order: item, 
-      isEdit: isOpenEditable 
+    props.navigation.navigate("OrderItemPage", {
+      initial: false,
+      order: item,
+      isEdit: isOpenEditable
     });
 
     // modal.openModal("BottomSheetModal", {
@@ -221,7 +221,7 @@ const Orders = (props) => {
               message = "There was an issue performing this action."
           />
           ,
-          onClose: () => {modal.closeModals('ConfirmationModal')} 
+          onClose: () => {modal.closeModals('ConfirmationModal')}
       })
     }, 100);
 }
@@ -290,10 +290,10 @@ const onCancelErrorScreen = () =>{
   };
 
   const orderItem = (item) => {
-    const {
+    let {
       purchaseOrderNumber = "",
       status = "",
-      orderDate = "",
+      deliveryDate,
       supplier = {},
     } = item;
     const { name = "" } = supplier;
@@ -306,10 +306,7 @@ const onCancelErrorScreen = () =>{
             ? "--color-red-700"
             : "--color-gray-700";
 
-    const deliveryDate =
-      orderDate === "" || orderDate === null
-        ? "n/a"
-        : formatDate(orderDate, "DD/MM/YYYY");
+    deliveryDate = deliveryDate ? formatDate(deliveryDate, "DD/MM/YYYY") : "n/a";
 
     return (
       <>
@@ -317,25 +314,6 @@ const onCancelErrorScreen = () =>{
         <DataItem text = {transformToSentence(status)} fontStyle = "--text-sm-medium" flex = {1} color={statusColor}/>
         <DataItem text = {deliveryDate} fontStyle = "--text-sm-medium" flex = {1.5}/>
         <DataItem text = {name} fontStyle = "--text-sm-medium" flex = {1.5} color = "--color-blue-600"/>
-
-        {/* <View style={[styles.item, { ...styles.rowBorderRight, flex: 1.5 }]}>
-          <Text style={[styles.itemText, { color: "#4E5664" }]}>
-            {purchaseOrderNumber}
-          </Text>
-        </View> 
-        <View style={[styles.item, { flex: 1, alignItems: "center" }]}>
-          <Text style={[styles.itemText, { color: statusColor }]}>
-            {transformToSentence(status)}
-          </Text>
-        </View>
-        <View style={[styles.item, { flex: 1, alignItems: "flex-start" }]}>
-          <Text style={[styles.itemText, { color: "#4E5664", fontSize: 15 }]}>
-            {deliveryDate}
-          </Text>
-        </View>
-        <View style={[styles.item, { flex: 1 }]}>
-          <Text style={[styles.itemText, { color: "#3182CE" }]}>{name}</Text>
-        </View> */}
       </>
     );
   };
@@ -395,7 +373,7 @@ const onCancelErrorScreen = () =>{
 
       // actions.push(createInvoice);
     } else {
-   
+
     }
 
     return (
