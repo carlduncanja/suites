@@ -152,6 +152,11 @@ function AppointmentPage({navigation}) {
     const [caseProceduresInfo, setCaseProceduresInfo] = useState({});
     const [procedureErrors, setProcedureErrors] = useState({});
 
+    const [hasRecovery, setRecovery] = useState(true);
+    const [recoveryInfo, setRecoveryInfo] = useState({})
+    const [recoveryInfoError, setRecoveryInfoErrors] = useState({})
+
+
     const [snackbar, setSnackbar] = useState({visible: false, message: ""})
 
 
@@ -179,8 +184,10 @@ function AppointmentPage({navigation}) {
                 valid = await validateProcedureInfo(caseProceduresInfo)
                 break
             case PAGE_TABS.RECOVERY:
+                valid = validateRecoveryInfo(recoveryInfo)
                 break
             default:
+                valid = true;
                 break
 
         }
@@ -216,8 +223,8 @@ function AppointmentPage({navigation}) {
         setCaseProceduresInfo(value)
     }
 
-    const onRecoveryUpdate = () => {
-
+    const onRecoveryUpdate = (value) => {
+        setRecoveryInfo(value);
     }
 
     const clearSnackBar = () => {
@@ -234,28 +241,28 @@ function AppointmentPage({navigation}) {
 
     const testData = [
         {
-            name : "Agents",
-            amount : 5
+            name: "Agents",
+            amount: 5
         },
         {
-            name : "Agents",
-            amount : 6
+            name: "Agents",
+            amount: 6
         },
         {
-            name : "Agents",
-            amount : 7
+            name: "Agents",
+            amount: 7
         },
         {
-            name : "Agents",
-            amount : 8
+            name: "Agents",
+            amount: 8
         },
         {
-            name : "Agents",
-            amount : 9
+            name: "Agents",
+            amount: 9
         },
         {
-            name : "Agents",
-            amount : 10
+            name: "Agents",
+            amount: 10
         },
     ]
 
@@ -271,8 +278,11 @@ function AppointmentPage({navigation}) {
                 />
             case PAGE_TABS.RECOVERY:
                 return <RecoveryTab
-                    recoveryFields={{}}
+                    recoveryFields={recoveryInfo}
+                    onRecoveryToggle={value => setRecovery(value)}
                     onRecoveryFieldUpdate={onRecoveryUpdate}
+                    errors={recoveryInfoError}
+                    hasRecovery={hasRecovery}
                 />
             case PAGE_TABS.CONSUMABLES:
                 return <ItemsTable
@@ -288,6 +298,29 @@ function AppointmentPage({navigation}) {
                 return <View/>
         }
     };
+
+    const validateRecoveryInfo = (recoveryFields) => {
+        if (!hasRecovery) return true;
+
+        let isValid = true;
+        const requiredParams = ["time", "date","location", "duration"];
+        const errorObj = {}
+
+        for (const requiredParam of requiredParams) {
+            if (!recoveryFields[requiredParam]) {
+                console.log(`${requiredParam} is required`);
+                isValid = false;
+                errorObj[requiredParam] = "Please enter a value";
+            } else {
+                delete errorObj[requiredParam];
+            }
+        }
+
+        setRecoveryInfoErrors(errorObj);
+        console.log("errors: ", errorObj, recoveryFields);
+
+        return isValid
+    }
 
 
     const validateProcedureInfo = async (procedureInfo) => {
@@ -548,9 +581,7 @@ const AppointmentTab = ({onProcedureUpdate, procedure, patient = "--", errors, o
             subTitle: patient,
             type: EVENT_TYPES.DEFAULT,
         }
-
     }
-
 
     const date = currentProcedure?.date || new Date()
 
@@ -582,6 +613,15 @@ const RowWrapper = styled.View`
     margin-bottom: ${({theme}) => theme.space['--space-16']};
     z-index: ${({zIndex}) => zIndex};
 `
+const RecoveryFieldsContainer = styled.View`
+  flex: 1;
+  padding-top: ${({theme}) => theme.space['--space-32']};
+  margin-top: ${({theme}) => theme.space['--space-24']};
+  border: 1px solid ${({theme}) => theme.colors['--color-gray-300']};
+  border-bottom-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+`
 
 /**
  *
@@ -590,13 +630,10 @@ const RowWrapper = styled.View`
  * @return {*}
  * @constructor
  */
-const RecoveryTab = ({isEdit, recoveryFields, onRecoveryFieldUpdate}) => {
+const RecoveryTab = ({isEdit, recoveryFields, errors, onRecoveryFieldUpdate, hasRecovery, onRecoveryToggle}) => {
     const theme = useTheme();
-    const {duration = {}, location, startTime} = recoveryFields;
+    const {duration , location, time, date} = recoveryFields;
     const {name = ""} = location || {}
-
-    const [hasRecovery, setRecovery] = useState(true);
-
 
     const onDurationUpdated = (duration) => {
         // validate num
@@ -612,7 +649,29 @@ const RecoveryTab = ({isEdit, recoveryFields, onRecoveryFieldUpdate}) => {
         const newStartTime = moment(date)
         onRecoveryFieldUpdate({
             ...recoveryFields,
-            startTime: newStartTime.toDate(),
+            time: newStartTime.toDate(),
+        })
+    }
+
+    const onDateUpdated = (date) => {
+        const newStartTime = moment(date)
+        onRecoveryFieldUpdate({
+            ...recoveryFields,
+            date: newStartTime.toDate(),
+        })
+    }
+
+    const onDateClear = () => {
+        onRecoveryFieldUpdate({
+            ...recoveryFields,
+            date: undefined
+        })
+    }
+
+    const onTimeClear = () => {
+        onRecoveryFieldUpdate({
+            ...recoveryFields,
+            time: undefined
         })
     }
 
@@ -683,7 +742,7 @@ const RecoveryTab = ({isEdit, recoveryFields, onRecoveryFieldUpdate}) => {
 
     return (
         <ContentContainer theme={theme}>
-            <RowWrapper theme={theme}>
+            <RowWrapper theme={theme} zIndex={3}>
 
                 <InputWrapper theme={theme}>
                     <OptionsField
@@ -691,9 +750,7 @@ const RecoveryTab = ({isEdit, recoveryFields, onRecoveryFieldUpdate}) => {
                         labelWidth={70}
                         enabled={isEdit}
                         text={hasRecovery ? 'Yes' : 'No'}
-                        oneOptionsSelected={() => {
-
-                        }}
+                        oneOptionsSelected={onRecoveryToggle}
                         menuOption={<MenuOptions>
                             <MenuOption value={true} text='Yes'/>
                             <MenuOption value={false} text='No'/>
@@ -702,76 +759,97 @@ const RecoveryTab = ({isEdit, recoveryFields, onRecoveryFieldUpdate}) => {
                 </InputWrapper>
 
                 <View style={{width: 20}}/>
-                <InputWrapper theme={theme}>
-                    <SearchableOptionsField
-                        title="Location"
-                        selectable={true}
-                        labelWidth={70}
-                        enabled={true}
-                        label="Location"
-                        value={location}
-                        text={searchLocationValue}
-                        oneOptionsSelected={handleLocationChange}
-                        onChangeText={(value) => {
-                            setSearchLocationValue(value)
-                        }}
-                        onClear={handleLocationChange}
-                        options={searchLocationResult}
-                    />
-                </InputWrapper>
-
-            </RowWrapper>
-
-            <RowWrapper theme={theme} zIndex={3}>
-                <InputWrapper theme={theme} style={{flex: 1}}>
-                    <DateInputField
-                        label="Date"
-                        labelWidth={70}
-                        value={moment(startTime).toDate()}
-                        format={"MMM/DD/YYYY"}
-                        mode={"date"}
-                        onDateChange={onStartTimeUpdated}
-                        placeholder="MMM/D/YYYY"
-                    />
-                </InputWrapper>
-
-                <View style={{width: 24}}/>
-
-                <InputWrapper theme={theme} style={{flex: 1}}>
-                    <DateInputField
-                        label="Time"
-                        labelWidth={70}
-                        value={moment(startTime).toDate()}
-                        format={"h:mm A"}
-                        mode={"time"}
-                        onDateChange={onStartTimeUpdated}
-                        placeholder="HH:MM"
-                    />
-
-                    {/*    EDIT TIME    */}
-
-                </InputWrapper>
-
-
-            </RowWrapper>
-
-            <RowWrapper theme={theme}>
-                <InputWrapper theme={theme} style={{flex: 1}}>
-                    <InputUnitField
-                        label={"Duration"}
-                        labelWidth={70}
-                        onChangeText={onDurationUpdated}
-                        value={duration}
-                        units={['hrs']}
-                        keyboardType="number-pad"
-                        errorMessage="Input estimated time (hours)."
-                    />
-                </InputWrapper>
-
-                <View style={{width: 24}}/>
                 <InputWrapper theme={theme}/>
 
             </RowWrapper>
+
+            {
+                hasRecovery &&
+                <RecoveryFieldsContainer theme={theme}>
+
+                    <RowWrapper theme={theme} zIndex={3}>
+
+                        <InputWrapper theme={theme}>
+                            <SearchableOptionsField
+                                title="Location"
+                                selectable={true}
+                                labelWidth={70}
+                                enabled={true}
+                                label="Location"
+                                value={location}
+                                text={searchLocationValue}
+                                oneOptionsSelected={handleLocationChange}
+                                onChangeText={(value) => {
+                                    setSearchLocationValue(value)
+                                }}
+                                onClear={handleLocationChange}
+                                options={searchLocationResult}
+                                hasError={errors["location"]}
+                                errorMessage={errors["location"]}
+                            />
+                        </InputWrapper>
+
+                        <View style={{width: 24}}/>
+
+                        <InputWrapper theme={theme} style={{flex: 1}}>
+                            <DateInputField
+                                label="Date"
+                                labelWidth={70}
+                                value={date}
+                                format={"MMM/DD/YYYY"}
+                                mode={"date"}
+                                onDateChange={onDateUpdated}
+                                onClear={onDateClear}
+                                placeholder="MMM/D/YYYY"
+                                hasError={errors["date"]}
+                                errorMessage={errors["date"]}
+                            />
+                        </InputWrapper>
+
+
+                    </RowWrapper>
+
+                    <RowWrapper theme={theme} zIndex={2}>
+
+                        <InputWrapper theme={theme} style={{flex: 1}}>
+                            <DateInputField
+                                label="Time"
+                                labelWidth={70}
+                                value={time}
+                                format={"h:mm A"}
+                                mode={"time"}
+                                onDateChange={onStartTimeUpdated}
+                                onClear={onTimeClear}
+                                placeholder="HH:MM"
+                                hasError={errors["time"]}
+                                errorMessage={errors["time"]}
+                            />
+
+                            {/*    EDIT TIME    */}
+
+                        </InputWrapper>
+
+
+                        <View style={{width: 24}}/>
+
+                        <InputWrapper theme={theme} style={{flex: 1}}>
+                            <InputUnitField
+                                label={"Duration"}
+                                labelWidth={70}
+                                onChangeText={onDurationUpdated}
+                                value={duration}
+                                units={['hrs']}
+                                keyboardType="number-pad"
+                                hasError={errors["duration"]}
+                                errorMessage="Input estimated time (hours)."
+                            />
+                        </InputWrapper>
+
+                    </RowWrapper>
+
+                </RecoveryFieldsContainer>
+            }
+
         </ContentContainer>
     )
 }
