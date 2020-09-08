@@ -8,7 +8,13 @@ import PageButton from "../../components/common/Page/PageButton";
 import ChevronLeft from "../../../assets/svg/ChevronLeft";
 import ChevronRight from "../../../assets/svg/ChevronRight";
 import moment from "moment";
-import {getAppointments, getTheatres, isValidCaseProcedureAppointment} from "../../api/network";
+import {
+    addProcedureAppointmentCall,
+    getAppointments,
+    getProcedureById,
+    getTheatres,
+    isValidCaseProcedureAppointment
+} from "../../api/network";
 import ScheduleDisplayComponent, {EVENT_TYPES} from "../../components/ScheduleDisplay/ScheduleDisplayComponent";
 import ProcedureTab from "../../components/CaseFiles/ProceduresDialogTabs/ProcedureTab";
 import _ from "lodash";
@@ -21,6 +27,9 @@ import Table from "../../components/common/Table/Table";
 import Paginator from "../../components/common/Paginators/Paginator";
 import Button from "../../components/common/Buttons/Button";
 import Snackbar from "react-native-paper/src/components/Snackbar";
+import {useModal} from "react-native-modalfy";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
+import LoadingComponent from "../../components/LoadingComponent";
 
 
 const HeaderText = styled.Text`
@@ -142,13 +151,17 @@ const PAGE_TABS = {
     EQUIPMENT: "Equipment",
 }
 
-function AppointmentPage({navigation}) {
+function AppointmentPage({navigation, route}) {
+
     const currentTabs = [PAGE_TABS.APPOINTMENT, PAGE_TABS.RECOVERY, PAGE_TABS.CONSUMABLES, PAGE_TABS.EQUIPMENT];
+    const {caseId, onAppointmentCreated} = route.params;
+    const modal = useModal();
     const theme = useTheme();
 
     const [currentTabIndex, setTabIndex] = useState(0);
-    const [isEditMode, setEditMode] = useState(false);
+    const [isLoading, setLoading] = useState(false)
 
+    const [selectedProcedure, setSelectedProcedure] = useState();
     const [caseProceduresInfo, setCaseProceduresInfo] = useState({});
     const [procedureErrors, setProcedureErrors] = useState({});
 
@@ -160,19 +173,8 @@ function AppointmentPage({navigation}) {
     const [snackbar, setSnackbar] = useState({visible: false, message: ""})
 
 
-    useEffect(() => {
-
-    }, [])
-
-
     //#region Event Handler
-    const onTabPress = (selectedTab) => {
-        if (isEditMode) return;
-
-        const index = currentTabs.indexOf(selectedTab)
-        if (index < 0) return
-        setTabIndex(index);
-
+    const onTabPress = () => {
     };
 
     let valid;
@@ -199,12 +201,44 @@ function AppointmentPage({navigation}) {
         //
         const isFinalTab = currentTabIndex === currentTabs.length - 1
         if (isFinalTab) {
-
+            console.log("Final Tab")
+            onFinalTab()
         } else {
             const nextTabIndex = currentTabIndex + 1
             setTabIndex(nextTabIndex);
+
+            if (currentTabs[nextTabIndex] === PAGE_TABS.RECOVERY) {
+                getProcedureData(caseProceduresInfo?.procedure?._id)
+            }
+        }
+    }
+
+    const onFinalTab = () => {
+        const createAppointmentObj = {}
+
+        createAppointmentObj.location = caseProceduresInfo.location?._id;
+        createAppointmentObj.procedure = caseProceduresInfo.procedure?._id;
+        createAppointmentObj.duration = caseProceduresInfo.duration;
+        createAppointmentObj.startTime = caseProceduresInfo.startTime;
+
+        if (hasRecovery) {
+            const recoveryObj = {}
+
+            const startTimeMoment = new moment(recoveryInfo.startTime)
+            const dateMoment = new moment(recoveryInfo.date);
+
+            recoveryObj.startTime = new moment(dateMoment.toDate())
+                .hours(startTimeMoment.hours())
+                .minutes(startTimeMoment.minutes()).toDate();
+
+            recoveryObj.duration = recoveryInfo.duration
+            recoveryObj.location = recoveryInfo.location._id
+
+            createAppointmentObj.recovery = recoveryObj;
         }
 
+        console.log("create appointment: ", createAppointmentObj);
+        addProcedureAppointment(createAppointmentObj);
     }
 
     const onPreviousButtonPress = () => {
@@ -216,7 +250,7 @@ function AppointmentPage({navigation}) {
     }
 
     const closeTapped = () => {
-        navigation.navigate("CaseFiles")
+        navigation.goBack()
     }
 
     const onProcedureUpdate = (value) => {
@@ -236,37 +270,7 @@ function AppointmentPage({navigation}) {
 
     //#endregion
 
-
     //#region Helper Methods
-
-    const testData = [
-        {
-            name: "Agents",
-            amount: 5
-        },
-        {
-            name: "Agents",
-            amount: 6
-        },
-        {
-            name: "Agents",
-            amount: 7
-        },
-        {
-            name: "Agents",
-            amount: 8
-        },
-        {
-            name: "Agents",
-            amount: 9
-        },
-        {
-            name: "Agents",
-            amount: 10
-        },
-    ]
-
-
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case PAGE_TABS.APPOINTMENT:
@@ -287,23 +291,41 @@ function AppointmentPage({navigation}) {
             case PAGE_TABS.CONSUMABLES:
                 return <ItemsTable
                     title={"Consumable"}
-                    data={testData}
+                    data={getInventoryDataFromSelectedProcedure()}
                 />
             case PAGE_TABS.EQUIPMENT:
                 return <ItemsTable
                     title={"Equipments"}
-                    data={testData}
+                    data={getEquipmentDataFromSelectedProcedure()}
                 />
             default:
                 return <View/>
         }
     };
 
+    const getEquipmentDataFromSelectedProcedure = () => {
+        const equipments = selectedProcedure?.equipments || []
+
+        return equipments.map(item => ({
+            name: item.equipment?.name,
+            amount: item.amount
+        }))
+    }
+
+    const getInventoryDataFromSelectedProcedure = () => {
+        const inventories = selectedProcedure?.inventories || []
+
+        return inventories.map(item => ({
+            name: item.inventory?.name,
+            amount: item.amount
+        }))
+    }
+
     const validateRecoveryInfo = (recoveryFields) => {
         if (!hasRecovery) return true;
 
         let isValid = true;
-        const requiredParams = ["time", "date","location", "duration"];
+        const requiredParams = ["time", "date", "location", "duration"];
         const errorObj = {}
 
         for (const requiredParam of requiredParams) {
@@ -321,7 +343,6 @@ function AppointmentPage({navigation}) {
 
         return isValid
     }
-
 
     const validateProcedureInfo = async (procedureInfo) => {
         let isValid = true;
@@ -355,6 +376,7 @@ function AppointmentPage({navigation}) {
     };
 
     const validateProcedureAsync = (procedure, location, startTime, duration) => {
+        setLoading(true)
         return isValidCaseProcedureAppointment(procedure, location, startTime, duration)
             .then(results => {
                 const {errors = [], isValid} = results;
@@ -374,12 +396,67 @@ function AppointmentPage({navigation}) {
                 setSnackbar({visible: true, message: "Something went wrong"})
                 return false
             })
+            .finally( _ => setLoading(false))
+    }
+
+    const getProcedureData = (procedureId) => {
+
+        // check to see if we already have data for procedure
+        if (selectedProcedure?._id === procedureId) return;
+
+        console.log("Fetching procedure data");
+        getProcedureById(procedureId)
+            .then(Procedure => {
+                setSelectedProcedure(Procedure);
+            })
+            .catch(error => {
+                console.error("Failed to fetch procedure info", error);
+                setSnackbar({visible: true, message: "Failed to fetch consumable & equipments data."})
+            })
+    }
+
+    const addProcedureAppointment = (procedureAppointment) => {
+        setLoading(true);
+        addProcedureAppointmentCall(caseId, procedureAppointment)
+            .then( data => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                navigation.goBack()
+                                if (onAppointmentCreated) {
+                                    onAppointmentCreated(data)
+                                }
+                            }}
+                            message="New Appointment was successfully created"
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch( error => {
+                console.log("Failed to create new appointment for procedure.")
+
+            })
+            .finally( _ => {
+                setLoading(false)
+            })
     }
 
     //endregion
 
     return (
         <PageWrapper theme={theme}>
+
             <HeaderWrapper theme={theme}>
                 <HeaderContainer theme={theme}>
                     <HeaderText theme={theme}>Add Appointment</HeaderText>
@@ -454,6 +531,11 @@ function AppointmentPage({navigation}) {
                 {snackbar?.message || "Something went wrong"}
             </Snackbar>
 
+            {
+                isLoading &&
+                <LoadingComponent/>
+            }
+
         </PageWrapper>
     );
 }
@@ -464,7 +546,7 @@ AppointmentPage.defaultProps = {};
 export default AppointmentPage;
 
 
-const AppointmentTab = ({onProcedureUpdate, procedure, patient = "--", errors, onErrorUpdate}) => {
+const AppointmentTab = ({onProcedureUpdate, onProcedureSelected, procedure, patient = "--", errors, onErrorUpdate}) => {
 
     // TODO clean up logic for scheduling assistant.
 
@@ -589,6 +671,7 @@ const AppointmentTab = ({onProcedureUpdate, procedure, patient = "--", errors, o
         <View style={{flex: 1}}>
             <ProcedureTab
                 onProcedureInfoChange={onProcedureFieldChange}
+                onProcedureSelected={onProcedureSelected}
                 procedureInfo={currentProcedure}
                 errors={errors}
                 onErrorUpdate={handleOnErrorUpdate}
@@ -632,7 +715,7 @@ const RecoveryFieldsContainer = styled.View`
  */
 const RecoveryTab = ({isEdit, recoveryFields, errors, onRecoveryFieldUpdate, hasRecovery, onRecoveryToggle}) => {
     const theme = useTheme();
-    const {duration , location, time, date} = recoveryFields;
+    const {duration, location, time, date} = recoveryFields;
     const {name = ""} = location || {}
 
     const onDurationUpdated = (duration) => {
@@ -854,7 +937,6 @@ const RecoveryTab = ({isEdit, recoveryFields, errors, onRecoveryFieldUpdate, has
     )
 }
 
-
 const PaginatorContainer = styled.View`
     border: 1px solid #CCD6E0;
     height: 50px;
@@ -864,8 +946,9 @@ const PaginatorContainer = styled.View`
 `
 
 const ItemsTable = ({title, data}) => {
-
     const theme = useTheme();
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEM_PER_PAGE = 10;
 
     const headers = [
         {
@@ -880,13 +963,20 @@ const ItemsTable = ({title, data}) => {
 
 
     const onGoToNext = () => {
+        const lastPage = Math.ceil(data.length / ITEM_PER_PAGE)
+        const nextPage = currentPage + 1;
 
+        if (nextPage > lastPage) return
+
+        setCurrentPage(nextPage);
     }
 
     const onGoToPrevious = () => {
+        const prvPage = currentPage - 1;
 
+        if (!prvPage) return
+        setCurrentPage(prvPage);
     }
-
 
     const listItemFormat = (item) => {
         return (
@@ -901,14 +991,18 @@ const ItemsTable = ({title, data}) => {
         )
     }
 
+    const totalPages = Math.ceil(data.length / ITEM_PER_PAGE);
+    const start = (currentPage - 1) * ITEM_PER_PAGE;
+    const end = start + ITEM_PER_PAGE;
+
+    const dataToShow = data.slice(start, end)
+
 
     return <ContentContainer theme={theme}>
 
         <View style={{flex: 1}}>
             <Table
-                data={data}
-                currentListMin={1}
-                currentListMax={2}
+                data={dataToShow}
                 listItemFormat={listItemFormat}
                 headers={headers}
                 isCheckbox={false}
@@ -919,8 +1013,8 @@ const ItemsTable = ({title, data}) => {
             <View style={{alignItems: 'flex-start', justifyContent: 'flex-start'}}>
                 <PaginatorContainer theme={theme}>
                     <Paginator
-                        currentPage={1}
-                        totalPages={1}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
                         goToNextPage={onGoToNext}
                         goToPreviousPage={onGoToPrevious}
                     />

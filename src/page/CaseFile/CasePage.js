@@ -166,7 +166,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 console.log('Modal closed');
             },
         });
-
     }
 
     const handleRevertChargeSheetChanges = () => {
@@ -353,6 +352,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             />,
             onClose : ()=>{modal.closeModals('ActionContainerModal')}
         });
+    }
+
+    const onAppointmentCreated = (value) => {
+        fetchCase(caseId);
     }
 
     /**
@@ -566,7 +569,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 console.log('failed to create', error);
                 modal.openModal('ConfirmationModal', {
                     content: (
-                        <ConfirmationComponent 
+                        <ConfirmationComponent
                             isError={true}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
                             onCancel={() => {
@@ -991,9 +994,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     const openAddProcedure = () => {
         modal.closeModals('ActionContainerModal');
-
-        navigation.navigate("AddAppointmentPage");
-
+        navigation.navigate("AddAppointmentPage", {caseId, onAppointmentCreated});
     };
 
     const getBillingData = () => {

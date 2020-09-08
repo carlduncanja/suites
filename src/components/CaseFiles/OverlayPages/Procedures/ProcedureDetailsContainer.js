@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {View, StyleSheet, ScrollView, Modal, TouchableHighlight, Alert} from "react-native";
 import FrameProcedureCard from '../../../common/Frames/FrameCards/FrameProcedureCard';
 import {useModal} from 'react-native-modalfy';
@@ -17,7 +17,12 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
     const {pageState, setPageState, fetchCase} = useContext(PageContext);
     const {isEditMode} = pageState;
 
+    useEffect(() => {
+        setProcedureAppointment(tabDetails);
+    }, [tabDetails])
+
     const [procedureAppointments, setProcedureAppointment] = useState(tabDetails);
+
 
     const setPageLoading = (isLoading) => {
         setPageState({

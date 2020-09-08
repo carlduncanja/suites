@@ -47,7 +47,7 @@ import {
     caseQuotationEndpoint,
     quotationEndpoint,
     caseInvoicesEndpoint,
-    chargeSheetApprovalEndpoint, chargeSheetWithdrawChangesEndpoint
+    chargeSheetApprovalEndpoint, chargeSheetWithdrawChangesEndpoint, caseProcedureAppointmentsEndpoint
 } from "../const/suitesEndpoints";
 import { createDocumentLink } from "../const/documentGenerationEndpoints";
 
@@ -318,6 +318,13 @@ export const createInvoiceViaQuotation = async (caseId, quotationId) => {
 export const removeCaseProcedureAppointment = async (caseId, caseProcedureId) => {
     return suitesAxiosInstance
         .delete(caseProcedureAppointmentEndpoint(caseId, caseProcedureId))
+        .then(handleResponse)
+        .catch(handleError);
+}
+
+export const addProcedureAppointmentCall = async (caseId, procedureAppointment) => {
+    return suitesAxiosInstance
+        .post(caseProcedureAppointmentsEndpoint(caseId), procedureAppointment)
         .then(handleResponse)
         .catch(handleError);
 }

@@ -35,6 +35,7 @@ const InputWrapper = styled.View`
 
 const ProcedureTab = ({
                           onProcedureInfoChange,
+                          onProcedureSelected = () => {},
                           procedureInfo,
                           errors,
                           onErrorUpdate,
@@ -141,7 +142,7 @@ const ProcedureTab = ({
             }
             : value;
 
-        // handleInfoChange("procedure")(procedure)
+        onProcedureSelected(value);
 
         onProcedureInfoChange({
             ...procedureInfo,
