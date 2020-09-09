@@ -6,6 +6,7 @@ import {useTheme} from "emotion-theming";
 
 const ButtonWrapper = styled.TouchableOpacity`
   flex: 1;
+  position: relative;
   display: flex;
   padding: ${({theme}) => theme.space['--space-16']};
   border-radius: 8px;
@@ -17,6 +18,7 @@ const ButtonWrapper = styled.TouchableOpacity`
 
 
 const ButtonContainer = styled.View`
+  position: absolute;
   flex-direction: row;
   align-items: center;
 `

@@ -116,11 +116,10 @@ const FormContainer = styled.View`
   flex-direction: column;
 `;
 
-
 const RowContainer = styled.View`
   width: 100%;
-  height: 56px;
-  margin-bottom: ${({theme}) => theme.space['--space-32']};
+  height: 36px;
+  margin-bottom: ${({theme}) => theme.space['--space-20']};
 `
 
 const DividerContainer = styled.View`
@@ -146,7 +145,7 @@ const LoginButtonWrapper = styled.View`
 `
 
 const ButtonWrapper = styled.View`
-    height: 42px;
+    height: 36px;
     margin-top: 16px;
     width: 100%
 `
@@ -244,7 +243,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
 
                             <RowContainer theme={theme}>
                                 <InputFieldWithIcon
-                                    label="Email"
+                                    placeholder="Email"
                                     onChangeText={value => onFieldChange('email')(value)}
                                     value={fields.email}
                                     keyboardType="email-address"
@@ -259,7 +258,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
 
                             <RowContainer theme={theme}>
                                 <InputFieldWithIcon
-                                    label="Password"
+                                    placeholder="Password"
                                     onChangeText={value => onFieldChange('password')(value)}
                                     value={fields.password}
                                     onClear={() => onFieldChange('password')('')}
