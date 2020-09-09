@@ -8,7 +8,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
 const TabWrapper = styled.TouchableOpacity`
-    height:36px;
+    height:32px;
     width : 115px;
     padding : ${ ({theme}) => `${theme.space['--space-6']} ${theme.space['--space-4']}`};
 `;
@@ -42,38 +42,13 @@ function CreationTab({backgroundColor, textColor = "", tabName = "", onTabPress 
 
     const theme = useTheme();
 
-    
-
     return (
         <TabWrapper onPress = {onTabPress} activeOpacity={1} theme = {theme}>
             <TabContainer backgroundColor = {backgroundColor}>
-                {/* <TabCorner>
-                    <TabLeftCorner fillColor={backgroundColor ? backgroundColor : null}/>
-                </TabCorner>
-                 */}
-                {/* <TabNameWrapper>
-                    <TabNameContainer> */}
-                        <TabName theme={theme}>{tabName}</TabName>
-                       
-                    {/* </TabNameContainer>
-                </TabNameWrapper> */}
-
-                {/* <TabCorner>
-                    <TabRightCorner fillColor={backgroundColor ? backgroundColor : null}/>
-                </TabCorner> */}
+                <TabName theme={theme}>{tabName}</TabName>
             </TabContainer>
         </TabWrapper>
-        // <View style={styles.container}>
-        //     <View style={styles.corner}>
-        //         <SvgIcon iconName="tabLeft" fillColor={backgroundColor}/>
-        //     </View>
-        //     <View style={[styles.tabContainer,{backgroundColor:backgroundColor}]}>
-        //         <Text style={[styles.text,{color:textColor}]}>{tabName}</Text>
-        //     </View>
-        //     <View style={styles.corner}>
-        //         <SvgIcon iconName="tabRight" fillColor={backgroundColor}/>
-        //     </View>
-        // </View>
+        
     );
 }
 
