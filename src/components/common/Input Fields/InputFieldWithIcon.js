@@ -2,27 +2,39 @@ import React, {useRef, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ClearIcon from '../../../../assets/svg/clearIcon';
+import InputErrorComponent from "../InputErrorComponent";
 
 /**
  *
+ * @param hasError
+ * @param errorMessage
  * @param label
  * @param onChangeText
  * @param value
  * @param placeholder
  * @param keyboardType
+ * @param autoCapitalize
  * @param onClear
+ * @param icon
+ * @param secureTextEntry
+ * @param inputRef
+ * @param isFocus
  * @returns {*}
  * @constructor
  */
-function InputFieldWithIcon({label, onChangeText, value, placeholder, keyboardType, autoCapitalize = 'sentences', onClear, icon, secureTextEntry, inputRef = useRef(), isFocus = false,}) {
+function InputFieldWithIcon({hasError = false, errorMessage, label, onChangeText, value, placeholder, keyboardType, autoCapitalize = 'sentences', onClear, icon, secureTextEntry, inputRef = useRef(), isFocus = false,}) {
     return (
         <View style={styles.container}>
             {
-                label&&
+                label &&
                 <Text style={[styles.textLabel]}>{label}</Text>
             }
 
-            <View style={[styles.inputWrapper, {paddingRight: value ? 4 : 0}]}>
+            <View style={[styles.inputWrapper,
+                {
+                    paddingRight: value ? 4 : 0,
+                    borderColor: hasError ? '#fc8181' : '#E3E8EF'
+                }]}>
                 <TextInput
                     style={[styles.inputField, {}]}
                     onChangeText={onChangeText}
@@ -38,6 +50,13 @@ function InputFieldWithIcon({label, onChangeText, value, placeholder, keyboardTy
                     {icon}
                 </View>
             </View>
+
+            {
+                hasError &&
+                <View style={{position: "absolute"}}>
+                    <InputErrorComponent errorMessage={errorMessage}/>
+                </View>
+            }
 
         </View>
     );
@@ -66,6 +85,7 @@ const styles = StyleSheet.create({
         borderColor: '#E3E8EF',
         borderRadius: 4,
         height: 32,
+        marginBottom: 5,
         justifyContent: 'center'
     },
     inputField: {
