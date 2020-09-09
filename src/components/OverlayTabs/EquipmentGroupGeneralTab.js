@@ -124,6 +124,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
     };
 
 
+
     const getSuppliers = () => {
         supplierToDisplay.map(item => {
             return item.name

@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled, { css } from '@emotion/native';
 import AddEquipmentDetailsTab from "../components/OverlayTabs/AddEquipmentDetailsTab";
 import { useTheme } from "emotion-theming";
-import { Text, View } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import TabsContainer from "../components/common/Tabs/TabsContainerComponent"
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import Footer from '../components/common/Page/Footer';
+import { Divider } from 'react-native-paper';
 
 
 const AddEquipmentPageWrapper = styled.View`
@@ -64,12 +65,43 @@ const TabsViewContainer = styled.View`
     height: 54px;
 `;
 
+const testData = {
+    Assignment: "Choice",
+    Quantity: "1",
+    Status: "Available"
+}
 
-function AddEquipmentPage(props) {
+const AddEquipmentPage = ({ navigation, route }) => {
+    const { equipment } = route.params;
     const currentTabs = ["Details"];
     const theme = useTheme();
+    const [equipmentData, setEquipmentData] = useState(testData);
+    const [locations, setLocations] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(0);
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [isEditMode, setEditMode] = useState(false);
+
+    const onFieldChange = (fieldName) => (value) => {
+        const updateFields = { ...equipmentData }
+        setEquipmentData({
+            ...updateFields,
+            [fieldName]: value
+        })
+        console.log(equipmentData);
+    }
+
+    const onLocationUpdate = (value) => {
+        const updatedLocations = [...locations]
+
+        // check if value is at index
+        updatedLocations[selectedIndex] = value;
+        console.log("Updated locations:", updatedLocations)
+        setLocations(updatedLocations);
+    }
+
+
+
+
 
     useEffect(() => {
 
@@ -80,14 +112,20 @@ function AddEquipmentPage(props) {
     };
 
     const closeTapped = () => {
-        // props.navigation.navigate("Equipment")
+        navigation.navigate("Equipment")
     }
 
 
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <AddEquipmentDetailsTab />
+                return <AddEquipmentDetailsTab
+                    equipmentDetails={equipment}
+                    data={equipmentData}
+                    locations={locations[selectedIndex]}
+                    onFieldChange={onFieldChange}
+                    onLocationUpdate={onLocationUpdate}
+                />
             default:
                 return <View />
         }
@@ -118,6 +156,7 @@ function AddEquipmentPage(props) {
                     <AddEquipmentPageContentContainer>
                         {getTabContent(currentTab)}
 
+
                     </AddEquipmentPageContentContainer>
                 </AddEquipmentPageContentWrapper>
 
@@ -130,7 +169,5 @@ function AddEquipmentPage(props) {
     );
 }
 
-AddEquipmentPage.propTypes = {};
-AddEquipmentPage.defaultProps = {};
 
 export default AddEquipmentPage;

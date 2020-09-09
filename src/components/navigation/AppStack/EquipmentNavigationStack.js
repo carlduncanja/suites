@@ -52,7 +52,7 @@ export default () => {
                 }}
             />
             <Stack.Screen
-                name="AddEquipment"
+                name="AddEquipmentPage"
                 component={AddEquipmentPage}
                 options={{
                     headerShown: false

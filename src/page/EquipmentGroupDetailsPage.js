@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
+import { withModal } from "react-native-modalfy";
 import { PageContext } from '../contexts/PageContext';
 import DetailsPage from '../components/common/DetailsPage/DetailsPage';
 import TabsContainerComponent from '../components/common/Tabs/TabsContainerComponent';
 import { getEquipmentTypeById } from '../api/network';
 import EquipmentGroupGeneralTab from '../components/OverlayTabs/EquipmentGroupGeneralTab';
+import { Modal } from 'react-native-paper';
 
 function EquipmentGroupDetailsPage(props) {
 
     const { data = {} } = props.route.params;
     const { name = "", _id = "", equipments = [], suppliers = [] } = data
-    const tabs = ["Details", "Items"]
+    const tabs = ["Details"]
 
     const [currentTab, setCurrentTab] = useState(tabs[0])
     const [pageState, setPageState] = useState({});
@@ -52,7 +54,8 @@ function EquipmentGroupDetailsPage(props) {
     };
 
     const goToAddEquipment = () => {
-        props.navigation.navigate("AddEquipment");
+        props.navigation.navigate("AddEquipmentPage", { equipment: selectedEquipment });
+        props.modal.closeAllModals();
 
     }
 
@@ -77,7 +80,7 @@ function EquipmentGroupDetailsPage(props) {
         <PageContext.Provider value={{ pageState, setPageState }}>
             <DetailsPage
                 headerChildren={[name]}
-                onBackPress={() => navigation.navigate("Equipment")}
+                onBackPress={() => props.navigation.navigate("Equipment")}
                 pageTabs={
                     <TabsContainerComponent
                         tabs={tabs}
@@ -87,6 +90,7 @@ function EquipmentGroupDetailsPage(props) {
                 }
             >
                 {getContentData(currentTab)}
+
             </DetailsPage>
 
         </PageContext.Provider>
@@ -101,4 +105,4 @@ function EquipmentGroupDetailsPage(props) {
 EquipmentGroupDetailsPage.propTypes = {};
 EquipmentGroupDetailsPage.defaultProps = {};
 
-export default EquipmentGroupDetailsPage
+export default withModal(EquipmentGroupDetailsPage)
