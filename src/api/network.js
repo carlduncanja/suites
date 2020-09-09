@@ -47,7 +47,10 @@ import {
     caseQuotationEndpoint,
     quotationEndpoint,
     caseInvoicesEndpoint,
-    chargeSheetApprovalEndpoint, chargeSheetWithdrawChangesEndpoint, caseProcedureAppointmentsEndpoint
+    chargeSheetApprovalEndpoint,
+    chargeSheetWithdrawChangesEndpoint,
+    caseProcedureAppointmentsEndpoint,
+    registrationEndpoint
 } from "../const/suitesEndpoints";
 import { createDocumentLink } from "../const/documentGenerationEndpoints";
 
@@ -73,6 +76,13 @@ export const logout = async (userId, pushToken) => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+export const registrationCall = async (params) => {
+    return suitesAxiosInstance
+        .put(registrationEndpoint, params)
+        .then(handleResponse)
+        .catch(handleError);
+}
 
 
 // ################# Appointments Endpoints
