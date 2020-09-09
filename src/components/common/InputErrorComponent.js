@@ -11,8 +11,8 @@ import styled, { css } from '@emotion/native';
 
 
 const ErrorWrapper = styled.View`
-    postion : absolute;
-    top : 34;
+    position : absolute;
+    top : 34px;
 `;
 
 const ErrorContainer = styled.View`
@@ -28,7 +28,7 @@ const ErrorText = styled.Text( ({theme}) => ({
 
 
 function InputErrorComponent({
-    errorMessage = "Error",    
+    errorMessage = "Error",
 }){
 
     const theme = useTheme();
@@ -36,10 +36,10 @@ function InputErrorComponent({
     return (
         <ErrorWrapper>
             <ErrorContainer>
-                <ErrorText theme = {theme}>! {errorMessage}</ErrorText>
+                <ErrorText theme = {theme}>{errorMessage} !</ErrorText>
             </ErrorContainer>
         </ErrorWrapper>
-        
+
     );
 }
 
