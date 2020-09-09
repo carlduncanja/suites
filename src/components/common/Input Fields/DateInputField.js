@@ -36,7 +36,9 @@ function DateInputField({
                             minDate,
                             mode,
                             format,
-                            maxDate
+                            maxDate,
+                            borderColor = '--color-gray-300',
+                            hasBorder = true
                         }) {
 
     const theme = useTheme();
@@ -84,10 +86,10 @@ function DateInputField({
                             ...styles.inputWrapper,
                             flex: 1,
                             backgroundColor: theme.colors['--default-shade-white'],
-                            borderColor: theme.colors['--color-gray-300'],
+                            borderColor: hasBorder ? theme.colors[borderColor] : null,
                             justifyContent: 'center',
                             alignSelf: 'flex-start',
-                            borderWidth: 1,
+                            borderWidth: hasBorder ? 1 : null,
                             borderRadius: 4,
                             height: 32,
                             padding: 4,
@@ -144,9 +146,7 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         flex: 1,
-        borderWidth: 1,
         height: 32,
-        borderRadius: 4,
         paddingLeft: 10,
         alignItems: 'flex-start',
     },

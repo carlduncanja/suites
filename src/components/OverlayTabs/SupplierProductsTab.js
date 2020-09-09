@@ -57,7 +57,7 @@ const PaginatorActionsContainer = styled.View`
 function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false }) {
 
     // ######## STATES
-    // console.log("Productsss: ", products)
+    console.log("Cart: ", cart)
     const theme = useTheme();
 
     const [checkBoxList, setCheckBoxList] = useState([])
@@ -212,29 +212,64 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
     const onListFooterPress = (data) => {
         // console.log("List: ", data)
-        addCartItem(data)
+        let { purchaseOrders = [], deliveryDate = ""} = data
+        addCartItem(purchaseOrders);
         // updateCartItems(data)
-        setCartItems(data)
-        setCheckBoxList([])
+        setCartItems(purchaseOrders);
+        onCompleteOrder(data)
+    }
 
-        console.log("Card data: ", data)
+    const onCompleteOrder = (data) => {
+        let { purchaseOrders = [], deliveryDate = ""} = data
+        let orderToCreate = {
+            deliveryDate,
+            orders : purchaseOrders,
+            supplier : supplierId,
+        }
+        
+        console.log("Data: ", orderToCreate)
 
-        // setTimeout(() => {
-        //     modal.openModal('OverlayModal',
-        //         {
-        //             content: <CreatePurchaseOrderDialog
-        //                 onCancel={() => setFloatingAction(false)}
-        //                 onCreated={(fields) => {
-        //                     modal.closeModals('OverlayModal');
-        //                     setTimeout(() => {
-        //                         onOrderComplete(fields, data)
-        //                         // onCompleted(fields, data)
-        //                     }, 200)
-        //                 }}
-        //             />,
-        //             onClose: () => setFloatingAction(false)
-        //         })
-        // }, 200)
+        createPurchaseOrder(orderToCreate)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError = {false}
+                            isEditUpdate = {false}
+                            onAction = {()=> {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    });
+                addCartItem([]);
+                setCartItems([]);
+                setCheckBoxList([]);
+
+                // Alert.alert("Success", "Purchase order successfully created.")
+            })
+                .catch(error => {
+                    console.log("Failed to create PO", error)
+                    modal.openModal(
+                        'ConfirmationModal',
+                        {
+                            content: <ConfirmationComponent
+                                isError = {true}
+                                isEditUpdate = {false}
+                                onCancel = {()=> {
+                                    modal.closeModals('ConfirmationModal');
+                                }}
+                            />
+                            ,
+                            onClose: () => {modal.closeModals('ConfirmationModal')} 
+                        })
+                    // Alert.alert("Failed", "Purchase order was not created, please try again.")
+                    //TODO handle error cases.
+                })
+
+       
     }
 
     const onConfirmChanges = (data) => {
@@ -251,9 +286,9 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                             onListFooterPress(data);
                         },200);
 
-                        setTimeout(()=>{
-                            onShowSuccessScreen();
-                        },200)
+                        // setTimeout(()=>{
+                        //     onShowSuccessScreen();
+                        // },200)
                         
                     }}
                     onCancel = {()=>{
@@ -364,19 +399,6 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
         setFloatingAction(false)
         setCartItems([...cartArray])
         setCartTotal(cartArray.length)
-        // updateCartItems([...cartArray])
-
-        // setTimeout(()=>{
-        //     modal.openModal('OverlayInfoModal',{
-        //         overlayContent : <SuppliersPurchaseOrder
-        //             details = {cartArray}
-        //             onUpdateItems = {onUpdateItems}
-        //             onClearPress = {onClearPress}
-        //             onListFooterPress = {onListFooterPress}
-        //         />,
-        //     })
-        // },200)
-
     }
 
     const addItemComplete = (data) => {
@@ -522,12 +544,12 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProp = {
     addCartItem
-}
+} 
 
 export default connect(mapStateToProps, mapDispatchToProp)(withModal(SupplierProductsTab));
 
 const styles = StyleSheet.create({
-    item: {
+    item: { 
         flex: 1,
     },
     itemText: {

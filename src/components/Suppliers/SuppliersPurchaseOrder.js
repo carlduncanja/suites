@@ -28,7 +28,9 @@ const Row = styled.View`
 const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFooterPress, modal}) => {
     const { closeModals } = modal;
     const theme = useTheme();
-    const [purchaseOrders, setPurchaseOrders] = useState(details)
+    const [purchaseOrders, setPurchaseOrders] = useState(details);
+    const [fields, setFields] = useState({});
+    const [errorFields, setErrorFields] = useState({});
 
     const headers = [
         {
@@ -55,11 +57,11 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
 
     const onNumberArrowChange = (id) => (operation) =>{
         const findIndex = details.findIndex(obj => obj._id === id);
-        let objQuantity = purchaseOrders[findIndex].amount || 0
+        let objQuantity = purchaseOrders[findIndex].amount || 1
        
         const updatedObj = { 
             ...purchaseOrders[findIndex], 
-            amount: operation === 'sub' ? objQuantity === 0 ? objQuantity : objQuantity -1 : objQuantity +1
+            amount: operation === 'sub' ? objQuantity === 1 ? objQuantity : objQuantity -1 : objQuantity +1
         };
 
         const updatedArray = [
@@ -74,10 +76,10 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
     const onChangeField = (id) => (value)=>{
         console.log("Change")
         const findIndex = purchaseOrders.findIndex(obj => obj._id === id);
-        let objQuantity = purchaseOrders[findIndex].amount || 0
+        let objQuantity = purchaseOrders[findIndex].amount || 1
         const updatedObj = { 
             ...purchaseOrders[findIndex], 
-            amount: parseInt(value) || ""
+            amount: value === 0 ? 1 : parseInt(value) || ""
         };
         const updatedArray = [
             ...purchaseOrders.slice(0, findIndex),
@@ -101,12 +103,62 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
 
     const onFooterPress = () => {
 
-        onListFooterPress(purchaseOrders)
+        let isValid = validateOrder();
+
+        if(!isValid){ return }
+
+        let updatedPurchaseOrders = purchaseOrders.map( order => {
+            return {
+                ...order,
+                productId : order?._id
+            }
+        })
+        console.log("UpdatedPurchase order: ", updatedPurchaseOrders);
+        onListFooterPress({
+            purchaseOrders : updatedPurchaseOrders,
+            deliveryDate : fields['deliveryDate']
+        })
         // onUpdateItems(purchaseOrders)
     }
 
+    const validateOrder = () => {
+        let isValid = true
+        let requiredFields = ['deliveryDate']
+    
+        let errorObj = {...errorFields} || {}
+
+        for (const requiredField of requiredFields) {
+            if(!fields[requiredField]){
+                // console.log(`${requiredField} is required`)
+                isValid = false
+                errorObj[requiredField] = "Value is required.";
+            }else{
+                delete errorObj[requiredField]
+            }
+        }
+
+        setErrorFields(errorObj)
+        console.log("Error obj: ", errorObj)
+
+        return isValid
+    }
+
+    const onFieldChange = (fieldName) => (value) => {
+        console.log("Field:", fieldName, value)
+        const updatedFields = {...fields}
+        setFields({
+            ...updatedFields,
+            [fieldName]: value
+        })
+
+        const updatedErrors = {...errorFields}
+        delete updatedErrors[fieldName]
+        setErrorFields(updatedErrors)
+
+    };
+
     const listItemFormat = (item) => { 
-        const { _id = "", name = "", amount = 0, unit = "n/a" } = item
+        const { _id = "", name = "", amount = 1, unit = "n/a" } = item
         return (
             
             <Row theme = {theme}>
@@ -176,7 +228,7 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
 
     return (
         
-            <AddOverlayDialog
+            <CartCard
                 title = "Cart"  
                 closeModal = {()=>closeModals("OverlayInfoModal")}
                 listItemFormat = {listItemFormat}
@@ -186,7 +238,10 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
                 onFooterPress = {onFooterPress}
                 onClearPress = {onClearItems}
                 hasSearch = {false}
-                footerTitle = "COMPLETE ORDERS"
+                footerTitle = "COMPLETE ORDERS" 
+                onDateChange = {onFieldChange}
+                errors = {errorFields}
+                fields = {fields}
             /> 
         
     ) 

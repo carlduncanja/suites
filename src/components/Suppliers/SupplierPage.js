@@ -125,7 +125,8 @@ function SupplierPage({ route, navigation }) {
             ...item,
             unitCost: item.unitPrice
         }
-        setProducts([...products, newItem])
+        setProducts([...products, newItem]);
+        
 
     }
 
