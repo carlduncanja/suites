@@ -206,8 +206,6 @@ function SignupPage({navigation, signIn, expoPushToken}) {
             .finally(_ => {
                 setLoading(false);
             });
-
-
     };
 
     const onGuestButtonPress = () => {
