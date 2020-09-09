@@ -141,12 +141,6 @@ const FooterWrapper = styled.View`
   margin-right: ${({theme}) => theme.space['--space-24']}; 
 `
 
-const SnackBarsWrapper = styled.View`
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-`
-
 const FooterContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
@@ -791,8 +785,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
             <PageContentWrapper>
                 <View style={{flex: 1}}>{getTabContent()}</View>
             </PageContentWrapper>
-
-            <Divider/>
 
             <FooterWrapper>
                 <FooterContainer>

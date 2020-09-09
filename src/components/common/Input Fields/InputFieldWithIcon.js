@@ -17,7 +17,10 @@ import ClearIcon from '../../../../assets/svg/clearIcon';
 function InputFieldWithIcon({label, onChangeText, value, placeholder, keyboardType, autoCapitalize = 'sentences', onClear, icon, secureTextEntry, inputRef = useRef(), isFocus = false,}) {
     return (
         <View style={styles.container}>
-            <Text style={[styles.textLabel]}>{label}</Text>
+            {
+                label&&
+                <Text style={[styles.textLabel]}>{label}</Text>
+            }
 
             <View style={[styles.inputWrapper, {paddingRight: value ? 4 : 0}]}>
                 <TextInput

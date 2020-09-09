@@ -8,23 +8,23 @@ import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesH
 
 const PickListCard = (props) =>{
 
-    const {  
-        title, 
-        isEditMode = false, 
+    const {
+        title,
+        isEditMode = false,
         onEditDone = ()=>{},
-        closeModal, 
-        data, 
-        selectedTab, 
-        listItemFormat, 
-        tabs, 
-        headers, 
+        closeModal,
+        data,
+        selectedTab,
+        listItemFormat,
+        tabs,
+        headers,
         isCheckBox ,
         onPressTab,
         hasFooter = false,
         onFooterPress = () => {},
         footerTitle = ""
     } = props
-   
+
     const testData = [
         {
             name : "Agents",
@@ -94,7 +94,7 @@ const PickListCard = (props) =>{
                     {
                         tabs.map((tab,index)=>{
                             return (
-                                <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null, height: 30}]} key={index}>
+                                <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null, height: 30, width: 150}]} key={index}>
                                     <Button
                                         backgroundColor = {tab === selectedTab ? "#FFFFFF" : null}
                                         color = {tab === selectedTab ? "#3182CE" : "#A0AEC0" }
@@ -106,10 +106,9 @@ const PickListCard = (props) =>{
                         })
                     }
                 </View>
-            
             }
 
-             
+
 
             <View style={styles.list}>
                 <Table
@@ -167,7 +166,7 @@ const PickListCard = (props) =>{
                     />
                 </View>
             }
-        
+
         </View>
     )
 }

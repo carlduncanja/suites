@@ -31,7 +31,7 @@ const BannerText = styled.Text( ({theme}) => ({
 const Table = (props) => {
 
     const {
-        data = [], 
+        data = [],
         listItemFormat = ()=>{},
         headers = [],
         isCheckbox = true,
@@ -46,14 +46,14 @@ const Table = (props) => {
     // const toggleHeaderCheckbox = isCheckbox ? toggleHeaderCheckbox : ()=>{};
     // const itemSelected = isCheckbox ? itemSelected : [];
 
-    const isIndeterminate = itemSelected.length > 0 && itemSelected.length !== data.length;
+    const isIndeterminate = itemSelected?.length > 0 && itemSelected?.length !== data?.length;
     return (
         <>
             <Header
                 headers = {headers}
                 toggleHeaderCheckbox = {toggleHeaderCheckbox}
                 isIndeterminate = {isIndeterminate}
-                checked = {itemSelected.length > 0}
+                checked = {itemSelected?.length > 0}
                 isCheckbox = {isCheckbox}
             />
 
