@@ -48,8 +48,8 @@ function SupplierPage({ route, navigation }) {
             if (!products.length){
                 fetchProducts();
                 fetchSupplier(_id);
-            } 
-            
+            }
+
         }, 200)
         // fetchSupplier(_id)
     }, []);
@@ -131,7 +131,7 @@ function SupplierPage({ route, navigation }) {
     }
 
     // ##### Helper functions
-    
+
     const errorScreen = () => {
         setTimeout(() => {
             modal
@@ -145,7 +145,7 @@ function SupplierPage({ route, navigation }) {
                             message = "There was an issue performing this action."
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                        onClose: () => {modal.closeModals('ConfirmationModal')}
                     })
         }, 100);
     }
@@ -163,7 +163,7 @@ function SupplierPage({ route, navigation }) {
                 console.log("Failed to get products", error)
                 //TODO handle error cases.
                 errorScreen();
-                //CONFIRAMTION SCREEN 
+                //CONFIRAMTION SCREEN
             })
             // .finally(_ => {
             //     setPageLoading(false);
@@ -183,8 +183,8 @@ function SupplierPage({ route, navigation }) {
                     setTimeout(()=>{modal.closeModals('ConfirmationModal');},100)
                     errorScreen();
                 }
-                
-                // confirmation screeen 
+
+                // confirmation screeen
                 //TODO handle error cases.
             })
             .finally(_ => {
@@ -216,23 +216,10 @@ function SupplierPage({ route, navigation }) {
 
     return (
 
-        // <BottomSheetContainer
-        //     isFetching={isFetching}
-        //     overlayId={supplierNumber}
-        //     overlayTitle={name}
-        //     onTabPressChange={onTabPress}
-        //     currentTabs={currentTabs}
-        //     selectedTab={currentTab}
-        //     isEditMode={isEditMode}
-        //     onEditPress={onEditPress}
-        //     overlayContent={getTabContent(currentTab)}
-        // />
-
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
-                    title={name}
-                    subTitle={``}
+                    headerChildren={[name]}
                     onBackPress={backTapped}
                     pageTabs={
                         <TabsContainer
@@ -248,34 +235,7 @@ function SupplierPage({ route, navigation }) {
                 </DetailsPage>
             </PageContext.Provider>
         </>
-        // <View style={{flex: 1}}>
-        //     {
-        //         isFetching
-        //             ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-        //                 <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-        //             </View>
-        //             :
 
-        //             // console.log("Selected: ", selectedProcedure)
-        //             <SlideOverlay
-        //                 overlayId={supplierNumber}
-        //                 overlayTitle={name}
-        //                 onTabPressChange={onTabPress}
-        //                 currentTabs={currentTabs}
-        //                 selectedTab={currentTab}
-        //                 isEditMode={isEditMode}
-        //                 onEditPress = {onEditPress}
-        //                 overlayContent={
-        //                     <View 
-        //                         style={{flex: 1, padding:30, paddingBottom:20}}
-        //                         // onPress = {()=>{console.log("Touched"); handlePopovers(false)()}}
-        //                     >
-        //                         {getTabContent(currentTab)}
-        //                     </View>
-        //                 }
-        //             />
-        //     }
-        // </View>
     );
 }
 

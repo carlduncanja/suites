@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
+import { withModal } from "react-native-modalfy";
 import { PageContext } from '../contexts/PageContext';
 import DetailsPage from '../components/common/DetailsPage/DetailsPage';
 import TabsContainerComponent from '../components/common/Tabs/TabsContainerComponent';
 import { getEquipmentTypeById } from '../api/network';
 import EquipmentGroupGeneralTab from '../components/OverlayTabs/EquipmentGroupGeneralTab';
+import { Modal } from 'react-native-paper';
 
-function EquipmentGroupDetailsPage({ route, navigation }) {
+function EquipmentGroupDetailsPage(props) {
 
-    const { data = {}, equipments = [] } = route.params;
-    //console.log("data being received,", data);
-    const { name = "", _id = "" } = data
+    const { data = {} } = props.route.params;
+    const { name = "", _id = "", equipments = [], suppliers = [] } = data
     const tabs = ["Details"]
 
     const [currentTab, setCurrentTab] = useState(tabs[0])
@@ -48,13 +49,27 @@ function EquipmentGroupDetailsPage({ route, navigation }) {
         })
     }
 
+    const onTabPress = (selectedTab) => {
+        if (!pageState.isEditMode) setCurrentTab(selectedTab);
+    };
+
+    const goToAddEquipment = () => {
+        props.navigation.navigate("AddEquipmentPage", { equipment: selectedEquipment });
+        props.modal.closeAllModals();
+
+    }
+
     const getContentData = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
                 return <EquipmentGroupGeneralTab
+                    goToAddEquipment={goToAddEquipment}
                     equipmentGroup={selectedEquipment}
-                    equipmentChildren={equipments}
+                    equipments={equipments}
+                    suppliers={suppliers}
                 />
+            case "Items":
+                return
             default:
                 break;
         }
@@ -65,16 +80,17 @@ function EquipmentGroupDetailsPage({ route, navigation }) {
         <PageContext.Provider value={{ pageState, setPageState }}>
             <DetailsPage
                 headerChildren={[name]}
-                onBackPress={() => navigation.navigate("Equipment")}
+                onBackPress={() => props.navigation.navigate("Equipment")}
                 pageTabs={
                     <TabsContainerComponent
                         tabs={tabs}
                         selectedTab={currentTab}
-                        onPressChange={() => { }}
+                        onPressChange={onTabPress}
                     />
                 }
             >
                 {getContentData(currentTab)}
+
             </DetailsPage>
 
         </PageContext.Provider>
@@ -89,4 +105,4 @@ function EquipmentGroupDetailsPage({ route, navigation }) {
 EquipmentGroupDetailsPage.propTypes = {};
 EquipmentGroupDetailsPage.defaultProps = {};
 
-export default EquipmentGroupDetailsPage
+export default withModal(EquipmentGroupDetailsPage)

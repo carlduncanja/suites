@@ -6,7 +6,7 @@ import AuthStack from "../src/components/navigation/AuthStack/AuthStack";
 import SplashScreen from "../src/page/SplashScreen";
 import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
-import LoginPage from "./page/LoginPage";
+import LoginPage from "./page/Onboarding/LoginPage";
 import NotFound from "./page/NotFound";
 import SuitesNavigationStack from "./components/navigation/AppStack/SuitesNavigationStack";
 

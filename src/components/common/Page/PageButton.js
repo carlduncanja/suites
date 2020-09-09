@@ -12,7 +12,7 @@ const ButtonWrapper = styled.TouchableOpacity`
   justify-content: center;
   flex-direction: row;
   align-items: center;
-  background-color: ${({backgroundColor}) => backgroundColor || theme.colors['--color-blue-500']}
+  background-color: ${({backgroundColor, theme}) => backgroundColor || theme.colors['--color-blue-500']}
 `
 
 
@@ -21,8 +21,8 @@ const ButtonContainer = styled.View`
   align-items: center;
 `
 
-const ButtonText = styled.Text(({theme, color}) => ({
-    ...theme.font['--text-base-bold'],
+const ButtonText = styled.Text(({theme, fontStyle, color}) => ({
+    ...(fontStyle ? fontStyle : theme.font['--text-base-bold']),
     color: color || theme.colors['--default-shade-white'],
 }))
 
@@ -33,7 +33,7 @@ const IconWrapper = styled.View`
 `
 
 
-function PageButton({onPress, text, IconLeft, IconRight, backgroundColor, fontColor }) {
+function PageButton({onPress, text, IconLeft, IconRight, backgroundColor, fontColor, fontStyle}) {
     const theme = useTheme();
 
     return (
@@ -46,12 +46,12 @@ function PageButton({onPress, text, IconLeft, IconRight, backgroundColor, fontCo
                     }
                 </IconWrapper>
 
-                <ButtonText color={fontColor}>{text}</ButtonText>
+                <ButtonText fontStyle={fontStyle} color={fontColor}>{text}</ButtonText>
 
                 <IconWrapper>
-                {
-                    IconRight
-                }
+                    {
+                        IconRight
+                    }
                 </IconWrapper>
 
             </ButtonContainer>

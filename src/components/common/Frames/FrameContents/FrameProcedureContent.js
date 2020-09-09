@@ -228,7 +228,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated, isRecovery = false}
                     title="Location"
                     selectable={true}
                     labelWidth={70}
-                    enabled={false}
+                    enabled={isEdit}
                     label="Location"
                     value={location}
                     text={searchLocationValue}
