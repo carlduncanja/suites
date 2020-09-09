@@ -128,6 +128,8 @@ const ButtonWrapper = styled.View`
     width: 100%
 `
 
+const GUEST_ROLE_ID = "5ec2ec9abfd5c07e5792e84d"
+
 function SignupPage({navigation, signIn, expoPushToken}) {
     const theme = useTheme();
 
@@ -173,7 +175,23 @@ function SignupPage({navigation, signIn, expoPushToken}) {
             errors['confirm_password'] = "passwords doesn't match"
             valid = false;
         }
-        setFieldError(errors)
+
+        // check min length
+        if (valid && (fields['password'].length < 6 || fields['confirm_password'].length < 6)) {
+            errors['password'] = "must have at least six characters"
+            errors['confirm_password'] = "must have at least six characters"
+            valid = false;
+        }
+
+        // check if alphanumeric
+        const alphaNumericRegex = /^[a-z0-9]+$/i
+        if (valid && (!alphaNumericRegex.test(fields['password']) || !alphaNumericRegex.test(fields['confirm_password']))) {
+            errors['password'] = "password should be alphanumeric."
+            errors['confirm_password'] = "password must be alphanumeric."
+            valid = false;
+        }
+
+            setFieldError(errors)
         return valid
     }
 
@@ -183,7 +201,7 @@ function SignupPage({navigation, signIn, expoPushToken}) {
         if (!validateFields()) return;
 
         setLoading(true);
-        registrationCall({...fields, pushToken: expoPushToken} )
+        registrationCall({...fields, role: GUEST_ROLE_ID, pushToken: expoPushToken})
             .then(async data => {
                 // save auth data
                 console.log(data);
@@ -194,14 +212,22 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                         setBearerToken(token);
                     }
 
+
+                    // assign role
                     signIn(token);
+
                 } catch (error) {
                     // Error saving data
+                    signIn("");
                 }
             })
             .catch(e => {
-                console.log('login failed', e);
-                Alert.alert('Failed to login');
+                console.log('login failed', e.response?.data);
+
+                //const errorMessage = "Password Requirements Not Met. Should be min"
+                const errorMessage = e.response?.data?.error || "Something went wrong.";
+
+                Alert.alert('Failed to register user.', errorMessage);
             })
             .finally(_ => {
                 setLoading(false);
@@ -344,7 +370,6 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                                     text={'Continue As Guest'}
                                 />
                             </ButtonWrapper>
-
 
 
                             <DividerContainer theme={theme}>

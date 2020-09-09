@@ -79,7 +79,7 @@ export const logout = async (userId, pushToken) => {
 
 export const registrationCall = async (params) => {
     return suitesAxiosInstance
-        .put(registrationEndpoint, params)
+        .post(registrationEndpoint, params)
         .then(handleResponse)
         .catch(handleError);
 }
