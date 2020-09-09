@@ -77,6 +77,12 @@ const ChargeSheet = ({
                          handleInvoices,
                          onSelectEquipments,
                          onSelectConsumables,
+                         onSelectVariants,
+                         onSelectEquipmenntsVariants,
+                         variantsConsumables = [],
+                         selectedConsumables = [],
+                         selectedEquipments = [],
+                        variantsEquipments = []
                      }) => {
 
     let {
@@ -270,7 +276,11 @@ const ChargeSheet = ({
                     isEditMode={isEditMode}
                     handleEditDone={handleEditDone}
                     onSelectConsumables = {onSelectConsumables}
+                    selectedConsumables = {selectedConsumables}
+                    variantsConsumables = {variantsConsumables}
+                    onSelectVariants = {onSelectVariants}
                 />
+                
             }
 
             return
@@ -284,9 +294,12 @@ const ChargeSheet = ({
                 caseProceduresFilters={consumableProcedures}
                 onEquipmentsUpdate={handleEquipmentUpdate}
                 onSelectEquipments={onSelectEquipments}
+                onSelectEquipmenntsVariants = {onSelectEquipmenntsVariants}
                 // details={billing.procedures}
                 isEditMode={isEditMode}
                 handleEditDone={handleEditDone}
+                selectedEquipments = {selectedEquipments}
+                variantsEquipments = {variantsEquipments}
             />;
         case 'Invoices':
             return <Invoices
@@ -315,7 +328,7 @@ const ChargeSheet = ({
     }
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ({ 
     isEditMode: state.casePage?.isEdit,
     pageState: state.casePage,
     auth: state.auth
