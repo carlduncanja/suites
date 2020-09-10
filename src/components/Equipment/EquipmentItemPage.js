@@ -18,7 +18,7 @@ function EquipmentItemPage({ route, navigation }) {
     const { equipment, isOpenEditable, group } = route.params;
 
 
-    console.log("Equipment group has:", group);
+    console.log("Equipment item has:", equipment);
     const testData = {
         description: "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
         assigned: "Dr.Mansingh",
@@ -35,7 +35,7 @@ function EquipmentItemPage({ route, navigation }) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedEquipment, setSelectedEquipment] = useState(equipment)
     const [isEditMode, setEditMode] = useState(isOpenEditable);
-    const [editableTab, setEditableTab] = useState()
+    const [editableTab, setEditableTab] = useState('')
     const [isFetching, setFetching] = useState(false);
     const [pageState, setPageState] = useState({});
 
@@ -50,11 +50,13 @@ function EquipmentItemPage({ route, navigation }) {
         usage,
         availableOn,
         categories,
-        description
+        description,
+        sku
     } = equipment
 
     const [fields, setFields] = useState({
         // supplier name
+        sku: sku,
         supplier: supplier,
         assigned: assigned,
         status: status,
@@ -110,7 +112,9 @@ function EquipmentItemPage({ route, navigation }) {
 
         switch (selectedTab) {
             case "Details":
-                return editableTab === 'Details' && isEditMode ?
+                console.log("Page state has", pageState.isEditMode);
+                console.log("Fields has", fields);
+                return pageState.isEditMode ?
                     <EditableEquipmentDetails fields={fields} onFieldChange={onFieldChange} />
                     :
                     <General equipment={selectedEquipment} />;
@@ -146,6 +150,7 @@ function EquipmentItemPage({ route, navigation }) {
                     hasIcon={<SvgIcon iconName='paginationNext' strokeColor="#718096" />}
                     headerChildren={[group.name, name]}
                     onBackPress={backTapped}
+
                     pageTabs={
                         <TabsContainer
                             tabs={currentTabs}
