@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, StyleSheet} from "react-native";
 import moment from "moment";
@@ -6,6 +6,9 @@ import {formatDate} from '../../utils/formatter';
 import InputField2 from "../common/Input Fields/InputField2";
 import TextArea from "../common/Input Fields/TextArea";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import {updatedTheatreCall} from "../../api/network";
+import ConfirmationComponent from "../ConfirmationComponent";
+import {useModal} from "react-native-modalfy";
 
 const UiData = {
     description: "",
@@ -20,20 +23,139 @@ const UiData = {
 
 function TheatresDetailsTab({
                                 description = "",
+                                theatreId,
                                 id = "--",
                                 name = "--",
                                 status = "Available",
                                 statusColor = "black",
-                                isEditMode = true,
+                                isEditMode = false,
                                 physician = "--",
                                 availableOn = "--",
+                                onUpdated = () => {},
                             }) {
 
-    const [fields, setFields] = useState({});
-    const onFieldChange = () => {
+    const baseStateRef = useRef();
+    const modal = useModal();
 
+    const [fields, setFields] = useState({
+        description,
+        id,
+        name,
+        status,
+        physician,
+        availableOn,
+    });
+
+    const [isLoading, setLoading] = useState(false);
+    const [isUpdated, setUpdated] = useState(false)
+
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName]: value
+        })
+        setUpdated(true)
+    };
+
+    useEffect(() => {
+        baseStateRef.current = {
+            description,
+            id,
+            name,
+            status
+        }
+        return () => {
+            baseStateRef.current = {}
+        }
+    }, [])
+
+    useEffect(() => {
+        if (isUpdated && !isEditMode) {
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        error={false}//boolean to show whether an error icon or success icon
+                        isEditUpdate={true}
+                        onCancel={() => {
+                            modal.closeAllModals();
+                            resetState()
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            updateTheatre()
+                        }}
+                        message="Do you want to save changes?"//general message you can send to be displayed
+                        action="Yes"
+                    />
+                ),
+                onClose: () => {
+                    console.log('Modal closed');
+                },
+            });
+        }
+    }, [isEditMode])
+
+    const resetState = () => {
+        setFields(baseStateRef.current);
+        setUpdated(false);
     }
 
+    const updateTheatre = () => {
+        const data = {...fields}
+
+        console.log("params", theatreId, data);
+
+        setLoading(true)
+        updatedTheatreCall(theatreId, data)
+            .then( _ => {
+                onUpdated(data)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Changes were successful."//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch(error => {
+                console.log("Failed to update theatre", error)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                resetState()
+                            }}
+                            message="Something went wrong when applying changes."//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .finally(_ => {
+                setLoading(false)
+            })
+    }
 
     return (
         <View style={styles.container}>
@@ -45,7 +167,9 @@ function TheatresDetailsTab({
                     {
                         !isEditMode
                             ? <Text
-                                style={[styles.textDefault, {color: description ? "#1D2129" : "#A0AEC0"}]}>{description ? description : "No description available."}</Text>
+                                style={[styles.textDefault, {color: description ? "#1D2129" : "#A0AEC0"}]}>
+                                {fields['description'] ? fields['description'] : "No description available."}
+                            </Text>
                             : <View style={{height: 70, justifyContent: 'center'}}>
                                 <TextArea
                                     onChangeText={onFieldChange('description')}
@@ -67,9 +191,9 @@ function TheatresDetailsTab({
                     <Text style={styles.textLabel}>ID</Text>
                     {
                         !isEditMode
-                            ? <Text style={styles.textDefault}>{id}</Text>
+                            ? <Text style={styles.textDefault}>{fields['id']}</Text>
                             : <InputField2
-                                value={id}
+                                value={fields['id']}
                                 enabled={false}
                             />
                     }
@@ -82,10 +206,11 @@ function TheatresDetailsTab({
 
                     {
                         !isEditMode
-                            ? <Text style={styles.textDefault}>{name}</Text>
+                            ? <Text style={styles.textDefault}>{fields['name']}</Text>
                             : <InputField2
-                                value={name}
-                                enabled={false}
+                                value={fields['name']}
+                                onChangeText={onFieldChange('name')}
+                                enabled={true}
                             />
                     }
 
@@ -93,7 +218,14 @@ function TheatresDetailsTab({
 
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Status</Text>
-                    <Text style={[styles.textDefault, {color: statusColor}]}>{status}</Text>
+                    {
+                        !isEditMode
+                            ? <Text style={[styles.textDefault, {color: statusColor}]}>{fields['status']}</Text>
+                            : <InputField2
+                                value={fields['status']}
+                                enabled={false}
+                            />
+                    }
                 </View>
             </View>
 
@@ -101,14 +233,27 @@ function TheatresDetailsTab({
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Physician</Text>
 
-                    <Text style={[styles.textDefault, styles.textLink]}>{physician}</Text>
+                    {
+                        !isEditMode
+                            ? <Text style={[styles.textDefault, styles.textLink]}>{fields['physician']}</Text>
+                            : <InputField2
+                                value={fields['physician']}
+                                enabled={false}
+                            />
+                    }
                 </View>
 
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Available On</Text>
 
-                    <Text style={styles.textDefault}>{availableOn}</Text>
-
+                    {
+                        !isEditMode
+                            ? <Text style={styles.textDefault}>{fields['availableOn']}</Text>
+                            : <InputField2
+                                value={fields['availableOn']}
+                                enabled={false}
+                            />
+                    }
                 </View>
 
                 <View style={styles.item}/>
@@ -135,6 +280,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         marginRight: 20,
+        marginTop: 10,
     },
     textLabel: {
         color: "#718096",

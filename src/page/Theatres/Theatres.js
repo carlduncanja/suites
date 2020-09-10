@@ -122,11 +122,12 @@ function Theatres(props) {
     // ##### Handler functions
 
     const onItemPress = (item, isOpenEditable) => () => {
-        // modal.openModal("BottomSheetModal", {
-        //   content: <TheatresBottomSheetContainer theatre={item} />,
-        // });
-        console.log("clicked a theatre");
-        props.navigation.navigate('TheatresPage', {initial: false, theatre: item, isEdit: isOpenEditable});
+        props.navigation.navigate('TheatresPage', {
+            initial: false,
+            theatre: item,
+            isEdit: isOpenEditable,
+            reloadTheatres: () => fetchTheatres(currentPagePosition)
+        });
     };
 
     const onSearchInputChange = (input) => {
@@ -280,7 +281,6 @@ function Theatres(props) {
         const inUseColor = "#DD6B20";
 
         const {isActive, isRecovery} = isInUse(item.appointments || [])
-
 
         const formattedItem = {
             name: item.name || "",
