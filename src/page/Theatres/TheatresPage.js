@@ -34,10 +34,10 @@ function TheatresPage({ route, navigation }) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
     const [pageState, setPageState] = useState({});
-    const [isEditMode, setEditMode] = useState(false);
+    // const [isEditMode, setEditMode] = useState(false);
     const [isFetching, setFetching] = useState(true);
 
-
+    const {isEditMode} = pageState;
     // ##### Lifecycle Methods
 
     useEffect(() => {
@@ -95,7 +95,11 @@ function TheatresPage({ route, navigation }) {
                 };
 
 
-                return <TheatresDetailsTab {...theatreDetails} />;
+                return <TheatresDetailsTab
+                    {...theatreDetails}
+                    isEditMode={isEditMode}
+                />;
+
             case "History":
                 // console.log("Cases: ", selectedTheatre.cases)
                 const cases = selectedTheatre.cases.map(caseItem => {

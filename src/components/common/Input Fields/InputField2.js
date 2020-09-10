@@ -50,7 +50,8 @@ const TextInputContainer = styled.View`
     width : 100%;
     border-width: 1px;
     border-color: ${({theme, hasError}) => hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
-    background-color : ${({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    //background-color : ${({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    background-color : ${ ({theme, enabled}) => !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
     border-radius: 4px;
     box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null};
 `;
@@ -85,6 +86,7 @@ function InputField2({
                          onChangeText = () => {
                          },
                          value,
+                         enabled = true,
                          placeholder = "",
                          keyboardType,
                          onClear = () => {
@@ -114,13 +116,16 @@ function InputField2({
             }
 
             <TextInputWrapper>
-                <TextInputContainer backgroundColor={backgroundColor} theme={theme}
+                <TextInputContainer backgroundColor={backgroundColor}
+                                    enabled={enabled}
+                                    theme={theme}
                                     style={isFocussed ? styles.shadow : null}>
 
                     <Input
                         theme={theme}
                         onChangeText={onChangeText}
                         value={value}
+                        editable={enabled}
                         keyboardType={keyboardType}
                         placeholder={placeholder}
                         autoFocus={isFocussed}
@@ -138,7 +143,7 @@ function InputField2({
                     }
 
                     {
-                        !(value === undefined || value === null || value === '') &&
+                        !!value && enabled &&
                         <IconContainer>
                             <IconButton
                                 Icon={<ClearIcon/>}

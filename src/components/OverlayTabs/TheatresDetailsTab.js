@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, StyleSheet} from "react-native";
 import moment from "moment";
 import {formatDate} from '../../utils/formatter';
+import InputField2 from "../common/Input Fields/InputField2";
+import TextArea from "../common/Input Fields/TextArea";
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 
 const UiData = {
     description: "",
@@ -21,10 +24,15 @@ function TheatresDetailsTab({
                                 name = "--",
                                 status = "Available",
                                 statusColor = "black",
-
+                                isEditMode = true,
                                 physician = "--",
                                 availableOn = "--",
                             }) {
+
+    const [fields, setFields] = useState({});
+    const onFieldChange = () => {
+
+    }
 
 
     return (
@@ -32,20 +40,55 @@ function TheatresDetailsTab({
             <View style={[styles.row]}>
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Description</Text>
-                    <Text style={[styles.textDefault,{color: description ? "#1D2129" : "#A0AEC0"}]}>{description ? description : "No description available."}</Text>
+
+
+                    {
+                        !isEditMode
+                            ? <Text
+                                style={[styles.textDefault, {color: description ? "#1D2129" : "#A0AEC0"}]}>{description ? description : "No description available."}</Text>
+                            : <View style={{height: 70, justifyContent: 'center'}}>
+                                <TextArea
+                                    onChangeText={onFieldChange('description')}
+                                    value={fields['description']}
+                                    multiline={true}
+                                    numberOfLines={4}
+                                    onClear={() => onFieldChange('description')('')}
+                                />
+                            </View>
+                    }
+
                 </View>
                 <View style={{flex: 1}}/>
             </View>
 
             <View style={styles.row}>
                 <View style={[styles.item]}>
+
                     <Text style={styles.textLabel}>ID</Text>
-                    <Text style={styles.textDefault}>{id}</Text>
+                    {
+                        !isEditMode
+                            ? <Text style={styles.textDefault}>{id}</Text>
+                            : <InputField2
+                                value={id}
+                                enabled={false}
+                            />
+                    }
+
+
                 </View>
 
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Theatre Name</Text>
-                    <Text style={styles.textDefault}>{name}</Text>
+
+                    {
+                        !isEditMode
+                            ? <Text style={styles.textDefault}>{name}</Text>
+                            : <InputField2
+                                value={name}
+                                enabled={false}
+                            />
+                    }
+
                 </View>
 
                 <View style={[styles.item]}>
@@ -57,12 +100,15 @@ function TheatresDetailsTab({
             <View style={styles.row}>
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Physician</Text>
+
                     <Text style={[styles.textDefault, styles.textLink]}>{physician}</Text>
                 </View>
 
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Available On</Text>
-                    <Text style={styles.textDefault}>{ availableOn }</Text>
+
+                    <Text style={styles.textDefault}>{availableOn}</Text>
+
                 </View>
 
                 <View style={styles.item}/>
@@ -87,7 +133,8 @@ const styles = StyleSheet.create({
     },
     item: {
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        marginRight: 20,
     },
     textLabel: {
         color: "#718096",
