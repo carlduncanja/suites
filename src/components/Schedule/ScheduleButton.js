@@ -33,7 +33,7 @@ function ScheduleButton({ title = '', onButtonPress = () => { }, color }) {
         <ScheduleButtonWrapper>
             <ScheduleButtonContainer>
                 <Button
-                    title={'Hello'}
+                    title={title}
                     buttonPress={onButtonPress}
                     color={theme.colors['--color-gray-700']}
                 />
