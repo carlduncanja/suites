@@ -79,7 +79,7 @@ export const logout = async (userId, pushToken) => {
 
 export const registrationCall = async (params) => {
     return suitesAxiosInstance
-        .put(registrationEndpoint, params)
+        .post(registrationEndpoint, params)
         .then(handleResponse)
         .catch(handleError);
 }
@@ -139,6 +139,13 @@ export const getTheatres = async (query, max, page, isRecovery) => {
 export const getTheatreById = async (id) => {
     return suitesAxiosInstance
         .get(theatreEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+export const updatedTheatreCall = async (id, data) => {
+    return suitesAxiosInstance
+        .put(theatreEndpoint(id), data)
         .then(handleResponse)
         .catch(handleError);
 };

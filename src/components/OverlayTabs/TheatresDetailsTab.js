@@ -1,8 +1,14 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, StyleSheet} from "react-native";
 import moment from "moment";
 import {formatDate} from '../../utils/formatter';
+import InputField2 from "../common/Input Fields/InputField2";
+import TextArea from "../common/Input Fields/TextArea";
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import {updatedTheatreCall} from "../../api/network";
+import ConfirmationComponent from "../ConfirmationComponent";
+import {useModal} from "react-native-modalfy";
 
 const UiData = {
     description: "",
@@ -17,52 +23,237 @@ const UiData = {
 
 function TheatresDetailsTab({
                                 description = "",
+                                theatreId,
                                 id = "--",
                                 name = "--",
                                 status = "Available",
                                 statusColor = "black",
-
+                                isEditMode = false,
                                 physician = "--",
                                 availableOn = "--",
+                                onUpdated = () => {},
                             }) {
 
+    const baseStateRef = useRef();
+    const modal = useModal();
+
+    const [fields, setFields] = useState({
+        description,
+        id,
+        name,
+        status,
+        physician,
+        availableOn,
+    });
+
+    const [isLoading, setLoading] = useState(false);
+    const [isUpdated, setUpdated] = useState(false)
+
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName]: value
+        })
+        setUpdated(true)
+    };
+
+    useEffect(() => {
+        baseStateRef.current = {
+            description,
+            id,
+            name,
+            status
+        }
+        return () => {
+            baseStateRef.current = {}
+        }
+    }, [])
+
+    useEffect(() => {
+        if (isUpdated && !isEditMode) {
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        error={false}//boolean to show whether an error icon or success icon
+                        isEditUpdate={true}
+                        onCancel={() => {
+                            modal.closeAllModals();
+                            resetState()
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            updateTheatre()
+                        }}
+                        message="Do you want to save changes?"//general message you can send to be displayed
+                        action="Yes"
+                    />
+                ),
+                onClose: () => {
+                    console.log('Modal closed');
+                },
+            });
+        }
+    }, [isEditMode])
+
+    const resetState = () => {
+        setFields(baseStateRef.current);
+        setUpdated(false);
+    }
+
+    const updateTheatre = () => {
+        const data = {...fields}
+
+        console.log("params", theatreId, data);
+
+        setLoading(true)
+        updatedTheatreCall(theatreId, data)
+            .then( _ => {
+                onUpdated(data)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Changes were successful."//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch(error => {
+                console.log("Failed to update theatre", error)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                resetState()
+                            }}
+                            message="Something went wrong when applying changes."//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .finally(_ => {
+                setLoading(false)
+            })
+    }
 
     return (
         <View style={styles.container}>
             <View style={[styles.row]}>
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Description</Text>
-                    <Text style={[styles.textDefault,{color: description ? "#1D2129" : "#A0AEC0"}]}>{description ? description : "No description available."}</Text>
+
+
+                    {
+                        !isEditMode
+                            ? <Text
+                                style={[styles.textDefault, {color: description ? "#1D2129" : "#A0AEC0"}]}>
+                                {fields['description'] ? fields['description'] : "No description available."}
+                            </Text>
+                            : <View style={{height: 70, justifyContent: 'center'}}>
+                                <TextArea
+                                    onChangeText={onFieldChange('description')}
+                                    value={fields['description']}
+                                    multiline={true}
+                                    numberOfLines={4}
+                                    onClear={() => onFieldChange('description')('')}
+                                />
+                            </View>
+                    }
+
                 </View>
                 <View style={{flex: 1}}/>
             </View>
 
             <View style={styles.row}>
                 <View style={[styles.item]}>
+
                     <Text style={styles.textLabel}>ID</Text>
-                    <Text style={styles.textDefault}>{id}</Text>
+                    {
+                        !isEditMode
+                            ? <Text style={styles.textDefault}>{fields['id']}</Text>
+                            : <InputField2
+                                value={fields['id']}
+                                enabled={false}
+                            />
+                    }
+
+
                 </View>
 
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Theatre Name</Text>
-                    <Text style={styles.textDefault}>{name}</Text>
+
+                    {
+                        !isEditMode
+                            ? <Text style={styles.textDefault}>{fields['name']}</Text>
+                            : <InputField2
+                                value={fields['name']}
+                                onChangeText={onFieldChange('name')}
+                                enabled={true}
+                            />
+                    }
+
                 </View>
 
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Status</Text>
-                    <Text style={[styles.textDefault, {color: statusColor}]}>{status}</Text>
+                    {
+                        !isEditMode
+                            ? <Text style={[styles.textDefault, {color: statusColor}]}>{fields['status']}</Text>
+                            : <InputField2
+                                value={fields['status']}
+                                enabled={false}
+                            />
+                    }
                 </View>
             </View>
 
             <View style={styles.row}>
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Physician</Text>
-                    <Text style={[styles.textDefault, styles.textLink]}>{physician}</Text>
+
+                    {
+                        !isEditMode
+                            ? <Text style={[styles.textDefault, styles.textLink]}>{fields['physician']}</Text>
+                            : <InputField2
+                                value={fields['physician']}
+                                enabled={false}
+                            />
+                    }
                 </View>
 
                 <View style={[styles.item]}>
                     <Text style={styles.textLabel}>Available On</Text>
-                    <Text style={styles.textDefault}>{ availableOn }</Text>
+
+                    {
+                        !isEditMode
+                            ? <Text style={styles.textDefault}>{fields['availableOn']}</Text>
+                            : <InputField2
+                                value={fields['availableOn']}
+                                enabled={false}
+                            />
+                    }
                 </View>
 
                 <View style={styles.item}/>
@@ -87,7 +278,9 @@ const styles = StyleSheet.create({
     },
     item: {
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        marginRight: 20,
+        marginTop: 10,
     },
     textLabel: {
         color: "#718096",

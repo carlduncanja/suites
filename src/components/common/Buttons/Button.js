@@ -5,9 +5,11 @@ import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 
 const ButtonWrapper = styled.TouchableOpacity`
-        //height: 100%;
-        //width: 100%;
+        display: flex;
+        flex: 1;
+        position: relative;
         padding-right: 8px;
+
         padding-left: 8px;
         flex-direction: row;
         align-items: center;
@@ -16,9 +18,10 @@ const ButtonWrapper = styled.TouchableOpacity`
 
 const ButtonContainer = styled.View`
         position: relative;
+        display: flex;
         height: 100%;
         width: 100%;
-        
+                
         justify-content: center;
         align-items: center;
         background-color:${(backgroundColor,) => backgroundColor};

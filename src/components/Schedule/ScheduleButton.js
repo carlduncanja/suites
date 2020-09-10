@@ -21,8 +21,9 @@ function ScheduleButton({ title = '', onButtonPress = () => { }, color }) {
         width: 95px;
     `
     const ScheduleButtonContainer = styled.View`
+        display: flex;
         height: 100%;
-        weight: 100%;
+        width: 100%;
         background-color: ${theme.colors['--default-shade-white']};
         border-color: ${theme.colors['--color-gray-400']};
         border-radius: 4px;

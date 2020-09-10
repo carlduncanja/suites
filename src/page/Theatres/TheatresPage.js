@@ -28,16 +28,13 @@ function TheatresPage({ route, navigation }) {
         "Equipment",
         "Schedule",
     ];
-    //console.log("what is in route?", route.params.params.theatre);
-    const { theatre } = route.params;
+    const { theatre, reloadTheatres } = route.params;
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
     const [pageState, setPageState] = useState({});
-    const [isEditMode, setEditMode] = useState(false);
-    const [isFetching, setFetching] = useState(true);
 
-
+    const {isEditMode} = pageState;
     // ##### Lifecycle Methods
 
     useEffect(() => {
@@ -54,9 +51,6 @@ function TheatresPage({ route, navigation }) {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
-    const onEditPress = () => {
-        setEditMode(!isEditMode)
-    }
     const setPageLoading = (value) => {
         setPageState({
             ...pageState,
@@ -70,32 +64,66 @@ function TheatresPage({ route, navigation }) {
         navigation.navigate('Theatres');
     }
 
-
+    const onDetailsUpdated = (updates) => {
+        // hello???
+        setTheatre({
+            ...selectedTheatre,
+            name: updates.name,
+            description: updates.description
+        })
+        if (reloadTheatres) reloadTheatres()
+    }
 
     // ##### Helper functions
+
+    const isInUse = (appointments = []) => {
+        const now = moment();
+
+        if (!Array.isArray(appointments)) return  {isActive: false, isRecovery: false}
+
+        for (const appointment of appointments) {
+            const startTime = moment(appointment.startTime)
+            const endTime = moment(appointment.endTime)
+
+            const isActive = now.isBetween(startTime, endTime)
+
+            if (isActive) {
+                return {isActive: true, isRecovery: false};
+            }
+        }
+
+        return {isActive: false, isRecovery: false};
+    }
+
 
     const getOverlayScreen = (selectedOverlay) => {
         switch (selectedOverlay) {
             case "Details":
                 // console.log('Theatre:', selectedTheatre);
-                let appointments = selectedTheatre.appointements || []
+                let appointments = selectedTheatre.appointments || []
+
+                const {isActive, isRecovery} = isInUse(selectedTheatre.appointments || [])
                 const availableOn = appointments && appointments.length &&
                     formatDate(appointments[0].endTime, "DD/MM/YYYY @ hh:mm a")
                     || "--";
+
 
                 const theatreDetails = {
                     description: selectedTheatre.description,
                     id: selectedTheatre.theatreNumber,
                     name: selectedTheatre.name,
-                    status: "Available", // TODO calculate status
+                    status: isActive ? "In-Use" : "Available",  // TODO calculate status
                     statusColor: "black",
-
                     physician: "--",
-                    availableOn
+                    availableOn : isActive ? availableOn : "--"
                 };
 
-
-                return <TheatresDetailsTab {...theatreDetails} />;
+                return <TheatresDetailsTab
+                    {...theatreDetails}
+                    theatreId={selectedTheatre._id}
+                    onUpdated={onDetailsUpdated}
+                    isEditMode={isEditMode}
+                />;
             case "History":
                 // console.log("Cases: ", selectedTheatre.cases)
                 const cases = selectedTheatre.cases.map(caseItem => {
@@ -159,7 +187,6 @@ function TheatresPage({ route, navigation }) {
         }
     };
 
-
     const fetchTheatre = (id) => {
 
         setPageLoading(true);
@@ -175,7 +202,6 @@ function TheatresPage({ route, navigation }) {
                 setPageLoading(false);
             })
     };
-
 
     const { _id, name } = selectedTheatre;
 

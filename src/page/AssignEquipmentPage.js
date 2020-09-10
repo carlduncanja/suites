@@ -9,14 +9,15 @@ import { createEquipment } from "../api/network";
 import TabsContainer from "../components/common/Tabs/TabsContainerComponent"
 import Footer from '../components/common/Page/Footer';
 import { Divider, Modal } from 'react-native-paper';
+import AssignEquipmentDetailsTab from '../components/OverlayTabs/AssignEquipmentDetailsTab';
 
 
-const AddEquipmentPageWrapper = styled.View`
+const AssignEquipmentPageWrapper = styled.View`
         margin:0;
         background-color: ${({ theme }) => theme.colors['--default-shade-white']};
     `;
 
-const AddEquipmentPageContainer = styled.View`
+const AssignEquipmentPageContainer = styled.View`
         height:100%;
         width:100%;
     `;
@@ -51,7 +52,7 @@ const CloseText = styled.Text`
     font:${({ theme }) => theme.font["--text-sm-bold"]}
     `;
 
-const AddEquipmentPageContentWrapper = styled.View`
+const AssignEquipmentPageContentWrapper = styled.View`
         flex:1;
         margin : 0;
         padding-top: ${({ theme }) => theme.space['--space-32']};
@@ -59,7 +60,7 @@ const AddEquipmentPageContentWrapper = styled.View`
         padding-right: ${({ theme }) => theme.space['--space-24']};
 `
 
-const AddEquipmentPageContentContainer = styled.View`
+const AssignEquipmentPageContentContainer = styled.View`
         display: flex;
         flex:1;
 `
@@ -75,7 +76,7 @@ const testData = {
     Status: "Available"
 }
 
-const AddEquipmentPage = ({ navigation, route, modal }) => {
+const AssignEquipmentPage = ({ navigation, route, modal }) => {
     const { equipment, onCreated } = route.params;
     const currentTabs = ["Details"];
     const theme = useTheme();
@@ -197,7 +198,7 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <AddEquipmentDetailsTab
+                return <AssignEquipmentDetailsTab
                     onDonePress={onDonePress}
                     equipmentDetails={equipment}
                     data={equipmentData}
@@ -212,12 +213,12 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
         }
     };
     return (
-        <AddEquipmentPageWrapper theme={theme}>
-            <AddEquipmentPageContainer theme={theme}>
+        <AssignEquipmentPageWrapper theme={theme}>
+            <AssignEquipmentPageContainer theme={theme}>
 
 
                 <HeaderContainer >
-                    <HeaderText theme={theme} >Add Equipment</HeaderText>
+                    <HeaderText theme={theme} >Assign Equipment</HeaderText>
                     <CloseButtonWrapper>
                         <CloseButtonContainer onPress={closeTapped} >
                             <CloseText>Close</CloseText>
@@ -233,16 +234,16 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
                     />
                 </TabsViewContainer>
 
-                <AddEquipmentPageContentWrapper>
-                    <AddEquipmentPageContentContainer>
+                <AssignEquipmentPageContentWrapper>
+                    <AssignEquipmentPageContentContainer>
                         {getTabContent(currentTab)}
 
 
-                    </AddEquipmentPageContentContainer>
-                </AddEquipmentPageContentWrapper>
+                    </AssignEquipmentPageContentContainer>
+                </AssignEquipmentPageContentWrapper>
 
-            </AddEquipmentPageContainer>
-        </AddEquipmentPageWrapper>
+            </AssignEquipmentPageContainer>
+        </AssignEquipmentPageWrapper>
 
 
 
@@ -251,4 +252,4 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
 }
 
 
-export default withModal(AddEquipmentPage);
+export default withModal(AssignEquipmentPage);

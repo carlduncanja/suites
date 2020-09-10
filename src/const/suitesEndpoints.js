@@ -1,7 +1,7 @@
 // ##### Auth
 export const loginEndpoint = `/auth/login`
 export const logoutEndpoint = `/auth/logout`
-export const registrationEndpoint = `/register`
+export const registrationEndpoint = `/auth/register`
 export const guestLoginEndpoint = `/auth/login/guest`
 
 // ##### Appointments

@@ -1,17 +1,17 @@
-import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet,KeyboardAvoidingView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import InputField2 from '../common/Input Fields/InputField2';
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 import OptionsField from '../common/Input Fields/OptionsField';
 import InputUnitField from '../common/Input Fields/InputUnitFields';
 
-import {MenuOptions, MenuOption } from 'react-native-popup-menu';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 
-import {getPhysicians, getCategories} from "../../api/network";
+import { getPhysicians, getCategories } from "../../api/network";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 
 
-const EditableEquipmentDetails = ({fields, onFieldChange}) => {
+const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
 
     // const {
     //     // supplier id
@@ -36,6 +36,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
     //     categories : categories,
     //     description : description
     // })
+
 
     // Physicians Search
     const [searchValue, setSearchValue] = useState();
@@ -113,11 +114,11 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
     };
 
     const fetchCategory = () => {
-        getCategories(categorySearchValue,5)
-            .then((data = [])=>{
+        getCategories(categorySearchValue, 5)
+            .then((data = []) => {
                 const results = data.map(item => ({
-                    _id : item,
-                    name : item
+                    _id: item,
+                    name: item
                 }));
                 setCategorySearchResult(results || [])
             })
@@ -130,7 +131,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
 
     return (
         <KeyboardAvoidingView
-            style={{ flex: 1}}
+            style={{ flex: 1 }}
             enabled
             keyboardVerticalOffset={300}
             behavior={'padding'}
@@ -138,7 +139,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
             <View>
 
                 <View style={styles.fieldWrapper}>
-                    <View style={{ marginBottom:5}}>
+                    <View style={{ marginBottom: 5 }}>
                         <Text style={styles.title}>Description</Text>
                     </View>
 
@@ -149,17 +150,17 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                 <View style={styles.row}>
 
                     <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom:5}}>
-                            <Text style={styles.title}>ID</Text>
+                        <View style={{ marginBottom: 5 }}>
+                            <Text style={styles.title}>SKU</Text>
                         </View>
 
                         <View style={styles.inputWrapper}>
-                            <Text>{_id}</Text>
+                            <Text>{fields['sku']}</Text>
                         </View>
                     </View>
 
                     <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom:5}}>
+                        <View style={{ marginBottom: 5 }}>
                             <Text style={styles.title}>Assigned</Text>
                         </View>
 
@@ -180,7 +181,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                     </View>
 
                     <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom:5}}>
+                        <View style={{ marginBottom: 5 }}>
                             <Text style={styles.title}>Status</Text>
                         </View>
 
@@ -189,8 +190,8 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                                 text={fields['status']}
                                 oneOptionsSelected={onFieldChange('status')}
                                 menuOption={<MenuOptions>
-                                    <MenuOption value={"In Use"} text='In Use'/>
-                                    <MenuOption value={"Available"} text='Available'/>
+                                    <MenuOption value={"In Use"} text='In Use' />
+                                    <MenuOption value={"Available"} text='Available' />
                                 </MenuOptions>}
                             />
                         </View>
@@ -201,7 +202,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                 <View style={styles.row}>
 
                     <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom:5}}>
+                        <View style={{ marginBottom: 5 }}>
                             <Text style={styles.title}>Supplier</Text>
                         </View>
 
@@ -211,14 +212,14 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                     </View>
 
                     <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom:5}}>
+                        <View style={{ marginBottom: 5 }}>
                             <Text style={styles.title}>Usage</Text>
                         </View>
 
                         <View style={styles.inputWrapper}>
                             <InputUnitField
                                 label={"Usage"}
-                                onChangeText={(value)=>{
+                                onChangeText={(value) => {
                                     if (/^\d+$/g.test(value) || !value) {
                                         onFieldChange('usage')(value)
                                     }
@@ -231,7 +232,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                     </View>
 
                     <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom:5}}>
+                        <View style={{ marginBottom: 5 }}>
                             <Text style={styles.title}>Available On</Text>
                         </View>
 
@@ -243,7 +244,7 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                 </View>
 
                 <View style={styles.fieldWrapper}>
-                    <View style={{ marginBottom:5}}>
+                    <View style={{ marginBottom: 5 }}>
                         <Text style={styles.title}>Description</Text>
                     </View>
 
@@ -251,10 +252,10 @@ const EditableEquipmentDetails = ({fields, onFieldChange}) => {
                         <MultipleSelectionsField
                             label={"Category"}
                             onOptionsSelected={onFieldChange('category')}
-                            options = {categorySearchResults}
-                            searchText = {categorySearchValue}
-                            onSearchChangeText = {(value)=> setCategorySearchValue(value)}
-                            onClear={()=>{setCategorySearchValue('')}}
+                            options={categorySearchResults}
+                            searchText={categorySearchValue}
+                            onSearchChangeText={(value) => setCategorySearchValue(value)}
+                            onClear={() => { setCategorySearchValue('') }}
                         />
                     </View>
                 </View>
@@ -272,22 +273,22 @@ EditableEquipmentDetails.defaultProps = {};
 export default EditableEquipmentDetails
 
 const styles = StyleSheet.create({
-    row:{
-        flexDirection:'row',
+    row: {
+        flexDirection: 'row',
     },
-    fieldWrapper:{
-        flex:1,
-        marginRight:35,
-        marginBottom:30,
-        flexDirection:'column'
+    fieldWrapper: {
+        flex: 1,
+        marginRight: 35,
+        marginBottom: 30,
+        flexDirection: 'column'
     },
-    inputWrapper:{
-        height:30,
-        justifyContent:'center'
+    inputWrapper: {
+        height: 30,
+        justifyContent: 'center'
     },
-    title:{
-        color:'#718096',
-        fontSize:16,
+    title: {
+        color: '#718096',
+        fontSize: 16,
         // marginBottom:5
     },
 })
