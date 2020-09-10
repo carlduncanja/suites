@@ -4,11 +4,11 @@ import {
     View,
     StyleSheet,
     Alert,
-    AsyncStorage,
     ActivityIndicator,
     Text,
     Keyboard,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'
 import {connect} from 'react-redux';
 import styled, {css} from '@emotion/native';
 import {login} from '../../api/network';
@@ -17,37 +17,12 @@ import Logo from '../../../assets/svg/logo';
 import InputFieldWithIcon from '../../components/common/Input Fields/InputFieldWithIcon';
 import PersonIcon from '../../../assets/svg/personIcon';
 import PasswordIcon from '../../../assets/svg/lockIcon';
-import NotificationReg from '../../components/notifications/NotficationRegistry';
 import Button from '../../components/common/Buttons/Button';
 import {signIn} from '../../redux/actions/authActions';
-import Page from '../../components/common/Page/Page';
 import {setBearerToken} from '../../api';
-import {useTheme} from "emotion-theming";
-import TextButton from "../../components/common/Buttons/TextButton";
 import PageButton from "../../components/common/Page/PageButton";
+import {useTheme} from "emotion-theming";
 
-const LoginPageWrapper = styled.View`
-        margin: 0;
-        flex: 1;
-    `;
-const LoginPageContainer = styled.View`
-        height: 100%;
-        width: 100%;
-        
-    `;
-
-const OverlayWrapper = styled.View`
-        flex: 1;
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        top: 0;
-        bottom: 0;
-    `;
-const OverlayContainer = styled.View`
-        height: 100%;
-        width: 100%;
-    `;
 
 const PageWrapper = styled.View`
     flex: 1;
@@ -116,11 +91,10 @@ const FormContainer = styled.View`
   flex-direction: column;
 `;
 
-
 const RowContainer = styled.View`
   width: 100%;
-  height: 56px;
-  margin-bottom: ${({theme}) => theme.space['--space-32']};
+  height: 36px;
+  margin-bottom: ${({theme}) => theme.space['--space-20']};
 `
 
 const DividerContainer = styled.View`
@@ -146,7 +120,7 @@ const LoginButtonWrapper = styled.View`
 `
 
 const ButtonWrapper = styled.View`
-    height: 42px;
+    height: 36px;
     margin-top: 16px;
     width: 100%
 `
@@ -161,6 +135,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
         email: '',
         password: '',
     });
+    const [fieldError, setFieldError] = useState({})
 
     useEffect(() => {
     }, []);
@@ -172,12 +147,17 @@ function LoginPage({navigation, signIn, expoPushToken}) {
             ...fields,
             [fieldName]: value,
         });
+        const updatedErrors = {...fieldError}
+        delete updatedErrors[fieldName]
+        setFieldError(updatedErrors)
     };
+
     const onButtonPress = () => {
         console.log('Fields: ', fields);
 
-        setLoading(true);
+        if(!validateFields()) return;
 
+        setLoading(true);
         login(fields.email, fields.password, expoPushToken)
             .then(async data => {
                 // save auth data
@@ -203,6 +183,23 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                 setLoading(false);
             });
     };
+
+    const validateFields = () => {
+        const requiredParams = ['email', 'password']
+
+        let valid = true;
+        const errors = {}
+        for (const requiredParam of requiredParams) {
+            if (!fields[requiredParam]) {
+                valid = false;
+                errors[requiredParam] = "Please enter value"
+            }
+        }
+
+        setFieldError(errors)
+        return valid
+    }
+
 
     const onGuestButtonPress = () => {
     };
@@ -237,15 +234,16 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                     </LogoWrapper>
 
                     <FormWrapper theme={theme}>
-
                         <FormContainer theme={theme}>
 
                             <FormHeaderText>Login</FormHeaderText>
 
                             <RowContainer theme={theme}>
                                 <InputFieldWithIcon
-                                    label="Email"
+                                    placeholder="Email"
                                     onChangeText={value => onFieldChange('email')(value)}
+                                    hasError={!!fieldError['email']}
+                                    errorMessage={fieldError['email']}
                                     value={fields.email}
                                     keyboardType="email-address"
                                     autoCapitalize="none"
@@ -259,9 +257,11 @@ function LoginPage({navigation, signIn, expoPushToken}) {
 
                             <RowContainer theme={theme}>
                                 <InputFieldWithIcon
-                                    label="Password"
+                                    placeholder="Password"
                                     onChangeText={value => onFieldChange('password')(value)}
                                     value={fields.password}
+                                    hasError={!!fieldError['password']}
+                                    errorMessage={fieldError['password']}
                                     onClear={() => onFieldChange('password')('')}
                                     icon={<PasswordIcon/>}
                                     secureTextEntry={true}
@@ -293,14 +293,11 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                 />
                             </ButtonWrapper>
 
-
-
                             <DividerContainer theme={theme}>
                                 {divider}
                                 <DividerText>OR</DividerText>
                                 {divider}
                             </DividerContainer>
-
 
                             <View
                                 style={[

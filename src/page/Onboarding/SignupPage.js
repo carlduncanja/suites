@@ -4,14 +4,14 @@ import {
     View,
     StyleSheet,
     Alert,
-    AsyncStorage,
     ActivityIndicator,
     Text,
     Keyboard,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'
 import {connect} from 'react-redux';
 import styled, {css} from '@emotion/native';
-import {login} from '../../api/network';
+import {login, registrationCall} from '../../api/network';
 import LoginBackground from '../../components/Onboarding/LoginBackground';
 import Logo from '../../../assets/svg/logo';
 import InputFieldWithIcon from '../../components/common/Input Fields/InputFieldWithIcon';
@@ -25,29 +25,6 @@ import {setBearerToken} from '../../api';
 import {useTheme} from "emotion-theming";
 import TextButton from "../../components/common/Buttons/TextButton";
 import PageButton from "../../components/common/Page/PageButton";
-
-const LoginPageWrapper = styled.View`
-        margin: 0;
-        flex: 1;
-    `;
-const LoginPageContainer = styled.View`
-        height: 100%;
-        width: 100%;
-        
-    `;
-
-const OverlayWrapper = styled.View`
-        flex: 1;
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        top: 0;
-        bottom: 0;
-    `;
-const OverlayContainer = styled.View`
-        height: 100%;
-        width: 100%;
-    `;
 
 const PageWrapper = styled.View`
     flex: 1;
@@ -161,6 +138,7 @@ function SignupPage({navigation, signIn, expoPushToken}) {
         email: '',
         password: '',
     });
+    const [fieldError, setFieldError] = useState({})
 
     useEffect(() => {
     }, []);
@@ -172,37 +150,62 @@ function SignupPage({navigation, signIn, expoPushToken}) {
             ...fields,
             [fieldName]: value,
         });
+        const updatedErrors = {...fieldError}
+        delete updatedErrors[fieldName]
+        setFieldError(updatedErrors)
     };
+
+    const validateFields = () => {
+        const requiredParams = ['first_name', 'last_name', 'email', 'password', 'confirm_password']
+
+        let valid = true;
+        const errors = {}
+        for (const requiredParam of requiredParams) {
+            if (!fields[requiredParam]) {
+                valid = false;
+                errors[requiredParam] = "Please enter value"
+            }
+        }
+
+        // check if passwords are the same
+        if (valid && fields['password'] !== fields['confirm_password']) {
+            errors['password'] = "passwords doesn't match"
+            errors['confirm_password'] = "passwords doesn't match"
+            valid = false;
+        }
+        setFieldError(errors)
+        return valid
+    }
+
     const onButtonPress = () => {
         console.log('Fields: ', fields);
 
-        // setLoading(true);
-        // login(fields.email, fields.password, expoPushToken)
-        //     .then(async data => {
-        //         // save auth data
-        //         console.log(data);
-        //         const {token = null} = data;
-        //         try {
-        //             await AsyncStorage.setItem('userToken', token);
-        //             // navigation.navigate("App")
-        //             if (token) {
-        //                 setBearerToken(token);
-        //             }
-        //
-        //             signIn(token);
-        //         } catch (error) {
-        //             // Error saving data
-        //         }
-        //     })
-        //     .catch(e => {
-        //         console.log('login failed', e);
-        //         Alert.alert('Failed to login');
-        //     })
-        //     .finally(_ => {
-        //         setLoading(false);
-        //     });
+        if (!validateFields()) return;
 
+        setLoading(true);
+        registrationCall({...fields, pushToken: expoPushToken} )
+            .then(async data => {
+                // save auth data
+                console.log(data);
+                const {token = null} = data;
+                try {
+                    await AsyncStorage.setItem('userToken', token);
+                    if (token) {
+                        setBearerToken(token);
+                    }
 
+                    signIn(token);
+                } catch (error) {
+                    // Error saving data
+                }
+            })
+            .catch(e => {
+                console.log('login failed', e);
+                Alert.alert('Failed to login');
+            })
+            .finally(_ => {
+                setLoading(false);
+            });
     };
 
     const onGuestButtonPress = () => {
@@ -237,7 +240,6 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                     </LogoWrapper>
 
                     <FormWrapper theme={theme}>
-
                         <FormContainer theme={theme}>
 
                             <FormHeaderText>SignUp</FormHeaderText>
@@ -245,10 +247,11 @@ function SignupPage({navigation, signIn, expoPushToken}) {
 
                             <RowContainer theme={theme}>
                                 <InputFieldWithIcon
-                                    // label="Email"
                                     placeholder={"Firstname"}
                                     onChangeText={value => onFieldChange('first_name')(value)}
                                     value={fields['first_name']}
+                                    hasError={!!fieldError['first_name']}
+                                    errorMessage={fieldError['first_name']}
                                     keyboardType="email-address"
                                     autoCapitalize="none"
                                     onClear={() => onFieldChange('first_name')('')}
@@ -257,13 +260,13 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                                 />
                             </RowContainer>
 
-
                             <RowContainer theme={theme}>
                                 <InputFieldWithIcon
-                                    // label="Email"
                                     placeholder={"Lastname"}
                                     onChangeText={value => onFieldChange('last_name')(value)}
                                     value={fields['last_name']}
+                                    hasError={!!fieldError['last_name']}
+                                    errorMessage={fieldError['last_name']}
                                     keyboardType="email-address"
                                     autoCapitalize="none"
                                     onClear={() => onFieldChange('last_name')('')}
@@ -272,11 +275,12 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                                 />
                             </RowContainer>
 
-
                             <RowContainer theme={theme}>
                                 <InputFieldWithIcon
                                     // label="Email"
                                     placeholder={"Email"}
+                                    hasError={!!fieldError['email']}
+                                    errorMessage={fieldError['email']}
                                     onChangeText={value => onFieldChange('email')(value)}
                                     value={fields.email}
                                     keyboardType="email-address"
@@ -293,6 +297,8 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                                     placeholder={"Password"}
                                     onChangeText={value => onFieldChange('password')(value)}
                                     value={fields.password}
+                                    hasError={!!fieldError['password']}
+                                    errorMessage={fieldError['password']}
                                     onClear={() => onFieldChange('password')('')}
                                     icon={<PasswordIcon/>}
                                     secureTextEntry={true}
@@ -306,6 +312,8 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                                     // label="Password"
                                     placeholder={"Confirm Password"}
                                     onChangeText={value => onFieldChange('confirm_password')(value)}
+                                    hasError={!!fieldError['confirm_password']}
+                                    errorMessage={fieldError['confirm_password']}
                                     value={fields['confirm_password']}
                                     onClear={() => onFieldChange('confirm_password')('')}
                                     icon={<PasswordIcon/>}
@@ -376,7 +384,6 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                         {'\u00A9'} Copyright 2019 The Suites
                     </CopyRightText>
                 </CopyRightContainer>
-
             </PageWrapper>
 
         </PageWrapper>

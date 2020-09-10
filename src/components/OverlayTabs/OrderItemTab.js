@@ -25,7 +25,7 @@ import { useTheme } from 'emotion-theming';
 import DataItem from "../common/List/DataItem";
 
 const OrderItemTab = ({
-    orders = [], 
+    orders = [],  
     // isEditMode = false, 
     onItemChange = ()=>{},  
     supplierId = "", 

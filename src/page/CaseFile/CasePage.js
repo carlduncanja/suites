@@ -613,19 +613,20 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         setSelectedCase(updatedCase);
     };
 
-    const openAddItem = itemToAdd => {
+    const openAddItem = (itemToAdd) => {
         modal.closeModals('ActionContainerModal');
+        navigation.navigate("AddChargeSheetItem", {type : itemToAdd});
 
-        setTimeout(() => {
-            modal.openModal('OverlayModal', {
+        // setTimeout(() => {
+        //     modal.openModal('OverlayModal', {
 
-                content: <AddNewItem
-                    itemToAdd={itemToAdd}
-                />,
-                onClose: () => setFloatingAction(false)
+        //         content: <AddNewItem
+        //             itemToAdd={itemToAdd}
+        //         />,
+        //         onClose: () => setFloatingAction(false)
 
-            });
-        }, 200);
+        //     });
+        // }, 200);
     };
 
     const onRemoveQuotations = quotation => {
@@ -689,7 +690,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
         console.log('getFabActions: selected tab', selectedTab);
         console.log('Selected menu: ', selectedMenuItem);
-
+ 
         if (selectedMenuItem === 'Charge Sheet') {
             switch (selectedTab) {
                 case 'Consumables': {
@@ -753,7 +754,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             <ActionItem
                                 title="Add Consumable"
                                 icon={<AddIcon/>}
-                                onPress={() => openAddItem('Consumable')}
+                                onPress={() => openAddItem('Consumables')}
                             />
                         );
                         const removeLineItemAction = (

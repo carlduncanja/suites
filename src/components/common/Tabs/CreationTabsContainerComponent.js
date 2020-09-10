@@ -8,28 +8,35 @@ import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 
 const TabsWrapper = styled.View`
-    background-color: blue;
     width:100%;
     height: 100%;
 ` ;
-const TabsContainer = styled.View`
-    height: 100%;
-    align-items: center;
-    flex-direction: row;
-    // padding-top: ${({paddingTop}) => `${paddingTop}px`};
-    background-color: ${({theme}) => theme.colors['--color-gray-200']};
-    justify-content: ${({justify}) => justify};
-`;
 
-function CreationTabsContainerComponent({tabs, onPressChange, selectedTab, completedTabs, paddingTop = 25, justify = 'flex-start'}) {
+const TabsContainer = styled.View`
+    height : 100%;
+    width : 100%;
+    align-items : center;
+    background-color: ${({theme, backgroundColor}) => theme.colors[backgroundColor]};
+`;
+// const TabsContainer = styled.View`
+//     height: 80%;
+//     align-items: center;
+//     flex-direction: row; 
+//     background-color: ${({theme, backgroundColor}) => theme.colors[backgroundColor]};
+//     justify-content : center;
+//     justify-content: ${({justify}) => justify};
+// `;
+
+function CreationTabsContainerComponent({tabs, onPressChange, backgroundColor='--color-gray-200', selectedTab, completedTabs, paddingTop = 25, justify = 'flex-start'}) {
 
     const theme = useTheme();
  
     return (
         <TabsWrapper>
-            <TabsContainer theme={theme} paddingTop = {paddingTop} justify = {justify}>
+            <TabsContainer theme={theme} paddingTop = {paddingTop} justify = {justify} backgroundColor = {backgroundColor}>
+                {/* <Text>Hello</Text> */}
                 {tabs.map((tab, index) => {
-                    return (
+                    return ( 
                         <CreationTab
                             key={index}
                             tabName={tab}
@@ -41,8 +48,7 @@ function CreationTabsContainerComponent({tabs, onPressChange, selectedTab, compl
                             onTabPress={() => onPressChange(tab)}
                         />
                     )
-                })}
-                
+                })} 
             </TabsContainer>
         </TabsWrapper>
     );

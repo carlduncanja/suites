@@ -6,6 +6,7 @@ import IconButton from "../common/Buttons/IconButton";
 import AddOverlayDialog from "../common/AddOverlayDialog";
 import ConfirmationComponent from '../ConfirmationComponent';
 
+
 import { getSupplierProducts } from "../../api/network";
 import _ from "lodash";
 import styled, {css} from '@emotion/native';
@@ -19,7 +20,7 @@ const Row = styled.View`
     /* width : 100%; */
     height : 20px;
     flex-direction : row;
-    margin-bottom : ${ ({theme}) => theme.space['--space-24']};
+    margin-bottom : ${ ({theme}) => theme.space['--space-24']}; 
 
 `
 

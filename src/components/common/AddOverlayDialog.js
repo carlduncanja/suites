@@ -30,6 +30,10 @@ const ContentContainer = styled.View`
     width : 100%;
 `;
 
+const TabsContainer = styled.View`
+    height : 52px;
+`;
+
 const SearchableFieldContainer = styled.View`
     z-index : 1;
     margin-bottom : 24px;
@@ -72,7 +76,7 @@ const PaginatorContainer = styled.View`
 
 const ClearListContainer = styled.TouchableOpacity`
     height : 100%;
-    flex-direction : row;
+    flex-direction : row; 
     width : 80px;
     align-items : center;
     justify-content : space-between;
@@ -163,10 +167,13 @@ function AddOverlayDialog(props){
                     positiveText={footerTitle}
                 >
                     {tabs &&
-                        <CreationDialogTabs
-                            tabs = {tabs}
-                            tab = {selectedTab}
-                        />
+                        <TabsContainer>
+                            <CreationDialogTabs
+                                tabs = {tabs}
+                                tab = {selectedTab}
+                            />
+                        </TabsContainer>
+                        
                     }
                     
 

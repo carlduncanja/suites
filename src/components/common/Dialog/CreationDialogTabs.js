@@ -9,28 +9,23 @@ import {useTheme} from 'emotion-theming';
 import CreationTabsContainerComponent from '../Tabs/CreationTabsContainerComponent';
 
 const DialogTabsWrapper = styled.View`
-    height : 44px;
+    height : 100%;
     width : 100%;
-    background-color: blue;
 `;
 const DialogTabsContainer = styled.View`
     width : 100%;
     height: 100%;
     flex-direction : row;
-    align-items: flex-end;
-    justify-content: flex-start;
-    background-color: ${ ({theme}) => theme.colors['--color-gray-200']};
-    background-color: yellow;
+    background-color: ${ ({theme, backgroundColor}) => theme.colors[backgroundColor]};
 `;
 
 
-function CreationDialogTabs({tabs, tab, onTabPress, onAddTab, tabName}) {
+function CreationDialogTabs({tabs, tab, onTabPress, onAddTab, tabName, backgroundColor = '--color-gray-200'}) {
 
     const theme = useTheme();
     return (
         <DialogTabsWrapper> 
-            <DialogTabsContainer theme = {theme}> 
-
+            <DialogTabsContainer theme = {theme} backgroundColor = {backgroundColor}> 
                 <CreationTabsContainerComponent
                     tabs={tabs}
                     onPressChange={onTabPress}
@@ -39,6 +34,7 @@ function CreationDialogTabs({tabs, tab, onTabPress, onAddTab, tabName}) {
                     justify = "center"
                     onAddTab = {onAddTab}
                     tabName = {tabName}
+                    backgroundColor = {backgroundColor}
                 />
 
                 {/* <View style={{

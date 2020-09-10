@@ -34,7 +34,7 @@ import LoadingComponent from "../../components/LoadingComponent";
 
 const HeaderText = styled.Text`
     font:${({theme}) => theme.font["--text-xl-medium"]};
-    color:${({theme}) => theme.colors["--company"]}
+    color:${({theme}) => theme.colors["--company"]};
 `;
 
 const CloseButtonWrapper = styled.View`
@@ -63,7 +63,7 @@ const CloseButtonContainer = styled.TouchableOpacity`
 
 const CloseText = styled.Text`
     color:${({theme}) => theme.colors["--color-gray-600"]};
-    font:${({theme}) => theme.font["--text-sm-bold"]}
+    font:${({theme}) => theme.font["--text-sm-bold"]};
 `;
 
 
@@ -124,7 +124,7 @@ const PageWrapper = styled.View`
 `
 const PageContentWrapper = styled.View`
   flex: 1;
-  //padding: ${({theme}) => theme.space['--space-32']}
+  //padding: ${({theme}) => theme.space['--space-32']};
 `
 
 const HeaderWrapper = styled.View`
