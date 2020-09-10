@@ -65,7 +65,7 @@ const ConsumableText = styled.Text( ({theme}) => ({
     paddingLeft : 14,
 }));
 
-function Consumables ({ 
+function Consumables ({  
     headers,
     consumables = [],
     caseProceduresFilters = [],

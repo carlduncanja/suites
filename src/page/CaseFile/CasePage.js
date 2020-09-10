@@ -126,6 +126,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [variantsEquipments, setVariantsEquipments] = useState([]);
     const [selectedConsumables, setSelectedConsumables] = useState([]);
     const [variantsConsumables, setVariantsConsumables] = useState([]);
+    const [isConsumablesRemoved, setIsConsumablesRemoved] = useState(false);
     // ############### State
 
     const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
@@ -706,6 +707,55 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     }
 
+    const handleRemoveConsumableItems = (itemToRemove) => {
+        const { chargeSheet = {} } = selectedCase;
+        const { proceduresBillableItems = [] } = chargeSheet
+       
+        let updatedItems = proceduresBillableItems;
+        let selectedItemsArray = itemToRemove === 'Consumables' ? variantsConsumables : variantsEquipments;
+        selectedItemsArray.map( item => {
+            const { _parentId = "", variants = [] } = item;
+            
+            const billableItem = updatedItems.filter( item => item?.caseProcedureId === _parentId )[0] || {};
+            const { inventories = [], equipments = [] } = billableItem
+            let updatedList = itemToRemove === 'Consumables' ? inventories : equipments;
+
+            variants.map(variant => {
+                itemToRemove === 'Consumables' ?
+                    updatedList = [...updatedList.filter( item => item?.inventory?._id !== variant)]
+                :
+                    updatedList = [...updatedList.filter( item => item?.equipment?._id !== variant)]
+            });
+
+            let updatedProcedureObj = 
+                itemToRemove === 'Consumables' ?
+                    {
+                        ...billableItem,
+                        inventories : updatedList
+                    }
+                    :
+                    {
+                        ...billableItem,
+                        equipments : updatedList
+                    }
+
+            updatedItems = updatedItems.map( procedure => {
+                return procedure?.caseProcedureId === _parentId
+                    ? {...updatedProcedureObj}
+                    : {...procedure}
+            });
+        })
+        if(itemToRemove === 'Consumables'){
+            setSelectedConsumables([]);
+            setVariantsConsumables([]);
+        }else{
+            setSelectedEquipments([]);
+            setVariantsEquipments([]);
+        }
+        updateCaseChargeSheet(updatedItems);
+    
+    }
+
     const onRemoveQuotations = quotation => {
         modal.openModal('ConfirmationModal', {
             content: (
@@ -835,8 +885,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         const removeLineItemAction = (
                             <LongPressWithFeedback
                                 pressTimer={700}
-                                onLongPress={_ => {
-                                }}
+                                onLongPress={()=>handleRemoveConsumableItems('Consumables')}
                                 isDisabled={selectedConsumables.length === 0 ? true : false}
 
                             >
@@ -844,15 +893,14 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                                     title="Hold to Delete"
                                     icon={<WasteIcon
                                         strokeColor={selectedConsumables.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
-                                    onPress={() => {
-                                    }}
+                                    onPress={() => {}}
                                     touchable={false}
                                     disabled={selectedConsumables.length === 0 ? true : false}
                                 />
 
                             </LongPressWithFeedback>
                         );
-                        floatingAction.push(/*addNewLineItemAction,*/ addNewItem, /*removeLineItemAction*/);
+                        floatingAction.push(/*addNewLineItemAction,*/ removeLineItemAction, addNewItem,);
                     }
                     title = "CONSUMABLE'S ACTIONS";
 
@@ -876,8 +924,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     const removeLineItemAction = (
                         <LongPressWithFeedback
                             pressTimer={700}
-                            onLongPress={_ => {
-                            }}
+                            onLongPress={()=>handleRemoveConsumableItems('Equipment')}
                             isDisabled={selectedEquipments.length === 0 ? true : false}
 
                         >
@@ -885,15 +932,14 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                                 title="Hold to Delete"
                                 icon={<WasteIcon
                                     strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
-                                onPress={() => {
-                                }}
+                                onPress={() => {}}
                                 touchable={false}
                                 disabled={selectedEquipments.length === 0 ? true : false}
                             />
 
                         </LongPressWithFeedback>
                     );
-                    floatingAction.push( addNewLineItemAction);
+                    floatingAction.push( removeLineItemAction,addNewLineItemAction );
                     title = 'EQUIPMENT ACTIONS';
                     break;
                 }

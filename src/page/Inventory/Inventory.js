@@ -21,6 +21,7 @@ import CollapsedIcon from "../../../assets/svg/closeArrow";
 import ActionIcon from "../../../assets/svg/dropdownIcon";
 import SvgIcon from "../../../assets/SvgIcon";
 import WasteIcon from "../../../assets/svg/wasteIcon";
+import TransferIcon from "../../../assets/svg/transferIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 
 import {numberFormatter} from "../../utils/formatter";
@@ -304,19 +305,19 @@ function Inventory(props) {
     // ##### Helper functions
 
     const getFabActions = () => {
-
+        let isDisabled = selectedIds.length === 0 ? true : false;
         const deleteAction =
             <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
                 <LongPressWithFeedback
                     pressTimer={1200}
                     onLongPress={removeGroup}
-                    isDisabled = {selectedIds.length === 0 ? true : false}
+                    isDisabled = {isDisabled}
                 >
                     <ActionItem
                         title={"Hold to Delete"}
-                        icon={<WasteIcon strokeColor = {selectedIds.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
+                        icon={<WasteIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
                         onPress={() => {}}
-                        disabled = {selectedIds.length === 0 ? true : false}
+                        disabled = {isDisabled}
                         touchable={false}
                     />
                 </LongPressWithFeedback>
@@ -325,12 +326,21 @@ function Inventory(props) {
 
         const createAction = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={openCreateInventoryModel}/>;
         const createGroup = <ActionItem title={"Create Item Group"} icon={<AddIcon/>} onPress={openCreateGroupDialog}/>;
+        const itemTranfer = 
+            <ActionItem
+                title={"Item Transfer"}
+                icon={<TransferIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}/>}
+                onPress={() => {}}
+                disabled = {isDisabled}
+                touchable={!isDisabled}
+            />
 
         return <ActionContainer
             floatingActions={[
                 deleteAction,
                 createAction,
-                createGroup
+                createGroup,
+                itemTranfer
             ]}
             title={"INVENTORY ACTIONS"}
         />
