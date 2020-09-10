@@ -259,7 +259,7 @@ function Theatres(props) {
     const isInUse = (appointments = []) => {
         const now = moment();
 
-        if (!Array.isArray(appointments)) return false
+        if (!Array.isArray(appointments)) return  {isActive: false, isRecovery: false}
 
         for (const appointment of appointments) {
             const startTime = moment(appointment.startTime)
@@ -267,17 +267,20 @@ function Theatres(props) {
 
             const isActive = now.isBetween(startTime, endTime)
 
-            if (isActive) return true;
+            if (isActive) {
+                return {isActive: true, isRecovery: false};
+            }
         }
 
-        return false;
+        return {isActive: false, isRecovery: false};
     }
 
     const renderItem = (item) => {
         const availableColor = "#38A169";
         const inUseColor = "#DD6B20";
 
-        const isActive = isInUse(item.appointments || [])
+        const {isActive, isRecovery} = isInUse(item.appointments || [])
+
 
         const formattedItem = {
             name: item.name || "",
