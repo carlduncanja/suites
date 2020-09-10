@@ -143,6 +143,13 @@ export const getTheatreById = async (id) => {
         .catch(handleError);
 };
 
+export const updatedTheatreCall = async (id, data) => {
+    return suitesAxiosInstance
+        .put(theatreEndpoint(id), data)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 export const createTheatre = async (theatreForCreation) => {
     return suitesAxiosInstance
         .post(theatresEndpoint, theatreForCreation)
