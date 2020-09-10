@@ -50,7 +50,8 @@ import {
     chargeSheetApprovalEndpoint,
     chargeSheetWithdrawChangesEndpoint,
     caseProcedureAppointmentsEndpoint,
-    registrationEndpoint
+    registrationEndpoint,
+    assignEquipmentToLocation
 } from "../const/suitesEndpoints";
 import { createDocumentLink } from "../const/documentGenerationEndpoints";
 
@@ -457,6 +458,13 @@ export const getEquipmentTypes = async (query, max, page) => {
 export const getEquipmentTypeById = async (id) => {
     return suitesAxiosInstance
         .get(equipmentTypeEndpoint(id))
+        .then(handleResponse)
+        .catch(handleError);
+}
+
+export const assignEquipmentGivenLocation = async (typeID, equipmentID, bodyToSend) => {
+    return suitesAxiosInstance
+        .post(assignEquipmentToLocation(typeID, equipmentID), bodyToSend)
         .then(handleResponse)
         .catch(handleError);
 }

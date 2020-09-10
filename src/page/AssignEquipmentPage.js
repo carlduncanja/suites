@@ -5,11 +5,12 @@ import AddEquipmentDetailsTab from "../components/OverlayTabs/AddEquipmentDetail
 import { useTheme } from "emotion-theming";
 import { Text, View, TouchableOpacity } from "react-native";
 import ConfirmationComponent from "../components/ConfirmationComponent";
-import { createEquipment } from "../api/network";
+import { assignEquipmentGivenLocation } from "../api/network";
 import TabsContainer from "../components/common/Tabs/TabsContainerComponent"
 import Footer from '../components/common/Page/Footer';
 import { Divider, Modal } from 'react-native-paper';
 import AssignEquipmentDetailsTab from '../components/OverlayTabs/AssignEquipmentDetailsTab';
+import { eq } from 'lodash';
 
 
 const AssignEquipmentPageWrapper = styled.View`
@@ -70,14 +71,15 @@ const TabsViewContainer = styled.View`
 `;
 
 const testData = {
-    Sku: "",
     Assignment: "Location",
     Quantity: "1",
-    Status: "Available"
+    Status: "Available",
+    Usage: "10"
 }
 
 const AssignEquipmentPage = ({ navigation, route, modal }) => {
     const { equipment, onCreated } = route.params;
+    console.log("the date is", new Date().toISOString());
     const currentTabs = ["Details"];
     const theme = useTheme();
     const [equipmentData, setEquipmentData] = useState(testData);
@@ -129,14 +131,19 @@ const AssignEquipmentPage = ({ navigation, route, modal }) => {
     }
 
     const onDonePress = () => {
+
+
         const fieldsToPass =
         {
-            sku: equipmentData['Sku'],
-            quantity: equipmentData['Quantity'],
-            type: equipment._id,
-            status: equipmentData['Status']
+            type: equipmentData['Assignment'] === "Location" ? "location" : "users",
+            startTime: `${new Date().toISOString()}`,
+            duration: equipmentData['Usage'],
+            referenceId: equipmentData['Assignment'] === "Location" ? locations[0]._id : physicians[0]._id
+
         };
-        createEquipmentCall(fieldsToPass);
+        console.log("fields", fieldsToPass);
+        AssignEquipmentCall(fieldsToPass)
+
 
     }
 
@@ -151,8 +158,8 @@ const AssignEquipmentPage = ({ navigation, route, modal }) => {
         modal.closeModals("ConfirmationModal");
     }
 
-    const createEquipmentCall = (updatedFields) => {
-        createEquipment(updatedFields)
+    const AssignEquipmentCall = (updatedFields) => {
+        assignEquipmentGivenLocation(equipment.type, equipment._id, updatedFields)
             .then(data => {
                 modal.openModal("ConfirmationModal", {
                     content: (
