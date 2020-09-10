@@ -357,7 +357,7 @@ const Equipment = (props) => {
         isChecked={selectedTypesIds.includes(item._id)}
         onCheckBoxPress={handleOnCheckBoxPress(item)}
         // onItemPress={() => handleOnItemPress(item, false)}
-        onItemPress={() => { console.log("group clicked") }}
+        onItemPress={() => gotoGroupDetails(item)}
         render={(collapse, isCollapsed) =>
           equipmentGroupView(viewItem, collapse, isCollapsed)
         }
@@ -431,8 +431,6 @@ const Equipment = (props) => {
     return data;
   };
 
-
-
   const renderItemView = (item, actionItem, onActionPress) => {
     let { _id } = actionItem;
     return (
@@ -470,10 +468,8 @@ const Equipment = (props) => {
   }
 
   const equipmentGroupView = (item, onActionPress, isCollapsed) => (
-    <GroupEquipmentView onPress={() => gotoGroupDetails(item)}>
-
-      <DataItem text={item.name} flex={.75} color="--color-gray-800" fontStyle="--text-base-regular" />
-
+    <>
+      <DataItem text={item.name} flex={1.8} color="--color-gray-800" fontStyle="--text-base-regular" />
       <QuantityWrapper>
         <MultipleShadowsContainer shadows={shadows}>
           <QuantityContainer theme={theme} isCollapsed={isCollapsed}>
@@ -481,9 +477,11 @@ const Equipment = (props) => {
           </QuantityContainer>
         </MultipleShadowsContainer>
       </QuantityWrapper>
+      {/*<View style={{flex: .9}}/>*/}
+      <View style={{flex: 1.7}}/>
       <ContentDataItem
-        align="flex-end"
-        flex={1}
+        align="center"
+        flex={.5}
         content={
           <IconButton
             Icon={isCollapsed ? <ActionIcon /> : <CollapsedIcon />}
@@ -491,7 +489,7 @@ const Equipment = (props) => {
           />
         }
       />
-    </GroupEquipmentView>
+    </>
   );
 
   const getFabActions = () => {
