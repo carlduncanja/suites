@@ -284,14 +284,8 @@ function Theatres(props) {
 
         const formattedItem = {
             name: item.name || "",
-            recoveryStatus:
-                item.isRecovery && !item.available
-                    ? "Yes"
-                    : !item.available
-                    ? "No"
-                    : "--",
-            recoveryStatusColor:
-                item.isRecovery && !item.available ? availableColor : "#4E5664",
+            recoveryStatus: isRecovery ? "Yes" : isActive ? "No" : "--",
+            recoveryStatusColor: isRecovery ? availableColor : "#4E5664",
             status: !isActive ? "Available" : "In-Use",
             statusColor: !isActive ? availableColor : inUseColor,
         };
