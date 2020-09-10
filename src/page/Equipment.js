@@ -127,7 +127,7 @@ const Equipment = (props) => {
   //  ############ State
   const [isFetchingData, setFetchingData] = useState(false);
   const [isFloatingActionDisabled, setFloatingAction] = useState(false);
-
+  const [groupSelected, setGroupSelected] = useState({});
   const [totalPages, setTotalPages] = useState(1);
   const [currentPageListMin, setCurrentPageListMin] = useState(0);
   const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
@@ -135,7 +135,7 @@ const Equipment = (props) => {
   const [isNextDisabled, setNextDisabled] = useState(false);
   const [isPreviousDisabled, setPreviousDisabled] = useState(true);
   const [groupNameSelected, setGroupNameSelected] = useState({});
-
+  const [shown, setisShown] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState({});
@@ -206,10 +206,12 @@ const Equipment = (props) => {
     console.log("Id:", item);
     let updatedEquipmentList = checkboxItemPress(item, _id, selectedTypesIds);
 
+    setGroupSelected(item);
     setSelectedTypesIds(updatedEquipmentList);
+
   };
 
-  const handleOnItemCheckboxPress = (item) => () => {
+  const handleOnItemCheckboxPress = (item) => {
     // console.log("Item: ", item)
     const { _id } = item;
     let updatedEquipments = [...selectedEquipmentIds];
@@ -349,7 +351,6 @@ const Equipment = (props) => {
     };
 
 
-    //setGroupNameSelected(viewItem);
 
     return (
       <CollapsibleListItem
@@ -378,8 +379,10 @@ const Equipment = (props) => {
           renderItem={({ item }) => {
             const equipmentGroup = item.items || [];
 
-            console.log("render children equipment item has:", viewItem);
+
             groupNameChoice = viewItem;
+
+
 
 
             const equipmentItem = {
@@ -440,7 +443,7 @@ const Equipment = (props) => {
         itemView={equipmentItemView(item, onActionPress)}
         hasCheckBox={true}
         isChecked={selectedEquipmentIds.includes(_id)}
-        onCheckBoxPress={handleOnItemCheckboxPress(actionItem)}
+        onCheckBoxPress={() => handleOnItemCheckboxPress(actionItem)}
         onItemPress={() => handleOnItemPress(actionItem, false, groupNameChoice)}
       />
     );
@@ -466,7 +469,7 @@ const Equipment = (props) => {
     );
 
   const gotoGroupDetails = (item) => {
-    props.navigation.navigate("EquipmentGroupDetailsPage", { data: item })
+    props.navigation.navigate("EquipmentGroupDetailsPage", { data: item, onCreated: handleDataRefresh })
   }
 
   const equipmentGroupView = (item, onActionPress, isCollapsed) => (
@@ -493,6 +496,11 @@ const Equipment = (props) => {
       />
     </GroupEquipmentView>
   );
+
+  const gotoAddEquipment = () => {
+    modal.closeAllModals();
+    navigation.navigate("AddEquipmentPage", { equipment: groupSelected, onCreated: handleDataRefresh })
+  }
 
   const getFabActions = () => {
     const deleteAction = (
@@ -526,7 +534,9 @@ const Equipment = (props) => {
       <ActionItem
         title={"Add Equipment"}
         icon={<AddIcon />}
-        onPress={openEquipmentDialog}
+        touchable={selectedTypesIds.length === 1 ? true : false}
+        disabled={selectedTypesIds.length === 1 ? false : true}
+        onPress={selectedTypesIds.length === 1 ? gotoAddEquipment : () => { console.log(selectedTypesIds.length) }}
       />
     );
 

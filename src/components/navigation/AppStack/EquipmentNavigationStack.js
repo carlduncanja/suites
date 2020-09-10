@@ -5,6 +5,7 @@ import Equipment from "../../../page/Equipment";
 import EquipmentItemPage from "../../Equipment/EquipmentItemPage";
 import EquipmentGroupDetailsPage from "../../../page/EquipmentGroupDetailsPage";
 import AddEquipmentPage from "../../../page/AddEquipmentPage";
+import AssignEquipmentPage from "../../../page/AssignEquipmentPage";
 import NotFound from "../../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 
@@ -54,6 +55,13 @@ export default () => {
             <Stack.Screen
                 name="AddEquipmentPage"
                 component={AddEquipmentPage}
+                options={{
+                    headerShown: false
+                }}
+            />
+            <Stack.Screen
+                name="AssignEquipmentPage"
+                component={AssignEquipmentPage}
                 options={{
                     headerShown: false
                 }}

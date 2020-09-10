@@ -11,9 +11,11 @@ import DropdownInputField from '../common/Input Fields/DropdownInputField';
 import OptionsField from '../common/Input Fields/OptionsField';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import { getTheatres } from "../../api/network";
+import { getPhysicians } from "../../api/network";
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 import { isEmpty } from 'lodash';
 import { Divider } from 'react-native-paper';
+import _ from "lodash";
 
 
 const InputWrapper = styled.View`
@@ -48,15 +50,29 @@ color:${({ theme }) => theme.colors["--default-shade-white"]};
 `
 
 
-function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locations, equipmentDetails }) {
+function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locations, physcians, onPhysicianUpdate, equipmentDetails, onDonePress }) {
 
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResults] = useState([]);
+    const [searchQuery, setSearchQuery] = useState();
 
     useEffect(() => {
 
+        if (!isEmpty(searchValue)) {
+            const searchFunction = data['Assignment'] === "Location" ? fetchTheatres : fetchPhysicians;
 
-        !isEmpty(searchValue) ? fetchTheatres() : setSearchResults([]);
+            const search = _.debounce(searchFunction, 300);
+
+            setSearchQuery(prevSearch => {
+                if (prevSearch && prevSearch.cancel) {
+                    prevSearch.cancel();
+                }
+                return search;
+            });
+            search();
+        } else setSearchResults([])
+
+
 
 
     }, [searchValue])
@@ -79,6 +95,26 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                 setSearchResults([]);
             })
     }
+
+    const fetchPhysicians = () => {
+        getPhysicians(searchValue, 5)
+            .then((physicianResult = []) => {
+                const { data = [], pages = 0 } = physicianResult
+                const results = data.map(item => ({
+                    name: `Dr. ${item.surname}`,
+                    ...item
+                }));
+                setSearchResults(results || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+
+                console.log("failed to get physicians", error);
+                setSearchResults([]);
+            })
+    }
+
 
     const handleQuantityValidation = (value) => {
         !isNaN(value) ? onFieldChange('Quantity')(value) : ""
@@ -141,7 +177,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                         <SearchableOptionsField
                             label="Assigned"
                             labelWidth={30}
-                            value={locations}
+                            value={data['Assignment'] === "Location" ? locations : physcians}
                             text={searchValue}
                             oneOptionsSelected={(value) => {
                                 const location = {
@@ -149,8 +185,13 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                                     name: value.name,
 
                                 }
+                                const physician = {
+                                    _id: value._id,
+                                    name: value.name
+                                }
 
-                                onLocationUpdate(location)
+
+                                data['Assignment'] === "Location" ? onLocationUpdate(location) : onPhysicianUpdate(physician)
 
                             }}
                             onChangeText={(value) => setSearchValue(value)}
@@ -166,7 +207,9 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                             oneOptionsSelected={onFieldChange('Status')}
                             menuOption={<MenuOptions>
                                 <MenuOption value={"Available"} text='Available' />
-                                <MenuOption value={"Unavailable"} text='Unavailable' />
+                                <MenuOption value={"Servicing"} text='Servicing' />
+                                <MenuOption value={"Damaged"} text='Damaged' />
+                                <MenuOption value={"In Use"} text='In Use' />
                             </MenuOptions>}
 
                         />
@@ -178,7 +221,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
 
             </View >
             <Divider />
-            <DoneButtonWrapper>
+            <DoneButtonWrapper onPress={onDonePress}>
                 <DoneButtonText>DONE</DoneButtonText>
             </DoneButtonWrapper>
         </>

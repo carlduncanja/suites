@@ -10,7 +10,7 @@ import { Modal } from 'react-native-paper';
 
 function EquipmentGroupDetailsPage(props) {
 
-    const { data = {} } = props.route.params;
+    const { data = {}, onCreated = () => { } } = props.route.params;
     const { name = "", _id = "", equipments = [], suppliers = [] } = data
     const tabs = ["Details"]
 
@@ -54,7 +54,7 @@ function EquipmentGroupDetailsPage(props) {
     };
 
     const goToAddEquipment = () => {
-        props.navigation.navigate("AddEquipmentPage", { equipment: selectedEquipment });
+        props.navigation.navigate("AddEquipmentPage", { equipment: selectedEquipment, onCreated: onCreated });
         props.modal.closeAllModals();
 
     }
