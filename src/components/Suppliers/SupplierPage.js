@@ -208,6 +208,7 @@ function SupplierPage({ route, navigation }) {
             case "Purchase Orders":
                 return <SupplierPurshaseOrders
                     floatingActions={floatingActions}
+                    data = {selectedSupplier?.purchaseOrders}
                 />;
             default:
                 return <View />

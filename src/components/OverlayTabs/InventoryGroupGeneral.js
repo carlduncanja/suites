@@ -1,46 +1,53 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import { View } from 'react-native';
 
 import Record from '../common/Information Record/Record';
 import ListTextRecord from '../common/Information Record/ListTextRecord';
 import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import ConfirmationComponent from "../ConfirmationComponent";
-import {useModal} from "react-native-modalfy";
-import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
-import {updateInventoryGroupCall} from "../../api/network";
+import { PageContext } from '../../contexts/PageContext';
+import { updateInventoryGroupById } from '../../api/network';
+import TextArea from '../common/Input Fields/TextArea';
+import ConfirmationComponent from '../ConfirmationComponent';
+import { useModal } from 'react-native-modalfy';
 
-function InventoryGroupGeneral({ inventoryGroup = {} , isEditMode}){
+const DescriptionContainer = styled.View`
+    flex : 0.8;
+`;
 
-    const { description = "", categories = [], name, _id} = inventoryGroup
+const TextContainer = styled.View`
+    height : 100px;
+`;
+
+const DescriptionText = styled.Text(({theme})=>({
+    ...theme.font['--text-base-regular'],
+    color : theme.colors['--color-gray-600'],
+    marginBottom : 12
+}));
+
+function InventoryGroupGeneral({ inventoryGroup = {}, onUpdate = () => {} }){
+
     const baseStateRef = useRef();
+
+    const { description = "", categories = []} = inventoryGroup;
+    const theme = useTheme();
     const modal = useModal();
+    const { pageState, setPageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
+    const [isUpdated, setIsUpdated] = useState(false);
 
     const [fields, setFields] = useState({
-        description,
-        categories,
-        name
+        'description' : description
     });
 
-
-    // Category Search
-    const [categorySearchValue, setCategorySearchValue] = useState();
-    const [categorySearchResults, setCategorySearchResult] = useState([]);
-    const [categorySearchQuery, setCategorySearchQuery] = useState({});
-
-
-    //const [isLoading, setLoading] = useState(false);
-    const [isUpdated, setUpdated] = useState(false)
-
-    const onFieldChange = (fieldName) => (value) => {
-        setFields({
-            ...fields,
-            [fieldName]: value
-        })
-        setUpdated(true)
-    };
+    useEffect(()=>{
+        if(isUpdated && isEditMode === false){
+            goToConfirmationScreen();
+        }
+    },[isEditMode])
 
     useEffect(() => {
         baseStateRef.current = {
@@ -52,133 +59,123 @@ function InventoryGroupGeneral({ inventoryGroup = {} , isEditMode}){
         }
     }, [])
 
-    useEffect(() => {
-        if (isUpdated && !isEditMode) {
-            modal.openModal('ConfirmationModal', {
-                content: (
-                    <ConfirmationComponent
-                        error={false}//boolean to show whether an error icon or success icon
-                        isEditUpdate={true}
-                        onCancel={() => {
-                            modal.closeAllModals();
-                            resetState()
-                        }}
-                        onAction={() => {
-                            modal.closeAllModals();
-                            updateGroup();
-                        }}
-                        message="Do you want to save changes?"//general message you can send to be displayed
-                        action="Yes"
-                    />
-                ),
-                onClose: () => {
-                    console.log('Modal closed');
-                },
-            });
-        }
-    }, [isEditMode])
+
+    const onFieldChange = (fieldName) => (value) => {
+        const updatedFields = {...fields}
+        setFields({
+            ...updatedFields,
+            [fieldName]: value
+        })
+        setIsUpdated(true);
+        // const updatedErrors = {...errorFields}
+        // delete updatedErrors[fieldName]
+        // setErrorFields(updatedErrors)
+
+    };
 
     const resetState = () => {
         setFields(baseStateRef.current);
-        setUpdated(false);
+        setIsUpdated(false);
     }
 
-    const updateGroup = () => {
-        updateInventoryGroupCall(_id, fields)
-            .then( _ => {
-                modal.openModal('ConfirmationModal', {
-                    content: (
-                        <ConfirmationComponent
-                            error={false}//boolean to show whether an error icon or success icon
-                            isEditUpdate={false}
-                            onCancel={() => {
-                                modal.closeAllModals();
-                            }}
-                            onAction={() => {
-                                modal.closeAllModals();
-                            }}
-                            message="Changes were successful."//general message you can send to be displayed
-                            action="Yes"
-                        />
-                    ),
-                    onClose: () => {
-                        console.log('Modal closed');
-                    },
-                });
+
+    const goToConfirmationScreen = () => {
+        modal.openModal('ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isEditUpdate = {true}
+                    onCancel = {()=> {
+                        modal.closeModals('ConfirmationModal');
+                        setPageState({
+                            ...pageState,
+                            isEditMode : true
+                        });
+                    }}
+                    onAction = {()=>updateInventoryGroup()}
+                    message = "Do you want to save your changes?"
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')}
+            })
+    }
+
+    const updateInventoryGroup = () => {
+        let updatedGroup = {
+            ...inventoryGroup,
+            description : fields['description'],
+        }
+        updateInventoryGroupById(inventoryGroup?._id, updatedGroup)
+            .then(data => {
+                // addInventory(data)
+                modal.closeAllModals();
+                modal.openModal('ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isEditUpdate = {false}
+                        isError = {false}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=> modal.closeModals('ConfirmationModal')}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')}
+                })
             })
             .catch(error => {
-                console.log("Failed to update theatre", error)
-                modal.openModal('ConfirmationModal', {
-                    content: (
-                        <ConfirmationComponent
-                            error={true}//boolean to show whether an error icon or success icon
-                            isEditUpdate={false}
-                            onCancel={() => {
-                                modal.closeAllModals();
-                            }}
-                            onAction={() => {
-                                modal.closeAllModals();
-                                resetState()
-                            }}
-                            message="Something went wrong when applying changes."//general message you can send to be displayed
-                            action="Yes"
-                        />
-                    ),
-                    onClose: () => {
-                        console.log('Modal closed');
-                    },
-                });
+                // todo handle error
+                console.log("failed to update inventory group", error);
+                modal.openModal('ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isEditUpdate = {false}
+                        isError = {true}
+                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                        onAction = {()=>modal.closeModals('ConfirmationModal')}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')}
+                })
+                // Alert.alert("Failed", "failed to create inventory group")
             })
-            .finally()
+            .finally(_=>{
+                onUpdate()
+            })
+            // console.log("Save data: ", updatedGroup);
+        // console.log("Group: ", inventoryGroup);
     }
 
     return(
         <>
             <Row>
-                <Record
-                    recordTitle = "Description"
-                    recordValue = {fields['description']}
-                    onRecordUpdate = {onFieldChange('description')}
-                    editMode = {isEditMode}
-                    editable = {true}
-                    useTextArea ={true}
-                    flex = {0.8}
-                />
+                {
+                    isEditMode ?
+                        <DescriptionContainer>
+                            <DescriptionText theme = {theme}>Description</DescriptionText>
+                            <TextContainer>
+                                <TextArea
+                                    onChangeText={onFieldChange('description')}
+                                    value={fields['description']}
+                                    multiline={true}
+                                    numberOfLines={4}
+                                    onClear={() => onFieldChange('description')('')}
+                                />
+                            </TextContainer>
+
+                        </DescriptionContainer>
+                        :
+                        <Record
+                            recordTitle = "Description"
+                            recordValue = {description}
+                            flex = {0.8}
+                        />
+                }
+
             </Row>
 
             <Row>
-
-                <Record
-                    recordTitle = "Name"
-                    recordValue = {fields['name']}
-                    onRecordUpdate = {onFieldChange('name')}
-                    editMode = {isEditMode}
-                    editable = {true}
-                    flex = {0.5}
-                />
-
                 <ListTextRecord
                     recordTitle = "Category"
-                    // values = {fields['categories']}
-                    values = {['hello', "hello again"]}
-                    onRecordUpdate = {onFieldChange('categories')}
-                    editMode = {isEditMode}
-                    editable = {true}
-                    flex={0.4}
+                    values = {categories}
                 />
-
-
-                {/*<MultipleSelectionsField*/}
-                {/*    label={"Category"}*/}
-                {/*    onOptionsSelected={onFieldChange('category')}*/}
-                {/*    options = {categorySearchResults}*/}
-                {/*    searchText = {categorySearchValue}*/}
-                {/*    onSearchChangeText = {(value)=> setCategorySearchValue(value)}*/}
-                {/*    onClear={()=>{setCategorySearchValue('')}}*/}
-                {/*    handlePopovers = {(value)=>handlePopovers(value)('category')}*/}
-                {/*    isPopoverOpen = {catPop[0].status}*/}
-                {/*/>*/}
-
             </Row>
         </>
     )

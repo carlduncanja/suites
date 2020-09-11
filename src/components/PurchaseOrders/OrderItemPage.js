@@ -158,6 +158,9 @@ function OrderItemPage({ route, navigation }) {
                             onClose: () => {modal.closeModals('ConfirmationModal')}
                     })
             })
+            .finally(_=>{
+                fetchOrder(_id);
+            })
     }
 
     const onFieldChange = (fieldName) => (value) => {
@@ -216,6 +219,30 @@ function OrderItemPage({ route, navigation }) {
         setOrderItems(itemsList)
         setIsUpdateDone(true)
 
+    }
+
+    const onRemoveProductItems = (data) => {
+        console.log("Current data list");
+        modal.openModal('ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError = {false}
+                    isEditUpdate = {true}
+                    onAction = {()=>{
+                        modal.closeModals('ConfirmationModal');
+                        updatePurchaseOrderItems(data, _id)
+                    }}
+
+                    onCancel = {()=>{
+                        modal.closeModals('ConfirmationModal')
+                        
+                    }}
+                    message = "Do you want to delete these item(s)?"
+
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')}
+        })
     }
 
     // ##### Helper functions
@@ -284,6 +311,7 @@ function OrderItemPage({ route, navigation }) {
                     onItemChange={onItemChange}
                     supplierId={supplier?._id}
                     onAddProductItems={onAddProductItems}
+                    onRemoveProductItems = {onRemoveProductItems}
                 />
             case "Suppliers":
                 return <SupplierDetailsTab order={selectedOrder} />;

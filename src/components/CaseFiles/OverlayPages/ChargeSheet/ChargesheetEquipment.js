@@ -45,14 +45,15 @@ const EquipmentText = styled.Text( ({theme}) => ({
     paddingLeft : 14,
 })); 
   
-function ChargesheetEquipment({ 
+function ChargesheetEquipment({  
     headers, 
     equipments = [], 
     caseProceduresFilters = [], 
     onEquipmentsUpdate, 
     onSelectEquipments,
-    // handleEditDone = () => {}, 
-    // isEditMode = false, 
+    onSelectEquipmenntsVariants,
+    selectedEquipments = [],
+    variantsEquipments = [],
     allItems = [],
     caseProcedures = [],
 }) {
@@ -63,8 +64,8 @@ function ChargesheetEquipment({
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState
 
-    const [checkBoxList, setCheckBoxList] = useState([]);
-    const [variantsCheckboxList, setVariantsCheckBoxList] = useState([]);
+    // const [checkBoxList, setCheckBoxList] = useState([]);
+    // const [variantsCheckboxList, setVariantsCheckBoxList] = useState([]);
 
     const [searchText, setSearchText] = useState('');
     const [selectedOption, setSelectedOption] = useState(caseProceduresFilters[0]);
@@ -76,16 +77,16 @@ function ChargesheetEquipment({
 
     const toggleCheckbox = (item, parentId) => () => {
 
-        let childCheckboxList = [...variantsCheckboxList];
+        let childCheckboxList = [...variantsEquipments];
         let variantsArray = childCheckboxList.filter(obj => obj?._parentId === parentId)
 
         if(variantsArray.length === 0){
-            setVariantsCheckBoxList([...variantsCheckboxList,{
+            onSelectEquipmenntsVariants([...variantsEquipments,{
                 _parentId : parentId,
                 variants : [item?.equipment]
             }]);
-            setCheckBoxList([...checkBoxList, parentId]);
-            onSelectEquipments([...checkBoxList, parentId])
+            // setCheckBoxList([...checkBoxList, parentId]);
+            onSelectEquipments([...selectedEquipments, parentId])
         }else{
             let { variants = [], _parentId } = variantsArray[0] || {}
             let variantsInList = variants.filter( id => id === item?.equipment);
@@ -97,19 +98,19 @@ function ChargesheetEquipment({
                     variants : [...variants, item?.equipment] 
                 }
                 let newChildList = [...updatedChildList,newObj]
-                setVariantsCheckBoxList(newChildList)
+                onSelectEquipmenntsVariants(newChildList)
             }else{
                 let updatedVariants = variants.filter( id => id !== item?.equipment)
                 let updatedChildList = childCheckboxList.filter( obj => obj?._parentId !== parentId);
 
                 if(updatedVariants.length === 0){
-                    setVariantsCheckBoxList([...updatedChildList]);
-                    setCheckBoxList([...checkBoxList.filter( id => id !== _parentId)]);
-                    onSelectEquipments([...checkBoxList.filter( id => id !== _parentId)])
+                    onSelectEquipmenntsVariants([...updatedChildList]);
+                    // setCheckBoxList([...checkBoxList.filter( id => id !== _parentId)]);
+                    onSelectEquipments([...selectedEquipments.filter( id => id !== _parentId)])
                     // Remove from header list if none remain and from childlist
                 }else{
                     let newVariantObj = {_parentId, variants : updatedVariants};
-                    setVariantsCheckBoxList([...updatedChildList, newVariantObj]);
+                    onSelectEquipmenntsVariants([...updatedChildList, newVariantObj]);
                 }
 
             }
@@ -122,7 +123,7 @@ function ChargesheetEquipment({
 
         let updatedChecboxList = []
         let updatedVariants = []
-        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== caseProcedures.length
+        const indeterminate = selectedEquipments.length >= 0 && selectedEquipments.length !== caseProcedures.length
 
         if(indeterminate){
             caseProcedures.map(procedure => {
@@ -139,13 +140,13 @@ function ChargesheetEquipment({
                 )
                 
             });
-        setVariantsCheckBoxList(updatedVariants)
-        setCheckBoxList(updatedChecboxList)
+        onSelectEquipmenntsVariants(updatedVariants)
+        // setCheckBoxList(updatedChecboxList)
         onSelectEquipments(updatedChecboxList)
 
         }else{
-            setCheckBoxList([])
-            setVariantsCheckBoxList([])
+            // setCheckBoxList([])
+            onSelectEquipmenntsVariants([])
             onSelectEquipments([])
         }
 
@@ -155,19 +156,19 @@ function ChargesheetEquipment({
         
         let { equipments = [] } = item
         let itemId = item?.caseProcedureId
-        let parentCheckboxList = [...checkBoxList];
+        let parentCheckboxList = [...selectedEquipments];
  
         if(parentCheckboxList.includes(itemId)){
-            setCheckBoxList(parentCheckboxList.filter( id => id !== itemId ));
+            // setCheckBoxList(parentCheckboxList.filter( id => id !== itemId ));
             onSelectEquipments(parentCheckboxList.filter( id => id !== itemId ))
-            console.log("itemId: ", itemId)
-            let updatedList = [...variantsCheckboxList].filter( obj => obj?._parentId !== itemId)
-            setVariantsCheckBoxList(updatedList)
-            console.log("Updated varaint: ", updatedList)
+            // console.log("itemId: ", itemId)
+            let updatedList = [...variantsEquipments].filter( obj => obj?._parentId !== itemId)
+            onSelectEquipmenntsVariants(updatedList)
+            // console.log("Updated varaint: ", updatedList)
         }else{
-            setCheckBoxList([...parentCheckboxList, itemId])
+            // setCheckBoxList([...parentCheckboxList, itemId])
             onSelectEquipments([...parentCheckboxList, itemId])
-            setVariantsCheckBoxList([...variantsCheckboxList,{
+            onSelectEquipmenntsVariants([...variantsEquipments,{
                 _parentId : itemId,
                 variants : [...equipments.map( item => item?.equipment)]
             }])
@@ -263,7 +264,7 @@ function ChargesheetEquipment({
     const renderChildItemView = (item, parentId, itemIndex, sectionIndex) => {
         
         let { _id, equipment } = item
-        let { variants = [] } = variantsCheckboxList?.filter( obj => obj._parentId === parentId)[0] || {};
+        let { variants = [] } = variantsEquipments?.filter( obj => obj._parentId === parentId)[0] || {};
         return (
             <Item
                 itemView = {childViewItem(item, itemIndex, sectionIndex)}
@@ -284,7 +285,7 @@ function ChargesheetEquipment({
 
         return (
             <CollapsibleListItem
-                isChecked={checkBoxList.includes(item?.caseProcedureId)}
+                isChecked={selectedEquipments.includes(item?.caseProcedureId)}
                 onCheckBoxPress={()=>toggleParentCheckBox(item)}
                 hasCheckBox={true}
                 onItemPress={ ()=> {}}
@@ -326,7 +327,7 @@ function ChargesheetEquipment({
                         // listItemFormat = {()=>{}}
                         headers = {headers}
                         toggleHeaderCheckbox = {toggleHeaderCheckbox}
-                        itemSelected = {checkBoxList}
+                        itemSelected = {selectedEquipments}
                     />
 
                 </TableContainer>

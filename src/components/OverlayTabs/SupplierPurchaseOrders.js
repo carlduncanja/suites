@@ -13,6 +13,7 @@ import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } 
 import DataItem from "../common/List/DataItem";
 import TouchableDataItem from "../common/List/TouchableDataItem";
 import DataItemWithIcon from "../common/List/DataItemWithIcon";
+import { transformToSentence } from "../../hooks/useTextEditHook";
 
 
 const testData = [
@@ -41,7 +42,7 @@ const testData = [
 ]
 
 const SupplierPurchaseOrders = ({ modal, floatingActions, isArchive = false, data = [] }) => {
-
+    
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
     const [hasActionButton, setHasActionButton] = useState(!isArchive);
@@ -146,14 +147,14 @@ const SupplierPurchaseOrders = ({ modal, floatingActions, isArchive = false, dat
 
     const listItemFormat = (item) => {
 
-        const { invoiceNumber, order, status, orderDate, deliveryDate } = item
+        const { invoiceNumber = "", purchaseOrderNumber = "", status = "", nextOrderDate = "", deliveryDate = "" } = item
         let invoice = invoiceNumber === '' ? 'n/a' : invoiceNumber
         let invoiceColor = invoiceNumber === '' ? '--color-gray-500' : '--color-blue-600';
-        let statusColor = status === 'Payment Due' ? '--color-red-700' : '--color-teal-600'
+        let statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700'
         return (
             <>
                 <TouchableDataItem
-                    text={order}
+                    text={purchaseOrderNumber}
                     onPress={() => { }}
                     fontStyle="--text-base-medium"
                 />
@@ -166,11 +167,11 @@ const SupplierPurchaseOrders = ({ modal, floatingActions, isArchive = false, dat
                     flex={1.2}
                 />
                 <DataItem
-                    text={status}
+                    text={transformToSentence(status)}
                     color={statusColor}
                     fontStyle="--text-sm-medium"
                 />
-                <DataItem text={formatDate(orderDate, 'DD/MM/YYYY')} />
+                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY')} />
                 <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} />
 
                 {/* <View style={[styles.item,{flex:1}]}>

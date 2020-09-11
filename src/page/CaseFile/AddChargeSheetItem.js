@@ -12,13 +12,15 @@ import NumberChangeField from '../../components/common/Input Fields/NumberChange
 import IconButton from "../../components/common/Buttons/IconButton";
 import DataItem from "../../components/common/List/DataItem";
 import ContentDataItem from "../../components/common/List/ContentDataItem";
-
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 import SearchableOptionsField from '../../components/common/Input Fields/SearchableOptionsField';
 
 import {useNextPaginator,usePreviousPaginator} from '../../helpers/caseFilesHelpers';
 import { getInventories, getEquipmentTypes } from "../../api/network";
+import {useModal} from 'react-native-modalfy';
 import _ from "lodash";
+import { Alert } from 'react-native';
 
 
 const PageWrapper = styled.View`
@@ -119,7 +121,8 @@ const FooterContainer = styled.View`
 
 function AddChargeSheetItem({navigation, route}){
 
-    const {type} = route.params;
+    const {type, onAddItem, selectedObj} = route.params;
+    const modal = useModal();
     let name = type === 'Consumables' ? 'Consumable' : 'Equipment';
     const headers = [
         {
@@ -234,7 +237,27 @@ function AddChargeSheetItem({navigation, route}){
     };
     
     const onFooterPress = () => {
-
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isError = {false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        onBackPress();
+                        onAddItem(data);
+                        modal.closeAllModals();
+                    }}
+                    message = {"Do you want to save these item(s)?"}
+                    
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
     };
 
 
@@ -272,24 +295,63 @@ function AddChargeSheetItem({navigation, route}){
     }
 
     const onItemSelected = (item) => {
-        console.log("Item: ", item)
-        console.log("Dat length: ", data)
-        setSelectedItem(item);
-        setSearchValue(item);
+        // console.log("Seleted item: ", item);
+        let updatedItem = {};
+        let items = type === 'Consumables' ? selectedObj?.inventories : selectedObj?.equipments
+        let filterItem = items.filter( dataItem => dataItem?.inventory?._id === item?._id);
+        // console.log("Items: ", items)
+        if(type === 'Consumables'){
+            updatedItem = {
+                _id : item._id,
+                inventory : {
+                    _id : item?._id,
+                    inventoryGroup : item?.inventoryGroup
+                },
+                ...item,
+                amount : 1,
+            }
 
-        if(data.length === 0){
-            setData([...data,item])
+            delete(updatedItem.inventoryGroup);
         }else{
-            
-            data.map( dataItem => {
-                if(dataItem._id === item._id){
-                    setData([...data])
-                }else{
-                    console.log('Dis')
-                    setData([...data,item])
-                }
-            })
+            console.log("Selected obj: ", selectedObj);
+            console.log("iTEM: ", item)
+            updatedItem = {
+                _id : item._id,
+                equipment : {
+                    ...item
+                },
+                amount : 1,
+                name : item.name
+            };
+           
         }
+        
+        // console.log("Updated item: ", updatedItem)
+        setSelectedItem(updatedItem);
+        setSearchValue(updatedItem);
+
+        if(filterItem.length > 0){
+            Alert.alert("Failed",`Item is already added to the ${type} list`);
+        }else{
+
+            if(data.length === 0){
+                setData([...data,updatedItem])
+            }else{
+            
+                data.map( dataItem => {
+                    if(dataItem._id === updatedItem._id){
+                        console.log("Same")
+                        setData([...data])
+                    }else{
+                        console.log('Dis')
+                        setData([...data,updatedItem])
+                    }
+                })
+            }
+        }
+
+
+        
         // const updatedData = data.length === 0 ?
         //     [...data,item]
         //     :
@@ -309,7 +371,9 @@ function AddChargeSheetItem({navigation, route}){
     }
 
     const handleDeleteItem = (item) => {
-        onDeletePress(item);
+        const filterItems = data.filter( obj => obj._id !== item._id)
+        setData(filterItems)
+       
         // modal
         //     .openModal(
         //         'ConfirmationModal',
@@ -330,10 +394,10 @@ function AddChargeSheetItem({navigation, route}){
         //         })
     };
 
-    const onDeletePress = (item) => {
-        const filterItems = data.filter( obj => obj._id !== item._id)
-        setData(filterItems)
-    };
+    // const onDeletePress = (item) => {
+    //     const filterItems = data.filter( obj => obj._id !== item._id)
+    //     setData(filterItems)
+    // };
 
     const listItemFormat = (item) => { 
         const { _id = "", name = "", amount = 1 } = item
