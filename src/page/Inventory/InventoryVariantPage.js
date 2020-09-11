@@ -67,7 +67,8 @@ function InventoryVariantPage({ route, navigation }){
 
             case "Storage Locations" :
                 return <InventoryStorageLocationsTab
-                    storageLocations = {selectedVariant?.storageLocations || [] }
+                    selectedVariant = {selectedVariant}
+                    groupId = {groupId}
                 />
             default:
                 break;

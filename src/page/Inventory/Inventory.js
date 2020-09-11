@@ -17,6 +17,7 @@ import ContentDataItem from '../../components/common/List/ContentDataItem';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import MultipleShadowsContainer from '../../components/common/MultipleShadowContainer';
 
+
 import CollapsedIcon from "../../../assets/svg/closeArrow";
 import ActionIcon from "../../../assets/svg/dropdownIcon";
 import SvgIcon from "../../../assets/SvgIcon";
@@ -199,8 +200,9 @@ function Inventory(props) {
     };
 
     const onItemVariantPress = (item, parentItem) => () =>{
-        console.log("parent: ", parentItem)
+        // console.log("parent: ", parentItem)
         let updatedItem = {...item, name : item?.itemName, groupId : parentItem?._id , groupName : parentItem?.name}
+        // console.log("Updated item: ", updatedItem);
         navigation.navigate("InventoryVariantPage",{
             screen : "InventoryVariantPage",
             initial: false,
@@ -275,6 +277,7 @@ function Inventory(props) {
     // ####### CHILD CHECKBOXPRESS
 
     const onChildCheckBoxPress = (item, parentItem) => () => {
+        // console.log("Item: ", item);
         const { _id } = item;
         let { variantIds = [] } = selectedChildIds.filter( obj => obj.groupId === parentItem?._id)[0] || {}
         let updatedChildIds = checkboxItemPress(item, _id, variantIds);
@@ -282,7 +285,9 @@ function Inventory(props) {
         if(variantIds.length === 0){
 
             let updatedParentIds = checkboxItemPress(parentItem, _id, selectedIds);
-            let selectedChild = {groupId : parentItem?._id, variantIds : updatedChildIds}
+            let selectedChild = {
+                groupId : parentItem?._id, variantIds : updatedChildIds
+            }
 
             setSelectedChildIs([...selectedChildIds,selectedChild])
             setSelectedIds(updatedParentIds)
@@ -303,6 +308,8 @@ function Inventory(props) {
     };
 
     // ##### Helper functions
+
+    
 
     const getFabActions = () => {
         let isDisabled = selectedIds.length === 0 ? true : false;
@@ -330,7 +337,7 @@ function Inventory(props) {
             <ActionItem
                 title={"Item Transfer"}
                 icon={<TransferIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}/>}
-                onPress={() => {}}
+                onPress={() => handleTransferItems()}
                 disabled = {isDisabled}
                 touchable={!isDisabled}
             />
@@ -497,18 +504,21 @@ function Inventory(props) {
     };
 
     const renderItem = (item) => {
-
+        // console.log("Render ite:",item)
         const formattedItem = {
             _id : item?._id,
             name: item?.name || "",
             stock: item?.stock || 0,
             locations: item?.locations || 0,
-            levels: item?.levels
+            levels: item?.levels,
         };
+
+        // console.log("Item: ", formattedItem);
 
         let {variants = []} = item;
 
         variants = variants.map( item => {
+            // console.log("Variant item: ", item);
             let { storageLocations = [] } = item
             let levels = getLevels(storageLocations);
             let stock = getStock(storageLocations) || 0;
@@ -519,6 +529,7 @@ function Inventory(props) {
                     itemName: item?.name || "",
                     stock: stock,
                     locations : storageLocations.length,
+                    storageLocations : storageLocations,
                     levels: levels || {}
                 }
             )
