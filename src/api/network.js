@@ -1,6 +1,6 @@
 import suitesAxiosInstance, { documentGenerationInstance } from "./index";
 import { handleError, handleResponse } from "./apiUtils";
-
+ 
 import {
     inventoryGroups,
     inventoryGroup,
@@ -8,6 +8,7 @@ import {
     inventoryEndpoint,
     inventoryVariantEndpoint,
     inventoryGroupVariant,
+    inventoryGroupVariantTransfers,
     theatresEndpoint,
     theatreEndpoint,
     physiciansEndpoint,
@@ -181,6 +182,14 @@ export const getInventoryGroupById = async (id) => {
         .catch(handleError);
 };
 
+export const updateInventoryGroupById = async (id, data) => {
+    return suitesAxiosInstance
+        .put(inventoryGroup(id), data)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+
 export const removeInventoryGroup = async (id) => {
     return suitesAxiosInstance
         .delete(inventoryGroup(id))
@@ -210,6 +219,12 @@ export const createInventoryGroup = async (groupToCreate) => {
 
 export const createInventoryVariant = async (referenceId, itemToCreate) => {
     return suitesAxiosInstance.post(inventoryVariantEndpoint(referenceId), itemToCreate)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+export const createTransfer = async (groupId, variantId, transferData) => {
+    return suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
         .then(handleResponse)
         .catch(handleError);
 };

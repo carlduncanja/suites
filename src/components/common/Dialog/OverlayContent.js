@@ -21,6 +21,7 @@ import OverlayDialogHeader from "./OverlayDialogHeader";
 const OverlayContentWrapper = styled.View`
   flex:1;
   width : 100%;
+  min-height : 350px;
   padding-top : ${ ({theme}) => theme.space['--space-40']};
   padding-bottom : ${ ({theme}) => theme.space['--space-40']};
   padding-right : ${ ({theme}) => theme.space['--space-24']};

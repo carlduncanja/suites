@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState } from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from "react-native";
 import Table from "../common/Table/Table";
@@ -7,6 +7,17 @@ import LevelIndicator from "../common/LevelIndicator/LevelIndicator";
 import Item from "../common/Table/Item";
 import DataItem from '../common/List/DataItem';
 import ContentDataItem from '../common/List/ContentDataItem';
+import Footer from '../common/Page/Footer';
+import TransferItemDialog from '../Inventory/TransferItemDialog';
+import TransferIcon from "../../../assets/svg/transferIcon";
+import ActionItem from "../common/ActionItem";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import { useModal } from 'react-native-modalfy';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { getInventoryVariantByGroup } from "../../api/network";
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+
 
 
 const storageHeader = [
@@ -25,18 +36,89 @@ const storageHeader = [
         alignment: 'center',
         flex: 1
     }
-];
+]; 
 
 function InventoryStorageLocationsTab({
-        storageLocations = [],
-        selectedItems = [],
-        onCheckBoxPress = () => {
-        }
+        selectedVariant = {},
+        groupId = ""
     }) {
 
-    console.log("Locations: ", storageLocations)
+    const modal = useModal();
+    const theme = useTheme();
+    const  { storageLocations = [], _id = "", inventoryGroup = {} } = selectedVariant;
+
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
+    
+    
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+
+        modal.openModal("ActionContainerModal",
+            {
+                actions: floatingActions(),
+                title: "INVENTORY ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                },
+            })
+    }
+
+    const handleTransferItems = () => {
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal(
+                'OverlayModal',
+                    {
+                        content: <TransferItemDialog
+                            // onCreated={(item) => onItemPress(item)()}
+                            variant = {selectedVariant}
+                            selectedLocation = {selectedItems[0]}
+                            groupId = {groupId}
+                            onCreated = {()=>{setFloatingAction(false)}}
+                            onCancel={() => setFloatingAction(false)}
+                        />,
+                        onClose: () => setFloatingAction(false)
+                })
+        }, 200)
+    }
+
+    const handleOnSelectAll = () => {
+        let updatedLocationsList = selectAll(storageLocations, selectedItems);
+        setSelectedItems(updatedLocationsList)
+    }
+
+    const handleOnCheckBoxPress = (item) => () => {
+        console.log("Item: ", item);
+        const {_id} = item;
+        let updatedItems = checkboxItemPress(item, _id, selectedItems)
+
+        setSelectedItems(updatedItems)
+    }
 
     // ####### HELPER FUNCTIONS
+
+    const floatingActions = () =>{
+        let isDisabled = selectedItems.length === 1 ? false : true;
+        
+        const itemTransfer = 
+            <ActionItem
+                title={"Item Transfer"}
+                icon={<TransferIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}/>}
+                onPress={() => handleTransferItems()}
+                disabled = {isDisabled}
+                touchable={!isDisabled}
+            />
+
+
+        return <ActionContainer
+            floatingActions={[
+                // deleteItem,
+                itemTransfer,
+            ]}
+            title={"INVENTORY ACTIONS"}
+        />
+    }
 
     const storageItem = ({locationName, stock, levels}) => {
         let updatedLevels = {
@@ -72,15 +154,13 @@ function InventoryStorageLocationsTab({
     };
 
     const renderStorageLocation = (item) => {
-
         return <Item
             hasCheckBox={true}
-            isChecked={selectedItems.includes(item.id)}
+            isChecked={selectedItems.includes(item._id)}
             itemView={storageItem(item)}
-            onCheckBoxPress={onCheckBoxPress}
+            onCheckBoxPress={handleOnCheckBoxPress(item)}
         />
     };
-
 
     return (
         <>
@@ -90,6 +170,15 @@ function InventoryStorageLocationsTab({
                 headers={storageHeader}
                 isCheckbox={true}
                 itemSelected={selectedItems}
+                toggleHeaderCheckbox = {handleOnSelectAll}
+                
+            />
+            <Footer
+                hasPaginator = {false}
+                hasActionButton = {true}
+                hasActions = {true}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
             />
         </>
     );

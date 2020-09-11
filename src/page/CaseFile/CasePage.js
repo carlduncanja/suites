@@ -123,7 +123,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
     const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
     const [selectedEquipments, setSelectedEquipments] = useState([]);
+    const [variantsEquipments, setVariantsEquipments] = useState([]);
     const [selectedConsumables, setSelectedConsumables] = useState([]);
+    const [variantsConsumables, setVariantsConsumables] = useState([]);
+    const [isConsumablesRemoved, setIsConsumablesRemoved] = useState(false);
     // ############### State
 
     const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
@@ -274,10 +277,44 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         updateChargeSheet(caseId, updateInfo)
             .then(data => {
                 console.log('Updated Record:', data);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
             })
             .catch(error => {
                 console.log('Failed to update chargesheet', error);
-                Alert.alert('Sorry', 'Failed to update case file');
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+                // Alert.alert('Sorry', 'Failed to update case file');
             })
             .finally(_ => {
                 fetchCase(caseId);
@@ -614,20 +651,110 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const openAddItem = (itemToAdd) => {
+        const { chargeSheet = {} } = selectedCase
+        const { proceduresBillableItems = [] } = chargeSheet
+        let checkedList = itemToAdd === 'Consumables' ? selectedConsumables : selectedEquipments
+        let filerObj = proceduresBillableItems.filter( item => item?.caseProcedureId === checkedList[0] || "")[0] || {};
+
         modal.closeModals('ActionContainerModal');
-        navigation.navigate("AddChargeSheetItem", {type : itemToAdd});
+        navigation.navigate("AddChargeSheetItem", {
+            type : itemToAdd,
+            onAddItem : onAddItem(itemToAdd),
+            selectedObj : filerObj,
 
-        // setTimeout(() => {
-        //     modal.openModal('OverlayModal', {
-
-        //         content: <AddNewItem
-        //             itemToAdd={itemToAdd}
-        //         />,
-        //         onClose: () => setFloatingAction(false)
-
-        //     });
-        // }, 200);
+        });
     };
+
+    const onAddItem = (itemToAdd) => (data) => {
+        const { chargeSheet = {} } = selectedCase
+        const { proceduresBillableItems = [] } = chargeSheet
+        let checkedList = itemToAdd === 'Consumables' ? selectedConsumables : selectedEquipments
+
+        let filerObj = proceduresBillableItems.filter( item => item?.caseProcedureId === checkedList[0] || "")[0] || {};
+        let updatedObj = itemToAdd === 'Consumables' ? 
+            {
+                ...filerObj,
+                inventories : [...filerObj?.inventories, ...data]
+            }
+            :
+            {
+                ...filerObj,
+                equipments : [...filerObj?.equipments, ...data]
+            }
+        // console.log("Selected consumables: ", selectedConsumables);
+        // console.log("Filter obj : ", filerObj);
+        console.log("Updated:", updatedObj)
+        const updatedCase = proceduresBillableItems.map( procedure => {
+            return procedure?.caseProcedureId === checkedList[0]
+                ? {...updatedObj}
+                : {...procedure}
+        })
+
+        console.log(" Updated Case: ", updatedCase);
+
+        if(itemToAdd === 'Consumables'){
+            setSelectedConsumables([]);
+            setVariantsConsumables([]);
+        }else{
+            setSelectedEquipments([]);
+            setVariantsEquipments([]);
+        }
+
+        updateCaseChargeSheet(updatedCase);
+
+        
+        // console.log("Billable: ", proceduresBillableItems);
+
+    }
+
+    const handleRemoveConsumableItems = (itemToRemove) => {
+        const { chargeSheet = {} } = selectedCase;
+        const { proceduresBillableItems = [] } = chargeSheet
+       
+        let updatedItems = proceduresBillableItems;
+        let selectedItemsArray = itemToRemove === 'Consumables' ? variantsConsumables : variantsEquipments;
+        selectedItemsArray.map( item => {
+            const { _parentId = "", variants = [] } = item;
+            
+            const billableItem = updatedItems.filter( item => item?.caseProcedureId === _parentId )[0] || {};
+            const { inventories = [], equipments = [] } = billableItem
+            let updatedList = itemToRemove === 'Consumables' ? inventories : equipments;
+
+            variants.map(variant => {
+                itemToRemove === 'Consumables' ?
+                    updatedList = [...updatedList.filter( item => item?.inventory?._id !== variant)]
+                :
+                    updatedList = [...updatedList.filter( item => item?.equipment?._id !== variant)]
+            });
+
+            let updatedProcedureObj = 
+                itemToRemove === 'Consumables' ?
+                    {
+                        ...billableItem,
+                        inventories : updatedList
+                    }
+                    :
+                    {
+                        ...billableItem,
+                        equipments : updatedList
+                    }
+
+            updatedItems = updatedItems.map( procedure => {
+                return procedure?.caseProcedureId === _parentId
+                    ? {...updatedProcedureObj}
+                    : {...procedure}
+            });
+        })
+        if(itemToRemove === 'Consumables'){
+            setSelectedConsumables([]);
+            setVariantsConsumables([]);
+        }else{
+            setSelectedEquipments([]);
+            setVariantsEquipments([]);
+        }
+        updateCaseChargeSheet(updatedItems);
+    
+    }
 
     const onRemoveQuotations = quotation => {
         modal.openModal('ConfirmationModal', {
@@ -742,26 +869,23 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         }
 
                     } else {
-                        const addNewLineItemAction = (
-                            <ActionItem
-                                title="Update Consumable"
-                                icon={<AddIcon/>}
-                                onPress={_ => {
-                                }}
-                            />
-                        );
+                        let isDisabled = selectedConsumables.length === 1 ? false : true
+                        
                         const addNewItem = (
                             <ActionItem
                                 title="Add Consumable"
-                                icon={<AddIcon/>}
+                                icon={<AddIcon
+                                    strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                                />}
+                                disabled = {isDisabled}
+                                touchable = {!isDisabled}
                                 onPress={() => openAddItem('Consumables')}
                             />
                         );
                         const removeLineItemAction = (
                             <LongPressWithFeedback
                                 pressTimer={700}
-                                onLongPress={_ => {
-                                }}
+                                onLongPress={()=>handleRemoveConsumableItems('Consumables')}
                                 isDisabled={selectedConsumables.length === 0 ? true : false}
 
                             >
@@ -769,21 +893,14 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                                     title="Hold to Delete"
                                     icon={<WasteIcon
                                         strokeColor={selectedConsumables.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
-                                    onPress={() => {
-                                    }}
+                                    onPress={() => {}}
                                     touchable={false}
                                     disabled={selectedConsumables.length === 0 ? true : false}
                                 />
 
                             </LongPressWithFeedback>
-                            // <ActionItem
-                            //     title="Remove Consumable"
-                            //     icon={<DeleteIcon/>}
-                            //     onPress={_ => {
-                            //     }}
-                            // />
                         );
-                        floatingAction.push(/*addNewLineItemAction,*/ addNewItem, /*removeLineItemAction*/);
+                        floatingAction.push(/*addNewLineItemAction,*/ removeLineItemAction, addNewItem,);
                     }
                     title = "CONSUMABLE'S ACTIONS";
 
@@ -791,19 +908,23 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     break;
                 }
                 case 'Equipment': {
+                    let isDisabled = selectedEquipments.length === 1 ? false : true
+
                     const addNewLineItemAction = (
                         <ActionItem
                             title="Add Equipment"
-                            icon={<AddIcon/>}
-                            onPress={_ => {
-                            }}
+                            icon={<AddIcon 
+                                strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                            />}
+                            disabled = {isDisabled}
+                            touchable = {!isDisabled}
+                            onPress={() => openAddItem('Equipment')}
                         />
                     );
                     const removeLineItemAction = (
                         <LongPressWithFeedback
                             pressTimer={700}
-                            onLongPress={_ => {
-                            }}
+                            onLongPress={()=>handleRemoveConsumableItems('Equipment')}
                             isDisabled={selectedEquipments.length === 0 ? true : false}
 
                         >
@@ -811,15 +932,14 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                                 title="Hold to Delete"
                                 icon={<WasteIcon
                                     strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
-                                onPress={() => {
-                                }}
+                                onPress={() => {}}
                                 touchable={false}
                                 disabled={selectedEquipments.length === 0 ? true : false}
                             />
 
                         </LongPressWithFeedback>
                     );
-                    floatingAction.push(removeLineItemAction, addNewLineItemAction);
+                    floatingAction.push( removeLineItemAction,addNewLineItemAction );
                     title = 'EQUIPMENT ACTIONS';
                     break;
                 }
@@ -1504,6 +1624,16 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     onSelectConsumables={(consumables)=>{
                         setSelectedConsumables(consumables)
                     }}
+                    onSelectVariants = {(variants) => {
+                        setVariantsConsumables(variants)
+                    }}
+                    onSelectEquipmenntsVariants = {(variants) =>{
+                        setVariantsEquipments(variants)
+                    }}
+                    selectedConsumables = {selectedConsumables}
+                    variantsConsumables = {variantsConsumables}
+                    selectedEquipments = {selectedEquipments}
+                    variantsEquipments = {variantsEquipments}
                 />;
             default:
                 return <View/>;

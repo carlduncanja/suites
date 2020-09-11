@@ -76,7 +76,7 @@ const SuggestionsContainer = styled.View`
     border-radius : 8px;
     border : 1px solid ${({theme}) => theme.colors['--color-gray-400']};
     background-color : ${({theme}) => theme.colors['--default-shade-white']};
-    z-index : 1;
+    z-index : 2;
 `;
 
 const NoSuggestionsContainer = styled.View`

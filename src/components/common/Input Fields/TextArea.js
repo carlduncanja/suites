@@ -16,7 +16,7 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @constructor
  */
 function TextArea({label, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error", numberOfLines = 4}) {
-
+    console.log("Value: ", value);
     return ( 
         <View style={styles.container}> 
             {
@@ -55,7 +55,7 @@ function TextArea({label, onChangeText, value, placeholder, keyboardType, onClea
             {
                 !(value === undefined || value === null || value === '') &&
                 <TouchableOpacity
-                    style={styles.clearIcon}
+                    style={[styles.clearIcon,{alignSelf : 'flex-start'}]}
                     onPress={onClear}
                 >
                     <ClearIcon/>

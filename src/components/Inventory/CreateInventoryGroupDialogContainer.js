@@ -241,7 +241,7 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
             })
             .finally()
     };
-
+ 
     const detailsTab = (
 
         <OverlayDialogContent>

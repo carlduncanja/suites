@@ -54,6 +54,7 @@ function InventoryPage({ route, navigation }){
             case "General":
                 return <InventoryGroupGeneral
                     inventoryGroup = {selectedInventory}
+                    onUpdate = {()=>fetchInventory(_id)}
                 />
             default:
                 break;

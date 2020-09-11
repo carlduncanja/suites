@@ -24,12 +24,13 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import DataItem from "../common/List/DataItem";
 
-const OrderItemTab = ({
+const OrderItemTab = ({ 
     orders = [],  
     // isEditMode = false, 
     onItemChange = ()=>{},  
     supplierId = "", 
-    onAddProductItems = ()=>{}
+    onAddProductItems = ()=>{},
+    onRemoveProductItems = ()=>{},
 }) =>{
     
     const modal = useModal();  
@@ -241,23 +242,23 @@ const OrderItemTab = ({
         />;
 
         const deleteItem = 
-        <LongPressWithFeedback 
-            pressTimer={700} 
-            onLongPress={() => {}}
-            isDisabled = {isDisabled}
-        >
-            <ActionItem 
-                title={"Hold to Delete"} 
-                icon={<WasteIcon strokeColor = {isDisabledColor}/>} 
-                onPress={() => {}} 
-                disabled = {isDisabled}
-                touchable={false}
-            />
-        </LongPressWithFeedback>;
+            <LongPressWithFeedback 
+                pressTimer={700} 
+                onLongPress={handleRemoveItem}
+                isDisabled = {isDisabled}
+            >
+                <ActionItem 
+                    title={"Hold to Delete"} 
+                    icon={<WasteIcon strokeColor = {isDisabledColor}/>} 
+                    onPress={() => {}} 
+                    disabled = {isDisabled}
+                    touchable={false}
+                />
+            </LongPressWithFeedback>;
 
         return <ActionContainer
             floatingActions={[
-                // deleteItem,
+                deleteItem,
                 addItem,
             ]}
             title={"ORDERS ACTIONS"}
@@ -285,6 +286,14 @@ const OrderItemTab = ({
                     onClose: () => setFloatingAction(false)
                 })
         },200)
+    }
+
+    const handleRemoveItem = () => {
+        let updatedOrders = orders
+        selectedItems.map( item => {
+            updatedOrders = updatedOrders.filter(order => order?._id !== item)
+        })
+        onRemoveProductItems(updatedOrders);
     }
 
     let itemsToDisplay = [...orders];

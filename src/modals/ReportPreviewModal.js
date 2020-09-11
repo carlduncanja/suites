@@ -10,7 +10,7 @@ const { width } = Dimensions.get("window");
 
 const ReportPreviewModal = (props) => {
     
-    const { modal: {closeModals, currentModal, params : {content, onClose}}} = props
+    const { modal: {closeModals, currentModal, params : {content, onClose = ()=>{}}}} = props
     
     let closePreview = () =>{
         closeModals(currentModal);
