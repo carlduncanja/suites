@@ -9,7 +9,7 @@ import InventoryGroupGeneral from '../../components/OverlayTabs/InventoryGroupGe
 
 function InventoryPage({ route, navigation }){
 
-    const { data = {}, isGroup = true, isEdit = false} = route.params
+    const { data = {}, isGroup = true} = route.params
     const { name = "", _id = "" } = data
     const tabs = ["General"]
 
@@ -17,6 +17,9 @@ function InventoryPage({ route, navigation }){
     const [pageState, setPageState] = useState({});
     const [selectedInventory, setSelectedInventory] = useState({});
     const [isInfoUpdated, setIsInfoUpdated] = useState(false)
+
+
+    const {isEditMode} = pageState;
 
     useEffect(() => {
         fetchInventory(_id)
@@ -54,6 +57,7 @@ function InventoryPage({ route, navigation }){
             case "General":
                 return <InventoryGroupGeneral
                     inventoryGroup = {selectedInventory}
+                    isEditMode={isEditMode}
                 />
             default:
                 break;

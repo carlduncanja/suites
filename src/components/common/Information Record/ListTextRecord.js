@@ -2,6 +2,8 @@ import React,{Component} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import MultipleOptionsField from "../InputFields/MultipleOptionsField";
+import MultipleSelectionsField from "../Input Fields/MultipleSelectionsField";
 
 
 const RecordWrapper = styled.View`
@@ -30,42 +32,59 @@ const ValueText = styled.Text( ({theme, valueStyle, valueColor}) => ({
 
 
 function ListTextRecord({
-    recordTitle = "", 
+    recordTitle = "",
     titleStyle = "--text-sm-regular",
     valueStyle = "--text-base-regular",
     values = [],
-    titleColor = '--color-gray-600', 
+    titleColor = '--color-gray-600',
     valueColor = '--color-gray-900',
-    flex = 1
+    flex = 1,
+    // EDIT MODE PROPS
+    editMode = false,
+    editable = true
 }){
     const theme = useTheme();
 
-    return ( 
+    return (
         <RecordWrapper flex = {flex} theme = {theme}>
             <RecordContainer>
                 <TitleText theme = {theme} titleColor = {titleColor} titleStyle = {titleStyle}>{recordTitle}</TitleText>
                 {
                     values.length === 0 && <ValueText theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>--</ValueText>
                 }
-                <ValueContainer>
-                    {
-                        values.map( (value,index) => {
-                            return index === values.length-1 ? 
-                                <ValueText key = {index} theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>{value}</ValueText>
-                                :
-                                <ValueText key = {index} theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>{value}, </ValueText>
-                            
-                        })
-                    }
-                </ValueContainer>
-                
-                
+
+
+                {
+                    !editMode &&
+                    <ValueContainer>
+                        {
+                            values.map( (value,index) => {
+                                return index === values.length-1 ?
+                                    <ValueText key = {index} theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>{value}</ValueText>
+                                    :
+                                    <ValueText key = {index} theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>{value}, </ValueText>
+
+                            })
+                        }
+                    </ValueContainer>
+                }
+
+
+                {
+                    // editMode &&
+                    // <MultipleSelectionsField
+                    //     value={values}
+                    //
+                    // />
+                }
+
+
             </RecordContainer>
         </RecordWrapper>
     )
 }
 
-export default ListTextRecord 
+export default ListTextRecord
 
 const styles = StyleSheet.create({
     container:{
@@ -74,5 +93,5 @@ const styles = StyleSheet.create({
     recordTitle:{
         paddingBottom:4,
     },
-    
+
 })
