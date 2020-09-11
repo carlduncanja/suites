@@ -85,10 +85,17 @@ function ReportHeaderSummary({
 
                     {
                         type === 'Quotation' ? (
-                            <BillingDescriptionContainer>
-                                <ContentHeading theme={theme}>For</ContentHeading>
-                                <ContentItem theme={theme}>{billedFor}</ContentItem>
-                            </BillingDescriptionContainer>
+                            <>
+                                <BillingDescriptionContainer>
+                                    <ContentHeading theme={theme}>Quotation #</ContentHeading>
+                                    <ContentItem theme={theme}>{reportNumber}</ContentItem>
+                                </BillingDescriptionContainer>
+
+                                <BillingDescriptionContainer>
+                                    <ContentHeading theme={theme}>For</ContentHeading>
+                                    <ContentItem theme={theme}>{billedFor.join(',')}</ContentItem>
+                                </BillingDescriptionContainer>
+                            </>
                         ) : (
                             <>
                                 <BillingDescriptionContainer>

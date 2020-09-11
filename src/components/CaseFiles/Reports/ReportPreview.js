@@ -53,13 +53,22 @@ const Rectangle = () => (
 );
 
 const ReportPreview = ({type = '', details = {}, reportDetails}) => {
+    // console.log(" quite details: ", details.quotationNumber);
     const theme = useTheme();
-    const {billingDetails = {}, customerDetails = {}, createdAt = '', amountDue = 0} = details;
-    const {address = {}, email = '', name = '', phone = '', billedFor = 'Medical Supplies'} = customerDetails;
+    const {billingDetails = {}, customerDetails = {}, createdAt = '', amountDue = 0, quotationNumber = "", invoiceNumber = ""} = details;
+    const {address = {}, email = '', name = '', phone = ''} = customerDetails;
 
-    const reportNumber = type === 'Invoice' ? details.invoiceNumber : details.quotationNumber;
+    const reportNumber = type === 'Invoice' ? invoiceNumber : quotationNumber;
     const purchaseOrderNumber = details.purchaseOrderNumber || '';
     const {procedures = [], discount = 0, hasDiscount = false, tax = 0} = reportDetails;
+    // console.log("Procedures details: ", procedures);
+    let procedureNames = []
+    procedures.map( item => {
+        item?.procedures.map( procedure => {
+            procedureNames.push(procedure?.name);
+        })
+    })
+    let billedFor = [...new Set(procedureNames)];
     const total = hasDiscount ? (amountDue - (amountDue * discount)) * (1 + tax) : (amountDue) * (1 + tax);
     const formatDiscount = amountDue * discount;
 
