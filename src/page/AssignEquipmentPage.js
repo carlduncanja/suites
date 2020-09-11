@@ -131,12 +131,14 @@ const AssignEquipmentPage = ({ navigation, route, modal }) => {
     }
 
     const onDonePress = () => {
-
+        let somedate = "2020-10-30T14:00:00.000Z";
+        let today = new Date().toISOString();
 
         const fieldsToPass =
         {
+
             type: equipmentData['Assignment'] === "Location" ? "location" : "users",
-            startTime: `${new Date().toISOString()}`,
+            startTime: somedate,
             duration: equipmentData['Usage'],
             referenceId: equipmentData['Assignment'] === "Location" ? locations[0]._id : physicians[0]._id
 

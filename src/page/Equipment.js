@@ -331,15 +331,12 @@ const Equipment = (props) => {
 
   const renderEquipmentFn = (item) => {
     const equipments = item.equipments || [];
-    console.log("equipments", equipments);
+
     let assignmentStored = [];
 
     equipments.map(equipment => assignmentStored = equipment.assignments)
 
-
-
-    console.log("Assingmentts:", assignmentStored);
-
+    console.log("Assignments", assignmentStored);
     const viewItem = {
       name: item.name,
       _id: item._id,
@@ -350,7 +347,7 @@ const Equipment = (props) => {
       status:
         isEmpty(assignmentStored)
           ? "Available"
-          : assignmentStored.length > 1 && assignmentStored.length !== 0
+          : assignmentStored.length >= 1
             ? "Multiple"
             : "Unavailable",
       nextAvailable: new Date(2020, 12, 12),
