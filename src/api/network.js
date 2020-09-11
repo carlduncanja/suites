@@ -182,6 +182,14 @@ export const getInventoryGroupById = async (id) => {
         .catch(handleError);
 };
 
+export const updateInventoryGroupById = async (id, data) => {
+    return suitesAxiosInstance
+        .put(inventoryGroup(id), data)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
+
 export const removeInventoryGroup = async (id) => {
     return suitesAxiosInstance
         .delete(inventoryGroup(id))
