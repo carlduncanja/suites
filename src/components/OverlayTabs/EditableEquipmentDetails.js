@@ -4,39 +4,26 @@ import InputField2 from '../common/Input Fields/InputField2';
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 import OptionsField from '../common/Input Fields/OptionsField';
 import InputUnitField from '../common/Input Fields/InputUnitFields';
-
+import styled, { css } from '@emotion/native';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 
 import { getPhysicians, getCategories } from "../../api/network";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
+import Row from "../common/Row";
+import Record from "../common/Information Record/Record";
+import { useTheme } from "emotion-theming";
+import TextEditor from "../common/Input Fields/TextEditor";
+import { forEach } from "lodash";
+import { set } from "numeral";
 
+const LabelText = styled.Text`
+color:${({ theme }) => theme.colors["--color-gray-600"]};
+font:${({ theme }) => theme.font["--text-base-regular"]};
+`
 
 const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
 
-    // const {
-    //     // supplier id
-    //     _id,
-    //     // supplier name
-    //     supplier,
-    //     assigned,
-    //     status,
-    //     usage,
-    //     availableOn,
-    //     categories,
-    //     description
-    // } = equipment
-
-    // const [fields, setFields] = useState({
-    //     // supplier name
-    //     supplier : supplier,
-    //     assigned : assigned,
-    //     status : status ,
-    //     usage : usage,
-    //     availableOn : availableOn,
-    //     categories : categories,
-    //     description : description
-    // })
-
+    const theme = useTheme();
 
     // Physicians Search
     const [searchValue, setSearchValue] = useState();
@@ -47,6 +34,14 @@ const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
+
+    //Description
+    const [descriptionValue, setDescriptionValue] = useState('');
+
+
+    useEffect(() => {
+        console.log("Description has:", descriptionValue);
+    }, [descriptionValue])
 
     // Handle physicians search
     useEffect(() => {
@@ -136,131 +131,16 @@ const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
             keyboardVerticalOffset={300}
             behavior={'padding'}
         >
-            <View>
+            <>
+                <Row>
+                    <LabelText theme={theme}>Description</LabelText>
+                </Row>
+                <TextEditor
+                    onFieldChange={(value) => setDescriptionValue(value)}
+                />
+            </>
 
-                <View style={styles.fieldWrapper}>
-                    <View style={{ marginBottom: 5 }}>
-                        <Text style={styles.title}>Description</Text>
-                    </View>
 
-                    <View style={styles.inputWrapper}>
-                    </View>
-                </View>
-
-                <View style={styles.row}>
-
-                    <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom: 5 }}>
-                            <Text style={styles.title}>SKU</Text>
-                        </View>
-
-                        <View style={styles.inputWrapper}>
-                            <Text>{fields['sku']}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom: 5 }}>
-                            <Text style={styles.title}>Assigned</Text>
-                        </View>
-
-                        <View style={styles.inputWrapper}>
-                            <SearchableOptionsField
-                                text={searchValue}
-                                oneOptionsSelected={(item) => {
-                                    onFieldChange('physician')(item._id)
-                                }}
-                                onChangeText={value => setSearchValue(value)}
-                                onClear={() => {
-                                    onFieldChange('physician')('');
-                                    setSearchValue('');
-                                }}
-                                options={searchResults}
-                            />
-                        </View>
-                    </View>
-
-                    <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom: 5 }}>
-                            <Text style={styles.title}>Status</Text>
-                        </View>
-
-                        <View style={styles.inputWrapper}>
-                            <OptionsField
-                                text={fields['status']}
-                                oneOptionsSelected={onFieldChange('status')}
-                                menuOption={<MenuOptions>
-                                    <MenuOption value={"In Use"} text='In Use' />
-                                    <MenuOption value={"Available"} text='Available' />
-                                </MenuOptions>}
-                            />
-                        </View>
-                    </View>
-
-                </View>
-
-                <View style={styles.row}>
-
-                    <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom: 5 }}>
-                            <Text style={styles.title}>Supplier</Text>
-                        </View>
-
-                        <View style={styles.inputWrapper}>
-
-                        </View>
-                    </View>
-
-                    <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom: 5 }}>
-                            <Text style={styles.title}>Usage</Text>
-                        </View>
-
-                        <View style={styles.inputWrapper}>
-                            <InputUnitField
-                                label={"Usage"}
-                                onChangeText={(value) => {
-                                    if (/^\d+$/g.test(value) || !value) {
-                                        onFieldChange('usage')(value)
-                                    }
-                                }}
-                                value={fields['usage']}
-                                units={['hrs']}
-                                keyboardType="number-pad"
-                            />
-                        </View>
-                    </View>
-
-                    <View style={styles.fieldWrapper}>
-                        <View style={{ marginBottom: 5 }}>
-                            <Text style={styles.title}>Available On</Text>
-                        </View>
-
-                        <View style={styles.inputWrapper}>
-
-                        </View>
-                    </View>
-
-                </View>
-
-                <View style={styles.fieldWrapper}>
-                    <View style={{ marginBottom: 5 }}>
-                        <Text style={styles.title}>Description</Text>
-                    </View>
-
-                    <View style={styles.inputWrapper}>
-                        <MultipleSelectionsField
-                            label={"Category"}
-                            onOptionsSelected={onFieldChange('category')}
-                            options={categorySearchResults}
-                            searchText={categorySearchValue}
-                            onSearchChangeText={(value) => setCategorySearchValue(value)}
-                            onClear={() => { setCategorySearchValue('') }}
-                        />
-                    </View>
-                </View>
-
-            </View>
         </KeyboardAvoidingView>
 
 

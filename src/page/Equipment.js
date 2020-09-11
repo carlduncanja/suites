@@ -16,7 +16,7 @@ import ActionItem from "../components/common/ActionItem";
 import CreateEquipmentDialog from "../components/Equipment/CreateEquipmentDialogContainer";
 import Item from "../components/common/Table/Item";
 import NavPage from "../components/common/Page/NavPage";
-import _ from "lodash";
+import _, { isEmpty } from "lodash";
 import DataItem from "../components/common/List/DataItem";
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -128,6 +128,7 @@ const Equipment = (props) => {
   const [isFetchingData, setFetchingData] = useState(false);
   const [isFloatingActionDisabled, setFloatingAction] = useState(false);
   const [groupSelected, setGroupSelected] = useState({});
+  const [selectedChildEquipment, setSelectedChildEquipment] = useState({});
   const [totalPages, setTotalPages] = useState(1);
   const [currentPageListMin, setCurrentPageListMin] = useState(0);
   const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
@@ -140,7 +141,7 @@ const Equipment = (props) => {
   const [searchResults, setSearchResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState({});
   let groupNameChoice = {};
-
+  const [assignments, setAssignments] = useState([]);
   const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([]);
   const [selectedTypesIds, setSelectedTypesIds] = useState([]);
   const [equipmentTypes, setEquipmentTypes] = useState([]);
@@ -212,7 +213,7 @@ const Equipment = (props) => {
   };
 
   const handleOnItemCheckboxPress = (item) => {
-    // console.log("Item: ", item)
+    setSelectedChildEquipment(item);
     const { _id } = item;
     let updatedEquipments = [...selectedEquipmentIds];
 
@@ -331,20 +332,22 @@ const Equipment = (props) => {
   const renderEquipmentFn = (item) => {
     const equipments = item.equipments || [];
 
-    const assignmentStored = equipments.assignments || [];
+    let assignmentStored = [];
 
+    equipments.map(equipment => assignmentStored = equipment.assignments)
 
+    console.log("Assignments", assignmentStored);
     const viewItem = {
       name: item.name,
       _id: item._id,
       equipments: equipments,
       suppliers: item.suppliers,
       quantity: item.equipments.length,
-      assignment: assignmentStored.length === 0 ? "Not currently assigned" : assignmentStored,
+      assignment: isEmpty(assignmentStored) ? "Not currently assigned" : assignmentStored[0].theatre,
       status:
-        assignmentStored.length === 0
+        isEmpty(assignmentStored)
           ? "Available"
-          : assignmentStored.length > 1 && assignmentStored != 0
+          : assignmentStored.length >= 1
             ? "Multiple"
             : "Unavailable",
       nextAvailable: new Date(2020, 12, 12),
@@ -481,7 +484,7 @@ const Equipment = (props) => {
         </MultipleShadowsContainer>
       </QuantityWrapper>
       {/*<View style={{flex: .9}}/>*/}
-      <View style={{flex: 1.7}}/>
+      <View style={{ flex: 1.7 }} />
       <ContentDataItem
         align="center"
         flex={.5}
@@ -500,6 +503,11 @@ const Equipment = (props) => {
     navigation.navigate("AddEquipmentPage", { equipment: groupSelected, onCreated: handleDataRefresh })
   }
 
+  const gotoAssignEquipment = () => {
+    modal.closeAllModals();
+    navigation.navigate("AssignEquipmentPage", { equipment: selectedChildEquipment, onCreated: handleDataRefresh });
+  }
+
   const getFabActions = () => {
     const deleteAction = (
       <LongPressWithFeedback pressTimer={700} onLongPress={() => { }}>
@@ -513,9 +521,11 @@ const Equipment = (props) => {
     );
     const assignEquipment = (
       <ActionItem
+        disabled={isEmpty(selectedChildEquipment) ? true : false}
+        touchable={isEmpty(selectedChildEquipment) ? false : true}
         title={"Assign Equipment"}
         icon={<AssignIcon />}
-        onPress={() => { }}
+        onPress={gotoAssignEquipment}
       />
     );
     const editGroup = (

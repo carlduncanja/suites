@@ -16,6 +16,7 @@ import SearchableOptionsField from '../common/Input Fields/SearchableOptionsFiel
 import { isEmpty } from 'lodash';
 import { Divider } from 'react-native-paper';
 import _ from "lodash";
+import { useTheme } from 'emotion-theming';
 
 
 const InputWrapper = styled.View`
@@ -51,7 +52,7 @@ color:${({ theme }) => theme.colors["--default-shade-white"]};
 
 
 function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locations, physcians, onPhysicianUpdate, equipmentDetails, onDonePress }) {
-
+    const theme = useTheme();
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResults] = useState([]);
     const [searchQuery, setSearchQuery] = useState();
@@ -129,7 +130,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                             labelWidth={30}
                             placeholder={equipmentDetails?.name}
                             label="Equipment"
-                            backgroundColor="--color-gray-200"
+                            enabled={false}
                         />
                     </InputWrapper>
 
@@ -139,7 +140,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                             labelWidth={30}
                             placeholder={isEmpty(equipmentDetails?.categories[0]) ? "--" : equipmentDetails.categories[0]}
                             label="Category"
-                            backgroundColor="--color-gray-200"
+                            enabled={false}
                         />
                     </InputWrapper>
                 </View>
@@ -221,8 +222,8 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
 
             </View >
             <Divider />
-            <DoneButtonWrapper onPress={onDonePress}>
-                <DoneButtonText>DONE</DoneButtonText>
+            <DoneButtonWrapper theme={theme} onPress={onDonePress}>
+                <DoneButtonText theme={theme}>DONE</DoneButtonText>
             </DoneButtonWrapper>
         </>
     )

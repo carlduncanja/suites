@@ -7,9 +7,10 @@ import TabsContainerComponent from '../components/common/Tabs/TabsContainerCompo
 import { getEquipmentTypeById } from '../api/network';
 import EquipmentGroupGeneralTab from '../components/OverlayTabs/EquipmentGroupGeneralTab';
 import { Modal } from 'react-native-paper';
+import { useTheme } from 'emotion-theming';
 
 function EquipmentGroupDetailsPage(props) {
-
+    const theme = useTheme();
     const { data = {}, onCreated = () => { } } = props.route.params;
     const { name = "", _id = "", equipments = [], suppliers = [] } = data
     const tabs = ["Details"]

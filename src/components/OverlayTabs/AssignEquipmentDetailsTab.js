@@ -16,6 +16,7 @@ import SearchableOptionsField from '../common/Input Fields/SearchableOptionsFiel
 import { isEmpty } from 'lodash';
 import { Divider } from 'react-native-paper';
 import _ from "lodash";
+import InputUnitField from '../common/Input Fields/InputUnitFields';
 
 
 const InputWrapper = styled.View`
@@ -116,9 +117,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
     }
 
 
-    const handleQuantityValidation = (value) => {
-        !isNaN(value) ? onFieldChange('Quantity')(value) : ""
-    }
+
     return (
         <>
             <View style={{ flexDirection: "column", height: "88%", width: "100%", alignItems: "center", justifyContent: "flex-start" }}>
@@ -129,7 +128,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                             labelWidth={30}
                             placeholder={equipmentDetails?.name}
                             label="Equipment"
-                            backgroundColor="--color-gray-200"
+                            enabled={false}
                         />
                     </InputWrapper>
 
@@ -137,9 +136,9 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                         <InputField2
                             value={""}
                             labelWidth={30}
-                            placeholder={isEmpty(equipmentDetails?.categories[0]) ? "--" : equipmentDetails.categories[0]}
+                            placeholder={!equipmentDetails?.categories ? "--" : equipmentDetails.categories[0]}
                             label="Category"
-                            backgroundColor="--color-gray-200"
+                            enabled={false}
                         />
                     </InputWrapper>
                 </View>
@@ -160,14 +159,15 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     </InputWrapper>
 
                     <InputWrapper>
-                        <InputField2
-                            key={data['Quantity']}
-                            value={data['Quantity']}
-                            labelWidth={30}
-                            onChangeText={(value) => { handleQuantityValidation(value) }}
-                            onFieldChange={onFieldChange('Quantity')}
-                            onClear={() => onFieldChange('Quantity')('')}
-                            label="Quantity"
+                        <InputUnitField
+                            label={"Usage"}
+                            onChangeText={(value) => {
+                                if (/^\d+$/g.test(value) || !value) {
+                                    onFieldChange('Usage')(value)
+                                }
+                            }}
+                            value={data['Usage']}
+                            units={['hrs']}
                             keyboardType="number-pad"
                         />
                     </InputWrapper>

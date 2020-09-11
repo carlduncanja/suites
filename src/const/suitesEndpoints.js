@@ -38,8 +38,9 @@ export const procedureEndpoint = (id) => `/procedures/${id}`;
 // ##### EQUIPMENTS
 export const equipmentsEndpoint = "/equipments";
 export const equipmentEndpoint = (id) => `/equipments/${id}`;
-export const equipmentTypesEndpoint = "/equipment-types"
-export const equipmentTypeEndpoint = (id) => `/equipment-types/${id}`
+export const equipmentTypesEndpoint = "/equipment-types";
+export const equipmentTypeEndpoint = (id) => `/equipment-types/${id}`;
+export const assignEquipmentToLocation = (typeId, equipmentId) => `/equipment-types/${typeId}/equipments/${equipmentId}/assign`;
 
 // ##### CASE FILES
 export const caseFilesEndpoint = "/cases";
