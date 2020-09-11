@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useState} from 'react';
-import styled, {css} from '@emotion/native';
-import {useTheme} from "emotion-theming";
-import {Text, View} from "react-native";
+import React, { useContext, useEffect, useState } from 'react';
+import styled, { css } from '@emotion/native';
+import { useTheme } from "emotion-theming";
+import { Text, View } from "react-native";
 import TabsContainer from "../../components/common/Tabs/TabsContainerComponent"
 import Divider from "../../components/common/Divider";
 import PageButton from "../../components/common/Page/PageButton";
@@ -15,26 +15,26 @@ import {
     getTheatres,
     isValidCaseProcedureAppointment
 } from "../../api/network";
-import ScheduleDisplayComponent, {EVENT_TYPES} from "../../components/ScheduleDisplay/ScheduleDisplayComponent";
+import ScheduleDisplayComponent, { EVENT_TYPES } from "../../components/ScheduleDisplay/ScheduleDisplayComponent";
 import ProcedureTab from "../../components/CaseFiles/ProceduresDialogTabs/ProcedureTab";
 import _ from "lodash";
 import SearchableOptionsField from "../../components/common/Input Fields/SearchableOptionsField";
 import DateInputField from "../../components/common/Input Fields/DateInputField";
 import InputUnitField from "../../components/common/Input Fields/InputUnitFields";
 import OptionsField from "../../components/common/Input Fields/OptionsField";
-import {MenuOption, MenuOptions} from "react-native-popup-menu";
+import { MenuOption, MenuOptions } from "react-native-popup-menu";
 import Table from "../../components/common/Table/Table";
 import Paginator from "../../components/common/Paginators/Paginator";
 import Button from "../../components/common/Buttons/Button";
 import Snackbar from "react-native-paper/src/components/Snackbar";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
 import ConfirmationComponent from "../../components/ConfirmationComponent";
 import LoadingComponent from "../../components/LoadingComponent";
 
 
 const HeaderText = styled.Text`
-    font:${({theme}) => theme.font["--text-xl-medium"]};
-    color:${({theme}) => theme.colors["--company"]};
+    font:${({ theme }) => theme.font["--text-xl-medium"]};
+    color:${({ theme }) => theme.colors["--company"]};
 `;
 
 const CloseButtonWrapper = styled.View`
@@ -47,13 +47,13 @@ const InputWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    z-index: ${({zIndex}) => zIndex};
+    z-index: ${({ zIndex }) => zIndex};
 
 `
 
 
 const CloseButtonContainer = styled.TouchableOpacity`
-    background-color:${({theme}) => theme.colors["--color-gray-300"]};
+    background-color:${({ theme }) => theme.colors["--color-gray-300"]};
     width:68px;
     height:26px;
     padding:4px 14px;
@@ -62,8 +62,8 @@ const CloseButtonContainer = styled.TouchableOpacity`
 `;
 
 const CloseText = styled.Text`
-    color:${({theme}) => theme.colors["--color-gray-600"]};
-    font:${({theme}) => theme.font["--text-sm-bold"]};
+    color:${({ theme }) => theme.colors["--color-gray-600"]};
+    font:${({ theme }) => theme.font["--text-sm-bold"]};
 `;
 
 
@@ -71,9 +71,9 @@ const AppointmentPageContentWrapper = styled.View`
     flex:1;
     margin : 0;
 
-     padding-top: ${({theme}) => theme.space['--space-12']};
-    // padding-left: ${({theme}) => theme.space['--space-24']};
-    // padding-right: ${({theme}) => theme.space['--space-24']};
+     padding-top: ${({ theme }) => theme.space['--space-12']};
+    // padding-left: ${({ theme }) => theme.space['--space-24']};
+    // padding-right: ${({ theme }) => theme.space['--space-24']};
 `
 
 const AppointmentPageContentContainer = styled.View`
@@ -83,23 +83,23 @@ const AppointmentPageContentContainer = styled.View`
 const ContentContainer = styled.View`
     display: flex;
     flex:1;
-    padding-top: ${({theme}) => theme.space['--space-24']};
-    padding-left: ${({theme}) => theme.space['--space-24']};
-    padding-right: ${({theme}) => theme.space['--space-24']};
+    padding-top: ${({ theme }) => theme.space['--space-24']};
+    padding-left: ${({ theme }) => theme.space['--space-24']};
+    padding-right: ${({ theme }) => theme.space['--space-24']};
 `
 
 
 const FooterWrapper = styled.View`
   //height: 500px;
-  border: 1px solid ${({theme}) => theme.colors['--color-gray-300']};
+  border: 1px solid ${({ theme }) => theme.colors['--color-gray-300']};
   border-bottom-width: 0;
   border-left-width: 0;
   border-right-width: 0;
-  padding-top: ${({theme}) => theme.space['--space-24']}; 
-  padding-bottom: ${({theme}) => theme.space['--space-24']}; 
-  margin-left: ${({theme}) => theme.space['--space-24']}; 
+  padding-top: ${({ theme }) => theme.space['--space-24']}; 
+  padding-bottom: ${({ theme }) => theme.space['--space-24']}; 
+  margin-left: ${({ theme }) => theme.space['--space-24']}; 
   margin-top: 0;
-  margin-right: ${({theme}) => theme.space['--space-24']}; 
+  margin-right: ${({ theme }) => theme.space['--space-24']}; 
 `
 
 const FooterContainer = styled.View`
@@ -120,20 +120,20 @@ const PageWrapper = styled.View`
   flex: 1;
   display: flex;  
   margin:0;
-  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+  background-color: ${({ theme }) => theme.colors['--default-shade-white']};
 `
 const PageContentWrapper = styled.View`
   flex: 1;
-  //padding: ${({theme}) => theme.space['--space-32']};
+  //padding: ${({ theme }) => theme.space['--space-32']};
 `
 
 const HeaderWrapper = styled.View`
   display: flex;
   height: 47px;
-  //width: 100%;
+  //width: 80%;
   justify-content: center;
-  padding-left: ${({theme}) => theme.space['--space-24']};
-  padding-right: ${({theme}) => theme.space['--space-24']};
+  padding-left: ${({ theme }) => theme.space['--space-24']};
+  padding-right: ${({ theme }) => theme.space['--space-24']};
   
 `
 
@@ -151,10 +151,10 @@ const PAGE_TABS = {
     EQUIPMENT: "Equipment",
 }
 
-function AppointmentPage({navigation, route}) {
+function AppointmentPage({ navigation, route }) {
 
     const currentTabs = [PAGE_TABS.APPOINTMENT, PAGE_TABS.RECOVERY, PAGE_TABS.CONSUMABLES, PAGE_TABS.EQUIPMENT];
-    const {caseId, onAppointmentCreated} = route.params;
+    const { caseId, onAppointmentCreated } = route.params;
     const modal = useModal();
     const theme = useTheme();
 
@@ -170,7 +170,7 @@ function AppointmentPage({navigation, route}) {
     const [recoveryInfoError, setRecoveryInfoErrors] = useState({})
 
 
-    const [snackbar, setSnackbar] = useState({visible: false, message: ""})
+    const [snackbar, setSnackbar] = useState({ visible: false, message: "" })
 
 
     //#region Event Handler
@@ -299,7 +299,7 @@ function AppointmentPage({navigation, route}) {
                     data={getEquipmentDataFromSelectedProcedure()}
                 />
             default:
-                return <View/>
+                return <View />
         }
     };
 
@@ -348,7 +348,7 @@ function AppointmentPage({navigation, route}) {
         let isValid = true;
         const requiredParams = ["date", "startTime", "location", "procedure", "duration"];
 
-        let errorObj = {...procedureErrors} || {};
+        let errorObj = { ...procedureErrors } || {};
 
         for (const requiredParam of requiredParams) {
             if (!procedureInfo[requiredParam]) {
@@ -365,7 +365,7 @@ function AppointmentPage({navigation, route}) {
         if (!isValid) return isValid
 
         // TODO validate time.
-        const {procedure, location, startTime, duration} = procedureInfo;
+        const { procedure, location, startTime, duration } = procedureInfo;
         isValid = await validateProcedureAsync(procedure._id, location._id, startTime, duration);
 
         // TODO validate theatre location.
@@ -379,24 +379,24 @@ function AppointmentPage({navigation, route}) {
         setLoading(true)
         return isValidCaseProcedureAppointment(procedure, location, startTime, duration)
             .then(results => {
-                const {errors = [], isValid} = results;
+                const { errors = [], isValid } = results;
 
                 // loop through and show all errors.
                 let messages = errors.map(item => item.message)
 
                 if (messages.length) {
                     let message = messages.join('\n')
-                    setSnackbar({visible: true, message})
+                    setSnackbar({ visible: true, message })
                 }
 
                 return isValid;
             })
             .catch(error => {
                 console.log("Failed to validate procedure", error);
-                setSnackbar({visible: true, message: "Something went wrong"})
+                setSnackbar({ visible: true, message: "Something went wrong" })
                 return false
             })
-            .finally( _ => setLoading(false))
+            .finally(_ => setLoading(false))
     }
 
     const getProcedureData = (procedureId) => {
@@ -411,14 +411,14 @@ function AppointmentPage({navigation, route}) {
             })
             .catch(error => {
                 console.error("Failed to fetch procedure info", error);
-                setSnackbar({visible: true, message: "Failed to fetch consumable & equipments data."})
+                setSnackbar({ visible: true, message: "Failed to fetch consumable & equipments data." })
             })
     }
 
     const addProcedureAppointment = (procedureAppointment) => {
         setLoading(true);
         addProcedureAppointmentCall(caseId, procedureAppointment)
-            .then( data => {
+            .then(data => {
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -443,11 +443,11 @@ function AppointmentPage({navigation, route}) {
                     },
                 });
             })
-            .catch( error => {
+            .catch(error => {
                 console.log("Failed to create new appointment for procedure.")
 
             })
-            .finally( _ => {
+            .finally(_ => {
                 setLoading(false)
             })
     }
@@ -493,7 +493,7 @@ function AppointmentPage({navigation, route}) {
                             fontColor={theme.colors['--color-gray-600']}
                             text={"PREVIOUS"}
                             onPress={onPreviousButtonPress}
-                            IconLeft={<ChevronLeft strokeColor={theme.colors['--color-gray-600']}/>}
+                            IconLeft={<ChevronLeft strokeColor={theme.colors['--color-gray-600']} />}
                         />
                     </FooterButtonContainer>
 
@@ -504,7 +504,7 @@ function AppointmentPage({navigation, route}) {
                             fontColor={theme.colors['--default-shade-white']}
                             text={"NEXT"}
                             onPress={onNextButtonPress}
-                            IconRight={<ChevronRight strokeColor={theme.colors['--default-shade-white']}/>}
+                            IconRight={<ChevronRight strokeColor={theme.colors['--default-shade-white']} />}
                         />
                     </FooterButtonContainer>
                 </FooterContainer>
@@ -533,7 +533,7 @@ function AppointmentPage({navigation, route}) {
 
             {
                 isLoading &&
-                <LoadingComponent/>
+                <LoadingComponent />
             }
 
         </PageWrapper>
@@ -546,7 +546,7 @@ AppointmentPage.defaultProps = {};
 export default AppointmentPage;
 
 
-const AppointmentTab = ({onProcedureUpdate, onProcedureSelected, procedure, patient = "--", errors, onErrorUpdate}) => {
+const AppointmentTab = ({ onProcedureUpdate, onProcedureSelected, procedure, patient = "--", errors, onErrorUpdate }) => {
 
     // TODO clean up logic for scheduling assistant.
 
@@ -577,7 +577,7 @@ const AppointmentTab = ({onProcedureUpdate, onProcedureSelected, procedure, pati
         try {
             const data = await getAppointments("", location, start, end, 1)
             return data.map(item => {
-                const {patient} = item;
+                const { patient } = item;
                 const subTitle = patient ? `${patient.firstName} ${patient.surname}` : item.title;
 
                 return {
@@ -622,7 +622,7 @@ const AppointmentTab = ({onProcedureUpdate, onProcedureSelected, procedure, pati
 
             if (duration && startTime) {
                 const tempAppointment = getTempAppointment(duration, startTime)
-                const {startTime: newStart, endTime: newEnd} = tempAppointment;
+                const { startTime: newStart, endTime: newEnd } = tempAppointment;
 
                 for (const appointment of appointments) {
                     const start = moment(appointment?.startTime);
@@ -668,7 +668,7 @@ const AppointmentTab = ({onProcedureUpdate, onProcedureSelected, procedure, pati
     const date = currentProcedure?.date || new Date()
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
             <ProcedureTab
                 onProcedureInfoChange={onProcedureFieldChange}
                 onProcedureSelected={onProcedureSelected}
@@ -677,12 +677,12 @@ const AppointmentTab = ({onProcedureUpdate, onProcedureSelected, procedure, pati
                 onErrorUpdate={handleOnErrorUpdate}
             />
 
-            <View style={{backgroundColor: '#C4C4C4', width: '100%', height: 1}}/>
+            <View style={{ backgroundColor: '#C4C4C4', width: '100%', height: 1 }} />
 
             {/* SCHEDULING ASSISTANT */}
 
-            <View style={{flex: 1, paddingRight: 30}}>
-                <ScheduleDisplayComponent appointments={appointments} date={date}/>
+            <View style={{ flex: 1, paddingRight: 30 }}>
+                <ScheduleDisplayComponent appointments={appointments} date={date} />
             </View>
 
         </View>
@@ -693,14 +693,14 @@ const AppointmentTab = ({onProcedureUpdate, onProcedureSelected, procedure, pati
 const RowWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: ${({theme}) => theme.space['--space-16']};
-    z-index: ${({zIndex}) => zIndex};
+    margin-bottom: ${({ theme }) => theme.space['--space-16']};
+    z-index: ${({ zIndex }) => zIndex};
 `
 const RecoveryFieldsContainer = styled.View`
   flex: 1;
-  padding-top: ${({theme}) => theme.space['--space-32']};
-  margin-top: ${({theme}) => theme.space['--space-24']};
-  border: 1px solid ${({theme}) => theme.colors['--color-gray-300']};
+  padding-top: ${({ theme }) => theme.space['--space-32']};
+  margin-top: ${({ theme }) => theme.space['--space-24']};
+  border: 1px solid ${({ theme }) => theme.colors['--color-gray-300']};
   border-bottom-width: 0;
   border-left-width: 0;
   border-right-width: 0;
@@ -713,10 +713,10 @@ const RecoveryFieldsContainer = styled.View`
  * @return {*}
  * @constructor
  */
-const RecoveryTab = ({isEdit, recoveryFields, errors, onRecoveryFieldUpdate, hasRecovery, onRecoveryToggle}) => {
+const RecoveryTab = ({ isEdit, recoveryFields, errors, onRecoveryFieldUpdate, hasRecovery, onRecoveryToggle }) => {
     const theme = useTheme();
-    const {duration, location, time, date} = recoveryFields;
-    const {name = ""} = location || {}
+    const { duration, location, time, date } = recoveryFields;
+    const { name = "" } = location || {}
 
     const onDurationUpdated = (duration) => {
         // validate num
@@ -797,7 +797,7 @@ const RecoveryTab = ({isEdit, recoveryFields, errors, onRecoveryFieldUpdate, has
     const fetchLocations = () => {
         getTheatres(searchLocationValue, 5, 1, 1)
             .then((locationsInfo) => {
-                const {data = [], pages} = locationsInfo;
+                const { data = [], pages } = locationsInfo;
                 setSearchLocationResult(data || []);
             })
             .catch((error) => {
@@ -835,14 +835,14 @@ const RecoveryTab = ({isEdit, recoveryFields, errors, onRecoveryFieldUpdate, has
                         text={hasRecovery ? 'Yes' : 'No'}
                         oneOptionsSelected={onRecoveryToggle}
                         menuOption={<MenuOptions>
-                            <MenuOption value={true} text='Yes'/>
-                            <MenuOption value={false} text='No'/>
+                            <MenuOption value={true} text='Yes' />
+                            <MenuOption value={false} text='No' />
                         </MenuOptions>}
                     />
                 </InputWrapper>
 
-                <View style={{width: 20}}/>
-                <InputWrapper theme={theme}/>
+                <View style={{ width: 20 }} />
+                <InputWrapper theme={theme} />
 
             </RowWrapper>
 
@@ -872,9 +872,9 @@ const RecoveryTab = ({isEdit, recoveryFields, errors, onRecoveryFieldUpdate, has
                             />
                         </InputWrapper>
 
-                        <View style={{width: 24}}/>
+                        <View style={{ width: 24 }} />
 
-                        <InputWrapper theme={theme} style={{flex: 1}}>
+                        <InputWrapper theme={theme} style={{ flex: 1 }}>
                             <DateInputField
                                 label="Date"
                                 labelWidth={70}
@@ -894,7 +894,7 @@ const RecoveryTab = ({isEdit, recoveryFields, errors, onRecoveryFieldUpdate, has
 
                     <RowWrapper theme={theme} zIndex={2}>
 
-                        <InputWrapper theme={theme} style={{flex: 1}}>
+                        <InputWrapper theme={theme} style={{ flex: 1 }}>
                             <DateInputField
                                 label="Time"
                                 labelWidth={70}
@@ -913,9 +913,9 @@ const RecoveryTab = ({isEdit, recoveryFields, errors, onRecoveryFieldUpdate, has
                         </InputWrapper>
 
 
-                        <View style={{width: 24}}/>
+                        <View style={{ width: 24 }} />
 
-                        <InputWrapper theme={theme} style={{flex: 1}}>
+                        <InputWrapper theme={theme} style={{ flex: 1 }}>
                             <InputUnitField
                                 label={"Duration"}
                                 labelWidth={70}
@@ -945,7 +945,7 @@ const PaginatorContainer = styled.View`
     margin-bottom: 20px;
 `
 
-const ItemsTable = ({title, data}) => {
+const ItemsTable = ({ title, data }) => {
     const theme = useTheme();
     const [currentPage, setCurrentPage] = useState(1);
     const ITEM_PER_PAGE = 10;
@@ -980,12 +980,12 @@ const ItemsTable = ({title, data}) => {
 
     const listItemFormat = (item) => {
         return (
-            <View style={{marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{}}>
-                    <Text style={{color: "#3182CE"}}>{item.name}</Text>
+                    <Text style={{ color: "#3182CE" }}>{item.name}</Text>
                 </View>
-                <View style={{width: 70, alignItems: 'center'}}>
-                    <Text style={{color: "#4A5568"}}>{item.amount}</Text>
+                <View style={{ width: 70, alignItems: 'center' }}>
+                    <Text style={{ color: "#4A5568" }}>{item.amount}</Text>
                 </View>
             </View>
         )
@@ -1000,7 +1000,7 @@ const ItemsTable = ({title, data}) => {
 
     return <ContentContainer theme={theme}>
 
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
             <Table
                 data={dataToShow}
                 listItemFormat={listItemFormat}
@@ -1010,7 +1010,7 @@ const ItemsTable = ({title, data}) => {
         </View>
 
         {
-            <View style={{alignItems: 'flex-start', justifyContent: 'flex-start'}}>
+            <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
                 <PaginatorContainer theme={theme}>
                     <Paginator
                         currentPage={currentPage}
