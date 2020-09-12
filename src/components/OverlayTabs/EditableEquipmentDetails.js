@@ -6,7 +6,7 @@ import OptionsField from '../common/Input Fields/OptionsField';
 import InputUnitField from '../common/Input Fields/InputUnitFields';
 import styled, { css } from '@emotion/native';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
-
+import EditLocked from "../../../assets/svg/editLockedIcon";
 import { getPhysicians, getCategories } from "../../api/network";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import Row from "../common/Row";
@@ -15,15 +15,23 @@ import { useTheme } from "emotion-theming";
 import TextEditor from "../common/Input Fields/TextEditor";
 import { forEach } from "lodash";
 import { set } from "numeral";
+import TextArea from "../common/Input Fields/TextArea";
+import InputFieldWithIcon from "../common/Input Fields/InputFieldWithIcon";
 
 const LabelText = styled.Text`
 color:${({ theme }) => theme.colors["--color-gray-600"]};
 font:${({ theme }) => theme.font["--text-base-regular"]};
 `
+const InputWrapper = styled.View`
+height:30px;
+width:170px;
+margin:20px;
 
+`
 const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
 
     const theme = useTheme();
+    const enabled = true;
 
     // Physicians Search
     const [searchValue, setSearchValue] = useState();
@@ -37,11 +45,6 @@ const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
 
     //Description
     const [descriptionValue, setDescriptionValue] = useState('');
-
-
-    useEffect(() => {
-        console.log("Description has:", descriptionValue);
-    }, [descriptionValue])
 
     // Handle physicians search
     useEffect(() => {
@@ -131,13 +134,64 @@ const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
             keyboardVerticalOffset={300}
             behavior={'padding'}
         >
-            <>
+            <View style={{ height: 220, width: 620 }}>
                 <Row>
                     <LabelText theme={theme}>Description</LabelText>
                 </Row>
-                <TextEditor
-                    onFieldChange={(value) => setDescriptionValue(value)}
+                <TextArea
+                    value={fields['description']}
+                    onChangeText={(value) => setDescriptionValue(value)}
                 />
+            </View>
+            <>
+
+
+                <View style={{ height: 100, width: 300, flexDirection: "row" }}>
+                    <InputWrapper>
+                        <LabelText theme={theme}>SKU</LabelText>
+                        <InputField2
+
+                            value={""}
+                            labelWidth={30}
+                            placeholder={fields['sku']}
+                            enabled={false}
+                            editable={enabled}
+                        />
+                    </InputWrapper>
+
+
+
+
+                    <InputWrapper>
+                        <LabelText theme={theme}>Assigned</LabelText>
+                        <InputField2
+                            value={fields['assigned']}
+                            labelWidth={30}
+                            placeholder={"--"}
+                            enabled={true}
+
+                        />
+                    </InputWrapper>
+
+                    <InputWrapper>
+                        <LabelText theme={theme}>Status</LabelText>
+                        <OptionsField
+                            key={fields['status']}
+                            text={fields['status']}
+                            oneOptionsSelected={onFieldChange('Status')}
+                            menuOption={<MenuOptions>
+                                <MenuOption value={"Available"} text='Available' />
+                                <MenuOption value={"Servicing"} text='Servicing' />
+                                <MenuOption value={"Damaged"} text='Damaged' />
+                                <MenuOption value={"In Use"} text='In Use' />
+                            </MenuOptions>}
+
+                        />
+                    </InputWrapper>
+
+                </View>
+
+
             </>
 
 

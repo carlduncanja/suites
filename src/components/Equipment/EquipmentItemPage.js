@@ -15,14 +15,14 @@ import SvgIcon from "../../../assets/SvgIcon";
 
 function EquipmentItemPage({ route, navigation }) {
 
-    const { equipment, isOpenEditable, group } = route.params;
+    const { equipment, info, isOpenEditable, group } = route.params;
 
 
-    console.log("Equipment item has:", equipment);
+    console.log("Info item has:", info);
     const testData = {
         description: "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
         assigned: "Dr.Mansingh",
-        status: equipment.status,
+        status: info.status,
         supplier: 'Medical Suppliers Ltd.',
         usage: '12 Hours',
         availableOn: formatDate(equipment.nextAvailable, "DD/MM/YYYY")
@@ -59,7 +59,7 @@ function EquipmentItemPage({ route, navigation }) {
         sku: sku,
         supplier: supplier,
         assigned: assigned,
-        status: status,
+        status: info.status,
         usage: usage,
         availableOn: availableOn,
         categories: categories,
@@ -112,12 +112,12 @@ function EquipmentItemPage({ route, navigation }) {
 
         switch (selectedTab) {
             case "Details":
-                console.log("Page state has", pageState.isEditMode);
+
                 console.log("Fields has", fields);
                 return pageState.isEditMode ?
                     <EditableEquipmentDetails fields={fields} onFieldChange={onFieldChange} />
                     :
-                    <General equipment={selectedEquipment} />;
+                    <General equipment={selectedEquipment} updatedInfo={info} />;
             default:
                 return <View />
         }
