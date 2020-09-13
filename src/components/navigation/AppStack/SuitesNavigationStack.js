@@ -45,17 +45,26 @@ import SettingsIcon from "../../../../assets/svg/settingsIcon";
 import HelpIcon from "../../../../assets/svg/helpIcon";
 import NotificationIcon from "../../../../assets/svg/notificationIcon";
 import Invoices from "../../CaseFiles/OverlayPages/ChargeSheet/Invoices";
+import {connect} from "react-redux";
+import {ROLES} from "../../../const";
+import PersonIcon from "../../../../assets/svg/personIcon";
 
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
 
 
-export const SuitesNavigationStack = () => {
+export const SuitesNavigationStack = ({auth = {}}) => {
+
+    const isAdmin =  auth.user['role_name'] === ROLES.ADMIN
+
+    console.log("auth suites navigator", auth);
+
     return (
         <SuitesNavigator.Navigator
             initialRouteName="Schedule"
         >
+
             <SuitesNavigator.Screen
                 name="Schedule"
                 component={Schedule}
@@ -159,6 +168,20 @@ export const SuitesNavigationStack = () => {
                 }}
             />
 
+            {
+                isAdmin &&
+                <SuitesNavigator.Screen
+                    name="Users"
+                    component={NotFound}
+                    initialParams={{
+                        icon: PersonIcon,
+                        tabName: 'Users',
+                    }}
+                />
+            }
+
+
+
 
 
             <SuitesNavigator.Screen
@@ -197,132 +220,10 @@ export const SuitesNavigationStack = () => {
     );
 }
 
-/***
- *  Top level navigation Stack for Suites Application for the side navigation bar.
- *
- *  The params
- *  @icon : Icon component for sidebar tab.
- *  @tabName : Name displayed on the sidebar.
- *  @provider : Context provider that is passed in to the component.
- */
-// export const SuitesNavigationStack = createSuitesSidebarNavigator(
-//     {
-//         Schedule: {
-//             screen: Schedule,
-//             params: {
-//                 icon: ScheduleIcon,
-//                 tabName: 'schedule',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         CaseFiles: {
-//             screen: CaseFileStack,
-//             params: {
-//                 icon: CaseFileIcon,
-//                 tabName: 'CaseFiles',
-//                 provider: CaseFileContextProvider
-//             },
-//         },
-//         Theatre: {
-//             screen: Theatres,
-//             params: {
-//                 icon: TheathreIcon,
-//                 tabName: 'Theatre',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Inventory: {
-//             screen: Inventory,
-//             params: {
-//                 icon: InventoryIcon,
-//                 tabName: 'Inventory',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Equipment: {
-//             screen: Equipment,
-//             params: {
-//                 icon: EquipmentIcon,
-//                 tabName: 'Equipment',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Orders: {
-//             screen: Orders,
-//             params: {
-//                 icon: OrdersIcon,
-//                 tabName: 'Orders',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Suppliers: {
-//             screen: Suppliers,
-//             params: {
-//                 icon: DeliveryIcon,
-//                 tabName: 'Suppliers',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Invoices: {
-//             screen: NotFound,
-//             params: {
-//                 icon: InvoiceIcon,
-//                 tabName: 'Invoices',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Storage: {
-//             screen: Storage,
-//             params: {
-//                 icon: StorageIcon,
-//                 tabName: 'Storage',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Physicians: {
-//             screen: Physicians,
-//             params: {
-//                 icon: PhysiciansIcon,
-//                 tabName: 'Physicians',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Procedures: {
-//             screen: Procedures,
-//             params: {
-//                 icon: ProcedureIcon,
-//                 tabName: 'Procedures',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Alerts: {
-//             screen: NotFound,
-//             params: {
-//                 icon: NotificationIcon,
-//                 tabName: 'Alerts',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Help: {
-//             screen: NotFound,
-//             params: {
-//                 icon: HelpIcon,
-//                 tabName: 'Help',
-//                 provider: ScheduleProvider
-//             },
-//         },
-//         Settings: {
-//             screen: NotFound,
-//             params: {
-//                 icon: SettingsIcon,
-//                 tabName: 'Settings',
-//                 provider: ScheduleProvider
-//             },
-//         }
-//     },
-//     {
-//         initialRouteName: 'Schedule',
-//     },
-// );
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth
+    }
+}
 
-export default SuitesNavigationStack
+export default connect(mapStateToProps)(SuitesNavigationStack)

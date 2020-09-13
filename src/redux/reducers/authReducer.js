@@ -1,4 +1,5 @@
 import initialState from "./initialState";
+import jwtDecode from 'jwt-decode';
 import {EXPO_TOKEN, RESTORE_TOKEN, SET_AUTH, SIGN_IN, SIGN_OUT, UPDATE_AUTH} from "../actions/authActions";
 
 export default (prevState = initialState.auth, action) => {
@@ -27,10 +28,20 @@ export default (prevState = initialState.auth, action) => {
                 expoPushToken: payload.data,
             };
         case SIGN_IN:
+
+            let tokeData = {};
+
+            try {
+                tokeData = jwtDecode(payload.data)
+            } catch (e) {
+                console.log("parse token");
+            }
+
             return {
                 ...prevState,
                 isSignOut: false,
                 userToken: payload.data,
+                user: tokeData
             };
         case SIGN_OUT:
             return {

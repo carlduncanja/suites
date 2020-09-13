@@ -17,6 +17,7 @@ export default {
     isSignOut: false,
     userToken: null,
     expoPushToken: null,
+    user: {}
   },
   draft: [],
   archivedSuppliers: [],
