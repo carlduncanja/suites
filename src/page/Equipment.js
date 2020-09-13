@@ -16,7 +16,7 @@ import ActionItem from "../components/common/ActionItem";
 import CreateEquipmentDialog from "../components/Equipment/CreateEquipmentDialogContainer";
 import Item from "../components/common/Table/Item";
 import NavPage from "../components/common/Page/NavPage";
-import _, { isEmpty } from "lodash";
+import _, { isEmpty, concat } from "lodash";
 import DataItem from "../components/common/List/DataItem";
 import WasteIcon from "../../assets/svg/wasteIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -226,16 +226,9 @@ const Equipment = (props) => {
     setSelectedEquipmentIds(updatedEquipments);
   };
 
-  const handleOnItemPress = (item, isOpenEditable, type) => {
-    // modal.openModal("BottomSheetModal", {
-    //   content: (
-    //     <EquipmentBottomSheet
-    //       equipment={item}
-    //       isOpenEditable={isOpenEditable}
-    //     />
-    //   ),
-    // });
-    props.navigation.navigate("EquipmentItemPage", { initial: false, equipment: item, isOpenEditable: isOpenEditable, group: type });
+  const handleOnItemPress = (item, addedInfo, isOpenEditable, type) => {
+
+    props.navigation.navigate("EquipmentItemPage", { initial: false, equipment: item, info: addedInfo, isOpenEditable: isOpenEditable, group: type });
   };
 
   const goToNextPage = () => {
@@ -331,23 +324,23 @@ const Equipment = (props) => {
 
   const renderEquipmentFn = (item) => {
     const equipments = item.equipments || [];
+    let assignments;
 
-    let assignmentStored = [];
 
-    equipments.map(equipment => assignmentStored = equipment.assignments)
+    assignments = equipments.map(x => { return x.assignments.map(assigned => assigned.theatre) })
 
-    console.log("Assignments", assignmentStored);
+    const concatAssignments = [].concat.apply([], assignments);
     const viewItem = {
       name: item.name,
       _id: item._id,
       equipments: equipments,
       suppliers: item.suppliers,
       quantity: item.equipments.length,
-      assignment: isEmpty(assignmentStored) ? "Not currently assigned" : assignmentStored[0].theatre,
+      assignment: isEmpty(concatAssignments) ? "Not currently assigned" : concatAssignments,
       status:
-        isEmpty(assignmentStored)
+        isEmpty(concatAssignments)
           ? "Available"
-          : assignmentStored.length >= 1
+          : concatAssignments.length >= 1
             ? "Multiple"
             : "Unavailable",
       nextAvailable: new Date(2020, 12, 12),
@@ -393,15 +386,16 @@ const Equipment = (props) => {
               assigmentName: item.id,
               quantity: equipmentGroup.length,
               status: viewItem.status,
-              dateAvailable: new Date(),
+              dateAvailable: viewItem.nextAvailable,
             };
 
             const onActionPress = () => { console.log("Clicked group") };
 
             let pressItem = item.items[0];
+            let addedInfo = equipmentItem;
             //setGroupNameSelected(viewItem);
 
-            return renderItemView(equipmentItem, pressItem, onActionPress);
+            return renderItemView(equipmentItem, addedInfo, pressItem, onActionPress);
 
           }}
         />
@@ -437,7 +431,7 @@ const Equipment = (props) => {
     return data;
   };
 
-  const renderItemView = (item, actionItem, onActionPress) => {
+  const renderItemView = (item, addedInfo, actionItem, onActionPress) => {
     let { _id } = actionItem;
     return (
       <Item
@@ -445,7 +439,7 @@ const Equipment = (props) => {
         hasCheckBox={true}
         isChecked={selectedEquipmentIds.includes(_id)}
         onCheckBoxPress={() => handleOnItemCheckboxPress(actionItem)}
-        onItemPress={() => handleOnItemPress(actionItem, false, groupNameChoice)}
+        onItemPress={() => handleOnItemPress(actionItem, addedInfo, false, groupNameChoice)}
       />
     );
   };
@@ -460,8 +454,10 @@ const Equipment = (props) => {
         <DataItem text={assigmentName} flex={.2} color="--color-blue-600" fontStyle="--text-sm-medium" />
         <DataItem text={status} flex={.25} color="--color-gray-800" fontStyle="--text-sm-regular" />
         <DataItem text={quantity} flex={.2} color="--color-gray-800" fontStyle="--text-sm-regular" />
-        <DataItem text={assignment} flex={.3} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
-
+        {Array.isArray(assignment) ? assignment?.map(item =>
+          <DataItem text={item} flex={.1} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
+        ) : <DataItem text={assignment} flex={.3} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
+        }
       </>
 
 

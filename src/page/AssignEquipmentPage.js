@@ -22,13 +22,21 @@ const AssignEquipmentPageContainer = styled.View`
         height:100%;
         width:100%;
     `;
+const HeaderWrapper = styled.View`
+    display: flex;
+    height:47px;
+    justify-content: center;
+    padding-left: ${({ theme }) => theme.space['--space-24']};
+    padding-right: ${({ theme }) => theme.space['--space-24']};
+    
+    
+    `
 
 const HeaderContainer = styled.View`
     flex-direction:row;
-    height:47px;
-    width:681px;
+    justify-content: space-between;
     align-items:center;
-    padding:10px;
+   
 `;
 
 const HeaderText = styled.Text`
@@ -37,8 +45,8 @@ const HeaderText = styled.Text`
     `;
 
 const CloseButtonWrapper = styled.View`
-    align-items:flex-end;
-    width:540px;
+//    align-self:flex-end;
+//     width:540px;
     `;
 const CloseButtonContainer = styled.TouchableOpacity`
     background-color:${({ theme }) => theme.colors["--color-gray-300"]};
@@ -57,8 +65,8 @@ const AssignEquipmentPageContentWrapper = styled.View`
         flex:1;
         margin : 0;
         padding-top: ${({ theme }) => theme.space['--space-32']};
-        padding-left: ${({ theme }) => theme.space['--space-24']};
-        padding-right: ${({ theme }) => theme.space['--space-24']};
+        // padding-left: ${({ theme }) => theme.space['--space-24']};
+        // padding-right: ${({ theme }) => theme.space['--space-24']};
 `
 
 const AssignEquipmentPageContentContainer = styled.View`
@@ -225,15 +233,16 @@ const AssignEquipmentPage = ({ navigation, route, modal }) => {
         <AssignEquipmentPageWrapper theme={theme}>
             <AssignEquipmentPageContainer theme={theme}>
 
-
-                <HeaderContainer >
-                    <HeaderText theme={theme} >Assign Equipment</HeaderText>
-                    <CloseButtonWrapper>
-                        <CloseButtonContainer onPress={closeTapped} >
-                            <CloseText>Close</CloseText>
-                        </CloseButtonContainer>
-                    </CloseButtonWrapper>
-                </HeaderContainer>
+                <HeaderWrapper>
+                    <HeaderContainer >
+                        <HeaderText theme={theme} >Assign Equipment</HeaderText>
+                        <CloseButtonWrapper>
+                            <CloseButtonContainer onPress={closeTapped} >
+                                <CloseText>Close</CloseText>
+                            </CloseButtonContainer>
+                        </CloseButtonWrapper>
+                    </HeaderContainer>
+                </HeaderWrapper>
 
                 <TabsViewContainer>
                     <TabsContainer
