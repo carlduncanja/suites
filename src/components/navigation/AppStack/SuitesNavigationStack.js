@@ -48,6 +48,7 @@ import Invoices from "../../CaseFiles/OverlayPages/ChargeSheet/Invoices";
 import {connect} from "react-redux";
 import {ROLES} from "../../../const";
 import PersonIcon from "../../../../assets/svg/personIcon";
+import UsersPage from "../../../page/Users/UsersPage";
 
 
 
@@ -172,7 +173,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 isAdmin &&
                 <SuitesNavigator.Screen
                     name="Users"
-                    component={NotFound}
+                    component={UsersPage}
                     initialParams={{
                         icon: PersonIcon,
                         tabName: 'Users',

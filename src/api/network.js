@@ -52,7 +52,7 @@ import {
     chargeSheetWithdrawChangesEndpoint,
     caseProcedureAppointmentsEndpoint,
     registrationEndpoint,
-    assignEquipmentToLocation
+    assignEquipmentToLocation, users
 } from "../const/suitesEndpoints";
 import { createDocumentLink } from "../const/documentGenerationEndpoints";
 
@@ -78,6 +78,15 @@ export const logout = async (userId, pushToken) => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+
+// ################ Users Endpoint
+export const getUsersCall = async (query, page, max) => {
+    return suitesAxiosInstance
+        .get(users, {params: {query, page, max }})
+        .then(handleResponse)
+        .catch(handleError)
+}
 
 export const registrationCall = async (params) => {
     return suitesAxiosInstance

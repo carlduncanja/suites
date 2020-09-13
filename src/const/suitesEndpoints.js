@@ -4,6 +4,9 @@ export const logoutEndpoint = `/auth/logout`
 export const registrationEndpoint = `/auth/register`
 export const guestLoginEndpoint = `/auth/login/guest`
 
+// ##### Users
+export const users = `/users`
+
 // ##### Appointments
 export const appointmentsEndpoint = `/appointments/`
 export const appointmentEndpoint = (id) => `/appointments/${id}`;
