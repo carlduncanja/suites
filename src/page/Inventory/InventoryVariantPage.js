@@ -21,6 +21,8 @@ function InventoryVariantPage({ route, navigation }){
     const [selectedVariant, setSelectedVariant] = useState({});
     const [isInfoUpdated, setIsInfoUpdated] = useState(false)
 
+    const {isEditMode} = pageState;
+
     useEffect(() => {
         fetchVariant(groupId,_id)
     }, []);
@@ -63,6 +65,7 @@ function InventoryVariantPage({ route, navigation }){
                 return <InventoryVariantGeneral
                     inventoryVariant = {selectedVariant}
                     selectedData = {data}
+                    isEditMode={isEditMode}
                 />;
 
             case "Storage Locations" :

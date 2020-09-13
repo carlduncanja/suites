@@ -204,6 +204,13 @@ export const getInventoryVariantByGroup = async (id, groupId) => {
         .catch(handleError);
 };
 
+export const updateInventoryVariantCall = async (id, groupId, data) => {
+    return suitesAxiosInstance
+        .put(inventoryGroupVariant(groupId, id), data)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 export const createInventories = async (inventoryForCreation) => {
     return suitesAxiosInstance
         .post(inventoriesEndpoint, inventoryForCreation)
