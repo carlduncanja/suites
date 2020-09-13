@@ -49,8 +49,9 @@ const ItemTextView = styled.Text( ({theme}) => ({
 
 const ItemView = styled.Text( ({flex, justifyContent}) => ({
     flex: flex || 1,
-    flexDirection: "row",
-    justifyContent: justifyContent || "center"
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    // justifyContent: justifyContent || "center"
 }))
 
 
@@ -92,12 +93,7 @@ function UsersPage() {
 
     // region Event Handlers
     const onItemPress = (item, isOpenEditable) => () => {
-        props.navigation.navigate('TheatresPage', {
-            initial: false,
-            theatre: item,
-            isEdit: isOpenEditable,
-            reloadTheatres: () => fetchUsers(currentPagePosition)
-        });
+
     };
 
     const onSearchInputChange = (input) => {
@@ -170,10 +166,10 @@ function UsersPage() {
             <ItemView flex={2} justifyContent={"flex-start"}>
                 <ItemTextView theme={theme}>{email}</ItemTextView>
             </ItemView>
-            <ItemView justifyContent={"center"}>
+            <ItemView flex={1} justifyContent={"center"}>
                 <ItemTextView theme={theme}>{groupName}</ItemTextView>
             </ItemView>
-            <ItemView justifyContent={"center"}>
+            <ItemView flex={1}  justifyContent={"center"}>
             </ItemView>
         </>
     );
@@ -227,7 +223,6 @@ function UsersPage() {
             })
             .finally( _ => {
                 setFetchingData(false)
-
             })
     };
 
