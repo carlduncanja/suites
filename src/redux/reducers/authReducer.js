@@ -5,6 +5,8 @@ import {EXPO_TOKEN, RESTORE_TOKEN, SET_AUTH, SIGN_IN, SIGN_OUT, UPDATE_AUTH} fro
 export default (prevState = initialState.auth, action) => {
     const {type, payload} = action
 
+    let tokeData = {};
+
     switch (type) {
         case SET_AUTH:
             return payload.data
@@ -14,10 +16,19 @@ export default (prevState = initialState.auth, action) => {
                 ...payload.data
             }
         case RESTORE_TOKEN:
+
+
+            try {
+                tokeData = jwtDecode(payload.data)
+            } catch (e) {
+                console.log("parse token");
+            }
+
             return {
                 ...prevState,
                 userToken: payload.data,
                 isLoading: false,
+                user: tokeData
             };
         case EXPO_TOKEN:
 
@@ -28,8 +39,6 @@ export default (prevState = initialState.auth, action) => {
                 expoPushToken: payload.data,
             };
         case SIGN_IN:
-
-            let tokeData = {};
 
             try {
                 tokeData = jwtDecode(payload.data)
