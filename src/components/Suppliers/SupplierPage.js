@@ -126,8 +126,6 @@ function SupplierPage({ route, navigation }) {
             unitCost: item.unitPrice
         }
         setProducts([...products, newItem]);
-        
-
     }
 
     // ##### Helper functions
@@ -165,9 +163,6 @@ function SupplierPage({ route, navigation }) {
                 errorScreen();
                 //CONFIRAMTION SCREEN
             })
-            // .finally(_ => {
-            //     setPageLoading(false);
-            // })
     };
 
     const fetchSupplier = (id) => {

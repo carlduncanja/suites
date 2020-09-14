@@ -54,7 +54,7 @@ const PaginatorActionsContainer = styled.View`
 `
 
 
-function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false }) {
+function SupplierProductsTab({ modal, navigation, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false }) {
 
     // ######## STATES
     console.log("Cart: ", cart)
@@ -88,7 +88,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
             flex: 2
         },
         {
-            name: "Category",
+            name: "Reference",
             alignment: "flex-start"
         },
         {
@@ -117,6 +117,11 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
     // }, []);
 
     // ######## EVENT HANDLERS
+
+    const onProductsPress = () => {
+        // open product page.
+        navigation.navigate("")
+    }
 
     const onSearchChange = (input) => {
         setSearchValue(input)
@@ -422,10 +427,9 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
     const listItemFormat = (item) => <>
         <DataItem text={item?.name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600" />
-        <DataItem text={item?.type} />
+        <DataItem text={item?.inventoryVariant?.name} />
         <DataItem text={item?.sku || 'n/a'} align="center" />
         <DataItem text={`$ ${currencyFormatter(item.unitPrice)}`} align="flex-end" />
-
         {/* <View style={styles.item}>
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
@@ -445,7 +449,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={() => { }}
+            onItemPress={onProductsPress}
             itemView={listItemFormat(item)}
         />
     }
