@@ -26,7 +26,7 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import Footer from "../common/Page/Footer";
+import { useNavigation } from '@react-navigation/native';
 
 
 const SearchContainer = styled.View`
@@ -36,7 +36,7 @@ const SearchContainer = styled.View`
 const FooterWrapper = styled.View`
     width: 100%;
     position : absolute;
-    bottom : 20; 
+    bottom : 20px; 
 `;
 const FooterContainer = styled.View`
     width :100%;
@@ -54,11 +54,13 @@ const PaginatorActionsContainer = styled.View`
 `
 
 
-function SupplierProductsTab({ modal, navigation, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false }) {
+function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false }) {
 
     // ######## STATES
     console.log("Cart: ", cart)
     const theme = useTheme();
+    const navigation = useNavigation();
+
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFetching, setFetching] = useState(false);
@@ -118,9 +120,9 @@ function SupplierProductsTab({ modal, navigation, supplierId, addCartItem, cart,
 
     // ######## EVENT HANDLERS
 
-    const onProductsPress = () => {
+    const onProductsPress = (productItem) => () => {
         // open product page.
-        navigation.navigate("")
+        navigation.navigate("SupplierProductPage", {product: productItem} )
     }
 
     const onSearchChange = (input) => {
@@ -449,7 +451,7 @@ function SupplierProductsTab({ modal, navigation, supplierId, addCartItem, cart,
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={onProductsPress}
+            onItemPress={onProductsPress(item)}
             itemView={listItemFormat(item)}
         />
     }
