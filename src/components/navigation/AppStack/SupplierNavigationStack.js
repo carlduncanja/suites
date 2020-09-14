@@ -8,6 +8,7 @@ import HeaderBackComponent from "../components/HeaderBackComponent";
 import ArchivedSuppliers from "../../../page/ArchivedSuppliers/ArchivedSuppliersPage";
 import ArchivedSupplier from "../../../page/ArchivedSuppliers/ArchivedSupplier";
 import SupplierProductPage from "../../Suppliers/SupplierProductPage";
+import SupplierProductCreationPage from "../../Suppliers/SupplierProductCreationPage";
 
 
 const Stack = createStackNavigator();
@@ -49,6 +50,24 @@ export default () => {
             <Stack.Screen
                 name="SupplierProductPage"
                 component={SupplierProductPage}
+                options={{
+                    headerShown: false,
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+
+                    },
+                    headerTitle: ""
+                }}
+            />
+
+            <Stack.Screen
+                name="SupplierProductCreation"
+                component={SupplierProductCreationPage}
                 options={{
                     headerShown: false,
                     headerLeft: (props) => (

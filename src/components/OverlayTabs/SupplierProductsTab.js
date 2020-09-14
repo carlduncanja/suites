@@ -371,7 +371,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
         return <ActionContainer
             floatingActions={[
                 addCart,
-                // addProduct
+                addProduct
             ]}
             title={"SUPPLIER ACTIONS"}
         />
@@ -413,18 +413,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
     }
 
     const openAddProduct = () => {
-        modal.closeModals('ActionContainerModal')
-
-        setTimeout(() => {
-            modal.openModal('OverlayModal',
-                {
-                    content: <CreateInventoryDialogContainer
-                        onCreated={(item) => addItemComplete(item)}
-                        onCancel={() => setFloatingAction(false)}
-                    />,
-                    onClose: () => setFloatingAction(false)
-                })
-        }, 200)
+        navigation.navigate('SupplierProductCreation', {supplierId})
     }
 
     const listItemFormat = (item) => <>

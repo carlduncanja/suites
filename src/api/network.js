@@ -557,6 +557,13 @@ export const getSupplierProducts = async (id, query, max) => {
         .get(supplierProductsEndpoint(id), { params: { query, max } })
         .then(handleResponse)
         .catch(handleError);
+}
+
+;export const createSupplierProductsCall = async (id, data) => {
+    return suitesAxiosInstance
+        .post(supplierProductsEndpoint(id), data)
+        .then(handleResponse)
+        .catch(handleError);
 };
 
 export const updateSupplierProducts = async (supplierId, productId, data) => {
