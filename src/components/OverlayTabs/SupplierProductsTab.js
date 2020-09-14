@@ -226,7 +226,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
             orders : purchaseOrders,
             supplier : supplierId,
         }
-        
+
         console.log("Data: ", orderToCreate)
 
         createPurchaseOrder(orderToCreate)
@@ -242,7 +242,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                             }}
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                        onClose: () => {modal.closeModals('ConfirmationModal')}
                     });
                 addCartItem([]);
                 setCartItems([]);
@@ -263,13 +263,13 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                                 }}
                             />
                             ,
-                            onClose: () => {modal.closeModals('ConfirmationModal')} 
+                            onClose: () => {modal.closeModals('ConfirmationModal')}
                         })
                     // Alert.alert("Failed", "Purchase order was not created, please try again.")
                     //TODO handle error cases.
                 })
 
-       
+
     }
 
     const onConfirmChanges = (data) => {
@@ -289,7 +289,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                         // setTimeout(()=>{
                         //     onShowSuccessScreen();
                         // },200)
-                        
+
                     }}
                     onCancel = {()=>{
                         modal.closeModals('ConfirmationModal');
@@ -297,7 +297,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                     message = "Do you want to save your changes ?"
                 />
                 ,
-                onClose: () => {modal.closeModals('ConfirmationModal')} 
+                onClose: () => {modal.closeModals('ConfirmationModal')}
             })
     };
 
@@ -313,7 +313,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                     }}
                 />
                 ,
-                onClose: () => {modal.closeModals('ConfirmationModal')} 
+                onClose: () => {modal.closeModals('ConfirmationModal')}
             })
     }
 
@@ -352,13 +352,13 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
     const actions = () => {
         let isDisabled = checkBoxList.length === 0 ? true : false;
-        const addCart = 
-            <ActionItem 
-                title={"Add to Cart"} 
-                icon={<AddIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>} 
+        const addCart =
+            <ActionItem
+                title={"Add to Cart"}
+                icon={<AddIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>}
                 disabled = {isDisabled}
                 touchable = {!isDisabled}
-                onPress={openCartDailog} 
+                onPress={openCartDailog}
             />;
         const addProduct = <ActionItem title={"Add Product"} icon={<AddIcon />} onPress={openAddProduct} />;
         return <ActionContainer
@@ -377,20 +377,17 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
         if (updatedCheck.length === 0) {
             cartArray = cartItems
         } else {
-
-            cartItems.map(item => {
+            cartItems.forEach(item => {
                 let isFilterCheck = checkBoxList.filter(checkItem => checkItem._id === item._id)
                 if (isFilterCheck) {
-                    cartArray.push(item)
+                    cartArray.push({...item, amount: 1})
                 }
                 let index = updatedCheck.findIndex(checkItem => checkItem._id === item._id)
                 updatedCheck = [
                     ...updatedCheck.slice(0, index),
                     ...updatedCheck.slice(index + 1),
                 ];
-
             })
-
         }
         cartArray = [...cartArray, ...updatedCheck]
 
@@ -484,7 +481,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                         value = {cartTotal}
                         showValue =  {cartTotal !== 0}
                     />
-                    
+
                     <PaginatorActionsContainer>
                         <RoundedPaginator
                             totalPages={totalPages}
@@ -494,14 +491,14 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                             isNextDisabled={false}
                             isPreviousDisabled={false}
                         />
-                    
+
                         <FloatingActionButton
                             isDisabled={isFloatingActionDisabled}
                             toggleActionButton={toggleActionButton}
                         />
-        
+
                     </PaginatorActionsContainer>
-                    
+
                 </FooterContainer>
             </FooterWrapper>
             {/* <View style={styles.footer}>
@@ -533,7 +530,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
             </View> */}
         </>
     )
-} 
+}
 
 SupplierProductsTab.propTypes = {};
 SupplierProductsTab.defaultProps = {};
@@ -544,12 +541,12 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProp = {
     addCartItem
-} 
+}
 
 export default connect(mapStateToProps, mapDispatchToProp)(withModal(SupplierProductsTab));
 
 const styles = StyleSheet.create({
-    item: { 
+    item: {
         flex: 1,
     },
     itemText: {
