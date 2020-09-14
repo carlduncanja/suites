@@ -122,6 +122,8 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
     const onProductsPress = (productItem) => () => {
         // open product page.
+        modal.closeModals('ActionContainerModal')
+        setFloatingAction(true)
         navigation.navigate("SupplierProductPage", {product: productItem} )
     }
 
@@ -413,6 +415,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
     }
 
     const openAddProduct = () => {
+        modal.closeModals('ActionContainerModal')
         navigation.navigate('SupplierProductCreation', {supplierId})
     }
 
