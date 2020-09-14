@@ -11,6 +11,7 @@ const PageWrapper = styled.View`
   background-color: ${({ theme }) => theme.colors['--default-shade-white']};
 `
 const PageContentWrapper = styled.View`
+  display: flex;
   flex: 1;
   //padding: ${({ theme }) => theme.space['--space-32']};
 `
