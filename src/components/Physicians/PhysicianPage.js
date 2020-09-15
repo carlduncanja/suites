@@ -100,6 +100,7 @@ function PhysicianPage({route, navigation}) {
                     isEditUpdate={true}
                     onCancel={onConfirmCancel}
                     onAction={onConfirmSave}
+                    message={"Would you like to finish editing and save the change?"}
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
