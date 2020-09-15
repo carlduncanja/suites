@@ -174,7 +174,7 @@ function InventoryGroupGeneral({
                 
                 <Record
                     recordTitle = "Description"
-                    recordValue = {description}
+                    recordValue = {fields['description']}
                     onClearValue = {()=>onFieldChange('description')('')}
                     onRecordUpdate = {onFieldChange('description')}
                     useTextArea = {true}
