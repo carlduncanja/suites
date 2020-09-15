@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, StyleSheet} from "react-native";
 import moment from "moment";
@@ -9,6 +9,7 @@ import SearchableOptionsField from "../common/Input Fields/SearchableOptionsFiel
 import {updatedTheatreCall} from "../../api/network";
 import ConfirmationComponent from "../ConfirmationComponent";
 import {useModal} from "react-native-modalfy";
+import {PageContext} from "../../contexts/PageContext";
 
 const UiData = {
     description: "",
@@ -28,7 +29,7 @@ function TheatresDetailsTab({
                                 name = "--",
                                 status = "Available",
                                 statusColor = "black",
-                                isEditMode = false,
+                                // isEditMode = false,
                                 physician = "--",
                                 availableOn = "--",
                                 onUpdated = () => {},
@@ -36,6 +37,8 @@ function TheatresDetailsTab({
 
     const baseStateRef = useRef();
     const modal = useModal();
+    const {pageState, setPageState} = useContext(PageContext);
+    const {isEditMode} = pageState;
 
     const [fields, setFields] = useState({
         description,
@@ -77,8 +80,9 @@ function TheatresDetailsTab({
                         error={false}//boolean to show whether an error icon or success icon
                         isEditUpdate={true}
                         onCancel={() => {
+                            // resetState()
+                            setPageState({...pageState, isEditMode: true})
                             modal.closeAllModals();
-                            resetState()
                         }}
                         onAction={() => {
                             modal.closeAllModals();
@@ -93,7 +97,7 @@ function TheatresDetailsTab({
                 },
             });
         }
-    }, [isEditMode])
+    },[isEditMode])
 
     const resetState = () => {
         setFields(baseStateRef.current);
