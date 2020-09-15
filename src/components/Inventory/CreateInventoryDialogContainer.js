@@ -209,7 +209,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
         getSuppliers(supplierSearchValue, 5)
             .then((supplierData ) => {
                 const { data = [], pages = 0} = supplierData
-                // console.log("Data: ", data)
+                console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));
