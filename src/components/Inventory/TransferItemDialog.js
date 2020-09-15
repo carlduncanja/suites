@@ -19,6 +19,8 @@ import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 import AutoFillField from '../common/Input Fields/AutoFillField';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
+import ConfirmationComponent from '../ConfirmationComponent';
+
 
 
 /**
@@ -44,7 +46,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
 
     console.log("Selected variant:", variant);
     console.log("Transfer item: ", storageLocationObj);
-    const dialogTabs = ['Details', 'Destination','Configuration'];
+    const dialogTabs = ['Details', 'Configuration'];
 
     // ########## STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
@@ -217,14 +219,12 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
     const validateTransfer = () => {
         let isValid = true;
         let requiredFields = [];
-        let detailsRequiredFields = ['from'];
-        let destinationRequiredFields = ['to'];
+        let detailsRequiredFields = ['to'];
+        // let destinationRequiredFields = ['to'];
         let configurationRequiredFields = ['amount'];
         selectedIndex === 0 
-            ? requiredFields = requiredFields 
-            : selectedIndex === 1
-                ? requiredFields = destinationRequiredFields
-                    : requiredFields = configurationRequiredFields
+            ? requiredFields = detailsRequiredFields 
+            : requiredFields = configurationRequiredFields
     
         let errorObj = {...errorFields} || {}
 
@@ -249,7 +249,19 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
         createTransfer(groupId, variantId, transferToCreate)
             .then(data => {
                 modal.closeAllModals();
-                Alert.alert("Success","The transfer is successful.")
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {false}
+                            onCancel = {()=> modal.closeAllModals()}
+                            onAction = {()=> modal.closeAllModals()}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+                // Alert.alert("Success","The transfer is successful.")
                 setTimeout(() => {
                     onCreated(data)
                 }, 400);
@@ -257,7 +269,20 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
             .catch(error => {
                 // todo handle error
                 console.log("failed to create transfer", error);
-                Alert.alert("Failed", "Failed to create a transfer")
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onCancel = {()=> modal.closeAllModals()}
+                            onAction = {()=> modal.closeAllModals()}
+                            message = "There was an issue performing this action"
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+                // Alert.alert("Failed", "Failed to create a transfer")
             })
             .finally()
     };
@@ -266,8 +291,6 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
         switch (dialogTabs[selectedIndex]) {
             case "Details":
                 return detailsTab;
-            case "Destination":
-                return destinationTab;
             case "Configuration":
                 return configTab;
             default:
@@ -304,13 +327,33 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
 
                 <FieldContainer>
                     <AutoFillField
-                        label = "Warehouse"
+                        label = "Location"
                         value = {locationName}
                     />
                 </FieldContainer>
             </Row>
 
-            <Row>
+            <Row zIndex = {-1}>
+
+                <FieldContainer>
+                    <SearchableOptionsField
+                        label={"Destination"}
+                        text={storageSearchValue}
+                        oneOptionsSelected={(item) => {
+                            onDestinationSelected(item)
+                        }}
+                        onChangeText={value => {setStorageSearchValue(value); console.log("Value:", value)}}
+                        onClear={() => {
+                            onFieldChange('to')('');
+                            setStorageSearchValue('');
+                        }}
+                        options={storangeSearchResults}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {storangeSearchQuery}
+                        errorMessage = "Warehouse must be given."
+                        hasError = {errorFields['to']}
+                    />  
+                </FieldContainer>
                 {/* <FieldContainer>
                     {
                         locationName === 'Warehouse 1' || locationName === 'Warehouse 2' ?

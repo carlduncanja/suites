@@ -8,6 +8,7 @@ import {
     inventoryEndpoint,
     inventoryVariantEndpoint,
     inventoryGroupVariant,
+    inventoryGroupVariants,
     inventoryGroupVariantTransfers,
     theatresEndpoint,
     theatreEndpoint,
@@ -52,7 +53,9 @@ import {
     chargeSheetWithdrawChangesEndpoint,
     caseProcedureAppointmentsEndpoint,
     registrationEndpoint,
-    assignEquipmentToLocation, users
+    assignEquipmentToLocation,
+    users,
+    createCategoryEndpoint
 } from "../const/suitesEndpoints";
 import { createDocumentLink } from "../const/documentGenerationEndpoints";
 
@@ -83,7 +86,7 @@ export const logout = async (userId, pushToken) => {
 // ################ Users Endpoint
 export const getUsersCall = async (query, page, max) => {
     return suitesAxiosInstance
-        .get(users, {params: {query, page, max }})
+        .get(users, { params: { query, page, max } })
         .then(handleResponse)
         .catch(handleError)
 }
@@ -234,7 +237,7 @@ export const createInventoryGroup = async (groupToCreate) => {
 };
 
 export const createInventoryVariant = async (referenceId, itemToCreate) => {
-    return suitesAxiosInstance.post(inventoryVariantEndpoint(referenceId), itemToCreate)
+    return suitesAxiosInstance.post(inventoryGroupVariants(referenceId), itemToCreate)
         .then(handleResponse)
         .catch(handleError);
 };
@@ -529,6 +532,13 @@ export const getCategories = async (query, max) => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+export const addCategory = async (category = []) => {
+    return suitesAxiosInstance
+        .post(createCategoryEndpoint, category)
+        .then(handleResponse)
+        .catch(handleError);
+}
 
 // ################# Suppliers Endpoints
 export const getSuppliers = async (query, max, page) => {

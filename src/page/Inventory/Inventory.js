@@ -365,36 +365,65 @@ function Inventory(props) {
 
     const openCreateInventoryModel = () => {
         modal.closeModals('ActionContainerModal');
-
+        navigation.navigate("CreateInventoryDialogContainer",{
+            screen : "CreateInventoryDialogContainer",
+            initial: false,
+            // params : {
+                onCreated : ()=>{
+                    setFloatingAction(false);
+                    // navigation.goBack();
+                    onRefresh(); 
+                },
+                onCancel : ()=>{ 
+                    setFloatingAction(false);
+                    navigation.goBack();
+                },
+            // }
+        });
         // For some reason there has to be a delay between closing a modal and opening another.
-        setTimeout(() => {
+        // setTimeout(() => {
 
-            modal
-                .openModal(
-                    'OverlayModal',
-                    {
-                        content: <CreateInventoryDialogContainer
-                            // onCreated={(item) => onItemPress(item)()}
-                            onCreated = {()=>{setFloatingAction(false)}}
-                            onCancel={() => setFloatingAction(false)}
-                        />,
-                        onClose: () => setFloatingAction(false)
-                    })
-        }, 200)
+        //     modal
+        //         .openModal(
+        //             'OverlayModal',
+        //             {
+        //                 content: <CreateInventoryDialogContainer
+        //                     // onCreated={(item) => onItemPress(item)()}
+        //                     onCreated = {()=>{setFloatingAction(false)}}
+        //                     onCancel={() => setFloatingAction(false)}
+        //                 />,
+        //                 onClose: () => setFloatingAction(false)
+        //             })
+        // }, 200)
     };
 
     const openCreateGroupDialog = () => {
         modal.closeModals('ActionContainerModal');
-        setTimeout(() => {
-            modal.openModal('OverlayModal',
-                {
-                    content: <CreateInventoryGroupDialogContainer
-                        onCreated={()=>{onRefresh(); setFloatingAction(false)}}
-                        onCancel={() => setFloatingAction(false)}
-                    />,
-                    onClose: () => setFloatingAction(false)
-                })
-        }, 200)
+        navigation.navigate("CreateInventoryGroupDialogContainer",{
+            screen : "CreateInventoryGroupDialogContainer",
+            initial: false,
+            // params : {
+                onCreated : ()=>{
+                    onRefresh(); 
+                    setFloatingAction(false);
+                    navigation.goBack();
+                },
+                onCancel : ()=>{ 
+                    setFloatingAction(false)
+                    navigation.goBack();
+                },
+            // }
+        });
+        // setTimeout(() => {
+        //     modal.openModal('OverlayModal',
+        //         {
+        //             content: <CreateInventoryGroupDialogContainer
+        //                 onCreated={()=>{onRefresh(); setFloatingAction(false)}}
+        //                 onCancel={() => setFloatingAction(false)}
+        //             />,
+        //             onClose: () => setFloatingAction(false)
+        //         })
+        // }, 200)
     };
 
     const getLevels = (locations = []) => {

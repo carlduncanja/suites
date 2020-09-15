@@ -10,6 +10,8 @@ import SearchableOptionsField from "../common/Input Fields/SearchableOptionsFiel
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import OptionsField from "../common/Input Fields/OptionsField";
 import AutoFillField from "../common/Input Fields/AutoFillField";
+import CreatePageHeader from '../common/DetailsPage/CreatePageHeader';
+import CreatePreviousDoneFooter from '../common/DetailsPage/CreatePreviousDoneFooter';
 
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
@@ -35,6 +37,32 @@ import OverlayDialogContent from '../common/Dialog/OverlayContent';
  * @constructor
  */
 
+const PageWrapper = styled.View`
+    height : 100%;
+    width : 100%;
+    background-color : ${ ({theme}) => theme.colors['--default-shade-white']}; 
+`;
+const TabsContainer = styled.View`
+    height : 58px;
+    justify-content : flex-end;
+    background-color: ${ ({theme}) => theme.colors['--color-gray-200']};
+`;
+
+const ContentWrapper = styled.View`
+    height : 800px;
+    padding : ${ ({theme}) => theme.space['--space-28']};
+`;
+const ContentContainer = styled.View`
+    height : 100%;
+    width : 100%;
+`;
+
+const FooterWrapper = styled.View`
+    position : absolute;
+    bottom: 0; 
+    left : 0;
+    right : 0;
+`;
  
 const Divider = styled.View`
     border-width : 1px;
@@ -43,9 +71,10 @@ const Divider = styled.View`
     margin-bottom : ${ ({theme}) => theme.space['--space-32']};
 `;
 
-function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
+function CreateInventoryGroupDialogContainer({navigation, route}) {
 
     // ######### CONST
+    const { onCancel, onCreated } = route.params;
     const modal = useModal();
     const dialogTabs = ['Details'];
     const theme = useTheme();
@@ -145,7 +174,7 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
 
         if(!isValid){ return }
 
-        goToConfirmationScreen()
+        goToConfirmationScreen();
     };
 
     const onFieldChange = (fieldName) => (value) => {
@@ -225,7 +254,12 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
     }
 
     const createGroupCall = () => {
-        createInventoryGroup(fields)
+        // console.log("Fields: ", fields);
+        const updatedFields = {
+            ...fields,
+            unitOfMeasurement : null
+        }
+        createInventoryGroup(updatedFields)
             .then(data => {
                 // addInventory(data)
                 modal.closeAllModals();
@@ -244,7 +278,7 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
  
     const detailsTab = (
 
-        <OverlayDialogContent>
+        <>
 
             <Row>
                 <FieldContainer>
@@ -311,7 +345,7 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
                 <FieldContainer>
                     <InputUnitField
                         label={"Markup"}
-                        onChangeText={(value)=>{
+                        onChangeText={(value)=>{ 
                             if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
                                 onFieldChange('markup')(value)
                             }
@@ -323,35 +357,65 @@ function CreateInventoryGroupDialogContainer({onCancel, onCreated}) {
                 </FieldContainer>
             </Row>
 
-        </OverlayDialogContent> 
+        </> 
     );
 
     return (
-        <OverlayDialog
-            title={"Create Group"}
-            onPositiveButtonPress={onPositiveClick}
-            onClose={handleCloseDialog}
-            positiveText={"DONE"}
-            // handlePopovers = {handlePopovers}
-            // buttonIcon={<ArrowRightIcon/>}
-        >
 
-            <>
+        <PageWrapper theme = {theme}>
+            
+            <CreatePageHeader
+                title = "Create Item Group"
+                onClose = {onCancel}
+            />
+
+            <TabsContainer theme = {theme}>
                 <DialogTabs
-                    tabs={dialogTabs}
-                    tab={selectedIndex}
+                    tabs={['Details']}
+                    tab={0}
                 />
-                {/* <TouchableOpacity
-                    onPress = {()=>handlePopovers(false)()}
-                    activeOpacity = {1}
-                > */}
+            </TabsContainer>
+
+            <ContentWrapper theme = {theme}>
+                <ContentContainer>
                     {detailsTab}
-                {/* </TouchableOpacity> */}
+                </ContentContainer>
+            </ContentWrapper>
 
-            </>
+            
+            <FooterWrapper>
+               <CreatePreviousDoneFooter
+                    onFooterPress = {onPositiveClick}
+                />
+            </FooterWrapper>
 
 
-        </OverlayDialog>
+        </PageWrapper>
+        // <OverlayDialog
+        //     title={"Create Group"}
+        //     onPositiveButtonPress={onPositiveClick}
+        //     onClose={handleCloseDialog}
+        //     positiveText={"DONE"}
+        //     // handlePopovers = {handlePopovers}
+        //     // buttonIcon={<ArrowRightIcon/>}
+        // >
+
+        //     <>
+        //         <DialogTabs
+        //             tabs={dialogTabs}
+        //             tab={selectedIndex}
+        //         />
+        //         {/* <TouchableOpacity
+        //             onPress = {()=>handlePopovers(false)()}
+        //             activeOpacity = {1}
+        //         > */}
+        //             {detailsTab}
+        //         {/* </TouchableOpacity> */}
+
+        //     </>
+
+
+        // </OverlayDialog>
     );
 }
 

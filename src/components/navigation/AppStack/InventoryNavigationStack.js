@@ -4,6 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Inventory from "../../../page/Inventory/Inventory";
 import InventoryPage from "../../../page/Inventory/InventoryPage";
 import InventoryVariantPage from "../../../page/Inventory/InventoryVariantPage";
+import CreateInventoryGroupDialogContainer from "../../Inventory/CreateInventoryGroupDialogContainer";
+import CreateInventoryDialogContainer from "../../Inventory/CreateInventoryDialogContainer";
 import NotFound from "../../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 import PageHeader from "../../common/Page/PageHeader";
@@ -61,6 +63,43 @@ export default () => {
                     headerTitle: ""
                 }}
             />
+
+            <Stack.Screen
+                name="CreateInventoryGroupDialogContainer"
+                component={CreateInventoryGroupDialogContainer}
+                options={{
+                    headerShown: false,
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+
+                    },
+                    headerTitle: ""
+                }}
+            />
+
+            <Stack.Screen
+                name="CreateInventoryDialogContainer"
+                component={CreateInventoryDialogContainer}
+                options={{
+                    headerShown: false,
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+
+                    },
+                    headerTitle: ""
+                }}
+            />
+
 
         </Stack.Navigator>
     );
