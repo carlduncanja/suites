@@ -7,9 +7,10 @@ import InputUnitField from '../common/Input Fields/InputUnitFields';
 import styled, { css } from '@emotion/native';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import EditLocked from "../../../assets/svg/editLockedIcon";
-import { getPhysicians, getCategories } from "../../api/network";
+import { getPhysicians, getCategories, addCategory } from "../../api/network";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import Row from "../common/Row";
+import _ from "lodash";
 import Record from "../common/Information Record/Record";
 import { useTheme } from "emotion-theming";
 import TextEditor from "../common/Input Fields/TextEditor";
@@ -17,6 +18,7 @@ import { forEach } from "lodash";
 import { set } from "numeral";
 import TextArea from "../common/Input Fields/TextArea";
 import InputFieldWithIcon from "../common/Input Fields/InputFieldWithIcon";
+import { withModal } from "react-native-modalfy";
 
 const LabelText = styled.Text`
 color:${({ theme }) => theme.colors["--color-gray-600"]};
@@ -28,10 +30,16 @@ width:170px;
 margin:20px;
 
 `
-const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
+const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popoverList, modal }) => {
+
 
     const theme = useTheme();
     const enabled = true;
+
+    const dateReceived = new Date(fields['availableOn']);
+
+    const today = new Date();
+
 
     // Physicians Search
     const [searchValue, setSearchValue] = useState();
@@ -118,6 +126,7 @@ const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
                     _id: item,
                     name: item
                 }));
+                console.log("results have", results);
                 setCategorySearchResult(results || [])
             })
             .catch(error => {
@@ -127,6 +136,33 @@ const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
 
     }
 
+    const createCategory = () => {
+        categorySearchResults.push(categorySearchValue);
+        addCategory(categorySearchResults)
+            .then(data => {
+                console.log("added category", data)
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onCancel={onConfirmCancel}
+                            onAction={onConfirmSave}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                )
+            })
+            .catch(error => {
+                console.log("Failed to add category", error)
+            })
+    }
+    let assignedPop = popoverList.filter(item => item.name === 'assigned');
+    let typePop = popoverList.filter(item => item.name === 'type');
+    let catPop = popoverList.filter(item => item.name === 'category');
     return (
         <KeyboardAvoidingView
             style={{ flex: 1 }}
@@ -146,7 +182,7 @@ const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
             <>
 
 
-                <View style={{ height: 100, width: 300, flexDirection: "row" }}>
+                <Row>
                     <InputWrapper>
                         <LabelText theme={theme}>SKU</LabelText>
                         <InputField2
@@ -188,8 +224,66 @@ const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
 
                         />
                     </InputWrapper>
+                </Row>
+                <Row>
+                    <InputWrapper>
+                        <LabelText theme={theme}>Supplier</LabelText>
+                        <InputField2
+                            value={fields['supplier']}
+                            labelWidth={30}
+                            placeholder={"--"}
+                            enabled={true}
 
-                </View>
+                        />
+                    </InputWrapper>
+
+                    <InputWrapper>
+                        <LabelText theme={theme}>Usage</LabelText>
+                        <InputField2
+                            value={`${fields['usage']} days`}
+                            labelWidth={30}
+                            onChangeText={(value) => {
+                                onFieldChange('usage')(value)
+                            }}
+                            keyboardType="number-pad"
+                            placeholder={"--"}
+                            enabled={true}
+
+                        />
+                    </InputWrapper>
+
+                    <InputWrapper>
+                        <LabelText theme={theme}>Available On</LabelText>
+                        <InputField2
+                            value={`${parseInt((dateReceived - today) / (1000 * 60 * 60 * 24))} days`}
+                            labelWidth={30}
+                            placeholder={"--"}
+                            enabled={false}
+
+                        />
+                    </InputWrapper>
+
+
+                </Row>
+
+                <Row>
+
+                    <MultipleSelectionsField
+                        label={"Category"}
+                        onOptionsSelected={onFieldChange('category')}
+                        options={categorySearchResults}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={(value) => handlePopovers(value)('category')}
+                        isPopoverOpen={catPop[0].status}
+                        createNew={createCategory}
+                    />
+                </Row>
+
+
+
+
 
 
             </>
@@ -204,7 +298,7 @@ const EditableEquipmentDetails = ({ fields, onFieldChange }) => {
 EditableEquipmentDetails.propTypes = {};
 EditableEquipmentDetails.defaultProps = {};
 
-export default EditableEquipmentDetails
+export default withModal(EditableEquipmentDetails)
 
 const styles = StyleSheet.create({
     row: {

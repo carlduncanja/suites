@@ -37,6 +37,7 @@ function EquipmentItemPage({ route, navigation }) {
     const [isEditMode, setEditMode] = useState(isOpenEditable);
     const [editableTab, setEditableTab] = useState('')
     const [isFetching, setFetching] = useState(false);
+    const [isInfoUpdated, setIsInfoUpdated] = useState(false);
     const [pageState, setPageState] = useState({});
 
     const {
@@ -54,6 +55,8 @@ function EquipmentItemPage({ route, navigation }) {
         sku
     } = equipment
 
+
+
     const [fields, setFields] = useState({
         // supplier name
         sku: sku,
@@ -61,7 +64,7 @@ function EquipmentItemPage({ route, navigation }) {
         assigned: assigned,
         status: info.status,
         usage: usage,
-        availableOn: availableOn,
+        availableOn: info.dateAvailable,
         categories: categories,
         description: description
     })
@@ -74,6 +77,84 @@ function EquipmentItemPage({ route, navigation }) {
 
     }, []);
 
+    useEffect(() => {
+        if (!pageState.isEditMode && isInfoUpdated) confirmAction();
+    }, [pageState.isEditMode]);
+
+    const [popoverList, setPopoverList] = useState([
+        {
+            name: "category",
+            status: false
+        },
+        {
+            name: "assigned",
+            status: false
+        },
+        {
+            name: "type",
+            status: false
+        }
+    ])
+
+    const handlePopovers = (popoverValue) => (popoverItem) => {
+
+        if (!popoverItem) {
+            let updatedPopovers = popoverList.map(item => {
+                return {
+                    ...item,
+                    status: false
+                }
+            })
+
+            setPopoverList(updatedPopovers)
+        } else {
+            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
+            const updatedPopovers = [
+                ...popoverList.slice(0, objIndex),
+                updatedObj,
+                ...popoverList.slice(objIndex + 1),
+            ];
+            setPopoverList(updatedPopovers)
+        }
+
+    }
+
+    const confirmAction = () => {
+        // setTimeout(() => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isEditUpdate={true}
+                    onCancel={onConfirmCancel}
+                    onAction={onConfirmSave}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+        // }, 200)
+    };
+
+    const onConfirmSave = () => {
+        modal.closeModals('ConfirmationModal');
+        setTimeout(() => {
+            // updatePhysicianRecord(selectedPhysician);
+            updatePhysicianCall(selectedPhysician);
+            setIsInfoUpdated(false);
+        }, 200);
+    };
+
+    const onConfirmCancel = () => {
+        modal.closeModals('ConfirmationModal');
+        setPageState({
+            ...pageState,
+            isEditMode: true
+        });
+    };
+
     // ##### Event Handlers
 
     const onFieldChange = (fieldName) => (value) => {
@@ -81,6 +162,7 @@ function EquipmentItemPage({ route, navigation }) {
             ...fields,
             [fieldName]: value
         })
+        setIsInfoUpdated(true);
     };
 
     const onTabPress = (selectedTab) => {
@@ -112,10 +194,11 @@ function EquipmentItemPage({ route, navigation }) {
 
         switch (selectedTab) {
             case "Details":
-
-                console.log("Fields has", fields);
                 return pageState.isEditMode ?
-                    <EditableEquipmentDetails fields={fields} onFieldChange={onFieldChange} />
+                    <EditableEquipmentDetails fields={fields}
+                        onFieldChange={onFieldChange}
+                        handlePopovers={handlePopovers}
+                        popoverList={popoverList} />
                     :
                     <General equipment={selectedEquipment} updatedInfo={info} />;
             default:
@@ -131,9 +214,9 @@ function EquipmentItemPage({ route, navigation }) {
         setPageLoading(true);
         getEquipmentById(id)
             .then(data => {
-                // console.log("Data:", data)
+
                 setSelectedEquipment(data)
-                setEquipment(data)
+
             })
             .catch(error => {
                 console.log("Failed to get equipment", error)

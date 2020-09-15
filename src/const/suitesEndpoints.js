@@ -82,6 +82,7 @@ export const updatePurchaseOrderEndpoint = (purchaseOrderId) => `/purchase_order
 
 // ##### CATEGORIES
 export const categoriesEndpoint = "/categories/items";
+export const createCategoryEndpoint = "/categories/items";
 
 
 
