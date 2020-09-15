@@ -136,7 +136,6 @@ const HeaderWrapper = styled.View`
   padding-right: ${({ theme }) => theme.space['--space-24']};
   
 `
-
 const HeaderContainer = styled.View`
   //flex: 1;
   flex-direction: row;
