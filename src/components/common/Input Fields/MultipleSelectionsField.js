@@ -15,6 +15,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from 'emotion-theming';
 import styled, { css } from '@emotion/native';
 import InputLabelComponent from "../InputLablel";
+import SearchableOptionsField from "./SearchableOptionsField";
 
 const InputFieldWrapper = styled.View`
     flex:1;
@@ -42,7 +43,7 @@ const TextInputContainer = styled.View`
 
 
 
-function MultipleSelectionsField({
+function MultipleSelectionsField({ 
     onOptionsSelected, 
     label, 
     value = [], 
@@ -55,7 +56,7 @@ function MultipleSelectionsField({
     hasError = false
 }){
 
-    // console.log("Value: ", value)
+    console.log("Category options: ", options)
     let { name = "" } = value[0] || {}
     const theme = useTheme();
 
@@ -63,7 +64,8 @@ function MultipleSelectionsField({
     const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
-    const onCheckboxPress = (item) => () => {
+    const onCheckboxPress = (item) => {
+        console.log("Item: ", item)
         let updatedList = [...checkedList]
         if (checkedList.includes(item)){
             updatedList = updatedList.filter( filterItem => filterItem !== item)
@@ -145,7 +147,7 @@ function MultipleSelectionsField({
             { isDisplay && isPopoverOpen &&
 
                 <View style={styles.menuOptionsContainer}>
-                    
+
                     <SearchableContainer
                         options = {options}
                         onCheckboxPress = {onCheckboxPress}

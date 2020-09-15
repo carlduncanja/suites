@@ -40,7 +40,7 @@ const FieldContainer = styled.View`
     padding-top: ${ ({theme}) => theme.space['--space-2']};
     padding-bottom: ${ ({theme}) =>theme.space['--space-2']};
     border-width: 1px;
-    border-color: ${ ({theme}) => theme.colors['--color-gray-300']}
+    border-color: ${ ({theme}) => theme.colors['--color-gray-300']};
     border-radius: 4px;
 `;
 

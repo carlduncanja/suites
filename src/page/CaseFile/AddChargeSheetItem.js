@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react'; 
 import styled, {css} from '@emotion/native';
 import {useTheme} from "emotion-theming";
 import CreatePageHeader from '../../components/common/DetailsPage/CreatePageHeader';
