@@ -62,7 +62,7 @@ const General = ({ equipment = {}, updatedInfo, modal }) => {
 
     const usageRecord = <Record
         recordTitle={"Usage"}
-        recordValue={usage}
+        recordValue={`${usage} days`}
     />
 
     const available = <Record
