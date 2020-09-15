@@ -65,7 +65,7 @@ function Record({
                     <ValueText
                         theme={theme}
                         valueColor={valueColor}
-                        valueStyle={valueStyle}>
+                        valueStyle={valueStyle}> 
                         {recordValue || "--"}
                     </ValueText>
                 }
@@ -90,6 +90,7 @@ function Record({
                         value={recordValue}
                         onChangeText={onRecordUpdate}
                         enabled={editable}
+                        onClear = {onClearValue}
                     />
                 }
 

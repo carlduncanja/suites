@@ -15,28 +15,10 @@ import TextArea from '../common/Input Fields/TextArea';
 import ConfirmationComponent from '../ConfirmationComponent';
 import { useModal } from 'react-native-modalfy';
 
-const DescriptionContainer = styled.View`
-    flex : 0.8;
-`;
-
-const EditNameContainer = styled.View`
-    flex : 1;
-    flex-direction : column;
-`;
-
-const TextContainer = styled.View`
-    height : 100px;
-`;
-
-const RecordText = styled.Text(({theme})=>({
-    ...theme.font['--text-base-regular'],
-    color : theme.colors['--color-gray-600'],
-    marginBottom : 12
-}));
  
 function InventoryGroupGeneral({ 
     inventoryGroup = {}, 
-    // onUpdate = () => {}, 
+    onUpdate = () => {}, 
     fields = {}, 
     errorFields = {},
     onFieldChange = ()=>{}
@@ -49,8 +31,8 @@ function InventoryGroupGeneral({
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
-    // const [isUpdated, setIsUpdated] = useState(false);
 
+    // const [isUpdated, setIsUpdated] = useState(false);
     // const [fields, setFields] = useState({
     //     description,
     //     name
@@ -82,16 +64,16 @@ function InventoryGroupGeneral({
     //         [fieldName]: value
     //     })
     //     setIsUpdated(true);
-    //     // const updatedErrors = {...errorFields}
-    //     // delete updatedErrors[fieldName]
-    //     // setErrorFields(updatedErrors)
+    //     const updatedErrors = {...errorFields}
+    //     delete updatedErrors[fieldName]
+    //     setErrorFields(updatedErrors)
 
     // };
 
-    const resetState = () => {
-        setFields(baseStateRef.current);
-        setIsUpdated(false);
-    }
+    // const resetState = () => {
+    //     setFields(baseStateRef.current);
+    //     setIsUpdated(false);
+    // }
 
     // const onFinishEdit = () =>{
     //     let isValid = validateUpdate();
@@ -189,28 +171,17 @@ function InventoryGroupGeneral({
     return(
         <>
             <Row>
-                {
-                    isEditMode ?
-                        <DescriptionContainer>
-                            <RecordText theme = {theme}>Description</RecordText>
-                            <TextContainer>
-                                <TextArea
-                                    onChangeText={onFieldChange('description')}
-                                    value={fields['description']}
-                                    multiline={true}
-                                    numberOfLines={4}
-                                    onClear={() => onFieldChange('description')('')}
-                                />
-                            </TextContainer>
-
-                        </DescriptionContainer>
-                        :
-                        <Record
-                            recordTitle = "Description"
-                            recordValue = {description}
-                            flex = {0.8}
-                        />
-                }
+                
+                <Record
+                    recordTitle = "Description"
+                    recordValue = {description}
+                    onClearValue = {()=>onFieldChange('description')('')}
+                    onRecordUpdate = {onFieldChange('description')}
+                    useTextArea = {true}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    flex = {0.8}
+                />
 
             </Row>
 
@@ -220,27 +191,15 @@ function InventoryGroupGeneral({
                     values = {categories}
                 />
 
-                {
-                    isEditMode ?
-                        <EditNameContainer>
-                            <RecordText>Group Name</RecordText>
-                            <InputField2
-                                onChangeText={onFieldChange('name')}
-                                value={fields['name']}
-                                onClear={()=>onFieldChange('name')('')}
-                                hasError = {errorFields['name']}
-                                errorMessage = "Name must be provided."
-                            />
-                        </EditNameContainer>
-
-                    :
-
-                        <Record
-                            recordTitle = "Group Name"
-                            recordValue = {name}
-                        />
-                }
-                
+                <Record
+                    recordTitle = "Group Name"
+                    recordValue = {fields['name']}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    onRecordUpdate = {onFieldChange('name')}
+                    onClearValue = {()=>{onFieldChange('name')(''); console.log("Clear")}}
+                />
+ 
             </Row>
         </>
     )

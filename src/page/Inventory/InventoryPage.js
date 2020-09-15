@@ -11,7 +11,7 @@ import { useModal } from 'react-native-modalfy';
 
 function InventoryPage({ route, navigation }){
 
-    const { data = {}, isGroup = true} = route.params
+    const { data = {} } = route.params;
     const { name = "", _id = "", description = "" } = data
     const tabs = ["General"];
     const modal = useModal();
@@ -30,7 +30,7 @@ function InventoryPage({ route, navigation }){
     const {isEditMode} = pageState;
 
     useEffect(() => {
-        fetchInventory(_id)
+        fetchInventory(_id);
     }, []);
 
     useEffect(()=>{
@@ -40,10 +40,10 @@ function InventoryPage({ route, navigation }){
     },[isEditMode])
 
     const fetchInventory = (id) => {
-        setPageLoading(true)
+        setPageLoading(true);
         getInventoryGroupById(id)
             .then(data => {
-                setSelectedInventory(data)
+                setSelectedInventory(data);
                 // console.log("Fetch data: ", data)
             })
             .catch(error => {
@@ -51,7 +51,7 @@ function InventoryPage({ route, navigation }){
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setPageLoading(false)
+                setPageLoading(false);
             })
     };
 
@@ -62,9 +62,9 @@ function InventoryPage({ route, navigation }){
             [fieldName]: value
         })
         setIsUpdated(true);
-        // const updatedErrors = {...errorFields}
-        // delete updatedErrors[fieldName]
-        // setErrorFields(updatedErrors)
+        const updatedErrors = {...errorFields}
+        delete updatedErrors[fieldName]
+        setErrorFields(updatedErrors)
 
     };
 
@@ -177,7 +177,6 @@ function InventoryPage({ route, navigation }){
                 return <InventoryGroupGeneral
                     inventoryGroup = {selectedInventory}
                     // onUpdate = {()=>fetchInventory(_id)}
-                    // isEditMode={isEditMode}
                     fields = {fields}
                     errorFields = {errorFields}
                     onFieldChange = {onFieldChange}
