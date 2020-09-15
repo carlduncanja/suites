@@ -15,17 +15,21 @@ import { getSupplierById, createPurchaseOrder, getSupplierProducts } from "../..
 import { colors } from "../../styles";
 import { useModal } from 'react-native-modalfy';
 import { set } from 'numeral';
+import SupplierProductsDetailsTab from "../OverlayTabs/SupplierProductsDetailsTab";
 
 
-function SupplierPage({ route, navigation }) {
-    const { supplier, isOpenEditable, floatingActions } = route.params;
+function SupplierProductPage({ route, navigation }) {
+    const { product = {}, isOpenEditable, floatingActions } = route?.params || {};
     const modal = useModal();
-    const currentTabs = ["Details", "Products", "Purchase Orders"];
+
+
+
+    const currentTabs = ["Details"];
     const {
-        supplierNumber = "",
         name = "",
         _id = "",
-    } = supplier;
+        supplier = {}
+    } = product;
 
     // ##### States
 
@@ -43,16 +47,7 @@ function SupplierPage({ route, navigation }) {
     const [popoverList, setPopoverList] = useState([])
 
     // ##### Lifecycle Methods
-    useEffect(() => {
-        setTimeout(() => {
-            if (!products.length){
-                fetchProducts();
-                fetchSupplier(_id);
-            }
 
-        }, 200)
-        // fetchSupplier(_id)
-    }, []);
 
     // ##### Event Handlers
     const setPageLoading = (value) => {
@@ -74,16 +69,6 @@ function SupplierPage({ route, navigation }) {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
-    const onEditPress = (tab) => {
-        setEditableTab(tab)
-        setEditMode(!isEditMode)
-        if (!isEditMode === false) {
-            console.log("Fields:", fields)
-
-            // updatePhysicianFn(_id, fieldsObject)
-        }
-    }
-
     const onFieldChange = (fieldName) => (value) => {
         setFields({
             ...fields,
@@ -92,7 +77,7 @@ function SupplierPage({ route, navigation }) {
     };
 
     const backTapped = () => {
-        navigation.navigate("Suppliers");
+        navigation.goBack();
     }
 
     const handlePopovers = (popoverValue) => (popoverItem) => {
@@ -119,15 +104,6 @@ function SupplierPage({ route, navigation }) {
 
     }
 
-    const onAddProducts = (item) => {
-        console.log("DATA: ",)
-        const newItem = {
-            ...item,
-            unitCost: item.unitPrice
-        }
-        setProducts([...products, newItem]);
-    }
-
     // ##### Helper functions
 
     const errorScreen = () => {
@@ -148,74 +124,22 @@ function SupplierPage({ route, navigation }) {
         }, 100);
     }
 
-    const fetchProducts = () => {
-        setPageLoading(true);
-
-        getSupplierProducts(_id, "")
-            .then(productsData => {
-                const { data = [], pages = 0 } = productsData
-                setProducts(data)
-                setHasFetchProducts(true)
-            })
-            .catch(error => {
-                console.log("Failed to get products", error)
-                //TODO handle error cases.
-                errorScreen();
-                //CONFIRAMTION SCREEN
-            })
-    };
-
-    const fetchSupplier = (id) => {
-        // setFetching(true);
-        getSupplierById(id)
-            .then(data => {
-                console.log("Data: ", data)
-                setSelectedSupplier(data)
-            })
-            .catch(error => {
-                console.log("Failed to get supplier", error)
-                if(hasFetchProducts === false){
-                    setTimeout(()=>{modal.closeModals('ConfirmationModal');},100)
-                    errorScreen();
-                }
-
-                // confirmation screeen
-                //TODO handle error cases.
-            })
-            .finally(_ => {
-                setPageLoading(false)
-            })
-    };
 
     // const supplierDetails = { supplier, status: '' }
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <SupplierDetailsTab order={{supplier : selectedSupplier, status: ''}} />
-            case "Products":
-                return <SupplierProductsTab
-                    floatingActions={floatingActions}
-                    products={products}
-                    onAddProducts={onAddProducts}
-                    // cartOrderItems = {cartOrderItems}
-                    supplierId={_id}
-                />
-            case "Purchase Orders":
-                return <SupplierPurshaseOrders
-                    floatingActions={floatingActions}
-                    data = {selectedSupplier?.purchaseOrders}
-                />;
+                return <SupplierProductsDetailsTab product={product}/>
             default:
                 return <View />
         }
     };
 
     return (
-
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
-                    headerChildren={[name]}
+                    headerChildren={[supplier?.name, "products", name]}
                     onBackPress={backTapped}
                     pageTabs={
                         <TabsContainer
@@ -231,14 +155,13 @@ function SupplierPage({ route, navigation }) {
                 </DetailsPage>
             </PageContext.Provider>
         </>
-
     );
 }
 
-SupplierPage.propTypes = {};
-SupplierPage.defaultProps = {};
+SupplierProductPage.propTypes = {};
+SupplierProductPage.defaultProps = {};
 
-export default SupplierPage;
+export default SupplierProductPage;
 
 const styles = StyleSheet.create({
     item: {

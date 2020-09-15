@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react'; 
 import styled, {css} from '@emotion/native';
 import {useTheme} from "emotion-theming";
 import CreatePageHeader from '../../components/common/DetailsPage/CreatePageHeader';
@@ -21,6 +21,7 @@ import { getInventories, getEquipmentTypes } from "../../api/network";
 import {useModal} from 'react-native-modalfy';
 import _ from "lodash";
 import { Alert } from 'react-native';
+import DefaultPage from "../../components/common/Page/DefaultPage";
 
 
 const PageWrapper = styled.View`
@@ -141,7 +142,7 @@ function AddChargeSheetItem({navigation, route}){
             flex:1
         },
     ]
-    
+
     const theme = useTheme();
     const [data, setData] = useState([]);
 
@@ -183,8 +184,8 @@ function AddChargeSheetItem({navigation, route}){
         });
 
         search()
-    }, [searchValue]); 
- 
+    }, [searchValue]);
+
     const fetchInventory = () => {
         getInventories(searchValue, 5)
             .then(inventoryResult => {
@@ -235,7 +236,7 @@ function AddChargeSheetItem({navigation, route}){
     const onBackPress = () =>{
         navigation.goBack();
     };
-    
+
     const onFooterPress = () => {
         modal.openModal('ConfirmationModal', {
             content: (
@@ -251,7 +252,7 @@ function AddChargeSheetItem({navigation, route}){
                         modal.closeAllModals();
                     }}
                     message = {"Do you want to save these item(s)?"}
-                    
+
                 />
             ),
             onClose: () => {
@@ -323,9 +324,9 @@ function AddChargeSheetItem({navigation, route}){
                 amount : 1,
                 name : item.name
             };
-           
+
         }
-        
+
         // console.log("Updated item: ", updatedItem)
         setSelectedItem(updatedItem);
         setSearchValue(updatedItem);
@@ -337,7 +338,7 @@ function AddChargeSheetItem({navigation, route}){
             if(data.length === 0){
                 setData([...data,updatedItem])
             }else{
-            
+
                 data.map( dataItem => {
                     if(dataItem._id === updatedItem._id){
                         console.log("Same")
@@ -351,7 +352,7 @@ function AddChargeSheetItem({navigation, route}){
         }
 
 
-        
+
         // const updatedData = data.length === 0 ?
         //     [...data,item]
         //     :
@@ -373,7 +374,7 @@ function AddChargeSheetItem({navigation, route}){
     const handleDeleteItem = (item) => {
         const filterItems = data.filter( obj => obj._id !== item._id)
         setData(filterItems)
-       
+
         // modal
         //     .openModal(
         //         'ConfirmationModal',
@@ -390,7 +391,7 @@ function AddChargeSheetItem({navigation, route}){
         //                 message = {"Do you want to delete this item ?"}
         //             />
         //             ,
-        //             onClose: () => {modal.closeModals('ConfirmationModal')} 
+        //             onClose: () => {modal.closeModals('ConfirmationModal')}
         //         })
     };
 
@@ -399,7 +400,7 @@ function AddChargeSheetItem({navigation, route}){
     //     setData(filterItems)
     // };
 
-    const listItemFormat = (item) => { 
+    const listItemFormat = (item) => {
         const { _id = "", name = "", amount = 1 } = item
         return (
             <Row theme = {theme}>
@@ -426,12 +427,7 @@ function AddChargeSheetItem({navigation, route}){
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax)
 
     return(
-        <PageWrapper theme = {theme}>
-           
-            <CreatePageHeader
-                title = {`Add ${type}`}
-                onClose = {onBackPress}
-            />
+        <DefaultPage pageTitle={`Add ${type}`} onClosePress={onBackPress} theme = {theme}>
 
             <TabsContainer>
                 <CreationDialogTabs
@@ -492,7 +488,7 @@ function AddChargeSheetItem({navigation, route}){
                         </PaginatorContainer>
                         <ContentFooterText>
                             Showing {
-                                dataLength === recordsPerPage 
+                                dataLength === recordsPerPage
                                     ? recordsPerPage
                                     : dataLength
 
@@ -506,15 +502,15 @@ function AddChargeSheetItem({navigation, route}){
             <Divider>
                 <LineDivider/>
             </Divider>
-            
+
 
             <FooterWrapper theme = {theme}>
                 <FooterContainer>
                     <CreatePageDoneFooter onFooterPress = {onFooterPress}/>
                 </FooterContainer>
             </FooterWrapper>
-            
-        </PageWrapper>
+
+        </DefaultPage>
     )
 }
 

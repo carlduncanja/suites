@@ -26,7 +26,7 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import Footer from "../common/Page/Footer";
+import { useNavigation } from '@react-navigation/native';
 
 
 const SearchContainer = styled.View`
@@ -36,7 +36,7 @@ const SearchContainer = styled.View`
 const FooterWrapper = styled.View`
     width: 100%;
     position : absolute;
-    bottom : 20; 
+    bottom : 20px; 
 `;
 const FooterContainer = styled.View`
     width :100%;
@@ -59,6 +59,8 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
     // ######## STATES
     console.log("Cart: ", cart)
     const theme = useTheme();
+    const navigation = useNavigation();
+
 
     const [checkBoxList, setCheckBoxList] = useState([])
     const [isFetching, setFetching] = useState(false);
@@ -88,7 +90,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
             flex: 2
         },
         {
-            name: "Category",
+            name: "Reference",
             alignment: "flex-start"
         },
         {
@@ -117,6 +119,13 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
     // }, []);
 
     // ######## EVENT HANDLERS
+
+    const onProductsPress = (productItem) => () => {
+        // open product page.
+        modal.closeModals('ActionContainerModal')
+        setFloatingAction(true)
+        navigation.navigate("SupplierProductPage", {product: productItem} )
+    }
 
     const onSearchChange = (input) => {
         setSearchValue(input)
@@ -364,7 +373,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
         return <ActionContainer
             floatingActions={[
                 addCart,
-                // addProduct
+                addProduct
             ]}
             title={"SUPPLIER ACTIONS"}
         />
@@ -407,25 +416,14 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
     const openAddProduct = () => {
         modal.closeModals('ActionContainerModal')
-
-        setTimeout(() => {
-            modal.openModal('OverlayModal',
-                {
-                    content: <CreateInventoryDialogContainer
-                        onCreated={(item) => addItemComplete(item)}
-                        onCancel={() => setFloatingAction(false)}
-                    />,
-                    onClose: () => setFloatingAction(false)
-                })
-        }, 200)
+        navigation.navigate('SupplierProductCreation', {supplierId})
     }
 
     const listItemFormat = (item) => <>
         <DataItem text={item?.name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600" />
-        <DataItem text={item?.type} />
+        <DataItem text={item?.inventoryVariant?.name} />
         <DataItem text={item?.sku || 'n/a'} align="center" />
         <DataItem text={`$ ${currencyFormatter(item.unitPrice)}`} align="flex-end" />
-
         {/* <View style={styles.item}>
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
@@ -445,7 +443,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={() => { }}
+            onItemPress={onProductsPress(item)}
             itemView={listItemFormat(item)}
         />
     }

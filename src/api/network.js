@@ -8,6 +8,7 @@ import {
     inventoryEndpoint,
     inventoryVariantEndpoint,
     inventoryGroupVariant,
+    inventoryGroupVariants,
     inventoryGroupVariantTransfers,
     theatresEndpoint,
     theatreEndpoint,
@@ -236,7 +237,7 @@ export const createInventoryGroup = async (groupToCreate) => {
 };
 
 export const createInventoryVariant = async (referenceId, itemToCreate) => {
-    return suitesAxiosInstance.post(inventoryVariantEndpoint(referenceId), itemToCreate)
+    return suitesAxiosInstance.post(inventoryGroupVariants(referenceId), itemToCreate)
         .then(handleResponse)
         .catch(handleError);
 };
@@ -564,6 +565,13 @@ export const getSupplierById = async (id) => {
 export const getSupplierProducts = async (id, query, max) => {
     return suitesAxiosInstance
         .get(supplierProductsEndpoint(id), { params: { query, max } })
+        .then(handleResponse)
+        .catch(handleError);
+}
+
+;export const createSupplierProductsCall = async (id, data) => {
+    return suitesAxiosInstance
+        .post(supplierProductsEndpoint(id), data)
         .then(handleResponse)
         .catch(handleError);
 };
