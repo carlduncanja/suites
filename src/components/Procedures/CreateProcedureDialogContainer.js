@@ -13,7 +13,7 @@ import { createNewProcedure, getTheatres, getPhysicians } from "../../api/networ
 import { addProcedure } from "../../redux/actions/proceduresActions";
 import {connect} from "react-redux";
 import { duration } from "moment";
-import _ from "lodash";
+import _ from "lodash"; 
 
 
 /**

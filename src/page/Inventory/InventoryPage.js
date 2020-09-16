@@ -13,7 +13,7 @@ function InventoryPage({ route, navigation }){
 
     const { data = {} } = route.params;
     const { name = "", _id = "", description = "" } = data
-    const tabs = ["General"];
+    const tabs = ["Details"];
     const modal = useModal();
 
     const [currentTab, setCurrentTab] = useState(tabs[0])
@@ -173,7 +173,7 @@ function InventoryPage({ route, navigation }){
 
     const getContentData = (selectedTab) => {
         switch (selectedTab) {
-            case "General":
+            case "Details":
                 return <InventoryGroupGeneral
                     inventoryGroup = {selectedInventory}
                     // onUpdate = {()=>fetchInventory(_id)}
