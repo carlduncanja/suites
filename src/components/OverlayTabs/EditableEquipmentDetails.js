@@ -160,8 +160,7 @@ const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popov
                 console.log("Failed to add category", error)
             })
     }
-    let assignedPop = popoverList.filter(item => item.name === 'assigned');
-    let typePop = popoverList.filter(item => item.name === 'type');
+
     let catPop = popoverList.filter(item => item.name === 'category');
     return (
         <KeyboardAvoidingView
@@ -240,7 +239,7 @@ const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popov
                     <InputWrapper>
                         <LabelText theme={theme}>Usage</LabelText>
                         <InputField2
-                            value={`${fields['usage']} days`}
+                            value={`${fields['usage']} `}
                             labelWidth={30}
                             onChangeText={(value) => {
                                 onFieldChange('usage')(value)
@@ -269,15 +268,10 @@ const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popov
                 <Row>
 
                     <MultipleSelectionsField
+                        disabled={true}
+                        onOptionsSelected={() => { }}
                         label={"Category"}
-                        onOptionsSelected={onFieldChange('category')}
-                        options={categorySearchResults}
-                        searchText={categorySearchValue}
-                        onSearchChangeText={(value) => setCategorySearchValue(value)}
-                        onClear={() => { setCategorySearchValue('') }}
-                        handlePopovers={(value) => handlePopovers(value)('category')}
-                        isPopoverOpen={catPop[0].status}
-                        createNew={createCategory}
+                        value={!fields?.categories ? "--" : fields.categories}
                     />
                 </Row>
 

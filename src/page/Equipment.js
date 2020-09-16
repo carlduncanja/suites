@@ -59,7 +59,7 @@ const QuantityWrapper = styled.View`
 const QuantityContainer = styled.View`
     height : 24px;
     width : 28px;
-    background-color : ${ ({ theme, isCollapsed }) => isCollapsed === false ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
+    background-color : ${({ theme, isCollapsed }) => isCollapsed === false ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
     border-radius : 4px;
     align-items: center;
     justify-content: center;
@@ -329,12 +329,16 @@ const Equipment = (props) => {
 
     assignments = equipments.map(x => { return x.assignments.map(assigned => assigned.theatre) })
 
+
+
     const concatAssignments = [].concat.apply([], assignments);
+
     const viewItem = {
       name: item.name,
       _id: item._id,
       equipments: equipments,
       suppliers: item.suppliers,
+      description: item.description,
       quantity: item.equipments.length,
       assignment: isEmpty(concatAssignments) ? "Not currently assigned" : concatAssignments,
       status:
@@ -384,6 +388,7 @@ const Equipment = (props) => {
             const equipmentItem = {
               assignment: viewItem.assignment,
               assigmentName: item.id,
+              description: viewItem.description,
               quantity: equipmentGroup.length,
               status: viewItem.status,
               dateAvailable: viewItem.nextAvailable,

@@ -10,7 +10,7 @@ import TabsContainer from "../components/common/Tabs/TabsContainerComponent"
 import Footer from '../components/common/Page/Footer';
 import { Divider, Modal } from 'react-native-paper';
 import AssignEquipmentDetailsTab from '../components/OverlayTabs/AssignEquipmentDetailsTab';
-import { eq } from 'lodash';
+import moment from 'moment';
 
 
 const AssignEquipmentPageWrapper = styled.View`
@@ -82,12 +82,12 @@ const testData = {
     Assignment: "Location",
     Quantity: "1",
     Status: "Available",
-    Usage: "10"
+    Usage: "10",
+    date: new Date(moment().add(1, 'days'))
 }
 
 const AssignEquipmentPage = ({ navigation, route, modal }) => {
     const { equipment, onCreated } = route.params;
-    console.log("the date is", new Date().toISOString());
     const currentTabs = ["Details"];
     const theme = useTheme();
     const [equipmentData, setEquipmentData] = useState(testData);
@@ -97,13 +97,14 @@ const AssignEquipmentPage = ({ navigation, route, modal }) => {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [isEditMode, setEditMode] = useState(false);
 
+
     const onFieldChange = (fieldName) => (value) => {
         const updateFields = { ...equipmentData }
         setEquipmentData({
             ...updateFields,
             [fieldName]: value
         })
-        console.log(equipmentData);
+
     }
 
     const onLocationUpdate = (value) => {
@@ -122,14 +123,6 @@ const AssignEquipmentPage = ({ navigation, route, modal }) => {
         setPhysicians(updatePhysicians)
     }
 
-
-
-
-
-    useEffect(() => {
-
-    }, [])
-
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
@@ -139,14 +132,14 @@ const AssignEquipmentPage = ({ navigation, route, modal }) => {
     }
 
     const onDonePress = () => {
-        let somedate = "2020-10-30T14:00:00.000Z";
-        let today = new Date().toISOString();
 
+        console.log("the equipment type to pass:", equipment.type);
+        console.log("the equipment child id is", equipment._id);
         const fieldsToPass =
         {
 
-            type: equipmentData['Assignment'] === "Location" ? "location" : "users",
-            startTime: somedate,
+            type: equipmentData['Assignment'] === "Location" ? "location" : "physician",
+            startTime: equipmentData['date'],
             duration: equipmentData['Usage'],
             referenceId: equipmentData['Assignment'] === "Location" ? locations[0]._id : physicians[0]._id
 
