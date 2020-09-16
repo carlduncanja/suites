@@ -33,7 +33,7 @@ function InventoryVariantGeneral({ inventoryVariant = {}, selectedData = {} , is
     const { name = "", inventoryGroup = {}, unitCost = 0, storageLocations = [], sku = "" } = inventoryVariant;
     const { description = "", category = [], unitOfMeasurement = "", } = inventoryGroup;
     const { stock = 0, levels = {} } = selectedData;
-    let suppliers = [];
+    let suppliers = []; 
 
     const [fields, setFields] = useState({
         description,

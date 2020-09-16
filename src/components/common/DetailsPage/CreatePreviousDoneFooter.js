@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import styled, {css} from '@emotion/native';
 import {useTheme} from "emotion-theming";
 import Button from '../Buttons/Button';
+import BackIcon from '../../../../assets/svg/paginationLeft';
+import NextIcon from '../../../../assets/svg/paginationRight';
 
 const FooterWrapper = styled.View`
     display: flex;
@@ -33,18 +35,21 @@ const ButtonContainer = styled.View`
 const IconButtonContainer= styled.TouchableOpacity`
     height : 48px;
     width  : 128px;
-    justify-content: center;
+    padding-left : ${ ({theme}) => theme.space["--space-10"]} ;
+    padding-right : ${ ({theme}) => theme.space["--space-10"]} ;
+    flex-direction : row;
+    justify-content: space-between;
     align-items: center;
-    background-color : ${({theme, isDisabled}) => isDisabled ? theme.colors["--color-gray-200"] : theme.colors["--color-blue-500"]};
+    background-color : ${({theme, isDisabled}) => isDisabled ? theme.colors["--default-shade-white"] : theme.colors["--color-blue-500"]};
     border-radius : 8px;
+    border : ${ ({theme, isDisabled}) => isDisabled ? `1px solid ${theme.colors['--color-gray-300']}` : null };
 `
 
 const ButtonText = styled.Text`
     font:${({theme}) => theme.font["--text-base-bold"]};
-    color:${({theme}) => theme.colors["--default-shade-white"]};
+    color:${({theme, isDisabled}) => isDisabled ? theme.colors['--color-gray-300'] : theme.colors["--default-shade-white"]};
 `;
 
-const ButtonIcon = styled.View``;
 
 function CreatePageDoneFooter ({
     isFinished = true, 
@@ -54,7 +59,8 @@ function CreatePageDoneFooter ({
 }){
 
     const theme = useTheme();
-
+    let disabledBorder = !isPreviousDisabled ? `1px solid ${theme.colors['--color-blue-500']}` : null;
+    let disabledColor = !isPreviousDisabled ? theme.colors['--color-blue-500'] : null;
     return(
         <FooterWrapper theme={theme} onPress = {onFooterPress}>
             <FooterContainer theme={theme}>
@@ -63,8 +69,14 @@ function CreatePageDoneFooter ({
                     onPress = {()=>onFooterPreviousPress()}
                     disabled = {isPreviousDisabled}
                     isDisabled = {isPreviousDisabled}
+                    style = {css`
+                        border : ${disabledBorder};
+                        background-color : ${theme.colors['--default-shade-white']};
+                    `}
                 >
-                    <ButtonText>PREVIOUS</ButtonText>
+                    
+                        <BackIcon strokeColor = {isPreviousDisabled ? theme.colors['--color-gray-300'] : theme.colors['--color-blue-500']}/>
+                    <ButtonText style = {css`color : ${disabledColor}`} isDisabled = {isPreviousDisabled}>PREVIOUS</ButtonText>
                 </IconButtonContainer>
                 {
                     isFinished ?
@@ -79,9 +91,11 @@ function CreatePageDoneFooter ({
                         </ButtonContainer>
                         :
                         <IconButtonContainer
+                            style = {css`padding-left : 30px; padding-right: 30px;`}
                             onPress = {()=>{onFooterPress()}}
                         >
                             <ButtonText>NEXT</ButtonText>
+                            <NextIcon strokeColor = {theme.colors['--default-shade-white']}/>
                         </IconButtonContainer>
                 }
                 
