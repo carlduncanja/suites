@@ -268,7 +268,7 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                     <FormWrapper theme={theme}>
                         <FormContainer theme={theme}>
 
-                            <FormHeaderText>SignUp</FormHeaderText>
+                            <FormHeaderText>Sign Up</FormHeaderText>
 
 
                             <RowContainer theme={theme}>
