@@ -233,18 +233,29 @@ function CreateProcedure({ addProcedure, navigation, route}){
 
 
         if (tabIndex === 0){
-            isValid = validateProcedure()
+            isValid = validateProcedure();
         }
 
         if(!isValid){ return }
 
         if(tabIndex === dialogTabs.length - 1){
+            let updatedLocations = locations.map(item => item?._id) || [];
+            let updatedConsumables = consumables.map(item => {return ({ inventory : item?._id, amount : item?.amount})}) || [];
+            let updatedEquipments = equipments.map(item => {return ({ equipment : item?._id, amount : item?.amount})}) || [];
+            
             updatedFields = {
                 ...fields,
                 physician : fields['physician']._id,
                 duration : parseInt(fields['duration']),
-                supportedRooms : fields['supportedRooms']?.map(item => item._id) || []
+                supportedRooms : updatedLocations,
+                inventories : updatedConsumables,
+                equipments : updatedEquipments
             }
+
+            // console.log("Fields: ", updatedFields);
+            // console.log("Updated consumables:" , updatedConsumables);
+            // console.log("Updated Loations:" , updatedLocations);
+            // console.log("Updated Equipments:" , updatedEquipments);
             console.log("Fields: ",updatedFields)
             createProcedureCall(updatedFields)
 
@@ -314,7 +325,7 @@ function CreateProcedure({ addProcedure, navigation, route}){
                 itemType = "Consumables"
                 headers = {headers}
             />;
-            
+
             case "Equipments":
                 return <DialogItems
                 handleData = {(equipments)=>setEquipments([...equipments])}
@@ -331,17 +342,47 @@ function CreateProcedure({ addProcedure, navigation, route}){
         createNewProcedure(updatedFields)
             .then(data => {
                 addProcedure(data);
-                // modal.closeAllModals();
-                Alert.alert("Success",`New procedure ${updatedFields['name']} has been created.`)
-                navigation.replace('Procedure', {
-                    procedure : data,
-                    isOpenEditable : true
+                modal.openModal('ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {false}
+                        onCancel = {()=> {modal.closeModals('ConfirmationModal'); onCancel()}}
+                        onAction = {()=>{
+                            modal.closeAllModals();
+                            onCreated();
+                        }}
+                        // onAction = { () => confirmAction()}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
                 })
+                // modal.closeAllModals();
+                // Alert.alert("Success",`New procedure ${updatedFields['name']} has been created.`)
+                // navigation.replace('Procedure', {
+                //     procedure : data,
+                //     isOpenEditable : true
+                // })
                 // setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
                 // todo handle error
-                Alert.alert("Fialed","Failed to create a new procedure.")
+                modal.openModal('ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {true}
+                        isEditUpdate = {false}
+                        onCancel = {()=> {modal.closeModals('ConfirmationModal'); onCancel()}}
+                        onAction = {()=>{
+                            modal.closeAllModals();
+                            onCancel();
+                        }}
+                        // onAction = { () => confirmAction()}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                })
+                // Alert.alert("Fialed","Failed to create a new procedure.")
                 console.log("failed to create procedure", error)
             })
             // .finally(_ => {
@@ -383,44 +424,7 @@ function CreateProcedure({ addProcedure, navigation, route}){
 
 
         </PageWrapper>  
-        // <OverlayDialog
-        //     title={"New Procedure"}
-        //     onPositiveButtonPress={onPositiveButtonPress}
-        //     onClose={()=>{}}
-        //     positiveText={positiveText}
-        //     // handlePopovers = {handlePopovers}
-        // >
-        //     <View style = {styles.container}>
-
-        //         <View style={styles.headingContainer}>
-        //             <Text>New Procedure</Text>
-        //         </View>
-
-        //         <View style={{ flex: 1 }}>
-        //             <View style={{height: 40}}>
-        //                 <DialogTabs
-        //                     tabs = {dialogTabs}
-        //                     tab = {tabIndex}
-        //                     onTabPress = { onTabPress }
-        //                 />
-        //             </View>
-
-        //             <TouchableOpacity
-        //                 onPress = {()=>handlePopovers(false)()}
-        //                 activeOpacity = {1}
-        //             >
-        //                 {
-        //                     getDialogContent(dialogTabs[tabIndex])
-        //                 }
-        //             </TouchableOpacity>
-        //         </View>
-
-        //         <TouchableOpacity style={styles.footer} onPress={onPositiveButtonPress}>
-        //             <Text style={styles.footerText}>{positiveText}</Text>
-        //         </TouchableOpacity>
-
-        //     </View>
-        // </OverlayDialog>
+  
     )
 }
 

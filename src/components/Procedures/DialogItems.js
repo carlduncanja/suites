@@ -14,9 +14,10 @@ import IconButton from "../common/Buttons/IconButton";
 import ContentDataItem from "../common/List/ContentDataItem";
 import ConfirmationComponent from '../ConfirmationComponent';
 import {currencyFormatter} from '../../utils/formatter';
+import {useModal} from "react-native-modalfy";
 
 import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
-import { getTheatres, getInventories, getEquipment } from "../../api/network";
+import { getTheatres, getInventories, getEquipmentTypes } from "../../api/network";
 import _ from "lodash";
 import { useNextPaginator,usePreviousPaginator } from '../../helpers/caseFilesHelpers';
 import styled, {css} from '@emotion/native';
@@ -87,6 +88,7 @@ function DialogItems({
 
     const recordsPerPage = 4;
     const theme = useTheme();
+    const modal = useModal();
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
@@ -173,10 +175,10 @@ function DialogItems({
     };
 
     const fetchEquipments = () => {
-        getEquipment(searchValue, 5)
+        getEquipmentTypes(searchValue, 5)
             .then((equipmentResult = {}) => {
                 const { data = [], pages = 0} = equipmentResult
-                
+                console.log("Results:", data);
                 const results = data.map(item => ({
                     // name: `Dr. ${item.surname}`,
                     ...item
@@ -187,7 +189,7 @@ function DialogItems({
             })
             .catch(error => {
                 // TODO handle error
-                console.log("failed to get theatres");
+                console.log("failed to get equipments");
                 setSearchValue([]);
             })
     };
@@ -234,36 +236,38 @@ function DialogItems({
 
     const onQuantityChange = (item) => (action) =>{
 
-        const { amount = 0 } = item
+        const { amount = 1 } = item
 
         const updatedObj = {
             ...item,
-            amount: action === 'add' ? amount + 1 : amount === 0 ? amount : amount - 1
+            amount: action === 'add' ? amount + 1 : amount === 1 ? amount : amount - 1
         };
 
-        const updatedData = itemstoAdd.map(item => {
+        const updatedData = itemData.map(item => {
             return item._id === updatedObj._id
                 ? {...updatedObj}
                 : {...item}
         })
 
-        setItems(updatedData)
+        handleData(updatedData)
+        // setItems(updatedData)
     }
 
     const onAmountChange = (item) => (value) => {
 
         const updatedObj = {
             ...item,
-            amount: value === '' ? '' : parseFloat(value) < 0 ? 0 : parseInt(value)
+            amount: value === '' ? '' : parseFloat(value) < 1 ? 1 : parseInt(value)
         };
 
-        const updatedData = itemstoAdd.map(item => {
+        const updatedData = itemData.map(item => {
             return item._id === updatedObj._id
                 ? {...updatedObj}
                 : {...item}
         })
 
-        setItems(updatedData)
+        handleData(updatedData);
+        // setItems(updatedData)
     }
 
     const handleDeleteItem = (item) => {
@@ -287,6 +291,11 @@ function DialogItems({
                 })
     };
 
+    const onDeletePress = (item) => {
+        const filterItems = itemData.filter( obj => obj._id !== item._id);
+        handleData(filterItems);
+        // setItems(filterItems)
+     }
 
     const listLocationsItem = (item) => {
         let recovery = item.hasRecovery ? "Yes" : "No"
@@ -312,7 +321,8 @@ function DialogItems({
     };
 
     const listConsumblesEquipmentItem = (item) =>{
-        const { name = "", unitCost = 0, amount = 1} = item;
+        const { name = "", unitCost = 0, unitPrice = 0, amount = 1} = item;
+        let price = itemType === "Consumables" ? unitCost : unitPrice;
         console.log("Item: ", item);
         return (
             <ItemWrapper theme = {theme} style = {css`margin-right : 0;`}>
@@ -322,7 +332,7 @@ function DialogItems({
                     onAmountChange = {onAmountChange(item)}
                     value = {amount.toString()}
                 />
-                <DataItem text = {`$ ${currencyFormatter(unitCost)}`} flex = {1}  align = "center" fontStyle = "--text-sm-regular" color = "--color-gray-800" />
+                <DataItem text = {`$ ${currencyFormatter(price)}`} flex = {1}  align = "center" fontStyle = "--text-sm-regular" color = "--color-gray-800" />
                 <ContentDataItem
                     align = "flex-end"
                     content = {
