@@ -8,7 +8,7 @@ import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
 import LevelIndicator from '../components/common/LevelIndicator/LevelIndicator';
 import {numberFormatter} from '../utils/formatter';
-import {getStorage} from '../api/network';
+import {getStorage, removeStorageLocations} from '../api/network';
 import {setStorage} from '../redux/actions/storageActions';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
@@ -20,6 +20,7 @@ import AddIcon from '../../assets/svg/addIcon';
 import LongPressWithFeedback from '../components/common/LongPressWithFeedback';
 import CreateStorageDialogContainer from '../components/Storage/CreateStorageDialogContainer';
 import NavPage from '../components/common/Page/NavPage';
+import ConfirmationComponent from '../components/ConfirmationComponent';
 
 const listHeaders = [
     {
@@ -256,12 +257,13 @@ function Storage(props) {
     };
 
     const getFabActions = () => {
+        const isDisabled = selectedIds.length === 0;
         const deleteAction = (
             <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
                 <LongPressWithFeedback
                     pressTimer={1200}
-                    onLongPress={() => {
-                    }}
+                    onLongPress={removeStorageLocationsLongPress}
+                    isDisabled={isDisabled}
                 >
                     <ActionItem
                         title="Hold to Delete"
@@ -291,6 +293,87 @@ function Storage(props) {
             ]}
             title="STORAGE ACTIONS"
         />;
+    };
+
+    const removeStorageLocationsLongPress = () => {
+        // Done with one id selected
+        if (selectedIds.length > 0) openDeletionConfirm({ids: [...selectedIds]});
+        else openErrorConfirmation();
+    };
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removeStorageLocationsCall(data);
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message="Do you want to delete these item(s)?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const removeStorageLocationsCall = data => {
+        removeStorageLocations(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    onRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setSelectedIds([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove group: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
     };
 
     const openCreateStorageModel = () => {

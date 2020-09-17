@@ -375,6 +375,11 @@ export const createStorageLocation = async storageForCreation => suitesAxiosInst
     .then(handleResponse)
     .catch(handleError);
 
+export const removeStorageLocations = async data => suitesAxiosInstance
+    .delete(storageLocationsEndpoint, {data})
+    .then(handleResponse)
+    .catch(handleError);
+
 // ################# Equipment Endpoint
 export const getEquipment = async query => suitesAxiosInstance
     .get(equipmentsEndpoint, {params: {query}})
