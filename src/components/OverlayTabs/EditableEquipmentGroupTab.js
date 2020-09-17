@@ -19,6 +19,7 @@ import { set } from "numeral";
 import TextArea from "../common/Input Fields/TextArea";
 import InputFieldWithIcon from "../common/Input Fields/InputFieldWithIcon";
 import { withModal } from "react-native-modalfy";
+import { Divider } from "react-native-elements";
 
 const LabelText = styled.Text`
 color:${({ theme }) => theme.colors["--color-gray-600"]};
@@ -26,19 +27,16 @@ font:${({ theme }) => theme.font["--text-base-regular"]};
 `
 const InputWrapper = styled.View`
 height:30px;
-width:170px;
-margin:20px;
+width:250px;
+margin-top:5px;
 
 `
-const EditableEquipmentGroupTab = ({ fields, onFieldChange, handlePopovers, popoverList, modal }) => {
+const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popoverList, modal }) => {
 
 
     const theme = useTheme();
     const enabled = true;
 
-    const dateReceived = new Date(fields['availableOn']);
-
-    const today = new Date();
 
 
     // Physicians Search
@@ -160,8 +158,8 @@ const EditableEquipmentGroupTab = ({ fields, onFieldChange, handlePopovers, popo
                 console.log("Failed to add category", error)
             })
     }
+    let catPop = popoverList.filter(item => item.name === 'category')
 
-    let catPop = popoverList.filter(item => item.name === 'category');
     return (
         <KeyboardAvoidingView
             style={{ flex: 1 }}
@@ -169,120 +167,111 @@ const EditableEquipmentGroupTab = ({ fields, onFieldChange, handlePopovers, popo
             keyboardVerticalOffset={300}
             behavior={'padding'}
         >
-            <View style={{ height: 220, width: 620 }}>
-                <Row>
-                    <LabelText theme={theme}>Description</LabelText>
-                </Row>
-                <TextArea
-                    value={fields['description']}
-                    onChangeText={(value) => setDescriptionValue(value)}
-                />
+            <View style={{ width: 600, alignSelf: "center", }}>
+                <View style={{ width: "100%", flexDirection: "column", marginBottom: 20 }}>
+                    <>
+
+
+                        <Row>
+                            <InputWrapper>
+                                <InputField2
+                                    label="Equipment"
+                                    value={""}
+                                    labelWidth={80}
+                                    placeholder={fields['name']}
+                                    enabled={true}
+                                    editable={enabled}
+                                />
+                            </InputWrapper>
+
+                            <InputWrapper>
+
+                                <MultipleSelectionsField
+                                    disabled={false}
+                                    enabled={true}
+                                    createNew={createCategory}
+                                    label={"Category"}
+                                    onOptionsSelected={onFieldChange('category')}
+                                    options={categorySearchResults}
+                                    searchText={categorySearchValue}
+                                    onSearchChangeText={(value) => setCategorySearchValue(value)}
+                                    onClear={() => { setCategorySearchValue('') }}
+                                    handlePopovers={(value) => handlePopovers(value)('category')}
+                                    isPopoverOpen={catPop[0].status}
+                                />
+                            </InputWrapper>
+                        </Row>
+                        <Row>
+
+                            <InputWrapper>
+                                <InputField2
+                                    label="SKU"
+                                    value={""}
+                                    labelWidth={30}
+                                    placeholder={fields['sku']}
+                                    enabled={false}
+                                    editable={enabled}
+                                />
+                            </InputWrapper>
+
+
+
+
+                            <InputWrapper>
+
+                                <InputField2
+                                    label="Assigned"
+                                    value={fields['assigned']}
+                                    labelWidth={30}
+                                    placeholder={"--"}
+                                    enabled={true}
+
+                                />
+                            </InputWrapper>
+
+                        </Row>
+                        <Row>
+                            <InputWrapper>
+
+                                <OptionsField
+                                    label="Status"
+                                    key={fields['status']}
+                                    text={fields['status']}
+                                    oneOptionsSelected={onFieldChange('Status')}
+                                    menuOption={<MenuOptions>
+                                        <MenuOption value={"Available"} text='Available' />
+                                        <MenuOption value={"Servicing"} text='Servicing' />
+                                        <MenuOption value={"Damaged"} text='Damaged' />
+                                        <MenuOption value={"In Use"} text='In Use' />
+                                    </MenuOptions>}
+
+                                />
+                            </InputWrapper>
+
+                            <InputWrapper>
+
+                                <InputField2
+                                    label="Supplier"
+                                    value={fields['supplier']}
+                                    labelWidth={30}
+                                    placeholder={"--"}
+                                    enabled={true}
+
+                                />
+                            </InputWrapper>
+                        </Row>
+
+
+
+
+
+
+
+                    </>
+
+                </View>
+                <Divider />
             </View>
-            <>
-
-
-                <Row>
-                    <InputWrapper>
-                        <LabelText theme={theme}>SKU</LabelText>
-                        <InputField2
-
-                            value={""}
-                            labelWidth={30}
-                            placeholder={fields['sku']}
-                            enabled={false}
-                            editable={enabled}
-                        />
-                    </InputWrapper>
-
-
-
-
-                    <InputWrapper>
-                        <LabelText theme={theme}>Assigned</LabelText>
-                        <InputField2
-                            value={fields['assigned']}
-                            labelWidth={30}
-                            placeholder={"--"}
-                            enabled={true}
-
-                        />
-                    </InputWrapper>
-
-                    <InputWrapper>
-                        <LabelText theme={theme}>Status</LabelText>
-                        <OptionsField
-                            key={fields['status']}
-                            text={fields['status']}
-                            oneOptionsSelected={onFieldChange('Status')}
-                            menuOption={<MenuOptions>
-                                <MenuOption value={"Available"} text='Available' />
-                                <MenuOption value={"Servicing"} text='Servicing' />
-                                <MenuOption value={"Damaged"} text='Damaged' />
-                                <MenuOption value={"In Use"} text='In Use' />
-                            </MenuOptions>}
-
-                        />
-                    </InputWrapper>
-                </Row>
-                <Row>
-                    <InputWrapper>
-                        <LabelText theme={theme}>Supplier</LabelText>
-                        <InputField2
-                            value={fields['supplier']}
-                            labelWidth={30}
-                            placeholder={"--"}
-                            enabled={true}
-
-                        />
-                    </InputWrapper>
-
-                    <InputWrapper>
-                        <LabelText theme={theme}>Usage</LabelText>
-                        <InputField2
-                            value={`${fields['usage']} `}
-                            labelWidth={30}
-                            onChangeText={(value) => {
-                                onFieldChange('usage')(value)
-                            }}
-                            keyboardType="number-pad"
-                            placeholder={"--"}
-                            enabled={true}
-
-                        />
-                    </InputWrapper>
-
-                    <InputWrapper>
-                        <LabelText theme={theme}>Available On</LabelText>
-                        <InputField2
-                            value={`${parseInt((dateReceived - today) / (1000 * 60 * 60 * 24))} days`}
-                            labelWidth={30}
-                            placeholder={"--"}
-                            enabled={false}
-
-                        />
-                    </InputWrapper>
-
-
-                </Row>
-
-                <Row>
-
-                    <MultipleSelectionsField
-                        disabled={true}
-                        onOptionsSelected={() => { }}
-                        label={"Category"}
-                        value={!fields?.categories ? "--" : fields.categories}
-                    />
-                </Row>
-
-
-
-
-
-
-            </>
-
-
         </KeyboardAvoidingView>
 
 

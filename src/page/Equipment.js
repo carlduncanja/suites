@@ -329,9 +329,17 @@ const Equipment = (props) => {
 
     assignments = equipments.map(x => { return x.assignments.map(assigned => assigned.theatre) })
 
+    console.log("id has", item._id);
+    let asArray = [];
+
+    //asArray = [[...equipments.map(x => x.assignments)]];
 
 
     const concatAssignments = [].concat.apply([], assignments);
+
+    // console.log("id being passed", item._id)
+
+    //const filtered = [...concatAssignments.filter(assigned => assigned.equipment === item._id)];
 
     const viewItem = {
       name: item.name,

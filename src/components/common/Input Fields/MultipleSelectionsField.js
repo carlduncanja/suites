@@ -105,7 +105,7 @@ function MultipleSelectionsField({
                     <TextInputContainer theme={theme} hasError={hasError} backgroundColor={disabled ? "--color-gray-200" : null}>
 
                         <TouchableOpacity
-                            onPress={() => { disabled ? toggleCheckBox() && handlePopovers(true) : "" }}
+                            onPress={() => { !disabled ? toggleCheckBox() && handlePopovers(true) : () => { } }}
                             style={[styles.inputField, {}]}
                         >
                             {
@@ -135,8 +135,8 @@ function MultipleSelectionsField({
                             <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "flex-end" }}>
                                 <IconButton
                                     Icon={<DropDownIcon />}
-                                    onPress={() => { }}
-                                // onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
+                                    //onPress={() => { }}
+                                    onPress={() => { toggleCheckBox(); handlePopovers(true) }}
                                 />
                             </View>
 
