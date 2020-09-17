@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, DatePickerIOS } from 'react-native';
 import styled, { css } from '@emotion/native';
 import { withModal } from "react-native-modalfy";
 import Record from '../common/Information Record/Record';
@@ -17,12 +17,20 @@ import { isEmpty } from 'lodash';
 import { Divider } from 'react-native-paper';
 import _ from "lodash";
 import InputUnitField from '../common/Input Fields/InputUnitFields';
-
+import DateInputField from '../common/Input Fields/DateInputField';
+import moment from 'moment';
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
 
 const InputWrapper = styled.View`
 height:30px;
 width:230px;
 margin:40px;
+
+`
+const DateWrapper = styled.View`
+height:30px;
+width:280px;
+margin-top:5px;
 
 `
 
@@ -56,6 +64,8 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResults] = useState([]);
     const [searchQuery, setSearchQuery] = useState();
+
+    const today = new Date();
 
     useEffect(() => {
 
@@ -116,6 +126,13 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
             })
     }
 
+    const onDateChange = (date) => {
+
+        onFieldChange('date')(date)
+
+    }
+
+
 
 
     return (
@@ -133,12 +150,13 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     </InputWrapper>
 
                     <InputWrapper>
-                        <InputField2
-                            value={""}
-                            labelWidth={30}
-                            placeholder={!equipmentDetails?.categories ? "--" : equipmentDetails.categories[0]}
-                            label="Category"
-                            enabled={false}
+                        <MultipleSelectionsField
+                            disabled={true}
+                            onOptionsSelected={() => { }}
+                            label={"Category"}
+                            value={!equipmentDetails?.categories ? "--" : equipmentDetails.categories}
+
+
                         />
                     </InputWrapper>
                 </View>
@@ -215,8 +233,27 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                         />
                     </InputWrapper>
 
-
                 </ViewBreaker>
+
+                <DateWrapper>
+                    <DateInputField
+                        label={"Date of Assignment"}
+                        labelWidth={28}
+                        value={data['date']}
+                        onClear={() => onFieldChange('date')('')}
+                        mode={'date'}
+                        format={"YYYY-MM-DD"}
+                        keyboardType="number-pad"
+                        placeholder="YYYY/MM/DD"
+                        minDate={new Date(moment().add(1, 'days'))}
+                        maxDate={null}
+                        onDateChange={onDateChange}
+                    // hasError={errors['dob']}
+                    // errorMessage={errors['dob']}
+                    />
+                </DateWrapper>
+
+
 
 
             </View >

@@ -1,45 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Text } from "react-native";
-import Page from "../components/common/Page/Page";
-import ListItem from "../components/common/List/ListItem";
-import LevelIndicator from "../components/common/LevelIndicator/LevelIndicator";
-import { numberFormatter } from "../utils/formatter";
-import { useModal } from "react-native-modalfy";
-import { getStorage } from "../api/network";
-import { setStorage } from "../redux/actions/storageActions";
-import { connect } from "react-redux";
-import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
-import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
-import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress } from "../helpers/caseFilesHelpers";
-import ActionContainer from "../components/common/FloatingAction/ActionContainer";
-import ActionItem from "../components/common/ActionItem";
-import WasteIcon from "../../assets/svg/wasteIcon";
-import AddIcon from "../../assets/svg/addIcon";
-import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
-import CreateStorageDialogContainer from "../components/Storage/CreateStorageDialogContainer";
+import {View, StyleSheet, Text} from 'react-native';
+import {useModal} from 'react-native-modalfy';
+import {connect} from 'react-redux';
+import _ from 'lodash';
+import Page from '../components/common/Page/Page';
+import ListItem from '../components/common/List/ListItem';
+import LevelIndicator from '../components/common/LevelIndicator/LevelIndicator';
+import {numberFormatter} from '../utils/formatter';
+import {getStorage, removeStorageLocations} from '../api/network';
+import {setStorage} from '../redux/actions/storageActions';
+import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
+import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
+import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from '../helpers/caseFilesHelpers';
+import ActionContainer from '../components/common/FloatingAction/ActionContainer';
+import ActionItem from '../components/common/ActionItem';
+import WasteIcon from '../../assets/svg/wasteIcon';
+import AddIcon from '../../assets/svg/addIcon';
+import LongPressWithFeedback from '../components/common/LongPressWithFeedback';
+import CreateStorageDialogContainer from '../components/Storage/CreateStorageDialogContainer';
 import NavPage from '../components/common/Page/NavPage';
-import _ from "lodash";
-
+import ConfirmationComponent from '../components/ConfirmationComponent';
 
 const listHeaders = [
     {
-        name: "Room Name",
-        alignment: "flex-start",
+        name: 'Room Name',
+        alignment: 'flex-start',
         flex: 1.5
     },
     {
-        name: "In Stock",
-        alignment: "center",
+        name: 'In Stock',
+        alignment: 'center',
         flex: 1,
     },
     {
-        name: "Capacity",
-        alignment: "center",
+        name: 'Capacity',
+        alignment: 'center',
         flex: 1
     }
 ];
-
 
 function Storage(props) {
     const {
@@ -47,7 +46,7 @@ function Storage(props) {
         setStorage,
     } = props;
 
-    const pageTitle = "Storage";
+    const pageTitle = 'Storage';
     const recordsPerPage = 10;
     const modal = useModal();
 
@@ -55,7 +54,7 @@ function Storage(props) {
     const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
 
@@ -77,11 +76,10 @@ function Storage(props) {
     }, []);
 
     useEffect(() => {
-
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
-            fetchStorageData(1)
+            fetchStorageData(1);
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
@@ -97,57 +95,57 @@ function Storage(props) {
             return search;
         });
 
-        search()
-        setCurrentPagePosition(1)
+        search();
+        setCurrentPagePosition(1);
     }, [searchValue]);
-
 
     // ############# Event Handlers
 
     const onRefresh = () => {
-        fetchStorageData()
+        fetchStorageData();
     };
 
-    const onSearchChange = (input) => {
-        setSearchValue(input)
+    const onSearchChange = input => {
+        setSearchValue(input);
     };
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
-            fetchStorageData(currentPage)
+            fetchStorageData(currentPage);
         }
     };
 
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
-        fetchStorageData(currentPage)
-
+        fetchStorageData(currentPage);
     };
 
     const onSelectAll = () => {
-        let updatedStorage = selectAll(storageLocations, selectedIds)
-        setSelectedIds(updatedStorage)
-
-    };
-
-    const onCheckBoxPress = (item) => () => {
-        const { _id } = item;
-        let updatedStorage = checkboxItemPress(item, _id, selectedIds)
+        const updatedStorage = selectAll(storageLocations, selectedIds);
         setSelectedIds(updatedStorage);
-
     };
 
-    const onItemPress = (item) => () => {
-        props.navigation.navigate("StoragePage", { initial: false, storage: item });
+    const onCheckBoxPress = item => () => {
+        const {_id} = item;
+        const updatedStorage = checkboxItemPress(item, _id, selectedIds);
+        setSelectedIds(updatedStorage);
+    };
+
+    const onItemPress = item => () => {
+        props.navigation.navigate('StoragePage', {
+            initial: false,
+            storage: item,
+            reloadStorageLocations: () => fetchStorageData(currentPagePosition)
+        });
         // modal.openModal('BottomSheetModal', {
         //     content: <StorageBottomSheetContainer storage={item}/>
         // })
@@ -155,54 +153,56 @@ function Storage(props) {
 
     const toggleActionButton = () => {
         setFloatingAction(true);
-        modal.openModal("ActionContainerModal",
+        modal.openModal('ActionContainerModal',
             {
                 actions: getFabActions(),
-                title: "STORAGE ACTIONS",
+                title: 'STORAGE ACTIONS',
                 onClose: () => {
-                    setFloatingAction(false)
+                    setFloatingAction(false);
                 }
-            })
+            });
     };
 
-
     // ##### Helper functions
-    const storageItem = ({ name, stock, levels }) => <>
-        <View style={[styles.item, { flex: 1.5, justifyContent: 'space-between', ...styles.rowBorderRight }]}>
-            <Text style={{ color: "#3182CE", fontSize: 16 }}>
-                {name}
-            </Text>
-        </View>
-        <View style={[
-            styles.item, { justifyContent: "center" }
-        ]}>
-            <Text style={[styles.itemText]}>
-                {numberFormatter(stock)}
-            </Text>
-        </View>
-        <View style={[
-            styles.item, { justifyContent: "center" }
-        ]}>
-            {/*   LEVELS    */}
-            <LevelIndicator
-                max={levels.max}
-                min={0}
-                level={stock}
-                ideal={levels.ideal}
-                critical={levels.critical}
-            />
-        </View>
-    </>;
+    const storageItem = ({name, stock, levels}) => (
+        <>
+            <View style={[styles.item, {flex: 1.5, justifyContent: 'space-between', ...styles.rowBorderRight}]}>
+                <Text style={{color: '#3182CE', fontSize: 16}}>
+                    {name}
+                </Text>
+            </View>
+            <View style={[
+                styles.item, {justifyContent: 'center'}
+            ]}
+            >
+                <Text style={[styles.itemText]}>
+                    {numberFormatter(stock)}
+                </Text>
+            </View>
+            <View style={[
+                styles.item, {justifyContent: 'center'}
+            ]}
+            >
+                {/*   LEVELS    */}
+                <LevelIndicator
+                    max={levels.max}
+                    min={0}
+                    level={stock}
+                    ideal={levels.ideal}
+                    critical={levels.critical}
+                />
+            </View>
+        </>
+    );
 
-    const fetchStorageData = (pagePosition) => {
-
-        let currentPosition = pagePosition ? pagePosition : 1;
-        setCurrentPagePosition(currentPosition)
+    const fetchStorageData = pagePosition => {
+        const currentPosition = pagePosition || 1;
+        setCurrentPagePosition(currentPosition);
 
         setFetchingData(true);
         getStorage(searchValue, recordsPerPage, currentPosition)
             .then(storageResult => {
-                const { data = [], pages = 0 } = storageResult
+                const {data = [], pages = 0} = storageResult;
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
@@ -215,27 +215,25 @@ function Storage(props) {
                     setPreviousDisabled(false);
                 } else if (currentPosition < pages) {
                     setNextDisabled(false);
-                    setPreviousDisabled(false)
+                    setPreviousDisabled(false);
                 } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
 
                 setStorage(data);
-                data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
-
+                data.length === 0 ? setTotalPages(0) : setTotalPages(pages);
             })
             .catch(error => {
-                console.log("failed to get storage", error);
+                console.log('failed to get storage', error);
             })
             .finally(_ => {
-                setFetchingData(false)
-            })
+                setFetchingData(false);
+            });
     };
 
-    const renderItem = (item) => {
-
-        const totalStock = item.inventoryLocations?.reduce((acc, item) => acc + item.stock, 0) || 0
+    const renderItem = item => {
+        const totalStock = item.inventoryLocations?.reduce((acc, item) => acc + item.stock, 0) || 0;
 
         const formattedItem = {
             name: item.name,
@@ -255,32 +253,127 @@ function Storage(props) {
             onCheckBoxPress={onCheckBoxPress(item)}
             onItemPress={onItemPress(item)}
             itemView={itemView}
-        />
+        />;
     };
 
     const getFabActions = () => {
-
-        const deleteAction =
-            <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
-                <LongPressWithFeedback pressTimer={1200} onLongPress={() => {
-                }}>
-                    <ActionItem title={"Hold to Delete"} icon={<WasteIcon />} onPress={() => {
-                    }} touchable={false} />
+        const isDisabled = selectedIds.length === 0;
+        const deleteAction = (
+            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+                <LongPressWithFeedback
+                    pressTimer={1200}
+                    onLongPress={removeStorageLocationsLongPress}
+                    isDisabled={isDisabled}
+                >
+                    <ActionItem
+                        title="Hold to Delete"
+                        icon={<WasteIcon/>}
+                        onPress={() => {
+                        }}
+                        touchable={false}
+                    />
                 </LongPressWithFeedback>
-            </View>;
+            </View>
+        );
 
-
-        const createAction = <ActionItem title={"New Location"} icon={<AddIcon />} onPress={
-            openCreateStorageModel
-        } />;
+        const createAction = (
+            <ActionItem
+                title="New Location"
+                icon={<AddIcon/>}
+                onPress={
+                    openCreateStorageModel
+                }
+            />
+        );
 
         return <ActionContainer
             floatingActions={[
                 deleteAction,
                 createAction
             ]}
-            title={"STORAGE ACTIONS"}
-        />
+            title="STORAGE ACTIONS"
+        />;
+    };
+
+    const removeStorageLocationsLongPress = () => {
+        // Done with one id selected
+        if (selectedIds.length > 0) openDeletionConfirm({ids: [...selectedIds]});
+        else openErrorConfirmation();
+    };
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removeStorageLocationsCall(data);
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message="Do you want to delete these item(s)?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const removeStorageLocationsCall = data => {
+        removeStorageLocations(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    onRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setSelectedIds([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove group: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
     };
 
     const openCreateStorageModel = () => {
@@ -288,26 +381,26 @@ function Storage(props) {
 
         // For some reason there has to be a delay between closing a modal and opening another.
         setTimeout(() => {
-
             modal
                 .openModal(
                     'OverlayModal',
                     {
                         content: <CreateStorageDialogContainer
-                            onCreated={(item) => onItemPress(item)()}
+                            onCreated={item => onItemPress(item)()}
                             onCancel={() => setFloatingAction(false)}
                         />,
                         onClose: () => setFloatingAction(false)
-                    })
-        }, 200)
+                    }
+                );
+        }, 200);
     };
 
-    let storageToDisplay = [...storageLocations];
+    const storageToDisplay = [...storageLocations];
     // storageToDisplay = storageToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
         <NavPage
-            placeholderText={"Search by room name."}
+            placeholderText="Search by room name."
             routeName={pageTitle}
             listData={storageToDisplay}
             inputText={searchValue}
@@ -336,7 +429,6 @@ function Storage(props) {
 Storage.propTypes = {};
 Storage.defaultProps = {};
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -348,7 +440,7 @@ const styles = StyleSheet.create({
     },
     itemText: {
         fontSize: 14,
-        color: "#4E5664",
+        color: '#4E5664',
     },
     footer: {
         flex: 1,
@@ -360,16 +452,12 @@ const styles = StyleSheet.create({
         marginRight: 30,
     },
     rowBorderRight: {
-        borderRightColor: "#E3E8EF",
+        borderRightColor: '#E3E8EF',
         borderRightWidth: 1,
     }
 });
-const mapStateToProps = (state) => ({
-    storageLocations: state.storage
-});
+const mapStateToProps = state => ({storageLocations: state.storage});
 
-const mapDispatcherToProp = {
-    setStorage
-};
+const mapDispatcherToProp = {setStorage};
 
 export default connect(mapStateToProps, mapDispatcherToProp)(Storage);

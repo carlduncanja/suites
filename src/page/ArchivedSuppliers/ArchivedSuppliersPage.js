@@ -149,6 +149,7 @@ function ArchivedSuppliersPage(props) {
             .then(suppliersInfo => {
                 const { data = [] } = suppliersInfo
                 console.log("Archived suppliers received is:", data);
+                setTotalPages(1);
 
                 // if (pages === 1) {
                 //     setPreviousDisabled(true);

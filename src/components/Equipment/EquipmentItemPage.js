@@ -18,7 +18,7 @@ function EquipmentItemPage({ route, navigation }) {
     const { equipment, info, isOpenEditable, group } = route.params;
 
 
-    console.log("Info item has:", info);
+    console.log("info item has:", info);
     const testData = {
         description: "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
         assigned: "Dr.Mansingh",
@@ -33,7 +33,7 @@ function EquipmentItemPage({ route, navigation }) {
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [selectedEquipment, setSelectedEquipment] = useState(equipment)
+    const [selectedEquipment, setSelectedEquipment] = useState(equipment);
     const [isEditMode, setEditMode] = useState(isOpenEditable);
     const [editableTab, setEditableTab] = useState('')
     const [isFetching, setFetching] = useState(false);
@@ -47,10 +47,9 @@ function EquipmentItemPage({ route, navigation }) {
         // supplier name
         supplier,
         assigned,
-        status,
         usage,
         availableOn,
-        categories,
+        categories = [],
         description,
         sku
     } = equipment
@@ -66,7 +65,7 @@ function EquipmentItemPage({ route, navigation }) {
         usage: usage,
         availableOn: info.dateAvailable,
         categories: categories,
-        description: description
+        description: info.description
     })
 
     // ##### Lifecycle Methods
