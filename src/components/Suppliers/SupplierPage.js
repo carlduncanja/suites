@@ -161,7 +161,10 @@ function SupplierPage({ route, navigation }) {
                 console.log("Failed to get products", error)
                 //TODO handle error cases.
                 errorScreen();
-                //CONFIRAMTION SCREEN
+                //CONFORMATION SCREEN
+            })
+            .finally( _ => {
+                setPageLoading(false);
             })
     };
 
@@ -197,7 +200,7 @@ function SupplierPage({ route, navigation }) {
                     floatingActions={floatingActions}
                     products={products}
                     onAddProducts={onAddProducts}
-                    // cartOrderItems = {cartOrderItems}
+                    onProductsCreated={() => fetchProducts()}
                     supplierId={_id}
                 />
             case "Purchase Orders":

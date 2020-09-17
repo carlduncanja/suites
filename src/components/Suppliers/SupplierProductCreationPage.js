@@ -181,7 +181,7 @@ const headers = [
 ]
 
 function SupplierProductCreationPage({route}) {
-    const { refresh, supplierId, } = route.params;
+    const { onProductsCreated = () => {}, supplierId} = route.params;
     const theme = useTheme();
     const modal = useModal()
     const navigation = useNavigation();
@@ -228,7 +228,6 @@ function SupplierProductCreationPage({route}) {
         search()
     }, [searchValue]);
     //endregion
-
 
     // region Event Handlers
     const onClosePress = () => {
@@ -290,6 +289,7 @@ function SupplierProductCreationPage({route}) {
 
     // endregion
 
+    // region helper functions
     const listItemFormat = (item, index) => {
         const {_id = "", name = "", unitPrice, inventoryVariant = {}} = item
         return (
@@ -336,7 +336,20 @@ function SupplierProductCreationPage({route}) {
 
     const creatProducts = () => {
         setLoading(true);
-        createSupplierProductsCall(supplierId, data)
+
+        console.log("create products", data);
+
+        const createProductsData = data.map(item => {
+            return {
+                "name": item.name,
+                "type": "inventory",
+                "sku": "",
+                "unitPrice": item.unitPrice,
+                "inventoryVariant": item.inventoryVariant?._id
+            }
+        })
+
+        createSupplierProductsCall(supplierId, createProductsData)
             .then( _ => {
                 modal.openModal(
                     'ConfirmationModal',
@@ -347,6 +360,8 @@ function SupplierProductCreationPage({route}) {
                             onCancel = {() => {}}
                             onAction = {() => {
                                 modal.closeAllModals();
+                                onProductsCreated()
+                                navigation.goBack()
                             }}
                         />
                         ,
@@ -354,7 +369,7 @@ function SupplierProductCreationPage({route}) {
                     })
             })
             .catch( error => {
-                console.log("failed to create products", error)
+                console.log("failed to create products", error.response?.body)
                 modal.openModal(
                         'ConfirmationModal',
                         {
@@ -377,14 +392,12 @@ function SupplierProductCreationPage({route}) {
                 setLoading(false);
             })
     }
-
+    // endregion
 
     // const dataToDisplay = []
 
     return (
-
         <PageWrapper>
-
             <DefaultPage
                 pageTitle={"Create Products"}
                 onClosePress={onClosePress}
@@ -490,8 +503,6 @@ function SupplierProductCreationPage({route}) {
             }
 
         </PageWrapper>
-
-
     );
 }
 

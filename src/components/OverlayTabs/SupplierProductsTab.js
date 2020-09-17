@@ -54,7 +54,7 @@ const PaginatorActionsContainer = styled.View`
 `
 
 
-function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false }) {
+function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false, onProductsCreated }) {
 
     // ######## STATES
     console.log("Cart: ", cart)
@@ -416,7 +416,7 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
     const openAddProduct = () => {
         modal.closeModals('ActionContainerModal')
-        navigation.navigate('SupplierProductCreation', {supplierId})
+        navigation.navigate('SupplierProductCreation', {supplierId, onProductsCreated})
     }
 
     const listItemFormat = (item) => <>
@@ -499,33 +499,6 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
                 </FooterContainer>
             </FooterWrapper>
-            {/* <View style={styles.footer}>
-                <View>
-                    <FloatingActionAnnotated
-                        toggleActionButton={toggleCartActionButton}
-                        icon = {Cart}
-                        value = {cartTotal}
-                        showValue =  {cartTotal !== 0}
-                    />
-                </View>
-
-                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', paddingRight:20}}>
-                    <View style={{alignSelf: "center", marginRight: 10}}>
-                        <RoundedPaginator
-                            totalPages={totalPages}
-                            currentPage={currentPagePosition}
-                            goToNextPage={goToNextPage}
-                            goToPreviousPage={goToPreviousPage}
-                        />
-                    </View>
-
-                    <FloatingActionButton
-                        isDisabled={isFloatingActionDisabled}
-                        toggleActionButton={toggleActionButton}
-                    />
-                </View>
-
-            </View> */}
         </>
     )
 }
