@@ -34,6 +34,7 @@ const TextAreaWrapper = styled.View`
 `;
 
 
+
 function Record({
                     recordTitle = "",
                     recordValue = '--',
@@ -65,7 +66,7 @@ function Record({
                     <ValueText
                         theme={theme}
                         valueColor={valueColor}
-                        valueStyle={valueStyle}>
+                        valueStyle={valueStyle}> 
                         {recordValue || "--"}
                     </ValueText>
                 }
@@ -86,11 +87,15 @@ function Record({
 
                 {
                     editMode && !useTextArea &&
+                    
                     <InputField2
                         value={recordValue}
                         onChangeText={onRecordUpdate}
                         enabled={editable}
+                        onClear = {onClearValue}
                     />
+    
+                    
                 }
 
 

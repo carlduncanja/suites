@@ -18,7 +18,7 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
 function TextArea({label, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error", numberOfLines = 4}) {
     console.log("Value: ", value);
     return ( 
-        <View style={styles.container}> 
+        <View style={styles.container}>  
             {
                 label &&  <Text style={[
                     styles.textLabel, {

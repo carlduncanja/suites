@@ -69,6 +69,7 @@ const Divider = styled.View`
     margin-top : ${ ({theme}) => theme.space['--space-20']};
     margin-bottom : ${ ({theme}) => theme.space['--space-32']};
 `;
+
 function CreateInventoryDialogContainer({navigation, route, addInventory}) {
 
     // ########## CONST
@@ -209,7 +210,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
         getSuppliers(supplierSearchValue, 5)
             .then((supplierData ) => {
                 const { data = [], pages = 0} = supplierData
-                // console.log("Data: ", data)
+                console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));

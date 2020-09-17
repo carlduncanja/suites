@@ -45,6 +45,7 @@ const TextInputContainer = styled.View`
 
 function MultipleSelectionsField({
     onOptionsSelected,
+    disabled = false,
     createNew,
     label,
     value = [],
@@ -101,10 +102,10 @@ function MultipleSelectionsField({
                 */}
 
                 <TextInputWrapper>
-                    <TextInputContainer theme={theme} hasError={hasError}>
+                    <TextInputContainer theme={theme} hasError={hasError} backgroundColor={disabled ? "--color-gray-200" : null}>
 
                         <TouchableOpacity
-                            onPress={() => { toggleCheckBox(); handlePopovers(true) }}
+                            onPress={() => { !disabled ? toggleCheckBox() && handlePopovers(true) : () => { } }}
                             style={[styles.inputField, {}]}
                         >
                             {
@@ -134,8 +135,8 @@ function MultipleSelectionsField({
                             <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "flex-end" }}>
                                 <IconButton
                                     Icon={<DropDownIcon />}
-                                    onPress={() => { }}
-                                // onPress = {()=>{toggleCheckBox(); handlePopovers(true)}}
+                                    //onPress={() => { }}
+                                    onPress={() => { toggleCheckBox(); handlePopovers(true) }}
                                 />
                             </View>
 

@@ -19,7 +19,7 @@ import TabsContainer from '../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 
 function PhysicianPage({route, navigation}) {
-    const {physician, isOpenEditable} = route.params;
+    const {physician, isOpenEditable, reloadPhysicians} = route.params;
 
     const currentTabs = ['Details', 'Case Files', 'Custom Procedures', 'Schedule'];
     const modal = useModal();
@@ -36,9 +36,9 @@ function PhysicianPage({route, navigation}) {
         phones,
         emergencyContact
     } = physician;
-    const name = `Dr. ${firstName} ${surname}`;
     // ##### States
 
+    const [name, setName] = useState(`Dr. ${firstName} ${surname}`);
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedPhysician, setSelectedPhysician] = useState(physician);
     // const [isEditMode, setEditMode] = useState(isOpenEditable);
@@ -63,6 +63,7 @@ function PhysicianPage({route, navigation}) {
     // ##### Lifecycle Methods
     useEffect(() => {
         fetchPhysician(_id);
+        console.log('and mek yuh touch yuh tonsil')
     }, []);
 
     useEffect(() => {
@@ -150,6 +151,28 @@ function PhysicianPage({route, navigation}) {
             .then(data => {
                 fetchPhysician(_id);
                 console.log('Physician data from db: ', data);
+
+                if (reloadPhysicians) reloadPhysicians();
+
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Changes were successful."//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
             })
             .catch(error => {
                 // todo handle error
@@ -170,21 +193,21 @@ function PhysicianPage({route, navigation}) {
     const getTabContent = selectedTab => {
         const {cases = [], procedures = []} = selectedPhysician;
         switch (selectedTab) {
-        case 'Details':
-            return editableTab === 'Details' && pageState.isEditMode ? (
-                <EditablePhysiciansDetailsTab
-                    fields={fields}
-                    onFieldChange={onFieldChange}
-                />
-            ) : <PhysiciansDetailsTab physician={selectedPhysician}/>;
-        case 'Case Files':
-            return <CaseFilesTab cases={cases}/>;
-        case 'Custom Procedures':
-            return <CustomProceduresTab procedures={procedures}/>;
-        case 'Schedule':
-            return <PaginatedSchedule ID={physician._id} isPhysician={true}/>;
-        default:
-            return <View/>;
+            case 'Details':
+                return editableTab === 'Details' && pageState.isEditMode ? (
+                    <EditablePhysiciansDetailsTab
+                        fields={fields}
+                        onFieldChange={onFieldChange}
+                    />
+                ) : <PhysiciansDetailsTab physician={selectedPhysician}/>;
+            case 'Case Files':
+                return <CaseFilesTab cases={cases}/>;
+            case 'Custom Procedures':
+                return <CustomProceduresTab procedures={procedures}/>;
+            case 'Schedule':
+                return <PaginatedSchedule ID={physician._id} isPhysician={true}/>;
+            default:
+                return <View/>;
         }
     };
 
@@ -193,6 +216,9 @@ function PhysicianPage({route, navigation}) {
         getPhysicianById(id)
             .then(data => {
                 setSelectedPhysician(data);
+
+                const {firstName, surname} = data;
+                setName(`Dr. ${firstName} ${surname}`);
                 // setPhysician(data)
             })
             .catch(error => {

@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from "react-native";
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, View} from 'react-native';
 import BottomSheetContainer from '../common/BottomSheetContainer';
-import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
+import SlideOverlay from '../common/SlideOverlay/SlideOverlay';
 import StorageConsumablesTab from '../OverlayTabs/StorageConsumablesTab';
 import StorageEquipmentTab from '../OverlayTabs/StorageEquipmentTab';
-import TransfersOverlayTab from "../OverlayTabs/TransfersOverlayTab";
-import { getStorageById } from "../../api/network";
-import { colors } from "../../styles";
-import { PageContext } from "../../contexts/PageContext";
-import DetailsPage from "../common/DetailsPage/DetailsPage";
-import TabsContainer from "../common/Tabs/TabsContainerComponent";
+import TransfersOverlayTab from '../OverlayTabs/TransfersOverlayTab';
+import {getStorageById} from '../../api/network';
+import {colors} from '../../styles';
+import {PageContext} from '../../contexts/PageContext';
+import DetailsPage from '../common/DetailsPage/DetailsPage';
+import TabsContainer from '../common/Tabs/TabsContainerComponent';
+import StorageDetailsTab from './StorageDetailsTab';
 
-function StoragePage({ route, navigation }) {
-    const currentTabs = ["Transfer", "Consumables", "Equipment"];
+function StoragePage({route, navigation}) {
+    const currentTabs = ['Details', 'Transfers', 'Consumables', 'Equipment'];
 
-    const { storage } = route.params;
+    const {storage, reloadStorageLocations} = route.params;
 
     // ##### States
 
@@ -28,14 +29,13 @@ function StoragePage({ route, navigation }) {
 
     useEffect(() => {
         setTimeout(() => {
-            fetchStorageItem(storage._id)
-        }, 200)
+            fetchStorageItem(storage._id);
+        }, 200);
     }, []);
-
 
     // ##### Event Handlers
 
-    const onTabPress = (selectedTab) => {
+    const onTabPress = selectedTab => {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
@@ -44,68 +44,88 @@ function StoragePage({ route, navigation }) {
     };
 
     const backTapped = () => {
-        navigation.navigate("Storage");
-    }
+        navigation.navigate('Storage');
+    };
 
     // ##### Helper functions
 
-    const setPageLoading = (value) => {
+    const setPageLoading = value => {
         setPageState({
             ...pageState,
             isLoading: value,
             isEdit: false
-        })
-    }
+        });
+    };
 
-
-    const fetchStorageItem = (id) => {
-
+    const fetchStorageItem = id => {
         setPageLoading(true);
         getStorageById(id)
             .then(data => {
                 setStorageItem(data);
             })
             .catch(error => {
-                console.log("Failed to get inventory item", error);
+                console.log('Failed to get inventory item', error);
                 // TODO handle error
             })
             .finally(_ => {
-
                 setPageLoading(false);
-            })
+            });
     };
 
-    const getTabContent = (selectedTab) => {
+    const onDetailsUpdated = updates => {
+        setStorageItem({
+            ...storageItem,
+            name: updates.name,
+            description: updates.description
+        });
+        if (reloadStorageLocations) reloadStorageLocations();
+    };
+
+    const getTabContent = selectedTab => {
         switch (selectedTab) {
-            case "Transfer":
-                return <TransfersOverlayTab />;
-            case "Consumables":
+            case 'Details':
+                const storageLocationDetails = {
+                    description: storageItem.description,
+                    name: storageItem.name,
+                };
+
+                return <StorageDetailsTab
+                    {...storageLocationDetails}
+                    storageLocationId={storageItem._id}
+                    onUpdated={onDetailsUpdated}
+                    isEditMode={isEditMode}
+                />;
+            case 'Transfers':
+                return <TransfersOverlayTab/>;
+            case 'Consumables': {
                 // Get Consumables
                 const consumables = storageItem.inventoryLocations.map(item => {
                     console.log(item);
 
                     return {
                         item: item.inventory.name,
-                        type: "",
+                        type: '',
                         onHand: item.stock,
                         unitPrice: item.inventory.unitPrice
-                    }
+                    };
                 });
 
-                return <StorageConsumablesTab consumables={consumables} />;
-
-            case "Equipment":
-                return <StorageEquipmentTab />;
+                return <StorageConsumablesTab consumables={consumables}/>;
+            }
+            case 'Equipment':
+                return <StorageEquipmentTab/>;
             default:
-                return <View />
+                return <View/>;
         }
     };
 
-    const overlayContent = <View style={{ flex: 1, padding: 30 }}>
-        {getTabContent(currentTab)}
-    </View>;
+    const overlayContent = (
+        <View style={{flex: 1, padding: 30}}>
+            {getTabContent(currentTab)}
+        </View>
+    );
 
-    const { _id, name } = storageItem;
+    const {_id, name} = storageItem;
 
     return (
         // <BottomSheetContainer
@@ -120,17 +140,17 @@ function StoragePage({ route, navigation }) {
         //     overlayContent={getTabContent(currentTab)}
         // />
         <>
-            <PageContext.Provider value={{ pageState, setPageState }}>
+            <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     headerChildren={[name]}
                     onBackPress={backTapped}
-                    pageTabs={
+                    pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}
                             selectedTab={currentTab}
                             onPressChange={onTabPress}
                         />
-                    }
+                    )}
                 >
                     {getTabContent(currentTab)}
                 </DetailsPage>
@@ -143,4 +163,3 @@ StoragePage.propTypes = {};
 StoragePage.defaultProps = {};
 
 export default StoragePage;
-

@@ -252,7 +252,7 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
 
     const listItemFormat = (item) => { 
         const { _id = "", name = "", amount = 0, unit = "n/a" } = item
-        return (
+        return ( 
             <Row theme = {theme}>
                 <DataItem text = {name} flex = {1} fontStyle = "--text-base-medium" color = "--color-blue-600" />
                 <NumberChangeField

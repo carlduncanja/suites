@@ -38,7 +38,7 @@ background-color:${({ theme }) => theme.colors["--color-neutral-gray-100"]};
 border:1px solid ${({ theme }) => theme.colors["--color-gray-400"]};
 border-radius:4px;
 padding:6px 12px;
-width:199px;
+width:220px;
 height:35px;
 margin-left:10px;
 margin-right:10px
