@@ -8,21 +8,41 @@ import { getEquipmentTypeById } from '../api/network';
 import EquipmentGroupGeneralTab from '../components/OverlayTabs/EquipmentGroupGeneralTab';
 import { Modal } from 'react-native-paper';
 import { useTheme } from 'emotion-theming';
+import EditableEquipmentGroupTab from '../components/OverlayTabs/EditableEquipmentGroupTab';
 
 function EquipmentGroupDetailsPage(props) {
     const theme = useTheme();
     const { data = {}, onCreated = () => { } } = props.route.params;
-    const { name = "", _id = "", equipments = [], suppliers = [] } = data
-    const tabs = ["Details"]
-
-    const [currentTab, setCurrentTab] = useState(tabs[0])
+    const { name = "", _id = "", equipments = [], suppliers = [], categories } = data
+    const tabs = ["Details"];
+    const [currentTab, setCurrentTab] = useState(tabs[0]);
     const [pageState, setPageState] = useState({});
     const [selectedEquipment, setSelectedEquipment] = useState({});
     const [isInfoUpdated, setIsInfoUpdated] = useState(false)
 
+
+
+
+
+
     useEffect(() => {
         fetchEquipmentGroup(_id)
     }, []);
+
+    useEffect(() => {
+        if (!pageState.isEditMode && isInfoUpdated) confirmAction();
+    }, [pageState.isEditMode]);
+
+    const [fields, setFields] = useState({
+        name: name,
+        sku: equipments[0].sku,
+        supplier: suppliers,
+        quantity: equipments.length,
+        categories: categories,
+    })
+
+    console.log("What is in fileds ?", fields);
+
 
 
     const fetchEquipmentGroup = (id) => {
@@ -40,6 +60,39 @@ function EquipmentGroupDetailsPage(props) {
             })
     };
 
+    const [popoverList, setPopoverList] = useState([
+        {
+            name: "category",
+            status: false
+        },
+
+    ])
+
+    const handlePopovers = (popoverValue) => (popoverItem) => {
+
+        if (!popoverItem) {
+            let updatedPopovers = popoverList.map(item => {
+                return {
+                    ...item,
+                    status: false
+                }
+            })
+
+            setPopoverList(updatedPopovers)
+        } else {
+            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
+            const updatedPopovers = [
+                ...popoverList.slice(0, objIndex),
+                updatedObj,
+                ...popoverList.slice(objIndex + 1),
+            ];
+            setPopoverList(updatedPopovers)
+        }
+
+    }
+
+
     // ###### HELPER FUNCTIONS
 
     const setPageLoading = (value) => {
@@ -49,6 +102,50 @@ function EquipmentGroupDetailsPage(props) {
             isEdit: false
         })
     }
+    const confirmAction = () => {
+        // setTimeout(() => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isEditUpdate={true}
+                    onCancel={onConfirmCancel}
+                    onAction={onConfirmSave}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+        // }, 200)
+    };
+
+    const onConfirmSave = () => {
+        modal.closeModals('ConfirmationModal');
+        setTimeout(() => {
+            // updatePhysicianRecord(selectedPhysician);
+            updatePhysicianCall(selectedPhysician);
+            setIsInfoUpdated(false);
+        }, 200);
+    };
+
+    const onConfirmCancel = () => {
+        modal.closeModals('ConfirmationModal');
+        setPageState({
+            ...pageState,
+            isEditMode: true
+        });
+    };
+
+    // ##### Event Handlers
+
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName]: value
+        })
+        setIsInfoUpdated(true);
+    };
 
     const onTabPress = (selectedTab) => {
         if (!pageState.isEditMode) setCurrentTab(selectedTab);
@@ -63,12 +160,20 @@ function EquipmentGroupDetailsPage(props) {
     const getContentData = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <EquipmentGroupGeneralTab
-                    goToAddEquipment={goToAddEquipment}
-                    equipmentGroup={selectedEquipment}
-                    equipments={equipments}
-                    suppliers={suppliers}
-                />
+                return pageState.isEditMode ?
+                    <EditableEquipmentGroupTab
+                        handlePopovers={handlePopovers}
+                        popoverList={popoverList}
+                        fields={fields}
+                        onFieldChange={onFieldChange}
+                    />
+                    :
+                    <EquipmentGroupGeneralTab
+                        goToAddEquipment={goToAddEquipment}
+                        equipmentGroup={selectedEquipment}
+                        equipments={equipments}
+                        suppliers={suppliers}
+                    />
             case "Items":
                 return
             default:
