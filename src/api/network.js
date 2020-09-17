@@ -1,5 +1,5 @@
-import suitesAxiosInstance, { documentGenerationInstance } from "./index";
-import { handleError, handleResponse } from "./apiUtils";
+import suitesAxiosInstance, {documentGenerationInstance} from './index';
+import {handleError, handleResponse} from './apiUtils';
 
 import {
     inventoryGroups,
@@ -56,48 +56,38 @@ import {
     assignEquipmentToLocation,
     users,
     createCategoryEndpoint
-} from "../const/suitesEndpoints";
-import { createDocumentLink } from "../const/documentGenerationEndpoints";
+} from '../const/suitesEndpoints';
+import {createDocumentLink} from '../const/documentGenerationEndpoints';
 
 // ################# Mock Data
-import { appointments } from "../../data/Appointments";
-import caseFiles from "../../data/CaseFiles";
-import procedures from "../../data/Procedures";
-import physicians from "../../data/Physicians";
-import storage from "../../data/Storage";
-import equipment from "../../data/Equipment";
+import {appointments} from '../../data/Appointments';
+import caseFiles from '../../data/CaseFiles';
+import procedures from '../../data/Procedures';
+import physicians from '../../data/Physicians';
+import storage from '../../data/Storage';
+import equipment from '../../data/Equipment';
 
 // ################# Auth Endpoints
-export const login = async (email, password, pushToken) => {
-    return suitesAxiosInstance
-        .post(loginEndpoint, { email, password, pushToken })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const login = async (email, password, pushToken) => suitesAxiosInstance
+    .post(loginEndpoint, {email, password, pushToken})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const logout = async (userId, pushToken) => {
-    return suitesAxiosInstance
-        .put(logoutEndpoint, { "user_id": userId, pushToken })
-        .then(handleResponse)
-        .catch(handleError);
-};
-
+export const logout = async (userId, pushToken) => suitesAxiosInstance
+    .put(logoutEndpoint, {user_id: userId, pushToken})
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################ Users Endpoint
-export const getUsersCall = async (query, page, max) => {
-    return suitesAxiosInstance
-        .get(users, { params: { query, page, max } })
-        .then(handleResponse)
-        .catch(handleError)
-}
+export const getUsersCall = async (query, page, max) => suitesAxiosInstance
+    .get(users, {params: {query, page, max}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const registrationCall = async (params) => {
-    return suitesAxiosInstance
-        .post(registrationEndpoint, params)
-        .then(handleResponse)
-        .catch(handleError);
-}
-
+export const registrationCall = async params => suitesAxiosInstance
+    .post(registrationEndpoint, params)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Appointments Endpoints
 export const getAppointments = async (
@@ -107,23 +97,17 @@ export const getAppointments = async (
     to,
     type,
     user
-) => {
-    return suitesAxiosInstance
-        .get(appointmentsEndpoint, {
-            params: { query, location, from, to, type, user },
-        })
-        .then(handleResponse)
-        .catch(handleError);
-};
+) => suitesAxiosInstance
+    .get(appointmentsEndpoint, {params: {query, location, from, to, type, user}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getAppointmentById = async (id) => {
-    return suitesAxiosInstance
-        .get(appointmentEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getAppointmentById = async id => suitesAxiosInstance
+    .get(appointmentEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const searchSchedule = async (query) => {
+export const searchSchedule = async query => {
     if (!query) return []; //  don't search for empty string;
 
     // mocking endpoint calls
@@ -133,156 +117,111 @@ export const searchSchedule = async (query) => {
     // TODO implement search api with cancellation.
 
     return suitesAxiosInstance
-        .get("/appointments", {
-            params: {
-                query,
-            },
-        })
+        .get('/appointments', {params: {query}})
         .then(handleResponse)
         .catch(handleError);
 };
 
 // ################# Theatres Endpoints
-export const getTheatres = async (query, max, page, isRecovery) => {
-    return suitesAxiosInstance
-        .get(theatresEndpoint, { params: { query, max, page, isRecovery } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getTheatres = async (query, max, page, isRecovery) => suitesAxiosInstance
+    .get(theatresEndpoint, {params: {query, max, page, isRecovery}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getTheatreById = async (id) => {
-    return suitesAxiosInstance
-        .get(theatreEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getTheatreById = async id => suitesAxiosInstance
+    .get(theatreEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updatedTheatreCall = async (id, data) => {
-    return suitesAxiosInstance
-        .put(theatreEndpoint(id), data)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const updatedTheatreCall = async (id, data) => suitesAxiosInstance
+    .put(theatreEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createTheatre = async (theatreForCreation) => {
-    return suitesAxiosInstance
-        .post(theatresEndpoint, theatreForCreation)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createTheatre = async theatreForCreation => suitesAxiosInstance
+    .post(theatresEndpoint, theatreForCreation)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Inventory Endpoints
 
-export const getInventoriesGroup = async (query, max, page) => {
-    return suitesAxiosInstance
-        .get(inventoryGroups, { params: { query, max, page } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getInventoriesGroup = async (query, max, page) => suitesAxiosInstance
+    .get(inventoryGroups, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getInventories = async (query, max, page) => {
-    return suitesAxiosInstance
-        .get(inventoriesEndpoint, { params: { query, max, page } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getInventories = async (query, max, page) => suitesAxiosInstance
+    .get(inventoriesEndpoint, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getInventoryGroupById = async (id) => {
-    return suitesAxiosInstance
-        .get(inventoryGroup(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getInventoryGroupById = async id => suitesAxiosInstance
+    .get(inventoryGroup(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updateInventoryGroupById = async (id, data) => {
-    return suitesAxiosInstance
-        .put(inventoryGroup(id), data)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const updateInventoryGroupById = async (id, data) => suitesAxiosInstance
+    .put(inventoryGroup(id), data)
+    .then(handleResponse)
+    .catch(handleError);
 
+export const removeInventoryGroup = async id => suitesAxiosInstance
+    .delete(inventoryGroup(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const removeInventoryGroup = async (id) => {
-    return suitesAxiosInstance
-        .delete(inventoryGroup(id))
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const getInventoryVariantByGroup = async (id, groupId) => suitesAxiosInstance
+    .get(inventoryGroupVariant(groupId, id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getInventoryVariantByGroup = async (id, groupId) => {
-    return suitesAxiosInstance
-        .get(inventoryGroupVariant(groupId, id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const updateInventoryVariantCall = async (id, groupId, data) => suitesAxiosInstance
+    .put(inventoryGroupVariant(groupId, id), data)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updateInventoryVariantCall = async (id, groupId, data) => {
-    return suitesAxiosInstance
-        .put(inventoryGroupVariant(groupId, id), data)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createInventories = async inventoryForCreation => suitesAxiosInstance
+    .post(inventoriesEndpoint, inventoryForCreation)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createInventories = async (inventoryForCreation) => {
-    return suitesAxiosInstance
-        .post(inventoriesEndpoint, inventoryForCreation)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createInventoryGroup = async groupToCreate => suitesAxiosInstance.post(inventoryGroups, groupToCreate)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createInventoryGroup = async (groupToCreate) => {
-    return suitesAxiosInstance.post(inventoryGroups, groupToCreate)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createInventoryVariant = async (referenceId, itemToCreate) => suitesAxiosInstance.post(inventoryGroupVariants(referenceId), itemToCreate)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createInventoryVariant = async (referenceId, itemToCreate) => {
-    return suitesAxiosInstance.post(inventoryGroupVariants(referenceId), itemToCreate)
-        .then(handleResponse)
-        .catch(handleError);
-};
-
-export const createTransfer = async (groupId, variantId, transferData) => {
-    return suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createTransfer = async (groupId, variantId, transferData) => suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Case Files Endpoints
-export const getCaseFiles = async (query, max, page) => {
-    return suitesAxiosInstance
-        .get(caseFilesEndpoint, { params: { query, max, page } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getCaseFiles = async (query, max, page) => suitesAxiosInstance
+    .get(caseFilesEndpoint, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getCaseFileById = async (id) => {
-    return suitesAxiosInstance
-        .get(caseFileEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getCaseFileById = async id => suitesAxiosInstance
+    .get(caseFileEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createCaseFile = async (caseFileForCreation) => {
-    return suitesAxiosInstance
-        .post(caseFilesEndpoint, caseFileForCreation)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createCaseFile = async caseFileForCreation => suitesAxiosInstance
+    .post(caseFilesEndpoint, caseFileForCreation)
+    .then(handleResponse)
+    .catch(handleError);
 
 export const isValidCaseProcedureAppointment = async (
     procedure,
     location,
     startTime,
     duration
-) => {
-    return suitesAxiosInstance
-        .get(validateCaseProcedureEndpoint, {
-            params: { procedure, location, duration, startTime },
-        })
-        .then(handleResponse)
-        .catch(handleError);
-};
+) => suitesAxiosInstance
+    .get(validateCaseProcedureEndpoint, {params: {procedure, location, duration, startTime}})
+    .then(handleResponse)
+    .catch(handleError);
 
 export const getSuggestedStartTimes = async (
     procedure,
@@ -290,349 +229,264 @@ export const getSuggestedStartTimes = async (
     date,
     duration,
     numSuggestions
-) => {
-    return suitesAxiosInstance
-        .get(suggestedStartTimeEndpoint, {
-            params: {
-                procedure,
-                location,
-                duration,
-                date,
-                numSuggestions,
-            },
-        })
-        .then(handleResponse)
-        .catch(handleError);
-};
+) => suitesAxiosInstance
+    .get(suggestedStartTimeEndpoint, {
+        params: {
+            procedure,
+            location,
+            duration,
+            date,
+            numSuggestions,
+        },
+    })
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updateChargeSheet = async (id, data) => {
-    return suitesAxiosInstance
-        .put(updateChargeSheetEndpoint(id), data)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const updateChargeSheet = async (id, data) => suitesAxiosInstance
+    .put(updateChargeSheetEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
 
+export const approveChargeSheetCall = async (id, params) => suitesAxiosInstance
+    .put(chargeSheetApprovalEndpoint(id), params)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const approveChargeSheetCall = async (id, params) => {
-    return suitesAxiosInstance
-        .put(chargeSheetApprovalEndpoint(id), params)
-        .then(handleResponse)
-        .catch(handleError);
-};
-
-export const withdrawChargeSheetChangesCall = async (id) => {
-    return suitesAxiosInstance
-        .put(chargeSheetWithdrawChangesEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const withdrawChargeSheetChangesCall = async id => suitesAxiosInstance
+    .put(chargeSheetWithdrawChangesEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
 export const updateCaseQuotationStatus = async (
     caseId,
     quotationId,
     status
-) => {
-    return suitesAxiosInstance
-        .put(updateQuotationStatusEndpoint(caseId, quotationId), { status })
-        .then(handleResponse)
-        .catch(handleError);
-};
+) => suitesAxiosInstance
+    .put(updateQuotationStatusEndpoint(caseId, quotationId), {status})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const generateQuotationCall = async (caseId) => {
-    return suitesAxiosInstance
-        .post(caseQuotationEndpoint(caseId))
-        .then(handleResponse)
-        .catch(handleError)
-}
+export const generateQuotationCall = async caseId => suitesAxiosInstance
+    .post(caseQuotationEndpoint(caseId))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const removeQuotationCall = async (caseId, quotationsId) => {
-    return suitesAxiosInstance
-        .delete(quotationEndpoint(caseId, quotationsId))
-        .then(handleResponse)
-        .catch(handleError)
-}
+export const removeQuotationCall = async (caseId, quotationsId) => suitesAxiosInstance
+    .delete(quotationEndpoint(caseId, quotationsId))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const generateInvoiceCall = async (caseId) => {
-    return suitesAxiosInstance
-        .post(caseInvoicesEndpoint(caseId))
-        .then(handleResponse)
-        .catch(handleError)
-}
+export const generateInvoiceCall = async caseId => suitesAxiosInstance
+    .post(caseInvoicesEndpoint(caseId))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createInvoiceViaQuotation = async (caseId, quotationId) => {
-    return suitesAxiosInstance
-        .post(createInvoice(caseId)(quotationId))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createInvoiceViaQuotation = async (caseId, quotationId) => suitesAxiosInstance
+    .post(createInvoice(caseId)(quotationId))
+    .then(handleResponse)
+    .catch(handleError);
 
 // Case procedure appointments
-export const removeCaseProcedureAppointment = async (caseId, caseProcedureId) => {
-    return suitesAxiosInstance
-        .delete(caseProcedureAppointmentEndpoint(caseId, caseProcedureId))
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const removeCaseProcedureAppointment = async (caseId, caseProcedureId) => suitesAxiosInstance
+    .delete(caseProcedureAppointmentEndpoint(caseId, caseProcedureId))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const addProcedureAppointmentCall = async (caseId, procedureAppointment) => {
-    return suitesAxiosInstance
-        .post(caseProcedureAppointmentsEndpoint(caseId), procedureAppointment)
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const addProcedureAppointmentCall = async (caseId, procedureAppointment) => suitesAxiosInstance
+    .post(caseProcedureAppointmentsEndpoint(caseId), procedureAppointment)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId, data) => {
-    return suitesAxiosInstance
-        .put(caseProcedureAppointmentEndpoint(caseId, caseProcedureId), data)
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId, data) => suitesAxiosInstance
+    .put(caseProcedureAppointmentEndpoint(caseId, caseProcedureId), data)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Procedures Endpoints
-export const getProcedures = async (query, max, page) => {
-    return suitesAxiosInstance
-        .get(proceduresEndpoint, { params: { query, max, page } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getProcedures = async (query, max, page) => suitesAxiosInstance
+    .get(proceduresEndpoint, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getProcedureById = async (id) => {
-    return suitesAxiosInstance
-        .get(procedureEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getProcedureById = async id => suitesAxiosInstance
+    .get(procedureEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createNewProcedure = async (procedureToCreate) => {
-    return suitesAxiosInstance
-        .post(proceduresEndpoint, procedureToCreate)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createNewProcedure = async procedureToCreate => suitesAxiosInstance
+    .post(proceduresEndpoint, procedureToCreate)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updatePurchaseOrderStatus = async (purchaseOrderId, status) => {
-    return suitesAxiosInstance
-        .put(updatePurchaseOrderStatusEndpoint(purchaseOrderId), { status })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const updatePurchaseOrderStatus = async (purchaseOrderId, status) => suitesAxiosInstance
+    .put(updatePurchaseOrderStatusEndpoint(purchaseOrderId), {status})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updateProcedure = async (id, data) => {
-    return suitesAxiosInstance
-        .put(procedureEndpoint(id), data)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const updateProcedure = async (id, data) => suitesAxiosInstance
+    .put(procedureEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Physicians Endpoints
-export const getPhysicians = async (query, max, page) => {
-    return suitesAxiosInstance
-        .get(physiciansEndpoint, { params: { query, max, page } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getPhysicians = async (query, max, page) => suitesAxiosInstance
+    .get(physiciansEndpoint, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getPhysicianById = async (id) => {
-    return suitesAxiosInstance
-        .get(physicianEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getPhysicianById = async id => suitesAxiosInstance
+    .get(physicianEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createPhysician = async (physicianToCreate) => {
-    return suitesAxiosInstance
-        .post(physiciansEndpoint, physicianToCreate)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createPhysician = async physicianToCreate => suitesAxiosInstance
+    .post(physiciansEndpoint, physicianToCreate)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updatePhysician = async (id, data) => {
-    return suitesAxiosInstance
-        .put(physicianEndpoint(id), data)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const updatePhysician = async (id, data) => suitesAxiosInstance
+    .put(physicianEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Storage Endpoints
-export const getStorage = async (query, max, page) => {
-    return suitesAxiosInstance.get(storageLocationsEndpoint, { params: { query, max, page } })
-        .then(handleResponse)
-        .catch(handleError)
-};
+export const getStorage = async (query, max, page) => suitesAxiosInstance.get(storageLocationsEndpoint, {
+    params: {
+        query,
+        max,
+        page
+    }
+})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getStorageById = async (id) => {
-    return suitesAxiosInstance
-        .get(storageLocationEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getStorageById = async id => suitesAxiosInstance
+    .get(storageLocationEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createStorageLocation = async (storageForCreation) => {
-    return suitesAxiosInstance
-        .post(storageLocationsEndpoint, storageForCreation)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const updateStorageLocationCall = async (id, data) => suitesAxiosInstance
+    .put(storageLocationEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const createStorageLocation = async storageForCreation => suitesAxiosInstance
+    .post(storageLocationsEndpoint, storageForCreation)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Equipment Endpoint
-export const getEquipment = async (query) => {
-    return suitesAxiosInstance
-        .get(equipmentsEndpoint, { params: { query } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getEquipment = async query => suitesAxiosInstance
+    .get(equipmentsEndpoint, {params: {query}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getEquipmentById = async (id) => {
-    return suitesAxiosInstance
-        .get(equipmentEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getEquipmentById = async id => suitesAxiosInstance
+    .get(equipmentEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getEquipmentTypes = async (query, max, page) => {
-    return suitesAxiosInstance
-        .get(equipmentTypesEndpoint, { params: { query, max, page } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getEquipmentTypes = async (query, max, page) => suitesAxiosInstance
+    .get(equipmentTypesEndpoint, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getEquipmentTypeById = async (id) => {
-    return suitesAxiosInstance
-        .get(equipmentTypeEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const getEquipmentTypeById = async id => suitesAxiosInstance
+    .get(equipmentTypeEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const assignEquipmentGivenLocation = async (typeID, equipmentID, bodyToSend) => {
-    return suitesAxiosInstance
-        .post(assignEquipmentToLocation(typeID, equipmentID), bodyToSend)
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const assignEquipmentGivenLocation = async (typeID, equipmentID, bodyToSend) => suitesAxiosInstance
+    .post(assignEquipmentToLocation(typeID, equipmentID), bodyToSend)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createEquipment = async (equipmentToCreate) => {
-    return suitesAxiosInstance
-        .post(equipmentsEndpoint, equipmentToCreate)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createEquipment = async equipmentToCreate => suitesAxiosInstance
+    .post(equipmentsEndpoint, equipmentToCreate)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createEquipmentType = async (equipmentTypeToCreate) => {
-    return suitesAxiosInstance
-        .post(equipmentTypesEndpoint, equipmentTypeToCreate)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createEquipmentType = async equipmentTypeToCreate => suitesAxiosInstance
+    .post(equipmentTypesEndpoint, equipmentTypeToCreate)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Categories Endpoint
 
-export const getCategories = async (query, max) => {
-    return suitesAxiosInstance
-        .get(categoriesEndpoint, { params: { query } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getCategories = async (query, max) => suitesAxiosInstance
+    .get(categoriesEndpoint, {params: {query}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const addCategory = async (category = []) => {
-    return suitesAxiosInstance
-        .post(createCategoryEndpoint, category)
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const addCategory = async (category = []) => suitesAxiosInstance
+    .post(createCategoryEndpoint, category)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Suppliers Endpoints
-export const getSuppliers = async (query, max, page) => {
-    return suitesAxiosInstance
-        .get(suppliersEndpoint, { params: { query, max, page } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getSuppliers = async (query, max, page) => suitesAxiosInstance
+    .get(suppliersEndpoint, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createSuppier = async (supplierToCreate) => {
-    return suitesAxiosInstance
-        .post(suppliersEndpoint, supplierToCreate)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createSuppier = async supplierToCreate => suitesAxiosInstance
+    .post(suppliersEndpoint, supplierToCreate)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getSupplierById = async (id) => {
-    return suitesAxiosInstance
-        .get(supplierEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getSupplierById = async id => suitesAxiosInstance
+    .get(supplierEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getSupplierProducts = async (id, query, max) => {
-    return suitesAxiosInstance
-        .get(supplierProductsEndpoint(id), { params: { query, max } })
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const getSupplierProducts = async (id, query, max) => suitesAxiosInstance
+    .get(supplierProductsEndpoint(id), {params: {query, max}})
+    .then(handleResponse)
+    .catch(handleError);
+export const createSupplierProductsCall = async (id, data) => suitesAxiosInstance
+    .post(supplierProductsEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
 
-;export const createSupplierProductsCall = async (id, data) => {
-    return suitesAxiosInstance
-        .post(supplierProductsEndpoint(id), data)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const updateSupplierProducts = async (supplierId, productId, data) => suitesAxiosInstance
+    .put(updateProductsEndpoint(supplierId)(productId), data)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updateSupplierProducts = async (supplierId, productId, data) => {
-    return suitesAxiosInstance
-        .put(updateProductsEndpoint(supplierId)(productId), data)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getArchivedSuppliers = async () => suitesAxiosInstance
+    .get(getArchivedSuppliersEndPoint)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getArchivedSuppliers = async () => {
-    return suitesAxiosInstance
-        .get(getArchivedSuppliersEndPoint)
-        .then(handleResponse)
-        .catch(handleError);
-};
-
-export const archiveSupplier = async (supplierId) => {
-    return suitesAxiosInstance
-        .delete(archiveSupplierEndpoint(supplierId))
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const archiveSupplier = async supplierId => suitesAxiosInstance
+    .delete(archiveSupplierEndpoint(supplierId))
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# PurchaseOrders Endpoints
-export const getPurchaseOrders = async (query, max, page) => {
-    return suitesAxiosInstance
-        .get(purchaseOrdersEndpoint, { params: { query, max, page } })
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getPurchaseOrders = async (query, max, page) => suitesAxiosInstance
+    .get(purchaseOrdersEndpoint, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createPurchaseOrder = async (orderToCreate) => {
-    return suitesAxiosInstance
-        .post(purchaseOrdersEndpoint, orderToCreate)
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const createPurchaseOrder = async orderToCreate => suitesAxiosInstance
+    .post(purchaseOrdersEndpoint, orderToCreate)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const getPurchaseOrderById = async (id) => {
-    return suitesAxiosInstance
-        .get(purchaseOrderEndpoint(id))
-        .then(handleResponse)
-        .catch(handleError);
-};
+export const getPurchaseOrderById = async id => suitesAxiosInstance
+    .get(purchaseOrderEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const createInvoiceViaOrders = async (quotationId) => {
-    return suitesAxiosInstance.post(createOrderInvoice(quotationId))
-        .then(handleResponse)
-        .catch(handleError)
-}
+export const createInvoiceViaOrders = async quotationId => suitesAxiosInstance.post(createOrderInvoice(quotationId))
+    .then(handleResponse)
+    .catch(handleError);
 
-export const updatePurchaseOrder = async (purchaseOrderId, data) => {
-    return suitesAxiosInstance.put(updatePurchaseOrderEndpoint(purchaseOrderId), data)
-        .then(handleResponse)
-        .catch(handleError)
-}
+export const updatePurchaseOrder = async (purchaseOrderId, data) => suitesAxiosInstance.put(updatePurchaseOrderEndpoint(purchaseOrderId), data)
+    .then(handleResponse)
+    .catch(handleError);
 
-export const generateDocumentLink = async data => {
-    return documentGenerationInstance.post(createDocumentLink, data)
-        .then(handleResponse)
-        .catch(handleError);
-}
+export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
+    .then(handleResponse)
+    .catch(handleError);
