@@ -1,71 +1,70 @@
-import React, {useEffect, useState} from "react";
-import PropTypes from "prop-types";
-import {View, StyleSheet, Text} from "react-native";
-import Page from "../../components/common/Page/Page";
-import IconButton from "../../components/common/Buttons/IconButton";
-import ActionIcon from "../../../assets/svg/ActionIcon";
-import ListItem from "../../components/common/List/ListItem";
-import {getTheatres} from "../../api/network";
-import {setTheatres} from "../../redux/actions/theatresActions";
-import {connect} from "react-redux";
-import {useModal} from "react-native-modalfy";
-import CaseFileBottomSheet from "../../components/CaseFiles/CaseFileBottomSheet";
-import RoundedPaginator from "../../components/common/Paginators/RoundedPaginator";
-import FloatingActionButton from "../../components/common/FloatingAction/FloatingActionButton";
+import React, {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
+import {View, StyleSheet, Text} from 'react-native';
+import {connect} from 'react-redux';
+import {useModal} from 'react-native-modalfy';
+import _ from 'lodash';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import moment from 'moment';
+import Page from '../../components/common/Page/Page';
+import IconButton from '../../components/common/Buttons/IconButton';
+import ActionIcon from '../../../assets/svg/ActionIcon';
+import ListItem from '../../components/common/List/ListItem';
+import {getTheatres, removeTheatres} from '../../api/network';
+import {setTheatres} from '../../redux/actions/theatresActions';
+import CaseFileBottomSheet from '../../components/CaseFiles/CaseFileBottomSheet';
+import RoundedPaginator from '../../components/common/Paginators/RoundedPaginator';
+import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
 import {
     useNextPaginator,
     usePreviousPaginator,
     selectAll,
     checkboxItemPress,
-} from "../../helpers/caseFilesHelpers";
-import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
-import ActionItem from "../../components/common/ActionItem";
-import WasteIcon from "../../../assets/svg/wasteIcon";
-import AddIcon from "../../../assets/svg/addIcon";
-import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import CreateStorageDialogContainer from "../../components/Storage/CreateStorageDialogContainer";
-import CreateTheatreDialogContainer from "../../components/Theatres/CreateTheatreDialogContainer";
-import AssignIcon from "../../../assets/svg/assignIcon";
-import _ from "lodash";
+} from '../../helpers/caseFilesHelpers';
+import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
+import ActionItem from '../../components/common/ActionItem';
+import WasteIcon from '../../../assets/svg/wasteIcon';
+import AddIcon from '../../../assets/svg/addIcon';
+import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
+import CreateTheatreDialogContainer from '../../components/Theatres/CreateTheatreDialogContainer';
+import AssignIcon from '../../../assets/svg/assignIcon';
 
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import Footer from "../../components/common/Page/Footer";
+import Footer from '../../components/common/Page/Footer';
 import NavPage from '../../components/common/Page/NavPage';
-import moment from "moment";
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 const listHeaders = [
     {
         // id: "1",
-        name: "Theatre",
-        alignment: "flex-start",
+        name: 'Theatre',
+        alignment: 'flex-start',
         flex: 2,
     },
     {
         // id: "2",
-        name: "Status",
-        alignment: "center",
+        name: 'Status',
+        alignment: 'center',
         flex: 1,
     },
     {
         // id: "3",
-        name: "Recovery",
-        alignment: "center",
+        name: 'Recovery',
+        alignment: 'center',
         flex: 1,
     },
     {
         // id: "3",
-        name: "Actions",
-        alignment: "center",
+        name: 'Actions',
+        alignment: 'center',
         flex: 1,
     },
 ];
 
-
 function Theatres(props) {
     const {theatres = [], setTheatres} = props;
     const theme = useTheme();
-    const pageTitle = "Theatres";
+    const pageTitle = 'Theatres';
     const modal = useModal();
     const recordsPerPage = 10;
 
@@ -75,7 +74,7 @@ function Theatres(props) {
 
     const [selectedIds, setSelectedIds] = useState([]);
 
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
 
@@ -99,7 +98,7 @@ function Theatres(props) {
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
-            fetchTheatres(1)
+            fetchTheatres(1);
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
@@ -108,7 +107,7 @@ function Theatres(props) {
 
         const search = _.debounce(fetchTheatres, 300);
 
-        setSearchQuery((prevSearch) => {
+        setSearchQuery(prevSearch => {
             if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
@@ -116,7 +115,7 @@ function Theatres(props) {
         });
 
         search();
-        setCurrentPagePosition(1)
+        setCurrentPagePosition(1);
     }, [searchValue]);
 
     // ##### Handler functions
@@ -130,7 +129,7 @@ function Theatres(props) {
         });
     };
 
-    const onSearchInputChange = (input) => {
+    const onSearchInputChange = input => {
         setSearchValue(input);
     };
 
@@ -139,47 +138,43 @@ function Theatres(props) {
     };
 
     const onSelectAll = () => {
-        let updatedTheatres = selectAll(theatres, selectedIds);
+        const updatedTheatres = selectAll(theatres, selectedIds);
         setSelectedIds(updatedTheatres);
     };
 
     const goToNextPage = () => {
-
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
-            fetchTheatres(currentPage)
+            fetchTheatres(currentPage);
         }
     };
 
     const goToPreviousPage = () => {
-
         if (currentPagePosition === 1) {
-            return
+            return;
         }
-        ;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
-        fetchTheatres(currentPage)
-
+        fetchTheatres(currentPage);
     };
 
-    const onCheckBoxPress = (item) => () => {
+    const onCheckBoxPress = item => () => {
         const {_id} = item;
-        let updatedTheatres = checkboxItemPress(item, _id, selectedIds);
+        const updatedTheatres = checkboxItemPress(item, _id, selectedIds);
         setSelectedIds(updatedTheatres);
     };
 
     const toggleActionButton = () => {
         setFloatingAction(true);
-        modal.openModal("ActionContainerModal", {
+        modal.openModal('ActionContainerModal', {
             actions: getFabActions(),
-            title: "STORAGE ACTIONS",
+            title: 'THEATRE ACTIONS',
             onClose: () => {
                 setFloatingAction(false);
             },
@@ -187,22 +182,20 @@ function Theatres(props) {
     };
 
     // ##### Helper functions
-    const theatreItem = ({name = "", recoveryStatus = "n/a", recoveryStatusColor, status = "", statusColor},
-                         onActionPress
-    ) => (
+    const theatreItem = ({name = '', recoveryStatus = 'n/a', recoveryStatusColor, status = '', statusColor}, onActionPress) => (
         <>
             <View style={[styles.item, {flex: 2, ...styles.rowBorderRight}]}>
-                <Text style={{color: "#3182CE", fontSize: 16}}>{name}</Text>
+                <Text style={{color: '#3182CE', fontSize: 16}}>{name}</Text>
             </View>
-            <View style={[styles.item, {flex: 1, justifyContent: "center"}]}>
+            <View style={[styles.item, {flex: 1, justifyContent: 'center'}]}>
                 <Text style={[styles.itemText, {color: statusColor}]}>{status}</Text>
             </View>
-            <View style={[styles.item, {flex: 1, justifyContent: "center"}]}>
+            <View style={[styles.item, {flex: 1, justifyContent: 'center'}]}>
                 <Text style={[styles.itemText, {color: recoveryStatusColor}]}>
                     {recoveryStatus}
                 </Text>
             </View>
-            <View style={[styles.item, {flex: 1, justifyContent: "center"}]}>
+            <View style={[styles.item, {flex: 1, justifyContent: 'center'}]}>
                 <IconButton Icon={<AssignIcon/>} onPress={onActionPress}/>
             </View>
         </>
@@ -210,11 +203,13 @@ function Theatres(props) {
 
     const getFabActions = () => {
         const deleteAction = (
-            <View style={{borderRadius: 6, flex: 1, overflow: "hidden"}}>
-                <LongPressWithFeedback pressTimer={1200} onLongPress={() => {
-                }}>
+            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+                <LongPressWithFeedback
+                    pressTimer={1200}
+                    onLongPress={removeTheatresLongPress}
+                >
                     <ActionItem
-                        title={"Hold to Delete"}
+                        title="Hold to Delete"
                         icon={<WasteIcon/>}
                         onPress={() => {
                         }}
@@ -226,7 +221,7 @@ function Theatres(props) {
 
         const createAction = (
             <ActionItem
-                title={"Create Theatre"}
+                title="Create Theatre"
                 icon={<AddIcon/>}
                 onPress={openCreateTheatreModel}
             />
@@ -235,17 +230,98 @@ function Theatres(props) {
         return (
             <ActionContainer
                 floatingActions={[deleteAction, createAction]}
-                title={"STORAGE ACTIONS"}
+                title="THEATRE ACTIONS"
             />
         );
     };
 
+    const removeTheatresLongPress = () => {
+        // Done with one or more ids selected
+        if (selectedIds.length > 0) openDeletionConfirm({ids: [...selectedIds]});
+        else openErrorConfirmation();
+    };
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removeTheatresCall(data);
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message="Do you want to delete these item(s)?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const removeTheatresCall = data => {
+        removeTheatres(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    onRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setSelectedIds([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove group: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
+    };
+
     const openCreateTheatreModel = () => {
-        modal.closeModals("ActionContainerModal");
+        modal.closeModals('ActionContainerModal');
 
         // For some reason there has to be a delay between closing a modal and opening another.
         setTimeout(() => {
-            modal.openModal("OverlayModal", {
+            modal.openModal('OverlayModal', {
                 content: (
                     <CreateTheatreDialogContainer
                         onCreated={onItemPress}
@@ -260,13 +336,13 @@ function Theatres(props) {
     const isInUse = (appointments = []) => {
         const now = moment();
 
-        if (!Array.isArray(appointments)) return  {isActive: false, isRecovery: false}
+        if (!Array.isArray(appointments)) return {isActive: false, isRecovery: false};
 
         for (const appointment of appointments) {
-            const startTime = moment(appointment.startTime)
-            const endTime = moment(appointment.endTime)
+            const startTime = moment(appointment.startTime);
+            const endTime = moment(appointment.endTime);
 
-            const isActive = now.isBetween(startTime, endTime)
+            const isActive = now.isBetween(startTime, endTime);
 
             if (isActive) {
                 return {isActive: true, isRecovery: false};
@@ -274,19 +350,19 @@ function Theatres(props) {
         }
 
         return {isActive: false, isRecovery: false};
-    }
+    };
 
-    const renderItem = (item) => {
-        const availableColor = "#38A169";
-        const inUseColor = "#DD6B20";
+    const renderItem = item => {
+        const availableColor = '#38A169';
+        const inUseColor = '#DD6B20';
 
-        const {isActive, isRecovery} = isInUse(item.appointments || [])
+        const {isActive, isRecovery} = isInUse(item.appointments || []);
 
         const formattedItem = {
-            name: item.name || "",
-            recoveryStatus: isRecovery ? "Yes" : isActive ? "No" : "--",
-            recoveryStatusColor: isRecovery ? availableColor : "#4E5664",
-            status: !isActive ? "Available" : "In-Use",
+            name: item.name || '',
+            recoveryStatus: isRecovery ? 'Yes' : isActive ? 'No' : '--',
+            recoveryStatusColor: isRecovery ? availableColor : '#4E5664',
+            status: !isActive ? 'Available' : 'In-Use',
             statusColor: !isActive ? availableColor : inUseColor,
         };
 
@@ -307,15 +383,13 @@ function Theatres(props) {
         );
     };
 
-    const fetchTheatres = (pagePosition) => {
-
-        let currentPosition = pagePosition ? pagePosition : 1;
-        setCurrentPagePosition(currentPosition)
+    const fetchTheatres = pagePosition => {
+        const currentPosition = pagePosition || 1;
+        setCurrentPagePosition(currentPosition);
 
         setFetchingData(true);
         getTheatres(searchValue, recordsPerPage, currentPosition)
-            .then((result) => {
-
+            .then(result => {
                 const {data = [], pages = 0} = result;
 
                 if (pages === 1) {
@@ -329,29 +403,28 @@ function Theatres(props) {
                     setPreviousDisabled(false);
                 } else if (currentPosition < pages) {
                     setNextDisabled(false);
-                    setPreviousDisabled(false)
+                    setPreviousDisabled(false);
                 } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
-                console.log("Theatre data:", data)
+                console.log('Theatre data:', data);
                 setTheatres(data);
-                data.length === 0 ? setTotalPages(1) : setTotalPages(pages)
-
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
-            .catch((error) => {
+            .catch(error => {
                 // TODO handle error
-                console.log("failed to fetch theatres", error);
-                setTotalPages(1)
-                setPreviousDisabled(true)
-                setNextDisabled(true)
+                console.log('failed to fetch theatres', error);
+                setTotalPages(1);
+                setPreviousDisabled(true);
+                setNextDisabled(true);
             })
-            .finally((_) => {
+            .finally(_ => {
                 setFetchingData(false);
             });
     };
 
-    let theatreToDisplay = [...theatres];
+    const theatreToDisplay = [...theatres];
 
     // ###### STYLED COMPONENTS
     const TheatresWrapper = styled.View`
@@ -364,10 +437,9 @@ function Theatres(props) {
     height: 100%;
   `;
 
-
     return (
         <NavPage
-            placeholderText={"Search by theatre name or status."}
+            placeholderText="Search by theatre name or status."
             routeName={pageTitle}
             listData={theatreToDisplay}
             listItemFormat={renderItem}
@@ -401,47 +473,41 @@ Theatres.defaultProps = {};
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: "column",
+        flexDirection: 'column',
     },
     item: {
         flex: 1,
-        flexDirection: "row",
+        flexDirection: 'row',
     },
     itemText: {
         fontSize: 14,
-        color: "#4E5664",
+        color: '#4E5664',
     },
     footer: {
         flex: 1,
-        flexDirection: "row",
-        position: "absolute",
+        flexDirection: 'row',
+        position: 'absolute',
         bottom: 0,
         right: 0,
         marginBottom: 20,
         marginRight: 30,
     },
     rowBorderRight: {
-        borderRightColor: "#E3E8EF",
+        borderRightColor: '#E3E8EF',
         borderRightWidth: 1,
         // marginRight: 20,
     },
 });
 
-const mapStateToProps = (state) => {
-    const theatres = state.theatres.map((item) => {
-        return {
-            ...item,
-            // id: item._id
-        };
-    });
+const mapStateToProps = state => {
+    const theatres = state.theatres.map(item => ({
+        ...item,
+        // id: item._id
+    }));
 
-    return {
-        theatres,
-    };
+    return {theatres};
 };
 
-const mapDispatchToProps = {
-    setTheatres,
-};
+const mapDispatchToProps = {setTheatres};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Theatres);

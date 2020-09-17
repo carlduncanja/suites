@@ -143,6 +143,11 @@ export const createTheatre = async theatreForCreation => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const removeTheatres = async data => suitesAxiosInstance
+    .delete(theatresEndpoint, {data})
+    .then(handleResponse)
+    .catch(handleError);
+
 // ################# Inventory Endpoints
 
 export const getInventoriesGroup = async (query, max, page) => suitesAxiosInstance

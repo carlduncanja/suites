@@ -296,7 +296,7 @@ function Storage(props) {
     };
 
     const removeStorageLocationsLongPress = () => {
-        // Done with one id selected
+        // Done with one or more ids selected
         if (selectedIds.length > 0) openDeletionConfirm({ids: [...selectedIds]});
         else openErrorConfirmation();
     };
