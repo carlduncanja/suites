@@ -4,15 +4,22 @@ import OverlayDialog from "../../components/common/Dialog/OverlayDialog";
 import DialogTabs from "../../components/common/Dialog/DialogTabs";
 import DialogDetailsTab from "../../components/Procedures/DialogDetailsTab";
 import DialogLocationTab from "../../components/Procedures/DialogLocationTab";
+import ConfirmationComponent from '../../components/ConfirmationComponent';
+import CreatePageHeader from '../../components/common/DetailsPage/CreatePageHeader';
+import CreatePreviousDoneFooter from '../../components/common/DetailsPage/CreatePreviousDoneFooter';
 
 import { formatDate } from '../../utils/formatter'
-// import {useModal} from "react-native-modalfy";
+import {useModal} from "react-native-modalfy";
+
 
 import { createNewProcedure, getTheatres, getPhysicians } from "../../api/network";
 import { addProcedure } from "../../redux/actions/proceduresActions";
 import {connect} from "react-redux";
 import { duration } from "moment";
 import _ from "lodash";
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import DialogItems from "../../components/Procedures/DialogItems";
 
 
 /**
@@ -25,16 +32,85 @@ import _ from "lodash";
  * @constructor
  */
 
-const CreateProcedure = ({ addProcedure, navigation}) =>{
+const PageWrapper = styled.View`
+    height : 100%;
+    width : 100%;
+    background-color : ${ ({theme}) => theme.colors['--default-shade-white']}; 
+`;
+const TabsContainer = styled.View`
+    height : 58px;
+    justify-content : flex-end;
+    background-color: ${ ({theme}) => theme.colors['--color-gray-200']};
+`;
 
-    // const modal = useModal();
-    const dialogTabs = ['Details','Location'];
+const ContentWrapper = styled.View`
+    height : 800px;
+    padding : ${ ({theme}) => theme.space['--space-28']};
+`;
+const ContentContainer = styled.View`
+    height : 100%;
+    width : 100%;
+`;
+
+const FooterWrapper = styled.View`
+    position : absolute;
+    bottom: 0; 
+    left : 0;
+    right : 0;
+`;
+
+const Divider = styled.View`
+    border-width : 1px;
+    border-color : ${ ({theme}) => theme.colors['--color-gray-300']};
+    margin-top : ${ ({theme}) => theme.space['--space-20']};
+    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+`;
+
+function CreateProcedure({ addProcedure, navigation, route}){
+
+    const modal = useModal();
+    const theme = useTheme();
+    const  { onCancel, onCreated, } = route.params;
+    const dialogTabs = ['Details','Locations','Consumables','Equipments'];
     const selectedIndex = 0;
 
-    const [tabIndex, setTabIndex] = useState(selectedIndex)
-    const [positiveText, setPositiveText] = useState("NEXT")
-    const [physicians, setPhysicians] = useState([])
-    const [savedTheatres, setSavedTheatres] = useState([])
+    const locationsHeader = [
+        {
+            name : "Location",
+            alignment : "flex-start"
+        },
+        {
+            name : "Recovery",
+            alignment : "flex-end"
+        },
+    ];
+    const headers = [
+        {
+            name : "Item Name",
+            alignment : "flex-start"
+        },
+        {
+            name : "Quantity",
+            alignment : "center"
+        },
+        {
+            name : "Unit Price",
+            alignment : "center"
+        },
+        {
+            name : "Action",
+            alignment : "flex-end"
+        },
+    ]
+
+    const [tabIndex, setTabIndex] = useState(selectedIndex);
+    const [positiveText, setPositiveText] = useState("NEXT");
+    const [physicians, setPhysicians] = useState([]);
+    const [savedTheatres, setSavedTheatres] = useState([]);
+
+    const [locations, setLocations] = useState([]);
+    const [consumables, setConsumables] = useState([]);
+    const [equipments, setEquipments] = useState([]);
 
     const [popoverList, setPopoverList] = useState([
         {
@@ -55,28 +131,14 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
         }
     ])
 
-    const [fields, setFields] = useState({
-        // reference :'',
-        // name : '',
-        // duration : '',
-        // notes:'',
-        // isTemplate : false,
-        // hasRecovery : true,
-        // physician: '',
-        // supportedRooms: [],
-        // inventories:[],
-        // equipments:[],
-        // serviceFee : 0
-    });
-
+    const [fields, setFields] = useState({});
     const [errors, setErrors] = useState({})
-
-    const [errorFields, setErrorFields] = useState({
-        name : false,
-        duration : false,
-        physician : false,
-        serviceFee : false
-    })
+    // const [errorFields, setErrorFields] = useState({
+    //     name : false,
+    //     duration : false,
+    //     physician : false,
+    //     serviceFee : false
+    // })
 
     const handlePopovers = (popoverValue) => (popoverItem) =>{
         let updatedPopovers;
@@ -100,11 +162,6 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
         setPopoverList(updatedPopovers)
     }
 
-    // const handleCloseDialog = () => {
-    //     onCancel();
-    //     modal.closeAllModals();
-    // };
-
     const onFieldChange = (fieldName) => (value) => {
         const updatedFields = {...fields}
         setFields({
@@ -119,23 +176,33 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
     };
 
     const onTabPress = (newTab) => {
-        const newIndex = dialogTabs.findIndex( tab => tab === newTab)
-        if (newIndex === dialogTabs.length - 1)
-        {
-            let isValid = validateProcedure()
+        let isValid = validateProcedure()
+        if(!isValid) {return}
+        setTabIndex(dialogTabs.indexOf(newTab))
 
-            if(!isValid){return}
+        // const newIndex = dialogTabs.findIndex( tab => tab === newTab)
+        // if (newIndex === dialogTabs.length - 1)
+        // {
+        //     let isValid = validateProcedure()
 
-            setPositiveText("DONE")
-            setTabIndex(dialogTabs.length-1)
+        //     if(!isValid){return}
 
-        }else
-        {
+        //     setPositiveText("DONE")
+        //     setTabIndex(dialogTabs.length-1)
 
-            setPositiveText("NEXT")
-            setTabIndex(newIndex)
-        }
+        // }else
+        // {
 
+        //     setPositiveText("NEXT")
+        //     setTabIndex(newIndex)
+        // }
+
+    }
+
+    const onFooterPreviousPress = () =>{
+        let isValid = validateProcedure()
+        if(!isValid) {return}
+        setTabIndex(tabIndex-1)
     }
 
     const validateProcedure = () =>{
@@ -229,19 +296,32 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
                     fields = {fields}
                     handlePopovers = {handlePopovers}
                     popoverList = {popoverList}
-                    errorFields = {errorFields}
+                    // errorFields = {errorFields}
                     errors = {errors}
                 />;
-            case "Location":
-                return <DialogLocationTab
-                    onFieldChange = {onFieldChange}
-                    fields = {fields}
-                    // theatres = {theatres}
-                    getSavedTheatres={getSavedTheatres}
-                    savedTheatres = {savedTheatres}
-                    handlePopovers = {handlePopovers}
-                    popoverList = {popoverList}
+            case "Locations":
+                return <DialogItems
+                    handleData = {(locations)=>setLocations([...locations])}
+                    itemData = {locations}
+                    itemType = "Locations"
+                    headers = {locationsHeader}
                 />;
+
+            case "Consumables":
+                return <DialogItems
+                handleData = {(consumables)=>setConsumables([...consumables])}
+                itemData = {consumables}
+                itemType = "Consumables"
+                headers = {headers}
+            />;
+            
+            case "Equipments":
+                return <DialogItems
+                handleData = {(equipments)=>setEquipments([...equipments])}
+                itemData = {equipments}
+                itemType = "Equipments"
+                headers = {headers}
+            />;
             default :
                 return <View/>
         }
@@ -270,6 +350,39 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
     }
 
     return (
+        <PageWrapper theme = {theme}>
+            
+            <CreatePageHeader
+                title = "Create Procedure"
+                onClose = {onCancel}
+            />
+
+            <TabsContainer theme = {theme}>
+                <DialogTabs
+                   tabs={dialogTabs}
+                   tab={tabIndex}
+                    onTabPress={onTabPress}
+                />
+            </TabsContainer>
+
+            <ContentWrapper theme = {theme}>
+                <ContentContainer>
+                    {getDialogContent(dialogTabs[tabIndex])}
+                </ContentContainer>
+            </ContentWrapper>
+
+        
+            <FooterWrapper>
+                <CreatePreviousDoneFooter
+                    onFooterPress = {onPositiveButtonPress}
+                    isFinished = {tabIndex === dialogTabs.length-1 ? true : false}
+                    onFooterPreviousPress = {onFooterPreviousPress}
+                    isPreviousDisabled = {tabIndex === 0 ? true : false}
+                />
+            </FooterWrapper>
+
+
+        </PageWrapper>  
         // <OverlayDialog
         //     title={"New Procedure"}
         //     onPositiveButtonPress={onPositiveButtonPress}
@@ -277,36 +390,36 @@ const CreateProcedure = ({ addProcedure, navigation}) =>{
         //     positiveText={positiveText}
         //     // handlePopovers = {handlePopovers}
         // >
-            <View style = {styles.container}>
+        //     <View style = {styles.container}>
 
-                <View style={styles.headingContainer}>
-                    <Text>New Procedure</Text>
-                </View>
+        //         <View style={styles.headingContainer}>
+        //             <Text>New Procedure</Text>
+        //         </View>
 
-                <View style={{ flex: 1 }}>
-                    <View style={{height: 40}}>
-                        <DialogTabs
-                            tabs = {dialogTabs}
-                            tab = {tabIndex}
-                            onTabPress = { onTabPress }
-                        />
-                    </View>
+        //         <View style={{ flex: 1 }}>
+        //             <View style={{height: 40}}>
+        //                 <DialogTabs
+        //                     tabs = {dialogTabs}
+        //                     tab = {tabIndex}
+        //                     onTabPress = { onTabPress }
+        //                 />
+        //             </View>
 
-                    <TouchableOpacity
-                        onPress = {()=>handlePopovers(false)()}
-                        activeOpacity = {1}
-                    >
-                        {
-                            getDialogContent(dialogTabs[tabIndex])
-                        }
-                    </TouchableOpacity>
-                </View>
+        //             <TouchableOpacity
+        //                 onPress = {()=>handlePopovers(false)()}
+        //                 activeOpacity = {1}
+        //             >
+        //                 {
+        //                     getDialogContent(dialogTabs[tabIndex])
+        //                 }
+        //             </TouchableOpacity>
+        //         </View>
 
-                <TouchableOpacity style={styles.footer} onPress={onPositiveButtonPress}>
-                    <Text style={styles.footerText}>{positiveText}</Text>
-                </TouchableOpacity>
+        //         <TouchableOpacity style={styles.footer} onPress={onPositiveButtonPress}>
+        //             <Text style={styles.footerText}>{positiveText}</Text>
+        //         </TouchableOpacity>
 
-            </View>
+        //     </View>
         // </OverlayDialog>
     )
 }

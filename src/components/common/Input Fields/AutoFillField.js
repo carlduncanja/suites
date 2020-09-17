@@ -59,13 +59,13 @@ function AutoFillField({label, value = "", flex = 1}) {
         <AutoFillFieldWrapper flex = {flex} theme = {theme}>
             <AutoFillContainer>
 
-            <InputLabelComponent label = {label}/>
+                <InputLabelComponent label = {label}/>
             
-            <FieldWrapper flex = {flex}>
-                <FieldContainer theme = {theme}>
-                    <Value theme = {theme} >{value}</Value>
-                </FieldContainer>
-            </FieldWrapper>
+                <FieldWrapper flex = {flex}>
+                    <FieldContainer theme = {theme}>
+                        <Value theme = {theme} >{value}</Value>
+                    </FieldContainer>
+                </FieldWrapper>
 
             </AutoFillContainer>
         </AutoFillFieldWrapper>

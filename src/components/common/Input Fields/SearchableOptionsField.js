@@ -145,6 +145,7 @@ function SearchableOptionsField({
                                     options,
                                     oneOptionsSelected,
                                     onChangeText,
+                                    placeholder = "",
                                     onClear,
                                     enabled = true,
                                     value,
@@ -230,6 +231,7 @@ function SearchableOptionsField({
                                     editable={enabled}
                                     value={selectedValue?.name || text}
                                     ref={textInputRef}
+                                    placeholder = {placeholder}
                                 />
 
                                 {

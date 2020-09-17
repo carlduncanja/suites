@@ -179,7 +179,7 @@ function AddOverlayDialog(props){
 
                     <ContentWrapper theme = {theme}>
                         <ContentContainer>
-                            {
+                            { 
                                 hasSearch &&
                                 <SearchableFieldContainer>
                                     <SearchableOptionsField

@@ -69,6 +69,7 @@ const Divider = styled.View`
     margin-top : ${ ({theme}) => theme.space['--space-20']};
     margin-bottom : ${ ({theme}) => theme.space['--space-32']};
 `;
+
 function CreateInventoryDialogContainer({navigation, route, addInventory}) {
 
     // ########## CONST

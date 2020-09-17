@@ -31,16 +31,7 @@ export default () => {
                 name="CreateProcedure"
                 component={CreateProcedure}
                 options={{
-                    // headerShown: false,
-                    headerLeft: (props) => (
-                        <HeaderBackComponent
-                            {...props}
-                        />
-                    ),
-                    headerStyle: {
-                        height: 100,
-                    },
-                    headerTitle: ""
+                    headerShown: false,
                 }}
             />
 

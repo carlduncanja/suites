@@ -265,9 +265,11 @@ const Procedures = (props) => {
     const openCreateProcedure = () => {
         modal.closeModals('ActionContainerModal');
 
-        navigation.navigate('Procedures List', {
+        navigation.navigate('CreateProcedure', {
             screen : 'CreateProcedure',
             initial : false,
+            onCancel : ()=>{{navigation.goBack();setFloatingAction(false)}},
+            onCreated : ()=>{{navigation.goBack();setFloatingAction(false)}},
         })
     }
 

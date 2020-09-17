@@ -4,15 +4,19 @@ import InputField2 from "../common/Input Fields/InputField2";
 import DropdownInputField from "../common/Input Fields/DropdownInputField";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import Row from "../common/Row";
 import _ from "lodash";
 import {getPhysicians, getTheatres, getProcedures, getCategories} from "../../api/network";
 import OptionSearchableField from "../common/InputFields/OptionSearchableField";
 import OptionsField from "../common/Input Fields/OptionsField";
-import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
+import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField"; 
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import FieldContainer from "../common/FieldContainerComponent";
+import AutoFillField from "../common/Input Fields/AutoFillField";
 
 
-const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, errorFields, errors}) => {
+
+function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, errorFields, errors}) {
 
     const templateText = {
         true: "Yes",
@@ -190,6 +194,7 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
             delete fields['physician']
         }else{
             onFieldChange('physician')(physician);
+            setSearchValue(value.name)
         }
         
         // setSearchValue()
@@ -202,9 +207,114 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
     let catPop = popoverList.filter( item => item.name === 'category')
 
     return (
-        <View style={[styles.sectionContainer]}>
+        <>
+            <Row>
 
-            <View style={styles.row}>
+                <AutoFillField
+                    label = "Reference"
+                    value = "--"
+                    flex = {2}
+                />
+                    {/* <SearchableOptionsField
+                        label={"Reference"}
+                        text={searchProcedureValue}
+                        oneOptionsSelected={(item) => {
+                            onFieldChange('reference')(item._id)
+                        }}
+                        onChangeText={value => setSearchProcedureValue(value)}
+                        onClear={() => {
+                            onFieldChange('reference')('');
+                            setSearchProcedureValue('');
+                        }}
+                        options={searchProcedureResults}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {searchProcedureQuery}
+                    /> */}
+
+            </Row>
+                
+            <Row>
+                <FieldContainer>
+                    <InputField2
+                        label={"Procedure"}
+                        onChangeText={onFieldChange('name')}
+                        value={fields['name']}
+                        onClear={() => onFieldChange('name')('')}
+                        hasError = {errors['name']}
+                        errorMessage = "Name must be assigned"
+                    />
+                </FieldContainer>
+                <FieldContainer>
+                    <SearchableOptionsField
+                        label={"Physician"} 
+                        value = {fields['physician']}
+                        text={searchValue}
+                        oneOptionsSelected={(item) => {handlePhysician(item)}}
+                        onChangeText={value => setSearchValue(value)}
+                        onClear={handlePhysician}
+                        options={searchResults}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {searchQuery}
+                        hasError = {errors['physician']}
+                        errorMessage = "Physician must be assigned"
+                    />
+                </FieldContainer>
+            </Row>
+
+            <Row zIndex = {-1}>
+                <FieldContainer>
+                    <InputUnitField
+                        label={"Duration"}
+                        onChangeText={(value) => {
+                            if (/^\d{9}/g.test(value).toString() || !value) {
+                                onFieldChange('duration')(value)
+                            }
+                        }}
+                        value={fields['duration']}
+                        units={['hrs']}
+                        keyboardType="number-pad"
+                        hasError = {errors['duration']}
+                        errorMessage = "Input estimated time (hours)."
+                    />
+                </FieldContainer>
+                <FieldContainer>
+                    <InputField2
+                        label={"Category"}
+                        onChangeText={onFieldChange('category')}
+                        value={fields['category']}
+                        onClear={() => onFieldChange('category')('')}
+                    />
+                </FieldContainer>
+            </Row>
+
+            <Row zIndex = {-2}>
+                <FieldContainer>
+                    <OptionsField
+                        label={"Recovery"}
+                        text={templateText[fields['hasRecovery']]}
+                        oneOptionsSelected={onFieldChange('hasRecovery')}
+                        menuOption={<MenuOptions>
+                            <MenuOption value={true} text='Yes'/>
+                            <MenuOption value={false} text='No'/>
+                        </MenuOptions>}
+                    />
+                </FieldContainer>
+                <FieldContainer>
+                    <InputField2
+                        label={"Service Fee"}
+                        onChangeText={(value) => {
+                            handlePrice(value)
+                        }}
+                        value={`$ ${fee.toString()}`}
+                        keyboardType={'number-pad'}
+                        onClear={() => handlePrice('')}
+                        hasError = {errors['serviceFee']}
+                        errorMessage = "Cost is required."
+                    />
+                </FieldContainer>
+            </Row>
+
+            {/* <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
@@ -219,8 +329,8 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
                             setSearchProcedureValue('');
                         }}
                         options={searchProcedureResults}
-                        handlePopovers = {(value)=>handlePopovers(value)('reference')}
-                        isPopoverOpen = {refPop[0].status}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {searchProcedureQuery}
                     />
                 </View>
 
@@ -264,8 +374,8 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
                             // setSearchValue('');
                         // }}
                         options={searchResults}
-                        handlePopovers = {(value)=>handlePopovers(value)('physician')}
-                        isPopoverOpen = {physPop[0].status}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {searchQuery}
                         hasError = {errors['physician']}
                         errorMessage = "Physician must be assigned"
                     />
@@ -334,9 +444,9 @@ const DialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, er
                     />
                 </View>
 
-            </View>
+            </View> */}
 
-        </View>
+        </>
     )
 }
 
