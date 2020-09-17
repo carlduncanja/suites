@@ -93,6 +93,7 @@
       }
     ],
     "no-param-reassign": "warn",
+    "no-nested-ternary": "warn",
     "nonblock-statement-body-position": "off",
     "curly": "off",
     "consistent-return": "off",
