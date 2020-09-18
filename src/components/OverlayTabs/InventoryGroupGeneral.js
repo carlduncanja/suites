@@ -15,10 +15,13 @@ import TextArea from '../common/Input Fields/TextArea';
 import ConfirmationComponent from '../ConfirmationComponent';
 import { useModal } from 'react-native-modalfy';
 
- 
+
+const FieldWrapper = styled.View`
+    margin-bottom : 32px;
+`;
 function InventoryGroupGeneral({ 
     inventoryGroup = {}, 
-    onUpdate = () => {}, 
+    onUpdate = () => {},  
     fields = {}, 
     errorFields = {},
     onFieldChange = ()=>{}
@@ -171,6 +174,18 @@ function InventoryGroupGeneral({
     return(
         <>
             <Row>
+                <Record
+                    recordTitle = "Group Name"
+                    recordValue = {fields['name']}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    onRecordUpdate = {onFieldChange('name')}
+                    onClearValue = {()=>{onFieldChange('name')(''); console.log("Clear")}}
+                    flex = {0.5}
+                />
+            </Row>
+
+            <Row>
                 
                 <Record
                     recordTitle = "Description"
@@ -185,22 +200,16 @@ function InventoryGroupGeneral({
 
             </Row>
 
+            
+
             <Row>
                 <ListTextRecord
                     recordTitle = "Category"
                     values = {categories}
                 />
-
-                <Record
-                    recordTitle = "Group Name"
-                    recordValue = {fields['name']}
-                    editMode = {isEditMode}
-                    editable = {true}
-                    onRecordUpdate = {onFieldChange('name')}
-                    onClearValue = {()=>{onFieldChange('name')(''); console.log("Clear")}}
-                />
- 
             </Row>
+
+            
         </>
     )
 }

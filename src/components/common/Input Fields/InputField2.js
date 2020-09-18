@@ -79,7 +79,7 @@ const IconContainer = styled.View`
     right : 0;
 `;
 
-
+ 
 function InputField2({
                          label,
                          labelWidth,

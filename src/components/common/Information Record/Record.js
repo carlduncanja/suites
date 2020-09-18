@@ -34,6 +34,7 @@ const TextAreaWrapper = styled.View`
 `;
 
 
+
 function Record({
                     recordTitle = "",
                     recordValue = '--',
@@ -86,12 +87,15 @@ function Record({
 
                 {
                     editMode && !useTextArea &&
+                    
                     <InputField2
                         value={recordValue}
                         onChangeText={onRecordUpdate}
                         enabled={editable}
                         onClear = {onClearValue}
                     />
+    
+                    
                 }
 
 
