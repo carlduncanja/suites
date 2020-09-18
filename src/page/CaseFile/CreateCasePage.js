@@ -1,35 +1,35 @@
-import React, {useState, useEffect} from "react";
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {useModal} from "react-native-modalfy";
-import {createCaseFile, isValidCaseProcedureAppointment} from "../../api/network";
-import DialogTabs from "../../components/common/Dialog/DialogTabs";
-import PatientIcon from "../../../assets/svg/newCasePatient";
-import MedicalIcon from "../../../assets/svg/newCaseMedical";
-import ProcedureIcon from "../../../assets/svg/newCaseProcedure";
-import PatientStep from "../../components/CaseFiles/PatientDialogTabs/PatientStep";
-import StaffStep from "../../components/CaseFiles/StaffDialogTabs/StaffStep";
-import ProcedureStep from "../../components/CaseFiles/ProceduresDialogTabs/ProcedureStep";
-import CompleteCreateCase from "../../components/CaseFiles/CompleteCreateCase";
-import ProgressContainer from "../../components/common/Progress/ProgressContainer";
-import {addCaseFile} from "../../redux/actions/caseFilesActions";
-import {saveDraft} from "../../redux/actions/draftActions";
-import {connect} from "react-redux";
-import {isEmpty} from "lodash";
-import moment from "moment";
-import styled from "@emotion/native"
-import ConfirmationComponent from "../../components/ConfirmationComponent";
-import {useTheme} from "emotion-theming";
-import PageButton from "../../components/common/Page/PageButton";
-import ChevronRight from "../../../assets/svg/ChevronRight";
-import ChevronLeft from "../../../assets/svg/ChevronLeft";
-import Divider from "../../components/common/Divider";
-import Snackbar from "react-native-paper/src/components/Snackbar";
+import React, {useState, useEffect} from 'react';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useModal} from 'react-native-modalfy';
+import {connect} from 'react-redux';
+import {isEmpty} from 'lodash';
+import moment from 'moment';
+import styled from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import Snackbar from 'react-native-paper/src/components/Snackbar';
+import {createCaseFile, isValidCaseProcedureAppointment} from '../../api/network';
+import DialogTabs from '../../components/common/Dialog/DialogTabs';
+import PatientIcon from '../../../assets/svg/newCasePatient';
+import MedicalIcon from '../../../assets/svg/newCaseMedical';
+import ProcedureIcon from '../../../assets/svg/newCaseProcedure';
+import PatientStep from '../../components/CaseFiles/PatientDialogTabs/PatientStep';
+import StaffStep from '../../components/CaseFiles/StaffDialogTabs/StaffStep';
+import ProcedureStep from '../../components/CaseFiles/ProceduresDialogTabs/ProcedureStep';
+import CompleteCreateCase from '../../components/CaseFiles/CompleteCreateCase';
+import ProgressContainer from '../../components/common/Progress/ProgressContainer';
+import {addCaseFile} from '../../redux/actions/caseFilesActions';
+import {saveDraft} from '../../redux/actions/draftActions';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
+import PageButton from '../../components/common/Page/PageButton';
+import ChevronRight from '../../../assets/svg/ChevronRight';
+import ChevronLeft from '../../../assets/svg/ChevronLeft';
+import Divider from '../../components/common/Divider';
 
 const PATIENT_TABS = {
-    DETAILS: "Details",
-    CONTACT: "Contact",
-    ADDRESS: "Address",
-    INSURANCE: "Insurance Coverage",
+    DETAILS: 'Details',
+    CONTACT: 'Contact',
+    ADDRESS: 'Address',
+    INSURANCE: 'Insurance Coverage',
 };
 
 const CASE_PROCEDURE_TABS = {
@@ -40,58 +40,58 @@ const CASE_PROCEDURE_TABS = {
 };
 
 const testData = {
-    name: "John Doe",
+    name: 'John Doe',
     patient: {
-        firstName: "John",
-        middleName: "",
-        surname: "Doe",
-        gender: "Male",
-        trn: "42991536",
-        dob: "2020-06-02",
+        firstName: 'John',
+        middleName: '',
+        surname: 'Doe',
+        gender: 'Male',
+        trn: '42991536',
+        dob: '2020-06-02',
         contactInfo: {
             phones: [
                 {
-                    phone: "8764287313",
-                    type: "cell",
+                    phone: '8764287313',
+                    type: 'cell',
                 },
             ],
             emails: [
                 {
-                    email: "john.doe@gmail.com",
-                    type: "work",
+                    email: 'john.doe@gmail.com',
+                    type: 'work',
                 },
             ],
             emergencyContact: [
                 {
-                    name: "Bob Brown",
-                    email: "Bob.brown@gmail.com",
-                    phone: "8765232141",
-                    relation: "mother",
+                    name: 'Bob Brown',
+                    email: 'Bob.brown@gmail.com',
+                    phone: '8765232141',
+                    relation: 'mother',
                 },
             ],
         },
         addressInfo: {
-            line1: "23 Ruthven Road",
-            line2: "",
-            city: "Kingston",
-            parish: "Kingston 8",
+            line1: '23 Ruthven Road',
+            line2: '',
+            city: 'Kingston',
+            parish: 'Kingston 8',
         },
         insurance: {
-            name: "Sagicor Life",
+            name: 'Sagicor Life',
             coverage: 45000.0,
-            policyNumber: "7311239-122",
+            policyNumber: '7311239-122',
         },
     },
     staff: {
-        physicians: ["5ea05a51a5ba16247dac651d"],
-        leadPhysician: "5ea05a51a5ba16247dac651d",
+        physicians: ['5ea05a51a5ba16247dac651d'],
+        leadPhysician: '5ea05a51a5ba16247dac651d',
     },
     caseProcedures: [
         {
-            procedure: "5ea060219a60bdf9e4b15783",
-            startTime: "2020-04-10T09:00:00.000Z",
-            endTime: "2020-04-10T10:00:00.000Z",
-            location: "5ea05bd848a2d72ff86e5151",
+            procedure: '5ea060219a60bdf9e4b15783',
+            startTime: '2020-04-10T09:00:00.000Z',
+            endTime: '2020-04-10T10:00:00.000Z',
+            location: '5ea05bd848a2d72ff86e5151',
         },
     ],
 };
@@ -101,11 +101,11 @@ const PageWrapper = styled.View`
   display: flex;  
   margin:0;
   background-color: ${({theme}) => theme.colors['--default-shade-white']};
-`
+`;
 const PageContentWrapper = styled.View`
   flex: 1;
   //padding: ${({theme}) => theme.space['--space-32']}
-`
+`;
 
 const HeaderWrapper = styled.View`
   display: flex;
@@ -115,19 +115,19 @@ const HeaderWrapper = styled.View`
   padding-left: ${({theme}) => theme.space['--space-24']};
   padding-right: ${({theme}) => theme.space['--space-24']};
   
-`
+`;
 
 const HeaderContainer = styled.View`
   //flex: 1;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 const PageTitle = styled.Text(({theme}) => ({
     ...theme.font['--text-xl-medium'],
     color: theme.colors['--company']
-}))
+}));
 
 const FooterWrapper = styled.View`
   bottom: 0;
@@ -139,30 +139,29 @@ const FooterWrapper = styled.View`
   padding-bottom: ${({theme}) => theme.space['--space-24']}; 
   margin-left: ${({theme}) => theme.space['--space-24']}; 
   margin-right: ${({theme}) => theme.space['--space-24']}; 
-`
+`;
 
 const FooterContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
-`
+`;
 
 const FooterButtonContainer = styled.View`
   width: 145px;
   height: 48px;
-`
-
+`;
 
 function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) {
     // ########### CONST
     const [wizard, setWizard] = useState([
         {
             step: {
-                name: "Patient",
+                name: 'Patient',
                 selectedIcon: (
-                    <PatientIcon fillColor={"#0CB0E7"} strokeColor={"#64D8FF"}/>
+                    <PatientIcon fillColor="#0CB0E7" strokeColor="#64D8FF"/>
                 ),
                 disabledIcon: (
-                    <PatientIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"}/>
+                    <PatientIcon fillColor="#A0AEC0" strokeColor="#CCD6E0"/>
                 ),
                 progress: 0,
             },
@@ -175,17 +174,17 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         },
         {
             step: {
-                name: "Medical Team",
-                selectedIcon: <MedicalIcon fillColor={"#E53E3E"}/>,
-                disabledIcon: <MedicalIcon fillColor={"#CBD5E0"}/>,
+                name: 'Medical Team',
+                selectedIcon: <MedicalIcon fillColor="#E53E3E"/>,
+                disabledIcon: <MedicalIcon fillColor="#CBD5E0"/>,
                 progress: 0,
             },
-            tabs: ["Assignment 1"],
-            tabName: "Assignment",
+            tabs: ['Assignment 1'],
+            tabName: 'Assignment',
             onAdd: () => {
                 // add new assignment
                 const updatedWizard = [...wizard];
-                const tabs = updatedWizard[1].tabs;
+                const {tabs} = updatedWizard[1];
                 if (tabs.length === 3) return;
 
                 const assignment = `Assignment ${tabs.length + 1}`;
@@ -196,21 +195,21 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         },
         {
             step: {
-                name: "Procedures",
+                name: 'Procedures',
                 selectedIcon: (
-                    <ProcedureIcon fillColor={"#319795"} strokeColor={"#81E6D9"}/>
+                    <ProcedureIcon fillColor="#319795" strokeColor="#81E6D9"/>
                 ),
                 disabledIcon: (
-                    <ProcedureIcon fillColor={"#A0AEC0"} strokeColor={"#CCD6E0"}/>
+                    <ProcedureIcon fillColor="#A0AEC0" strokeColor="#CCD6E0"/>
                 ),
                 progress: 0,
             },
-            tabName: "Procedure",
-            tabs: ["Procedure 1"],
+            tabName: 'Procedure',
+            tabs: ['Procedure 1'],
             onAdd: () => {
                 // add new procedure
                 const updatedWizard = [...wizard];
-                const tabs = updatedWizard[2].tabs;
+                const {tabs} = updatedWizard[2];
                 if (tabs.length === 3) return;
 
                 const assignment = `Procedure ${tabs.length + 1}`;
@@ -221,7 +220,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         },
     ]);
     const theme = useTheme();
-    const steps = [...wizard.map((step) => step.step)];
+    const steps = [...wizard.map(step => step.step)];
     const modal = useModal();
     const {draftItem} = route.params;
 
@@ -241,7 +240,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
     const [caseProceduresInfo, setCaseProceduresInfo] = useState([]);
     const [procedureErrors, setProcedureErrors] = useState([]);
 
-    const [positiveText, setPositiveText] = useState("NEXT");
+    const [positiveText, setPositiveText] = useState('NEXT');
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -253,43 +252,45 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
     const [completedTabs, setCompletedTabs] = useState([]);
     const [draft, setDraft] = useState([]);
 
-    const [snackbar, setSnackbar] = useState({visible: false, message: ""})
+    const [snackbar, setSnackbar] = useState({
+        visible: false,
+        message: ''
+    });
 
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
     //create new state in redux
-    const [name, setName] = useState("");
-
+    const [name, setName] = useState('');
 
     //#region Event Handlers
 
-    const onPatientInfoUpdate = (value) => {
+    const onPatientInfoUpdate = value => {
         setPatientFields(value);
     };
 
-    const onStaffUpdate = (value) => {
+    const onStaffUpdate = value => {
         setStaffInfo(value);
     };
 
-    const onProcedureUpdate = (value) => {
-        console.log("procedure update", value);
+    const onProcedureUpdate = value => {
+        console.log('procedure update', value);
 
         setCaseProceduresInfo([...value]);
     };
 
-    const handleStepPress = (name) => {
+    const handleStepPress = name => {
         if (completedSteps.includes(name)) {
             let updatedSteps = [...completedSteps];
 
-            const selectedIndex = updatedSteps.findIndex((step) => step === name);
-            const stepsIndex = steps.findIndex((step) => step.name === name);
+            const selectedIndex = updatedSteps.findIndex(step => step === name);
+            const stepsIndex = steps.findIndex(step => step.name === name);
 
-            const stepObj = wizard.filter((item) => item.step.name === name);
+            const stepObj = wizard.filter(item => item.step.name === name);
             const stepTabs = stepObj[0].tabs;
             updatedSteps = updatedSteps.slice(0, selectedIndex);
 
             if (stepsIndex !== steps.length - 1) {
-                setPositiveText("NEXT");
+                setPositiveText('NEXT');
             }
 
             setSelectedIndex(stepsIndex);
@@ -301,19 +302,19 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         }
     };
 
-    const handleTabPress = (name) => {
+    const handleTabPress = name => {
         if (completedTabs.includes(name)) {
             let newTabs = [...tabs];
             if (selectedIndex === 1) {
-                tabs.length === 3
-                    ? (newTabs = newTabs)
-                    : (newTabs = [...newTabs, `Assignment ${tabs.length + 1}`]);
+                tabs.length === 3 ?
+                    (newTabs = newTabs) :
+                    (newTabs = [...newTabs, `Assignment ${tabs.length + 1}`]);
             }
             const tabsCopy = completedTabs;
             const completedFilterTabIndex = completedTabs.findIndex(
-                (tab) => tab === name
+                tab => tab === name
             );
-            const selectedFilterTabIndex = tabs.findIndex((tab) => tab === name);
+            const selectedFilterTabIndex = tabs.findIndex(tab => tab === name);
             const updatedTabs = tabsCopy.slice(0, completedFilterTabIndex);
 
             setSelectedTabIndex(selectedFilterTabIndex);
@@ -335,7 +336,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
             setSelectedIndex(updatedIndex);
             setSelectedStep(steps[updatedIndex].name);
 
-            const tabs = wizard[updatedIndex].tabs;
+            const {tabs} = wizard[updatedIndex];
             setTabs(tabs);
             setSelectedTabIndex(0);
             setCompletedTabs([]);
@@ -366,7 +367,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                 break;
             }
             case CASE_PROCEDURE_TABS.FINAL: {
-                console.log("validation procedure info");
+                console.log('validation procedure info');
 
                 break;
             }
@@ -384,7 +385,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 
         if (selectedIndex === 3) {
             // we are on the final tab
-            console.log("Hey Save my data and open bottom sheet with the data");
+            console.log('Hey Save my data and open bottom sheet with the data');
 
             handleOnComplete();
         } else if (selectedTabIndex !== tabs.length - 1) {
@@ -395,7 +396,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
             selectedIndex === steps.length - 1 &&
             selectedTabIndex === tabs.length - 1
         ) {
-            setPositiveText("CONTINUE");
+            setPositiveText('CONTINUE');
             setCompletedSteps([...completedSteps, steps[selectedIndex].name]);
             setSelectedIndex(3);
             setSelectedTabIndex(0);
@@ -408,7 +409,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
             setSelectedIndex(updatedIndex);
             setSelectedStep(steps[updatedIndex].name);
 
-            const tabs = wizard[updatedIndex].tabs;
+            const {tabs} = wizard[updatedIndex];
             setTabs(tabs);
             setSelectedTabIndex(0);
             setCompletedTabs([]);
@@ -416,45 +417,44 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
     };
 
     const onPreviousButtonPress = () => {
-
         if (selectedIndex === 0 && selectedTabIndex === 0) {
 
         } else if (selectedTabIndex !== 0) {
             const updatedTabIndex = selectedTabIndex - 1;
-            const tabs = [...completedTabs]
-            tabs.pop()
+            const tabs = [...completedTabs];
+            tabs.pop();
             setCompletedTabs(tabs);
 
             setSelectedTabIndex(updatedTabIndex);
         } else {
             const updatedIndex = selectedIndex - 1;
             const steps = [...completedSteps];
-            steps.pop()
+            steps.pop();
             setCompletedSteps(steps);
             setSelectedIndex(updatedIndex);
             setSelectedStep(steps[updatedIndex]?.name);
 
-            const tabs = wizard[updatedIndex].tabs;
+            const {tabs} = wizard[updatedIndex];
             setTabs(tabs);
             setSelectedTabIndex(0);
             setCompletedTabs([]);
         }
     };
 
-    const validatePatientDetailsTab = (tab) => {
+    const validatePatientDetailsTab = tab => {
         let isValid = true;
 
         let requiredFields = [];
         switch (tab) {
             case PATIENT_TABS.DETAILS: {
                 // validate the fields on the details tab that are required
-                requiredFields = ["firstName", "surname", "trn", "dob"];
+                requiredFields = ['firstName', 'surname', 'trn', 'dob'];
 
                 break;
             }
             case PATIENT_TABS.ADDRESS: {
                 // validate the fields on the details tab that are required
-                requiredFields = ["line1", "city", "parish"];
+                requiredFields = ['line1', 'city', 'parish'];
 
                 break;
             }
@@ -465,7 +465,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         console.log(patientFields);
 
         for (const requiredField of requiredFields) {
-            if (requiredField === "trn") {
+            if (requiredField === 'trn') {
                 // check if trn field is 9
 
                 const trn = patientFields[requiredField];
@@ -474,27 +474,25 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 
                     updateErrors = {
                         ...updateErrors,
-                        [requiredField]: `Invalid trn.`,
+                        [requiredField]: 'Invalid TRN',
                     };
                 }
-            } else if (requiredField === "dob") {
+            } else if (requiredField === 'dob') {
                 // check if dob is valid
-                const validaDob = new moment().subtract(5, 'years')
+                const validaDob = moment()
+                    .subtract(5, 'years');
                 const dob = patientFields[requiredField];
-                const validDob = moment(dob).isBefore(validaDob);
+                const validDob = moment(dob)
+                    .isBefore(validaDob);
                 if (!validDob) {
                     isValid = false;
 
                     updateErrors = {
                         ...updateErrors,
-                        [requiredField]: `Invalid DOB entered.`,
+                        [requiredField]: 'Invalid DOB',
                     };
                 }
-            } else if (
-                patientFields[requiredField] ||
-                (tab === PATIENT_TABS.ADDRESS &&
-                    patientFields.addressInfo[requiredField])
-            ) {
+            } else if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo[requiredField])) {
                 delete updateErrors[requiredField];
                 console.log(`${requiredField} is valid`);
             } else {
@@ -502,7 +500,10 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 
                 updateErrors = {
                     ...updateErrors,
-                    [requiredField]: `${requiredField} is required`,
+                    [requiredField]: `${requiredField.charAt(0)
+                        .toUpperCase() + requiredField.slice(1)
+                        .replace(/([a-z0-9])([A-Z])/g, '$1 $2')} is required`, // capitalize and separate camelcase named field
+                    // [requiredField]: `${requiredField} is required`,
                 };
 
                 console.log(patientFields.addressInfo[requiredField]);
@@ -515,22 +516,22 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         return isValid;
     };
 
-    const validateProcedureInfo = async (procedureIndex) => {
+    const validateProcedureInfo = async procedureIndex => {
         let isValid = true;
-        const requiredParams = ["date", "startTime", "location", "procedure", "duration"];
+        const requiredParams = ['date', 'startTime', 'location', 'procedure', 'duration'];
 
         const procedureInfo = caseProceduresInfo[procedureIndex] || {};
 
-        let updateErrors = [...procedureErrors];
-        let errorObj = updateErrors[procedureIndex] || {};
+        const updateErrors = [...procedureErrors];
+        const errorObj = updateErrors[procedureIndex] || {};
 
-        console.log("error index at", procedureIndex);
+        console.log('error index at', procedureIndex);
 
         for (const requiredParam of requiredParams) {
             if (!procedureInfo[requiredParam]) {
                 console.log(`${requiredParam} is required`);
                 isValid = false;
-                errorObj[requiredParam] = "Please enter a value";
+                errorObj[requiredParam] = 'Please enter a value';
                 updateErrors[+procedureIndex] = errorObj;
             } else {
                 delete errorObj[requiredParam];
@@ -540,7 +541,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 
         setProcedureErrors(updateErrors);
         // console.log("procedure errors", procedureErrors);
-        if (!isValid) return isValid
+        if (!isValid) return isValid;
 
         // TODO validate time.
         const {procedure, location, startTime, duration} = procedureInfo;
@@ -553,22 +554,22 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         return isValid;
     };
 
-    const validateStaffInfo = (staffIndex) => {
+    const validateStaffInfo = staffIndex => {
         let isValid = true;
-        const requiredParams = ["name"];
+        const requiredParams = ['name'];
 
         const staff = staffInfo[staffIndex] || {};
 
-        let updateErrors = [...staffErrors];
-        let errorObj = updateErrors[staffIndex] || {};
+        const updateErrors = [...staffErrors];
+        const errorObj = updateErrors[staffIndex] || {};
 
-        console.log("error index at", staffIndex, staff, staffInfo);
+        console.log('error index at', staffIndex, staff, staffInfo);
 
         for (const requiredParam of requiredParams) {
             if (!staff[requiredParam]) {
                 console.log(`${requiredParam} is required`);
                 isValid = false;
-                errorObj[requiredParam] = "Please enter a value";
+                errorObj[requiredParam] = 'Please enter a value';
                 updateErrors[+staffIndex] = errorObj;
             } else {
                 delete errorObj[requiredParam];
@@ -577,7 +578,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         }
 
         setStaffErrors(updateErrors);
-        console.log("staff errors", staffErrors);
+        console.log('staff errors', staffErrors);
 
         return isValid;
     };
@@ -585,15 +586,15 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
     const clearSnackBar = () => {
         setSnackbar({
             visible: false,
-            message: ""
-        })
-    }
+            message: ''
+        });
+    };
 
     const handleOnComplete = () => {
         // prepare request create case file request
-        console.log("handleOnComplete", patientFields);
-        console.log("handleOnCompleted", staffInfo);
-        console.log("handleOnCompleted", caseProceduresInfo);
+        console.log('handleOnComplete', patientFields);
+        console.log('handleOnCompleted', staffInfo);
+        console.log('handleOnCompleted', caseProceduresInfo);
 
         const caseFileData = {
             name: `${patientFields.firstName} ${patientFields.surname}`,
@@ -609,7 +610,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 
         // adding staff info
         for (const staffInfoElement of staffInfo) {
-            if (staffInfoElement.type === "Physician") {
+            if (staffInfoElement.type === 'Physician') {
                 caseFileData.staff.physicians.push(staffInfoElement._id);
             } else {
                 caseFileData.staff.nurses.push(staffInfoElement._id);
@@ -618,7 +619,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         caseFileData.staff.leadPhysician = caseFileData.staff.physicians[0];
 
         // adding procedure info
-        caseFileData.caseProcedures = caseProceduresInfo.map((item) => ({
+        caseFileData.caseProcedures = caseProceduresInfo.map(item => ({
             // ...item,
             procedure: item.procedure._id,
             location: item.location._id,
@@ -626,47 +627,48 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
             duration: item.duration,
         }));
 
-        console.log("handleOnComplete: caseProcedure Info", caseFileData);
+        console.log('handleOnComplete: caseProcedure Info', caseFileData);
 
         createCaseFile(caseFileData)
-            .then((data) => {
+            .then(data => {
                 addCaseFile(data);
-                navigation.replace("Case", {
+                navigation.replace('Case', {
                     caseId: data._id,
                     isEdit: true,
                 });
             })
-            .catch((error) => {
-                console.log("failed to create case file", error.message);
-                Alert.alert("Sorry", "Something went wrong when creating case.");
+            .catch(error => {
+                console.log('failed to create case file', error.message);
+                Alert.alert('Sorry', 'Something went wrong when creating case.');
             });
     };
 
     const createDraft = () => {
-        saveDraft([{id: Math.floor(Math.random() * 10000), patient: patientFields}]);
-        navigation.navigate("CaseFiles");
-        modal.closeAllModals()
-    }
+        saveDraft([{
+            id: Math.floor(Math.random() * 10000),
+            patient: patientFields
+        }]);
+        navigation.navigate('CaseFiles');
+        modal.closeAllModals();
+    };
 
     const onClose = () => {
-        modal.openModal("ConfirmationModal", {
+        modal.openModal('ConfirmationModal', {
             content: (
                 <ConfirmationComponent
                     isError={false}
                     isEditUpdate={true}
                     onAction={createDraft}
-                    action={"Save"}
+                    action="Save"
                     onCancel={() => {
-                        navigation.navigate("CaseFiles");
-                        modal.closeAllModals()
+                        navigation.navigate('CaseFiles');
+                        modal.closeAllModals();
                     }}
                     message={`You haven't finished creating the Case File for "${patientFields?.firstName}". Do you wish to save your progress?`}
                 />
             ),
         });
-
-
-    }
+    };
 
     const getTabContent = () => {
         switch (selectedIndex) {
@@ -677,7 +679,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                         patient={patientFields}
                         onPatientUpdate={onPatientInfoUpdate}
                         errors={patientFieldErrors}
-                        onErrorUpdate={(value) => setPatientErrors(value)}
+                        onErrorUpdate={value => setPatientErrors(value)}
                     />
                 );
 
@@ -690,7 +692,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                         tabs={tabs}
                         completedTabs={completedTabs}
                         errors={staffErrors}
-                        onErrorsUpdate={(value) => setStaffErrors(value)}
+                        onErrorsUpdate={value => setStaffErrors(value)}
                     />
                 );
 
@@ -701,7 +703,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                         onProcedureUpdate={onProcedureUpdate}
                         procedures={caseProceduresInfo}
                         errors={procedureErrors}
-                        onErrorUpdate={(value) => setProcedureErrors(value)}
+                        onErrorUpdate={value => setProcedureErrors(value)}
                     />
                 );
 
@@ -717,36 +719,37 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
         }
     };
 
-    const getTabsProgress = () => {
-        return ((selectedTabIndex + 1) / tabs.length) * 100;
-    };
+    const getTabsProgress = () => ((selectedTabIndex + 1) / tabs.length) * 100;
 
-    const validateProcedureAsync = (procedure, location, startTime, duration) => {
+    const validateProcedureAsync = (procedure, location, startTime, duration) => isValidCaseProcedureAppointment(procedure, location, startTime, duration)
+        .then(results => {
+            const {errors = [], isValid} = results;
 
-        return isValidCaseProcedureAppointment(procedure, location, startTime, duration)
-            .then(results => {
-                const {errors = [], isValid} = results;
+            // loop through and show all errors.
+            const messages = errors.map(item => item.message);
 
-                // loop through and show all errors.
-                let messages = errors.map(item => item.message)
+            if (messages.length) {
+                const message = messages.join('\n');
+                setSnackbar({
+                    visible: true,
+                    message
+                });
+            }
 
-                if (messages.length) {
-                    let message = messages.join('\n')
-                    setSnackbar({visible: true, message})
-                }
-
-                return isValid;
-            })
-            .catch(error => {
-                console.log("Failed to validate procedure", error);
-                setSnackbar({visible: true, message: "Something went wrong"})
-                return false
-            })
-    }
+            return isValid;
+        })
+        .catch(error => {
+            console.log('Failed to validate procedure', error);
+            setSnackbar({
+                visible: true,
+                message: 'Something went wrong'
+            });
+            return false;
+        });
 
     //#endregion
 
-    const title = name === "" ? "New Case" : name;
+    const title = name === '' ? 'New Case' : name;
 
     return (
         <PageWrapper theme={theme}>
@@ -756,7 +759,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                     <PageTitle>{title}</PageTitle>
 
                     <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                        <Text style={{color: "#718096"}}>Close</Text>
+                        <Text style={{color: '#718096'}}>Close</Text>
                     </TouchableOpacity>
 
                 </HeaderContainer>
@@ -792,18 +795,17 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                         <PageButton
                             backgroundColor={theme.colors['--color-gray-200']}
                             fontColor={theme.colors['--color-gray-600']}
-                            text={"PREVIOUS"}
+                            text="PREVIOUS"
                             onPress={onPreviousButtonPress}
                             IconLeft={<ChevronLeft strokeColor={theme.colors['--color-gray-600']}/>}
                         />
                     </FooterButtonContainer>
 
-
                     <FooterButtonContainer>
                         <PageButton
                             backgroundColor={theme.colors['--color-blue-500']}
                             fontColor={theme.colors['--default-shade-white']}
-                            text={"NEXT"}
+                            text="NEXT"
                             onPress={onPositiveButtonPress}
                             IconRight={<ChevronRight strokeColor={theme.colors['--default-shade-white']}/>}
                         />
@@ -826,10 +828,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                     color: theme.colors['--color-red-700']
                 }}
                 action={{
-                    label: "X",
+                    label: 'X',
                     onPress: clearSnackBar,
-                }}>
-                {snackbar?.message || "Something went wrong"}
+                }}
+            >
+                {snackbar?.message || 'Something went wrong'}
             </Snackbar>
 
         </PageWrapper>
@@ -839,9 +842,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 CreateCasePage.propTypes = {};
 CreateCasePage.defaultProps = {};
 
-const mapStateToProps = (state) => ({
-    draftprop: [...state.draft],
-});
+const mapStateToProps = state => ({draftprop: [...state.draft]});
 
 const mapDispatchToProp = {
     addCaseFile,
@@ -853,47 +854,47 @@ export default connect(mapStateToProps, mapDispatchToProp)(CreateCasePage);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: "column",
-        backgroundColor: "white",
+        flexDirection: 'column',
+        backgroundColor: 'white',
     },
     footerButton: {
         height: 57,
-        width: "100%",
+        width: '100%',
         bottom: 0,
-        flexDirection: "row",
+        flexDirection: 'row',
         borderBottomRightRadius: 8,
         borderBottomLeftRadius: 8,
         borderTopWidth: 1,
-        borderTopColor: "#E3E8EF",
-        justifyContent: "center",
-        alignItems: "center",
+        borderTopColor: '#E3E8EF',
+        justifyContent: 'center',
+        alignItems: 'center',
         zIndex: 0,
     },
     closeButton: {
         borderRadius: 6,
         padding: 4,
-        alignItems: "center",
+        alignItems: 'center',
         width: 64,
         height: 26,
-        backgroundColor: "#E3E8EF"
+        backgroundColor: '#E3E8EF'
     },
     footerText: {
         fontSize: 16,
         marginRight: 10,
         marginLeft: 10,
-        fontWeight: "bold",
-        color: "#3182CE",
+        fontWeight: 'bold',
+        color: '#3182CE',
     },
     headingContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         height: 47,
         paddingLeft: 12,
         paddingRight: 12,
         paddingTop: 8,
         paddingBottom: 8,
         borderBottomWidth: 1,
-        borderBottomColor: "#E3E8EF",
+        borderBottomColor: '#E3E8EF',
     },
 });
