@@ -137,7 +137,6 @@ const AssignEquipmentPage = ({ navigation, route, modal }) => {
         console.log("the equipment child id is", equipment._id);
         const fieldsToPass =
         {
-
             type: equipmentData['Assignment'] === "Location" ? "location" : "physician",
             startTime: equipmentData['date'],
             duration: equipmentData['Usage'],

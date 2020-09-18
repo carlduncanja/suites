@@ -55,7 +55,8 @@ import {
     registrationEndpoint,
     assignEquipmentToLocation,
     users,
-    createCategoryEndpoint
+    createCategoryEndpoint,
+    updateEquipmentEndpoint
 } from "../const/suitesEndpoints";
 import { createDocumentLink } from "../const/documentGenerationEndpoints";
 
@@ -489,6 +490,13 @@ export const getEquipmentById = async (id) => {
         .catch(handleError);
 };
 
+export const updateEquipment = async (id, bodyToSend) => {
+    return suitesAxiosInstance
+        .put(updateEquipmentEndpoint(id), bodyToSend)
+        .then(handleResponse)
+        .catch(handleError);
+};
+
 export const getEquipmentTypes = async (query, max, page) => {
     return suitesAxiosInstance
         .get(equipmentTypesEndpoint, { params: { query, max, page } })
@@ -569,12 +577,12 @@ export const getSupplierProducts = async (id, query, max) => {
         .catch(handleError);
 }
 
-;export const createSupplierProductsCall = async (id, data) => {
-    return suitesAxiosInstance
-        .post(supplierProductsEndpoint(id), data)
-        .then(handleResponse)
-        .catch(handleError);
-};
+    ; export const createSupplierProductsCall = async (id, data) => {
+        return suitesAxiosInstance
+            .post(supplierProductsEndpoint(id), data)
+            .then(handleResponse)
+            .catch(handleError);
+    };
 
 export const updateSupplierProducts = async (supplierId, productId, data) => {
     return suitesAxiosInstance

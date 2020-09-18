@@ -31,6 +31,7 @@ const InputFieldContainer = styled.View`
 const TextInputWrapper = styled.View`
     flex:1;
     height : 32px;
+   
 `;
 const TextInputContainer = styled.View`
     height : 100%;

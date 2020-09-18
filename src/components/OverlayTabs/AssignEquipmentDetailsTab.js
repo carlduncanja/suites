@@ -23,13 +23,13 @@ import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsFi
 
 const InputWrapper = styled.View`
 height:30px;
-width:230px;
-margin:40px;
+width:260px;
+margin-right:30px;
 
 `
 const DateWrapper = styled.View`
 height:30px;
-width:280px;
+width:260px;
 margin-top:5px;
 
 `
@@ -37,9 +37,8 @@ margin-top:5px;
 const ViewBreaker = styled.View`
 flex-direction:row;
 align-items:center;
-padding:10px;
 justify-content:space-between;
-margin-top:-50px;
+margin-top:25px;
 `
 const DoneButtonWrapper = styled.TouchableOpacity`
 width:616px;
@@ -142,7 +141,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <InputField2
                             value=""
-                            labelWidth={30}
+                            labelWidth={98}
                             placeholder={equipmentDetails?.name}
                             label="Equipment"
                             enabled={false}
@@ -156,7 +155,6 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                             label={"Category"}
                             value={!equipmentDetails?.categories ? "--" : equipmentDetails.categories}
 
-
                         />
                     </InputWrapper>
                 </View>
@@ -164,7 +162,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <OptionsField
                             key={data['Assignment']}
-                            labelWidth={50}
+                            labelWidth={98}
                             label="Assignment"
                             text={data['Assignment']}
                             oneOptionsSelected={onFieldChange('Assignment')}
@@ -177,24 +175,9 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     </InputWrapper>
 
                     <InputWrapper>
-                        <InputUnitField
-                            label={"Usage"}
-                            onChangeText={(value) => {
-                                if (/^\d+$/g.test(value) || !value) {
-                                    onFieldChange('Usage')(value)
-                                }
-                            }}
-                            value={data['Usage']}
-                            units={['hrs']}
-                            keyboardType="number-pad"
-                        />
-                    </InputWrapper>
-                </ViewBreaker>
-                <ViewBreaker>
-                    <InputWrapper>
                         <SearchableOptionsField
                             label="Assigned"
-                            labelWidth={30}
+                            labelWidth={98}
                             value={data['Assignment'] === "Location" ? locations : physcians}
                             text={searchValue}
                             oneOptionsSelected={(value) => {
@@ -217,41 +200,48 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                             options={searchResult}
                         />
                     </InputWrapper>
-                    <InputWrapper>
-                        <OptionsField
-                            key={data['Status']}
-                            label="Status"
-                            text={data['Status']}
-                            oneOptionsSelected={onFieldChange('Status')}
-                            menuOption={<MenuOptions>
-                                <MenuOption value={"Available"} text='Available' />
-                                <MenuOption value={"Servicing"} text='Servicing' />
-                                <MenuOption value={"Damaged"} text='Damaged' />
-                                <MenuOption value={"In Use"} text='In Use' />
-                            </MenuOptions>}
 
+
+                </ViewBreaker>
+                <ViewBreaker>
+                    <InputWrapper>
+                        <DateInputField
+                            label={"From"}
+                            labelWidth={98}
+                            value={data['date']}
+                            onClear={() => onFieldChange('date')('')}
+                            mode={'date'}
+                            format={"YYYY-MM-DD"}
+                            keyboardType="number-pad"
+                            placeholder="YYYY/MM/DD"
+                            minDate={new Date(moment().add(1, 'days'))}
+                            maxDate={null}
+                            onDateChange={onDateChange}
+                        // hasError={errors['dob']}
+                        // errorMessage={errors['dob']}
                         />
                     </InputWrapper>
 
-                </ViewBreaker>
+                    <InputWrapper>
+                        <InputUnitField
+                            label={"Duration"}
+                            labelWidth={98}
+                            onChangeText={(value) => {
+                                if (/^\d+$/g.test(value) || !value) {
+                                    onFieldChange('Usage')(value)
+                                }
+                            }}
+                            value={data['Usage']}
+                            units={['hrs']}
+                            keyboardType="number-pad"
+                        />
+                    </InputWrapper>
 
-                <DateWrapper>
-                    <DateInputField
-                        label={"Date of Assignment"}
-                        labelWidth={28}
-                        value={data['date']}
-                        onClear={() => onFieldChange('date')('')}
-                        mode={'date'}
-                        format={"YYYY-MM-DD"}
-                        keyboardType="number-pad"
-                        placeholder="YYYY/MM/DD"
-                        minDate={new Date(moment().add(1, 'days'))}
-                        maxDate={null}
-                        onDateChange={onDateChange}
-                    // hasError={errors['dob']}
-                    // errorMessage={errors['dob']}
-                    />
-                </DateWrapper>
+
+
+
+
+                </ViewBreaker>
 
 
 
