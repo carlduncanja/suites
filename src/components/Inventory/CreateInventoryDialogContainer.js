@@ -366,6 +366,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
         setCategories(updatedCategories);
         console.log("Categories: ", updatedCategories);
     }
+    
     const handleCustomPrice = (value) => {
         let price = value.replace(/[^0-9.]/g, "")
         if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {

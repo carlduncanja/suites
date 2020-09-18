@@ -61,9 +61,12 @@ const Label = styled.Text(({theme, label}) => ({
 
 const Input = styled.TextInput`
     /* flex:1; */
+    display : flex;
+    position : relative;
     padding: ${({theme}) => theme.space['--space-4']};
     /* paddingLeft: 12, */
     padding-right: ${({theme}) =>  theme.space['--space-12']};
+
     padding-left : 0;
     /* width : 85%; */
    
@@ -101,14 +104,16 @@ const OptionContainer = styled.TouchableOpacity`
 `;
 
 const ValueContainer = styled.TouchableOpacity`
-    flex: 1;
+    /* flex: 1;
     display : flex;
     position : absolute;
     top : 3;
-    bottom : 3;
+    bottom : 3; */
     flex-direction : row;
     margin-left : 10px;
     width : 84px;
+    height:22px;
+    
     flex-direction : row;
     /* alignSelf: 'center', */
     align-items: center;
@@ -119,6 +124,21 @@ const ValueContainer = styled.TouchableOpacity`
     padding-left : ${({theme}) => theme.space['--space-4']};
     justify-content:space-between;
 `;
+
+const DisplayContainer = styled.View`
+    flex: 1;
+    display : flex;
+    position : absolute;
+    /* top : 3; */
+    /* bottom : 3; */
+    flex-direction : row;
+    /* background-color : red; */
+    max-width : 300px;
+    min-width :0;
+    height : 100%;
+    align-items : center;
+
+`
 /* border : 1px solid ${ ({theme}) => theme.colors['--color-red-300']};
    background-color : ${ ({theme}) => theme.colors['--color-red-100']};
    border-radius: 2px; */
@@ -163,7 +183,9 @@ function MultipleSearchableOptionsField({
             },
             onSelectShownIten = () => {},
             hasError = false,
-            errorMessage = ""
+            errorMessage = "",
+            maxNumItemsShown = 1,
+            placeholder = "Add Category"
         }) {
 
     const textInputRef = useRef();
@@ -204,6 +226,25 @@ function MultipleSearchableOptionsField({
         </OptionContainer>
     };
 
+    const renderValueBox = (item, index) =>{
+        return(
+            <ValueContainer
+                key = {index}
+                onPress = {()=>{onSelectShownIten(item); }}
+            >
+                <InputText 
+                    numberOfLines={1} 
+                    fontStyle="--text-sm-regular"
+                    textColor="--color-gray-700"  
+                    style = {css`padding-right: 8px;`}>
+                        {item || ""}
+                </InputText>
+                <RemoveIcon strokeColor = {theme.colors['--color-green-500']}/>
+            </ValueContainer>
+
+        )                              
+    }
+
     return (
         <InputContainerComponent>
             {
@@ -217,17 +258,19 @@ function MultipleSearchableOptionsField({
                 <TextInputContainer enabled={enabled}>
 
                     {
+                        
                         selectedItems.length > 0 &&
-                            <ValueContainer
-                                onPress = {()=>{onSelectShownIten(); }}
-                            >
-                                <InputText numberOfLines={1} fontStyle="--text-sm-regular"
-                                    textColor="--color-gray-700"  style = {css`padding-right: 8px;`}>{selectedItems[selectedItems.length-1] || ""}</InputText>
-                                <RemoveIcon strokeColor = {theme.colors['--color-green-500']}/>
-                            </ValueContainer>
-
-
-
+                            <DisplayContainer>
+                                {
+                                    selectedItems.map((item,index)=>{
+                                        return(
+                                           
+                                            renderValueBox(item, index)
+                                        )
+                                    })
+                                }
+                            </DisplayContainer>
+                             
                     }
 
                         <>
@@ -241,6 +284,7 @@ function MultipleSearchableOptionsField({
                                 editable={enabled}
                                 value={text}
                                 ref={textInputRef}
+                                placeholder = {placeholder}
                             />
 
                             <IconContainer>

@@ -4,6 +4,8 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import MultipleOptionsField from "../InputFields/MultipleOptionsField";
 import MultipleSelectionsField from "../Input Fields/MultipleSelectionsField";
+import MultipleSearchableOptionsField from '../Input Fields/MultipleSearchableOptionsField';
+import { options } from 'numeral';
 
 
 const RecordWrapper = styled.View`
@@ -41,16 +43,27 @@ function ListTextRecord({
     flex = 1,
     // EDIT MODE PROPS
     editMode = false,
-    editable = true
+    editable = true,
+    text = "",
+    oneOptionsSelected = () =>{},
+    onChangeText = () => {},
+    onClear = ()=>{},
+    onSelectShownIten = ()=>{},
+    selectedItems = [],
+    options=[],
+    handlePopovers = ()=>{},
+    isPopoverOpen = false,
+    maxNumItemsShown = 1
+
 }){
     const theme = useTheme();
-
+    console.log("Values: ", values);
     return (
         <RecordWrapper flex = {flex} theme = {theme}>
             <RecordContainer>
                 <TitleText theme = {theme} titleColor = {titleColor} titleStyle = {titleStyle}>{recordTitle}</TitleText>
                 {
-                    values.length === 0 && <ValueText theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>--</ValueText>
+                    values.length === 0 && !editMode && <ValueText theme = {theme} valueColor = {valueColor} valueStyle = {valueStyle}>--</ValueText>
                 }
 
 
@@ -71,11 +84,19 @@ function ListTextRecord({
 
 
                 {
-                    // editMode &&
-                    // <MultipleSelectionsField
-                    //     value={values}
-                    //
-                    // />
+                    editMode &&
+                    <MultipleSearchableOptionsField
+                        text={text}
+                        oneOptionsSelected={oneOptionsSelected}
+                        onChangeText={onChangeText}
+                        onClear={onClear}
+                        onSelectShownIten = {onSelectShownIten}
+                        selectedItems = {selectedItems}
+                        options={options}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {isPopoverOpen}
+                        maxNumItemsShown = {maxNumItemsShown}
+                    />
                 }
 
 

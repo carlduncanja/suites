@@ -141,10 +141,6 @@ function InventoryVariantGeneral({
 
     const updateVariant = () => {
         let groupId = inventoryGroup?._id;
-
-        console.log("Fields: ", fields);
-        console.log("Id: ", _id);
-        console.log("Group: ", groupId);
         
         updateInventoryVariantCall(_id, groupId,fields)
             .then( _ => {
@@ -185,7 +181,7 @@ function InventoryVariantGeneral({
                             message="Something went wrong when applying changes."//general message you can send to be displayed
                             action="Yes"
                         />
-                    ),
+                    ), 
                     onClose: () => {
                         console.log('Modal closed');
                     },

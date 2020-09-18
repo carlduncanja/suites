@@ -12,7 +12,8 @@ import { useModal } from 'react-native-modalfy';
 function InventoryPage({ route, navigation }){
 
     const { data = {} } = route.params;
-    const { name = "", _id = "", description = "" } = data
+    const { name = "", _id = "", description = "", categories = [] } = data
+    console.log("Data: ", data);
     const tabs = ["Details"];
     const modal = useModal();
 
@@ -25,6 +26,7 @@ function InventoryPage({ route, navigation }){
     });
     const [errorFields, setErrorFields] = useState({});
     const [isUpdated, setIsUpdated] = useState(false);
+    const [groupCategories, setCategories] = useState([...categories]);
 
 
     const {isEditMode} = pageState;
@@ -123,6 +125,7 @@ function InventoryPage({ route, navigation }){
             ...selectedInventory,
             description : fields['description'],
             name : fields['name'],
+            categories : [...groupCategories]
         }
         updateInventoryGroupById(selectedInventory?._id, updatedGroup)
             .then(data => {
@@ -180,6 +183,8 @@ function InventoryPage({ route, navigation }){
                     fields = {fields}
                     errorFields = {errorFields}
                     onFieldChange = {onFieldChange}
+                    groupCategories = {groupCategories}
+                    handleCategories = {(categories)=>{setCategories(categories); setIsUpdated(true)}}
                 />
             default:
                 break;
