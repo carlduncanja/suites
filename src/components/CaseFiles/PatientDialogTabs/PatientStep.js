@@ -1,28 +1,26 @@
-import React, {useState} from "react";
-import {View, Text, StyleSheet} from "react-native";
-import PatientDetailsTab from "./PatientDetailsTab";
-import PatientContactTab from "./PatientContactTab";
-import PatientAddressTab from "./PatientAddressTab";
-import PatientInsuranceTab from "./PatientInsuranceTab";
-
+import React, {useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import PatientDetailsTab from './PatientDetailsTab';
+import PatientContactTab from './PatientContactTab';
+import PatientAddressTab from './PatientAddressTab';
+import PatientInsuranceTab from './PatientInsuranceTab';
 
 const PatientStep = ({selectedTabIndex, patient, errors, onPatientUpdate, onErrorUpdate}) => {
-
-    const onFieldChange = (fieldName) => (value) => {
-        const updateFields = {...patient}
+    const onFieldChange = fieldName => value => {
+        const updateFields = {...patient};
         onPatientUpdate({
             ...updateFields,
             [fieldName]: value
-        })
+        });
 
-        const updatedErrors = {...errors}
+        const updatedErrors = {...errors};
         delete updatedErrors[fieldName];
-        console.log("errors: ", errors);
+        console.log('errors: ', errors);
         onErrorUpdate(updatedErrors);
-    }
+    };
 
-    const onAddressInfoChange = (fieldName) => (value) => {
-        const updateFields = {...patient}
+    const onAddressInfoChange = fieldName => value => {
+        const updateFields = {...patient};
         if (!updateFields.addressInfo) updateFields.addressInfo = {};
 
         onPatientUpdate({
@@ -31,14 +29,13 @@ const PatientStep = ({selectedTabIndex, patient, errors, onPatientUpdate, onErro
                 ...updateFields.addressInfo,
                 [fieldName]: value
             }
-        })
+        });
 
-        const updatedErrors = {...errors}
+        const updatedErrors = {...errors};
         delete updatedErrors[fieldName];
-        console.log("errors: ", errors);
+        console.log('errors: ', errors);
         onErrorUpdate(updatedErrors);
-    }
-
+    };
 
     const getTab = () => {
         switch (selectedTabIndex) {
@@ -47,35 +44,34 @@ const PatientStep = ({selectedTabIndex, patient, errors, onPatientUpdate, onErro
                     onFieldChange={onFieldChange}
                     fields={patient}
                     errors={errors}
-                />
+                />;
             case 1:
                 return <PatientContactTab
                     onFieldChange={onFieldChange}
                     fields={patient}
                     errors={errors}
-                />
+                />;
             case 2:
                 return <PatientAddressTab
                     onAddressInfoChange={onAddressInfoChange}
                     fields={patient}
                     errors={errors}
-                />
+                />;
             case 3:
                 return <PatientInsuranceTab
                     onFieldChange={onFieldChange}
                     fields={patient}
                     errors={errors}
-                />
+                />;
             default:
                 break;
         }
-    }
+    };
     return (
         <View style={{flex: 1}}>
             {getTab()}
         </View>
-    )
-}
+    );
+};
 
-export default PatientStep
-
+export default PatientStep;

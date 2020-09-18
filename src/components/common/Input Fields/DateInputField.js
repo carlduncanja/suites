@@ -1,17 +1,17 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
-import ClearIcon from "../../../../assets/svg/clearIcon";
-import DatePicker from "react-native-datepicker";
-import {useTheme} from "emotion-theming";
-import Styled from "@emotion/native"
-import InputLabelComponent from "../InputLablel";
-
+import {View, TextInput, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import DatePicker from 'react-native-datepicker';
+import {useTheme} from 'emotion-theming';
+import Styled from '@emotion/native';
+import ClearIcon from '../../../../assets/svg/clearIcon';
+import InputLabelComponent from '../InputLablel';
+import InputErrorComponent from '../InputErrorComponent';
 
 const LabelContainer = Styled.View(({theme, label}) => ({
     minWidth: 70,
     marginRight: label ? 20 : 0
-}))
+}));
 
 /**
  *
@@ -24,33 +24,32 @@ const LabelContainer = Styled.View(({theme, label}) => ({
  * @constructor
  */
 function DateInputField({
-                            label,
-                            labelWidth,
-                            onDateChange,
-                            value,
-                            enabled = true,
-                            placeholder,
-                            onClear,
-                            hasError = false,
-                            errorMessage = "",
-                            minDate,
-                            mode,
-                            format,
-                            maxDate,
-                            borderColor = '--color-gray-300',
-                            hasBorder = true
-                        }) {
-
+    label,
+    labelWidth,
+    onDateChange,
+    value,
+    enabled = true,
+    placeholder,
+    onClear,
+    hasError = false,
+    errorMessage = '',
+    minDate,
+    mode,
+    format,
+    maxDate,
+    borderColor = '--color-gray-300',
+    hasBorder = true
+}) {
     const theme = useTheme();
 
     const handleOnDateChange = (dateString, dateObj) => {
         // if (!onDateChange) {
         //     setDate(dateObj)
         // } else {
-        onDateChange(dateObj)
+        onDateChange(dateObj);
 
         // }
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -97,22 +96,24 @@ function DateInputField({
                             paddingRight: 12,
                             marginBottom: 0,
                         },
-                        disabled: {
-                            backgroundColor: theme.colors['--color-gray-100'],
-                        }
+                        disabled: {backgroundColor: theme.colors['--color-gray-100'], }
                     }}
                     onDateChange={handleOnDateChange}
                 />
 
-
                 {
-                    hasError && <View style={{
-                        position: "absolute",
-                        top: 35,
-                        paddingTop: 3,
-                        paddingLeft: 15
-                    }}>
-                        <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
+                    // hasError && <View style={{
+                    //     position: "absolute",
+                    //     top: 35,
+                    //     paddingTop: 3,
+                    //     paddingLeft: 15
+                    // }}>
+                    //     <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
+                    // </View>
+
+                    hasError &&
+                    <View style={{position: 'absolute'}}>
+                        <InputErrorComponent errorMessage={errorMessage}/>
                     </View>
                 }
 

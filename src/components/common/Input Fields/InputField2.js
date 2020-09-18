@@ -1,9 +1,9 @@
 import React, {useRef, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
-import ClearIcon from "../../../../assets/svg/clearIcon";
+import {View, TextInput, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import {useTheme} from 'emotion-theming';
 import styled, {css} from '@emotion/native';
+import ClearIcon from '../../../../assets/svg/clearIcon';
 import IconButton from '../Buttons/IconButton';
 import InputLabelComponent from '../InputLablel';
 import InputContainerComponent from '../InputContainerComponent';
@@ -34,11 +34,10 @@ const InputFieldContainer = styled.View`
     align-items: center;
 `;
 
-
 const LabelWrapper = styled.View(({theme, label}) => ({
     minWidth: 70,
     marginRight: label ? 20 : 0
-}))
+}));
 
 const TextInputWrapper = styled.View`
     flex:1;
@@ -49,11 +48,11 @@ const TextInputContainer = styled.View`
     height : 100%;
     width : 100%;
     border-width: 1px;
-    border-color: ${({theme, hasError}) => hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
-    //background-color : ${({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
-    background-color : ${ ({theme, enabled}) => !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
+    border-color: ${({theme, hasError}) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
+    //background-color : ${({theme, backgroundColor}) => (backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white'])};
+    background-color : ${({theme, enabled}) => (!enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white'])};
     border-radius: 4px;
-    box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null};
+    box-shadow : ${({isFocussed, theme}) => (isFocussed ? theme.shadow['--shadow-lg'] : null)};
 `;
 
 const Input = styled.TextInput`
@@ -79,31 +78,29 @@ const IconContainer = styled.View`
     right : 0;
 `;
 
- 
 function InputField2({
-                         label,
-                         labelWidth,
-                         onChangeText = () => {
-                         },
-                         value,
-                         enabled = true,
-                         placeholder = "",
-                         keyboardType,
-                         onClear = () => {
-                         },
-                         hasError = false,
-                         errorMessage = "Error",
-                         backgroundColor,
-                         onFocus = () => {
-                         },
-                         onEndEditing = () => {
-                         },
-                         isFocussed = false
-                     }) {
-
+    label,
+    labelWidth,
+    onChangeText = () => {
+    },
+    value,
+    enabled = true,
+    placeholder = '',
+    keyboardType,
+    onClear = () => {
+    },
+    hasError = false,
+    errorMessage = 'Error',
+    backgroundColor,
+    onFocus = () => {
+    },
+    onEndEditing = () => {
+    },
+    isFocussed = false,
+    autoCapitalize = 'sentences' // default from docs
+}) {
     const theme = useTheme();
     const inputRef = useRef();
-
 
     return (
         <InputContainerComponent>
@@ -116,10 +113,12 @@ function InputField2({
             }
 
             <TextInputWrapper>
-                <TextInputContainer backgroundColor={backgroundColor}
-                                    enabled={enabled}
-                                    theme={theme}
-                                    style={isFocussed ? styles.shadow : null}>
+                <TextInputContainer
+                    backgroundColor={backgroundColor}
+                    enabled={enabled}
+                    theme={theme}
+                    style={isFocussed ? styles.shadow : null}
+                >
 
                     <Input
                         theme={theme}
@@ -131,15 +130,15 @@ function InputField2({
                         autoFocus={isFocussed}
                         onFocus={onFocus}
                         onEndEditing={onEndEditing}
+                        autoCapitalize={autoCapitalize}
                         ref={inputRef}
-
                     />
 
                     {
                         hasError &&
-                            <View style={{position: "absolute"}}>
-                                <InputErrorComponent errorMessage={errorMessage}/>
-                            </View>
+                        <View style={{position: 'absolute'}}>
+                            <InputErrorComponent errorMessage={errorMessage}/>
+                        </View>
                     }
 
                     {
@@ -186,7 +185,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     shadow: {
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0.5,
             height: 2.5,
