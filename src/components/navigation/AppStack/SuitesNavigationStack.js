@@ -33,7 +33,7 @@ import NotFound from "../../../page/NotFound";
 import ScheduleIcon from "../../../../assets/svg/schedule"
 import CaseFileIcon from "../../../../assets/svg/caseFile"
 import TheathreIcon from "../../../../assets/svg/threatre"
-import InventoryIcon from "../../../../assets/svg/caseFile"
+import InventoryIcon from "../../../../assets/svg/inventory"
 import EquipmentIcon from "../../../../assets/svg/equipment"
 import OrdersIcon from "../../../../assets/svg/orders"
 import DeliveryIcon from "../../../../assets/svg/delivery"
