@@ -1,14 +1,12 @@
 import React from 'react';
-import { useTheme } from 'emotion-theming';
-import styled, { css } from '@emotion/native';
-
+import {useTheme} from 'emotion-theming';
+import styled, {css} from '@emotion/native';
 
 /**
  * @param hasError
  * @returns {*}
  * @constructor
  */
-
 
 const ErrorWrapper = styled.View`
     position : absolute;
@@ -21,22 +19,18 @@ const ErrorContainer = styled.View`
     padding-left : 15px;
 `;
 
-const ErrorText = styled.Text( ({theme}) => ({
+const ErrorText = styled.Text(({theme}) => ({
     ...theme.font['--text-xs-regular'],
-    color : theme.colors['--color-red-700']
+    color: theme.colors['--color-red-700']
 }));
 
-
-function InputErrorComponent({
-    errorMessage = "Error",
-}){
-
+function InputErrorComponent({errorMessage = 'Error',}) {
     const theme = useTheme();
 
     return (
         <ErrorWrapper>
             <ErrorContainer>
-                <ErrorText theme = {theme}>{errorMessage} !</ErrorText>
+                <ErrorText theme={theme}>{errorMessage}</ErrorText>
             </ErrorContainer>
         </ErrorWrapper>
 
@@ -45,7 +39,5 @@ function InputErrorComponent({
 
 InputErrorComponent.propTypes = {};
 InputErrorComponent.defaultProps = {};
-
-
 
 export default InputErrorComponent;

@@ -1,13 +1,13 @@
-import React, {useState} from "react";
-import {View, Text, StyleSheet, Button} from "react-native";
-import InputField2 from "../../common/Input Fields/InputField2";
-import OptionsField from "../../common/Input Fields/OptionsField";
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, Button} from 'react-native';
 import {MenuOptions, MenuOption} from 'react-native-popup-menu';
-import DateInputField from "../../common/Input Fields/DateInputField";
-import { isValidDOB } from "../../../utils/formatter";
 import moment from 'moment';
-import styled from '@emotion/native'
-import {useTheme} from "emotion-theming";
+import styled from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import InputField2 from '../../common/Input Fields/InputField2';
+import OptionsField from '../../common/Input Fields/OptionsField';
+import DateInputField from '../../common/Input Fields/DateInputField';
+import { isValidDOB } from '../../../utils/formatter';
 
 const Space = styled.View`
    width:  ${({theme}) => theme.space['--space-24']}
@@ -18,7 +18,7 @@ const RowWrapper = styled.View`
     justify-content: space-between;
     margin-bottom: ${({theme}) => theme.space['--space-20']};
     z-index: ${({zIndex}) => zIndex};
-`
+`;
 
 const InputWrapper = styled.View`
     flex: 1;
@@ -27,25 +27,25 @@ const InputWrapper = styled.View`
     align-items: center;
     z-index: ${({zIndex}) => zIndex};
 
-`
+`;
 
 const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
     const theme = useTheme();
 
-    const handleTrnValidation = (trnValue) => {
-        if (trnValue.toString().length > 9) return
+    const handleTrnValidation = trnValue => {
+        if (trnValue.toString().length > 9) return;
 
         if (/^\d+$/g.test(trnValue) || !trnValue) {
-            onFieldChange('trn')(trnValue)
+            onFieldChange('trn')(trnValue);
         }
-    }
+    };
 
-    const onDateChange = (date) => {
-        if (isValidDOB(date)){
-            console.log("Date: ", date)
-            onFieldChange("dob")(date)
+    const onDateChange = date => {
+        if (isValidDOB(date)) {
+            console.log('Date: ', date);
+            onFieldChange('dob')(date);
         }
-    }
+    };
 
     return (
         <View style={styles.sectionContainer}>
@@ -53,22 +53,22 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
             <RowWrapper style={styles.row}>
                 <InputWrapper style={styles.inputWrapper}>
                     <InputField2
-                        label={"First Name"}
+                        label="First Name"
                         labelWidth={98}
                         onChangeText={onFieldChange('firstName')}
-                        value={fields['firstName']}
+                        value={fields.firstName}
                         onClear={() => onFieldChange('firstName')('')}
-                        hasError={errors['firstName']}
-                        errorMessage={errors['firstName']}
+                        hasError={errors.firstName}
+                        errorMessage={errors.firstName}
                     />
                 </InputWrapper>
                 <Space theme={theme}/>
                 <View style={styles.inputWrapper}>
                     <InputField2
-                        label={"Middle Name"}
+                        label="Middle Name"
                         labelWidth={98}
                         onChangeText={onFieldChange('middleName')}
-                        value={fields['middleName']}
+                        value={fields.middleName}
                         onClear={() => onFieldChange('middleName')('')}
                     />
                 </View>
@@ -79,85 +79,88 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
 
                 <InputWrapper style={styles.inputWrapper}>
                     <InputField2
-                        label={"Last Name"}
+                        label="Last Name"
                         onChangeText={onFieldChange('surname')}
                         labelWidth={98}
-                        value={fields['surname']}
+                        value={fields.surname}
                         onClear={() => onFieldChange('surname')('')}
-                        hasError={errors['surname']}
-                        errorMessage={errors['surname']}
+                        hasError={errors.surname}
+                        errorMessage={errors.surname}
                     />
                 </InputWrapper>
                 <Space theme={theme}/>
 
                 <InputWrapper style={styles.inputWrapper}>
                     <OptionsField
-                        label={"Title"}
+                        label="Title"
                         labelWidth={98}
-                        text={fields['title']}
+                        text={fields.title}
                         oneOptionsSelected={onFieldChange('title')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={"Mr."} text='Mr.'/>
-                            <MenuOption value={"Ms."} text='Ms.'/>
-                            <MenuOption value={"Mrs."} text='Mrs.'/>
-                            <MenuOption value={"Dr."} text='Dr.'/>
-                        </MenuOptions>}
+                        menuOption={(
+                            <MenuOptions>
+                                <MenuOption value="Mr." text="Mr."/>
+                                <MenuOption value="Ms." text="Ms."/>
+                                <MenuOption value="Mrs." text="Mrs."/>
+                                <MenuOption value="Dr." text="Dr."/>
+                            </MenuOptions>
+                        )}
                     />
                 </InputWrapper>
 
             </RowWrapper>
 
-            <RowWrapper heme={theme} zIndex={-2}>
+            <RowWrapper theme={theme} zIndex={-2}>
 
                 <InputWrapper style={styles.inputWrapper}>
                     <OptionsField
-                        label={"Gender"}
+                        label="Gender"
                         labelWidth={98}
-                        text={fields['gender']}
+                        text={fields.gender}
                         oneOptionsSelected={onFieldChange('gender')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={"Female"} text='Female'/>
-                            <MenuOption value={"Male"} text='Male'/>
-                        </MenuOptions>}
+                        menuOption={(
+                            <MenuOptions>
+                                <MenuOption value="Female" text="Female"/>
+                                <MenuOption value="Male" text="Male"/>
+                            </MenuOptions>
+                        )}
                     />
                 </InputWrapper>
                 <Space theme={theme}/>
 
                 <InputWrapper style={styles.inputWrapper}>
                     <InputField2
-                        label={"TRN"}
+                        label="TRN"
                         labelWidth={98}
-                        onChangeText={(value) => {
-                            handleTrnValidation(value)
+                        onChangeText={value => {
+                            handleTrnValidation(value);
                         }}
-                        value={fields['trn']}
+                        value={fields.trn}
                         onClear={() => onFieldChange('trn')('')}
                         keyboardType="number-pad"
-                        hasError={errors['trn']}
-                        errorMessage={errors['trn']}
+                        hasError={errors.trn}
+                        errorMessage={errors.trn}
                     />
                 </InputWrapper>
 
-
             </RowWrapper>
 
-            <RowWrapper heme={theme} zIndex={-3}>
+            <RowWrapper theme={theme} zIndex={-3}>
 
                 <InputWrapper style={styles.inputWrapper}>
                     <DateInputField
-                        label={"Date of Birth"}
+                        label="Date of Birth"
                         labelWidth={98}
-                        value={fields['dob']}
+                        value={fields.dob}
                         onClear={() => onFieldChange('dob')('')}
-                        mode={'date'}
-                        format={"YYYY-MM-DD"}
+                        mode="date"
+                        format="YYYY-MM-DD"
                         keyboardType="number-pad"
                         placeholder="YYYY/MM/DD"
                         minDate={null}
-                        maxDate = {new Date(moment().subtract(1, 'days'))}
+                        maxDate={new Date(moment().subtract(1, 'days'))}
                         onDateChange={onDateChange}
-                        hasError={errors['dob']}
-                        errorMessage={errors['dob']}
+                        hasError={errors.dob}
+                        errorMessage={errors.dob}
                     />
                 </InputWrapper>
 
@@ -167,13 +170,13 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
             </RowWrapper>
 
         </View>
-    )
-}
+    );
+};
 
-PatientDetailsTab.propTypes = {}
-PatientDetailsTab.defaultProps = {}
+PatientDetailsTab.propTypes = {};
+PatientDetailsTab.defaultProps = {};
 
-export default PatientDetailsTab
+export default PatientDetailsTab;
 
 const styles = StyleSheet.create({
     sectionContainer: {

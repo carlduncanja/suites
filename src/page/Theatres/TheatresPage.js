@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from "react-native";
-import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
-import InventoryGeneralTabContent from "../../components/OverlayTabs/InventoryGeneralTabContent";
-import TheatresDetailsTab from "../../components/OverlayTabs/TheatresDetailsTab";
-import { getTheatreById } from "../../api/network";
-import ProceduresEquipmentTab from "../../components/OverlayTabs/ProceduresEquipmentTab";
-import EquipmentsTab from "../../components/OverlayTabs/EquipmentsTab";
-import PaginatedSchedule from "../../components/PaginatedSchedule"
-import StorageLocationsTab from "../../components/OverlayTabs/StorageLocationsTab";
-import HistoryTabs from "../../components/OverlayTabs/HistoryTabs";
-import { formatDate } from "../../utils/formatter";
-import moment from "moment";
-import { forEach } from "lodash";
+import { ActivityIndicator, View } from 'react-native';
+import moment from 'moment';
+import { forEach } from 'lodash';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import SlideOverlay from '../../components/common/SlideOverlay/SlideOverlay';
+import InventoryGeneralTabContent from '../../components/OverlayTabs/InventoryGeneralTabContent';
+import TheatresDetailsTab from '../../components/OverlayTabs/TheatresDetailsTab';
+import { getTheatreById } from '../../api/network';
+import ProceduresEquipmentTab from '../../components/OverlayTabs/ProceduresEquipmentTab';
+import EquipmentsTab from '../../components/OverlayTabs/EquipmentsTab';
+import PaginatedSchedule from '../../components/PaginatedSchedule';
+import StorageLocationsTab from '../../components/OverlayTabs/StorageLocationsTab';
+import HistoryTabs from '../../components/OverlayTabs/HistoryTabs';
+import { formatDate } from '../../utils/formatter';
 import BottomSheetContainer from '../../components/common/BottomSheetContainer';
-import { PageContext } from "../../contexts/PageContext";
-import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
-import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
+import { PageContext } from '../../contexts/PageContext';
+import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
+import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 
 function TheatresPage({ route, navigation }) {
     const theme = useTheme();
     const currentTabs = [
-        "Details",
-        "History",
-        "Storage",
-        "Equipment",
-        "Schedule",
+        'Details',
+        'History',
+        'Storage',
+        'Equipment',
+        'Schedule',
     ];
     const { theatre, reloadTheatres } = route.params;
     // ##### States
@@ -38,54 +38,52 @@ function TheatresPage({ route, navigation }) {
     // ##### Lifecycle Methods
 
     useEffect(() => {
-
         setTimeout(() => {
-            fetchTheatre(theatre._id)
-        }, 200)
-
+            fetchTheatre(theatre._id);
+        }, 200);
     }, []);
 
     // ##### Event Handlers
 
-    const onTabPress = (selectedTab) => {
+    const onTabPress = selectedTab => {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
-    const setPageLoading = (value) => {
+    const setPageLoading = value => {
         setPageState({
             ...pageState,
             isLoading: value,
             isEdit: false
-        })
-    }
+        });
+    };
 
     const onBackTapped = () => {
-        console.log("tapped the back arrow");
+        console.log('tapped the back arrow');
         navigation.navigate('Theatres');
-    }
+    };
 
-    const onDetailsUpdated = (updates) => {
+    const onDetailsUpdated = updates => {
         // hello???
         setTheatre({
             ...selectedTheatre,
             name: updates.name,
             description: updates.description
-        })
-        if (reloadTheatres) reloadTheatres()
-    }
+        });
+        if (reloadTheatres) reloadTheatres();
+    };
 
     // ##### Helper functions
 
     const isInUse = (appointments = []) => {
         const now = moment();
 
-        if (!Array.isArray(appointments)) return  {isActive: false, isRecovery: false}
+        if (!Array.isArray(appointments)) return {isActive: false, isRecovery: false};
 
         for (const appointment of appointments) {
-            const startTime = moment(appointment.startTime)
-            const endTime = moment(appointment.endTime)
+            const startTime = moment(appointment.startTime);
+            const endTime = moment(appointment.endTime);
 
-            const isActive = now.isBetween(startTime, endTime)
+            const isActive = now.isBetween(startTime, endTime);
 
             if (isActive) {
                 return {isActive: true, isRecovery: false};
@@ -93,29 +91,27 @@ function TheatresPage({ route, navigation }) {
         }
 
         return {isActive: false, isRecovery: false};
-    }
+    };
 
-
-    const getOverlayScreen = (selectedOverlay) => {
+    const getOverlayScreen = selectedOverlay => {
         switch (selectedOverlay) {
-            case "Details":
+            case 'Details':
                 // console.log('Theatre:', selectedTheatre);
-                let appointments = selectedTheatre.appointments || []
+                const appointments = selectedTheatre.appointments || [];
 
-                const {isActive, isRecovery} = isInUse(selectedTheatre.appointments || [])
+                const {isActive, isRecovery} = isInUse(selectedTheatre.appointments || []);
                 const availableOn = appointments && appointments.length &&
-                    formatDate(appointments[0].endTime, "DD/MM/YYYY @ hh:mm a")
-                    || "--";
-
+                    formatDate(appointments[0].endTime, 'DD/MM/YYYY @ hh:mm a') ||
+                    '--';
 
                 const theatreDetails = {
                     description: selectedTheatre.description,
                     id: selectedTheatre.theatreNumber,
                     name: selectedTheatre.name,
-                    status: isActive ? "In-Use" : "Available",  // TODO calculate status
-                    statusColor: "black",
-                    physician: "--",
-                    availableOn : isActive ? availableOn : "--"
+                    status: isActive ? 'In-Use' : 'Available', // TODO calculate status
+                    statusColor: 'black',
+                    physician: '--',
+                    availableOn: isActive ? availableOn : '--'
                 };
 
                 return <TheatresDetailsTab
@@ -124,27 +120,24 @@ function TheatresPage({ route, navigation }) {
                     onUpdated={onDetailsUpdated}
                     isEditMode={isEditMode}
                 />;
-            case "History":
+            case 'History':
                 // console.log("Cases: ", selectedTheatre.cases)
                 const cases = selectedTheatre.cases.map(caseItem => {
-                    let end = caseItem.endTime
-                    let start = caseItem.startTime
-                    let duration = moment.duration(moment(end).diff(moment(start)))
-                    duration = duration.asHours()
+                    const end = caseItem.endTime;
+                    const start = caseItem.startTime;
+                    let duration = moment.duration(moment(end).diff(moment(start)));
+                    duration = duration.asHours();
                     return {
                         name: caseItem.title,
-                        duration: duration,
+                        duration,
                         date: caseItem.startTime,
                         isRecovery: caseItem.isRecovery || false
-                    }
+                    };
                 });
 
                 return <HistoryTabs cases={cases} />;
-            case "Storage":
-
+            case 'Storage':
                 const storageLocations = selectedTheatre.storageLocations.map(item => {
-
-
                     let stock = 0;
                     const levels = {
                         ideal: 0,
@@ -164,7 +157,6 @@ function TheatresPage({ route, navigation }) {
                         levels.critical += item.levels.critical;
                     });
 
-
                     return {
                         id: item._id,
                         locationName: item.name,
@@ -173,51 +165,50 @@ function TheatresPage({ route, navigation }) {
                         //TODO get this info
                         stock,
                         levels
-                    }
+                    };
                 });
                 return <StorageLocationsTab storageLocations={storageLocations} />;
-            case "Equipment":
+            case 'Equipment':
                 return <EquipmentsTab />;
-            case "Schedule":
+            case 'Schedule':
                 return (
                     <PaginatedSchedule ID={theatre._id} isPhysician={false} />
                 );
             default:
-                return <View />
+                return <View />;
         }
     };
 
-    const fetchTheatre = (id) => {
-
+    const fetchTheatre = id => {
         setPageLoading(true);
         getTheatreById(id)
             .then(data => {
-                setTheatre(data)
+                setTheatre(data);
             })
             .catch(error => {
-                console.log("Failed to get theatre", error)
+                console.log('Failed to get theatre', error);
                 //TODO handle error cases.
             })
             .finally(_ => {
                 setPageLoading(false);
-            })
+            });
     };
 
-    const { _id, name } = selectedTheatre;
+    const { _id, name, theatreNumber } = selectedTheatre;
 
     return (
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
-                    headerChildren={[name, `#${_id}`]}
+                    headerChildren={[name, `${theatreNumber}`]}
                     onBackPress={onBackTapped}
-                    pageTabs={
+                    pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}
                             selectedTab={currentTab}
                             onPressChange={onTabPress}
                         />
-                    }
+                    )}
                 >
                     {getOverlayScreen(currentTab)}
                 </DetailsPage>
@@ -230,5 +221,3 @@ TheatresPage.propTypes = {};
 TheatresPage.defaultProps = {};
 
 export default TheatresPage;
-
-

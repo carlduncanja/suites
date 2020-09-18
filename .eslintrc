@@ -8,7 +8,8 @@
       "error",
       4,
       {
-        "SwitchCase": 1
+        "SwitchCase": 1,
+        "ignoredNodes": ["TemplateLiteral"]
       }
     ],
     "no-unused-expressions": [
@@ -105,6 +106,7 @@
     "import/no-dynamic-require": "off",
     "spaced-comment": "off",
     "no-underscore-dangle": "off",
+    "template-curly-spacing": "off",
     "react/jsx-filename-extension": [
       "warn",
       {

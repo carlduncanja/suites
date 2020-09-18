@@ -20,10 +20,11 @@ import { withModal } from "react-native-modalfy";
 const General = ({ equipment = {}, updatedInfo, modal }) => {
 
 
-    const { dateAvailable } = updatedInfo;
+    const { dateAvailable, description } = updatedInfo;
 
     const {
         _id = "",
+        sku = '',
         assignment = {},
         status = "",
         usage = "",
@@ -33,14 +34,11 @@ const General = ({ equipment = {}, updatedInfo, modal }) => {
     } = equipment
 
     const { theatre = {} } = assignment
-    const { description, categories, suppliers } = type
+    const { categories, suppliers } = type
 
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
-    const supplierId = <Record
-        recordTitle={"Supplier ID"}
-        recordValue={""}
-    />
+
 
     const assignedRecord = <ResponsiveRecord
         recordTitle={"Assigned"}
@@ -51,19 +49,14 @@ const General = ({ equipment = {}, updatedInfo, modal }) => {
     const statusRecord = <Record
         recordTitle={"Status"}
         recordValue={updatedInfo.status}
-        valueColor={"#DD6B20"}
+        valueColor={"--color-orange-600"}
     />
 
-    const supplierRecord = <ResponsiveRecord
-        recordTitle={"Supplier"}
-        recordValue={""}
-        handleRecordPress={() => { }}
+    const skuRecord = <Record
+        recordTitle="SKU"
+        recordValue={`${sku}`}
     />
 
-    const usageRecord = <Record
-        recordTitle={"Usage"}
-        recordValue={`${usage} days`}
-    />
 
     const available = <Record
         recordTitle={"Available On"}
@@ -76,11 +69,9 @@ const General = ({ equipment = {}, updatedInfo, modal }) => {
     />
 
     const section1 = [
-        supplierId,
+        skuRecord,
         assignedRecord,
         statusRecord,
-        supplierRecord,
-        usageRecord,
         available
     ]
 
@@ -91,7 +82,7 @@ const General = ({ equipment = {}, updatedInfo, modal }) => {
     return (
         <>
             <View style={styles.description}>
-                <Text>Description</Text>
+                <Text style={{ color: "#6E7B87" }}>Description</Text>
                 <Text>{description}</Text>
             </View>
             <View style={styles.detailsContainer}>
@@ -100,10 +91,6 @@ const General = ({ equipment = {}, updatedInfo, modal }) => {
                         <ColumnSection
                             data={section1}
                             numOfColumns={3}
-                        />,
-                        <ColumnSection
-                            data={section2}
-                            numOfColumns={1}
                         />
                     ]}
                 />

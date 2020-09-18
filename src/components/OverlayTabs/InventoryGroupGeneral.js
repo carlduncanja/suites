@@ -10,21 +10,25 @@ import InputField2 from '../common/Input Fields/InputField2';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { PageContext } from '../../contexts/PageContext';
-import { updateInventoryGroupById } from '../../api/network';
+import { updateInventoryGroupById, getCategories } from '../../api/network';
 import TextArea from '../common/Input Fields/TextArea';
 import ConfirmationComponent from '../ConfirmationComponent';
 import { useModal } from 'react-native-modalfy';
-
+import MultipleSearchableOptionsField from '../common/Input Fields/MultipleSearchableOptionsField';
+import _ from "lodash";
 
 const FieldWrapper = styled.View`
-    margin-bottom : 32px;
+    flex: 0.5;
+    margin-bottom : ${ ({isEditMode}) => isEditMode ? `32px` : 0 };
 `;
 function InventoryGroupGeneral({ 
     inventoryGroup = {}, 
     onUpdate = () => {},  
     fields = {}, 
     errorFields = {},
-    onFieldChange = ()=>{}
+    onFieldChange = ()=>{},
+    groupCategories = [],
+    handleCategories = ()=>{}
  }){
 
     const baseStateRef = useRef();
@@ -34,6 +38,12 @@ function InventoryGroupGeneral({
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
+
+    const [categorySearchValue, setCategorySearchValue] = useState();
+    const [categorySearchResults, setCategorySearchResult] = useState([]);
+    const [categorySearchQuery, setCategorySearchQuery] = useState({});
+
+   console.log("Categories: ", inventoryGroup);
 
     // const [isUpdated, setIsUpdated] = useState(false);
     // const [fields, setFields] = useState({
@@ -58,6 +68,45 @@ function InventoryGroupGeneral({
             baseStateRef.current = {}
         }
     }, [])
+
+    useEffect(() => {
+        // console.log("Search: ", supplierSearchValue)
+        if (!categorySearchValue) {
+            // empty search values and cancel any out going request.
+            setCategorySearchResult([]);
+            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchCategories, 300);
+
+        setCategorySearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [categorySearchValue]);
+
+    const fetchCategories = () => {
+        getCategories(categorySearchValue, 5)
+            .then((categoryData = [] ) => {
+
+                // console.log("Data: ", data)
+
+                setCategorySearchResult(categoryData || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get suppliers", error);
+                setCategorySearchResult([]);
+            })
+    };
 
 
     // const onFieldChange = (fieldName) => (value) => {
@@ -171,18 +220,42 @@ function InventoryGroupGeneral({
     //     // console.log("Group: ", inventoryGroup);
     // }
 
+    const onSelectShownIten = (item) =>{
+        let updatedCategories = [...groupCategories];
+        updatedCategories = updatedCategories.filter(category => category !== item);
+        // updatedCategories.pop();
+        handleCategories(updatedCategories);
+        console.log("Categories: ", updatedCategories);
+    }
+
+    const onCategorySelect = (item) =>{
+        let updatedCategories = []
+        groupCategories.includes(item)?
+            updatedCategories = updatedCategories.filter( category => category !== item)
+            :
+            updatedCategories = [...groupCategories, item]
+        
+        // onFieldChange('category')(updatedCategories);
+        console.log("Updated categores: ", updatedCategories);
+        handleCategories(updatedCategories);
+    }
+
     return(
         <>
             <Row>
-                <Record
-                    recordTitle = "Group Name"
-                    recordValue = {fields['name']}
-                    editMode = {isEditMode}
-                    editable = {true}
-                    onRecordUpdate = {onFieldChange('name')}
-                    onClearValue = {()=>{onFieldChange('name')(''); console.log("Clear")}}
-                    flex = {0.5}
-                />
+                {/* <FieldWrapper isEditMode> */}
+                    <Record
+                        recordTitle = "Group Name"
+                        recordValue = {fields['name']}
+                        editMode = {isEditMode}
+                        editable = {true}
+                        onRecordUpdate = {onFieldChange('name')}
+                        onClearValue = {()=>{onFieldChange('name')(''); console.log("Clear")}}
+                        flex = {0.5}
+                    />
+                {/* </FieldWrapper> */}
+
+                
             </Row>
 
             <Row>
@@ -200,13 +273,51 @@ function InventoryGroupGeneral({
 
             </Row>
 
-            
-
+    
             <Row>
-                <ListTextRecord
+                {/* <ListTextRecord
                     recordTitle = "Category"
                     values = {categories}
-                />
+                    editMode = {isEditMode}
+                    text={categorySearchValue}
+                    oneOptionsSelected={(item) => {onCategorySelect(item);}}
+                    onChangeText={value => {setCategorySearchValue(value)}}
+                    onClear={() => {
+                        setCategorySearchValue('');
+                    }}
+                    onSelectShownIten = {onSelectShownIten}
+                    selectedItems = {groupCategories}
+                    options={categorySearchResults}
+                    handlePopovers = {()=>{}}
+                    isPopoverOpen = {categorySearchQuery}
+                    maxNumItemsShown = {4}
+
+                /> */}
+                {/* {
+                    isEditMode ?
+
+                    <MultipleSearchableOptionsField
+                        text={categorySearchValue}
+                        oneOptionsSelected={(item) => {onCategorySelect(item);}}
+                        onChangeText={value => {setCategorySearchValue(value)}}
+                        onClear={() => {
+                            setCategorySearchValue('');
+                        }}
+                        onSelectShownIten = {onSelectShownIten}
+                        selectedItems = {groupCategories}
+                        options={categorySearchResults}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {categorySearchQuery}
+                        maxNumItemsShown = {4}
+                    />
+                    :
+
+                    <ListTextRecord
+                        recordTitle = "Category"
+                        values = {categories}
+                    />
+                } */}
+                
             </Row>
 
             
