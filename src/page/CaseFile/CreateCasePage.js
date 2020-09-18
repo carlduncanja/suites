@@ -502,7 +502,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                     ...updateErrors,
                     [requiredField]: `${requiredField.charAt(0)
                         .toUpperCase() + requiredField.slice(1)
-                        .replace(/([a-z0-9])([A-Z])/g, '$1 $2')} is required`, // capitalize and separate camelcase named field
+                        .replace(/([a-z0-9])([A-Z0-9])/g, '$1 $2')} is required`, // capitalize and separate camelcase named field
                     // [requiredField]: `${requiredField} is required`,
                 };
 
