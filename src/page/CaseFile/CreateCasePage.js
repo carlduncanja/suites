@@ -660,7 +660,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
                         navigation.navigate("CaseFiles");
                         modal.closeAllModals()
                     }}
-                    message={`You haven't completed creating the case file for "${patientFields?.firstName}" ,Do you wish to save your progress?`}
+                    message={`You haven't finished creating the Case File for "${patientFields?.firstName}". Do you wish to save your progress?`}
                 />
             ),
         });
