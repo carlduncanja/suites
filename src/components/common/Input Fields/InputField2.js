@@ -50,7 +50,7 @@ const TextInputContainer = styled.View`
     border-width: 1px;
     border-color: ${({theme, hasError}) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
     //background-color : ${({theme, backgroundColor}) => (backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white'])};
-    background-color : ${ ({theme, enabled}) => (!enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white'])};
+    background-color : ${({theme, enabled}) => (!enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white'])};
     border-radius: 4px;
     box-shadow : ${({isFocussed, theme}) => (isFocussed ? theme.shadow['--shadow-lg'] : null)};
 `;
@@ -96,7 +96,8 @@ function InputField2({
     },
     onEndEditing = () => {
     },
-    isFocussed = false
+    isFocussed = false,
+    autoCapitalize = 'sentences' // default from docs
 }) {
     const theme = useTheme();
     const inputRef = useRef();
@@ -129,15 +130,15 @@ function InputField2({
                         autoFocus={isFocussed}
                         onFocus={onFocus}
                         onEndEditing={onEndEditing}
+                        autoCapitalize={autoCapitalize}
                         ref={inputRef}
-
                     />
 
                     {
                         hasError &&
-                            <View style={{position: 'absolute'}}>
-                                <InputErrorComponent errorMessage={errorMessage}/>
-                            </View>
+                        <View style={{position: 'absolute'}}>
+                            <InputErrorComponent errorMessage={errorMessage}/>
+                        </View>
                     }
 
                     {
