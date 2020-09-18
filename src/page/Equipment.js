@@ -228,7 +228,7 @@ const Equipment = (props) => {
 
   const handleOnItemPress = (item, addedInfo, isOpenEditable, type) => {
 
-    props.navigation.navigate("EquipmentItemPage", { initial: false, equipment: item, info: addedInfo, isOpenEditable: isOpenEditable, group: type });
+    props.navigation.navigate("EquipmentItemPage", { initial: false, equipment: item, info: addedInfo, isOpenEditable: isOpenEditable, group: type, onCreated: handleDataRefresh });
   };
 
   const goToNextPage = () => {

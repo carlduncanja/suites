@@ -188,7 +188,6 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
 
                                 <MultipleSelectionsField
                                     disabled={false}
-                                    enabled={true}
                                     createNew={createCategory}
                                     label={"Category"}
                                     onOptionsSelected={onFieldChange('category')}
@@ -252,7 +251,7 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
 
                                 <InputField2
                                     label="Supplier"
-                                    value={fields['supplier']}
+                                    value={""}
                                     labelWidth={30}
                                     placeholder={"--"}
                                     enabled={true}

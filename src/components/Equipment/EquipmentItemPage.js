@@ -5,20 +5,19 @@ import General from '../OverlayTabs/General';
 import EditableEquipmentDetails from '../OverlayTabs/EditableEquipmentDetails';
 import moment from 'moment';
 import { colors } from "../../styles";
-import { getEquipmentById } from "../../api/network";
+import { updateEquipment } from "../../api/network";
+import ConfirmationComponent from "../ConfirmationComponent";
 import { formatDate } from '../../utils/formatter';
 import BottomSheetContainer from '../common/BottomSheetContainer';
 import { PageContext } from "../../contexts/PageContext";
 import DetailsPage from "../common/DetailsPage/DetailsPage";
 import TabsContainer from "../common/Tabs/TabsContainerComponent";
 import SvgIcon from "../../../assets/SvgIcon";
+import { withModal } from 'react-native-modalfy';
 
-function EquipmentItemPage({ route, navigation }) {
+function EquipmentItemPage({ route, navigation, modal }) {
 
-    const { equipment, info, isOpenEditable, group } = route.params;
-
-
-    console.log("info item has:", info);
+    const { equipment, info, isOpenEditable, group, onCreated } = route.params;
     const testData = {
         description: "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
         assigned: "Dr.Mansingh",
@@ -47,77 +46,24 @@ function EquipmentItemPage({ route, navigation }) {
         // supplier name
         supplier,
         assigned,
-        usage,
-        availableOn,
-        categories = [],
-        description,
         sku
     } = equipment
-
 
 
     const [fields, setFields] = useState({
         // supplier name
         sku: sku,
-        supplier: supplier,
-        assigned: assigned,
-        status: info.status,
-        usage: usage,
-        availableOn: info.dateAvailable,
-        categories: categories,
-        description: info.description
+        description: info.description,
+        status: info.status
     })
 
     // ##### Lifecycle Methods
-    useEffect(() => {
-        setTimeout(() => {
-            fetchEquipment(_id)
-        }, 200)
 
-    }, []);
 
     useEffect(() => {
         if (!pageState.isEditMode && isInfoUpdated) confirmAction();
     }, [pageState.isEditMode]);
 
-    const [popoverList, setPopoverList] = useState([
-        {
-            name: "category",
-            status: false
-        },
-        {
-            name: "assigned",
-            status: false
-        },
-        {
-            name: "type",
-            status: false
-        }
-    ])
-
-    const handlePopovers = (popoverValue) => (popoverItem) => {
-
-        if (!popoverItem) {
-            let updatedPopovers = popoverList.map(item => {
-                return {
-                    ...item,
-                    status: false
-                }
-            })
-
-            setPopoverList(updatedPopovers)
-        } else {
-            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
-            const updatedPopovers = [
-                ...popoverList.slice(0, objIndex),
-                updatedObj,
-                ...popoverList.slice(objIndex + 1),
-            ];
-            setPopoverList(updatedPopovers)
-        }
-
-    }
 
     const confirmAction = () => {
         // setTimeout(() => {
@@ -126,6 +72,7 @@ function EquipmentItemPage({ route, navigation }) {
             {
                 content: <ConfirmationComponent
                     isEditUpdate={true}
+                    message={"Do you wish to save your changes?"}
                     onCancel={onConfirmCancel}
                     onAction={onConfirmSave}
                 />,
@@ -138,10 +85,16 @@ function EquipmentItemPage({ route, navigation }) {
     };
 
     const onConfirmSave = () => {
+        const bodyToPass = {
+            sku: fields['sku'],
+
+        }
+
+        console.log("Gonna send to endpoint:", bodyToPass);
         modal.closeModals('ConfirmationModal');
         setTimeout(() => {
             // updatePhysicianRecord(selectedPhysician);
-            updatePhysicianCall(selectedPhysician);
+            updateEquipmentCall(fields);
             setIsInfoUpdated(false);
         }, 200);
     };
@@ -154,6 +107,55 @@ function EquipmentItemPage({ route, navigation }) {
         });
     };
 
+    const onSuccess = () => {
+        modal.closeModals("ConfirmationModal");
+        navigation.navigate("Equipment");
+        onCreated();
+    }
+    const updateEquipmentCall = (info) => {
+        updateEquipment(_id, info)
+            .then(data => {
+                console.log("successfully updated", data)
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content:
+                            <ConfirmationComponent
+                                isError={false}
+                                message={"Completed Succefully"}
+                                isEditUpdate={false}
+                                onCancel={onConfirmCancel}
+                                onAction={onSuccess}
+                            />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                )
+            }
+            )
+            .catch(error => {
+                console.log("error occurred is:", error);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content:
+                            <ConfirmationComponent
+                                isError={true}
+                                message={"There was an error performing this action"}
+                                isEditUpdate={false}
+                                onCancel={onConfirmCancel}
+                                onAction={onConfirmSave}
+                            />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                )
+            }).finally(_ => {
+            })
+    }
+
     // ##### Event Handlers
 
     const onFieldChange = (fieldName) => (value) => {
@@ -161,6 +163,7 @@ function EquipmentItemPage({ route, navigation }) {
             ...fields,
             [fieldName]: value
         })
+        console.log("what's updated?", fields)
         setIsInfoUpdated(true);
     };
 
@@ -194,10 +197,10 @@ function EquipmentItemPage({ route, navigation }) {
         switch (selectedTab) {
             case "Details":
                 return pageState.isEditMode ?
-                    <EditableEquipmentDetails fields={fields}
+                    <EditableEquipmentDetails
+                        fields={fields}
                         onFieldChange={onFieldChange}
-                        handlePopovers={handlePopovers}
-                        popoverList={popoverList} />
+                    />
                     :
                     <General equipment={selectedEquipment} updatedInfo={info} />;
             default:
@@ -209,22 +212,6 @@ function EquipmentItemPage({ route, navigation }) {
         {getTabContent(currentTab)}
     </View>;
 
-    const fetchEquipment = (id) => {
-        setPageLoading(true);
-        getEquipmentById(id)
-            .then(data => {
-
-                setSelectedEquipment(data)
-
-            })
-            .catch(error => {
-                console.log("Failed to get equipment", error)
-                //TODO handle error cases.
-            })
-            .finally(_ => {
-                setPageLoading(false);
-            })
-    };
     return (
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
@@ -251,4 +238,4 @@ function EquipmentItemPage({ route, navigation }) {
 EquipmentItemPage.propTypes = {};
 EquipmentItemPage.defaultProps = {};
 
-export default EquipmentItemPage;
+export default withModal(EquipmentItemPage);
