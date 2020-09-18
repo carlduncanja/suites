@@ -296,7 +296,7 @@ function CaseFiles(props) {
             let { patient = {} } = item || {};
             console.log("rendering the draft item");
 
-            return (<DraftItem text={`${patient?.firstName || ""} ${patient?.surname || ""}`} />)
+            return (<DraftItem text={`${patient?.firstName ? `${patient?.firstName || ""} ${patient?.surname || ""}` : 'N/A'} `} />)
         } else return;
 
 
