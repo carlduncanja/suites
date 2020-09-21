@@ -24,6 +24,8 @@ import ConfirmationComponent from '../components/ConfirmationComponent';
 import DataItem from '../components/common/List/DataItem';
 import RightBorderDataItem from '../components/common/List/RightBorderDataItem';
 import {LONG_PRESS_TIMER} from '../const';
+import styled, {css} from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 const listHeaders = [
     {
@@ -52,6 +54,7 @@ function Storage(props) {
     const pageTitle = 'Storage';
     const recordsPerPage = 10;
     const modal = useModal();
+    const theme = useTheme();
 
     // ##### States
     const [isFetchingData, setFetchingData] = useState(false);
@@ -288,10 +291,11 @@ function Storage(props) {
                 >
                     <ActionItem
                         title="Hold to Delete"
-                        icon={<WasteIcon/>}
+                        icon={<WasteIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'] }/>}
                         onPress={() => {
                         }}
                         touchable={false}
+                        disabled = {isDisabled}
                     />
                 </LongPressWithFeedback>
             </View>
