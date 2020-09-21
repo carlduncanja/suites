@@ -303,7 +303,10 @@ function OrderItemPage({ route, navigation }) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <OrderDetailsTab order={selectedOrder} />
+                return <OrderDetailsTab 
+                    order={selectedOrder} 
+                    onUpdate = {()=>fetchOrder(_id)}
+                />
             case "Items":
                 return <OrderItemTab
                     orders={orderItems}

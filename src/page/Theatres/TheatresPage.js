@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import moment from 'moment';
 import { forEach } from 'lodash';
-import styled, { css } from '@emotion/native';
+import styled, { css } from '@emotion/native'; 
 import { useTheme } from 'emotion-theming';
 import SlideOverlay from '../../components/common/SlideOverlay/SlideOverlay';
 import InventoryGeneralTabContent from '../../components/OverlayTabs/InventoryGeneralTabContent';

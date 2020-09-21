@@ -4,6 +4,7 @@ import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 import TextArea from "../Input Fields/TextArea";
 import InputField2 from "../Input Fields/InputField2";
+import DateInputField from '../Input Fields/DateInputField';
 
 
 const RecordWrapper = styled.View`
@@ -32,8 +33,15 @@ const TextAreaWrapper = styled.View`
     height: 70px;
 `;
 
+const DateWrapper = styled.View`
+    background-color : yellow;
+    display : flex;
+    width : 150px;
+    height : 30px;
+`;
 
 
+ 
 function Record({
                     recordTitle = "",
                     recordValue = '--',
@@ -42,10 +50,12 @@ function Record({
                     titleColor = '--color-gray-600',
                     valueColor = '--color-gray-900',
                     flex = 1,
+                    minDate = new Date(),
                     // EDIT MODE PROPS
                     editMode = false,
                     editable = true,
                     useTextArea = false,
+                    useDateField = false,
                     onClearValue = () => {
                     },
                     onRecordUpdate = () => {
@@ -85,7 +95,7 @@ function Record({
 
 
                 {
-                    editMode && !useTextArea &&
+                    editMode && !useTextArea && !useDateField &&
 
                     <InputField2
                         value={recordValue}
@@ -94,7 +104,23 @@ function Record({
                         onClear = {onClearValue}
                     />
 
+                }
 
+                {
+                    editMode && useDateField &&
+                    <DateWrapper>
+                        <DateInputField
+                            // placeholder = "Delivery Date"
+                            borderColor = "--color-gray-400"
+                            minDate = {minDate}
+                            onDateChange = {onRecordUpdate}
+                            value={recordValue}
+                            onClear={onClearValue}
+                            mode={"date"}
+                            format={"MM/DD/YYYY"}
+                        />
+                    </DateWrapper>
+                    
                 }
 
 
