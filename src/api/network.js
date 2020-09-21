@@ -465,10 +465,17 @@ export const getSupplierById = async id => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+
+export const updateSupplierCall = async (id, data) => suitesAxiosInstance
+    .put(supplierEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
+
 export const getSupplierProducts = async (id, query, max) => suitesAxiosInstance
     .get(supplierProductsEndpoint(id), { params: { query, max } })
     .then(handleResponse)
     .catch(handleError);
+
 export const createSupplierProductsCall = async (id, data) => suitesAxiosInstance
     .post(supplierProductsEndpoint(id), data)
     .then(handleResponse)

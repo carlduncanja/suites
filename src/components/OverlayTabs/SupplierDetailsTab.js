@@ -13,6 +13,10 @@ import edit from "../../../assets/svg/edit";
 import InputField2 from "../common/Input Fields/InputField2";
 import InputLabelComponent from "../common/InputLablel";
 import TextArea from "../common/Input Fields/TextArea";
+import ConfirmationComponent from "../ConfirmationComponent";
+import {updateSupplierCall} from "../../api/network";
+import LoadingIndicator from "../common/LoadingIndicator";
+import {useModal} from "react-native-modalfy";
 
 const LineDividerContainer = styled.View`
     margin-bottom : ${({theme}) => theme.space['--space-32']};
@@ -42,13 +46,16 @@ const RowWrapper = styled.View`
     z-index: ${({zIndex}) => zIndex};
 `
 
-const SupplierDetailsTab = ({order}) => {
+const SupplierDetailsTab = ({supplierId, order}) => {
 
     const fieldsBaseStateRef = useRef();
+    const modal = useModal();
     const theme = useTheme();
 
     const {supplier = {}, status = ""} = order;
     const {pageState, setPageState} = useContext(PageContext);
+    const [isUpdated, setUpdated] = useState(false);
+    const [isLoading, setLoading] = useState(false)
     const {isEditMode} = pageState;
 
     const {
@@ -62,28 +69,120 @@ const SupplierDetailsTab = ({order}) => {
     } = supplier
 
 
-    const [fields, setFields] = useState({
-        description,
-        supplierNumber,
-        name,
-        phone,
-        fax,
-        email,
-        representatives
-    });
+    const [fields, setFields] = useState({});
 
     useEffect(() => {
         console.log("isEditMode", isEditMode)
+
+        if (isUpdated && !isEditMode) {
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        error={false}//boolean to show whether an error icon or success icon
+                        isEditUpdate={true}
+                        onCancel={() => {
+                            // resetState()
+                            setPageState({...pageState, isEditMode: true})
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            updatedSupplier()
+                        }}
+                        message="Would you like to finish edit and save changes?"//general message you can send to be displayed
+                        action="Yes"
+                    />
+                ),
+                onClose: () => {
+                    console.log('Modal closed');
+                },
+            });
+        }
+
     }, [isEditMode])
 
+    useEffect(() => {
+        setFields({
+            description,
+            supplierNumber,
+            name,
+            phone,
+            fax,
+            email,
+            representatives
+        })
+    }, [supplier])
 
     const onFieldUpdated = (field) => (value) => {
+        setUpdated(true);
         setFields({
             ...fields,
             [field]: value
         })
     }
 
+    const updatedSupplier = () => {
+
+        const data = {
+            supplierNumber: fields.supplierNumber,
+            name: fields.name,
+            phone: fields.phone,
+            email: fields.email,
+            fax: fields.fax,
+            description: fields.description,
+            // representatives: []
+        }
+
+        setLoading(true)
+        updateSupplierCall(supplierId, data)
+            .then( _ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                // resetState()
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+
+                            }}
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch(error => {
+                console.log("Failed to update supplier", error)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                // resetState()
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+
+                            }}
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .finally(_ => setLoading(false))
+
+    }
 
     return (
         <>
@@ -103,12 +202,12 @@ const SupplierDetailsTab = ({order}) => {
                             </TextAreaWrapper>
                         </InputWrapper>
                         : <Record
-                        recordTitle="Description"
-                        recordValue={description || "--"}
-                        flex={1}
-                        editMode={isEditMode}
-                        useTextArea={true}
-                    />
+                            recordTitle="Description"
+                            recordValue={fields['description'] || "--"}
+                            flex={1}
+                            editMode={isEditMode}
+                            useTextArea={true}
+                        />
                 }
             </RowWrapper>
 
@@ -123,12 +222,12 @@ const SupplierDetailsTab = ({order}) => {
                                 enabled={false}
                             />
                         </InputWrapper>
-                    : <Record
-                        recordTitle="Supplier ID"
-                        recordValue={supplierNumber || "--"}
-                        editMode={isEditMode}
-                        editable={false}
-                    />
+                        : <Record
+                            recordTitle="Supplier ID"
+                            recordValue={fields['supplierNumber'] || "--"}
+                            editMode={isEditMode}
+                            editable={false}
+                        />
                 }
                 {
                     isEditMode
@@ -141,10 +240,10 @@ const SupplierDetailsTab = ({order}) => {
                             />
                         </InputWrapper>
                         : <Record
-                        recordTitle="Supplier Name"
-                        recordValue={name || "--"}
-                        editMode={isEditMode}
-                    />
+                            recordTitle="Supplier Name"
+                            recordValue={fields['name'] || "--"}
+                            editMode={isEditMode}
+                        />
                 }
                 {
                     isEditMode
@@ -171,7 +270,7 @@ const SupplierDetailsTab = ({order}) => {
                     !isEditMode
                         ? <ResponsiveRecord
                             recordTitle="Telephone"
-                            recordValue={phone}
+                            recordValue={fields['phone']}
                             handleRecordPress={() => {
                             }}
                             editMode={isEditMode}
@@ -193,7 +292,7 @@ const SupplierDetailsTab = ({order}) => {
                     !isEditMode
                         ? <Record
                             recordTitle="Fax"
-                            recordValue={fax}
+                            recordValue={fields['fax']}
                         />
                         : <InputWrapper>
                             <InputLabelComponent label={'Fax'}/>
@@ -209,7 +308,7 @@ const SupplierDetailsTab = ({order}) => {
                     !isEditMode
                         ? <ResponsiveRecord
                             recordTitle="Email"
-                            recordValue={email}
+                            recordValue={fields['email']}
                             handleRecordPress={() => {
                             }}
                             editMode={isEditMode}
@@ -253,6 +352,11 @@ const SupplierDetailsTab = ({order}) => {
                         </RowWrapper>
                     )
                 })
+            }
+
+            {
+                isLoading &&
+                <LoadingIndicator/>
             }
         </>
     )

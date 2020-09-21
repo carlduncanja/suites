@@ -178,6 +178,7 @@ function SupplierPage({ route, navigation }) {
             case "Details":
                 return <SupplierDetailsTab
                     order={{supplier : selectedSupplier, status: ''}}
+                    supplierId={_id}
                     isEditMode={isEditMode}
                 />
             case "Products":

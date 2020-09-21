@@ -122,12 +122,12 @@ function OrderItemPage({ route, navigation }) {
                                 onAction = {()=>{
                                   modal.closeModals('ConfirmationModal')
                                 }}
-        
+
                                 onCancel = {()=>{
                                     modal.closeModals('ConfirmationModal')
-                                    
+
                                 }}
-        
+
                             />
                             ,
                             onClose: () => {modal.closeModals('ConfirmationModal')}
@@ -144,14 +144,14 @@ function OrderItemPage({ route, navigation }) {
                                 onAction = {()=>{
                                    modal.closeModals('ConfirmationModal')
                                 }}
-        
+
                                 onCancel = {()=>{
                                    setPageState({
                                         ...pageState,
                                         isEditMode : true
                                     });
                                     modal.closeModals('ConfirmationModal')
-                                    
+
                                 }}
                             />
                             ,
@@ -235,7 +235,7 @@ function OrderItemPage({ route, navigation }) {
 
                     onCancel = {()=>{
                         modal.closeModals('ConfirmationModal')
-                        
+
                     }}
                     message = "Do you want to delete these item(s)?"
 
@@ -314,7 +314,7 @@ function OrderItemPage({ route, navigation }) {
                     onRemoveProductItems = {onRemoveProductItems}
                 />
             case "Suppliers":
-                return <SupplierDetailsTab order={selectedOrder} />;
+                return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} />;
             default:
                 return <View />
         }
