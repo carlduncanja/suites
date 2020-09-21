@@ -15,9 +15,11 @@ import {getSupplierById, createPurchaseOrder, getSupplierProducts} from "../../a
 import {colors} from "../../styles";
 import {useModal} from 'react-native-modalfy';
 import {set} from 'numeral';
+import {updateSupplierAction} from "../../redux/actions/suppliersActions";
+import {connect} from "react-redux";
 
 
-function SupplierPage({route, navigation}) {
+function SupplierPage({route, navigation, updateSupplierAction}) {
     const {supplier, isOpenEditable, floatingActions} = route.params;
     const modal = useModal();
     const currentTabs = ["Details", "Products", "Purchase Orders"];
@@ -176,7 +178,9 @@ function SupplierPage({route, navigation}) {
     };
 
     const supplierInfoUpdated = (updatedInfo) => {
-        setSelectedSupplier({...selectedSupplier, ...updatedInfo})
+        const newState = {_id, ...selectedSupplier, ...updatedInfo};
+        setSelectedSupplier(newState)
+        updateSupplierAction(newState)
     }
 
     // const supplierDetails = { supplier, status: '' }
@@ -235,7 +239,11 @@ function SupplierPage({route, navigation}) {
 SupplierPage.propTypes = {};
 SupplierPage.defaultProps = {};
 
-export default SupplierPage;
+const mapDispatcher = {
+    updateSupplierAction
+}
+
+export default connect(null, mapDispatcher)(SupplierPage);
 
 const styles = StyleSheet.create({
     item: {
