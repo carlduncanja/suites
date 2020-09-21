@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, FlatList, ScrollView} from "react-native";
- 
+
 import IconButton from "../../components/common/Buttons/IconButton";
 import LevelIndicator from "../../components/common/LevelIndicator/LevelIndicator";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
@@ -34,6 +34,7 @@ import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} fr
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import _ from "lodash";
+import {LONG_PRESS_TIMER} from '../../const';
 
 
 const listHeaders = [
@@ -116,7 +117,7 @@ const shadows = [
 function Inventory(props) {
 
     const {
-        inventory, 
+        inventory,
         setInventory,
         route,
         navigation
@@ -309,14 +310,14 @@ function Inventory(props) {
 
     // ##### Helper functions
 
-    
+
 
     const getFabActions = () => {
         let isDisabled = selectedIds.length === 0 ? true : false;
         const deleteAction =
             <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
                 <LongPressWithFeedback
-                    pressTimer={1200}
+                    pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeGroup}
                     isDisabled = {isDisabled}
                 >
@@ -333,7 +334,7 @@ function Inventory(props) {
 
         const createAction = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={openCreateInventoryModel}/>;
         const createGroup = <ActionItem title={"Create Item Group"} icon={<AddIcon/>} onPress={openCreateGroupDialog}/>;
-        const itemTranfer = 
+        const itemTranfer =
             <ActionItem
                 title={"Item Transfer"}
                 icon={<TransferIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}/>}
@@ -372,9 +373,9 @@ function Inventory(props) {
                 onCreated : ()=>{
                     setFloatingAction(false);
                     // navigation.goBack();
-                    onRefresh(); 
+                    onRefresh();
                 },
-                onCancel : ()=>{ 
+                onCancel : ()=>{
                     setFloatingAction(false);
                     navigation.goBack();
                 },
@@ -404,11 +405,11 @@ function Inventory(props) {
             initial: false,
             // params : {
                 onCreated : ()=>{
-                    onRefresh(); 
+                    onRefresh();
                     setFloatingAction(false);
                     navigation.goBack();
                 },
-                onCancel : ()=>{ 
+                onCancel : ()=>{
                     setFloatingAction(false)
                     navigation.goBack();
                 },
@@ -587,7 +588,7 @@ function Inventory(props) {
         </CollapsibleListItem>
     };
 
-    const openConfirmationScreen = (id) => { 
+    const openConfirmationScreen = (id) => {
         modal
             .openModal(
                 'ConfirmationModal',
@@ -690,7 +691,7 @@ function Inventory(props) {
                             }}
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                        onClose: () => {modal.closeModals('ConfirmationModal')}
                     })
 
                 setSelectedIds([]);

@@ -22,9 +22,11 @@ import AssignIcon from '../../assets/svg/assignIcon';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
 
 import {setPhysicians} from '../redux/actions/physiciansActions';
-import {getPhysicians} from '../api/network';
+import {getPhysicians, removePhysicians} from '../api/network';
 
 import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
+import {LONG_PRESS_TIMER} from '../const';
+import ConfirmationComponent from '../components/ConfirmationComponent';
 
 const Physicians = props => {
     // ############# Const data
@@ -106,6 +108,10 @@ const Physicians = props => {
     }, [searchValue]);
 
     // ############# Event Handlers
+
+    const onRefresh = () => {
+        fetchPhysiciansData();
+    };
 
     const onSearchInputChange = input => {
         setSearchValue(input);
@@ -232,16 +238,28 @@ const Physicians = props => {
                     {/*<Text numberOfLines={1} style={[styles.itemText, { fontSize: 12, color: "#718096" }]}>#{_id}</Text>*/}
                     <Text
                         numberOfLines={1}
-                        style={[styles.itemText, {fontSize: 16, color: '#3182CE'}]}
+                        style={[styles.itemText, {
+                            fontSize: 16,
+                            color: '#3182CE'
+                        }]}
                     >Dr. {surname}</Text>
-                </View>
-                <View style={[styles.item, {alignItems: 'center'}]}>
-                    <Text numberOfLines={1} style={[styles.itemText, {fontSize: 16, color: '#4E5664'}]}>{type}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text
                         numberOfLines={1}
-                        style={[styles.itemText, {fontSize: 14, color: statusColor(status)}]}
+                        style={[styles.itemText, {
+                            fontSize: 16,
+                            color: '#4E5664'
+                        }]}
+                    >{type}</Text>
+                </View>
+                <View style={[styles.item, {alignItems: 'center'}]}>
+                    <Text
+                        numberOfLines={1}
+                        style={[styles.itemText, {
+                            fontSize: 14,
+                            color: statusColor(status)
+                        }]}
                     >{status}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
@@ -254,9 +272,8 @@ const Physicians = props => {
     const getFabActions = () => {
         const deleteAction = (
             <LongPressWithFeedback
-                pressTimer={700}
-                onLongPress={() => {
-                }}
+                pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                onLongPress={removePhysiciansLongPress}
             >
                 <ActionItem
                     title="Hold to Delete"
@@ -299,6 +316,87 @@ const Physicians = props => {
             ]}
             title="PHYSICIAN ACTIONS"
         />;
+    };
+
+    const removePhysiciansLongPress = () => {
+        // Done with one or more ids selected
+        if (selectedPhysiciansId.length > 0) openDeletionConfirm({ids: [...selectedPhysiciansId]});
+        else openErrorConfirmation();
+    };
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removePhysiciansCall(data);
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message="Do you want to delete these item(s)?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const removePhysiciansCall = data => {
+        removePhysicians(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    onRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setSelectedPhysiciansId([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove group: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
     };
 
     const openCreateNewWorkItem = () => {

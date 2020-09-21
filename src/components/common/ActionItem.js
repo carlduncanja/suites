@@ -12,6 +12,7 @@ import {
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import disabledFloatingButton from '../../../assets/svg/disabledFloatingButton';
+import {LONG_PRESS_TIMER} from '../../const';
 
 const COLORS = ['rgba(255,255,255,1)', 'rgba(0,0,0,0.16)'];
 
@@ -72,7 +73,7 @@ ActionItem.propTypes = {
 };
 ActionItem.defaultProps = {
     icon: <View />,
-    pressTimer: 700,
+    pressTimer: LONG_PRESS_TIMER.MEDIUM,
     disabled: false,
     onPress: () => {
         console.log("ACTION TRIGGERED")
