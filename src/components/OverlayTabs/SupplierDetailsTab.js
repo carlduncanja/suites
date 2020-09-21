@@ -17,6 +17,8 @@ import ConfirmationComponent from "../ConfirmationComponent";
 import {updateSupplierCall} from "../../api/network";
 import LoadingIndicator from "../common/LoadingIndicator";
 import {useModal} from "react-native-modalfy";
+import OptionsField from "../common/Input Fields/OptionsField";
+import {MenuOption, MenuOptions} from "react-native-popup-menu";
 
 const LineDividerContainer = styled.View`
     margin-bottom : ${({theme}) => theme.space['--space-32']};
@@ -46,13 +48,13 @@ const RowWrapper = styled.View`
     z-index: ${({zIndex}) => zIndex};
 `
 
-const SupplierDetailsTab = ({supplierId, order}) => {
+const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
 
     const fieldsBaseStateRef = useRef();
     const modal = useModal();
     const theme = useTheme();
 
-    const {supplier = {}, status = ""} = order;
+    const {supplier = {}} = order;
     const {pageState, setPageState} = useContext(PageContext);
     const [isUpdated, setUpdated] = useState(false);
     const [isLoading, setLoading] = useState(false)
@@ -62,6 +64,7 @@ const SupplierDetailsTab = ({supplierId, order}) => {
         description = "",
         supplierNumber = "",
         name = "",
+        status = "",
         phone = "",
         fax = "",
         email = "",
@@ -108,6 +111,7 @@ const SupplierDetailsTab = ({supplierId, order}) => {
             name,
             phone,
             fax,
+            status,
             email,
             representatives
         })
@@ -128,6 +132,7 @@ const SupplierDetailsTab = ({supplierId, order}) => {
             name: fields.name,
             phone: fields.phone,
             email: fields.email,
+            status: fields.status,
             fax: fields.fax,
             description: fields.description,
             // representatives: []
@@ -135,7 +140,8 @@ const SupplierDetailsTab = ({supplierId, order}) => {
 
         setLoading(true)
         updateSupplierCall(supplierId, data)
-            .then( _ => {
+            .then(_ => {
+                onUpdated(fields);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -149,6 +155,7 @@ const SupplierDetailsTab = ({supplierId, order}) => {
                                 modal.closeAllModals();
 
                             }}
+
                             action="Yes"
                         />
                     ),
@@ -249,15 +256,22 @@ const SupplierDetailsTab = ({supplierId, order}) => {
                     isEditMode
                         ? <InputWrapper>
                             <InputLabelComponent label={'Status'}/>
-                            <InputField2
-                                value={fields['status']}
-                                onChangeText={onFieldUpdated('status')}
-                                enabled={false}
+                            <OptionsField
+                                text={transformToSentence(fields['status'] || 'active')}
+                                oneOptionsSelected={onFieldUpdated('status')}
+                                menuOption={(
+                                    <MenuOptions>
+                                        <MenuOption value="active" text="Active"/>
+                                        <MenuOption value="disengaged" text="Disengaged"/>
+                                    </MenuOptions>
+                                )}
                             />
+
+
                         </InputWrapper>
                         : <Record
                             recordTitle="Status"
-                            recordValue={transformToSentence(status) || "--"}
+                            recordValue={transformToSentence(fields['status'] || "") || "Active"}
                             editMode={isEditMode}
                             editable={false}
                         />

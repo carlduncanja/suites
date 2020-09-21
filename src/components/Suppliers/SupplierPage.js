@@ -1,24 +1,26 @@
 import React, {useState, useEffect, useContext} from 'react';
-import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 import SupplierProductsTab from '../OverlayTabs/SupplierProductsTab';
 import SupplierPurshaseOrders from '../OverlayTabs/SupplierPurchaseOrders';
 import BottomSheetContainer from '../common/BottomSheetContainer';
-import { PageContext } from "../../contexts/PageContext";
+import {PageContext} from "../../contexts/PageContext";
 import DetailsPage from "../common/DetailsPage/DetailsPage";
 import TabsContainer from "../common/Tabs/TabsContainerComponent";
 import ConfirmationComponent from '../ConfirmationComponent';
 
 
-import { getSupplierById, createPurchaseOrder, getSupplierProducts } from "../../api/network";
-import { colors } from "../../styles";
-import { useModal } from 'react-native-modalfy';
-import { set } from 'numeral';
+import {getSupplierById, createPurchaseOrder, getSupplierProducts} from "../../api/network";
+import {colors} from "../../styles";
+import {useModal} from 'react-native-modalfy';
+import {set} from 'numeral';
+import {updateSupplierAction} from "../../redux/actions/suppliersActions";
+import {connect} from "react-redux";
 
 
-function SupplierPage({ route, navigation }) {
-    const { supplier, isOpenEditable, floatingActions } = route.params;
+function SupplierPage({route, navigation, updateSupplierAction}) {
+    const {supplier, isOpenEditable, floatingActions} = route.params;
     const modal = useModal();
     const currentTabs = ["Details", "Products", "Purchase Orders"];
     const {
@@ -38,7 +40,6 @@ function SupplierPage({ route, navigation }) {
     // const [cartOrderItems, setCartOrderItems] = useState([])
     const [products, setProducts] = useState([])
 
-    const [fields, setFields] = useState({})
     const [popoverList, setPopoverList] = useState([])
 
     const {isEditMode} = pageState;
@@ -46,7 +47,7 @@ function SupplierPage({ route, navigation }) {
     // ##### Lifecycle Methods
     useEffect(() => {
         setTimeout(() => {
-            if (!products.length){
+            if (!products.length) {
                 fetchProducts();
                 fetchSupplier(_id);
             }
@@ -62,11 +63,11 @@ function SupplierPage({ route, navigation }) {
         })
     }
 
-    const onCancelErrorScreen = () =>{
+    const onCancelErrorScreen = () => {
         modal.closeAllModals();
-        setTimeout(()=>{
+        setTimeout(() => {
             backTapped();
-        },200)
+        }, 200)
     }
 
     const onTabPress = (selectedTab) => {
@@ -90,7 +91,7 @@ function SupplierPage({ route, navigation }) {
             setPopoverList(updatedPopovers)
         } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
+            const updatedObj = {...popoverList[objIndex], status: popoverValue};
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -119,13 +120,15 @@ function SupplierPage({ route, navigation }) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {true}
-                            onCancel = {onCancelErrorScreen}
-                            message = "There was an issue performing this action."
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={onCancelErrorScreen}
+                            message="There was an issue performing this action."
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')}
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
                     })
         }, 100);
     }
@@ -135,7 +138,7 @@ function SupplierPage({ route, navigation }) {
 
         getSupplierProducts(_id, "")
             .then(productsData => {
-                const { data = [], pages = 0 } = productsData
+                const {data = [], pages = 0} = productsData
                 setProducts(data)
                 setHasFetchProducts(true)
             })
@@ -145,7 +148,7 @@ function SupplierPage({ route, navigation }) {
                 errorScreen();
                 //CONFORMATION SCREEN
             })
-            .finally( _ => {
+            .finally(_ => {
                 setPageLoading(false);
             })
     };
@@ -159,8 +162,10 @@ function SupplierPage({ route, navigation }) {
             })
             .catch(error => {
                 console.log("Failed to get supplier", error)
-                if(hasFetchProducts === false){
-                    setTimeout(()=>{modal.closeModals('ConfirmationModal');},100)
+                if (hasFetchProducts === false) {
+                    setTimeout(() => {
+                        modal.closeModals('ConfirmationModal');
+                    }, 100)
                     errorScreen();
                 }
 
@@ -172,13 +177,20 @@ function SupplierPage({ route, navigation }) {
             })
     };
 
+    const supplierInfoUpdated = (updatedInfo) => {
+        const newState = {_id, ...selectedSupplier, ...updatedInfo};
+        setSelectedSupplier(newState)
+        updateSupplierAction(newState)
+    }
+
     // const supplierDetails = { supplier, status: '' }
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
                 return <SupplierDetailsTab
-                    order={{supplier : selectedSupplier, status: ''}}
+                    order={{supplier: selectedSupplier, status: ''}}
                     supplierId={_id}
+                    onUpdated={supplierInfoUpdated}
                     isEditMode={isEditMode}
                 />
             case "Products":
@@ -192,19 +204,19 @@ function SupplierPage({ route, navigation }) {
             case "Purchase Orders":
                 return <SupplierPurshaseOrders
                     floatingActions={floatingActions}
-                    data = {selectedSupplier?.purchaseOrders}
+                    data={selectedSupplier?.purchaseOrders}
                 />;
             default:
-                return <View />
+                return <View/>
         }
     };
 
     return (
 
         <>
-            <PageContext.Provider value={{ pageState, setPageState }}>
+            <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
-                    headerChildren={[name]}
+                    headerChildren={[selectedSupplier.name]}
                     onBackPress={backTapped}
                     pageTabs={
                         <TabsContainer
@@ -227,7 +239,11 @@ function SupplierPage({ route, navigation }) {
 SupplierPage.propTypes = {};
 SupplierPage.defaultProps = {};
 
-export default SupplierPage;
+const mapDispatcher = {
+    updateSupplierAction
+}
+
+export default connect(null, mapDispatcher)(SupplierPage);
 
 const styles = StyleSheet.create({
     item: {
