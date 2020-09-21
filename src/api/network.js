@@ -473,7 +473,7 @@ export const getSupplierById = async id => suitesAxiosInstance
 
 
 export const updateSupplierCall = async (id, data) => suitesAxiosInstance
-    .put(supplierEndpoint("asdfa"), data)
+    .put(supplierEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
 
