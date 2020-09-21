@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Table from "../common/Table/Table";
 import {formatDate} from "../../utils/formatter";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-
+ 
 const uiData = [
     // transfer data;
     {
@@ -83,7 +83,7 @@ const CompletedTransferHeadings = [
 ];
 
 
-function TransfersOverlayTab({transferItems = uiData}) {
+function TransfersOverlayTab({transferItems = []}) {
 
 
     const completedTransferListItem = ({from, to, product, quantity, date}) => {

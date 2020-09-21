@@ -96,7 +96,9 @@ function StoragePage({route, navigation}) {
                     isEditMode={isEditMode}
                 />;
             case 'Transfers':
-                return <TransfersOverlayTab/>;
+                return <TransfersOverlayTab
+                    transferItems = {[]}
+                />;
             case 'Consumables': {
                 // Get Consumables
                 const consumables = storageItem.inventoryLocations.map(item => {
@@ -113,7 +115,7 @@ function StoragePage({route, navigation}) {
                 return <StorageConsumablesTab consumables={consumables}/>;
             }
             case 'Equipment':
-                return <StorageEquipmentTab/>;
+                return <StorageEquipmentTab equipments = {[]}/>;
             default:
                 return <View/>;
         }
