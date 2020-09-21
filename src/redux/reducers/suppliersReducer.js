@@ -16,9 +16,6 @@ export default (state = initialState.suppliers, action) => {
         }
         case UPDATE_SUPPLIER: {
             const {data} = payload
-
-            console.log("Hello00000", data);
-
             return state.map(item => {
                 return item._id === data._id
                     ? {...item, ...data}
