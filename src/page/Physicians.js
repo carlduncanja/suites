@@ -25,6 +25,7 @@ import {setPhysicians} from '../redux/actions/physiciansActions';
 import {getPhysicians} from '../api/network';
 
 import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
+import {LONG_PRESS_TIMER} from '../const';
 
 const Physicians = props => {
     // ############# Const data
@@ -254,7 +255,7 @@ const Physicians = props => {
     const getFabActions = () => {
         const deleteAction = (
             <LongPressWithFeedback
-                pressTimer={700}
+                pressTimer={LONG_PRESS_TIMER.MEDIUM}
                 onLongPress={() => {
                 }}
             >

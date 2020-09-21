@@ -14,6 +14,7 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 
 import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import { withModal } from "react-native-modalfy";
+import {LONG_PRESS_TIMER} from '../../const';
 
 
 const headers = [
@@ -55,7 +56,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 
     const recordsPerPage = 10;
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
-    
+
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
@@ -119,7 +120,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 
     const getFabActions = () => {
         const deleteAction =
-        <LongPressWithFeedback pressTimer={700} onLongPress={()=>{}}>
+        <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} onLongPress={()=>{}}>
             <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
         </LongPressWithFeedback>;
         const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={ openAddItem }/>;
@@ -141,7 +142,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
     //     console.log("Arr: ", arr)
     //     console.log("Checked: ", checkBoxList)
     //     // arr = arr.filter(item => !dataToDelete.includes(item?.equipment?._id));
-        
+
     //     // handleEquipmentDelete(arr)
 
     //     setTimeout(()=>{
@@ -153,7 +154,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
         modal.closeModals('ActionContainerModal');
 
         // For some reason there has to be a delay between closing a modal and opening another.
-        setTimeout(() => { 
+        setTimeout(() => {
 
             modal
                 .openModal(
@@ -175,7 +176,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 
     return (
         <>
-            <Table 
+            <Table
                 data = {dataToDisplay}
                 listItemFormat = {listItemFormat}
                 headers = {headers}
@@ -185,7 +186,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
             <Footer
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
-                goToNextPage={goToNextPage} 
+                goToNextPage={goToNextPage}
                 goToPreviousPage={goToPreviousPage}
                 isDisabled = {isFloatingActionDisabled}
                 toggleActionButton = {toggleActionButton}
@@ -201,7 +202,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
                     <RoundedPaginator
                         totalPages={totalPages}
                         currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage} 
+                        goToNextPage={goToNextPage}
                         goToPreviousPage={goToPreviousPage}
                     />
                 </View>
@@ -210,8 +211,8 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
                     toggleActionButton = {toggleActionButton}
                 />
             </View> */}
-        </> 
-        
+        </>
+
     )
 }
 

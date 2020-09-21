@@ -21,6 +21,7 @@ import LongPressWithFeedback from '../components/common/LongPressWithFeedback';
 import CreateStorageDialogContainer from '../components/Storage/CreateStorageDialogContainer';
 import NavPage from '../components/common/Page/NavPage';
 import ConfirmationComponent from '../components/ConfirmationComponent';
+import {LONG_PRESS_TIMER} from '../const';
 
 const listHeaders = [
     {
@@ -261,7 +262,7 @@ function Storage(props) {
         const deleteAction = (
             <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
                 <LongPressWithFeedback
-                    pressTimer={1200}
+                    pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeStorageLocationsLongPress}
                     isDisabled={isDisabled}
                 >

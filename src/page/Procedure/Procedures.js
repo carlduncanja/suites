@@ -21,6 +21,7 @@ import {getProcedures} from "../../api/network";
 import _ from "lodash";
 
 import { useModal} from 'react-native-modalfy';
+import {LONG_PRESS_TIMER} from '../../const';
 
 const Procedures = (props) => {
 
@@ -176,7 +177,7 @@ const Procedures = (props) => {
         getProcedures(searchValue, recordsPerPage, currentPosition)
             .then(proceduresResult => {
                 const { data = [], pages = 0 } = proceduresResult
-                
+
                 if(pages === 1){
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -242,7 +243,7 @@ const Procedures = (props) => {
     const getFabActions = () => {
 
         const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {
+            <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} onLongPress={() => {
             }}>
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
                 }} touchable={false}/>

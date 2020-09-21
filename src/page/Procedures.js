@@ -24,6 +24,7 @@ import _ from "lodash";
 
 import {withModal} from 'react-native-modalfy';
 import proceduresTest from '../../data/Procedures'
+import {LONG_PRESS_TIMER} from '../const';
 
 const Procedures = (props) => {
 
@@ -216,7 +217,7 @@ const Procedures = (props) => {
     const getFabActions = () => {
 
         const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={() => {
+            <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} onLongPress={() => {
             }}>
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {
                 }} touchable={false}/>

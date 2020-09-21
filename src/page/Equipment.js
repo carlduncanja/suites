@@ -49,6 +49,7 @@ import CreateEquipmentTypeDialogContainer from "../components/Equipment/CreateEq
 import ListItem from "../components/common/List/ListItem";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import {LONG_PRESS_TIMER} from '../const';
 
 
 const QuantityWrapper = styled.View`
@@ -519,7 +520,7 @@ const Equipment = (props) => {
 
   const getFabActions = () => {
     const deleteAction = (
-      <LongPressWithFeedback pressTimer={700} onLongPress={() => { }}>
+      <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} onLongPress={() => { }}>
         <ActionItem
           title={"Hold to Delete"}
           icon={<WasteIcon />}

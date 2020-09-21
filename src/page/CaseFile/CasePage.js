@@ -36,7 +36,7 @@ import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
 import DeleteIcon from '../../../assets/svg/deleteIcon';
 import RemoveIcon from '../../../assets/svg/remove2';
-import {QUOTATION_STATUS, ROLES} from '../../const';
+import {LONG_PRESS_TIMER, QUOTATION_STATUS, ROLES} from '../../const';
 import EditIcon from '../../../assets/svg/editIcon';
 import DownloadIcon from '../../../assets/svg/DownloadIcon';
 import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
@@ -671,7 +671,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         let checkedList = itemToAdd === 'Consumables' ? selectedConsumables : selectedEquipments
 
         let filerObj = proceduresBillableItems.filter( item => item?.caseProcedureId === checkedList[0] || "")[0] || {};
-        let updatedObj = itemToAdd === 'Consumables' ? 
+        let updatedObj = itemToAdd === 'Consumables' ?
             {
                 ...filerObj,
                 inventories : [...filerObj?.inventories, ...data]
@@ -702,7 +702,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
         updateCaseChargeSheet(updatedCase);
 
-        
+
         // console.log("Billable: ", proceduresBillableItems);
 
     }
@@ -710,12 +710,12 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const handleRemoveConsumableItems = (itemToRemove) => {
         const { chargeSheet = {} } = selectedCase;
         const { proceduresBillableItems = [] } = chargeSheet
-       
+
         let updatedItems = proceduresBillableItems;
         let selectedItemsArray = itemToRemove === 'Consumables' ? variantsConsumables : variantsEquipments;
         selectedItemsArray.map( item => {
             const { _parentId = "", variants = [] } = item;
-            
+
             const billableItem = updatedItems.filter( item => item?.caseProcedureId === _parentId )[0] || {};
             const { inventories = [], equipments = [] } = billableItem
             let updatedList = itemToRemove === 'Consumables' ? inventories : equipments;
@@ -727,7 +727,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     updatedList = [...updatedList.filter( item => item?.equipment?._id !== variant)]
             });
 
-            let updatedProcedureObj = 
+            let updatedProcedureObj =
                 itemToRemove === 'Consumables' ?
                     {
                         ...billableItem,
@@ -753,7 +753,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             setVariantsEquipments([]);
         }
         updateCaseChargeSheet(updatedItems);
-    
+
     }
 
     const onRemoveQuotations = quotation => {
@@ -817,7 +817,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
         console.log('getFabActions: selected tab', selectedTab);
         console.log('Selected menu: ', selectedMenuItem);
- 
+
         if (selectedMenuItem === 'Charge Sheet') {
             switch (selectedTab) {
                 case 'Consumables': {
@@ -853,7 +853,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         if (isOwner) {
                             const WithdrawChanges = (
                                 <LongPressWithFeedback
-                                    pressTimer={700}
+                                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
                                     onLongPress={handleWithdrawChargeSheetChanges}
                                 >
                                     <ActionItem
@@ -870,7 +870,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
                     } else {
                         let isDisabled = selectedConsumables.length === 1 ? false : true
-                        
+
                         const addNewItem = (
                             <ActionItem
                                 title="Add Consumable"
@@ -884,7 +884,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         );
                         const removeLineItemAction = (
                             <LongPressWithFeedback
-                                pressTimer={700}
+                                pressTimer={LONG_PRESS_TIMER.MEDIUM}
                                 onLongPress={()=>handleRemoveConsumableItems('Consumables')}
                                 isDisabled={selectedConsumables.length === 0 ? true : false}
 
@@ -913,7 +913,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     const addNewLineItemAction = (
                         <ActionItem
                             title="Add Equipment"
-                            icon={<AddIcon 
+                            icon={<AddIcon
                                 strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
                             />}
                             disabled = {isDisabled}
@@ -923,7 +923,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     );
                     const removeLineItemAction = (
                         <LongPressWithFeedback
-                            pressTimer={700}
+                            pressTimer={LONG_PRESS_TIMER.MEDIUM}
                             onLongPress={()=>handleRemoveConsumableItems('Equipment')}
                             isDisabled={selectedEquipments.length === 0 ? true : false}
 
@@ -950,7 +950,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         const quotation = selectedQuoteIds[0];
                         const removeQuotations = (
                             <LongPressWithFeedback
-                                pressTimer={700}
+                                pressTimer={LONG_PRESS_TIMER.MEDIUM}
                                 onLongPress={() => onRemoveQuotations(quotation)}
                             >
                                 <ActionItem
@@ -987,7 +987,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         const invoice = selectedInvoiceIds[0];
                         // const removeInvoices = (
                         //     <LongPressWithFeedback
-                        //         pressTimer={700}
+                        //         pressTimer={LONG_PRESS_TIMER.MEDIUM}
                         //         onLongPress={() => onRemoveInvoices(invoice)}
                         //     >
                         //         <ActionItem
