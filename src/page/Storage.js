@@ -411,7 +411,7 @@ function Storage(props) {
                     'OverlayModal',
                     {
                         content: <CreateStorageDialogContainer
-                            onCreated={item => onItemPress(item)()}
+                            onCreated={item => {onItemPress(item)()}}
                             onCancel={() => setFloatingAction(false)}
                         />,
                         onClose: () => setFloatingAction(false)

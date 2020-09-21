@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import Table from "../common/Table/Table";
 import {formatDate} from "../../utils/formatter";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
+import styled, {css} from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import Footer from '../common/Page/Footer';
  
 const uiData = [
     // transfer data;
@@ -82,9 +85,21 @@ const CompletedTransferHeadings = [
     }
 ];
 
+const SectionContainer = styled.View`
+    display : flex;
+    margin-bottom : ${ ({theme}) => theme.space['--space-40']};
+`;
+
+const SectionText = styled.Text( ({theme}) => ({
+    ...theme.font['--text-xl-medium'],
+    color : theme.colors['--color-gray-800'],
+    marginBottom : 24,
+}));
+
 
 function TransfersOverlayTab({transferItems = []}) {
 
+    const theme = useTheme();
 
     const completedTransferListItem = ({from, to, product, quantity, date}) => {
         return (<View
@@ -146,34 +161,65 @@ function TransfersOverlayTab({transferItems = []}) {
 
 
     return (
-        <View style={styles.container}>
-            {/*PENDING*/}
-            <View style={styles.sectionContainer}>
-                <Text style={styles.sectionHeading}>Pending</Text>
-
+        <>
+            <SectionContainer>
+                <SectionText>Pending</SectionText>
                 <Table
                     data={transferItems}
                     listItemFormat={renderPendingItem}
                     headers={PendingTransferHeadings}
                     isCheckbox={false}
                 />
+            </SectionContainer>
 
-            </View>
-
-            {/*COMPLETED*/}
-            <View style={styles.sectionContainer}>
-                <Text style={styles.sectionHeading}>Completed</Text>
-
+            <SectionContainer
+                style = {css`margin-bottom : 0;`}
+            >
+                <SectionText>Completed</SectionText>
                 <Table
                     data={transferItems}
                     listItemFormat={renderCompleteItem}
                     headers={CompletedTransferHeadings}
                     isCheckbox={false}
                 />
+            </SectionContainer>
 
-            </View>
+            <Footer
+                hasPaginator = {false}
+                hasActionButton = {true}
+                hasActions = {true}
+            />
+        </>
 
-        </View>
+        // <View style={styles.container}>
+        //     {/*PENDING*/}
+        //     <View style={styles.sectionContainer}>
+        //         <Text style={styles.sectionHeading}>Pending</Text>
+
+        //         <Table
+        //             data={transferItems}
+        //             listItemFormat={renderPendingItem}
+        //             headers={PendingTransferHeadings}
+        //             isCheckbox={false}
+        //         />
+
+        //     </View>
+
+        //     {/*COMPLETED*/}
+        //     <View style={styles.sectionContainer}>
+        //         <Text style={styles.sectionHeading}>Completed</Text>
+
+        //         <Table
+        //             data={transferItems}
+        //             listItemFormat={renderCompleteItem}
+        //             headers={CompletedTransferHeadings}
+        //             isCheckbox={false}
+        //         />
+
+        //     </View>
+
+        // </View>
+    
     );
 }
 

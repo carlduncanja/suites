@@ -6,10 +6,11 @@ import Checkbox from '../../../common/Checkbox/Checkbox';
 import { useCheckBox } from '../../../../helpers/caseFilesHelpers';
 import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
 import Item from '../../../common/Table/Item'; 
+import Footer from '../../../common/Page/Footer';
 
-const Equipment = ({tabDetails, headers, listItemFormat}) => {
+const Equipment = ({tabDetails, headers, listItemFormat, toggleActionButton = ()=>{}}) => {
 
-    const [checkBoxList, setCheckBoxList] = useState([])
+    const [checkBoxList, setCheckBoxList] = useState([]) 
 
     const toggleCheckbox = (item) => () => {
         let updatedCases = [...checkBoxList];
@@ -44,7 +45,7 @@ const Equipment = ({tabDetails, headers, listItemFormat}) => {
     }
    
     return ( 
-        <View>
+        <>
             <Table
                 isCheckbox = {true}
                 data = {tabDetails}
@@ -54,7 +55,14 @@ const Equipment = ({tabDetails, headers, listItemFormat}) => {
                 itemSelected = {checkBoxList}
                 // dataLength = {tabDetails.length}
             />
-        </View>
+
+            <Footer
+                hasPaginator = {true}
+                hasActionButton = {true}
+                hasActions = {true}
+                toggleActionButton = {toggleActionButton}
+            />
+        </>
     );
 }
  

@@ -65,12 +65,16 @@ const StorageEquipmentTab = ({equipments = []}) => {
         }
     });
 
+    const toggleActionButton = () =>{
+        
+    }
 
     return (
         <Equipment
             tabDetails = {data}
             headers = {headers}
             listItemFormat = {listItem}
+            toggleActionButton = {toggleActionButton}
         />
     )
 }

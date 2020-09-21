@@ -2,6 +2,8 @@ import React, {} from "react";
 import {View, StyleSheet, Text} from "react-native";
 import Consumables from '../CaseFiles/OverlayPages/ChargeSheet/Consumables';
 import {currencyFormatter} from '../../utils/formatter';
+import Table from "../common/Table/Table";
+import Footer from "../common/Page/Footer";
 
 
 const testData = [
@@ -55,14 +57,25 @@ const StorageConsumablesTab = ({consumables = testData}) => {
             <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
         </View>
     </>;
+ 
+    const toggleActionButton = () =>{
 
-
+    }
+    
     return (
-        <Consumables
-            tabDetails={consumables}
-            headers={headers}
-            listItemFormat={listItem}
-        />
+        <>
+            <Table
+                data = {consumables}
+                listItemFormat = {listItem}
+                headers = {headers}
+                isCheckbox = {true}
+            />
+
+            <Footer
+                toggleActionButton = {toggleActionButton}
+            />
+        </>
+        
     )
 }
 
