@@ -334,6 +334,11 @@ export const updateProcedure = async (id, data) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const removeProcedures = async data => suitesAxiosInstance
+    .delete(proceduresEndpoint, { data })
+    .then(handleResponse)
+    .catch(handleError);
+
 // ################# Physicians Endpoints
 export const getPhysicians = async (query, max, page) => suitesAxiosInstance
     .get(physiciansEndpoint, { params: { query, max, page } })
