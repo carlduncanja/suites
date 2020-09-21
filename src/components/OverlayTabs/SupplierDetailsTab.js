@@ -150,6 +150,7 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
                                 modal.closeAllModals();
 
                             }}
+
                             action="Yes"
                         />
                     ),
