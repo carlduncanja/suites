@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
@@ -30,7 +30,6 @@ function SupplierPage({ route, navigation }) {
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [isEditMode, setEditMode] = useState(isOpenEditable);
     const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
     const [selectedSupplier, setSelectedSupplier] = useState({});
@@ -42,6 +41,8 @@ function SupplierPage({ route, navigation }) {
     const [fields, setFields] = useState({})
     const [popoverList, setPopoverList] = useState([])
 
+    const {isEditMode} = pageState;
+
     // ##### Lifecycle Methods
     useEffect(() => {
         setTimeout(() => {
@@ -49,9 +50,7 @@ function SupplierPage({ route, navigation }) {
                 fetchProducts();
                 fetchSupplier(_id);
             }
-
         }, 200)
-        // fetchSupplier(_id)
     }, []);
 
     // ##### Event Handlers
@@ -72,23 +71,6 @@ function SupplierPage({ route, navigation }) {
 
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
-    };
-
-    const onEditPress = (tab) => {
-        setEditableTab(tab)
-        setEditMode(!isEditMode)
-        if (!isEditMode === false) {
-            console.log("Fields:", fields)
-
-            // updatePhysicianFn(_id, fieldsObject)
-        }
-    }
-
-    const onFieldChange = (fieldName) => (value) => {
-        setFields({
-            ...fields,
-            [fieldName]: value
-        })
     };
 
     const backTapped = () => {
@@ -194,7 +176,10 @@ function SupplierPage({ route, navigation }) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <SupplierDetailsTab order={{supplier : selectedSupplier, status: ''}} />
+                return <SupplierDetailsTab
+                    order={{supplier : selectedSupplier, status: ''}}
+                    isEditMode={isEditMode}
+                />
             case "Products":
                 return <SupplierProductsTab
                     floatingActions={floatingActions}

@@ -29,7 +29,6 @@ const ValueText = styled.Text(({theme, valueStyle, valueColor}) => ({
 
 const TextAreaWrapper = styled.View`
     display: flex;
-    
     height: 70px;
 `;
 
@@ -66,7 +65,7 @@ function Record({
                     <ValueText
                         theme={theme}
                         valueColor={valueColor}
-                        valueStyle={valueStyle}> 
+                        valueStyle={valueStyle}>
                         {recordValue || "--"}
                     </ValueText>
                 }
@@ -87,15 +86,15 @@ function Record({
 
                 {
                     editMode && !useTextArea &&
-                    
+
                     <InputField2
                         value={recordValue}
                         onChangeText={onRecordUpdate}
                         enabled={editable}
                         onClear = {onClearValue}
                     />
-    
-                    
+
+
                 }
 
 
