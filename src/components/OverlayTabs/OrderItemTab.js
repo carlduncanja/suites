@@ -1,7 +1,7 @@
 import React,{ useEffect, useState, useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Table from "../common/Table/Table";
-import Item from '../common/Table/Item'; 
+import Item from '../common/Table/Item';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import LongPressWithFeedback from "../common/LongPressWithFeedback";
@@ -23,17 +23,18 @@ import Search from "../common/Search";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import DataItem from "../common/List/DataItem";
+import {LONG_PRESS_TIMER} from '../../const';
 
-const OrderItemTab = ({ 
-    orders = [],  
-    // isEditMode = false, 
-    onItemChange = ()=>{},  
-    supplierId = "", 
+const OrderItemTab = ({
+    orders = [],
+    // isEditMode = false,
+    onItemChange = ()=>{},
+    supplierId = "",
     onAddProductItems = ()=>{},
     onRemoveProductItems = ()=>{},
 }) =>{
-    
-    const modal = useModal();  
+
+    const modal = useModal();
     const theme = useTheme();
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode, isLoading} = pageState;
@@ -69,7 +70,7 @@ const OrderItemTab = ({
     ]
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
-    
+
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
@@ -166,7 +167,7 @@ const OrderItemTab = ({
     const listItemFormat = (item,index) => {
         const { amount = 0, productId = {} } = item
         const { name = "", sku = "", unitPrice = 0, unit = "" } = productId
-        
+
         return (
             <>
                 <DataItem text = {name} flex = {2} fontStyle = "--text-base-medium" color = "--color-blue-600" />
@@ -232,25 +233,25 @@ const OrderItemTab = ({
     const floatingActions = () =>{
         let isDisabled = selectedItems.length === 0 ? true : false;
         let isDisabledColor = selectedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
-        const addItem = 
-            <ActionItem 
-                title={"Add Item"} 
+        const addItem =
+            <ActionItem
+                title={"Add Item"}
                 icon={<AddIcon strokeColor = {isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']}/>}
                 onPress={onAddItem}
                 disabled = {isEditMode ? false : true}
                 touchable = {isEditMode ? true : false}
         />;
 
-        const deleteItem = 
-            <LongPressWithFeedback 
-                pressTimer={700} 
+        const deleteItem =
+            <LongPressWithFeedback
+                pressTimer={LONG_PRESS_TIMER.MEDIUM}
                 onLongPress={handleRemoveItem}
                 isDisabled = {isDisabled}
             >
-                <ActionItem 
-                    title={"Hold to Delete"} 
-                    icon={<WasteIcon strokeColor = {isDisabledColor}/>} 
-                    onPress={() => {}} 
+                <ActionItem
+                    title={"Hold to Delete"}
+                    icon={<WasteIcon strokeColor = {isDisabledColor}/>}
+                    onPress={() => {}}
                     disabled = {isDisabled}
                     touchable={false}
                 />
@@ -297,8 +298,8 @@ const OrderItemTab = ({
     }
 
     let itemsToDisplay = [...orders];
-    itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax); 
-    
+    itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax);
+
     return (
         <>
             <Search
@@ -311,7 +312,7 @@ const OrderItemTab = ({
             <Table
                 data = {itemsToDisplay}
                 listItemFormat = {renderItemFn}
-                headers = {headers} 
+                headers = {headers}
                 isCheckbox = {true}
                 toggleHeaderCheckbox = {handleOnSelectAll}
                 itemSelected = {selectedItems}

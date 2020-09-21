@@ -21,6 +21,7 @@ import { currencyFormatter } from '../../utils/formatter';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import { withModal } from "react-native-modalfy";
 import { PageContext } from "../../contexts/PageContext";
+import {LONG_PRESS_TIMER} from '../../const';
 
 const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, onAddEquipment, handleEquipmentDelete}) => {
 
@@ -31,7 +32,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
     // const [equipments, setEquipments] = useState(equipmentsData)
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
     const [checkBoxList, setCheckboxList] = useState([])
-    
+
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0)
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
@@ -59,7 +60,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
             alignment: "flex-end",
             flex:1
         }
-    ] 
+    ]
 
     // ###### EVENT HANDLERS
 
@@ -122,7 +123,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
                 </View>
                 <View style={[styles.item,{alignItems:'flex-end'}]}>
                     <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
-                </View>      
+                </View>
             </>
         )
     }
@@ -130,7 +131,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
     const renderEquipmentFn = (item) => {
         const { equipment = {} } = item
         const { _id } = equipment
-       
+
         return <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(_id)}
@@ -155,7 +156,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
     const getFabActions = () => {
 
         const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={deleteItems}>
+            <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} onLongPress={deleteItems}>
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
             </LongPressWithFeedback>;
         const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={ openAddItem }/>;
@@ -175,7 +176,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
         let dataToDelete = [...checkBoxList];
 
         arr = arr.filter(item => !dataToDelete.includes(item?.equipment?._id));
-        
+
         confirmDelete(arr)
     }
 
@@ -190,7 +191,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
                 message = "Do you wish to delete these items?"
             />
             ,
-            onClose: () => {modal.closeModals("ConfirmationModal")} 
+            onClose: () => {modal.closeModals("ConfirmationModal")}
         })
     }
 
@@ -239,14 +240,14 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
 
-    return ( 
+    return (
         <>
             <Table
                 isCheckbox = {true}
                 data = {dataToDisplay}
                 listItemFormat = {renderEquipmentFn}
                 headers = {headers}
-                toggleHeaderCheckbox = {handleOnSelectAll} 
+                toggleHeaderCheckbox = {handleOnSelectAll}
                 itemSelected = {checkBoxList}
             />
 
@@ -254,9 +255,9 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
-                goToPreviousPage={goToPreviousPage} 
+                goToPreviousPage={goToPreviousPage}
                 isDisabled = {isFloatingActionDisabled}
-                toggleActionButton = {toggleActionButton} 
+                toggleActionButton = {toggleActionButton}
                 hasPaginator = {true}
                 hasActionButton = {true}
                 hasActions = {true}
@@ -264,11 +265,11 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
                 isPreviousDisabled = {false}
             />
 
-        </> 
-    ) 
+        </>
+    )
 }
 
-export default withModal(ProceduresEquipmentTab) 
+export default withModal(ProceduresEquipmentTab)
 
 const styles = StyleSheet.create({
     item:{

@@ -4,9 +4,10 @@ import {
     View,
     TouchableWithoutFeedback,
     StyleSheet,
-    Text, 
+    Text,
     Animated
 } from "react-native";
+import {LONG_PRESS_TIMER} from '../../const';
 // import Animated from "react-native-reanimated";
 
 const COLORS = ['rgba(255,255,255,1)', 'rgba(227, 232, 239, 1)'];
@@ -22,7 +23,7 @@ function LongPressWithFeedback(props) {
     const {pressTimer, isDisabled, onLongPress} = props;
 
     const _valueRef = useRef(0);
-    const ACTION_TIMER = pressTimer || 700;
+    const ACTION_TIMER = pressTimer || LONG_PRESS_TIMER.MEDIUM;
 
     const [pressAction] = useState(new Animated.Value(0));
     const [viewWidth, setViewWidth] = useState(0);
@@ -98,7 +99,7 @@ LongPressWithFeedback.propTypes = {
 };
 LongPressWithFeedback.defaultProps = {
     icon: <View/>,
-    pressTimer: 700,
+    pressTimer: LONG_PRESS_TIMER.MEDIUM,
     isDisabled: false,
     onLongPress: () => {
         console.log("ACTION TRIGGERED")
