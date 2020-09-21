@@ -46,7 +46,7 @@ const RowWrapper = styled.View`
     z-index: ${({zIndex}) => zIndex};
 `
 
-const SupplierDetailsTab = ({supplierId, order}) => {
+const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
 
     const fieldsBaseStateRef = useRef();
     const modal = useModal();
@@ -135,7 +135,8 @@ const SupplierDetailsTab = ({supplierId, order}) => {
 
         setLoading(true)
         updateSupplierCall(supplierId, data)
-            .then( _ => {
+            .then(_ => {
+                onUpdated(fields);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
