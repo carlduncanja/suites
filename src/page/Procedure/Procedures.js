@@ -127,7 +127,8 @@ const Procedures = props => {
             initial: false,
             params: {
                 procedure: item,
-                isOpenEditable
+                isOpenEditable,
+                onUpdate : ()=>{handleDataRefresh()}
             }
         });
         // modal.openModal('BottomSheetModal',{
