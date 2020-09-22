@@ -38,11 +38,11 @@ export const proceduresEndpoint = '/procedures';
 export const procedureEndpoint = id => `/procedures/${id}`;
 
 // ##### EQUIPMENTS
-export const equipmentsEndpoint = "/equipments";
-export const equipmentEndpoint = (id) => `/equipments/${id}`;
-export const equipmentTypesEndpoint = "/equipment-types";
-export const equipmentTypeEndpoint = (id) => `/equipment-types/${id}`;
-export const updateEquipmentEndpoint = (id) => `/equipments/${id}`
+export const equipmentsEndpoint = '/equipments';
+export const equipmentEndpoint = id => `/equipments/${id}`;
+export const equipmentTypesEndpoint = '/equipment-types';
+export const equipmentTypeEndpoint = id => `/equipment-types/${id}`;
+export const updateEquipmentEndpoint = id => `/equipments/${id}`;
 export const assignEquipmentToLocation = (typeId, equipmentId) => `/equipment-types/${typeId}/equipments/${equipmentId}/assign`;
 
 // ##### CASE FILES
@@ -75,10 +75,11 @@ export const getArchivedSuppliersEndPoint = '/suppliers/archived';
 
 // ##### PURCHASE ORDERS
 export const purchaseOrdersEndpoint = '/purchase_orders';
+export const purchaseOrdersArchiveEndpoint = '/purchase_orders/archive';
 export const purchaseOrderEndpoint = id => `/purchase_orders/${id}`;
 export const createOrderInvoice = id => `/purchase_orders/${id}/invoice`;
-export const updatePurchaseOrderStatusEndpoint = purchaseOrderId => `/purchase_orders/${purchaseOrderId}/status`;
-export const updatePurchaseOrderEndpoint = purchaseOrderId => `/purchase_orders/${purchaseOrderId}/orders`;
+export const updatePurchaseOrderStatusEndpoint = id => `/purchase_orders/${id}/status`;
+export const updatePurchaseOrderEndpoint = id => `/purchase_orders/${id}/orders`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/items';
