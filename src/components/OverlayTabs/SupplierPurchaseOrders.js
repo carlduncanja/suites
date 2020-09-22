@@ -22,6 +22,8 @@ import ActionContainer from '../common/FloatingAction/ActionContainer';
 import LongPressWithFeedback from '../common/LongPressWithFeedback';
 import {LONG_PRESS_TIMER} from '../../const';
 import WasteIcon from '../../../assets/svg/wasteIcon';
+import ConfirmationComponent from '../ConfirmationComponent';
+import {removePurchaseOrders, archivePurchaseOrders} from '../../api/network';
 
 const testData = [
     {
@@ -48,17 +50,24 @@ const testData = [
 
 ];
 
-const SupplierPurchaseOrders = ({modal, isArchive = false, data = []}) => {
+const SupplierPurchaseOrders = ({
+    modal,
+    isArchive = false,
+    data = [],
+    onRefresh = () => {
+    }
+}) => {
     const [checkBoxList, setCheckBoxList] = useState([]);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [hasActionButton, setHasActionButton] = useState(!isArchive);
-    const recordsPerPage = 15;
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
     const [tabDetails, setTabDetails] = useState([]);
+
+    const recordsPerPage = 15;
 
     const headers = [
         {
@@ -120,8 +129,7 @@ const SupplierPurchaseOrders = ({modal, isArchive = false, data = []}) => {
             <ActionItem
                 title="Archive Purchase Order"
                 icon={<ArchiveIcon/>}
-                onPress={() => {
-                }}
+                onPress={archiveSupplierPurchaseOrders}
             />
         );
 
@@ -171,8 +179,93 @@ const SupplierPurchaseOrders = ({modal, isArchive = false, data = []}) => {
 
     const removeSupplierPurchaseOrders = () => {
         // Done with one or more ids selected
-        // if (checkBoxList.length > 0) openDeletionConfirm({ids: [...selectedIds]});
-        // else openErrorConfirmation();
+        const selectedIds = checkBoxList.map(item => item._id);
+
+        if (checkBoxList.length > 0) openDeletionConfirm({ids: [...selectedIds]});
+        else openErrorConfirmation();
+    };
+
+    const archiveSupplierPurchaseOrders = () => {
+        // Done with one or more ids selected
+        const selectedIds = checkBoxList.map(item => item._id);
+
+        if (checkBoxList.length > 0) openDeletionConfirm({ids: [...selectedIds]}, true);
+        else openErrorConfirmation();
+    };
+
+    const openDeletionConfirm = (data, archive = false) => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removeSupplierPurchaseOrdersCall(data);
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message={`Do you want to ${archive ? 'archive' : 'delete'} these item(s)?`}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const removeSupplierPurchaseOrdersCall = data => {
+        removePurchaseOrders(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    onRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setCheckBoxList([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove group: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
     };
 
     const toggleCheckbox = item => () => {

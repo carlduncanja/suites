@@ -228,19 +228,22 @@ const Procedures = props => {
                 <View style={[styles.item, {
                     ...styles.rowBorderRight,
                     flex: 1.5
-                }]}>
+                }]}
+                >
                     <Text numberOfLines={1} style={[styles.itemText, {color: '#323843'}]}>{item.name}</Text>
                 </View>
                 <View style={[styles.item, {
                     flex: 1,
                     alignItems: 'flex-start'
-                }]}>
+                }]}
+                >
                     <Text numberOfLines={1} style={[styles.itemText, {color: '#3182CE'}]}>Dr. {firstName} {surname}</Text>
                 </View>
                 <View style={[styles.item, {
                     flex: 1,
                     alignItems: 'center'
-                }]}>
+                }]}
+                >
                     <Text numberOfLines={1} style={[styles.itemText, {color: '#3182CE'}]}>{`${item.duration} hours`}</Text>
                 </View>
             </>
@@ -274,7 +277,7 @@ const Procedures = props => {
         return <ActionContainer
             floatingActions={[
                 deleteAction,
-                // createCopy,
+                createCopy,
                 createNewProcedure
             ]}
             title="PROCEDURES ACTIONS"
@@ -389,6 +392,18 @@ const Procedures = props => {
         navigation.navigate('Procedures List', {
             screen: 'CreateCopy',
             initial: false,
+            onCancel: () => {
+                {
+                    navigation.goBack();
+                    setFloatingAction(false);
+                }
+            },
+            onCreated: () => {
+                {
+                    navigation.goBack();
+                    setFloatingAction(false);
+                }
+            },
         });
     };
 

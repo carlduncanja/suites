@@ -10,7 +10,7 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import OptionsField from "../common/Input Fields/OptionsField";
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import { createSuppier } from "../../api/network";
+import { createSupplier } from "../../api/network";
 import { addSupplier } from "../../redux/actions/suppliersActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import _ from "lodash";
@@ -27,7 +27,7 @@ import _ from "lodash";
 
 function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
 
-    // ######### CONST 
+    // ######### CONST
     const modal = useModal();
     const dialogTabs = ['Details', 'Representative'];
 
@@ -50,7 +50,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
         let supplierToAdd = {}
 
         if(!isValid){ return }
-        
+
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
@@ -60,7 +60,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
             }else{
                 supplierToAdd = {...fields}
             }
-            
+
             console.log("Success:", supplierToAdd)
             createSupplierCall(supplierToAdd)
         }
@@ -90,7 +90,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
         let requiredFields = ['name','phone','fax']
         // selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unitPrice']
         // const requiredFields = ['name', 'unitPrice']
-    
+
         let errorObj = {...errorFields} || {}
 
         for (const requiredField of requiredFields) {
@@ -110,7 +110,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
     }
 
     const createSupplierCall = (supplier) => {
-        createSuppier(supplier)
+        createSupplier(supplier)
             .then(data => {
                 // addSupplier(data)
                 modal.closeAllModals();
