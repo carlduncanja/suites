@@ -27,6 +27,7 @@ function EquipmentItemPage({ route, navigation, modal }) {
         availableOn: formatDate(equipment.nextAvailable, "DD/MM/YYYY")
     }
 
+
     const currentTabs = ["Details"];
 
     // ##### States
@@ -54,7 +55,8 @@ function EquipmentItemPage({ route, navigation, modal }) {
         // supplier name
         sku: sku,
         description: info.description,
-        status: info.status
+        status: info.status,
+        assigned: equipment?.assignments[0]?.theatre
     })
 
     // ##### Lifecycle Methods

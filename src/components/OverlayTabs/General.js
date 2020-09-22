@@ -42,7 +42,7 @@ const General = ({ equipment = {}, updatedInfo, modal }) => {
 
     const assignedRecord = <ResponsiveRecord
         recordTitle={"Assigned"}
-        recordValue={theatre.name}
+        recordValue={equipment?.assignments[0]?.theatre}
         handleRecordPress={() => { }}
     />
 
