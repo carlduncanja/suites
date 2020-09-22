@@ -44,7 +44,7 @@ const headers = [
     }
 ];
 
-const ProceduresConsumablesTab = ({consumablesData, procedureId, modal, handleInventoryUpdate, onAddItems, handleConsumablesDelete, navigation}) => {
+const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,modal, handleInventoryUpdate, onAddItems, handleConsumablesDelete, navigation}) => {
 
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState;
@@ -257,10 +257,12 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, modal, handleIn
                 {
                     navigation.goBack();
                     setFloatingAction(false);
-                    onAddItems(data);
+                    onAddInventory(data);
+                    // onAddItems(data);
                     // console.log("Created data: ", data)
                 }
             },
+            type : 'Consumables'
         });
 
         // For some reason there has to be a delay between closing a modal and opening another.

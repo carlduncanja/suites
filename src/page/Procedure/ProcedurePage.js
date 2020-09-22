@@ -174,19 +174,22 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     const onAddInventory = (data) => {
         let {inventories = []} = selectedProcedure
-        let newData = [...inventories, data]
+        let updatedInventory = inventories.map( item => {return { inventory : item?.inventory._id, amount : item?.amount}});
+        let newData = [...updatedInventory, ...data?.inventories];
         let newProcedureData = {...selectedProcedure, inventories: newData}
         setIsInfoUpdated(true)
-        setSelectedProcedure(newProcedureData)
+        // setSelectedProcedure(newProcedureData)
         updateProcedureCall(newProcedureData)
     }
 
     const onAddEquipment = (data) => {
         let {equipments = []} = selectedProcedure
-        let newData = [...equipments, data]
+        let updatedEquipments = equipments.map( item => {return { equipment : item?.equipment._id, amount : item?.amount}})
+        let newData = [...updatedEquipments, ...data?.equipments];
+
         let newProcedureData = {...selectedProcedure, equipments: newData}
         setIsInfoUpdated(true)
-        setSelectedProcedure(newProcedureData)
+        // setSelectedProcedure(newProcedureData)
         updateProcedureCall(newProcedureData)
     }
 
@@ -328,6 +331,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                     consumablesData={inventories}
                     handleInventoryUpdate={handleInventoryUpdate}
                     handleConsumablesDelete = {handleConsumablesDelete}
+                    onAddInventory = {onAddInventory}
                     navigation = {navigation}
                     procedureId = {_id}
                 />

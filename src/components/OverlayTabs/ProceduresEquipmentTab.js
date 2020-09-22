@@ -195,7 +195,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
         })
     }
 
-    const onClose = () =>{
+    const onClose = () =>{ 
         setTimeout(()=>{
             modal.closeModals('ConfirmationModal')
         },200)
@@ -232,10 +232,12 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
                 {
                     navigation.goBack();
                     setFloatingAction(false);
-                    onAddItems(data);
+                    onAddEquipment(data);
+                    // onAddItems(data);
                     // console.log("Created data: ", data)
                 }
             },
+            type : 'Equipments'
         });
         // For some reason there has to be a delay between closing a modal and opening another.
         // setTimeout(() => {

@@ -70,8 +70,8 @@ function AddItems({ addProcedure, navigation, route}){
 
     const modal = useModal();
     const theme = useTheme();
-    const  { onCancel, onCreated } = route.params;
-    const dialogTabs = ['Consumables','Equipments'];
+    const  { onCancel, onCreated, type } = route.params;
+    const dialogTabs = type === 'Consumables' ? ['Consumables'] : ['Equipments'];
     const selectedIndex = 0;
 
     const headers = [
@@ -157,10 +157,16 @@ function AddItems({ addProcedure, navigation, route}){
             let updatedConsumables = consumables.map(item => {return ({ inventory : item?._id, amount : item?.amount})}) || [];
             let updatedEquipments = equipments.map(item => {return ({ equipment : item?._id, amount : item?.amount})}) || [];
             
-            updatedFields = {
-                inventories : updatedConsumables,
-                equipments : updatedEquipments
-            }
+            type === 'Consumables' ?
+                updatedFields = {
+                    inventories : updatedConsumables,
+                    // equipments : updatedEquipments
+                }
+                :
+                updatedFields = {
+                    // inventories : updatedConsumables,
+                    equipments : updatedEquipments
+                }
             onConfirmSave(updatedFields)
 
 
@@ -197,25 +203,39 @@ function AddItems({ addProcedure, navigation, route}){
     }
 
     const getDialogContent = (tab) => {
-        switch (tab) {
-            case "Consumables":
-                return <DialogItems
+        return type === 'Consumables' ?
+            <DialogItems
                 handleData = {(consumables)=>setConsumables([...consumables])}
                 itemData = {consumables}
                 itemType = "Consumables"
                 headers = {headers}
-            />;
-
-            case "Equipments":
-                return <DialogItems
+            />
+            :
+            <DialogItems
                 handleData = {(equipments)=>setEquipments([...equipments])}
                 itemData = {equipments}
                 itemType = "Equipments"
                 headers = {headers}
-            />;
-            default :
-                return <View/>
-        }
+            />
+        // switch (tab) {
+        //     case "Consumables":
+        //         return <DialogItems
+        //         handleData = {(consumables)=>setConsumables([...consumables])}
+        //         itemData = {consumables}
+        //         itemType = "Consumables"
+        //         headers = {headers}
+        //     />;
+
+        //     case "Equipments":
+        //         return <DialogItems
+        //         handleData = {(equipments)=>setEquipments([...equipments])}
+        //         itemData = {equipments}
+        //         itemType = "Equipments"
+        //         headers = {headers}
+        //     />;
+        //     default :
+        //         return <View/>
+        // }
     };
 
 
