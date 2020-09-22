@@ -22,6 +22,7 @@ import Footer from '../../components/common/Page/Footer';
 import { PageContext } from "../../contexts/PageContext";
 import DataItem from "../common/List/DataItem";
 import { useTheme } from 'emotion-theming';
+import {LONG_PRESS_TIMER} from '../../const';
 
 
 const headers = [
@@ -37,7 +38,7 @@ const headers = [
         name :"Quantity",
         alignment: "center"
     },
-    { 
+    {
         name :"Unit Price",
         alignment: "flex-end"
     }
@@ -105,9 +106,9 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
                 }
             })
     }
-    
+
     const listItem = (item) => {
-        
+
         const { inventory = {}, amount = 0 } = item || {}
         const { name = "", unitPrice = 0, type = "n/a" } = inventory || {}
 
@@ -160,7 +161,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
 
         handleInventoryUpdate(updatedData)
 
-    } 
+    }
 
     const onAmountChange = (item) => (value) => {
         const updatedObj = {
@@ -180,7 +181,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
 
     const getFabActions = () => {
         const deleteAction =
-            <LongPressWithFeedback pressTimer={700} onLongPress={deleteItems}>
+            <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} onLongPress={deleteItems}>
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
             </LongPressWithFeedback>;
         const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={openAddItem}/>;
@@ -192,7 +193,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
             title={"PROCEDURES ACTIONS"}
         />
     }
- 
+
     const deleteItems = () => {
         let arr = [...consumablesData];
         let dataToDelete = [...checkBoxList];
@@ -200,7 +201,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
         arr = arr.filter(item => !dataToDelete.includes(item?._id));
 
         confirmDelete(arr)
-        
+
     }
 
     const confirmDelete = (data) =>{
@@ -214,9 +215,9 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
                 message = "Do you wish to delete these items?"
             />
             ,
-            onClose: () => {modal.closeModals("ConfirmationModal")} 
+            onClose: () => {modal.closeModals("ConfirmationModal")}
         })
-        
+
     }
 
     const onClose = () =>{
@@ -273,7 +274,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
                 toggleHeaderCheckbox = {handleOnSelectAll}
                 itemSelected = {checkBoxList}
             />
- 
+
             <Footer
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
@@ -287,7 +288,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
                 isNextDisabled = {false}
                 isPreviousDisabled = {false}
             />
-        </> 
+        </>
 
     )
 }

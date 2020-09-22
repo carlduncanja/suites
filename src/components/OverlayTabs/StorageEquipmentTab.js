@@ -6,7 +6,7 @@ import { currencyFormatter } from '../../utils/formatter';
 const testData = [
     {
         itemName : 'Bag',
-        type : 'Anaesthesia',
+        type : 'Anaesthesia', 
         onHand : 100,
         unitPrice : 4120.76
     },
@@ -18,7 +18,7 @@ const testData = [
     }
 
 ]
-const StorageEquipmentTab = () => {
+const StorageEquipmentTab = ({equipments = []}) => {
 
     const headers = [
         {
@@ -55,13 +55,13 @@ const StorageEquipmentTab = () => {
             
     </>
 
-    const data = testData.map(item => {
+    const data = equipments.map(item => {
 
         return {
-            item :  item.itemName,
-            type : item.type,
-            onHand : item.onHand,
-            unitPrice : item.unitPrice
+            item :  item?.itemName,
+            type : item?.type,
+            onHand : item?.onHand,
+            unitPrice : item?.unitPrice
         }
     });
 

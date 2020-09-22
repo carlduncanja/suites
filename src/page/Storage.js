@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from 'react-native';
 import {useModal} from 'react-native-modalfy';
-import {connect} from 'react-redux';
+import {connect} from 'react-redux'; 
 import _ from 'lodash';
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
@@ -21,20 +21,23 @@ import LongPressWithFeedback from '../components/common/LongPressWithFeedback';
 import CreateStorageDialogContainer from '../components/Storage/CreateStorageDialogContainer';
 import NavPage from '../components/common/Page/NavPage';
 import ConfirmationComponent from '../components/ConfirmationComponent';
+import DataItem from '../components/common/List/DataItem';
+import RightBorderDataItem from '../components/common/List/RightBorderDataItem';
+import {LONG_PRESS_TIMER} from '../const';
 
 const listHeaders = [
     {
         name: 'Room Name',
         alignment: 'flex-start',
-        flex: 1.5
+        flex: 1.2
     },
     {
-        name: 'In Stock',
+        name: 'Stored Items',
         alignment: 'center',
         flex: 1,
     },
     {
-        name: 'Capacity',
+        name: 'Pending Transfers',
         alignment: 'center',
         flex: 1
     }
@@ -164,26 +167,39 @@ function Storage(props) {
     };
 
     // ##### Helper functions
-    const storageItem = ({name, stock, levels}) => (
+    const storageItem = ({name, stock, levels, products, transfers}) => (
         <>
-            <View style={[styles.item, {flex: 1.5, justifyContent: 'space-between', ...styles.rowBorderRight}]}>
+
+            {/* <View style={[styles.item, {flex: 1.5, justifyContent: 'space-between', ...styles.rowBorderRight}]}>
                 <Text style={{color: '#3182CE', fontSize: 16}}>
                     {name}
                 </Text>
-            </View>
-            <View style={[
+            </View> */}
+            <RightBorderDataItem
+                fontStyle = {'--text-base-regular'} 
+                color = {'--color-gray-800'} 
+               
+                text = {name}
+                flex = {1.2}
+            />
+            <DataItem 
+                fontStyle = {'--text-base-medium'} 
+                color = {'--color-blue-600'} 
+                align = "center" 
+                text = {`${products} ${ products === 1 ? 'Product' : 'Products'}`}
+            />
+            <DataItem 
+                fontStyle = {'--text-base-medium'} 
+                color = {'--color-blue-600'} 
+                align = "center" 
+                text = {`${transfers} ${ transfers === 1 ? 'Transfer' : 'Transfers'}`}
+            />
+           
+            {/* <View style={[
                 styles.item, {justifyContent: 'center'}
             ]}
             >
-                <Text style={[styles.itemText]}>
-                    {numberFormatter(stock)}
-                </Text>
-            </View>
-            <View style={[
-                styles.item, {justifyContent: 'center'}
-            ]}
-            >
-                {/*   LEVELS    */}
+                {/*   LEVELS    
                 <LevelIndicator
                     max={levels.max}
                     min={0}
@@ -191,7 +207,7 @@ function Storage(props) {
                     ideal={levels.ideal}
                     critical={levels.critical}
                 />
-            </View>
+            </View> */}
         </>
     );
 
@@ -233,11 +249,16 @@ function Storage(props) {
     };
 
     const renderItem = item => {
+        console.log("Storage item: ", item);
         const totalStock = item.inventoryLocations?.reduce((acc, item) => acc + item.stock, 0) || 0;
+        const totalProducts = item?.inventoryLocations?.length || 0;
+        const totalTransfers = 0;
 
         const formattedItem = {
             name: item.name,
             stock: totalStock,
+            products: totalProducts,
+            transfers : totalTransfers,
             levels: {
                 min: 0,
                 max: item.capacity
@@ -261,7 +282,7 @@ function Storage(props) {
         const deleteAction = (
             <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
                 <LongPressWithFeedback
-                    pressTimer={1200}
+                    pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeStorageLocationsLongPress}
                     isDisabled={isDisabled}
                 >

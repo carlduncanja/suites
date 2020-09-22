@@ -29,7 +29,7 @@ const DataText = styled.Text( ({theme, fontStyle, color}) => ({
 
 function RightBorderDataItem({text = "", flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-gray-700', }){
     const theme = useTheme();
-    
+     
     return ( 
         <DataItemWrapper flex = {flex} theme={theme}>
             <DataItemContainer align = {align} theme={theme}>
