@@ -129,8 +129,7 @@ const SupplierPurchaseOrders = ({
             <ActionItem
                 title="Archive Purchase Order"
                 icon={<ArchiveIcon/>}
-                onPress={() => {
-                }}
+                onPress={archiveSupplierPurchaseOrders}
             />
         );
 
@@ -186,7 +185,15 @@ const SupplierPurchaseOrders = ({
         else openErrorConfirmation();
     };
 
-    const openDeletionConfirm = data => {
+    const archiveSupplierPurchaseOrders = () => {
+        // Done with one or more ids selected
+        const selectedIds = checkBoxList.map(item => item._id);
+
+        if (checkBoxList.length > 0) openDeletionConfirm({ids: [...selectedIds]}, true);
+        else openErrorConfirmation();
+    };
+
+    const openDeletionConfirm = (data, archive = false) => {
         modal.openModal(
             'ConfirmationModal',
             {
@@ -199,7 +206,7 @@ const SupplierPurchaseOrders = ({
                         removeSupplierPurchaseOrdersCall(data);
                     }}
                     // onAction = { () => confirmAction()}
-                    message="Do you want to delete these item(s)?"
+                    message={`Do you want to ${archive ? 'archive' : 'delete'} these item(s)?`}
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
