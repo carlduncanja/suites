@@ -49,7 +49,7 @@ import CreateEquipmentTypeDialogContainer from "../components/Equipment/CreateEq
 import ListItem from "../components/common/List/ListItem";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import {LONG_PRESS_TIMER} from '../const';
+import { LONG_PRESS_TIMER } from '../const';
 
 
 const QuantityWrapper = styled.View`
@@ -328,9 +328,10 @@ const Equipment = (props) => {
     let assignments;
 
 
-    assignments = equipments.map(x => { return x.assignments.map(assigned => assigned.theatre) })
+    assignments = equipments.map(x => { return x.assignments.map(assigned => assigned) })
 
-    console.log("id has", item._id);
+
+
     let asArray = [];
 
     //asArray = [[...equipments.map(x => x.assignments)]];
@@ -338,7 +339,9 @@ const Equipment = (props) => {
 
     const concatAssignments = [].concat.apply([], assignments);
 
-    // console.log("id being passed", item._id)
+    //console.log("concat has", concatAssignments);
+
+
 
     //const filtered = [...concatAssignments.filter(assigned => assigned.equipment === item._id)];
 
@@ -349,13 +352,6 @@ const Equipment = (props) => {
       suppliers: item.suppliers,
       description: item.description,
       quantity: item.equipments.length,
-      assignment: isEmpty(concatAssignments) ? "Not currently assigned" : concatAssignments,
-      status:
-        isEmpty(concatAssignments)
-          ? "Available"
-          : concatAssignments.length >= 1
-            ? "Multiple"
-            : "Unavailable",
       nextAvailable: new Date(2020, 12, 12),
     };
 
@@ -393,13 +389,20 @@ const Equipment = (props) => {
 
 
 
+            const childAssignments = item.items[0].assignments;
+
 
             const equipmentItem = {
-              assignment: viewItem.assignment,
               assigmentName: item.id,
               description: viewItem.description,
               quantity: equipmentGroup.length,
-              status: viewItem.status,
+              assignment: isEmpty(childAssignments) ? "Not currently assigned" : childAssignments,
+              status:
+                isEmpty(childAssignments) || childAssignments.length <= 1
+                  ? "Available"
+                  : childAssignments.length >= 2 && childAssignments.length <= 5
+                    ? "Multiple"
+                    : "Unavailable",
               dateAvailable: viewItem.nextAvailable,
             };
 
@@ -469,7 +472,7 @@ const Equipment = (props) => {
         <DataItem text={status} flex={.25} color="--color-gray-800" fontStyle="--text-sm-regular" />
         <DataItem text={quantity} flex={.2} color="--color-gray-800" fontStyle="--text-sm-regular" />
         {Array.isArray(assignment) ? assignment?.map(item =>
-          <DataItem text={item} flex={.1} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
+          <DataItem text={item.theatre} flex={.1} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
         ) : <DataItem text={assignment} flex={.3} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
         }
       </>

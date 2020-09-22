@@ -204,7 +204,7 @@ function EquipmentItemPage({ route, navigation, modal }) {
                         onFieldChange={onFieldChange}
                     />
                     :
-                    <General equipment={selectedEquipment} updatedInfo={info} />;
+                    <General equipment={selectedEquipment} updatedInfo={info} navigation={navigation} groupInfo={group} name={name} />;
             default:
                 return <View />
         }

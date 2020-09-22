@@ -17,10 +17,13 @@ import EditIcon from "../../../assets/svg/editIcon";
 
 import { withModal } from "react-native-modalfy";
 
-const General = ({ equipment = {}, updatedInfo, modal }) => {
+const General = ({ equipment = {}, updatedInfo, modal, navigation, groupInfo, name }) => {
 
 
     const { dateAvailable, description } = updatedInfo;
+
+    console.log
+
 
     const {
         _id = "",
@@ -43,7 +46,7 @@ const General = ({ equipment = {}, updatedInfo, modal }) => {
     const assignedRecord = <ResponsiveRecord
         recordTitle={"Assigned"}
         recordValue={equipment?.assignments[0]?.theatre}
-        handleRecordPress={() => { }}
+        handleRecordPress={() => { navigation.navigate('AssignmentManagmentPage', { assignments: equipment.assignments, group: groupInfo, name: name }) }}
     />
 
     const statusRecord = <Record
