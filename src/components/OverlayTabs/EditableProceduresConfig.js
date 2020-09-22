@@ -14,7 +14,7 @@ import _ from "lodash";
 
 const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopovers}) => {
 
-    const recoveryText = {
+    const recoveryText = { 
         true: "Yes",
         false: "No"
     };

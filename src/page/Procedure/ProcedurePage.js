@@ -44,7 +44,8 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [pageState, setPageState] = useState({});
     const [selectedProcedure, setSelectedProcedure] = useState({})
-    const [isInfoUpdated, setIsInfoUpdated] = useState(false)
+    const [isInfoUpdated, setIsInfoUpdated] = useState(false);
+    // console.log("Selected procedure: ", selectedProcedure);
 
     const [fields, setFields] = useState({
         name: name,
@@ -63,7 +64,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        fetchProcdure(_id)
+        fetchProcdure(_id);
     }, []);
 
     useEffect(()=>{
@@ -158,7 +159,8 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         setPageLoading(true)
         getProcedureById(id)
             .then(data => {
-                setSelectedProcedure(data)
+                setSelectedProcedure(data);
+                console.log("Fetched data: ", data)
                 // setProcedure(data)
             })
             .catch(error => {
@@ -186,6 +188,21 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
         updateProcedureCall(newProcedureData)
+    }
+
+    const onAddItems = (data) => {
+        // console.log("Dtae in add function: ", data);
+        let { inventories = [], equipments = [] } = selectedProcedure
+        let updatedInventory = inventories.map( item => {return { inventory : item?.inventory._id, amount : item?.amount}});
+        let updatedEquipments = equipments.map( item => {return { equipment : item?.equipment._id, amount : item?.amount}})
+        let newInventory = [...updatedInventory, ...data?.inventories];
+        let newEquipment = [...updatedEquipments, ...data?.equipments];
+        let newProcedureData = {inventories : newInventory, equipments : newEquipment};
+        
+        console.log("New procedure: ", newProcedureData);
+        setIsInfoUpdated(true);
+        // setSelectedProcedure(newProcedureData);
+        updateProcedureCall(newProcedureData);
     }
 
     const onAddTheatre = (data) => {
@@ -238,11 +255,12 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     }
 
     const updateProcedureCall = (updatedFields) => {
+        // console.log("Fields: ", updatedFields);
         updateProcedure(_id, updatedFields)
             .then(data => {
                 // getProcedures()
-                fetchProcdure(_id)
-                console.log("Data from db: ", data)
+                fetchProcdure(_id);
+                console.log("Success");
                 // modal.closeAllModals();
                 // setTimeout(() => {onCreated(data)}, 200);
             })
@@ -308,15 +326,18 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
             case "Consumables":
                 return <ProceduresConsumablesTab
                     consumablesData={inventories}
-                    onAddInventory={onAddInventory}
                     handleInventoryUpdate={handleInventoryUpdate}
                     handleConsumablesDelete = {handleConsumablesDelete}
+                    navigation = {navigation}
+                    procedureId = {_id}
                 />
             case "Equipment":
                 return <ProceduresEquipmentTab
                     equipmentsData={equipments}
                     onAddEquipment={onAddEquipment}
                     handleEquipmentDelete = {handleEquipmentDelete}
+                    onAddItems={onAddItems}
+                    navigation = {navigation}
                     // handleEquipmentUpdate={handleEquipmentUpdate}
                 />;
             case "Notes":

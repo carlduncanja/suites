@@ -187,7 +187,7 @@ function Storage(props) {
             />
             <DataItem 
                 fontStyle = {'--text-base-medium'} 
-                color = {'--color-blue-600'} 
+                color = {'--color-gray-800'} 
                 align = "center" 
                 text = {`${products} ${ products === 1 ? 'Product' : 'Products'}`}
             />
@@ -222,6 +222,7 @@ function Storage(props) {
         getStorage(searchValue, recordsPerPage, currentPosition)
             .then(storageResult => {
                 const {data = [], pages = 0} = storageResult;
+                console.log("Dta: ", data);
 
                 if (pages === 1) {
                     setPreviousDisabled(true);

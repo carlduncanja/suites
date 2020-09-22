@@ -44,7 +44,7 @@ const headers = [
     }
 ];
 
-const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate, onAddInventory, handleConsumablesDelete}) => {
+const ProceduresConsumablesTab = ({consumablesData, procedureId, modal, handleInventoryUpdate, onAddItems, handleConsumablesDelete, navigation}) => {
 
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState;
@@ -244,21 +244,40 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
     const openAddItem = () => {
         modal.closeModals('ActionContainerModal');
 
-        // For some reason there has to be a delay between closing a modal and opening another.
-        setTimeout(() => {
+        navigation.navigate('AddItems', {
+            screen: 'AddItems',
+            initial: false,
+            onCancel: () => {
+                {
+                    navigation.goBack();
+                    setFloatingAction(false);
+                }
+            },
+            onCreated: (data) => {
+                {
+                    navigation.goBack();
+                    setFloatingAction(false);
+                    onAddItems(data);
+                    // console.log("Created data: ", data)
+                }
+            },
+        });
 
-            modal
-                .openModal(
-                    'OverlayModal',
-                    {
-                        content: <AddItemDialog
-                            itemType = {'Consumables'}
-                            onCancel={() => setFloatingAction(false)}
-                            onCreated={onAddInventory}
-                        />,
-                        onClose: () => setFloatingAction(false)
-                    })
-        }, 200)
+        // For some reason there has to be a delay between closing a modal and opening another.
+        // setTimeout(() => {
+
+        //     modal
+        //         .openModal(
+        //             'OverlayModal',
+        //             {
+        //                 content: <AddItemDialog
+        //                     itemType = {'Consumables'}
+        //                     onCancel={() => setFloatingAction(false)}
+        //                     onCreated={onAddInventory}
+        //                 />,
+        //                 onClose: () => setFloatingAction(false)
+        //             })
+        // }, 200)
     }
 
     let dataToDisplay = [...consumablesData];
@@ -285,7 +304,7 @@ const ProceduresConsumablesTab = ({consumablesData, modal, handleInventoryUpdate
                 hasPaginator = {true}
                 hasActionButton = {true}
                 hasActions = {true}
-                isNextDisabled = {false}
+                isNextDisabled = {false} 
                 isPreviousDisabled = {false}
             />
         </>

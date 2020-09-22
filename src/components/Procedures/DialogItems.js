@@ -182,7 +182,7 @@ function DialogItems({
                 const results = data.map(item => ({
                     // name: `Dr. ${item.surname}`,
                     ...item
-                }));
+                })); 
                 // console.log("Data: ", results);
                 setSearchResults(results || []);
 
@@ -213,12 +213,16 @@ function DialogItems({
     };
 
     const onItemSelected = (item) =>{
-        let updatedData = [...itemData]
-        setSelectedItem(item);
-        updatedData.includes(item) ?
+        let updatedData = [...itemData];
+        let updatedItem = {
+            ...item,
+            amount : 1
+        }
+        setSelectedItem(updatedItem);
+        updatedData.includes(updatedItem) ?
             updatedData = updatedData
             :
-            updatedData = [...updatedData,item]
+            updatedData = [...updatedData,updatedItem]
         handleData(updatedData);
         console.log("New List:", updatedData);
     }
@@ -361,7 +365,7 @@ function DialogItems({
                     onChangeText={(value) => {setSearchValue(value)}}
                     onClear={()=>{onClearItem()}}
                     options={searchResults}
-                    placeholder = "Add New Location"
+                    placeholder = { itemType === 'Locations' ? "Add New Location" : "Item Name"}
                     handlePopovers={() => {
                         // console.log("handle popovers");
                     }}

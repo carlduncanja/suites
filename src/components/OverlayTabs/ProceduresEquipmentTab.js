@@ -23,7 +23,7 @@ import { withModal } from "react-native-modalfy";
 import { PageContext } from "../../contexts/PageContext";
 import {LONG_PRESS_TIMER} from '../../const';
 
-const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, onAddEquipment, handleEquipmentDelete}) => {
+const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, onAddEquipment, handleEquipmentDelete, navigation, onAddItems}) => {
 
     const { pageState } = useContext(PageContext);
     const  { isEditMode } = pageState;
@@ -219,21 +219,39 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
     const openAddItem = () => {
         modal.closeModals('ActionContainerModal');
 
+        navigation.navigate('AddItems', {
+            screen: 'AddItems',
+            initial: false,
+            onCancel: () => {
+                {
+                    navigation.goBack();
+                    setFloatingAction(false);
+                }
+            },
+            onCreated: (data) => {
+                {
+                    navigation.goBack();
+                    setFloatingAction(false);
+                    onAddItems(data);
+                    // console.log("Created data: ", data)
+                }
+            },
+        });
         // For some reason there has to be a delay between closing a modal and opening another.
-        setTimeout(() => {
+        // setTimeout(() => {
 
-            modal
-                .openModal(
-                    'OverlayModal',
-                    {
-                        content: <AddItemDialog
-                            itemType = "Equipments"
-                            onCancel={() => setFloatingAction(false)}
-                            onCreated={onAddEquipment}
-                        />,
-                        onClose: () => setFloatingAction(false)
-                    })
-        }, 200)
+        //     modal
+        //         .openModal(
+        //             'OverlayModal',
+        //             {
+        //                 content: <AddItemDialog
+        //                     itemType = "Equipments"
+        //                     onCancel={() => setFloatingAction(false)}
+        //                     onCreated={onAddEquipment}
+        //                 />,
+        //                 onClose: () => setFloatingAction(false)
+        //             })
+        // }, 200)
     }
 
     let dataToDisplay = [...equipmentsData];
@@ -262,7 +280,7 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
                 hasActionButton = {true}
                 hasActions = {true}
                 isNextDisabled = {false}
-                isPreviousDisabled = {false}
+                isPreviousDisabled = {false} 
             />
 
         </>

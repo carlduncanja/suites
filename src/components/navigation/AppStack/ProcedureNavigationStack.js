@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Procedures from "../../../page/Procedure/Procedures";
 import CreateProcedure from "../../../page/Procedure/CreateProcedure";
+import AddItems from "../../../page/Procedure/AddItems";
 import CreateCopy from "../../../page/Procedure/CreateCopy";
 import ProcedurePage from "../../../page/Procedure/ProcedurePage";
 import NotFound from "../../../page/NotFound";
@@ -30,6 +31,14 @@ export default () => {
             <Stack.Screen
                 name="CreateProcedure"
                 component={CreateProcedure}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen
+                name="AddItems"
+                component={AddItems}
                 options={{
                     headerShown: false,
                 }}
