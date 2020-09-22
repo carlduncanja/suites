@@ -1,45 +1,44 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import React, {useEffect, useContext, useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 
+import {connect} from 'react-redux';
+import _, {isEmpty} from 'lodash';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import {withModal, useModal} from 'react-native-modalfy';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
-import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
-import ActionContainer from "../components/common/FloatingAction/ActionContainer";
-import ActionItem from "../components/common/ActionItem";
-import Footer from "../components/common/Page/Footer";
+import LongPressWithFeedback from '../components/common/LongPressWithFeedback';
+import ActionContainer from '../components/common/FloatingAction/ActionContainer';
+import ActionItem from '../components/common/ActionItem';
+import Footer from '../components/common/Page/Footer';
 import NavPage from '../components/common/Page/NavPage';
-import ConfirmationComponent from "../components/ConfirmationComponent";
-import ArchiveIcon from "../../assets/svg/archiveIcon";
-import AddIcon from "../../assets/svg/addIcon";
+import ConfirmationComponent from '../components/ConfirmationComponent';
+import ArchiveIcon from '../../assets/svg/archiveIcon';
+import AddIcon from '../../assets/svg/addIcon';
 import RightBorderDataItem from '../components/common/List/RightBorderDataItem';
 import DataItem from '../components/common/List/DataItem';
 
-import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../helpers/caseFilesHelpers';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
 
-import { connect } from 'react-redux';
-import { setSuppliers } from "../redux/actions/suppliersActions";
-import { getSuppliers, archiveSupplier } from "../api/network";
-import _, { isEmpty } from "lodash";
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import {setSuppliers} from '../redux/actions/suppliersActions';
+import {getSuppliers, archiveSupplier} from '../api/network';
 
-import { withModal, useModal } from 'react-native-modalfy';
-import suppliersTest from '../../data/Suppliers'
+import suppliersTest from '../../data/Suppliers';
 import SuppliersBottomSheet from '../components/Suppliers/SupplierPage';
 import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplierDialogContainer';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import Button from '../components/common/OverlayButtons/OverlayButton';
 import TouchableDataItem from '../components/common/List/TouchableDataItem';
-
 
 const ArchiveButton = styled.TouchableOpacity`
     align-items:center;
     border-width:1px;
     margin-right:5px;
     justify-content:center;
-    border-color: ${ ({ theme }) => theme.colors['--color-gray-500']};
+    border-color: ${({theme}) => theme.colors['--color-gray-500']};
     width:100px;
     height:30px;
     border-radius:6px;
@@ -55,45 +54,45 @@ align-items: center;
 color: #A0AEC0;
 `;
 
-const Suppliers = (props) => {
+const Suppliers = props => {
     const theme = useTheme();
 
     // ############# Const data
     const recordsPerPage = 10;
     const listHeaders = [
         {
-            name: "Name",
-            alignment: "flex-start",
+            name: 'Name',
+            alignment: 'flex-start',
             flex: 2
         },
         {
-            name: "Phone",
-            alignment: "flex-start",
+            name: 'Phone',
+            alignment: 'flex-start',
             flex: 1
         },
         {
-            name: "Email",
-            alignment: "flex-start",
+            name: 'Email',
+            alignment: 'flex-start',
             flex: 2
         }
     ];
 
     //  ############ Props
-    const { suppliers = [], setSuppliers } = props;
+    const {suppliers = [], setSuppliers} = props;
     const modal = useModal();
 
     //  ############ State
     const [isFetchingData, setFetchingData] = useState(false);
-    const [isFloatingActionDisabled, setFloatingAction] = useState(false)
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [totalPages, setTotalPages] = useState(1);
-    const [currentPageListMin, setCurrentPageListMin] = useState(0)
-    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
 
@@ -102,16 +101,15 @@ const Suppliers = (props) => {
     // ############# Lifecycle methods
 
     useEffect(() => {
-        if (!suppliers.length) fetchSuppliersData(currentPagePosition)
-        setTotalPages(Math.ceil(suppliers.length / recordsPerPage))
+        if (!suppliers.length) fetchSuppliersData(currentPagePosition);
+        setTotalPages(Math.ceil(suppliers.length / recordsPerPage));
     }, []);
 
     useEffect(() => {
-
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
-            fetchSuppliersData(1)
+            fetchSuppliersData(1);
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
@@ -127,81 +125,83 @@ const Suppliers = (props) => {
             return search;
         });
 
-        search()
-        setCurrentPagePosition(1)
+        search();
+        setCurrentPagePosition(1);
     }, [searchValue]);
 
     // ############# Event Handlers
 
-    const onSearchInputChange = (input) => {
-        setSearchValue(input)
-    }
+    const onSearchInputChange = input => {
+        setSearchValue(input);
+    };
 
     const handleDataRefresh = () => {
-        fetchSuppliersData()
+        fetchSuppliersData();
     };
 
     const handleOnSelectAll = () => {
-        let updatedSuppliersList = selectAll(suppliers, selectedSuppliers)
-        setSelectedSuppliers(updatedSuppliersList)
-    }
+        const updatedSuppliersList = selectAll(suppliers, selectedSuppliers);
+        setSelectedSuppliers(updatedSuppliersList);
+    };
 
-    const handleOnCheckBoxPress = (item) => () => {
-        const { _id } = item;
-        let updatedSuppliersList = checkboxItemPress(item, _id, selectedSuppliers)
+    const handleOnCheckBoxPress = item => () => {
+        const {_id} = item;
+        const updatedSuppliersList = checkboxItemPress(item, _id, selectedSuppliers);
 
-        setSelectedSuppliers(updatedSuppliersList)
-    }
+        setSelectedSuppliers(updatedSuppliersList);
+    };
 
     const handleOnItemPress = (item, isOpenEditable) => {
-
-        props.navigation.navigate("SupplierPage", { initial: false, supplier: item, isEdit: isOpenEditable, floatingActions: getFabActions });
-    }
+        props.navigation.navigate('SupplierPage', {
+            initial: false,
+            supplier: item,
+            isEdit: isOpenEditable,
+            floatingActions: getFabActions
+        });
+    };
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
-            fetchSuppliersData(currentPage)
+            fetchSuppliersData(currentPage);
         }
     };
 
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
-        fetchSuppliersData(currentPage)
-
+        fetchSuppliersData(currentPage);
     };
 
     const toggleActionButton = () => {
-        setFloatingAction(true)
-        modal.openModal("ActionContainerModal",
+        setFloatingAction(true);
+        modal.openModal('ActionContainerModal',
             {
                 actions: getFabActions(),
-                title: "SUPPLIER ACTIONS",
+                title: 'SUPPLIER ACTIONS',
                 onClose: () => {
-                    setFloatingAction(false)
+                    setFloatingAction(false);
                 }
-            })
-    }
+            });
+    };
 
     // ############# Helper functions
 
-    const fetchSuppliersData = (pagePosition) => {
+    const fetchSuppliersData = pagePosition => {
+        const currentPosition = pagePosition || 1;
+        setCurrentPagePosition(currentPosition);
 
-        let currentPosition = pagePosition ? pagePosition : 1;
-        setCurrentPagePosition(currentPosition)
-
-        setFetchingData(true)
+        setFetchingData(true);
         getSuppliers(searchValue, recordsPerPage, currentPosition)
             .then(suppliersInfo => {
-                const { data = [], pages = 0 } = suppliersInfo
+                const {data = [], pages = 0} = suppliersInfo;
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
@@ -214,76 +214,73 @@ const Suppliers = (props) => {
                     setPreviousDisabled(false);
                 } else if (currentPosition < pages) {
                     setNextDisabled(false);
-                    setPreviousDisabled(false)
+                    setPreviousDisabled(false);
                 } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
 
                 setSuppliers(data);
-                data.length === 0 ? setTotalPages(1) : setTotalPages(pages)
-
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
-                console.log("failed to get suppliers", error);
-                setTotalPages(1)
-                setPreviousDisabled(true)
-                setNextDisabled(true)
+                console.log('failed to get suppliers', error);
+                setTotalPages(1);
+                setPreviousDisabled(true);
+                setNextDisabled(true);
             })
             .finally(_ => {
-                setFetchingData(false)
-            })
+                setFetchingData(false);
+            });
     };
 
-    const renderSupplierFn = (item) => {
-        return <ListItem
+    const renderSupplierFn = item => (
+        <ListItem
             hasCheckBox={true}
             isChecked={selectedSuppliers.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => handleOnItemPress(item, false)}
             itemView={supplierItem(item)}
         />
-    }
+    );
 
-    const supplierItem = (item) => {
-
-        return (
-            <>
-                <RightBorderDataItem
-                    text={item.name}
-                    flex={2}
-                    color="--color-gray-800"
-                />
-                <TouchableDataItem
-                    text={item.phone}
-                    onPress={() => { }}
-                />
-                <TouchableDataItem
-                    text={item.email}
-                    onPress={() => { }}
-                    flex={2}
-                />
-                {/* <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
+    const supplierItem = item => (
+        <>
+            <RightBorderDataItem
+                text={item.name}
+                flex={2}
+                color="--color-gray-800"
+            />
+            <TouchableDataItem
+                text={item.phone}
+                onPress={() => {
+                }}
+            />
+            <TouchableDataItem
+                text={item.email}
+                onPress={() => {
+                }}
+                flex={2}
+            />
+            {/* <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
                     <Text numberOfLines={1} style={[styles.itemText, { color: "#323843" }]}>{item.name}</Text>
-                </View> 
+                </View>
                 <View style={[styles.item, { flex: 1, alignItems: 'center' }]}>
                     <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.phone}</Text>
                 </View>
                 <View style={[styles.item, { flex: 2, alignItems: 'center' }]}>
                     <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.email}</Text>
                 </View> */}
-            </>
-        )
-
-    }
+        </>
+    );
 
     const cancelClicked = () => {
-        modal.closeAllModals("ConfirmationModal");
-    }
+        modal.closeAllModals('ConfirmationModal');
+    };
 
     const toggleConfirmArchive = () => {
         !isEmpty(selectedSuppliers) ?
-            modal.openModal("ConfirmationModal", {
+            modal.openModal('ConfirmationModal', {
                 content: (
                     <ConfirmationComponent
                         isError={true}//boolean to show whether an error icon or success icon
@@ -294,7 +291,7 @@ const Suppliers = (props) => {
                         action="Archive"
                     />
                 )
-            }) : modal.openModal("ConfirmationModal", {
+            }) : modal.openModal('ConfirmationModal', {
                 content: (
                     <ConfirmationComponent
                         isError={true}//boolean to show whether an error icon or success icon
@@ -305,18 +302,19 @@ const Suppliers = (props) => {
                         action="Archive"
                     />
                 )
-            })
-    }
+            });
+    };
 
     const ArchiveSupplier = () => {
         //fetchSuppliersData(currentPagePosition);
         const selected = [...selectedSuppliers];
-        modal.closeAllModals("ConfirmationModal");
+        modal.closeAllModals('ConfirmationModal');
         selected.map((item, index) => {
-            archiveSupplier(item).then(fetchSuppliersData(currentPagePosition))
+            archiveSupplier(item)
+                .then(fetchSuppliersData(currentPagePosition))
                 .catch(error => {
-                    console.log("failed to archive suppliers", error);
-                    modal.openModal("ConfirmationModal", {
+                    console.log('failed to archive suppliers', error);
+                    modal.openModal('ConfirmationModal', {
                         content: (
                             <ConfirmationComponent
                                 isError={true}//boolean to show whether an error icon or success icon
@@ -327,37 +325,39 @@ const Suppliers = (props) => {
                                 action="Archive"
                             />
                         )
-                    })
-                }).finally(_ => {
-                    setFetchingData(false);
+                    });
                 })
-        })
-
-
-    }
+                .finally(_ => {
+                    setFetchingData(false);
+                });
+        });
+    };
 
     const getFabActions = () => {
-
-        const archiveCase = <ActionItem title={"Archive Supplier"}
-            touchable={!isEmpty(selectedSuppliers) ? true : false}
-            disabled={!isEmpty(selectedSuppliers) ? false : true}
-            icon={!isEmpty(selectedSuppliers) ? <ArchiveIcon /> : <ArchiveIcon strokeColor="#A0AEC0" />}
-            onPress={!isEmpty(selectedSuppliers) ? toggleConfirmArchive : () => { }} />
-        const createNewSupplier = <ActionItem title={"Add Supplier"} icon={<AddIcon />} onPress={onOpenCreateSupplier} />;
-
+        const archiveCase = (
+            <ActionItem
+                title="Archive Supplier"
+                touchable={!isEmpty(selectedSuppliers)}
+                disabled={!!isEmpty(selectedSuppliers)}
+                icon={!isEmpty(selectedSuppliers) ? <ArchiveIcon/> : <ArchiveIcon strokeColor="#A0AEC0"/>}
+                onPress={!isEmpty(selectedSuppliers) ? toggleConfirmArchive : () => {
+                }}
+            />
+        );
+        const createNewSupplier = <ActionItem title="Add Supplier" icon={<AddIcon/>} onPress={onOpenCreateSupplier}/>;
 
         return <ActionContainer
             floatingActions={[
                 archiveCase,
                 createNewSupplier
             ]}
-            title={"SUPPLIER ACTIONS"}
-        />
+            title="SUPPLIER ACTIONS"
+        />;
     };
 
     const goToArchives = () => {
-        props.navigation.navigate("ArchivedSuppliers");
-    }
+        props.navigation.navigate('ArchivedSuppliers');
+    };
 
     const onOpenCreateSupplier = () => {
         modal.closeModals('ActionContainerModal');
@@ -366,16 +366,16 @@ const Suppliers = (props) => {
                 {
                     content: <CreateSupplierDialogContainer
                         onCancel={() => setFloatingAction(false)}
-                        onCreated={(item) => handleOnItemPress(item, true)}
+                        onCreated={item => handleOnItemPress(item, true)}
                     />,
                     onClose: () => setFloatingAction(false)
-                })
-        }, 200)
-    }
+                });
+        }, 200);
+    };
 
     // ############# Prepare list data
 
-    let suppliersToDisplay = [...suppliers];
+    const suppliersToDisplay = [...suppliers];
     // suppliersToDisplay = suppliersToDisplay.slice(currentPageListMin, currentPageListMax);
 
     // ##### STYLED COMPONENTS
@@ -395,19 +395,18 @@ const Suppliers = (props) => {
         <NavPage
             isFetchingData={isFetchingData}
             onRefresh={handleDataRefresh}
-            placeholderText={"Search by Supplier"}
+            placeholderText="Search by Supplier"
             changeText={onSearchInputChange}
             inputText={searchValue}
-            routeName={"Suppliers"}
+            routeName="Suppliers"
             listData={suppliersToDisplay}
-            TopButton={() => {
-                return (
-                    <ButtonContainer>
-                        <ArchiveButton onPress={goToArchives} theme={theme}>
-                            <ArchiveButtonText >View Archive</ArchiveButtonText>
-                        </ArchiveButton>
-                    </ButtonContainer>)
-            }}
+            TopButton={() => (
+                <ButtonContainer>
+                    <ArchiveButton onPress={goToArchives} theme={theme}>
+                        <ArchiveButtonText>View Archive</ArchiveButtonText>
+                    </ArchiveButton>
+                </ButtonContainer>
+            )}
 
             listHeaders={listHeaders}
             itemsSelected={selectedSuppliers}
@@ -426,26 +425,20 @@ const Suppliers = (props) => {
             isPreviousDisabled={isPreviousDisabled}
         />
 
-    )
-}
-
-const mapStateToProps = (state) => ({
-    suppliers: state.suppliers
-});
-
-const mapDispatcherToProp = {
-    setSuppliers
+    );
 };
 
-export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Suppliers))
+const mapStateToProps = state => ({suppliers: state.suppliers});
+
+const mapDispatcherToProp = {setSuppliers};
+
+export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Suppliers));
 
 const styles = StyleSheet.create({
     item: {
         // flex:1
     },
-    itemText: {
-        fontSize: 16
-    },
+    itemText: {fontSize: 16},
     footer: {
         flex: 1,
         alignSelf: 'flex-end',
@@ -457,8 +450,8 @@ const styles = StyleSheet.create({
         marginRight: 30,
     },
     rowBorderRight: {
-        borderRightColor: "#E3E8EF",
+        borderRightColor: '#E3E8EF',
         borderRightWidth: 1,
         // marginRight: 20,
     }
-})
+});

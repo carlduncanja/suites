@@ -1,62 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator } from "react-native";
-import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import General from '../OverlayTabs/General';
-import EditableEquipmentDetails from '../OverlayTabs/EditableEquipmentDetails';
-import moment from 'moment';
-import { colors } from "../../styles";
-import { updateEquipment } from "../../api/network";
-import ConfirmationComponent from "../ConfirmationComponent";
-import { formatDate } from '../../utils/formatter';
-import BottomSheetContainer from '../common/BottomSheetContainer';
-import { PageContext } from "../../contexts/PageContext";
-import DetailsPage from "../common/DetailsPage/DetailsPage";
-import TabsContainer from "../common/Tabs/TabsContainerComponent";
-import SvgIcon from "../../../assets/SvgIcon";
+import ConfirmationComponent from "../components/ConfirmationComponent";
+import { PageContext } from "../contexts/PageContext";
+import DetailsPage from "../components/common/DetailsPage/DetailsPage";
+import TabsContainer from "../components/common/Tabs/TabsContainerComponent";
+import SvgIcon from "../../assets/SvgIcon";
 import { withModal } from 'react-native-modalfy';
+import AssignedManagmentTab from '../components/OverlayTabs/AssignedManagmentTab';
 
-function EquipmentItemPage({ route, navigation, modal }) {
+function AssignmentManagementPage({ route, navigation, modal }) {
 
-    const { equipment, info, isOpenEditable, group, onCreated } = route.params;
-    const testData = {
-        description: "In endoscopy, Fibre-optic endoscopes are pliable, highly maneuverable instruments that allow access to channels in the body.",
-        assigned: "Dr.Mansingh",
-        status: info.status,
-        supplier: 'Medical Suppliers Ltd.',
-        usage: '12 Hours',
-        availableOn: formatDate(equipment.nextAvailable, "DD/MM/YYYY")
-    }
-
+    const { assignments = [], group, name } = route.params;
 
     const currentTabs = ["Details"];
 
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [selectedEquipment, setSelectedEquipment] = useState(equipment);
-    const [isEditMode, setEditMode] = useState(isOpenEditable);
+
+    const [isEditMode, setEditMode] = useState(false);
     const [editableTab, setEditableTab] = useState('')
     const [isFetching, setFetching] = useState(false);
     const [isInfoUpdated, setIsInfoUpdated] = useState(false);
     const [pageState, setPageState] = useState({});
 
-    const {
-        // supplier id
-        _id = "",
-        name,
-        // supplier name
-        supplier,
-        assigned,
-        sku
-    } = equipment
 
 
     const [fields, setFields] = useState({
         // supplier name
-        sku: sku,
-        description: info.description,
-        status: info.status,
-        assigned: equipment?.assignments[0]?.theatre
+        sku: '',
+        description: '',
+        status: '',
+        assigned: ''
     })
 
     // ##### Lifecycle Methods
@@ -173,10 +148,7 @@ function EquipmentItemPage({ route, navigation, modal }) {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
-    const onEditPress = (tab) => {
-        setEditableTab(tab)
-        setEditMode(!isEditMode)
-    }
+
 
     const backTapped = () => {
         navigation.navigate("Equipment");
@@ -198,13 +170,8 @@ function EquipmentItemPage({ route, navigation, modal }) {
 
         switch (selectedTab) {
             case "Details":
-                return pageState.isEditMode ?
-                    <EditableEquipmentDetails
-                        fields={fields}
-                        onFieldChange={onFieldChange}
-                    />
-                    :
-                    <General equipment={selectedEquipment} updatedInfo={info} navigation={navigation} groupInfo={group} name={name} />;
+                return <AssignedManagmentTab assignments={assignments} />
+
             default:
                 return <View />
         }
@@ -219,7 +186,7 @@ function EquipmentItemPage({ route, navigation, modal }) {
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
                     hasIcon={<SvgIcon iconName='paginationNext' strokeColor="#718096" />}
-                    headerChildren={[group.name, name]}
+                    headerChildren={[group.name, name, 'Assigned']}
                     onBackPress={backTapped}
 
                     pageTabs={
@@ -237,7 +204,6 @@ function EquipmentItemPage({ route, navigation, modal }) {
     );
 }
 
-EquipmentItemPage.propTypes = {};
-EquipmentItemPage.defaultProps = {};
 
-export default withModal(EquipmentItemPage);
+
+export default withModal(AssignmentManagementPage);

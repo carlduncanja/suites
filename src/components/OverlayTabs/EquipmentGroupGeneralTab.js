@@ -74,11 +74,12 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const { description = "" } = equipmentGroup
+    const categories = equipmentGroup.categories;
     let equipmentToDisplay = [...equipments]
     let supplierToDisplay = [...suppliers]
 
     const getCategories = () => {
-        equipmentToDisplay.map(item => {
+        categories.map(item => {
             return item.category
         })
     }
@@ -146,7 +147,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
 
                 />
             </Row>
-            {/* <View style={{ width: 250, flexDirection: "row" }}>
+            <View style={{ width: 250, flexDirection: "row" }}>
                 <Row>
                     <Record
                         recordTitle="Category"
@@ -154,16 +155,17 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
                         flex={0.8}
                     />
                 </Row>
-                <Row>
-                    <Record
-                        recordTitle="Supplier"
-                        recordValue={isEmpty(getSuppliers()) ? "--" : getSuppliers()}
-                        flex={0.8}
-                        valueColor="--color-blue-600"
-                    />
-                </Row>
-            </View> */}
-            <BorderView />
+            </View>
+            <Row>
+                <Record
+                    recordTitle="Supplier"
+                    recordValue={isEmpty(getSuppliers()) ? "--" : getSuppliers()}
+                    flex={0.8}
+                    valueColor="--color-blue-600"
+                />
+            </Row>
+
+            {/* <BorderView />
 
             <HeaderView theme={theme}>
                 <>
@@ -174,7 +176,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
 
             </HeaderView>
             {/* <TableBorderView theme={theme}> */}
-
+            {/* 
             {equipmentToDisplay.map((item, index) => {
 
                 return (
@@ -195,7 +197,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
 
                 )
 
-            })}
+            })} */}
             <Footer
                 hasActionButton={true}
                 hasPaginator={false}
