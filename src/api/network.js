@@ -200,7 +200,8 @@ export const createInventoryVariant = async (referenceId, itemToCreate) => suite
     .then(handleResponse)
     .catch(handleError);
 
-export const createTransfer = async (groupId, variantId, transferData) => suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
+export const createTransfer = async (groupId, variantId, transferData) => 
+    suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
     .then(handleResponse)
     .catch(handleError);
 
