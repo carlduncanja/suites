@@ -28,7 +28,7 @@ font:${({ theme }) => theme.font["--text-base-regular"]};
 const InputWrapper = styled.View`
 height:30px;
 width:250px;
-margin-top:5px;
+margin-top:10px;
 
 `
 const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popoverList, modal }) => {
@@ -168,97 +168,62 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
             behavior={'padding'}
         >
             <View style={{ width: 600, alignSelf: "center", }}>
-                <View style={{ width: "100%", flexDirection: "column", marginBottom: 20 }}>
+                <View style={{ width: "100%", flexDirection: "column", marginBottom: 30 }}>
                     <>
 
+                        <View style={{ height: 220, width: 620, marginBottom: 20 }}>
+                            <Row>
+                                <LabelText theme={theme}>Description</LabelText>
+                            </Row>
+                            <TextArea
+                                value={fields['description']}
+                                onChangeText={onFieldChange('description')}
+                                onClear={() => onFieldChange('description')('')}
+                                multiline={true}
+                                numberOfLines={4}
+                            />
+                        </View>
 
                         <Row>
-                            <InputWrapper>
-                                <InputField2
-                                    label="Equipment"
-                                    value={""}
-                                    labelWidth={80}
-                                    placeholder={fields['name']}
-                                    enabled={true}
-                                    editable={enabled}
-                                />
-                            </InputWrapper>
 
-                            <InputWrapper>
+                            <MultipleSelectionsField
+                                disabled={false}
+                                createNew={createCategory}
+                                label={"Category"}
+                                onOptionsSelected={onFieldChange('category')}
+                                options={categorySearchResults}
+                                searchText={categorySearchValue}
+                                onSearchChangeText={(value) => setCategorySearchValue(value)}
+                                onClear={() => { setCategorySearchValue('') }}
+                                handlePopovers={(value) => handlePopovers(value)('category')}
+                                isPopoverOpen={catPop[0].status}
+                            />
 
-                                <MultipleSelectionsField
-                                    disabled={false}
-                                    createNew={createCategory}
-                                    label={"Category"}
-                                    onOptionsSelected={onFieldChange('category')}
-                                    options={categorySearchResults}
-                                    searchText={categorySearchValue}
-                                    onSearchChangeText={(value) => setCategorySearchValue(value)}
-                                    onClear={() => { setCategorySearchValue('') }}
-                                    handlePopovers={(value) => handlePopovers(value)('category')}
-                                    isPopoverOpen={catPop[0].status}
-                                />
-                            </InputWrapper>
                         </Row>
                         <Row>
 
                             <InputWrapper>
                                 <InputField2
                                     label="SKU"
-                                    value={""}
-                                    labelWidth={30}
-                                    placeholder={fields['sku']}
-                                    enabled={false}
-                                    editable={enabled}
+                                    value={fields['sku']}
+                                    labelWidth={98}
+                                    onChangeText={onFieldChange('sku')}
+                                    enabled={true}
                                 />
                             </InputWrapper>
 
-
-
-
                             <InputWrapper>
-
                                 <InputField2
-                                    label="Assigned"
-                                    value={fields['assigned']}
-                                    labelWidth={30}
-                                    placeholder={"--"}
+                                    label="Name"
+                                    value={fields['name']}
+                                    labelWidth={98}
+                                    onChangeText={onFieldChange('name')}
                                     enabled={true}
-
                                 />
                             </InputWrapper>
 
                         </Row>
-                        <Row>
-                            <InputWrapper>
 
-                                <OptionsField
-                                    label="Status"
-                                    key={fields['status']}
-                                    text={fields['status']}
-                                    oneOptionsSelected={onFieldChange('Status')}
-                                    menuOption={<MenuOptions>
-                                        <MenuOption value={"Available"} text='Available' />
-                                        <MenuOption value={"Servicing"} text='Servicing' />
-                                        <MenuOption value={"Damaged"} text='Damaged' />
-                                        <MenuOption value={"In Use"} text='In Use' />
-                                    </MenuOptions>}
-
-                                />
-                            </InputWrapper>
-
-                            <InputWrapper>
-
-                                <InputField2
-                                    label="Supplier"
-                                    value={""}
-                                    labelWidth={30}
-                                    placeholder={"--"}
-                                    enabled={true}
-
-                                />
-                            </InputWrapper>
-                        </Row>
 
 
 
@@ -269,7 +234,6 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                     </>
 
                 </View>
-                <Divider />
             </View>
         </KeyboardAvoidingView>
 
