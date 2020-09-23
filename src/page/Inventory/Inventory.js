@@ -338,7 +338,9 @@ function Inventory(props) {
             <ActionItem
                 title={"Item Transfer"}
                 icon={<TransferIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}/>}
-                onPress={() => handleTransferItems()}
+                onPress={() => {
+                    // handleTransferItems()
+                }}
                 disabled = {isDisabled}
                 touchable={!isDisabled}
             />
