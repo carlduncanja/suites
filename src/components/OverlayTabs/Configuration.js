@@ -1,20 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import Record from '../common/Information Record/Record';
 import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
 import ColumnSection from '../common/ColumnSection';
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
+import {MenuOption, MenuOptions} from "react-native-popup-menu";
 
-import { withModal } from "react-native-modalfy";
+import { withModal, useModal } from "react-native-modalfy";
+import { getPhysicians, updateProcedure } from "../../api/network";
+import _ from "lodash"; 
+import Row from '../common/Row';
+import TextArea from '../common/Input Fields/TextArea';
+import { PageContext } from '../../contexts/PageContext';
 
-const Configuration = ({procedure, modal}) => {
+const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
+
+    const { pageState, setPageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
+
+    const baseStateRef = useRef();
+    const modal = useModal();
+
+    console.log("Fields: ", fields);
 
     const { 
         name, 
         duration, 
         hasRecovery, 
-        custom, 
+        custom = false, 
         physician={}, 
         description
     } = procedure 
@@ -23,48 +37,210 @@ const Configuration = ({procedure, modal}) => {
         firstName = "", 
         surname = ""
     } =  physician
+
+    const BOOLOBJECT = {
+        false : 'No',
+        true : 'Yes'
+    }
     
-    const recovery = hasRecovery ? "Yes" : "No"
-    const customStatus  = "Yes"
-    const physicianName = `Dr. ${firstName} ${surname}`
+    const [searchValue, setSearchValue] = useState("")
+    const [searchResults, setSearchResults] = useState([])
+    const [searchQuery, setSearchQuery] = useState({});
 
-    const procedureName = <Record 
-        recordTitle = {"Procedure"}
-        recordValue = {name}
-    />
+    useEffect(() => {
 
-    const recoveryRecord = <Record
-        recordTitle = {"Recovery"}
-        recordValue = {recovery}
-    />
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResults([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
 
-    const durationRecord = <Record
-        recordTitle = {"Duration"}
-        recordValue = {`${duration} hours`}
-    />
+        // wait 300ms before search. cancel any prev request before executing current.
 
-    const customRecord = <Record
-        recordTitle = {"Custom"}
-        recordValue = {customStatus}
-    />
+        const search = _.debounce(fetchPhysician, 300);
 
-    const assignedRecord = <ResponsiveRecord
-        recordTitle = {"Assigned to"}
-        recordValue = {physicianName}
-        handleRecordPress = {()=>{}}
-    />
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
 
-    const section = [
-        procedureName,
-        recoveryRecord,
-        durationRecord,
-        customRecord,
-        assignedRecord
-    ]
+        search()
+    }, [searchValue]);
+
+    const fetchPhysician = () => {
+        getPhysicians(searchValue, 5)
+            .then(physicianResults => {
+                const { data = [], pages = 0 } = physicianResults;
+                const refinedResults = data.map(item => ({
+                    name: `Dr. ${item.firstName} ${item.surname}`,
+                    ...item
+                }));
+                setSearchResults(refinedResults || []);
+            })
+            .catch(error => {
+                // TODO handle error
+                // console.log("failed to get theatres");
+                setSearchResults([]);
+            })
+    };
+
+    const [isUpdated, setUpdated] = useState(false);
+
+    const recovery = BOOLOBJECT[fields['hasRecovery']];
+    const customStatus  = BOOLOBJECT[fields['custom']];
+    const physicianName = `Dr. ${fields['physician']?.firstName} ${fields['physician']?.surname}`
+    // console.log("Phys name:", physician);
+
+    // const onFieldChange = (fieldName) => (value) => {
+    //     setFields({
+    //         ...fields,
+    //         [fieldName]: value
+    //     })
+    //     setUpdated(true)
+    // };
+
+    useEffect(() => {
+        baseStateRef.current = {
+            description,
+            name,
+            duration,
+            hasRecovery,
+            custom,
+            physician
+        }
+        return () => {
+            baseStateRef.current = {}
+        }
+    }, [])
+
+    // useEffect(() => {
+    //     if (isUpdated && !isEditMode) {
+    //         modal.openModal('ConfirmationModal', {
+    //             content: (
+    //                 <ConfirmationComponent
+    //                     error={false}//boolean to show whether an error icon or success icon
+    //                     isEditUpdate={true}
+    //                     onCancel={() => {
+    //                         // resetState()
+    //                         setPageState({...pageState, isEditMode: true})
+    //                         modal.closeAllModals();
+    //                     }}
+    //                     onAction={() => {
+    //                         modal.closeAllModals();
+    //                         updateProcedure();
+    //                     }}
+    //                     message="Do you want to save these changes?"//general message you can send to be displayed
+    //                     action="Yes"
+    //                 />
+    //             ),
+    //             onClose: () => {
+    //                 console.log('Modal closed');
+    //             },
+    //         });
+    //     }
+    // },[isEditMode])
+
+    const resetState = () => {
+        setFields(baseStateRef.current);
+        // setUpdated(false);
+    }
+
+    // const updateProcedure = () => {
+    //     console.log("Update procedure: ", fields)
+    // }
+
 
     return (
         <>
-            <View style={styles.description}>
+            <Row>
+                <Record
+                    recordTitle = {'Description'}
+                    recordValue = {fields['description']}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    useTextArea = {true}
+                    onRecordUpdate = {onFieldChange('description')}
+                    onClearValue = {()=>{onFieldChange('description')('')}}
+                />
+            </Row>
+
+            <Row>
+                <Record 
+                    recordTitle = {"Procedure"}
+                    recordValue = {fields['name']}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    onRecordUpdate = {onFieldChange('name')}
+                    onClearValue = {()=>{onFieldChange('name')('')}}
+                />
+
+                <Record
+                    recordTitle = {"Recovery"}
+                    recordValue = {recovery}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    useDropdown = {true}
+                    options = {<MenuOptions>
+                        <MenuOption value={true} text={"Yes"}/>
+                        <MenuOption value={false} text={"No"}/>
+                    </MenuOptions>}
+                    onRecordUpdate = {onFieldChange('hasRecovery')}
+                />
+
+                <Record
+                    recordTitle = {"Duration"}
+                    recordValue = { isEditMode ? fields['duration'].toString() : `${duration} hours`}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    onRecordUpdate = {(value)=>{
+                        if (/^\d+$/g.test(value) || !value) {
+                            onFieldChange('duration')(value)
+                        }
+                    }}
+                    onClearValue = {()=>{onFieldChange('duration')('')}}
+                />
+            </Row>
+
+            <Row>
+                <Record
+                    recordTitle = {"Custom"}
+                    recordValue = {customStatus}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    useDropdown = {true}
+                    options = {<MenuOptions>
+                        <MenuOption value={true} text={"Yes"}/>
+                        <MenuOption value={false} text={"No"}/>
+                    </MenuOptions>}
+                    onRecordUpdate = {onFieldChange('custom')}
+
+                />
+
+                <Record
+                    recordTitle = {"Assigned to"}
+                    recordValue = {isEditMode ? fields['physician'] : physicianName}
+                    valueColor = "--color-blue-600"
+                    editMode = {isEditMode}
+                    editable = {true}
+                    useSearchable = {true}
+                    searchQuery = {searchQuery}
+                    searchResults = {searchResults}
+                    searchText = {searchValue}
+                    onRecordUpdate = {onFieldChange('physician')}
+                    onClearValue = {()=>{onFieldChange('physician')(''); setSearchValue('')}}
+                    onSearchChange = {(value)=>setSearchValue(value)}
+                />
+
+                <Record
+                    recordValue = " "
+                />
+
+            </Row>
+
+            {/* <View style={styles.description}>
                 <Text style={{fontSize:16, color:'#718096', paddingBottom:10}}>Description</Text>
                 {
                     description ?
@@ -80,14 +256,14 @@ const Configuration = ({procedure, modal}) => {
                     numOfColumns = {3}
                 />
             </View>
-            {/* <View style={{marginTop:15}}>
+            <View style={{marginTop:15}}>
                 <Text style={{color:'#718096', fontSize:16 }}>This Procedure is available at these Locations</Text>
-            </View> */}
+            </View>  */}
         </>
-    )
+    ) 
 }
 
-export default withModal(Configuration)
+export default Configuration
 
 const styles = StyleSheet.create({
     container:{

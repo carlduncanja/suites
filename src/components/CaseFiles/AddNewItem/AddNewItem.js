@@ -97,7 +97,7 @@ const PaginatorContainer = styled.View`
 const Description  = styled.Text( ({theme}) => ({
     ...theme.font['--text-base-regular'],
     color : theme.colors['--color-gray-700'],
-}));
+})); 
 
 
 function AddNewItem({itemToAdd}){

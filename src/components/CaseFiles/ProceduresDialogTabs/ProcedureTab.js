@@ -14,7 +14,7 @@ import {useTheme} from "emotion-theming";
 import InputUnitField from "../../common/Input Fields/InputUnitFields";
 
 const Space = styled.View`
-   width:  ${({theme}) => theme.space['--space-24']}
+   width:  ${({theme}) => theme.space['--space-24']};
 `;
 
 const RowWrapper = styled.View`
