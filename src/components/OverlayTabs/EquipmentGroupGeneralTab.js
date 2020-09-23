@@ -74,7 +74,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const { description = "" } = equipmentGroup
-    const categories = equipmentGroup.categories;
+    const categories = equipmentGroup?.categories || [];
     let equipmentToDisplay = [...equipments]
     let supplierToDisplay = [...suppliers]
 

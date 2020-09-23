@@ -6,14 +6,14 @@ import DetailsPage from '../components/common/DetailsPage/DetailsPage';
 import TabsContainerComponent from '../components/common/Tabs/TabsContainerComponent';
 import { getEquipmentTypeById } from '../api/network';
 import EquipmentGroupGeneralTab from '../components/OverlayTabs/EquipmentGroupGeneralTab';
-import { Modal } from 'react-native-paper';
 import { useTheme } from 'emotion-theming';
 import EditableEquipmentGroupTab from '../components/OverlayTabs/EditableEquipmentGroupTab';
 
 function EquipmentGroupDetailsPage(props) {
     const theme = useTheme();
+    const modal = props.modal;
     const { data = {}, onCreated = () => { } } = props.route.params;
-    const { name = "", _id = "", equipments = [], suppliers = [], categories } = data
+    const { name = "", _id = "", equipments = [], suppliers = [], description = '', categories = [] } = data
     const tabs = ["Details"];
     const [currentTab, setCurrentTab] = useState(tabs[0]);
     const [pageState, setPageState] = useState({});
@@ -35,13 +35,13 @@ function EquipmentGroupDetailsPage(props) {
 
     const [fields, setFields] = useState({
         name: name,
+        description: description,
         sku: equipments[0].sku,
         supplier: suppliers,
         quantity: equipments.length,
         categories: categories,
     })
 
-    console.log("What is in fileds ?", fields);
 
 
 

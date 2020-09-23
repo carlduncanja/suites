@@ -22,7 +22,7 @@ import { useTheme } from 'emotion-theming';
 const InputWrapper = styled.View`
 height:30px;
 width:230px;
-margin:40px;
+margin:30px;
 
 `
 
@@ -118,7 +118,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
 
 
     const handleQuantityValidation = (value) => {
-        !isNaN(value) ? onFieldChange('Quantity')(value) : ""
+        !isNaN(value) && value > 0 ? onFieldChange('Quantity')(value) : ""
     }
     return (
         <>
@@ -127,7 +127,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <InputField2
                             value=""
-                            labelWidth={30}
+                            labelWidth={98}
                             placeholder={equipmentDetails?.name}
                             label="Equipment"
                             enabled={false}
@@ -137,7 +137,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <InputField2
                             value={""}
-                            labelWidth={30}
+                            labelWidth={98}
                             placeholder={isEmpty(equipmentDetails?.categories[0]) ? "--" : equipmentDetails.categories[0]}
                             label="Category"
                             enabled={false}
@@ -148,7 +148,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <OptionsField
                             key={data['Assignment']}
-                            labelWidth={50}
+                            labelWidth={98}
                             label="Assignment"
                             text={data['Assignment']}
                             oneOptionsSelected={onFieldChange('Assignment')}
@@ -164,7 +164,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                         <InputField2
                             key={data['Quantity']}
                             value={data['Quantity']}
-                            labelWidth={30}
+                            labelWidth={98}
                             onChangeText={(value) => { handleQuantityValidation(value) }}
                             onFieldChange={onFieldChange('Quantity')}
                             onClear={() => onFieldChange('Quantity')('')}
@@ -177,7 +177,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <SearchableOptionsField
                             label="Assigned"
-                            labelWidth={30}
+                            labelWidth={98}
                             value={data['Assignment'] === "Location" ? locations : physcians}
                             text={searchValue}
                             oneOptionsSelected={(value) => {
@@ -202,7 +202,9 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     </InputWrapper>
                     <InputWrapper>
                         <OptionsField
+                            labelWidth={98}
                             key={data['Status']}
+                            enabled={false}
                             label="Status"
                             text={data['Status']}
                             oneOptionsSelected={onFieldChange('Status')}
