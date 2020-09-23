@@ -237,45 +237,45 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
         console.log("Variant id: ",variant?._id);
         console.log("Dta: ", transferToCreate);
 
-        // createTransfer(inventoryGroup?._id, variant?._id, transferToCreate)
-        //     .then(data => {
-        //         modal.closeAllModals();
-        //         modal.openModal(
-        //             'ConfirmationModal',
-        //             {
-        //                 content: <ConfirmationComponent
-        //                     isEditUpdate = {false}
-        //                     isError = {false}
-        //                     onCancel = {()=> modal.closeAllModals()}
-        //                     onAction = {()=> modal.closeAllModals()}
-        //                 />
-        //                 ,
-        //                 onClose: () => {modal.closeModals('ConfirmationModal')} 
-        //             })
-        //         // Alert.alert("Success","The transfer is successful.")
-        //         setTimeout(() => {
-        //             onCreated(data)
-        //         }, 400);
-        //     })
-        //     .catch(error => {
-        //         // todo handle error
-        //         console.log("failed to create transfer", error);
-        //         modal.openModal(
-        //             'ConfirmationModal',
-        //             {
-        //                 content: <ConfirmationComponent
-        //                     isEditUpdate = {false}
-        //                     isError = {true}
-        //                     onCancel = {()=> {modal.closeAllModals()}}
-        //                     onAction = {()=> modal.closeAllModals()}
-        //                     message = "There was an issue performing this action"
-        //                 />
-        //                 ,
-        //                 onClose: () => {modal.closeModals('ConfirmationModal')} 
-        //             })
-        //         // Alert.alert("Failed", "Failed to create a transfer")
-        //     })
-        //     .finally()
+        createTransfer(inventoryGroup?._id, variant?._id, transferToCreate)
+            .then(data => {
+                modal.closeAllModals();
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {false}
+                            onCancel = {()=> modal.closeAllModals()}
+                            onAction = {()=> modal.closeAllModals()}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+                // Alert.alert("Success","The transfer is successful.")
+                setTimeout(() => {
+                    onCreated(data)
+                }, 400);
+            })
+            .catch(error => {
+                // todo handle error
+                console.log("failed to create transfer", error);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onCancel = {()=> {modal.closeAllModals()}}
+                            onAction = {()=> modal.closeAllModals()}
+                            message = "There was an issue performing this action"
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+                // Alert.alert("Failed", "Failed to create a transfer")
+            })
+            .finally()
     
         };
 
