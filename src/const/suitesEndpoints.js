@@ -64,7 +64,7 @@ export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/pro
 // ##### STORAGE
 export const storageLocationsEndpoint = '/storage-locations';
 export const storageLocationEndpoint = id => `/storage-locations/${id}`;
-
+ 
 // ##### SUPPLIERS
 export const suppliersEndpoint = '/suppliers';
 export const supplierEndpoint = id => `/suppliers/${id}`;
@@ -80,6 +80,7 @@ export const purchaseOrderEndpoint = id => `/purchase_orders/${id}`;
 export const createOrderInvoice = id => `/purchase_orders/${id}/invoice`;
 export const updatePurchaseOrderStatusEndpoint = id => `/purchase_orders/${id}/status`;
 export const updatePurchaseOrderEndpoint = id => `/purchase_orders/${id}/orders`;
+export const updatePurchaseOrderDetailsEndpoint = id => `/purchase_orders/${id}`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/items';

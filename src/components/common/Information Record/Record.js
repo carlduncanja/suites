@@ -8,6 +8,7 @@ import DateInputField from '../Input Fields/DateInputField';
 import OptionsField from '../Input Fields/OptionsField';
 import SearchableOptionsField from '../Input Fields/SearchableOptionsField';
 import {MenuOption, MenuOptions} from "react-native-popup-menu";
+import { formatDate } from '../../../utils/formatter';
 
 const RecordWrapper = styled.View`
     flex:${({flex}) => flex.toString()};
@@ -116,10 +117,10 @@ function Record({
                             borderColor = "--color-gray-400"
                             minDate = {minDate}
                             onDateChange = {onRecordUpdate}
-                            value={recordValue}
+                            value={formatDate(recordValue,"DD/MM/YYYY")}
                             onClear={onClearValue}
                             mode={"date"}
-                            format={"MM/DD/YYYY"}
+                            format={"DD/MM/YYYY"}
                         />
                     </DateWrapper>
                     

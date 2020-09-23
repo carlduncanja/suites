@@ -49,7 +49,7 @@ align-self:center;
 align-items:center;
 justify-self:flex-end;
 justify-content:center;
-background-color:${({ theme }) => theme.colors["--color-blue-500"]}
+background-color:${({ theme }) => theme.colors["--color-blue-500"]};
 `;
 
 const DoneButtonText = styled.Text`

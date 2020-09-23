@@ -8,7 +8,7 @@ import { formatAmount } from "../../helpers/caseFilesHelpers";
 import { transformToSentence } from "../../hooks/useTextEditHook";
 import DateInputField from '../common/Input Fields/DateInputField';
 import LineDivider from "../common/LineDivider";
-import styled, {css} from '@emotion/native';
+import styled, {css} from '@emotion/native'; 
 import {useTheme} from 'emotion-theming'; 
 import { PageContext } from "../../contexts/PageContext";
 import ConfirmationComponent from '../ConfirmationComponent';
@@ -24,7 +24,7 @@ const LineDividerContainer = styled.View`
 
 
 
-const OrderDetailsTab = ({order = {}, onUpdate }) =>{ 
+const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=>{} }) =>{ 
 
     const theme = useTheme();
     const modal = useModal();
@@ -56,21 +56,16 @@ const OrderDetailsTab = ({order = {}, onUpdate }) =>{
     const { description = "", representatives = [] } = supplier;
     const { name = "" } = storageLocation;
 
-    const [fields, setFields] = useState({
-        description,
-        deliveryDate
-    });
-    console.log("DELIVERY: ", fields);
     const [isUpdated, setUpdated] = useState(false)
 
-    const onFieldChange = (fieldName) => (value) => {
-        setFields({
-            ...fields,
-            [fieldName]: value
-        })
-        setUpdated(true)
-        console.log("Field name and value: ", fieldName, value);
-    };
+    // const onFieldChange = (fieldName) => (value) => {
+    //     setFields({
+    //         ...fields,
+    //         [fieldName]: value
+    //     })
+    //     setUpdated(true)
+    //     console.log("Field name and value: ", fieldName, value);
+    // };
 
     useEffect(() => {
         baseStateRef.current = {
@@ -82,98 +77,98 @@ const OrderDetailsTab = ({order = {}, onUpdate }) =>{
         }
     }, []);
 
-    useEffect(() => {
-        if (isUpdated && !isEditMode) {
-            modal.openModal('ConfirmationModal', {
-                content: (
-                    <ConfirmationComponent
-                        error={false}//boolean to show whether an error icon or success icon
-                        isEditUpdate={true}
-                        onCancel={() => {
-                            // resetState()
-                            setPageState({...pageState, isEditMode: true})
-                            modal.closeAllModals();
-                        }}
-                        onAction={() => {
-                            modal.closeAllModals();
-                            updatePO();
-                        }}
-                        message="Do you want to save changes?"//general message you can send to be displayed
-                        action="Yes"
-                    />
-                ),
-                onClose: () => {
-                    console.log('Modal closed');
-                },
-            });
-        }
-    },[isEditMode])
+    // useEffect(() => {
+    //     if (isUpdated && !isEditMode) {
+    //         modal.openModal('ConfirmationModal', {
+    //             content: (
+    //                 <ConfirmationComponent
+    //                     error={false}//boolean to show whether an error icon or success icon
+    //                     isEditUpdate={true}
+    //                     onCancel={() => {
+    //                         // resetState()
+    //                         setPageState({...pageState, isEditMode: true})
+    //                         modal.closeAllModals();
+    //                     }}
+    //                     onAction={() => {
+    //                         modal.closeAllModals();
+    //                         updatePO();
+    //                     }}
+    //                     message="Do you want to save changes?"//general message you can send to be displayed
+    //                     action="Yes"
+    //                 />
+    //             ),
+    //             onClose: () => {
+    //                 console.log('Modal closed');
+    //             },
+    //         });
+    //     }
+    // },[isEditMode])
 
     const resetState = () => {
         setFields(baseStateRef.current);
         setUpdated(false);
     };
 
-    const updatePO = () =>{
-        const data = {
-            ...order,
-            description : fields['description'],
-            deliveryDate : fields['deliveryDate'],
-        };
+    // const updatePO = () =>{
+    //     const data = {
+    //         ...order,
+    //         description : fields['description'],
+    //         deliveryDate : fields['deliveryDate'],
+    //     };
 
-        console.log("Data: ", order?._id, data);
+    //     console.log("Data: ", order?._id, data);
 
-        // updatePurchaseOrder(order?._id, data)
-        //     .then( _ => {
-        //         console.log("Updated: ")
-        //         onUpdate()
-        //         modal.openModal('ConfirmationModal', {
-        //             content: (
-        //                 <ConfirmationComponent
-        //                     error={false}//boolean to show whether an error icon or success icon
-        //                     isEditUpdate={false}
-        //                     onCancel={() => {
-        //                         modal.closeAllModals();
-        //                     }}
-        //                     onAction={() => {
-        //                         modal.closeAllModals();
-        //                     }}
-        //                     message="Changes were successful."//general message you can send to be displayed
-        //                     action="Yes"
-        //                 />
-        //             ),
-        //             onClose: () => {
-        //                 console.log('Modal closed');
-        //             },
-        //         });
-        //     })
-        //     .catch(error => {
-        //         console.log("Failed to update order", error)
-        //         modal.openModal('ConfirmationModal', {
-        //             content: (
-        //                 <ConfirmationComponent
-        //                     error={true}//boolean to show whether an error icon or success icon
-        //                     isEditUpdate={false}
-        //                     onCancel={() => {
-        //                         modal.closeAllModals();
-        //                     }}
-        //                     onAction={() => {
-        //                         modal.closeAllModals();
-        //                         resetState()
-        //                     }}
-        //                     message="Something went wrong when applying changes."//general message you can send to be displayed
-        //                     action="Yes"
-        //                 />
-        //             ),
-        //             onClose: () => {
-        //                 console.log('Modal closed');
-        //             },
-        //         });
-        //     })
-        //     .finally(_ => {
-        //         // setLoading(false)
-        //     })
-    }
+    //     // updatePurchaseOrder(order?._id, data)
+    //     //     .then( _ => {
+    //     //         console.log("Updated: ")
+    //     //         onUpdate()
+    //     //         modal.openModal('ConfirmationModal', {
+    //     //             content: (
+    //     //                 <ConfirmationComponent
+    //     //                     error={false}//boolean to show whether an error icon or success icon
+    //     //                     isEditUpdate={false}
+    //     //                     onCancel={() => {
+    //     //                         modal.closeAllModals();
+    //     //                     }}
+    //     //                     onAction={() => {
+    //     //                         modal.closeAllModals();
+    //     //                     }}
+    //     //                     message="Changes were successful."//general message you can send to be displayed
+    //     //                     action="Yes"
+    //     //                 />
+    //     //             ),
+    //     //             onClose: () => {
+    //     //                 console.log('Modal closed');
+    //     //             },
+    //     //         });
+    //     //     })
+    //     //     .catch(error => {
+    //     //         console.log("Failed to update order", error)
+    //     //         modal.openModal('ConfirmationModal', {
+    //     //             content: (
+    //     //                 <ConfirmationComponent
+    //     //                     error={true}//boolean to show whether an error icon or success icon
+    //     //                     isEditUpdate={false}
+    //     //                     onCancel={() => {
+    //     //                         modal.closeAllModals();
+    //     //                     }}
+    //     //                     onAction={() => {
+    //     //                         modal.closeAllModals();
+    //     //                         resetState()
+    //     //                     }}
+    //     //                     message="Something went wrong when applying changes."//general message you can send to be displayed
+    //     //                     action="Yes"
+    //     //                 />
+    //     //             ),
+    //     //             onClose: () => {
+    //     //                 console.log('Modal closed');
+    //     //             },
+    //     //         });
+    //     //     })
+    //     //     .finally(_ => {
+    //     //         // setLoading(false)
+    //     //     })
+    // }
 
     return (
         <>
@@ -222,7 +217,7 @@ const OrderDetailsTab = ({order = {}, onUpdate }) =>{
                     editable = {true}
                     useDateField = {true}
                     onClearValue = {()=>{onFieldChange('deliveryDate')('')}}
-                    onRecordUpdate = {(date)=>{onFieldChange('deliveryDate')(date); console.log("New date: ", date)}}
+                    onRecordUpdate = {(date)=>{onFieldChange('deliveryDate')(date) }}
                />
 
                 <ResponsiveRecord
