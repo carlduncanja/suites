@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
+import {withModal} from 'react-native-modalfy';
+import {connect} from 'react-redux';
+import _ from 'lodash';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import {useNavigation} from '@react-navigation/native';
 import Table from '../common/Table/Table';
 import Search from '../common/Search';
 import Item from '../common/Table/Item';
@@ -7,30 +13,23 @@ import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import FloatingActionAnnotated from '../common/FloatingAction/FloatingActionAnnotated';
 import SuppliersPurchaseOrder from '../Suppliers/SuppliersPurchaseOrder';
-import CreatePurchaseOrderDialog from "../Suppliers/CreatePurchaseOrderDialog";
-import CreateInventoryDialogContainer from "../Inventory/CreateInventoryDialogContainer";
-import DataItem from "../common/List/DataItem";
-import ActionContainer from "../common/FloatingAction/ActionContainer";
+import CreatePurchaseOrderDialog from '../Suppliers/CreatePurchaseOrderDialog';
+import CreateInventoryDialogContainer from '../Inventory/CreateInventoryDialogContainer';
+import DataItem from '../common/List/DataItem';
+import ActionContainer from '../common/FloatingAction/ActionContainer';
 import ConfirmationComponent from '../ConfirmationComponent';
 
 import Cart from '../../../assets/svg/cart';
-import ActionItem from "../common/ActionItem";
-import AddIcon from "../../../assets/svg/addIcon";
+import ActionItem from '../common/ActionItem';
+import AddIcon from '../../../assets/svg/addIcon';
 
-import { currencyFormatter } from "../../utils/formatter";
-import { withModal } from 'react-native-modalfy';
-import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
-import { getSupplierProducts, createPurchaseOrder } from "../../api/network";
-import { addCartItem } from "../../redux/actions/cartActions";
-import { connect } from "react-redux";
-import _ from "lodash";
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
-import { useNavigation } from '@react-navigation/native';
-
+import {currencyFormatter} from '../../utils/formatter';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import {getSupplierProducts, createPurchaseOrder} from '../../api/network';
+import {addCartItem} from '../../redux/actions/cartActions';
 
 const SearchContainer = styled.View`
-    margin-bottom : ${ ({ theme }) => theme.space['--space-20']};
+    margin-bottom : ${({theme}) => theme.space['--space-20']};
 `;
 
 const FooterWrapper = styled.View`
@@ -51,67 +50,64 @@ const PaginatorActionsContainer = styled.View`
     justify-content : space-between;
     align-items : center;
     flex-direction : row;
-`
+`;
 
-
-function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false, onProductsCreated }) {
-
+function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false, onProductsCreated}) {
     // ######## STATES
-    console.log("Cart: ", cart)
+    console.log('Cart: ', cart);
     const theme = useTheme();
     const navigation = useNavigation();
 
-
-    const [checkBoxList, setCheckBoxList] = useState([])
+    const [checkBoxList, setCheckBoxList] = useState([]);
     const [isFetching, setFetching] = useState(false);
     const [hasActionButton, setHasActionButton] = useState(!isArchive);
 
     const recordsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
-    const [currentPageListMin, setCurrentPageListMin] = useState(0)
-    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
-    const [currentPagePosition, setCurrentPagePosition] = useState(1)
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
     const [tabDetails, setTabDetails] = useState([]);
 
-    const [isFloatingActionDisabled, setFloatingAction] = useState(false)
-    const [cartTotal, setCartTotal] = useState(cart.length)
-    const [cartItems, setCartItems] = useState([])
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+    const [cartTotal, setCartTotal] = useState(cart.length);
+    const [cartItems, setCartItems] = useState([]);
 
     // ######## CONST
 
     const headers = [
         {
-            name: "Product",
-            alignment: "flex-start",
+            name: 'Product',
+            alignment: 'flex-start',
             flex: 2
         },
         {
-            name: "Reference",
-            alignment: "flex-start"
+            name: 'Reference',
+            alignment: 'flex-start'
         },
         {
-            name: "SKU",
-            alignment: "center"
+            name: 'SKU',
+            alignment: 'center'
         },
         {
-            name: "Price",
-            alignment: "flex-end"
+            name: 'Price',
+            alignment: 'flex-end'
         }
-    ]
+    ];
 
     // ######## LIFECYCLE METHODS
 
     useEffect(() => {
         setTimeout(() => {
-            setCartItems(cart)
+            setCartItems(cart);
             // onUpdateItems(cart);
-            setTotalPages(Math.ceil(products.length / recordsPerPage))
-        }, 200)
-    }, [])
+            setTotalPages(Math.ceil(products.length / recordsPerPage));
+        }, 200);
+    }, []);
 
     // useEffect(() => {
     //     // if (!products.length) fetchProducts()
@@ -120,20 +116,20 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
     // ######## EVENT HANDLERS
 
-    const onProductsPress = (productItem) => () => {
+    const onProductsPress = productItem => () => {
         // open product page.
-        modal.closeModals('ActionContainerModal')
-        setFloatingAction(true)
-        navigation.navigate("SupplierProductPage", {product: productItem} )
-    }
+        modal.closeModals('ActionContainerModal');
+        setFloatingAction(true);
+        navigation.navigate('SupplierProductPage', {product: productItem});
+    };
 
-    const onSearchChange = (input) => {
-        setSearchValue(input)
-    }
+    const onSearchChange = input => {
+        setSearchValue(input);
+    };
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -143,48 +139,47 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
     };
 
-    const toggleCheckbox = (item) => () => {
-        let updatedCases = [...checkBoxList];
+    const toggleCheckbox = item => () => {
+        let checkedItems = [...checkBoxList];
 
-        if (updatedCases.includes(item)) {
-            updatedCases = updatedCases.filter(caseItem => caseItem !== item)
+        if (checkedItems.includes(item)) {
+            checkedItems = checkedItems.filter(caseItem => caseItem !== item);
         } else {
-            updatedCases.push(item);
+            checkedItems.push(item);
         }
-        setCheckBoxList(updatedCases);
-    }
+        setCheckBoxList(checkedItems);
+    };
 
     const toggleHeaderCheckbox = () => {
         const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
 
         if (indeterminate) {
-            const selectedAllIds = [...tabDetails.map(item => item)]
-            setCheckBoxList(selectedAllIds)
+            const selectedAllIds = [...tabDetails.map(item => item)];
+            setCheckBoxList(selectedAllIds);
         } else {
-            setCheckBoxList([])
+            setCheckBoxList([]);
         }
-    }
+    };
 
     const toggleActionButton = () => {
-        setFloatingAction(true)
-        modal.openModal("ActionContainerModal",
+        setFloatingAction(true);
+        modal.openModal('ActionContainerModal',
             {
                 actions: actions(),
-                title: "SUPPLIER ACTIONS",
+                title: 'SUPPLIER ACTIONS',
                 onClose: () => {
-                    setFloatingAction(false)
+                    setFloatingAction(false);
                 },
-            })
-    }
+            });
+    };
 
     const toggleCartActionButton = () => {
-
         setTimeout(() => {
             modal.openModal('OverlayInfoModal', {
                 overlayContent: <SuppliersPurchaseOrder
@@ -193,50 +188,50 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                     onClearPress={onClearPress}
                     onListFooterPress={onConfirmChanges}
                 />,
-            })
-        }, 200)
-    }
+            });
+        }, 200);
+    };
 
     const onClearPress = () => {
         // setCartItems([])
         // updateCartItems([])
-        addCartItem([])
-        setCartTotal(0)
-        setCartItems([])
-        setCheckBoxList([])
-    }
+        addCartItem([]);
+        setCartTotal(0);
+        setCartItems([]);
+        setCheckBoxList([]);
+    };
 
-    const onUpdateItems = (data) => {
-        const total = data.reduce((acc, curr) => acc + (curr.amount || 0), 0)
-        let updatedData = data.map(item => {
-            return { ...item, amount: item.amount ? item.amount : 0 }
-        })
-        setCartItems(data)
-        addCartItem(data)
+    const onUpdateItems = data => {
+        const total = data.reduce((acc, curr) => acc + (curr.amount || 1), 0);
+        const updatedData = data.map(item => ({
+            ...item,
+            amount: item.amount ? item.amount : 0
+        }));
+        setCartTotal(total);
+        setCartItems(data);
+        addCartItem(data);
         // updateCartItems(data)
         // console.log("Data: ", data)
-        // setCartTotal(total)
+    };
 
-    }
-
-    const onListFooterPress = (data) => {
+    const onListFooterPress = data => {
         // console.log("List: ", data)
-        let { purchaseOrders = [], deliveryDate = ""} = data
+        const {purchaseOrders = [], deliveryDate = ''} = data;
         addCartItem(purchaseOrders);
         // updateCartItems(data)
         setCartItems(purchaseOrders);
-        onCompleteOrder(data)
-    }
+        onCompleteOrder(data);
+    };
 
-    const onCompleteOrder = (data) => {
-        let { purchaseOrders = [], deliveryDate = ""} = data
-        let orderToCreate = {
+    const onCompleteOrder = data => {
+        const {purchaseOrders = [], deliveryDate = ''} = data;
+        const orderToCreate = {
             deliveryDate,
-            orders : purchaseOrders,
-            supplier : supplierId,
-        }
+            orders: purchaseOrders,
+            supplier: supplierId,
+        };
 
-        console.log("Data: ", orderToCreate)
+        console.log('Data: ', orderToCreate);
 
         createPurchaseOrder(orderToCreate)
             .then(_ => {
@@ -244,187 +239,205 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isError = {false}
-                            isEditUpdate = {false}
-                            onAction = {()=> {
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
                                 modal.closeModals('ConfirmationModal');
                             }}
-                        />
-                        ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')}
-                    });
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
                 addCartItem([]);
                 setCartItems([]);
                 setCheckBoxList([]);
 
                 // Alert.alert("Success", "Purchase order successfully created.")
             })
-                .catch(error => {
-                    console.log("Failed to create PO", error)
-                    modal.openModal(
-                        'ConfirmationModal',
-                        {
-                            content: <ConfirmationComponent
-                                isError = {true}
-                                isEditUpdate = {false}
-                                onCancel = {()=> {
-                                    modal.closeModals('ConfirmationModal');
-                                }}
-                            />
-                            ,
-                            onClose: () => {modal.closeModals('ConfirmationModal')}
-                        })
-                    // Alert.alert("Failed", "Purchase order was not created, please try again.")
-                    //TODO handle error cases.
-                })
+            .catch(error => {
+                console.log('Failed to create PO', error);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+                // Alert.alert("Failed", "Purchase order was not created, please try again.")
+                //TODO handle error cases.
+            });
+    };
 
-
-    }
-
-    const onConfirmChanges = (data) => {
+    const onConfirmChanges = data => {
         modal.openModal(
             'ConfirmationModal',
             {
                 content: <ConfirmationComponent
-                    isError = {false}
-                    isEditUpdate = {true}
-                    onAction = {()=> {
+                    isError={false}
+                    isEditUpdate={true}
+                    onAction={() => {
                         modal.closeModals('ConfirmationModal');
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             modal.closeModals('OverlayInfoModal');
                             onListFooterPress(data);
-                        },200);
+                        }, 200);
 
                         // setTimeout(()=>{
                         //     onShowSuccessScreen();
                         // },200)
-
                     }}
-                    onCancel = {()=>{
+                    onCancel={() => {
                         modal.closeModals('ConfirmationModal');
                     }}
-                    message = "Do you want to save your changes ?"
-                />
-                ,
-                onClose: () => {modal.closeModals('ConfirmationModal')}
-            })
+                    message="Do you want to save your changes ?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
     };
 
-    const onShowSuccessScreen = () =>{
+    const onShowSuccessScreen = () => {
         modal.openModal(
             'ConfirmationModal',
             {
                 content: <ConfirmationComponent
-                    isError = {false}
-                    isEditUpdate = {false}
-                    onAction = {()=> {
+                    isError={false}
+                    isEditUpdate={false}
+                    onAction={() => {
                         modal.closeModals('ConfirmationModal');
                     }}
-                />
-                ,
-                onClose: () => {modal.closeModals('ConfirmationModal')}
-            })
-    }
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
 
     const onOrderComplete = (fields, data) => {
-        modal.closeModals('OverlayModal')
+        modal.closeModals('OverlayModal');
 
         setTimeout(() => {
-            const { name = "", storageLocation = {} } = fields
+            const {name = '', storageLocation = {}} = fields;
             const updatedOrders = data
-                .filter(item => { if (item.amount || item.amount !== 0) { return true } })
-                .map(item => { return { amount: item.amount, productId: item._id } })
-            let newPO = {
-                name: name,
+                .filter(item => {
+                    if (item.amount || item.amount !== 0) {
+                        return true;
+                    }
+                })
+                .map(item => ({
+                    amount: item.amount,
+                    productId: item._id
+                }));
+            const newPO = {
+                name,
                 storageLocation: storageLocation._id,
                 supplier: supplierId,
                 orders: updatedOrders,
                 orderDate: new Date()
-            }
+            };
             createPurchaseOrder(newPO)
                 .then(data => {
-                    console.log("DB data: ", data)
-                    Alert.alert("Success", "Purchase order successfully created.")
+                    console.log('DB data: ', data);
+                    Alert.alert('Success', 'Purchase order successfully created.');
                 })
                 .catch(error => {
-                    console.log("Failed to create PO", error)
-                    Alert.alert("Failed", "Purchase order was not created, please try again.")
+                    console.log('Failed to create PO', error);
+                    Alert.alert('Failed', 'Purchase order was not created, please try again.');
                     //TODO handle error cases.
-                })
-            console.log("Purchase Order: ", newPO)
+                });
+            console.log('Purchase Order: ', newPO);
             // console.log("Cart Items: ", cartOrderItems)
-        }, 200)
-
-    }
+        }, 200);
+    };
 
     // ######## HELPER FUNCTIONS
 
     const actions = () => {
-        let isDisabled = checkBoxList.length === 0 ? true : false;
-        const addCart =
+        const isDisabled = checkBoxList.length === 0;
+        const addCart = (
             <ActionItem
-                title={"Add to Cart"}
-                icon={<AddIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>}
-                disabled = {isDisabled}
-                touchable = {!isDisabled}
-                onPress={openCartDailog}
-            />;
-        const addProduct = <ActionItem title={"Add Product"} icon={<AddIcon />} onPress={openAddProduct} />;
+                title="Add to Cart"
+                icon={<AddIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>}
+                disabled={isDisabled}
+                touchable={!isDisabled}
+                onPress={openCartDialog}
+            />
+        );
+        const addProduct = <ActionItem title="Add Product" icon={<AddIcon/>} onPress={openAddProduct}/>;
         return <ActionContainer
             floatingActions={[
                 addCart,
                 addProduct
             ]}
-            title={"SUPPLIER ACTIONS"}
-        />
-    }
+            title="SUPPLIER ACTIONS"
+        />;
+    };
 
-    const openCartDailog = () => {
-
-        let cartArray = []
-        let updatedCheck = [...checkBoxList]
+    const openCartDialog = () => {
+        let cartArray = [];
+        let updatedCheck = [...checkBoxList];
         if (updatedCheck.length === 0) {
-            cartArray = cartItems
+            cartArray = [...cartItems];
         } else {
             cartItems.forEach(item => {
-                let isFilterCheck = checkBoxList.filter(checkItem => checkItem._id === item._id)
+                const isFilterCheck = checkBoxList.filter(checkItem => checkItem._id === item._id);
                 if (isFilterCheck) {
-                    cartArray.push({...item, amount: 1})
+                    cartArray.push({
+                        ...item,
+                        amount: 1
+                    });
                 }
-                let index = updatedCheck.findIndex(checkItem => checkItem._id === item._id)
+                const index = updatedCheck.findIndex(checkItem => checkItem._id === item._id);
                 updatedCheck = [
                     ...updatedCheck.slice(0, index),
                     ...updatedCheck.slice(index + 1),
                 ];
-            })
+            });
         }
-        cartArray = [...cartArray, ...updatedCheck]
+        cartArray = [...cartArray, ...updatedCheck];
 
-        modal.closeModals('ActionContainerModal')
+        modal.closeModals('ActionContainerModal');
 
-        setFloatingAction(false)
-        setCartItems([...cartArray])
-        setCartTotal(cartArray.length)
-    }
+        setFloatingAction(false);
+        setCartItems([...cartArray]);
+        setCartTotal(cartArray.length);
+    };
 
-    const addItemComplete = (data) => {
-        modal.closeModals('OverlayModal')
+    const addItemComplete = data => {
+        modal.closeModals('OverlayModal');
         setTimeout(() => {
-            onAddProducts(data)
-        }, 200)
-    }
+            onAddProducts(data);
+        }, 200);
+    };
 
     const openAddProduct = () => {
-        modal.closeModals('ActionContainerModal')
-        navigation.navigate('SupplierProductCreation', {supplierId, onProductsCreated})
-    }
+        modal.closeModals('ActionContainerModal');
+        navigation.navigate('SupplierProductCreation', {
+            supplierId,
+            onProductsCreated
+        });
+    };
 
-    const listItemFormat = (item) => <>
-        <DataItem text={item?.name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600" />
-        <DataItem text={item?.inventoryVariant?.name} />
-        <DataItem text={item?.sku || 'n/a'} align="center" />
-        <DataItem text={`$ ${currencyFormatter(item.unitPrice)}`} align="flex-end" />
-        {/* <View style={styles.item}>
+    const listItemFormat = item => (
+        <>
+            <DataItem text={item?.name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600"/>
+            <DataItem text={item?.inventoryVariant?.name}/>
+            <DataItem text={item?.sku || 'n/a'} align="center"/>
+            <DataItem text={`$ ${currencyFormatter(item.unitPrice)}`} align="flex-end"/>
+            {/* <View style={styles.item}>
             <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
         </View>
         <View style={[styles.item, {alignItems: 'flex-start'}]}>
@@ -436,17 +449,18 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
         <View style={[styles.item, {alignItems: 'flex-end'}]}>
             <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
         </View> */}
-    </>;
+        </>
+    );
 
-    const renderListFn = (item) => {
-        return <Item
+    const renderListFn = item => (
+        <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
             onItemPress={onProductsPress(item)}
             itemView={listItemFormat(item)}
         />
-    }
+    );
 
     let productsToDisplay = [...products];
     productsToDisplay = productsToDisplay.slice(currentPageListMin, currentPageListMax);
@@ -475,9 +489,9 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
 
                     <FloatingActionAnnotated
                         toggleActionButton={toggleCartActionButton}
-                        icon = {Cart}
-                        value = {cartTotal}
-                        showValue =  {cartTotal !== 0}
+                        icon={Cart}
+                        value={cartTotal}
+                        showValue={cartTotal !== 0}
                     />
 
                     <PaginatorActionsContainer>
@@ -500,29 +514,23 @@ function SupplierProductsTab({ modal, supplierId, addCartItem, cart, products, o
                 </FooterContainer>
             </FooterWrapper>
         </>
-    )
+    );
 }
 
 SupplierProductsTab.propTypes = {};
 SupplierProductsTab.defaultProps = {};
 
-const mapStateToProps = (state) => ({
-    cart: state.cart
-});
+const mapStateToProps = state => ({cart: state.cart});
 
-const mapDispatchToProp = {
-    addCartItem
-}
+const mapDispatchToProp = {addCartItem};
 
 export default connect(mapStateToProps, mapDispatchToProp)(withModal(SupplierProductsTab));
 
 const styles = StyleSheet.create({
-    item: {
-        flex: 1,
-    },
+    item: {flex: 1,},
     itemText: {
         fontSize: 16,
-        color: "#4A5568",
+        color: '#4A5568',
     },
     footer: {
         flex: 1,
@@ -537,4 +545,4 @@ const styles = StyleSheet.create({
         // backgroundColor:'red',
         justifyContent: 'space-between'
     },
-})
+});
