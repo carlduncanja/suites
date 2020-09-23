@@ -52,15 +52,12 @@ const PaginatorActionsContainer = styled.View`
     flex-direction : row;
 `;
 
-function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, onAddProducts, isArchive = false, onProductsCreated}) {
+function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, onAddProducts, onProductsCreated}) {
     // ######## STATES
-    console.log('Cart: ', cart);
     const theme = useTheme();
     const navigation = useNavigation();
 
-    const [checkBoxList, setCheckBoxList] = useState([]);
-    const [isFetching, setFetching] = useState(false);
-    const [hasActionButton, setHasActionButton] = useState(!isArchive);
+    const [checkboxList, setCheckboxList] = useState([]);
 
     const recordsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
@@ -69,12 +66,9 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
     const [searchValue, setSearchValue] = useState('');
-    const [searchResults, setSearchResult] = useState([]);
-    const [searchQuery, setSearchQuery] = useState({});
-    const [tabDetails, setTabDetails] = useState([]);
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
-    const [cartTotal, setCartTotal] = useState(cart.length);
+    const [cartTotal, setCartTotal] = useState(cart.reduce((acc, curr) => acc + (curr.amount || 1), 0));
     const [cartItems, setCartItems] = useState([]);
 
     // ######## CONST
@@ -104,15 +98,9 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     useEffect(() => {
         setTimeout(() => {
             setCartItems(cart);
-            // onUpdateItems(cart);
             setTotalPages(Math.ceil(products.length / recordsPerPage));
         }, 200);
     }, []);
-
-    // useEffect(() => {
-    //     // if (!products.length) fetchProducts()
-    //     setTotalPages(Math.ceil(products.length / recordsPerPage))
-    // }, []);
 
     // ######## EVENT HANDLERS
 
@@ -146,25 +134,20 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     };
 
     const toggleCheckbox = item => () => {
-        let checkedItems = [...checkBoxList];
-
-        if (checkedItems.includes(item)) {
-            checkedItems = checkedItems.filter(caseItem => caseItem !== item);
-        } else {
-            checkedItems.push(item);
-        }
-        setCheckBoxList(checkedItems);
+        const itemChecked = checkboxList.some(checkedItem => checkedItem._id === item._id);
+        if (itemChecked) {
+            // remove it from checkboxList
+            const filteredCheckboxList = checkboxList.filter(checkedItem => checkedItem._id !== item._id);
+            setCheckboxList([...filteredCheckboxList]);
+        } else setCheckboxList([...checkboxList, item]);
     };
 
     const toggleHeaderCheckbox = () => {
-        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
+        const productsToDisplay = products.slice(currentPageListMin, currentPageListMax);
 
-        if (indeterminate) {
-            const selectedAllIds = [...tabDetails.map(item => item)];
-            setCheckBoxList(selectedAllIds);
-        } else {
-            setCheckBoxList([]);
-        }
+        if (!checkboxList.length || (checkboxList.length && checkboxList.length < productsToDisplay.length)) {
+            setCheckboxList([...productsToDisplay]);
+        } else setCheckboxList([]);
     };
 
     const toggleActionButton = () => {
@@ -172,46 +155,24 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         modal.openModal('ActionContainerModal',
             {
                 actions: actions(),
-                title: 'SUPPLIER ACTIONS',
-                onClose: () => {
-                    setFloatingAction(false);
-                },
+                title: 'SUPPLIER PRODUCTS ACTIONS',
+                onClose: () => setFloatingAction(false),
             });
-    };
-
-    const toggleCartActionButton = () => {
-        setTimeout(() => {
-            modal.openModal('OverlayInfoModal', {
-                overlayContent: <SuppliersPurchaseOrder
-                    details={cartItems}
-                    onUpdateItems={onUpdateItems}
-                    onClearPress={onClearPress}
-                    onListFooterPress={onConfirmChanges}
-                />,
-            });
-        }, 200);
     };
 
     const onClearPress = () => {
-        // setCartItems([])
-        // updateCartItems([])
         addCartItem([]);
         setCartTotal(0);
         setCartItems([]);
-        setCheckBoxList([]);
+        setCheckboxList([]);
     };
 
     const onUpdateItems = data => {
         const total = data.reduce((acc, curr) => acc + (curr.amount || 1), 0);
-        const updatedData = data.map(item => ({
-            ...item,
-            amount: item.amount ? item.amount : 0
-        }));
+
         setCartTotal(total);
         setCartItems(data);
         addCartItem(data);
-        // updateCartItems(data)
-        // console.log("Data: ", data)
     };
 
     const onListFooterPress = data => {
@@ -250,10 +211,8 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
                         }
                     }
                 );
-                addCartItem([]);
-                setCartItems([]);
-                setCheckBoxList([]);
 
+                onClearPress();
                 // Alert.alert("Success", "Purchase order successfully created.")
             })
             .catch(error => {
@@ -366,54 +325,103 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     // ######## HELPER FUNCTIONS
 
     const actions = () => {
-        const isDisabled = checkBoxList.length === 0;
+        const isDisabled = checkboxList.length === 0;
         const addCart = (
             <ActionItem
                 title="Add to Cart"
                 icon={<AddIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>}
                 disabled={isDisabled}
                 touchable={!isDisabled}
-                onPress={openCartDialog}
+                onPress={addToCartAction}
             />
         );
-        const addProduct = <ActionItem title="Add Product" icon={<AddIcon/>} onPress={openAddProduct}/>;
+        const addProduct = <ActionItem title="Add Product" icon={<AddIcon/>} onPress={addProductAction}/>;
         return <ActionContainer
             floatingActions={[
                 addCart,
                 addProduct
             ]}
-            title="SUPPLIER ACTIONS"
+            title="SUPPLIER PRODUCTS ACTIONS"
         />;
     };
 
-    const openCartDialog = () => {
-        let cartArray = [];
-        let updatedCheck = [...checkBoxList];
-        if (updatedCheck.length === 0) {
-            cartArray = [...cartItems];
+    const toggleCartActionButton = () => {
+        setTimeout(() => {
+            modal.openModal('OverlayInfoModal', {
+                overlayContent: <SuppliersPurchaseOrder
+                    details={cartItems}
+                    onUpdateItems={onUpdateItems}
+                    onClearPress={onClearPress}
+                    onListFooterPress={onConfirmChanges}
+                />,
+            });
+        }, 200);
+    };
+
+    const addToCartAction = () => {
+        let cartQuantity;
+        let updatedCheckboxList = [...checkboxList];
+        const updatedCartItems = [...cartItems];
+
+        if (!updatedCartItems.length) { // add all the checked items since none exist currently in cart
+            updatedCheckboxList = updatedCheckboxList.map(item => ({
+                ...item,
+                amount: 1
+            }));
+            updatedCartItems.push(...updatedCheckboxList);
+            cartQuantity = updatedCheckboxList.length; // since every item's amount would be defaulted to 1, this can safely be done
         } else {
-            cartItems.forEach(item => {
-                const isFilterCheck = checkBoxList.filter(checkItem => checkItem._id === item._id);
-                if (isFilterCheck) {
-                    cartArray.push({
+            updatedCheckboxList.forEach(item => {
+                // check if checked item doesn't exist in cartItems, then add
+                const itemIndex = updatedCartItems.findIndex(cartItem => cartItem._id === item._id);
+                if (itemIndex < 0) {
+                    updatedCartItems.push({
                         ...item,
                         amount: 1
                     });
+                } else { // increase quantity of item if already exists
+                    updatedCartItems[itemIndex].amount = updatedCartItems[itemIndex].amount + 1 || 1;
                 }
-                const index = updatedCheck.findIndex(checkItem => checkItem._id === item._id);
-                updatedCheck = [
-                    ...updatedCheck.slice(0, index),
-                    ...updatedCheck.slice(index + 1),
-                ];
             });
+            cartQuantity = updatedCartItems.reduce((acc, curr) => acc + (curr.amount || 1), 0);
         }
-        cartArray = [...cartArray, ...updatedCheck];
 
         modal.closeModals('ActionContainerModal');
 
         setFloatingAction(false);
-        setCartItems([...cartArray]);
-        setCartTotal(cartArray.length);
+        setCartItems(updatedCartItems);
+        setCartTotal(cartQuantity);
+        setCheckboxList([]); // clear checked items
+
+        ////////////////////
+
+        // let cartArray = [];
+        // let updatedCheck = [...checkboxList];
+        // if (updatedCheck.length === 0) {
+        //     cartArray = [...cartItems];
+        // } else {
+        //     cartItems.forEach(item => {
+        //         const isFilterCheck = checkboxList.filter(checkItem => checkItem._id === item._id);
+        //         if (isFilterCheck) {
+        //             cartArray.push({
+        //                 ...item,
+        //                 amount: 1
+        //             });
+        //         }
+        //         const index = updatedCheck.findIndex(checkItem => checkItem._id === item._id);
+        //         updatedCheck = [
+        //             ...updatedCheck.slice(0, index),
+        //             ...updatedCheck.slice(index + 1),
+        //         ];
+        //     });
+        // }
+        // cartArray = [...cartArray, ...updatedCheck];
+        //
+        // modal.closeModals('ActionContainerModal');
+        //
+        // setFloatingAction(false);
+        // setCartItems([...cartArray]);
+        // setCartTotal(cartArray.length);
     };
 
     const addItemComplete = data => {
@@ -423,7 +431,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         }, 200);
     };
 
-    const openAddProduct = () => {
+    const addProductAction = () => {
         modal.closeModals('ActionContainerModal');
         navigation.navigate('SupplierProductCreation', {
             supplierId,
@@ -455,7 +463,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     const renderListFn = item => (
         <Item
             hasCheckBox={true}
-            isChecked={checkBoxList.includes(item)}
+            isChecked={checkboxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
             onItemPress={onProductsPress(item)}
             itemView={listItemFormat(item)}
@@ -477,11 +485,11 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
 
             <Table
                 data={productsToDisplay}
-                listItemFormat={renderListFn}
                 headers={headers}
                 isCheckbox={true}
+                itemSelected={checkboxList}
+                listItemFormat={renderListFn}
                 toggleHeaderCheckbox={toggleHeaderCheckbox}
-                itemSelected={checkBoxList}
             />
 
             <FooterWrapper>
@@ -527,7 +535,7 @@ const mapDispatchToProp = {addCartItem};
 export default connect(mapStateToProps, mapDispatchToProp)(withModal(SupplierProductsTab));
 
 const styles = StyleSheet.create({
-    item: {flex: 1,},
+    item: {flex: 1},
     itemText: {
         fontSize: 16,
         color: '#4A5568',

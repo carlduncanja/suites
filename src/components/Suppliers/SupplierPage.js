@@ -189,7 +189,6 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 />;
             case 'Products':
                 return <SupplierProductsTab
-                    floatingActions={floatingActions}
                     products={products}
                     onAddProducts={onAddProducts}
                     onProductsCreated={() => fetchProducts()}
