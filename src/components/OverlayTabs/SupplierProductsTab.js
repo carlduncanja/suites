@@ -27,6 +27,7 @@ import {currencyFormatter} from '../../utils/formatter';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import {getSupplierProducts, createPurchaseOrder} from '../../api/network';
 import {addCartItem} from '../../redux/actions/cartActions';
+import LoadingIndicator from '../common/LoadingIndicator';
 
 const SearchContainer = styled.View`
     margin-bottom : ${({theme}) => theme.space['--space-20']};
@@ -57,6 +58,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     const theme = useTheme();
     const navigation = useNavigation();
 
+    const [isLoading, setLoading] = useState(false);
     const [checkboxList, setCheckboxList] = useState([]);
 
     const recordsPerPage = 10;
@@ -176,6 +178,8 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     };
 
     const onListFooterPress = data => {
+        setLoading(true);
+
         // console.log("List: ", data)
         const {purchaseOrders = [], deliveryDate = ''} = data;
         addCartItem(purchaseOrders);
@@ -234,7 +238,8 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
                 );
                 // Alert.alert("Failed", "Purchase order was not created, please try again.")
                 //TODO handle error cases.
-            });
+            })
+            .finally(_ => setLoading(false));
     };
 
     const onConfirmChanges = data => {
@@ -521,6 +526,11 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
 
                 </FooterContainer>
             </FooterWrapper>
+
+            {
+                isLoading &&
+                <LoadingIndicator backgroundColor="white"/>
+            }
         </>
     );
 }

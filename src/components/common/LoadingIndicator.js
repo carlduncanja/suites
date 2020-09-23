@@ -11,30 +11,30 @@ const LoadingIndicatorWrapper = styled.View`
     height: 100%;
     width: 100%;
     z-index: 10;
-`
+`;
 
 const LoadingIndicatorContainer = styled.View`
     flex: 1;
     align-items: center;
     justify-content: center;
-    background-color: ${({backgroundColor}) =>  backgroundColor ? backgroundColor : 'none'};
-`
+    background-color: ${({backgroundColor}) => (backgroundColor || 'none')};
+`;
 
 function LoadingIndicator({size = 'large', color, backgroundColor}) {
-
     const theme = useTheme();
 
     return (
         <LoadingIndicatorWrapper theme={theme}>
             <LoadingIndicatorContainer theme={theme} backgroundColor={backgroundColor}>
                 <ActivityIndicator
-                    style={{alignSelf: 'center'}} size={size}
-                    color={color ? color : theme.colors['--company']}
+                    style={{alignSelf: 'center'}}
+                    size={size}
+                    color={color || theme.colors['--company']}
                 />
             </LoadingIndicatorContainer>
         </LoadingIndicatorWrapper>
 
-    )
+    );
 }
 
-export default LoadingIndicator
+export default LoadingIndicator;
