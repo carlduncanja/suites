@@ -144,7 +144,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
 
     useEffect(() => {
         // if procedure is being copied
-        if (referenceProcedure._id) fetchProcedure(referenceProcedure._id);
+        if (referenceProcedure?._id) fetchProcedure(referenceProcedure._id);
     }, [referenceProcedure]);
 
     const fetchProcedure = id => {

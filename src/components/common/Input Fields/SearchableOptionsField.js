@@ -130,7 +130,7 @@ const TextInputWrapper = styled.View`
 `;
 const TextInputContainer = styled.View`
     position: relative;
-    height : 100%;
+    height : 100%; 
     width : 100%;
     border-width: 1px;
     border-color: ${({theme, hasError}) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
@@ -178,7 +178,7 @@ function SearchableOptionsField({
         oneOptionsSelected(option);
 
         // to clear the search field after selecting an item
-        onClearPress();
+        // onClearPress();
     };
 
     const onClearPress = () => {

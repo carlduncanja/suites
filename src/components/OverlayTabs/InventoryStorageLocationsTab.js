@@ -89,7 +89,7 @@ function InventoryStorageLocationsTab({
     }
 
     const handleOnCheckBoxPress = (item) => () => {
-        console.log("Item: ", item);
+        // console.log("Item: ", item);
         const {_id} = item;
         let updatedItems = checkboxItemPress(item, _id, selectedItems)
 
