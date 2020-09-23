@@ -30,40 +30,28 @@ import ConfirmationComponent from '../ConfirmationComponent';
  * @param onCreated
  * @param addTheatre
  * @returns {*}
- * @constructor
+ * @constructor 
  */
-function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, groupId}) {
+function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
 
     // ########## CONST
     const modal = useModal();
     const { name = "", storageLocations = [], inventoryGroup = {} } = variant;
     const storageLocationObj = storageLocations.filter( location => location?._id === selectedLocation)[0] || {} ;
-    const { locationName = "", levels = {}, stock } = storageLocationObj;
-    const { low = 0} = levels
+    const { locationName = "", levels = {}, stock, location = "" } = storageLocationObj;
+    const { low = 0} = levels;
     const available = parseInt(stock - low) < 0 ? 0 : parseInt(stock - low);
-    const currentLocation = storageLocationObj?._id;
-    console.log("Groupid: ", groupId);
+  
 
-    console.log("Selected variant:", variant);
-    console.log("Transfer item: ", storageLocationObj);
+    // console.log("Group and variant ids:", inventoryGroup._id, variant._id);
+
     const dialogTabs = ['Details', 'Configuration'];
 
     // ########## STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
     const [fields, setFields] = useState({ priority : 'Not Urgent'});
     const [errorFields, setErrorFields] = useState({})
-    const [popoverList, setPopoverList] = useState([
-        {
-            name : "product",
-            status : false
-        },
-        {
-            name : "supplier",
-            status : false
-        }
-    ]);
-    const [destinationConfigurations, setDestinationConfigurations] = useState({});
-
+   
     // Storage Search
     const [storageSearchValue, setStorageSearchValue] = useState();
     const [storangeSearchResults, setStorageSearchResult] = useState([]);
@@ -130,7 +118,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
         getStorage(storageSearchValue, 5)
             .then((storageResults = {}) => {
                 const { data = [], pages = 0 } = storageResults
-                console.log("Data: ", data)
+                // console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));
@@ -183,14 +171,14 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
         } else {
             // const referenceId = fields['product']
             const updatedFields = {
-                from : currentLocation,
-                amount : parseInt(fields['amount']),
+                from : storageLocationObj?.location,
+                amount : (parseInt(fields['amount']).toString()),
                 to : fields['to'],
                 priority : fields['priority']
             }
             console.log("Success:", updatedFields);
             
-            createTransferCall(updatedFields)
+            createTransferCall(updatedFields);
             // onCreated(fields)
             // createInventoryCall(referenceId,fields)
         }
@@ -245,8 +233,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
     }
 
     const createTransferCall = (transferToCreate) => {
-        const variantId = variant?._id;
-        createTransfer(groupId, variantId, transferToCreate)
+        createTransfer(inventoryGroup?._id, variant?._id, transferToCreate)
             .then(data => {
                 modal.closeAllModals();
                 modal.openModal(
@@ -275,7 +262,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
                         content: <ConfirmationComponent
                             isEditUpdate = {false}
                             isError = {true}
-                            onCancel = {()=> modal.closeAllModals()}
+                            onCancel = {()=> {modal.closeAllModals()}}
                             onAction = {()=> modal.closeAllModals()}
                             message = "There was an issue performing this action"
                         />
@@ -314,7 +301,6 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
         onFieldChange('to')(item._id)
     }
     
-
     const detailsTab = (
         <>
             <Row>
@@ -384,45 +370,6 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant, gro
         </>
     );
 
-    const destinationTab = <>
-        <Row zIndex = {5}>
-            <FieldContainer>
-                <SearchableOptionsField
-                    label={"Warehouse"}
-                    text={storageSearchValue}
-                    oneOptionsSelected={(item) => {
-                        onDestinationSelected(item)
-                    }}
-                    onChangeText={value => {setStorageSearchValue(value); console.log("Value:", value)}}
-                    onClear={() => {
-                        onFieldChange('to')('');
-                        setStorageSearchValue('');
-                    }}
-                    options={storangeSearchResults}
-                    handlePopovers = {()=>{}}
-                    isPopoverOpen = {storangeSearchQuery}
-                    errorMessage = "Warehouse must be given."
-                    hasError = {errorFields['to']}
-                />  
-            </FieldContainer>
-
-            {/* <FieldContainer>
-                <OptionsField
-                    label={"Location"}
-                    text={fields['destinationLocation']}
-                    oneOptionsSelected={onFieldChange('destinationLocation')}
-                    menuOption={
-                        <MenuOptions>
-                            <MenuOption value={'Cabinet 1'} text='Cabinet 1'/>
-                            <MenuOption value={'Cabinet 2'} text='Cabinet 2'/>
-                        </MenuOptions>
-                    }
-                />
-            </FieldContainer> */}
-        </Row>
-
-    </>
-    
     const configTab = (
         <>
             <Row>

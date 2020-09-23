@@ -17,6 +17,7 @@ function StoragePage({route, navigation}) {
 
     const {storage, reloadStorageLocations} = route.params;
 
+    console.log("Storage: ", storage);
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
@@ -97,10 +98,11 @@ function StoragePage({route, navigation}) {
                 />;
             case 'Transfers':
                 return <TransfersOverlayTab
-                    transferItems = {[]}
+                    transferItems = {storage?.transfers || []}
                 />;
             case 'Consumables': {
                 // Get Consumables
+                // console.log("Consumbales: ", storageItem);
                 const consumables = storageItem.inventoryLocations.map(item => {
                     console.log(item);
 

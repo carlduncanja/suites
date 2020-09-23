@@ -31,8 +31,6 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     const {procedure, isOpenEditable, onUpdate} = route.params
 
-    console.log("PN update: ", onUpdate);
-
     const {
         _id = "",
         name,

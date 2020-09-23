@@ -56,7 +56,8 @@ import {
     assignEquipmentToLocation,
     users,
     createCategoryEndpoint,
-    updateEquipmentEndpoint, purchaseOrdersArchiveEndpoint
+    updateEquipmentEndpoint, purchaseOrdersArchiveEndpoint,
+    updatePurchaseOrderDetailsEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink } from '../const/documentGenerationEndpoints';
 
@@ -199,7 +200,8 @@ export const createInventoryVariant = async (referenceId, itemToCreate) => suite
     .then(handleResponse)
     .catch(handleError);
 
-export const createTransfer = async (groupId, variantId, transferData) => suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
+export const createTransfer = async (groupId, variantId, transferData) => 
+    suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
     .then(handleResponse)
     .catch(handleError);
 
@@ -516,6 +518,11 @@ export const createInvoiceViaOrders = async quotationId => suitesAxiosInstance.p
     .catch(handleError);
 
 export const updatePurchaseOrder = async (purchaseOrderId, data) => suitesAxiosInstance.put(updatePurchaseOrderEndpoint(purchaseOrderId), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const updatePurchaseOrderDetails = async (purchaseOrderId, data) => 
+    suitesAxiosInstance.put(updatePurchaseOrderDetailsEndpoint(purchaseOrderId), data)
     .then(handleResponse)
     .catch(handleError);
 

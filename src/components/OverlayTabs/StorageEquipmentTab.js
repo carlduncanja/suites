@@ -1,24 +1,25 @@
-import React,{  } from "react";
+import React,{ useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Equipment from '../CaseFiles/OverlayPages/ChargeSheet/Equipment';
+import Table from "../common/Table/Table";
+import Footer from "../common/Page/Footer";
 import { currencyFormatter } from '../../utils/formatter';
- 
-const testData = [
-    {
-        itemName : 'Bag',
-        type : 'Anaesthesia', 
-        onHand : 100,
-        unitPrice : 4120.76
-    },
-    {
-        itemName : 'Atracurium',
-        type : 'Anaesthesia',
-        onHand : 50,
-        unitPrice : 8924.09
-    }
+import LongPressWithFeedback from "../common/LongPressWithFeedback";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import ActionItem from "../common/ActionItem";
+import {LONG_PRESS_TIMER} from '../../const';
+import { useModal } from 'react-native-modalfy';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import TransferIcon from "../../../assets/svg/transferIcon";
+import Item from '../common/Table/Item';
+import DataItem from '../common/List/DataItem';
+  
 
-]
 const StorageEquipmentTab = ({equipments = []}) => {
+    const theme = useTheme();
+    const modal = useModal();
 
     const headers = [
         {
@@ -26,7 +27,7 @@ const StorageEquipmentTab = ({equipments = []}) => {
             alignment: "flex-start"
         },
         {
-            name :"Type",
+            name :"Category",
             alignment: "center"
         },
         {
@@ -39,43 +40,104 @@ const StorageEquipmentTab = ({equipments = []}) => {
         }
     ]
 
-    const listItem = (item) => <>
-        <View style={styles.item}>
-            <Text style={[styles.itemText,{color:"#3182CE"}]}>{item.item}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'flex-start'}]}>
-            <Text style={styles.itemText}>{item.type}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'center'}]}>
-            <Text style={styles.itemText}>{item.onHand}</Text>
-        </View>
-        <View style={[styles.item,{alignItems:'flex-end'}]}>
-            <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
-        </View>
+    const [checkedItems, setPCheckedItems] = useState([]);
+    const [isFloatingDisabled, setFloatingAction] = useState(false);
+
+    const listItem = (item) => 
+        <>
+            <DataItem flex = {2} color = "--color-blue-600" fontStyle = "--text-base-medium" text = {item?.name}/>
+            <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {item?.type}/>
+            <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {item?.amount}/>
+            <DataItem align = "flex-end" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {item.unitPrice}/>
             
-    </>
-
-    const data = equipments.map(item => {
-
-        return {
-            item :  item?.itemName,
-            type : item?.type,
-            onHand : item?.onHand,
-            unitPrice : item?.unitPrice
-        }
-    });
-
-    const toggleActionButton = () =>{
-        
+        </>;
+ 
+    const renderListItem = (item) => {
+        <Item
+            itemView = {listItem(item)}
+            hasCheckBox = {true}
+            isChecked = {checkedItems.includes(_id)}
+            onCheckBoxPress = {onItemCheck(item)}
+            onItemPress = {()=>{}}
+        />
     }
 
-    return (
-        <Equipment
-            tabDetails = {data}
-            headers = {headers}
-            listItemFormat = {listItem}
-            toggleActionButton = {toggleActionButton}
+    const onItemCheck = (item) =>{
+
+    }
+    
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+
+        modal.openModal("ActionContainerModal",
+            {
+                actions: floatingActions(),
+                title: "SUPPLIER ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                },
+            })
+    }
+
+    const floatingActions = () =>{
+        let isDisabled = checkedItems.length === 0 ? true : false;
+        let isDisabledColor = checkedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
+        const deleteItem =
+            <LongPressWithFeedback
+                pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                onLongPress={onDeleteItems}
+                isDisabled = {isDisabled}
+            >
+                <ActionItem
+                    title={"Hold to Delete"}
+                    icon={<WasteIcon strokeColor = {isDisabledColor}/>}
+                    onPress={()=>{}}
+                    disabled = {isDisabled}
+                    touchable={false}
+                />
+            </LongPressWithFeedback>;
+
+        const itemTransfer = 
+            <ActionItem
+                title={"Item Transfer"}
+                icon={<TransferIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}/>}
+                onPress={() => handleTransferItems()}
+                disabled = {isDisabled}
+                touchable={!isDisabled}
+            />
+
+        return <ActionContainer
+            floatingActions={[
+                deleteItem,
+                itemTransfer
+            ]}
+            title={"SUPPLIER ACTIONS"}
         />
+    }
+
+    const onDeleteItems = () =>{}
+
+    const handleTransferItems = () => {}
+
+    return (
+        <>
+            <Table
+                data = {equipments}
+                listItemFormat = {renderListItem}
+                headers = {headers}
+                isCheckbox = {true}
+            />
+
+            <Footer
+                toggleActionButton = {toggleActionButton}
+            />
+        </>
+        // <Equipment
+        //     tabDetails = {data}
+        //     headers = {headers}
+        //     listItemFormat = {listItem}
+        //     toggleActionButton = {toggleActionButton}
+        // />
     )
 }
 
