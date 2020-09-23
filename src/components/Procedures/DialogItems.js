@@ -213,9 +213,7 @@ function DialogItems({
             amount: 1
         };
         setSelectedItem(updatedItem);
-        updatedData.includes(updatedItem) ?
-            updatedData = updatedData :
-            updatedData = [...updatedData, updatedItem];
+        updatedData.includes(updatedItem) ? updatedData = updatedData : updatedData = [...updatedData, updatedItem];
         handleData(updatedData);
         console.log('New List:', updatedData);
     };
@@ -353,12 +351,8 @@ function DialogItems({
                     value={selectedItem}
                     text={searchValue}
                     oneOptionsSelected={item => onItemSelected(item)}
-                    onChangeText={value => {
-                        setSearchValue(value);
-                    }}
-                    onClear={() => {
-                        onClearItem();
-                    }}
+                    onChangeText={value => setSearchValue(value)}
+                    onClear={() => onClearItem()}
                     options={searchResults}
                     placeholder={itemType === 'Locations' ? 'Add New Location' : 'Item Name'}
                     handlePopovers={() => {
