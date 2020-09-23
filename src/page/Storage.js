@@ -24,6 +24,8 @@ import ConfirmationComponent from '../components/ConfirmationComponent';
 import DataItem from '../components/common/List/DataItem';
 import RightBorderDataItem from '../components/common/List/RightBorderDataItem';
 import {LONG_PRESS_TIMER} from '../const';
+import styled, {css} from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 const listHeaders = [
     {
@@ -52,6 +54,7 @@ function Storage(props) {
     const pageTitle = 'Storage';
     const recordsPerPage = 10;
     const modal = useModal();
+    const theme = useTheme();
 
     // ##### States
     const [isFetchingData, setFetchingData] = useState(false);
@@ -184,7 +187,7 @@ function Storage(props) {
             />
             <DataItem 
                 fontStyle = {'--text-base-medium'} 
-                color = {'--color-blue-600'} 
+                color = {'--color-gray-800'} 
                 align = "center" 
                 text = {`${products} ${ products === 1 ? 'Product' : 'Products'}`}
             />
@@ -219,6 +222,7 @@ function Storage(props) {
         getStorage(searchValue, recordsPerPage, currentPosition)
             .then(storageResult => {
                 const {data = [], pages = 0} = storageResult;
+                console.log("Dta: ", data);
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
@@ -252,7 +256,7 @@ function Storage(props) {
         console.log("Storage item: ", item);
         const totalStock = item.inventoryLocations?.reduce((acc, item) => acc + item.stock, 0) || 0;
         const totalProducts = item?.inventoryLocations?.length || 0;
-        const totalTransfers = 0;
+        const totalTransfers = item?.transfers?.length || 0;;
 
         const formattedItem = {
             name: item.name,
@@ -288,10 +292,11 @@ function Storage(props) {
                 >
                     <ActionItem
                         title="Hold to Delete"
-                        icon={<WasteIcon/>}
+                        icon={<WasteIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'] }/>}
                         onPress={() => {
                         }}
                         touchable={false}
+                        disabled = {isDisabled}
                     />
                 </LongPressWithFeedback>
             </View>
@@ -407,7 +412,7 @@ function Storage(props) {
                     'OverlayModal',
                     {
                         content: <CreateStorageDialogContainer
-                            onCreated={item => onItemPress(item)()}
+                            onCreated={item => {onItemPress(item)()}}
                             onCancel={() => setFloatingAction(false)}
                         />,
                         onClose: () => setFloatingAction(false)

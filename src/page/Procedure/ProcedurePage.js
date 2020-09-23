@@ -29,13 +29,15 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     // const { pageState } = useContext(PageContext);
     // const { isEditMode } = pageState;
 
-    const {procedure, isOpenEditable} = route.params
+    const {procedure, isOpenEditable, onUpdate} = route.params
 
     const {
         _id = "",
         name,
+        description = "",
         hasRecovery,
         duration,
+        custom = false,
         physician
     } = procedure;
 
@@ -44,15 +46,25 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [pageState, setPageState] = useState({});
     const [selectedProcedure, setSelectedProcedure] = useState({})
-    const [isInfoUpdated, setIsInfoUpdated] = useState(false)
+    const [isInfoUpdated, setIsInfoUpdated] = useState(false);
+    // console.log("Selected procedure: ", selectedProcedure);
+
+    // const [fields, setFields] = useState({
+    //     name: name,
+    //     hasRecovery: hasRecovery,
+    //     duration: duration.toString(),
+    //     custom: true,
+    //     physician: physician,
+    // })
 
     const [fields, setFields] = useState({
-        name: name,
-        hasRecovery: hasRecovery,
-        duration: duration.toString(),
-        custom: true,
-        physician: physician,
-    })
+        description,
+        name,
+        duration,
+        hasRecovery,
+        custom,
+        physician
+    });
 
     const [popoverList, setPopoverList] = useState([
         {
@@ -63,7 +75,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        fetchProcdure(_id)
+        fetchProcdure(_id);
     }, []);
 
     useEffect(()=>{
@@ -95,9 +107,11 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
+                            isError = {false}
                             isEditUpdate = {true}
                             onCancel = {onConfirmCancel}
                             onAction = {onConfirmSave}
+                            message = "Do you want to save these changes ?"
                         />
                         ,
                         onClose: () => {modal.closeModals("ConfirmationModal")}
@@ -108,7 +122,8 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     const onConfirmSave = () =>{
         modal.closeModals('ConfirmationModal');
         setTimeout(()=>{
-            updateProcedureCall(selectedProcedure)
+            console.log("Updated: ", selectedProcedure);
+            updateProcedureCall(selectedProcedure);
             setIsInfoUpdated(false)
         },200)
     }
@@ -126,7 +141,8 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
             ...fields,
             [fieldName]: value
         })
-
+        console.log("Fields: ", fieldName, value);
+        setIsInfoUpdated(true);
         setSelectedProcedure({...selectedProcedure, [fieldName]: value})
     };
 
@@ -158,7 +174,8 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         setPageLoading(true)
         getProcedureById(id)
             .then(data => {
-                setSelectedProcedure(data)
+                setSelectedProcedure(data);
+                console.log("Fetched data: ", data);
                 // setProcedure(data)
             })
             .catch(error => {
@@ -172,20 +189,38 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     const onAddInventory = (data) => {
         let {inventories = []} = selectedProcedure
-        let newData = [...inventories, data]
+        let updatedInventory = inventories.map( item => {return { inventory : item?.inventory._id, amount : item?.amount}});
+        let newData = [...updatedInventory, ...data?.inventories];
         let newProcedureData = {...selectedProcedure, inventories: newData}
         setIsInfoUpdated(true)
-        setSelectedProcedure(newProcedureData)
+        // setSelectedProcedure(newProcedureData)
         updateProcedureCall(newProcedureData)
     }
 
     const onAddEquipment = (data) => {
         let {equipments = []} = selectedProcedure
-        let newData = [...equipments, data]
+        let updatedEquipments = equipments.map( item => {return { equipment : item?.equipment._id, amount : item?.amount}})
+        let newData = [...updatedEquipments, ...data?.equipments];
+
         let newProcedureData = {...selectedProcedure, equipments: newData}
         setIsInfoUpdated(true)
-        setSelectedProcedure(newProcedureData)
+        // setSelectedProcedure(newProcedureData)
         updateProcedureCall(newProcedureData)
+    }
+
+    const onAddItems = (data) => {
+        // console.log("Dtae in add function: ", data);
+        let { inventories = [], equipments = [] } = selectedProcedure
+        let updatedInventory = inventories.map( item => {return { inventory : item?.inventory._id, amount : item?.amount}});
+        let updatedEquipments = equipments.map( item => {return { equipment : item?.equipment._id, amount : item?.amount}})
+        let newInventory = [...updatedInventory, ...data?.inventories];
+        let newEquipment = [...updatedEquipments, ...data?.equipments];
+        let newProcedureData = {inventories : newInventory, equipments : newEquipment};
+        
+        console.log("New procedure: ", newProcedureData);
+        setIsInfoUpdated(true);
+        // setSelectedProcedure(newProcedureData);
+        updateProcedureCall(newProcedureData);
     }
 
     const onAddTheatre = (data) => {
@@ -195,6 +230,10 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         setIsInfoUpdated(true)
         setSelectedProcedure(newProcedureData)
         updateProcedureCall(newProcedureData)
+    }
+
+    const onDetailsUpdate = (data) =>{
+        console.log("Data: ", data);
     }
 
     const handleInventoryUpdate = (data) => {
@@ -238,11 +277,13 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     }
 
     const updateProcedureCall = (updatedFields) => {
+        // console.log("Fields: ", updatedFields);
         updateProcedure(_id, updatedFields)
             .then(data => {
                 // getProcedures()
-                fetchProcdure(_id)
-                console.log("Data from db: ", data)
+                onUpdate();
+                fetchProcdure(_id);
+                console.log("Success: ", data);
                 // modal.closeAllModals();
                 // setTimeout(() => {onCreated(data)}, 200);
             })
@@ -287,36 +328,45 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         const {inventories = [], equipments = [], notes = "", supportedRooms = []} = selectedProcedure
         switch (selectedTab) {
             case "Configuration":
-                return currentTab === 'Configuration' && pageState.isEditMode ?
-                    <TouchableOpacity
-                        style={{flex: 1}}
-                        activeOpacity={1}
-                        onPress={() => {
-                            handlePopovers(false)()
-                        }}
-                    >
-                        <EditableProceduresConfig
-                            fields={fields}
-                            onFieldChange={onFieldChange}
-                            popoverList={popoverList}
-                            handlePopovers={handlePopovers}
-                        />
-                    </TouchableOpacity>
+                // return currentTab === 'Configuration' && pageState.isEditMode ?
+                    // <TouchableOpacity
+                    //     style={{flex: 1}}
+                    //     activeOpacity={1}
+                    //     onPress={() => {
+                    //         handlePopovers(false)()
+                    //     }}
+                    // >
+                    //     <EditableProceduresConfig
+                    //         fields={fields}
+                    //         onFieldChange={onFieldChange}
+                    //         popoverList={popoverList}
+                    //         handlePopovers={handlePopovers}
+                    //     />
+                    // </TouchableOpacity>
 
-                    :
-                    <Configuration procedure={selectedProcedure}/>;
+                    // :
+                return <Configuration 
+                    procedure={selectedProcedure}
+                    onDetailsUpdate = {onDetailsUpdate}
+                    fields = {fields}
+                    onFieldChange = {onFieldChange}
+                />;
             case "Consumables":
                 return <ProceduresConsumablesTab
                     consumablesData={inventories}
-                    onAddInventory={onAddInventory}
                     handleInventoryUpdate={handleInventoryUpdate}
                     handleConsumablesDelete = {handleConsumablesDelete}
+                    onAddInventory = {onAddInventory}
+                    navigation = {navigation}
+                    procedureId = {_id}
                 />
             case "Equipment":
                 return <ProceduresEquipmentTab
                     equipmentsData={equipments}
                     onAddEquipment={onAddEquipment}
                     handleEquipmentDelete = {handleEquipmentDelete}
+                    onAddItems={onAddItems}
+                    navigation = {navigation}
                     // handleEquipmentUpdate={handleEquipmentUpdate}
                 />;
             case "Notes":

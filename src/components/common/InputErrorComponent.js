@@ -24,7 +24,7 @@ const ErrorText = styled.Text(({theme}) => ({
     color: theme.colors['--color-red-700']
 }));
 
-function InputErrorComponent({errorMessage = 'Error',}) {
+function InputErrorComponent({errorMessage = 'Error'}) {
     const theme = useTheme();
 
     return (

@@ -55,7 +55,7 @@ function InventoryVariantGeneral({
     });
     const [errorFields, setErrorFields] = useState({});
     const [isUpdated, setUpdated] = useState(false);
-    const [unitPriceText, setUnitPriceText] = useState(0);
+    const [unitPriceText, setUnitPriceText] = useState(unitCost);
 
 
     const onFieldChange = (fieldName) => (value) => {

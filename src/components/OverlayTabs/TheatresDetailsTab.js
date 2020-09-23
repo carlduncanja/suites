@@ -21,8 +21,8 @@ const UiData = {
     physician: "Dr. H. Mansingh",
     availableOn: new Date(2020, 12, 13, 23, 0),
 };
-
-function TheatresDetailsTab({
+ 
+function TheatresDetailsTab({ 
                                 description = "",
                                 theatreId,
                                 id = "--",
@@ -30,7 +30,7 @@ function TheatresDetailsTab({
                                 status = "Available",
                                 statusColor = "black",
                                 // isEditMode = false,
-                                physician = "--",
+                                physician = "--", 
                                 availableOn = "--",
                                 onUpdated = () => {},
                             }) {

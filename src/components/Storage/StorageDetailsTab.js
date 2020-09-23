@@ -9,7 +9,11 @@ import TextArea from '../common/Input Fields/TextArea';
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 import {updateStorageLocationCall} from '../../api/network';
 import ConfirmationComponent from '../ConfirmationComponent';
-import {PageContext} from '../../contexts/PageContext';
+import {PageContext} from '../../contexts/PageContext'; 
+import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent';
+import Record from '../common/Information Record/Record';
+import Footer from '../common/Page/Footer';
 
 function StorageDetailsTab({
     storageLocationId,
@@ -139,51 +143,85 @@ function StorageDetailsTab({
     };
 
     return (
-        <View style={styles.container}>
-            <View style={[styles.row]}>
-                <View style={[styles.item]}>
-                    <Text style={styles.textLabel}>Description</Text>
+        <>
+            <Row>
+                <Record
+                    recordTitle = "Description"
+                    recordValue = {fields['description']}
+                    onClearValue = {()=>onFieldChange('description')('')}
+                    onRecordUpdate = {onFieldChange('description')}
+                    useTextArea = {true}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    flex = {0.8}
+                />
+            </Row>
 
-                    {
-                        !isEditMode ? (
-                            <Text
-                                style={[styles.textDefault, {color: description ? '#1D2129' : '#A0AEC0'}]}
-                            >
-                                {fields.description ? fields.description : 'No description available.'}
-                            </Text>
-                        ) : (
-                            <View style={{height: 70, justifyContent: 'center'}}>
-                                <TextArea
-                                    onChangeText={onFieldChange('description')}
-                                    value={fields.description}
-                                    multiline={true}
-                                    numberOfLines={4}
-                                    onClear={() => onFieldChange('description')('')}
-                                />
-                            </View>
-                        )}
+            <Row>
+                <Record
+                    recordTitle = "Room Name"
+                    recordValue = {fields['name']}
+                    editMode = {isEditMode}
+                    editable = {true}
+                    onRecordUpdate = {onFieldChange('name')}
+                    onClearValue = {()=>{onFieldChange('name')(''); console.log("Clear")}}
+                    flex = {0.5}
+                />
+            </Row>
 
-                </View>
-                <View style={{flex: 1}}/>
-            </View>
+            <Footer
+                hasActionButton = {true}
+                hasActions = {false}
+                hasPaginator = {false}
+            />
+        </>
 
-            <View style={styles.row}>
-                <View style={[styles.item]}>
+        // <View style={styles.container}>
+        //     <View style={[styles.row]}>
+        //         <View style={[styles.item]}>
+        //             <Text style={styles.textLabel}>Description</Text>
 
-                    <Text style={styles.textLabel}>Room Name</Text>
-                    {
-                        !isEditMode ?
-                            <Text style={styles.textDefault}>{fields.name}</Text> : (
-                                <InputField2
-                                    value={fields.name}
-                                    onChangeText={onFieldChange('name')}
-                                    enabled={true}
-                                />
-                            )}
+        //             {
+        //                 !isEditMode ? (
+        //                     <Text
+        //                         style={[styles.textDefault, {color: description ? '#1D2129' : '#A0AEC0'}]}
+        //                     >
+        //                         {fields.description ? fields.description : 'No description available.'}
+        //                     </Text>
+        //                 ) : (
+        //                     <View style={{height: 70, justifyContent: 'center'}}>
+        //                         <TextArea
+        //                             onChangeText={onFieldChange('description')}
+        //                             value={fields.description}
+        //                             multiline={true}
+        //                             numberOfLines={4}
+        //                             onClear={() => onFieldChange('description')('')}
+        //                         />
+        //                     </View>
+        //                 )}
 
-                </View>
-            </View>
-        </View>
+        //         </View>
+        //         <View style={{flex: 1}}/>
+        //     </View>
+
+        //     <View style={styles.row}>
+        //         <View style={[styles.item]}>
+
+        //             <Text style={styles.textLabel}>Room Name</Text>
+        //             {
+        //                 !isEditMode ?
+        //                     <Text style={styles.textDefault}>{fields.name}</Text> : (
+        //                         <InputField2
+        //                             value={fields.name}
+        //                             onChangeText={onFieldChange('name')}
+        //                             enabled={true}
+        //                         />
+        //                     )}
+
+        //         </View>
+        //     </View>
+        // </View>
+    
     );
 }
 

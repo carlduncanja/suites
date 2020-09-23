@@ -1,46 +1,44 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
-import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
+import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {useModal} from 'react-native-modalfy';
+import {set} from 'numeral';
+import {connect} from 'react-redux';
+import SlideOverlay from '../common/SlideOverlay/SlideOverlay';
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 import SupplierProductsTab from '../OverlayTabs/SupplierProductsTab';
 import SupplierPurshaseOrders from '../OverlayTabs/SupplierPurchaseOrders';
 import BottomSheetContainer from '../common/BottomSheetContainer';
-import {PageContext} from "../../contexts/PageContext";
-import DetailsPage from "../common/DetailsPage/DetailsPage";
-import TabsContainer from "../common/Tabs/TabsContainerComponent";
+import {PageContext} from '../../contexts/PageContext';
+import DetailsPage from '../common/DetailsPage/DetailsPage';
+import TabsContainer from '../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 
-
-import {getSupplierById, createPurchaseOrder, getSupplierProducts} from "../../api/network";
-import {colors} from "../../styles";
-import {useModal} from 'react-native-modalfy';
-import {set} from 'numeral';
-import {updateSupplierAction} from "../../redux/actions/suppliersActions";
-import {connect} from "react-redux";
-
+import {getSupplierById, createPurchaseOrder, getSupplierProducts} from '../../api/network';
+import {colors} from '../../styles';
+import {updateSupplierAction} from '../../redux/actions/suppliersActions';
 
 function SupplierPage({route, navigation, updateSupplierAction}) {
     const {supplier, isOpenEditable, floatingActions} = route.params;
     const modal = useModal();
-    const currentTabs = ["Details", "Products", "Purchase Orders"];
+    const currentTabs = ['Details', 'Products', 'Purchase Orders'];
     const {
-        supplierNumber = "",
-        name = "",
-        _id = "",
+        supplierNumber = '',
+        name = '',
+        _id = '',
     } = supplier;
 
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [editableTab, setEditableTab] = useState(currentTab)
+    const [editableTab, setEditableTab] = useState(currentTab);
     const [isFetching, setFetching] = useState(false);
     const [selectedSupplier, setSelectedSupplier] = useState({});
     const [pageState, setPageState] = useState({});
-    const [hasFetchProducts, setHasFetchProducts] = useState(false)
+    const [hasFetchProducts, setHasFetchProducts] = useState(false);
     // const [cartOrderItems, setCartOrderItems] = useState([])
-    const [products, setProducts] = useState([])
+    const [products, setProducts] = useState([]);
 
-    const [popoverList, setPopoverList] = useState([])
+    const [popoverList, setPopoverList] = useState([]);
 
     const {isEditMode} = pageState;
 
@@ -51,44 +49,41 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 fetchProducts();
                 fetchSupplier(_id);
             }
-        }, 200)
+        }, 200);
     }, []);
 
     // ##### Event Handlers
-    const setPageLoading = (value) => {
+    const setPageLoading = value => {
         setPageState({
             ...pageState,
             isLoading: value,
             isEdit: false
-        })
-    }
+        });
+    };
 
     const onCancelErrorScreen = () => {
         modal.closeAllModals();
         setTimeout(() => {
             backTapped();
-        }, 200)
-    }
+        }, 200);
+    };
 
-    const onTabPress = (selectedTab) => {
+    const onTabPress = selectedTab => {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
     const backTapped = () => {
-        navigation.navigate("Suppliers");
-    }
+        navigation.navigate('Suppliers');
+    };
 
-    const handlePopovers = (popoverValue) => (popoverItem) => {
-
+    const handlePopovers = popoverValue => popoverItem => {
         if (!popoverItem) {
-            let updatedPopovers = popoverList.map(item => {
-                return {
-                    ...item,
-                    status: false
-                }
-            })
+            const updatedPopovers = popoverList.map(item => ({
+                ...item,
+                status: false
+            }));
 
-            setPopoverList(updatedPopovers)
+            setPopoverList(updatedPopovers);
         } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
             const updatedObj = {...popoverList[objIndex], status: popoverValue};
@@ -97,19 +92,18 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
             ];
-            setPopoverList(updatedPopovers)
+            setPopoverList(updatedPopovers);
         }
+    };
 
-    }
-
-    const onAddProducts = (item) => {
-        console.log("DATA: ",)
+    const onAddProducts = item => {
+        console.log('DATA: ',);
         const newItem = {
             ...item,
             unitCost: item.unitPrice
-        }
+        };
         setProducts([...products, newItem]);
-    }
+    };
 
     // ##### Helper functions
 
@@ -124,48 +118,48 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                             isError={true}
                             onCancel={onCancelErrorScreen}
                             message="There was an issue performing this action."
-                        />
-                        ,
+                        />,
                         onClose: () => {
-                            modal.closeModals('ConfirmationModal')
+                            modal.closeModals('ConfirmationModal');
                         }
-                    })
+                    }
+                );
         }, 100);
-    }
+    };
 
     const fetchProducts = () => {
         setPageLoading(true);
 
-        getSupplierProducts(_id, "")
+        getSupplierProducts(_id, '')
             .then(productsData => {
-                const {data = [], pages = 0} = productsData
-                setProducts(data)
-                setHasFetchProducts(true)
+                const {data = [], pages = 0} = productsData;
+                setProducts(data);
+                setHasFetchProducts(true);
             })
             .catch(error => {
-                console.log("Failed to get products", error)
+                console.log('Failed to get products', error);
                 //TODO handle error cases.
                 errorScreen();
                 //CONFORMATION SCREEN
             })
             .finally(_ => {
                 setPageLoading(false);
-            })
+            });
     };
 
-    const fetchSupplier = (id) => {
+    const fetchSupplier = id => {
         // setFetching(true);
         getSupplierById(id)
             .then(data => {
-                console.log("Data: ", data)
-                setSelectedSupplier(data)
+                console.log('Data: ', data);
+                setSelectedSupplier(data);
             })
             .catch(error => {
-                console.log("Failed to get supplier", error)
+                console.log('Failed to get supplier', error);
                 if (hasFetchProducts === false) {
                     setTimeout(() => {
                         modal.closeModals('ConfirmationModal');
-                    }, 100)
+                    }, 100);
                     errorScreen();
                 }
 
@@ -173,41 +167,41 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setPageLoading(false)
-            })
+                setPageLoading(false);
+            });
     };
 
-    const supplierInfoUpdated = (updatedInfo) => {
+    const supplierInfoUpdated = updatedInfo => {
         const newState = {_id, ...selectedSupplier, ...updatedInfo};
-        setSelectedSupplier(newState)
-        updateSupplierAction(newState)
-    }
+        setSelectedSupplier(newState);
+        updateSupplierAction(newState);
+    };
 
     // const supplierDetails = { supplier, status: '' }
-    const getTabContent = (selectedTab) => {
+    const getTabContent = selectedTab => {
         switch (selectedTab) {
-            case "Details":
+            case 'Details':
                 return <SupplierDetailsTab
                     order={{supplier: selectedSupplier, status: ''}}
                     supplierId={_id}
                     onUpdated={supplierInfoUpdated}
                     isEditMode={isEditMode}
-                />
-            case "Products":
+                />;
+            case 'Products':
                 return <SupplierProductsTab
-                    floatingActions={floatingActions}
                     products={products}
                     onAddProducts={onAddProducts}
                     onProductsCreated={() => fetchProducts()}
                     supplierId={_id}
-                />
-            case "Purchase Orders":
+                />;
+            case 'Purchase Orders':
                 return <SupplierPurshaseOrders
                     floatingActions={floatingActions}
                     data={selectedSupplier?.purchaseOrders}
+                    onRefresh={() => fetchSupplier(_id)}
                 />;
             default:
-                return <View/>
+                return <View/>;
         }
     };
 
@@ -218,13 +212,13 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 <DetailsPage
                     headerChildren={[selectedSupplier.name]}
                     onBackPress={backTapped}
-                    pageTabs={
+                    pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}
                             selectedTab={currentTab}
                             onPressChange={onTabPress}
                         />
-                    }
+                    )}
                 >
 
                     {getTabContent(currentTab)}
@@ -239,19 +233,14 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
 SupplierPage.propTypes = {};
 SupplierPage.defaultProps = {};
 
-const mapDispatcher = {
-    updateSupplierAction
-}
+const mapDispatcher = {updateSupplierAction};
 
 export default connect(null, mapDispatcher)(SupplierPage);
 
 const styles = StyleSheet.create({
-    item: {
-        flex: 1,
-    },
+    item: {flex: 1, },
     itemText: {
         fontSize: 16,
-        color: "#4A5568",
+        color: '#4A5568',
     },
-})
-
+});

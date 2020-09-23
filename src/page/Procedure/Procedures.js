@@ -4,6 +4,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 import {useModal} from 'react-native-modalfy';
+import {useTheme} from 'emotion-theming';
 import Page from '../../components/common/Page/Page';
 import ListItem from '../../components/common/List/ListItem';
 import RoundedPaginator from '../../components/common/Paginators/RoundedPaginator';
@@ -27,7 +28,10 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 const Procedures = props => {
     // ############# Const data
     const recordsPerPage = 10;
+
     const modal = useModal();
+    const theme = useTheme();
+
     const listHeaders = [
         {
             name: 'Procedure',
@@ -127,7 +131,10 @@ const Procedures = props => {
             initial: false,
             params: {
                 procedure: item,
-                isOpenEditable
+                isOpenEditable,
+                onUpdate: () => {
+                    handleDataRefresh();
+                }
             }
         });
         // modal.openModal('BottomSheetModal',{
@@ -228,19 +235,22 @@ const Procedures = props => {
                 <View style={[styles.item, {
                     ...styles.rowBorderRight,
                     flex: 1.5
-                }]}>
+                }]}
+                >
                     <Text numberOfLines={1} style={[styles.itemText, {color: '#323843'}]}>{item.name}</Text>
                 </View>
                 <View style={[styles.item, {
                     flex: 1,
                     alignItems: 'flex-start'
-                }]}>
+                }]}
+                >
                     <Text numberOfLines={1} style={[styles.itemText, {color: '#3182CE'}]}>Dr. {firstName} {surname}</Text>
                 </View>
                 <View style={[styles.item, {
                     flex: 1,
                     alignItems: 'center'
-                }]}>
+                }]}
+                >
                     <Text numberOfLines={1} style={[styles.itemText, {color: '#3182CE'}]}>{`${item.duration} hours`}</Text>
                 </View>
             </>
@@ -262,7 +272,19 @@ const Procedures = props => {
                 />
             </LongPressWithFeedback>
         );
-        const createCopy = <ActionItem title="Create Copy" icon={<AddIcon/>} onPress={openCreateCopy}/>;
+
+        const isCreateCopyDisabled = selectedProcedures.length !== 1;
+        const copyProcedure = selectedProcedures.length === 1 ? procedures.find(item => item._id === selectedProcedures[0]) : null;
+
+        const createCopy = (
+            <ActionItem
+                title="Create Copy"
+                icon={<AddIcon strokeColor={isCreateCopyDisabled ? theme.colors['--color-gray-600'] : '#2F855A'}/>}
+                onPress={() => openCreateCopy(copyProcedure)}
+                disabled={isCreateCopyDisabled}
+                touchable={!isCreateCopyDisabled}
+            />
+        );
         const createNewProcedure = (
             <ActionItem
                 title="New Procedure"
@@ -274,7 +296,7 @@ const Procedures = props => {
         return <ActionContainer
             floatingActions={[
                 deleteAction,
-                // createCopy,
+                createCopy,
                 createNewProcedure
             ]}
             title="PROCEDURES ACTIONS"
@@ -369,27 +391,62 @@ const Procedures = props => {
             screen: 'CreateProcedure',
             initial: false,
             onCancel: () => {
-                {
-                    navigation.goBack();
-                    setFloatingAction(false);
-                }
+                navigation.goBack();
+                setFloatingAction(false);
             },
             onCreated: () => {
-                {
-                    navigation.goBack();
-                    setFloatingAction(false);
-                }
+                navigation.goBack();
+                setFloatingAction(false);
+                handleDataRefresh();
             },
         });
     };
 
-    const openCreateCopy = () => {
+    const openCreateCopy = item => {
         modal.closeModals('ActionContainerModal');
 
-        navigation.navigate('Procedures List', {
-            screen: 'CreateCopy',
+        const procedureCopy = {...item};
+
+        // modify copy object to manage attributes which can be copied
+        procedureCopy.procedureReferenceName = procedureCopy.name;
+        procedureCopy.procedureReference = procedureCopy._id;
+        procedureCopy.name = `${procedureCopy.name} - Copy`;
+        procedureCopy.physician = {
+            _id: procedureCopy.physician._id,
+            name: `Dr. ${procedureCopy.physician.surname}`
+        };
+
+        navigation.navigate('CreateProcedure', {
+            screen: 'CreateProcedure',
             initial: false,
+            referenceProcedure: procedureCopy,
+            onCancel: () => {
+                navigation.goBack();
+                setFloatingAction(false);
+            },
+            onCreated: () => {
+                navigation.goBack();
+                setFloatingAction(false);
+                handleDataRefresh();
+            },
         });
+
+        // navigation.navigate('Procedures List', {
+        //     screen: 'CreateCopy',
+        //     initial: false,
+        //     onCancel: () => {
+        //         {
+        //             navigation.goBack();
+        //             setFloatingAction(false);
+        //         }
+        //     },
+        //     onCreated: () => {
+        //         {
+        //             navigation.goBack();
+        //             setFloatingAction(false);
+        //         }
+        //     },
+        // });
     };
 
     // ############# Prepare list data

@@ -9,7 +9,7 @@ import OrderDetailsTab from '../OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../OverlayTabs/OrderItemTab';
 import OrderSuppliersTab from '../OverlayTabs/OrderSuppliersTab';
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
-import { updatePurchaseOrder } from '../../api/network';
+import { updatePurchaseOrder, updatePurchaseOrderDetails } from '../../api/network';
 import { PageContext } from "../../contexts/PageContext";
 import DetailsPage from "../common/DetailsPage/DetailsPage";
 import TabsContainer from "../common/Tabs/TabsContainerComponent";
@@ -23,8 +23,8 @@ function OrderItemPage({ route, navigation }) {
 
 
     const currentTabs = ["Details", "Items", "Suppliers"];
-    // console.log("Order:", order)
-    const { _id, supplier = {}, purchaseOrderNumber } = order;
+    // console.log("Order:", order);
+    const { _id, supplier = {}, purchaseOrderNumber, deliveryDate = "", description = "" } = order;
     const { name = "" } = supplier
 
 
@@ -37,8 +37,12 @@ function OrderItemPage({ route, navigation }) {
     const [selectedOrder, setSelectedOrder] = useState({});
     const [orderItems, setOrderItems] = useState([]);
     const [pageState, setPageState] = useState({});
-    const [fields, setFields] = useState({});
+    const [fields, setFields] = useState({
+        description,
+        deliveryDate
+    });
     const [isUpdateDone, setIsUpdateDone] = useState(false);
+    const [isUpdateDetails, setIsUpdateDetails] = useState(false);
 
     const [popoverList, setPopoverList] = useState([]);
 
@@ -52,35 +56,17 @@ function OrderItemPage({ route, navigation }) {
             handleSaveEdit();
         }
     },[pageState.isEditMode])
+
+    useEffect(()=>{
+        if(pageState.isEditMode === false && isUpdateDetails){
+            handleDetailsUpdate();
+        }
+    },[pageState.isEditMode])
     // ##### Event Handlers
 
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
-
-    // const onEditPress = (tab) => {
-    //     setEditableTab(tab)
-    //     setEditMode(!isEditMode)
-
-    //     if (isEditMode && isUpdateDone) {
-    //         if (currentTab === "Items") {
-    //             console.log("Edit Press: ", orderItems)
-    //             let dataToSend = orderItems.map(item => {
-    //                 const { amount = 0, productId = {} } = item
-    //                 return {
-    //                     amount,
-    //                     productId: productId?._id || ""
-    //                 }
-    //             })
-    //             console.log("Updated Data: ", dataToSend)
-    //             console.log("Order Id: ", _id)
-    //             updatePurchaseOrderItems(dataToSend, _id)
-    //         }
-
-
-    //     }
-
-
 
     const handleSaveEdit = () => {
         let dataToSend = orderItems.map(item => {
@@ -100,6 +86,31 @@ function OrderItemPage({ route, navigation }) {
                         onAction = {()=>{
                             updatePurchaseOrderItems(dataToSend, _id)
                             setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
+                        }}
+                        // onAction = { () => confirmAction()}
+                        message = {"Do you want to save your changes ?"}
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')}
+            })
+    }
+
+    const handleDetailsUpdate = () => {
+
+        modal.openModal(
+            'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError = {false}
+                        isEditUpdate = {true}
+                        onCancel = {()=> {
+                            modal.closeModals('ConfirmationModal');
+                            setIsUpdateDetails(false);
+                            setPageState({...pageState, isEditMode : true})
+                        }}
+                        onAction = {()=>{
+                            updateDetails();
+                            modal.closeAllModals();
                         }}
                         // onAction = { () => confirmAction()}
                         message = {"Do you want to save your changes ?"}
@@ -163,36 +174,91 @@ function OrderItemPage({ route, navigation }) {
             })
     }
 
+    const updateDetails = () =>{
+        let updatedFields = {
+            ...fields,
+            deliveryDate : fields['deliveryDate'].toString(),
+        }
+        // console.log("Error not here: ", typeof updatedFields['deliveryDate']);
+        updatePurchaseOrderDetails(_id, updatedFields)
+            .then(_ =>{
+                console.log("Success")
+                modal.openModal('ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError = {false}
+                            isEditUpdate = {false}
+                            onAction = {()=>{
+                                modal.closeModals('ConfirmationModal')
+                            }}
+
+                            onCancel = {()=>{
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')}
+                })
+            })
+            .catch(error => {
+                console.log("Update PO details error: ", error);
+                modal.openModal('ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError = {isError}
+                            isEditUpdate = {false}
+                            onAction = {()=>{
+                                modal.closeModals('ConfirmationModal')
+                            }}
+
+                            onCancel = {()=>{
+                                setPageState({
+                                    ...pageState,
+                                    isEditMode : true
+                                });
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')}
+                })
+            })
+            .finally(_=>{
+                fetchOrder(_id);
+            })
+    }
+
     const onFieldChange = (fieldName) => (value) => {
         setFields({
             ...fields,
             [fieldName]: value
-        })
+        });
+        setIsUpdateDetails(true);
     };
 
-    const handlePopovers = (popoverValue) => (popoverItem) => {
+    // const handlePopovers = (popoverValue) => (popoverItem) => {
 
-        if (!popoverItem) {
-            let updatedPopovers = popoverList.map(item => {
-                return {
-                    ...item,
-                    status: false
-                }
-            })
+    //     if (!popoverItem) {
+    //         let updatedPopovers = popoverList.map(item => {
+    //             return {
+    //                 ...item,
+    //                 status: false
+    //             }
+    //         })
 
-            setPopoverList(updatedPopovers)
-        } else {
-            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
-            const updatedPopovers = [
-                ...popoverList.slice(0, objIndex),
-                updatedObj,
-                ...popoverList.slice(objIndex + 1),
-            ];
-            setPopoverList(updatedPopovers)
-        }
+    //         setPopoverList(updatedPopovers)
+    //     } else {
+    //         const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
+    //         const updatedObj = { ...popoverList[objIndex], status: popoverValue };
+    //         const updatedPopovers = [
+    //             ...popoverList.slice(0, objIndex),
+    //             updatedObj,
+    //             ...popoverList.slice(objIndex + 1),
+    //         ];
+    //         setPopoverList(updatedPopovers)
+    //     }
 
-    }
+    // }
 
     const onItemChange = (data) => {
         // console.log("Change")
@@ -303,7 +369,12 @@ function OrderItemPage({ route, navigation }) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <OrderDetailsTab order={selectedOrder} />
+                return <OrderDetailsTab 
+                    order={selectedOrder} 
+                    onUpdate = {()=>fetchOrder(_id)}
+                    fields = {fields}
+                    onFieldChange = {onFieldChange}
+                />
             case "Items":
                 return <OrderItemTab
                     orders={orderItems}
@@ -321,18 +392,6 @@ function OrderItemPage({ route, navigation }) {
     };
 
     return (
-        // <BottomSheetContainer
-        //     isFetching={isFetching}
-        //     overlayId={name}
-        //     overlayTitle={purchaseOrderNumber}
-        //     onTabPressChange={onTabPress}
-        //     currentTabs={currentTabs}
-        //     selectedTab={currentTab}
-        //     isEditMode={isEditMode}
-        //     onEditPress={onEditPress}
-        //     overlayContent={getTabContent(currentTab)}
-        // />
-
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage

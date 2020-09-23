@@ -36,7 +36,7 @@ function PaginatorNumbers({
     return (
         <PaginatorNumbersWrapper>
             <PaginatorNumbersContainer theme={theme} hasNumberBorder={hasNumberBorder}>
-                <Number theme={theme}>{currentPage} of {totalPages || 1}</Number>
+                <Number theme={theme}>{currentPage || 1} of {totalPages || 1}</Number>
             </PaginatorNumbersContainer>
         </PaginatorNumbersWrapper>
     );

@@ -8,13 +8,13 @@ import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import { isValidNumber } from '../../utils/formatter';
 import { getPhysicians } from "../../api/network";
-import _ from "lodash";
+import _ from "lodash"; 
 // import TextEditor from "../common/Input Fields/TextEditor";
 // import TextEditor2 from "../common/Input Fields/TextEditor2";
 
 const EditableProcedureConfig = ({fields, onFieldChange, popoverList, handlePopovers}) => {
 
-    const recoveryText = {
+    const recoveryText = { 
         true: "Yes",
         false: "No"
     };

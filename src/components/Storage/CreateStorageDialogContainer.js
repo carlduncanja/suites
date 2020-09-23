@@ -4,7 +4,7 @@ import {View, StyleSheet, Text, TouchableOpacity, Alert} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
-import InputField from "../common/Input Fields/InputField";
+import InputUnitFields from "../common/Input Fields/InputUnitFields";
 import InputField2 from "../common/Input Fields/InputField2";
 import {createStorageLocation, getTheatres} from "../../api/network";
 // import NumberInputField from "../common/Input Fields/NumberInputField";
@@ -13,6 +13,13 @@ import {addStorageLocation} from "../../redux/actions/storageActions";
 import {connect} from "react-redux";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import _ from "lodash";
+import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent';
+
+import styled, {css} from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import OverlayDialogContent from '../common/Dialog/OverlayContent';
+import ConfirmationComponent from '../ConfirmationComponent';
 
 /**
  * Component to handle the create storage process.
@@ -23,9 +30,21 @@ import _ from "lodash";
  * @returns {*}
  * @constructor
  */
+
+const DialogContent = styled.View`
+    flex:1;
+    width : 100%;
+    height : 160px;
+    padding-top : ${ ({theme}) => theme.space['--space-40']};
+    padding-bottom : ${ ({theme}) => theme.space['--space-40']};
+    padding-right : ${ ({theme}) => theme.space['--space-24']};
+    padding-left : ${ ({theme}) => theme.space['--space-24']};
+`;
+
 function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation}) {
 
     const modal = useModal();
+    const theme = useTheme();
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
 
@@ -119,8 +138,11 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     };
 
     const onPositiveClick = () => {
-        createStorageCall()
+        
+        createStorageCall();
     };
+
+
 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
@@ -134,17 +156,57 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
         console.log(fields);
         createStorageLocation(fields)
             .then(data => {
+                console.log("Data: ", data);
                 modal.closeAllModals();
-                Alert.alert("Success", `New storage location ${fields['name']}, has been created.`)
-                setTimeout(() => {
-                    onCreated(data)
-                }, 200);
-                addStorageLocation(data);
+                modal.openModal('ConfirmationModal',{
+                    content : (
+                        <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {false}
+                            onAction = {()=>{
+                                onCreated(data);
+                                // addStorageLocation(data);
+                                modal.closeAllModals();
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeAllModals();
+                        console.log('Modal closed');
+                    },
+                })
+                
+                // Alert.alert("Success", `New storage location ${fields['name']}, has been created.`)
+                // setTimeout(() => {
+                //     onCreated(data)
+                // }, 200);
+                // addStorageLocation(data);
             })
             .catch(error => {
                 // todo handle error
+                modal.openModal('ConfirmationModal',{
+                    content : (
+                        <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onAction = {()=>{
+                                modal.closeModals();
+                                onCancel();
+                            }}
+                            onCancel = {()=>{
+                                modal.closeAllModals();
+                                onCancel();
+                            }}
+                        />
+                    ),
+                    onClose : () =>{
+                        modal.closeModals();
+                        onCancel();
+                    }
+                })
+                
                 console.log("failed to create storage location", error)
-                Alert.alert("Failed", `Failed to create new storage location ${fields['name']}.`)
+                // Alert.alert("Failed", `Failed to create new storage location ${fields['name']}.`)
             })
             .finally(_ => {
             });
@@ -160,14 +222,41 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
             positiveText={"DONE"}
             // handlePopovers = {handlePopovers}
         >
-
-            <View style={styles.container}>
+ 
+            <>
                 <DialogTabs
                     tabs={dialogTabs}
                     tab={selectedIndex}
                 />
+                <DialogContent theme = {theme}>
+                    <Row>
+                        <FieldContainer>
+                            <InputField2 
+                                label={"Location Name"}
+                                onChangeText={onFieldChange('name')}
+                                value={fields['name']}
+                                onClear={() => onFieldChange('name')('')}
+                            />
+                        </FieldContainer>
 
-                <TouchableOpacity
+                        <FieldContainer>
+                            <InputUnitFields
+                                label={"Capacity"}
+                                onChangeText={(value) => {
+                                    if (/^\d+$/g.test(value) || !value) {
+                                        onFieldChange('capacity')(value)
+                                    }
+                                }}
+                                value={fields['capacity']}
+                                keyboardType={'number-pad'}
+                                onClear={() => onFieldChange('name')('')}
+                                units = {['units']}
+                            />
+                        </FieldContainer>
+                    </Row>
+                </DialogContent>
+
+                {/* <TouchableOpacity
                     onPress = {()=>handlePopovers(false)()}
                     activeOpacity = {1}
                 >
@@ -215,13 +304,13 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                                     isPopoverOpen = {assignedPop[0].status}
                                 />
                             </View>
-                            {/* <View style={styles.inputWrapper}/> */}
+                            {/* <View style={styles.inputWrapper}/> 
                         </View>
                     </View>
 
                 </TouchableOpacity>
-
-            </View>
+ */}
+            </>
 
 
         </OverlayDialog>
@@ -257,7 +346,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapDispatcherToProps = {
+const mapDispatcherToProps = { 
     addStorageLocation
 };
 

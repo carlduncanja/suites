@@ -28,7 +28,7 @@ const BannerText = styled.Text( ({theme}) => ({
     color : theme.colors['--default-shade-white'],
 }));
 
-const Table = (props) => {
+const Table = (props) => { 
 
     const {
         data = [],

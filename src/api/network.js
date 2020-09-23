@@ -56,7 +56,8 @@ import {
     assignEquipmentToLocation,
     users,
     createCategoryEndpoint,
-    updateEquipmentEndpoint
+    updateEquipmentEndpoint, purchaseOrdersArchiveEndpoint,
+    updatePurchaseOrderDetailsEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink } from '../const/documentGenerationEndpoints';
 
@@ -199,7 +200,8 @@ export const createInventoryVariant = async (referenceId, itemToCreate) => suite
     .then(handleResponse)
     .catch(handleError);
 
-export const createTransfer = async (groupId, variantId, transferData) => suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
+export const createTransfer = async (groupId, variantId, transferData) => 
+    suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
     .then(handleResponse)
     .catch(handleError);
 
@@ -455,7 +457,7 @@ export const getSuppliers = async (query, max, page) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-export const createSuppier = async supplierToCreate => suitesAxiosInstance
+export const createSupplier = async supplierToCreate => suitesAxiosInstance
     .post(suppliersEndpoint, supplierToCreate)
     .then(handleResponse)
     .catch(handleError);
@@ -464,7 +466,6 @@ export const getSupplierById = async id => suitesAxiosInstance
     .get(supplierEndpoint(id))
     .then(handleResponse)
     .catch(handleError);
-
 
 export const updateSupplierCall = async (id, data) => suitesAxiosInstance
     .put(supplierEndpoint(id), data)
@@ -520,6 +521,22 @@ export const updatePurchaseOrder = async (purchaseOrderId, data) => suitesAxiosI
     .then(handleResponse)
     .catch(handleError);
 
+export const updatePurchaseOrderDetails = async (purchaseOrderId, data) => 
+    suitesAxiosInstance.put(updatePurchaseOrderDetailsEndpoint(purchaseOrderId), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const removePurchaseOrders = async data => suitesAxiosInstance
+    .delete(purchaseOrdersEndpoint, { data })
+    .then(handleResponse)
+    .catch(handleError);
+
+export const archivePurchaseOrders = async data => suitesAxiosInstance
+    .delete(purchaseOrdersArchiveEndpoint, { data })
+    .then(handleResponse)
+    .catch(handleError);
+
+// ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
     .then(handleResponse)
     .catch(handleError);

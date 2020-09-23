@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import SvgIcon from "../../../assets/SvgIcon";
+import styled, {css} from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import SvgIcon from '../../../assets/SvgIcon';
 import ClearList from '../../../assets/svg/clearList';
 import CalendarIcon from '../../../assets/svg/calendar';
-import Button from "./Buttons/Button";
-import Table from "./Table/Table"
+import Button from './Buttons/Button';
+import Table from './Table/Table';
 import Paginator from './Paginators/Paginator';
 import SearchableOptionsField from './Input Fields/SearchableOptionsField';
 import CreationDialogTabs from './Dialog/CreationDialogTabs';
 import DateInputField from './Input Fields/DateInputField';
-import {useNextPaginator,usePreviousPaginator} from '../../helpers/caseFilesHelpers';
-import OverlayDialog from "./Dialog/OverlayDialog";
-import DialogTabs from "./Dialog/DialogTabs";
-import styled, {css} from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import {useNextPaginator, usePreviousPaginator} from '../../helpers/caseFilesHelpers';
+import OverlayDialog from './Dialog/OverlayDialog';
+import DialogTabs from './Dialog/DialogTabs';
 
 const Overlayrapper = styled.View`
     height : 558px;
@@ -35,7 +35,7 @@ const ContentContainer = styled.View`
 const SearchableFieldContainer = styled.View`
     z-index : 1;
     margin-bottom : 24px;
-`
+`;
 
 const ListContainerWrapper = styled.View`
     height : 299px;
@@ -80,9 +80,9 @@ const ClearListContainer = styled.TouchableOpacity`
     justify-content : space-between;
 `;
 
-const ClearListText = styled.Text( ({theme}) =>({
+const ClearListText = styled.Text(({theme}) => ({
     ...theme.font['--text-xs-regular'],
-    color : theme.colors['--color-gray-600'],
+    color: theme.colors['--color-gray-600'],
 }));
 
 const DateWrapper = styled.View`
@@ -101,78 +101,77 @@ const DateContainer = styled.View`
     padding-right : ${ ({theme}) => theme.space['--space-8']};
 `;
 
-function CartCard(props){ 
-
-    const { 
-        title = "", 
+function CartCard(props) {
+    const {
+        title = '',
         onClearPress = () => {},
-        closeModal = () => {}, 
-        data = [], 
-        selectedTab = 0, 
+        closeModal = () => {},
+        data = [],
+        selectedTab = 0,
         listItemFormat = () => {},
         tabs,
-        headers = [], 
+        headers = [],
         isCheckBox = false,
         onPressTab = () => {},
         hasFooter = false,
         onFooterPress = () => {},
-        footerTitle = "DONE",
-        searchText = "",
+        footerTitle = 'DONE',
+        searchText = '',
         searchResults = [],
         searchQuery,
         onSearchChange = () => {},
         onSelectItem = () => {},
         handleCloseDialog = () => {},
-        hasSearch = true, 
-        onDateChange  = () => {},
+        hasSearch = true,
+        onDateChange = () => {},
         errors = {errors},
         fields
-    } = props
+    } = props;
 
     const theme = useTheme();
 
-    const recordsPerPage = 4
-    const dataLength = data.length
-    const totalPages = Math.ceil(dataLength/recordsPerPage)
+    const recordsPerPage = 4;
+    const dataLength = data.length;
+    const totalPages = Math.ceil(dataLength / recordsPerPage);
 
-    const [currentPagePosition, setCurrentPagePosition] = useState(1)
-    const [currentPageListMin, setCurrentPageListMin] = useState(0)
-    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
 
-    const [selectedItem, setSelectedItem] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(false);
 
     const goToNextPage = () => {
-        if (currentPagePosition < totalPages){
-            let {currentPage,currentListMin,currentListMax} = useNextPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax)
+        if (currentPagePosition < totalPages) {
+            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
-            setCurrentPageListMax(currentListMax)
+            setCurrentPageListMax(currentListMax);
         }
     };
 
     const goToPreviousPage = () => {
-        if (currentPagePosition > 1){
-            let {currentPage,currentListMin,currentListMax} = usePreviousPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax)
+        if (currentPagePosition > 1) {
+            const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
-            setCurrentPageListMax(currentListMax)
+            setCurrentPageListMax(currentListMax);
         }
     };
 
-    const onItemSelected = (item) => {
-        setSelectedItem(item)
-        onSelectItem(item)
-    }
+    const onItemSelected = item => {
+        setSelectedItem(item);
+        onSelectItem(item);
+    };
 
     const onClearItem = () => {
-        onSearchChange('')
-        setSelectedItem(false)
-    }
+        onSearchChange('');
+        setSelectedItem(false);
+    };
 
-    let dataToDisplay = [...data]
-    dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax)
+    let dataToDisplay = [...data];
+    dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
-    return(
+    return (
 
         <Overlayrapper>
             <OverlayContainer>
@@ -185,74 +184,68 @@ function CartCard(props){
                 >
                     {tabs &&
                         <CreationDialogTabs
-                            tabs = {tabs}
-                            tab = {selectedTab}
+                            tabs={tabs}
+                            tab={selectedTab}
                         />
                     }
-                    
 
-                    <ContentWrapper theme = {theme}>
+                    <ContentWrapper theme={theme}>
                         <ContentContainer>
 
                             <DateWrapper>
-                                <DateContainer theme = {theme}>
+                                <DateContainer theme={theme}>
                                     <DateInputField
-                                        placeholder = "Delivery Date"
-                                        borderColor = "--color-gray-400"
-                                        hasBorder = {false}
-                                        minDate = {new Date()}
-                                        onDateChange = {onDateChange('deliveryDate')}
-                                        value={fields['deliveryDate']}
-                                        onClear={()=>onDateChange('deliveryDate')('')}
-                                        mode={"date"}
-                                        format={"YYYY-MM-DD"}
-                                        errorMessage={"Choose an esimated date"}
-                                        hasError={errors["deliveryDate"]}
+                                        placeholder="Delivery Date"
+                                        borderColor="--color-gray-400"
+                                        hasBorder={false}
+                                        minDate={new Date()}
+                                        onDateChange={onDateChange('deliveryDate')}
+                                        value={fields.deliveryDate}
+                                        onClear={() => onDateChange('deliveryDate')('')}
+                                        mode="date"
+                                        format="YYYY-MM-DD"
+                                        errorMessage="Set an estimated date"
+                                        hasError={errors.deliveryDate}
                                     />
                                     <CalendarIcon/>
                                 </DateContainer>
                             </DateWrapper>
 
-                            
-                            <ListContainerWrapper theme = {theme}>
+                            <ListContainerWrapper theme={theme}>
                                 <ListContentContainer>
 
-                                    <List theme = {theme}>
+                                    <List theme={theme}>
                                         <Table
-                                            data = {dataToDisplay}
-                                            currentListMin = {currentPageListMin}
-                                            currentListMax = {currentPageListMax}
-                                            listItemFormat = {listItemFormat}
-                                            headers = {headers}
-                                            isCheckbox = {isCheckBox}
+                                            data={dataToDisplay}
+                                            currentListMin={currentPageListMin}
+                                            currentListMax={currentPageListMax}
+                                            listItemFormat={listItemFormat}
+                                            headers={headers}
+                                            isCheckbox={isCheckBox}
                                         />
                                     </List>
-                               
-
 
                                     <FooterContainer>
 
                                         <PaginatorContainer theme={theme}>
                                             <Paginator
-                                                currentPage = {currentPagePosition}
-                                                totalPages = {totalPages}
-                                                goToNextPage = {goToNextPage}
-                                                goToPreviousPage = {goToPreviousPage}
-                                                hasNumberBorder = {false}
+                                                currentPage={currentPagePosition}
+                                                totalPages={totalPages}
+                                                goToNextPage={goToNextPage}
+                                                goToPreviousPage={goToPreviousPage}
+                                                hasNumberBorder={false}
                                             />
                                         </PaginatorContainer>
-                                        
-                                        <ClearListContainer onPress = {onClearPress}>
-                                            <ClearListText theme = {theme}>Clear List</ClearListText>
+
+                                        <ClearListContainer onPress={onClearPress}>
+                                            <ClearListText theme={theme}>Clear List</ClearListText>
                                             <ClearList/>
                                         </ClearListContainer>
 
                                     </FooterContainer>
-                            
 
                                 </ListContentContainer>
                             </ListContainerWrapper>
-
 
                         </ContentContainer>
                     </ContentWrapper>
@@ -261,185 +254,183 @@ function CartCard(props){
 
             </OverlayContainer>
         </Overlayrapper>
-        
-        // <View style={styles.container}>
-        //     <View style={styles.headerContainer}>
-        //         <Text>{title}</Text>
-        //         <TouchableOpacity onPress={()=>closeModal()} style={{alignItems:'flex-end'}}>
-        //             <SvgIcon iconName = "searchExit" strokeColor="#718096"/>
-        //         </TouchableOpacity>
-        //     </View>
 
-        //     {
-        //         tabs && <View style={styles.tabContainer}>
-        //             {
-        //                 tabs.map((tab,index)=>{
-        //                     return (
-        //                         <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null}]} key={index}>
-        //                             <Button
-        //                                 backgroundColor = {tab === selectedTab ? "#FFFFFF" : null}
-        //                                 color = {tab === selectedTab ? "#3182CE" : "#A0AEC0" }
-        //                                 buttonPress = {()=>{onPressTab(tab)}}
-        //                                 title = {tab}
-        //                             />
-        //                         </View>
-        //                     )
-        //                 })
-        //             }
-        //         </View>
-            
-        //     }
+    // <View style={styles.container}>
+    //     <View style={styles.headerContainer}>
+    //         <Text>{title}</Text>
+    //         <TouchableOpacity onPress={()=>closeModal()} style={{alignItems:'flex-end'}}>
+    //             <SvgIcon iconName = "searchExit" strokeColor="#718096"/>
+    //         </TouchableOpacity>
+    //     </View>
 
-        //     <View style={{margin: 20}}>
+    //     {
+    //         tabs && <View style={styles.tabContainer}>
+    //             {
+    //                 tabs.map((tab,index)=>{
+    //                     return (
+    //                         <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null}]} key={index}>
+    //                             <Button
+    //                                 backgroundColor = {tab === selectedTab ? "#FFFFFF" : null}
+    //                                 color = {tab === selectedTab ? "#3182CE" : "#A0AEC0" }
+    //                                 buttonPress = {()=>{onPressTab(tab)}}
+    //                                 title = {tab}
+    //                             />
+    //                         </View>
+    //                     )
+    //                 })
+    //             }
+    //         </View>
 
-        //         <View style={[styles.search, {zIndex:1}]}>
-        //             <SearchableOptionsField
-        //                 value={selectedItem}
-        //                 text={searchText}
-        //                 oneOptionsSelected={(item)=> onItemSelected(item)}
-        //                 onChangeText={(value) => {onSearchChange(value)}}
-        //                 onClear={()=>{onClearItem()}}
-        //                 options={searchResults}
-        //                 handlePopovers={() => {
-        //                     // console.log("handle popovers");
-        //                 }}
-        //                 isPopoverOpen={searchQuery}
-        //             />
-        //         </View>
+    //     }
 
-        //         <View style={styles.list}>
-        //             <Table
-        //                 data = {dataToDisplay}
-        //                 currentListMin = {currentPageListMin}
-        //                 currentListMax = {currentPageListMax}
-        //                 listItemFormat = {listItemFormat}
-        //                 headers = {headers}
-        //                 isCheckbox = {isCheckBox}
-        //             />
-        //         </View>
+    //     <View style={{margin: 20}}>
 
-        //         <View style={{justifyContent:'space-between', flexDirection:'row'}}>
+    //         <View style={[styles.search, {zIndex:1}]}>
+    //             <SearchableOptionsField
+    //                 value={selectedItem}
+    //                 text={searchText}
+    //                 oneOptionsSelected={(item)=> onItemSelected(item)}
+    //                 onChangeText={(value) => {onSearchChange(value)}}
+    //                 onClear={()=>{onClearItem()}}
+    //                 options={searchResults}
+    //                 handlePopovers={() => {
+    //                     // console.log("handle popovers");
+    //                 }}
+    //                 isPopoverOpen={searchQuery}
+    //             />
+    //         </View>
 
-        //             <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
-        //                 <Paginator
-        //                     currentPage = {currentPagePosition}
-        //                     totalPages = {totalPages}
-        //                     goToNextPage = {goToNextPage}
-        //                     goToPreviousPage = {goToPreviousPage}
-        //                 />
-        //             </View>
-        //             <TouchableOpacity 
-        //                 style={styles.clearListStyle}
-        //                 onPress = {onClearPress}
-        //             >
-        //                 <Text style={{color:'#718096', fontSize:12}}>Clear List</Text>
-        //                 <ClearList/>
-        //             </TouchableOpacity>
+    //         <View style={styles.list}>
+    //             <Table
+    //                 data = {dataToDisplay}
+    //                 currentListMin = {currentPageListMin}
+    //                 currentListMax = {currentPageListMax}
+    //                 listItemFormat = {listItemFormat}
+    //                 headers = {headers}
+    //                 isCheckbox = {isCheckBox}
+    //             />
+    //         </View>
 
-        //         </View>
-            
-        //     </View>
+    //         <View style={{justifyContent:'space-between', flexDirection:'row'}}>
 
-        //     {
-        //         hasFooter &&
-        //         <View style={[styles.footer,{zIndex:-1}]}>
-        //             <Button
-        //                 backgroundColor = "#FFFFFF"
-        //                 title = {footerTitle}
-        //                 buttonPress = {onFooterPress}
-        //                 color = "#4299E1"
-        //             />
-        //         </View>
-        //     }
-        
-        // </View>
-    
-    )
+    //             <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
+    //                 <Paginator
+    //                     currentPage = {currentPagePosition}
+    //                     totalPages = {totalPages}
+    //                     goToNextPage = {goToNextPage}
+    //                     goToPreviousPage = {goToPreviousPage}
+    //                 />
+    //             </View>
+    //             <TouchableOpacity
+    //                 style={styles.clearListStyle}
+    //                 onPress = {onClearPress}
+    //             >
+    //                 <Text style={{color:'#718096', fontSize:12}}>Clear List</Text>
+    //                 <ClearList/>
+    //             </TouchableOpacity>
+
+    //         </View>
+
+    //     </View>
+
+    //     {
+    //         hasFooter &&
+    //         <View style={[styles.footer,{zIndex:-1}]}>
+    //             <Button
+    //                 backgroundColor = "#FFFFFF"
+    //                 title = {footerTitle}
+    //                 buttonPress = {onFooterPress}
+    //                 color = "#4299E1"
+    //             />
+    //         </View>
+    //     }
+
+    // </View>
+
+    );
 }
 
-export default CartCard
+export default CartCard;
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         // flex:1,
-        backgroundColor:'#FFFFFF',
-        borderRadius:8,
-        width:550,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 8,
+        width: 550,
         // backgroundColor:'red'
     },
-    headerContainer:{
-        flexDirection:'row',
-        justifyContent:'space-between',
-        padding:10,
-        borderBottomColor:'#CCD6E0',
-        borderBottomWidth:1
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 10,
+        borderBottomColor: '#CCD6E0',
+        borderBottomWidth: 1
     },
-    headerTitle:{
-        fontSize:16,
-        color:"#323843"
+    headerTitle: {
+        fontSize: 16,
+        color: '#323843'
     },
-    tabContainer:{
-        flexDirection:'row',
-        justifyContent:'center',
-        alignItems:'center',
-        backgroundColor:'#EEF2F6',
-        paddingTop:15,
-        paddingBottom:15
+    tabContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#EEF2F6',
+        paddingTop: 15,
+        paddingBottom: 15
     },
-    tab:{
+    tab: {
         borderRadius: 4,
-        padding:10,
-        paddingBottom:6,
-        paddingTop:6
+        padding: 10,
+        paddingBottom: 6,
+        paddingTop: 6
     },
-    list:{
+    list: {
         // margin:15,
-        borderColor:"#CCD6E0",
-        borderWidth:1,
-        borderRadius:8,
-        padding:10,
-        marginTop:15,
-        marginBottom:15
+        borderColor: '#CCD6E0',
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: 10,
+        marginTop: 15,
+        marginBottom: 15
     },
-    listDataContainer:{
-        flexDirection:'row',
-        justifyContent:'space-between'
+    listDataContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
-    dataText:{
-        fontSize:16
+    dataText: {fontSize: 16},
+    headerText: {
+        fontSize: 12,
+        color: '#718096',
+        fontWeight: '500'
     },
-    headerText:{
-        fontSize:12,
-        color:"#718096",
-        fontWeight:'500'
+    clearListStyle: {
+        flexDirection: 'row',
+        width: 100,
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
     },
-    clearListStyle:{
-        flexDirection:'row',
-        width:100,
-        alignItems:"center",
-        justifyContent:'space-evenly',
-    },
-    paginationContainer:{
-        borderColor:'#CCD6E0',
-        borderWidth:1,
-        backgroundColor:'#FFFFFF',
+    paginationContainer: {
+        borderColor: '#CCD6E0',
+        borderWidth: 1,
+        backgroundColor: '#FFFFFF',
         borderRadius: 4,
-        padding:8,
-        alignSelf:'flex-end',
+        padding: 8,
+        alignSelf: 'flex-end',
     },
-    footer:{
+    footer: {
         // backgroundColor:'#FFFFFF',
-        borderTopWidth:1,
-        borderTopColor:'#CCD6E0',
-        padding:5,
-        paddingBottom:20,
-        paddingTop:20
+        borderTopWidth: 1,
+        borderTopColor: '#CCD6E0',
+        padding: 5,
+        paddingBottom: 20,
+        paddingTop: 20
     },
-    search:{
-        height:40,
-        backgroundColor:'#FFFFFF',
+    search: {
+        height: 40,
+        backgroundColor: '#FFFFFF',
         // borderColor:'#CCD6E0',
         // borderWidth:1,
         // borderRadius:8
     }
-})
+});

@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { getInventoryVariantByGroup, updateInventoryGroupCall, updateInventoryVariantCall } from '../../api/network';
 import InventoryGroupGeneral from '../../components/OverlayTabs/InventoryGroupGeneral';
 import InventoryVariantGeneral from '../../components/OverlayTabs/InventoryVariantGeneral';
+import TransfersOverlayTab from '../../components/OverlayTabs/TransfersOverlayTab';
 import InventoryStorageLocationsTab from '../../components/OverlayTabs/InventoryStorageLocationsTab';
 import ConfirmationComponent from "../../components/ConfirmationComponent";
 import {useModal} from "react-native-modalfy";
@@ -15,7 +16,7 @@ function InventoryVariantPage({ route, navigation }){
 
     const { data = {}, isEdit = false} = route.params;
     const modal = useModal();
-    console.log("Data: ", data)
+    // console.log("Data: ", data)
     const { name = "", _id = "", groupName = "", groupId = "" } = data
     const tabs = ["Details","Storage Locations", "Transfers", "Suppliers"];
 
@@ -130,6 +131,8 @@ function InventoryVariantPage({ route, navigation }){
                     selectedVariant = {selectedVariant}
                     groupId = {groupId}
                 />
+            case "Transfers" :
+                return <TransfersOverlayTab tranferItems = {[]}/>
             default:
                 break;
         }

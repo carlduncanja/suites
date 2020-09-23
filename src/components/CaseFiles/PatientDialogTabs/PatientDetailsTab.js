@@ -10,7 +10,7 @@ import DateInputField from '../../common/Input Fields/DateInputField';
 import { isValidDOB } from '../../../utils/formatter';
 
 const Space = styled.View`
-   width:  ${({theme}) => theme.space['--space-24']}
+   width:  ${({theme}) => theme.space['--space-24']};
 `;
 
 const RowWrapper = styled.View`
