@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {View, StyleSheet, Text} from "react-native";
 import PropTypes from 'prop-types';
 import Table from "../common/Table/Table";
@@ -7,57 +7,33 @@ import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import Footer from '../common/Page/Footer';
+import Item from '../common/Table/Item';
+import DataItem from '../common/List/DataItem';
+import LongPressWithFeedback from "../common/LongPressWithFeedback";
+import ActionContainer from "../common/FloatingAction/ActionContainer";
+import ActionItem from "../common/ActionItem";
+import {LONG_PRESS_TIMER} from '../../const';
+import { useModal } from 'react-native-modalfy';
+import WasteIcon from "../../../assets/svg/wasteIcon";
  
-const uiData = [
-    // transfer data;
-    {
-        from: "OR1: Cabinet 1",
-        to: "OR1: Cabinet 2",
-        product: "Normal Saline",
-        date: new Date(),
-        quantity: 25,
-        status: "COMPLETED"
-    },
-    {
-        from: "OR1: Cabinet 1",
-        to: "OR1: Cabinet 2",
-        product: "Normal Saline",
-        date: new Date(),
-        quantity: 35,
-        status: "COMPLETED"
-    },
-
-];
-
-
 const PendingTransferHeadings = [
     {
         name: 'Transfer',
         alignment: 'flex-start',
-        styles: {
-            flex: 1
-        }
+        flex : 1.5,
+        
     },
     {
         name: 'Product',
-        alignment: 'center',
-        styles: {
-            flex: 1
-        }
+        alignment: 'flex-start',
     },
     {
         name: 'Date',
-        alignment: 'center',
-        styles: {
-            flex: 1
-        }
+        alignment: 'flex-start',
     },
     {
         name: 'Quantity',
         alignment: 'center',
-        styles: {
-            flex: 1
-        }
     }
 ];
 
@@ -65,23 +41,15 @@ const CompletedTransferHeadings = [
     {
         name: 'Transfer',
         alignment: 'flex-start',
-        styles: {
-            flex: 2
-        }
+        flex:2,
     },
     {
         name: 'Date',
         alignment: 'flex-start',
-        styles: {
-            flex: 1
-        }
     },
     {
         name: 'Product',
         alignment: 'flex-start',
-        styles: {
-            flex: 1
-        }
     }
 ];
 
@@ -100,63 +68,107 @@ const SectionText = styled.Text( ({theme}) => ({
 function TransfersOverlayTab({transferItems = []}) {
 
     const theme = useTheme();
+    const modal = useModal();
 
-    const completedTransferListItem = ({from, to, product, quantity, date}) => {
-        return (<View
-            style={{flexDirection: 'row', alignItems: 'flex-start', marginBottom: 32}}>
+    const [pendingCheckedItems, setPendingCheckedItems] = useState([]);
+    const [isFloatingDisabled, setFloatingAction] = useState(false);
+
+    const pendingItems = transferItems.filter(item => item?.state === 'pending');
+    const completedItems = transferItems.filter( item => item?.state === 'complete');
+
+    const onItemCheckbox = (item) => {
+
+    }
+
+    const toggleActionButton = () => {
+        setFloatingAction(true)
+
+        modal.openModal("ActionContainerModal",
+            {
+                actions: floatingActions(),
+                title: "SUPPLIER ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                },
+            })
+    }
+
+    const floatingActions = () =>{
+        let isDisabled = pendingCheckedItems.length === 0 ? true : false;
+        let isDisabledColor = pendingCheckedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
+        const deleteItem =
+            <LongPressWithFeedback
+                pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                onLongPress={onDeleteItems}
+                isDisabled = {isDisabled}
+            >
+                <ActionItem
+                    title={"Hold to Delete"}
+                    icon={<WasteIcon strokeColor = {isDisabledColor}/>}
+                    onPress={()=>{}}
+                    disabled = {isDisabled}
+                    touchable={false}
+                />
+            </LongPressWithFeedback>;
+
+        return <ActionContainer
+            floatingActions={[
+                deleteItem,
+            ]}
+            title={"SUPPLIER ACTIONS"}
+        />
+    }
+
+    const onDeleteItems = () =>{
+
+    }
+
+    const completedTransferListItem = ({from, to, product, amount, dateCompleted = ""}) => {
+        const { inventoryName = "" } = inventoryLocation
+        return (
+        <>
             <View style={[styles.item, {flex: 2, justifyContent: 'space-between', paddingRight: 20}]}>
                 <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{from}</Text></View>
                 <ArrowRightIcon/>
                 <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{to}</Text></View>
             </View>
 
-            <View style={[styles.item, {justifyContent: 'flex-start'}]}>
-                <Text style={styles.itemText}>
-                    {formatDate(date, "MM/DD/YYYY")}
-                </Text>
-            </View>
-
-            <View style={[styles.item, {justifyContent: 'flex-start'}]}>
-                <Text style={styles.itemText}>
-                    {product}({quantity})
-                </Text>
-            </View>
-        </View>)
+            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {formatDate(dateCompleted, "DD/MM/YYYY")}/>
+            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {`${inventoryName} ${amount}`}/>
+        </>)
     };
 
-    const pendingTransferListItem = ({from, to, product, quantity, date}) => {
-        return (<View
-            style={{flexDirection: 'row', alignItems: 'flex-start', marginBottom: 32}}>
-            <View style={[styles.item, {justifyContent: 'space-between', paddingRight: 20}]}>
-                <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{from}</Text></View>
-            </View>
-
-            <View style={[styles.item, {justifyContent: 'center'}]}>
-                <Text style={styles.itemText}>
-                    {product}
-                </Text>
-            </View>
-
-            <View style={[styles.item, {justifyContent: 'center'}]}>
-                <Text style={styles.itemText}>
-                    {formatDate(date, "MM/DD/YYYY")}
-                </Text>
-            </View>
-
-            <View style={[styles.item, {justifyContent: 'center'}]}>
-                <Text style={styles.itemText}>
-                    {quantity}
-                </Text>
-            </View>
-        </View>)
+    const pendingTransferListItem = ({from, to, product, amount, dateGenerated, inventoryLocation}) => {
+        const { inventoryName = "" } = inventoryLocation
+        return (
+        <>
+            <DataItem  flex = {1.5} fontStyle = "--text-base-medium" color = "--color-blue-600" text = {from}/>
+            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {inventoryName}/>
+            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {formatDate(dateGenerated, "DD/MM/YYYY")}/>
+            <DataItem align = "center" fontStyle = "--text-base-medium" color = "--color-green-600" text = {`+ ${amount}`}/>
+        </>)
     };
 
     const renderCompleteItem = (item) => {
-        return completedTransferListItem(item)
+
+        return <Item
+            itemView = {completedTransferListItem(item)}
+            hasCheckBox = {false}
+            onItemPress = {()=>{}}
+        />
+        
     };
 
     const renderPendingItem = (item) => {
-        return pendingTransferListItem(item)
+        const { _id = "" } = item
+        return <Item
+            itemView = {pendingTransferListItem(item)}
+            hasCheckBox = {true}
+            isChecked = {pendingCheckedItems.includes(_id)}
+            onCheckBoxPress = {onItemCheckbox(item)}
+            onItemPress = {()=>{}}
+        />
+        
     };
 
 
@@ -165,10 +177,10 @@ function TransfersOverlayTab({transferItems = []}) {
             <SectionContainer>
                 <SectionText>Pending</SectionText>
                 <Table
-                    data={transferItems}
+                    data={pendingItems}
                     listItemFormat={renderPendingItem}
                     headers={PendingTransferHeadings}
-                    isCheckbox={false}
+                    isCheckbox={true}                    
                 />
             </SectionContainer>
 
@@ -177,7 +189,7 @@ function TransfersOverlayTab({transferItems = []}) {
             >
                 <SectionText>Completed</SectionText>
                 <Table
-                    data={transferItems}
+                    data={completedItems}
                     listItemFormat={renderCompleteItem}
                     headers={CompletedTransferHeadings}
                     isCheckbox={false}
@@ -188,6 +200,7 @@ function TransfersOverlayTab({transferItems = []}) {
                 hasPaginator = {false}
                 hasActionButton = {true}
                 hasActions = {true}
+                toggleActionButton = {toggleActionButton}
             />
         </>
 
