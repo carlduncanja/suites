@@ -1,40 +1,42 @@
 import React, {useRef, useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, TextInput, FlatList, TouchableOpacity, SafeAreaView} from "react-native";
-import IconButton from "../Buttons/IconButton";
-import RemoveIcon from "../../../../assets/svg/removeIcon";
-import ClearIcon from "../../../../assets/svg/clearIcon";
+import {View, StyleSheet, Text, TextInput, FlatList, TouchableOpacity, SafeAreaView} from 'react-native';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import Styled from '@emotion/native';
+import IconButton from '../Buttons/IconButton';
+import RemoveIcon from '../../../../assets/svg/removeIcon';
+import ClearIcon from '../../../../assets/svg/clearIcon';
 import InputLabelComponent from '../InputLablel';
 import InputContainerComponent from '../InputContainerComponent';
 import InputErrorComponent from '../InputErrorComponent';
 
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
 import MultipleShadowsContainer from '../MultipleShadowContainer';
 
-import Styled from "@emotion/native";
-import {shadow} from "../../../styles";
+import {shadow} from '../../../styles';
 
-const optionsStyles = {
-    optionsContainer: {
-        backgroundColor: "rgba(255, 255, 255, 0)"
-    }
-};
+const optionsStyles = {optionsContainer: {backgroundColor: 'rgba(255, 255, 255, 0)'}};
 
 const shadows = [
     {
         shadowColor: 'black',
-        shadowOffset: {width: 10, height: 0},
+        shadowOffset: {
+            width: 10,
+            height: 0
+        },
         shadowOpacity: 0.1,
         shadowRadius: 15
     },
     {
         shadowColor: 'black',
-        shadowOffset: {width: 4, height: 0},
+        shadowOffset: {
+            width: 4,
+            height: 0
+        },
         shadowOpacity: 0.05,
         shadowRadius: 6
     },
-]
+];
 
 const IconContainer = styled.View`
     position: absolute;
@@ -131,32 +133,30 @@ const TextInputContainer = styled.View`
     height : 100%;
     width : 100%;
     border-width: 1px;
-    border-color: ${({theme, hasError}) => hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
-    background-color : ${({theme, enabled}) => enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100']};
+    border-color: ${({theme, hasError}) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
+    background-color : ${({theme, enabled}) => (enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'])};
     border-radius: 4px;
     justify-content : center;
-    /* box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null}; */
+    /* box-shadow : ${({isFocussed, theme}) => (isFocussed ? theme.shadow['--shadow-lg'] : null)}; */
 `;
 
-
 function SearchableOptionsField({
-                                    text,
-                                    label,
-                                    options,
-                                    oneOptionsSelected,
-                                    onChangeText,
-                                    placeholder = "",
-                                    onClear,
-                                    enabled = true,
-                                    value,
-                                    isPopoverOpen = () => {
-                                    },
-                                    handlePopovers = () => {
-                                    },
-                                    hasError = false,
-                                    errorMessage = ""
-                                }) {
-
+    text,
+    label,
+    options,
+    oneOptionsSelected,
+    onChangeText,
+    placeholder = '',
+    onClear,
+    enabled = true,
+    value,
+    isPopoverOpen = () => {
+    },
+    handlePopovers = () => {
+    },
+    hasError = false,
+    errorMessage = ''
+}) {
     const textInputRef = useRef();
 
     const theme = useTheme();
@@ -165,31 +165,37 @@ function SearchableOptionsField({
 
     useEffect(() => {
         setSelectedValue(value);
-    }, [value])
+    }, [value]);
 
     // console.log("selected value", value);
 
-    const onOptionPress = (option) => {
-
+    const onOptionPress = option => {
         setSelectedValue(option);
         if (textInputRef) {
             textInputRef.current.clear();
         }
 
-        oneOptionsSelected(option)
+        oneOptionsSelected(option);
+
+        // to clear the search field after selecting an item
+        onClearPress();
     };
 
     const onClearPress = () => {
         setSelectedValue(false);
-        onClear()
+        onClear();
     };
 
-    const renderOptions = ({item}) => {
-        return <OptionContainer onPress={() => onOptionPress(item)} theme={theme}>
-            <InputText numberOfLines={1} theme={theme} textColor="--color-gray-800"
-                       fontStyle="--text-sm-regular">{item?.name || ""}</InputText>
+    const renderOptions = ({item}) => (
+        <OptionContainer onPress={() => onOptionPress(item)} theme={theme}>
+            <InputText
+                numberOfLines={1}
+                theme={theme}
+                textColor="--color-gray-800"
+                fontStyle="--text-sm-regular"
+            >{item?.name || ''}</InputText>
         </OptionContainer>
-    };
+    );
 
     return (
         <InputContainerComponent>
@@ -202,81 +208,79 @@ function SearchableOptionsField({
 
             <TextInputWrapper theme={theme} enabled={enabled}>
                 <TextInputContainer enabled={enabled}>
-
                     {
-                        (enabled && !!selectedValue)
+                        (enabled && !!selectedValue) ?
+                            (
+                                <>
+                                    <ValueContainer>
+                                        <InputText
+                                            numberOfLines={1}
+                                            fontStyle="--text-sm-regular"
+                                            textColor="--color-gray-700"
+                                        >{selectedValue?.name || ''}</InputText>
+                                    </ValueContainer>
 
-                            // true
-                            ? <>
-                                <ValueContainer>
-                                    <InputText numberOfLines={1} fontStyle="--text-sm-regular"
-                                               textColor="--color-gray-700">{selectedValue?.name || ""}</InputText>
-                                </ValueContainer>
-
-                                <IconContainer>
-                                    <IconButton
-                                        Icon={<ClearIcon/>}
-                                        onPress={onClearPress}
+                                    <IconContainer>
+                                        <IconButton
+                                            Icon={<ClearIcon/>}
+                                            onPress={onClearPress}
+                                        />
+                                    </IconContainer>
+                                </>
+                            ) : (
+                                <View>
+                                    <Input
+                                        theme={theme}
+                                        onChangeText={value => {
+                                            onChangeText(value);
+                                            handlePopovers(true);
+                                        }}
+                                        editable={enabled}
+                                        value={selectedValue?.name || text}
+                                        ref={textInputRef}
+                                        placeholder={placeholder}
                                     />
-                                </IconContainer>
-                            </>
-                            :
-                            <View>
-                                <Input
-                                    theme={theme}
-                                    onChangeText={(value) => {
-                                        onChangeText(value);
-                                        handlePopovers(true)
-                                    }}
-                                    editable={enabled}
-                                    value={selectedValue?.name || text}
-                                    ref={textInputRef}
-                                    placeholder = {placeholder}
-                                />
 
-                                {
-                                    hasError &&
-                                    <View style={{position: 'absolute'}}>
-                                        <InputErrorComponent errorMessage={errorMessage}/>
-                                    </View>
-                                }
+                                    {
+                                        hasError &&
+                                        <View style={{position: 'absolute'}}>
+                                            <InputErrorComponent errorMessage={errorMessage}/>
+                                        </View>
+                                    }
 
-                            </View>
-
+                                </View>
+                            )
                     }
 
                     {
-
-                        (!selectedValue && text && isPopoverOpen)
-                            ?
+                        (!selectedValue && text && isPopoverOpen) ? (
                             <MultipleShadowsContainer shadows={shadows}>
                                 <SuggestionsContainer theme={theme}>
                                     {
-                                        options.length === 0 ?
-
+                                        options.length === 0 ? (
                                             <NoSuggestionsContainer theme={theme}>
-                                                <InputText theme={theme} textColor="--color-gray-300"
-                                                           fontStyle="--text-xs-medium">No Suggestions Found</InputText>
+                                                <InputText
+                                                    theme={theme}
+                                                    textColor="--color-gray-300"
+                                                    fontStyle="--text-xs-medium"
+                                                >No Suggestions Found</InputText>
                                             </NoSuggestionsContainer>
-
-                                            :
-
+                                        ) : (
                                             <FlatList
-                                                keyExtractor={(item, index) => index + ''}
+                                                keyExtractor={(item, index) => `${index}`}
                                                 data={options}
                                                 renderItem={renderOptions}
                                             />
+                                        )
                                     }
-
                                 </SuggestionsContainer>
                             </MultipleShadowsContainer>
-                            : null
+                        ) : null
                     }
                 </TextInputContainer>
             </TextInputWrapper>
 
         </InputContainerComponent>
-
 
     );
 }
@@ -319,7 +323,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#CCD6E0',
         backgroundColor: '#FFFFFF',
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0.5,
             height: 2.5,

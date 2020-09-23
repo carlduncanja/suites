@@ -1,29 +1,26 @@
-import React, {useEffect, useState} from "react";
-import {View, Text, StyleSheet, YellowBox} from "react-native";
-import InputField2 from "../common/Input Fields/InputField2";
-import DropdownInputField from "../common/Input Fields/DropdownInputField";
-import InputUnitField from "../common/Input Fields/InputUnitFields";
-import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
-import Row from "../common/Row";
-import _ from "lodash";
-import {getPhysicians, getTheatres, getProcedures, getCategories} from "../../api/network";
-import OptionSearchableField from "../common/InputFields/OptionSearchableField";
-import OptionsField from "../common/Input Fields/OptionsField";
-import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField"; 
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import FieldContainer from "../common/FieldContainerComponent";
-import AutoFillField from "../common/Input Fields/AutoFillField";
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, YellowBox} from 'react-native';
+import _ from 'lodash';
+import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
+import InputField2 from '../common/Input Fields/InputField2';
+import DropdownInputField from '../common/Input Fields/DropdownInputField';
+import InputUnitField from '../common/Input Fields/InputUnitFields';
+import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
+import Row from '../common/Row';
+import {getPhysicians, getTheatres, getProcedures, getCategories} from '../../api/network';
+import OptionSearchableField from '../common/InputFields/OptionSearchableField';
+import OptionsField from '../common/Input Fields/OptionsField';
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
+import FieldContainer from '../common/FieldContainerComponent';
+import AutoFillField from '../common/Input Fields/AutoFillField';
 
-
-
-function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, errorFields, errors}) {
-
+function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, errorFields, errors}) {
     const templateText = {
-        true: "Yes",
-        false: "No"
-    }
+        true: 'Yes',
+        false: 'No'
+    };
 
-    const { serviceFee = 0 } = fields
+    const {serviceFee = 0} = fields;
 
     // Physicians Search
     const [searchValue, setSearchValue] = useState();
@@ -32,7 +29,7 @@ function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, e
 
     // Procedures Search
     const [searchProcedureValue, setSearchProcedureValue] = useState();
-    const [searchProcedureResults, setSearcProcedurehResult] = useState([]);
+    const [searchProcedureResults, setSearchProcedureResult] = useState([]);
     const [searchProcedureQuery, setSearchProcedureQuery] = useState({});
 
     // Category Search
@@ -40,14 +37,13 @@ function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, e
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
-    const [fee, setFee] = useState(serviceFee)
-    const [selectedPhysicican, setSelectedPhysician] = useState()
+    const [fee, setFee] = useState(serviceFee);
+    const [selectedPhysician, setSelectedPhysician] = useState();
 
-    // ###### 
+    // ######
 
     // Handle physicians search
     useEffect(() => {
-
         if (!searchValue) {
             // empty search values and cancel any out going request.
             setSearchResult([]);
@@ -66,15 +62,14 @@ function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, e
             return search;
         });
 
-        search()
+        search();
     }, [searchValue]);
 
     // Handle procedures search
     useEffect(() => {
-
         if (!searchProcedureValue) {
             // empty search values and cancel any out going request.
-            setSearcProcedurehResult([]);
+            setSearchProcedureResult([]);
             if (searchProcedureQuery.cancel) searchProcedureQuery.cancel();
             return;
         }
@@ -90,12 +85,11 @@ function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, e
             return search;
         });
 
-        search()
+        search();
     }, [searchProcedureValue]);
 
     // Handle category search
     useEffect(() => {
-
         if (!categorySearchValue) {
             // empty search values and cancel any out going request.
             setCategorySearchResult([]);
@@ -114,108 +108,102 @@ function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, e
             return search;
         });
 
-        search()
+        search();
     }, [categorySearchValue]);
 
     const fetchPhysicians = () => {
         getPhysicians(searchValue, 5)
             .then((physicianResult = {}) => {
-                const { data = [], pages = 0 } = physicianResult
+                const {data = [], pages = 0} = physicianResult;
                 const results = data.map(item => ({
                     name: `Dr. ${item.surname}`,
                     ...item
                 }));
-                console.log("Results: ", results)
+                console.log('Results: ', results);
                 setSearchResult(results || []);
-
             })
             .catch(error => {
                 // TODO handle error
-                console.log("failed to get theatres");
+                console.log('failed to get theatres');
                 setSearchValue([]);
-            })
+            });
     };
 
     const fetchProcedures = () => {
         getProcedures(searchProcedureValue, 5)
             .then((proceduresResult = {}) => {
-                const { data = [], pages = 0 } = proceduresResult
-                const results = data.map(item => ({
-                    ...item
-                }));
+                const {data = [], pages = 0} = proceduresResult;
+                const results = data.map(item => ({...item}));
 
-                setSearcProcedurehResult(results || []);
-
+                setSearchProcedureResult(results || []);
             })
             .catch(error => {
                 // TODO handle error
-                console.log("failed to get procedures");
+                console.log('failed to get procedures');
                 setSearchProcedureValue([]);
-            })
+            });
     };
 
     const fetchCategory = () => {
-        getCategories(categorySearchValue,5)
-            .then((categoryResults = {})=>{
-                const { data = [], pages = 0 } = categoryResults
+        getCategories(categorySearchValue, 5)
+            .then((categoryResults = {}) => {
+                const {data = [], pages = 0} = categoryResults;
                 const results = data.map(item => ({
-                    _id : item,
-                    name : item
+                    _id: item,
+                    name: item
                 }));
-                setCategorySearchResult(results || [])
+                setCategorySearchResult(results || []);
             })
             .catch(error => {
-                console.log("failed to get categories: ", error)
-                setCategorySearchResult([])
-            })
+                console.log('failed to get categories: ', error);
+                setCategorySearchResult([]);
+            });
+    };
 
-    } 
-
-    const handlePrice = (price) => {
-        let updatedPrice = price.replace(/[^0-9.]/g, "")
+    const handlePrice = price => {
+        const updatedPrice = price.replace(/[^0-9.]/g, '');
         // console.log("Price: ", price.replace(/[^0-9.]/g, ""))
         if (/^\d+(\.\d{1,2})?$/g.test(updatedPrice) || /^\d+$/g.test(updatedPrice) || !updatedPrice) {
-            console.log("Service Fee: ", updatedPrice)
-            onFieldChange('serviceFee')(parseFloat(updatedPrice))
+            console.log('Service Fee: ', updatedPrice);
+            onFieldChange('serviceFee')(parseFloat(updatedPrice));
         }
-        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(updatedPrice) || !updatedPrice){
-            setFee(updatedPrice)
+        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(updatedPrice) || !updatedPrice) {
+            setFee(updatedPrice);
         }
-        
-    }
+    };
 
-    const handlePhysician = (value) => {
+    const handlePhysician = value => {
         const physician = value ? {
             _id: value._id,
             name: value.name
-        } : value
+        } : value;
 
-        if(value === undefined || null ){
-            delete fields['physician']
-        }else{
+        if (value === undefined || null) {
+            delete fields.physician;
+        } else {
             onFieldChange('physician')(physician);
-            setSearchValue(value.name)
+            setSearchValue(value.name);
         }
-        
-        // setSearchValue()
-        setSearchResult([])
-        setSearchQuery(undefined)
-    }
 
-    let refPop = popoverList.filter( item => item.name === 'reference')
-    let physPop = popoverList.filter( item => item.name === 'physician')
-    let catPop = popoverList.filter( item => item.name === 'category')
+        // setSearchValue()
+        setSearchResult([]);
+        setSearchQuery(undefined);
+    };
+
+    const refPop = popoverList.filter(item => item.name === 'reference');
+    const physPop = popoverList.filter(item => item.name === 'physician');
+    const catPop = popoverList.filter(item => item.name === 'category');
 
     return (
         <>
             <Row>
 
                 <AutoFillField
-                    label = "Reference"
-                    value = "--"
-                    flex = {2}
+                    label="Reference"
+                    value={fields.procedureReferenceName || '--'}
+                    flex={2}
                 />
-                    {/* <SearchableOptionsField
+                {/* <SearchableOptionsField
                         label={"Reference"}
                         text={searchProcedureValue}
                         oneOptionsSelected={(item) => {
@@ -232,84 +220,86 @@ function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, e
                     /> */}
 
             </Row>
-                
+
             <Row>
                 <FieldContainer>
                     <InputField2
-                        label={"Procedure"}
+                        label="Procedure"
                         onChangeText={onFieldChange('name')}
-                        value={fields['name']}
+                        value={fields.name}
                         onClear={() => onFieldChange('name')('')}
-                        hasError = {errors['name']}
-                        errorMessage = "Name must be assigned"
+                        hasError={errors.name}
+                        errorMessage="Name must be assigned"
                     />
                 </FieldContainer>
                 <FieldContainer>
                     <SearchableOptionsField
-                        label={"Physician"} 
-                        value = {fields['physician']}
+                        label="Physician"
+                        value={fields.physician}
                         text={searchValue}
-                        oneOptionsSelected={(item) => {handlePhysician(item)}}
+                        oneOptionsSelected={item => handlePhysician(item)}
                         onChangeText={value => setSearchValue(value)}
                         onClear={handlePhysician}
                         options={searchResults}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {searchQuery}
-                        hasError = {errors['physician']}
-                        errorMessage = "Physician must be assigned"
+                        handlePopovers={() => {
+                        }}
+                        isPopoverOpen={searchQuery}
+                        hasError={errors.physician}
+                        errorMessage="Physician must be assigned"
                     />
                 </FieldContainer>
             </Row>
 
-            <Row zIndex = {-1}>
+            <Row zIndex={-1}>
                 <FieldContainer>
                     <InputUnitField
-                        label={"Duration"}
-                        onChangeText={(value) => {
-                            if (/^\d{9}/g.test(value).toString() || !value) {
-                                onFieldChange('duration')(value)
+                        label="Duration"
+                        onChangeText={value => {
+                            if (/^\d{9}/g.test(value)
+                                .toString() || !value) {
+                                onFieldChange('duration')(value);
                             }
                         }}
-                        value={fields['duration']}
+                        value={fields.duration}
                         units={['hrs']}
                         keyboardType="number-pad"
-                        hasError = {errors['duration']}
-                        errorMessage = "Input estimated time (hours)."
+                        hasError={errors.duration}
+                        errorMessage="Input estimated time (hours)."
                     />
                 </FieldContainer>
                 <FieldContainer>
                     <InputField2
-                        label={"Category"}
+                        label="Category"
                         onChangeText={onFieldChange('category')}
-                        value={fields['category']}
+                        value={fields.category}
                         onClear={() => onFieldChange('category')('')}
                     />
                 </FieldContainer>
             </Row>
 
-            <Row zIndex = {-2}>
+            <Row zIndex={-2}>
                 <FieldContainer>
                     <OptionsField
-                        label={"Recovery"}
-                        text={templateText[fields['hasRecovery']]}
+                        label="Recovery"
+                        text={templateText[fields.hasRecovery]}
                         oneOptionsSelected={onFieldChange('hasRecovery')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={true} text='Yes'/>
-                            <MenuOption value={false} text='No'/>
-                        </MenuOptions>}
+                        menuOption={(
+                            <MenuOptions>
+                                <MenuOption value={true} text="Yes"/>
+                                <MenuOption value={false} text="No"/>
+                            </MenuOptions>
+                        )}
                     />
                 </FieldContainer>
                 <FieldContainer>
                     <InputField2
-                        label={"Service Fee"}
-                        onChangeText={(value) => {
-                            handlePrice(value)
-                        }}
+                        label="Service Fee"
+                        onChangeText={value => handlePrice(value)}
                         value={`$ ${fee.toString()}`}
-                        keyboardType={'number-pad'}
+                        keyboardType="number-pad"
                         onClear={() => handlePrice('')}
-                        hasError = {errors['serviceFee']}
-                        errorMessage = "Cost is required."
+                        hasError={errors.serviceFee}
+                        errorMessage="Cost is required."
                     />
                 </FieldContainer>
             </Row>
@@ -361,7 +351,7 @@ function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, e
 
                 <View style={[styles.inputWrapper]}>
                     <SearchableOptionsField
-                        label={"Physician"} 
+                        label={"Physician"}
                         value = {fields['physician']}
                         text={searchValue}
                         oneOptionsSelected={(item) => {
@@ -447,13 +437,13 @@ function DialogDetailsTab ({onFieldChange, fields, handlePopovers,popoverList, e
             </View> */}
 
         </>
-    )
+    );
 }
 
-DialogDetailsTab.propTypes = {}
-DialogDetailsTab.defaultProps = {}
+DialogDetailsTab.propTypes = {};
+DialogDetailsTab.defaultProps = {};
 
-export default DialogDetailsTab
+export default DialogDetailsTab;
 
 const styles = StyleSheet.create({
     sectionContainer: {
