@@ -19,7 +19,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
 
-    const baseStateRef = useRef();
+    const baseStateRef = useRef(); 
     const modal = useModal();
 
     console.log("Fields: ", fields);
