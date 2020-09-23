@@ -21,7 +21,8 @@ import DataItem from '../common/List/DataItem';
 const headers = [
     {
         name: "Item Name",
-        alignment: "flex-start"
+        alignment: "flex-start",
+        flex: 2,
     },
     {
         name: "Type",
@@ -38,8 +39,8 @@ const headers = [
 ];
  
 
-const StorageConsumablesTab = ({consumables = testData}) => {
-
+const StorageConsumablesTab = ({consumables = []}) => {
+    
     const theme = useTheme();
     const modal = useModal();
 
@@ -47,17 +48,26 @@ const StorageConsumablesTab = ({consumables = testData}) => {
     const [isFloatingDisabled, setFloatingAction] = useState(false);
 
 
-    const listItem = (item) => 
-        <>
-            <DataItem flex = {2} color = "--color-blue-600" fontStyle = "--text-base-medium" text = {item?.name}/>
-            <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {item?.type}/>
-            <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {item?.amount}/>
-            <DataItem align = "flex-end" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {item.unitPrice}/>
+    const listItem = (item) => {
+        console.log("Item: ", item);
+        const { stock = 0, inventory = {} } = item;
+        const { inventoryGroup = "", name = "", unitCost = 0 } = inventory
+        return (
+            <>
+                <DataItem flex = {2} color = "--color-blue-600" fontStyle = "--text-base-medium" text = {name}/>
+                <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {inventoryGroup}/>
+                <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {stock}/>
+                <DataItem align = "flex-end" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {`$ ${currencyFormatter(unitCost)}`}/>
             
-        </>;
+            </>
  
+        )
+    }
+
+        
     const renderListItem = (item) => {
-        <Item
+        const { _id } = item;
+        return <Item
             itemView = {listItem(item)}
             hasCheckBox = {true}
             isChecked = {checkedItems.includes(_id)}
@@ -119,9 +129,13 @@ const StorageConsumablesTab = ({consumables = testData}) => {
         />
     }
 
-    const onDeleteItems = () =>{}
+    const onDeleteItems = () =>{
 
-    const handleTransferItems = () => {}
+    }
+
+    const handleTransferItems = () => {
+        
+    }
     
     return (
         <>
