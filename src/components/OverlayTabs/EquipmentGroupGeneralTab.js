@@ -164,40 +164,6 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
                     valueColor="--color-blue-600"
                 />
             </Row>
-
-            {/* <BorderView />
-
-            <HeaderView theme={theme}>
-                <>
-                    <DataItem flex={2.3} text={"Item"} />
-                    <DataItem flex={2.7} text={"Supplier"} />
-                    <DataItem flex={.5} text={"Units"} />
-                </>
-
-            </HeaderView>
-            {/* <TableBorderView theme={theme}> */}
-            {/* 
-            {equipmentToDisplay.map((item, index) => {
-
-                return (
-                    <>
-                        <TableDetailsView key={index} theme={theme}>
-                            <>
-
-                                <DataItem flex={2.3} text={item.name} color="--color-blue-600" />
-                                <DataItem flex={3} text="Medical Supplies Inc" color="--color-blue-600" />
-                                <DataItem flex={.5} text={item.usage} />
-
-                            </>
-
-
-                        </TableDetailsView>
-
-                    </>
-
-                )
-
-            })} */}
             <Footer
                 hasActionButton={true}
                 hasPaginator={false}
