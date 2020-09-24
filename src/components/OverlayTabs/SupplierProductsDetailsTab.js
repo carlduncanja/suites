@@ -12,6 +12,8 @@ import {PageContext} from "../../contexts/PageContext";
 import {Input} from "react-native-elements";
 import InputLabelComponent from "../common/InputLablel";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import _ from "lodash";
+import {getInventories, getInventoriesGroup} from "../../api/network";
 
 const LineDividerContainer = styled.View`
     margin-bottom : ${({theme}) => theme.space['--space-32']};
@@ -47,6 +49,36 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
 
     const {isEditMode} = pageState;
 
+    // Inventory Search
+    const [inventorySearchValue, setInventorySearchValue] = useState();
+    const [inventorySearchResults, setInventorySearchResult] = useState([]);
+    const [inventorySearchQuery, setInventorySearchQuery] = useState({});
+
+
+    // Handle inventories search
+    useEffect(() => {
+        // console.log("Search: ", inventorySearchValue)
+        if (!inventorySearchValue) {
+            // empty search values and cancel any out going request.
+            setInventorySearchResult([]);
+            if (inventorySearchQuery.cancel) inventorySearchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchInventories, 300);
+
+        setInventorySearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search()
+    }, [inventorySearchValue]);
+
 
     const {
         sku,
@@ -55,12 +87,45 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
         unitPrice = 0
     } = product
 
+    const [isUpdated, setUpdated] = useState(false);
     const [fields, setFields] = useState({
         sku,
         name,
         inventoryVariant,
         unitPrice,
     })
+
+    useEffect(() => {
+        console.log("field", fields);
+    }, [fields])
+
+    const fetchInventories = () => {
+        getInventories(inventorySearchValue, 5)
+            .then((inventoryResults = {}) => {
+                const {data = [], pages = 0} = inventoryResults
+                const results = data.map(item => ({
+                    ...item
+                }));
+
+                setInventorySearchResult(results || []);
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get inventories", error);
+                setInventorySearchResult([]);
+            })
+    };
+
+
+    const onRecordUpdate = (field) => (value) => {
+        setUpdated(true);
+
+        console.log(field, value);
+        setFields({
+            ...fields,
+            [field]: value
+        })
+    }
 
     return (
         <View style={{flexDirection: "column"}}>
@@ -70,6 +135,7 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
                         recordTitle={'Product Name'}
                         recordValue={fields['name']}
                         editMode={isEdit}
+                        onRecordUpdate={onRecordUpdate('name')}
                     />
                 </InputWrapper>
 
@@ -83,6 +149,7 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
                         recordTitle={'SKU'}
                         recordValue={fields['sku']}
                         editMode={isEdit}
+                        onRecordUpdate={onRecordUpdate('sku')}
                     />
                 </InputWrapper>
 
@@ -94,7 +161,19 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
                             ? <InputWrapper>
                                 <InputLabelComponent label={"Inventory Reference"}/>
                                 <SearchableOptionsField
-                                    value={fields['inventoryVariant'].name}
+                                    value={fields['inventoryVariant']}
+                                    text={inventorySearchValue}
+                                    oneOptionsSelected={(value) => {
+                                        onRecordUpdate('inventoryVariant')(value);
+                                        setInventorySearchValue('');
+                                    }}
+                                    onChangeText={setInventorySearchValue}
+                                    onClear={() => {
+                                        setInventorySearchValue('');
+                                    }}
+                                    options={inventorySearchResults}
+                                    isPopoverOpen={inventorySearchQuery}
+                                    errorMessage="Reference must be given."
                                 />
                             </InputWrapper>
                             : <Record
@@ -108,8 +187,11 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
                 <InputWrapper>
                     <Record
                         recordTitle={"Unit Price"}
-                        recordValue={fields['unitPrice']}
+                        recordValue={fields['unitPrice'] + ""}
                         editMode={isEdit}
+                        onRecordUpdate={(value) => {
+                            if (!isNaN(value)) onRecordUpdate('unitPrice')(value)
+                        }}
                     />
                 </InputWrapper>
             </Row>
