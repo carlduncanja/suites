@@ -12,10 +12,11 @@ import { formatDate } from '../../../utils/formatter';
 
 const RecordWrapper = styled.View`
     flex:${({flex}) => flex.toString()};
+    height: 46px;
+    justify-content: flex-start;
+    //align-items: flex-start;
     margin-right: ${({theme}) => theme.space['--space-4']};
-    margin-bottom: ${({theme}) => theme.space['--space-20']};
-    background-color: pink;
-    
+    margin-bottom: ${({theme}) => theme.space['--space-20']};    
 `;
 const RecordContainer = styled.View`
     display: flex;

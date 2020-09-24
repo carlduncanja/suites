@@ -34,29 +34,17 @@ function SupplierProductPage({ route, navigation }) {
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [isEditMode, setEditMode] = useState(isOpenEditable);
-    const [editableTab, setEditableTab] = useState(currentTab)
-    const [isFetching, setFetching] = useState(false);
-    const [selectedSupplier, setSelectedSupplier] = useState({});
     const [pageState, setPageState] = useState({});
-    const [hasFetchProducts, setHasFetchProducts] = useState(false)
-    // const [cartOrderItems, setCartOrderItems] = useState([])
-    const [products, setProducts] = useState([])
 
     const [fields, setFields] = useState({})
     const [popoverList, setPopoverList] = useState([])
+
+    const {isEditMode} = pageState;
 
     // ##### Lifecycle Methods
 
 
     // ##### Event Handlers
-    const setPageLoading = (value) => {
-        setPageState({
-            ...pageState,
-            isLoading: value,
-            isEdit: false
-        })
-    }
 
     const onCancelErrorScreen = () =>{
         modal.closeAllModals();
@@ -69,67 +57,18 @@ function SupplierProductPage({ route, navigation }) {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
-    const onFieldChange = (fieldName) => (value) => {
-        setFields({
-            ...fields,
-            [fieldName]: value
-        })
-    };
-
     const backTapped = () => {
         navigation.goBack();
     }
 
-    const handlePopovers = (popoverValue) => (popoverItem) => {
-
-        if (!popoverItem) {
-            let updatedPopovers = popoverList.map(item => {
-                return {
-                    ...item,
-                    status: false
-                }
-            })
-
-            setPopoverList(updatedPopovers)
-        } else {
-            const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
-            const updatedPopovers = [
-                ...popoverList.slice(0, objIndex),
-                updatedObj,
-                ...popoverList.slice(objIndex + 1),
-            ];
-            setPopoverList(updatedPopovers)
-        }
-
-    }
 
     // ##### Helper functions
-
-    const errorScreen = () => {
-        setTimeout(() => {
-            modal
-                .openModal(
-                    'ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {true}
-                            onCancel = {onCancelErrorScreen}
-                            message = "There was an issue performing this action."
-                        />
-                        ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')}
-                    })
-        }, 100);
-    }
-
 
     // const supplierDetails = { supplier, status: '' }
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <SupplierProductsDetailsTab product={product}/>
+                return <SupplierProductsDetailsTab product={product} isEdit={isEditMode}/>
             default:
                 return <View />
         }

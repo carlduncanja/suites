@@ -30,7 +30,6 @@ const InputWrapper = styled.View`
     justify-content: space-between;
     align-items: center;
     z-index: ${({zIndex}) => zIndex};
-
 `
 
 const ProcedureTab = ({
