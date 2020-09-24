@@ -1,30 +1,30 @@
-import React, {useState, useEffect} from "react"; 
-import {View, Text, StyleSheet} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import OptionsField from "../common/Input Fields/OptionsField";
 // import MultipleOptionsField from "../common/InputFields/MultipleOptionsField";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
-import {getTheatres, searchSchedule, getPhysicians, getEquipmentTypes, getCategories} from "../../api/network";
+import { getTheatres, searchSchedule, getPhysicians, getEquipmentTypes, getCategories } from "../../api/network";
 import _ from "lodash";
 
-import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 // import OptionSearchableField from "../common/InputFields/OptionSearchableField";
 
-const EquipmentDialogDetailsTab = ({onFieldChange, fields, handlePopovers,popoverList, errorFields }) => {
+const EquipmentDialogDetailsTab = ({ onFieldChange, fields, handlePopovers, popoverList, errorFields }) => {
 
-const testCategory = [
-    {
-        _id : '8hwHGuygf92',
-        name : 'Surgical'
-    },
-    {
-        _id : '8hopTEoud10',
-        name : 'Electric'
-    }
-];
-// const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
+    const testCategory = [
+        {
+            _id: '8hwHGuygf92',
+            name: 'Surgical'
+        },
+        {
+            _id: '8hopTEoud10',
+            name: 'Electric'
+        }
+    ];
+    // const EquipmentDialogDetailsTab = ({onFieldChange, fields}) => {
 
     const [theatresSearchValue, setTheatreSearchValue] = useState();
     const [theatreSearchResults, setTheatreSearchResult] = useState([]);
@@ -146,7 +146,7 @@ const testCategory = [
     const fetchTheatres = () => {
         getTheatres(theatresSearchValue, 5)
             .then((theatresResult = {}) => {
-                const { data = [], pages = 0} = theatresResult
+                const { data = [], pages = 0 } = theatresResult
                 console.log("theatres search", data);
                 setTheatreSearchResult(data || []);
             })
@@ -189,12 +189,12 @@ const testCategory = [
     };
 
     const fetchCategory = () => {
-        getCategories(categorySearchValue,5)
+        getCategories(categorySearchValue)
             .then((categoriesResult = {}) => {
                 const { data = [], pages = 0 } = categoriesResult
                 const results = data.map(item => ({
-                    _id : item,
-                    name : item
+                    _id: item,
+                    name: item
                 }));
                 setCategorySearchResult(results || [])
             })
@@ -205,50 +205,50 @@ const testCategory = [
 
     }
 
-    let assignedPop = popoverList.filter( item => item.name === 'assigned')
-    let typePop = popoverList.filter( item => item.name === 'type')
-    let catPop = popoverList.filter( item => item.name === 'category')
+    let assignedPop = popoverList.filter(item => item.name === 'assigned')
+    let typePop = popoverList.filter(item => item.name === 'type')
+    let catPop = popoverList.filter(item => item.name === 'category')
 
     return (
         <View style={styles.sectionContainer}>
 
-            <View style={[styles.row, {zIndex: 10}]}>
+            <View style={[styles.row, { zIndex: 10 }]}>
                 <View style={styles.inputWrapper}>
                     <InputField2
                         label={"Equipment"}
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
-                        hasError = {errorFields['name']}
-                        errorMessage = "Name must be filled."
+                        hasError={errorFields['name']}
+                        errorMessage="Name must be filled."
                     />
                 </View>
                 <View style={styles.inputWrapper}>
                     <MultipleSelectionsField
                         label={"Category"}
                         onOptionsSelected={onFieldChange('category')}
-                        options = {categorySearchResults}
-                        searchText = {categorySearchValue}
-                        onSearchChangeText = {(value)=> setCategorySearchValue(value)}
-                        onClear={()=>{setCategorySearchValue('')}}
-                        handlePopovers = {(value)=>handlePopovers(value)('category')}
-                        isPopoverOpen = {catPop[0].status}
+                        options={categorySearchResults}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={(value) => handlePopovers(value)('category')}
+                        isPopoverOpen={catPop[0].status}
                     />
                 </View>
             </View>
 
-            <View style={[styles.row,{zIndex:-2}]}>
+            <View style={[styles.row, { zIndex: -2 }]}>
 
-                <View style={{width: 260}}>
+                <View style={{ width: 260 }}>
                     <OptionsField
                         label={"Assignment"}
                         text={fields['assigmentType']}
                         oneOptionsSelected={onFieldChange('assigmentType')}
                         menuOption={
-                        <MenuOptions>
-                            <MenuOption value={'Physician'} text='Physician'/>
-                            <MenuOption value={'Location'} text='Location'/>
-                        </MenuOptions>
+                            <MenuOptions>
+                                <MenuOption value={'Physician'} text='Physician' />
+                                <MenuOption value={'Location'} text='Location' />
+                            </MenuOptions>
                         }
                     />
 
@@ -256,7 +256,7 @@ const testCategory = [
                 <View style={styles.inputWrapper}>
                     <InputUnitField
                         label={"Usage"}
-                        onChangeText={(value)=>{
+                        onChangeText={(value) => {
                             if (/^\d+$/g.test(value) || !value) {
                                 onFieldChange('usage')(value)
                             }
@@ -264,13 +264,13 @@ const testCategory = [
                         value={fields['usage']}
                         units={['hrs']}
                         keyboardType="number-pad"
-                        hasError = {errorFields['usage']}
-                        errorMessage = "Add hours greater than 0"
+                        hasError={errorFields['usage']}
+                        errorMessage="Add hours greater than 0"
                     />
                 </View>
             </View>
 
-            <View style={[styles.row,{zIndex:-3}]}>
+            <View style={[styles.row, { zIndex: -3 }]}>
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Assigned"}
@@ -281,10 +281,10 @@ const testCategory = [
                                 theatresSearchValue
                         }
                         oneOptionsSelected={(item) => {
-                            assignmentOption === 'Physician'?
-                                onFieldChange('assigned')({physician : item._id})
+                            assignmentOption === 'Physician' ?
+                                onFieldChange('assigned')({ physician: item._id })
                                 :
-                                onFieldChange('assigned')({theatre : item._id})
+                                onFieldChange('assigned')({ theatre: item._id })
                         }}
                         onChangeText={value =>
                             assignmentOption === 'Physician' ?
@@ -305,10 +305,10 @@ const testCategory = [
                                 :
                                 theatreSearchResults
                         }
-                        handlePopovers = {(value)=>handlePopovers(value)('assigned')}
-                        isPopoverOpen = {assignedPop[0].status}
-                        hasError = {errorFields['assignment']}
-                        errorMessage = {`Must select a ${fields['assigmentType']}`}
+                        handlePopovers={(value) => handlePopovers(value)('assigned')}
+                        isPopoverOpen={assignedPop[0].status}
+                        hasError={errorFields['assignment']}
+                        errorMessage={`Must select a ${fields['assigmentType']}`}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
@@ -318,8 +318,8 @@ const testCategory = [
                         oneOptionsSelected={onFieldChange('status')}
                         menuOption={
                             <MenuOptions>
-                                <MenuOption value={'Available'} text='Available'/>
-                                <MenuOption value={'In Use'} text='In Use'/>
+                                <MenuOption value={'Available'} text='Available' />
+                                <MenuOption value={'In Use'} text='In Use' />
                             </MenuOptions>
                         }
                     />
@@ -327,7 +327,7 @@ const testCategory = [
 
             </View>
 
-            <View style={[styles.row,{zIndex:-4}]}>
+            <View style={[styles.row, { zIndex: -4 }]}>
                 <View style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Type"}
@@ -341,10 +341,10 @@ const testCategory = [
                             setTypeSearchValue('');
                         }}
                         options={typeSearchResults}
-                        handlePopovers = {(value)=>handlePopovers(value)('type')}
-                        isPopoverOpen = {typePop[0].status}
-                        hasError = {errorFields['type']}
-                        errorMessage = "Select a type to classify equipment."
+                        handlePopovers={(value) => handlePopovers(value)('type')}
+                        isPopoverOpen={typePop[0].status}
+                        hasError={errorFields['type']}
+                        errorMessage="Select a type to classify equipment."
                     />
                 </View>
             </View>

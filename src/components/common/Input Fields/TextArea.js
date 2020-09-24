@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, TextInput, StyleSheet, TouchableOpacity, Text} from "react-native";
+import { View, TextInput, StyleSheet, TouchableOpacity, Text } from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 
 /**
@@ -15,12 +15,11 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @returns {*}
  * @constructor
  */
-function TextArea({label, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error", numberOfLines = 4}) {
-    console.log("Value: ", value);
-    return ( 
-        <View style={styles.container}>  
+function TextArea({ label, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error", numberOfLines = 4 }) {
+    return (
+        <View style={styles.container}>
             {
-                label &&  <Text style={[
+                label && <Text style={[
                     styles.textLabel, {
                         minWidth: 60,
                         marginRight: label ? 20 : 0
@@ -29,25 +28,25 @@ function TextArea({label, onChangeText, value, placeholder, keyboardType, onClea
                     {label}
                 </Text>
             }
-           
+
             <View style={[styles.inputWrapper, {
                 paddingRight: value ? 4 : 0,
-                flex:1,
-                height:'100%'
+                flex: 1,
+                height: '100%'
                 // height:200
             }]}>
                 <TextInput
-                    style={[styles.inputField, {borderColor: hasError ? 'red' : '#E3E8EF'}]}
+                    style={[styles.inputField, { borderColor: hasError ? 'red' : '#E3E8EF' }]}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}
                     placeholder={placeholder}
-                    multiline = {true}
-                    numberOfLines = {numberOfLines}
+                    multiline={true}
+                    numberOfLines={numberOfLines}
                 />
                 {
                     hasError && <View style={styles.errorView}>
-                        <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
+                        <Text style={{ fontSize: 10, color: 'red' }}>{errorMessage}</Text>
                     </View>
                 }
 
@@ -55,10 +54,10 @@ function TextArea({label, onChangeText, value, placeholder, keyboardType, onClea
             {
                 !(value === undefined || value === null || value === '') &&
                 <TouchableOpacity
-                    style={[styles.clearIcon,{alignSelf : 'flex-start'}]}
+                    style={[styles.clearIcon, { alignSelf: 'flex-start' }]}
                     onPress={onClear}
                 >
-                    <ClearIcon/>
+                    <ClearIcon />
                 </TouchableOpacity>
             }
         </View>
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor:'white',
+        backgroundColor: 'white',
     },
     textLabel: {
         fontSize: 12,
@@ -93,7 +92,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#E3E8EF',
         borderRadius: 4,
-        height:'100%'
+        height: '100%'
         // height: 32,
     },
     clearIcon: {
