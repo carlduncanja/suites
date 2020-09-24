@@ -17,7 +17,7 @@ function StoragePage({route, navigation}) {
 
     const {storage, reloadStorageLocations} = route.params;
 
-    console.log("Storage: ", storage);
+    // console.log("Storage: ", storage);
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
@@ -114,7 +114,7 @@ function StoragePage({route, navigation}) {
                     };
                 });
 
-                return <StorageConsumablesTab consumables={consumables}/>;
+                return <StorageConsumablesTab consumables={storageItem?.inventoryLocations}/>;
             }
             case 'Equipment':
                 return <StorageEquipmentTab equipments = {[]}/>;

@@ -63,7 +63,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         duration,
         hasRecovery,
         custom,
-        physician
+        physician : {...physician, name : `Dr. ${physician?.firstName || ""} ${physician?.surname || ""}`}
     });
 
     const [popoverList, setPopoverList] = useState([

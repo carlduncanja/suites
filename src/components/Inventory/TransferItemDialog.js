@@ -43,22 +43,22 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
     const available = parseInt(stock - low) < 0 ? 0 : parseInt(stock - low);
   
 
-    // console.log("Group and variant ids:", inventoryGroup._id, variant._id);
+    console.log("Variant:", variant);
 
     const dialogTabs = ['Details', 'Configuration'];
 
     // ########## STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
     const [fields, setFields] = useState({ priority : 'Not Urgent'});
-    const [errorFields, setErrorFields] = useState({})
+    const [errorFields, setErrorFields] = useState({});
    
     // Storage Search
-    const [storageSearchValue, setStorageSearchValue] = useState();
-    const [storangeSearchResults, setStorageSearchResult] = useState([]);
-    const [storangeSearchQuery, setStorageSearchQuery] = useState({});
+    const [storageSearchValue, setStorageSearchValue] = useState("");
+    const [storageSearchResults, setStorageSearchResult] = useState([]);
+    const [storageSearchQuery, setStorageSearchQuery] = useState({});
 
     // Theatre Search
-    const [theatreSearchValue, setTheatreSearchValue] = useState();
+    const [theatreSearchValue, setTheatreSearchValue] = useState("");
     const [theatreSearchResults, setTheatreSearchResult] = useState([]);
     const [theatreSearchQuery, setTheatreSearchQuery] = useState({});
 
@@ -71,7 +71,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
         if (!storageSearchValue) {
             // empty search values and cancel any out going request.
             setStorageSearchResult([]);
-            if (storangeSearchQuery.cancel) storangeSearchQuery.cancel();
+            if (storageSearchQuery.cancel) storageSearchQuery.cancel();
             return;
         }
 
@@ -173,7 +173,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
             const updatedFields = {
                 from : storageLocationObj?.location,
                 amount : (parseInt(fields['amount']).toString()),
-                to : fields['to'],
+                to : fields['to']?._id,
                 priority : fields['priority']
             }
             console.log("Success:", updatedFields);
@@ -197,10 +197,10 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
             ...updatedFields,
             [fieldName]: value
         })
-
-        const updatedErrors = {...errorFields}
-        delete updatedErrors[fieldName]
-        setErrorFields(updatedErrors)
+        console.log("Fieldname: ", fieldName, value);
+        const updatedErrors = {...errorFields};
+        delete updatedErrors[fieldName];
+        setErrorFields(updatedErrors);
 
     };
 
@@ -233,6 +233,10 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
     }
 
     const createTransferCall = (transferToCreate) => {
+        console.log("Group id: ",inventoryGroup?._id);
+        console.log("Variant id: ",variant?._id);
+        console.log("Dta: ", transferToCreate);
+
         createTransfer(inventoryGroup?._id, variant?._id, transferToCreate)
             .then(data => {
                 modal.closeAllModals();
@@ -272,7 +276,8 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 // Alert.alert("Failed", "Failed to create a transfer")
             })
             .finally()
-    };
+    
+        };
 
     const getTabContent = () => {
         switch (dialogTabs[selectedIndex]) {
@@ -286,19 +291,17 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
     };
 
     const onDestinationSelected = (item) => {
-        console.log("Item: ", item);
-        // const { inventoryLocations = [], capacity = 0 } = item
-        // let currentStock = inventoryLocations.reduce((acc, curr)=>{ return acc + curr.stock }, 0);
-        // let reserved = 10;
-        // const available = capacity - currentStock;
-        // setDestinationConfigurations({
-        //     reserved,
-        //     available
-        // })
-        // const getStock = (locations) => {
-        //     return locations.reduce((acc, curr)=>{ return acc + curr.stock }, 0)
-        // }
-        onFieldChange('to')(item._id)
+        console.log("Destination Selected: ", item);
+        
+        if (item === undefined || null) {
+            delete fields['to'];
+        } else {
+            onFieldChange('to')(item);
+            setStorageSearchValue(item.name);
+        }
+       
+        setStorageSearchResult([]);
+        setStorageSearchQuery(false);
     }
     
     const detailsTab = (
@@ -325,18 +328,19 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                     <SearchableOptionsField
                         label={"Destination"}
                         text={storageSearchValue}
-                        oneOptionsSelected={(item) => {
-                            onDestinationSelected(item)
-                        }}
-                        onChangeText={value => {setStorageSearchValue(value); console.log("Value:", value)}}
-                        onClear={() => {
-                            onFieldChange('to')('');
-                            setStorageSearchValue('');
-                        }}
-                        options={storangeSearchResults}
+                        value = {fields['to']}
+                        oneOptionsSelected={(item)=>{onDestinationSelected(item); console.log("Item : ", item)}}
+                        onChangeText={value => {setStorageSearchValue(value); }}
+                        onClear={
+                            onDestinationSelected
+                            // console.log("Clearing");
+                            // onFieldChange('to')('');
+                            // setStorageSearchValue('');
+                        }
+                        options={storageSearchResults}
                         handlePopovers = {()=>{}}
-                        isPopoverOpen = {storangeSearchQuery}
-                        errorMessage = "Warehouse must be given."
+                        isPopoverOpen = {storageSearchQuery}
+                        errorMessage = "Destination must be given."
                         hasError = {errorFields['to']}
                     />  
                 </FieldContainer>

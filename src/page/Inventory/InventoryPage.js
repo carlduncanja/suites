@@ -12,7 +12,13 @@ import { useModal } from 'react-native-modalfy';
 function InventoryPage({ route, navigation }){
 
     const { data = {} } = route.params;
-    const { name = "", _id = "", description = "", categories = [] } = data
+    const {
+        name = "",
+        _id = "",
+        description = "",
+        categories = []
+    } = data
+
     console.log("Data: ", data);
     const tabs = ["Details"];
     const modal = useModal();
@@ -26,7 +32,7 @@ function InventoryPage({ route, navigation }){
     });
     const [errorFields, setErrorFields] = useState({});
     const [isUpdated, setIsUpdated] = useState(false);
-    const [groupCategories, setCategories] = useState([...categories]);
+    const [groupCategories, setCategories] = useState([]);
 
 
     const {isEditMode} = pageState;
@@ -83,7 +89,7 @@ function InventoryPage({ route, navigation }){
     const validateUpdate = () => {
         let isValid = true
         let requiredFields = ['name']
-    
+
         let errorObj = {...errorFields} || {}
 
         for (const requiredField of requiredFields) {
@@ -162,8 +168,6 @@ function InventoryPage({ route, navigation }){
             .finally(_=>{
                 fetchInventory(_id);
             })
-            // console.log("Save data: ", updatedGroup);
-        // console.log("Group: ", inventoryGroup);
     }
 
     const setPageLoading = (value) => {

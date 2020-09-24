@@ -10,7 +10,7 @@ import { useTheme } from 'emotion-theming';
 import CollapsibleListItemChildView from './CollapsibleListItemChildView';
 
 
-/** 
+/**
  *
  * @param hasCheckBox{bool}
  * @param isChecked{bool}
@@ -73,35 +73,8 @@ function CollapsibleListItem ({
                     isCollapsed = {isCollapsed}
                     children = {children}
                 />
-
-                {/* <View style={styles.list}>
-                    {
-                        hasCheckBox &&
-                        <View style={{alignSelf: 'center', justifyContent: 'center', padding: 10, marginRight: 10}}>
-                            <CheckBoxComponent
-                                isCheck={isChecked}
-                                onPress={onCheckBoxPress}
-                            />
-                        </View>
-                    }
-                    {
-                        render(collapse, isCollapsed)
-                    }
-                </View>
-                <Collapsible collapsed={isCollapsed}>
-                    <View style={styles.divider}/>
-                    {
-                        !isCollapsed &&
-                        <View style={[styles.childContent]}>
-
-                            {children}
-
-                        </View>
-                    }
-                </Collapsible> */}
             </CollapsibleListItemContainer>
         </CollapsibleListItemWrapper>
-        // </CollapsibleListItemWrapper>
     );
 };
 
