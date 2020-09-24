@@ -14,7 +14,7 @@ function EquipmentGroupDetailsPage(props) {
     const modal = props.modal;
     const { data = {}, onCreated = () => { } } = props.route.params;
     const { name = "", _id = "", equipments = [], suppliers = [], description = '', categories = [] } = data
-    const tabs = ["Details"];
+    const tabs = ["Details", "Items", "Suppliers"];
     const [currentTab, setCurrentTab] = useState(tabs[0]);
     const [pageState, setPageState] = useState({});
     const [selectedEquipment, setSelectedEquipment] = useState({});
@@ -175,6 +175,8 @@ function EquipmentGroupDetailsPage(props) {
                         suppliers={suppliers}
                     />
             case "Items":
+                return
+            case "Suppliers":
                 return
             default:
                 break;

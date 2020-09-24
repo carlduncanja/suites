@@ -20,6 +20,7 @@ import TextArea from "../common/Input Fields/TextArea";
 import InputFieldWithIcon from "../common/Input Fields/InputFieldWithIcon";
 import { withModal } from "react-native-modalfy";
 import { Divider } from "react-native-elements";
+import ConfirmationComponent from "../ConfirmationComponent";
 
 const LabelText = styled.Text`
 color:${({ theme }) => theme.colors["--color-gray-600"]};
@@ -39,11 +40,6 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
 
 
 
-    // Physicians Search
-    const [searchValue, setSearchValue] = useState();
-    const [searchResults, setSearchResult] = useState([]);
-    const [searchQuery, setSearchQuery] = useState({});
-
     // Category Search
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
@@ -52,84 +48,57 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
     //Description
     const [descriptionValue, setDescriptionValue] = useState('');
 
-    // Handle physicians search
+
+
+    // useEffect(() => {
+
+    //     if (!categorySearchValue) {
+    //         // empty search values and cancel any out going request.
+    //         setCategorySearchResult([]);
+    //         if (categorySearchQuery.cancel) categorySearchQuery.cancel();
+    //         return;
+    //     }
+
+
+    //     console.log('What is being searched:', categorySearchValue)
+    //     const search = _.debounce(fetchCategory, 300);
+
+
+    //     setCategorySearchQuery(prevSearch => {
+    //         if (prevSearch && prevSearch.cancel) {
+    //             prevSearch.cancel();
+    //         }
+    //         return search;
+    //     });
+
+    //     search();
+
+    // }, [categorySearchValue]);
+
     useEffect(() => {
+        console.log('What being searched with?', categorySearchValue);
+        fetchCategory(categorySearchValue);
 
-        if (!searchValue) {
-            // empty search values and cancel any out going request.
-            setSearchResult([]);
-            if (searchQuery.cancel) searchQuery.cancel();
-            return;
-        }
+    }, [categorySearchValue])
 
-        // wait 300ms before search. cancel any prev request before executing current.
 
-        const search = _.debounce(fetchPhysicians, 300);
 
-        setSearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search()
-    }, [searchValue]);
-
-    useEffect(() => {
-
-        if (!categorySearchValue) {
-            // empty search values and cancel any out going request.
-            setCategorySearchResult([]);
-            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-
-        const search = _.debounce(fetchCategory, 300);
-
-        setCategorySearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search()
-    }, [categorySearchValue]);
-
-    const fetchPhysicians = () => {
-        getPhysicians(searchValue, 5)
-            .then((data = []) => {
-                const results = data.map(item => ({
-                    name: `Dr. ${item.surname}`,
-                    ...item
-                }));
-                console.log("Results: ", results)
-                setSearchResult(results || []);
-
-            })
-            .catch(error => {
-                // TODO handle error
-                console.log("failed to get theatres");
-                setSearchValue([]);
-            })
-    };
-
-    const fetchCategory = () => {
-        getCategories(categorySearchValue, 5)
+    const fetchCategory = (searchval) => {
+        getCategories(searchval)
             .then((data = []) => {
                 const results = data.map(item => ({
                     _id: item,
                     name: item
                 }));
                 console.log("results have", results);
-                setCategorySearchResult(results || [])
+                setCategorySearchResult(results)
+
             })
             .catch(error => {
                 console.log("failed to get categories: ", error)
-                setCategorySearchResult([])
+                //setCategorySearchResult([])
+            }).finally(_ => {
+                return
             })
 
     }
@@ -184,22 +153,7 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                             />
                         </View>
 
-                        <Row>
 
-                            <MultipleSelectionsField
-                                disabled={false}
-                                createNew={createCategory}
-                                label={"Category"}
-                                onOptionsSelected={onFieldChange('category')}
-                                options={categorySearchResults}
-                                searchText={categorySearchValue}
-                                onSearchChangeText={(value) => setCategorySearchValue(value)}
-                                onClear={() => { setCategorySearchValue('') }}
-                                handlePopovers={(value) => handlePopovers(value)('category')}
-                                isPopoverOpen={catPop[0].status}
-                            />
-
-                        </Row>
                         <Row>
 
                             <InputWrapper>
@@ -221,6 +175,22 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                                     enabled={true}
                                 />
                             </InputWrapper>
+
+                        </Row>
+
+                        <Row>
+
+                            <MultipleSelectionsField
+                                createNew={createCategory}
+                                label={"Category"}
+                                onOptionsSelected={onFieldChange('categories')}
+                                options={categorySearchResults}
+                                searchText={categorySearchValue}
+                                onSearchChangeText={(value) => setCategorySearchValue(value)}
+                                onClear={() => { setCategorySearchValue('') }}
+                                handlePopovers={(value) => handlePopovers(value)('category')}
+                                isPopoverOpen={catPop[0].status}
+                            />
 
                         </Row>
 

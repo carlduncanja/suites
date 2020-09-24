@@ -106,7 +106,7 @@ function MultipleSelectionsField({
                     <TextInputContainer theme={theme} hasError={hasError} backgroundColor={disabled ? "--color-gray-200" : null}>
 
                         <TouchableOpacity
-                            onPress={() => { !disabled ? toggleCheckBox() && handlePopovers(true) : () => { } }}
+                            onPress={() => { if (!disabled) { toggleCheckBox(); handlePopovers(true); } }}
                             style={[styles.inputField, {}]}
                         >
                             {
@@ -136,7 +136,7 @@ function MultipleSelectionsField({
                             <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "flex-end" }}>
                                 <IconButton
                                     Icon={<DropDownIcon />}
-                                    //onPress={() => { }}
+                                    // onPress={() => { }}
                                     onPress={() => { toggleCheckBox(); handlePopovers(true) }}
                                 />
                             </View>
@@ -153,7 +153,7 @@ function MultipleSelectionsField({
 
                         <SearchableContainer
                             options={options}
-                            onCheckboxPress={onCheckboxPress}
+                            onCheckboxPress={() => { onCheckboxPress }}
                             checkedList={checkedList}
                             searchText={searchText}
                             onSearchChangeText={onSearchChangeText}
@@ -163,7 +163,7 @@ function MultipleSelectionsField({
 
 
                         <View style={styles.footer}>
-                            <TouchableOpacity onPress={createNew} style={{ flexDirection: "row", justifyContent: "space-evenly", }}>
+                            <TouchableOpacity onPress={() => { createNew() }} style={{ flexDirection: "row", justifyContent: "space-evenly", }}>
                                 <AddIcon />
                                 <Text style={{ paddingLeft: 10 }}>Create New</Text>
                             </TouchableOpacity>
