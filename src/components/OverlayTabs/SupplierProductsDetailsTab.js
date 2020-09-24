@@ -13,7 +13,10 @@ import {Input} from "react-native-elements";
 import InputLabelComponent from "../common/InputLablel";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import _ from "lodash";
-import {getInventories, getInventoriesGroup} from "../../api/network";
+import {getInventories, getInventoriesGroup, updateSupplierProductsCall} from "../../api/network";
+import {useModal} from "react-native-modalfy";
+import ConfirmationComponent from "../ConfirmationComponent";
+import LoadingIndicator from "../common/LoadingIndicator";
 
 const LineDividerContainer = styled.View`
     margin-bottom : ${({theme}) => theme.space['--space-32']};
@@ -42,17 +45,37 @@ const RowWrapper = styled.View`
 `
 
 
-const SupplierProductsDetailsTab = ({product, isEdit}) => {
+const SupplierProductsDetailsTab = ({
+                                        supplierId, product, isEdit, onUpdate = () => {
+    }
+                                    }) => {
 
     const pageState = useContext(PageContext)
+    const modal = useModal();
     const theme = useTheme();
 
-    const {isEditMode} = pageState;
+    const {
+        _id,
+        sku,
+        name,
+        inventoryVariant = {},
+        unitPrice = 0
+    } = product
+
 
     // Inventory Search
     const [inventorySearchValue, setInventorySearchValue] = useState();
     const [inventorySearchResults, setInventorySearchResult] = useState([]);
     const [inventorySearchQuery, setInventorySearchQuery] = useState({});
+
+    const [isLoading, setLoading] = useState(false);
+    const [isUpdated, setUpdated] = useState(false);
+    const [fields, setFields] = useState({
+        sku,
+        name,
+        inventoryVariant,
+        unitPrice,
+    })
 
 
     // Handle inventories search
@@ -80,24 +103,31 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
     }, [inventorySearchValue]);
 
 
-    const {
-        sku,
-        name,
-        inventoryVariant = {},
-        unitPrice = 0
-    } = product
-
-    const [isUpdated, setUpdated] = useState(false);
-    const [fields, setFields] = useState({
-        sku,
-        name,
-        inventoryVariant,
-        unitPrice,
-    })
-
     useEffect(() => {
-        console.log("field", fields);
-    }, [fields])
+        if (!isEdit && isUpdated) {
+
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false}//boolean to show whether an error icon or success icon
+                        isEditUpdate={true}
+                        onCancel={() => {
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            updateProduct()
+                        }}
+                        message={"Would you like to finish editing and save changes?"}
+                        action="Yes"
+                    />
+                ),
+                onClose: () => {
+                    console.log('Modal closed');
+                },
+            });
+        }
+    }, [isEdit])
 
     const fetchInventories = () => {
         getInventories(inventorySearchValue, 5)
@@ -116,7 +146,6 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
             })
     };
 
-
     const onRecordUpdate = (field) => (value) => {
         setUpdated(true);
 
@@ -127,8 +156,67 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
         })
     }
 
+    const updateProduct = () => {
+
+        const data = {
+            inventoryVariantId: fields.inventoryVariant?._id,
+            unitPrice: fields.unitPrice,
+            sku: fields.sku,
+            name: fields.name,
+        }
+
+        setLoading(true)
+        updateSupplierProductsCall(supplierId, _id, data)
+            .then(response => {
+                onUpdate(data)
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                // resetState()
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+
+                            }}
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch(error => {
+                console.log("Failed to update product", error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+
+                            }}
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .finally(_ => setLoading(false))
+    }
+
     return (
-        <View style={{flexDirection: "column"}}>
+        <>
             <Row theme={theme}>
                 <InputWrapper>
                     <Record
@@ -195,7 +283,13 @@ const SupplierProductsDetailsTab = ({product, isEdit}) => {
                     />
                 </InputWrapper>
             </Row>
-        </View>
+
+
+            {
+                isLoading &&
+                <LoadingIndicator/>
+            }
+        </>
     )
 }
 

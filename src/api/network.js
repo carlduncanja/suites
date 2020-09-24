@@ -200,7 +200,7 @@ export const createInventoryVariant = async (referenceId, itemToCreate) => suite
     .then(handleResponse)
     .catch(handleError);
 
-export const createTransfer = async (groupId, variantId, transferData) => 
+export const createTransfer = async (groupId, variantId, transferData) =>
     suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
     .then(handleResponse)
     .catch(handleError);
@@ -482,7 +482,7 @@ export const createSupplierProductsCall = async (id, data) => suitesAxiosInstanc
     .then(handleResponse)
     .catch(handleError);
 
-export const updateSupplierProducts = async (supplierId, productId, data) => suitesAxiosInstance
+export const updateSupplierProductsCall = async (supplierId, productId, data) => suitesAxiosInstance
     .put(updateProductsEndpoint(supplierId)(productId), data)
     .then(handleResponse)
     .catch(handleError);
@@ -521,7 +521,7 @@ export const updatePurchaseOrder = async (purchaseOrderId, data) => suitesAxiosI
     .then(handleResponse)
     .catch(handleError);
 
-export const updatePurchaseOrderDetails = async (purchaseOrderId, data) => 
+export const updatePurchaseOrderDetails = async (purchaseOrderId, data) =>
     suitesAxiosInstance.put(updatePurchaseOrderDetailsEndpoint(purchaseOrderId), data)
     .then(handleResponse)
     .catch(handleError);

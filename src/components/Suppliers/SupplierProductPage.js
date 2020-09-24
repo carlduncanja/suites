@@ -68,7 +68,7 @@ function SupplierProductPage({ route, navigation }) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <SupplierProductsDetailsTab product={product} isEdit={isEditMode}/>
+                return <SupplierProductsDetailsTab supplierId={supplier?._id} product={product} isEdit={isEditMode}/>
             default:
                 return <View />
         }
