@@ -44,54 +44,54 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
+    const [catBodyToSend, setcatBodyToSend] = useState([]);
 
     //Description
     const [descriptionValue, setDescriptionValue] = useState('');
 
 
 
-    // useEffect(() => {
-
-    //     if (!categorySearchValue) {
-    //         // empty search values and cancel any out going request.
-    //         setCategorySearchResult([]);
-    //         if (categorySearchQuery.cancel) categorySearchQuery.cancel();
-    //         return;
-    //     }
-
-
-    //     console.log('What is being searched:', categorySearchValue)
-    //     const search = _.debounce(fetchCategory, 300);
-
-
-    //     setCategorySearchQuery(prevSearch => {
-    //         if (prevSearch && prevSearch.cancel) {
-    //             prevSearch.cancel();
-    //         }
-    //         return search;
-    //     });
-
-    //     search();
-
-    // }, [categorySearchValue]);
-
     useEffect(() => {
-        console.log('What being searched with?', categorySearchValue);
-        fetchCategory(categorySearchValue);
 
-    }, [categorySearchValue])
+        if (!categorySearchValue) {
+            // empty search values and cancel any out going request.
+            setCategorySearchResult([]);
+            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
+            return;
+        }
+
+
+        console.log('What is being searched:', categorySearchValue)
+        const search = _.debounce(fetchCategory, 300);
+
+
+        setCategorySearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+
+    }, [categorySearchValue]);
+
+    // useEffect(() => {
+    //     if (!categorySearchValue) {
+    //         setCategorySearchResult([])
+    //     }
+    //     console.log('What being searched with?', categorySearchValue);
+    //     fetchCategory(categorySearchValue);
+
+    // }, [categorySearchValue])
 
 
 
-    const fetchCategory = (searchval) => {
-        getCategories(searchval)
+    const fetchCategory = () => {
+        getCategories(categorySearchValue)
             .then((data = []) => {
-                const results = data.map(item => ({
-                    _id: item,
-                    name: item
-                }));
-                console.log("results have", results);
-                setCategorySearchResult(results)
+
+                setCategorySearchResult(data)
 
             })
             .catch(error => {
@@ -103,9 +103,17 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
 
     }
 
+    const onConfirmSave = () => {
+        modal.closeModals("ConfirmationModal");
+    }
+
+    const onConfirmCancel = () => {
+        modal.closeModals("ConfirmationModal");
+    }
     const createCategory = () => {
-        categorySearchResults.push(categorySearchValue);
-        addCategory(categorySearchResults)
+        catBodyToSend.push(categorySearchValue);
+
+        addCategory(catBodyToSend)
             .then(data => {
                 console.log("added category", data)
                 modal.openModal(
@@ -114,6 +122,7 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                         content: <ConfirmationComponent
                             isError={false}
                             isEditUpdate={false}
+                            message="Completed succesfully"
                             onCancel={onConfirmCancel}
                             onAction={onConfirmSave}
                         />,
@@ -125,6 +134,21 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
             })
             .catch(error => {
                 console.log("Failed to add category", error)
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            message="Failed to add new category"
+                            onCancel={onConfirmCancel}
+                            onAction={onConfirmSave}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                )
             })
     }
     let catPop = popoverList.filter(item => item.name === 'category')
@@ -183,7 +207,8 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                             <MultipleSelectionsField
                                 createNew={createCategory}
                                 label={"Category"}
-                                onOptionsSelected={onFieldChange('categories')}
+                                value={fields['categories']}
+                                onOptionsSelected={(value) => onFieldChange('categories')(value)}
                                 options={categorySearchResults}
                                 searchText={categorySearchValue}
                                 onSearchChangeText={(value) => setCategorySearchValue(value)}

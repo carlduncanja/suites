@@ -472,7 +472,7 @@ const Equipment = (props) => {
         <DataItem text={status} flex={.25} color="--color-gray-800" fontStyle="--text-sm-regular" />
         <DataItem text={quantity} flex={.2} color="--color-gray-800" fontStyle="--text-sm-regular" />
         {Array.isArray(assignment) ? assignment?.map(item =>
-          <DataItem text={item.theatre} flex={.1} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
+          <DataItem text={item.type === "physician" ? item.physician : item.theatre} flex={.1} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
         ) : <DataItem text={assignment} flex={.3} align="center" color="--color-gray-800" fontStyle="--text-sm-regular" />
         }
       </>

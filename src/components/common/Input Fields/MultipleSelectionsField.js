@@ -60,14 +60,14 @@ function MultipleSelectionsField({
 }) {
 
     console.log("Category options: ", options)
-    let { name = "" } = value[0] || {}
+
     const theme = useTheme();
 
-    const [selectedOption, setSelectedOption] = useState(name)
+    const [selectedOption, setSelectedOption] = useState(value[0])
     const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
-    const onCheckboxPress = (item) => {
+    const onCheckboxPress = (item) => () => {
         console.log("Item: ", item)
         let updatedList = [...checkedList]
         if (checkedList.includes(item)) {
@@ -77,7 +77,7 @@ function MultipleSelectionsField({
         }
 
         setCheckedList(updatedList)
-        setSelectedOption(updatedList.length > 0 ? updatedList[0].name : "")
+        setSelectedOption(updatedList.length > 0 ? updatedList[0] : "")
         // console.log("Updated List: ", updatedList)
         onOptionsSelected(updatedList)
     }
@@ -153,7 +153,7 @@ function MultipleSelectionsField({
 
                         <SearchableContainer
                             options={options}
-                            onCheckboxPress={() => { onCheckboxPress }}
+                            onCheckboxPress={onCheckboxPress}
                             checkedList={checkedList}
                             searchText={searchText}
                             onSearchChangeText={onSearchChangeText}

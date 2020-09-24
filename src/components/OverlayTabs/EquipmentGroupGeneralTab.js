@@ -78,9 +78,11 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
     let equipmentToDisplay = [...equipments]
     let supplierToDisplay = [...suppliers]
 
+    console.log('categories', categories);
+
     const getCategories = () => {
         categories.map(item => {
-            return item.category
+            return item._id
         })
     }
 
@@ -151,7 +153,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
                 <Row>
                     <Record
                         recordTitle="Category"
-                        recordValue={isEmpty(getCategories()) ? "--" : getCategories()}
+                        recordValue={isEmpty(categories) ? "--" : `${categories.map(item => item._id)},`}
                         flex={0.8}
                     />
                 </Row>
