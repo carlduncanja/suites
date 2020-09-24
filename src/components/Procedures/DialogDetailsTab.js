@@ -172,7 +172,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
         }
     };
 
-    const handlePhysician = value => {
+    const handlePhysician = value => { 
         const physician = value ? {
             _id: value._id,
             name: value.name

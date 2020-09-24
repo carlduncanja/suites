@@ -178,7 +178,7 @@ function SearchableOptionsField({
         oneOptionsSelected(option);
 
         // to clear the search field after selecting an item
-        // onClearPress();
+        onClearPress();
     };
 
     const onClearPress = () => {

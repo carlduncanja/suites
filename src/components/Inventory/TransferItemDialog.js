@@ -293,18 +293,13 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
     const onDestinationSelected = (item) => {
         console.log("Destination Selected: ", item);
         
-        // const { inventoryLocations = [], capacity = 0 } = item
-        // let currentStock = inventoryLocations.reduce((acc, curr)=>{ return acc + curr.stock }, 0);
-        // let reserved = 10;
-        // const available = capacity - currentStock;
-        // setDestinationConfigurations({
-        //     reserved,
-        //     available
-        // })
-        // const getStock = (locations) => {
-        //     return locations.reduce((acc, curr)=>{ return acc + curr.stock }, 0)
-        // }
-        onFieldChange('to')(item);
+        if (item === undefined || null) {
+            delete fields['to'];
+        } else {
+            onFieldChange('to')(item);
+            setStorageSearchValue(item.name);
+        }
+       
         setStorageSearchResult([]);
         setStorageSearchQuery(false);
     }
@@ -336,11 +331,12 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                         value = {fields['to']}
                         oneOptionsSelected={(item)=>{onDestinationSelected(item); console.log("Item : ", item)}}
                         onChangeText={value => {setStorageSearchValue(value); }}
-                        onClear={() => {
-                            console.log("Clearing");
-                            onFieldChange('to')('');
-                            setStorageSearchValue('');
-                        }}
+                        onClear={
+                            onDestinationSelected
+                            // console.log("Clearing");
+                            // onFieldChange('to')('');
+                            // setStorageSearchValue('');
+                        }
                         options={storageSearchResults}
                         handlePopovers = {()=>{}}
                         isPopoverOpen = {storageSearchQuery}
