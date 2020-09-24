@@ -7,8 +7,8 @@ const RowWrapper = styled.View`
     //margin-top: ${({theme}) => theme.space['--space-32']};
     width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    //align-items: center;
+    //justify-content: center;
     position: relative;
     z-index : ${({zIndex}) => zIndex.toString()};
 `;
