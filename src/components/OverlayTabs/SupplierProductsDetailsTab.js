@@ -50,9 +50,10 @@ const SupplierProductsDetailsTab = ({
     }
                                     }) => {
 
-    const pageState = useContext(PageContext)
+    const {pageState, setPageState, fetchCase} = useContext(PageContext);
     const modal = useModal();
     const theme = useTheme();
+
 
     const {
         _id,
@@ -192,6 +193,10 @@ const SupplierProductsDetailsTab = ({
             })
             .catch(error => {
                 console.log("Failed to update product", error);
+                // keep in edit mode.
+
+                setPageState({...pageState, isEditMode: true})
+
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent

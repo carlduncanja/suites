@@ -1,43 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from "react-native";
+import React, {useState, useEffect} from 'react';
+import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
 import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 import SupplierProductsTab from '../OverlayTabs/SupplierProductsTab';
 import SupplierPurshaseOrders from '../OverlayTabs/SupplierPurchaseOrders';
 import BottomSheetContainer from '../common/BottomSheetContainer';
-import { PageContext } from "../../contexts/PageContext";
+import {PageContext} from "../../contexts/PageContext";
 import DetailsPage from "../common/DetailsPage/DetailsPage";
 import TabsContainer from "../common/Tabs/TabsContainerComponent";
 import ConfirmationComponent from '../ConfirmationComponent';
 
 
-import { getSupplierById, createPurchaseOrder, getSupplierProducts } from "../../api/network";
-import { colors } from "../../styles";
-import { useModal } from 'react-native-modalfy';
-import { set } from 'numeral';
+import {getSupplierById, createPurchaseOrder, getSupplierProducts} from "../../api/network";
+import {colors} from "../../styles";
+import {useModal} from 'react-native-modalfy';
+import {set} from 'numeral';
 import SupplierProductsDetailsTab from "../OverlayTabs/SupplierProductsDetailsTab";
 
 
-function SupplierProductPage({ route, navigation }) {
-    const { product = {}, isOpenEditable, floatingActions } = route?.params || {};
+function SupplierProductPage({route, navigation}) {
+    const {product : defaultProduct = {}, onUpdated} = route?.params || {};
     const modal = useModal();
 
-
-
     const currentTabs = ["Details"];
-    const {
-        name = "",
-        _id = "",
-        supplier = {}
-    } = product;
 
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [pageState, setPageState] = useState({});
-
-    const [fields, setFields] = useState({})
-    const [popoverList, setPopoverList] = useState([])
+    const [product, setProduct] = useState(defaultProduct);
 
     const {isEditMode} = pageState;
 
@@ -45,13 +36,6 @@ function SupplierProductPage({ route, navigation }) {
 
 
     // ##### Event Handlers
-
-    const onCancelErrorScreen = () =>{
-        modal.closeAllModals();
-        setTimeout(()=>{
-            backTapped();
-        },200)
-    }
 
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
@@ -61,6 +45,12 @@ function SupplierProductPage({ route, navigation }) {
         navigation.goBack();
     }
 
+    const onValueUpdate = (product) => {
+        const updatedValue = {...defaultProduct,...product};
+        setProduct(updatedValue);
+        onUpdated(updatedValue);
+    }
+
 
     // ##### Helper functions
 
@@ -68,15 +58,27 @@ function SupplierProductPage({ route, navigation }) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <SupplierProductsDetailsTab supplierId={supplier?._id} product={product} isEdit={isEditMode}/>
+                return <SupplierProductsDetailsTab
+                    supplierId={supplier?._id}
+                    product={product}
+                    isEdit={isEditMode}
+                    onUpdate={onValueUpdate}
+                />
             default:
-                return <View />
+                return <View/>
         }
     };
 
+
+    const {
+        name = "",
+        _id = "",
+        supplier = {}
+    } = product;
+
     return (
         <>
-            <PageContext.Provider value={{ pageState, setPageState }}>
+            <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     headerChildren={[supplier?.name, "products", name]}
                     onBackPress={backTapped}

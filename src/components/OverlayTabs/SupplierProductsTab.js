@@ -53,7 +53,7 @@ const PaginatorActionsContainer = styled.View`
     flex-direction : row;
 `;
 
-function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, onAddProducts, onProductsCreated}) {
+function SupplierProductsTab({modal, supplierId, addCartItem, cart, products = [], onAddProducts, onProductsCreated}) {
     // ######## STATES
     const theme = useTheme();
     const navigation = useNavigation();
@@ -63,6 +63,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
 
     const recordsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
+    const [productsState, setProducts] = useState(products);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
@@ -100,7 +101,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     useEffect(() => {
         setTimeout(() => {
             setCartItems(cart);
-            setTotalPages(Math.ceil(products.length / recordsPerPage));
+            setTotalPages(Math.ceil(productsState.length / recordsPerPage));
         }, 200);
     }, []);
 
@@ -110,8 +111,15 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         // open product page.
         modal.closeModals('ActionContainerModal');
         setFloatingAction(true);
-        navigation.navigate('SupplierProductPage', {product: productItem});
+        navigation.navigate('SupplierProductPage', {product: productItem, onUpdated: onProductUpdate});
     };
+
+    const onProductUpdate = (value) => {
+        const updated = productsState.map(item => {
+            return item._id === value._id ? {...value} : {...item}
+        })
+        setProducts(updated)
+    }
 
     const onSearchChange = input => {
         setSearchValue(input);
@@ -145,7 +153,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
     };
 
     const toggleHeaderCheckbox = () => {
-        const productsToDisplay = products.slice(currentPageListMin, currentPageListMax);
+        const productsToDisplay = productsState.slice(currentPageListMin, currentPageListMax);
 
         if (!checkboxList.length || (checkboxList.length && checkboxList.length < productsToDisplay.length)) {
             setCheckboxList([...productsToDisplay]);
@@ -334,7 +342,8 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         const addCart = (
             <ActionItem
                 title="Add to Cart"
-                icon={<AddIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>}
+                icon={<AddIcon
+                    strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>}
                 disabled={isDisabled}
                 touchable={!isDisabled}
                 onPress={addToCartAction}
@@ -398,42 +407,6 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         setCartTotal(cartQuantity);
         setCheckboxList([]); // clear checked items
 
-        ////////////////////
-
-        // let cartArray = [];
-        // let updatedCheck = [...checkboxList];
-        // if (updatedCheck.length === 0) {
-        //     cartArray = [...cartItems];
-        // } else {
-        //     cartItems.forEach(item => {
-        //         const isFilterCheck = checkboxList.filter(checkItem => checkItem._id === item._id);
-        //         if (isFilterCheck) {
-        //             cartArray.push({
-        //                 ...item,
-        //                 amount: 1
-        //             });
-        //         }
-        //         const index = updatedCheck.findIndex(checkItem => checkItem._id === item._id);
-        //         updatedCheck = [
-        //             ...updatedCheck.slice(0, index),
-        //             ...updatedCheck.slice(index + 1),
-        //         ];
-        //     });
-        // }
-        // cartArray = [...cartArray, ...updatedCheck];
-        //
-        // modal.closeModals('ActionContainerModal');
-        //
-        // setFloatingAction(false);
-        // setCartItems([...cartArray]);
-        // setCartTotal(cartArray.length);
-    };
-
-    const addItemComplete = data => {
-        modal.closeModals('OverlayModal');
-        setTimeout(() => {
-            onAddProducts(data);
-        }, 200);
     };
 
     const addProductAction = () => {
@@ -450,18 +423,6 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
             <DataItem text={item?.inventoryVariant?.name}/>
             <DataItem text={item?.sku || 'n/a'} align="center"/>
             <DataItem text={`$ ${currencyFormatter(item.unitPrice)}`} align="flex-end"/>
-            {/* <View style={styles.item}>
-            <Text style={[styles.itemText, {color: "#3182CE"}]}>{item.name}</Text>
-        </View>
-        <View style={[styles.item, {alignItems: 'flex-start'}]}>
-            <Text style={styles.itemText}>{item.type}</Text>
-        </View>
-        <View style={[styles.item, {alignItems: 'center'}]}>
-            <Text style={styles.itemText}>{item?.sku || 'n/a'}</Text>
-        </View>
-        <View style={[styles.item, {alignItems: 'flex-end'}]}>
-            <Text style={styles.itemText}>$ {currencyFormatter(item.unitPrice)}</Text>
-        </View> */}
         </>
     );
 
@@ -475,7 +436,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products, on
         />
     );
 
-    let productsToDisplay = [...products];
+    let productsToDisplay = [...productsState];
     productsToDisplay = productsToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
