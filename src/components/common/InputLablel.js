@@ -21,9 +21,10 @@ import styled, {css} from '@emotion/native';
  */
 
 const InputLabelWrapper = styled.View`
-    //width : 98px;
     min-width: 60px;
     height : 32px;
+    align-items: flex-start;
+    justify-content: flex-start;
 `;
 
 const InputLabelContainer = styled.View`

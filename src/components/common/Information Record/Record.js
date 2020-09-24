@@ -13,7 +13,9 @@ import { formatDate } from '../../../utils/formatter';
 const RecordWrapper = styled.View`
     flex:${({flex}) => flex.toString()};
     margin-right: ${({theme}) => theme.space['--space-4']};
-
+    margin-bottom: ${({theme}) => theme.space['--space-20']};
+    background-color: pink;
+    
 `;
 const RecordContainer = styled.View`
     display: flex;
@@ -23,8 +25,12 @@ const RecordContainer = styled.View`
 const TitleText = styled.Text(({theme, titleColor, titleStyle}) => ({
     ...theme.font[titleStyle],
     color: theme.colors[titleColor],
-    marginBottom: 10,
 }));
+
+const TitleWrapper = styled.View`
+    height: 32px;
+    justify-content: center;
+`
 
 const ValueText = styled.Text(({theme, valueStyle, valueColor}) => ({
     ...theme.font[valueStyle],
@@ -49,11 +55,11 @@ const DropdownWrapper = styled.View`
 `
 
 
-  
+
 function Record({
                     recordTitle = "",
                     recordValue = '--',
-                    titleStyle = "--text-sm-regular",
+                    titleStyle = "--text-xs-medium",
                     valueStyle = "--text-base-regular",
                     titleColor = '--color-gray-600',
                     valueColor = '--color-gray-900',
@@ -84,7 +90,10 @@ function Record({
         <RecordWrapper flex={flex} theme={theme}>
             <RecordContainer>
 
-                <TitleText theme={theme} titleColor={titleColor} titleStyle={titleStyle}>{recordTitle}</TitleText>
+                <TitleWrapper>
+                    <TitleText theme={theme} titleColor={titleColor} titleStyle={titleStyle}>{recordTitle}</TitleText>
+
+                </TitleWrapper>
 
                 {
                     !editMode &&
@@ -123,7 +132,7 @@ function Record({
                             format={"DD/MM/YYYY"}
                         />
                     </DateWrapper>
-                    
+
                 }
 
                 {
@@ -141,7 +150,7 @@ function Record({
 
                 {
                     editMode && useSearchable &&
-                    
+
                     <SearchableOptionsField
                         value={recordValue}
                         text={searchText}
