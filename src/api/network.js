@@ -490,7 +490,7 @@ export const createSupplierProductsCall = async (id, data) => suitesAxiosInstanc
     .then(handleResponse)
     .catch(handleError);
 
-export const updateSupplierProducts = async (supplierId, productId, data) => suitesAxiosInstance
+export const updateSupplierProductsCall = async (supplierId, productId, data) => suitesAxiosInstance
     .put(updateProductsEndpoint(supplierId)(productId), data)
     .then(handleResponse)
     .catch(handleError);
