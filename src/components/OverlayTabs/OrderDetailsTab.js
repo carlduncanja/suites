@@ -3,13 +3,13 @@ import { View, Text, StyleSheet } from "react-native";
 import Record from "../common/Information Record/Record";
 import Row from "../common/Row";
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
-import { formatDate } from "../../utils/formatter"; 
+import { formatDate } from "../../utils/formatter";
 import { formatAmount } from "../../helpers/caseFilesHelpers";
 import { transformToSentence } from "../../hooks/useTextEditHook";
 import DateInputField from '../common/Input Fields/DateInputField';
 import LineDivider from "../common/LineDivider";
-import styled, {css} from '@emotion/native'; 
-import {useTheme} from 'emotion-theming'; 
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import { PageContext } from "../../contexts/PageContext";
 import ConfirmationComponent from '../ConfirmationComponent';
 import { updatePurchaseOrder } from '../../api/network';
@@ -24,7 +24,7 @@ const LineDividerContainer = styled.View`
 
 
 
-const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=>{} }) =>{ 
+const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=>{} }) =>{
 
     const theme = useTheme();
     const modal = useModal();
@@ -46,9 +46,9 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
         storageLocation = {},
         type = "",
         configStatus = "",
-        approvedBy =  "",
-        receivedBy = "",
-        requestedBy = ""
+        approvedBy = {},
+        receivedBy = {},
+        requestedBy = {}
     } = order
 
     // console.log("Order: ",deliveryDate)
@@ -172,7 +172,7 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
 
     return (
         <>
-            
+
             <Row>
                 <Record
                     recordTitle = "Description"
@@ -182,7 +182,7 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
                     useTextArea = {true}
                     onRecordUpdate = {onFieldChange('description')}
                     onClearValue = {()=>{onFieldChange('description')('')}}
-                    
+
                 />
             </Row>
 
@@ -208,8 +208,8 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
                     recordTitle = "Ordered On"
                     recordValue = {formatDate(nextOrderDate, "DD/MM/YYYY") || "--"}
                 />
-                
-                
+
+
                 <Record
                     recordTitle = "Delivered On"
                     recordValue = {isEditMode ? fields['deliveryDate'] : formatDate(deliveryDate,'DD/MM/YYYY') }
@@ -229,24 +229,24 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
             <Row>
                 <ResponsiveRecord
                     recordTitle = "Requested by"
-                    recordValue = {requestedBy}
+                    recordValue = {`${requestedBy['first_name'] || '--'} ${requestedBy['last_name'] || ''} `}
                 />
 
                 <ResponsiveRecord
                     recordTitle = "Approved by"
-                    recordValue = {approvedBy}
+                    recordValue = {`${approvedBy['first_name'] || '--'} ${approvedBy['last_name'] || ''}`}
                 />
 
                 <ResponsiveRecord
                     recordTitle = "Received by"
-                    recordValue = {receivedBy}
+                    recordValue = {`${receivedBy['first_name'] || '--'} ${receivedBy['last_name'] || ''}`}
                 />
            </Row>
 
             <LineDividerContainer theme={theme}>
                 <LineDivider/>
             </LineDividerContainer>
-            
+
 
             <Row>
                 <Record
@@ -262,7 +262,7 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
                     recordValue = {configStatus}
                     valueColor = "#38A169"
                 />
-                
+
             </Row>
 
             {/* <View style={styles.row}>
@@ -343,7 +343,7 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
                </View>
            </View> */}
 
-           
+
             {/* <View style={[styles.row,{justifyContent:"flex-start"}]}>
                <View style={[styles.inputWrapper,{flex:0, width:'33%'}]}>
                    <Record
