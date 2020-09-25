@@ -22,6 +22,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 import { withModal } from "react-native-modalfy";
 import { PageContext } from "../../contexts/PageContext";
 import {LONG_PRESS_TIMER} from '../../const';
+import DataItem from "../common/List/DataItem";
 
 const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, onAddEquipment, handleEquipmentDelete, navigation, onAddItems}) => {
 
@@ -51,8 +52,13 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
             flex:2,
         },
         {
+            name :"SKU",
+            alignment: "center",
+            flex:1,
+        },
+        {
             name :"Type",
-            alignment: "flex-start",
+            alignment: "center",
             flex:1,
         },
         {
@@ -110,20 +116,16 @@ const ProceduresEquipmentTab = ({modal, equipmentsData, handleEquipmentUpdate, o
 
 
     const listItem = (item) => {
-        console.log("Item List: ", item)
+        console.log("Item List: ", item);
         const { equipment = {} } = item
-        const { name = "", type = {}, unitPrice = 0 } =equipment || {}
+        const { name = "", type = {}, unitPrice = 0, sku = "" } =equipment || {}
         return (
             <>
-                <View style={[styles.item,{flex:2}]}>
-                    <Text style={[styles.itemText,{color:"#3182CE"}]}>{name}</Text>
-                </View>
-                <View style={[styles.item,{alignItems:'flex-start'}]}>
-                    <Text style={styles.itemText}>{type?.name || 'n/a'}</Text>
-                </View>
-                <View style={[styles.item,{alignItems:'flex-end'}]}>
-                    <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
-                </View>
+                <DataItem flex = {2} text = {name} color = {'--color-blue-600'} fontStyle = {'--text-base-medium'}/>
+                <DataItem text = {sku || 'n/a'} align = "center" color = {'--color-gray-600'} fontStyle = {'--text-base-regular'}/>
+                <DataItem text = {type?.name || 'n/a'} align = "center" color = {'--color-gray-600'} fontStyle = {'--text-base-medium'}/>
+                <DataItem text = {`$ ${currencyFormatter(unitPrice)}`} align = "flex-end" color = {'--color-gray-600'} fontStyle = {'--text-base-medium'}/>
+
             </>
         )
     }
