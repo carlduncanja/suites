@@ -7,49 +7,49 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import Page from "../components/common/Page/Page";
-import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
-import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
-import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
-import ActionContainer from "../components/common/FloatingAction/ActionContainer";
-import ActionItem from "../components/common/ActionItem";
-import CreateEquipmentDialog from "../components/Equipment/CreateEquipmentDialogContainer";
-import Item from "../components/common/Table/Item";
-import NavPage from "../components/common/Page/NavPage";
+import Page from "../../components/common/Page/Page";
+import RoundedPaginator from "../../components/common/Paginators/RoundedPaginator";
+import FloatingActionButton from "../../components/common/FloatingAction/FloatingActionButton";
+import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
+import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../../components/common/ActionItem";
+import CreateEquipmentDialog from "../../components/Equipment/CreateEquipmentDialogContainer";
+import Item from "../../components/common/Table/Item";
+import NavPage from "../../components/common/Page/NavPage";
 import _, { isEmpty, concat } from "lodash";
-import DataItem from "../components/common/List/DataItem";
-import WasteIcon from "../../assets/svg/wasteIcon";
-import AddIcon from "../../assets/svg/addIcon";
-import AssignIcon from "../../assets/svg/assignIcon";
-import EditIcon from "../../assets/svg/editIcon";
-import MultipleShadowsContainer from '../components/common/MultipleShadowContainer';
-import ContentDataItem from "../components/common/List/ContentDataItem";
-import RightBorderDataItem from "../components/common/List/RightBorderDataItem";
-import CollapsedIcon from "../../assets/svg/closeArrow";
-import ActionIcon from "../../assets/svg/dropdownIcon";
+import DataItem from "../../components/common/List/DataItem";
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import AddIcon from "../../../assets/svg/addIcon";
+import AssignIcon from "../../../assets/svg/assignIcon";
+import EditIcon from "../../../assets/svg/editIcon";
+import MultipleShadowsContainer from '../../components/common/MultipleShadowContainer';
+import ContentDataItem from "../../components/common/List/ContentDataItem";
+import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
+import CollapsedIcon from "../../../assets/svg/closeArrow";
+import ActionIcon from "../../../assets/svg/dropdownIcon";
 import {
   useNextPaginator,
   usePreviousPaginator,
   checkboxItemPress,
   selectAll,
-} from "../helpers/caseFilesHelpers";
+} from "../../helpers/caseFilesHelpers";
 
 import { connect } from "react-redux";
-import { setEquipment } from "../redux/actions/equipmentActions";
-import { getEquipment, getEquipmentTypes } from "../api/network";
+import { setEquipment } from "../../redux/actions/equipmentActions";
+import { getEquipment, getEquipmentTypes } from "../../api/network";
 
 import { withModal } from "react-native-modalfy";
-import { formatDate } from "../utils/formatter";
-import { numberFormatter } from "../utils/formatter";
-import CollapsibleListItem from "../components/common/List/CollapsibleListItem";
-import IconButton from "../components/common/Buttons/IconButton";
-import ActionCollapseIcon from "../../assets/svg/actionCollapseIcon";
-import SvgIcon from "../../assets/SvgIcon";
-import CreateEquipmentTypeDialogContainer from "../components/Equipment/CreateEquipmentTypeDialogContainer";
-import ListItem from "../components/common/List/ListItem";
+import { formatDate } from "../../utils/formatter";
+import { numberFormatter } from "../../utils/formatter";
+import CollapsibleListItem from "../../components/common/List/CollapsibleListItem";
+import IconButton from "../../components/common/Buttons/IconButton";
+import ActionCollapseIcon from "../../../assets/svg/actionCollapseIcon";
+import SvgIcon from "../../../assets/SvgIcon";
+import CreateEquipmentTypeDialogContainer from "../../components/Equipment/CreateEquipmentTypeDialogContainer";
+import ListItem from "../../components/common/List/ListItem";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import { LONG_PRESS_TIMER } from '../const';
+import { LONG_PRESS_TIMER } from '../../const';
 
 
 const QuantityWrapper = styled.View`

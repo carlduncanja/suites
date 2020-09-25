@@ -1,9 +1,9 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Equipment from "../../../page/Equipment";
+import Equipment from "../../../page/Equipment/Equipment";
 import EquipmentItemPage from "../../Equipment/EquipmentItemPage";
-import EquipmentGroupDetailsPage from "../../../page/EquipmentGroupDetailsPage";
+import EquipmentGroupDetailsPage from "../../../page/Equipment/EquipmentGroupDetailsPage";
 import AddEquipmentPage from "../../../page/AddEquipmentPage";
 import AssignEquipmentPage from "../../../page/AssignEquipmentPage";
 import AssignmentManagmentPage from "../../../page/AssignmentManagementPage";

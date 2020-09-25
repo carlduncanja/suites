@@ -12,7 +12,7 @@ import Storage from "../../../page/Storage";
 import Procedures from '../../../page/Procedures';
 import Physicians from '../../../page/Physicians';
 import Suppliers from '../../../page/Suppliers';
-import Equipment from '../../../page/Equipment';
+import Equipment from '../../../page/Equipment/Equipment';
 import Orders from '../../../page/Orders'
 
 import ProcedureNavigationStack from "./ProcedureNavigationStack";
