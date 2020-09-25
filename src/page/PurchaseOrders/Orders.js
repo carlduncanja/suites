@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Alert } from "react-native";
 
-import Page from "../components/common/Page/Page";
-import ListItem from "../components/common/List/ListItem";
-import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
-import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../components/common/FloatingAction/ActionContainer";
-import ActionItem from "../components/common/ActionItem";
-import AddIcon from "../../assets/svg/addIcon";
-import Notifier from "../components/NotificationComponent";
-import NavPage from '../components/common/Page/NavPage';
-import DataItem from '../components/common/List/DataItem';
-import ConfirmationComponent from '../components/ConfirmationComponent';
+import Page from "../../components/common/Page/Page";
+import ListItem from "../../components/common/List/ListItem";
+import RoundedPaginator from "../../components/common/Paginators/RoundedPaginator";
+import FloatingActionButton from "../../components/common/FloatingAction/FloatingActionButton";
+import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../../components/common/ActionItem";
+import AddIcon from "../../../assets/svg/addIcon";
+import Notifier from "../../components/NotificationComponent";
+import NavPage from '../../components/common/Page/NavPage';
+import DataItem from '../../components/common/List/DataItem';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -21,27 +21,27 @@ import {
   usePreviousPaginator,
   checkboxItemPress,
   selectAll,
-} from "../helpers/caseFilesHelpers";
+} from "../../helpers/caseFilesHelpers";
 
 import { connect } from "react-redux";
 import {
   setPurchaseOrders,
   updatePurchaseOrder,
-} from "../redux/actions/purchaseOrdersActions";
+} from "../../redux/actions/purchaseOrdersActions";
 import {
   getPurchaseOrders,
   createInvoiceViaOrders,
   updatePurchaseOrderStatus,
-} from "../api/network";
+} from "../../api/network";
 import _ from "lodash";
 
 import { withModal, useModal } from "react-native-modalfy";
-import { formatDate, transformToSentence } from "../utils/formatter";
-import OrderItemPage from "../components/PurchaseOrders/OrderItemPage";
-import { PURCHASE_ORDER_STATUSES } from "../const";
-import EditIcon from "../../assets/svg/editIcon";
-import { addNotification } from "../redux/actions/NotificationActions";
-import RightBorderDataItem from "../components/common/List/RightBorderDataItem";
+import { formatDate, transformToSentence } from "../../utils/formatter";
+import OrderItemPage from "../../components/PurchaseOrders/OrderItemPage";
+import { PURCHASE_ORDER_STATUSES } from "../../const";
+import EditIcon from "../../../assets/svg/editIcon";
+import { addNotification } from "../../redux/actions/NotificationActions";
+import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 
 const listHeaders = [
   {

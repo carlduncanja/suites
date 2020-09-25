@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Orders from "../../../page/Orders";
+import Orders from "../../../page/PurchaseOrders/Orders";
 import OrderItemPage from "../../PurchaseOrders/OrderItemPage";
 import NotFound from "../../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
