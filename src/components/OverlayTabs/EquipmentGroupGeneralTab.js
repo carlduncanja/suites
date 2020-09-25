@@ -78,9 +78,11 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
     let equipmentToDisplay = [...equipments]
     let supplierToDisplay = [...suppliers]
 
+    console.log('categories', categories);
+
     const getCategories = () => {
         categories.map(item => {
-            return item.category
+            return item._id
         })
     }
 
@@ -151,7 +153,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
                 <Row>
                     <Record
                         recordTitle="Category"
-                        recordValue={isEmpty(getCategories()) ? "--" : getCategories()}
+                        recordValue={isEmpty(categories) ? "--" : `${categories.map(item => item._id)},`}
                         flex={0.8}
                     />
                 </Row>
@@ -164,40 +166,6 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
                     valueColor="--color-blue-600"
                 />
             </Row>
-
-            {/* <BorderView />
-
-            <HeaderView theme={theme}>
-                <>
-                    <DataItem flex={2.3} text={"Item"} />
-                    <DataItem flex={2.7} text={"Supplier"} />
-                    <DataItem flex={.5} text={"Units"} />
-                </>
-
-            </HeaderView>
-            {/* <TableBorderView theme={theme}> */}
-            {/* 
-            {equipmentToDisplay.map((item, index) => {
-
-                return (
-                    <>
-                        <TableDetailsView key={index} theme={theme}>
-                            <>
-
-                                <DataItem flex={2.3} text={item.name} color="--color-blue-600" />
-                                <DataItem flex={3} text="Medical Supplies Inc" color="--color-blue-600" />
-                                <DataItem flex={.5} text={item.usage} />
-
-                            </>
-
-
-                        </TableDetailsView>
-
-                    </>
-
-                )
-
-            })} */}
             <Footer
                 hasActionButton={true}
                 hasPaginator={false}

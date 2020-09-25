@@ -60,14 +60,14 @@ function MultipleSelectionsField({
 }) {
 
     console.log("Category options: ", options)
-    let { name = "" } = value[0] || {}
+
     const theme = useTheme();
 
-    const [selectedOption, setSelectedOption] = useState(name)
+    const [selectedOption, setSelectedOption] = useState(value[0])
     const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
-    const onCheckboxPress = (item) => {
+    const onCheckboxPress = (item) => () => {
         console.log("Item: ", item)
         let updatedList = [...checkedList]
         if (checkedList.includes(item)) {
@@ -77,7 +77,7 @@ function MultipleSelectionsField({
         }
 
         setCheckedList(updatedList)
-        setSelectedOption(updatedList.length > 0 ? updatedList[0].name : "")
+        setSelectedOption(updatedList.length > 0 ? updatedList[0] : "")
         // console.log("Updated List: ", updatedList)
         onOptionsSelected(updatedList)
     }
@@ -106,7 +106,7 @@ function MultipleSelectionsField({
                     <TextInputContainer theme={theme} hasError={hasError} backgroundColor={disabled ? "--color-gray-200" : null}>
 
                         <TouchableOpacity
-                            onPress={() => { !disabled ? toggleCheckBox() && handlePopovers(true) : () => { } }}
+                            onPress={() => { if (!disabled) { toggleCheckBox(); handlePopovers(true); } }}
                             style={[styles.inputField, {}]}
                         >
                             {
@@ -136,7 +136,7 @@ function MultipleSelectionsField({
                             <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "flex-end" }}>
                                 <IconButton
                                     Icon={<DropDownIcon />}
-                                    //onPress={() => { }}
+                                    // onPress={() => { }}
                                     onPress={() => { toggleCheckBox(); handlePopovers(true) }}
                                 />
                             </View>
@@ -163,7 +163,7 @@ function MultipleSelectionsField({
 
 
                         <View style={styles.footer}>
-                            <TouchableOpacity onPress={createNew} style={{ flexDirection: "row", justifyContent: "space-evenly", }}>
+                            <TouchableOpacity onPress={() => { createNew() }} style={{ flexDirection: "row", justifyContent: "space-evenly", }}>
                                 <AddIcon />
                                 <Text style={{ paddingLeft: 10 }}>Create New</Text>
                             </TouchableOpacity>

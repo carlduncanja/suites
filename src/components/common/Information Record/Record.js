@@ -8,23 +8,29 @@ import DateInputField from '../Input Fields/DateInputField';
 import OptionsField from '../Input Fields/OptionsField';
 import SearchableOptionsField from '../Input Fields/SearchableOptionsField';
 import {MenuOption, MenuOptions} from "react-native-popup-menu";
-import { formatDate } from '../../../utils/formatter';
+import {formatDate} from '../../../utils/formatter';
 
 const RecordWrapper = styled.View`
     flex:${({flex}) => flex.toString()};
+    flex-direction:column;
+    justify-content: flex-start;
     margin-right: ${({theme}) => theme.space['--space-4']};
-
+    margin-bottom: ${({theme}) => theme.space['--space-20']};    
 `;
 const RecordContainer = styled.View`
     display: flex;
-    flex-direction:column;
+    justify-content: center;
 `;
 
 const TitleText = styled.Text(({theme, titleColor, titleStyle}) => ({
     ...theme.font[titleStyle],
     color: theme.colors[titleColor],
-    marginBottom: 10,
 }));
+
+const TitleWrapper = styled.View`
+    height: 32px;
+    justify-content: center;
+`
 
 const ValueText = styled.Text(({theme, valueStyle, valueColor}) => ({
     ...theme.font[valueStyle],
@@ -54,17 +60,17 @@ const InputWrapper = styled.View`
 `
 
 
-  
 function Record({
                     recordTitle = "",
                     recordValue = '--',
-                    titleStyle = "--text-sm-regular",
+                    titleStyle = "--text-xs-medium",
                     valueStyle = "--text-base-regular",
                     titleColor = '--color-gray-600',
                     valueColor = '--color-gray-900',
                     flex = 1,
                     minDate = new Date(),
-                    options = ()=>{},
+                    options = () => {
+                    },
                     searchText = "",
                     searchResults = [],
                     searchQuery = false,
@@ -89,7 +95,10 @@ function Record({
         <RecordWrapper flex={flex} theme={theme}>
             <RecordContainer>
 
-                <TitleText theme={theme} titleColor={titleColor} titleStyle={titleStyle}>{recordTitle}</TitleText>
+                <TitleWrapper>
+                    <TitleText theme={theme} titleColor={titleColor} titleStyle={titleStyle}>{recordTitle}</TitleText>
+
+                </TitleWrapper>
 
                 {
                     !editMode &&
@@ -119,16 +128,16 @@ function Record({
                     <DateWrapper>
                         <DateInputField
                             // placeholder = "Delivery Date"
-                            borderColor = "--color-gray-400"
-                            minDate = {minDate}
-                            onDateChange = {onRecordUpdate}
-                            value={formatDate(recordValue,"DD/MM/YYYY")}
+                            borderColor="--color-gray-400"
+                            minDate={minDate}
+                            onDateChange={onRecordUpdate}
+                            value={formatDate(recordValue, "DD/MM/YYYY")}
                             onClear={onClearValue}
                             mode={"date"}
                             format={"DD/MM/YYYY"}
                         />
                     </DateWrapper>
-                    
+
                 }
 
                 {
@@ -146,13 +155,17 @@ function Record({
 
                 {
                     editMode && useSearchable &&
-                    
+
                     <SearchableOptionsField
                         value={recordValue}
                         text={searchText}
-                        oneOptionsSelected={(item)=> onRecordUpdate(item)}
-                        onChangeText={(value) => {onSearchChange(value)}}
-                        onClear={()=>{onClearValue()}}
+                        oneOptionsSelected={(item) => onRecordUpdate(item)}
+                        onChangeText={(value) => {
+                            onSearchChange(value)
+                        }}
+                        onClear={() => {
+                            onClearValue()
+                        }}
                         options={searchResults}
                         handlePopovers={() => {
                             // console.log("handle popovers");

@@ -20,6 +20,7 @@ import TextArea from "../common/Input Fields/TextArea";
 import InputFieldWithIcon from "../common/Input Fields/InputFieldWithIcon";
 import { withModal } from "react-native-modalfy";
 import { Divider } from "react-native-elements";
+import ConfirmationComponent from "../ConfirmationComponent";
 
 const LabelText = styled.Text`
 color:${({ theme }) => theme.colors["--color-gray-600"]};
@@ -39,42 +40,16 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
 
 
 
-    // Physicians Search
-    const [searchValue, setSearchValue] = useState();
-    const [searchResults, setSearchResult] = useState([]);
-    const [searchQuery, setSearchQuery] = useState({});
-
     // Category Search
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
+    const [catBodyToSend, setcatBodyToSend] = useState([]);
 
     //Description
     const [descriptionValue, setDescriptionValue] = useState('');
 
-    // Handle physicians search
-    useEffect(() => {
 
-        if (!searchValue) {
-            // empty search values and cancel any out going request.
-            setSearchResult([]);
-            if (searchQuery.cancel) searchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-
-        const search = _.debounce(fetchPhysicians, 300);
-
-        setSearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search()
-    }, [searchValue]);
 
     useEffect(() => {
 
@@ -85,9 +60,10 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
             return;
         }
 
-        // wait 300ms before search. cancel any prev request before executing current.
 
+        console.log('What is being searched:', categorySearchValue)
         const search = _.debounce(fetchCategory, 300);
+
 
         setCategorySearchQuery(prevSearch => {
             if (prevSearch && prevSearch.cancel) {
@@ -96,47 +72,48 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
             return search;
         });
 
-        search()
+        search();
+
     }, [categorySearchValue]);
 
-    const fetchPhysicians = () => {
-        getPhysicians(searchValue, 5)
-            .then((data = []) => {
-                const results = data.map(item => ({
-                    name: `Dr. ${item.surname}`,
-                    ...item
-                }));
-                console.log("Results: ", results)
-                setSearchResult(results || []);
+    // useEffect(() => {
+    //     if (!categorySearchValue) {
+    //         setCategorySearchResult([])
+    //     }
+    //     console.log('What being searched with?', categorySearchValue);
+    //     fetchCategory(categorySearchValue);
 
-            })
-            .catch(error => {
-                // TODO handle error
-                console.log("failed to get theatres");
-                setSearchValue([]);
-            })
-    };
+    // }, [categorySearchValue])
+
+
 
     const fetchCategory = () => {
-        getCategories(categorySearchValue, 5)
+        getCategories(categorySearchValue)
             .then((data = []) => {
-                const results = data.map(item => ({
-                    _id: item,
-                    name: item
-                }));
-                console.log("results have", results);
-                setCategorySearchResult(results || [])
+
+                setCategorySearchResult(data)
+
             })
             .catch(error => {
                 console.log("failed to get categories: ", error)
-                setCategorySearchResult([])
+                //setCategorySearchResult([])
+            }).finally(_ => {
+                return
             })
 
     }
 
+    const onConfirmSave = () => {
+        modal.closeModals("ConfirmationModal");
+    }
+
+    const onConfirmCancel = () => {
+        modal.closeModals("ConfirmationModal");
+    }
     const createCategory = () => {
-        categorySearchResults.push(categorySearchValue);
-        addCategory(categorySearchResults)
+        catBodyToSend.push(categorySearchValue);
+
+        addCategory(catBodyToSend)
             .then(data => {
                 console.log("added category", data)
                 modal.openModal(
@@ -145,6 +122,7 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                         content: <ConfirmationComponent
                             isError={false}
                             isEditUpdate={false}
+                            message="Completed succesfully"
                             onCancel={onConfirmCancel}
                             onAction={onConfirmSave}
                         />,
@@ -156,6 +134,21 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
             })
             .catch(error => {
                 console.log("Failed to add category", error)
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            message="Failed to add new category"
+                            onCancel={onConfirmCancel}
+                            onAction={onConfirmSave}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                )
             })
     }
     let catPop = popoverList.filter(item => item.name === 'category')
@@ -184,22 +177,7 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                             />
                         </View>
 
-                        <Row>
 
-                            <MultipleSelectionsField
-                                disabled={false}
-                                createNew={createCategory}
-                                label={"Category"}
-                                onOptionsSelected={onFieldChange('category')}
-                                options={categorySearchResults}
-                                searchText={categorySearchValue}
-                                onSearchChangeText={(value) => setCategorySearchValue(value)}
-                                onClear={() => { setCategorySearchValue('') }}
-                                handlePopovers={(value) => handlePopovers(value)('category')}
-                                isPopoverOpen={catPop[0].status}
-                            />
-
-                        </Row>
                         <Row>
 
                             <InputWrapper>
@@ -221,6 +199,23 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                                     enabled={true}
                                 />
                             </InputWrapper>
+
+                        </Row>
+
+                        <Row>
+
+                            <MultipleSelectionsField
+                                createNew={createCategory}
+                                label={"Category"}
+                                value={fields['categories']}
+                                onOptionsSelected={(value) => onFieldChange('categories')(value)}
+                                options={categorySearchResults}
+                                searchText={categorySearchValue}
+                                onSearchChangeText={(value) => setCategorySearchValue(value)}
+                                onClear={() => { setCategorySearchValue('') }}
+                                handlePopovers={(value) => handlePopovers(value)('category')}
+                                isPopoverOpen={catPop[0].status}
+                            />
 
                         </Row>
 

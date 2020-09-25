@@ -1,28 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
-import { withModal } from "react-native-modalfy";
-import { PageContext } from '../contexts/PageContext';
-import DetailsPage from '../components/common/DetailsPage/DetailsPage';
-import TabsContainerComponent from '../components/common/Tabs/TabsContainerComponent';
-import { getEquipmentTypeById } from '../api/network';
-import EquipmentGroupGeneralTab from '../components/OverlayTabs/EquipmentGroupGeneralTab';
-import { useTheme } from 'emotion-theming';
-import EditableEquipmentGroupTab from '../components/OverlayTabs/EditableEquipmentGroupTab';
+import React, {useState, useEffect} from 'react';
+import {View, Text} from 'react-native';
+import {withModal} from "react-native-modalfy";
+import {PageContext} from '../../contexts/PageContext';
+import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
+import TabsContainerComponent from '../../components/common/Tabs/TabsContainerComponent';
+import {getEquipmentTypeById} from '../../api/network';
+import EquipmentGroupGeneralTab from '../../components/OverlayTabs/EquipmentGroupGeneralTab';
+import {useTheme} from 'emotion-theming';
+import EquipmentGroupItemsTab from "../../components/OverlayTabs/EquipmentGroupItemsTab";
+import EditableEquipmentGroupTab from '../../components/OverlayTabs/EditableEquipmentGroupTab';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
+import { updateEquipmentType } from "../../api/network"
+
 
 function EquipmentGroupDetailsPage(props) {
     const theme = useTheme();
     const modal = props.modal;
-    const { data = {}, onCreated = () => { } } = props.route.params;
-    const { name = "", _id = "", equipments = [], suppliers = [], description = '', categories = [] } = data
-    const tabs = ["Details"];
+    const {
+        data = {}, onCreated = () => {
+        }
+    } = props.route.params;
+    const {name = "", _id = "", equipments = [], suppliers = [], description = '', categories = []} = data
+    const tabs = ["Details", "Items", "Suppliers"];
     const [currentTab, setCurrentTab] = useState(tabs[0]);
     const [pageState, setPageState] = useState({});
     const [selectedEquipment, setSelectedEquipment] = useState({});
     const [isInfoUpdated, setIsInfoUpdated] = useState(false)
-
-
-
-
 
 
     useEffect(() => {
@@ -36,13 +39,8 @@ function EquipmentGroupDetailsPage(props) {
     const [fields, setFields] = useState({
         name: name,
         description: description,
-        sku: equipments[0].sku,
-        supplier: suppliers,
-        quantity: equipments.length,
         categories: categories,
     })
-
-
 
 
     const fetchEquipmentGroup = (id) => {
@@ -81,7 +79,7 @@ function EquipmentGroupDetailsPage(props) {
             setPopoverList(updatedPopovers)
         } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
+            const updatedObj = {...popoverList[objIndex], status: popoverValue};
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -108,7 +106,9 @@ function EquipmentGroupDetailsPage(props) {
             'ConfirmationModal',
             {
                 content: <ConfirmationComponent
+                    isError={false}
                     isEditUpdate={true}
+                    message={"Would you like to save your recent updates?"}
                     onCancel={onConfirmCancel}
                     onAction={onConfirmSave}
                 />,
@@ -120,11 +120,17 @@ function EquipmentGroupDetailsPage(props) {
         // }, 200)
     };
 
+    const onSuccess = () => {
+        modal.closeModals("ConfirmationModal");
+        props.navigation.navigate("Equipment");
+        onCreated();
+    }
+
     const onConfirmSave = () => {
         modal.closeModals('ConfirmationModal');
+        console.log('Fields to be passed:', fields)
         setTimeout(() => {
-            // updatePhysicianRecord(selectedPhysician);
-            updatePhysicianCall(selectedPhysician);
+            updateEquipmentTypeCall(fields)
             setIsInfoUpdated(false);
         }, 200);
     };
@@ -133,9 +139,55 @@ function EquipmentGroupDetailsPage(props) {
         modal.closeModals('ConfirmationModal');
         setPageState({
             ...pageState,
-            isEditMode: true
+            isEditMode: false
         });
     };
+
+    const updateEquipmentTypeCall = (info) => {
+        updateEquipmentType(_id, info)
+            .then(data => {
+                console.log("successfully updated", data)
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content:
+                            <ConfirmationComponent
+                                isError={false}
+                                isEditUpdate={false}
+                                message="Completed Succefully"
+                                onCancel={onConfirmCancel}
+                                onAction={onSuccess}
+                            />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                )
+            }
+            )
+            .catch(error => {
+                console.log("error occurred is:", error);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content:
+                            <ConfirmationComponent
+                                isError={true}
+                                message={"There was an error performing this action"}
+                                isEditUpdate={false}
+                                onCancel={onConfirmCancel}
+                                onAction={onConfirmSave}
+                            />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                )
+            }).finally(_ => {
+            })
+
+
+    }
 
     // ##### Event Handlers
 
@@ -145,6 +197,7 @@ function EquipmentGroupDetailsPage(props) {
             [fieldName]: value
         })
         setIsInfoUpdated(true);
+        console.log('value being passed', value);
     };
 
     const onTabPress = (selectedTab) => {
@@ -152,7 +205,7 @@ function EquipmentGroupDetailsPage(props) {
     };
 
     const goToAddEquipment = () => {
-        props.navigation.navigate("AddEquipmentPage", { equipment: selectedEquipment, onCreated: onCreated });
+        props.navigation.navigate("AddEquipmentPage", {equipment: selectedEquipment, onCreated: onCreated});
         props.modal.closeAllModals();
 
     }
@@ -175,6 +228,8 @@ function EquipmentGroupDetailsPage(props) {
                         suppliers={suppliers}
                     />
             case "Items":
+                return <EquipmentGroupItemsTab items={selectedEquipment.equipments}/>
+            case "Suppliers":
                 return
             default:
                 break;
@@ -183,7 +238,7 @@ function EquipmentGroupDetailsPage(props) {
 
     return (
 
-        <PageContext.Provider value={{ pageState, setPageState }}>
+        <PageContext.Provider value={{pageState, setPageState}}>
             <DetailsPage
                 headerChildren={[name]}
                 onBackPress={() => props.navigation.navigate("Equipment")}

@@ -49,9 +49,9 @@ const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popov
                     <LabelText theme={theme}>Description</LabelText>
                 </Row>
                 <TextArea
+                    enabled={false}
                     value={fields['description']}
-                    onChangeText={onFieldChange('description')}
-                    onClear={() => onFieldChange('description')('')}
+                    onChangeText={() => { }}
                     multiline={true}
                     numberOfLines={4}
                 />
