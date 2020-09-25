@@ -142,7 +142,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <InputField2
                             value=""
-                            labelWidth={98}
+                            labelWidth={80}
                             placeholder={equipmentDetails?.name}
                             label="Equipment"
                             enabled={false}
@@ -152,6 +152,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <MultipleSelectionsField
                             disabled={true}
+                            labelWidth={80}
                             onOptionsSelected={() => { }}
                             label={"Category"}
                             value={!equipmentDetails?.categories ? "--" : equipmentDetails.categories}
@@ -163,7 +164,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <OptionsField
                             key={data['Assignment']}
-                            labelWidth={98}
+                            labelWidth={80}
                             label="Assignment"
                             text={data['Assignment']}
                             oneOptionsSelected={onFieldChange('Assignment')}
@@ -178,7 +179,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <SearchableOptionsField
                             label="Assigned"
-                            labelWidth={98}
+                            labelWidth={80}
                             value={data['Assignment'] === "Location" ? locations : physcians}
                             text={searchValue}
                             oneOptionsSelected={(value) => {
@@ -208,7 +209,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <DateInputField
                             label={"From"}
-                            labelWidth={98}
+                            labelWidth={80}
                             value={data['date']}
                             onClear={() => onFieldChange('date')('')}
                             mode={'date'}
@@ -226,7 +227,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     <InputWrapper>
                         <InputUnitField
                             label={"Duration"}
-                            labelWidth={98}
+                            labelWidth={70}
                             onChangeText={(value) => {
                                 if (/^\d+$/g.test(value) || !value) {
                                     onFieldChange('Usage')(value)
