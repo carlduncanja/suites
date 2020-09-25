@@ -7,11 +7,10 @@ import TabsContainerComponent from '../../components/common/Tabs/TabsContainerCo
 import {getEquipmentTypeById} from '../../api/network';
 import EquipmentGroupGeneralTab from '../../components/OverlayTabs/EquipmentGroupGeneralTab';
 import {useTheme} from 'emotion-theming';
-import EditableEquipmentGroupTab from '../../components/OverlayTabs/EditableEquipmentGroupTab';
 import EquipmentGroupItemsTab from "../../components/OverlayTabs/EquipmentGroupItemsTab";
-import EditableEquipmentGroupTab from '../components/OverlayTabs/EditableEquipmentGroupTab';
-import ConfirmationComponent from '../components/ConfirmationComponent';
-import { updateEquipmentType } from "../api/network"
+import EditableEquipmentGroupTab from '../../components/OverlayTabs/EditableEquipmentGroupTab';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
+import { updateEquipmentType } from "../../api/network"
 
 
 function EquipmentGroupDetailsPage(props) {
