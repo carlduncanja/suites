@@ -15,7 +15,7 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @returns {*}
  * @constructor
  */
-function TextArea({ label, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error", numberOfLines = 4 }) {
+function TextArea({ label, enabled = true, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error", numberOfLines = 4 }) {
     return (
         <View style={styles.container}>
             {
@@ -36,7 +36,7 @@ function TextArea({ label, onChangeText, value, placeholder, keyboardType, onCle
                 // height:200
             }]}>
                 <TextInput
-                    style={[styles.inputField, { borderColor: hasError ? 'red' : '#E3E8EF' }]}
+                    style={[styles.inputField, { borderColor: hasError ? 'red' : '#E3E8EF' }, { backgroundColor: enabled ? "white" : "#EDF0F2" }]}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}

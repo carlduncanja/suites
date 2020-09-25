@@ -24,6 +24,7 @@ import {
     equipmentEndpoint,
     equipmentTypesEndpoint,
     equipmentTypeEndpoint,
+    updateEquipmentTypeEndpoint,
     storageLocationsEndpoint,
     suppliersEndpoint,
     supplierEndpoint,
@@ -202,8 +203,8 @@ export const createInventoryVariant = async (referenceId, itemToCreate) => suite
 
 export const createTransfer = async (groupId, variantId, transferData) =>
     suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
-    .then(handleResponse)
-    .catch(handleError);
+        .then(handleResponse)
+        .catch(handleError);
 
 // ################# Case Files Endpoints
 export const getCaseFiles = async (query, max, page) => suitesAxiosInstance
@@ -363,7 +364,7 @@ export const updatePhysician = async (id, data) => suitesAxiosInstance
     .catch(handleError);
 
 export const removePhysicians = async data => suitesAxiosInstance
-    .delete(physiciansEndpoint, {data})
+    .delete(physiciansEndpoint, { data })
     .then(handleResponse)
     .catch(handleError);
 
@@ -413,6 +414,13 @@ export const updateEquipment = async (id, bodyToSend) => suitesAxiosInstance
     .put(updateEquipmentEndpoint(id), bodyToSend)
     .then(handleResponse)
     .catch(handleError);
+
+export const updateEquipmentType = async (id, bodyToSend) => suitesAxiosInstance
+    .put(updateEquipmentTypeEndpoint(id), bodyToSend)
+    .then(handleResponse)
+    .catch(handleError);
+
+
 
 export const getEquipmentTypes = async (query, max, page) => suitesAxiosInstance
     .get(equipmentTypesEndpoint, { params: { query, max, page } })
@@ -523,8 +531,8 @@ export const updatePurchaseOrder = async (purchaseOrderId, data) => suitesAxiosI
 
 export const updatePurchaseOrderDetails = async (purchaseOrderId, data) =>
     suitesAxiosInstance.put(updatePurchaseOrderDetailsEndpoint(purchaseOrderId), data)
-    .then(handleResponse)
-    .catch(handleError);
+        .then(handleResponse)
+        .catch(handleError);
 
 export const removePurchaseOrders = async data => suitesAxiosInstance
     .delete(purchaseOrdersEndpoint, { data })

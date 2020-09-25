@@ -7,7 +7,10 @@ import TabsContainerComponent from '../components/common/Tabs/TabsContainerCompo
 import { getEquipmentTypeById } from '../api/network';
 import EquipmentGroupGeneralTab from '../components/OverlayTabs/EquipmentGroupGeneralTab';
 import { useTheme } from 'emotion-theming';
+import { updateEquipmentType } from "../api/network"
 import EditableEquipmentGroupTab from '../components/OverlayTabs/EditableEquipmentGroupTab';
+import ConfirmationComponent from '../components/ConfirmationComponent';
+
 
 function EquipmentGroupDetailsPage(props) {
     const theme = useTheme();
@@ -36,9 +39,6 @@ function EquipmentGroupDetailsPage(props) {
     const [fields, setFields] = useState({
         name: name,
         description: description,
-        sku: equipments[0].sku,
-        supplier: suppliers,
-        quantity: equipments.length,
         categories: categories,
     })
 
@@ -108,7 +108,9 @@ function EquipmentGroupDetailsPage(props) {
             'ConfirmationModal',
             {
                 content: <ConfirmationComponent
+                    isError={false}
                     isEditUpdate={true}
+                    message={"Would you like to save your recent updates?"}
                     onCancel={onConfirmCancel}
                     onAction={onConfirmSave}
                 />,
@@ -120,11 +122,17 @@ function EquipmentGroupDetailsPage(props) {
         // }, 200)
     };
 
+    const onSuccess = () => {
+        modal.closeModals("ConfirmationModal");
+        props.navigation.navigate("Equipment");
+        onCreated();
+    }
+
     const onConfirmSave = () => {
         modal.closeModals('ConfirmationModal');
+        console.log('Fields to be passed:', fields)
         setTimeout(() => {
-            // updatePhysicianRecord(selectedPhysician);
-            updatePhysicianCall(selectedPhysician);
+            updateEquipmentTypeCall(fields)
             setIsInfoUpdated(false);
         }, 200);
     };
@@ -133,9 +141,55 @@ function EquipmentGroupDetailsPage(props) {
         modal.closeModals('ConfirmationModal');
         setPageState({
             ...pageState,
-            isEditMode: true
+            isEditMode: false
         });
     };
+
+    const updateEquipmentTypeCall = (info) => {
+        updateEquipmentType(_id, info)
+            .then(data => {
+                console.log("successfully updated", data)
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content:
+                            <ConfirmationComponent
+                                isError={false}
+                                isEditUpdate={false}
+                                message="Completed Succefully"
+                                onCancel={onConfirmCancel}
+                                onAction={onSuccess}
+                            />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                )
+            }
+            )
+            .catch(error => {
+                console.log("error occurred is:", error);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content:
+                            <ConfirmationComponent
+                                isError={true}
+                                message={"There was an error performing this action"}
+                                isEditUpdate={false}
+                                onCancel={onConfirmCancel}
+                                onAction={onConfirmSave}
+                            />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                )
+            }).finally(_ => {
+            })
+
+
+    }
 
     // ##### Event Handlers
 
@@ -145,6 +199,7 @@ function EquipmentGroupDetailsPage(props) {
             [fieldName]: value
         })
         setIsInfoUpdated(true);
+        console.log('value being passed', value);
     };
 
     const onTabPress = (selectedTab) => {

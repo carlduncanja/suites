@@ -6,13 +6,13 @@ import { useTheme } from "emotion-theming";
 import { Text, View, TouchableOpacity } from "react-native";
 import ConfirmationComponent from "../components/ConfirmationComponent";
 import { createEquipment } from "../api/network";
+import CreatePageHeader from '../components/common/DetailsPage/CreatePageHeader'
 import TabsContainer from "../components/common/Tabs/TabsContainerComponent"
 import Footer from '../components/common/Page/Footer';
 import { Divider, Modal } from 'react-native-paper';
 
 
 const AddEquipmentPageWrapper = styled.View`
-        margin:0;
         background-color: ${({ theme }) => theme.colors['--default-shade-white']};
     `;
 
@@ -216,14 +216,7 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
             <AddEquipmentPageContainer theme={theme}>
 
 
-                <HeaderContainer >
-                    <HeaderText theme={theme} >Add Equipment</HeaderText>
-                    <CloseButtonWrapper>
-                        <CloseButtonContainer onPress={closeTapped} >
-                            <CloseText>Close</CloseText>
-                        </CloseButtonContainer>
-                    </CloseButtonWrapper>
-                </HeaderContainer>
+                <CreatePageHeader title='Add Equipment' onClose={closeTapped} />
 
                 <TabsViewContainer>
                     <TabsContainer

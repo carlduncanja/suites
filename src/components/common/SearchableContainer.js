@@ -1,8 +1,8 @@
-import React,{ useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, TextInput, ScrollView} from "react-native";
-import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
-import SearchInput,{ createFilter } from 'react-native-search-filter';
+import { View, StyleSheet, Text, TextInput, ScrollView } from "react-native";
+import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
+import SearchInput, { createFilter } from 'react-native-search-filter';
 
 import ClearIcon from "../../../assets/svg/clearIcon";
 import AddIcon from "../../../assets/svg/addIcon";
@@ -16,40 +16,40 @@ import { checkboxItemPress } from '../../helpers/caseFilesHelpers';
  * @returns {*} 
  */
 
-const SearchableContainer = ({ options, onCheckboxPress, checkedList, searchText, onSearchChangeText, onClear}) => {
+const SearchableContainer = ({ options, onCheckboxPress, checkedList, searchText, onSearchChangeText, onClear }) => {
 
     return (
         <>
             <View style={styles.searchContainer}>
-                <TextInput 
+                <TextInput
                     style={styles.inputField}
-                    value = {searchText}
-                    onChangeText = {(text)=>onSearchChangeText(text)}
-                    keyboardType = {"default"}
+                    value={searchText}
+                    onChangeText={(text) => onSearchChangeText(text)}
+                    keyboardType={"default"}
                 />
-                <View style={{alignItems:'center', paddingLeft:5, paddingRight:5}}>
+                <View style={{ alignItems: 'center', paddingLeft: 5, paddingRight: 5 }}>
                     <IconButton
-                        Icon = {<ClearIcon/>}
-                        onPress = {()=>{onClear()}}
+                        Icon={<ClearIcon />}
+                        onPress={() => { onClear() }}
                     />
                 </View>
-                
+
             </View>
-            
-      
-             <ScrollView 
-                bounces = {false}
+
+
+            <ScrollView
+                bounces={false}
                 style={styles.suggestionsContainer}
             >
-                {options.map(( option, index)=>{
-                   
+                {options.map((option, index) => {
+
                     return (
                         <View key={index} style={styles.optionWrapper}>
                             <CheckBoxComponent
-                                isCheck = {checkedList.includes(option)}
-                                onPress = {onCheckboxPress(option)}
+                                isCheck={checkedList.includes(option)}
+                                onPress={onCheckboxPress(option)}
                             />
-                            <Text style={{color:"#323843", fontSize:14, paddingLeft:6}}>{option.name}</Text>
+                            <Text style={{ color: "#323843", fontSize: 14, paddingLeft: 6 }}>{option}</Text>
                         </View>
                     )
                 })}
@@ -62,11 +62,11 @@ const SearchableContainer = ({ options, onCheckboxPress, checkedList, searchText
 export default SearchableContainer
 
 const styles = StyleSheet.create({
-    searchContainer:{
-        height:30,
-        borderBottomColor:"#E3E8EF",
+    searchContainer: {
+        height: 30,
+        borderBottomColor: "#E3E8EF",
         borderBottomWidth: 1,
-        flexDirection:'row',
+        flexDirection: 'row',
         // alignItems:'center'
     },
     inputField: {
@@ -76,24 +76,24 @@ const styles = StyleSheet.create({
         paddingTop: 2,
         paddingBottom: 2,
     },
-    suggestionsContainer:{
+    suggestionsContainer: {
         // height:120,
     },
-    optionWrapper : {
-        flexDirection : 'row',
+    optionWrapper: {
+        flexDirection: 'row',
         // padding:10,
-        alignItems:'center',
+        alignItems: 'center',
     },
-    footer:{
-        flex:1,
-        position:'absolute',
-        bottom:2,
-        left:0,
-        right:0,
+    footer: {
+        flex: 1,
+        position: 'absolute',
+        bottom: 2,
+        left: 0,
+        right: 0,
         // alignSelf:'flex-end',
-        flexDirection:'row',
-        justifyContent:"space-between",
-        padding:10,
-        backgroundColor:'#F8FAFB'
+        flexDirection: 'row',
+        justifyContent: "space-between",
+        padding: 10,
+        backgroundColor: '#F8FAFB'
     }
 })
