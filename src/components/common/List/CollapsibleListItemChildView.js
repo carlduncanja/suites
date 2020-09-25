@@ -17,25 +17,18 @@ const ChildContentContainer = styled.ScrollView`
     border-bottom-left-radius : 8px;
 `;
 
-function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}}){
-    const theme = useTheme(); 
+function CollapsibleListItemChildView ({isCollapsed=false, children =()=>{}, onAnimationEnd}){
+    const theme = useTheme();
 
     return (
 
-        <Collapsible collapsed={isCollapsed}>
+        <Collapsible onAnimationEnd={onAnimationEnd} collapsed={isCollapsed}>
             <LineDivider/>
-            { 
+            {
                 !isCollapsed &&
-                
-                // <ChildContentWrapper>
-                //     <ChildContentContainer>
                 <ChildContentContainer children = {children}>
                     {children}
                 </ChildContentContainer>
-                        
-                //     </ChildContentContainer>
-                // </ChildContentWrapper>
-                
             }
 
         </Collapsible>

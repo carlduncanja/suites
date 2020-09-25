@@ -43,17 +43,25 @@ function CollapsibleListItem ({
         onCheckBoxPress = ()=>{},
         onItemPress = () => {},
         childView,
+        collapsed = true,
+        onCollapsedEnd,
         render = ()=>{},
         children = ()=>{}  ,
         backgroundColor,
     }) {
 
-    const [isCollapsed, setCollapsed] = useState(true);
+    const [isCollapsed, setCollapsed] = useState(collapsed);
     const theme = useTheme();
+
     const collapse = () => {
         console.log("collapse press")
         setCollapsed(!isCollapsed);
     }
+
+
+    // useEffect(() => {
+    //     setCollapsed(isCollapsed);
+    // },[isCollapsed])
 
     return (
 
@@ -71,6 +79,7 @@ function CollapsibleListItem ({
 
                 <CollapsibleListItemChildView
                     isCollapsed = {isCollapsed}
+                    onAnimationEnd={onCollapsedEnd}
                     children = {children}
                 />
             </CollapsibleListItemContainer>
@@ -89,37 +98,3 @@ CollapsibleListItem.propTypes = {
     render: PropTypes.func
 };
 CollapsibleListItem.defaultProps = {};
-
-const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'column',
-        width: '100%',
-        marginBottom: 10,
-        borderRadius: 8,
-        borderWidth: 1,
-        backgroundColor: '#FFFFFF',
-        borderColor: "#E3E8EF",
-    },
-    divider: {
-        // flex: 1,
-        width: '100%',
-        height: 2,
-        borderBottomWidth: 1,
-        borderBottomColor: "#E3E8EF",
-        marginBottom: 20
-    },
-    list: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    childContent: {
-        flex: 1,
-        flexDirection: 'column',
-        paddingTop:22,
-        paddingBottom:20,
-        marginBottom: 20,
-
-        // padding: 8,
-        // marginTop: 0
-    }
-});
