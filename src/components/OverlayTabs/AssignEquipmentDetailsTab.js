@@ -136,8 +136,9 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
 
     return (
         <>
-            <View style={{ flexDirection: "column", height: "88%", width: "100%", alignItems: "center", justifyContent: "flex-start" }}>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <View style={{ padding: 32, flexDirection: "column", height: "88%", width: "100%", alignItems: "center", justifyContent: "flex-start" }}>
+
+                <Row style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                     <InputWrapper>
                         <InputField2
                             value=""
@@ -157,8 +158,8 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
 
                         />
                     </InputWrapper>
-                </View>
-                <ViewBreaker>
+                </Row>
+                <Row zIndex={2}>
                     <InputWrapper>
                         <OptionsField
                             key={data['Assignment']}
@@ -202,8 +203,8 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     </InputWrapper>
 
 
-                </ViewBreaker>
-                <ViewBreaker>
+                </Row>
+                <Row>
                     <InputWrapper>
                         <DateInputField
                             label={"From"}
@@ -241,7 +242,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
 
 
 
-                </ViewBreaker>
+                </Row>
 
 
 
