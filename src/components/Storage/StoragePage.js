@@ -117,7 +117,7 @@ function StoragePage({route, navigation}) {
                 return <StorageConsumablesTab consumables={storageItem?.inventoryLocations}/>;
             }
             case 'Equipment':
-                console.log("Storage item: ", storageItem);
+                // console.log("Storage item: ", storageItem);
                 return <StorageEquipmentTab equipments = {[]}/>;
             default:
                 return <View/>;

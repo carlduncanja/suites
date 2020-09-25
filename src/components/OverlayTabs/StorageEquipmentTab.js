@@ -15,11 +15,13 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import TransferIcon from "../../../assets/svg/transferIcon";
 import Item from '../common/Table/Item';
 import DataItem from '../common/List/DataItem';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+
   
 
 const StorageEquipmentTab = ({equipments = []}) => {
     const theme = useTheme();
-    const modal = useModal();
+    const modal = useModal(); 
 
     const headers = [
         {
@@ -40,7 +42,7 @@ const StorageEquipmentTab = ({equipments = []}) => {
         }
     ]
 
-    const [checkedItems, setPCheckedItems] = useState([]);
+    const [checkedItems, setCheckedItems] = useState([]);
     const [isFloatingDisabled, setFloatingAction] = useState(false);
 
     const listItem = (item) => 
@@ -57,13 +59,21 @@ const StorageEquipmentTab = ({equipments = []}) => {
             itemView = {listItem(item)}
             hasCheckBox = {true}
             isChecked = {checkedItems.includes(_id)}
-            onCheckBoxPress = {onItemCheck(item)}
+            onCheckBoxPress = {()=>onItemCheck(item)}
             onItemPress = {()=>{}}
         />
     }
 
-    const onItemCheck = (item) =>{
+    const handleHeaderCheckbox = () =>{
+        let updatedItemsList = selectAll(consumables, checkedItems);
+        setCheckedItems(updatedItemsList)
+    }
 
+    const onItemCheck = (item) =>{
+        const { _id } = item;
+        let updatedItems = checkboxItemPress(item, _id, checkedItems);
+        setCheckedItems(updatedItems)
+        
     }
     
     const toggleActionButton = () => {
@@ -82,20 +92,20 @@ const StorageEquipmentTab = ({equipments = []}) => {
     const floatingActions = () =>{
         let isDisabled = checkedItems.length === 0 ? true : false;
         let isDisabledColor = checkedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
-        const deleteItem =
-            <LongPressWithFeedback
-                pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                onLongPress={onDeleteItems}
-                isDisabled = {isDisabled}
-            >
-                <ActionItem
-                    title={"Hold to Delete"}
-                    icon={<WasteIcon strokeColor = {isDisabledColor}/>}
-                    onPress={()=>{}}
-                    disabled = {isDisabled}
-                    touchable={false}
-                />
-            </LongPressWithFeedback>;
+        // const deleteItem =
+        //     <LongPressWithFeedback
+        //         pressTimer={LONG_PRESS_TIMER.MEDIUM}
+        //         onLongPress={onDeleteItems}
+        //         isDisabled = {isDisabled}
+        //     >
+        //         <ActionItem
+        //             title={"Hold to Delete"}
+        //             icon={<WasteIcon strokeColor = {isDisabledColor}/>}
+        //             onPress={()=>{}}
+        //             disabled = {isDisabled}
+        //             touchable={false}
+        //         />
+        //     </LongPressWithFeedback>;
 
         const itemTransfer = 
             <ActionItem
@@ -108,14 +118,11 @@ const StorageEquipmentTab = ({equipments = []}) => {
 
         return <ActionContainer
             floatingActions={[
-                deleteItem,
                 itemTransfer
             ]}
             title={"SUPPLIER ACTIONS"}
         />
     }
-
-    const onDeleteItems = () =>{}
 
     const handleTransferItems = () => {}
 
@@ -126,6 +133,8 @@ const StorageEquipmentTab = ({equipments = []}) => {
                 listItemFormat = {renderListItem}
                 headers = {headers}
                 isCheckbox = {true}
+                toggleHeaderCheckbox = {handleHeaderCheckbox}
+                itemSelected = {checkedItems}
             />
 
             <Footer
