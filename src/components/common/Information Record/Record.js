@@ -8,19 +8,18 @@ import DateInputField from '../Input Fields/DateInputField';
 import OptionsField from '../Input Fields/OptionsField';
 import SearchableOptionsField from '../Input Fields/SearchableOptionsField';
 import {MenuOption, MenuOptions} from "react-native-popup-menu";
-import { formatDate } from '../../../utils/formatter';
+import {formatDate} from '../../../utils/formatter';
 
 const RecordWrapper = styled.View`
     flex:${({flex}) => flex.toString()};
-    height: 46px;
+    flex-direction:column;
     justify-content: flex-start;
-    //align-items: flex-start;
     margin-right: ${({theme}) => theme.space['--space-4']};
     margin-bottom: ${({theme}) => theme.space['--space-20']};    
 `;
 const RecordContainer = styled.View`
     display: flex;
-    flex-direction:column;
+    justify-content: center;
 `;
 
 const TitleText = styled.Text(({theme, titleColor, titleStyle}) => ({
@@ -56,7 +55,6 @@ const DropdownWrapper = styled.View`
 `
 
 
-
 function Record({
                     recordTitle = "",
                     recordValue = '--',
@@ -66,7 +64,8 @@ function Record({
                     valueColor = '--color-gray-900',
                     flex = 1,
                     minDate = new Date(),
-                    options = ()=>{},
+                    options = () => {
+                    },
                     searchText = "",
                     searchResults = [],
                     searchQuery = false,
@@ -124,10 +123,10 @@ function Record({
                     <DateWrapper>
                         <DateInputField
                             // placeholder = "Delivery Date"
-                            borderColor = "--color-gray-400"
-                            minDate = {minDate}
-                            onDateChange = {onRecordUpdate}
-                            value={formatDate(recordValue,"DD/MM/YYYY")}
+                            borderColor="--color-gray-400"
+                            minDate={minDate}
+                            onDateChange={onRecordUpdate}
+                            value={formatDate(recordValue, "DD/MM/YYYY")}
                             onClear={onClearValue}
                             mode={"date"}
                             format={"DD/MM/YYYY"}
@@ -155,9 +154,13 @@ function Record({
                     <SearchableOptionsField
                         value={recordValue}
                         text={searchText}
-                        oneOptionsSelected={(item)=> onRecordUpdate(item)}
-                        onChangeText={(value) => {onSearchChange(value)}}
-                        onClear={()=>{onClearValue()}}
+                        oneOptionsSelected={(item) => onRecordUpdate(item)}
+                        onChangeText={(value) => {
+                            onSearchChange(value)
+                        }}
+                        onClear={() => {
+                            onClearValue()
+                        }}
                         options={searchResults}
                         handlePopovers={() => {
                             // console.log("handle popovers");
@@ -173,7 +176,7 @@ function Record({
                         value={recordValue}
                         onChangeText={onRecordUpdate}
                         enabled={editable}
-                        onClear = {onClearValue}
+                        onClear={onClearValue}
                     />
 
                 }

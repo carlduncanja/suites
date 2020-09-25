@@ -182,7 +182,6 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
                     useTextArea = {true}
                     onRecordUpdate = {onFieldChange('description')}
                     onClearValue = {()=>{onFieldChange('description')('')}}
-
                 />
             </Row>
 
