@@ -107,7 +107,7 @@ function InventoryGroupGeneral({
                 setCategorySearchResult([]);
             })
     };
-
+ 
 
     // const onFieldChange = (fieldName) => (value) => {
     //     const updatedFields = {...fields}

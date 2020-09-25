@@ -52,6 +52,11 @@ const DateWrapper = styled.View`
 const DropdownWrapper = styled.View`
     display :flex;
     height  :30px;
+`;
+
+const InputWrapper = styled.View`
+    display :flex;
+    height  :30px;
 `
 
 
@@ -137,7 +142,7 @@ function Record({
 
                 {
                     editMode && useDropdown &&
-                    <DropdownWrapper>
+                    <InputWrapper>
                         <OptionsField
                             text={recordValue}
                             oneOptionsSelected={(value) => {
@@ -145,7 +150,7 @@ function Record({
                             }}
                             menuOption={options}
                         />
-                    </DropdownWrapper>
+                    </InputWrapper>
                 }
 
                 {
@@ -171,13 +176,15 @@ function Record({
 
                 {
                     editMode && !useTextArea && !useDateField && !useDropdown && !useSearchable &&
-
-                    <InputField2
-                        value={recordValue}
-                        onChangeText={onRecordUpdate}
-                        enabled={editable}
-                        onClear={onClearValue}
-                    />
+                    <InputWrapper>
+                        <InputField2
+                            value={recordValue}
+                            onChangeText={onRecordUpdate}
+                            enabled={editable}
+                            onClear = {onClearValue}
+                        />
+                    </InputWrapper>
+                    
 
                 }
 

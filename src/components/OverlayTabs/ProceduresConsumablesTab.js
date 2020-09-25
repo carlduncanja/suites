@@ -110,7 +110,8 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
     const listItem = (item) => {
 
         const { inventory = {}, amount = 0 } = item || {}
-        const { name = "", unitPrice = 0, type = "n/a" } = inventory || {}
+        const { name = "", unitCost = 0, type = "n/a" } = inventory || {}
+        console.log("iTEM:", item);
 
         return (
             <>
@@ -130,7 +131,7 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
                     <DataItem text = {amount} align = "center" fontStyle = {'--text-base-regular'}/>
                 }
 
-                <DataItem text = {`$ ${currencyFormatter(unitPrice)}`} align = "flex-end" fontStyle = {'--text-base-regular'}/>
+                <DataItem text = {`$ ${currencyFormatter(unitCost)}`} align = "flex-end" fontStyle = {'--text-base-regular'}/>
             </>
         )
 

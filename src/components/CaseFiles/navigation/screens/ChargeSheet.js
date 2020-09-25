@@ -49,7 +49,7 @@ const headers = [
 
     },
     {
-        name: 'Type',
+        name: 'Category',
         alignment: 'center',
         hasSort: true
 

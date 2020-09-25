@@ -15,7 +15,7 @@ import { useModal } from 'react-native-modalfy';
 
 function OrderItemPage({ route, navigation }) {
 
-    const { order, isOpenEditable } = route.params;
+    const { order, isOpenEditable, updateOrders } = route.params;
     const modal = useModal();
 
 
@@ -175,6 +175,7 @@ function OrderItemPage({ route, navigation }) {
         let updatedFields = {
             ...fields,
             deliveryDate : fields['deliveryDate'].toString(),
+            description : fields['description'],
         }
         // console.log("Error not here: ", typeof updatedFields['deliveryDate']);
         updatePurchaseOrderDetails(_id, updatedFields)
@@ -222,6 +223,7 @@ function OrderItemPage({ route, navigation }) {
             })
             .finally(_=>{
                 fetchOrder(_id);
+                updateOrders();
             })
     }
 

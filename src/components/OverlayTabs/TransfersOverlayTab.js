@@ -62,7 +62,7 @@ const SectionText = styled.Text( ({theme}) => ({
     ...theme.font['--text-xl-medium'],
     color : theme.colors['--color-gray-800'],
     marginBottom : 24,
-}));
+})); 
 
 
 function TransfersOverlayTab({transferItems = []}) {
@@ -103,7 +103,7 @@ function TransfersOverlayTab({transferItems = []}) {
                 isDisabled = {isDisabled}
             >
                 <ActionItem
-                    title={"Hold to Delete"}
+                    title={"Hold to Cancel"}
                     icon={<WasteIcon strokeColor = {isDisabledColor}/>}
                     onPress={()=>{}}
                     disabled = {isDisabled}
