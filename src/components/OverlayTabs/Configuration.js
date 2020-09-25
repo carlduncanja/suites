@@ -230,7 +230,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
                     searchResults = {searchResults}
                     searchText = {searchValue}
                     onRecordUpdate = {onFieldChange('physician')}
-                    onClearValue = {()=>{onFieldChange('physician')(''); setSearchValue('')}}
+                    onClearValue = {()=>{setSearchValue('')}}
                     onSearchChange = {(value)=>setSearchValue(value)}
                 />
 
