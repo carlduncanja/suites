@@ -155,7 +155,8 @@ const Orders = (props) => {
     props.navigation.navigate("OrderItemPage", {
       initial: false,
       order: item,
-      isEdit: isOpenEditable
+      isEdit: isOpenEditable,
+      updateOrders : () => {{handleDataRefresh(); console.log("Refreshed")}}
     });
 
     // modal.openModal("BottomSheetModal", {
