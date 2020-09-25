@@ -55,10 +55,10 @@ const StorageConsumablesTab = ({consumables = []}) => {
         return (
             <>
                 <DataItem flex = {2} color = "--color-blue-600" fontStyle = "--text-base-medium" text = {name}/>
-                <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {inventoryGroup}/>
+                <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {inventoryGroup?.name}/>
                 <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {stock}/>
                 <DataItem align = "flex-end" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {`$ ${currencyFormatter(unitCost)}`}/>
-            
+             
             </>
  
         )
