@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
-import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import BottomSheetContainer from '../common/BottomSheetContainer';
+
 
 import { getPurchaseOrderById } from "../../api/network";
-import { colors } from "../../styles";
 import OrderDetailsTab from '../OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../OverlayTabs/OrderItemTab';
-import OrderSuppliersTab from '../OverlayTabs/OrderSuppliersTab';
 import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
 import { updatePurchaseOrder, updatePurchaseOrderDetails } from '../../api/network';
 import { PageContext } from "../../contexts/PageContext";
@@ -267,7 +264,7 @@ function OrderItemPage({ route, navigation }) {
     }
 
     const BackTapped = () => {
-        navigation.navigate("Orders");
+        navigation.goBack("Orders");
     }
 
     const onAddProductItems = (data) => {
@@ -369,8 +366,8 @@ function OrderItemPage({ route, navigation }) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <OrderDetailsTab 
-                    order={selectedOrder} 
+                return <OrderDetailsTab
+                    order={selectedOrder}
                     onUpdate = {()=>fetchOrder(_id)}
                     fields = {fields}
                     onFieldChange = {onFieldChange}
