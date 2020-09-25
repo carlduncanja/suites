@@ -106,20 +106,20 @@ const StorageConsumablesTab = ({consumables = []}) => {
     const floatingActions = () =>{
         let isDisabled = checkedItems.length === 0 ? true : false;
         let isDisabledColor = checkedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
-        const deleteItem =
-            <LongPressWithFeedback
-                pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                onLongPress={onDeleteItems}
-                isDisabled = {isDisabled}
-            >
-                <ActionItem
-                    title={"Hold to Delete"}
-                    icon={<WasteIcon strokeColor = {isDisabledColor}/>}
-                    onPress={()=>{}}
-                    disabled = {isDisabled}
-                    touchable={false}
-                />
-            </LongPressWithFeedback>;
+        // const deleteItem =
+        //     <LongPressWithFeedback
+        //         pressTimer={LONG_PRESS_TIMER.MEDIUM}
+        //         onLongPress={onDeleteItems}
+        //         isDisabled = {isDisabled}
+        //     >
+        //         <ActionItem
+        //             title={"Hold to Delete"}
+        //             icon={<WasteIcon strokeColor = {isDisabledColor}/>}
+        //             onPress={()=>{}}
+        //             disabled = {isDisabled}
+        //             touchable={false}
+        //         />
+        //     </LongPressWithFeedback>;
 
         const itemTransfer = 
             <ActionItem
@@ -132,15 +132,10 @@ const StorageConsumablesTab = ({consumables = []}) => {
 
         return <ActionContainer
             floatingActions={[
-                deleteItem,
                 itemTransfer
             ]}
             title={"SUPPLIER ACTIONS"}
         />
-    }
-
-    const onDeleteItems = () =>{
-
     }
 
     const handleTransferItems = () => {
