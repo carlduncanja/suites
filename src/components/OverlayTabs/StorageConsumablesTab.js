@@ -15,6 +15,8 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import TransferIcon from "../../../assets/svg/transferIcon";
 import Item from '../common/Table/Item';
 import DataItem from '../common/List/DataItem';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+
 
 
 
@@ -44,7 +46,7 @@ const StorageConsumablesTab = ({consumables = []}) => {
     const theme = useTheme();
     const modal = useModal();
 
-    const [checkedItems, setPCheckedItems] = useState([]);
+    const [checkedItems, setCheckedItems] = useState([]);
     const [isFloatingDisabled, setFloatingAction] = useState(false);
 
 
@@ -60,7 +62,6 @@ const StorageConsumablesTab = ({consumables = []}) => {
                 <DataItem align = "flex-end" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {`$ ${currencyFormatter(unitCost)}`}/>
              
             </>
- 
         )
     }
 
@@ -71,13 +72,22 @@ const StorageConsumablesTab = ({consumables = []}) => {
             itemView = {listItem(item)}
             hasCheckBox = {true}
             isChecked = {checkedItems.includes(_id)}
-            onCheckBoxPress = {onItemCheck(item)}
+            onCheckBoxPress = {()=>onItemCheck(item)}
             onItemPress = {()=>{}}
         />
     }
 
-    const onItemCheck = (item) =>{
 
+    const handleHeaderCheckbox = () =>{
+        let updatedItemsList = selectAll(consumables, checkedItems);
+        setCheckedItems(updatedItemsList)
+    }
+
+    const onItemCheck = (item) =>{
+        const { _id } = item;
+        let updatedItems = checkboxItemPress(item, _id, checkedItems);
+        setCheckedItems(updatedItems)
+        
     }
     
     const toggleActionButton = () => {
@@ -144,6 +154,8 @@ const StorageConsumablesTab = ({consumables = []}) => {
                 listItemFormat = {renderListItem}
                 headers = {headers}
                 isCheckbox = {true}
+                toggleHeaderCheckbox = {handleHeaderCheckbox}
+                itemSelected = {checkedItems}
             />
 
             <Footer
