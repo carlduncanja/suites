@@ -346,8 +346,8 @@ const Equipment = (props) => {
         let assignments;
 
 
-        assignments = equipments.map(x => {
-            return x.assignments.map(assigned => assigned)
+        assignments = equipments?.map(x => {
+            return x?.assignments?.map(assigned => assigned)
         })
 
 
