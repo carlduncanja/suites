@@ -316,8 +316,6 @@ function Inventory(props) {
         } else {
             setExpandedItems([...expandedItems, key])
         }
-
-        console.log('on collapse', key, expandedItems);
     }
 
     // ##### Helper functions
@@ -565,7 +563,7 @@ function Inventory(props) {
             hasCheckBox={true}
             onItemPress={onItemPress(item)}
             collapsed={!expandedItems.includes(item.name)}
-            onCollapsedEnd={() => setExpandedItems(item.name)}
+            onCollapsedEnd={() => onCollapseView(item.name)}
             render={(collapse, isCollapsed) => inventoryItemView(formattedItem, collapse, isCollapsed)}
         >
             <FlatList

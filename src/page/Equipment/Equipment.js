@@ -236,8 +236,6 @@ const Equipment = (props) => {
         } else {
             setExpandedItems([...expandedItems, key])
         }
-
-        console.log('on collapse', key, expandedItems);
     }
 
     const handleOnItemPress = (item, addedInfo, isOpenEditable, type) => {
