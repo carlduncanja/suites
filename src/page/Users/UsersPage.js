@@ -53,7 +53,7 @@ function UsersPage() {
     const recordsPerPage = 10;
 
     // ##### States
-    const [isFetchingData, setFetchingData] = useState(false);
+    const [isLoading, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [users, setUsers] = useState([]);
 
@@ -192,6 +192,7 @@ function UsersPage() {
     );
 
     const deleteUser = (userId) => {
+        setFetchingData(true)
         deleteUserCall(userId)
             .then(data => {
                 removeUserFromState(userId);
@@ -236,6 +237,9 @@ function UsersPage() {
                         }
                     }
                 );
+            })
+            .finally(_ => {
+                setFetchingData(false)
             })
     }
 
@@ -329,7 +333,7 @@ function UsersPage() {
             listHeaders={listHeaders}
             changeText={onSearchInputChange}
             onRefresh={onRefresh}
-            isFetchingData={isFetchingData}
+            isFetchingData={isLoading}
             onSelectAll={onSelectAll}
 
             totalPages={totalPages}
