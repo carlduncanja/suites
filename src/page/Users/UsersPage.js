@@ -7,7 +7,7 @@ import {useModal} from "react-native-modalfy";
 import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import ListItem from "../../components/common/List/ListItem";
-import {getUsersCall} from "../../api/network";
+import {deleteUserCall, getUsersCall} from "../../api/network";
 import styled from '@emotion/native';
 import DataItem from "../../components/common/List/DataItem";
 import EditIcon from "../../../assets/svg/editIcon";
@@ -15,6 +15,11 @@ import IconButton from "../../components/common/Buttons/IconButton";
 import ActionIcon from "../../../assets/svg/dropdownIcon";
 import CollapsedIcon from "../../../assets/svg/closeArrow";
 import ContentDataItem from "../../components/common/List/ContentDataItem";
+import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
+import {LONG_PRESS_TIMER} from "../../const";
+import ActionItem from "../../components/common/ActionItem";
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
 
 
 const listHeaders = [
@@ -39,17 +44,6 @@ const listHeaders = [
         flex: 1,
     },
 ];
-
-const ItemView = styled.Text(({flex, justifyContent}) => ({
-    flex: flex || 1,
-    display: 'flex',
-    backgroundColor: 'yellow',
-    alignItems: 'flex-end',
-    // flexDirection: 'row',
-    // alignItems: 'flex-end',
-    // justifyContent: justifyContent || "center"
-}))
-
 
 function UsersPage() {
 
@@ -130,18 +124,22 @@ function UsersPage() {
     };
 
     const onCheckBoxPress = (selectedItem) => () => {
-        if(selectedIds.includes(selectedItem._id)){
+        if (selectedIds.includes(selectedItem._id)) {
             setSelectedIds(selectedIds.filter(id => selectedItem._id !== id))
         } else {
             setSelectedIds([...selectedIds, selectedItem._id])
         }
     };
 
+    const removeUserFromState = (userId) => {
+        setUsers(users.filter(user => user._id !== userId))
+    }
+
     const toggleActionButton = () => {
         setFloatingAction(true);
         modal.openModal("ActionContainerModal", {
             actions: getFabActions(),
-            title: "STORAGE ACTIONS",
+            title: "USER ACTIONS",
             onClose: () => {
                 setFloatingAction(false);
             },
@@ -152,14 +150,30 @@ function UsersPage() {
 
     }
 
-    // endregion
+    const onDeleteUsers = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={modal.closeAllModals}
+                    onAction={() => deleteUser(selectedIds[0])}
+                    message="Are you sure you want to remove selected user?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    }
 
+    // endregion
 
 
     // region Helper Methods
 
     const userItem = (name, email, groupName, onActions) => (
-
         <>
             <DataItem flex={1.3} text={name} theme={theme}/>
             <DataItem flex={2} text={email} theme={theme}/>
@@ -177,10 +191,81 @@ function UsersPage() {
         </>
     );
 
+    const deleteUser = (userId) => {
+        deleteUserCall(userId)
+            .then(data => {
+                removeUserFromState(userId);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                            }}
+                            onAction={() => {
+                                deleteUser(selectedIds[0])
+                                modal.closeAllModals()
+                            }}
+                            message="User successfully removed."
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+            })
+            .catch(error => {
+                console.log("Failed to remove user", error);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            onCancel={modal.closeAllModals}
+                            onAction={() => {
+                                deleteUser(selectedIds[0])
+                                modal.closeAllModals()
+                            }}
+                            message="Failed to remove user."
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+            })
+    }
+
     const getFabActions = () => {
+
+        const isUsersSelected = selectedIds?.length === 1;
+        const deleteColor = !isUsersSelected ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
+
+        const DeleteUserAction = <View style={{
+            borderRadius: 6,
+            flex: 1,
+            overflow: 'hidden'
+        }}>
+            <LongPressWithFeedback
+                pressTimer={LONG_PRESS_TIMER.LONG}
+                isDisabled={!isUsersSelected}
+                onLongPress={onDeleteUsers}
+            >
+                <ActionItem
+                    title="Hold to Delete"
+                    icon={<WasteIcon strokeColor={deleteColor}/>}
+                    disabled={!isUsersSelected}
+                    touchable={false}
+                />
+            </LongPressWithFeedback>
+        </View>
+
         return (
             <ActionContainer
-                floatingActions={[]}
+                floatingActions={[DeleteUserAction]}
                 title={"USERS ACTIONS"}
             />
         );

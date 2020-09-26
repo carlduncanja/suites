@@ -58,7 +58,7 @@ import {
     users,
     createCategoryEndpoint,
     updateEquipmentEndpoint, purchaseOrdersArchiveEndpoint,
-    updatePurchaseOrderDetailsEndpoint
+    updatePurchaseOrderDetailsEndpoint, user
 } from '../const/suitesEndpoints';
 import { createDocumentLink } from '../const/documentGenerationEndpoints';
 
@@ -84,6 +84,11 @@ export const logout = async (userId, pushToken) => suitesAxiosInstance
 // ################ Users Endpoint
 export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .get(users, { params: { query, page, max } })
+    .then(handleResponse)
+    .catch(handleError);
+
+export const deleteUserCall = async (userId) => suitesAxiosInstance
+    .delete(user(userId))
     .then(handleResponse)
     .catch(handleError);
 
