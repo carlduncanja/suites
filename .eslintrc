@@ -156,6 +156,7 @@
     "react/sort-comp": "off",
     "react/jsx-boolean-value": "off",
     "react/jsx-tag-spacing": "off",
-    "react/jsx-curly-newline": "off"
+    "react/jsx-curly-newline": "off",
+    "react-hooks/rules-of-hooks": "warn"
   }
 }

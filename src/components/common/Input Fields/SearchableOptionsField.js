@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {View, StyleSheet, Text, TextInput, FlatList, TouchableOpacity, SafeAreaView} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
-import Styled from '@emotion/native';
 import IconButton from '../Buttons/IconButton';
 import RemoveIcon from '../../../../assets/svg/removeIcon';
 import ClearIcon from '../../../../assets/svg/clearIcon';
@@ -117,7 +116,7 @@ const ValueContainer = styled.View`
    background-color : ${ ({theme}) => theme.colors['--color-red-100']};
    border-radius: 2px; */
 
-const LabelContainer = Styled.View(({theme, label}) => ({
+const LabelContainer = styled.View(({theme, label}) => ({
     // ...theme.font['--text-xs-medium'],
     // color: theme.colors['--color-gray-600'],
     minWidth: 70,

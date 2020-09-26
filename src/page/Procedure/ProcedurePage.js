@@ -1,40 +1,38 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity} from "react-native";
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {useModal} from 'react-native-modalfy';
+import {useCode} from 'react-native-reanimated';
 import Configuration from '../../components/OverlayTabs/Configuration';
 import NotesTab from '../../components/OverlayTabs/NotesTab';
 import ProceduresConsumablesTab from '../../components/OverlayTabs/ProceduresConsumablesTab';
 import ProceduresEquipmentTab from '../../components/OverlayTabs/ProceduresEquipmentTab';
 import EditableProceduresConfig from '../../components/OverlayTabs/EditableProceduresConfig';
 import TheatresTab from '../../components/OverlayTabs/TheatresTab';
-import ActionItem from "../../components/common/ActionItem";
-import AddIcon from "../../../assets/svg/addIcon";
-import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
-import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
+import ActionItem from '../../components/common/ActionItem';
+import AddIcon from '../../../assets/svg/addIcon';
+import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
+import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
+import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 
-import {updateProcedure, getProcedureById} from "../../api/network";
-import {setProcedureEdit} from "../../redux/actions/procedurePageActions";
-import {connect} from 'react-redux';
-import {PageContext} from "../../contexts/PageContext";
-import { bindActionCreators } from 'redux';
-import { useModal } from "react-native-modalfy";
-import { useCode } from 'react-native-reanimated';
-
+import {updateProcedure, getProcedureById} from '../../api/network';
+import {setProcedureEdit} from '../../redux/actions/procedurePageActions';
+import {PageContext} from '../../contexts/PageContext';
 
 function ProcedurePage({route, setProcedureEdit, navigation}) {
-
-    const currentTabs = ["Configuration", "Consumables", "Equipment", "Notes", "Theatres"];
+    const currentTabs = ['Configuration', 'Consumables', 'Equipment', 'Notes', 'Theatres'];
     const modal = useModal();
     // const { pageState } = useContext(PageContext);
     // const { isEditMode } = pageState;
 
-    const {procedure, isOpenEditable, onUpdate} = route.params
+    const {procedure, isOpenEditable, onUpdate} = route.params;
 
     const {
-        _id = "",
+        _id = '',
         name,
-        description = "",
+        description = '',
         hasRecovery,
         duration,
         custom = false,
@@ -45,7 +43,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [pageState, setPageState] = useState({});
-    const [selectedProcedure, setSelectedProcedure] = useState({})
+    const [selectedProcedure, setSelectedProcedure] = useState({});
     const [isInfoUpdated, setIsInfoUpdated] = useState(false);
     // console.log("Selected procedure: ", selectedProcedure);
 
@@ -63,184 +61,217 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         duration,
         hasRecovery,
         custom,
-        physician : {...physician, name : `Dr. ${physician?.firstName || ""} ${physician?.surname || ""}`}
+        physician: {
+            ...physician,
+            name: `Dr. ${physician?.firstName || ''} ${physician?.surname || ''}`
+        }
     });
 
     const [popoverList, setPopoverList] = useState([
         {
-            name: "physician",
+            name: 'physician',
             status: false
         }
-    ])
+    ]);
 
     // ##### Lifecycle Methods
     useEffect(() => {
         fetchProcdure(_id);
     }, []);
 
-    useEffect(()=>{
-        if(pageState.isEditMode === false && isInfoUpdated === true){
+    useEffect(() => {
+        if (pageState.isEditMode === false && isInfoUpdated === true) {
             confirmAction();
             // updateProcedureCall(selectedProcedure)
         }
-    },[pageState.isEditMode])
+    }, [pageState.isEditMode]);
 
     // ##### Event Handlers
 
-    const onTabPress = (selectedTab) => {
+    const onTabPress = selectedTab => {
         if (!pageState.isEditMode) setCurrentTab(selectedTab);
     };
 
-    const setPageLoading = (value) => {
+    const setPageLoading = value => {
         setPageState({
             ...pageState,
-            isLoading : value,
-            isEdit : false
-        })
-    }
+            isLoading: value,
+            isEdit: false
+        });
+    };
 
-
-    const confirmAction = () =>{
+    const confirmAction = () => {
         // setTimeout(() => {
-            modal
-                .openModal(
-                    'ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isError = {false}
-                            isEditUpdate = {true}
-                            onCancel = {onConfirmCancel}
-                            onAction = {onConfirmSave}
-                            message = "Do you want to save these changes ?"
-                        />
-                        ,
-                        onClose: () => {modal.closeModals("ConfirmationModal")}
-                    })
+        modal
+            .openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={true}
+                        onCancel={onConfirmCancel}
+                        onAction={onConfirmSave}
+                        message="Do you want to save these changes ?"
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                }
+            );
         // }, 200)
-    }
+    };
 
-    const onConfirmSave = () =>{
+    const onConfirmSave = () => {
         modal.closeModals('ConfirmationModal');
-        setTimeout(()=>{
-            console.log("Updated: ", selectedProcedure);
+        setTimeout(() => {
+            console.log('Updated: ', selectedProcedure);
             updateProcedureCall(selectedProcedure);
-            setIsInfoUpdated(false)
-        },200)
-    }
+            setIsInfoUpdated(false);
+        }, 200);
+    };
 
     const onConfirmCancel = () => {
         modal.closeModals('ConfirmationModal');
         setPageState({
             ...pageState,
-            isEditMode : true
+            isEditMode: true
         });
-    }
+    };
 
-    const onFieldChange = (fieldName) => (value) => {
+    const onFieldChange = fieldName => value => {
         setFields({
             ...fields,
             [fieldName]: value
-        })
-        console.log("Fields: ", fieldName, value);
+        });
+        console.log('Fields: ', fieldName, value);
         setIsInfoUpdated(true);
-        setSelectedProcedure({...selectedProcedure, [fieldName]: value})
+        setSelectedProcedure({
+            ...selectedProcedure,
+            [fieldName]: value
+        });
     };
 
-    const handlePopovers = (popoverValue) => (popoverItem) => {
-
+    const handlePopovers = popoverValue => popoverItem => {
         if (!popoverItem) {
-            let updatedPopovers = popoverList.map(item => {
-                return {
-                    ...item,
-                    status: false
-                }
-            })
+            const updatedPopovers = popoverList.map(item => ({
+                ...item,
+                status: false
+            }));
 
-            setPopoverList(updatedPopovers)
+            setPopoverList(updatedPopovers);
         } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = {...popoverList[objIndex], status: popoverValue};
+            const updatedObj = {
+                ...popoverList[objIndex],
+                status: popoverValue
+            };
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
                 ...popoverList.slice(objIndex + 1),
             ];
-            setPopoverList(updatedPopovers)
+            setPopoverList(updatedPopovers);
         }
+    };
 
-    }
-
-    const fetchProcdure = (id) => {
-        setPageLoading(true)
+    const fetchProcdure = id => {
+        setPageLoading(true);
         getProcedureById(id)
             .then(data => {
                 setSelectedProcedure(data);
-                console.log("Fetched data: ", data);
+                console.log('Fetched data: ', data);
                 // setProcedure(data)
             })
             .catch(error => {
-                console.log("Failed to get procedure", error)
+                console.log('Failed to get procedure', error);
                 //TODO handle error cases.
             })
             .finally(_ => {
-                setPageLoading(false)
-            })
+                setPageLoading(false);
+            });
     };
 
-    const onAddInventory = (data) => {
-        let {inventories = []} = selectedProcedure
-        let updatedInventory = inventories.map( item => {return { inventory : item?.inventory._id, amount : item?.amount}});
-        let newData = [...updatedInventory, ...data?.inventories];
-        let newProcedureData = {...selectedProcedure, inventories: newData}
-        setIsInfoUpdated(true)
+    const onAddInventory = data => {
+        const {inventories = []} = selectedProcedure;
+        const updatedInventory = inventories.map(item => ({
+            inventory: item?.inventory._id,
+            amount: item?.amount
+        }));
+        const newData = [...updatedInventory, ...data?.inventories];
+        const newProcedureData = {
+            ...selectedProcedure,
+            inventories: newData
+        };
+        setIsInfoUpdated(true);
         // setSelectedProcedure(newProcedureData)
-        updateProcedureCall(newProcedureData)
-    }
+        updateProcedureCall(newProcedureData);
+    };
 
-    const onAddEquipment = (data) => {
-        let {equipments = []} = selectedProcedure
-        let updatedEquipments = equipments.map( item => {return { equipment : item?.equipment._id, amount : item?.amount}})
-        let newData = [...updatedEquipments, ...data?.equipments];
+    const onAddEquipment = data => {
+        const {equipments = []} = selectedProcedure;
+        const updatedEquipments = equipments.map(item => ({
+            equipment: item?.equipment._id,
+            amount: item?.amount
+        }));
+        const newData = [...updatedEquipments, ...data?.equipments];
 
-        let newProcedureData = {...selectedProcedure, equipments: newData}
-        setIsInfoUpdated(true)
+        const newProcedureData = {
+            ...selectedProcedure,
+            equipments: newData
+        };
+        setIsInfoUpdated(true);
         // setSelectedProcedure(newProcedureData)
-        updateProcedureCall(newProcedureData)
-    }
+        updateProcedureCall(newProcedureData);
+    };
 
-    const onAddItems = (data) => {
+    const onAddItems = data => {
         // console.log("Dtae in add function: ", data);
-        let { inventories = [], equipments = [] } = selectedProcedure
-        let updatedInventory = inventories.map( item => {return { inventory : item?.inventory._id, amount : item?.amount}});
-        let updatedEquipments = equipments.map( item => {return { equipment : item?.equipment._id, amount : item?.amount}})
-        let newInventory = [...updatedInventory, ...data?.inventories];
-        let newEquipment = [...updatedEquipments, ...data?.equipments];
-        let newProcedureData = {inventories : newInventory, equipments : newEquipment};
-        
-        console.log("New procedure: ", newProcedureData);
+        const {inventories = [], equipments = []} = selectedProcedure;
+        const updatedInventory = inventories.map(item => ({
+            inventory: item?.inventory._id,
+            amount: item?.amount
+        }));
+        const updatedEquipments = equipments.map(item => ({
+            equipment: item?.equipment._id,
+            amount: item?.amount
+        }));
+        const newInventory = [...updatedInventory, ...data?.inventories];
+        const newEquipment = [...updatedEquipments, ...data?.equipments];
+        const newProcedureData = {
+            inventories: newInventory,
+            equipments: newEquipment
+        };
+
+        console.log('New procedure: ', newProcedureData);
         setIsInfoUpdated(true);
         // setSelectedProcedure(newProcedureData);
         updateProcedureCall(newProcedureData);
-    }
+    };
 
-    const onAddTheatre = (data) => {
-        let {supportedRooms = []} = selectedProcedure
-        let newData = [...supportedRooms, data]
-        let newProcedureData = {...selectedProcedure, supportedRooms: newData}
-        setIsInfoUpdated(true)
-        setSelectedProcedure(newProcedureData)
-        updateProcedureCall(newProcedureData)
-    }
+    const onAddTheatre = data => {
+        const {supportedRooms = []} = selectedProcedure;
+        const newData = [...supportedRooms, data];
+        const newProcedureData = {
+            ...selectedProcedure,
+            supportedRooms: newData
+        };
+        setIsInfoUpdated(true);
+        setSelectedProcedure(newProcedureData);
+        updateProcedureCall(newProcedureData);
+    };
 
-    const onDetailsUpdate = (data) =>{
-        console.log("Data: ", data);
-    }
+    const onDetailsUpdate = data => {
+        console.log('Data: ', data);
+    };
 
-    const handleInventoryUpdate = (data) => {
-        const procedure = {...selectedProcedure, inventories: data}
-        const updatedObj = {inventories: data}
-        setSelectedProcedure(procedure)
-        setIsInfoUpdated(true)
+    const handleInventoryUpdate = data => {
+        const procedure = {
+            ...selectedProcedure,
+            inventories: data
+        };
+        const updatedObj = {inventories: data};
+        setSelectedProcedure(procedure);
+        setIsInfoUpdated(true);
         // Change updated
         // updateProcedureCall(updatedObj)
     };
@@ -251,64 +282,86 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     //     setIsInfoUpdated(true)
     // };
 
-    const handleEquipmentDelete = (data) => {
-        const procedure = {...selectedProcedure, equipments: data}
-        setSelectedProcedure(procedure)
-        updateProcedureCall(procedure)
+    const handleEquipmentDelete = data => {
+        const procedure = {
+            ...selectedProcedure,
+            equipments: data
+        };
+        setSelectedProcedure(procedure);
+        updateProcedureCall(procedure);
     };
 
-    const handleConsumablesDelete = (data) => {
-        const procedure = {...selectedProcedure, inventories: data}
-        setSelectedProcedure(procedure)
-        updateProcedureCall(procedure)
+    const handleConsumablesDelete = data => {
+        const procedure = {
+            ...selectedProcedure,
+            inventories: data
+        };
+        setSelectedProcedure(procedure);
+        updateProcedureCall(procedure);
     };
 
-    const handleTheatresDelete = (data) => {
-        const procedure = {...selectedProcedure, supportedRooms: data}
-        setSelectedProcedure(procedure)
-        updateProcedureCall(procedure)
-    }
+    const handleTheatresDelete = data => {
+        const procedure = {
+            ...selectedProcedure,
+            supportedRooms: data
+        };
+        setSelectedProcedure(procedure);
+        updateProcedureCall(procedure);
+    };
 
-    const updateNote = (data) => {
-        const procedure = {...selectedProcedure, notes : data}
-        setSelectedProcedure(procedure)
-        setIsInfoUpdated(true)
+    const updateNote = data => {
+        const procedure = {
+            ...selectedProcedure,
+            notes: data
+        };
+        setSelectedProcedure(procedure);
+        setIsInfoUpdated(true);
         // console.log("Procedure: ", selectedProcedure)
-    }
+    };
 
-    const updateProcedureCall = (updatedFields) => {
+    const updateProcedureCall = updatedFields => {
         // console.log("Fields: ", updatedFields);
         updateProcedure(_id, updatedFields)
             .then(data => {
                 // getProcedures()
                 onUpdate();
                 fetchProcdure(_id);
-                console.log("Success: ", data);
+                console.log('Success: ', data);
                 // modal.closeAllModals();
                 // setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
                 // todo handle error
-                console.log("failed to update procedure", error)
-            })
-    }
+                console.log('failed to update procedure', error);
+            });
+    };
 
     const getFabActions = () => {
-        let title = "Actions";
-        let floatingAction = [];
+        let title = 'Actions';
+        const floatingAction = [];
 
         switch (currentTab) {
             case 0: {
-                const addNewItem = <ActionItem title={"Add Inventory Item"} icon={<AddIcon/>} onPress={_ => {
-                }}/>;
-                const removeLineItemAction = <ActionItem title={"Remove Consumable"} icon={<DeleteIcon/>}
-                                                         onPress={_ => {
-                                                         }}/>;
-                floatingAction.push(addNewItem, /*removeLineItemAction*/)
-                title = "CONSUMABLE'S ACTIONS"
+                const addNewItem = (
+                    <ActionItem
+                        title="Add Inventory Item"
+                        icon={<AddIcon/>}
+                        onPress={_ => {
+                        }}
+                    />
+                );
+                const removeLineItemAction = (
+                    <ActionItem
+                        title="Remove Consumable"
+                        icon={<DeleteIcon/>}
+                        onPress={_ => {
+                        }}
+                    />
+                );
+                floatingAction.push(addNewItem, /*removeLineItemAction*/);
+                title = 'CONSUMABLE\'S ACTIONS';
                 break;
             }
-
 
             default:
                 break;
@@ -317,88 +370,90 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         return <ActionContainer
             floatingActions={floatingAction}
             title={title}
-        />
+        />;
+    };
 
-    }
-
-
-    const getTabContent = (selectedTab) => {
-
-
-        const {inventories = [], equipments = [], notes = "", supportedRooms = []} = selectedProcedure
+    const getTabContent = selectedTab => {
+        const {inventories = [], equipments = [], notes = '', supportedRooms = []} = selectedProcedure;
         switch (selectedTab) {
-            case "Configuration":
+            case 'Configuration':
                 // return currentTab === 'Configuration' && pageState.isEditMode ?
-                    // <TouchableOpacity
-                    //     style={{flex: 1}}
-                    //     activeOpacity={1}
-                    //     onPress={() => {
-                    //         handlePopovers(false)()
-                    //     }}
-                    // >
-                    //     <EditableProceduresConfig
-                    //         fields={fields}
-                    //         onFieldChange={onFieldChange}
-                    //         popoverList={popoverList}
-                    //         handlePopovers={handlePopovers}
-                    //     />
-                    // </TouchableOpacity>
+                // <TouchableOpacity
+                //     style={{flex: 1}}
+                //     activeOpacity={1}
+                //     onPress={() => {
+                //         handlePopovers(false)()
+                //     }}
+                // >
+                //     <EditableProceduresConfig
+                //         fields={fields}
+                //         onFieldChange={onFieldChange}
+                //         popoverList={popoverList}
+                //         handlePopovers={handlePopovers}
+                //     />
+                // </TouchableOpacity>
 
-                    // :
-                return <Configuration 
+                // :
+                return <Configuration
                     procedure={selectedProcedure}
-                    onDetailsUpdate = {onDetailsUpdate}
-                    fields = {fields}
-                    onFieldChange = {onFieldChange}
+                    onDetailsUpdate={onDetailsUpdate}
+                    fields={fields}
+                    onFieldChange={onFieldChange}
                 />;
-            case "Consumables":
+            case 'Consumables':
                 return <ProceduresConsumablesTab
                     consumablesData={inventories}
                     handleInventoryUpdate={handleInventoryUpdate}
-                    handleConsumablesDelete = {handleConsumablesDelete}
-                    onAddInventory = {onAddInventory}
-                    navigation = {navigation}
-                    procedureId = {_id}
-                />
-            case "Equipment":
+                    handleConsumablesDelete={handleConsumablesDelete}
+                    onAddInventory={onAddInventory}
+                    navigation={navigation}
+                    procedureId={_id}
+                />;
+            case 'Equipment':
                 return <ProceduresEquipmentTab
                     equipmentsData={equipments}
                     onAddEquipment={onAddEquipment}
-                    handleEquipmentDelete = {handleEquipmentDelete}
+                    handleEquipmentDelete={handleEquipmentDelete}
                     onAddItems={onAddItems}
-                    navigation = {navigation}
+                    navigation={navigation}
                     // handleEquipmentUpdate={handleEquipmentUpdate}
                 />;
-            case "Notes":
+            case 'Notes':
                 return <NotesTab
                     notesData={notes}
-                    updateNote = {updateNote}
+                    updateNote={updateNote}
                 />;
-            case "Theatres" :
+            case 'Theatres':
                 return <TheatresTab
                     theatresData={supportedRooms}
                     onAddTheatre={onAddTheatre}
-                    handleTheatresDelete = {handleTheatresDelete}
-                />
-            default :
-                return <View/>
+                    handleTheatresDelete={handleTheatresDelete}
+                />;
+            default:
+                return <View/>;
         }
     };
 
-    let physicianName = `Dr. ${physician?.firstName[0]} . ${physician?.surname}`;
+    const physicianName = `Dr. ${physician?.firstName && physician?.surname ? `${physician?.firstName[0]}. ${physician?.surname}` : physician?.firstName || (physician?.surname || '')}`;
 
     return (
-        <PageContext.Provider value ={{ pageState, setPageState}}>
+        <PageContext.Provider value={{
+            pageState,
+            setPageState
+        }}
+        >
             <DetailsPage
                 headerChildren={[name, physicianName]}
-                onBackPress = {() =>{navigation.navigate('Procedures')}}
-                pageTabs = {
+                onBackPress={() => {
+                    navigation.navigate('Procedures');
+                }}
+                pageTabs={(
                     <TabsContainer
                         tabs={currentTabs}
                         selectedTab={currentTab}
                         onPressChange={onTabPress}
                     />
-                }
+                )}
             >
                 {getTabContent(currentTab)}
             </DetailsPage>
@@ -407,9 +462,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     );
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-    setProcedureEdit
-}, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({setProcedureEdit}, dispatch);
 
 ProcedurePage.propTypes = {};
 ProcedurePage.defaultProps = {};
@@ -417,12 +470,10 @@ ProcedurePage.defaultProps = {};
 export default connect(null, mapDispatchToProps)(ProcedurePage);
 
 const styles = StyleSheet.create({
-    item: {
-        flex: 1,
-    },
+    item: {flex: 1},
     itemText: {
         fontSize: 16,
-        color: "#4A5568",
+        color: '#4A5568',
     },
     footer: {
         // alignSelf: 'flex-end',
@@ -434,4 +485,4 @@ const styles = StyleSheet.create({
         // marginRight: 30,
         // backgroundColor:'red'
     }
-})
+});

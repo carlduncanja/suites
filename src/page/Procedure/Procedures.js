@@ -244,14 +244,19 @@ const Procedures = props => {
                     alignItems: 'flex-start'
                 }]}
                 >
-                    <Text numberOfLines={1} style={[styles.itemText, {color: '#3182CE'}]}>Dr. {firstName} {surname}</Text>
+                    <Text
+                        numberOfLines={1}
+                        style={[styles.itemText, {color: '#3182CE'}]}
+                    >
+                        Dr. {firstName && surname ? `${firstName} ${surname}` : firstName || (surname || '')}
+                    </Text>
                 </View>
                 <View style={[styles.item, {
                     flex: 1,
                     alignItems: 'center'
                 }]}
                 >
-                    <Text numberOfLines={1} style={[styles.itemText, {color: '#3182CE'}]}>{`${item.duration} hours`}</Text>
+                    <Text numberOfLines={1} style={[styles.itemText, {color: '#3182CE'}]}>{`${item.duration || 1} hours`}</Text>
                 </View>
             </>
         );
