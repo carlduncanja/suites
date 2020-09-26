@@ -4,19 +4,17 @@ import {useTheme} from "emotion-theming"
 import PropTypes from 'prop-types';
 import NavPage from "../../components/common/Page/NavPage";
 import {useModal} from "react-native-modalfy";
-import {checkboxItemPress, selectAll, useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
-import IconButton from "../../components/common/Buttons/IconButton";
-import AssignIcon from "../../../assets/svg/assignIcon";
-import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
-import ActionItem from "../../components/common/ActionItem";
-import WasteIcon from "../../../assets/svg/wasteIcon";
-import AddIcon from "../../../assets/svg/addIcon";
+import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import CreateTheatreDialogContainer from "../../components/Theatres/CreateTheatreDialogContainer";
-import moment from "moment";
 import ListItem from "../../components/common/List/ListItem";
-import {getTheatres, getUsersCall} from "../../api/network";
+import {getUsersCall} from "../../api/network";
 import styled from '@emotion/native';
+import DataItem from "../../components/common/List/DataItem";
+import EditIcon from "../../../assets/svg/editIcon";
+import IconButton from "../../components/common/Buttons/IconButton";
+import ActionIcon from "../../../assets/svg/dropdownIcon";
+import CollapsedIcon from "../../../assets/svg/closeArrow";
+import ContentDataItem from "../../components/common/List/ContentDataItem";
 
 
 const listHeaders = [
@@ -42,15 +40,13 @@ const listHeaders = [
     },
 ];
 
-const ItemTextView = styled.Text( ({theme}) => ({
-    ...theme.font['--text-base-regular'],
-    color : theme.colors['--color-black'],
-}))
-
-const ItemView = styled.Text( ({flex, justifyContent}) => ({
+const ItemView = styled.Text(({flex, justifyContent}) => ({
     flex: flex || 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    display: 'flex',
+    backgroundColor: 'yellow',
+    alignItems: 'flex-end',
+    // flexDirection: 'row',
+    // alignItems: 'flex-end',
     // justifyContent: justifyContent || "center"
 }))
 
@@ -105,8 +101,6 @@ function UsersPage() {
     };
 
     const onSelectAll = () => {
-        let updatedTheatres = selectAll(theatres, selectedIds);
-        setSelectedIds(updatedTheatres);
     };
 
     const goToNextPage = () => {
@@ -136,9 +130,7 @@ function UsersPage() {
     };
 
     const onCheckBoxPress = (item) => () => {
-        const {_id} = item;
-        let updatedTheatres = checkboxItemPress(item, _id, selectedIds);
-        setSelectedIds(updatedTheatres);
+
     };
 
     const toggleActionButton = () => {
@@ -152,7 +144,12 @@ function UsersPage() {
         });
     };
 
+    const onActionPress = () => {
+
+    }
+
     // endregion
+
 
 
     // region Helper Methods
@@ -160,17 +157,19 @@ function UsersPage() {
     const userItem = (name, email, groupName, onActions) => (
 
         <>
-            <ItemView flex={1.3} justifyContent={"flex-start"}>
-                <ItemTextView theme={theme}>{name}</ItemTextView>
-            </ItemView>
-            <ItemView flex={2} justifyContent={"flex-start"}>
-                <ItemTextView theme={theme}>{email}</ItemTextView>
-            </ItemView>
-            <ItemView flex={1} justifyContent={"center"}>
-                <ItemTextView theme={theme}>{groupName}</ItemTextView>
-            </ItemView>
-            <ItemView flex={1}  justifyContent={"center"}>
-            </ItemView>
+            <DataItem flex={1.3} text={name} theme={theme}/>
+            <DataItem flex={2} text={email} theme={theme}/>
+            <DataItem flex={1} align={'center'} text={groupName} color={'--color-blue-600'}/>
+            <ContentDataItem
+                align="center"
+                flex={1}
+                content={
+                    <IconButton
+                        Icon={<EditIcon/>}
+                        onPress={onActionPress}
+                    />
+                }
+            />
         </>
     );
 
@@ -218,10 +217,10 @@ function UsersPage() {
                 setUsers(data?.data || [])
                 setTotalPages(data?.totalPages)
             })
-            .catch( error => {
+            .catch(error => {
                 console.log("Failed to get users")
             })
-            .finally( _ => {
+            .finally(_ => {
                 setFetchingData(false)
             })
     };
