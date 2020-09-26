@@ -129,8 +129,12 @@ function UsersPage() {
 
     };
 
-    const onCheckBoxPress = (item) => () => {
-
+    const onCheckBoxPress = (selectedItem) => () => {
+        if(selectedIds.includes(selectedItem._id)){
+            setSelectedIds(selectedIds.filter(id => selectedItem._id !== id))
+        } else {
+            setSelectedIds([...selectedIds, selectedItem._id])
+        }
     };
 
     const toggleActionButton = () => {
