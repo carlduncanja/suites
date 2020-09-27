@@ -160,8 +160,8 @@ function UsersPage() {
         }
     };
 
-    const removeUserFromState = (userId) => {
-        setUsers(users.filter(user => user._id !== userId))
+    const removeUsersFromState = (userIds) => {
+        setUsers(users.filter(user => !userIds.includes(user._id)))
     }
 
     const toggleActionButton = () => {
@@ -187,8 +187,9 @@ function UsersPage() {
                     isError={false}
                     isEditUpdate={true}
                     onCancel={modal.closeAllModals}
-                    onAction={() => deleteUser(selectedIds[0])}
-                    message="Are you sure you want to remove selected user?"
+                    onAction={() => deleteUser(selectedIds)}
+                    action={"Yes"}
+                    message="Are you sure you want to remove selected user(s)?"
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
@@ -240,11 +241,12 @@ function UsersPage() {
         </>
     );
 
-    const deleteUser = (userId) => {
+    const deleteUser = (userIds) => {
         setFetchingData(true)
-        deleteUserCall(userId)
+        deleteUserCall(userIds)
             .then(data => {
-                removeUserFromState(userId);
+                // removeUsersFromState(userId);
+                fetchUsers(currentPagePosition);
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -255,10 +257,9 @@ function UsersPage() {
                                 modal.closeAllModals()
                             }}
                             onAction={() => {
-                                deleteUser(selectedIds[0])
                                 modal.closeAllModals()
                             }}
-                            message="User successfully removed."
+                            message="User(s) successfully removed."
                         />,
                         onClose: () => {
                             modal.closeModals('ConfirmationModal');
@@ -275,10 +276,7 @@ function UsersPage() {
                             isError={true}
                             isEditUpdate={false}
                             onCancel={modal.closeAllModals}
-                            onAction={() => {
-                                deleteUser(selectedIds[0])
-                                modal.closeAllModals()
-                            }}
+                            onAction={modal.closeAllModals}
                             message="Failed to remove user."
                         />,
                         onClose: () => {
@@ -294,7 +292,7 @@ function UsersPage() {
 
     const getFabActions = () => {
 
-        const isUsersSelected = selectedIds?.length === 1;
+        const isUsersSelected = selectedIds?.length;
         const deleteColor = !isUsersSelected ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
 
         const DeleteUserAction = <View style={{

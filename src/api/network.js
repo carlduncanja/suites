@@ -92,8 +92,8 @@ export const getRolesCall = async (query, page, max) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-export const deleteUserCall = async (userId) => suitesAxiosInstance
-    .delete(user(userId))
+export const deleteUserCall = async (userIds) => suitesAxiosInstance
+    .delete(users,{data: {ids: userIds}})
     .then(handleResponse)
     .catch(handleError);
 
