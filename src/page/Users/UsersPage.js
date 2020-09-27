@@ -23,6 +23,7 @@ import ConfirmationComponent from "../../components/ConfirmationComponent";
 import AddIcon from "../../../assets/svg/addIcon";
 import CreateTheatreDialogContainer from "../../components/Theatres/CreateTheatreDialogContainer";
 import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDialog";
+import _ from "lodash";
 
 
 const listHeaders = [
@@ -80,6 +81,29 @@ function UsersPage() {
         setTotalPages(Math.ceil(users.length / recordsPerPage));
     }, []);
 
+    useEffect(() => {
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            fetchUsers(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchUsers, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPagePosition(1);
+    }, [searchValue]);
 
     // endregion
 
