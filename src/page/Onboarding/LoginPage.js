@@ -260,6 +260,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                     placeholder="Password"
                                     onChangeText={value => onFieldChange('password')(value)}
                                     value={fields.password}
+                                    autoCapitalize={'none'}
                                     hasError={!!fieldError['password']}
                                     errorMessage={fieldError['password']}
                                     onClear={() => onFieldChange('password')('')}
