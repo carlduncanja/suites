@@ -6,10 +6,12 @@ import {PageContext} from "../../contexts/PageContext";
 import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
 import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
 import {useNavigation} from "@react-navigation/native"
+import UserDetailsComponent from "../../components/Users/UserDetailsComponent";
 
-function UserPage({user, ...props}) {
+function UserPage({route, ...props}) {
 
     const navigation = useNavigation()
+    const {user} = route.params;
 
     const [pageState, setPageState] = useState({});
     const [selectedUser, setUser] = useState(user);
@@ -29,6 +31,8 @@ function UserPage({user, ...props}) {
 
     const getOverlayScreen = (currentTab) => {
         switch (currentTab) {
+            case 'Details':
+                return <UserDetailsComponent user={selectedUser}/>
             default:
                 return <View/>
         }
@@ -37,7 +41,7 @@ function UserPage({user, ...props}) {
     return (
         <PageContext.Provider value={{pageState, setPageState}}>
             <DetailsPage
-                headerChildren={[`${selectedUser?.first_name} ${selectedUser?.last_name}`|| '--']}
+                headerChildren={[`${selectedUser?.first_name || '--'} ${selectedUser?.last_name || ''} `]}
                 onBackPress={onBackTapped}
                 pageTabs={(
                     <TabsContainer

@@ -1,0 +1,179 @@
+import React, {useContext, useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
+import {View} from 'react-native';
+import styled from '@emotion/native';
+import Row from "../common/Row";
+import Record from "../common/Information Record/Record";
+import {PageContext} from "../../contexts/PageContext";
+import InputLabelComponent from "../common/InputLablel";
+import {MenuOption, MenuOptions} from "react-native-popup-menu";
+import OptionsField from "../common/Input Fields/OptionsField";
+import {getRolesCall} from "../../api/network";
+import ConfirmationComponent from "../ConfirmationComponent";
+import {useModal} from "react-native-modalfy";
+
+
+const InputWrapper = styled.View`
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    z-index: ${({zIndex}) => zIndex};
+    margin-right: 8px;
+`
+
+
+function UserDetailsComponent({user}) {
+
+    const {pageState, setPageState} = useContext(PageContext)
+    const modal = useModal();
+
+    const [userFields, setUserFields] = useState({
+        'first_name': user['first_name'],
+        'last_name': user['last_name'],
+        'email': user['email'],
+        'password': user['password'],
+        'role': user['role']
+    });
+
+    const {isEditMode, setPageSate} = pageState;
+
+    const [roles, setRoles] = useState([])
+    const [fieldErrors, setErrors] = useState({});
+    const [isUpdated, setUpdated] = useState(false);
+
+
+    useEffect(() => {
+        getRoles()
+    }, [])
+
+    useEffect(() => {
+        if (isUpdated && !isEditMode) {
+            confirmChanges()
+        }
+    }, [isEditMode])
+
+
+    const onFieldChange = field => value => {
+        setUserFields({
+            ...userFields,
+            [field]: value
+        })
+
+        setErrors({
+            ...fieldErrors,
+            [field]: undefined
+        })
+
+        setUpdated(true);
+    }
+
+    const getRoles = () => {
+        getRolesCall()
+            .then(data => setRoles(data))
+            .catch(error => {
+                console.log("failed to get user role")
+            })
+    }
+
+    const confirmChanges = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        // resetState()
+                        setPageState({...pageState, isEditMode: true})
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        updateUser()
+                    }}
+                    message="Would you like to finish edit and save changes?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+    }
+
+
+    const updateUser = () => {
+
+    }
+
+
+    return (
+        <>
+            <Row>
+                <Record
+                    recordValue={userFields['first_name']}
+                    recordTitle='First Name'
+                    editMode={isEditMode}
+                    onRecordUpdate={onFieldChange('first_name')}
+                    onClearValue={onFieldChange('first_name')}
+                />
+
+                <Record
+                    recordValue={userFields['last_name']}
+                    recordTitle='Last Name'
+                    editMode={isEditMode}
+                    onRecordUpdate={onFieldChange('last_name')}
+                    onClearValue={onFieldChange('last_name')}
+                />
+            </Row>
+
+            <Row>
+                <Record
+                    recordValue={userFields['email']}
+                    recordTitle='Email'
+                    editMode={isEditMode}
+                    onRecordUpdate={onFieldChange('email')}
+                    onClearValue={onFieldChange('email')}
+                />
+
+                {
+                    isEditMode
+                        ? <InputWrapper>
+                            <InputLabelComponent label={"Role"}/>
+                            <OptionsField
+                                text={userFields['role'].name}
+                                hasError={!!fieldErrors['role']}
+                                errorMessage={fieldErrors['role']}
+                                oneOptionsSelected={onFieldChange('role')}
+                                menuOption={(
+                                    <MenuOptions>
+                                        {
+                                            roles?.map(item => <MenuOption key={item._id} value={item} text={item.name}/>)
+                                        }
+                                    </MenuOptions>
+                                )}
+                            />
+                        </InputWrapper>
+                        : <Record
+                            recordValue={userFields['role'].name}
+                            recordTitle='Role'
+                        />
+                }
+            </Row>
+
+            <Row>
+                <Record
+                    recordValue={userFields['password']}
+                    recordTitle='Password'
+                />
+            </Row>
+
+
+        </>
+    );
+}
+
+UserDetailsComponent.propTypes = {};
+UserDetailsComponent.defaultProps = {};
+
+export default UserDetailsComponent;

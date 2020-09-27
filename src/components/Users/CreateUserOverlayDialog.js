@@ -253,7 +253,7 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                                     menuOption={(
                                         <MenuOptions>
                                             {
-                                                roles.map(item => <MenuOption key={item._id} value={item} text={item.name}/>)
+                                                roles?.map(item => <MenuOption key={item._id} value={item} text={item.name}/>)
                                             }
                                         </MenuOptions>
                                     )}
