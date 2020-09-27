@@ -20,6 +20,9 @@ import {LONG_PRESS_TIMER} from "../../const";
 import ActionItem from "../../components/common/ActionItem";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import ConfirmationComponent from "../../components/ConfirmationComponent";
+import AddIcon from "../../../assets/svg/addIcon";
+import CreateTheatreDialogContainer from "../../components/Theatres/CreateTheatreDialogContainer";
+import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDialog";
 
 
 const listHeaders = [
@@ -168,6 +171,23 @@ function UsersPage() {
         );
     }
 
+    const onNewUserPress = () => {
+        modal.closeModals('ActionContainerModal');
+
+        // For some reason there has to be a delay between closing a modal and opening another.
+        setTimeout(() => {
+            modal.openModal('OverlayModal', {
+                content: (
+                    <CreateUserOverlayDialog
+                        onCreated={onItemPress}
+                        onCancel={() => setFloatingAction(false)}
+                    />
+                ),
+                onClose: () => setFloatingAction(false),
+            });
+        }, 200);
+    }
+
     // endregion
 
 
@@ -267,9 +287,16 @@ function UsersPage() {
             </LongPressWithFeedback>
         </View>
 
+        const CreateUserAction = <ActionItem
+            title="New User"
+            icon={<AddIcon/>}
+            onPress={onNewUserPress}
+            touchable={true}
+        />
+
         return (
             <ActionContainer
-                floatingActions={[DeleteUserAction]}
+                floatingActions={[DeleteUserAction, CreateUserAction]}
                 title={"USERS ACTIONS"}
             />
         );

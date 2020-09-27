@@ -27,9 +27,8 @@ function DialogTabs({tabs, tab, onTabPress, onAddTab, tabName}) {
 
     const theme = useTheme();
     return (
-        <DialogTabsWrapper> 
-            <DialogTabsContainer theme = {theme}> 
-
+        <DialogTabsWrapper>
+            <DialogTabsContainer theme = {theme}>
                 <TabsContainer
                     tabs={tabs}
                     onPressChange={onTabPress}
@@ -39,32 +38,6 @@ function DialogTabs({tabs, tab, onTabPress, onAddTab, tabName}) {
                     onAddTab = {onAddTab}
                     tabName = {tabName}
                 />
-
-                {/* <View style={{
-                    flexDirection: "row",
-                    alignSelf: 'flex-end',
-                    justifyContent: "flex-end"
-                }}>
-                    <TabsContainer
-                        tabs={tabs}
-                        onPressChange={onTabPress}
-                        selectedTab={tabs[tab]}
-                    />
-                    {
-                        onAddTab &&
-                        <View style={{justifyContent: "center", marginLeft: 16}}>
-                            <TouchableOpacity
-                                style = {{flex:1, justifyContent: "center", flexDirection: "row", alignItems: 'center'}}
-                                onPress={onAddTab}
-                            >
-                                <AddTab/>
-                                <Text style={{marginLeft: 6, color: "#A0AEC0", fontWeight: "500"}}>
-                                    { `${tabName} ${tabs.length+1}` }
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    }
-                </View> */}
             </DialogTabsContainer>
         </DialogTabsWrapper>
     );
