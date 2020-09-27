@@ -49,6 +49,7 @@ import {connect} from "react-redux";
 import {ROLES} from "../../../const";
 import PersonIcon from "../../../../assets/svg/personIcon";
 import UsersPage from "../../../page/Users/UsersPage";
+import UsersNavigationStack from "./UsersNavigationStack";
 
 
 
@@ -173,7 +174,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 isAdmin &&
                 <SuitesNavigator.Screen
                     name="Users"
-                    component={UsersPage}
+                    component={UsersNavigationStack}
                     initialParams={{
                         icon: PersonIcon,
                         tabName: 'Users',

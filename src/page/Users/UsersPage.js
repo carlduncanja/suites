@@ -23,6 +23,7 @@ import ConfirmationComponent from "../../components/ConfirmationComponent";
 import AddIcon from "../../../assets/svg/addIcon";
 import CreateTheatreDialogContainer from "../../components/Theatres/CreateTheatreDialogContainer";
 import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDialog";
+import {useNavigation} from "@react-navigation/native"
 import _ from "lodash";
 
 
@@ -53,6 +54,7 @@ function UsersPage() {
 
     const theme = useTheme();
     const pageTitle = "Users";
+    const navigation = useNavigation();
     const modal = useModal();
     const recordsPerPage = 10;
 
@@ -110,7 +112,7 @@ function UsersPage() {
 
     // region Event Handlers
     const onItemPress = (item, isOpenEditable) => () => {
-
+        navigation.navigate("UserPage", {user: item})
     };
 
     const onSearchInputChange = (input) => {
