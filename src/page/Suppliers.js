@@ -286,7 +286,7 @@ const Suppliers = props => {
                         isError={true}//boolean to show whether an error icon or success icon
                         isEditUpdate={true}//use this specification to either get the confirm an edit or update
                         onCancel={cancelClicked}
-                        onAction={ArchiveSupplier}
+                        onAction={archiveSupplierClick}
                         message="Are you sure you want to Archive the supplier(s)"//general message you can send to be displayed
                         action="Archive"
                     />
@@ -297,7 +297,7 @@ const Suppliers = props => {
                         isError={true}//boolean to show whether an error icon or success icon
                         isEditUpdate={false}//use this specification to either get the confirm an edit or update
                         onCancel={cancelClicked}
-                        onAction={ArchiveSupplier}
+                        onAction={archiveSupplierClick}
                         message="Please choose a supplier "//general message you can send to be displayed
                         action="Archive"
                     />
@@ -305,13 +305,16 @@ const Suppliers = props => {
             });
     };
 
-    const ArchiveSupplier = () => {
+    const archiveSupplierClick = () => {
         //fetchSuppliersData(currentPagePosition);
         const selected = [...selectedSuppliers];
         modal.closeAllModals('ConfirmationModal');
         selected.map((item, index) => {
             archiveSupplier(item)
-                .then(fetchSuppliersData(currentPagePosition))
+                .then(() => {
+                    setSelectedSuppliers([]);
+                    fetchSuppliersData(currentPagePosition);
+                })
                 .catch(error => {
                     console.log('failed to archive suppliers', error);
                     modal.openModal('ConfirmationModal', {
@@ -320,7 +323,7 @@ const Suppliers = props => {
                                 isError={true}//boolean to show whether an error icon or success icon
                                 isEditUpdate={false}//use this specification to either get the confirm an edit or update
                                 onCancel={cancelClicked}
-                                onAction={ArchiveSupplier}
+                                onAction={archiveSupplierClick}
                                 message="Are you sure you want to Archive the supplier(s)"//general message you can send to be displayed
                                 action="Archive"
                             />
