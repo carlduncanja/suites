@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/native';
 import OverlayDialog from "../common/Dialog/OverlayDialog";
@@ -8,6 +8,9 @@ import {useTheme} from "emotion-theming";
 import InputField2 from "../common/Input Fields/InputField2";
 import OptionsField from "../common/Input Fields/OptionsField";
 import {MenuOption, MenuOptions} from "react-native-popup-menu";
+import {getRolesCall, registrationCall} from "../../api/network";
+import ConfirmationComponent from "../ConfirmationComponent";
+import {useModal} from "react-native-modalfy";
 
 
 const DialogContent = styled.View`
@@ -49,15 +52,20 @@ const Space = styled.View`
 function CreateUserOverlayDialog({onCancel, onCreated}) {
 
     const theme = useTheme();
+    const modal = useModal();
 
     const [createUserFields, setCreateUserFields] = useState({
-        name: "",
         email: "",
         password: "",
-        role: undefined,
+        role: {},
     })
+
+    const [roles, setRoles] = useState([])
     const [fieldErrors, setErrors] = useState({});
 
+    useEffect(() => {
+        getRoles()
+    }, [])
 
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
@@ -65,9 +73,15 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
     const onDonePress = () => {
         const isValid = validateFields();
 
+        console.log("is valid", isValid);
         if (!isValid) return;
 
+        const data = {
+            ...createUserFields,
+            role: createUserFields.role?._id
+        }
 
+        createUser(data);
     }
 
     const onFieldChange = field => value => {
@@ -129,7 +143,54 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
         return isValid;
     }
 
-    const createUser = () => {
+    const createUser = (data) => {
+
+        console.log("data", data);
+
+        registrationCall(data)
+            .then(data => {
+                onCreated(data);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onCancel={modal.closeAllModals}
+                            onAction={modal.closeAllModals}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+            })
+            .catch(error => {
+                console.log("Failed to register user");
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            onCancel={modal.closeAllModals}
+                            onAction={modal.closeAllModals}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+            })
+            .finally()
+    }
+
+    const getRoles = () => {
+        getRolesCall()
+            .then(data => setRoles(data))
+            .catch(error => {
+                console.log("failed to get user role")
+            })
     }
 
     return (
@@ -185,14 +246,15 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                                 <OptionsField
                                     label={'Role'}
                                     labelWidth={120}
-                                    text={createUserFields['role']}
+                                    text={createUserFields['role'].name}
                                     hasError={!!fieldErrors['role']}
                                     errorMessage={fieldErrors['role']}
                                     oneOptionsSelected={onFieldChange('role')}
                                     menuOption={(
                                         <MenuOptions>
-                                            <MenuOption value="Admin" text="Admin"/>
-                                            <MenuOption value="Nurse" text="Nurse"/>
+                                            {
+                                                roles.map(item => <MenuOption key={item._id} value={item} text={item.name}/>)
+                                            }
                                         </MenuOptions>
                                     )}
                                 />

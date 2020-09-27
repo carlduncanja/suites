@@ -94,7 +94,7 @@ function UsersPage() {
     };
 
     const onRefresh = () => {
-        fetchUsers();
+        fetchUsers(currentPagePosition);
     };
 
     const onSelectAll = () => {
@@ -179,7 +179,10 @@ function UsersPage() {
             modal.openModal('OverlayModal', {
                 content: (
                     <CreateUserOverlayDialog
-                        onCreated={onItemPress}
+                        onCreated={(user) => {
+                            fetchUsers(currentPagePosition)
+                            setFloatingAction(false)
+                        }}
                         onCancel={() => setFloatingAction(false)}
                     />
                 ),
