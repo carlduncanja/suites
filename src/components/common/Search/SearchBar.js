@@ -92,8 +92,8 @@ function SearchBar(props) {
                     changeText={changeText}
                     inputText={inputText}
                     matchesFound={matchesFound.length}
-                    onPressNextResult={onPressNextResult}
-                    onPressPreviousResult={onPressPreviousResult}
+                    onPressNextResult={getNextResults}
+                    onPressPreviousResult={getPreviousResults}
                     onPressNewSerch={onPressNewSearch}
                     onPressSubmit={onPressSubmit}
                 /> 
@@ -105,9 +105,9 @@ function SearchBar(props) {
                     isSuggestionsOpen={suggestionsOpen}
                     matchesToDisplay={matchesToDisplay}
                     openSearchResult={openSearchResult}
-                    currentListMin={currentListMin}
-                    getPreviousResults={getPreviousResults}
-                    getNextResults={getNextResults}
+                    // currentListMin={currentListMin}
+                    // getPreviousResults={getPreviousResults}
+                    // getNextResults={getNextResults}
                 />
                 {/* {
                     suggestionsOpen &&
