@@ -76,7 +76,7 @@ const OptionContainer = styled.View`
     height:25px;
     margin:1.8px;
     align-items:center;
-    justify-content:center
+    justify-content:center;
 `;
 
 function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, onPressPreviousResult, onPressNewSerch, onPressSubmit }) {
@@ -143,7 +143,6 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
 
         )
     }
-
 
 
     return (

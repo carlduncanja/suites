@@ -167,7 +167,7 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
 
     return (
-        isOpen ?
+        isOpen ? 
             <ScheduleSearchWrapper>
                 <SearchContainer>
                     {/* Background Shadow View*/}

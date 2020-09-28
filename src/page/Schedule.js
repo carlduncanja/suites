@@ -23,12 +23,12 @@ import SchedulePageContent from '../components/Schedule/SchedulePageContent';
 import { isEmpty } from 'lodash';
 
 const ScheduleWrapper = styled.View`
-flex:1;
-background-color:${({ theme }) => theme.colors['--default-neutral-gray']}
+    flex:1;
+    background-color:${({ theme }) => theme.colors['--default-neutral-gray']};
 `;
 
 const BodyContainer = styled.View`
-flex:1;
+    flex:1;
 `
 
 const ScheduleContainer = styled.View`
