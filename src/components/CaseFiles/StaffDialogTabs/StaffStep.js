@@ -26,7 +26,7 @@ const StaffStep = ({tabs, selectedTabIndex, staffs, onStaffChange, completedTabs
         onStaffChange(updatedStaffs);
     }
 
-    console.log(selectedTabIndex, staff);
+    console.log(selectedTabIndex, staff); 
 
     return (
         <View style={{flex: 1}}>

@@ -104,8 +104,9 @@ const PageWrapper = styled.View`
 `;
 const PageContentWrapper = styled.View`
   flex: 1;
-  //padding: ${({theme}) => theme.space['--space-32']}
+
 `;
+  /* padding: ${({theme}) => theme.space['--space-32']} */
 
 const HeaderWrapper = styled.View`
   display: flex;
@@ -118,7 +119,7 @@ const HeaderWrapper = styled.View`
 `;
 
 const HeaderContainer = styled.View`
-  //flex: 1;
+  /* flex: 1; */
   flex-direction: row;
   justify-content: space-between;
   align-items: center;

@@ -93,7 +93,7 @@ function ReportHeaderSummary({
 
                                 <BillingDescriptionContainer>
                                     <ContentHeading theme={theme}>For</ContentHeading>
-                                    <ContentItem theme={theme}>{billedFor.join(',')}</ContentItem>
+                                    <ContentItem theme={theme}>Medical Services</ContentItem>
                                 </BillingDescriptionContainer>
                             </>
                         ) : (

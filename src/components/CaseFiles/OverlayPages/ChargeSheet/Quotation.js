@@ -100,7 +100,7 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     ];
 
     const openModal = item => () => {
-        console.log('Item: ', item, reportDetails);
+        // console.log('Report Quote Item: ', item.billingDetails);
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Quotation"
@@ -111,6 +111,7 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     };
 
     const listItem = item => {
+        
         const {quotationNumber = '', amountDue = 0, createdAt = ''} = item;
         return (
             <>

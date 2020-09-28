@@ -64,7 +64,7 @@ function ReportDetails({reportList, reportTable, listItemFormat, headers}) {
     let inventoriesArray = [];
 
     reportList.map(item => {
-        console.log('watch the item here nuh please', item);
+        // console.log('watch the item here nuh please', item);
         const {physicians = [], services = [], procedures = [], inventories = [], equipments = []} = item;
         physicians.map(physician => {
             physiciansArray.push({

@@ -121,7 +121,7 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
         //     billingDetails: customer,
         //     ...report
         // };
-        console.log("Item: ", item)
+        console.log("Report Item: ", item)
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Invoice"

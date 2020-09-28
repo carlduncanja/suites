@@ -5,7 +5,7 @@ import SearchableOptionsField from "../../common/Input Fields/SearchableOptionsF
 
 import { MenuOptions, MenuOption } from "react-native-popup-menu";
 import _ from "lodash";
-import { getPhysicians } from "../../../api/network";
+import { getPhysicians, getUsersCall } from "../../../api/network";
 import styled from "@emotion/native";
 import {useTheme} from "emotion-theming";
 
@@ -89,16 +89,33 @@ const Assignment = ({value, type, onStaffChange, errors = {}, onErrorUpdate}) =>
         };
 
         const fetchNurses = () => {
-            setSearchResults([
-                {
-                    name: 'Nurse Hector',
-                    _id: '9824HIUAHFUIEH',
-                },
-                {
-                    name: 'Nurse John',
-                    _id: '67245HVAUYEGRV',
-                }
-            ])
+            getUsersCall(searchValue, 1,5)
+                .then((userResult = []) => {
+                    const { data = [], pages = 0 } = userResult
+                    const filterUser = data.filter( user => user?.role?.name === 'Nurse');
+                    const results = filterUser.map(item => ({
+                        name: `Nurse ${item.last_name}`,
+                        ...item
+                    }));
+                    console.group("Nurse results: ", results);
+                    setSearchResults(results || []);
+
+                })
+                .catch(error => {
+                    // TODO handle error
+                    console.log("failed to get nurses");
+                    setSearchResults([]);
+                })
+            // setSearchResults([
+            //     {
+            //         name: 'Nurse Hector',
+            //         _id: '9824HIUAHFUIEH',
+            //     },
+            //     {
+            //         name: 'Nurse John',
+            //         _id: '67245HVAUYEGRV',
+            //     }
+            // ])
         }
 
         const onSelectType = (type) => {
@@ -147,10 +164,11 @@ const Assignment = ({value, type, onStaffChange, errors = {}, onErrorUpdate}) =>
                             value={value}
                             text={searchValue}
                             oneOptionsSelected={(value) => {
+            
                                 const staff = {
-                                    _id: value._id,
-                                    name: value.name,
-                                    type: selectedType,
+                                    _id : value?._id,
+                                    name : value?.name,
+                                    type : selectedType
                                 }
 
                                 onStaffChange(staff)
