@@ -385,7 +385,7 @@ function UsersPage() {
 
     return (
         <NavPage
-            placeholderText={"Search by user name or status."}
+            placeholderText={"Search by user name or email."}
             routeName={pageTitle}
             listData={users}
             listItemFormat={renderItem}
