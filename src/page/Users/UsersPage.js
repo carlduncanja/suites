@@ -112,7 +112,7 @@ function UsersPage() {
 
     // region Event Handlers
     const onItemPress = (item, isOpenEditable) => () => {
-        navigation.navigate("UserPage", {user: item})
+        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate})
     };
 
     const onSearchInputChange = (input) => {
@@ -125,6 +125,13 @@ function UsersPage() {
 
     const onSelectAll = () => {
     };
+
+    const handleUserUpdate = (updatedUser) => {
+        setUsers(users.map(user => user._id === updatedUser._id
+            ? {...user, ...updatedUser}
+            : {...user}
+        ))
+    }
 
     const goToNextPage = () => {
 

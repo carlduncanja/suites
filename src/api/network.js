@@ -87,6 +87,11 @@ export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const updateUserCall = async (userId, updateData) => suitesAxiosInstance
+    .put(user(userId),  updateData)
+    .then(handleResponse)
+    .catch(handleError);
+
 export const getRolesCall = async (query, page, max) => suitesAxiosInstance
     .get(roles, { params: { query, page, max } })
     .then(handleResponse)

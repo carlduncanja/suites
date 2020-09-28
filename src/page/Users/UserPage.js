@@ -11,7 +11,7 @@ import UserDetailsComponent from "../../components/Users/UserDetailsComponent";
 function UserPage({route, ...props}) {
 
     const navigation = useNavigation()
-    const {user} = route.params;
+    const {user, onUserUpdate} = route.params;
 
     const [pageState, setPageState] = useState({});
     const [selectedUser, setUser] = useState(user);
@@ -29,10 +29,15 @@ function UserPage({route, ...props}) {
 
     }
 
+    const handleUserUpdate = (updatedUser) => {
+        setUser({...selectedUser, ...updatedUser});
+        if (onUserUpdate) onUserUpdate({...selectedUser, ...updatedUser})
+    }
+
     const getOverlayScreen = (currentTab) => {
         switch (currentTab) {
             case 'Details':
-                return <UserDetailsComponent user={selectedUser}/>
+                return <UserDetailsComponent user={selectedUser} onUserUpdated={handleUserUpdate}/>
             default:
                 return <View/>
         }
