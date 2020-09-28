@@ -56,7 +56,6 @@ function DetailsPage({
     const {isLoading} = pageState;
 
     useEffect(() => {
-        console.log('detailes updated');
     }, []);
 
     return (

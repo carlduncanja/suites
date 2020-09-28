@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
-import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import BottomSheetContainer from '../common/BottomSheetContainer';
+
 
 import { getPurchaseOrderById } from "../../api/network";
-import { colors } from "../../styles";
-import OrderDetailsTab from '../OverlayTabs/OrderDetailsTab';
-import OrderItemTab from '../OverlayTabs/OrderItemTab';
-import OrderSuppliersTab from '../OverlayTabs/OrderSuppliersTab';
-import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
+import OrderDetailsTab from '../../components/OverlayTabs/OrderDetailsTab';
+import OrderItemTab from '../../components/OverlayTabs/OrderItemTab';
+import SupplierDetailsTab from '../../components/OverlayTabs/SupplierDetailsTab';
 import { updatePurchaseOrder, updatePurchaseOrderDetails } from '../../api/network';
 import { PageContext } from "../../contexts/PageContext";
-import DetailsPage from "../common/DetailsPage/DetailsPage";
-import TabsContainer from "../common/Tabs/TabsContainerComponent";
-import ConfirmationComponent from '../ConfirmationComponent';
+import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
+import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { useModal } from 'react-native-modalfy';
 
 function OrderItemPage({ route, navigation }) {
 
-    const { order, isOpenEditable } = route.params;
+    const { order, isOpenEditable, updateOrders } = route.params;
     const modal = useModal();
 
 
@@ -31,8 +28,6 @@ function OrderItemPage({ route, navigation }) {
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [isEditMode, setEditMode] = useState(isOpenEditable);
-    const [editableTab, setEditableTab] = useState(currentTab)
     const [isFetching, setFetching] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState({});
     const [orderItems, setOrderItems] = useState([]);
@@ -45,6 +40,7 @@ function OrderItemPage({ route, navigation }) {
     const [isUpdateDetails, setIsUpdateDetails] = useState(false);
 
     const [popoverList, setPopoverList] = useState([]);
+    const {isEditMode} = pageState;
 
     // ##### Lifecycle Methods
     useEffect(() => {
@@ -178,6 +174,7 @@ function OrderItemPage({ route, navigation }) {
         let updatedFields = {
             ...fields,
             deliveryDate : fields['deliveryDate'].toString(),
+            description : fields['description'],
         }
         // console.log("Error not here: ", typeof updatedFields['deliveryDate']);
         updatePurchaseOrderDetails(_id, updatedFields)
@@ -225,6 +222,7 @@ function OrderItemPage({ route, navigation }) {
             })
             .finally(_=>{
                 fetchOrder(_id);
+                updateOrders();
             })
     }
 
@@ -267,7 +265,7 @@ function OrderItemPage({ route, navigation }) {
     }
 
     const BackTapped = () => {
-        navigation.navigate("Orders");
+        navigation.goBack("Orders");
     }
 
     const onAddProductItems = (data) => {
@@ -369,8 +367,8 @@ function OrderItemPage({ route, navigation }) {
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
-                return <OrderDetailsTab 
-                    order={selectedOrder} 
+                return <OrderDetailsTab
+                    order={selectedOrder}
                     onUpdate = {()=>fetchOrder(_id)}
                     fields = {fields}
                     onFieldChange = {onFieldChange}

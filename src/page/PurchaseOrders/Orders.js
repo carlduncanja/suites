@@ -37,7 +37,7 @@ import _ from "lodash";
 
 import { withModal, useModal } from "react-native-modalfy";
 import { formatDate, transformToSentence } from "../../utils/formatter";
-import OrderItemPage from "../../components/PurchaseOrders/OrderItemPage";
+import OrderItemPage from "./OrderItemPage";
 import { PURCHASE_ORDER_STATUSES } from "../../const";
 import EditIcon from "../../../assets/svg/editIcon";
 import { addNotification } from "../../redux/actions/NotificationActions";
@@ -158,12 +158,6 @@ const Orders = (props) => {
       isEdit: isOpenEditable,
       updateOrders : () => {{handleDataRefresh(); console.log("Refreshed")}}
     });
-
-    // modal.openModal("BottomSheetModal", {
-    //   content: (
-    //     <OrdersBottomSheet order={item} isOpenEditable={isOpenEditable} />
-    //   ),
-    // });
   };
 
   const goToNextPage = () => {
