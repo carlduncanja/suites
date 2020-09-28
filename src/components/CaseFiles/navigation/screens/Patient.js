@@ -60,7 +60,7 @@ const Patient = ({ patient, selectedTab, isEditMode }) => {
                 <Details tabDetails = {patient}/>
             :
             selectedTab === 'Insurance' ?
-                <Insurance tabDetails = {insurance}/>
+                <Insurance tabDetails = {{...insurance, patient: `${firstName} ${surname}`}}/>
                 :
                 selectedTab === 'Diagnosis' ?
                     <Diagnosis

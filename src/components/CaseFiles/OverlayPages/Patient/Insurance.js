@@ -6,6 +6,7 @@ import Record from '../../../common/Information Record/Record';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import Row from '../../../common/Row';
+import FrameInsuranceCard from '../../../common/Frames/FrameCards/FrameInsuranceCard';
 
 const Insurance = ({tabDetails}) => { 
     const theme = useTheme();
@@ -32,27 +33,7 @@ const Insurance = ({tabDetails}) => {
         <InsuranceWrapper>
             <InsuranceContainer>
 
-                <Row>
-                    <Record
-                        recordTitle = "Primary Insurer"
-                        recordValue = {name}
-                    />
-                </Row>
-                    
-                <Divider/>
-
-                <Row>
-                    <Record
-                        recordTitle = "Coverage Limit"
-                        recordValue = {`$ ${currencyFormatter(coverageLimit)}`}
-                    />
-                </Row>
-                <Row>
-                    <Record
-                        recordTitle = "Policy Number"
-                        recordValue = {policyNumber}
-                    />
-                </Row>
+                <FrameInsuranceCard insuranceDetails = {tabDetails}/>
 
             </InsuranceContainer>
         </InsuranceWrapper>
