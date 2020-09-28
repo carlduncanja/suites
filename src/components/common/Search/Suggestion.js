@@ -24,7 +24,7 @@ const SuggestionContainer = styled.View`
 
 const SuggestionText = styled.Text( ({theme}) => ({
     ...theme.font['--text-base-medium'],
-    color: theme.colors['--color-gray-300']
+    color: theme.colors['--color-gray-600']
 }))
 
 function Suggestion({

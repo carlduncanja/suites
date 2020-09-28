@@ -33,7 +33,7 @@ const SuggestionsComponentContainer = styled.View`
     height: 100%;
     width: 100%;
     justify-content: flex-start;
-`;
+`; 
 
 function SuggestionsComponent({
     isSuggestionsOpen = false,

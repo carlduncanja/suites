@@ -96,7 +96,7 @@ function SearchBar(props) {
                     onPressPreviousResult={onPressPreviousResult}
                     onPressNewSerch={onPressNewSearch}
                     onPressSubmit={onPressSubmit}
-                />
+                /> 
 
 
                 {/* Search Results Drop down */}
