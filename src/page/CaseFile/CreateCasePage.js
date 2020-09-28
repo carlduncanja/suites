@@ -46,8 +46,8 @@ const testData = {
         middleName: '',
         surname: 'Doe',
         gender: 'Male',
-        trn: '42991536',
-        dob: '2020-06-02',
+        trn: '429915360',
+        dob: '2000-06-02',
         contactInfo: {
             phones: [
                 {
@@ -64,9 +64,9 @@ const testData = {
             emergencyContact: [
                 {
                     name: 'Bob Brown',
-                    email: 'Bob.brown@gmail.com',
+                    email: 'bob.brown@gmail.com',
                     phone: '8765232141',
-                    relation: 'mother',
+                    relation: 'Father',
                 },
             ],
         },

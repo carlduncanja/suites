@@ -38,7 +38,8 @@ function DateInputField({
     format,
     maxDate,
     borderColor = '--color-gray-300',
-    hasBorder = true
+    hasBorder = true,
+    minuteInterval = 5
 }) {
     const theme = useTheme();
 
@@ -69,7 +70,10 @@ function DateInputField({
                 }}
             >
                 <DatePicker
-                    style={{flex: 1, height: 32}}
+                    style={{
+                        flex: 1,
+                        height: 32
+                    }}
                     date={value}
                     mode={mode}
                     format={format}
@@ -80,6 +84,7 @@ function DateInputField({
                     iconComponent={<View/>}
                     confirmBtnText="Confirm"
                     cancelBtnText="Cancel"
+                    minuteInterval={minuteInterval}
                     customStyles={{
                         dateInput: {
                             ...styles.inputWrapper,
@@ -96,7 +101,7 @@ function DateInputField({
                             paddingRight: 12,
                             marginBottom: 0,
                         },
-                        disabled: {backgroundColor: theme.colors['--color-gray-100'], }
+                        disabled: {backgroundColor: theme.colors['--color-gray-100']}
                     }}
                     onDateChange={handleOnDateChange}
                 />

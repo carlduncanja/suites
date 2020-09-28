@@ -211,10 +211,9 @@ export const createInventoryVariant = async (referenceId, itemToCreate) => suite
     .then(handleResponse)
     .catch(handleError);
 
-export const createTransfer = async (groupId, variantId, transferData) =>
-    suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
-        .then(handleResponse)
-        .catch(handleError);
+export const createTransfer = async (groupId, variantId, transferData) => suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
+    .then(handleResponse)
+    .catch(handleError);
 
 // ################# Case Files Endpoints
 export const getCaseFiles = async (query, max, page) => suitesAxiosInstance
@@ -430,8 +429,6 @@ export const updateEquipmentType = async (id, bodyToSend) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-
-
 export const getEquipmentTypes = async (query, max, page) => suitesAxiosInstance
     .get(equipmentTypesEndpoint, { params: { query, max, page } })
     .then(handleResponse)
@@ -539,10 +536,9 @@ export const updatePurchaseOrder = async (purchaseOrderId, data) => suitesAxiosI
     .then(handleResponse)
     .catch(handleError);
 
-export const updatePurchaseOrderDetails = async (purchaseOrderId, data) =>
-    suitesAxiosInstance.put(updatePurchaseOrderDetailsEndpoint(purchaseOrderId), data)
-        .then(handleResponse)
-        .catch(handleError);
+export const updatePurchaseOrderDetails = async (purchaseOrderId, data) => suitesAxiosInstance.put(updatePurchaseOrderDetailsEndpoint(purchaseOrderId), data)
+    .then(handleResponse)
+    .catch(handleError);
 
 export const removePurchaseOrders = async data => suitesAxiosInstance
     .delete(purchaseOrdersEndpoint, { data })
