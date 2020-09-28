@@ -3,6 +3,9 @@ import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from "react-native
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import {currencyFormatter, formatDate} from "../../utils/formatter";
+import DataItem from '../common/List/DataItem';
+import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
 
 
 const testData = [
@@ -39,30 +42,45 @@ const headers = [
     },
     {
         name: "Date",
-        alignment: "center",
+        alignment: "flex-end",
         flex:1
     }, 
 ];
 
+const ItemWrapper = styled.View`
+    flex-direction : row;
+    height : 28px;
+    border-bottom-color : ${ ({theme}) => theme.colors['--color-gray-300']};
+    border-bottom-width : 1px;
+    border-bottom-style : solid;
+    margin-bottom: ${ ({theme}) => theme.space['--space-12']};
+`
+
 const HistoryTabs = ({ cases = testData, selectedItems = [], onCheckboxPress = () => {}, onSelectAll = () => {} }) => {
 
+    const theme = useTheme();
+
     const listItem = ({name, isRecovery, duration, date}) => {
-        let recoveryColor = isRecovery ? "#38A169" : "#ED8936"
+        let recoveryColor = isRecovery ? "--color-green-600" : "--color-orange-500"
         return (
-            <>
-                <View style={[styles.item, {alignItems: 'flex-start', flex:2}]}>
+            <ItemWrapper theme = {theme}>
+                <DataItem flex={2} color = "--color-blue-600" text = {name}/>
+                <DataItem align = 'center' color = {recoveryColor} text = {isRecovery ? "Yes" : "No"}/>
+                <DataItem align = 'center' color = "--color-gray-800" text = {`${duration} hrs`}/>
+                <DataItem align = 'flex-end' color = "--color-gray-800" text = {formatDate(date, "MM/DD/YYYY")}/>
+                {/* <View style={[styles.item, {alignItems: 'flex-start', flex:2, backgroundColor:'red'}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{name}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center',flex:1}]}>
-                    <Text style={[styles.itemText,{color:recoveryColor}]}>{isRecovery ? "Yes" : "No"}</Text>
+                    <Text style={[styles.itemText,{color:recoveryColor}]}>{}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center',flex:1}]}>
                     <Text style={styles.itemText}>{duration} hrs</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center',flex:1}]}>
-                    <Text style={styles.itemText}>{formatDate(date, "MM/DD/YYYY")}</Text>
-                </View>
-            </>
+                    <Text style={styles.itemText}>{}</Text>
+                </View> */}
+            </ItemWrapper>
         )
     }
     
@@ -70,7 +88,6 @@ const HistoryTabs = ({ cases = testData, selectedItems = [], onCheckboxPress = (
     const renderListFn = (item) => {
         return <Item
             hasCheckBox={false}
-            isChecked={selectedItems.includes(item)}
             onItemPress={() => {}}
             itemView={listItem(item)}
         />
@@ -81,7 +98,7 @@ const HistoryTabs = ({ cases = testData, selectedItems = [], onCheckboxPress = (
             <Table
                 isCheckbox={false}
                 data={cases}
-                listItemFormat={renderListFn}
+                listItemFormat={listItem}
                 headers={headers}
                 toggleHeaderCheckbox={onSelectAll}
                 itemSelected={selectedItems}
