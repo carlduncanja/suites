@@ -288,15 +288,12 @@ function CaseFiles(props) {
     const renderDraft = item => {
         if (item !== null) {
             const {patient = {}} = item || {};
-            console.log('rendering the draft item');
 
             return (<DraftItem text={`${patient?.firstName ? `${patient?.firstName || ''} ${patient?.surname || ''}` : 'N/A'} `}/>);
         }
     };
 
     const caseItem = item => {
-        //console.log("being passed in tempdraft is", item);
-
         const {
             caseNumber,
             patient = {},
@@ -436,48 +433,8 @@ function CaseFiles(props) {
 const mapStateToProps = state => {
     let {caseFiles} = state;
     const {draft} = state;
-    //console.log("what i'm gonna render in the cases draft is", state.draft);
 
-    const tempDraft = [
-
-        {
-            id: 10,
-            patient: {
-                firstName: 'Treston',
-                middleName: 'Sire',
-                surname: 'G'
-            }
-
-        },
-        {
-            id: 5,
-            patient: {
-                firstName: 'Sally',
-                middleName: 'Samantha',
-                surname: 'Gordon'
-            }
-        },
-
-    ];
-
-    //console.log("what is in temp draft is", tempDraft.patient.firstName);
-
-    if (!isEmpty(state.draft)) {
-        console.log('what draft is being passed to case files', state.draft);
-        caseFiles = [...state.draft, ...caseFiles];
-    }
-
-    // if (!isEmpty(state.draft)) {
-    //   console.log(state.draft.name);
-    //   const draftCase = {
-    //     patient: state.draft.patient,
-    //     chargeSheet: {},
-    //     staff: state.draft.staff,
-    //     caseProcedures: state.draft.caseProcedures,
-    //   };
-    //
-    //   caseFiles = [...caseFiles, draftCase];
-    // }
+    if (draft && draft.length) caseFiles = [...draft, ...caseFiles];
 
     return {
         caseFiles,

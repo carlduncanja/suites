@@ -18,7 +18,7 @@ import ProcedureStep from '../../components/CaseFiles/ProceduresDialogTabs/Proce
 import CompleteCreateCase from '../../components/CaseFiles/CompleteCreateCase';
 import ProgressContainer from '../../components/common/Progress/ProgressContainer';
 import {addCaseFile} from '../../redux/actions/caseFilesActions';
-import {saveDraft} from '../../redux/actions/draftActions';
+import {removeDraft, saveDraft} from '../../redux/actions/draftActions';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import PageButton from '../../components/common/Page/PageButton';
 import ChevronRight from '../../../assets/svg/ChevronRight';
@@ -151,7 +151,7 @@ const FooterButtonContainer = styled.View`
   height: 48px;
 `;
 
-function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) {
+function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}) {
     // ########### CONST
     const [wizard, setWizard] = useState([
         {
@@ -227,17 +227,14 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
     //console.log("what's in route", route.params);
     // ########### STATES
 
-    const [patientFields, setPatientFields] = useState(
-        !isEmpty(draftItem) ? draftItem.patient : testData.patient
-        //testData.patient
-    );
+    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : testData.patient);
     const [patientFieldErrors, setPatientErrors] = useState({});
 
-    const [staffInfo, setStaffInfo] = useState([]);
+    const [staffInfo, setStaffInfo] = useState(!isEmpty(draftItem) && draftItem.staff?.length ? draftItem.staff : []);
     const [staffErrors, setStaffErrors] = useState([]);
     const [loadDraft, setLoadDraft] = useState(false);
 
-    const [caseProceduresInfo, setCaseProceduresInfo] = useState([]);
+    const [caseProceduresInfo, setCaseProceduresInfo] = useState(!isEmpty(draftItem) && draftItem.procedures?.length ? draftItem.procedures : []);
     const [procedureErrors, setProcedureErrors] = useState([]);
 
     const [positiveText, setPositiveText] = useState('NEXT');
@@ -629,6 +626,9 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 
         console.log('handleOnComplete: caseProcedure Info', caseFileData);
 
+        // remove draft from redux state
+        if (draftItem?.id) removeDraft(draftItem?.id);
+
         createCaseFile(caseFileData)
             .then(data => {
                 addCaseFile(data);
@@ -645,8 +645,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 
     const createDraft = () => {
         saveDraft([{
-            id: Math.floor(Math.random() * 10000),
-            patient: patientFields
+            // pass back existing draft id to overwrite existing draft
+            id: draftItem?.id || Math.floor(Math.random() * 10000),
+            patient: patientFields,
+            staff: staffInfo,
+            procedures: caseProceduresInfo
         }]);
         navigation.navigate('CaseFiles');
         modal.closeAllModals();
@@ -842,11 +845,12 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, draftprop, route}) 
 CreateCasePage.propTypes = {};
 CreateCasePage.defaultProps = {};
 
-const mapStateToProps = state => ({draftprop: [...state.draft]});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProp = {
     addCaseFile,
     saveDraft,
+    removeDraft
 };
 
 export default connect(mapStateToProps, mapDispatchToProp)(CreateCasePage);
