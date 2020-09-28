@@ -588,6 +588,8 @@ function Inventory(props) {
             collapsed={!expandedItems.includes(item.name)}
             onCollapsedEnd={() => onCollapseView(item.name)}
             render={(collapse, isCollapsed) => inventoryItemView(formattedItem, collapse, isCollapsed)}
+            backgroundColor={item.name.toLowerCase()
+                .includes('ungrouped') ? '#EEF2F6' : ''}
         >
             <FlatList
                 data={variants}
@@ -595,6 +597,8 @@ function Inventory(props) {
                 renderItem={({item}) => renderChildItemView(item, formattedItem, () => {
                 })}
                 keyExtractor={(item, index) => `${index}`}
+                backgroundColor={item.name.toLowerCase()
+                    .includes('ungrouped') ? '#EEF2F6' : ''}
                 ItemSeparatorComponent={() => (
                     <View style={{
                         flex: 1,
