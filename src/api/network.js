@@ -193,6 +193,17 @@ export const removeInventoryGroup = async id => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const removeInventoryGroups = async ids => suitesAxiosInstance
+    .delete(inventoryGroups, {data: {ids}})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const removeInventoryVariants = async ids => suitesAxiosInstance
+    .delete(inventoriesEndpoint, {data: {ids}})
+    .then(handleResponse)
+    .catch(handleError);
+
+
 export const getInventoryVariantByGroup = async (id, groupId) => suitesAxiosInstance
     .get(inventoryGroupVariant(groupId, id))
     .then(handleResponse)

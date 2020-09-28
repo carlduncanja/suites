@@ -31,7 +31,12 @@ import AddIcon from '../../../assets/svg/addIcon';
 
 import {numberFormatter} from '../../utils/formatter';
 import {setInventory} from '../../redux/actions/InventorActions';
-import {getInventoriesGroup, removeInventoryGroup} from '../../api/network';
+import {
+    getInventoriesGroup,
+    removeInventoryGroup,
+    removeInventoryGroups,
+    removeInventoryVariants
+} from '../../api/network';
 import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from '../../helpers/caseFilesHelpers';
 import {LONG_PRESS_TIMER} from '../../const';
 
@@ -136,7 +141,7 @@ function Inventory(props) {
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [selectedIds, setSelectedIds] = useState([]);
-    const [selectedChildIds, setSelectedChildIs] = useState([]);
+    const [selectedVariants, setSelectedVariants] = useState([]);
 
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResult] = useState([]);
@@ -263,56 +268,47 @@ function Inventory(props) {
 
     const onCheckBoxPress = item => () => {
         const {_id, variants = []} = item;
-        const variantIds = [];
+        // const variantIds = [];
 
         const updatedInventory = checkboxItemPress(item, _id, selectedIds);
         setSelectedIds(updatedInventory);
 
-        if (selectedIds.includes(_id)) {
-            const removeChildren = selectedChildIds.filter(obj => obj.groupId !== _id);
-            setSelectedChildIs(removeChildren);
-            // console.log("Remove children: ", removeChildren)
-        } else {
-            variants.map(variant => variantIds.push(variant?._id));
-            const updatedIds = [...selectedChildIds, {
-                groupId: _id,
-                variantIds
-            }];
-            setSelectedChildIs(updatedIds);
-            // console.log("Included: ", updatedIds)
-        }
+        const removeChildren = selectedVariants.filter(obj => obj.groupId !== _id);
+        setSelectedVariants(removeChildren);
+
+
+        // if (selectedIds.includes(_id)) {
+        //     const removeChildren = selectedChildIds.filter(obj => obj.groupId !== _id);
+        //     setSelectedChildIs(removeChildren);
+        //     console.log("Remove children: ", removeChildren)
+        // } else {
+        //     variants.map(variant => variantIds.push(variant?._id));
+        //     const updatedIds = [...selectedChildIds, {
+        //         groupId: _id,
+        //         variantIds
+        //     }];
+        //     setSelectedChildIs(updatedIds);
+        //     console.log("Included: ", updatedIds)
+        // }
     };
 
-    // ####### CHILD CHECKBOXPRESS
+    // ####### CHILD CHECK BOX PRESS
 
-    const onChildCheckBoxPress = (item, parentItem) => () => {
-        // console.log("Item: ", item);
-        const {_id} = item;
-        const {variantIds = []} = selectedChildIds.filter(obj => obj.groupId === parentItem?._id)[0] || {};
-        const updatedChildIds = checkboxItemPress(item, _id, variantIds);
+    const onChildCheckBoxPress = (inventoryVariant, inventoryGroup) => () => {
+        const {_id} = inventoryVariant;
+        const {_id: groupId} = inventoryGroup;
 
-        if (variantIds.length === 0) {
-            const updatedParentIds = checkboxItemPress(parentItem, _id, selectedIds);
-            const selectedChild = {
-                groupId: parentItem?._id,
-                variantIds: updatedChildIds
-            };
+        // get ids for variants
+        const variantIds = selectedVariants.map(variantObj => variantObj._id);
+        const updatedChildIds = checkboxItemPress(inventoryVariant, _id, variantIds);
 
-            setSelectedChildIs([...selectedChildIds, selectedChild]);
-            setSelectedIds(updatedParentIds);
+        // set selected variant
+        const updatedSelectedVariants = updatedChildIds.map(_id => ({_id, groupId: inventoryGroup._id}))
+        setSelectedVariants(updatedSelectedVariants);
 
-            // console.log("Included: ", [...selectedChildIds,selectedChild])
-        } else {
-            const updatedChildList = selectedChildIds.map(obj => (obj.groupId === parentItem?._id ?
-                {
-                    ...obj,
-                    variantIds: updatedChildIds
-                } :
-                obj));
-            setSelectedChildIs(updatedChildList);
-
-            // console.log("Updated item: ", updatedChildList)
-        }
+        // unselect group when child is selected
+        const updatedIds = selectedIds.filter(id => id !== groupId)
+        setSelectedIds(updatedIds)
     };
 
     const onCollapseView = key => {
@@ -326,34 +322,58 @@ function Inventory(props) {
     // ##### Helper functions
 
     const getFabActions = () => {
-        const isDisabled = selectedIds.length === 0;
+        const isRemoveGroupsDisabled = selectedIds.length === 0;
         const deleteAction = (
             <View style={{
                 borderRadius: 6,
                 flex: 1,
                 overflow: 'hidden'
-            }}
-            >
+            }}>
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
-                    onLongPress={removeGroup}
-                    isDisabled={isDisabled}
+                    onLongPress={removeGroups}
+                    isDisabled={isRemoveGroupsDisabled}
                 >
                     <ActionItem
-                        title="Hold to Delete"
+                        title="Hold to Delete Group"
                         icon={(
                             <WasteIcon
-                                strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                                strokeColor={isRemoveGroupsDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
                             />
                         )}
-                        onPress={() => {
-                        }}
-                        disabled={isDisabled}
+                        disabled={isRemoveGroupsDisabled}
                         touchable={false}
                     />
                 </LongPressWithFeedback>
             </View>
         );
+
+        const isRemoveVariantsDisabled = selectedVariants.length === 0;
+        const deleteInventoryItemAction = (
+            <View style={{
+                borderRadius: 6,
+                flex: 1,
+                overflow: 'hidden'
+            }}>
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.LONG}
+                    onLongPress={removeVariants}
+                    isDisabled={isRemoveVariantsDisabled}
+                >
+                    <ActionItem
+                        title="Hold to Delete Inventory"
+                        icon={(
+                            <WasteIcon
+                                strokeColor={isRemoveVariantsDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            />
+                        )}
+                        disabled={isRemoveVariantsDisabled}
+                        touchable={false}
+                    />
+                </LongPressWithFeedback>
+            </View>
+        );
+
 
         const createAction = <ActionItem title="Add Item" icon={<AddIcon/>} onPress={openCreateInventoryModel}/>;
         const createGroup = <ActionItem title="Create Item Group" icon={<AddIcon/>} onPress={openCreateGroupDialog}/>;
@@ -362,20 +382,21 @@ function Inventory(props) {
                 title="Item Transfer"
                 icon={(
                     <TransferIcon
-                        strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}
+                        strokeColor={isRemoveGroupsDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}
                     />
                 )}
                 onPress={() => {
                     // handleTransferItems()
                 }}
-                disabled={isDisabled}
-                touchable={!isDisabled}
+                disabled={isRemoveGroupsDisabled}
+                touchable={!isRemoveGroupsDisabled}
             />
         );
 
         return <ActionContainer
             floatingActions={[
                 deleteAction,
+                deleteInventoryItemAction,
                 createAction,
                 createGroup,
                 itemTransfer
@@ -384,15 +405,16 @@ function Inventory(props) {
         />;
     };
 
-    const removeGroup = () => {
-        // Done with one id selected
-        if (selectedIds.length === 1) {
-            const idToDelete = selectedIds[0] || '';
-            openConfirmationScreen(idToDelete);
-        } else {
-            openErrorConfirmation();
-        }
+    const removeGroups = () => {
+        openConfirmationScreen(() => removeGroupsCall(selectedIds));
+
     };
+
+    const removeVariants = () => {
+        const variantIds = selectedVariants.map(variant => variant._id)
+        openConfirmationScreen(() => removeVariantsCall(variantIds));
+    };
+
 
     const openCreateInventoryModel = () => {
         modal.closeModals('ActionContainerModal');
@@ -504,7 +526,7 @@ function Inventory(props) {
         </>
     );
 
-    const storageItemView = ({itemName, stock, levels, locations}, onActionPress) => (
+    const inventoryVariantItem = ({itemName, stock, levels, locations}, onActionPress) => (
         <>
 
             <RightBorderDataItem text={itemName} flex={1.5} color="--color-blue-600" fontStyle="--text-sm-medium"/>
@@ -535,11 +557,11 @@ function Inventory(props) {
 
     const renderChildItemView = (item, parentItem, onActionPress) => {
         const {_id} = item;
-        const {variantIds = []} = selectedChildIds.filter(obj => obj.groupId === parentItem?._id)[0] || {};
+        const variantIds = selectedVariants.map(obj => obj._id);
 
         return (
             <Item
-                itemView={storageItemView(item, onActionPress)}
+                itemView={inventoryVariantItem(item, onActionPress)}
                 hasCheckBox={true}
                 isChecked={variantIds.includes(_id)}
                 onCheckBoxPress={onChildCheckBoxPress(item, parentItem)}
@@ -580,10 +602,13 @@ function Inventory(props) {
             );
         });
 
+        const isIndeterminate = selectedVariants.some(variant => variant.groupId === item._id)
+
         return <CollapsibleListItem
             isChecked={selectedIds.includes(item._id)}
             onCheckBoxPress={onCheckBoxPress(item)}
             hasCheckBox={true}
+            isIndeterminate={isIndeterminate}
             onItemPress={onItemPress(item)}
             collapsed={!expandedItems.includes(item.name)}
             onCollapsedEnd={() => onCollapseView(item.name)}
@@ -615,7 +640,7 @@ function Inventory(props) {
         </CollapsibleListItem>;
     };
 
-    const openConfirmationScreen = id => {
+    const openConfirmationScreen = (callbackFn) => {
         modal
             .openModal(
                 'ConfirmationModal',
@@ -626,9 +651,8 @@ function Inventory(props) {
                         onCancel={() => modal.closeModals('ConfirmationModal')}
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                            removeGroupCall(id);
-                        }
-                        }
+                            callbackFn()
+                        }}
                         // onAction = { () => confirmAction()}
                         message="Do you want to delete these item(s)?"
                     />,
@@ -696,15 +720,9 @@ function Inventory(props) {
             });
     };
 
-    const removeGroupCall = id => {
-        removeInventoryGroup(id)
+    const removeGroupsCall = ids => {
+        removeInventoryGroups(ids)
             .then(_ => {
-                // setTimeout(()=>{
-                //     modal.closeModals('ConfirmationModal');
-
-                // },200);
-                // modal.closeModals("ActionContainerModal");
-                // onRefresh();
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -738,6 +756,44 @@ function Inventory(props) {
                 setFloatingAction(false);
             });
     };
+
+    const removeVariantsCall = ids => {
+        removeInventoryVariants(ids)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    onRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setSelectedIds([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove group: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
+    };
+
 
     const confirmAction = () => {
         modal.openModal(
