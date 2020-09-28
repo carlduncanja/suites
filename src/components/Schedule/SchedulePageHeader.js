@@ -179,7 +179,7 @@ function SchedulePageHeader({
         {
             name: "Equipment",
             color: theme.colors["--color-blue-600"],
-            shadowColor : 'rgba(249, 130, 206,  0.45)'
+            shadowColor : 'rgba(249, 130, 206, 0.45)'
         },
         {
             name: "Procedure",
@@ -270,9 +270,9 @@ function SchedulePageHeader({
                             onPress={showFilterMenu}
                         >
                             {
-                                checkedRadioButton && <FilterIndicator 
-                                    backgroundColor = {optionList.filter(item => item.name === checkedRadioButton)[0].color}
-                                    shadowColor = {optionList.filter(item => item.name === checkedRadioButton)[0].shadowColor}
+                                checkedRadioButton !== "" && <FilterIndicator 
+                                    backgroundColor = {optionList.filter(item => item?.name === checkedRadioButton)[0].color || theme.colors['--default-shade-white']}
+                                    shadowColor = {optionList.filter(item => item?.name === checkedRadioButton)[0].shadowColor || theme.colors['--default-shade-white']}
                                 />
                             }
                             <FilterIcon strokeColor = {checkedRadioButton ? theme.colors['--color-gray-700'] : theme.colors['--default-shade-white'] }/>
