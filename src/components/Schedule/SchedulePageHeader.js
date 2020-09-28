@@ -27,10 +27,10 @@ const ScheduleHeaderContainer = styled.View`
 const SchedulePageHeaderContainer = styled.View`
     width : 102%;
     flex-direction: row;
-     height:40px;
+    height:40px;
     justify-content: space-between;
-     align-self: flex-start;
-     align-items:center;
+    align-self: flex-start;
+    align-items:center;
     margin-bottom:${({ theme }) => theme.space["--space-16"]};
     margin-top:${({ theme }) => theme.space["--space-6"]};
 `;
@@ -44,10 +44,10 @@ const ButtonView = styled.View`
     flex-direction:row;
     padding-top:15px;
     padding-bottom:15px;
-     padding:15px;
-    borderTopWidth:1px;
-    borderTopColor:${ ({ theme }) => theme.colors["--color-gray-400"]};
-    // background-color: yellow;
+    padding:15px;
+    border-top-width:1px;
+    border-top-color:${ ({ theme }) => theme.colors["--color-gray-400"]};
+    /* background-color: yellow; */
     justify-content: space-between;
 `;
 
@@ -57,8 +57,8 @@ const GroupButtonContainer = styled.View`
 `;
 const ExpandButtonWrapper = styled.View`
     height: 24px;
-     margin-left:${({ theme }) => theme.space["--space-10"]};
-     margin-right:${({ theme }) => theme.space["--space-10"]};
+    margin-left:${({ theme }) => theme.space["--space-10"]};
+    margin-right:${({ theme }) => theme.space["--space-10"]};
     width: 140px;
    
   
@@ -66,7 +66,7 @@ const ExpandButtonWrapper = styled.View`
 
 const ExpandButton = styled.View`
     height: 100%;
-    weight: 100%;
+    width: 100%;
     background-color: ${ ({ theme, Expanded }) => Expanded ? theme.colors["--accent-button"] : theme.colors['--default-shade-white']};
     border-color: ${ ({ theme }) => theme.colors['--color-gray-400']};
     border-radius: 4px;
@@ -74,52 +74,74 @@ const ExpandButton = styled.View`
 `;
 
 const PopUp = styled.View`
-width:185px;
-align-self:center;
-align-items:flex-start;
-position:absolute;
-padding:12px 8px;
-top:30px;
-left:100px;
-height:185px;
-background-color:${({ theme }) => theme.colors["--default-shade-white"]};
-z-index:10;
-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-border-radius:3.6px;
+    width:185px;
+    align-self:center;
+    align-items:flex-start;
+    position:absolute;
+    padding:12px 8px;
+    top:30px;
+    left:100px;
+    height:185px;
+    background-color:${({ theme }) => theme.colors["--default-shade-white"]};
+    z-index:10;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius:3.6px;
 
 `
 
 const PopupContainer = styled.View`
-align-items:center;
-flex-direction:row;
-margin:${({ theme }) => theme.space["--space-2"]};
+    align-items:center;
+    flex-direction:row;
+    margin:${({ theme }) => theme.space["--space-2"]};
 
 `
 
 const RadioContainer = styled.View`
-background-color:${({ checkedButton, name, theme }) => checkedButton === name ? theme.colors["--color-blue-600"] : "white"};
-border-color:${({ theme }) => theme.colors["--color-neutral-gray-300"]};
-border-width:2px;
-width:15px;
-height:15px;
-border-radius:7.5px;
-margin-right:${({ theme }) => theme.space["--space-10"]};
+    background-color:${({ checkedButton, name, theme }) => checkedButton === name ? theme.colors["--color-blue-600"] : "white"};
+    border-color:${({ theme }) => theme.colors["--color-neutral-gray-300"]};
+    border-width:2px;
+    width:15px;
+    height:15px;
+    border-radius:7.5px;
+    margin-right:${({ theme }) => theme.space["--space-10"]};
 
 `;
 
 const OptionContainer = styled.TouchableOpacity`
-background-color:${({ item }) => item.color};
-border-radius:4.6px;
-height:25px;
-margin:${({ theme }) => theme.space["--space-2"]};
-align-items:center;
-justify-content:center;
-padding:2px 6px;
+    background-color:${({ item }) => item.color};
+    border-radius:4.6px;
+    height:25px;
+    margin:${({ theme }) => theme.space["--space-2"]};
+    align-items:center;
+    justify-content:center;
+    padding:2px 6px;
 `;
 
 const OptionText = styled.Text`
-color:${({ theme }) => theme.colors["--default-shade-white"]};
-font:${({ theme }) => theme.font["--text-sm-regular"]}
+    color:${({ theme }) => theme.colors["--default-shade-white"]};
+    font:${({ theme }) => theme.font["--text-sm-regular"]};
+`;
+
+const FilterContainer = styled.TouchableOpacity`
+    height : 24px;
+    width : 24px;
+    align-items : center;
+    justify-content : center;
+    border : ${ ({theme, borderColor}) => `1px solid ${theme.colors[borderColor]}`};
+    border-radius : 4px;
+    background-color : ${ ({theme, backgroundColor}) => theme.colors[backgroundColor]};
+    position : relative;
+`;
+
+const FilterIndicator = styled.View`
+    height : 8px;
+    width : 8px;
+    position : absolute;
+    background-color : ${(backgroundColor)=>backgroundColor};
+    box-shadow : ${ ({shadowColor}) => `0px 1px 4px ${shadowColor}`};
+    border-radius : 8px;
+    top : -4;
+    right : -2;
 `;
 
 
@@ -140,34 +162,34 @@ function SchedulePageHeader({
     const optionList = [
         {
             name: "Delivery",
-            color: theme.colors["--color-green-600"]
-
+            color: theme.colors["--color-green-600"],
+            shadowColor : 'rgba(56, 161, 105, 0.45)'
         },
         {
             name: "Inventory Re-Stock",
-            color: theme.colors["--color-yellow-600"]
+            color: theme.colors["--color-yellow-600"],
+            shadowColor : 'rgba(214, 158, 46, 0.45)'
         },
         {
             name: "Inventory Audit",
-            color: theme.colors["--color-pink-600"]
+            color: theme.colors["--color-pink-600"],
+            shadowColor : 'rgba(213, 63, 140, 0.45)'
+
         },
         {
             name: "Equipment",
-            color: theme.colors["--color-blue-600"]
+            color: theme.colors["--color-blue-600"],
+            shadowColor : 'rgba(249, 130, 206, 0.45)'
         },
         {
             name: "Procedure",
-            color: theme.colors["--color-red-700"]
+            color: theme.colors["--color-red-700"],
+            shadowColor : 'rgba(245, 101, 101, 0.45)'
         }
 
     ]
 
-
     const [state] = useContext(SuitesContext);
-
-
-
-
 
     const renderDropDown = () => {
         console.log(checkedRadioButton)
@@ -240,10 +262,22 @@ function SchedulePageHeader({
                                 />
                             </ExpandButton>
                         </ExpandButtonWrapper>
-                        <TouchableOpacity onPress={showFilterMenu}>
-                            <FilterIcon />
 
-                        </TouchableOpacity>
+                        <FilterContainer 
+                            theme = {theme}
+                            borderColor = {checkedRadioButton ? '--color-gray-400' : '--accent-button'}
+                            backgroundColor = {checkedRadioButton ? '--default-shade-white' : '--accent-button'}
+                            onPress={showFilterMenu}
+                        >
+                            {
+                                checkedRadioButton !== "" && <FilterIndicator 
+                                    backgroundColor = {optionList.filter(item => item?.name === checkedRadioButton)[0].color || theme.colors['--default-shade-white']}
+                                    shadowColor = {optionList.filter(item => item?.name === checkedRadioButton)[0].shadowColor || theme.colors['--default-shade-white']}
+                                />
+                            }
+                            <FilterIcon strokeColor = {checkedRadioButton ? theme.colors['--color-gray-700'] : theme.colors['--default-shade-white'] }/>
+                        </FilterContainer>
+
                         {showDropDown ? renderDropDown() : <View />}
                     </GroupButtonContainer>
 

@@ -74,7 +74,9 @@ const Diagnosis = ({tabDetails, fields, isEditMode}) => {
     }
    
     return ( 
-        <ScrollView>
+        <ScrollView
+            contentContainerStyle = {{paddingBottom : 100}}
+        >
 
             <FrameCard
                 frameColor = {theme.colors['--color-blue-600']}

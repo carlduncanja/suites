@@ -162,7 +162,7 @@ const Schedule = (props) => {
 
     useEffect(() => {
         console.log("filtered appointments state has:", filteredAppointments);
-
+        // console.log("Checked filter button: ", checkedRadioButton);
         checkedRadioButton === "" ? fetchAppointments() : filter(appointments);
 
     }, [checkedRadioButton]);
