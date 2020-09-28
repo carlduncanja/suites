@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import styled from '@emotion/native';
 import {useTheme} from 'emotion-theming';
+import jwtDecode from 'jwt-decode';
 import {colors} from '../../styles';
 import SlideOverlay from '../../components/common/SlideOverlay/SlideOverlay';
 import CaseFileOverlayMenu from '../../components/CaseFiles/CaseFileOverlayMenu';
@@ -63,9 +64,8 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
 import WasteIcon from '../../../assets/svg/wasteIcon';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
-import jwtDecode from "jwt-decode";
-import AcceptIcon from "../../../assets/svg/acceptIcon";
-import {CHARGE_SHEET_STATUSES} from "../../components/CaseFiles/navigation/screens/ChargeSheet";
+import AcceptIcon from '../../../assets/svg/acceptIcon';
+import {CHARGE_SHEET_STATUSES} from '../../components/CaseFiles/navigation/screens/ChargeSheet';
 
 const overlayMenu = [
     {
@@ -109,11 +109,11 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const theme = useTheme();
 
     const {userToken} = auth;
-    let authInfo = {}
+    let authInfo = {};
     try {
         authInfo = jwtDecode(userToken);
     } catch (e) {
-        console.log("failed to decode token", e);
+        console.log('failed to decode token', e);
     }
 
     const {caseId, isEdit} = route.params;
@@ -159,7 +159,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     }}
                     onAction={() => {
                         modal.closeAllModals();
-                        chargeSheetApproval({approve: true})
+                        chargeSheetApproval({approve: true});
                     }}
                     message="Do you want to accept changes submitted?"//general message you can send to be displayed
                     action="Yes"
@@ -169,7 +169,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 console.log('Modal closed');
             },
         });
-    }
+    };
 
     const handleRevertChargeSheetChanges = () => {
         modal.openModal('ConfirmationModal', {
@@ -182,7 +182,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     }}
                     onAction={() => {
                         modal.closeAllModals();
-                        chargeSheetApproval({approve: false})
+                        chargeSheetApproval({approve: false});
                     }}
                     message="Are you sure you want to revert changes submitted?"//general message you can send to be displayed
                     action="Yes"
@@ -192,7 +192,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 console.log('Modal closed');
             },
         });
-    }
+    };
 
     const handleWithdrawChargeSheetChanges = () => {
         modal.openModal('ConfirmationModal', {
@@ -205,7 +205,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     }}
                     onAction={() => {
                         modal.closeAllModals();
-                        chargeSheetWithdrawChanges({approve: false})
+                        chargeSheetWithdrawChanges({approve: false});
                     }}
                     message="Are you sure you want to withdraw changes submitted?"//general message you can send to be displayed
                     action="Yes"
@@ -215,8 +215,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 console.log('Modal closed');
             },
         });
-    }
-
+    };
 
     const handleOverlayMenuPress = selectedItem => {
         if (pageState.isEditMode) return;
@@ -243,7 +242,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         });
     };
 
-    const handleConfirmChargeSheetChanges = (updateInfo) => {
+    const handleConfirmChargeSheetChanges = updateInfo => {
         modal.openModal(
             'ConfirmationModal',
             {
@@ -255,23 +254,22 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         setPageState({
                             ...pageState,
                             isEditMode: true,
-                        })
+                        });
                     }}
                     onAction={() => {
-                        updateCaseChargeSheet(updateInfo)
+                        updateCaseChargeSheet(updateInfo);
                         setTimeout(() => {
                             modal.closeModals('ConfirmationModal');
-                        }, 200)
+                        }, 200);
                     }}
-                    message={"Confirm changes made"}
-                />
-                ,
+                    message="Confirm changes made"
+                />,
                 onClose: () => {
-                    modal.closeModals('ConfirmationModal')
+                    modal.closeModals('ConfirmationModal');
                 }
-            })
-
-    }
+            }
+        );
+    };
 
     const updateCaseChargeSheet = updateInfo => {
         updateChargeSheet(caseId, updateInfo)
@@ -328,7 +326,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     const handleInvoices = invoices => {
         setSelectedInvoiceIds(invoices);
-    }
+    };
 
     const onGenerateQuotation = () => {
         modal.openModal('ConfirmationModal', {
@@ -376,24 +374,29 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         });
     };
 
-    const onPreviewInvoice = () =>{
-        let billingData = getBillingData()
-        let { total = 0 } = getBillingData();
-        let { createdAt } = selectedCase?.chargeSheet || {};
+    const onPreviewInvoice = () => {
+        const billingData = getBillingData();
+        const {total = 0} = getBillingData();
+        const {createdAt} = selectedCase?.chargeSheet || {};
 
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Invoice"
-                details={{amountDue : total, createdAt}}
+                details={{
+                    amountDue: total,
+                    createdAt
+                }}
                 reportDetails={billingData}
             />,
-            onClose : ()=>{modal.closeModals('ActionContainerModal')}
+            onClose: () => {
+                modal.closeModals('ActionContainerModal');
+            }
         });
-    }
+    };
 
-    const onAppointmentCreated = (value) => {
+    const onAppointmentCreated = value => {
         fetchCase(caseId);
-    }
+    };
 
     /**
      * Displays floating actions
@@ -412,7 +415,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     // ############### Helper Function
     const fetchCase = id => {
-        console.log("fetching case");
+        console.log('fetching case');
         setPageLoading(true);
         getCaseFileById(id)
             .then(data => {
@@ -427,7 +430,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             });
     };
 
-    const chargeSheetApproval = (params) => {
+    const chargeSheetApproval = params => {
         setPageLoading(true);
         // return;
         approveChargeSheetCall(caseId, params)
@@ -451,7 +454,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 });
             })
             .catch(error => {
-                console.log("Failed to approve charge sheet", error)
+                console.log('Failed to approve charge sheet', error);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -471,10 +474,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         console.log('Modal closed');
                     },
                 });
-
             })
-            .finally(_ => fetchCase(caseId))
-    }
+            .finally(_ => fetchCase(caseId));
+    };
 
     const chargeSheetWithdrawChanges = () => {
         setPageLoading(true);
@@ -500,7 +502,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 });
             })
             .catch(error => {
-                console.log("Failed to approve charge sheet", error)
+                console.log('Failed to approve charge sheet', error);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -520,11 +522,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         console.log('Modal closed');
                     },
                 });
-
             })
-            .finally(_ => fetchCase(caseId))
-    }
-
+            .finally(_ => fetchCase(caseId));
+    };
 
     const generateQuotation = caseId => {
         setPageLoading(true);
@@ -650,111 +650,101 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         setSelectedCase(updatedCase);
     };
 
-    const openAddItem = (itemToAdd) => {
-        const { chargeSheet = {} } = selectedCase
-        const { proceduresBillableItems = [] } = chargeSheet
-        let checkedList = itemToAdd === 'Consumables' ? selectedConsumables : selectedEquipments
-        let filerObj = proceduresBillableItems.filter( item => item?.caseProcedureId === checkedList[0] || "")[0] || {};
+    const openAddItem = itemToAdd => {
+        const {chargeSheet = {}} = selectedCase;
+        const {proceduresBillableItems = []} = chargeSheet;
+        const checkedList = itemToAdd === 'Consumables' ? selectedConsumables : selectedEquipments;
+        const filerObj = proceduresBillableItems.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
 
         modal.closeModals('ActionContainerModal');
-        navigation.navigate("AddChargeSheetItem", {
-            type : itemToAdd,
-            onAddItem : onAddItem(itemToAdd),
-            selectedObj : filerObj,
+        navigation.navigate('AddChargeSheetItem', {
+            type: itemToAdd,
+            onAddItem: onAddItem(itemToAdd),
+            selectedObj: filerObj,
 
         });
     };
 
-    const onAddItem = (itemToAdd) => (data) => {
-        const { chargeSheet = {} } = selectedCase
-        const { proceduresBillableItems = [] } = chargeSheet
-        let checkedList = itemToAdd === 'Consumables' ? selectedConsumables : selectedEquipments
+    const onAddItem = itemToAdd => data => {
+        const {chargeSheet = {}} = selectedCase;
+        const {proceduresBillableItems = []} = chargeSheet;
+        const checkedList = itemToAdd === 'Consumables' ? selectedConsumables : selectedEquipments;
 
-        let filerObj = proceduresBillableItems.filter( item => item?.caseProcedureId === checkedList[0] || "")[0] || {};
-        let updatedObj = itemToAdd === 'Consumables' ?
+        const filerObj = proceduresBillableItems.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
+        const updatedObj = itemToAdd === 'Consumables' ?
             {
                 ...filerObj,
-                inventories : [...filerObj?.inventories, ...data]
-            }
-            :
+                inventories: [...filerObj?.inventories, ...data]
+            } :
             {
                 ...filerObj,
-                equipments : [...filerObj?.equipments, ...data]
-            }
+                equipments: [...filerObj?.equipments, ...data]
+            };
         // console.log("Selected consumables: ", selectedConsumables);
         // console.log("Filter obj : ", filerObj);
-        console.log("Updated:", updatedObj)
-        const updatedCase = proceduresBillableItems.map( procedure => {
-            return procedure?.caseProcedureId === checkedList[0]
-                ? {...updatedObj}
-                : {...procedure}
-        })
+        console.log('Updated:', updatedObj);
+        const updatedCase = proceduresBillableItems.map(procedure => (procedure?.caseProcedureId === checkedList[0] ?
+            {...updatedObj} :
+            {...procedure}));
 
-        console.log(" Updated Case: ", updatedCase);
+        console.log(' Updated Case: ', updatedCase);
 
-        if(itemToAdd === 'Consumables'){
+        if (itemToAdd === 'Consumables') {
             setSelectedConsumables([]);
             setVariantsConsumables([]);
-        }else{
+        } else {
             setSelectedEquipments([]);
             setVariantsEquipments([]);
         }
 
         updateCaseChargeSheet(updatedCase);
 
-
         // console.log("Billable: ", proceduresBillableItems);
+    };
 
-    }
-
-    const handleRemoveConsumableItems = (itemToRemove) => {
-        const { chargeSheet = {} } = selectedCase;
-        const { proceduresBillableItems = [] } = chargeSheet
+    const handleRemoveConsumableItems = itemToRemove => {
+        const {chargeSheet = {}} = selectedCase;
+        const {proceduresBillableItems = []} = chargeSheet;
 
         let updatedItems = proceduresBillableItems;
-        let selectedItemsArray = itemToRemove === 'Consumables' ? variantsConsumables : variantsEquipments;
-        selectedItemsArray.map( item => {
-            const { _parentId = "", variants = [] } = item;
+        const selectedItemsArray = itemToRemove === 'Consumables' ? variantsConsumables : variantsEquipments;
+        selectedItemsArray.map(item => {
+            const {_parentId = '', variants = []} = item;
 
-            const billableItem = updatedItems.filter( item => item?.caseProcedureId === _parentId )[0] || {};
-            const { inventories = [], equipments = [] } = billableItem
+            const billableItem = updatedItems.filter(item => item?.caseProcedureId === _parentId)[0] || {};
+            const {inventories = [], equipments = []} = billableItem;
             let updatedList = itemToRemove === 'Consumables' ? inventories : equipments;
 
             variants.map(variant => {
                 itemToRemove === 'Consumables' ?
-                    updatedList = [...updatedList.filter( item => item?.inventory?._id !== variant)]
-                :
-                    updatedList = [...updatedList.filter( item => item?.equipment?._id !== variant)]
+                    updatedList = [...updatedList.filter(item => item?.inventory?._id !== variant)] :
+                    updatedList = [...updatedList.filter(item => item?.equipment?._id !== variant)];
             });
 
-            let updatedProcedureObj =
+            const updatedProcedureObj =
                 itemToRemove === 'Consumables' ?
                     {
                         ...billableItem,
-                        inventories : updatedList
-                    }
-                    :
+                        inventories: updatedList
+                    } :
                     {
                         ...billableItem,
-                        equipments : updatedList
-                    }
+                        equipments: updatedList
+                    };
 
-            updatedItems = updatedItems.map( procedure => {
-                return procedure?.caseProcedureId === _parentId
-                    ? {...updatedProcedureObj}
-                    : {...procedure}
-            });
-        })
-        if(itemToRemove === 'Consumables'){
+            updatedItems = updatedItems.map(procedure => (procedure?.caseProcedureId === _parentId ?
+                {...updatedProcedureObj} :
+                {...procedure}));
+        });
+        if (itemToRemove === 'Consumables') {
             setSelectedConsumables([]);
             setVariantsConsumables([]);
-        }else{
+        } else {
             setSelectedEquipments([]);
             setVariantsEquipments([]);
         }
         updateCaseChargeSheet(updatedItems);
-
-    }
+    };
 
     const onRemoveQuotations = quotation => {
         modal.openModal('ConfirmationModal', {
@@ -821,15 +811,13 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         if (selectedMenuItem === 'Charge Sheet') {
             switch (selectedTab) {
                 case 'Consumables': {
-
                     const {chargeSheet} = selectedCase;
-                    const status = chargeSheet.status;
-                    const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES
+                    const {status} = chargeSheet;
+                    const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
 
                     if (isPending) {
-
-                        const isAdmin = authInfo['role_name'] === ROLES.ADMIN
-                        const isOwner = chargeSheet.updatedBy?._id === authInfo['user_id'];
+                        const isAdmin = authInfo.role_name === ROLES.ADMIN;
+                        const isOwner = chargeSheet.updatedBy?._id === authInfo.user_id;
 
                         if (isAdmin) {
                             const RevertChanges = (
@@ -867,79 +855,89 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             );
                             floatingAction.push(WithdrawChanges);
                         }
-
                     } else {
-                        let isDisabled = selectedConsumables.length === 1 ? false : true
+                        const isDisabled = selectedConsumables.length !== 1;
 
                         const addNewItem = (
                             <ActionItem
                                 title="Add Consumable"
-                                icon={<AddIcon
-                                    strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
-                                />}
-                                disabled = {isDisabled}
-                                touchable = {!isDisabled}
+                                icon={(
+                                    <AddIcon
+                                        strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                                    />
+                                )}
+                                disabled={isDisabled}
+                                touchable={!isDisabled}
                                 onPress={() => openAddItem('Consumables')}
                             />
                         );
                         const removeLineItemAction = (
                             <LongPressWithFeedback
                                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                                onLongPress={()=>handleRemoveConsumableItems('Consumables')}
-                                isDisabled={selectedConsumables.length === 0 ? true : false}
+                                onLongPress={() => handleRemoveConsumableItems('Consumables')}
+                                isDisabled={selectedConsumables.length === 0}
 
                             >
                                 <ActionItem
                                     title="Hold to Delete"
-                                    icon={<WasteIcon
-                                        strokeColor={selectedConsumables.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
-                                    onPress={() => {}}
+                                    icon={(
+                                        <WasteIcon
+                                            strokeColor={selectedConsumables.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                                        />
+                                    )}
+                                    onPress={() => {
+                                    }}
                                     touchable={false}
-                                    disabled={selectedConsumables.length === 0 ? true : false}
+                                    disabled={selectedConsumables.length === 0}
                                 />
 
                             </LongPressWithFeedback>
                         );
                         floatingAction.push(/*addNewLineItemAction,*/ removeLineItemAction, addNewItem,);
                     }
-                    title = "CONSUMABLE'S ACTIONS";
-
+                    title = 'CONSUMABLE\'S ACTIONS';
 
                     break;
                 }
                 case 'Equipment': {
-                    let isDisabled = selectedEquipments.length === 1 ? false : true
+                    const isDisabled = selectedEquipments.length !== 1;
 
                     const addNewLineItemAction = (
                         <ActionItem
                             title="Add Equipment"
-                            icon={<AddIcon
-                                strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
-                            />}
-                            disabled = {isDisabled}
-                            touchable = {!isDisabled}
+                            icon={(
+                                <AddIcon
+                                    strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                                />
+                            )}
+                            disabled={isDisabled}
+                            touchable={!isDisabled}
                             onPress={() => openAddItem('Equipment')}
                         />
                     );
                     const removeLineItemAction = (
                         <LongPressWithFeedback
                             pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                            onLongPress={()=>handleRemoveConsumableItems('Equipment')}
-                            isDisabled={selectedEquipments.length === 0 ? true : false}
+                            onLongPress={() => handleRemoveConsumableItems('Equipment')}
+                            isDisabled={selectedEquipments.length === 0}
 
                         >
                             <ActionItem
                                 title="Hold to Delete"
-                                icon={<WasteIcon
-                                    strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}/>}
-                                onPress={() => {}}
+                                icon={(
+                                    <WasteIcon
+                                        strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                                    />
+                                )}
+                                onPress={() => {
+                                }}
                                 touchable={false}
-                                disabled={selectedEquipments.length === 0 ? true : false}
+                                disabled={selectedEquipments.length === 0}
                             />
 
                         </LongPressWithFeedback>
                     );
-                    floatingAction.push( removeLineItemAction,addNewLineItemAction );
+                    floatingAction.push(removeLineItemAction, addNewLineItemAction);
                     title = 'EQUIPMENT ACTIONS';
                     break;
                 }
@@ -1049,7 +1047,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             }
         } else if (selectedMenuItem === 'Procedures') {
             switch (selectedTab) {
-                case 'Details':
+                case 'Details': {
                     const addNewProcedure = (
                         <ActionItem
                             title="Add Appointment"
@@ -1060,6 +1058,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     floatingAction.push(addNewProcedure);
                     title = 'APPOINTMENT ACTIONS';
                     break;
+                }
             }
         }
 
@@ -1098,7 +1097,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 let {quotations} = updatedCase;
 
                 quotations = quotations.map(item => (item._id === quotationId ?
-                    {...item, status} :
+                    {
+                        ...item,
+                        status
+                    } :
                     {...item}));
 
                 updatedCase.quotations = quotations;
@@ -1115,7 +1117,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     const openAddProcedure = () => {
         modal.closeModals('ActionContainerModal');
-        navigation.navigate("AddAppointmentPage", {caseId, onAppointmentCreated});
+        navigation.navigate('AddAppointmentPage', {
+            caseId,
+            onAppointmentCreated
+        });
     };
 
     const getBillingData = () => {
@@ -1195,9 +1200,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             billing.procedures.push(billingItem);
         }
 
-        return billing
-
-    }
+        return billing;
+    };
 
     const downloadInvoiceDocument = async invoice => {
         const {invoices, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
@@ -1338,7 +1342,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         quantity: amount,
                         price: `$${currencyFormatter(cost)}`,
                         total: `$${currencyFormatter(cost * amount)}`
-                    })
+                    });
                 });
 
                 args.total = `$${currencyFormatter(total)}`;
@@ -1357,7 +1361,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             }
         });
 
-        data = {...data, args};
+        data = {
+            ...data,
+            args
+        };
 
         // build args to pass to document generation endpoint; pass result of that endpoint to downloadAsync
         try {
@@ -1371,24 +1378,27 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             FileSystem.downloadAsync(
                 fileUrl,
                 `${FileSystem.cacheDirectory}${filename}`
-            ).then(({uri}) => {
-                console.info(`download.path::${uri}`);
+            )
+                .then(({uri}) => {
+                    console.info(`download.path::${uri}`);
 
-                Sharing.shareAsync(uri, {UTI: 'pdf'})
-                    .then(result => console.info('sharing.success', result))
-                    .catch(error => console.error('sharing.error', error));
-            }).catch(error => {
-                console.error(error);
-            }).finally(_ => {
-                setPageLoading(false);
-                modal.closeAllModals();
-            });
+                    Sharing.shareAsync(uri, {UTI: 'pdf'})
+                        .then(result => console.info('sharing.success', result))
+                        .catch(error => console.error('sharing.error', error));
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+                .finally(_ => {
+                    setPageLoading(false);
+                    modal.closeAllModals();
+                });
         } catch (error) {
             console.error(error); // todo: show error message
             setPageLoading(false);
             modal.closeAllModals();
         }
-    }
+    };
 
     const downloadQuotationDocument = async quotation => {
         const {quotations, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
@@ -1529,7 +1539,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         quantity: amount,
                         price: `$${currencyFormatter(cost)}`,
                         total: `$${currencyFormatter(cost * amount)}`
-                    })
+                    });
                 });
 
                 args.total = `$${currencyFormatter(total)}`;
@@ -1548,7 +1558,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             }
         });
 
-        data = {...data, args};
+        data = {
+            ...data,
+            args
+        };
 
         // build args to pass to document generation endpoint; pass result of that endpoint to downloadAsync
         try {
@@ -1562,18 +1575,21 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             FileSystem.downloadAsync(
                 fileUrl,
                 `${FileSystem.cacheDirectory}${filename}`
-            ).then(({uri}) => {
-                console.info(`download.path::${uri}`);
+            )
+                .then(({uri}) => {
+                    console.info(`download.path::${uri}`);
 
-                Sharing.shareAsync(uri, {UTI: 'pdf'})
-                    .then(result => console.info('sharing.success', result))
-                    .catch(error => console.error('sharing.error', error));
-            }).catch(error => {
-                console.error(error);
-            }).finally(_ => {
-                setPageLoading(false);
-                modal.closeAllModals();
-            });
+                    Sharing.shareAsync(uri, {UTI: 'pdf'})
+                        .then(result => console.info('sharing.success', result))
+                        .catch(error => console.error('sharing.error', error));
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+                .finally(_ => {
+                    setPageLoading(false);
+                    modal.closeAllModals();
+                });
         } catch (error) {
             console.error(error); // todo: show error message
             setPageLoading(false);
@@ -1590,6 +1606,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             case 'Patient':
                 return <Patient
                     patient={patient}
+                    procedures={caseProcedures}
                     selectedTab={selectedTab}
                 />;
             case 'Medical Staff':
@@ -1618,22 +1635,22 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
                     handleInvoices={handleInvoices}
-                    onSelectEquipments={(equipments) => {
-                        setSelectedEquipments(equipments)
+                    onSelectEquipments={equipments => {
+                        setSelectedEquipments(equipments);
                     }}
-                    onSelectConsumables={(consumables)=>{
-                        setSelectedConsumables(consumables)
+                    onSelectConsumables={consumables => {
+                        setSelectedConsumables(consumables);
                     }}
-                    onSelectVariants = {(variants) => {
-                        setVariantsConsumables(variants)
+                    onSelectVariants={variants => {
+                        setVariantsConsumables(variants);
                     }}
-                    onSelectEquipmenntsVariants = {(variants) =>{
-                        setVariantsEquipments(variants)
+                    onSelectEquipmenntsVariants={variants => {
+                        setVariantsEquipments(variants);
                     }}
-                    selectedConsumables = {selectedConsumables}
-                    variantsConsumables = {variantsConsumables}
-                    selectedEquipments = {selectedEquipments}
-                    variantsEquipments = {variantsEquipments}
+                    selectedConsumables={selectedConsumables}
+                    variantsConsumables={variantsConsumables}
+                    selectedEquipments={selectedEquipments}
+                    variantsEquipments={variantsEquipments}
                 />;
             default:
                 return <View/>;
@@ -1645,9 +1662,14 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     return (
         <>
-            <PageContext.Provider value={{pageState, setPageState, fetchCase}}>
+            <PageContext.Provider value={{
+                pageState,
+                setPageState,
+                fetchCase
+            }}
+            >
                 <DetailsPage
-                    headerChildren={[name,`#${caseNumber}`]}
+                    headerChildren={[name, `#${caseNumber}`]}
                     onBackPress={() => {
                         navigation.navigate('CaseFiles');
                     }}
@@ -1683,20 +1705,18 @@ const mapDispatchTopProp = dispatch => bindActionCreators({
     setCaseEdit
 }, dispatch);
 
-const mapStateToProps = (state) => ({
-    auth: state.auth
-})
+const mapStateToProps = state => ({auth: state.auth});
 
 export default connect(mapStateToProps, mapDispatchTopProp)(CasePage);
 
 function CasePageContent({
-                             overlayContent,
-                             overlayMenu,
-                             selectedMenuItem,
-                             onOverlayTabPress,
-                             toggleActionButton,
-                             actionDisabled
-                         }) {
+    overlayContent,
+    overlayMenu,
+    selectedMenuItem,
+    onOverlayTabPress,
+    toggleActionButton,
+    actionDisabled
+}) {
     useEffect(() => {
         console.log('Case Page Create');
     }, []);
