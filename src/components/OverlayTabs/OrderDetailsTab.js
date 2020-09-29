@@ -215,6 +215,7 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
                     editMode = {isEditMode}
                     editable = {true}
                     useDateField = {true}
+                    minDate={new Date()}
                     onClearValue = {()=>{onFieldChange('deliveryDate')('')}}
                     onRecordUpdate = {(date)=>{onFieldChange('deliveryDate')(date) }}
                />

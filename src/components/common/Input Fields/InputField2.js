@@ -8,7 +8,7 @@ import IconButton from '../Buttons/IconButton';
 import InputLabelComponent from '../InputLablel';
 import InputContainerComponent from '../InputContainerComponent';
 import InputErrorComponent from '../InputErrorComponent';
-import InputFieldWithIcon from "./InputFieldWithIcon";
+import InputFieldWithIcon from './InputFieldWithIcon';
 
 /**
  *
@@ -80,27 +80,27 @@ const IconContainer = styled.View`
 `;
 
 function InputField2({
-                         label,
-                         labelWidth,
-                         secureTextEntry = false,
-                         onChangeText = () => {
-                         },
-                         value,
-                         enabled = true,
-                         placeholder = '',
-                         keyboardType,
-                         onClear = () => {
-                         },
-                         hasError = false,
-                         errorMessage = 'Error',
-                         backgroundColor,
-                         onFocus = () => {
-                         },
-                         onEndEditing = () => {
-                         },
-                         isFocussed = false,
-                         autoCapitalize = 'sentences' // default from docs
-                     }) {
+    label,
+    labelWidth,
+    secureTextEntry = false,
+    onChangeText = () => {
+    },
+    value,
+    enabled = true,
+    placeholder = '',
+    keyboardType,
+    onClear = () => {
+    },
+    hasError = false,
+    errorMessage = 'Error',
+    backgroundColor,
+    onFocus = () => {
+    },
+    onEndEditing = () => {
+    },
+    isFocussed = false,
+    autoCapitalize = 'sentences' // default from docs
+}) {
     const theme = useTheme();
     const inputRef = useRef();
 

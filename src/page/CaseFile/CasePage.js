@@ -116,7 +116,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         console.log('failed to decode token', e);
     }
 
-    const {caseId, isEdit} = route.params;
+    const {caseId} = route.params;
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([]);
@@ -1608,6 +1608,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     patient={patient}
                     procedures={caseProcedures}
                     selectedTab={selectedTab}
+                    isEditMode={pageState.isEditMode}
                 />;
             case 'Medical Staff':
                 return <MedicalStaff

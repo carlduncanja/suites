@@ -32,15 +32,6 @@ const Patient = ({patient, procedures = [], selectedTab, isEditMode}) => {
         firstName = '',
         middleName = '',
         surname = '',
-        trn = '',
-        height = 0,
-        weight = 0,
-        bloodType = '',
-        dob = '',
-        gender = '',
-        ethnicity = '',
-        address = [],
-        contactInfo = {},
         insurance = {},
         medicalInfo = {},
         nextVisit = getDate(dates) || null
@@ -48,66 +39,37 @@ const Patient = ({patient, procedures = [], selectedTab, isEditMode}) => {
 
     const {diagnosis = [], risks = []} = medicalInfo;
 
-    const [fields, setFields] = useState({
-        firstName,
-        middleName,
-        surname,
-        trn,
-        height,
-        weight,
-        bloodType,
-        dob,
-        gender,
-        ethnicity,
-        contactInfo,
-        address,
-        risks,
-        diagnosis,
-        nextVisit
-    });
-
-    const onFieldChange = fieldName => value => {
-        console.log('fieldname.value', fieldName, value);
-        setFields({
-            ...fields,
-            [fieldName]: value
-        });
-    };
-
     return (
         selectedTab === 'Details' ?
-            isEditMode ?
-                <EditablePatientDetails
-                    fields = {fields}
-                    onFieldChange = {onFieldChange}
-                />
-                :
-                (
-                    <Details tabDetails={{
+            (
+                <Details
+                    tabDetails={{
                         ...patient,
                         nextVisit
                     }}
-                    />
-                )
-            :
+                    onUpdated={() => {
+                    }}
+                />
+            ) :
             selectedTab === 'Insurance' ?
-                <Insurance tabDetails = {{...insurance, patient: `${firstName} ${surname}`}}/>
-                :
-                selectedTab === 'Diagnosis' ?
                 (
-                    <Diagnosis
-                        tabDetails = {diagnosis}
-                        fields = {fields}
-                        isEditMode = {isEditMode}
+                    <Insurance tabDetails={{
+                        ...insurance,
+                        patient: `${firstName} ${surname}`
+                    }}
                     />
-                ) 
-                 :
+                ) :
+                selectedTab === 'Diagnosis' ?
+                    (
+                        <Diagnosis
+                            tabDetails={diagnosis}
+                            isEditMode={isEditMode}
+                        />
+                    ) :
                     (
                         <PatientRisk
                             tabDetails={risks}
                             isEditMode={isEditMode}
-                            fields={fields}
-                            onFieldChange={onFieldChange}
                         />
                     )
     );
