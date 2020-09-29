@@ -26,7 +26,7 @@ const CollapsibleParentListItemContainer = styled.View`
     background-color : ${ ({backgroundColor, theme}) => theme.colors[backgroundColor]};
 `;
 
-function CollapsibleListItemParentView ({hasCheckBox = true, isChecked = false, onCheckBoxPress = ()=>{}, collapse = ()=>{}, isCollapsed=false, render = ()=>{}, backgroundColor = 'default-shade-white'}){
+function CollapsibleListItemParentView ({hasCheckBox = true, isChecked = false, isIndeterminate = false, onCheckBoxPress = ()=>{}, collapse = ()=>{}, isCollapsed=false, render = ()=>{}, backgroundColor = 'default-shade-white'}){
 
     const theme = useTheme();
 
@@ -38,6 +38,7 @@ function CollapsibleListItemParentView ({hasCheckBox = true, isChecked = false, 
 
                     <CheckBoxComponent
                         isCheck={isChecked}
+                        isIndeterminate={isIndeterminate}
                         onPress={onCheckBoxPress}
                     />
 

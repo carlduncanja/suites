@@ -36,7 +36,7 @@ import {
 
 import {connect} from "react-redux";
 import {setEquipment} from "../../redux/actions/equipmentActions";
-import {getEquipment, getEquipmentTypes} from "../../api/network";
+import {getEquipment, getEquipmentTypes, removeEquipment, removeEquipmentTypes} from "../../api/network";
 
 import {withModal} from "react-native-modalfy";
 import {formatDate} from "../../utils/formatter";
@@ -50,6 +50,7 @@ import ListItem from "../../components/common/List/ListItem";
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 import {LONG_PRESS_TIMER} from '../../const';
+import ConfirmationComponent from "../../components/ConfirmationComponent";
 
 
 const QuantityWrapper = styled.View`
@@ -129,7 +130,7 @@ const Equipment = (props) => {
     const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [groupSelected, setGroupSelected] = useState({});
-    const [selectedChildEquipment, setSelectedChildEquipment] = useState({});
+
     const [totalPages, setTotalPages] = useState(1);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
@@ -137,14 +138,16 @@ const Equipment = (props) => {
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [groupNameSelected, setGroupNameSelected] = useState({});
-    const [shown, setisShown] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
     let groupNameChoice = {};
     const [assignments, setAssignments] = useState([]);
-    const [selectedEquipmentIds, setSelectedEquipmentIds] = useState([]);
+
+    const [selectedEquipments, setSelectedEquipments] = useState([]);
+    const [selectedChildEquipment, setSelectedChildEquipment] = useState({});
     const [selectedTypesIds, setSelectedTypesIds] = useState([]);
+
     const [equipmentTypes, setEquipmentTypes] = useState([]);
 
     const [expandedItems, setExpandedItems] = useState([])
@@ -214,20 +217,31 @@ const Equipment = (props) => {
         setGroupSelected(item);
         setSelectedTypesIds(updatedEquipmentList);
 
+        // remove selected child items
+        const removeChildren = selectedChildEquipment.filter(obj => obj.groupId !== _id);
+        setSelectedChildEquipment(removeChildren);
+
     };
 
-    const handleOnItemCheckboxPress = (item) => {
-        setSelectedChildEquipment(item);
-        const {_id} = item;
-        let updatedEquipments = [...selectedEquipmentIds];
+    const handleOnItemCheckboxPress = (equipmentItem) => {
+        setSelectedChildEquipment(equipmentItem);
+        const {_id, type} = equipmentItem;
+        //  let updatedEquipments = [...selectedEquipmentIds];
 
-        if (updatedEquipments.includes(_id)) {
-            updatedEquipments = updatedEquipments.filter((id) => id !== item._id);
-        } else {
-            updatedEquipments.push(item._id);
-        }
+        //  get equipment ids
+        const equipmentIds = selectedEquipments.map(variantObj => variantObj._id);
+        const updatedEquipmentIds = checkboxItemPress(equipmentItem, _id, equipmentIds);
 
-        setSelectedEquipmentIds(updatedEquipments);
+        //  set selected equipments
+        const updatedSelectedVariants = updatedEquipmentIds.map(_id => ({
+            _id,
+            groupId: type,
+            ...equipmentItem
+        }))
+        setSelectedEquipments(updatedSelectedVariants);
+
+        //  remove group
+        setSelectedTypesIds(selectedTypesIds.filter(id => id !== type))
     };
 
     const onCollapseView = (key) => {
@@ -291,6 +305,18 @@ const Equipment = (props) => {
         });
     };
 
+    const onRemoveGroups = () => {
+        openConfirmationScreen(() => removeEquipmentGroup(selectedEquipments))
+    }
+
+    const onRemoveItems = () => {
+        openConfirmationScreen(() => removeEquipmentItems(selectedChildEquipment))
+    }
+
+    const onRefresh = () => {
+        fetchEquipmentData(currentPagePosition);
+    }
+
     // ############# Helper functions
     const fetchEquipmentData = (pagePosition) => {
 
@@ -345,23 +371,13 @@ const Equipment = (props) => {
         const equipments = item.equipments || [];
         let assignments;
 
-
         assignments = equipments?.map(x => {
             return x?.assignments?.map(assigned => assigned)
         })
 
-
         let asArray = [];
-
-        //asArray = [[...equipments.map(x => x.assignments)]];
-
-
         const concatAssignments = [].concat.apply([], assignments);
 
-        //console.log("concat has", concatAssignments);
-
-
-        //const filtered = [...concatAssignments.filter(assigned => assigned.equipment === item._id)];
 
         const viewItem = {
             name: item.name,
@@ -372,14 +388,15 @@ const Equipment = (props) => {
             quantity: item.equipments.length,
             nextAvailable: new Date(2020, 12, 12),
         };
+        const isIndeterminate = selectedTypesIds.some(variant => variant.groupId === item._id)
 
 
         return (
             <CollapsibleListItem
                 hasCheckBox={true}
                 isChecked={selectedTypesIds.includes(item._id)}
+                isIndeterminate={isIndeterminate}
                 onCheckBoxPress={handleOnCheckBoxPress(item)}
-                // onItemPress={() => handleOnItemPress(item, false)}
                 onItemPress={() => gotoGroupDetails(item)}
                 collapsed={!expandedItems.includes(item.name)}
                 onCollapsedEnd={() => onCollapseView(item.name)}
@@ -388,7 +405,7 @@ const Equipment = (props) => {
                 }
             >
                 <FlatList
-                    data={renderChildView(equipments)}
+                    data={getEquipmentData(equipments)}
                     keyExtractor={(item, index) => "" + index}
                     ItemSeparatorComponent={() => (
                         <View
@@ -433,14 +450,13 @@ const Equipment = (props) => {
                         //setGroupNameSelected(viewItem);
 
                         return renderItemView(equipmentItem, addedInfo, pressItem, onActionPress);
-
                     }}
                 />
             </CollapsibleListItem>
         );
     };
 
-    const renderChildView = (equipments = []) => {
+    const getEquipmentData = (equipments = []) => {
         const assignmentGroupedEquipments = {};
 
         // console.log("render children equipments", equipments);
@@ -470,24 +486,20 @@ const Equipment = (props) => {
 
     const renderItemView = (item, addedInfo, actionItem, onActionPress) => {
         let {_id} = actionItem;
+        const ids = selectedEquipments.map(item => item._id);
         return (
             <Item
                 itemView={equipmentItemView(item, onActionPress)}
                 hasCheckBox={true}
-                isChecked={selectedEquipmentIds.includes(_id)}
+                isChecked={ids.includes(_id)}
                 onCheckBoxPress={() => handleOnItemCheckboxPress(actionItem)}
                 onItemPress={() => handleOnItemPress(actionItem, addedInfo, false, groupNameChoice)}
             />
         );
     };
 
-    const equipmentItemView = (
-        {assigmentName, quantity, status, dateAvailable, assignment},
-        onActionPress
-    ) => (
-
+    const equipmentItemView = ({assigmentName, quantity, status, dateAvailable, assignment}, onActionPress) => (
         <>
-
             <DataItem text={assigmentName} flex={.2} color="--color-blue-600" fontStyle="--text-sm-medium"/>
             <DataItem text={status} flex={.25} color="--color-gray-800" fontStyle="--text-sm-regular"/>
             <DataItem text={quantity} flex={.2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
@@ -498,8 +510,6 @@ const Equipment = (props) => {
                           fontStyle="--text-sm-regular"/>
             }
         </>
-
-
     );
 
     const gotoGroupDetails = (item) => {
@@ -538,35 +548,71 @@ const Equipment = (props) => {
 
     const gotoAssignEquipment = () => {
         modal.closeAllModals();
-        navigation.navigate("AssignEquipmentPage", {equipment: selectedChildEquipment, onCreated: handleDataRefresh});
+        const equipment = selectedEquipments[0];
+        navigation.navigate("AssignEquipmentPage", {equipment, onCreated: handleDataRefresh});
     }
 
     const getFabActions = () => {
+
+
+        const isGroupDeleteDisabled = !selectedTypesIds.length
+
         const deleteAction = (
-            <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} onLongPress={() => {
+            <View style={{
+                borderRadius: 6,
+                flex: 1,
+                overflow: 'hidden'
             }}>
-                <ActionItem
-                    title={"Hold to Delete"}
-                    icon={<WasteIcon/>}
-                    onPress={() => {
-                    }}
-                    touchable={false}
-                />
-            </LongPressWithFeedback>
+                <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} isDisabled={isGroupDeleteDisabled}
+                                       onLongPress={onRemoveGroups}>
+                    <ActionItem
+                        title={"Hold to Delete Group"}
+                        icon={<WasteIcon
+                            strokeColor={isGroupDeleteDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                        />}
+                        onPress={onRemoveGroups}
+                        touchable={false}
+                        disabled={isGroupDeleteDisabled}
+                    />
+                </LongPressWithFeedback>
+            </View>
         );
+
+        const isEquipmentItemDeleteDisabled = !selectedEquipments.length
+        const deleteEquipmentItemAction = (
+            <View style={{
+                borderRadius: 6,
+                flex: 1,
+                overflow: 'hidden'
+            }}>
+                <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} isDisabled={isEquipmentItemDeleteDisabled}
+                                       onLongPress={onRemoveGroups}>
+                    <ActionItem
+                        title={"Hold to Delete Equipment"}
+                        icon={<WasteIcon
+                            strokeColor={isEquipmentItemDeleteDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                        />}
+                        onPress={onRemoveItems}
+                        touchable={false}
+                        disabled={isEquipmentItemDeleteDisabled}
+                    />
+                </LongPressWithFeedback>
+            </View>
+        );
+
+        const isAssignDisabled = selectedEquipments.length !== 1;
         const assignEquipment = (
             <ActionItem
-                disabled={isEmpty(selectedChildEquipment) ? true : false}
-                touchable={isEmpty(selectedChildEquipment) ? false : true}
+                disabled={isAssignDisabled}
+                touchable={true}
                 title={"Assign Equipment"}
-                icon={<AssignIcon/>}
+                icon={<AssignIcon
+                    strokeColor={isAssignDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-blue-700']}
+                />}
                 onPress={gotoAssignEquipment}
             />
         );
-        const editGroup = (
-            <ActionItem title={"Edit Group"} icon={<EditIcon/>} onPress={() => {
-            }}/>
-        );
+
         const createEquipmentType = (
             <ActionItem
                 title={"Create Equipment Type"}
@@ -574,6 +620,7 @@ const Equipment = (props) => {
                 onPress={openEquipmentTypeDialog}
             />
         );
+
         const createEquipment = (
             <ActionItem
                 title={"Add Equipment"}
@@ -590,8 +637,8 @@ const Equipment = (props) => {
             <ActionContainer
                 floatingActions={[
                     deleteAction,
+                    deleteEquipmentItemAction,
                     assignEquipment,
-                    editGroup,
                     createEquipmentType,
                     createEquipment,
                 ]}
@@ -600,22 +647,27 @@ const Equipment = (props) => {
         );
     };
 
-    const openEquipmentDialog = () => {
-        modal.closeModals("ActionContainerModal");
-
-        // For some reason there has to be a delay between closing a modal and opening another.
-        setTimeout(() => {
-            modal.openModal("OverlayModal", {
-                content: (
-                    <CreateEquipmentDialog
-                        onCancel={() => setFloatingAction(false)}
-                        onCreated={(item) => handleOnItemPress(item, true)}
-                        equipmentTypes={equipmentTypes}
-                    />
-                ),
-                onClose: () => setFloatingAction(false),
-            });
-        }, 200);
+    const openConfirmationScreen = (callbackFn) => {
+        modal
+            .openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={true}
+                        onCancel={() => modal.closeModals('ConfirmationModal')}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            callbackFn()
+                        }}
+                        // onAction = { () => confirmAction()}
+                        message="Do you want to delete these item(s)?"
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                }
+            );
     };
 
     const openEquipmentTypeDialog = () => {
@@ -640,7 +692,80 @@ const Equipment = (props) => {
     // ############# Prepare list data
 
     let equipmentToDisplay = [...equipmentTypes];
-    // equipmentToDisplay = equipmentToDisplay.slice(currentPageListMin, currentPageListMax);
+
+    const removeEquipmentGroup = ids => {
+        removeEquipmentTypes(ids)
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            setTimeout(() => {
+                                modal.closeModals('ActionContainerModal');
+                                onRefresh();
+                            }, 200);
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                });
+                setSelectedEquipments([]);
+            })
+            .catch(_ => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+            })
+    }
+
+    const removeEquipmentItems = ids => {
+        removeEquipment(ids)
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            setTimeout(() => {
+                                modal.closeModals('ActionContainerModal');
+                                onRefresh();
+                            }, 200);
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                });
+                setSelectedEquipments([]);
+            })
+            .catch(_ => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+            })
+    }
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
 
     return (
         <NavPage

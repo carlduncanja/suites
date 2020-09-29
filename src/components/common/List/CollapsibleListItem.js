@@ -5,8 +5,8 @@ import Collapsible from 'react-native-collapsible';
 import CollapsibleListItemParentView from './CollapsibleListItemParentView';
 import PropTypes from 'prop-types';
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import CollapsibleListItemChildView from './CollapsibleListItemChildView';
 
 
@@ -24,31 +24,36 @@ import CollapsibleListItemChildView from './CollapsibleListItemChildView';
 
 const CollapsibleListItemWrapper = styled.View`
     width: 100%;
-    margin-bottom: ${ ({theme}) => theme.space['--space-12']};
+    margin-bottom: ${({theme}) => theme.space['--space-12']};
 `;
 const CollapsibleListItemContainer = styled.TouchableOpacity`
     display: flex;
     width: 100%;
     
     flex-direction: column;
-    border-radius: ${ ({theme, isCollapsed}) => theme.space['--space-8']};
-    border: ${ ({theme, isCollapsed}) => `${isCollapsed ? '1px': '1px'} solid ${theme.colors['--color-gray-300']}`};
-    //border-bottom-width : ${ ({isCollapsed}) => isCollapsed ===true ? 0 : null};
-    background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
+    border-radius: ${({theme, isCollapsed}) => theme.space['--space-8']};
+    border: ${({theme, isCollapsed}) => `${isCollapsed ? '1px' : '1px'} solid ${theme.colors['--color-gray-300']}`};
+    //border-bottom-width : ${({isCollapsed}) => isCollapsed === true ? 0 : null};
+    background-color: ${({theme}) => theme.colors['--default-shade-white']};
 `;
 
-function CollapsibleListItem ({
-        hasCheckBox = true,
-        isChecked = false,
-        onCheckBoxPress = ()=>{},
-        onItemPress = () => {},
-        childView,
-        collapsed = true,
-        onCollapsedEnd,
-        render = ()=>{},
-        children = ()=>{}  ,
-        backgroundColor,
-    }) {
+function CollapsibleListItem({
+                                 hasCheckBox = true,
+                                 isChecked = false,
+                                 isIndeterminate = false,
+                                 onCheckBoxPress = () => {
+                                 },
+                                 onItemPress = () => {
+                                 },
+                                 childView,
+                                 collapsed = true,
+                                 onCollapsedEnd,
+                                 render = () => {
+                                 },
+                                 children = () => {
+                                 },
+                                 backgroundColor,
+                             }) {
 
     const [isCollapsed, setCollapsed] = useState(collapsed);
     const theme = useTheme();
@@ -65,22 +70,23 @@ function CollapsibleListItem ({
 
     return (
 
-        <CollapsibleListItemWrapper theme = {theme}>
-            <CollapsibleListItemContainer theme = {theme} onPress = {() => onItemPress(collapse)} isCollapsed = {isCollapsed}>
+        <CollapsibleListItemWrapper theme={theme}>
+            <CollapsibleListItemContainer theme={theme} onPress={() => onItemPress(collapse)} isCollapsed={isCollapsed}>
                 <CollapsibleListItemParentView
-                    hasCheckBox = {hasCheckBox}
-                    isChecked = {isChecked}
-                    onCheckBoxPress = {onCheckBoxPress}
-                    collapse = {collapse}
-                    isCollapsed = {isCollapsed}
-                    render = {render}
-                    backgroundColor = {backgroundColor}
+                    hasCheckBox={hasCheckBox}
+                    isChecked={isChecked}
+                    isIndeterminate={isIndeterminate}
+                    onCheckBoxPress={onCheckBoxPress}
+                    collapse={collapse}
+                    isCollapsed={isCollapsed}
+                    render={render}
+                    backgroundColor={backgroundColor}
                 />
 
                 <CollapsibleListItemChildView
-                    isCollapsed = {isCollapsed}
+                    isCollapsed={isCollapsed}
                     onAnimationEnd={onCollapsedEnd}
-                    children = {children}
+                    children={children}
                 />
             </CollapsibleListItemContainer>
         </CollapsibleListItemWrapper>

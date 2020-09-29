@@ -116,7 +116,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         console.log('failed to decode token', e);
     }
 
-    const {caseId, isEdit} = route.params;
+    const {caseId} = route.params;
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([]);
@@ -394,9 +394,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         });
     };
 
-    const onAppointmentCreated = value => {
-        fetchCase(caseId);
-    };
+    const onAppointmentCreated = value => fetchCase(caseId);
+
+    const onPatientUpdated = data => fetchCase(caseId);
 
     /**
      * Displays floating actions
@@ -1611,6 +1611,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     patient={patient}
                     procedures={caseProcedures}
                     selectedTab={selectedTab}
+                    onPatientUpdated={onPatientUpdated}
+                    isEditMode={pageState.isEditMode}
                 />;
             case 'Medical Staff':
                 return <MedicalStaff

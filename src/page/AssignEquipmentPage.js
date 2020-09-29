@@ -90,7 +90,9 @@ const AssignEquipmentPage = ({ navigation, route, modal }) => {
     const { equipment, onCreated } = route.params;
     const currentTabs = ["Details"];
     const theme = useTheme();
-    const [equipmentData, setEquipmentData] = useState(testData);
+
+    const [equipmentData, setEquipmentData] = useState({});
+
     const [locations, setLocations] = useState([]);
     const [physicians, setPhysicians] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
