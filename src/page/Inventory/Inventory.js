@@ -773,8 +773,7 @@ function Inventory(props) {
                         }
                     }
                 );
-
-                setSelectedIds([]);
+                setSelectedVariants([]);
             })
             .catch(error => {
                 openErrorConfirmation();
