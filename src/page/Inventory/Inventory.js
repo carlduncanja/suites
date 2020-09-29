@@ -276,7 +276,6 @@ function Inventory(props) {
         const removeChildren = selectedVariants.filter(obj => obj.groupId !== _id);
         setSelectedVariants(removeChildren);
 
-
         // if (selectedIds.includes(_id)) {
         //     const removeChildren = selectedChildIds.filter(obj => obj.groupId !== _id);
         //     setSelectedChildIs(removeChildren);
@@ -414,7 +413,6 @@ function Inventory(props) {
         const variantIds = selectedVariants.map(variant => variant._id)
         openConfirmationScreen(() => removeVariantsCall(variantIds));
     };
-
 
     const openCreateInventoryModel = () => {
         modal.closeModals('ActionContainerModal');
@@ -723,9 +721,7 @@ function Inventory(props) {
     const removeGroupsCall = ids => {
         removeInventoryGroups(ids)
             .then(_ => {
-                modal.openModal(
-                    'ConfirmationModal',
-                    {
+                modal.openModal('ConfirmationModal', {
                         content: <ConfirmationComponent
                             isError={false}
                             isEditUpdate={false}
@@ -740,9 +736,7 @@ function Inventory(props) {
                         onClose: () => {
                             modal.closeModals('ConfirmationModal');
                         }
-                    }
-                );
-
+                    });
                 setSelectedIds([]);
             })
             .catch(error => {
@@ -793,7 +787,6 @@ function Inventory(props) {
                 setFloatingAction(false);
             });
     };
-
 
     const confirmAction = () => {
         modal.openModal(
