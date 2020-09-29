@@ -394,9 +394,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         });
     };
 
-    const onAppointmentCreated = value => {
-        fetchCase(caseId);
-    };
+    const onAppointmentCreated = value => fetchCase(caseId);
+
+    const onPatientUpdated = data => fetchCase(caseId);
 
     /**
      * Displays floating actions
@@ -1608,6 +1608,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     patient={patient}
                     procedures={caseProcedures}
                     selectedTab={selectedTab}
+                    onPatientUpdated={onPatientUpdated}
                     isEditMode={pageState.isEditMode}
                 />;
             case 'Medical Staff':

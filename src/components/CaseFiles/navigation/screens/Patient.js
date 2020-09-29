@@ -4,7 +4,14 @@ import moment from 'moment';
 import {SuitesContext} from '../../../../contexts/SuitesContext';
 import {Details, Diagnosis, Insurance, PatientRisk, EditablePatientDetails} from '../../OverlayPages/Patient';
 
-const Patient = ({patient, procedures = [], selectedTab, isEditMode}) => {
+const Patient = ({
+    patient,
+    procedures = [],
+    selectedTab,
+    onPatientUpdated = () => {
+    },
+    isEditMode
+}) => {
     const dates = procedures.map(item => {
         const {appointment} = item;
         const {startTime} = appointment;
@@ -47,8 +54,7 @@ const Patient = ({patient, procedures = [], selectedTab, isEditMode}) => {
                         ...patient,
                         nextVisit
                     }}
-                    onUpdated={() => {
-                    }}
+                    onUpdated={onPatientUpdated}
                 />
             ) :
             selectedTab === 'Insurance' ?

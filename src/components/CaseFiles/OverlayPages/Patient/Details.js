@@ -4,15 +4,45 @@ import moment from 'moment';
 import {useModal, withModal} from 'react-native-modalfy';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
+import {MenuOption, MenuOptions} from 'react-native-popup-menu';
 import BMIConverter from '../../BMIConverter';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../common/Information Record/RecordStyles';
 import ResponsiveRecord from '../../../common/Information Record/ResponsiveRecord';
 import PatientBMIChart from '../../PatientBMIChart';
 import {formatDate, calcAge, handleNumberValidation, formatNumber, isValidEmail} from '../../../../utils/formatter';
 import Row from '../../../common/Row';
-import {MenuOption, MenuOptions} from 'react-native-popup-menu';
 import Record from '../../../common/Information Record/Record';
 import {PageContext} from '../../../../contexts/PageContext';
+import ConfirmationComponent from '../../../ConfirmationComponent';
+import {updatePatient} from '../../../../api/network';
+
+const bmiScale = [
+    {
+        color: '#4299E1',
+        startValue: 0,
+        endValue: 18.4
+    },
+    {
+        color: '#48BB78',
+        startValue: 18.5,
+        endValue: 24.9
+    },
+    {
+        color: '#ED8936',
+        startValue: 25,
+        endValue: 29.9
+    },
+    {
+        color: '#E53E3E',
+        startValue: 30,
+        endValue: 34.9
+    },
+    {
+        color: '#805AD5',
+        startValue: 35,
+        endValue: 100
+    }
+];
 
 const itemWidth = `${100 / 3}%`;
 
@@ -22,15 +52,6 @@ const Details = ({
     }
 }) => {
     const theme = useTheme();
-    const modal = useModal();
-
-    const baseStateRef = useRef();
-
-    const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode} = pageState;
-
-    const [isLoading, setLoading] = useState(false);
-    const [isUpdated, setUpdated] = useState(false);
 
     const Divider = styled.View`
         height : 1px;
@@ -40,33 +61,98 @@ const Details = ({
         margin-bottom : ${theme.space['--space-20']};
     `;
 
-    const bmiScale = [
-        {
-            color: '#4299E1',
-            startValue: 0,
-            endValue: 18.4
-        },
-        {
-            color: '#48BB78',
-            startValue: 18.5,
-            endValue: 24.9
-        },
-        {
-            color: '#ED8936',
-            startValue: 25,
-            endValue: 29.9
-        },
-        {
-            color: '#E53E3E',
-            startValue: 30,
-            endValue: 34.9
-        },
-        {
-            color: '#805AD5',
-            startValue: 35,
-            endValue: 100
+    const modal = useModal();
+
+    const baseStateRef = useRef();
+
+    const {_id: patientId} = tabDetails;
+    const [fields, setFields] = useState({});
+
+    const {pageState, setPageState} = useContext(PageContext);
+    const {isEditMode} = pageState;
+
+    const [isLoading, setLoading] = useState(false);
+    const [isUpdated, setUpdated] = useState(false);
+
+    const onTabUpdated = fields => setFields({...fields});
+
+    useEffect(() => {
+        if (isUpdated && !isEditMode) {
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false} // boolean to show whether to show an error icon or a success icon
+                        isEditUpdate={true}
+                        onCancel={() => {
+                            // resetState()
+                            setPageState({
+                                ...pageState,
+                                isEditMode: true
+                            });
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            updatePatientAction();
+                        }}
+                        message="Do you want to save changes?" // general message you can send to be displayed
+                        action="Yes"
+                    />
+                ),
+                onClose: () => console.log('Modal closed'),
+            });
         }
-    ];
+    }, [isEditMode]);
+
+    const updatePatientAction = () => {
+        const data = {...fields};
+
+        setLoading(true);
+        updatePatient(patientId, data)
+            .then(_ => {
+                onUpdated(data);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false} // boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => modal.closeAllModals()}
+                            message="Changes were successful." // general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => console.log('Modal closed'),
+                });
+            })
+            .catch(error => {
+                console.log('Failed to update Patient', error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                resetState();
+                            }}
+                            message="Something went wrong when applying changes."//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => console.log('Modal closed'),
+                });
+            })
+            .finally(_ => {
+                setLoading(false);
+            });
+    };
+
+    const resetState = () => {
+        setFields(baseStateRef.current);
+        setUpdated(false);
+    };
 
     const handleBMIPress = value => {
         modal.openModal('OverlayInfoModal', {
@@ -76,10 +162,6 @@ const Details = ({
             />
         });
     };
-
-    const separateNumber = number => number.toString()
-        .match(/\d{1,3}/g)
-        .join(' ');
 
     const DemographicData = () => {
         const {firstName, middleName, surname, height, weight, dob, trn, gender, ethnicity, bloodType, nextVisit} = tabDetails;
@@ -118,16 +200,14 @@ const Details = ({
             };
         }, []);
 
-        const resetState = () => {
-            setFields(baseStateRef.current);
-            setUpdated(false);
-        };
-
         const onFieldChange = fieldName => value => {
-            setFields({
+            const updatedFields = {
                 ...fields,
                 [fieldName]: value
-            });
+            };
+
+            setFields(updatedFields);
+            onTabUpdated(updatedFields);
             setUpdated(true);
         };
 

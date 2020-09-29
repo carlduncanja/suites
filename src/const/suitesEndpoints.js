@@ -88,3 +88,6 @@ export const updatePurchaseOrderDetailsEndpoint = id => `/purchase_orders/${id}`
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/items';
 export const createCategoryEndpoint = '/categories/items';
+
+// ##### PATIENTS
+export const patientEndpoint = id => `/patients/${id}`;

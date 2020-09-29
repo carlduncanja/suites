@@ -57,8 +57,12 @@ import {
     assignEquipmentToLocation,
     users,
     createCategoryEndpoint,
-    updateEquipmentEndpoint, purchaseOrdersArchiveEndpoint,
-    updatePurchaseOrderDetailsEndpoint, user, roles
+    updateEquipmentEndpoint,
+    purchaseOrdersArchiveEndpoint,
+    updatePurchaseOrderDetailsEndpoint,
+    user,
+    roles,
+    patientEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink } from '../const/documentGenerationEndpoints';
 
@@ -88,7 +92,7 @@ export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .catch(handleError);
 
 export const updateUserCall = async (userId, updateData) => suitesAxiosInstance
-    .put(user(userId),  updateData)
+    .put(user(userId), updateData)
     .then(handleResponse)
     .catch(handleError);
 
@@ -97,8 +101,8 @@ export const getRolesCall = async (query, page, max) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-export const deleteUserCall = async (userIds) => suitesAxiosInstance
-    .delete(users,{data: {ids: userIds}})
+export const deleteUserCall = async userIds => suitesAxiosInstance
+    .delete(users, {data: {ids: userIds}})
     .then(handleResponse)
     .catch(handleError);
 
@@ -202,7 +206,6 @@ export const removeInventoryVariants = async ids => suitesAxiosInstance
     .delete(inventoriesEndpoint, {data: {ids}})
     .then(handleResponse)
     .catch(handleError);
-
 
 export const getInventoryVariantByGroup = async (id, groupId) => suitesAxiosInstance
     .get(inventoryGroupVariant(groupId, id))
@@ -563,6 +566,12 @@ export const removePurchaseOrders = async data => suitesAxiosInstance
 
 export const archivePurchaseOrders = async data => suitesAxiosInstance
     .delete(purchaseOrdersArchiveEndpoint, { data })
+    .then(handleResponse)
+    .catch(handleError);
+
+// ################# Patients Endpoints
+export const updatePatient = async (id, data) => suitesAxiosInstance
+    .put(patientEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
 
