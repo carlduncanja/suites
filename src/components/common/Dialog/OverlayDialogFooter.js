@@ -23,7 +23,7 @@ const OverlayFooterWrapper = styled.TouchableOpacity`
   width : 100%;
   position : absolute;
   bottom:0;
-  z-index : 3,
+  z-index : 3;
 `;
 
 const OverlayFooterContainer = styled.View`
@@ -42,7 +42,7 @@ const OverlayFooterContainer = styled.View`
 const FooterText = styled.Text( ({theme}) =>({
   ...theme.font['--text-base-bold'],
   color: theme.colors['--color-blue-600'],
-  marginRight : 10
+  marginRight : 10,
 }));
 
 

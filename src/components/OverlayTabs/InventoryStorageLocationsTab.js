@@ -10,6 +10,7 @@ import ContentDataItem from '../common/List/ContentDataItem';
 import Footer from '../common/Page/Footer';
 import TransferItemDialog from '../Inventory/TransferItemDialog';
 import TransferIcon from "../../../assets/svg/transferIcon";
+import AddIcon from '../../../assets/svg/addIcon';
 import ActionItem from "../common/ActionItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
 import { useModal } from 'react-native-modalfy';
@@ -38,7 +39,7 @@ const storageHeader = [
     }
 ]; 
 
-function InventoryStorageLocationsTab({
+function InventoryStorageLocationsTab({ 
         selectedVariant = {},
         groupId = ""
     }) {
@@ -83,6 +84,20 @@ function InventoryStorageLocationsTab({
         }, 200)
     }
 
+    const handleAddLocation = () =>{
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal('OverlayModal',
+                {
+                    content: <AddLocationDialog
+                        onCreated = {()=>{setFloatingAction(false)}}
+                        onCancel={() => setFloatingAction(false)}
+                    />,
+                    onClose: () => setFloatingAction(false)
+            })
+        }, 200)
+    }
+
     const handleOnSelectAll = () => {
         let updatedLocationsList = selectAll(storageLocations, selectedItems);
         setSelectedItems(updatedLocationsList)
@@ -101,6 +116,12 @@ function InventoryStorageLocationsTab({
     const floatingActions = () =>{
         let isDisabled = selectedItems.length === 1 ? false : true;
         
+        const addLocation = <ActionItem
+            title={"Add Location"}
+            icon={<AddIcon/>}
+            onPress={() => handleAddLocation()}
+        />
+
         const itemTransfer = 
             <ActionItem
                 title={"Item Transfer"}
@@ -113,7 +134,7 @@ function InventoryStorageLocationsTab({
 
         return <ActionContainer
             floatingActions={[
-                // deleteItem,
+                addLocation,
                 itemTransfer,
             ]}
             title={"INVENTORY ACTIONS"}

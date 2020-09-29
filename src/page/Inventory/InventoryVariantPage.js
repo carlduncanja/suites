@@ -122,7 +122,7 @@ function InventoryVariantPage({ route, navigation }){
                     onUpdateItem = {()=>fetchVariant(groupId,_id)}
                     // isEditMode={isEditMode}
                     // fields = {fields}
-                    // errorFields = {errorFields}
+                    // errorFields = {errorFields} 
                     // onFieldChange = {onFieldChange}
                 />;
 

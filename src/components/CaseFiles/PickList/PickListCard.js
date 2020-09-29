@@ -5,8 +5,70 @@ import Button from "../../common/Buttons/Button";
 import Table from "../../common/Table/Table"
 import Paginator from '../../common/Paginators/Paginator';
 import {useNextPaginator,usePreviousPaginator} from '../../../helpers/caseFilesHelpers';
+import OverlayDialog from "../../common/Dialog/OverlayDialog";
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import OverlayDialogHeader from "../../common/Dialog/OverlayDialogHeader";
+import DialogTabs from "../../common/Dialog/DialogTabs";
+ 
 
-const PickListCard = (props) =>{
+const CardWrapper = styled.View`
+    flex : 1;
+    width : 624px;
+`;
+const CardContainer = styled.View`
+    display : flex;
+    width : 100%;
+    position : relative;
+    border-radius: 8px;
+    background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
+`;
+
+const CardFooterWrapper = styled.View`
+  height : 57px;
+  width : 100%;
+  position : absolute;
+  bottom:0;
+  right : 16;
+  z-index : 3;
+`;
+
+const CardFooterContainer = styled.View`
+  height: 100%;
+  width: 100%;
+  flex-direction : row;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+const TabsContainer = styled.View`
+    height : 46px;
+    justify-content : flex-end;
+    background-color: ${ ({theme}) => theme.colors['--color-gray-200']};
+`;
+
+const TableContainer = styled.View`
+    height :276px;
+    margin: ${ ({theme}) => theme.space['--space-16']};
+    border : ${ ({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
+    border-radius : 8px;
+    padding:16px;
+`
+
+const CardContentWrapper = styled.View`
+    width : 100%;
+    height : 400px;
+`;
+
+const PaginatorContainer = styled.View`
+    height : 32px;
+    width : 122px;
+    border : ${ ({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
+    border-radius : 4px;
+`;
+
+
+const PickListCard = (props) =>{ 
 
     const {
         title,
@@ -51,8 +113,9 @@ const PickListCard = (props) =>{
             amount : 10
         },
     ]
+    const theme = useTheme();
     const recordsPerPage = 5
-    const dataLength = testData.length
+    const dataLength = data.length
     const totalPages = Math.ceil(dataLength/recordsPerPage)
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1)
@@ -77,97 +140,151 @@ const PickListCard = (props) =>{
         }
     };
 
-    let dataToDisplay = [...testData]
+    let dataToDisplay = [...data]
     dataToDisplay = dataToDisplay.slice(currentPageListMin,currentPageListMax)
 
     return(
-        <View style={styles.container}>
-            <View style={styles.headerContainer}>
-                <Text>{title}</Text>
-                <TouchableOpacity onPress={()=>closeModal()} style={{alignItems:'flex-end'}}>
-                    <SvgIcon iconName = "searchExit" strokeColor="#718096"/>
-                </TouchableOpacity>
-            </View>
 
-            {
-                tabs && <View style={styles.tabContainer}>
-                    {
-                        tabs.map((tab,index)=>{
-                            return (
-                                <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null, height: 30, width: 150}]} key={index}>
-                                    <Button
-                                        backgroundColor = {tab === selectedTab ? "#FFFFFF" : null}
-                                        color = {tab === selectedTab ? "#3182CE" : "#A0AEC0" }
-                                        buttonPress = {()=>{onPressTab(tab)}}
-                                        title = {tab}
-                                    />
-                                </View>
-                            )
-                        })
-                    }
-                </View>
-            }
+        <CardWrapper>
+            <CardContainer theme = {theme}>
 
-
-
-            <View style={styles.list}>
-                <Table
-                    data = {dataToDisplay}
-                    currentListMin = {currentPageListMin}
-                    currentListMax = {currentPageListMax}
-                    listItemFormat = {listItemFormat}
-                    headers = {headers}
-                    isCheckbox = {isCheckBox}
+                <OverlayDialogHeader
+                    title = "Picklist"
+                    onClose = {closeModal}
                 />
-            </View>
 
-            {
-                isEditMode ?
-                    <View style={{marginLeft:20, marginRight:20, justifyContent:'space-between', flexDirection:'row'}}>
-                        <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
+                <CardFooterWrapper>
+                    <CardFooterContainer>
+
+                        <PaginatorContainer>
                             <Paginator
                                 currentPage = {currentPagePosition}
                                 totalPages = {totalPages}
                                 goToNextPage = {goToNextPage}
                                 goToPreviousPage = {goToPreviousPage}
+                                hasNumberBorder = {false}
                             />
-                        </View>
-                        <View style={styles.buttonStyle}>
-                            <Button
-                                backgroundColor = "#F8FAFB"
-                                title = 'DONE'
-                                buttonPress = {onEditDone}
-                                color = "#4299E1"
-                            />
-                        </View>
+                        </PaginatorContainer>
+                        
+                    </CardFooterContainer>
+                </CardFooterWrapper> 
 
-                    </View>
-                    :
-                    <View style={{alignItems:'flex-start', justifyContent:'flex-start'}}>
-                        <View style={styles.paginationContainer}>
-                            <Paginator
-                                currentPage = {currentPagePosition}
-                                totalPages = {totalPages}
-                                goToNextPage = {goToNextPage}
-                                goToPreviousPage = {goToPreviousPage}
-                            />
-                        </View>
-                    </View>
-            }
+                <CardContentWrapper>
+                    <TabsContainer theme = {theme}>
+                        <DialogTabs
+                            tabs = {tabs}
+                            tab = {selectedTab}
+                            onTabPress = {onPressTab}
+                        />
+                    </TabsContainer>
+                    
 
-            {
-                hasFooter &&
-                <View style={styles.footer}>
-                    <Button
-                        backgroundColor = "#FFFFFF"
-                        title = {footerTitle}
-                        buttonPress = {onFooterPress}
-                        color = "#4299E1"
-                    />
-                </View>
-            }
+                    <TableContainer theme = {theme}>
+                        <Table
+                            data = {dataToDisplay}
+                            currentListMin = {currentPageListMin}
+                            currentListMax = {currentPageListMax}
+                            listItemFormat = {listItemFormat}
+                            headers = {headers}
+                            isCheckbox = {isCheckBox}
+                        />
+                    </TableContainer>
 
-        </View>
+                </CardContentWrapper>
+
+            </CardContainer>
+        </CardWrapper>
+
+
+        // <View style={styles.container}>
+        //     <View style={styles.headerContainer}>
+        //         <Text>{title}</Text>
+        //         <TouchableOpacity onPress={()=>closeModal()} style={{alignItems:'flex-end'}}>
+        //             <SvgIcon iconName = "searchExit" strokeColor="#718096"/>
+        //         </TouchableOpacity>
+        //     </View>
+
+        //     {
+        //         tabs && <View style={styles.tabContainer}>
+        //             {
+        //                 tabs.map((tab,index)=>{
+        //                     return (
+        //                         <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null, height: 30, width: 150}]} key={index}>
+        //                             <Button
+        //                                 backgroundColor = {tab === selectedTab ? "#FFFFFF" : null}
+        //                                 color = {tab === selectedTab ? "#3182CE" : "#A0AEC0" }
+        //                                 buttonPress = {()=>{onPressTab(tab)}}
+        //                                 title = {tab}
+        //                             />
+        //                         </View>
+        //                     )
+        //                 })
+        //             }
+        //         </View>
+        //     }
+
+
+
+        //     <View style={styles.list}>
+        //         <Table
+        //             data = {dataToDisplay}
+        //             currentListMin = {currentPageListMin}
+        //             currentListMax = {currentPageListMax}
+        //             listItemFormat = {listItemFormat}
+        //             headers = {headers}
+        //             isCheckbox = {isCheckBox}
+        //         />
+        //     </View>
+
+        //     {
+        //         isEditMode ?
+        //             <View style={{marginLeft:20, marginRight:20, justifyContent:'space-between', flexDirection:'row'}}>
+        //                 <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
+        //                     <Paginator
+        //                         currentPage = {currentPagePosition}
+        //                         totalPages = {totalPages}
+        //                         goToNextPage = {goToNextPage}
+        //                         goToPreviousPage = {goToPreviousPage}
+        //                     />
+        //                 </View>
+        //                 <View style={styles.buttonStyle}>
+        //                     <Button
+        //                         backgroundColor = "#F8FAFB"
+        //                         title = 'DONE'
+        //                         buttonPress = {onEditDone}
+        //                         color = "#4299E1"
+        //                     />
+        //                 </View>
+
+        //             </View>
+        //             :
+        //             <View style={{alignItems:'flex-start', justifyContent:'flex-start'}}>
+        //                 <View style={styles.paginationContainer}>
+        //                     <Paginator
+        //                         currentPage = {currentPagePosition}
+        //                         totalPages = {totalPages}
+        //                         goToNextPage = {goToNextPage}
+        //                         goToPreviousPage = {goToPreviousPage}
+        //                     />
+        //                 </View>
+        //             </View>
+        //     }
+
+        //     {
+        //         hasFooter &&
+        //         <View style={styles.footer}>
+        //             <Button
+        //                 backgroundColor = "#FFFFFF"
+        //                 title = {footerTitle}
+        //                 buttonPress = {onFooterPress}
+        //                 color = "#4299E1"
+        //             />
+        //         </View>
+        //     }
+
+        // </View>
+    
+    
     )
 }
 
