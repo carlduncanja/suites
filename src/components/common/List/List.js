@@ -6,8 +6,8 @@ import ListData from './ListData';
 import {SuitesContext} from '../../../contexts/SuitesContext';
 import {useCheckBox} from '../../../helpers/caseFilesHelpers';
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 
 /**
  * @param listData array of objects
@@ -32,16 +32,19 @@ const ListContainer = styled.View`
 `;
 
 function List({
-        listData = [],
-        listHeaders = [],
-        itemsSelected = [],
-        listItemFormat = () => {},
-        onRefresh = () => {},
-        refreshing = false,
-        onSelectAll = () =>{},
-        isCheckbox = false,
-        keyExtractor = (item) => ((item?.id || "") || (item?._id || "")) + new Date().getTime()
-    }){
+                  listData = [],
+                  listHeaders = [],
+                  itemsSelected = [],
+                  listItemFormat = () => {
+                  },
+                  onRefresh = () => {
+                  },
+                  refreshing = false,
+                  onSelectAll = () => {
+                  },
+                  isCheckbox = false,
+                  keyExtractor = (item) => ((item?.id || "") || (item?._id || "")) + new Date().getTime()
+              }) {
 
     const theme = useTheme()
 
@@ -61,13 +64,14 @@ function List({
                 />
 
                 <FlatList
-                    data={listData}
+                    style={{height: '100%'}}
                     nestedScrollEnabled={true}
+                    data={listData}
                     renderItem={({item}) => listItemFormat(item)}
                     keyExtractor={keyExtractor}
                     onRefresh={onRefresh}
                     refreshing={refreshing}
-                    contentContainerStyle={{height:'100%'}}
+                    contentContainerStyle={{paddingBottom: 100}}
                     keyboardShouldPersistTaps={'always'}
                 />
             </ListContainer>
