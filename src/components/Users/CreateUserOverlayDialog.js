@@ -11,6 +11,7 @@ import {MenuOption, MenuOptions} from "react-native-popup-menu";
 import {getRolesCall, registrationCall} from "../../api/network";
 import ConfirmationComponent from "../ConfirmationComponent";
 import {useModal} from "react-native-modalfy";
+import jwtDecode from "jwt-decode";
 
 
 const DialogContent = styled.View`
@@ -55,8 +56,6 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
     const modal = useModal();
 
     const [createUserFields, setCreateUserFields] = useState({
-        email: "",
-        password: "",
         role: {},
     })
 
@@ -149,7 +148,6 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
 
         registrationCall(data)
             .then(data => {
-                onCreated(data);
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -164,6 +162,12 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                         }
                     }
                 );
+
+                setTimeout(() => {
+                    const user = getUserFromToken(data.token)
+                    onCreated(user);
+                }, 200)
+
             })
             .catch(error => {
                 console.log("Failed to register user");
@@ -193,6 +197,22 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
             })
     }
 
+    const getUserFromToken = (userToken) => {
+        try {
+            const userInfo = jwtDecode(userToken);
+            return {
+                ...userInfo,
+                _id: userInfo['user_id'],
+                role: {
+                    _id: userInfo['role_id'],
+                    name: userInfo['role_name']
+                }
+            }
+        } catch (e) {
+            return false
+        }
+    }
+
     return (
         <OverlayDialog
             title={"New Location"}
@@ -212,6 +232,7 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                                 <InputField2
                                     label={'First Name'}
                                     labelWidth={120}
+                                    value={createUserFields['first_name']}
                                     onChangeText={onFieldChange('first_name')}
                                     onClear={onFieldChange('first_name')}
                                     hasError={!!fieldErrors['first_name']}
@@ -223,6 +244,7 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                                 <InputField2
                                     label={'Last Name'}
                                     labelWidth={120}
+                                    value={createUserFields['last_name']}
                                     onChangeText={onFieldChange('last_name')}
                                     onClear={onFieldChange('last_name')}
                                     hasError={!!fieldErrors['last_name']}
@@ -235,6 +257,7 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                                 <InputField2
                                     label={'Email'}
                                     labelWidth={120}
+                                    value={createUserFields['email']}
                                     onChangeText={onFieldChange('email')}
                                     onClear={onFieldChange('email')}
                                     hasError={!!fieldErrors['email']}
@@ -253,7 +276,8 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                                     menuOption={(
                                         <MenuOptions>
                                             {
-                                                roles?.map(item => <MenuOption key={item._id} value={item} text={item.name}/>)
+                                                roles?.map(item => <MenuOption key={item._id} value={item}
+                                                                               text={item.name}/>)
                                             }
                                         </MenuOptions>
                                     )}
@@ -266,6 +290,7 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                                 <InputField2
                                     label={'Password'}
                                     labelWidth={120}
+                                    value={createUserFields['password']}
                                     secureTextEntry={true}
                                     keyboardType={'password'}
                                     onClear={onFieldChange('password')}
@@ -279,6 +304,7 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                                 <InputField2
                                     label={'Confirm Password'}
                                     labelWidth={120}
+                                    value={createUserFields['confirm_password']}
                                     secureTextEntry={true}
                                     keyboardType={'confirm_password'}
                                     onClear={onFieldChange('confirm_password')}

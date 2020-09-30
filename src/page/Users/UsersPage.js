@@ -1,19 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from "react-native"
+import {View} from "react-native"
 import {useTheme} from "emotion-theming"
-import PropTypes from 'prop-types';
 import NavPage from "../../components/common/Page/NavPage";
 import {useModal} from "react-native-modalfy";
 import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import ListItem from "../../components/common/List/ListItem";
 import {deleteUserCall, getUsersCall} from "../../api/network";
-import styled from '@emotion/native';
+import jwtDecode from 'jwt-decode';
 import DataItem from "../../components/common/List/DataItem";
 import EditIcon from "../../../assets/svg/editIcon";
 import IconButton from "../../components/common/Buttons/IconButton";
-import ActionIcon from "../../../assets/svg/dropdownIcon";
-import CollapsedIcon from "../../../assets/svg/closeArrow";
 import ContentDataItem from "../../components/common/List/ContentDataItem";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import {LONG_PRESS_TIMER} from "../../const";
@@ -21,7 +18,6 @@ import ActionItem from "../../components/common/ActionItem";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import ConfirmationComponent from "../../components/ConfirmationComponent";
 import AddIcon from "../../../assets/svg/addIcon";
-import CreateTheatreDialogContainer from "../../components/Theatres/CreateTheatreDialogContainer";
 import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDialog";
 import {useNavigation} from "@react-navigation/native"
 import _ from "lodash";
@@ -214,7 +210,9 @@ function UsersPage() {
                 content: (
                     <CreateUserOverlayDialog
                         onCreated={(user) => {
-                            fetchUsers(currentPagePosition)
+                            //fetchUsers(currentPagePosition)
+                            addUserToState(user);
+                            onItemPress(user)();
                             setFloatingAction(false)
                         }}
                         onCancel={() => setFloatingAction(false)}
@@ -379,6 +377,9 @@ function UsersPage() {
             })
     };
 
+    const addUserToState = (user) => {
+        setUsers([user, ...users])
+    }
 
     // endregion
 
