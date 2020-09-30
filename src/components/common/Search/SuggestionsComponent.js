@@ -33,13 +33,13 @@ const SuggestionsComponentContainer = styled.View`
     height: 100%;
     width: 100%;
     justify-content: flex-start;
-`; 
+`;
 
 function SuggestionsComponent({
     isSuggestionsOpen = false,
     matchesToDisplay = [],
     currentListMin = 0,
-    openSearchResult = () => { },
+    onSuggestionSelected = () => { },
     getPreviousResults = () => { },
     getNextResults = () => { }
 }) {
@@ -48,7 +48,9 @@ function SuggestionsComponent({
     const theme = useTheme();
     // STYLED COMPONENTS
 
-   
+    console.log(matchesToDisplay);
+
+
     return (
 
 
@@ -58,7 +60,7 @@ function SuggestionsComponent({
 
                 <SuggestionsMatchesComponent
                     matchesToDisplay={matchesToDisplay}
-                    openSearchResult={openSearchResult}
+                    onSuggestionPress={onSuggestionSelected}
                 />
 
                 {/* <SuggestionsControllerComponent

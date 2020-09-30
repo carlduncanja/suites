@@ -127,6 +127,8 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
     const handleOnSearchResultSelected = (selectedIndex) => {
         const selectedAppointment = searchResults[selectedIndex];
         onSearchResultSelected(selectedAppointment);
+
+        console.log("result selected", selectedIndex);
     };
 
     const handleOnSearchClose = () => {

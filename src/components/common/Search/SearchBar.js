@@ -50,7 +50,7 @@ function SearchBar(props) {
         if (matchesFound.length > 0) setSuggestionsOpen(true)
     }, [matchesFoundLength]);
 
-    const openSearchResult = (suggestion, selectedIndex) => {
+    const handleOnResultPress = (selectedIndex) => {
         console.log("selected search result");
         onResultSelected(selectedIndex)
     };
@@ -76,8 +76,7 @@ function SearchBar(props) {
         }
     };
 
-    let matchesToDisplay = [...matchesFound]
-    matchesToDisplay = matchesFound.slice(currentListMin, currentListMax)
+    let matchesToDisplay = matchesFound.slice(currentListMin, currentListMax)
     // STYLED COMPONENTS
 
 
@@ -102,7 +101,7 @@ function SearchBar(props) {
                 <SuggestionsComponent
                     isSuggestionsOpen={suggestionsOpen}
                     matchesToDisplay={matchesToDisplay}
-                    openSearchResult={openSearchResult}
+                    onSuggestionSelected={handleOnResultPress}
                 />
 
             </SearchBarContainer>

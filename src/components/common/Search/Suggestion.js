@@ -28,98 +28,24 @@ const SuggestionText = styled.Text( ({theme}) => ({
 }))
 
 function Suggestion({
-    openSearchResult = () => { }, 
+    onPress = () => { },
     suggestion = {},
-    index
 }) {
 
 
     const theme = useTheme();
-    // STYLED COMPONENTS
-
-
 
     return (
-
-        <SuggestionWrapper theme = {theme}>
+        <SuggestionWrapper onPress={onPress} theme = {theme}>
             <SuggestionContainer>
-
                 <SuggestionText theme = {theme}>
                     {(suggestion) instanceof Date ?
-                        formatDate(suggestion, "MMMM D, YYYY")
-                        :
-                        suggestion
+                        formatDate(suggestion, "MMMM D, YYYY") : suggestion
                     }
                 </SuggestionText>
-
             </SuggestionContainer>
         </SuggestionWrapper>
-
-
     )
 };
+
 export default Suggestion
-
-const styles = StyleSheet.create({
-    matchesFoundContainer: {
-        borderBottomLeftRadius: 12,
-        borderBottomRightRadius: 12,
-        backgroundColor: '#FAFAFA',
-        paddingBottom: 15,
-        height: 250
-    },
-    matchContainer: {
-        padding: 10,
-        paddingLeft: 18,
-        paddingRight: 18
-    },
-    matchText: {
-        fontSize: 16,
-        color: '#4E5664'
-    },
-    buttons: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: "center",
-        alignItems: 'flex-end'
-    },
-    buttonContainer: {
-        height: 28,
-        width: 97,
-        borderColor: '#E3E8EF',
-        borderRadius: 4,
-        borderWidth: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    sectionContainer: {
-        paddingRight: 24,
-        paddingLeft: 24,
-    },
-    separatorStyle: {
-        borderBottomColor: '#CBD5E0',
-        marginTop: 12,
-        marginBottom: 12,
-        borderBottomWidth: 1,
-    },
-    dateContainer: {
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-    },
-    dateLabelContainer: {
-        // backgroundColor: 'rgba(247, 250, 252, 1)',
-        backgroundColor: '#FFFFFF',
-        borderBottomColor: '#718096',
-        borderBottomWidth: 1,
-        paddingBottom: 5,
-        marginBottom: 10,
-        paddingTop: 24,
-        height: 50,
-    },
-    dateLabel: {
-        fontWeight: 'bold',
-        fontSize: 14,
-        color: '#4E5664'
-    },
-
-})

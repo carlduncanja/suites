@@ -1,16 +1,16 @@
-import React, { Component, useState, useEffect, useRef, useContext } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Animated, SectionList } from 'react-native';
+import React, {Component, useState, useEffect, useRef, useContext} from 'react';
+import {View, StyleSheet, TouchableOpacity, Text, Animated, SectionList} from 'react-native';
 import SearchInput from './SearchInput'
-import { scheduleActions } from '../../../redux/reducers/scheduleReducer';
-import { ScheduleContext } from '../../../contexts/ScheduleContext';
+import {scheduleActions} from '../../../redux/reducers/scheduleReducer';
+import {ScheduleContext} from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../Buttons/Button';
 import moment from 'moment';
 import ScheduleItem from '../../Schedule/ScheduleItem';
-import { formatDate } from '../../../utils/formatter';
+import {formatDate} from '../../../utils/formatter';
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import Suggestion from './Suggestion';
 
 const SuggestionsMatchesComponentWrapper = styled.View`
@@ -26,15 +26,19 @@ const SuggestionsMatchesComponentContainer = styled.View`
 `;
 
 function SuggestionsMatchesComponent({
-    matchesToDisplay = [],
-    openSearchResult = () => { }
-}) {
+                                         matchesToDisplay = [],
+                                         onSuggestionPress = () => {
+                                         }
+                                     }) {
 
 
     const theme = useTheme();
     // STYLED COMPONENTS
 
-    
+    const handleOnSuggestionPress = (index) => () => {
+        onSuggestionPress(index);
+    }
+
     return (
 
         <SuggestionsMatchesComponentWrapper>
@@ -44,7 +48,7 @@ function SuggestionsMatchesComponent({
                         .map((suggestion, index) => {
                             return (
                                 <Suggestion
-                                    openSearchResult={openSearchResult}
+                                    onPress={handleOnSuggestionPress(index)}
                                     suggestion={suggestion}
                                     index={index}
                                 />
