@@ -14,7 +14,7 @@ export const handleNumberValidation = (value, maxLength = 0) => {
 
 export const formatTrn = value => value.replace(/(\d{3})(\d{3})(\d{3})/, '$1-$2-$3');
 
-export const formatNumber = value => value.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+export const formatPhoneNumber = value => value.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
 
 export const isValidDOB = date => moment(date)
     .isBefore(new Date());
@@ -52,3 +52,5 @@ export const calcAge = dob => {
     }
     return age;
 };
+
+export const checkObjectProperty = (object, key) => object && key in object && object[key] !== undefined && object[key] !== null;

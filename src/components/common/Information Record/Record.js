@@ -60,8 +60,10 @@ const InputWrapper = styled.View`
 `;
 
 function Record({
+    useDefaultRecordValue = true,
+    recordPlaceholder = '--',
     recordTitle = '',
-    recordValue = '--',
+    recordValue = useDefaultRecordValue ? recordPlaceholder : '',
     titleStyle = '--text-xs-medium',
     valueStyle = '--text-base-regular',
     titleColor = '--color-gray-600',
@@ -82,6 +84,7 @@ function Record({
     useDropdown = false,
     useSearchable = false,
     keyboardType = 'default',
+    autoCapitalize = 'sentences',
     onClearValue = () => {
     },
     onRecordUpdate = () => {
@@ -107,7 +110,7 @@ function Record({
                         valueColor={valueColor}
                         valueStyle={valueStyle}
                     >
-                        {recordValue || '--'}
+                        {recordValue}
                     </ValueText>
                 }
 
@@ -185,6 +188,7 @@ function Record({
                             enabled={editable}
                             onClear={onClearValue}
                             keyboardType={keyboardType}
+                            autoCapitalize={autoCapitalize}
                         />
                     </InputWrapper>
 
