@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import _ from "lodash";
-import { searchSchedule } from "../../../api/network";
-import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
+import {searchSchedule} from "../../../api/network";
+import {StyleSheet, View, TouchableWithoutFeedback} from "react-native";
 import SearchBar from "./SearchBar";
-import { formatDate } from "../../../utils/formatter";
+import {formatDate} from "../../../utils/formatter";
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import ShadowContainerComponent from '../ShadowContainerComponent';
 
 /**
@@ -36,7 +36,8 @@ display: flex;
 width: 100%;
 height: 100%;
 `;
-function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose }) {
+
+function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}) {
 
     const matchesFound = [
         "Coronary Bypass Graft",
@@ -108,12 +109,12 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
     const pressNextSearchResult = () => {
         currentSearchPosition < matchesFound &&
-            setCurrentSearchPosition(currentSearchPosition + 1)
+        setCurrentSearchPosition(currentSearchPosition + 1)
     };
 
     const pressPreviousSearchResult = () => {
         currentSearchPosition > 0 &&
-            setCurrentSearchPosition(currentSearchPosition - 1)
+        setCurrentSearchPosition(currentSearchPosition - 1)
     };
 
     const pressNewSearch = () => {
@@ -124,11 +125,16 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
         onSearchClose();
     };
 
+    const handleOnClearSearch = () => {
+        setSearchResult([])
+        setSearchInput('')
+    }
+
     const handleOnSearchResultSelected = (selectedIndex) => {
         const selectedAppointment = searchResults[selectedIndex];
         onSearchResultSelected(selectedAppointment);
 
-        console.log("result selected", selectedIndex);
+        handleOnClearSearch()
     };
 
     const handleOnSearchClose = () => {
@@ -155,13 +161,12 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
     // STYLED COMPONENTS
 
 
-
     return (
         isOpen ?
             <ScheduleSearchWrapper>
                 <SearchContainer>
                     {/* Background Shadow View*/}
-                    <ShadowContainerComponent isOpen={isOpen} />
+                    <ShadowContainerComponent isOpen={isOpen}/>
                     <SearchBar
                         closeSearch={handleOnSearchClose}
                         changeText={searchChangeText}
@@ -178,7 +183,7 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
             </ScheduleSearchWrapper>
 
             :
-            <View />
+            <View/>
     );
 }
 

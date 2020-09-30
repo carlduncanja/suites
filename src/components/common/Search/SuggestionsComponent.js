@@ -16,23 +16,21 @@ import SuggestionsMatchesComponent from './SuggestionsMatchesComponent';
 import SuggestionsControllerComponent from './SuggestionsControllerComponent';
 
 const SuggestionsComponentWrapper = styled.View`
-    height: 200px;
     width: 100%;
     margin: 0;
+    
     padding-bottom: ${ ({theme}) => theme.space['--space-10']};
     padding-top: ${ ({theme}) => theme.space['--space-10']};
     padding-left: ${ ({theme}) => theme.space['--space-14']};
     padding-right: ${ ({theme}) => theme.space['--space-14']};
     border-bottom-left-radius: 12px; 
     border-bottom-right-radius: 12px;
-    background-color: ${ ({theme}) => theme.colors['--color-neutral-gray-100']};
+    background-color: ${({ theme }) => theme.colors['--color-neutral-gray-200']};
 `;
 
 const SuggestionsComponentContainer = styled.View`
     display: flex;
-    height: 100%;
     width: 100%;
-    justify-content: flex-start;
 `;
 
 function SuggestionsComponent({

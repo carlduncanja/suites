@@ -15,14 +15,11 @@ import Suggestion from './Suggestion';
 
 const SuggestionsMatchesComponentWrapper = styled.View`
     margin: 0;
-    height: 180px;
+    //height: 180px;
 `;
 
 const SuggestionsMatchesComponentContainer = styled.View`
     display: flex;
-    height: 100%;
-    width: 100%;
-    /* justify-content: space-between; */
 `;
 
 function SuggestionsMatchesComponent({
