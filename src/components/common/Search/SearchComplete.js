@@ -6,8 +6,8 @@ import SvgIcon from '../../../../assets/SvgIcon';
 import LeftSelector from '../../../../assets/svg/leftSelector';
 import RightSelector from '../../../../assets/svg/rightSelector';
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import IconButton from '../Buttons/IconButton';
 import SearchInputContainer from './SearchInputContainer';
 import MatchesFoundComponent from './MatchesFound';
@@ -15,39 +15,34 @@ import Button from '../Buttons/Button';
 
 const SearchCompleteWrapper = styled.View`
     margin : 0 ;
-    width : 64px;
-    height: 100%;
-    justify-content: center;
-`;
-
-const SearchCompleteontainer = styled.View`
-    
-    width: 100%;
-    flex-direction:row;
-    background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
-    border-width: 1px;
-    border-color: ${ ({theme}) => theme.colors['--color-gray-300']};
+    width : 55px;
+    height: 26px;
     border-radius: 6px;
-    align-items:center;
     justify-content: center;
+    align-items:center;
+    
+    border-color: ${({theme}) => theme.colors['--color-gray-300']};
+    border-width: 1px;
+    background-color: ${({theme}) => theme.colors['--color-gray-100']};
 `;
 
-function SearchComplete({onSubmit = ()=>{} }){
+function SearchComplete({
+                            onSubmit = () => {
+                            }
+                        }) {
 
     const theme = useTheme();
 
     return (
 
         <SearchCompleteWrapper>
-            <SearchCompleteontainer theme = {theme}>
-                <Button
-                    buttonPress = {onSubmit}
-                    color = {theme.colors['--accent-button']}
-                    title = "DONE"
-                />
-            </SearchCompleteontainer>
+            <Button
+                buttonPress={onSubmit}
+                color={theme.colors['--accent-button']}
+                title="Done"
+            />
         </SearchCompleteWrapper>
-  
+
     )
 }
 

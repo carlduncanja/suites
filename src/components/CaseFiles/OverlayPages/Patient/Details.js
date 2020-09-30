@@ -9,7 +9,7 @@ import BMIConverter from '../../BMIConverter';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../common/Information Record/RecordStyles';
 import ResponsiveRecord from '../../../common/Information Record/ResponsiveRecord';
 import PatientBMIChart from '../../PatientBMIChart';
-import {formatDate, calcAge, handleNumberValidation, formatNumber, isValidEmail} from '../../../../utils/formatter';
+import {formatDate, calcAge, handleNumberValidation, formatPhoneNumber, isValidEmail, checkObjectProperty} from '../../../../utils/formatter';
 import Row from '../../../common/Row';
 import Record from '../../../common/Information Record/Record';
 import {PageContext} from '../../../../contexts/PageContext';
@@ -74,7 +74,7 @@ const Details = ({
     const [isLoading, setLoading] = useState(false);
     const [isUpdated, setUpdated] = useState(false);
 
-    const onTabUpdated = fields => setFields({...fields});
+    const onTabUpdated = updatedFields => setFields({...fields, ...updatedFields});
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {
@@ -84,11 +84,12 @@ const Details = ({
                         isError={false} // boolean to show whether to show an error icon or a success icon
                         isEditUpdate={true}
                         onCancel={() => {
-                            // resetState()
+                            // resetState();
                             setPageState({
                                 ...pageState,
                                 isEditMode: true
                             });
+                            setUpdated(false);
                             modal.closeAllModals();
                         }}
                         onAction={() => {
@@ -111,6 +112,7 @@ const Details = ({
         updatePatient(patientId, data)
             .then(_ => {
                 onUpdated(data);
+                setUpdated(false);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -161,6 +163,11 @@ const Details = ({
                 bmiScale={bmiScale}
             />
         });
+    };
+
+    const defaultRecordValue = (object, key, defaultValue) => {
+        const isPropertyValueValid = checkObjectProperty(object, key);
+        return isPropertyValueValid ? object[key] : defaultValue || '--';
     };
 
     const DemographicData = () => {
@@ -223,7 +230,7 @@ const Details = ({
                     {/* I concede; fields attributes not being instantiated like EVERYWHERE else so I give up. 'fields.<attribute>' || '<attribute>' defaulting it is */}
                     <Record
                         recordTitle="First Name"
-                        recordValue={fields.firstName || firstName}
+                        recordValue={defaultRecordValue(fields, 'firstName', firstName)}
                         onClearValue={() => onFieldChange('firstName')('')}
                         onRecordUpdate={onFieldChange('firstName')}
                         editMode={isEditMode}
@@ -232,7 +239,7 @@ const Details = ({
 
                     <Record
                         recordTitle="Middle Name"
-                        recordValue={fields.middleName || middleName}
+                        recordValue={defaultRecordValue(fields, 'middleName', middleName)}
                         onClearValue={() => onFieldChange('middleName')('')}
                         onRecordUpdate={onFieldChange('middleName')}
                         editMode={isEditMode}
@@ -241,7 +248,7 @@ const Details = ({
 
                     <Record
                         recordTitle="Surname"
-                        recordValue={fields.surname || surname}
+                        recordValue={defaultRecordValue(fields, 'surname', surname)}
                         onClearValue={() => onFieldChange('surname')('')}
                         onRecordUpdate={onFieldChange('surname')}
                         editMode={isEditMode}
@@ -253,7 +260,7 @@ const Details = ({
 
                     <Record
                         recordTitle="Height"
-                        recordValue={fields.height || height}
+                        recordValue={defaultRecordValue(fields, 'height', height)}
                         onClearValue={() => onFieldChange('height')('')}
                         onRecordUpdate={onFieldChange('height')}
                         editMode={isEditMode}
@@ -263,7 +270,7 @@ const Details = ({
 
                     <Record
                         recordTitle="Weight"
-                        recordValue={fields.weight || weight}
+                        recordValue={defaultRecordValue(fields, 'weight', weight)}
                         onClearValue={() => onFieldChange('weight')('')}
                         onRecordUpdate={onFieldChange('weight')}
                         editMode={isEditMode}
@@ -287,21 +294,21 @@ const Details = ({
                 <Row>
                     <Record
                         recordTitle="Date of Birth"
-                        recordValue={isEditMode ? (fields.dob || dob) : dateOfBirth}
+                        recordValue={isEditMode ? defaultRecordValue(fields, 'dob', dob) : dateOfBirth}
                         editMode={isEditMode}
                         editable={true}
                         useDateField={true}
                         maxDate={new Date()}
                         onClearValue={() => onFieldChange('dob')('')}
-                        onRecordUpdate={(date) => onFieldChange('dob')(date)}
+                        onRecordUpdate={date => onFieldChange('dob')(date)}
                     />
                     <Record
                         recordTitle="TRN"
-                        recordValue={fields.trn || trn}
+                        recordValue={defaultRecordValue(fields, 'trn', trn)}
                         onClearValue={() => onFieldChange('trn')('')}
                         onRecordUpdate={value => {
                             const val = handleNumberValidation(value, 9);
-                            if (val) onFieldChange('trn')(val);
+                            if (val || val === '') onFieldChange('trn')(val);
                         }}
                         editMode={isEditMode}
                         editable={true}
@@ -309,7 +316,7 @@ const Details = ({
                     />
                     <Record
                         recordTitle="Gender"
-                        recordValue={fields.gender || gender}
+                        recordValue={defaultRecordValue(fields, 'gender', gender)}
                         editMode={isEditMode}
                         editable={true}
                         useDropdown={true}
@@ -326,7 +333,7 @@ const Details = ({
                 <Row>
                     <Record
                         recordTitle="Ethnicity"
-                        recordValue={fields.ethnicity || ethnicity}
+                        recordValue={defaultRecordValue(fields, 'ethnicity', ethnicity)}
                         editMode={isEditMode}
                         editable={true}
                         useDropdown={true}
@@ -344,7 +351,7 @@ const Details = ({
                     />
                     <Record
                         recordTitle="Blood Type"
-                        recordValue={fields.bloodType || bloodType}
+                        recordValue={defaultRecordValue(fields, 'bloodType', bloodType)}
                         editMode={isEditMode}
                         editable={true}
                         useDropdown={true}
@@ -372,78 +379,126 @@ const Details = ({
     };
 
     const ContactData = () => {
-        const {contactInfo = {}, address = []} = tabDetails;
+        const {contactInfo = {}, address: addresses = []} = tabDetails;
         const {phones = [], emails = []} = contactInfo;
-        const emailTypes = ['primary', 'other', 'work'];
-        const phoneTypes = ['cell', 'home', 'work'];
-        let phone = '';
-        let title = '';
-        let email = '';
 
-        // const updatePhone = (newValue, phoneType) => {
-        //     const objIndex = phoneValue.findIndex(obj => obj.type === phoneType);
-        //     const updatedObj = {...phoneValue[objIndex], phone: newValue};
-        //     const updatedPhones = [
-        //         ...phoneValue.slice(0, objIndex),
-        //         updatedObj,
-        //         ...phoneValue.slice(objIndex + 1),
-        //     ];
-        //     setPhoneValue(updatedPhones);
-        //     return updatedPhones;
-        // };
-        //
-        // const updateEmail = (newValue, emailType) => {
-        //     const objIndex = emailValue.findIndex(obj => obj.type === emailType);
-        //     const updatedObj = {...emailValue[objIndex], email: newValue};
-        //     const updatedEmails = [
-        //         ...emailValue.slice(0, objIndex),
-        //         updatedObj,
-        //         ...emailValue.slice(objIndex + 1),
-        //     ];
-        //     setEmailValue(updatedEmails);
-        //     return updatedEmails;
-        // };
-        //
-        // const handlePhoneChange = (number, phoneType) => {
-        //     const formattedNumber = number.replace(/\s/g, '');
-        //     const updatedPhones = updatePhone(formatNumber(formattedNumber), phoneType);
-        //
-        //     if (number === '') {
-        //         onFieldChange('phones')(updatePhone('', phoneType));
-        //     } else if (/^\d{10}$/g.test(formattedNumber) || !number) {
-        //         onFieldChange('phones')(updatedPhones);
-        //     }
-        // };
-        //
-        // const handleEmailChange = (email, emailType) => {
-        //     const updatedEmails = updateEmail(email, emailType);
-        //
-        //     if (email === '') {
-        //         onFieldChange('emails')(updatedEmails);
-        //     } else if (isValidEmail(email) || !email) {
-        //         onFieldChange('emails')(updatedEmails);
-        //     }
-        // };
-        //
-        // const updatedAddress = (value, key, id) => {
-        //     const objIndex = addresses.findIndex(obj => obj._id === id);
-        //     let updatedObj = {};
-        //     if (key === 'line1') {
-        //         updatedObj = {...addresses[objIndex], line1: value};
-        //     } else {
-        //         updatedObj = {...addresses[objIndex], line2: value};
-        //     }
-        //
-        //     const updatedAddress = [
-        //         ...addresses.slice(0, objIndex),
-        //         updatedObj,
-        //         ...addresses.slice(objIndex + 1),
-        //     ];
-        //     setAddresses(updatedAddress);
-        //
-        //     onFieldChange('address')(updatedAddress);
-        // };
-        //
+        const [fields, setFields] = useState({
+            phones,
+            emails
+        });
+
+        const handlePhones = () => {
+            const cellPhone = phones.find(p => p.type === 'cell');
+            const homePhone = phones.find(p => p.type === 'home');
+            const workPhone = phones.find(p => p.type === 'work');
+
+            return [
+                {
+                    type: 'cell',
+                    phone: cellPhone ? cellPhone.phone : ''
+                },
+                {
+                    type: 'home',
+                    phone: homePhone ? homePhone.phone : ''
+                },
+                {
+                    type: 'work',
+                    phone: workPhone ? workPhone.phone : ''
+                }
+            ];
+        };
+
+        const handleEmails = () => {
+            const primaryEmail = emails.find(e => e.type === 'primary');
+            const otherEmail = emails.find(e => e.type === 'other');
+            const workEmail = emails.find(e => e.type === 'work');
+
+            return [
+                {
+                    type: 'primary',
+                    phone: primaryEmail ? primaryEmail.email : ''
+                },
+                {
+                    type: 'other',
+                    phone: otherEmail ? otherEmail.email : ''
+                },
+                {
+                    type: 'work',
+                    phone: workEmail ? workEmail.email : ''
+                }
+            ];
+        };
+
+        const handleAddresses = () => (addresses.length ? [...addresses] : [
+            {
+                line1: '',
+                line2: ''
+            }
+        ]);
+
+        const [phoneValues, setPhoneValues] = useState(handlePhones());
+        const [emailValues, setEmailValues] = useState(handleEmails());
+        const [addressValues, setAddressValues] = useState(handleAddresses());
+
+        const onFieldChange = fieldName => value => {
+            const updatedFields = {
+                ...fields,
+                [fieldName]: value
+            };
+
+            setFields(updatedFields);
+            onTabUpdated({
+                contactInfo: updatedFields,
+                address: addressValues
+            });
+            setUpdated(true);
+        };
+
+        const updatePhone = (newValue, phoneType) => {
+            const updatedPhones = [...phoneValues];
+            updatedPhones.map(p => {
+                if (p.type === phoneType) p.phone = newValue;
+            });
+
+            setPhoneValues(updatedPhones);
+            return updatedPhones;
+        };
+
+        const updateEmail = (newValue, emailType) => {
+            const updatedEmails = [...emailValues];
+            updatedEmails.map(e => {
+                if (e.type === emailType) e.email = newValue;
+            });
+
+            setEmailValues(updatedEmails);
+            return updatedEmails;
+        };
+
+        const updateAddress = (value, key, id) => {
+            const updatedAddresses = [...addressValues];
+            updatedAddresses.map(addressObj => {
+                if (addressObj._id === id) addressObj[key] = value;
+            });
+
+            setAddressValues(updatedAddresses);
+            onFieldChange('address')(updatedAddresses);
+        };
+
+        const handlePhoneChange = (number, phoneType) => {
+            const formattedNumber = number.replace(/\s/g, ''); // remove whitespaces
+            const updatedPhones = updatePhone(formattedNumber, phoneType);
+
+            if (number === '') onFieldChange('phones')(updatePhone('', phoneType));
+            else if (/^\d+$/g.test(formattedNumber) || !number) onFieldChange('phones')(updatedPhones);
+        };
+
+        const handleEmailChange = (email, emailType) => {
+            const updatedEmails = updateEmail(email, emailType);
+
+            if (email === '') onFieldChange('emails')(updatedEmails);
+            else if (isValidEmail(email) || !email) onFieldChange('emails')(updatedEmails);
+        };
+
         // const handleEmergency = (value, key, contactIndex) => {
         //     const objIndex = emergencyContacts.findIndex((ob, index) => index === contactIndex);
         //     let updatedObj = {};
@@ -518,127 +573,336 @@ const Details = ({
         //     setEmergencyContacts(updatedContacts);
         // };
 
+        // Patient Phone Values
+        const cellPhoneObj = phones.find(p => p.type === 'cell');
+        const homePhoneObj = phones.find(p => p.type === 'home');
+        const workPhoneObj = phones.find(p => p.type === 'work');
+
+        const cellPhoneRecordValue = cellPhoneObj ? cellPhoneObj.phone : '';
+        const homePhoneRecordValue = homePhoneObj ? homePhoneObj.phone : '';
+        const workPhoneRecordValue = workPhoneObj ? workPhoneObj.phone : '';
+
+        // an unhealthy way of setting defaults (if edit value (phoneValue) is an empty string, still set it, otherwise, set the value currently pulled from the backend
+        const editCellPhoneValue = phoneValues.find(p => p.type === 'cell').phone === '' ?
+            phoneValues.find(p => p.type === 'cell').phone :
+            phoneValues.find(p => p.type === 'cell').phone || cellPhoneRecordValue;
+
+        const editHomePhoneValue = phoneValues.find(p => p.type === 'home').phone === '' ?
+            phoneValues.find(p => p.type === 'home').phone :
+            phoneValues.find(p => p.type === 'home').phone || homePhoneRecordValue;
+
+        const editWorkPhoneValue = phoneValues.find(p => p.type === 'work').phone === '' ?
+            phoneValues.find(p => p.type === 'work').phone :
+            phoneValues.find(p => p.type === 'work').phone || workPhoneRecordValue;
+
+        // Patient Email Values
+        const primaryEmailObj = emails.find(e => e.type === 'primary');
+        const otherEmailObj = emails.find(e => e.type === 'other');
+        const workEmailObj = emails.find(e => e.type === 'work');
+
+        const primaryEmailRecordValue = primaryEmailObj ? primaryEmailObj.email : '';
+        const otherEmailRecordValue = otherEmailObj ? otherEmailObj.email : '';
+        const workEmailRecordValue = workEmailObj ? workEmailObj.email : '';
+
+        // an unhealthy way of setting defaults (if edit value (emailValue) is an empty string, still set it, otherwise, set the value currently pulled from the backend
+        const editPrimaryEmailValue = emailValues.find(e => e.type === 'primary').email === '' ?
+            emailValues.find(e => e.type === 'primary').email :
+            emailValues.find(e => e.type === 'primary').email || primaryEmailRecordValue;
+
+        const editOtherEmailValue = emailValues.find(e => e.type === 'other').email === '' ?
+            emailValues.find(e => e.type === 'other').email :
+            emailValues.find(e => e.type === 'other').email || otherEmailRecordValue;
+
+        const editWorkEmailValue = emailValues.find(e => e.type === 'work').email === '' ?
+            emailValues.find(e => e.type === 'work').email :
+            emailValues.find(e => e.type === 'work').email || workEmailRecordValue;
+
         return (
             <>
                 <Row>
                     {
-                        phoneTypes.map((item, index) => {
-                            const phoneArray = phones.filter(phone => phone.type === item);
-                            phoneArray.length === 0 ? phone = '' : phone = phoneArray[0].phone;
+                        isEditMode ? (
+                            <Record
+                                recordTitle="Cell Phone Number"
+                                recordValue={editCellPhoneValue}
+                                onClearValue={() => handlePhoneChange('', 'cell')}
+                                onRecordUpdate={value => {
+                                    const val = handleNumberValidation(value, 10);
+                                    if (val || val === '') handlePhoneChange(value, 'cell');
+                                }}
+                                editMode={isEditMode}
+                                editable={true}
+                                keyboardType="number-pad"
+                            />
+                        ) : (
+                            <ResponsiveRecord
+                                recordTitle="Cell Phone Number"
+                                recordValue={formatPhoneNumber(cellPhoneRecordValue)}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
+                    }
 
-                            item === 'cell' ? title = 'Cell Phone Number' :
-                                item === 'home' ? title = 'Home Phone Number' :
-                                    item === 'work' ? title = 'Work Phone Number' :
-                                        title = 'Other Phone Number';
+                    {
+                        isEditMode ? (
+                            <Record
+                                recordTitle="Home Phone Number"
+                                recordValue={editHomePhoneValue}
+                                onClearValue={() => handlePhoneChange('', 'home')}
+                                onRecordUpdate={value => {
+                                    const val = handleNumberValidation(value, 10);
+                                    if (val || val === '') handlePhoneChange(value, 'home');
+                                }}
+                                editMode={isEditMode}
+                                editable={true}
+                                keyboardType="number-pad"
+                            />
+                        ) : (
+                            <ResponsiveRecord
+                                recordTitle="Home Phone Number"
+                                recordValue={formatPhoneNumber(homePhoneRecordValue)}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
+                    }
 
-                            return (
-                                <ResponsiveRecord
-                                    key={index}
-                                    recordTitle={title}
-                                    recordValue={phone}
-                                    handleRecordPress={() => {
-                                    }}
-                                />
-                            );
-
-                            // return isEditMode ?
-                            //     (
-                            //         <Record
-                            //             recordTitle={title}
-                            //             recordValue={formatNumber(phone)}
-                            //             editMode={isEditMode}
-                            //             editable={true}
-                            //         />
-                            //     ) :
-                            //     (
-                            //         <ResponsiveRecord
-                            //             key={index}
-                            //             recordTitle={title}
-                            //             recordValue={phone}
-                            //             handleRecordPress={() => {
-                            //             }}
-                            //         />
-                            //     );
-                        })
+                    {
+                        isEditMode ? (
+                            <Record
+                                recordTitle="Work Phone Number"
+                                recordValue={editWorkPhoneValue}
+                                onClearValue={() => handlePhoneChange('', 'work')}
+                                onRecordUpdate={value => {
+                                    const val = handleNumberValidation(value, 10);
+                                    if (val || val === '') handlePhoneChange(value, 'work');
+                                }}
+                                editMode={isEditMode}
+                                editable={true}
+                                keyboardType="number-pad"
+                            />
+                        ) : (
+                            <ResponsiveRecord
+                                recordTitle="Work Phone Number"
+                                recordValue={formatPhoneNumber(workPhoneRecordValue)}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
                     }
                 </Row>
 
                 <Row>
                     {
-                        emailTypes.map((item, index) => {
-                            const emailArray = emails.filter(email => email.type === item);
-                            emailArray.length === 0 ? email = '' : email = emailArray[0].email;
+                        isEditMode ? (
+                            <Record
+                                recordTitle="Primary Email"
+                                recordValue={editPrimaryEmailValue}
+                                onClearValue={() => handleEmailChange('', 'primary')}
+                                onRecordUpdate={value => handleEmailChange(value, 'primary')}
+                                editMode={isEditMode}
+                                editable={true}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                            />
+                        ) : (
+                            <ResponsiveRecord
+                                recordTitle="Primary Email"
+                                recordValue={primaryEmailRecordValue}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
+                    }
 
-                            item === 'primary' ? title = 'Primary Email' :
-                                item === 'other' ? title = 'Alternate Email' :
-                                    item === 'work' ? title = 'Work Email' :
-                                        title = 'Other';
+                    {
+                        isEditMode ? (
+                            <Record
+                                recordTitle="Alternate Email"
+                                recordValue={editOtherEmailValue}
+                                onClearValue={() => handleEmailChange('', 'other')}
+                                onRecordUpdate={value => handleEmailChange(value, 'other')}
+                                editMode={isEditMode}
+                                editable={true}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                            />
+                        ) : (
+                            <ResponsiveRecord
+                                recordTitle="Alternate Email"
+                                recordValue={otherEmailRecordValue}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
+                    }
 
-                            return (
-
-                                <ResponsiveRecord
-                                    key={index}
-                                    recordTitle={title}
-                                    recordValue={email}
-                                    handleRecordPress={() => {
-                                    }}
-                                />
-                            );
-                        })
+                    {
+                        isEditMode ? (
+                            <Record
+                                recordTitle="Work Email"
+                                recordValue={editWorkEmailValue}
+                                onClearValue={() => handleEmailChange('', 'work')}
+                                onRecordUpdate={value => handleEmailChange(value, 'work')}
+                                editMode={isEditMode}
+                                editable={true}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                            />
+                        ) : (
+                            <ResponsiveRecord
+                                recordTitle="Work Email"
+                                recordValue={workEmailRecordValue}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
                     }
                 </Row>
 
-                {address.map((item, index) => (
-                    <Row key={index}>
-                        <View style={{flex: 2}}>
-                            <PersonalRecord
-                                recordTitle="Address 1"
-                                recordValue={item.line1}
-                            />
-                        </View>
+                {
+                    isEditMode ? (
+                        addressValues.map((item, index) => (
+                            <Row key={index}>
+                                <View style={{flex: 2}}>
+                                    <Record
+                                        recordTitle="Address 1"
+                                        recordValue={item.line1}
+                                        onClearValue={() => updateAddress('', 'line1', item._id)}
+                                        onRecordUpdate={value => updateAddress(value, 'line1', item._id)}
+                                        editMode={isEditMode}
+                                        editable={true}
+                                    />
+                                </View>
 
-                        <PersonalRecord
-                            recordTitle="Address 2"
-                            recordValue={item.line2}
-                        />
-                    </Row>
-                ))}
+                                <Record
+                                    recordTitle="Address 2"
+                                    recordValue={item.line2}
+                                    onClearValue={() => updateAddress('', 'line2', item._id)}
+                                    onRecordUpdate={value => updateAddress(value, 'line2', item._id)}
+                                    editMode={isEditMode}
+                                    editable={true}
+                                />
+                            </Row>
+                        ))
+                    ) : (
+                        addresses.map((item, index) => (
+                            <Row key={index}>
+                                <View style={{flex: 2}}>
+                                    <PersonalRecord
+                                        recordTitle="Address 1"
+                                        recordValue={item.line1}
+                                    />
+                                </View>
 
+                                <PersonalRecord
+                                    recordTitle="Address 2"
+                                    recordValue={item.line2}
+                                />
+                            </Row>
+                        ))
+                    )
+                }
             </>
         );
     };
 
     const EmergencyData = () => {
         const {contactInfo = {}} = tabDetails;
-        const {emergencyContact = []} = contactInfo;
+        const {emergencyContact: emergencyContacts = []} = contactInfo;
+
+        const [fields, setFields] = useState({emergencyContact: emergencyContacts});
+
+        const handleEmergencyContacts = () => (emergencyContacts.length ? [...emergencyContacts] : [
+            {
+                email: '',
+                name: '',
+                phone: '',
+                relation: ''
+            }
+        ]);
+
+        const [emergencyContactsValues, setEmergencyContactsValues] = useState(handleEmergencyContacts());
+
         return (
             <>
-                {emergencyContact.map((contact, index) => {
-                    const {relation = '', email = '', phone = '', name = 'Coleen Brown'} = contact;
-                    return (
-                        <Row key={index}>
-                            <PersonalRecord
-                                recordTitle="Emergency Contact Name"
-                                recordValue={`${name} (${relation})`}
-                            />
+                {
+                    isEditMode ? (
+                        emergencyContactsValues.map((contact, index) => {
+                            const {relation = '', email = '', phone = '', name = ''} = contact;
+                            return (
+                                <React.Fragment key={index}>
+                                    <Row>
+                                        <Record
+                                            recordTitle={`Emergency Contact ${index + 1}'s Name`}
+                                            recordValue={name}
+                                            // onClearValue={() => handleEmergency('', 'name', index)}
+                                            // onRecordUpdate={value => handleEmergency(value, 'name', index)}
+                                            editMode={isEditMode}
+                                            editable={true}
+                                        />
 
-                            <ResponsiveRecord
-                                recordTitle="Emergency Contact Phone"
-                                recordValue={phone}
-                                handleRecordPress={() => {
-                                }}
-                            />
+                                        <Record
+                                            recordTitle={`Emergency Contact ${index + 1}'s Relation`}
+                                            recordValue={relation}
+                                            // onClearValue={() => handleEmergency('', 'relation', index)}
+                                            // onRecordUpdate={value => handleEmergency(value, 'relation', index)}
+                                            editMode={isEditMode}
+                                            editable={true}
+                                        />
+                                    </Row>
 
-                            <ResponsiveRecord
-                                recordTitle="Emergency Contact Email"
-                                recordValue={email}
-                                handleRecordPress={() => {
-                                }}
-                            />
+                                    <Row>
+                                        <Record
+                                            recordTitle={`Emergency Contact ${index + 1}'s Phone Number`}
+                                            recordValue={phone}
+                                            // onClearValue={() => handleEmergency('', 'phone', index)}
+                                            // onRecordUpdate={value => handleEmergency(value, 'phone', index)}
+                                            editMode={isEditMode}
+                                            editable={true}
+                                        />
 
-                        </Row>
-                    );
-                })}
+                                        <Record
+                                            recordTitle={`Emergency Contact ${index + 1}'s Email`}
+                                            recordValue={email}
+                                            // onClearValue={() => handleEmergency('', 'email', index)}
+                                            // onRecordUpdate={value => handleEmergency(value, 'email', index)}
+                                            editMode={isEditMode}
+                                            editable={true}
+                                        />
+                                    </Row>
+                                </React.Fragment>
+                            );
+                        })
+                    ) : (
+                        emergencyContacts.map((contact, index) => {
+                            const {relation = '', email = '', phone = '', name = ''} = contact;
+                            return (
+                                <Row key={index}>
+                                    <PersonalRecord
+                                        recordTitle="Emergency Contact Name"
+                                        recordValue={`${name} (${relation})`}
+                                    />
+
+                                    <ResponsiveRecord
+                                        recordTitle="Emergency Contact Phone"
+                                        recordValue={phone}
+                                        handleRecordPress={() => {
+                                        }}
+                                    />
+
+                                    <ResponsiveRecord
+                                        recordTitle="Emergency Contact Email"
+                                        recordValue={email}
+                                        handleRecordPress={() => {
+                                        }}
+                                    />
+                                </Row>
+                            );
+                        })
+                    )
+                }
             </>
         );
     };

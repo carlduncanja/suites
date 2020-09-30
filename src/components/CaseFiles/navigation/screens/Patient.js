@@ -37,7 +37,6 @@ const Patient = ({
 
     const {
         firstName = '',
-        middleName = '',
         surname = '',
         insurance = {},
         medicalInfo = {},

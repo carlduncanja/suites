@@ -17,11 +17,12 @@ const ButtonWrapper = styled.TouchableOpacity`
 `;
 
 const ButtonContainer = styled.View`
-        position: relative;
+        position: absolute;
         display: flex;
         height: 100%;
         width: 100%;
                 
+
         justify-content: center;
         align-items: center;
         background-color:${(backgroundColor,) => backgroundColor};
@@ -30,6 +31,7 @@ const ButtonContainer = styled.View`
 const ButtonTitle = styled.Text(({theme, font, color}) => ({
     ...theme.font[font],
     color: color ? color : theme.colors['--accent-button'],
+    textAlign: 'center',
 }))
 
 const IconWrapper = styled.View`
@@ -54,7 +56,6 @@ const Button = ({backgroundColor, buttonPress, disabled, color, title, font = '-
                     {Icon}
                 </IconWrapper>
             }
-
         </ButtonWrapper>
     )
 }

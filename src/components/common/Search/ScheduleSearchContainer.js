@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import _ from "lodash";
-import { searchSchedule } from "../../../api/network";
-import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
+import {searchSchedule} from "../../../api/network";
+import {StyleSheet, View, TouchableWithoutFeedback} from "react-native";
 import SearchBar from "./SearchBar";
-import { formatDate } from "../../../utils/formatter";
+import {formatDate} from "../../../utils/formatter";
+import * as Animatable from "react-native-animatable";
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import ShadowContainerComponent from '../ShadowContainerComponent';
 
 /**
@@ -23,20 +25,21 @@ import ShadowContainerComponent from '../ShadowContainerComponent';
  */
 
 const ScheduleSearchWrapper = styled.View`
-position: absolute;
-top: 0;
-bottom: 0;
-left: 0;
-right: 0;
-z-index: 5;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
 `;
 
 const SearchContainer = styled.View`
-display: flex;
-width: 100%;
-height: 100%;
+    display: flex;
+    width: 100%;
+    height: 100%;
 `;
-function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose }) {
+
+function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}) {
 
     const matchesFound = [
         "Coronary Bypass Graft",
@@ -52,6 +55,7 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
     ];
 
     const theme = useTheme();
+    const animateViewRef = useRef();
 
     //#######  States
     const [currentSearchPosition, setCurrentSearchPosition] = useState(0);
@@ -59,6 +63,7 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
     const [searchQuery, setSearchQuery] = useState({});
     const [searchResults, setSearchResult] = useState([]);
 
+    const [showSearchBar, setSearchBarShowing] = useState(true)
 
     //#######  Functions
 
@@ -108,47 +113,44 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
     const pressNextSearchResult = () => {
         currentSearchPosition < matchesFound &&
-            setCurrentSearchPosition(currentSearchPosition + 1)
+        setCurrentSearchPosition(currentSearchPosition + 1)
     };
 
     const pressPreviousSearchResult = () => {
         currentSearchPosition > 0 &&
-            setCurrentSearchPosition(currentSearchPosition - 1)
+        setCurrentSearchPosition(currentSearchPosition - 1)
     };
 
     const pressNewSearch = () => {
         setSearchInput("");
-        // dispatch({
-        //     type: 'SETNEWSEARCH',
-        //     newState: {
-        //         searchValue: "",
-        //         searchMatchesFound: []
-        //     }
-        // })
     };
 
     const pressSubmit = () => {
-        // dispatch({
-        //     type: 'GETSEARCHRESULT',
-        //     newState: searchInput
-        // })
         onSearchClose();
     };
+
+    const handleOnClearSearch = () => {
+        setSearchResult([])
+        setSearchInput('')
+    }
 
     const handleOnSearchResultSelected = (selectedIndex) => {
         const selectedAppointment = searchResults[selectedIndex];
         onSearchResultSelected(selectedAppointment);
+
+        handleOnSearchClose()
     };
 
     const handleOnSearchClose = () => {
-        onSearchClose();
+        // onSearchClose();
+        // // reset states
+        // setSearchInput("");
+        // setSearchResult([])
+        // // TODO cancel any ongoing search request
+        // // TODO animate closing
 
-        // reset states
-        setSearchInput("");
-        setSearchResult([])
-        // TODO cancel any ongoing search request
-        // TODO animate closing
-
+        // animateViewRef.current?.animate()
+        setSearchBarShowing(false)
     };
 
     const formatResult = (result) => {
@@ -164,37 +166,56 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
     // STYLED COMPONENTS
 
+    const handleAnimationEnd = () => {
+        // close view
+        if (!showSearchBar) closeSearchComponent()
+    }
+
+    const closeSearchComponent = () => {
+        onSearchClose();
+        // reset states
+        setSearchInput("");
+        setSearchResult([])
+    }
 
 
     return (
-        isOpen ? 
+        isOpen ?
             <ScheduleSearchWrapper>
                 <SearchContainer>
                     {/* Background Shadow View*/}
-                    <ShadowContainerComponent isOpen={isOpen} />
-                    {/* <View style={{
-                        position: 'absolute',
-                        width: '100%',
-                        height: '100%',
-                        top: 0,
-                    }}> */}
-                    <SearchBar
-                        closeSearch={handleOnSearchClose}
-                        changeText={searchChangeText}
-                        inputText={searchInput}
-                        matchesFound={formatResult(searchResults)}
-                        onPressNextResult={pressNextSearchResult}
-                        onPressPreviousResult={pressPreviousSearchResult}
-                        onPressNewSerch={pressNewSearch}
-                        onPressSubmit={pressSubmit}
-                        onResultSelected={handleOnSearchResultSelected}
-                    />
+                    <ShadowContainerComponent isOpen={showSearchBar}/>
+
+                    <Animatable.View
+                        ref={animateViewRef}
+                        style={{marginBottom: 10}}
+                        pointerEvents={"auto"}
+                        onAnimationEnd={(endState) =>
+                            handleAnimationEnd(showSearchBar, endState)
+                        }
+                        animation={showSearchBar ? "slideInDown" : "slideOutUp"}
+                        duration={400}
+                    >
+                        <SearchBar
+                            closeSearch={handleOnSearchClose}
+                            changeText={searchChangeText}
+                            inputText={searchInput}
+                            matchesFound={formatResult(searchResults)}
+                            onPressNextResult={pressNextSearchResult}
+                            onPressPreviousResult={pressPreviousSearchResult}
+                            onPressNewSerch={pressNewSearch}
+                            onPressSubmit={handleOnSearchClose}
+                            onResultSelected={handleOnSearchResultSelected}
+                        />
+                    </Animatable.View>
+
+
                     {/* </View> */}
                 </SearchContainer>
             </ScheduleSearchWrapper>
 
             :
-            <View />
+            <View/>
     );
 }
 
