@@ -27,7 +27,7 @@ const SearchInputWrapper = styled.View`
     margin:0; 
     height: 60px;
     padding:${({ theme }) => theme.space['--space-14']};
-    background-color: #FAFAFA;
+    background-color: ${({ theme }) => theme.colors['--color-neutral-gray-200']};
 `;
 const SearchInputContainer = styled.View`
     height: 100%;
@@ -84,7 +84,7 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
 
     const optionList = [
         {
-            name: "Delivery", 
+            name: "Delivery",
             color: "#38A169"
 
         },
@@ -155,111 +155,16 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
                     matchesFound={matchesFound}
                     onPressNewSerch={onPressNewSerch}
                 />
-                {/* <TouchableOpacity onPress={() => { setShowDropDown(!showDropDown) }}>
-                    <FilterBox theme={theme}>
 
-                        <FilterText theme={theme}>Filter</FilterText><DropDown fillColor="#FFFFFF" />
-
-                    </FilterBox>
-                    {showDropDown ? renderDropDown() : <View />}
-                </TouchableOpacity> */}
                 <SearchControls
                     onPressNextResult={onPressNextResult}
                     onPressPreviousResult={onPressPreviousResult}
                 />
 
-                <SearchComplete
-                    onSubmit={onPressSubmit}
-                />
-
-                {/* <View style={[styles.container, styles.searchContent]}>
-                <View style={{flexDirection: 'row', flex: 1}}>
-                    <View style={{paddingRight: 15, alignSelf: 'flex-start'}}>
-                        <SvgIcon iconName="search" strokeColor="#A0AEC0"/>
-                    </View>
-                    <View style={{flex: 1, position:'relative'}}>
-                        <InputText
-                            onChangeText={changeText}
-                            inputText={inputText}
-                            placeholderTextColor="#A0AEC0"
-                            placeholder=""
-                        />
-                    </View>
-
-                </View>
-                <View style={{flexDirection: 'row', alignSelf: 'flex-start'}}>
-                    <Text style={{color: '#3182CE', fontSize: 12, paddingRight: 8}}>{matchesFound} matches found</Text>
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        onPress={() => onPressNewSerch()}
-                    >
-                        <SvgIcon iconName="searchExit" strokeColor="#718096"/>
-                    </TouchableOpacity>
-
-                </View>
-            </View> */}
-
-                {/* <View style={[styles.container, styles.control]}>
-                <TouchableOpacity
-                    activeOpacity={1}
-                    style={{padding: 8, paddingLeft: 6}}
-                    onPress={() => onPressPreviousResult()}
-                >
-                    <SvgIcon iconName="scheduleMonthLeft" strokeColor="#718096"/>
-                </TouchableOpacity>
-
-                <View style={{borderWidth: 1, borderColor: '#E3E8EF'}}/>
-
-                <TouchableOpacity
-                    activeOpacity={1}
-                    style={{padding: 8, paddingRight: 6}}
-                    onPress={() => onPressNextResult()}
-                >
-                    <SvgIcon iconName="scheduleMonthRight" strokeColor="#718096"/>
-                </TouchableOpacity>
-            </View> */}
-
+                <SearchComplete onSubmit={onPressSubmit}/>
 
             </SearchInputContainer>
         </SearchInputWrapper>
     )
 }
 export default SearchInput
-
-const styles = StyleSheet.create({
-    searchBar: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        backgroundColor: '#FAFAFA',
-        padding: 15,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.32,
-        shadowRadius: 5.46,
-        elevation: 8,
-    },
-    container: {
-        flexDirection: 'row',
-        backgroundColor: "#F8FAFB",
-        borderWidth: 1,
-        borderColor: '#E3E8EF',
-        borderRadius: 8,
-        padding: 8,
-        paddingLeft: 6,
-        paddingRight: 6,
-    },
-    searchContent: {
-        flex: 1,
-        //alignItems:'center',
-        //justifyContent:'space-between'
-    },
-    control: {
-        backgroundColor: '#FFFFFF',
-        marginLeft: 10,
-        padding: 0,
-    },
-})

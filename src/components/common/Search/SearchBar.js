@@ -24,7 +24,7 @@ const SearchBarContainer = styled.View`
 `;
 
 function SearchBar(props) {
-    const { 
+    const {
         changeText,
         closeSearch,
 
@@ -43,8 +43,6 @@ function SearchBar(props) {
     const matchesFoundLength = matchesFound.length;
 
     const [suggestionsOpen, setSuggestionsOpen] = useState(false);
-    const [resultsOpen, setResultsOpen] = useState(false);
-    const [selectedSuggestion, setSelectedSuggestion] = useState("");
     const [currentListMin, setCurrentListMin] = useState(0);
     const [currentListMax, setCurrentListMax] = useState(5);
 
@@ -96,7 +94,7 @@ function SearchBar(props) {
                     onPressPreviousResult={getPreviousResults}
                     onPressNewSerch={onPressNewSearch}
                     onPressSubmit={onPressSubmit}
-                /> 
+                />
 
 
                 {/* Search Results Drop down */}
@@ -105,83 +103,10 @@ function SearchBar(props) {
                     isSuggestionsOpen={suggestionsOpen}
                     matchesToDisplay={matchesToDisplay}
                     openSearchResult={openSearchResult}
-                    // currentListMin={currentListMin}
-                    // getPreviousResults={getPreviousResults}
-                    // getNextResults={getNextResults}
                 />
-                {/* {
-                    suggestionsOpen &&
-                    <View style={styles.matchesFoundContainer}>
-                        {
-                            matchesFound.slice(currentListMin, currentListMax)
-                                .map((suggestion, index) => {
-                                    return (
-                                        <TouchableOpacity
-                                            style={styles.matchContainer}
-                                            key={index}
-                                            onPress={() => openSearchResult(suggestion, index)}
-                                        >
-                                            <Text style={styles.matchText}>
-                                                {(suggestion) instanceof Date ?
-                                                    formatDate(suggestion,"MMMM D, YYYY")
-                                                    :
-                                                    suggestion
-                                                }
-                                            </Text>
-                                        </TouchableOpacity>
-                                    )
-                                })
-                        }
 
-                        <View style={styles.buttons}>
-                            {
-                                currentListMin > 0 &&
-                                <View style={[styles.buttonContainer, {marginRight: 10}]}>
-                                    <Button
-                                        title="Go Back"
-                                        buttonPress={getPreviousResults}
-                                        color="#0CB0E7"
-                                    />
-                                </View>
-                            }
-                            <View style={styles.buttonContainer}>
-                                <Button
-                                    title="More Results"
-                                    buttonPress={getNextResults}
-                                    color="#0CB0E7"
-                                />
-                            </View>
-                        </View>
-
-                    </View>
-                } */}
             </SearchBarContainer>
-
-
-            {/*<BottomSheet*/}
-            {/*    ref={searchBottomSheetRef}*/}
-            {/*    snapPoints={getSnapPoints()}*/}
-            {/*    initialSnap={2}*/}
-            {/*    callbackNode={fall}*/}
-            {/*    borderRadius={14}*/}
-            {/*    renderContent={renderSearchContent()}*/}
-            {/*    onCloseEnd={() => setResultsOpen(false)}*/}
-            {/*    onOpenEnd={() => setResultsOpen(true)}*/}
-            {/*    renderHeader={() =>*/}
-            {/*        <View*/}
-            {/*            style={{*/}
-            {/*                height: 8,*/}
-            {/*                alignSelf: 'center',*/}
-            {/*                width: 50,*/}
-            {/*                backgroundColor: 'white',*/}
-            {/*                borderRadius: 4,*/}
-            {/*                marginBottom: 14*/}
-            {/*            }}*/}
-            {/*        />*/}
-            {/*    }*/}
-            {/*/>*/}
         </SearchBarWrapper>
-        // </SearchBarWrapper>
     )
 };
 export default SearchBar

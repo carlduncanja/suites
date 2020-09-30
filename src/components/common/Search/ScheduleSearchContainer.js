@@ -118,20 +118,9 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
     const pressNewSearch = () => {
         setSearchInput("");
-        // dispatch({
-        //     type: 'SETNEWSEARCH',
-        //     newState: {
-        //         searchValue: "",
-        //         searchMatchesFound: []
-        //     }
-        // })
     };
 
     const pressSubmit = () => {
-        // dispatch({
-        //     type: 'GETSEARCHRESULT',
-        //     newState: searchInput
-        // })
         onSearchClose();
     };
 
@@ -142,7 +131,6 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
     const handleOnSearchClose = () => {
         onSearchClose();
-
         // reset states
         setSearchInput("");
         setSearchResult([])
@@ -167,17 +155,11 @@ function ScheduleSearchContainer({ isOpen, onSearchResultSelected, onSearchClose
 
 
     return (
-        isOpen ? 
+        isOpen ?
             <ScheduleSearchWrapper>
                 <SearchContainer>
                     {/* Background Shadow View*/}
                     <ShadowContainerComponent isOpen={isOpen} />
-                    {/* <View style={{
-                        position: 'absolute',
-                        width: '100%',
-                        height: '100%',
-                        top: 0,
-                    }}> */}
                     <SearchBar
                         closeSearch={handleOnSearchClose}
                         changeText={searchChangeText}

@@ -224,8 +224,6 @@ const Schedule = (props) => {
 
     // ###### STYLED COMPONENTS
 
-
-
     return (
         <ScheduleWrapper theme={theme}>
             <Animated.View style={styles.scheduleContainer}>
@@ -266,64 +264,7 @@ const Schedule = (props) => {
                         selectedIndex={sectionListIndex}
                         onAppointmentPress={handleAppointmentPress}
                         selectedDay={selectedDay}
-                        month={selectedMonth}
                     />
-
-
-
-                    {/* <View style={styles.scheduleTop}>
-                        <View style={styles.buttonContainer}>
-                            <Button
-                                title="Search"
-                                buttonPress={searchPress}
-                                color="#4E5664"
-                            />
-                        </View>
-
-
-                        <MonthSelector
-                            selectedMonth={selectedMonth}
-                            onMonthUpdated={handleOnMonthUpdated}
-                        />
-
-                        <View style={styles.buttonContainer}>
-                            <Button
-                                title={"Go to Today"}
-                                buttonPress={handleOnGoToToday}
-                                color="#4E5664"
-                            />
-                        </View>
-
-                    </View> 
-                    <View style={styles.scheduleCalendar}>
-                        <View style={{
-                            flexDirection: 'row',
-                            alignSelf: 'flex-start'
-                        }}>
-                            <ScheduleCalendar
-                                onDaySelected={handleOnDaySelected}
-                                appointments={appointments}
-                                month={selectedMonth}
-                                days={daysList}
-                                selectedDate={selectedDay}
-                                screenDimensions={screenDimensions}
-                            />
-                        </View>
-                        {
-                            isFetchingAppointment
-                                ? <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-                                    <ActivityIndicator style={{alignSelf: 'center'}} size="large" color={colors.primary}/>
-                                </View>
-                                : <View style={styles.scheduleContent}>
-                                    <SchedulesList
-                                        selectedIndex={sectionListIndex}
-                                        onAppointmentPress={handleAppointmentPress}
-                                        selectedDay={selectedDay}
-                                        month={selectedMonth}
-                                    />
-                                </View>
-                        } 
-                    </View> */}
                 </BodyContainer>
             </Animated.View>
         </ScheduleWrapper>
