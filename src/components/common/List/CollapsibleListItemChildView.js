@@ -10,8 +10,8 @@ const ChildContentWrapper = styled.View`
     margin : 0;
 `;
 const ChildContentContainer = styled.ScrollView`
-    //max-height : ${({children}) => children?.props?.data?.length > 0 ? `400px` : '200px'};
-    height: 200px;
+    max-height : ${({children}) => children?.props?.data?.length > 0 ? `400px` : '200px'};
+    //height: 200px;
     border-bottom-width : 1px;
     border-bottom-color : ${({theme}) => theme.colors['--color-gray-300']};
     border-bottom-right-radius : 8px;
