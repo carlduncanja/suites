@@ -41,7 +41,7 @@ const OverlayContentContainer = styled.View`
 `;
 
 
-function OverlayDialog(props) {
+function OverlayDialog(props) { 
   const {
     title = " ",
     onClose = () => {},

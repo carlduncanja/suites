@@ -420,6 +420,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         getCaseFileById(id)
             .then(data => {
                 setSelectedCase(data);
+
             })
             .catch(error => {
                 console.log('Failed to get case', error);
@@ -1601,6 +1602,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const getOverlayContent = () => {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase;
         const {medicalInfo = {}} = patient;
+        const { proceduresBillableItems } = chargeSheet;
+        
 
         switch (selectedMenuItem) {
             case 'Patient':
@@ -1614,7 +1617,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             case 'Medical Staff':
                 return <MedicalStaff
                     staff={staff}
-                    selectedTab={selectedTab}
+                    selectedTab={selectedTab} 
                 />;
             case 'Medical History':
                 return <MedicalHistory
@@ -1624,6 +1627,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             case 'Procedures':
                 return <Procedures
                     procedures={caseProcedures}
+                    proceduresBillableItems = {proceduresBillableItems}
                     caseId={caseId}
                 />;
             case 'Charge Sheet':

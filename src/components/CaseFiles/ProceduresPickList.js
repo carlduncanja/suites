@@ -3,23 +3,27 @@ import { View, Text, StyleSheet } from "react-native";
 import PickListCard from './PickList/PickListCard' 
 import { withModal } from "react-native-modalfy";
 
-const ProceduresPickList = ({details, tabs, modal}) => {
+const ProceduresPickList = ({details, tabs, modal, pickListData}) => {
     const { closeModals } = modal
-    const {inventories = [], equipments = [] } = details
 
-    const [selectedTab, setSelectedTab] = useState(tabs[0])
+    const {inventories = [], equipments = [] } = pickListData
+
+    const [selectedTab, setSelectedTab] = useState(0);
 
     const handleOnPressTab = (tab) => {
-        setSelectedTab(tab)
+        setSelectedTab(tabs.indexOf(tab)) 
+        // setSelectedTab(tab)
     }
 
     // Format data
     const inventoriesArray = inventories.map( item => {
+
         const { inventory = {} } = item
         const { name = "" } = inventory
         return {
-            ...item,
-            name : name
+            // ...item,
+            name : name,
+            amount : item?.amount
         }
     })
 
@@ -27,16 +31,16 @@ const ProceduresPickList = ({details, tabs, modal}) => {
         const { equipment = {} } = item
         const { name = "" } = equipment
         return {
-            ...item,
-            name : name
+            // ...item,
+            name : name,
+            amount : item?.amount
         }
     })
-    
-    const data = selectedTab === 'Consumables' ? inventoriesArray : equipmentsArray
+
 
     const headers = [
         {
-            name : selectedTab,
+            name : tabs[selectedTab],
             alignment : "flex-start"
         },
         {
@@ -70,7 +74,7 @@ const ProceduresPickList = ({details, tabs, modal}) => {
                 listItemFormat = {listItemFormat}
                 headers = {headers}
                 isCheckBox = {false}
-                data = {data}
+                data = {tabs[selectedTab] === 'Consumables' ? inventoriesArray : equipmentsArray} 
             /> 
         </View>
     )

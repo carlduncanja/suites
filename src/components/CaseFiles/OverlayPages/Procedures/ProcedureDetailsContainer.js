@@ -11,18 +11,17 @@ import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import {reload} from "expo/build/Updates/Updates";
 
 
-const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
+const ProcedureDetailsContainer = ({tabDetails, caseId, proceduresBillableItems}) => {
 
     const modal = useModal();
     const {pageState, setPageState, fetchCase} = useContext(PageContext);
     const {isEditMode} = pageState;
-
+ 
     useEffect(() => {
         setProcedureAppointment(tabDetails);
     }, [tabDetails])
 
     const [procedureAppointments, setProcedureAppointment] = useState(tabDetails);
-
 
     const setPageLoading = (isLoading) => {
         setPageState({
@@ -31,13 +30,18 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
             isEditMode: false
         })
     }
+    
 
     // ############# Event Handlers
 
     const onOpenPickList = (details) => {
+        
+        const filterProcedures = proceduresBillableItems.filter( item => item?.procedureId._id === details._id);
+        
         modal.openModal('OverlayInfoModal', {
             overlayContent: <ProceduresPickList
                 details={details}
+                pickListData = {filterProcedures[0]}
                 tabs={["Consumables", "Equipment"]}
             />,
         })
@@ -104,6 +108,7 @@ const ProcedureDetailsContainer = ({tabDetails, caseId}) => {
         >
                 {
                     procedureAppointments.map((item) => {
+                        
                         return (
                             <View key={item._id} style={styles.procedureContainer}>
                                 <FrameProcedureCard
