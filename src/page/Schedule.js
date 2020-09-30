@@ -1,30 +1,30 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, ActivityIndicator, Text } from 'react-native';
+import React, {useState, useContext, useEffect} from 'react';
+import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
 import Animated from 'react-native-reanimated'
 import Button from '../components/common/Buttons/Button';
 import moment from 'moment';
 import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import MonthSelector from "../components/Calendar/MonthSelector";
 import SchedulesList from "../components/Schedule/SchedulesList";
-import { ScheduleContext } from '../contexts/ScheduleContext';
-import { getAppointments } from "../api/network";
-import { getDaysForMonth } from "../utils";
-import { formatDate } from "../utils/formatter";
-import { connect } from 'react-redux'
-import { setAppointments } from "../redux/actions/appointmentActions"
-import { colors } from '../styles'
+import {ScheduleContext} from '../contexts/ScheduleContext';
+import {getAppointments} from "../api/network";
+import {getDaysForMonth} from "../utils";
+import {formatDate} from "../utils/formatter";
+import {connect} from 'react-redux'
+import {setAppointments} from "../redux/actions/appointmentActions"
+import {colors} from '../styles'
 import ScheduleSearchContainer from "../components/common/Search/ScheduleSearchContainer";
 import ScheduleOverlayContainer from "../components/Schedule/ScheduleOverlayContainer";
-import { useModal } from "react-native-modalfy";
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import {useModal} from "react-native-modalfy";
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import SchedulePageHeader from '../components/Schedule/SchedulePageHeader';
 import SchedulePageContent from '../components/Schedule/SchedulePageContent';
-import { isEmpty } from 'lodash';
+import {isEmpty} from 'lodash';
 
 const ScheduleWrapper = styled.View`
     flex:1;
-    background-color:${({ theme }) => theme.colors['--default-neutral-gray']};
+    background-color:${({theme}) => theme.colors['--default-neutral-gray']};
 `;
 
 const BodyContainer = styled.View`
@@ -138,10 +138,6 @@ const Schedule = (props) => {
         // console.log("what is in filtered is", filterd);
 
 
-
-
-
-
     }
 
     const filter = (appointmentArray = []) => {
@@ -207,7 +203,7 @@ const Schedule = (props) => {
     const handleAppointmentPress = (appointment) => {
         modal.openModal('BottomSheetModal', {
             // content: <ScheduleOverlayContainer appointment={appointment}/>,
-            content: <ScheduleOverlayContainer appointment={appointment} />,
+            content: <ScheduleOverlayContainer appointment={appointment}/>,
             initialSnap: 2,
             snapPoints: [600, 500, 0]
         })
@@ -228,16 +224,19 @@ const Schedule = (props) => {
         <ScheduleWrapper theme={theme}>
             <Animated.View style={styles.scheduleContainer}>
 
-                <ScheduleSearchContainer
-                    isOpen={searchOpen}
-                    onSearchResultSelected={(appointment) => {
-                        closeSearch();
-                        handleAppointmentPress(appointment)
-                    }}
-                    onSearchClose={closeSearch}
-                />
+                {
+                    searchOpen &&
+                    <ScheduleSearchContainer
+                        isOpen={searchOpen}
+                        onSearchResultSelected={(appointment) => {
+                            closeSearch();
+                            handleAppointmentPress(appointment)
+                        }}
+                        onSearchClose={closeSearch}
+                    />
+                }
 
-                <BodyContainer >
+                <BodyContainer>
 
                     <SchedulePageHeader
                         Expanded={isExpanded}
