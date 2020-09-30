@@ -5,21 +5,14 @@ import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
-import InputUnitField from "../common/Input Fields/InputUnitFields";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
-import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
-import OptionsField from "../common/Input Fields/OptionsField";
-import {connect} from "react-redux";
-import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import { getStorage, getTheatres, createTransfer} from "../../api/network";
-import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import { getStorage, createInventoryLocation} from "../../api/network";
 import _ from "lodash";
-import { currencyFormatter } from '../../utils/formatter';
 import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
-import AutoFillField from '../common/Input Fields/AutoFillField';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
 import ConfirmationComponent from '../ConfirmationComponent';
+import { css } from '@emotion/native';
 
 
 
@@ -33,11 +26,12 @@ import ConfirmationComponent from '../ConfirmationComponent';
  * @constructor 
  */
 
- function AddLocationDialog({onCancel, onCreated }) {
-
+ function AddLocationDialog({onCancel, onCreated, variant  }) {
+    // console.log("Variant: ", variant);
     // ########## CONST
     const modal = useModal();
     const dialogTabs = ['Location', 'Configuration'];
+    const { inventoryGroup } = variant;
 
     // ########## STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
@@ -104,8 +98,8 @@ import ConfirmationComponent from '../ConfirmationComponent';
     };
 
     const onPositiveClick = () => {
-        
-        let isValid = validateAddLocation()
+
+        let isValid = validateAddLocation();
 
         if(!isValid){ return }
         
@@ -114,14 +108,63 @@ import ConfirmationComponent from '../ConfirmationComponent';
         } else {
 
             const updatedFields = {
-                ...fields
+                levels : {
+                    critical : parseInt(fields['critical']),
+                    low : parseInt(fields['low']),
+                    ideal : parseInt(fields['ideal']),
+                    max : parseInt(fields['max'])
+                },
+                location : fields['storageLocation']?._id,
+                inventory : variant?._id,
+                stock : parseInt(fields['inStock']),
             }
-            console.log("Success:", updatedFields);
+            console.log("Updated fields:", updatedFields);
             
-            // createTransferCall(updatedFields);
-           
+            createLocationCall(updatedFields);
         }
     };
+
+    const createLocationCall = (updatedFields) => {
+        createInventoryLocation(inventoryGroup?._id, variant?._id, updatedFields)
+            .then(_=>{
+                modal.closeAllModals();
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {false}
+                            onCancel = {()=> modal.closeAllModals()}
+                            onAction = {()=> {
+                                modal.closeAllModals();
+                                setTimeout(()=>{
+                                    onCreated();
+                                },200)
+                            }}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+            })
+            .catch(_=>{
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onCancel = {()=> {modal.closeAllModals(); onCancel()}}
+                            onAction = {()=> {modal.closeAllModals(); onCancel()}}
+                            message = "There was an issue performing this action"
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+            })
+            .finally(_=>{
+
+            })
+    }
 
     const onTabChange = (tab) => {
         let isValid = validateAddLocation();
@@ -145,7 +188,7 @@ import ConfirmationComponent from '../ConfirmationComponent';
         let isValid = true;
         let requiredFields = [];
         let locationsRequiredFields = ['storageLocation'];
-        let configRequiredFields = ['inStock', 'low', 'ideal', 'max'];
+        let configRequiredFields = ['inStock', 'critical','low', 'ideal', 'max'];
 
         selectedIndex === 0 
             ? requiredFields = locationsRequiredFields 
@@ -154,10 +197,21 @@ import ConfirmationComponent from '../ConfirmationComponent';
         let errorObj = {...errorFields} || {}
 
         for (const requiredField of requiredFields) {
+
             if(!fields[requiredField]){
                 isValid = false
                 errorObj[requiredField] = "Value is required.";
-            }else{
+            }
+            else if( 
+                (requiredField ==='low' && parseInt(fields['low']) <= parseInt(fields['critical']) ) ||
+                (requiredField ==='ideal' && parseInt(fields['ideal']) <= parseInt(fields['low']) ) ||
+                (requiredField ==='max' && parseInt(fields['max']) <= parseInt(fields['ideal']) ) ||
+                (requiredField ==='inStock' && parseInt(fields['inStock']) > parseInt(fields['max']) )
+            ){
+                isValid = false
+                errorObj[requiredField] = "Value is required.";
+            }
+            else{
                 delete errorObj[requiredField]
             }
         }
@@ -181,9 +235,9 @@ import ConfirmationComponent from '../ConfirmationComponent';
         console.log("Destination Selected: ", item);
         
         if (item === undefined || null) {
-            delete fields['to'];
+            delete fields['storageLocation'];
         } else {
-            onFieldChange('to')(item);
+            onFieldChange('storageLocation')(item);
             setStorageSearchValue(item.name);
         }
        
@@ -200,7 +254,7 @@ import ConfirmationComponent from '../ConfirmationComponent';
                         label={"Storage"}
                         text={storageSearchValue}
                         value = {fields['storageLocation']}
-                        oneOptionsSelected={(item)=>{onDestinationSelected(item); console.log("Item : ", item)}}
+                        oneOptionsSelected={(item)=>{onDestinationSelected(item); }}
                         onChangeText={value => {setStorageSearchValue(value); }}
                         onClear={
                             onDestinationSelected
@@ -225,17 +279,20 @@ import ConfirmationComponent from '../ConfirmationComponent';
     const configTab = (
         <>
             <Row>
+
                 <FieldContainer>
                     <InputField2
-                        label={"In-Stock"}
+                        label={"Critical"}
                         onChangeText={ (value) => {
                             if ((/^\d/g.test(value) || !value)) {
-                                onFieldChange('inStock')(value)
+                                onFieldChange('critical')(value)
                             }
                         }}
                         keyboardType = "number-pad"
-                        value={fields['inStock']}
-                        onClear={() => onFieldChange('inStock')('')}
+                        value={fields['critical']}
+                        onClear={() => onFieldChange('critical')('')}
+                        errorMessage = "Please provide a critical value"
+                        hasError = {errorFields['critical']}
                     />
                 </FieldContainer>
 
@@ -250,8 +307,11 @@ import ConfirmationComponent from '../ConfirmationComponent';
                         keyboardType = "number-pad"
                         value={fields['low']}
                         onClear={() => onFieldChange('low')('')}
+                        errorMessage = "Please provide an appropriate value"
+                        hasError = {errorFields['low']}
                     />
                 </FieldContainer>
+
             </Row>
             
             <Row>
@@ -266,6 +326,8 @@ import ConfirmationComponent from '../ConfirmationComponent';
                         keyboardType = "number-pad"
                         value={fields['ideal']}
                         onClear={() => onFieldChange('ideal')('')}
+                        errorMessage = "Please provide an appropriate value"
+                        hasError = {errorFields['ideal']}
                     />
                 </FieldContainer>
 
@@ -280,9 +342,31 @@ import ConfirmationComponent from '../ConfirmationComponent';
                         keyboardType = "number-pad"
                         value={fields['max']}
                         onClear={() => onFieldChange('max')('')}
+                        errorMessage = "Please provide an appropriate value"
+                        hasError = {errorFields['max']}
                     />
                 </FieldContainer>
             </Row>
+
+            <Row>
+                <FieldContainer>
+                    <InputField2
+                        label={"In-Stock"}
+                        onChangeText={ (value) => {
+                            if ((/^\d/g.test(value) || !value)) {
+                                onFieldChange('inStock')(value)
+                            }
+                        }}
+                        keyboardType = "number-pad"
+                        value={fields['inStock']}
+                        onClear={() => onFieldChange('inStock')('')}
+                        errorMessage = "Please provide an appropriate value"
+                        hasError = {errorFields['inStock']}
+                    />
+                </FieldContainer>
+                
+            </Row>
+
         </>
        
     );
@@ -309,7 +393,7 @@ import ConfirmationComponent from '../ConfirmationComponent';
             </>
         </OverlayDialog>
     );
-}
+} 
 
 AddLocationDialog.propTypes = {};
 AddLocationDialog.defaultProps = {};

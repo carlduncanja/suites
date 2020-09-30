@@ -124,12 +124,13 @@ function InventoryVariantPage({ route, navigation }){
                     // fields = {fields}
                     // errorFields = {errorFields} 
                     // onFieldChange = {onFieldChange}
-                />;
+                />; 
 
             case "Storage Locations" :
                 return <InventoryStorageLocationsTab
                     selectedVariant = {selectedVariant}
                     groupId = {groupId}
+                    onUpdateItem = {()=>fetchVariant(groupId,_id)}
                 />
             case "Transfers" :
                 return <TransfersOverlayTab tranferItems = {[]}/>

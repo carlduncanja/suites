@@ -26,6 +26,7 @@ export const inventoryGroups = '/inventory_groups';
 export const inventoryGroup = groupId => `/inventory_groups/${groupId}`;
 export const inventoryGroupVariants = groupId => `/inventory_groups/${groupId}/variants`;
 export const inventoryGroupVariant = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}`;
+export const inventoryLocationEndpint = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}/storage`;
 
 // ##### INVENTORY TRANSFERS
 export const inventoryGroupVariantTransfers = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}/transfers`;

@@ -10,6 +10,7 @@ import {
     inventoryGroupVariant,
     inventoryGroupVariants,
     inventoryGroupVariantTransfers,
+    inventoryLocationEndpint,
     theatresEndpoint,
     theatreEndpoint,
     physiciansEndpoint,
@@ -231,6 +232,11 @@ export const createInventoryVariant = async (referenceId, itemToCreate) => suite
     .catch(handleError);
 
 export const createTransfer = async (groupId, variantId, transferData) => suitesAxiosInstance.post(inventoryGroupVariantTransfers(groupId, variantId), transferData)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const createInventoryLocation = async (groupId, variantId, data) => suitesAxiosInstance
+    .post(inventoryLocationEndpint(groupId, variantId), data)
     .then(handleResponse)
     .catch(handleError);
 

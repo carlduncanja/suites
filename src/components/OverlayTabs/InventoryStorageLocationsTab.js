@@ -13,6 +13,7 @@ import TransferIcon from "../../../assets/svg/transferIcon";
 import AddIcon from '../../../assets/svg/addIcon';
 import ActionItem from "../common/ActionItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
+import AddLocationDialog from '../Inventory/AddLocationDialog';
 import { useModal } from 'react-native-modalfy';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -41,7 +42,8 @@ const storageHeader = [
 
 function InventoryStorageLocationsTab({ 
         selectedVariant = {},
-        groupId = ""
+        groupId = "",
+        onUpdateItem
     }) {
 
     const modal = useModal();
@@ -90,13 +92,14 @@ function InventoryStorageLocationsTab({
             modal.openModal('OverlayModal',
                 {
                     content: <AddLocationDialog
-                        onCreated = {()=>{setFloatingAction(false)}}
+                        onCreated = {()=>{setFloatingAction(false); onUpdateItem()}}
                         onCancel={() => setFloatingAction(false)}
+                        variant = {selectedVariant}
                     />,
                     onClose: () => setFloatingAction(false)
             })
         }, 200)
-    }
+    } 
 
     const handleOnSelectAll = () => {
         let updatedLocationsList = selectAll(storageLocations, selectedItems);
