@@ -12,7 +12,7 @@ import {
 import BillingCaseCard from '../../Billing/BillingCaseCard';
 import {currencyFormatter, formatDate} from '../../../../utils/formatter';
 import {PageContext} from '../../../../contexts/PageContext';
-import PostEditView from '../../OverlayPages/ChargeSheet/PostEditView';
+import PostEditView, {POST_EDIT_MODE} from '../../OverlayPages/ChargeSheet/PostEditView';
 import moment from "moment";
 import jwtDecode from 'jwt-decode'
 import {ROLES} from "../../../../const";
@@ -38,7 +38,12 @@ export const CHARGE_SHEET_STATUSES = {
     /**
      * Charge Sheet has changes that needs to be committed by an admin.
      */
-    PENDING_CHANGES: "pending_changes"
+    PENDING_CHANGES: "pending_changes",
+
+    /**
+     * billed
+     */
+    BILLED: "billed"
 }
 
 const headers = [
@@ -82,7 +87,7 @@ const ChargeSheet = ({
                          variantsConsumables = [],
                          selectedConsumables = [],
                          selectedEquipments = [],
-                        variantsEquipments = []
+                         variantsEquipments = []
                      }) => {
 
     let {
@@ -94,6 +99,8 @@ const ChargeSheet = ({
         caseId
     } = chargeSheet;
 
+    const baseStateRef = useRef();
+
     inventoryList = inventoryList.map(item => {
         const {inventory} = item;
         const {name = '', unitCost = 1} = inventory;
@@ -104,7 +111,6 @@ const ChargeSheet = ({
             type: 'Anaesthesia'
         };
     });
-
     equipmentList = equipmentList.map(item => {
         const {equipment} = item;
         const {name = '', unitPrice = 0, type = ''} = equipment;
@@ -133,6 +139,8 @@ const ChargeSheet = ({
     // --------------------------- States
 
     const [caseProcedures, setCaseProcedure] = useState([]);
+    const [chargeSheetStatus, setChargeSheetStatus] = useState(chargeSheet.status);
+    const [caseProcedureChanges, setCaseProcedureChanges] = useState([]);
     const [isUpdated, setUpdated] = useState(false);
 
 
@@ -149,6 +157,10 @@ const ChargeSheet = ({
         // preparing billing information
         const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
         setCaseProcedure(billing.procedures)
+
+        const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
+        const caseProcedureChanges = calculateChangesProcedureChanges(caseProcedures, billingUpdates.procedures)
+
     }, [chargeSheet])
 
     useEffect(() => {
@@ -235,12 +247,14 @@ const ChargeSheet = ({
     const procedureEquipments = [groupedEquipments, ...equipments];
     const consumableProcedures = ['All', ...caseProcedures.map(item => item.procedure.name)];
 
+    const {status, updatedBy = {}, updatedAt} = chargeSheet;
+
+    const isAdmin = authInfo['role_name'] === ROLES.ADMIN
+    const isOwner = updatedBy?._id === authInfo['user_id'];
+
     switch (selectedTab) {
         case 'Consumables':
-            const {status, updatedBy = {}, updatedAt} = chargeSheet;
 
-            const isAdmin = authInfo['role_name'] === ROLES.ADMIN
-            const isOwner = updatedBy?._id === authInfo['user_id'];
 
             if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
 
@@ -261,6 +275,7 @@ const ChargeSheet = ({
                     caseProcedures={caseProcedures}
                     caseProcedureChanges={caseProcedureChanges}
                     onConsumablesUpdate={handleConsumableUpdate}
+                    mode={POST_EDIT_MODE.CONSUMABLES}
                     isEditMode={isEditMode}
                     bannerText={bannerText}
                     handleEditDone={handleEditDone}
@@ -275,32 +290,60 @@ const ChargeSheet = ({
                     onConsumablesUpdate={handleConsumableUpdate}
                     isEditMode={isEditMode}
                     handleEditDone={handleEditDone}
-                    onSelectConsumables = {onSelectConsumables}
-                    selectedConsumables = {selectedConsumables}
-                    variantsConsumables = {variantsConsumables}
-                    onSelectVariants = {onSelectVariants}
+                    onSelectConsumables={onSelectConsumables}
+                    selectedConsumables={selectedConsumables}
+                    variantsConsumables={variantsConsumables}
+                    onSelectVariants={onSelectVariants}
                 />
-                
             }
 
             return
-
         case 'Equipment':
-            return <ChargesheetEquipment
-                headers={headers}
-                allItems={equipmentList}
-                equipments={procedureEquipments}
-                caseProcedures={caseProcedures}
-                caseProceduresFilters={consumableProcedures}
-                onEquipmentsUpdate={handleEquipmentUpdate}
-                onSelectEquipments={onSelectEquipments}
-                onSelectEquipmenntsVariants = {onSelectEquipmenntsVariants}
-                // details={billing.procedures}
-                isEditMode={isEditMode}
-                handleEditDone={handleEditDone}
-                selectedEquipments = {selectedEquipments}
-                variantsEquipments = {variantsEquipments}
-            />;
+
+
+            if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
+
+                const firstName = updatedBy['first_name'] || "";
+                const lastName = updatedBy['last_name'];
+
+                const bannerText = isAdmin ? `${firstName[0]}.${lastName} changes require your attention` : undefined
+
+                const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
+                const caseProcedureChanges = calculateChangesProcedureChanges(caseProcedures, billingUpdates.procedures)
+
+                return <PostEditView
+                    headers={headers}
+                    lastEdited={updatedAt}
+                    allItems={equipmentList}
+                    consumables={procedureEquipments}
+                    caseProceduresFilters={consumableProcedures}
+                    caseProcedures={caseProcedures}
+                    caseProcedureChanges={caseProcedureChanges}
+                    onConsumablesUpdate={handleConsumableUpdate}
+                    isEditMode={isEditMode}
+                    mode={POST_EDIT_MODE.EQUIPMENTS}
+                    bannerText={bannerText}
+                    handleEditDone={handleEditDone}
+                />
+
+            } else {
+                return <ChargesheetEquipment
+                    headers={headers}
+                    allItems={equipmentList}
+                    equipments={procedureEquipments}
+                    caseProcedures={caseProcedures}
+                    caseProceduresFilters={consumableProcedures}
+                    onEquipmentsUpdate={handleEquipmentUpdate}
+                    onSelectEquipments={onSelectEquipments}
+                    onSelectEquipmenntsVariants={onSelectEquipmenntsVariants}
+                    isEditMode={isEditMode}
+                    handleEditDone={handleEditDone}
+                    selectedEquipments={selectedEquipments}
+                    variantsEquipments={variantsEquipments}
+                />;
+
+            }
+
         case 'Invoices':
             return <Invoices
                 tabDetails={invoices}
@@ -328,7 +371,7 @@ const ChargeSheet = ({
     }
 };
 
-const mapStateToProps = state => ({ 
+const mapStateToProps = state => ({
     isEditMode: state.casePage?.isEdit,
     pageState: state.casePage,
     auth: state.auth
@@ -348,8 +391,8 @@ const configureBillableItems = (lastModified, total, updatedBy = {}, procedures,
         procedures: []
     };
 
-
     for (const proceduresBillableItem of proceduresBillableItems) {
+
         const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
 
         const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {};
@@ -461,7 +504,6 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
 
         updatedBillableItems.inventories = inventoryChanges;
         updatedBillableItems.equipments = equipmentChanges;
-
 
         updatedProcedures.push(updatedBillableItems)
     }

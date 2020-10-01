@@ -91,7 +91,7 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
 
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
-        let updatedProcedures = checkboxItemPress(item, _id, checkBoxList)
+        let updatedProcedures = checkboxItemPress(_id, checkBoxList)
         setCheckboxList(updatedProcedures)
     }
 
@@ -307,7 +307,7 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
                 hasPaginator = {true}
                 hasActionButton = {true}
                 hasActions = {true}
-                isNextDisabled = {false} 
+                isNextDisabled = {false}
                 isPreviousDisabled = {false}
             />
         </>

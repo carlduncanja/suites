@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
+import React, {useState, useEffect, useRef} from 'react';
+import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert} from "react-native";
 
 
-import { getPurchaseOrderById } from "../../api/network";
+import {getPurchaseOrderById} from "../../api/network";
 import OrderDetailsTab from '../../components/OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../../components/OverlayTabs/OrderItemTab';
 import SupplierDetailsTab from '../../components/OverlayTabs/SupplierDetailsTab';
-import { updatePurchaseOrder, updatePurchaseOrderDetails } from '../../api/network';
-import { PageContext } from "../../contexts/PageContext";
+import {updatePurchaseOrder, updatePurchaseOrderDetails} from '../../api/network';
+import {PageContext} from "../../contexts/PageContext";
 import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
 import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
 import ConfirmationComponent from '../../components/ConfirmationComponent';
-import { useModal } from 'react-native-modalfy';
+import {useModal} from 'react-native-modalfy';
 
-function OrderItemPage({ route, navigation }) {
+function OrderItemPage({route, navigation}) {
 
-    const { order, isOpenEditable, updateOrders } = route.params;
+    const {order, isOpenEditable, updateOrders} = route.params;
+    const baseStateRef = useRef();
     const modal = useModal();
 
 
     const currentTabs = ["Details", "Items", "Suppliers"];
     // console.log("Order:", order);
-    const { _id, supplier = {}, purchaseOrderNumber, deliveryDate = "", description = "" } = order;
-    const { name = "" } = supplier
+    const {_id, supplier = {}, purchaseOrderNumber, deliveryDate = "", description = ""} = order;
+    const {name = ""} = supplier
 
 
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [isFetching, setFetching] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState({});
     const [orderItems, setOrderItems] = useState([]);
     const [pageState, setPageState] = useState({});
@@ -39,7 +39,6 @@ function OrderItemPage({ route, navigation }) {
     const [isUpdateDone, setIsUpdateDone] = useState(false);
     const [isUpdateDetails, setIsUpdateDetails] = useState(false);
 
-    const [popoverList, setPopoverList] = useState([]);
     const {isEditMode} = pageState;
 
     // ##### Lifecycle Methods
@@ -47,17 +46,23 @@ function OrderItemPage({ route, navigation }) {
         setTimeout(() => fetchOrder(_id), 200);
     }, []);
 
-    useEffect(()=>{
-        if(pageState.isEditMode === false && isUpdateDone){
-            handleSaveEdit();
-        }
-    },[pageState.isEditMode])
+    useEffect(() => {
 
-    useEffect(()=>{
-        if(pageState.isEditMode === false && isUpdateDetails){
+        if (pageState.isEditMode) {
+            baseStateRef.current = orderItems // save the base state for as we enter edit mode.
+        }
+
+        if (pageState.isEditMode === false && isUpdateDone) {
+            handleSaveEdit();
+            setIsUpdateDone(false);
+        }
+    }, [pageState.isEditMode])
+
+    useEffect(() => {
+        if (pageState.isEditMode === false && isUpdateDetails) {
             handleDetailsUpdate();
         }
-    },[pageState.isEditMode])
+    }, [pageState.isEditMode])
     // ##### Event Handlers
 
     const onTabPress = (selectedTab) => {
@@ -66,7 +71,7 @@ function OrderItemPage({ route, navigation }) {
 
     const handleSaveEdit = () => {
         let dataToSend = orderItems.map(item => {
-            const { amount = 0, productId = {} } = item
+            const {amount = 0, productId = {}} = item
             return {
                 amount,
                 productId: productId?._id || ""
@@ -74,20 +79,27 @@ function OrderItemPage({ route, navigation }) {
         })
         modal.openModal(
             'ConfirmationModal',
-                {
-                    content: <ConfirmationComponent
-                        isError = {false}
-                        isEditUpdate = {true}
-                        onCancel = {()=> modal.closeModals('ConfirmationModal')}
-                        onAction = {()=>{
-                            updatePurchaseOrderItems(dataToSend, _id)
-                            setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
-                        }}
-                        // onAction = { () => confirmAction()}
-                        message = {"Do you want to save your changes ?"}
-                    />
-                    ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')}
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal')
+                        setOrderItems(baseStateRef.current);
+                    }}
+                    onAction={() => {
+                        updatePurchaseOrderItems(dataToSend, _id)
+                        setTimeout(() => {
+                            modal.closeModals('ConfirmationModal')
+                        }, 100)
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message={"Do you want to save your changes ?"}
+                />
+                ,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal')
+                }
             })
     }
 
@@ -95,24 +107,26 @@ function OrderItemPage({ route, navigation }) {
 
         modal.openModal(
             'ConfirmationModal',
-                {
-                    content: <ConfirmationComponent
-                        isError = {false}
-                        isEditUpdate = {true}
-                        onCancel = {()=> {
-                            modal.closeModals('ConfirmationModal');
-                            setIsUpdateDetails(false);
-                            setPageState({...pageState, isEditMode : true})
-                        }}
-                        onAction = {()=>{
-                            updateDetails();
-                            modal.closeAllModals();
-                        }}
-                        // onAction = { () => confirmAction()}
-                        message = {"Do you want to save your changes ?"}
-                    />
-                    ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')}
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setIsUpdateDetails(false);
+                        setPageState({...pageState, isEditMode: true})
+                    }}
+                    onAction={() => {
+                        updateDetails();
+                        modal.closeAllModals();
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message={"Do you want to save your changes ?"}
+                />
+                ,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal')
+                }
             })
     }
 
@@ -122,105 +136,113 @@ function OrderItemPage({ route, navigation }) {
                 console.log("DB data: ", data)
                 modal.openModal(
                     'ConfirmationModal',
-                        {
-                            content: <ConfirmationComponent
-                                isError = {false}
-                                isEditUpdate = {false}
-                                onAction = {()=>{
-                                  modal.closeModals('ConfirmationModal')
-                                }}
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
 
-                                onCancel = {()=>{
-                                    modal.closeModals('ConfirmationModal')
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal')
 
-                                }}
+                            }}
 
-                            />
-                            ,
-                            onClose: () => {modal.closeModals('ConfirmationModal')}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
                     })
             })
             .catch(error => {
                 console.log("Failed to update order", error);
                 modal.openModal(
                     'ConfirmationModal',
-                        {
-                            content: <ConfirmationComponent
-                                isError = {isError}
-                                isEditUpdate = {false}
-                                onAction = {()=>{
-                                   modal.closeModals('ConfirmationModal')
-                                }}
+                    {
+                        content: <ConfirmationComponent
+                            isError={isError}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
 
-                                onCancel = {()=>{
-                                   setPageState({
-                                        ...pageState,
-                                        isEditMode : true
-                                    });
-                                    modal.closeModals('ConfirmationModal')
+                            onCancel={() => {
+                                setPageState({
+                                    ...pageState,
+                                    isEditMode: true
+                                });
+                                modal.closeModals('ConfirmationModal')
 
-                                }}
-                            />
-                            ,
-                            onClose: () => {modal.closeModals('ConfirmationModal')}
+                            }}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
                     })
             })
-            .finally(_=>{
+            .finally(_ => {
                 fetchOrder(_id);
             })
     }
 
-    const updateDetails = () =>{
+    const updateDetails = () => {
         let updatedFields = {
             ...fields,
-            deliveryDate : fields['deliveryDate'].toString(),
-            description : fields['description'],
+            deliveryDate: fields['deliveryDate'].toString(),
+            description: fields['description'],
         }
         // console.log("Error not here: ", typeof updatedFields['deliveryDate']);
         updatePurchaseOrderDetails(_id, updatedFields)
-            .then(_ =>{
+            .then(_ => {
                 console.log("Success")
                 modal.openModal('ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isError = {false}
-                            isEditUpdate = {false}
-                            onAction = {()=>{
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
                                 modal.closeModals('ConfirmationModal')
                             }}
 
-                            onCancel = {()=>{
+                            onCancel={() => {
                                 modal.closeModals('ConfirmationModal')
                             }}
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')}
-                })
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
             })
             .catch(error => {
                 console.log("Update PO details error: ", error);
                 modal.openModal('ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isError = {isError}
-                            isEditUpdate = {false}
-                            onAction = {()=>{
+                            isError={isError}
+                            isEditUpdate={false}
+                            onAction={() => {
                                 modal.closeModals('ConfirmationModal')
                             }}
 
-                            onCancel = {()=>{
+                            onCancel={() => {
                                 setPageState({
                                     ...pageState,
-                                    isEditMode : true
+                                    isEditMode: true
                                 });
                                 modal.closeModals('ConfirmationModal')
                             }}
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')}
-                })
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
             })
-            .finally(_=>{
+            .finally(_ => {
                 fetchOrder(_id);
                 updateOrders();
             })
@@ -234,32 +256,7 @@ function OrderItemPage({ route, navigation }) {
         setIsUpdateDetails(true);
     };
 
-    // const handlePopovers = (popoverValue) => (popoverItem) => {
-
-    //     if (!popoverItem) {
-    //         let updatedPopovers = popoverList.map(item => {
-    //             return {
-    //                 ...item,
-    //                 status: false
-    //             }
-    //         })
-
-    //         setPopoverList(updatedPopovers)
-    //     } else {
-    //         const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-    //         const updatedObj = { ...popoverList[objIndex], status: popoverValue };
-    //         const updatedPopovers = [
-    //             ...popoverList.slice(0, objIndex),
-    //             updatedObj,
-    //             ...popoverList.slice(objIndex + 1),
-    //         ];
-    //         setPopoverList(updatedPopovers)
-    //     }
-
-    // }
-
     const onItemChange = (data) => {
-        // console.log("Change")
         setOrderItems(data)
         setIsUpdateDone(true)
     }
@@ -290,23 +287,25 @@ function OrderItemPage({ route, navigation }) {
         modal.openModal('ConfirmationModal',
             {
                 content: <ConfirmationComponent
-                    isError = {false}
-                    isEditUpdate = {true}
-                    onAction = {()=>{
+                    isError={false}
+                    isEditUpdate={true}
+                    onAction={() => {
                         modal.closeModals('ConfirmationModal');
                         updatePurchaseOrderItems(data, _id)
                     }}
 
-                    onCancel = {()=>{
+                    onCancel={() => {
                         modal.closeModals('ConfirmationModal')
 
                     }}
-                    message = "Do you want to delete these item(s)?"
+                    message="Do you want to delete these item(s)?"
 
                 />
                 ,
-                onClose: () => {modal.closeModals('ConfirmationModal')}
-        })
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal')
+                }
+            })
     }
 
     // ##### Helper functions
@@ -326,29 +325,31 @@ function OrderItemPage({ route, navigation }) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {true}
-                            onCancel = {onCancelErrorScreen}
-                            message = "There was an issue performing this action."
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={onCancelErrorScreen}
+                            message="There was an issue performing this action."
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')}
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
                     })
         }, 100);
     }
 
-    const onCancelErrorScreen = () =>{
+    const onCancelErrorScreen = () => {
         modal.closeAllModals();
-        setTimeout(()=>{
+        setTimeout(() => {
             BackTapped();
-        },200)
+        }, 200)
     }
 
     const fetchOrder = async (id) => {
         setPageLoading(true);
         getPurchaseOrderById(id)
             .then(data => {
-                const { orders = [] } = data
+                const {orders = []} = data
                 setSelectedOrder(data)
                 setOrderItems(orders)
             })
@@ -369,9 +370,9 @@ function OrderItemPage({ route, navigation }) {
             case "Details":
                 return <OrderDetailsTab
                     order={selectedOrder}
-                    onUpdate = {()=>fetchOrder(_id)}
-                    fields = {fields}
-                    onFieldChange = {onFieldChange}
+                    onUpdate={() => fetchOrder(_id)}
+                    fields={fields}
+                    onFieldChange={onFieldChange}
                 />
             case "Items":
                 return <OrderItemTab
@@ -380,18 +381,18 @@ function OrderItemPage({ route, navigation }) {
                     onItemChange={onItemChange}
                     supplierId={supplier?._id}
                     onAddProductItems={onAddProductItems}
-                    onRemoveProductItems = {onRemoveProductItems}
+                    onRemoveProductItems={onRemoveProductItems}
                 />
             case "Suppliers":
-                return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} />;
+                return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder}/>;
             default:
-                return <View />
+                return <View/>
         }
     };
 
     return (
         <>
-            <PageContext.Provider value={{ pageState, setPageState }}>
+            <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     headerChildren={[purchaseOrderNumber]}
                     onBackPress={BackTapped}
@@ -410,7 +411,6 @@ function OrderItemPage({ route, navigation }) {
             </PageContext.Provider>
         </>
     );
-
 
 
 }

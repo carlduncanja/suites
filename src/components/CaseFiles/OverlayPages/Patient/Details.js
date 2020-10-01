@@ -9,7 +9,14 @@ import BMIConverter from '../../BMIConverter';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../common/Information Record/RecordStyles';
 import ResponsiveRecord from '../../../common/Information Record/ResponsiveRecord';
 import PatientBMIChart from '../../PatientBMIChart';
-import {formatDate, calcAge, handleNumberValidation, formatPhoneNumber, isValidEmail, checkObjectProperty} from '../../../../utils/formatter';
+import {
+    formatDate,
+    calcAge,
+    handleNumberValidation,
+    formatPhoneNumber,
+    isValidEmail,
+    checkObjectProperty
+} from '../../../../utils/formatter';
 import Row from '../../../common/Row';
 import Record from '../../../common/Information Record/Record';
 import {PageContext} from '../../../../contexts/PageContext';
@@ -47,11 +54,12 @@ const bmiScale = [
 const itemWidth = `${100 / 3}%`;
 
 const Details = ({
-    tabDetails,
-    onUpdated = () => {
-    }
-}) => {
+                     tabDetails,
+                     onUpdated = () => {
+                     }
+                 }) => {
     const theme = useTheme();
+    const modal = useModal();
 
     const Divider = styled.View`
         height : 1px;
@@ -61,12 +69,29 @@ const Details = ({
         margin-bottom : ${theme.space['--space-20']};
     `;
 
-    const modal = useModal();
 
     const baseStateRef = useRef();
 
-    const {_id: patientId} = tabDetails;
-    const [fields, setFields] = useState({});
+    const {_id: patientId, firstName, middleName, surname, height, weight, dob, trn, gender, ethnicity, bloodType, nextVisit, contactInfo = {}, address: addresses = []} = tabDetails;
+    const {phones = [], emails = [], emergencyContact: emergencyContacts = []} = contactInfo;
+
+    const [fields, setFields] = useState({
+        firstName,
+        middleName,
+        surname,
+        height,
+        weight,
+        dob,
+        trn,
+        gender,
+        ethnicity,
+        bloodType,
+        nextVisit,
+        phones,
+        emails,
+        address: addresses,
+        emergencyContact: emergencyContacts
+    });
 
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode} = pageState;
@@ -74,7 +99,62 @@ const Details = ({
     const [isLoading, setLoading] = useState(false);
     const [isUpdated, setUpdated] = useState(false);
 
+    const [phoneValues, setPhoneValues] = useState(phones);
+    const [emailValues, setEmailValues] = useState(emails);
+    const [addressValues, setAddressValues] = useState(addresses);
+    const [emergencyContactsValues, setEmergencyContactsValues] = useState(emergencyContacts);
+
+    const age = calcAge(fields.dob || dob);
+    const dateOfBirth = `${formatDate(fields.dob || dob, 'DD/MM/YYYY')} (${age})`;
+    const metreHeight = Math.pow((height / 100), 2) || 0;
+    const bmiMeasure = Math.ceil(weight / metreHeight) || 0;
+    const bmi = bmiMeasure > 100 ? 100 : bmiMeasure;
+
     const onTabUpdated = updatedFields => setFields({...fields, ...updatedFields});
+
+    const onFieldChange = fieldName => value => {
+        const updatedFields = {
+            ...fields,
+            [fieldName]: value
+        };
+
+        setFields(updatedFields);
+
+        onTabUpdated({
+            ...updatedFields,
+            contactInfo: {
+                phones: phoneValues,
+                emails: emailValues,
+                emergencyContact: emergencyContactsValues
+            },
+            address: addressValues
+        });
+        setUpdated(true);
+    };
+
+    useEffect(() => {
+        baseStateRef.current = {
+            firstName,
+            middleName,
+            surname,
+            height,
+            weight,
+            dob,
+            trn,
+            gender,
+            ethnicity,
+            bloodType,
+            nextVisit,
+            phones,
+            emails,
+            address: addresses,
+            emergencyContact: emergencyContacts
+        };
+
+        return () => {
+            baseStateRef.current = {};
+        };
+    }, []);
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {
@@ -102,6 +182,13 @@ const Details = ({
                 ),
                 onClose: () => console.log('Modal closed'),
             });
+        }
+
+        if (isEditMode) {
+            setPhoneValues(phones);
+            setEmailValues(emails);
+            setAddressValues(addresses);
+            setEmergencyContactsValues(emergencyContacts);
         }
     }, [isEditMode]);
 
@@ -170,61 +257,184 @@ const Details = ({
         return isPropertyValueValid ? object[key] : defaultValue || '--';
     };
 
-    const DemographicData = () => {
-        const {firstName, middleName, surname, height, weight, dob, trn, gender, ethnicity, bloodType, nextVisit} = tabDetails;
+    const updatePhone = (newValue, phoneType) => {
+        let updatedPhones = [...phones];
 
-        const [fields, setFields] = useState({
-            firstName,
-            middleName,
-            surname,
-            height,
-            weight,
-            dob,
-            trn,
-            gender,
-            ethnicity,
-            bloodType,
-            nextVisit
+        let found = false;
+        updatedPhones.map(p => {
+            if (p.type === phoneType) {
+                p.phone = newValue;
+                found = true;
+            }
         });
 
-        useEffect(() => {
-            baseStateRef.current = {
-                firstName,
-                middleName,
-                surname,
-                height,
-                weight,
-                dob,
-                trn,
-                gender,
-                ethnicity,
-                bloodType,
-                nextVisit
+        if (!found) updatedPhones = [...updatedPhones, {
+            type: phoneType,
+            phone: newValue
+        }];
+
+        setPhoneValues(updatedPhones);
+        return updatedPhones;
+    };
+
+    const updateEmail = (newValue, emailType) => {
+        let updatedEmails = [...emails];
+
+        let found = false;
+        updatedEmails.map(e => {
+            if (e.type === emailType) {
+                e.email = newValue;
+                found = true;
+            }
+        });
+
+        if (!found) updatedEmails = [...updatedEmails, {
+            type: emailType,
+            email: newValue
+        }];
+
+        setEmailValues(updatedEmails);
+        return updatedEmails;
+    };
+
+    const updateAddress = (value, key, id) => {
+        let updatedAddresses = [...addresses];
+
+        let found = false;
+        updatedAddresses.map(addressObj => {
+            if (addressObj._id === id) {
+                addressObj[key] = value;
+                found = true;
+            }
+        });
+
+        if (!found) updatedAddresses = [...updatedAddresses, {
+            [key]: value,
+            [key === 'line1' ? 'line2' : 'line2']: ''
+        }];
+
+        setAddressValues(updatedAddresses);
+        onFieldChange('address')(updatedAddresses);
+    };
+
+    const handlePhoneChange = (number, phoneType) => {
+        const formattedNumber = number.replace(/\s/g, ''); // remove whitespaces
+        const updatedPhones = updatePhone(formattedNumber, phoneType);
+
+        if (number === '') onFieldChange('phones')(updatePhone('', phoneType));
+        else if (/^\d+$/g.test(formattedNumber) || !number) onFieldChange('phones')(updatedPhones);
+    };
+
+    const handleEmailChange = (email, emailType) => {
+        const updatedEmails = updateEmail(email, emailType);
+
+        if (email === '') onFieldChange('emails')(updatedEmails);
+        else if (isValidEmail(email) || !email) onFieldChange('emails')(updatedEmails);
+    };
+
+    const handleEmergencyChange = (value, key, contactIndex) => {
+        const objIndex = emergencyContactsValues.findIndex((ob, index) => index === contactIndex);
+        let updatedObj = {};
+        let updatedContacts = [];
+
+        if (key === 'name') {
+            updatedObj = {
+                ...emergencyContactsValues[objIndex],
+                name: value
+            };
+            updatedContacts = [
+                ...emergencyContactsValues.slice(0, objIndex),
+                updatedObj,
+                ...emergencyContactsValues.slice(objIndex + 1),
+            ];
+
+            onFieldChange('emergencyContact')(updatedContacts);
+        } else if (key === 'relation') {
+            if (value === '') updatedObj = {
+                ...emergencyContactsValues[objIndex],
+                relation: ''
+            };
+            else updatedObj = {
+                ...emergencyContactsValues[objIndex],
+                relation: value
             };
 
-            return () => {
-                baseStateRef.current = {};
+            updatedContacts = [
+                ...emergencyContactsValues.slice(0, objIndex),
+                updatedObj,
+                ...emergencyContactsValues.slice(objIndex + 1),
+            ];
+
+            onFieldChange('emergencyContact')(updatedContacts);
+        } else if (key === 'phone') {
+            updatedObj = {
+                ...emergencyContactsValues[objIndex],
+                phone: value
             };
-        }, []);
 
-        const onFieldChange = fieldName => value => {
-            const updatedFields = {
-                ...fields,
-                [fieldName]: value
+            updatedContacts = [
+                ...emergencyContactsValues.slice(0, objIndex),
+                updatedObj,
+                ...emergencyContactsValues.slice(objIndex + 1),
+            ];
+
+            if (/^\d{10}$/g.test(value) || !value) onFieldChange('emergencyContact')(updatedContacts);
+        } else {
+            updatedObj = {
+                ...emergencyContactsValues[objIndex],
+                email: value
             };
 
-            setFields(updatedFields);
-            onTabUpdated(updatedFields);
-            setUpdated(true);
-        };
+            updatedContacts = [
+                ...emergencyContactsValues.slice(0, objIndex),
+                updatedObj,
+                ...emergencyContactsValues.slice(objIndex + 1),
+            ];
 
-        const age = calcAge(fields.dob || dob);
-        const dateOfBirth = `${formatDate(fields.dob || dob, 'DD/MM/YYYY')} (${age})`;
-        const metreHeight = Math.pow((height / 100), 2) || 0;
-        const bmiMeasure = Math.ceil(weight / metreHeight) || 0;
-        const bmi = bmiMeasure > 100 ? 100 : bmiMeasure;
+            if (isValidEmail(value) || !value) onFieldChange('emergencyContact')(updatedContacts);
+        }
 
-        return (
+        setEmergencyContactsValues(updatedContacts);
+    };
+
+    // ############# Patient Phone Values
+    const cellPhoneObj = phones.find(p => p.type === 'cell'); // phone object from backend
+    const homePhoneObj = phones.find(p => p.type === 'home');
+    const workPhoneObj = phones.find(p => p.type === 'work');
+
+    const cellPhoneRecordValue = cellPhoneObj ? cellPhoneObj.phone : ''; // phone value from backend
+    const homePhoneRecordValue = homePhoneObj ? homePhoneObj.phone : '';
+    const workPhoneRecordValue = workPhoneObj ? workPhoneObj.phone : '';
+
+    const cellPhoneValue = phoneValues.length ? phoneValues.find(p => p.type === 'cell').phone : ''; // current  edited phone value from backend
+    const homePhoneValue = phoneValues.length ? phoneValues.find(p => p.type === 'home').phone : '';
+    const workPhoneValue = phoneValues.length ? phoneValues.find(p => p.type === 'work').phone : '';
+
+    // an unhealthy way of setting defaults (if edit value (phoneValue) is an empty string, still set it, otherwise, set the value currently pulled from the backend
+    const editCellPhoneValue = (cellPhoneValue || cellPhoneValue === '') && isUpdated ? cellPhoneValue : cellPhoneRecordValue;
+    const editHomePhoneValue = (homePhoneValue || homePhoneValue === '') && isUpdated ? homePhoneValue : homePhoneRecordValue;
+    const editWorkPhoneValue = (workPhoneValue || workPhoneValue === '') && isUpdated ? workPhoneValue : workPhoneRecordValue;
+
+    // ############# Patient Email Values
+    const primaryEmailObj = emails.find(e => e.type === 'primary');
+    const otherEmailObj = emails.find(e => e.type === 'other');
+    const workEmailObj = emails.find(e => e.type === 'work');
+
+    const primaryEmailRecordValue = primaryEmailObj ? primaryEmailObj.email : '';
+    const otherEmailRecordValue = otherEmailObj ? otherEmailObj.email : '';
+    const workEmailRecordValue = workEmailObj ? workEmailObj.email : '';
+
+    const primaryEmailValue = emailValues.length ? emailValues.find(p => p.type === 'primary').email : '';
+    const otherEmailValue = emailValues.length ? emailValues.find(p => p.type === 'other').email : '';
+    const workEmailValue = emailValues.length ? emailValues.find(p => p.type === 'work').email : '';
+
+    // an unhealthy way of setting defaults (if edit value (emailValue) is an empty string, still set it, otherwise, set the value currently pulled from the backend
+    const editPrimaryEmailValue = (primaryEmailValue || primaryEmailValue === '') && isUpdated ? primaryEmailValue : primaryEmailRecordValue;
+    const editOtherEmailValue = (otherEmailValue || otherEmailValue === '') && isUpdated ? otherEmailValue : otherEmailRecordValue;
+    const editWorkEmailValue = (workEmailValue || workEmailValue === '') && isUpdated ? workEmailValue : workEmailRecordValue;
+
+    return (
+        <ScrollView contentContainerStyle={{paddingBottom: 100}}>
             <>
                 <Row>
                     {/* I concede; fields attributes not being instantiated like EVERYWHERE else so I give up. 'fields.<attribute>' || '<attribute>' defaulting it is */}
@@ -375,249 +585,7 @@ const Details = ({
                     />
                 </Row>
             </>
-        );
-    };
-
-    const ContactData = () => {
-        const {contactInfo = {}, address: addresses = []} = tabDetails;
-        const {phones = [], emails = []} = contactInfo;
-
-        const [fields, setFields] = useState({
-            phones,
-            emails
-        });
-
-        const handlePhones = () => {
-            const cellPhone = phones.find(p => p.type === 'cell');
-            const homePhone = phones.find(p => p.type === 'home');
-            const workPhone = phones.find(p => p.type === 'work');
-
-            return [
-                {
-                    type: 'cell',
-                    phone: cellPhone ? cellPhone.phone : ''
-                },
-                {
-                    type: 'home',
-                    phone: homePhone ? homePhone.phone : ''
-                },
-                {
-                    type: 'work',
-                    phone: workPhone ? workPhone.phone : ''
-                }
-            ];
-        };
-
-        const handleEmails = () => {
-            const primaryEmail = emails.find(e => e.type === 'primary');
-            const otherEmail = emails.find(e => e.type === 'other');
-            const workEmail = emails.find(e => e.type === 'work');
-
-            return [
-                {
-                    type: 'primary',
-                    phone: primaryEmail ? primaryEmail.email : ''
-                },
-                {
-                    type: 'other',
-                    phone: otherEmail ? otherEmail.email : ''
-                },
-                {
-                    type: 'work',
-                    phone: workEmail ? workEmail.email : ''
-                }
-            ];
-        };
-
-        const handleAddresses = () => (addresses.length ? [...addresses] : [
-            {
-                line1: '',
-                line2: ''
-            }
-        ]);
-
-        const [phoneValues, setPhoneValues] = useState(handlePhones());
-        const [emailValues, setEmailValues] = useState(handleEmails());
-        const [addressValues, setAddressValues] = useState(handleAddresses());
-
-        const onFieldChange = fieldName => value => {
-            const updatedFields = {
-                ...fields,
-                [fieldName]: value
-            };
-
-            setFields(updatedFields);
-            onTabUpdated({
-                contactInfo: updatedFields,
-                address: addressValues
-            });
-            setUpdated(true);
-        };
-
-        const updatePhone = (newValue, phoneType) => {
-            const updatedPhones = [...phoneValues];
-            updatedPhones.map(p => {
-                if (p.type === phoneType) p.phone = newValue;
-            });
-
-            setPhoneValues(updatedPhones);
-            return updatedPhones;
-        };
-
-        const updateEmail = (newValue, emailType) => {
-            const updatedEmails = [...emailValues];
-            updatedEmails.map(e => {
-                if (e.type === emailType) e.email = newValue;
-            });
-
-            setEmailValues(updatedEmails);
-            return updatedEmails;
-        };
-
-        const updateAddress = (value, key, id) => {
-            const updatedAddresses = [...addressValues];
-            updatedAddresses.map(addressObj => {
-                if (addressObj._id === id) addressObj[key] = value;
-            });
-
-            setAddressValues(updatedAddresses);
-            onFieldChange('address')(updatedAddresses);
-        };
-
-        const handlePhoneChange = (number, phoneType) => {
-            const formattedNumber = number.replace(/\s/g, ''); // remove whitespaces
-            const updatedPhones = updatePhone(formattedNumber, phoneType);
-
-            if (number === '') onFieldChange('phones')(updatePhone('', phoneType));
-            else if (/^\d+$/g.test(formattedNumber) || !number) onFieldChange('phones')(updatedPhones);
-        };
-
-        const handleEmailChange = (email, emailType) => {
-            const updatedEmails = updateEmail(email, emailType);
-
-            if (email === '') onFieldChange('emails')(updatedEmails);
-            else if (isValidEmail(email) || !email) onFieldChange('emails')(updatedEmails);
-        };
-
-        // const handleEmergency = (value, key, contactIndex) => {
-        //     const objIndex = emergencyContacts.findIndex((ob, index) => index === contactIndex);
-        //     let updatedObj = {};
-        //     let updatedContacts = [];
-        //
-        //     if (key === 'name') {
-        //         updatedObj = {...emergencyContacts[objIndex], name: value};
-        //         updatedContacts = [
-        //             ...emergencyContacts.slice(0, objIndex),
-        //             updatedObj,
-        //             ...emergencyContacts.slice(objIndex + 1),
-        //         ];
-        //
-        //         onFieldChange('emergencyContact')(updatedContacts);
-        //     } else if (key === 'relation') {
-        //         if (value === '') {
-        //             updatedObj = {...emergencyContacts[objIndex], relation: ''};
-        //         } else {
-        //             // console.log("Value: ", value.trim())
-        //             // let splitValue = value.trim().split(' ')
-        //
-        //             // if (/\((\w)*\)/g.test(value)){
-        //             //     console.log("Length 1")
-        //             //     name = ""
-        //             //     relation = value.replace(/[()]/g, "")
-        //             // }else if(/\w*\s*\((\w)*\)/g.test(value.trim()) && splitValue.length === 2){
-        //             //     console.log("Length 2")
-        //             //     name = splitValue[0]
-        //             //     relation = splitValue[1].replace(/[()]/g, "")
-        //             // }else {
-        //             //     name = splitValue[0].contact(' ', splitValue[1])
-        //             //     relation = splitValue[2].replace(/[()]/g, "")
-        //             // }
-        //
-        //             updatedObj = {...emergencyContacts[objIndex], relation: value.trim()};
-        //         }
-        //
-        //         updatedContacts = [
-        //             ...emergencyContacts.slice(0, objIndex),
-        //             updatedObj,
-        //             ...emergencyContacts.slice(objIndex + 1),
-        //         ];
-        //
-        //         onFieldChange('emergencyContact')(updatedContacts);
-        //     } else if (key === 'phone') {
-        //         const formattedNumber = value.replace(/\s/g, '');
-        //         updatedObj = {...emergencyContacts[objIndex], phone: formatNumber(formattedNumber)};
-        //
-        //         updatedContacts = [
-        //             ...emergencyContacts.slice(0, objIndex),
-        //             updatedObj,
-        //             ...emergencyContacts.slice(objIndex + 1),
-        //         ];
-        //
-        //         if (/^\d{10}$/g.test(formattedNumber) || !value) {
-        //             onFieldChange('emergencyContact')(updatedContacts);
-        //         }
-        //     } else {
-        //         updatedObj = {...emergencyContacts[objIndex], email: value};
-        //
-        //         updatedContacts = [
-        //             ...emergencyContacts.slice(0, objIndex),
-        //             updatedObj,
-        //             ...emergencyContacts.slice(objIndex + 1),
-        //         ];
-        //
-        //         if (isValidEmail(value) || !value) {
-        //             onFieldChange('emergencyContact')(updatedContacts);
-        //         }
-        //     }
-        //
-        //     setEmergencyContacts(updatedContacts);
-        // };
-
-        // Patient Phone Values
-        const cellPhoneObj = phones.find(p => p.type === 'cell');
-        const homePhoneObj = phones.find(p => p.type === 'home');
-        const workPhoneObj = phones.find(p => p.type === 'work');
-
-        const cellPhoneRecordValue = cellPhoneObj ? cellPhoneObj.phone : '';
-        const homePhoneRecordValue = homePhoneObj ? homePhoneObj.phone : '';
-        const workPhoneRecordValue = workPhoneObj ? workPhoneObj.phone : '';
-
-        // an unhealthy way of setting defaults (if edit value (phoneValue) is an empty string, still set it, otherwise, set the value currently pulled from the backend
-        const editCellPhoneValue = phoneValues.find(p => p.type === 'cell').phone === '' ?
-            phoneValues.find(p => p.type === 'cell').phone :
-            phoneValues.find(p => p.type === 'cell').phone || cellPhoneRecordValue;
-
-        const editHomePhoneValue = phoneValues.find(p => p.type === 'home').phone === '' ?
-            phoneValues.find(p => p.type === 'home').phone :
-            phoneValues.find(p => p.type === 'home').phone || homePhoneRecordValue;
-
-        const editWorkPhoneValue = phoneValues.find(p => p.type === 'work').phone === '' ?
-            phoneValues.find(p => p.type === 'work').phone :
-            phoneValues.find(p => p.type === 'work').phone || workPhoneRecordValue;
-
-        // Patient Email Values
-        const primaryEmailObj = emails.find(e => e.type === 'primary');
-        const otherEmailObj = emails.find(e => e.type === 'other');
-        const workEmailObj = emails.find(e => e.type === 'work');
-
-        const primaryEmailRecordValue = primaryEmailObj ? primaryEmailObj.email : '';
-        const otherEmailRecordValue = otherEmailObj ? otherEmailObj.email : '';
-        const workEmailRecordValue = workEmailObj ? workEmailObj.email : '';
-
-        // an unhealthy way of setting defaults (if edit value (emailValue) is an empty string, still set it, otherwise, set the value currently pulled from the backend
-        const editPrimaryEmailValue = emailValues.find(e => e.type === 'primary').email === '' ?
-            emailValues.find(e => e.type === 'primary').email :
-            emailValues.find(e => e.type === 'primary').email || primaryEmailRecordValue;
-
-        const editOtherEmailValue = emailValues.find(e => e.type === 'other').email === '' ?
-            emailValues.find(e => e.type === 'other').email :
-            emailValues.find(e => e.type === 'other').email || otherEmailRecordValue;
-
-        const editWorkEmailValue = emailValues.find(e => e.type === 'work').email === '' ?
-            emailValues.find(e => e.type === 'work').email :
-            emailValues.find(e => e.type === 'work').email || workEmailRecordValue;
-
-        return (
+            <Divider/>
             <>
                 <Row>
                     {
@@ -805,27 +773,7 @@ const Details = ({
                     )
                 }
             </>
-        );
-    };
-
-    const EmergencyData = () => {
-        const {contactInfo = {}} = tabDetails;
-        const {emergencyContact: emergencyContacts = []} = contactInfo;
-
-        const [fields, setFields] = useState({emergencyContact: emergencyContacts});
-
-        const handleEmergencyContacts = () => (emergencyContacts.length ? [...emergencyContacts] : [
-            {
-                email: '',
-                name: '',
-                phone: '',
-                relation: ''
-            }
-        ]);
-
-        const [emergencyContactsValues, setEmergencyContactsValues] = useState(handleEmergencyContacts());
-
-        return (
+            <Divider/>
             <>
                 {
                     isEditMode ? (
@@ -835,19 +783,19 @@ const Details = ({
                                 <React.Fragment key={index}>
                                     <Row>
                                         <Record
-                                            recordTitle={`Emergency Contact ${index + 1}'s Name`}
+                                            recordTitle="Emergency Contact Name"
                                             recordValue={name}
-                                            // onClearValue={() => handleEmergency('', 'name', index)}
-                                            // onRecordUpdate={value => handleEmergency(value, 'name', index)}
+                                            onClearValue={() => handleEmergencyChange('', 'name', index)}
+                                            onRecordUpdate={value => handleEmergencyChange(value, 'name', index)}
                                             editMode={isEditMode}
                                             editable={true}
                                         />
 
                                         <Record
-                                            recordTitle={`Emergency Contact ${index + 1}'s Relation`}
+                                            recordTitle="Emergency Contact Relation"
                                             recordValue={relation}
-                                            // onClearValue={() => handleEmergency('', 'relation', index)}
-                                            // onRecordUpdate={value => handleEmergency(value, 'relation', index)}
+                                            onClearValue={() => handleEmergencyChange('', 'relation', index)}
+                                            onRecordUpdate={value => handleEmergencyChange(value, 'relation', index)}
                                             editMode={isEditMode}
                                             editable={true}
                                         />
@@ -855,21 +803,27 @@ const Details = ({
 
                                     <Row>
                                         <Record
-                                            recordTitle={`Emergency Contact ${index + 1}'s Phone Number`}
+                                            recordTitle="Emergency Contact Phone"
                                             recordValue={phone}
-                                            // onClearValue={() => handleEmergency('', 'phone', index)}
-                                            // onRecordUpdate={value => handleEmergency(value, 'phone', index)}
+                                            onClearValue={() => handleEmergencyChange('', 'phone', index)}
+                                            onRecordUpdate={value => {
+                                                const val = handleNumberValidation(value, 10);
+                                                if (val || val === '') handleEmergencyChange(value, 'phone', index);
+                                            }}
                                             editMode={isEditMode}
                                             editable={true}
+                                            keyboardType="number-pad"
                                         />
 
                                         <Record
-                                            recordTitle={`Emergency Contact ${index + 1}'s Email`}
+                                            recordTitle="Emergency Contact Email"
                                             recordValue={email}
-                                            // onClearValue={() => handleEmergency('', 'email', index)}
-                                            // onRecordUpdate={value => handleEmergency(value, 'email', index)}
+                                            onClearValue={() => handleEmergencyChange('', 'email', index)}
+                                            onRecordUpdate={value => handleEmergencyChange(value, 'email', index)}
                                             editMode={isEditMode}
                                             editable={true}
+                                            keyboardType="email-address"
+                                            autoCapitalize="none"
                                         />
                                     </Row>
                                 </React.Fragment>
@@ -880,14 +834,14 @@ const Details = ({
                             const {relation = '', email = '', phone = '', name = ''} = contact;
                             return (
                                 <Row key={index}>
-                                    <PersonalRecord
+                                    <Record
                                         recordTitle="Emergency Contact Name"
-                                        recordValue={`${name} (${relation})`}
+                                        recordValue={`${name && relation ? `${name} (${relation})` : name || '--'}`}
                                     />
 
                                     <ResponsiveRecord
                                         recordTitle="Emergency Contact Phone"
-                                        recordValue={phone}
+                                        recordValue={formatPhoneNumber(phone)}
                                         handleRecordPress={() => {
                                         }}
                                     />
@@ -904,21 +858,11 @@ const Details = ({
                     )
                 }
             </>
-        );
-    };
-
-    return (
-        <ScrollView>
-            {DemographicData()}
-            {<Divider/>}
-            {ContactData()}
-            {<Divider/>}
-            {EmergencyData()}
         </ScrollView>
     );
 };
 
-export default withModal(Details);
+export default Details;
 
 const styles = StyleSheet.create({
     separator: {

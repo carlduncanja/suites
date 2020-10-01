@@ -38,9 +38,9 @@ const storageHeader = [
         alignment: 'center',
         flex: 1
     }
-]; 
+];
 
-function InventoryStorageLocationsTab({ 
+function InventoryStorageLocationsTab({
         selectedVariant = {},
         groupId = "",
         onUpdateItem
@@ -52,8 +52,8 @@ function InventoryStorageLocationsTab({
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
-    
-    
+
+
     const toggleActionButton = () => {
         setFloatingAction(true)
 
@@ -99,7 +99,7 @@ function InventoryStorageLocationsTab({
                     onClose: () => setFloatingAction(false)
             })
         }, 200)
-    } 
+    }
 
     const handleOnSelectAll = () => {
         let updatedLocationsList = selectAll(storageLocations, selectedItems);
@@ -109,7 +109,7 @@ function InventoryStorageLocationsTab({
     const handleOnCheckBoxPress = (item) => () => {
         // console.log("Item: ", item);
         const {_id} = item;
-        let updatedItems = checkboxItemPress(item, _id, selectedItems)
+        let updatedItems = checkboxItemPress(_id, selectedItems)
 
         setSelectedItems(updatedItems)
     }
@@ -118,14 +118,14 @@ function InventoryStorageLocationsTab({
 
     const floatingActions = () =>{
         let isDisabled = selectedItems.length === 1 ? false : true;
-        
+
         const addLocation = <ActionItem
             title={"Add Location"}
             icon={<AddIcon/>}
             onPress={() => handleAddLocation()}
         />
 
-        const itemTransfer = 
+        const itemTransfer =
             <ActionItem
                 title={"Item Transfer"}
                 icon={<TransferIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}/>}
@@ -153,7 +153,7 @@ function InventoryStorageLocationsTab({
 
             <DataItem text = {locationName} flex = {1.5} color = {"--color-blue-600"} fontStyle = {"--text-base-medium"}/>
             <DataItem text = {stock} color = {"--color-gray-700"} fontStyle = {"--text-base-medium"} align={"center"}/>
-            <ContentDataItem 
+            <ContentDataItem
                 align = {'center'}
                 content = {
                     <LevelIndicator
@@ -162,7 +162,7 @@ function InventoryStorageLocationsTab({
                     />
                 }
             />
-                
+
             {/* <View style={[styles.item, {flex: 3,justifyContent: "flex-start"}]}>
                 <Text style={[styles.itemText, styles.linkText]}>
                     {locationName}
@@ -173,7 +173,7 @@ function InventoryStorageLocationsTab({
                     {stock}
                 </Text>
             </View> */}
-            
+
         </>
     };
 
@@ -195,7 +195,7 @@ function InventoryStorageLocationsTab({
                 isCheckbox={true}
                 itemSelected={selectedItems}
                 toggleHeaderCheckbox = {handleOnSelectAll}
-                
+
             />
             <Footer
                 hasPaginator = {false}

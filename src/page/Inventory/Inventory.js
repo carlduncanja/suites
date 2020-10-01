@@ -90,17 +90,6 @@ const LocationText = styled.Text(({theme, isCollapsed}) => ({
     color: isCollapsed === false ? theme.colors['--color-gray-500'] : theme.colors['--color-gray-700'],
 }));
 
-const ChildItemNameContainer = styled.View`
-    width : 100%;
-    background-color : yellow;
-    flex-direction : row;
-`;
-
-const ChildItemName = styled.Text(({theme}) => ({
-    font: theme.font['--text-sm-medium'],
-    color: theme.colors['--color-blue-500'],
-}));
-
 const shadows = [
     {
         shadowColor: 'black',
@@ -270,7 +259,7 @@ function Inventory(props) {
         const {_id, variants = []} = item;
         // const variantIds = [];
 
-        const updatedInventory = checkboxItemPress(item, _id, selectedIds);
+        const updatedInventory = checkboxItemPress(_id, selectedIds);
         setSelectedIds(updatedInventory);
 
         const removeChildren = selectedVariants.filter(obj => obj.groupId !== _id);
@@ -299,7 +288,7 @@ function Inventory(props) {
 
         // get ids for variants
         const variantIds = selectedVariants.map(variantObj => variantObj._id);
-        const updatedChildIds = checkboxItemPress(inventoryVariant, _id, variantIds);
+        const updatedChildIds = checkboxItemPress(_id, variantIds);
 
         // set selected variant
         const updatedSelectedVariants = updatedChildIds.map(_id => ({_id, groupId: inventoryGroup._id}))
@@ -620,8 +609,7 @@ function Inventory(props) {
                 renderItem={({item}) => renderChildItemView(item, formattedItem, () => {
                 })}
                 keyExtractor={(item, index) => `${index}`}
-                backgroundColor={item.name.toLowerCase()
-                    .includes('ungrouped') ? '#EEF2F6' : ''}
+                backgroundColor={item.name.toLowerCase().includes('ungrouped') ? '#EEF2F6' : ''}
                 ItemSeparatorComponent={() => (
                     <View style={{
                         flex: 1,
@@ -631,10 +619,8 @@ function Inventory(props) {
                         borderWidth: 0.5
                     }}
                     />
-                )
-                }
+                )}
             />
-
         </CollapsibleListItem>;
     };
 
@@ -722,21 +708,21 @@ function Inventory(props) {
         removeInventoryGroups(ids)
             .then(_ => {
                 modal.openModal('ConfirmationModal', {
-                        content: <ConfirmationComponent
-                            isError={false}
-                            isEditUpdate={false}
-                            onAction={() => {
-                                modal.closeModals('ConfirmationModal');
-                                setTimeout(() => {
-                                    modal.closeModals('ActionContainerModal');
-                                    onRefresh();
-                                }, 200);
-                            }}
-                        />,
-                        onClose: () => {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                        }
-                    });
+                            setTimeout(() => {
+                                modal.closeModals('ActionContainerModal');
+                                onRefresh();
+                            }, 200);
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                });
                 setSelectedIds([]);
             })
             .catch(error => {
@@ -841,54 +827,6 @@ function Inventory(props) {
 
 Inventory.propTypes = {};
 Inventory.defaultProps = {};
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    item: {
-        flex: 1,
-        flexDirection: 'row',
-    },
-    itemText: {
-        fontSize: 14,
-        color: '#4E5664',
-    },
-    locationBox: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 28,
-        height: 24,
-        borderRadius: 4,
-        shadowColor: '#000',
-        backgroundColor: '#FFFFFF',
-        shadowOffset: {
-            width: 0.5,
-            height: 0.5,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 2,
-        elevation: 3,
-        zIndex: 3,
-    },
-    footer: {
-        flex: 1,
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        marginBottom: 20,
-        marginRight: 30,
-    },
-    rowBorderRight: {
-        borderRightColor: '#E3E8EF',
-        borderRightWidth: 1,
-
-        // marginRight: 20,
-        // flex: 2
-    },
-});
 
 const mapStateToProps = state => {
     const getLevels = (variants = []) => {

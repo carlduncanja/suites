@@ -110,7 +110,7 @@ function ArchivedSuppliersPage(props) {
 
     const handleOnCheckBoxPress = (item) => () => {
         const { _id } = item;
-        let updatedSuppliersList = checkboxItemPress(item, _id, selectedSuppliers)
+        let updatedSuppliersList = checkboxItemPress(_id, selectedSuppliers)
 
         setSelectedSuppliers(updatedSuppliersList)
     }

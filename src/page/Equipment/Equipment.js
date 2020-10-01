@@ -211,16 +211,14 @@ const Equipment = (props) => {
 
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
-        console.log("Id:", item);
-        let updatedEquipmentList = checkboxItemPress(item, _id, selectedTypesIds);
+        let updatedEquipmentList = checkboxItemPress(_id, selectedTypesIds);
 
         setGroupSelected(item);
         setSelectedTypesIds(updatedEquipmentList);
 
         // remove selected child items
-        const removeChildren = selectedChildEquipment.filter(obj => obj.groupId !== _id);
+        const removeChildren = selectedEquipments.filter(obj => obj.groupId !== _id);
         setSelectedChildEquipment(removeChildren);
-
     };
 
     const handleOnItemCheckboxPress = (equipmentItem) => {
@@ -230,7 +228,7 @@ const Equipment = (props) => {
 
         //  get equipment ids
         const equipmentIds = selectedEquipments.map(variantObj => variantObj._id);
-        const updatedEquipmentIds = checkboxItemPress(equipmentItem, _id, equipmentIds);
+        const updatedEquipmentIds = checkboxItemPress(_id, equipmentIds);
 
         //  set selected equipments
         const updatedSelectedVariants = updatedEquipmentIds.map(_id => ({
@@ -388,7 +386,7 @@ const Equipment = (props) => {
             quantity: item.equipments.length,
             nextAvailable: new Date(2020, 12, 12),
         };
-        const isIndeterminate = selectedTypesIds.some(variant => variant.groupId === item._id)
+        const isIndeterminate = selectedEquipments.some(variant => variant.groupId === item._id)
 
 
         return (

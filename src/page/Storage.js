@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from 'react-native';
 import {useModal} from 'react-native-modalfy';
-import {connect} from 'react-redux'; 
+import {connect} from 'react-redux';
 import _ from 'lodash';
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
@@ -142,7 +142,7 @@ function Storage(props) {
 
     const onCheckBoxPress = item => () => {
         const {_id} = item;
-        const updatedStorage = checkboxItemPress(item, _id, selectedIds);
+        const updatedStorage = checkboxItemPress(_id, selectedIds);
         setSelectedIds(updatedStorage);
     };
 
@@ -179,30 +179,30 @@ function Storage(props) {
                 </Text>
             </View> */}
             <RightBorderDataItem
-                fontStyle = {'--text-base-regular'} 
-                color = {'--color-gray-800'} 
-               
+                fontStyle = {'--text-base-regular'}
+                color = {'--color-gray-800'}
+
                 text = {name}
                 flex = {1.2}
             />
-            <DataItem 
-                fontStyle = {'--text-base-medium'} 
-                color = {'--color-gray-800'} 
-                align = "center" 
+            <DataItem
+                fontStyle = {'--text-base-medium'}
+                color = {'--color-gray-800'}
+                align = "center"
                 text = {`${products} ${ products === 1 ? 'Product' : 'Products'}`}
             />
-            <DataItem 
-                fontStyle = {'--text-base-medium'} 
-                color = {'--color-blue-600'} 
-                align = "center" 
+            <DataItem
+                fontStyle = {'--text-base-medium'}
+                color = {'--color-blue-600'}
+                align = "center"
                 text = {`${transfers} ${ transfers === 1 ? 'Transfer' : 'Transfers'}`}
             />
-           
+
             {/* <View style={[
                 styles.item, {justifyContent: 'center'}
             ]}
             >
-                {/*   LEVELS    
+                {/*   LEVELS
                 <LevelIndicator
                     max={levels.max}
                     min={0}

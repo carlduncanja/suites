@@ -25,6 +25,35 @@ import { useTheme } from 'emotion-theming';
 import DataItem from "../common/List/DataItem";
 import {LONG_PRESS_TIMER} from '../../const';
 
+
+const headers = [
+    {
+        name : 'Item Name',
+        alignment : 'flex-start',
+        flex : 2,
+    },
+    {
+        name : 'SKU',
+        alignment : 'center',
+        flex : 1,
+    },
+    {
+        name : 'Quantity',
+        alignment : 'center',
+        flex : 1,
+    },
+    {
+        name : 'Unit',
+        alignment : 'center',
+        flex : 1,
+    },
+    {
+        name : 'Unit Price',
+        alignment : 'flex-end',
+        flex : 1,
+    },
+]
+
 const OrderItemTab = ({
     orders = [],
     // isEditMode = false,
@@ -41,33 +70,6 @@ const OrderItemTab = ({
 
     const recordsPerPage = 15;
 
-    const headers = [
-        {
-            name : 'Item Name',
-            alignment : 'flex-start',
-            flex : 2,
-        },
-        {
-            name : 'SKU',
-            alignment : 'center',
-            flex : 1,
-        },
-        {
-            name : 'Quantity',
-            alignment : 'center',
-            flex : 1,
-        },
-        {
-            name : 'Unit',
-            alignment : 'center',
-            flex : 1,
-        },
-        {
-            name : 'Unit Price',
-            alignment : 'flex-end',
-            flex : 1,
-        },
-    ]
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
 
@@ -107,7 +109,7 @@ const OrderItemTab = ({
 
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
-        let updatedItems = checkboxItemPress(item, _id, selectedItems)
+        let updatedItems = checkboxItemPress(_id, selectedItems)
 
         setSelectedItems(updatedItems)
     }
@@ -127,7 +129,7 @@ const OrderItemTab = ({
 
     const onQuantityChange = (item) => (action) =>{
         const { amount = 0, productId = {} } = item
-        const { inventoryId = "" } = productId
+        const { _id = "" } = productId
 
         const updatedObj = {
             ...item,
@@ -137,7 +139,7 @@ const OrderItemTab = ({
 
         const updatedData = orders.map(item => {
             // console.log("Order: ", item.p)
-            return item.productId?.inventoryId === inventoryId
+            return item.productId?._id === _id
                 ? {...updatedObj}
                 : {...item}
         })
@@ -146,6 +148,7 @@ const OrderItemTab = ({
     }
 
     const onAmountChange = (item) => (value) => {
+        console.log('hello', item, value);
 
         const { productId = {} } = item
         const { inventoryId = "" } = productId

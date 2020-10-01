@@ -39,10 +39,10 @@ const headers = [
         alignment: "flex-end"
     }
 ];
- 
+
 
 const StorageConsumablesTab = ({consumables = []}) => {
-    
+
     const theme = useTheme();
     const modal = useModal();
 
@@ -60,12 +60,12 @@ const StorageConsumablesTab = ({consumables = []}) => {
                 <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {inventoryGroup?.name}/>
                 <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {stock}/>
                 <DataItem align = "flex-end" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {`$ ${currencyFormatter(unitCost)}`}/>
-             
+
             </>
         )
     }
 
-        
+
     const renderListItem = (item) => {
         const { _id } = item;
         return <Item
@@ -85,11 +85,11 @@ const StorageConsumablesTab = ({consumables = []}) => {
 
     const onItemCheck = (item) =>{
         const { _id } = item;
-        let updatedItems = checkboxItemPress(item, _id, checkedItems);
+        let updatedItems = checkboxItemPress(_id, checkedItems);
         setCheckedItems(updatedItems)
-        
+
     }
-    
+
     const toggleActionButton = () => {
         setFloatingAction(true)
 
@@ -121,7 +121,7 @@ const StorageConsumablesTab = ({consumables = []}) => {
         //         />
         //     </LongPressWithFeedback>;
 
-        const itemTransfer = 
+        const itemTransfer =
             <ActionItem
                 title={"Item Transfer"}
                 icon={<TransferIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}/>}
@@ -139,9 +139,9 @@ const StorageConsumablesTab = ({consumables = []}) => {
     }
 
     const handleTransferItems = () => {
-        
+
     }
-    
+
     return (
         <>
             <Table
@@ -157,7 +157,7 @@ const StorageConsumablesTab = ({consumables = []}) => {
                 toggleActionButton = {toggleActionButton}
             />
         </>
-        
+
     )
 }
 
