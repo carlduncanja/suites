@@ -74,6 +74,7 @@ export const storageLocationEndpoint = id => `/storage-locations/${id}`;
 export const suppliersEndpoint = '/suppliers';
 export const supplierEndpoint = id => `/suppliers/${id}`;
 export const supplierProductsEndpoint = id => `/suppliers/${id}/products`;
+export const variantSuppliersEndpoint = '/suppliers/products';
 export const updateProductsEndpoint = id => productId => `/suppliers/${id}/products/${productId}`;
 export const archiveSupplierEndpoint = id => `/suppliers/${id}/archive`;
 export const getArchivedSuppliersEndPoint = '/suppliers/archived';

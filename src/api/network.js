@@ -32,6 +32,7 @@ import {
     suppliersEndpoint,
     supplierEndpoint,
     supplierProductsEndpoint,
+    variantSuppliersEndpoint,
     updateProductsEndpoint,
     purchaseOrdersEndpoint,
     purchaseOrderEndpoint,
@@ -536,6 +537,11 @@ export const updateSupplierCall = async (id, data) => suitesAxiosInstance
 
 export const getSupplierProducts = async (id, query, max) => suitesAxiosInstance
     .get(supplierProductsEndpoint(id), {params: {query, max}})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const getVariantSupplierProducts = async (inventoryVariant, query, max, page) => suitesAxiosInstance
+    .get(variantSuppliersEndpoint, {params: {query, max, page, inventoryVariant}})
     .then(handleResponse)
     .catch(handleError);
 
