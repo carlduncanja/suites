@@ -159,8 +159,8 @@ function StorageLocationsTab({storageLocations = []}) {
             <RightBorderDataItem
                 text={inventoryName}
                 flex={1.5}
-                color="--color-gray-800"
-                fontStyle="--text-base-regular"
+                color="--color-blue-600"
+                fontStyle="--text-base-medium"
             />
 
             <ContentDataItem
@@ -176,7 +176,7 @@ function StorageLocationsTab({storageLocations = []}) {
                 )}
             />
 
-            <DataItem flex={1} text={stock} color="--color-blue-600" fontStyle="--text-base-regular" align="center"/>
+            <DataItem flex={1} text={stock} color="--color-blue-600" fontStyle="--text-base-medium" align="center"/>
             <DataItem flex={0.5}/>
         </>
     );
