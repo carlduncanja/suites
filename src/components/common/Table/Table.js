@@ -1,12 +1,12 @@
 import React, {useContext, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import Header from './Header';
 import Data from './Data';
 
 import LineDivider from '../LineDivider';
 
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
 import {CaseFileContext} from '../../../contexts/CaseFileContext';
 
 const DividerContainer = styled.View`
@@ -29,17 +29,18 @@ const BannerText = styled.Text(({theme}) => ({
 }));
 
 const Table = ({
-                   data = [],
-                   listItemFormat = ()=>{},
-                   headers = [],
-                   isCheckbox = true,
-                   toggleHeaderCheckbox = ()=>{},
-                   itemSelected =  [],
-                   hasBanner = false,
-                   bannerText = "",
-                   ...props
-               }) => {
-
+    data = [],
+    listItemFormat = () => {
+    },
+    headers = [],
+    isCheckbox = true,
+    toggleHeaderCheckbox = () => {
+    },
+    itemSelected = [],
+    hasBanner = false,
+    bannerText = '',
+    ...props
+}) => {
     // const {
     //     data = [],
     //     listItemFormat = () => {
@@ -85,7 +86,7 @@ const Table = ({
             />
         </>
     );
-}
+};
 
 export default Table;
 const styles = StyleSheet.create({
@@ -94,4 +95,4 @@ const styles = StyleSheet.create({
         //marginBottom:25,
     },
     data: {}
-})
+});

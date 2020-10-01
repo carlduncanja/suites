@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, View} from 'react-native';
 import moment from 'moment';
-import { forEach } from 'lodash';
-import styled, { css } from '@emotion/native'; 
-import { useTheme } from 'emotion-theming';
+import {forEach} from 'lodash';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import SlideOverlay from '../../components/common/SlideOverlay/SlideOverlay';
 import InventoryGeneralTabContent from '../../components/OverlayTabs/InventoryGeneralTabContent';
 import TheatresDetailsTab from '../../components/OverlayTabs/TheatresDetailsTab';
-import { getTheatreById } from '../../api/network';
+import {getTheatreById} from '../../api/network';
 import ProceduresEquipmentTab from '../../components/OverlayTabs/ProceduresEquipmentTab';
 import EquipmentsTab from '../../components/OverlayTabs/EquipmentsTab';
 import PaginatedSchedule from '../../components/PaginatedSchedule';
 import StorageLocationsTab from '../../components/OverlayTabs/StorageLocationsTab';
 import HistoryTabs from '../../components/OverlayTabs/HistoryTabs';
-import { formatDate } from '../../utils/formatter';
+import {formatDate} from '../../utils/formatter';
 import BottomSheetContainer from '../../components/common/BottomSheetContainer';
-import { PageContext } from '../../contexts/PageContext';
+import {PageContext} from '../../contexts/PageContext';
 import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 
-function TheatresPage({ route, navigation }) {
+function TheatresPage({route, navigation}) {
     const theme = useTheme();
     const currentTabs = [
         'Details',
@@ -28,7 +28,7 @@ function TheatresPage({ route, navigation }) {
         'Equipment',
         'Schedule',
     ];
-    const { theatre, reloadTheatres } = route.params;
+    const {theatre, reloadTheatres} = route.params;
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
@@ -77,7 +77,10 @@ function TheatresPage({ route, navigation }) {
     const isInUse = (appointments = []) => {
         const now = moment();
 
-        if (!Array.isArray(appointments)) return {isActive: false, isRecovery: false};
+        if (!Array.isArray(appointments)) return {
+            isActive: false,
+            isRecovery: false
+        };
 
         for (const appointment of appointments) {
             const startTime = moment(appointment.startTime);
@@ -86,22 +89,28 @@ function TheatresPage({ route, navigation }) {
             const isActive = now.isBetween(startTime, endTime);
 
             if (isActive) {
-                return {isActive: true, isRecovery: false};
+                return {
+                    isActive: true,
+                    isRecovery: false
+                };
             }
         }
 
-        return {isActive: false, isRecovery: false};
+        return {
+            isActive: false,
+            isRecovery: false
+        };
     };
 
     const getOverlayScreen = selectedOverlay => {
         switch (selectedOverlay) {
-            case 'Details':
+            case 'Details': {
                 // console.log('Theatre:', selectedTheatre);
                 const appointments = selectedTheatre.appointments || [];
 
                 const {isActive, isRecovery} = isInUse(selectedTheatre.appointments || []);
-                const availableOn = appointments && appointments.length &&
-                    formatDate(appointments[0].endTime, 'DD/MM/YYYY @ hh:mm a') ||
+                const availableOn = (appointments && appointments.length) ?
+                    formatDate(appointments[0].endTime, 'DD/MM/YYYY @ hh:mm a') :
                     '--';
 
                 const theatreDetails = {
@@ -120,12 +129,14 @@ function TheatresPage({ route, navigation }) {
                     onUpdated={onDetailsUpdated}
                     isEditMode={isEditMode}
                 />;
-            case 'History':
+            }
+            case 'History': {
                 // console.log("Cases: ", selectedTheatre.cases)
                 const cases = selectedTheatre.cases.map(caseItem => {
                     const end = caseItem.endTime;
                     const start = caseItem.startTime;
-                    let duration = moment.duration(moment(end).diff(moment(start)));
+                    let duration = moment.duration(moment(end)
+                        .diff(moment(start)));
                     duration = duration.asHours();
                     return {
                         name: caseItem.title,
@@ -135,9 +146,12 @@ function TheatresPage({ route, navigation }) {
                     };
                 });
 
-                return <HistoryTabs cases={cases} />;
-            case 'Storage':
+                return <HistoryTabs cases={cases}/>;
+            }
+            case 'Storage': {
                 const storageLocations = selectedTheatre.storageLocations.map(item => {
+                    const {_id, inventoryLocations = []} = item;
+
                     let stock = 0;
                     const levels = {
                         ideal: 0,
@@ -148,34 +162,34 @@ function TheatresPage({ route, navigation }) {
                     };
 
                     // get the total stock and levels
-                    item.inventoryLocations.forEach(item => {
-                        stock += item.stock;
+                    inventoryLocations.map(inventoryLocation => {
+                        stock += inventoryLocation.stock;
 
-                        levels.ideal += item.levels.ideal;
-                        levels.max += item.levels.max;
-                        levels.low += item.levels.low;
-                        levels.critical += item.levels.critical;
+                        levels.ideal += inventoryLocation.levels.ideal;
+                        levels.max += inventoryLocation.levels.max;
+                        levels.low += inventoryLocation.levels.low;
+                        levels.critical += inventoryLocation.levels.critical;
+
+                        inventoryLocation.storageLocationId = item._id;
                     });
 
                     return {
-                        id: item._id,
+                        _id,
                         locationName: item.name,
-                        restockDate: new Date(),
 
-                        //TODO get this info
                         stock,
-                        levels
+                        levels,
+                        inventoryLocations
                     };
                 });
-                return <StorageLocationsTab storageLocations={storageLocations} />;
+                return <StorageLocationsTab storageLocations={storageLocations}/>;
+            }
             case 'Equipment':
-                return <EquipmentsTab />;
+                return <EquipmentsTab/>;
             case 'Schedule':
-                return (
-                    <PaginatedSchedule ID={theatre._id} isPhysician={false} />
-                );
+                return <PaginatedSchedule ID={theatre._id} isPhysician={false}/>;
             default:
-                return <View />;
+                return <View/>;
         }
     };
 
@@ -194,11 +208,14 @@ function TheatresPage({ route, navigation }) {
             });
     };
 
-    const { _id, name, theatreNumber } = selectedTheatre;
+    const {_id, name, theatreNumber} = selectedTheatre;
 
     return (
         <>
-            <PageContext.Provider value={{ pageState, setPageState }}>
+            <PageContext.Provider value={{
+                pageState,
+                setPageState
+            }}>
                 <DetailsPage
                     headerChildren={[name, `${theatreNumber}`]}
                     onBackPress={onBackTapped}
