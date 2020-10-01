@@ -38,20 +38,92 @@ const Patient = ({
     const {
         firstName = '',
         surname = '',
+        contactInfo = {},
         insurance = {},
         medicalInfo = {},
+        address: addresses = [],
         nextVisit = getDate(dates) || null
     } = patient;
 
+    const {phones = [], emails = [], emergencyContact: emergencyContacts = []} = contactInfo;
     const {diagnosis = [], risks = []} = medicalInfo;
+
+    const handlePhones = () => {
+        const cellPhone = phones.find(p => p.type === 'cell');
+        const homePhone = phones.find(p => p.type === 'home');
+        const workPhone = phones.find(p => p.type === 'work');
+
+        return [
+            {
+                type: 'cell',
+                phone: cellPhone ? cellPhone.phone : ''
+            },
+            {
+                type: 'home',
+                phone: homePhone ? homePhone.phone : ''
+            },
+            {
+                type: 'work',
+                phone: workPhone ? workPhone.phone : ''
+            }
+        ];
+    };
+
+    const handleEmails = () => {
+        const primaryEmail = emails.find(e => e.type === 'primary');
+        const otherEmail = emails.find(e => e.type === 'other');
+        const workEmail = emails.find(e => e.type === 'work');
+
+        return [
+            {
+                type: 'primary',
+                email: primaryEmail ? primaryEmail.email : ''
+            },
+            {
+                type: 'other',
+                email: otherEmail ? otherEmail.email : ''
+            },
+            {
+                type: 'work',
+                email: workEmail ? workEmail.email : ''
+            }
+        ];
+    };
+
+    const handleAddresses = () => (addresses.length ? [...addresses] : [
+        {
+            line1: '',
+            line2: ''
+        }
+    ]);
+
+    const handleEmergencyContacts = () => (emergencyContacts.length ? [...emergencyContacts] : [
+        {
+            email: '',
+            name: '',
+            phone: '',
+            relation: ''
+        }
+    ]);
+
+    const updatedPatient = {
+        ...patient,
+        contactInfo: {
+            ...contactInfo,
+            phones: handlePhones(),
+            emails: handleEmails(),
+            emergencyContact: handleEmergencyContacts()
+        },
+        address: handleAddresses()
+    };
 
     return (
         selectedTab === 'Details' ?
             (
                 <Details
                     tabDetails={{
-                        ...patient,
-                        nextVisit
+                        ...updatedPatient,
+                        nextVisit,
                     }}
                     onUpdated={onPatientUpdated}
                 />

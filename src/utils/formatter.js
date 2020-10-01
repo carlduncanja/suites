@@ -54,3 +54,25 @@ export const calcAge = dob => {
 };
 
 export const checkObjectProperty = (object, key) => object && key in object && object[key] !== undefined && object[key] !== null;
+
+export const mergeObjectArraysWithKeyValue = (arrOld = [], arrNew = [], key = '', value) => {
+    arrOld.map(arrOldObj => {
+        if (arrOldObj[key] === value) {
+            arrNew.map(arrNewObj => {
+                if (arrNewObj[key] === value) arrOldObj = {...arrOldObj, ...arrNewObj};
+            });
+        }
+    });
+    return arrOld;
+};
+
+export const mergeObjectArraysByKey = (arrOld = [], arrNew = [], key = '') => {
+    arrOld.map(arrOldObj => {
+        arrNew.forEach(arrNewObj => {
+            if (arrOldObj[key] === arrNewObj[key]) {
+                arrOldObj = {...arrOldObj, ...arrNewObj};
+            }
+        });
+    });
+    return arrOld;
+};
