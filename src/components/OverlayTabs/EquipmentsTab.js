@@ -4,7 +4,7 @@ import {useTheme} from 'emotion-theming';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
-import {checkboxItemPress} from '../../helpers/caseFilesHelpers';
+import {checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import CollapsibleListItem from '../common/List/CollapsibleListItem';
 import DataItem from '../common/List/DataItem';
 import RightBorderDataItem from '../common/List/RightBorderDataItem';
@@ -61,8 +61,8 @@ const EquipmentsTab = ({equipments = testData}) => {
     const onCheckBoxPress = item => () => {
         const {_id} = item;
 
-        const updatedStorageLocations = checkboxItemPress(_id, selectedIds);
-        setSelectedIds(updatedStorageLocations);
+        const updatedEquipments = checkboxItemPress(_id, selectedIds);
+        setSelectedIds(updatedEquipments);
 
         const removeChildren = selectedEquipments.filter(obj => obj.equipmentTypeId !== _id);
         setSelectedEquipments(removeChildren);
@@ -111,7 +111,7 @@ const EquipmentsTab = ({equipments = testData}) => {
         </>
     );
 
-    const equipmentItemView = ({equipmentName: name, status, startTime, endTime}, onActionPress) => {
+    const equipmentItemView = ({equipmentName: name, equipmentTitle, status, startTime, endTime}, onActionPress) => {
         const availableStatusColor = '--color-green-600';
         const servicingStatusColor = '--color-orange-600';
         const inUseStatusColor = '--color-indigo-600';
@@ -128,7 +128,7 @@ const EquipmentsTab = ({equipments = testData}) => {
         return (
             <>
                 <RightBorderDataItem
-                    text={name}
+                    text={equipmentTitle}
                     flex={1.5}
                     color="--color-blue-600"
                     fontStyle="--text-sm-medium"
@@ -193,6 +193,11 @@ const EquipmentsTab = ({equipments = testData}) => {
         </CollapsibleListItem>;
     };
 
+    const toggleHeaderCheckbox = () => {
+        const updatedEquipmentTypes = selectAll(equipments, selectedIds);
+        setSelectedIds(updatedEquipmentTypes);
+    };
+
     return (
         <ScrollView>
             <Table
@@ -201,6 +206,7 @@ const EquipmentsTab = ({equipments = testData}) => {
                 listItemFormat={renderListFn}
                 headers={headers}
                 itemSelected={selectedIds}
+                toggleHeaderCheckbox={toggleHeaderCheckbox}
             />
         </ScrollView>
     );

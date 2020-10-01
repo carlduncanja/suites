@@ -198,6 +198,7 @@ function TheatresPage({route, navigation}) {
                         const equipmentTypeIndex = equipments.findIndex(e => e._id === equipmentTypeId);
                         const equipmentObj = {
                             _id: equipmentTypeId,
+                            equipmentTitle,
                             equipmentId,
                             equipmentName,
                             status,
