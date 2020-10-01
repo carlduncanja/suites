@@ -15,10 +15,12 @@ import ActionItem from "../common/ActionItem";
 import {LONG_PRESS_TIMER} from '../../const';
 import { useModal } from 'react-native-modalfy';
 import WasteIcon from "../../../assets/svg/wasteIcon";
+import AddIcon from "../../../assets/svg/addIcon";
 import ConfirmationComponent from '../ConfirmationComponent';
-import { removeTransferItem } from '../../api/network';
+import { removeTransferItem, updateTransferState } from '../../api/network';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import { forEach } from 'lodash';
+import ContentDataItem from '../common/List/ContentDataItem';
 
  
 const PendingTransferHeadings = [
@@ -79,7 +81,7 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
     const [isFloatingDisabled, setFloatingAction] = useState(false);
 
     const pendingItems = transferItems.filter(item => item?.state === 'pending');
-    const completedItems = transferItems.filter( item => item?.state === 'complete');
+    const completedItems = transferItems.filter( item => item?.state === 'completed');
 
     const onItemCheckbox = (item) => {
         const {_id} = item;
@@ -108,6 +110,16 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
     const floatingActions = () =>{
         let isDisabled = pendingCheckedItems.length === 0 ? true : false;
         let isDisabledColor = pendingCheckedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
+        
+        const acceptTransfer = 
+            <ActionItem
+                title={"Accept Transfer"}
+                icon={<AddIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600'] } />}
+                onPress={handleAcceptTransfer}
+                disabled = {isDisabled}
+                touchable = {true}
+            />
+
         const deleteItem =
             <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
@@ -126,9 +138,75 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
         return <ActionContainer
             floatingActions={[
                 deleteItem,
+                acceptTransfer
             ]}
             title={"SUPPLIER ACTIONS"}
         />
+    }
+
+    const handleAcceptTransfer = () =>{
+        console.log("Pending: ", pendingCheckedItems.length);
+        if(pendingCheckedItems.length === 1) {
+            // console.log("Hello");
+            modal.closeAllModals();
+            setTimeout(()=>{
+                modal.openModal('ConfirmationModal',{
+
+                    content: <ConfirmationComponent
+                        isEditUpdate = {true}
+                        isError = {false}
+                        onCancel = {()=> modal.closeAllModals()}
+                        onAction = {()=> {
+                            modal.closeAllModals();
+                            updateTransferStatus(pendingCheckedItems[0])
+                        }}
+                        message = "Do you want to save your changes ?"
+                    />
+                    ,
+                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                })
+            },200)
+        }
+    }
+
+    const updateTransferStatus = (transferId) =>{
+        const newState = { state : 'completed'};
+        updateTransferState(groupId, variantId, transferId, newState)
+            .then(_=>{
+                modal.closeAllModals();
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {false}
+                            onCancel = {()=> modal.closeAllModals()}
+                            onAction = {()=> {
+                                modal.closeAllModals();
+                                setPendingCheckedItems([]);
+                            }}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+            })
+            .catch(_=>{
+                modal.closeAllModals();
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onCancel = {()=> {modal.closeAllModals(); }}
+                            onAction = {()=> {modal.closeAllModals(); }}
+                            message = "There was an issue performing this action"
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+            })
+            .finally(_=> onUpdateItem())
     }
 
     const onCancelItems = () =>{
@@ -197,26 +275,31 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
             })
     }
 
-    const completedTransferListItem = ({from, to, product, amount, dateCompleted = ""}) => {
-        const { inventoryName = "" } = inventoryLocation
+    const completedTransferListItem = ({from, to, product, amount, dateCompleted = "", updatedAt = ""}) => {
+        const { inventoryName = "", locationName = "" } = from
         return (
         <>
-            <View style={[styles.item, {flex: 2, justifyContent: 'space-between', paddingRight: 20}]}>
-                <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{from}</Text></View>
-                <ArrowRightIcon/>
-                <View style={[styles.highlighted]}><Text style={[styles.itemText, styles.linkText]}>{to}</Text></View>
-            </View>
+            <ContentDataItem
+                flex = {2}
+                content = {
+                    <View style={{flexDirection : 'row', justifyContent: 'space-between',}}>
+                        <View style={[styles.highlighted,{paddingRight:50 }]}><Text style={[styles.itemText, styles.linkText]}>{locationName}</Text></View>
+                        <ArrowRightIcon/>
+                        <View style={[styles.highlighted,{paddingLeft:20}]}><Text style={[styles.itemText, styles.linkText]}>{to?.locationName}</Text></View>
+                    </View>
+                }
+            />
 
-            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {formatDate(dateCompleted, "DD/MM/YYYY")}/>
-            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {`${inventoryName} ${amount}`}/>
+            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {formatDate(updatedAt, "DD/MM/YYYY")}/>
+            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {`${inventoryName} (${amount})`}/>
         </>)
     };
 
-    const pendingTransferListItem = ({from, to = "", product, amount, dateGenerated, inventoryLocation}) => {
+    const pendingTransferListItem = ({from, to , product, amount, dateGenerated, inventoryLocation}) => {
         const { inventoryName = "", locationName = "" } = from;
         return (
         <>
-            <DataItem  flex = {1.5} fontStyle = "--text-base-medium" color = "--color-blue-600" text = {to}/>
+            <DataItem  flex = {1.5} fontStyle = "--text-base-medium" color = "--color-blue-600" text = {to?.locationName}/>
             <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {inventoryName}/>
             <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {formatDate(dateGenerated, "DD/MM/YYYY")}/>
             <DataItem align = "center" fontStyle = "--text-base-medium" color = "--color-green-600" text = {`+ ${amount}`}/>
@@ -224,7 +307,6 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
     };
 
     const renderCompleteItem = (item) => {
-
         return <Item
             itemView = {completedTransferListItem(item)}
             hasCheckBox = {false}

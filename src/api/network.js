@@ -11,6 +11,7 @@ import {
     inventoryGroupVariants,
     inventoryGroupVariantTransfers,
     inventoryGroupVariantTransfer,
+    inventoryGroupVariantTransferState,
     inventoryLocationEndpint,
     theatresEndpoint,
     theatreEndpoint,
@@ -243,6 +244,11 @@ export const createInventoryLocation = async (groupId, variantId, data) => suite
 
 export const removeTransferItem = async(groupId, variantId, transferId) => suitesAxiosInstance
     .delete(inventoryGroupVariantTransfer(groupId, variantId, transferId))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const updateTransferState = async(groupId, variantId, transferId, data) => suitesAxiosInstance
+    .put(inventoryGroupVariantTransferState(groupId, variantId, transferId), data)
     .then(handleResponse)
     .catch(handleError);
 
