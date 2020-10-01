@@ -9,11 +9,11 @@ const ButtonWrapper = styled.TouchableOpacity`
         flex: 1;
         position: relative;
         padding-right: 8px;
-
         padding-left: 8px;
         flex-direction: row;
         align-items: center;
         justify-content: center;
+        
 `;
 
 const ButtonContainer = styled.View`
@@ -25,7 +25,6 @@ const ButtonContainer = styled.View`
 
         justify-content: center;
         align-items: center;
-        background-color:${(backgroundColor,) => backgroundColor};
 `;
 
 const ButtonTitle = styled.Text(({theme, font, color}) => ({
@@ -35,9 +34,9 @@ const ButtonTitle = styled.Text(({theme, font, color}) => ({
 }))
 
 const IconWrapper = styled.View`
-  //position: absolute;
-  //right: 0px;
-  //margin-top: 6px;
+  /* position: absolute;
+  right: 0px;
+  margin-top: 6px; */
 `
 
 

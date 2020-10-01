@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import styled, {css} from '@emotion/native';
+import { Text } from 'react-native';
 import {useTheme} from "emotion-theming";
 import Button from '../Buttons/Button';
 import BackIcon from '../../../../assets/svg/paginationLeft';
 import NextIcon from '../../../../assets/svg/paginationRight';
+import { findLastIndex } from 'lodash';
 
 const FooterWrapper = styled.View`
     display: flex;
@@ -42,13 +44,15 @@ const IconButtonContainer= styled.TouchableOpacity`
     align-items: center;
     background-color : ${({theme, isDisabled}) => isDisabled ? theme.colors["--default-shade-white"] : theme.colors["--color-blue-500"]};
     border-radius : 8px;
-    border : ${ ({theme, isDisabled}) => isDisabled ? `1px solid ${theme.colors['--color-gray-300']}` : null };
-`
-
-const ButtonText = styled.Text`
-    font:${({theme}) => theme.font["--text-base-bold"]};
-    color:${({theme, isDisabled}) => isDisabled ? theme.colors['--color-gray-300'] : theme.colors["--default-shade-white"]};
+    border : ${ ({theme, isDisabled}) => isDisabled ? `1px solid ${theme.colors['--color-gray-300']}` : null }; 
 `;
+
+
+const ButtonText = styled.Text( ({theme, isDisabled}) =>({
+    ...theme.font['--text-base-bold'],
+    color : isDisabled ? theme.colors['--color-gray-300'] : theme.colors["--default-shade-white"],
+    height : 14
+}));
 
 
 function CreatePageDoneFooter ({
@@ -56,7 +60,7 @@ function CreatePageDoneFooter ({
     isPreviousDisabled = true ,
     onFooterPress = ()=>{},
     onFooterPreviousPress = () => {}
-}){
+}){ 
 
     const theme = useTheme();
     let disabledBorder = !isPreviousDisabled ? `1px solid ${theme.colors['--color-blue-500']}` : null;
@@ -74,9 +78,9 @@ function CreatePageDoneFooter ({
                         background-color : ${theme.colors['--default-shade-white']};
                     `}
                 >
-                    
                         <BackIcon strokeColor = {isPreviousDisabled ? theme.colors['--color-gray-300'] : theme.colors['--color-blue-500']}/>
-                    <ButtonText style = {css`color : ${disabledColor}`} isDisabled = {isPreviousDisabled}>PREVIOUS</ButtonText>
+                    <ButtonText style = {css`color : ${disabledColor};`} isDisabled = {isPreviousDisabled}>PREVIOUS</ButtonText>
+               
                 </IconButtonContainer>
                 {
                     isFinished ?

@@ -21,11 +21,11 @@ const DataText = styled.Text( ({theme, fontStyle, color}) => ({
 }))
 
 
-function TouchableDataItem({text = "", flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-blue-600', onPress = ()=>{}}){
+function TouchableDataItem({text = "", flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-blue-600', onPress = ()=>{}, isDisabled = false }){
     const theme = useTheme();
     
     return (
-        <DataItemWrapper flex = {flex} theme={theme} onPress = {onPress}>
+        <DataItemWrapper flex = {flex} theme={theme} onPress = {onPress} disabled = {isDisabled}>
             <DataItemContainer align = {align}>
                 <DataText numberOfLines = {1} fontStyle = {fontStyle} color = {color} theme = {theme}>{text}</DataText>
             </DataItemContainer>

@@ -31,6 +31,7 @@ export const inventoryLocationEndpint = (groupId, variantId) => `/inventory_grou
 // ##### INVENTORY TRANSFERS
 export const inventoryGroupVariantTransfers = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}/transfers`;
 export const inventoryGroupVariantTransfer = (groupId, variantId, transferId) => `/inventory_groups/${groupId}/variants/${variantId}/transfers/${transferId}`;
+export const inventoryGroupVariantTransferState = (groupId, variantId, transferId) => `/inventory_groups/${groupId}/variants/${variantId}/transfers/${transferId}/state`;
 
 // ##### PHYSICIANS
 export const physiciansEndpoint = '/physicians';
@@ -73,6 +74,7 @@ export const storageLocationEndpoint = id => `/storage-locations/${id}`;
 export const suppliersEndpoint = '/suppliers';
 export const supplierEndpoint = id => `/suppliers/${id}`;
 export const supplierProductsEndpoint = id => `/suppliers/${id}/products`;
+export const variantSuppliersEndpoint = '/suppliers/products';
 export const updateProductsEndpoint = id => productId => `/suppliers/${id}/products/${productId}`;
 export const archiveSupplierEndpoint = id => `/suppliers/${id}/archive`;
 export const getArchivedSuppliersEndPoint = '/suppliers/archived';
