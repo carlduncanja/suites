@@ -146,7 +146,7 @@ const Suppliers = props => {
 
     const handleOnCheckBoxPress = item => () => {
         const {_id} = item;
-        const updatedSuppliersList = checkboxItemPress(item, _id, selectedSuppliers);
+        const updatedSuppliersList = checkboxItemPress(_id, selectedSuppliers);
 
         setSelectedSuppliers(updatedSuppliersList);
     };

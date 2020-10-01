@@ -167,7 +167,7 @@ function Theatres(props) {
 
     const onCheckBoxPress = item => () => {
         const {_id} = item;
-        const updatedTheatres = checkboxItemPress(item, _id, selectedIds);
+        const updatedTheatres = checkboxItemPress(_id, selectedIds);
         setSelectedIds(updatedTheatres);
     };
 

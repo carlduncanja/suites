@@ -109,7 +109,7 @@ const OrderItemTab = ({
 
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
-        let updatedItems = checkboxItemPress(item, _id, selectedItems)
+        let updatedItems = checkboxItemPress(_id, selectedItems)
 
         setSelectedItems(updatedItems)
     }

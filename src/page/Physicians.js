@@ -128,7 +128,7 @@ const Physicians = props => {
 
     const handleOnCheckBoxPress = item => () => {
         const {_id} = item;
-        const updatedPhysiciansList = checkboxItemPress(item, _id, selectedPhysiciansId);
+        const updatedPhysiciansList = checkboxItemPress(_id, selectedPhysiciansId);
         setSelectedPhysiciansId(updatedPhysiciansList);
     };
 

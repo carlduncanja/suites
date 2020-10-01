@@ -86,7 +86,7 @@ function StorageLocationsTab({storageLocations = []}) {
     const onCheckBoxPress = item => () => {
         const {_id, inventoryLocations = []} = item;
 
-        const updatedStorageLocations = checkboxItemPress(item, _id, selectedIds);
+        const updatedStorageLocations = checkboxItemPress(_id, selectedIds);
         setSelectedIds(updatedStorageLocations);
 
         const removeChildren = selectedInventories.filter(obj => obj.storageLocationId !== _id);

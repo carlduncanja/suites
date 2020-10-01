@@ -117,7 +117,7 @@ const Procedures = (props) => {
 
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
-        let updatedProcedures = checkboxItemPress(item, _id, selectedProcedures)
+        let updatedProcedures = checkboxItemPress( _id, selectedProcedures)
 
         setSelectedProcedures(updatedProcedures)
     }

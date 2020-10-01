@@ -17,11 +17,11 @@ import Item from '../common/Table/Item';
 import DataItem from '../common/List/DataItem';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 
-  
+
 
 const StorageEquipmentTab = ({equipments = []}) => {
     const theme = useTheme();
-    const modal = useModal(); 
+    const modal = useModal();
 
     const headers = [
         {
@@ -45,15 +45,15 @@ const StorageEquipmentTab = ({equipments = []}) => {
     const [checkedItems, setCheckedItems] = useState([]);
     const [isFloatingDisabled, setFloatingAction] = useState(false);
 
-    const listItem = (item) => 
+    const listItem = (item) =>
         <>
             <DataItem flex = {2} color = "--color-blue-600" fontStyle = "--text-base-medium" text = {item?.name}/>
             <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {item?.type}/>
             <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {item?.amount}/>
             <DataItem align = "flex-end" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {item.unitPrice}/>
-            
+
         </>;
- 
+
     const renderListItem = (item) => {
         <Item
             itemView = {listItem(item)}
@@ -71,11 +71,11 @@ const StorageEquipmentTab = ({equipments = []}) => {
 
     const onItemCheck = (item) =>{
         const { _id } = item;
-        let updatedItems = checkboxItemPress(item, _id, checkedItems);
+        let updatedItems = checkboxItemPress(_id, checkedItems);
         setCheckedItems(updatedItems)
-        
+
     }
-    
+
     const toggleActionButton = () => {
         setFloatingAction(true)
 
@@ -107,7 +107,7 @@ const StorageEquipmentTab = ({equipments = []}) => {
         //         />
         //     </LongPressWithFeedback>;
 
-        const itemTransfer = 
+        const itemTransfer =
             <ActionItem
                 title={"Item Transfer"}
                 icon={<TransferIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-orange-700']}/>}
