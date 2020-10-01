@@ -57,7 +57,7 @@ const shadows = [
     },
 ];
 
-const storageHeader = [
+const headers = [
     {
         name: 'Location',
         alignment: 'flex-start',
@@ -197,7 +197,7 @@ function StorageLocationsTab({storageLocations = []}) {
         );
     };
 
-    const renderStorageLocation = item => {
+    const renderListFn = item => {
         const {_id, inventoryLocations} = item;
 
         if (item._id === '5ea05b4d9ea6ffd91cc0fe8b') console.log('renderStorageLocation 5ea05b4d9ea6ffd91cc0fe8b', item);
@@ -206,12 +206,12 @@ function StorageLocationsTab({storageLocations = []}) {
 
         return <CollapsibleListItem
             hasCheckBox={true}
-            isChecked={selectedIds.includes(item._id)}
+            isChecked={selectedIds.includes(_id)}
             isIndeterminate={isIndeterminate}
             onCheckBoxPress={onCheckBoxPress(item)}
             onItemPress={() => console.info('Storage Location Selected:', item)}
-            collapsed={!expandedItems.includes(item._id)}
-            onCollapsedEnd={() => onCollapseView(item._id)}
+            collapsed={!expandedItems.includes(_id)}
+            onCollapsedEnd={() => onCollapseView(_id)}
             render={(collapse, isCollapsed) => storageItemView(item, collapse, isCollapsed)}
         >
             <FlatList
@@ -238,8 +238,8 @@ function StorageLocationsTab({storageLocations = []}) {
         <View style={styles.container}>
             <Table
                 data={storageLocations}
-                listItemFormat={renderStorageLocation}
-                headers={storageHeader}
+                listItemFormat={renderListFn}
+                headers={headers}
                 isCheckbox={true}
                 itemSelected={selectedIds}
             />
