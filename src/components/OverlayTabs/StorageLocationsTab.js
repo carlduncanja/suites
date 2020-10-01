@@ -70,7 +70,7 @@ const headers = [
     },
     {
         name: 'Products',
-        alignment: 'flex-end',
+        alignment: 'center',
         styles: {flex: 1}
     }
 ];

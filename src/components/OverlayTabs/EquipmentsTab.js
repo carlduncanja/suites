@@ -111,21 +111,36 @@ const EquipmentsTab = ({equipments = testData}) => {
         </>
     );
 
-    const equipmentItemView = ({equipmentName: name, status, startTime, endTime}, onActionPress) => (
-        <>
-            <RightBorderDataItem
-                text={name}
-                flex={1.5}
-                color="--color-blue-600"
-                fontStyle="--text-sm-medium"
-            />
-            <DataItem flex={1} text="1" color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
-            {/* TODO: Eval different colors to show based on status */}
-            <DataItem flex={1} text={status} color="--color-gray-700" fontStyle="--text-sm-regular" align="center"/>
-            <DataItem flex={1} text={formatDate(endTime, 'DD/MM/YYYY')} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
-            <DataItem flex={0.5}/>
-        </>
-    );
+    const equipmentItemView = ({equipmentName: name, status, startTime, endTime}, onActionPress) => {
+        const availableStatusColor = '--color-green-600';
+        const servicingStatusColor = '--color-orange-600';
+        const inUseStatusColor = '--color-indigo-600';
+        const damagedStatusColor = '--color-red-600';
+
+        const evaluateColor = () => {
+            if (status === 'Available') return availableStatusColor;
+            if (status === 'Servicing') return servicingStatusColor;
+            if (status === 'In Use') return inUseStatusColor;
+            if (status === 'Damaged') return damagedStatusColor;
+            return '--color-gray-700';
+        };
+
+        return (
+            <>
+                <RightBorderDataItem
+                    text={name}
+                    flex={1.5}
+                    color="--color-blue-600"
+                    fontStyle="--text-sm-medium"
+                />
+                <DataItem flex={1} text="1" color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
+                {/* TODO: Eval different colors to show based on status */}
+                <DataItem flex={1} text={status} color={evaluateColor()} fontStyle="--text-sm-regular" align="center"/>
+                <DataItem flex={1} text={formatDate(endTime, 'DD/MM/YYYY')} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
+                <DataItem flex={0.5}/>
+            </>
+        );
+    };
 
     const renderChildItemView = (item, parentItem, onActionPress) => {
         const {_id} = item;
