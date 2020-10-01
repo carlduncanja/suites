@@ -61,7 +61,7 @@ const EquipmentsTab = ({equipments = testData}) => {
     const onCheckBoxPress = item => () => {
         const {_id} = item;
 
-        const updatedStorageLocations = checkboxItemPress(item, _id, selectedIds);
+        const updatedStorageLocations = checkboxItemPress(_id, selectedIds);
         setSelectedIds(updatedStorageLocations);
 
         const removeChildren = selectedEquipments.filter(obj => obj.equipmentTypeId !== _id);

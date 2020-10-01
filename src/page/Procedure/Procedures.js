@@ -119,7 +119,7 @@ const Procedures = props => {
 
     const handleOnCheckBoxPress = item => () => {
         const {_id} = item;
-        const updatedProcedures = checkboxItemPress(item, _id, selectedProcedures);
+        const updatedProcedures = checkboxItemPress(_id, selectedProcedures);
 
         setSelectedProcedures(updatedProcedures);
     };

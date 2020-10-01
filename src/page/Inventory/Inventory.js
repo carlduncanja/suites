@@ -259,7 +259,7 @@ function Inventory(props) {
         const {_id, variants = []} = item;
         // const variantIds = [];
 
-        const updatedInventory = checkboxItemPress(item, _id, selectedIds);
+        const updatedInventory = checkboxItemPress(_id, selectedIds);
         setSelectedIds(updatedInventory);
 
         const removeChildren = selectedVariants.filter(obj => obj.groupId !== _id);
@@ -288,7 +288,7 @@ function Inventory(props) {
 
         // get ids for variants
         const variantIds = selectedVariants.map(variantObj => variantObj._id);
-        const updatedChildIds = checkboxItemPress(inventoryVariant, _id, variantIds);
+        const updatedChildIds = checkboxItemPress(_id, variantIds);
 
         // set selected variant
         const updatedSelectedVariants = updatedChildIds.map(_id => ({_id, groupId: inventoryGroup._id}))

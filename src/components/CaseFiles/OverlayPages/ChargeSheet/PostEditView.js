@@ -98,6 +98,10 @@ const ChangesDataContainer = styled.View`
     margin-bottom : ${ ({theme}) => theme.space['--space-12']};
 `
 
+export const POST_EDIT_MODE = {
+    CONSUMABLES: "consumables",
+    EQUIPMENTS: "equipments"
+}
 
 
 function PostEditView ({
@@ -108,7 +112,8 @@ function PostEditView ({
     lastEdited = new Date(),
     caseProcedureChanges = [],
     bannerText = "Find your change submission below",
-    role = "Nurse"
+    role = "Nurse",
+    mode = POST_EDIT_MODE.CONSUMABLES
 }) {
 
     // console.log("Cae: ", caseProcedures)
@@ -242,7 +247,6 @@ function PostEditView ({
         )
     }
 
-
     const renderChildItemView = (item, index) => {
         let { _id } = item
 
@@ -259,7 +263,6 @@ function PostEditView ({
 
     const renderChangeChildItemView = (item, index) => {
         let { _id } = item
-
         return (
             <Item
                 itemView = {changeChildViewItem(item, index)}
@@ -271,24 +274,26 @@ function PostEditView ({
         )
     };
 
-
     const renderCollapsible = (item, index) => {
 
-        const { procedure, inventories} = item
+        const { procedure, inventories, equipments} = item
         let procedureItem = {
             name : procedure?.name
         };
+
+        //  chose data depending on the mode.
+        const data = mode === POST_EDIT_MODE.EQUIPMENTS ? equipments : inventories;
 
         return (
             <CollapsibleListItem
                 isChecked={checkBoxList.includes(item._id)}
                 onCheckBoxPress={ (collapse)=> {collapse()}}
                 hasCheckBox={true}
-                onItemPress={ ()=> {}}
+                onItemPress={()=> {}}
                 render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, index)}
             >
             <FlatList
-                data={inventories}
+                data={data}
                 renderItem={({item, index}) => {
                     return renderChildItemView(item, index)
                 }}
@@ -304,8 +309,13 @@ function PostEditView ({
 
     const renderChangeCollapsible = (item, index) => {
 
-        const { procedure, inventories} = item
+        const { procedure, inventories, equipments} = item
         let procedureItem = {name : procedure?.name};
+
+        //  chose data depending on the mode.
+        const data = mode === POST_EDIT_MODE.EQUIPMENTS ? equipments : inventories;
+
+
         //Jan 12, 2020 @ 12:30pm
         const timeUpdated = moment(lastEdited).add(3, 'hours').format('MMM DD, yyyy @ hh:mma')
 
@@ -319,7 +329,7 @@ function PostEditView ({
                 backgroundColor = "--color-gray-200"
             >
             <FlatList
-                data={inventories}
+                data={data}
                 renderItem={({item, index}) => {
                     return renderChangeChildItemView(item, index)
                 }}

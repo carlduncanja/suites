@@ -180,7 +180,7 @@ function CaseFiles(props) {
 
     const handleOnCheckBoxPress = caseItem => () => {
         const {_id} = caseItem;
-        const updatedCases = checkboxItemPress(caseItem, _id, selectedCaseIds);
+        const updatedCases = checkboxItemPress(_id, selectedCaseIds);
         setSelectedCaseIds(updatedCases);
     };
 

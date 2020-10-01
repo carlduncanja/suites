@@ -59,6 +59,7 @@ const Details = ({
                      }
                  }) => {
     const theme = useTheme();
+    const modal = useModal();
 
     const Divider = styled.View`
         height : 1px;
@@ -68,7 +69,6 @@ const Details = ({
         margin-bottom : ${theme.space['--space-20']};
     `;
 
-    const modal = useModal();
 
     const baseStateRef = useRef();
 
@@ -862,7 +862,7 @@ const Details = ({
     );
 };
 
-export default withModal(Details);
+export default Details;
 
 const styles = StyleSheet.create({
     separator: {

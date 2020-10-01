@@ -211,7 +211,7 @@ const Equipment = (props) => {
 
     const handleOnCheckBoxPress = (item) => () => {
         const {_id} = item;
-        let updatedEquipmentList = checkboxItemPress(item, _id, selectedTypesIds);
+        let updatedEquipmentList = checkboxItemPress(_id, selectedTypesIds);
 
         setGroupSelected(item);
         setSelectedTypesIds(updatedEquipmentList);
@@ -228,7 +228,7 @@ const Equipment = (props) => {
 
         //  get equipment ids
         const equipmentIds = selectedEquipments.map(variantObj => variantObj._id);
-        const updatedEquipmentIds = checkboxItemPress(equipmentItem, _id, equipmentIds);
+        const updatedEquipmentIds = checkboxItemPress(_id, equipmentIds);
 
         //  set selected equipments
         const updatedSelectedVariants = updatedEquipmentIds.map(_id => ({
