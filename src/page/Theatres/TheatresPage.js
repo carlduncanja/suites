@@ -185,9 +185,80 @@ function TheatresPage({route, navigation}) {
                 return <StorageLocationsTab storageLocations={storageLocations}/>;
             }
             case 'Equipment': {
-                const equipments = selectedTheatre.appointments.map(item => {
-                    return {};
+                const equipments = [];
+
+                selectedTheatre.appointments.forEach(appointment => {
+                    const {_id: appointmentId, item = {}, title: equipmentTitle, startTime, endTime} = appointment;
+                    const {equipment = {}, equipmentType: equipmentTypeId} = item;
+                    const {name: equipmentName, _id: equipmentId, status} = equipment;
+
+                    if (item.equipment) {
+                        const equipmentTypeName = equipmentTitle.substring(0, equipmentTitle.indexOf('/'));
+
+                        const equipmentTypeIndex = equipments.findIndex(e => e._id === equipmentTypeId);
+                        const equipmentObj = {
+                            _id: equipmentTypeId,
+                            equipmentId,
+                            equipmentName,
+                            status,
+                            startTime,
+                            endTime
+                        };
+
+                        if (equipmentTypeIndex < 0) { // add to equipments array
+                            equipments.push({
+                                _id: equipmentTypeId,
+                                appointmentId,
+                                equipmentTypeName,
+                                equipments: [equipmentObj]
+                            });
+                        } else {
+                            equipments[equipmentTypeIndex].equipments = [...equipments[equipmentTypeIndex].equipments, equipmentObj];
+                        }
+                    }
                 });
+
+                const array = [
+                    {
+                        appointmentId: '5f75e79e488941fbfe16fcf3',
+                        equipmentTypeId: '5ea059269c2d1f6e55deb714',
+                        equipmentTypeName: 'Stethoscope',
+                        equipments: [
+                            {
+                                endTime: '2020-10-05T14:28:43.065Z',
+                                equipmentId: '5ea0736698454a945321009d',
+                                equipmentName: 'Stethoscopes 3',
+                                startTime: '2020-10-02T14:28:43.065Z',
+                                status: 'Available',
+                                equipmentTypeId: '5ea059269c2d1f6e55deb714'
+                            },
+                        ],
+                    },
+                    {
+                        appointmentId: '5f75e787488941fbfe16fcf1',
+                        equipmentTypeId: '5ea058fb706b105f13cc93d2',
+                        equipmentTypeName: 'MRI',
+                        equipments: [
+                            {
+                                endTime: '2020-10-05T14:28:16.504Z',
+                                equipmentId: '5ea07336dfb0da52b0ebd730',
+                                equipmentName: 'MRI 2',
+                                startTime: '2020-10-02T14:28:16.504Z',
+                                status: 'Available',
+                                equipmentTypeId: '5ea058fb706b105f13cc93d2'
+                            },
+                            {
+                                endTime: '2020-10-04T05:00:00.000Z',
+                                equipmentId: '5ea0733121bc5060f5317006',
+                                equipmentName: 'MRI 1',
+                                startTime: '2020-10-01T05:00:00.000Z',
+                                status: 'Available',
+                                equipmentTypeId: '5ea058fb706b105f13cc93d2'
+                            },
+                        ],
+                    },
+                ];
+
                 return <EquipmentsTab equipments={equipments}/>;
             }
             case 'Schedule':

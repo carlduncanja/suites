@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList} from 'react-native';
+import {useTheme} from 'emotion-theming';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
-import {currencyFormatter} from '../../utils/formatter';
-import {useTheme} from 'emotion-theming';
+import {currencyFormatter, formatDate} from '../../utils/formatter';
 import {checkboxItemPress} from '../../helpers/caseFilesHelpers';
 import CollapsibleListItem from '../common/List/CollapsibleListItem';
 import DataItem from '../common/List/DataItem';
@@ -50,9 +50,7 @@ const headers = [
     }
 ];
 
-const EquipmentsTab = ({
-    equipments = testData
-}) => {
+const EquipmentsTab = ({equipments = testData}) => {
     const theme = useTheme();
 
     const [selectedIds, setSelectedIds] = useState([]);
@@ -78,29 +76,29 @@ const EquipmentsTab = ({
         else setExpandedItems([...expandedItems, key]);
     };
 
-    const equipmentTypeItemView = ({equipmentName, quantity, availableOn}, onActionPress, isCollapsed) => (
+    const equipmentTypeItemView = ({equipmentTypeName, availableOn, equipments = []}, onActionPress, isCollapsed) => (
         <>
             {
                 isCollapsed ? (
                     <DataItem
-                        text={equipmentName}
+                        text={equipmentTypeName}
                         flex={1.5}
                         color="--color-gray-800"
                         fontStyle="--text-base-regular"
                     />
                 ) : (
                     <RightBorderDataItem
-                        text={equipmentName}
+                        text={equipmentTypeName}
                         flex={1.5}
                         color="--color-gray-800"
                         fontStyle="--text-base-regular"
                     />
                 )}
 
-            <DataItem flex={1} text={quantity} color="--color-gray-700" fontStyle="--text-base-regular" align="center"/>
+            <DataItem flex={1} text={equipments.length} color="--color-gray-800" fontStyle="--text-base-regular" align="center"/>
 
             {/* TODO: Eval different colors to show based on status */}
-            <DataItem flex={1} text="--" color="--color-gray-700" fontStyle="--text-base-regular" align="center"/>
+            <DataItem flex={1} text="--" color="--color-purple-700" fontStyle="--text-base-regular" align="center"/>
 
             <DataItem flex={1} text={availableOn} color="--color-gray-700" fontStyle="--text-base-regular" align="center"/>
 
@@ -117,21 +115,21 @@ const EquipmentsTab = ({
         </>
     );
 
-    const equipmentItemView = ({name, quantity, status, availableOn}, onActionPress) => (
+    const equipmentItemView = ({equipmentName: name, status, startTime, endTime}, onActionPress) => (
         <>
             <RightBorderDataItem
                 text={name}
                 flex={1.5}
-                color="--color-gray-800"
-                fontStyle="--text-base-regular"
+                color="--color-blue-600"
+                fontStyle="--text-sm-medium"
             />
 
-            <DataItem flex={1} text={quantity} color="--color-gray-700" fontStyle="--text-base-regular" align="center"/>
+            <DataItem flex={1} text="1" color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
 
             {/* TODO: Eval different colors to show based on status */}
-            <DataItem flex={1} text={status} color="--color-gray-700" fontStyle="--text-base-regular" align="center"/>
+            <DataItem flex={1} text={status} color="--color-gray-700" fontStyle="--text-sm-regular" align="center"/>
 
-            <DataItem flex={1} text={availableOn} color="--color-gray-700" fontStyle="--text-base-regular" align="center"/>
+            <DataItem flex={1} text={formatDate(endTime, 'DD/MM/YYYY')} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
 
             <DataItem flex={0.5}/>
         </>
@@ -139,13 +137,13 @@ const EquipmentsTab = ({
 
     const renderChildItemView = (item, parentItem, onActionPress) => {
         const {_id} = item;
-        const inventoryIds = selectedEquipments.map(obj => obj._id);
+        const equipmentIds = selectedEquipments.map(obj => obj._id);
 
         return (
             <Item
                 itemView={equipmentItemView(item, onActionPress)}
                 hasCheckBox={true}
-                isChecked={inventoryIds.includes(_id)}
+                isChecked={equipmentIds.includes(_id)}
                 onCheckBoxPress={onChildCheckBoxPress(item, parentItem)}
                 onItemPress={() => {
                 }}
@@ -154,7 +152,7 @@ const EquipmentsTab = ({
     };
 
     const renderListFn = item => {
-        const {_id, equipments = []} = item;
+        const {appointmentId, _id, equipments = []} = item;
 
         const isIndeterminate = selectedEquipments.some(equipment => equipment.equipmentTypeId === _id);
 
