@@ -184,8 +184,12 @@ function TheatresPage({route, navigation}) {
                 });
                 return <StorageLocationsTab storageLocations={storageLocations}/>;
             }
-            case 'Equipment':
-                return <EquipmentsTab/>;
+            case 'Equipment': {
+                const equipments = selectedTheatre.appointments.map(item => {
+                    return {};
+                });
+                return <EquipmentsTab equipments={equipments}/>;
+            }
             case 'Schedule':
                 return <PaginatedSchedule ID={theatre._id} isPhysician={false}/>;
             default:
@@ -215,7 +219,8 @@ function TheatresPage({route, navigation}) {
             <PageContext.Provider value={{
                 pageState,
                 setPageState
-            }}>
+            }}
+            >
                 <DetailsPage
                     headerChildren={[name, `${theatreNumber}`]}
                     onBackPress={onBackTapped}
