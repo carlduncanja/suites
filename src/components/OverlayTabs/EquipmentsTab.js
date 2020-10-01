@@ -4,7 +4,7 @@ import {useTheme} from 'emotion-theming';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
-import {checkboxItemPress} from '../../helpers/caseFilesHelpers';
+import {checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import CollapsibleListItem from '../common/List/CollapsibleListItem';
 import DataItem from '../common/List/DataItem';
 import RightBorderDataItem from '../common/List/RightBorderDataItem';
@@ -61,8 +61,8 @@ const EquipmentsTab = ({equipments = testData}) => {
     const onCheckBoxPress = item => () => {
         const {_id} = item;
 
-        const updatedStorageLocations = checkboxItemPress(_id, selectedIds);
-        setSelectedIds(updatedStorageLocations);
+        const updatedEquipments = checkboxItemPress(_id, selectedIds);
+        setSelectedIds(updatedEquipments);
 
         const removeChildren = selectedEquipments.filter(obj => obj.equipmentTypeId !== _id);
         setSelectedEquipments(removeChildren);
@@ -93,15 +93,11 @@ const EquipmentsTab = ({equipments = testData}) => {
                         color="--color-gray-800"
                         fontStyle="--text-base-regular"
                     />
-                )}
-
+                )
+            }
             <DataItem flex={1} text={equipments.length} color="--color-gray-800" fontStyle="--text-base-regular" align="center"/>
-
-            {/* TODO: Eval different colors to show based on status */}
             <DataItem flex={1} text="--" color="--color-purple-700" fontStyle="--text-base-regular" align="center"/>
-
             <DataItem flex={1} text={availableOn} color="--color-gray-700" fontStyle="--text-base-regular" align="center"/>
-
             <ContentDataItem
                 align="center"
                 flex={0.5}
@@ -115,25 +111,36 @@ const EquipmentsTab = ({equipments = testData}) => {
         </>
     );
 
-    const equipmentItemView = ({equipmentName: name, status, startTime, endTime}, onActionPress) => (
-        <>
-            <RightBorderDataItem
-                text={name}
-                flex={1.5}
-                color="--color-blue-600"
-                fontStyle="--text-sm-medium"
-            />
+    const equipmentItemView = ({equipmentName: name, equipmentTitle, status, startTime, endTime}, onActionPress) => {
+        const availableStatusColor = '--color-green-600';
+        const servicingStatusColor = '--color-orange-600';
+        const inUseStatusColor = '--color-indigo-600';
+        const damagedStatusColor = '--color-red-600';
 
-            <DataItem flex={1} text="1" color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
+        const evaluateColor = () => {
+            if (status === 'Available') return availableStatusColor;
+            if (status === 'Servicing') return servicingStatusColor;
+            if (status === 'In Use') return inUseStatusColor;
+            if (status === 'Damaged') return damagedStatusColor;
+            return '--color-gray-700';
+        };
 
-            {/* TODO: Eval different colors to show based on status */}
-            <DataItem flex={1} text={status} color="--color-gray-700" fontStyle="--text-sm-regular" align="center"/>
-
-            <DataItem flex={1} text={formatDate(endTime, 'DD/MM/YYYY')} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
-
-            <DataItem flex={0.5}/>
-        </>
-    );
+        return (
+            <>
+                <RightBorderDataItem
+                    text={equipmentTitle}
+                    flex={1.5}
+                    color="--color-blue-600"
+                    fontStyle="--text-sm-medium"
+                />
+                <DataItem flex={1} text="1" color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
+                {/* TODO: Eval different colors to show based on status */}
+                <DataItem flex={1} text={status} color={evaluateColor()} fontStyle="--text-sm-regular" align="center"/>
+                <DataItem flex={1} text={formatDate(endTime, 'DD/MM/YYYY')} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
+                <DataItem flex={0.5}/>
+            </>
+        );
+    };
 
     const renderChildItemView = (item, parentItem, onActionPress) => {
         const {_id} = item;
@@ -186,6 +193,11 @@ const EquipmentsTab = ({equipments = testData}) => {
         </CollapsibleListItem>;
     };
 
+    const toggleHeaderCheckbox = () => {
+        const updatedEquipmentTypes = selectAll(equipments, selectedIds);
+        setSelectedIds(updatedEquipmentTypes);
+    };
+
     return (
         <ScrollView>
             <Table
@@ -194,6 +206,7 @@ const EquipmentsTab = ({equipments = testData}) => {
                 listItemFormat={renderListFn}
                 headers={headers}
                 itemSelected={selectedIds}
+                toggleHeaderCheckbox={toggleHeaderCheckbox}
             />
         </ScrollView>
     );

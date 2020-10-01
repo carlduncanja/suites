@@ -19,7 +19,7 @@ import {checkboxItemPress} from '../../helpers/caseFilesHelpers';
 
 const StockWrapper = styled.View`
     flex: 1;
-    align-items: center; 
+    align-items: center;
 `;
 
 const StockContainer = styled.View`

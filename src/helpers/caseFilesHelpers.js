@@ -28,7 +28,10 @@ export const handleNewItemProgressBar = (tabIndex, progressList) => {
     const newProgress = [];
     const objIndex = progressList.findIndex(obj => obj.step === tabIndex);
     for (let i = objIndex; i < progressList.length; i++) {
-        const newObject = {...progressList[i], progress: 0};
+        const newObject = {
+            ...progressList[i],
+            progress: 0
+        };
         newProgress.push(newObject);
     }
     const updatedList = [...progressList.slice(0, objIndex), ...newProgress];
@@ -72,7 +75,7 @@ export const useCheckBox = (item, checkBoxList) => (checkBoxList.includes(item) 
 export const checkboxItemPress = (id, checkBoxList) => {
     const updatedList = [...checkBoxList];
     return updatedList.includes(id) ?
-        updatedList.filter(id => id !== id) :
+        updatedList.filter(_id => _id !== id) :
         [...updatedList, id];
 };
 
@@ -94,5 +97,8 @@ export const calcBillingValues = (subTotal, tax, discountPercent) => {
     const discountedValue = subTotal - discount;
     const total = discountedValue * (1 + tax);
 
-    return {discount, total};
+    return {
+        discount,
+        total
+    };
 };

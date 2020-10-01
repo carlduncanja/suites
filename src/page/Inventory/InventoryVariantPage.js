@@ -4,13 +4,14 @@ import { PageContext } from '../../contexts/PageContext';
 import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainerComponent from '../../components/common/Tabs/TabsContainerComponent';
 import { connect } from 'react-redux';
-import { getInventoryVariantByGroup, updateInventoryGroupCall, updateInventoryVariantCall } from '../../api/network';
+import { getInventoryVariantByGroup, updateInventoryGroupCall, updateInventoryVariantCall, getVariantSupplierProducts } from '../../api/network';
 import InventoryGroupGeneral from '../../components/OverlayTabs/InventoryGroupGeneral';
 import InventoryVariantGeneral from '../../components/OverlayTabs/InventoryVariantGeneral';
 import TransfersOverlayTab from '../../components/OverlayTabs/TransfersOverlayTab';
 import InventoryStorageLocationsTab from '../../components/OverlayTabs/InventoryStorageLocationsTab';
 import ConfirmationComponent from "../../components/ConfirmationComponent";
 import {useModal} from "react-native-modalfy";
+import InventorySuppliersTab from '../../components/OverlayTabs/InventorySuppliersTab';
 
 function InventoryVariantPage({ route, navigation }){
 
@@ -23,6 +24,7 @@ function InventoryVariantPage({ route, navigation }){
     const [currentTab, setCurrentTab] = useState(tabs[0])
     const [pageState, setPageState] = useState({});
     const [selectedVariant, setSelectedVariant] = useState({});
+    const [variantSuppliers, setVariantSuppliers] = useState([]);
 
     // const [fields, setFields] = useState({
     //     name,
@@ -57,6 +59,16 @@ function InventoryVariantPage({ route, navigation }){
             })
             .finally(_ => {
                 setPageLoading(false)
+            })
+        getVariantSupplierProducts(variantId)
+            .then(results => {
+                const { data = [] } = results;
+                setVariantSuppliers([...data]);
+                console.log("Suppliers: ", data);
+            })
+            .catch(error => {
+                console.log("Failed to get variant suppliers", error)
+                //TODO handle error cases.
             })
     };
 
@@ -114,6 +126,7 @@ function InventoryVariantPage({ route, navigation }){
     };
 
     const getContentData = (selectedTab) => {
+        
         switch (selectedTab) {
             case "Details":
                 return <InventoryVariantGeneral
@@ -131,9 +144,20 @@ function InventoryVariantPage({ route, navigation }){
                     selectedVariant = {selectedVariant}
                     groupId = {groupId}
                     onUpdateItem = {()=>fetchVariant(groupId,_id)}
-                />
+                /> 
             case "Transfers" :
-                return <TransfersOverlayTab tranferItems = {[]}/>
+                // console.log("Variant: ", selectedVariant);
+                return <TransfersOverlayTab 
+                    transferItems = {selectedVariant.transfers}
+                    groupId = {selectedVariant?.inventoryGroup?._id}
+                    variantId = {selectedVariant?._id}
+                    onUpdateItem = {()=>fetchVariant(groupId,_id)}
+                />
+            case "Suppliers" :
+                return <InventorySuppliersTab
+                    suppliers = {variantSuppliers}
+                    variantId = {selectedVariant?._id}
+                />
             default:
                 break;
         }

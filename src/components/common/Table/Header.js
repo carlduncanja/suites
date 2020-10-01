@@ -17,6 +17,7 @@ const HeaderContainer = styled.View`
     flex-direction:row;
     align-items:center;
     padding-left:1px;
+    padding-bottom : ${ ({theme, hasCheckbox}) => hasCheckbox === false ? theme.space['--space-14'] : 0};
 `;
 
 function Header({headers = [], toggleHeaderCheckbox = () => {}, isIndeterminate = false, checked = false, isCheckbox = true}) {
@@ -30,7 +31,7 @@ function Header({headers = [], toggleHeaderCheckbox = () => {}, isIndeterminate 
 
     return (
         <HeaderWrapper theme={theme}>
-            <HeaderContainer>
+            <HeaderContainer hasCheckbox = {isCheckbox}>
                 {
                     isCheckbox &&
                         <CheckBoxComponent

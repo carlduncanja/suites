@@ -34,7 +34,8 @@ const ItemView = styled.View`
     flex-direction: row;
     align-items: center;
     border-bottom : 1px solid ${({theme}) => theme.colors['--color-gray-300']};
-    margin-left : ${({hasCheckBox, theme}) => !hasCheckBox && theme.space['--space-48']};
+    margin-left : ${({hasCheckBox, theme}) => hasCheckBox === false && theme.space['--space-48']};
+    margin-left :0;
 `;
 
 function Item({
