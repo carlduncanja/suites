@@ -175,7 +175,7 @@ const EquipmentsTab = ({equipments = testData}) => {
         >
             <FlatList
                 data={equipments}
-                nestedScrollEnabled={true}
+                // nestedScrollEnabled={true}
                 renderItem={({item: childItem}) => renderChildItemView(childItem, item, () => {
                 })}
                 keyExtractor={(item, index) => `${index}`}

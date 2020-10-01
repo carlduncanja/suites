@@ -39,7 +39,7 @@ const PageSearchWrapper = styled.View`
 
 const PageHeader = styled.View`
 flex-direction:row;
-width:100%
+width:100%;
 `
 
 
