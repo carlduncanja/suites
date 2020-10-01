@@ -216,7 +216,7 @@ function StorageLocationsTab({storageLocations = []}) {
         >
             <FlatList
                 data={inventoryLocations}
-                nestedScrollEnabled={true}
+                // nestedScrollEnabled={true}
                 renderItem={({item: childItem}) => renderChildItemView(childItem, item, () => {
                 })}
                 keyExtractor={(item, index) => `${index}`}
