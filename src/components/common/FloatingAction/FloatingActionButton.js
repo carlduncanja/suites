@@ -6,6 +6,7 @@ import { withModal } from 'react-native-modalfy';
  
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';  
+import MultipleShadowsContainer from '../MultipleShadowContainer';
 
 const FloatingActionButtonWrapper = styled.TouchableOpacity`
     height : 48px;
@@ -31,6 +32,21 @@ const FloatingActionButtonContainer = styled.View`
 
 `;
 
+const shadows = [
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: 10, height: 0 },
+        shadowOpacity: 0.1,
+        shadowRadius: 15
+      },
+      {
+        shadowColor: 'black',
+        shadowOffset: { width: 4, height: 0 },
+        shadowOpacity: 0.05,
+        shadowRadius: 6
+      },
+]
+
 function FloatingActionButton ({isDisabled = false,toggleActionButton = ()=>{}, hasActions = true}){
 
     const theme = useTheme();
@@ -38,18 +54,21 @@ function FloatingActionButton ({isDisabled = false,toggleActionButton = ()=>{}, 
     
 
     return (
-        <FloatingActionButtonWrapper onPress={()=>toggleActionButton()}>
-            <FloatingActionButtonContainer hasActions = {hasActions} isDisabled = {isDisabled} theme = {theme}>
-                <ActionMenu
-                    fillColor = {
-                        hasActions ? 
-                            theme.colors['--default-shade-white']
-                            :
-                            theme.colors['--color-gray-400']
-                    }
-                />
-            </FloatingActionButtonContainer>
-        </FloatingActionButtonWrapper>
+        <MultipleShadowsContainer shadows = {shadows} hasShadow = {!hasActions ? false : true }>
+            <FloatingActionButtonWrapper onPress={()=>toggleActionButton()}>
+                <FloatingActionButtonContainer hasActions = {hasActions} isDisabled = {isDisabled} theme = {theme}>
+                    <ActionMenu
+                        fillColor = {
+                            hasActions ? 
+                                theme.colors['--default-shade-white']
+                                :
+                                theme.colors['--color-gray-400']
+                        }
+                    />
+                </FloatingActionButtonContainer>
+            </FloatingActionButtonWrapper>
+        </MultipleShadowsContainer>
+        
         
     );
 } 
