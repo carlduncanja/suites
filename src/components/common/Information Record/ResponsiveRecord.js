@@ -12,37 +12,48 @@ const RecordContainer = styled.View`
         flex-direction:column;
     `;
 
-const TitleText = styled.Text( ({theme, titleStyle, titleColor}) => ({
+const TitleText = styled.Text(({theme, titleStyle, titleColor}) => ({
     ...theme.font[titleStyle],
-    color : theme.colors[titleColor],
-    marginBottom: 10,
+    color: theme.colors[titleColor],
 }));
 
-const ValueText = styled.Text( ({theme, valueStyle, valueColor}) => ({
+const ValueText = styled.Text(({theme, valueStyle, valueColor}) => ({
     ...theme.font[valueStyle],
-    color : theme.colors[valueColor]
+    color: theme.colors[valueColor]
 }))
 
+const TitleWrapper = styled.View`
+    height: 32px;
+    justify-content: center;
+`;
+
 function ResponsiveRecord({
-    recordTitle = "",
-    recordValue = '--',
-    titleStyle = "--text-sm-regular",
-    valueStyle = "--text-base-medium",
-    valueFontSize = 16,
-    titleFontSize = 14,
-    titleColor = '--color-gray-600',
-    valueColor = '--color-blue-600',
-    handleRecordPress = ()=>{},
-    disabled= false,
-    index
-}) {
+                              recordTitle = "",
+                              recordValue = '--',
+                              titleStyle = "--text-xs-medium",
+                              valueStyle = "--text-base-medium",
+                              valueFontSize = 16,
+                              titleFontSize = 14,
+                              titleColor = '--color-gray-600',
+                              valueColor = '--color-blue-600',
+                              handleRecordPress = () => {
+                              },
+                              disabled = false,
+                              index
+                          }) {
     const theme = useTheme();
 
     return (
-        <RecordWrapper theme={theme} disabled={disabled} onPress={()=>handleRecordPress()}>
+        <RecordWrapper theme={theme} disabled={disabled} onPress={() => handleRecordPress()}>
             <RecordContainer>
-                <TitleText theme={theme} titleStyle={titleStyle}  titleColor={titleColor}>{recordTitle}</TitleText>
-                <ValueText theme={theme} valueStyle={valueStyle} valueColor={valueColor}>{recordValue === "" ? "--" : recordValue}</ValueText>
+
+                <TitleWrapper>
+                    <TitleText theme={theme} titleStyle={titleStyle} titleColor={titleColor}>{recordTitle}</TitleText>
+                </TitleWrapper>
+
+
+                <ValueText theme={theme} valueStyle={valueStyle}
+                           valueColor={valueColor}>{recordValue === "" ? "--" : recordValue}</ValueText>
             </RecordContainer>
         </RecordWrapper>
     );

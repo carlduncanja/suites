@@ -60,38 +60,38 @@ const InputWrapper = styled.View`
 `;
 
 function Record({
-    useDefaultRecordValue = true,
-    recordPlaceholder = '--',
-    recordTitle = '',
-    recordValue = useDefaultRecordValue ? recordPlaceholder : '',
-    titleStyle = '--text-xs-medium',
-    valueStyle = '--text-base-regular',
-    titleColor = '--color-gray-600',
-    valueColor = '--color-gray-900',
-    flex = 1,
-    minDate = null,
-    maxDate = null,
-    options = () => {
-    },
-    searchText = '',
-    searchResults = [],
-    searchQuery = false,
-    // EDIT MODE PROPS
-    editMode = false,
-    editable = true,
-    useTextArea = false,
-    useDateField = false,
-    useDropdown = false,
-    useSearchable = false,
-    keyboardType = 'default',
-    autoCapitalize = 'sentences',
-    onClearValue = () => {
-    },
-    onRecordUpdate = () => {
-    },
-    onSearchChange = () => {
-    }
-}) {
+                    useDefaultRecordValue = true,
+                    recordPlaceholder = '--',
+                    recordTitle = '',
+                    recordValue = useDefaultRecordValue ? recordPlaceholder : '',
+                    titleStyle = '--text-xs-medium',
+                    valueStyle = '--text-base-regular',
+                    titleColor = '--color-gray-600',
+                    valueColor = '--color-gray-900',
+                    flex = 1,
+                    minDate = null,
+                    maxDate = null,
+                    options = () => {
+                    },
+                    searchText = '',
+                    searchResults = [],
+                    searchQuery = false,
+                    // EDIT MODE PROPS
+                    editMode = false,
+                    editable = true,
+                    useTextArea = false,
+                    useDateField = false,
+                    useDropdown = false,
+                    useSearchable = false,
+                    keyboardType = 'default',
+                    autoCapitalize = 'sentences',
+                    onClearValue = () => {
+                    },
+                    onRecordUpdate = () => {
+                    },
+                    onSearchChange = () => {
+                    }
+                }) {
     const theme = useTheme();
 
     return (
@@ -100,7 +100,6 @@ function Record({
 
                 <TitleWrapper>
                     <TitleText theme={theme} titleColor={titleColor} titleStyle={titleStyle}>{recordTitle}</TitleText>
-
                 </TitleWrapper>
 
                 {
