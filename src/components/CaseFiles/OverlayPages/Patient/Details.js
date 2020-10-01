@@ -9,7 +9,14 @@ import BMIConverter from '../../BMIConverter';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../common/Information Record/RecordStyles';
 import ResponsiveRecord from '../../../common/Information Record/ResponsiveRecord';
 import PatientBMIChart from '../../PatientBMIChart';
-import {formatDate, calcAge, handleNumberValidation, formatPhoneNumber, isValidEmail, checkObjectProperty} from '../../../../utils/formatter';
+import {
+    formatDate,
+    calcAge,
+    handleNumberValidation,
+    formatPhoneNumber,
+    isValidEmail,
+    checkObjectProperty
+} from '../../../../utils/formatter';
 import Row from '../../../common/Row';
 import Record from '../../../common/Information Record/Record';
 import {PageContext} from '../../../../contexts/PageContext';
@@ -47,10 +54,10 @@ const bmiScale = [
 const itemWidth = `${100 / 3}%`;
 
 const Details = ({
-    tabDetails,
-    onUpdated = () => {
-    }
-}) => {
+                     tabDetails,
+                     onUpdated = () => {
+                     }
+                 }) => {
     const theme = useTheme();
 
     const Divider = styled.View`
@@ -427,7 +434,7 @@ const Details = ({
     const editWorkEmailValue = (workEmailValue || workEmailValue === '') && isUpdated ? workEmailValue : workEmailRecordValue;
 
     return (
-        <ScrollView>
+        <ScrollView contentContainerStyle={{paddingBottom: 100}}>
             <>
                 <Row>
                     {/* I concede; fields attributes not being instantiated like EVERYWHERE else so I give up. 'fields.<attribute>' || '<attribute>' defaulting it is */}
