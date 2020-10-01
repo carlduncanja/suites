@@ -93,15 +93,11 @@ const EquipmentsTab = ({equipments = testData}) => {
                         color="--color-gray-800"
                         fontStyle="--text-base-regular"
                     />
-                )}
-
+                )
+            }
             <DataItem flex={1} text={equipments.length} color="--color-gray-800" fontStyle="--text-base-regular" align="center"/>
-
-            {/* TODO: Eval different colors to show based on status */}
             <DataItem flex={1} text="--" color="--color-purple-700" fontStyle="--text-base-regular" align="center"/>
-
             <DataItem flex={1} text={availableOn} color="--color-gray-700" fontStyle="--text-base-regular" align="center"/>
-
             <ContentDataItem
                 align="center"
                 flex={0.5}
@@ -123,14 +119,10 @@ const EquipmentsTab = ({equipments = testData}) => {
                 color="--color-blue-600"
                 fontStyle="--text-sm-medium"
             />
-
             <DataItem flex={1} text="1" color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
-
             {/* TODO: Eval different colors to show based on status */}
             <DataItem flex={1} text={status} color="--color-gray-700" fontStyle="--text-sm-regular" align="center"/>
-
             <DataItem flex={1} text={formatDate(endTime, 'DD/MM/YYYY')} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
-
             <DataItem flex={0.5}/>
         </>
     );
