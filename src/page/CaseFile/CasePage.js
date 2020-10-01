@@ -1603,7 +1603,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase;
         const {medicalInfo = {}} = patient;
         const { proceduresBillableItems } = chargeSheet;
-        
 
         switch (selectedMenuItem) {
             case 'Patient':
@@ -1617,7 +1616,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             case 'Medical Staff':
                 return <MedicalStaff
                     staff={staff}
-                    selectedTab={selectedTab} 
+                    selectedTab={selectedTab}
                 />;
             case 'Medical History':
                 return <MedicalHistory

@@ -85,6 +85,7 @@ const ChargeSheet = ({
                          onSelectVariants,
                          onSelectEquipmenntsVariants,
                          variantsConsumables = [],
+
                          selectedConsumables = [],
                          selectedEquipments = [],
                          variantsEquipments = []
@@ -142,6 +143,7 @@ const ChargeSheet = ({
     const [chargeSheetStatus, setChargeSheetStatus] = useState(chargeSheet.status);
     const [caseProcedureChanges, setCaseProcedureChanges] = useState([]);
     const [isUpdated, setUpdated] = useState(false);
+    const [selectedCaseProcedureIds, setSelectedCaseProcedureIds] = useState([]);
 
 
     // --------------------------- Life Cycle

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'; 
+import React, {useState, useEffect} from 'react';
 import styled, {css} from '@emotion/native';
 import {useTheme} from "emotion-theming";
 import CreatePageHeader from '../../components/common/DetailsPage/CreatePageHeader';
@@ -119,29 +119,31 @@ const FooterContainer = styled.View`
     flex:1;
 `;
 
+const headers = [
+    {
+        name : name,
+        alignment : "flex-start",
+        flex : 1,
+    },
+    {
+        name : 'Amount',
+        alignment : "center",
+        flex:1
+    },
+    {
+        name : 'Action',
+        alignment : "flex-end",
+        flex:1
+    },
+]
+
 
 function AddChargeSheetItem({navigation, route}){
 
     const {type, onAddItem, selectedObj} = route.params;
     const modal = useModal();
     let name = type === 'Consumables' ? 'Consumable' : 'Equipment';
-    const headers = [
-        {
-            name : name,
-            alignment : "flex-start",
-            flex : 1,
-        },
-        {
-            name : 'Amount',
-            alignment : "center",
-            flex:1
-        },
-        {
-            name : 'Action',
-            alignment : "flex-end",
-            flex:1
-        },
-    ]
+
 
     const theme = useTheme();
     const [data, setData] = useState([]);

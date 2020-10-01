@@ -28,6 +28,7 @@ import { useTheme } from 'emotion-theming';
 import { PageContext } from '../../../../contexts/PageContext';
 import Data from '../../../common/Table/Data';
 import moment from "moment";
+import {checkboxItemPress} from "../../../../helpers/caseFilesHelpers";
 
 
 const headers = [
@@ -122,7 +123,7 @@ function PostEditView ({
     const { isEditMode } = pageState
 
 
-    const [checkBoxList, setCheckBoxList] = useState([]);
+    const [selectedCaseProcedureIds, setSelectedCaseProcedureIds] = useState([]);
     const [variantsCheckboxList, setVariantsCheckBoxList] = useState([]);
 
     const [searchText, setSearchText] = useState('')
@@ -134,27 +135,10 @@ function PostEditView ({
     }
 
     const toggleCheckbox = (item) => () => {
-        let updatedInventories = [...checkBoxList];
-
-        if (updatedInventories.includes(item)) {
-            updatedInventories = updatedInventories.filter(caseItem => caseItem !== item)
-        } else {
-            updatedInventories.push(item);
-        }
-        setCheckBoxList(updatedInventories);
+        const updatedIds = checkboxItemPress(item.caseProcedureId, selectedCaseProcedureIds)
+        setSelectedCaseProcedureIds(updatedIds);
     }
 
-    const toggleHeaderCheckbox = () => {
-        const selectedData = consumables[selectedIndex];
-        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== selectedData.length;
-
-        if (indeterminate) {
-            const selectedAllIds = [...selectedData.map(item => item)]
-            setCheckBoxList(selectedAllIds)
-        } else {
-            setCheckBoxList([])
-        }
-    }
 
 
     const listItem = ({ name }, onActionPress, isCollapsed, index) => <>
@@ -286,10 +270,10 @@ function PostEditView ({
 
         return (
             <CollapsibleListItem
-                isChecked={checkBoxList.includes(item._id)}
-                onCheckBoxPress={ (collapse)=> {collapse()}}
+                isChecked={selectedCaseProcedureIds.includes(item._id)}
+                // onCheckBoxPress={toggleCheckbox(item)}
                 hasCheckBox={true}
-                onItemPress={()=> {}}
+                // onItemPress={()=> {}}
                 render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, index)}
             >
             <FlatList
@@ -321,8 +305,8 @@ function PostEditView ({
 
         return (
             <CollapsibleListItem
-                isChecked={checkBoxList.includes(item._id)}
-                onCheckBoxPress={ ()=> {}}
+                isChecked={selectedCaseProcedureIds.includes(item.caseProcedureId)}
+                onCheckBoxPress={toggleCheckbox(item)}
                 hasCheckBox={true}
                 onItemPress={(collapse)=> { collapse()}}
                 render={(collapse, isCollapsed) => changeListItem(procedureItem, collapse, isCollapsed, index, timeUpdated)}
