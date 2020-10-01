@@ -176,7 +176,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 to : fields['to']?._id,
                 priority : fields['priority']
             }
-            console.log("Success:", updatedFields);
+            console.log("CREAT TRANSFER:", updatedFields);
             
             createTransferCall(updatedFields);
             // onCreated(fields)

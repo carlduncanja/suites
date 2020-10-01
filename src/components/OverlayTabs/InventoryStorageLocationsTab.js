@@ -66,7 +66,7 @@ function InventoryStorageLocationsTab({
                 },
             })
     }
-
+ 
     const handleTransferItems = () => {
         modal.closeModals('ActionContainerModal');
         setTimeout(() => {

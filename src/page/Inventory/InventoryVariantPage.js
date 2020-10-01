@@ -114,6 +114,7 @@ function InventoryVariantPage({ route, navigation }){
     };
 
     const getContentData = (selectedTab) => {
+        
         switch (selectedTab) {
             case "Details":
                 return <InventoryVariantGeneral
@@ -131,9 +132,15 @@ function InventoryVariantPage({ route, navigation }){
                     selectedVariant = {selectedVariant}
                     groupId = {groupId}
                     onUpdateItem = {()=>fetchVariant(groupId,_id)}
-                />
+                /> 
             case "Transfers" :
-                return <TransfersOverlayTab tranferItems = {[]}/>
+                // console.log("Variant: ", selectedVariant);
+                return <TransfersOverlayTab 
+                    transferItems = {selectedVariant.transfers}
+                    groupId = {selectedVariant?.inventoryGroup?._id}
+                    variantId = {selectedVariant?._id}
+                    onUpdateItem = {()=>fetchVariant(groupId,_id)}
+                />
             default:
                 break;
         }

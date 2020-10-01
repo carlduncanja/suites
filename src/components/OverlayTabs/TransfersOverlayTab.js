@@ -15,6 +15,11 @@ import ActionItem from "../common/ActionItem";
 import {LONG_PRESS_TIMER} from '../../const';
 import { useModal } from 'react-native-modalfy';
 import WasteIcon from "../../../assets/svg/wasteIcon";
+import ConfirmationComponent from '../ConfirmationComponent';
+import { removeTransferItem } from '../../api/network';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import { forEach } from 'lodash';
+
  
 const PendingTransferHeadings = [
     {
@@ -62,10 +67,10 @@ const SectionText = styled.Text( ({theme}) => ({
     ...theme.font['--text-xl-medium'],
     color : theme.colors['--color-gray-800'],
     marginBottom : 24,
-})); 
+}));  
 
 
-function TransfersOverlayTab({transferItems = []}) {
+function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateItem}) {
 
     const theme = useTheme();
     const modal = useModal();
@@ -77,7 +82,14 @@ function TransfersOverlayTab({transferItems = []}) {
     const completedItems = transferItems.filter( item => item?.state === 'complete');
 
     const onItemCheckbox = (item) => {
+        const {_id} = item;
+        const updatedCheckedList = checkboxItemPress(item, _id, pendingCheckedItems);
+        setPendingCheckedItems(updatedCheckedList);
+    }
 
+    const toggleHeaderCheckbox = () =>{
+        let updatedCheckedList = selectAll(transferItems, pendingCheckedItems);
+        setPendingCheckedItems(updatedCheckedList);
     }
 
     const toggleActionButton = () => {
@@ -99,7 +111,7 @@ function TransfersOverlayTab({transferItems = []}) {
         const deleteItem =
             <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                onLongPress={onDeleteItems}
+                onLongPress={onCancelItems}
                 isDisabled = {isDisabled}
             >
                 <ActionItem
@@ -119,8 +131,70 @@ function TransfersOverlayTab({transferItems = []}) {
         />
     }
 
-    const onDeleteItems = () =>{
+    const onCancelItems = () =>{
+        if(pendingCheckedItems.length === 1){
+            modal.closeAllModals();
+            modal.openModal('ConfirmationModal',{
 
+                content: <ConfirmationComponent
+                    isEditUpdate = {true}
+                    isError = {false}
+                    onCancel = {()=> modal.closeAllModals()}
+                    onAction = {()=> {
+                        modal.closeAllModals();
+                        removeItems(pendingCheckedItems[0])
+                    }}
+                    message = "Do you wish to delete these item(s)?"
+                />
+                ,
+                onClose: () => {modal.closeModals('ConfirmationModal')} 
+            })
+        }
+        // console.log("Checked items: ", pendingCheckedItems);
+    }
+
+    const removeItems = (transferId) => {
+        console.log("Transfer id: ", transferId);
+        console.log("Group id: ", groupId);
+        console.log("Variant:", variantId);
+        removeTransferItem(groupId, variantId, transferId)
+            .then(_=>{
+                modal.closeAllModals();
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {false}
+                            onCancel = {()=> modal.closeAllModals()}
+                            onAction = {()=> {
+                                modal.closeAllModals();
+                                setPendingCheckedItems([]);
+                            }}
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+            })
+            .catch(_=>{
+                modal.closeAllModals();
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onCancel = {()=> {modal.closeAllModals(); }}
+                            onAction = {()=> {modal.closeAllModals(); }}
+                            message = "There was an issue performing this action"
+                        />
+                        ,
+                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    })
+            })
+            .finally(_=>{
+                onUpdateItem()
+            })
     }
 
     const completedTransferListItem = ({from, to, product, amount, dateCompleted = ""}) => {
@@ -138,11 +212,11 @@ function TransfersOverlayTab({transferItems = []}) {
         </>)
     };
 
-    const pendingTransferListItem = ({from, to, product, amount, dateGenerated, inventoryLocation}) => {
-        const { inventoryName = "" } = inventoryLocation
+    const pendingTransferListItem = ({from, to = "", product, amount, dateGenerated, inventoryLocation}) => {
+        const { inventoryName = "", locationName = "" } = from;
         return (
         <>
-            <DataItem  flex = {1.5} fontStyle = "--text-base-medium" color = "--color-blue-600" text = {from}/>
+            <DataItem  flex = {1.5} fontStyle = "--text-base-medium" color = "--color-blue-600" text = {to}/>
             <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {inventoryName}/>
             <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {formatDate(dateGenerated, "DD/MM/YYYY")}/>
             <DataItem align = "center" fontStyle = "--text-base-medium" color = "--color-green-600" text = {`+ ${amount}`}/>
@@ -165,7 +239,7 @@ function TransfersOverlayTab({transferItems = []}) {
             itemView = {pendingTransferListItem(item)}
             hasCheckBox = {true}
             isChecked = {pendingCheckedItems.includes(_id)}
-            onCheckBoxPress = {onItemCheckbox(item)}
+            onCheckBoxPress = {()=>onItemCheckbox(item)}
             onItemPress = {()=>{}}
         />
         
@@ -180,7 +254,9 @@ function TransfersOverlayTab({transferItems = []}) {
                     data={pendingItems}
                     listItemFormat={renderPendingItem}
                     headers={PendingTransferHeadings}
-                    isCheckbox={true}                    
+                    isCheckbox={true}      
+                    toggleHeaderCheckbox = {toggleHeaderCheckbox}   
+                    itemSelected = {pendingCheckedItems}           
                 />
             </SectionContainer>
 
