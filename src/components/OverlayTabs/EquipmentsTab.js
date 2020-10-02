@@ -15,21 +15,6 @@ import IconButton from '../common/Buttons/IconButton';
 import ActionIcon from '../../../assets/svg/dropdownIcon';
 import CollapsedIcon from '../../../assets/svg/closeArrow';
 
-const testData = [
-    {
-        name: 'Bag',
-        type: 'Anaesthesia',
-        quantity: 1,
-        unitPrice: 4120.76
-    },
-    {
-        name: 'Atracurium',
-        type: 'Anaesthesia',
-        quantity: 5,
-        unitPrice: 8924.09
-    }
-];
-
 const headers = [
     {
         name: 'Equipment',
@@ -50,7 +35,7 @@ const headers = [
     }
 ];
 
-const EquipmentsTab = ({equipments = testData}) => {
+const EquipmentsTab = ({equipments = []}) => {
     const theme = useTheme();
 
     const [selectedIds, setSelectedIds] = useState([]);
@@ -68,7 +53,24 @@ const EquipmentsTab = ({equipments = testData}) => {
         setSelectedEquipments(removeChildren);
     };
 
-    const onChildCheckBoxPress = (inventoryItem, storageLocation) => () => {
+    const onChildCheckBoxPress = (equipment, equipmentType) => () => {
+        const {_id} = equipment;
+        const {_id: equipmentTypeId} = equipmentType;
+
+        // get ids for equipments
+        const equipmentIds = selectedEquipments.map(equipment => equipment._id);
+        const updatedChildIds = checkboxItemPress(_id, equipmentIds);
+
+        // set selected equipment
+        const updatedSelectedEquipments = updatedChildIds.map(_id => ({
+            _id,
+            equipmentTypeId
+        }));
+        setSelectedEquipments(updatedSelectedEquipments);
+
+        // unselect group when child is selected
+        const updatedIds = selectedIds.filter(id => id !== equipmentTypeId);
+        setSelectedIds(updatedIds);
     };
 
     const onCollapseView = key => {

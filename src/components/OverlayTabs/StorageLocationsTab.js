@@ -15,7 +15,7 @@ import MultipleShadowsContainer from '../common/MultipleShadowContainer';
 import IconButton from '../common/Buttons/IconButton';
 import ActionIcon from '../../../assets/svg/dropdownIcon';
 import CollapsedIcon from '../../../assets/svg/closeArrow';
-import {checkboxItemPress} from '../../helpers/caseFilesHelpers';
+import {checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 
 const StockWrapper = styled.View`
     flex: 1;
@@ -94,6 +94,23 @@ function StorageLocationsTab({storageLocations = []}) {
     };
 
     const onChildCheckBoxPress = (inventoryItem, storageLocation) => () => {
+        const {_id} = inventoryItem;
+        const {_id: storageLocationId} = storageLocation;
+
+        // get ids for inventory items
+        const inventoryIds = selectedInventories.map(equipment => equipment._id);
+        const updatedChildIds = checkboxItemPress(_id, inventoryIds);
+
+        // set selected location
+        const updatedSelectedInventories = updatedChildIds.map(_id => ({
+            _id,
+            storageLocationId
+        }));
+        setSelectedInventories(updatedSelectedInventories);
+
+        // unselect group when child is selected
+        const updatedIds = selectedIds.filter(id => id !== storageLocationId);
+        setSelectedIds(updatedIds);
     };
 
     const onCollapseView = key => {
@@ -107,14 +124,14 @@ function StorageLocationsTab({storageLocations = []}) {
                 isCollapsed ? (
                     <DataItem
                         text={locationName}
-                        flex={1.5}
+                        flex={2}
                         color="--color-gray-800"
                         fontStyle="--text-base-regular"
                     />
                 ) : (
                     <RightBorderDataItem
                         text={locationName}
-                        flex={1.5}
+                        flex={2}
                         color="--color-gray-800"
                         fontStyle="--text-base-regular"
                     />
@@ -122,6 +139,7 @@ function StorageLocationsTab({storageLocations = []}) {
 
             <ContentDataItem
                 align="center"
+                flex={1}
                 content={(
                     <LevelIndicator
                         max={levels.max}
@@ -133,7 +151,7 @@ function StorageLocationsTab({storageLocations = []}) {
                 )}
             />
 
-            <StockWrapper>
+            <StockWrapper flex={1}>
                 <MultipleShadowsContainer shadows={shadows}>
                     <StockContainer theme={theme} isCollapsed={isCollapsed}>
                         <StockText theme={theme} isCollapsed={isCollapsed}>{stock}</StockText>
@@ -143,7 +161,7 @@ function StorageLocationsTab({storageLocations = []}) {
 
             <ContentDataItem
                 align="center"
-                flex={0.5}
+                flex={0.4}
                 content={(
                     <IconButton
                         Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
@@ -200,8 +218,6 @@ function StorageLocationsTab({storageLocations = []}) {
     const renderListFn = item => {
         const {_id, inventoryLocations} = item;
 
-        if (item._id === '5ea05b4d9ea6ffd91cc0fe8b') console.log('renderStorageLocation 5ea05b4d9ea6ffd91cc0fe8b', item);
-
         const isIndeterminate = selectedInventories.some(inventory => inventory.storageLocationId === _id);
 
         return <CollapsibleListItem
@@ -234,6 +250,11 @@ function StorageLocationsTab({storageLocations = []}) {
         </CollapsibleListItem>;
     };
 
+    const toggleHeaderCheckbox = () => {
+        const updatedStorageLocations = selectAll(storageLocations, selectedIds);
+        setSelectedIds(updatedStorageLocations);
+    };
+
     return (
         <View style={styles.container}>
             <Table
@@ -242,6 +263,7 @@ function StorageLocationsTab({storageLocations = []}) {
                 headers={headers}
                 isCheckbox={true}
                 itemSelected={selectedIds}
+                toggleHeaderCheckbox={toggleHeaderCheckbox}
             />
         </View>
     );
