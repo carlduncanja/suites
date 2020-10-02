@@ -41,6 +41,7 @@ const ItemView = styled.View`
 function Item({
     itemView = () => {
     },
+    isDisabled = false,
     hasCheckBox = true,
     isChecked = false,
     onCheckBoxPress = () => {
@@ -52,7 +53,7 @@ function Item({
     const theme = useTheme();
 
     return (
-        <ItemWrapper onPress={onItemPress}>
+        <ItemWrapper onPress={onItemPress} disabled = {isDisabled}>
             <ItemContainer theme={theme} style={{backgroundColor}}>
                 {
                     hasCheckBox &&
