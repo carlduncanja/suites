@@ -3,39 +3,103 @@ import {View, TouchableOpacity, StyleSheet, Text, FlatList} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import Action from './Action'
 import { SuitesContext } from '../../../contexts/SuitesContext';
-import { CaseFileContext } from '../../../contexts/CaseFileContext';
+import { CaseFileContext } from '../../../contexts/CaseFileContext'; 
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import MultipleShadowsContainer from '../MultipleShadowContainer';
 
+const ActionWrapper = styled.View`
+    width : 223px;
+`;
 
+const ActionComponentContainer = styled.View`
+    display : flex;
+    border-radius : 8px;
+    background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
+    padding : ${ ({theme}) => `${theme.space['--space-8']} ${theme.space['--space-12']}` };
+`;
+
+const ActionTitle = styled.Text( ({theme}) =>({
+    ...theme.font['--actions-title'],
+    color : theme.colors['--color-gray-500'],
+
+}));
+
+const ActionsContainer =  styled.View`
+    display : flex;
+    flex-direction : column;
+    justify-content: space-between;
+    margin-top : ${ ({theme}) => theme.space['--space-12']};
+    margin-bottom : ${ ({theme}) => theme.space['--space-10']};
+`;
+
+const Separator = styled.View`
+    background-color : ${ ({theme}) => theme.colors['--color-gray-300']};
+    border-radius : 2px;
+    height : 1px;
+    margin-top : ${ ({theme}) => theme.space['--space-10']};
+    margin-bottom : ${ ({theme}) => theme.space['--space-10']};
+`
+
+const shadows = [
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: 10, height: 0 },
+        shadowOpacity: 0.1,
+        shadowRadius: 15
+      },
+      {
+        shadowColor: 'black',
+        shadowOffset: { width: 4, height: 0 },
+        shadowOpacity: 0.05,
+        shadowRadius: 6
+      },
+]
 
 const ActionContainer = ({title, floatingActions}) => {
+
+    const theme = useTheme();
+
     const separator = () => {
         return (
-            <View style={{
-                backgroundColor: "#E3E8EF",
-                borderRadius: 2,
-                height: 1,
-                width: '100%',
-                marginTop: 10,
-                marginBottom: 10
-            }}/>
+            <Separator theme = {theme}/>
         )
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.actionTitleContainer}>
-                <Text style={styles.title}>{title}</Text>
-            </View>
+        <MultipleShadowsContainer shadows = {shadows}>
+                <ActionWrapper theme = {theme}>
+                    <ActionComponentContainer>
 
-            <View style={styles.actionsContainer}>
-                <FlatList
-                    data={floatingActions}
-                    renderItem={({item}) => item}
-                    keyExtractor={(item, index) => ""+index}
-                    ItemSeparatorComponent={separator}
-                />
-            </View>
-        </View>
+                        <ActionTitle theme = {theme}>{title}</ActionTitle>
+                        <ActionsContainer theme = {theme}>
+                            <FlatList
+                                data={floatingActions}
+                                renderItem={({item}) => item}
+                                keyExtractor={(item, index) => ""+index}
+                                ItemSeparatorComponent={separator}
+                            />
+                        </ActionsContainer>
+
+
+                    </ActionComponentContainer>
+                </ActionWrapper>
+        </MultipleShadowsContainer>
+        
+        // <View style={styles.container}>
+        //     <View style={styles.actionTitleContainer}>
+        //         <Text style={styles.title}>{title}</Text>
+        //     </View>
+
+        //     <View style={styles.actionsContainer}>
+        //         <FlatList
+        //             data={floatingActions}
+        //             renderItem={({item}) => item}
+        //             keyExtractor={(item, index) => ""+index}
+        //             ItemSeparatorComponent={separator}
+        //         />
+        //     </View>
+        // </View>
     );
 };
 

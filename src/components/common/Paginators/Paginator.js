@@ -6,7 +6,7 @@ import SvgIcon from '../../../../assets/SvgIcon';
 import PaginatorRight from '../../../../assets/svg/paginationRight';
 import PaginatorLeft from '../../../../assets/svg/paginationLeft';
 import IconButton from '../Buttons/IconButton';
-import PaginatorNumbers from './PaginatorNumbers';
+import PaginatorNumbers from './PaginatorNumbers'; 
 
 const PaginatorWrapper = styled.View`
   height: 100%;

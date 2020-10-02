@@ -588,7 +588,7 @@ function Inventory(props) {
                 }
             );
         });
-
+ 
         const isIndeterminate = selectedVariants.some(variant => variant.groupId === item._id)
 
         return <CollapsibleListItem
@@ -605,7 +605,7 @@ function Inventory(props) {
         >
             <FlatList
                 data={variants}
-                nestedScrollEnabled={true}
+                // nestedScrollEnabled={true}
                 renderItem={({item}) => renderChildItemView(item, formattedItem, () => {
                 })}
                 keyExtractor={(item, index) => `${index}`}
