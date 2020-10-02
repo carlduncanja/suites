@@ -15,7 +15,7 @@ import {PageContext} from '../../../../contexts/PageContext';
 import PostEditView, {POST_EDIT_MODE} from '../../OverlayPages/ChargeSheet/PostEditView';
 import moment from "moment";
 import jwtDecode from 'jwt-decode'
-import {ROLES} from "../../../../const";
+import {emptyFn, ROLES} from "../../../../const";
 
 const LINE_ITEM_TYPES = {
     DISCOUNT: 'discount',
@@ -85,6 +85,9 @@ const ChargeSheet = ({
                          onSelectVariants,
                          onSelectEquipmenntsVariants,
                          variantsConsumables = [],
+
+                         selectedConsumableCaseProcedureIds = [],
+                         onConsumableCaseProcedureSelected = emptyFn,
 
                          selectedConsumables = [],
                          selectedEquipments = [],
@@ -157,6 +160,8 @@ const ChargeSheet = ({
 
     useEffect(() => {
         // preparing billing information
+        console.log("charge sheet prop updated", chargeSheet);
+
         const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
         setCaseProcedure(billing.procedures)
 
@@ -296,6 +301,9 @@ const ChargeSheet = ({
                     selectedConsumables={selectedConsumables}
                     variantsConsumables={variantsConsumables}
                     onSelectVariants={onSelectVariants}
+
+                    selectedCaseProcedureIds={selectedConsumableCaseProcedureIds}
+                    onCaseProcedureSelected={onConsumableCaseProcedureSelected}
                 />
             }
 
@@ -441,6 +449,7 @@ const configureBillableItems = (lastModified, total, updatedBy = {}, procedures,
             name: item.inventory?.name,
             cost: item.inventory?.unitCost || 0,
         }));
+
 
         billingItem.equipments = equipments.map(item => ({
             _id: item?._id,

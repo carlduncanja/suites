@@ -127,6 +127,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [selectedConsumables, setSelectedConsumables] = useState([]);
     const [variantsConsumables, setVariantsConsumables] = useState([]);
     const [isConsumablesRemoved, setIsConsumablesRemoved] = useState(false);
+
+    const [selectedConsumableCaseProcedureIds, setSelectedConsumableCaseProcedureIds] = useState([]);
+
+
     // ############### State
 
     const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
@@ -651,25 +655,29 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         setSelectedCase(updatedCase);
     };
 
+    const onConsumableCaseProcedureSelected = (caseProcedureIds) => {
+        setSelectedConsumableCaseProcedureIds(caseProcedureIds);
+    }
+
     const openAddItem = itemToAdd => {
         const {chargeSheet = {}} = selectedCase;
         const {proceduresBillableItems = []} = chargeSheet;
-        const checkedList = itemToAdd === 'Consumables' ? selectedConsumables : selectedEquipments;
+        const checkedList = itemToAdd === 'Consumables' ? selectedConsumableCaseProcedureIds : selectedEquipments;
         const filerObj = proceduresBillableItems.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
 
         modal.closeModals('ActionContainerModal');
         navigation.navigate('AddChargeSheetItem', {
             type: itemToAdd,
             onAddItem: onAddItem(itemToAdd),
-            selectedObj: filerObj,
-
+            selectedObj: filerObj
         });
     };
 
     const onAddItem = itemToAdd => data => {
         const {chargeSheet = {}} = selectedCase;
         const {proceduresBillableItems = []} = chargeSheet;
-        const checkedList = itemToAdd === 'Consumables' ? selectedConsumables : selectedEquipments;
+
+        const checkedList = itemToAdd === 'Consumables' ? selectedConsumableCaseProcedureIds : selectedEquipments;
 
         const filerObj = proceduresBillableItems.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
         const updatedObj = itemToAdd === 'Consumables' ?
@@ -681,14 +689,13 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 ...filerObj,
                 equipments: [...filerObj?.equipments, ...data]
             };
-        // console.log("Selected consumables: ", selectedConsumables);
-        // console.log("Filter obj : ", filerObj);
-        console.log('Updated:', updatedObj);
-        const updatedCase = proceduresBillableItems.map(procedure => (procedure?.caseProcedureId === checkedList[0] ?
+
+        // console.log('Updated:', updatedObj);
+        const updatedBillableItems = proceduresBillableItems.map(procedure => (procedure?.caseProcedureId === checkedList[0] ?
             {...updatedObj} :
             {...procedure}));
 
-        console.log(' Updated Case: ', updatedCase);
+        // console.log(' Updated Case: ', updatedBillableItems);
 
         if (itemToAdd === 'Consumables') {
             setSelectedConsumables([]);
@@ -698,9 +705,21 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             setVariantsEquipments([]);
         }
 
-        updateCaseChargeSheet(updatedCase);
+        const updatedCase = {
+            ...selectedCase,
+            chargeSheet: {
+                ...chargeSheet,
+                proceduresBillableItems: updatedBillableItems
+            }
+        };
+        // console.log("selected case", updatedBillableItems);
 
-        // console.log("Billable: ", proceduresBillableItems);
+
+        setSelectedCase(updatedCase)
+
+
+
+        // updateCaseChargeSheet(updatedCase);
     };
 
     const handleRemoveConsumableItems = itemToRemove => {
@@ -857,7 +876,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             floatingAction.push(WithdrawChanges);
                         }
                     } else {
-                        const isDisabled = selectedConsumables.length !== 1;
+                        const isDisabled = !selectedConsumableCaseProcedureIds.length
 
                         const addNewItem = (
                             <ActionItem
@@ -1602,7 +1621,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const getOverlayContent = () => {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase;
         const {medicalInfo = {}} = patient;
-        const { proceduresBillableItems } = chargeSheet;
+        const {proceduresBillableItems} = chargeSheet;
 
         switch (selectedMenuItem) {
             case 'Patient':
@@ -1626,7 +1645,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             case 'Procedures':
                 return <Procedures
                     procedures={caseProcedures}
-                    proceduresBillableItems = {proceduresBillableItems}
+                    proceduresBillableItems={proceduresBillableItems}
                     caseId={caseId}
                 />;
             case 'Charge Sheet':
@@ -1656,6 +1675,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     variantsConsumables={variantsConsumables}
                     selectedEquipments={selectedEquipments}
                     variantsEquipments={variantsEquipments}
+
+                    selectedConsumableCaseProcedureIds = {selectedConsumableCaseProcedureIds}
+                    onConsumableCaseProcedureSelected = {onConsumableCaseProcedureSelected}
                 />;
             default:
                 return <View/>;
@@ -1715,13 +1737,13 @@ const mapStateToProps = state => ({auth: state.auth});
 export default connect(mapStateToProps, mapDispatchTopProp)(CasePage);
 
 function CasePageContent({
-    overlayContent,
-    overlayMenu,
-    selectedMenuItem,
-    onOverlayTabPress,
-    toggleActionButton,
-    actionDisabled
-}) {
+                             overlayContent,
+                             overlayMenu,
+                             selectedMenuItem,
+                             onOverlayTabPress,
+                             toggleActionButton,
+                             actionDisabled
+                         }) {
     useEffect(() => {
         console.log('Case Page Create');
     }, []);

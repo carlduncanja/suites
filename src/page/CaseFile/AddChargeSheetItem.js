@@ -16,18 +16,18 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 import SearchableOptionsField from '../../components/common/Input Fields/SearchableOptionsField';
 
-import {useNextPaginator,usePreviousPaginator} from '../../helpers/caseFilesHelpers';
-import { getInventories, getEquipmentTypes } from "../../api/network";
+import {useNextPaginator, usePreviousPaginator} from '../../helpers/caseFilesHelpers';
+import {getInventories, getEquipmentTypes} from "../../api/network";
 import {useModal} from 'react-native-modalfy';
 import _ from "lodash";
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 import DefaultPage from "../../components/common/Page/DefaultPage";
 
 
 const PageWrapper = styled.View`
     height : 100%;
     width : 100%;
-    background-color : ${ ({theme}) => theme.colors['--default-shade-white']}; 
+    background-color : ${({theme}) => theme.colors['--default-shade-white']}; 
 `;
 
 const TabsContainer = styled.View`
@@ -36,11 +36,11 @@ const TabsContainer = styled.View`
 
 const ContentWrapper = styled.View`
     height : 780px;
-    margin-left : ${ ({theme}) => theme.space['--space-8']};
-    margin-right :${ ({theme}) => theme.space['--space-16']};
-    padding-left : ${ ({theme}) => theme.space['--space-14']};
-    padding-right :${ ({theme}) => theme.space['--space-14']};
-    padding-top :${ ({theme}) => theme.space['--space-32']};
+    margin-left : ${({theme}) => theme.space['--space-8']};
+    margin-right :${({theme}) => theme.space['--space-16']};
+    padding-left : ${({theme}) => theme.space['--space-14']};
+    padding-right :${({theme}) => theme.space['--space-14']};
+    padding-top :${({theme}) => theme.space['--space-32']};
 
 `;
 
@@ -69,88 +69,87 @@ const AddItemsContainer = styled.View`
 
 const SearchableFieldContainer = styled.View`
     z-index : 1;
-    margin-bottom : ${ ({theme}) => theme.space['--space-24']}; 
+    margin-bottom : ${({theme}) => theme.space['--space-24']}; 
 
     /* margin-bottom : 24px; */
 `
 
 const ListContainer = styled.View`
     flex:1;
-    margin-top : ${ ({theme}) => theme.space['--space-40']}; 
+    margin-top : ${({theme}) => theme.space['--space-40']}; 
     /* background-color : red; */
 `;
 const Row = styled.View`
     /* width : 100%; */
     height : 20px;
     flex-direction : row;
-    margin-bottom : ${ ({theme}) => theme.space['--space-24']}; 
+    margin-bottom : ${({theme}) => theme.space['--space-24']}; 
 
 `
 const PaginatorContainer = styled.View`
     height : 100%;
     width : 122px;
-    border : 1px solid ${ ({theme}) => theme.colors['--color-gray-400']};
+    border : 1px solid ${({theme}) => theme.colors['--color-gray-400']};
     border-radius : 4px;
 `;
 
-const ContentFooterText = styled.Text( ({theme}) => ({
+const ContentFooterText = styled.Text(({theme}) => ({
     ...theme.font['text-base-regular'],
-    color : theme.colors['--color-gray-700'],
+    color: theme.colors['--color-gray-700'],
 }));
 
 const Divider = styled.View`
-    margin-left : ${ ({theme}) => theme.space['--space-24']};
-    margin-right :${ ({theme}) => theme.space['--space-32']};
-    margin-top : ${ ({theme}) => theme.space['--space-24']};
-    margin-bottom : ${ ({theme}) => theme.space['--space-24']};
+    margin-left : ${({theme}) => theme.space['--space-24']};
+    margin-right :${({theme}) => theme.space['--space-32']};
+    margin-top : ${({theme}) => theme.space['--space-24']};
+    margin-bottom : ${({theme}) => theme.space['--space-24']};
 `
 
 const FooterWrapper = styled.View`
     width : 100%;
     position : absolute;
     bottom : 0;
-    margin-bottom : ${ ({theme}) => theme.space['--space-24']};
-    /* margin-top : ${ ({theme}) => theme.space['--space-24']}; */
-    padding-left : ${ ({theme}) => theme.space['--space-24']};
-    padding-right :${ ({theme}) => theme.space['--space-24']};
+    margin-bottom : ${({theme}) => theme.space['--space-24']};
+    /* margin-top : ${({theme}) => theme.space['--space-24']}; */
+    padding-left : ${({theme}) => theme.space['--space-24']};
+    padding-right :${({theme}) => theme.space['--space-24']};
 `;
 
 const FooterContainer = styled.View`
     flex:1;
 `;
 
-const headers = [
-    {
-        name : name,
-        alignment : "flex-start",
-        flex : 1,
-    },
-    {
-        name : 'Amount',
-        alignment : "center",
-        flex:1
-    },
-    {
-        name : 'Action',
-        alignment : "flex-end",
-        flex:1
-    },
-]
 
-
-function AddChargeSheetItem({navigation, route}){
+function AddChargeSheetItem({navigation, route}) {
 
     const {type, onAddItem, selectedObj} = route.params;
     const modal = useModal();
-    let name = type === 'Consumables' ? 'Consumable' : 'Equipment';
 
+    let name = type === 'Consumables' ? 'Consumable' : 'Equipment';
+    const headers = [
+        {
+            name: name,
+            alignment: "flex-start",
+            flex: 1,
+        },
+        {
+            name: 'Amount',
+            alignment: "center",
+            flex: 1
+        },
+        {
+            name: 'Action',
+            alignment: "flex-end",
+            flex: 1
+        },
+    ]
 
     const theme = useTheme();
     const [data, setData] = useState([]);
 
     const recordsPerPage = 6
     const dataLength = data.length
-    const totalPages = Math.ceil(dataLength/recordsPerPage)
+    const totalPages = Math.ceil(dataLength / recordsPerPage)
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
@@ -165,7 +164,6 @@ function AddChargeSheetItem({navigation, route}){
     const [selectedItem, setSelectedItem] = useState(false);
 
 
-
     useEffect(() => {
         if (!searchValue) {
             // empty search values and cancel any out going request.
@@ -176,7 +174,7 @@ function AddChargeSheetItem({navigation, route}){
 
         // wait 300ms before search. cancel any prev request before executing current.
 
-        const search = _.debounce( type === 'Consumables' ? fetchInventory : fetchEquipment, 300);
+        const search = _.debounce(type === 'Consumables' ? fetchInventory : fetchEquipment, 300);
 
         setSearchQuery(prevSearch => {
             if (prevSearch && prevSearch.cancel) {
@@ -191,7 +189,7 @@ function AddChargeSheetItem({navigation, route}){
     const fetchInventory = () => {
         getInventories(searchValue, 5)
             .then(inventoryResult => {
-                const { data = [], pages = 0 } = inventoryResult
+                const {data = [], pages = 0} = inventoryResult
                 setSearchResults(data);
             })
             .catch(error => {
@@ -205,7 +203,7 @@ function AddChargeSheetItem({navigation, route}){
     const fetchEquipment = () => {
         getEquipmentTypes(searchValue, 5)
             .then(equipmentResult => {
-                const { data = [], pages = 0 } = equipmentResult
+                const {data = [], pages = 0} = equipmentResult
                 setSearchResults(data);
             })
             .catch(error => {
@@ -218,8 +216,8 @@ function AddChargeSheetItem({navigation, route}){
 
 
     const goToNextPage = () => {
-        if (currentPagePosition < totalPages){
-            let {currentPage,currentListMin,currentListMax} = useNextPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax)
+        if (currentPagePosition < totalPages) {
+            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax)
@@ -227,15 +225,15 @@ function AddChargeSheetItem({navigation, route}){
     };
 
     const goToPreviousPage = () => {
-        if (currentPagePosition > 1){
-            let {currentPage,currentListMin,currentListMax} = usePreviousPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax)
+        if (currentPagePosition > 1) {
+            let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax)
         }
     };
 
-    const onBackPress = () =>{
+    const onBackPress = () => {
         navigation.goBack();
     };
 
@@ -243,17 +241,17 @@ function AddChargeSheetItem({navigation, route}){
         modal.openModal('ConfirmationModal', {
             content: (
                 <ConfirmationComponent
-                    isError = {false}
+                    isError={false}
                     isEditUpdate={true}
                     onCancel={() => {
                         modal.closeAllModals();
                     }}
                     onAction={() => {
                         onBackPress();
-                        onAddItem(data);
+                        onAddItem(configureData(data));
                         modal.closeAllModals();
                     }}
-                    message = {"Do you want to save these item(s)?"}
+                    message={"Do you want to save these item(s)?"}
 
                 />
             ),
@@ -264,8 +262,8 @@ function AddChargeSheetItem({navigation, route}){
     };
 
 
-    const onQuantityChange = (item) => (action) =>{
-        const { amount = 1 } = item
+    const onQuantityChange = (item) => (action) => {
+        const {amount = 1} = item
 
         const updatedObj = {
             ...item,
@@ -299,32 +297,35 @@ function AddChargeSheetItem({navigation, route}){
 
     const onItemSelected = (item) => {
         // console.log("Seleted item: ", item);
+
+        console.log("item selected", item);
+
         let updatedItem = {};
         let items = type === 'Consumables' ? selectedObj?.inventories : selectedObj?.equipments
-        let filterItem = items.filter( dataItem => dataItem?.inventory?._id === item?._id);
+        let filterItem = items.filter(dataItem => dataItem?.inventory?._id === item?._id);
         // console.log("Items: ", items)
-        if(type === 'Consumables'){
+        if (type === 'Consumables') {
             updatedItem = {
-                _id : item._id,
-                inventory : {
-                    _id : item?._id,
-                    inventoryGroup : item?.inventoryGroup
+                _id: item._id,
+                inventory: {
+                    _id: item?._id,
+                    inventoryGroup: item?.inventoryGroup
                 },
                 ...item,
-                amount : 1,
+                amount: 1,
             }
 
-            delete(updatedItem.inventoryGroup);
-        }else{
+            delete (updatedItem.inventoryGroup);
+        } else {
             console.log("Selected obj: ", selectedObj);
             console.log("iTEM: ", item)
             updatedItem = {
-                _id : item._id,
-                equipment : {
+                _id: item._id,
+                equipment: {
                     ...item
                 },
-                amount : 1,
-                name : item.name
+                amount: 1,
+                name: item.name
             };
 
         }
@@ -333,26 +334,25 @@ function AddChargeSheetItem({navigation, route}){
         setSelectedItem(updatedItem);
         setSearchValue(updatedItem);
 
-        if(filterItem.length > 0){
-            Alert.alert("Failed",`Item is already added to the ${type} list`);
-        }else{
+        if (filterItem.length > 0) {
+            Alert.alert("Failed", `Item is already added to the ${type} list`);
+        } else {
 
-            if(data.length === 0){
-                setData([...data,updatedItem])
-            }else{
+            if (data.length === 0) {
+                setData([...data, updatedItem])
+            } else {
 
-                data.map( dataItem => {
-                    if(dataItem._id === updatedItem._id){
+                data.map(dataItem => {
+                    if (dataItem._id === updatedItem._id) {
                         console.log("Same")
                         setData([...data])
-                    }else{
+                    } else {
                         console.log('Dis')
-                        setData([...data,updatedItem])
+                        setData([...data, updatedItem])
                     }
                 })
             }
         }
-
 
 
         // const updatedData = data.length === 0 ?
@@ -368,56 +368,47 @@ function AddChargeSheetItem({navigation, route}){
 
     }
 
+    const configureData = (data) => {
+        if (type === 'Consumables') {
+            return data.map(dataItem => ({
+                ...dataItem,
+                inventory: {
+                    ...dataItem.inventory,
+                    name: dataItem.name,
+                    unitCost: dataItem.unitCost
+                }
+            }))
+        } else {
+            return data;
+        }
+    }
+
     const onClearItem = () => {
         setSelectedItem(false);
         setSearchValue('');
     }
 
     const handleDeleteItem = (item) => {
-        const filterItems = data.filter( obj => obj._id !== item._id)
+        const filterItems = data.filter(obj => obj._id !== item._id)
         setData(filterItems)
-
-        // modal
-        //     .openModal(
-        //         'ConfirmationModal',
-        //         {
-        //             content: <ConfirmationComponent
-        //                 isError = {false}
-        //                 isEditUpdate = {true}
-        //                 onCancel = {()=> modal.closeModals('ConfirmationModal')}
-        //                 onAction = {()=>{
-        //                     onDeletePress(item);
-        //                     setTimeout(()=>{modal.closeModals('ConfirmationModal')}, 100)
-        //                 }}
-        //                 // onAction = { () => confirmAction()}
-        //                 message = {"Do you want to delete this item ?"}
-        //             />
-        //             ,
-        //             onClose: () => {modal.closeModals('ConfirmationModal')}
-        //         })
     };
 
-    // const onDeletePress = (item) => {
-    //     const filterItems = data.filter( obj => obj._id !== item._id)
-    //     setData(filterItems)
-    // };
-
     const listItemFormat = (item) => {
-        const { _id = "", name = "", amount = 1 } = item
+        const {_id = "", name = "", amount = 1} = item
         return (
-            <Row theme = {theme}>
-                <DataItem text = {name} flex = {1} fontStyle = "--text-base-medium" color = "--color-blue-600" />
+            <Row theme={theme}>
+                <DataItem text={name} flex={1} fontStyle="--text-base-medium" color="--color-blue-600"/>
                 <NumberChangeField
-                    onChangePress = {onQuantityChange(item)}
-                    onAmountChange = {onAmountChange(item)}
-                    value = {amount.toString() || 1}
+                    onChangePress={onQuantityChange(item)}
+                    onAmountChange={onAmountChange(item)}
+                    value={amount.toString() || 1}
                 />
                 <ContentDataItem
-                    align = "flex-end"
-                    content = {
+                    align="flex-end"
+                    content={
                         <IconButton
-                            Icon = {<DeleteIcon/>}
-                            onPress = {()=>handleDeleteItem(item)}
+                            Icon={<DeleteIcon/>}
+                            onPress={() => handleDeleteItem(item)}
                         />
                     }
                 />
@@ -428,18 +419,18 @@ function AddChargeSheetItem({navigation, route}){
     let dataToDisplay = [...data]
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax)
 
-    return(
-        <DefaultPage pageTitle={`Add ${type}`} onClosePress={onBackPress} theme = {theme}>
+    return (
+        <DefaultPage pageTitle={`Add ${type}`} onClosePress={onBackPress} theme={theme}>
 
             <TabsContainer>
                 <CreationDialogTabs
-                    tabs = {[type]}
-                    tab = {0}
-                    backgroundColor = "--color-gray-200"
+                    tabs={[type]}
+                    tab={0}
+                    backgroundColor="--color-gray-200"
                 />
             </TabsContainer>
 
-            <ContentWrapper theme = {theme}>
+            <ContentWrapper theme={theme}>
                 <ContentContaienr>
 
                     <AddItemsWrapper>
@@ -449,26 +440,28 @@ function AddChargeSheetItem({navigation, route}){
                                 <SearchableOptionsField
                                     value={selectedItem}
                                     text={searchValue}
-                                    oneOptionsSelected={(item)=> onItemSelected(item)}
-                                    onChangeText={(value) => {setSearchValue(value)}}
+                                    oneOptionsSelected={(item) => onItemSelected(item)}
+                                    onChangeText={(value) => {
+                                        setSearchValue(value)
+                                    }}
                                     onClear={onClearItem}
                                     options={searchResults}
                                     handlePopovers={() => {
                                         // console.log("handle popovers");
                                     }}
                                     isPopoverOpen={searchQuery}
-                                    borderColor = {theme.colors['--color-gray-400']}
+                                    borderColor={theme.colors['--color-gray-400']}
                                 />
                             </SearchableFieldContainer>
 
                             <ListContainer>
                                 <Table
-                                    data = {dataToDisplay}
-                                    currentListMin = {currentPageListMin}
-                                    currentListMax = {currentPageListMax}
-                                    listItemFormat = {listItemFormat}
-                                    headers = {headers}
-                                    isCheckbox = {false}
+                                    data={dataToDisplay}
+                                    currentListMin={currentPageListMin}
+                                    currentListMax={currentPageListMax}
+                                    listItemFormat={listItemFormat}
+                                    headers={headers}
+                                    isCheckbox={false}
                                 />
                             </ListContainer>
 
@@ -479,22 +472,22 @@ function AddChargeSheetItem({navigation, route}){
 
                         <PaginatorContainer>
                             <Paginator
-                                currentPage = {currentPagePosition}
-                                totalPages = {totalPages === 0 ? 1 : totalPages}
-                                goToNextPage = {goToNextPage}
-                                goToPreviousPage = {goToPreviousPage}
-                                hasNumberBorder = {false}
-                                isNextDisabled = {isNextDisabled}
-                                isPreviousDisabled = {isPreviousDisabled}
+                                currentPage={currentPagePosition}
+                                totalPages={totalPages === 0 ? 1 : totalPages}
+                                goToNextPage={goToNextPage}
+                                goToPreviousPage={goToPreviousPage}
+                                hasNumberBorder={false}
+                                isNextDisabled={isNextDisabled}
+                                isPreviousDisabled={isPreviousDisabled}
                             />
                         </PaginatorContainer>
                         <ContentFooterText>
                             Showing {
-                                dataLength === recordsPerPage
-                                    ? recordsPerPage
-                                    : dataLength
+                            dataLength === recordsPerPage
+                                ? recordsPerPage
+                                : dataLength
 
-                            } of {dataLength}
+                        } of {dataLength}
                         </ContentFooterText>
                     </ContentFooterContainer>
 
@@ -506,9 +499,9 @@ function AddChargeSheetItem({navigation, route}){
             </Divider>
 
 
-            <FooterWrapper theme = {theme}>
+            <FooterWrapper theme={theme}>
                 <FooterContainer>
-                    <CreatePageDoneFooter onFooterPress = {onFooterPress}/>
+                    <CreatePageDoneFooter onFooterPress={onFooterPress}/>
                 </FooterContainer>
             </FooterWrapper>
 

@@ -82,3 +82,5 @@ export const LONG_PRESS_TIMER = {
     MEDIUM: 700,
     LONG: 1200
 };
+
+export const emptyFn = () => {}
