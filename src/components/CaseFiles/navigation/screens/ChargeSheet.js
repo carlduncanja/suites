@@ -210,6 +210,29 @@ const ChargeSheet = ({
         }
     };
 
+    const handleCaseProcedureChangeUpdate = (updatedItem, caseProcedureId) => {
+
+        const updatedBillablesItems = [...proceduresBillableItemsChanges]
+
+        // const procedureToUpdate = proceduresBillableItemsChanges.find(billableItem =>
+        //     billableItem.caseProcedureId === caseProcedureId
+        // );
+        // if (!procedureToUpdate) return;
+
+        for (const index in updatedBillablesItems) {
+
+            const isProcedureForUpdate = proceduresBillableItems[index]['caseProcedureId'] === caseProcedureId
+            if (!isProcedureForUpdate) continue;
+
+            const updatedInventory = updatedBillablesItems[i].inventories.map(item => {
+
+            })
+
+        }
+
+
+    }
+
     const handleEquipmentUpdate = (index, procedureEquipments) => {
         const updatedCaseProcedures = [...caseProcedures];
         if (updatedCaseProcedures[index]) {
@@ -282,8 +305,9 @@ const ChargeSheet = ({
                     caseProcedures={caseProcedures}
                     caseProcedureChanges={caseProcedureChanges}
                     onConsumablesUpdate={handleConsumableUpdate}
+                    onCaseProcedureItemUpdated={handleCaseProcedureChangeUpdate}
                     mode={POST_EDIT_MODE.CONSUMABLES}
-                    isEditMode={isEditMode}
+                    isEditMode={isEditMode && (isOwner || isOwner)}
                     bannerText={bannerText}
                     handleEditDone={handleEditDone}
                 />

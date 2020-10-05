@@ -121,7 +121,8 @@ function PageHeader({
 
         setPageState({
             ...pageState,
-            isEditMode: !pageState.isEditMode
+            isEditMode: !pageState.isEditMode,
+
         });
     };
 
@@ -230,7 +231,7 @@ function PageHeader({
                 }
 
                 {
-                    !isEditDisabled ? (
+                    (!isEditDisabled || editDisabled) ? (
                         <EditButtonWrapper theme={theme}>
                             <EditButtonContainer
                                 theme={theme}

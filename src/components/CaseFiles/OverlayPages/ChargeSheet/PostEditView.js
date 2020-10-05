@@ -29,6 +29,7 @@ import {PageContext} from '../../../../contexts/PageContext';
 import Data from '../../../common/Table/Data';
 import moment from "moment";
 import {checkboxItemPress} from "../../../../helpers/caseFilesHelpers";
+import {emptyFn} from "../../../../const";
 
 
 const headers = [
@@ -114,14 +115,14 @@ function PostEditView({
                           caseProcedureChanges = [],
                           bannerText = "Find your change submission below",
                           role = "Nurse",
-                          mode = POST_EDIT_MODE.CONSUMABLES
+                          isEditMode = false,
+                          onProcedureUpdate,
+                          onCaseProcedureItemUpdated = emptyFn,
+                          mode = POST_EDIT_MODE.CONSUMABLES,
                       }) {
 
-    // console.log("Cae: ", caseProcedures)
+    console.log("caseProcedureChanges: ", caseProcedureChanges)
     const theme = useTheme();
-    const {pageState} = useContext(PageContext);
-    const {isEditMode} = pageState
-
 
     const [selectedCaseProcedureIds, setSelectedCaseProcedureIds] = useState([]);
     const [variantsCheckboxList, setVariantsCheckBoxList] = useState([]);
@@ -139,6 +140,24 @@ function PostEditView({
         setSelectedCaseProcedureIds(updatedIds);
     }
 
+    const onQuantityChangePress = (item, index, caseProcedureId) => (action) => {
+
+        //     amount: action === 'add' ? item.amount + 1 : item.amount - 1
+        // const selectedData = caseProcedures[sectionIndex].inventories;
+
+        const updatedObj = {
+            ...item,
+            amount: action === 'add' ? item.amount + 1 : item.amount - 1
+        };
+        //
+        // const updatedData = selectedData.map(item => {
+        //     return item._id === updatedObj._id
+        //         ? {...updatedObj}
+        //         : {...item}
+        // })
+
+        onCaseProcedureItemUpdated(updatedObj, caseProcedureId);
+    }
 
     const listItem = ({name}, onActionPress, isCollapsed, index) => <>
 
@@ -189,7 +208,7 @@ function PostEditView({
         )
     }
 
-    const changeChildViewItem = (item, index) => {
+    const changeChildViewItem = (item, index, caseProcedureId) => {
         const {amount = 0, cost = 0, name = "", initialAmount = 0, type} = item
         return (
             <>
@@ -205,16 +224,15 @@ function PostEditView({
 
                 <DataItem text={type} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
                 {
-                    isEditMode === true && role === 'Admin' ?
+                    isEditMode ?
                         <ContentDataItem
                             align="center"
                             content={
                                 <NumberChangeField
-                                    backgroundColor="#48BB78"
-                                    onChangePress={() => {
-                                    }}
-                                    // onAmountChange={onAmountChange(item, index)}
+                                    onChangePress={onQuantityChangePress(item, index, caseProcedureId)}
                                     value={amount === 0 ? "" : amount.toString()}
+                                    borderColor='--color-green-500'
+                                    backgroundColor='--color-green-100'
                                 />
                             }
                         />
@@ -250,11 +268,11 @@ function PostEditView({
         )
     };
 
-    const renderChangeChildItemView = (item, index) => {
+    const renderChangeChildItemView = (item, index, caseProcedureId) => {
         let {_id} = item
         return (
             <Item
-                itemView={changeChildViewItem(item, index)}
+                itemView={changeChildViewItem(item, index, caseProcedureId)}
                 hasCheckBox={true}
                 isChecked={variantsCheckboxList.includes(_id)}
                 onCheckBoxPress={() => {
@@ -278,19 +296,19 @@ function PostEditView({
         return (
             <CollapsibleListItem
                 isChecked={selectedCaseProcedureIds.includes(item._id)}
-                 hasCheckBox={true}
+                hasCheckBox={true}
                 render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, index)}
             >
-            <FlatList
-                data={data}
-                renderItem={({item, index}) => {
-                    return renderChildItemView(item, index)
-                }}
-                keyExtractor={(item, index) => "" + index}
-                ItemSeparatorComponent={() =>
-                    <View style={{flex: 1, margin: 5, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
-                }
-            />
+                <FlatList
+                    data={data}
+                    renderItem={({item, index}) => {
+                        return renderChildItemView(item, index)
+                    }}
+                    keyExtractor={(item, index) => "" + index}
+                    ItemSeparatorComponent={() =>
+                        <View style={{flex: 1, margin: 5, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
+                    }
+                />
 
             </CollapsibleListItem>
         )
@@ -298,7 +316,7 @@ function PostEditView({
 
     const renderChangeCollapsible = (item, index) => {
 
-        const {procedure, inventories, equipments} = item
+        const {procedure, inventories, equipments, caseProcedureId} = item
         let procedureItem = {name: procedure?.name};
 
         //  chose data depending on the mode.
@@ -322,7 +340,7 @@ function PostEditView({
                 <FlatList
                     data={data}
                     renderItem={({item, index}) => {
-                        return renderChangeChildItemView(item, index)
+                        return renderChangeChildItemView(item, index, caseProcedureId)
                     }}
                     keyExtractor={(item, index) => "" + index}
                     ItemSeparatorComponent={() =>
