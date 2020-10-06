@@ -76,11 +76,12 @@ function ChargesheetEquipment({
         const {equipment: variantId} = item;
 
         let variantsToUpdate = [...variantsEquipments];
-        const parentIds = variantsToUpdate.map(variantObjects => variantObjects.parentId);
+        const parentIds = variantsToUpdate.map(variantObjects => variantObjects._parentId);
         const selectedVariantGroupIndex = parentIds.indexOf(parentId);
 
         // find the variant object to include.
         if (selectedVariantGroupIndex >= 0) {
+
             // add or remove equipment from group from
             let equipmentVariants = variantsToUpdate[selectedVariantGroupIndex].variants
             equipmentVariants = checkboxItemPress(variantId, equipmentVariants)
