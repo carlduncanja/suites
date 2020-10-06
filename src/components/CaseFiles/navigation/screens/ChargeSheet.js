@@ -107,6 +107,7 @@ const ChargeSheet = React.forwardRef(({
         total = 0,
         caseId
     } = chargeSheet;
+
     const theme = useTheme();
     const navigation = useNavigation();
 
@@ -405,10 +406,8 @@ const ChargeSheet = React.forwardRef(({
         // updateCaseChargeSheet(updatedCase);
     };
 
-    const handleRemoveConsumableItems = itemToRemove => {
+    const handleRemoveConsumableItems = () => {
         const updatedCaseProcedures = [...caseProcedures];
-
-        console.log("selected consumables", caseProcedures, variantsConsumables);
 
         for (const variantsConsumable of variantsConsumables) {
             const {_parentId, variants} = variantsConsumable;
@@ -419,12 +418,17 @@ const ChargeSheet = React.forwardRef(({
                 const isSelectedParent = updatedCaseProcedures[i].caseProcedureId === _parentId
                 if (isSelectedParent) {
                     // find and remove the variants
-                    updatedCaseProcedures[i].inventories = updatedCaseProcedures[i].inventories.filter( item => !variants.includes(item.inventory) )
+                    const caseProcedureToUpdate = {...updatedCaseProcedures[i]}
+
+                    let inventories = [...caseProcedureToUpdate.inventories]
+                    inventories = inventories.filter(item => !variants.includes(item.inventory))
+
+                    caseProcedureToUpdate.inventories = inventories;
+                    updatedCaseProcedures[i] = caseProcedureToUpdate;
                 }
             }
         }
-
-        setCaseProcedure(updatedCaseProcedures);
+        onUpdateChargeSheet(updatedCaseProcedures)
     };
     // endregion
 
@@ -498,7 +502,7 @@ const ChargeSheet = React.forwardRef(({
             const removeLineItemAction = (
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                    onLongPress={() => handleRemoveConsumableItems('Consumables')}
+                    onLongPress={handleRemoveConsumableItems}
                     isDisabled={isDisabledConsumables}
 
                 >
@@ -676,7 +680,7 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, null, null, {forwardRef: true})(ChargeSheet);
 
 //
-const configureBillableItems = (lastModified, total, updatedBy = {}, procedures, proceduresBillableItems) => {
+const configureBillableItems = (lastModified, total, updatedBy = {}, procedures = [], proceduresBillableItems = []) => {
 
     const billing = {
         total,
