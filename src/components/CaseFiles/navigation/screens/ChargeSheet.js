@@ -1,16 +1,8 @@
 import React, {useContext, useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {connect} from 'react-redux';
-import {
-    Consumables,
-    Equipment,
-    Invoices,
-    Quotation,
-    Billing,
-    ChargesheetEquipment
-} from '../../OverlayPages/ChargeSheet';
+import {ChargesheetEquipment, Consumables, Invoices, Quotation} from '../../OverlayPages/ChargeSheet';
 import BillingCaseCard from '../../Billing/BillingCaseCard';
-import {currencyFormatter, formatDate} from '../../../../utils/formatter';
+import {formatDate} from '../../../../utils/formatter';
 import {PageContext} from '../../../../contexts/PageContext';
 import PostEditView, {POST_EDIT_MODE} from '../../OverlayPages/ChargeSheet/PostEditView';
 import moment from "moment";
@@ -24,6 +16,7 @@ import AddIcon from "../../../../../assets/svg/addIcon";
 import ConfirmationComponent from "../../../ConfirmationComponent";
 import {useNavigation} from '@react-navigation/native'
 import {useTheme} from "emotion-theming";
+import {useModal} from "react-native-modalfy";
 
 const LINE_ITEM_TYPES = {
     DISCOUNT: 'discount',
@@ -90,8 +83,8 @@ const ChargeSheet = React.forwardRef(({
                                           handleInvoices,
                                           onSelectEquipments,
                                           onSelectEquipmenntsVariants,
-                                          selectedConsumableCaseProcedureIds = [],
-                                          onConsumableCaseProcedureSelected = emptyFn,
+                                          //selectedConsumableCaseProcedureIds = [],
+                                          //onConsumableCaseProcedureSelected = emptyFn,
 
                                           // variantsConsumables = [],
                                           // selectedConsumables = [],
@@ -110,6 +103,7 @@ const ChargeSheet = React.forwardRef(({
 
     const theme = useTheme();
     const navigation = useNavigation();
+    const modal = useModal();
 
     const baseStateRef = useRef();
 
@@ -143,7 +137,7 @@ const ChargeSheet = React.forwardRef(({
     }
 
     const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode} = pageState;
+    const {isEditMode = false} = pageState;
 
     // preparing billing information
     const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
@@ -344,11 +338,14 @@ const ChargeSheet = React.forwardRef(({
         });
     };
 
+    const onConsumableCaseProcedureSelected = (caseProcedureIds) => {
+        setSelectedCaseProcedureIds(caseProcedureIds);
+    }
+
     const openAddItem = itemToAdd => {
-        const {chargeSheet = {}} = selectedCase;
-        const {proceduresBillableItems = []} = chargeSheet;
-        const checkedList = itemToAdd === 'Consumables' ? selectedConsumableCaseProcedureIds : selectedEquipments;
-        const filerObj = proceduresBillableItems.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
+        const proceduresToUpdate = [...caseProcedures];
+        const checkedList = itemToAdd === 'Consumables' ? selectedCaseProcedureIds : selectedEquipments;
+        const filerObj = proceduresToUpdate.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
 
         modal.closeModals('ActionContainerModal');
         navigation.navigate('AddChargeSheetItem', {
@@ -359,51 +356,49 @@ const ChargeSheet = React.forwardRef(({
     };
 
     const onAddItem = itemToAdd => data => {
-        const {chargeSheet = {}} = selectedCase;
-        const {proceduresBillableItems = []} = chargeSheet;
+        const dataToAdd = data.map(item => ({
+            _id: item._id,
+            amount: item.amount,
+            inventory: item.inventory?._id,
+            equipment: item.equipment?._id,
+            name: item.name,
+            cost: item.unitCost,
+            type: item.inventory?.inventoryGroup?.name || ""
+        }))
 
-        const checkedList = itemToAdd === 'Consumables' ? selectedConsumableCaseProcedureIds : selectedEquipments;
+        const proceduresToUpdate = [...caseProcedures];
 
-        const filerObj = proceduresBillableItems.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
+        const selectedProcedureIds = itemToAdd === 'Consumables' ? selectedCaseProcedureIds : selectedEquipments;
+
+        const procedureToUpdate = proceduresToUpdate.find(item => item?.caseProcedureId === selectedProcedureIds[0] || '');
+
         const updatedObj = itemToAdd === 'Consumables' ?
             {
-                ...filerObj,
-                inventories: [...filerObj?.inventories, ...data]
+                ...procedureToUpdate,
+                inventories: [...procedureToUpdate?.inventories, ...dataToAdd]
             } :
             {
-                ...filerObj,
-                equipments: [...filerObj?.equipments, ...data]
+                ...procedureToUpdate,
+                equipments: [...procedureToUpdate?.equipments, ...dataToAdd]
             };
 
-        // console.log('Updated:', updatedObj);
-        const updatedBillableItems = proceduresBillableItems.map(procedure => (procedure?.caseProcedureId === checkedList[0] ?
-            {...updatedObj} :
+        const updatedBillableItems = proceduresToUpdate.map(procedure => (procedure?.caseProcedureId === selectedProcedureIds[0] ?
+            {...procedure, ...updatedObj} :
             {...procedure}));
 
-        // console.log(' Updated Case: ', updatedBillableItems);
+
+        console.log("updated obj: ", updatedObj);
 
         if (itemToAdd === 'Consumables') {
-            setSelectedConsumables([]);
-            setVariantsConsumables([]);
+            setSelectedCaseProcedureIds([])
+            setSelectedConsumables([])
         } else {
-            setSelectedEquipments([]);
-            setVariantsEquipments([]);
+            // setSelectedEquipments([]);
+            // setVariantsEquipments([]);
         }
 
-        const updatedCase = {
-            ...selectedCase,
-            chargeSheet: {
-                ...chargeSheet,
-                proceduresBillableItems: updatedBillableItems
-            }
-        };
-        // console.log("selected case", updatedBillableItems);
-
-
-        setSelectedCase(updatedCase)
-
-
-        // updateCaseChargeSheet(updatedCase);
+        setCaseProcedure(updatedBillableItems)
+        setUpdated(true);
     };
 
     const handleRemoveConsumableItems = () => {
@@ -482,11 +477,11 @@ const ChargeSheet = React.forwardRef(({
                 floatingAction.push(WithdrawChanges);
             }
         } else {
-            const isDisabled = !selectedConsumableCaseProcedureIds.length
+            const isDisabled = !(selectedCaseProcedureIds.length === 1 && isEditMode)
 
             const addNewItem = (
                 <ActionItem
-                    title="Add Consumable"
+                    title="Add Consumable Hello"
                     icon={(
                         <AddIcon
                             strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
@@ -541,7 +536,7 @@ const ChargeSheet = React.forwardRef(({
 
     const consumables = [groupedInventories, ...inventories];
     const procedureEquipments = [groupedEquipments, ...equipments];
-    const consumableProcedures = ['All', ...caseProcedures.map(item => item.procedure.name)];
+    const consumableProcedures = ['All', ...caseProcedures.map(item => item?.procedure?.name)];
 
     const {status, updatedBy = {}, updatedAt} = chargeSheet;
 
@@ -594,7 +589,7 @@ const ChargeSheet = React.forwardRef(({
                     onSelectVariants={variants => {
                         setVariantsConsumables(variants);
                     }}
-                    selectedCaseProcedureIds={selectedConsumableCaseProcedureIds}
+                    selectedCaseProcedureIds={selectedCaseProcedureIds}
                     onCaseProcedureSelected={onConsumableCaseProcedureSelected}
                 />
             }

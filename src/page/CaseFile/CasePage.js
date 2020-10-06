@@ -126,7 +126,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [selectedEquipments, setSelectedEquipments] = useState([]);
     const [variantsEquipments, setVariantsEquipments] = useState([]);
 
-    const [isConsumablesRemoved, setIsConsumablesRemoved] = useState(false);
 
     const [selectedConsumableCaseProcedureIds, setSelectedConsumableCaseProcedureIds] = useState([]);
 
@@ -150,75 +149,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         if (pageState.isEdit === false) {
             setSelectedTab(tab);
         }
-    };
-
-    const handleAcceptChargeSheetChange = () => {
-        modal.openModal('ConfirmationModal', {
-            content: (
-                <ConfirmationComponent
-                    error={false}//boolean to show whether an error icon or success icon
-                    isEditUpdate={true}
-                    onCancel={() => {
-                        modal.closeAllModals();
-                    }}
-                    onAction={() => {
-                        modal.closeAllModals();
-                        chargeSheetApproval({approve: true});
-                    }}
-                    message="Do you want to accept changes submitted?"//general message you can send to be displayed
-                    action="Yes"
-                />
-            ),
-            onClose: () => {
-                console.log('Modal closed');
-            },
-        });
-    };
-
-    const handleRevertChargeSheetChanges = () => {
-        modal.openModal('ConfirmationModal', {
-            content: (
-                <ConfirmationComponent
-                    error={false}//boolean to show whether an error icon or success icon
-                    isEditUpdate={true}
-                    onCancel={() => {
-                        modal.closeAllModals();
-                    }}
-                    onAction={() => {
-                        modal.closeAllModals();
-                        chargeSheetApproval({approve: false});
-                    }}
-                    message="Are you sure you want to revert changes submitted?"//general message you can send to be displayed
-                    action="Yes"
-                />
-            ),
-            onClose: () => {
-                console.log('Modal closed');
-            },
-        });
-    };
-
-    const handleWithdrawChargeSheetChanges = () => {
-        modal.openModal('ConfirmationModal', {
-            content: (
-                <ConfirmationComponent
-                    error={false}//boolean to show whether an error icon or success icon
-                    isEditUpdate={true}
-                    onCancel={() => {
-                        modal.closeAllModals();
-                    }}
-                    onAction={() => {
-                        modal.closeAllModals();
-                        chargeSheetWithdrawChanges({approve: false});
-                    }}
-                    message="Are you sure you want to withdraw changes submitted?"//general message you can send to be displayed
-                    action="Yes"
-                />
-            ),
-            onClose: () => {
-                console.log('Modal closed');
-            },
-        });
     };
 
     const handleOverlayMenuPress = selectedItem => {
@@ -654,10 +584,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         updatedCase.quotations = quotations.filter(item => item._id === quotationId);
         setSelectedCase(updatedCase);
     };
-
-    const onConsumableCaseProcedureSelected = (caseProcedureIds) => {
-        setSelectedConsumableCaseProcedureIds(caseProcedureIds);
-    }
 
     const openAddItem = itemToAdd => {
         const {chargeSheet = {}} = selectedCase;
@@ -1669,22 +1595,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     onSelectEquipments={equipments => {
                         setSelectedEquipments(equipments);
                     }}
-                    // onSelectConsumables={consumables => {
-                    //     setSelectedConsumables(consumables);
-                    // }}
-                    // onSelectVariants={variants => {
-                    //     setVariantsConsumables(variants);
-                    // }}
-                    // onSelectEquipmenntsVariants={variants => {
-                    //     setVariantsEquipments(variants);
-                    // }}
-                    // selectedConsumables={selectedConsumables}
                     // variantsConsumables={variantsConsumables}
                     selectedEquipments={selectedEquipments}
                     variantsEquipments={variantsEquipments}
-
-                    selectedConsumableCaseProcedureIds={selectedConsumableCaseProcedureIds}
-                    onConsumableCaseProcedureSelected={onConsumableCaseProcedureSelected}
                 />;
             default:
                 return <View/>;
