@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import {Low, Moderate, High, VeryHigh} from '../../RiskFrames/RiskLevels' 
 import RiskLevel from '../../RiskFrames/RiskLevel'; 
 
-const PateintRisk = ({tabDetails, isEditMode, fields, onFieldChange}) => { 
+const PateintRisk = ({tabDetails = [], isEditMode, fields, onFieldChange}) => { 
 
     const [risks, setRisks] = useState(tabDetails)
 
@@ -19,11 +19,17 @@ const PateintRisk = ({tabDetails, isEditMode, fields, onFieldChange}) => {
             ]; 
             setRisks(updatedRisks)
             console.log("Id and Level: ", id, newLevel)
-        }    
+        }     
     }
 
     return ( 
         <ScrollView>
+            {
+                risks.length === 0 &&
+                <>
+                    <RiskLevel/>
+                </>
+            }
             {risks.map((risk,index)=>{
                 const {level = 'low', notes = [], _id = ""} = risk 
                 return (

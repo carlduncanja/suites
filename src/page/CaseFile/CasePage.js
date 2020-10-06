@@ -66,7 +66,7 @@ import WasteIcon from '../../../assets/svg/wasteIcon';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
 import AcceptIcon from '../../../assets/svg/acceptIcon';
 import {CHARGE_SHEET_STATUSES} from '../../components/CaseFiles/navigation/screens/ChargeSheet';
-
+ 
 const overlayMenu = [
     {
         name: 'Patient',

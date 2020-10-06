@@ -4,19 +4,25 @@ import FrameItem from '../../common/Frames/FrameItems/FrameItem';
 import RiskIcon from '../../../../assets/svg/riskLevel';
 import TextEditor from '../../common/Input Fields/TextEditor';
 
-const RiskLevel = (props) => {
+import styled from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+
+const RiskLevel = (props) => { 
+
+    const theme = useTheme();
+
     const {
-        titleBackground = "#EBF8FF",
-        borderColor="#90CDF4",
-        levelColor="#4299E1",
-        cardColor="#3182CE", 
-        riskLevel='low',
+        titleBackground = theme.colors['--color-gray-200'],
+        borderColor = theme.colors['--color-gray-400'],
+        levelColor = theme.colors['--color-gray-500'],
+        cardColor = theme.colors['--color-gray-600'],
+        riskLevel='default',
         itemContent = [],
         isEditMode = false,
-        fields = {},
         onFieldChange = ()=>{},
         onRiskChange = () =>{}
     } = props
+
 
     // console.log("Fields: ", fields.risks)
 
@@ -40,8 +46,9 @@ const RiskLevel = (props) => {
     ]
 
     const Level = (name,backgroundColor,textColor) => {
+        let background = riskLevel === 'default' ? null : backgroundColor
         return(
-            <View style={[styles.level,{backgroundColor:backgroundColor}]}>
+            <View style={[styles.level,{backgroundColor:background}]}>
                 <Text style={[styles.levelTitle,{color:textColor}]}>{name}</Text>
             </View>
         )
