@@ -304,7 +304,7 @@ const Equipment = (props) => {
     };
 
     const onRemoveGroups = () => {
-        openConfirmationScreen(() => removeEquipmentGroup(selectedEquipments))
+        openConfirmationScreen(() => removeEquipmentGroup(selectedTypesIds))
     }
 
     const onRemoveItems = () => {
@@ -690,10 +690,10 @@ const Equipment = (props) => {
     // ############# Prepare list data
 
     let equipmentToDisplay = [...equipmentTypes];
-
+ 
     const removeEquipmentGroup = ids => {
         removeEquipmentTypes(ids)
-            .then(_ => {
+            .then(data=> {
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
                         isError={false}
@@ -711,6 +711,7 @@ const Equipment = (props) => {
                     }
                 });
                 setSelectedEquipments([]);
+                console.log("Data: ", data);
             })
             .catch(_ => {
                 openErrorConfirmation();

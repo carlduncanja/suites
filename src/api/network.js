@@ -476,7 +476,7 @@ export const removeEquipmentTypes = async (ids) => suitesAxiosInstance
     .delete(equipmentTypesEndpoint, {data: {ids}})
     .then(handleResponse)
     .catch(handleError);
-
+    
 export const getEquipmentTypeById = async id => suitesAxiosInstance
     .get(equipmentTypeEndpoint(id))
     .then(handleResponse)
