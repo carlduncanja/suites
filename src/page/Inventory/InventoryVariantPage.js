@@ -60,16 +60,16 @@ function InventoryVariantPage({ route, navigation }){
             .finally(_ => {
                 setPageLoading(false)
             })
-        getVariantSupplierProducts(variantId)
-            .then(results => {
-                const { data = [] } = results;
-                setVariantSuppliers([...data]);
-                console.log("Suppliers: ", data);
-            })
-            .catch(error => {
-                console.log("Failed to get variant suppliers", error)
-                //TODO handle error cases.
-            })
+        // getVariantSupplierProducts(variantId)
+        //     .then(results => {
+        //         const { data = [] } = results;
+        //         setVariantSuppliers([...data]);
+        //         console.log("Suppliers: ", data);
+        //     })
+        //     .catch(error => {
+        //         console.log("Failed to get variant suppliers", error)
+        //         //TODO handle error cases.
+        //     })
     };
 
     // const onFinishEdit = () =>{
@@ -157,6 +157,7 @@ function InventoryVariantPage({ route, navigation }){
                 return <InventorySuppliersTab
                     suppliers = {variantSuppliers}
                     variantId = {selectedVariant?._id}
+                    parentId = {groupId}
                 />
             default:
                 break;
