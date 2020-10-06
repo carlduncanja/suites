@@ -206,7 +206,16 @@ const ChargeSheet = React.forwardRef(({
 
     useImperativeHandle(ref,
         () => ({
-            getActions: () => getAction()
+            getActions: () => {
+                switch (selectedTab) {
+                    case 'Consumables' :
+                        return getConsumablesActions();
+                    case 'Equipments' :
+                        return getEquipmentActions();
+                    default:
+                        return [[], ''];
+                }
+            }
         })
     );
 
@@ -429,7 +438,7 @@ const ChargeSheet = React.forwardRef(({
 
     // --------------------------- Helper Methods
 
-    const getAction = () => {
+    const getConsumablesActions = () => {
         const floatingAction = [];
         let title = 'CONSUMABLE\'S ACTIONS';
 
@@ -520,6 +529,52 @@ const ChargeSheet = React.forwardRef(({
         return [floatingAction, title]
     }
 
+    const getEquipmentActions = () => {
+
+        let title;
+        let floatingAction = [];
+        const isDisabled = selectedEquipments.length !== 1;
+
+        const addNewLineItemAction = (
+            <ActionItem
+                title="Add Equipment"
+                icon={(
+                    <AddIcon
+                        strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                    />
+                )}
+                disabled={isDisabled}
+                touchable={!isDisabled}
+                onPress={() => openAddItem('Equipment')}
+            />
+        );
+        const removeLineItemAction = (
+            <LongPressWithFeedback
+                pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                onLongPress={() => handleRemoveConsumableItems('Equipment')}
+                isDisabled={selectedEquipments.length === 0}
+            >
+                <ActionItem
+                    title="Hold to Delete"
+                    icon={(
+                        <WasteIcon
+                            strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                        />
+                    )}
+                    onPress={() => {
+                    }}
+                    touchable={false}
+                    disabled={selectedEquipments.length === 0}
+                />
+
+            </LongPressWithFeedback>
+        );
+        floatingAction.push(removeLineItemAction, addNewLineItemAction);
+        title = 'EQUIPMENT ACTIONS';
+
+        return [floatingAction, title]
+    }
+
     const groupedInventories = inventoryList.map(item => ({...item, cost: item.unitPrice}));
 
     const groupedEquipments = equipmentList.map(item => ({...item, cost: item.unitPrice}));
@@ -545,7 +600,6 @@ const ChargeSheet = React.forwardRef(({
 
     switch (selectedTab) {
         case 'Consumables':
-
             if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
 
                 const firstName = updatedBy['first_name'] || "";
@@ -593,11 +647,7 @@ const ChargeSheet = React.forwardRef(({
                     onCaseProcedureSelected={onConsumableCaseProcedureSelected}
                 />
             }
-
-            return
         case 'Equipment':
-
-
             if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
 
                 const firstName = updatedBy['first_name'] || "";
@@ -640,7 +690,6 @@ const ChargeSheet = React.forwardRef(({
                 />;
 
             }
-
         case 'Invoices':
             return <Invoices
                 tabDetails={invoices}
