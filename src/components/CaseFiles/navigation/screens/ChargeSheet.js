@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import {
@@ -15,7 +15,15 @@ import {PageContext} from '../../../../contexts/PageContext';
 import PostEditView, {POST_EDIT_MODE} from '../../OverlayPages/ChargeSheet/PostEditView';
 import moment from "moment";
 import jwtDecode from 'jwt-decode'
-import {emptyFn, ROLES} from "../../../../const";
+import {emptyFn, LONG_PRESS_TIMER, ROLES} from "../../../../const";
+import ActionItem from "../../../common/ActionItem";
+import WasteIcon from "../../../../../assets/svg/wasteIcon";
+import AcceptIcon from "../../../../../assets/svg/acceptIcon";
+import LongPressWithFeedback from "../../../common/LongPressWithFeedback";
+import AddIcon from "../../../../../assets/svg/addIcon";
+import ConfirmationComponent from "../../../ConfirmationComponent";
+import {useNavigation} from '@react-navigation/native'
+import {useTheme} from "emotion-theming";
 
 const LINE_ITEM_TYPES = {
     DISCOUNT: 'discount',
@@ -69,30 +77,27 @@ const headers = [
     }
 ];
 
-const ChargeSheet = ({
-                         auth = {},
-                         chargeSheet = {},
-                         selectedTab,
-                         procedures,
-                         quotations,
-                         invoices,
-                         onUpdateChargeSheet,
-                         handleEditDone,
-                         handleQuotes,
-                         handleInvoices,
-                         onSelectEquipments,
-                         onSelectConsumables,
-                         onSelectVariants,
-                         onSelectEquipmenntsVariants,
-                         variantsConsumables = [],
+const ChargeSheet = React.forwardRef(({
+                                          auth = {},
+                                          chargeSheet = {},
+                                          selectedTab,
+                                          procedures,
+                                          quotations,
+                                          invoices,
+                                          onUpdateChargeSheet,
+                                          handleEditDone,
+                                          handleQuotes,
+                                          handleInvoices,
+                                          onSelectEquipments,
+                                          onSelectEquipmenntsVariants,
+                                          selectedConsumableCaseProcedureIds = [],
+                                          onConsumableCaseProcedureSelected = emptyFn,
 
-                         selectedConsumableCaseProcedureIds = [],
-                         onConsumableCaseProcedureSelected = emptyFn,
-
-                         selectedConsumables = [],
-                         selectedEquipments = [],
-                         variantsEquipments = []
-                     }) => {
+                                          // variantsConsumables = [],
+                                          // selectedConsumables = [],
+                                          selectedEquipments = [],
+                                          variantsEquipments = []
+                                      }, ref) => {
 
     let {
         inventoryList = [],
@@ -102,6 +107,8 @@ const ChargeSheet = ({
         total = 0,
         caseId
     } = chargeSheet;
+    const theme = useTheme();
+    const navigation = useNavigation();
 
     const baseStateRef = useRef();
 
@@ -140,7 +147,7 @@ const ChargeSheet = ({
     // preparing billing information
     const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
 
-    // --------------------------- States
+    // region--------------------------- States
 
     const [caseProcedures, setCaseProcedure] = useState([]);
     const [chargeSheetStatus, setChargeSheetStatus] = useState(chargeSheet.status);
@@ -148,6 +155,10 @@ const ChargeSheet = ({
     const [isUpdated, setUpdated] = useState(false);
     const [selectedCaseProcedureIds, setSelectedCaseProcedureIds] = useState([]);
 
+    const [selectedConsumables, setSelectedConsumables] = useState([]);
+    const [variantsConsumables, setVariantsConsumables] = useState([]);
+
+    // endregion
 
     // --------------------------- Life Cycle
 
@@ -198,7 +209,13 @@ const ChargeSheet = ({
         }
     }, [])
 
-    // --------------------------- Helper Methods
+    useImperativeHandle(ref,
+        () => ({
+            getActions: () => getAction()
+        })
+    );
+
+    // region Event Handlers
 
     const handleConsumableUpdate = (index, procedureInventories) => {
         console.log('onConsumablesUpdate', index, procedureInventories);
@@ -229,8 +246,6 @@ const ChargeSheet = ({
             })
 
         }
-
-
     }
 
     const handleEquipmentUpdate = (index, procedureEquipments) => {
@@ -259,6 +274,253 @@ const ChargeSheet = ({
         setUpdated(true);
     };
 
+    const handleRevertChargeSheetChanges = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        chargeSheetApproval({approve: false});
+                    }}
+                    message="Are you sure you want to revert changes submitted?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+    };
+
+    const handleAcceptChargeSheetChange = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        chargeSheetApproval({approve: true});
+                    }}
+                    message="Do you want to accept changes submitted?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+    };
+
+    const handleWithdrawChargeSheetChanges = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        chargeSheetWithdrawChanges({approve: false});
+                    }}
+                    message="Are you sure you want to withdraw changes submitted?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+    };
+
+    const openAddItem = itemToAdd => {
+        const {chargeSheet = {}} = selectedCase;
+        const {proceduresBillableItems = []} = chargeSheet;
+        const checkedList = itemToAdd === 'Consumables' ? selectedConsumableCaseProcedureIds : selectedEquipments;
+        const filerObj = proceduresBillableItems.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
+
+        modal.closeModals('ActionContainerModal');
+        navigation.navigate('AddChargeSheetItem', {
+            type: itemToAdd,
+            onAddItem: onAddItem(itemToAdd),
+            selectedObj: filerObj
+        });
+    };
+
+    const onAddItem = itemToAdd => data => {
+        const {chargeSheet = {}} = selectedCase;
+        const {proceduresBillableItems = []} = chargeSheet;
+
+        const checkedList = itemToAdd === 'Consumables' ? selectedConsumableCaseProcedureIds : selectedEquipments;
+
+        const filerObj = proceduresBillableItems.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
+        const updatedObj = itemToAdd === 'Consumables' ?
+            {
+                ...filerObj,
+                inventories: [...filerObj?.inventories, ...data]
+            } :
+            {
+                ...filerObj,
+                equipments: [...filerObj?.equipments, ...data]
+            };
+
+        // console.log('Updated:', updatedObj);
+        const updatedBillableItems = proceduresBillableItems.map(procedure => (procedure?.caseProcedureId === checkedList[0] ?
+            {...updatedObj} :
+            {...procedure}));
+
+        // console.log(' Updated Case: ', updatedBillableItems);
+
+        if (itemToAdd === 'Consumables') {
+            setSelectedConsumables([]);
+            setVariantsConsumables([]);
+        } else {
+            setSelectedEquipments([]);
+            setVariantsEquipments([]);
+        }
+
+        const updatedCase = {
+            ...selectedCase,
+            chargeSheet: {
+                ...chargeSheet,
+                proceduresBillableItems: updatedBillableItems
+            }
+        };
+        // console.log("selected case", updatedBillableItems);
+
+
+        setSelectedCase(updatedCase)
+
+
+        // updateCaseChargeSheet(updatedCase);
+    };
+
+    const handleRemoveConsumableItems = itemToRemove => {
+        const updatedCaseProcedures = [...caseProcedures];
+
+        console.log("selected consumables", caseProcedures, variantsConsumables);
+
+        for (const variantsConsumable of variantsConsumables) {
+            const {_parentId, variants} = variantsConsumable;
+
+            // find the procedure
+            for (const i in updatedCaseProcedures) {
+
+                const isSelectedParent = updatedCaseProcedures[i].caseProcedureId === _parentId
+                if (isSelectedParent) {
+                    // find and remove the variants
+                    updatedCaseProcedures[i].inventories = updatedCaseProcedures[i].inventories.filter( item => !variants.includes(item.inventory) )
+                }
+            }
+        }
+
+        setCaseProcedure(updatedCaseProcedures);
+    };
+    // endregion
+
+    // --------------------------- Helper Methods
+
+    const getAction = () => {
+        const floatingAction = [];
+        let title = 'CONSUMABLE\'S ACTIONS';
+
+        const {status} = chargeSheet;
+        const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
+
+        if (isPending) {
+            const isAdmin = authInfo.role_name === ROLES.ADMIN;
+            const isOwner = chargeSheet.updatedBy?._id === authInfo.user_id;
+
+            if (isAdmin) {
+                const RevertChanges = (
+                    <ActionItem
+                        title="Revert Changes"
+                        icon={<WasteIcon/>}
+                        onPress={handleRevertChargeSheetChanges}
+                    />
+                );
+
+                const AcceptChanges = (
+                    <ActionItem
+                        title="Accept Changes"
+                        icon={<AcceptIcon/>}
+                        onPress={handleAcceptChargeSheetChange}
+                    />
+                );
+                floatingAction.push(RevertChanges, AcceptChanges);
+            }
+
+            if (isOwner) {
+                const WithdrawChanges = (
+                    <LongPressWithFeedback
+                        pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                        onLongPress={handleWithdrawChargeSheetChanges}
+                    >
+                        <ActionItem
+                            title="Hold to Withdraw"
+                            icon={<WasteIcon/>}
+                            onPress={() => {
+                            }}
+                            touchable={false}
+                        />
+                    </LongPressWithFeedback>
+                );
+                floatingAction.push(WithdrawChanges);
+            }
+        } else {
+            const isDisabled = !selectedConsumableCaseProcedureIds.length
+
+            const addNewItem = (
+                <ActionItem
+                    title="Add Consumable"
+                    icon={(
+                        <AddIcon
+                            strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                        />
+                    )}
+                    disabled={isDisabled}
+                    touchable={!isDisabled}
+                    onPress={() => openAddItem('Consumables')}
+                />
+            );
+
+            const isDisabledConsumables = selectedConsumables.length === 0;
+            const removeLineItemAction = (
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    onLongPress={() => handleRemoveConsumableItems('Consumables')}
+                    isDisabled={isDisabledConsumables}
+
+                >
+                    <ActionItem
+                        title="Hold to Delete"
+                        icon={(
+                            <WasteIcon
+                                strokeColor={isDisabledConsumables ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            />
+                        )}
+                        touchable={false}
+                        disabled={isDisabledConsumables}
+                    />
+
+                </LongPressWithFeedback>
+            );
+            floatingAction.push(/*addNewLineItemAction,*/ removeLineItemAction, addNewItem);
+        }
+
+        return [floatingAction, title]
+    }
+
     const groupedInventories = inventoryList.map(item => ({...item, cost: item.unitPrice}));
 
     const groupedEquipments = equipmentList.map(item => ({...item, cost: item.unitPrice}));
@@ -284,7 +546,6 @@ const ChargeSheet = ({
 
     switch (selectedTab) {
         case 'Consumables':
-
 
             if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
 
@@ -321,11 +582,14 @@ const ChargeSheet = ({
                     onConsumablesUpdate={handleConsumableUpdate}
                     isEditMode={isEditMode}
                     handleEditDone={handleEditDone}
-                    onSelectConsumables={onSelectConsumables}
+                    onSelectConsumables={consumables => {
+                        setSelectedConsumables(consumables);
+                    }}
                     selectedConsumables={selectedConsumables}
                     variantsConsumables={variantsConsumables}
-                    onSelectVariants={onSelectVariants}
-
+                    onSelectVariants={variants => {
+                        setVariantsConsumables(variants);
+                    }}
                     selectedCaseProcedureIds={selectedConsumableCaseProcedureIds}
                     onCaseProcedureSelected={onConsumableCaseProcedureSelected}
                 />
@@ -403,15 +667,13 @@ const ChargeSheet = ({
             return null;
 
     }
-};
+});
 
 const mapStateToProps = state => ({
-    isEditMode: state.casePage?.isEdit,
-    pageState: state.casePage,
     auth: state.auth
 });
 
-export default connect(mapStateToProps)(ChargeSheet);
+export default connect(mapStateToProps, null, null, {forwardRef: true})(ChargeSheet);
 
 //
 const configureBillableItems = (lastModified, total, updatedBy = {}, procedures, proceduresBillableItems) => {

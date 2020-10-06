@@ -6,6 +6,7 @@ import {withModal} from 'react-native-modalfy';
 import {CaseFileContext} from '../contexts/CaseFileContext';
 import {appActions} from '../redux/reducers/suitesAppReducer';
 import KeyboardShift from "../components/KeyboardShift";
+import {emptyFn} from "../const";
 
 const ActionContainerModal = (props) => {
     const [state, dispatch] = useContext(SuitesContext);
@@ -23,8 +24,7 @@ const ActionContainerModal = (props) => {
 
     const params = getParams({
         actions: <View/>,
-        onClose: () => {
-        },
+        onClose: emptyFn,
         position : 'right'
     });
 
@@ -32,8 +32,7 @@ const ActionContainerModal = (props) => {
 
     const {actions, onClose, position = 'right'} = getParams({
         actions: <View/>,
-        onClose: () => {
-        },
+        onClose: emptyFn,
         position:'right'
     });
 
