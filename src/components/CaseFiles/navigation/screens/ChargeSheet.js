@@ -81,15 +81,16 @@ const ChargeSheet = React.forwardRef(({
                                           handleEditDone,
                                           handleQuotes,
                                           handleInvoices,
-                                          onSelectEquipments,
-                                          onSelectEquipmenntsVariants,
+
+                                          // onSelectEquipments,
+                                          // onSelectEquipmenntsVariants,
                                           //selectedConsumableCaseProcedureIds = [],
                                           //onConsumableCaseProcedureSelected = emptyFn,
 
                                           // variantsConsumables = [],
                                           // selectedConsumables = [],
-                                          selectedEquipments = [],
-                                          variantsEquipments = []
+                                          // selectedEquipments = [],
+                                          // variantsEquipments = []
                                       }, ref) => {
 
     let {
@@ -153,6 +154,10 @@ const ChargeSheet = React.forwardRef(({
     const [selectedConsumables, setSelectedConsumables] = useState([]);
     const [variantsConsumables, setVariantsConsumables] = useState([]);
 
+    const [selectedEquipments, setSelectedEquipments] = useState([]);
+    const [variantsEquipments, setVariantsEquipments] = useState([]);
+
+
     // endregion
 
     // --------------------------- Life Cycle
@@ -210,7 +215,7 @@ const ChargeSheet = React.forwardRef(({
                 switch (selectedTab) {
                     case 'Consumables' :
                         return getConsumablesActions();
-                    case 'Equipments' :
+                    case 'Equipment' :
                         return getEquipmentActions();
                     default:
                         return [[], ''];
@@ -260,6 +265,14 @@ const ChargeSheet = React.forwardRef(({
             setUpdated(true);
         }
     };
+
+    const handleOnEquipmentSelected = (selectedEquipment) => {
+        setSelectedEquipments(selectedEquipment)
+    }
+
+    const selectEquipmentVariants = (selectedEquipmentVariants) => {
+        setVariantsEquipments(selectedEquipmentVariants)
+    }
 
     const handleLineItemsUpdate = (procedureIndex, procedureLineItem) => {
         const updatedCaseProcedures = [...caseProcedures];
@@ -434,6 +447,34 @@ const ChargeSheet = React.forwardRef(({
         }
         onUpdateChargeSheet(updatedCaseProcedures)
     };
+
+
+    const handleRemoveEquipmentItems = () => {
+        const updatedCaseProcedures = [...caseProcedures];
+
+        for (const variantEquipment of variantsEquipments) {
+            const {_parentId, variants} = variantEquipment;
+
+            // find the procedure
+            for (const i in updatedCaseProcedures) {
+
+                const isSelectedParent = updatedCaseProcedures[i].caseProcedureId === _parentId
+                if (isSelectedParent) {
+                    // find and remove the variants
+                    const caseProcedureToUpdate = {...updatedCaseProcedures[i]}
+
+                    let equipments = [...caseProcedureToUpdate.equipments]
+                    equipments = equipments.filter(item => !variants.includes(item.equipment))
+
+                    caseProcedureToUpdate.equipments = equipments;
+                    updatedCaseProcedures[i] = caseProcedureToUpdate;
+                }
+            }
+        }
+        // setCaseProcedure(updatedCaseProcedures)
+        onUpdateChargeSheet(updatedCaseProcedures)
+    };
+
     // endregion
 
     // --------------------------- Helper Methods
@@ -548,23 +589,25 @@ const ChargeSheet = React.forwardRef(({
                 onPress={() => openAddItem('Equipment')}
             />
         );
+
+        const isRemoveEquipmentsDisabled = !variantsEquipments.length
         const removeLineItemAction = (
             <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                onLongPress={() => handleRemoveConsumableItems('Equipment')}
-                isDisabled={selectedEquipments.length === 0}
+                onLongPress={handleRemoveEquipmentItems}
+                isDisabled={isRemoveEquipmentsDisabled}
             >
                 <ActionItem
                     title="Hold to Delete"
                     icon={(
                         <WasteIcon
-                            strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            strokeColor={isRemoveEquipmentsDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
                         />
                     )}
                     onPress={() => {
                     }}
                     touchable={false}
-                    disabled={selectedEquipments.length === 0}
+                    disabled={isRemoveEquipmentsDisabled}
                 />
 
             </LongPressWithFeedback>
@@ -681,8 +724,8 @@ const ChargeSheet = React.forwardRef(({
                     caseProcedures={caseProcedures}
                     caseProceduresFilters={consumableProcedures}
                     onEquipmentsUpdate={handleEquipmentUpdate}
-                    onSelectEquipments={onSelectEquipments}
-                    onSelectEquipmenntsVariants={onSelectEquipmenntsVariants}
+                    onSelectEquipments={handleOnEquipmentSelected}
+                    onSelectEquipmenntsVariants={selectEquipmentVariants}
                     isEditMode={isEditMode}
                     handleEditDone={handleEditDone}
                     selectedEquipments={selectedEquipments}

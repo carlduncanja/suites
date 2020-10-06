@@ -275,7 +275,8 @@ function Consumables({
     const renderChildItemView = (item, parentId, itemIndex, sectionIndex) => {
         let {_id, inventory} = item
         // let { variants = [] } = variantsCheckboxList?.filter( obj => obj._parentId === parentId)[0] || {};
-        let {variants = []} = variantsConsumables?.filter(obj => obj._parentId === parentId)[0] || {};
+        let selectedGroup = variantsConsumables?.find(obj => obj._parentId === parentId);
+        const variants = selectedGroup?.variants || [];
 
         return (
             <Item

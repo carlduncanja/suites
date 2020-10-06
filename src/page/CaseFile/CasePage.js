@@ -123,8 +123,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [updateInfo, setUpdateInfo] = useState([]);
     const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
     const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
-    const [selectedEquipments, setSelectedEquipments] = useState([]);
-    const [variantsEquipments, setVariantsEquipments] = useState([]);
+    // const [selectedEquipments, setSelectedEquipments] = useState([]);
+    // const [variantsEquipments, setVariantsEquipments] = useState([]);
 
 
     const [selectedConsumableCaseProcedureIds, setSelectedConsumableCaseProcedureIds] = useState([]);
@@ -852,45 +852,48 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     break;
                 }
                 case 'Equipment': {
-                    const isDisabled = selectedEquipments.length !== 1;
+                    // const isDisabled = selectedEquipments.length !== 1;
+                    //
+                    // const addNewLineItemAction = (
+                    //     <ActionItem
+                    //         title="Add Equipment"
+                    //         icon={(
+                    //             <AddIcon
+                    //                 strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                    //             />
+                    //         )}
+                    //         disabled={isDisabled}
+                    //         touchable={!isDisabled}
+                    //         onPress={() => openAddItem('Equipment')}
+                    //     />
+                    // );
+                    // const removeLineItemAction = (
+                    //     <LongPressWithFeedback
+                    //         pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    //         onLongPress={() => handleRemoveConsumableItems('Equipment')}
+                    //         isDisabled={selectedEquipments.length === 0}
+                    //
+                    //     >
+                    //         <ActionItem
+                    //             title="Hold to Delete"
+                    //             icon={(
+                    //                 <WasteIcon
+                    //                     strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                    //                 />
+                    //             )}
+                    //             onPress={() => {
+                    //             }}
+                    //             touchable={false}
+                    //             disabled={selectedEquipments.length === 0}
+                    //         />
+                    //
+                    //     </LongPressWithFeedback>
+                    // );
+                    // floatingAction.push(removeLineItemAction, addNewLineItemAction);
+                    // title = 'EQUIPMENT ACTIONS';
 
-                    const addNewLineItemAction = (
-                        <ActionItem
-                            title="Add Equipment"
-                            icon={(
-                                <AddIcon
-                                    strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
-                                />
-                            )}
-                            disabled={isDisabled}
-                            touchable={!isDisabled}
-                            onPress={() => openAddItem('Equipment')}
-                        />
-                    );
-                    const removeLineItemAction = (
-                        <LongPressWithFeedback
-                            pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                            onLongPress={() => handleRemoveConsumableItems('Equipment')}
-                            isDisabled={selectedEquipments.length === 0}
+                    [floatingAction, title] = chargeSheetRef.current?.getActions() || []
 
-                        >
-                            <ActionItem
-                                title="Hold to Delete"
-                                icon={(
-                                    <WasteIcon
-                                        strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
-                                    />
-                                )}
-                                onPress={() => {
-                                }}
-                                touchable={false}
-                                disabled={selectedEquipments.length === 0}
-                            />
-
-                        </LongPressWithFeedback>
-                    );
-                    floatingAction.push(removeLineItemAction, addNewLineItemAction);
-                    title = 'EQUIPMENT ACTIONS';
                     break;
                 }
                 case 'Quotation': {
@@ -1592,12 +1595,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
                     handleInvoices={handleInvoices}
-                    onSelectEquipments={equipments => {
-                        setSelectedEquipments(equipments);
-                    }}
-                    // variantsConsumables={variantsConsumables}
-                    selectedEquipments={selectedEquipments}
-                    variantsEquipments={variantsEquipments}
                 />;
             default:
                 return <View/>;
