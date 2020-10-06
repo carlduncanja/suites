@@ -378,13 +378,14 @@ const ChargeSheet = React.forwardRef(({
     };
 
     const onAddItem = itemToAdd => data => {
+
         const dataToAdd = data.map(item => ({
             _id: item._id,
             amount: item.amount,
             inventory: item.inventory?._id,
             equipment: item.equipment?._id,
             name: item.name,
-            cost: item.unitCost,
+            cost: itemToAdd === 'Consumables' ? item.unitCost: item.equipment?.unitPrice,
             type: item.inventory?.inventoryGroup?.name || ""
         }))
 
@@ -409,14 +410,12 @@ const ChargeSheet = React.forwardRef(({
             {...procedure}));
 
 
-        console.log("updated obj: ", updatedObj);
-
         if (itemToAdd === 'Consumables') {
             setSelectedCaseProcedureIds([])
             setSelectedConsumables([])
         } else {
-            // setSelectedEquipments([]);
-            // setVariantsEquipments([]);
+            setSelectedEquipments([]);
+            setVariantsEquipments([]);
         }
 
         setCaseProcedure(updatedBillableItems)
