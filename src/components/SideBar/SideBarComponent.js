@@ -89,7 +89,7 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                         routes.map((route, tabIndex) => {
                             const {name, params} = route;
                             const {icon, tabName} = params || {};
-
+ 
                             return (
                                 <View style={{width: '100%'}} key={tabIndex}>
 
