@@ -149,7 +149,9 @@ function ChargesheetEquipment({
                 ? {...updatedObj}
                 : {...item}
         })
-        onEquipmentsUpdate(selectedIndex, updatedData);
+
+
+        onEquipmentsUpdate(sectionIndex, updatedData);
     }
 
     const onAmountInputChange = (item, index) => (value) => {

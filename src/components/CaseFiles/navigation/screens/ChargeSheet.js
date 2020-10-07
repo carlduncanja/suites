@@ -258,6 +258,9 @@ const ChargeSheet = React.forwardRef(({
     }
 
     const handleEquipmentUpdate = (index, procedureEquipments) => {
+
+        console.log("hellooooo??? ", index, procedureEquipments)
+
         const updatedCaseProcedures = [...caseProcedures];
         if (updatedCaseProcedures[index]) {
             updatedCaseProcedures[index].equipments = procedureEquipments;
