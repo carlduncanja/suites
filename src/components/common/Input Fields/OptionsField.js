@@ -22,12 +22,12 @@ const TextInputContainer = styled.View`
     padding-left : ${ ({theme}) => theme.space['--space-10'] };
     padding-right : ${ ({theme}) => theme.space['--space-10'] };
     
-    border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
+    border-color: ${ ({theme, hasError}) => theme.colors['--color-gray-300']};
     background-color : ${ ({theme, enabled}) => !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
     border-radius: 4px;
     box-shadow : ${ ({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null};
 `;
-
+// border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
 const SelectedValue = styled.Text( ({theme}) => ({
     ...theme.font['--text-sm-regular'],
     color : theme.colors['--color-gray-900'],
