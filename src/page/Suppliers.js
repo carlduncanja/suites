@@ -370,6 +370,7 @@ const Suppliers = props => {
                     content: <CreateSupplierDialogContainer
                         onCancel={() => setFloatingAction(false)}
                         onCreated={item => handleOnItemPress(item, true)}
+                        onUpdate = {()=>handleDataRefresh()}
                     />,
                     onClose: () => setFloatingAction(false)
                 });

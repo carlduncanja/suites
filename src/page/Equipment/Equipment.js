@@ -541,7 +541,7 @@ const Equipment = (props) => {
 
     const gotoAddEquipment = () => {
         modal.closeAllModals();
-        navigation.navigate("AddEquipmentPage", {equipment: groupSelected, onCreated: handleDataRefresh})
+        navigation.navigate("AddEquipmentPage", {equipment: groupSelected, onCreated: ()=>{handleDataRefresh; setFloatingAction(false)}})
     }
 
     const gotoAssignEquipment = () => {

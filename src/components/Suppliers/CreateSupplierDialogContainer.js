@@ -2,18 +2,27 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text, Alert, TouchableOpacity} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
+import OverlayDialogContent from "../common/Dialog/OverlayContent";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import OptionsField from "../common/Input Fields/OptionsField";
+import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent'
+import ConfirmationComponent from '../ConfirmationComponent';
 import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 import { createSupplier } from "../../api/network";
 import { addSupplier } from "../../redux/actions/suppliersActions";
+import LineDivider from '../common/LineDivider';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import _ from "lodash";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { ThemeColors } from 'react-navigation';
+
 
 
 /**
@@ -25,16 +34,30 @@ import _ from "lodash";
  * @constructor
  */
 
-function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
+const DividerContainer = styled.View`
+    padding-bottom : ${ ({theme}) => theme.space['--space-24']};
+`
+
+function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpdate}) {
 
     // ######### CONST
     const modal = useModal();
-    const dialogTabs = ['Details', 'Representative'];
+    const dialogTabs = ['Details'];
+    const theme = useTheme();
 
     // ######### STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
-    const [fields, setFields] = useState({});
-    const [representative, setRepresentative] = useState({})
+    const [fields, setFields] = useState({
+        name : 'Medical Supplies Inc.',
+        email : "infoMed@supplies.com",
+        phone : "8763687566",
+        fax : "8769973765",
+    });
+    const [representative, setRepresentative] = useState({
+        name : 'John Doe',
+        email : "doe@supplies.com",
+        phone : "8768458743",
+    })
     const [errorFields, setErrorFields] = useState({})
 
     // ######### EVENT HANDLERS
@@ -56,12 +79,13 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
         } else {
 
             if(Object.keys(representative).length !== 0 ){
-                supplierToAdd = {...fields,representative : {...representative} }
+                supplierToAdd = {...fields,representatives : {...representative} }
             }else{
                 supplierToAdd = {...fields}
             }
 
-            console.log("Success:", supplierToAdd)
+            console.log("Success:", supplierToAdd);
+
             createSupplierCall(supplierToAdd)
         }
     };
@@ -110,21 +134,45 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
     }
 
     const createSupplierCall = (supplier) => {
+        console.log("Supplier: ", supplier);
         createSupplier(supplier)
             .then(data => {
                 // addSupplier(data)
                 modal.closeAllModals();
-                Alert.alert("Success",`Supplier, ${fields['name']} is successfully created.`)
-                setTimeout(() => {
-                    onCreated(data)
-                }, 200);
+
+                modal.openModal('ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isEditUpdate = {false}
+                        isError = {false}
+                        onCancel = {()=> {
+                            modal.closeAllModals();
+                            setTimeout(()=>{
+                                onCreated(data);
+                            },200)
+                            // navigation.goBack();
+                        }}
+                        onAction = {()=>{
+                            modal.closeAllModals();
+                            setTimeout(()=>{
+                                onCreated(data);
+                            },200)
+                            // navigation.goBack();
+                        }}
+                    />
+                    ,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                        navigation.goBack();
+                    } 
+                })
             })
             .catch(error => {
                 // todo handle error
                 console.log("failed to create supplier", error);
                 Alert.alert("Failed", "failed to create supplier")
             })
-            .finally()
+            .finally(_=>onUpdate())
     };
 
     const handleRepresentative = (fieldName) => (value) =>{
@@ -147,38 +195,22 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
     };
 
     const detailsTab = (
-        <View style={styles.sectionContainer}>
 
-            <View style={styles.row}>
-                <View style={[styles.inputWrapper,{flex:1,}]}>
+        <>
+            <Row>
+
+                <FieldContainer>
                     <InputField2
-                        label={"Supplier Name"}
+                        label={"Supplier"}
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
                         hasError = {errorFields['name']}
                         errorMessage = "Name must be filled."
                     />
-                </View>
-            </View>
+                </FieldContainer>
 
-            <View style={styles.row}>
-                <View style={[styles.inputWrapper,{flex:1}]}>
-                    <InputField2
-                        label={"Description"}
-                        onChangeText={onFieldChange('description')}
-                        value={fields['description']}
-                        onClear={() => onFieldChange('description')('')}
-                    />
-                </View>
-            </View>
-
-            <View style={styles.row}>
-                <Text style={{color:'#000000'}}>Contact Information</Text>
-            </View>
-
-            <View style={[styles.row,{zIndex:-2}]}>
-                <View style={styles.inputWrapper}>
+                <FieldContainer>
                     <InputField2
                         label={"Phone"}
                         onChangeText={(value)=>{
@@ -190,9 +222,13 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
                         hasError = {errorFields['phone']}
                         errorMessage = "Phone must be filled."
                     />
-                </View>
+                </FieldContainer>
 
-                <View style={styles.inputWrapper}>
+            </Row>
+
+            <Row>
+
+                <FieldContainer>
                     <InputField2
                         label={"Fax"}
                         onChangeText={(value)=>{
@@ -204,11 +240,9 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
                         hasError = {errorFields['fax']}
                         errorMessage = "Fax must be filled."
                     />
-                </View>
-            </View>
+                </FieldContainer>
 
-            <View style={[styles.row,{zIndex:-3}]}>
-                <View style={styles.inputWrapper}>
+                <FieldContainer>
                     <InputField2
                         label={"Email"}
                         onChangeText={onFieldChange('email')}
@@ -216,30 +250,29 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
                         keyboardType = {'email-address'}
                         onClear={() => onFieldChange('email')('')}
                     />
-                </View>
+                </FieldContainer>
 
-            </View>
+            </Row>
+            
+            <DividerContainer theme = {theme}>
+                <LineDivider/>
+            </DividerContainer>
+            
 
-        </View>
-    );
+            <Row>
 
-    const representativeTab = (
-
-        <View style={styles.sectionContainer}>
-
-            <View style={styles.row}>
-                <View style={styles.inputWrapper}>
+                <FieldContainer>
                     <InputField2
-                        label={"Name"}
+                        label={"Representative"}
                         onChangeText={handleRepresentative('name')}
                         value={representative['name']}
                         onClear={() => handleRepresentative('name')('')}
                     />
-                </View>
+                </FieldContainer>
 
-                <View style={styles.inputWrapper}>
+                <FieldContainer>
                     <InputField2
-                        label={"Phone"}
+                        label={"Rep. TelePhone"}
                         onChangeText={(value)=>{
                             if(/^\d{10}$/g.test(value))(handleRepresentative('phone')(value))
                         }}
@@ -247,22 +280,143 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
                         onClear={() => handleRepresentative('phone')('')}
                         keyboardType={'number-pad'}
                     />
-                </View>
-            </View>
+                </FieldContainer>
 
-            <View style={styles.row}>
-                <View style={styles.inputWrapper}>
+            </Row>
+
+            <Row>
+
+                <FieldContainer>
                     <InputField2
-                        label={"Email"}
-                        onChangeText={onFieldChange('email')}
+                        label={"Rep. Email"}
+                        onChangeText={handleRepresentative('email')}
                         value={representative['email']}
                         onClear={() => handleRepresentative('email')('')}
                         keyboardType={'email-address'}
                     />
-                </View>
-            </View>
-        </View>
+                </FieldContainer>
+
+            </Row>
+        </>
+
+        // <View style={styles.sectionContainer}>
+
+        //     <View style={styles.row}>
+        //         <View style={[styles.inputWrapper,{flex:1,}]}>
+        //             <InputField2
+        //                 label={"Supplier Name"}
+        //                 onChangeText={onFieldChange('name')}
+        //                 value={fields['name']}
+        //                 onClear={() => onFieldChange('name')('')}
+        //                 hasError = {errorFields['name']}
+        //                 errorMessage = "Name must be filled."
+        //             />
+        //         </View>
+        //     </View>
+
+        //     <View style={styles.row}>
+        //         <View style={[styles.inputWrapper,{flex:1}]}>
+        //             <InputField2
+        //                 label={"Description"}
+        //                 onChangeText={onFieldChange('description')}
+        //                 value={fields['description']}
+        //                 onClear={() => onFieldChange('description')('')}
+        //             />
+        //         </View>
+        //     </View>
+
+        //     <View style={styles.row}>
+        //         <Text style={{color:'#000000'}}>Contact Information</Text>
+        //     </View>
+
+        //     <View style={[styles.row,{zIndex:-2}]}>
+        //         <View style={styles.inputWrapper}>
+        //             <InputField2
+        //                 label={"Phone"}
+        //                 onChangeText={(value)=>{
+        //                     if(/^\d{10}$/g.test(value))(onFieldChange('phone')(value))
+        //                 }}
+        //                 value={fields['phone']}
+        //                 onClear={() => onFieldChange('phone')('')}
+        //                 keyboardType = {'number-pad'}
+        //                 hasError = {errorFields['phone']}
+        //                 errorMessage = "Phone must be filled."
+        //             />
+        //         </View>
+
+        //         <View style={styles.inputWrapper}>
+        //             <InputField2
+        //                 label={"Fax"}
+        //                 onChangeText={(value)=>{
+        //                     if(/^\d{10}$/g.test(value))(onFieldChange('fax')(value))
+        //                 }}
+        //                 value={fields['fax']}
+        //                 onClear={() => onFieldChange('fax')('')}
+        //                 keyboardType = {'number-pad'}
+        //                 hasError = {errorFields['fax']}
+        //                 errorMessage = "Fax must be filled."
+        //             />
+        //         </View>
+        //     </View>
+
+        //     <View style={[styles.row,{zIndex:-3}]}>
+        //         <View style={styles.inputWrapper}>
+        //             <InputField2
+        //                 label={"Email"}
+        //                 onChangeText={onFieldChange('email')}
+        //                 value={fields['email']}
+        //                 keyboardType = {'email-address'}
+        //                 onClear={() => onFieldChange('email')('')}
+        //             />
+        //         </View>
+
+        //     </View>
+
+        // </View>
+    
     );
+
+    // const representativeTab = (
+
+    //     <View style={styles.sectionContainer}>
+
+    //         <View style={styles.row}>
+    //             <View style={styles.inputWrapper}>
+    //                 <InputField2
+    //                     label={"Name"}
+    //                     onChangeText={handleRepresentative('name')}
+    //                     value={representative['name']}
+    //                     onClear={() => handleRepresentative('name')('')}
+    //                 />
+    //             </View>
+
+    //             <View style={styles.inputWrapper}>
+    //                 <InputField2
+    //                     label={"Phone"}
+    //                     onChangeText={(value)=>{
+    //                         if(/^\d{10}$/g.test(value))(handleRepresentative('phone')(value))
+    //                     }}
+    //                     value={representative['phone']}
+    //                     onClear={() => handleRepresentative('phone')('')}
+    //                     keyboardType={'number-pad'}
+    //                 />
+    //             </View>
+    //         </View>
+
+    //         <View style={styles.row}>
+    //             <View style={styles.inputWrapper}>
+    //                 <InputField2
+    //                     label={"Email"}
+    //                     onChangeText={onFieldChange('email')}
+    //                     value={representative['email']}
+    //                     onClear={() => handleRepresentative('email')('')}
+    //                     keyboardType={'email-address'}
+    //                 />
+    //             </View>
+    //         </View>
+    //     </View>
+    
+    // );
 
     return (
         <OverlayDialog
@@ -273,8 +427,19 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
             // handlePopovers = {handlePopovers}
             // buttonIcon={<ArrowRightIcon/>}
         >
+            <>
+                <DialogTabs
+                    tabs={dialogTabs}
+                    tab={selectedIndex}
+                    onTabPress={onTabChange}
+                />
 
-            <View style={styles.container}>
+                <OverlayDialogContent height = {320}>
+                    {getTabContent()}
+                </OverlayDialogContent>
+            </>
+
+            {/* <View style={styles.container}>
                 <DialogTabs
                     tabs={dialogTabs}
                     tab={selectedIndex}
@@ -287,7 +452,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
                     {getTabContent()}
                 </TouchableOpacity>
 
-            </View>
+            </View> */}
 
 
         </OverlayDialog>
