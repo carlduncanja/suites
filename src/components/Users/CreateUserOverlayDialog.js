@@ -74,7 +74,6 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
     const onDonePress = () => {
         const isValid = validateFields();
 
-        console.log("User data: ", createUserFields);
         console.log("is valid", isValid);
         if (!isValid) return;
 
@@ -83,7 +82,7 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
             role: createUserFields.role?._id
         }
 
-        // createUser(data);
+        createUser(data);
     }
 
     const onFieldChange = field => value => {
