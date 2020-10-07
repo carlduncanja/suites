@@ -21,7 +21,7 @@ import OverlayDialogHeader from "./OverlayDialogHeader";
 const OverlayContentWrapper = styled.View`
   flex:1;
   width : 100%;
-  min-height : 350px;
+  min-height : ${ ({minHeight}) => `${minHeight}px`};
   padding-top : ${ ({theme}) => theme.space['--space-40']};
   padding-bottom : ${ ({theme}) => theme.space['--space-40']};
   padding-right : ${ ({theme}) => theme.space['--space-24']};
@@ -36,13 +36,13 @@ const OverlayContentContainer = styled.View`
 
 
 
-function OverlayDialogContent({ children }) {
+function OverlayDialogContent({ children, height = 350 }) {
 
   const theme = useTheme();
 
   return (
    
-    <OverlayContentWrapper theme = {theme}>
+    <OverlayContentWrapper theme = {theme} minHeight = {height}>
         <OverlayContentContainer>
             {children}
         </OverlayContentContainer>

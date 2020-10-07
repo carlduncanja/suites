@@ -105,6 +105,7 @@ const CreateEquipmentTypeDialogContainer = ({
               onClear={() => onFieldChange("name")("")}
               hasError={errorFields["name"]}
               errorMessage="Name must be filled."
+              labelWidth = {98}
             />
           </View>
 

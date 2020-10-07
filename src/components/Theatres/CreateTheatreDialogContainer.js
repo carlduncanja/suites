@@ -19,6 +19,9 @@ import {
 import DropDownIcon from "../../../assets/svg/dropDown";
 import OptionsField from "../common/Input Fields/OptionsField";
 import TheatresPage from "../../page/Theatres/TheatresPage";
+import OverlayDialogContent from '../common/Dialog/OverlayContent';
+import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent';
 
 /**
  * Component to handle the create storage process.
@@ -97,12 +100,49 @@ function CreateTheatreDialogContainer({ onCancel, onCreated, addTheatre }) {
 
     return (
         <OverlayDialog
-            title={"New Location"}
+            title={"Create Theatre"}
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={"DONE"}
         >
 
+            <>
+                <DialogTabs
+                    tabs={dialogTabs}
+                    tab={selectedIndex}
+                />
+
+                <OverlayDialogContent height = {208}>
+                    <>
+                        <Row>
+                            <FieldContainer>
+                                <InputField2
+                                    label={"Room"}
+                                    onChangeText={onFieldChange('name')}
+                                    value={fields['name']}
+                                    onClear={() => onFieldChange('name')('')}
+                                    hasError={errorFields['name']}
+                                    errorMessage="Name must be filled."
+                                    labelWidth = {98}
+                                />
+                            </FieldContainer>
+
+                            <FieldContainer>
+                                <OptionsField
+                                    label={"Recovery"}
+                                    text={recoveryText[fields['isRecovery']]}
+                                    oneOptionsSelected={onFieldChange('isRecovery')}
+                                    menuOption={<MenuOptions>
+                                        <MenuOption value={true} text='Yes' />
+                                        <MenuOption value={false} text='No' />
+                                    </MenuOptions>}
+                                />
+                            </FieldContainer>
+                        </Row>
+                    </>
+                </OverlayDialogContent>
+            </>
+{/* 
             <View style={styles.container}>
                 <DialogTabs
                     tabs={dialogTabs}
@@ -138,7 +178,7 @@ function CreateTheatreDialogContainer({ onCancel, onCreated, addTheatre }) {
 
                 </View>
             </View>
-
+ */}
 
         </OverlayDialog>
     );

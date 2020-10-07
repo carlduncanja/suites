@@ -266,7 +266,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier}) {
 
     return (
         <OverlayDialog
-            title={"New Location"}
+            title={"Add Supplier"}
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={selectedIndex === (dialogTabs.length - 1) ? "DONE" : "NEXT"}
