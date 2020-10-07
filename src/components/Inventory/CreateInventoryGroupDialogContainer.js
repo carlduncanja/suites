@@ -278,7 +278,7 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
  
     const detailsTab = (
 
-        <>
+        <> 
 
             <Row>
                 <FieldContainer>

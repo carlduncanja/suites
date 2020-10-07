@@ -50,7 +50,7 @@ const Value = styled.Text( ({theme}) => ({
 }));
 
 
-function AutoFillField({label, value = "", flex = 1}) {
+function AutoFillField({label, value = "", flex = 1, labelWidth = 98}) {
 
     const theme = useTheme();
 
@@ -59,7 +59,7 @@ function AutoFillField({label, value = "", flex = 1}) {
         <AutoFillFieldWrapper flex = {flex} theme = {theme}>
             <AutoFillContainer>
 
-                <InputLabelComponent label = {label}/>
+                <InputLabelComponent label = {label} width = {labelWidth}/>
             
                 <FieldWrapper flex = {flex}>
                     <FieldContainer theme = {theme}>

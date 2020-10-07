@@ -131,7 +131,7 @@ const Divider = styled.View`
     margin-top : ${({theme}) => theme.space['--space-24']};
     margin-bottom : ${({theme}) => theme.space['--space-24']};
 `
-
+ 
 const FooterWrapper = styled.View`
     width : 100%;
     position : absolute;
