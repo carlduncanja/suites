@@ -12,25 +12,25 @@ const HeaderItemWrapper = styled.TouchableOpacity`
 `;
 const HeaderItemContainer = styled.View`
     flex-direction: row; 
-    justify-content : ${({header}) => (header.alignment ? header.alignment : 'flex-start')};
 `;
-
+// justify-content : ${({header}) => (header.alignment ? header.alignment : 'flex-start')};
 function HeaderItem({header, index, selectedHeader = '', onSelectHeader = () => {}}) {
     const theme = useTheme();
  
     return (
-        <HeaderItemWrapper 
-            key={index} 
-            onPress={() => onSelectHeader(header.name)}
-            header={header} 
-            activeOpacity = { header.hasSort ? 0.5 : 1}
+        <HeaderItemWrapper
+            key={index}
+            onPress={() => onSelectHeader(header?.name)}
+            header={header}
+            activeOpacity={header?.hasSort ? 0.5 : 1}
         >
             <HeaderItemContainer header={header}>
 
                 <HeaderFilterGroup
-                    name={header.name}
-                    isSelected={header.name === selectedHeader}
-                    hasSort = {header.hasSort}
+                    name={header?.name}
+                    alignment={header.alignment}
+                    isSelected={header?.name === selectedHeader}
+                    hasSort={header?.hasSort}
                 />
 
             </HeaderItemContainer>

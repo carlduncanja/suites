@@ -9,8 +9,7 @@ import CheckBoxComponent from '../Checkbox';
 import HeaderItem from './HeaderItem';
 
 const HeaderWrapper = styled.View`
-    margin-bottom: ${({theme}) => theme.space['--space-13']};
-
+    width:100%;
 `;
 const HeaderContainer = styled.View`
     align-items: flex-start;
@@ -31,7 +30,7 @@ function Header({headers = [], toggleHeaderCheckbox = () => {}, isIndeterminate 
 
     return (
         <HeaderWrapper theme={theme}>
-            <HeaderContainer hasCheckbox = {isCheckbox}>
+            <HeaderContainer hasCheckbox={isCheckbox}>
                 {
                     isCheckbox &&
                         <CheckBoxComponent

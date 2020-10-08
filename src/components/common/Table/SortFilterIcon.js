@@ -8,6 +8,8 @@ import { useTheme } from 'emotion-theming';
 const SortFilterWrapper = styled.View`
     height: 12px;
     width : 12px;
+    align-self:center;
+    padding-left:2px;
 `;
 const SortFilterContainer = styled.View`
     height: 100%;

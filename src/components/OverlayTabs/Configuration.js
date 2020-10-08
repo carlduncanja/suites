@@ -4,6 +4,7 @@ import {MenuOption, MenuOptions} from 'react-native-popup-menu';
 import {withModal, useModal} from 'react-native-modalfy';
 import _ from 'lodash';
 import Record from '../common/Information Record/Record';
+import Footer from '../common/Page/Footer';
 import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
 import ColumnSection from '../common/ColumnSection';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
@@ -149,13 +150,14 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
     // const updateProcedure = () => {
     //     console.log("Update procedure: ", fields)
     // }
-
+ 
     return (
         <>
             <Row>
                 <Record
                     recordTitle="Description"
-                    recordValue={fields.description}
+                    recordValue={!isEditMode ? fields.description ? fields.description : 'No description available' : fields.description}
+                    valueColor={!fields.description && '--color-gray-500'}
                     editMode={isEditMode}
                     editable={true}
                     useTextArea={true}
@@ -211,7 +213,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
 
             <Row>
                 <Record
-                    recordTitle="Custom"
+                    recordTitle="Custom Procedure"
                     recordValue={customStatus}
                     editMode={isEditMode}
                     editable={true}
@@ -249,6 +251,12 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
 
             </Row>
 
+            <Footer
+                hasActionButton={true}
+                hasPaginator={false}
+                hasActions={false}
+            />
+            
             {/* <View style={styles.description}>
                 <Text style={{fontSize:16, color:'#718096', paddingBottom:10}}>Description</Text>
                 {

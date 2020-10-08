@@ -24,6 +24,10 @@ import {getProcedures, removeProcedures} from '../../api/network';
 
 import {LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
+import DataItem from '../../components/common/List/DataItem';
+import RightBorderDataItem from '../../components/common/List/RightBorderDataItem';
+import TouchableDataItem from '../../components/common/List/TouchableDataItem';
+
 
 const Procedures = props => {
     // ############# Const data
@@ -40,7 +44,7 @@ const Procedures = props => {
         },
         {
             name: 'Physician',
-            alignment: 'center',
+            alignment: 'flex-start',
             flex: 1
         },
         {
@@ -230,9 +234,14 @@ const Procedures = props => {
     const procedureItem = item => {
         const {physician = {}} = item;
         const {firstName = '', surname = ''} = physician;
+        const physicianName = firstName && surname ? `${firstName} ${surname}` : firstName || (surname || '')
         return (
             <>
-                <View style={[styles.item, {
+                <RightBorderDataItem flex={1.5} fontStyle="--text-base-regular" color="--color-gray-800" text={item?.name}/>
+                <TouchableDataItem flex={1} fontStyle="--text-base-regular" text={`Dr. ${physicianName}`} isDisabled={true}/>
+                <DataItem flex={1} fontStyle="--text-base-regular" align="center" color="--color-blue-600" text={`${item.duration || 1} hours`}/>
+
+                {/* <View style={[styles.item, {
                     ...styles.rowBorderRight,
                     flex: 1.5
                 }]}
@@ -258,6 +267,7 @@ const Procedures = props => {
                 >
                     <Text numberOfLines={1} style={[styles.itemText, {color: '#3182CE'}]}>{`${item.duration || 1} hours`}</Text>
                 </View>
+             */}
             </>
         );
     };

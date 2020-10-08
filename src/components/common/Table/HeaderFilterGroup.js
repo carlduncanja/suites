@@ -1,14 +1,14 @@
 import React, {Component, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import DownArrow from '../../../../assets/svg/downArraow';  
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SortFilter from './SortFilterIcon';
 
-
 const HeaderGoupWrapper = styled.View`
+    flex:1;
     height: 100%;
+    align-items : ${({alignment}) => (alignment ? alignment : 'flex-start')};
 `;
 
 const HeaderGroupContainer = styled.View`
@@ -21,32 +21,34 @@ const HeaderGroupContainer = styled.View`
     border-radius : ${ ({isSelected, hasSort}) => isSelected && hasSort ?  '12px' : null };
     flex-direction : row;
     justify-content: center;
+
 `;
  
-const HeaderText = styled.Text( ({theme}) =>({
+const HeaderText = styled.Text( ({theme, isSelected, hasSort}) =>({
     ...theme.font['--text-sm-medium'],
-    color : theme.colors['--color-gray-600'],
-    paddingRight: 12,
-}))
+    color: theme.colors['--color-gray-600'],
+    paddingRight: (hasSort) ? 12 : 0,
+    paddingTop: 2,
 
-function HeaderFilterGroup({name = "", isSelected = false, hasSort = false}){
+}));
 
-    const theme = useTheme()
+function HeaderFilterGroup({name = '', isSelected = false, hasSort = false, alignment}) {
+    const theme = useTheme();
     // console.log("Name: ", name, isSelected)
 
     return (
-       name !=="" &&
-        <HeaderGoupWrapper>
-            <HeaderGroupContainer theme = {theme} isSelected = {isSelected} hasSort = {hasSort}>
-                <HeaderText theme = {theme}>{name}</HeaderText>
+        name !== '' &&
+        <HeaderGoupWrapper alignment={alignment}>
+            <HeaderGroupContainer theme={theme} isSelected={isSelected} hasSort={hasSort}>
+                <HeaderText theme={theme} isSelected={isSelected} hasSort={hasSort}>{name}</HeaderText>
                 {
-                    hasSort && <SortFilter isSelected = {isSelected}/>
+                    hasSort && <SortFilter isSelected={isSelected}/>
                 }
                 
             </HeaderGroupContainer>
         </HeaderGoupWrapper>
     
-    )
+    );
 }
 
-export default HeaderFilterGroup
+export default HeaderFilterGroup;

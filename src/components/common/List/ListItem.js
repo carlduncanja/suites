@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { withModal } from 'react-native-modalfy';
-import CheckBoxComponent from "../Checkbox";
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import CheckBoxComponent from '../Checkbox';
 
 /**
  *
@@ -27,7 +27,7 @@ const ListItemContainer = styled.View`
     height: 100%;
     width: 100%; 
     flex-direction: row;
-    background-color: ${ ({ theme, isArchive }) => isArchive ? theme.colors["--color-gray-200"] : theme.colors['--default-shade-white']};
+    background-color: ${ ({ theme, isArchive }) => isArchive ? theme.colors['--color-gray-200'] : theme.colors['--default-shade-white']};
     border : 1px solid ${ ({ theme }) => theme.colors['--color-gray-300']};
     border-radius: 8px;
 `;
@@ -36,8 +36,7 @@ const ItemView = styled.View`
     flex:1;
     flex-direction: row;
     align-items: center;
-    // margin-right:4px;
-`
+`;
 function ListItem({
     isArchive = false,
     itemView = () => { },
@@ -46,9 +45,7 @@ function ListItem({
     onCheckBoxPress = () => { },
     onItemPress = () => { }
 }) {
-
     const theme = useTheme();
-
 
     return (
         <ListItemWrapper onPress={onItemPress} theme={theme}>
@@ -64,9 +61,9 @@ function ListItem({
 
         </ListItemWrapper>
     );
-};
+}
 
-export default ListItem
+export default ListItem;
 
 ListItem.propTypes = {};
 ListItem.defaultProps = {};

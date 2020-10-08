@@ -6,8 +6,8 @@ import { Text } from 'react-native';
 const DataItemWrapper = styled.View` 
     flex: ${ ({flex}) => flex.toString()};
     height: 100%;
-    margin-right: ${ ({theme}) => theme.space['--space-4']};
 `;
+// margin-right: ${ ({theme}) => theme.space['--space-4']};
 const DataItemContainer = styled.View` 
     display: flex;
     height:100%; 
@@ -17,21 +17,20 @@ const DataItemContainer = styled.View`
 
 const DataText = styled.Text( ({theme, fontStyle, color}) => ({
     ...theme.font[fontStyle],
-    color : theme.colors[color],
-}))
+    color: theme.colors[color],
+    paddingTop: 2,
+}));
 
-
-function DataItem({text = "", flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-gray-700', }){
+function DataItem({text = "", flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-gray-700', }) {
     const theme = useTheme();
     
     return (
-        <DataItemWrapper flex = {flex} theme={theme}>
-            <DataItemContainer align = {align}>
-                <DataText numberOfLines = {1} fontStyle = {fontStyle} color = {color} theme = {theme}>{text}</DataText>
+        <DataItemWrapper flex={flex} theme={theme}>
+            <DataItemContainer align={align}>
+                <DataText numberOfLines={1} fontStyle={fontStyle} color={color} theme={theme}>{text}</DataText>
             </DataItemContainer>
         </DataItemWrapper>
-    )
+    );
 }
 
-export default DataItem
-
+export default DataItem;
