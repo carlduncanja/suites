@@ -16,7 +16,7 @@ const ErrorWrapper = styled.View`
 const ErrorContainer = styled.View`
     height : 100%;
     width : 100%;
-    padding-left : 15px;
+    /* padding-left : 15px; */
 `;
 
 const ErrorText = styled.Text(({theme}) => ({

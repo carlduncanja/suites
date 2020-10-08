@@ -11,6 +11,7 @@ import SvgIcon from '../../../../assets/SvgIcon';
 import LockIcon from '../../../../assets/svg/lockIcon';
 import EditLockIcon from '../../../../assets/svg/editLockedIcon';
 import DeleteIcon from '../../../../assets/svg/wasteIcon';
+import MultipleShadowsContainer from '../MultipleShadowContainer';
 
 const shadow = {
     shadowColor: '#000',
@@ -27,10 +28,10 @@ const shadow = {
 const HeaderWrapper = styled.View(({isEditMode, theme, isEditBackground}) => ({
     display: 'flex',
     height: 55,
-    ...(isEditMode ? shadow : {}),
+    // ...(isEditMode ? shadow : {}),
     backgroundColor: isEditMode ?
         isEditBackground :
-        theme.colors['--default-shade-white']
+        theme.colors['--default-shade-white'],
 }));
 
 const HeaderContainer = styled.View`
@@ -45,7 +46,7 @@ const TextContainer = styled.View`
     flex:1;
     padding-left: ${({theme}) => theme.space['--space-14']};
     flex-direction: row;
-    align-items: center
+    align-items: center;
 `;
 
 const HeaderText = styled.Text`
@@ -82,17 +83,17 @@ const EditButtonContainer = styled.View`
 `;
 
 const DisabledEditContainer = styled.View`
-background-color:${({theme}) => theme.colors['--default-shade-white']};
-height:26px;
-width:53px;
-align-items : center;
-justify-content : center;
-border-radius : 6px;
-border:1px #E3E8EF
+    background-color:${({theme}) => theme.colors['--default-shade-white']};
+    height:26px;
+    width:53px;
+    align-items : center;
+    justify-content : center;
+    border-radius : 6px;
+    border:1px #E3E8EF;
 `;
 
 const DisabledText = styled.Text`
-color:#A0AEC0;
+    color:#A0AEC0;
 `;
 
 const EditModeContainer = styled.Text(({theme, isReview}) => ({
@@ -101,6 +102,21 @@ const EditModeContainer = styled.Text(({theme, isReview}) => ({
     alignItems: 'center',
     textAlign: 'center'
 }));
+
+const shadows = [
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: 2, height: 0 },
+        shadowOpacity: 0.06,
+        shadowRadius: 4
+    },
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: 4, height: 0 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6
+    },
+]
 
 function PageHeader({
     onBack,
@@ -121,8 +137,7 @@ function PageHeader({
 
         setPageState({
             ...pageState,
-            isEditMode: !pageState.isEditMode,
-
+            isEditMode: !pageState.isEditMode
         });
     };
 
@@ -193,67 +208,71 @@ function PageHeader({
     const editColor = isReview ? theme.colors['--color-gray-600'] : theme.colors['--accent-button'];
 
     return (
-        <HeaderWrapper theme={theme} isEditMode={isEditMode} isEditBackground={editColor}>
-            <HeaderContainer theme={theme}>
+        <MultipleShadowsContainer shadows = {shadows} hasShadow = {isEditMode ? true : false}>
+        
+            <HeaderWrapper theme={theme} isEditMode={isEditMode} isEditBackground={editColor}>
+                <HeaderContainer theme={theme}>
 
-                {
-                    !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle/></IconContainer>
-                }
+                    {
+                        !isEditMode && <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle/></IconContainer>
+                    }
 
-                {
-                    !isEditMode &&
+                    {
+                        !isEditMode &&
 
-                    <TextContainer>
-                        {
-                            headerChildren.map((item, index) => {
-                                const lastItem = (index === headerChildren.length - 1);
+                        <TextContainer>
+                            {
+                                headerChildren.map((item, index) => {
+                                    const lastItem = (index === headerChildren.length - 1);
 
-                                return lastItem ?
-                                    <HeaderText theme={theme}>{item}</HeaderText> : (
-                                        <>
-                                            <SpecialText theme={theme}>{item}</SpecialText>
-                                            <View style={{marginLeft: 15, marginRight: 10}}>
-                                                {separator}
-                                            </View>
-                                        </>
-                                    );
-                            })
-                        }
-                    </TextContainer>
+                                    return lastItem ?
+                                        <HeaderText theme={theme}>{item}</HeaderText> : (
+                                            <>
+                                                <SpecialText theme={theme}>{item}</SpecialText>
+                                                <View style={{marginLeft: 15, marginRight: 10}}>
+                                                    {separator}
+                                                </View>
+                                            </>
+                                        );
+                                })
+                            }
+                        </TextContainer>
 
-                }
+                    }
 
-                {
-                    isEditMode &&
-                    <EditModeContainer theme={theme} isReview={isReview}>
-                        {editMsg || editMessage}
-                    </EditModeContainer>
-                }
+                    {
+                        isEditMode &&
+                        <EditModeContainer theme={theme} isReview={isReview}>
+                            {editMsg || editMessage}
+                        </EditModeContainer>
+                    }
 
-                {
-                    (!isEditDisabled || editDisabled) ? (
-                        <EditButtonWrapper theme={theme}>
-                            <EditButtonContainer
-                                theme={theme}
-                                backgroundColor={getEditBtnBackground()}
-                            >
-                                <Button
-                                    {...getButtonProps()}
-                                    buttonPress={onEditPress}
-                                    disabled={locked}
-                                    font={theme.font['--text-sm-medium']}
-                                    Icon={locked && <EditLockIcon/>}
-                                />
+                    {
+                        !isEditDisabled ? (
+                            <EditButtonWrapper theme={theme}>
+                                <EditButtonContainer
+                                    theme={theme}
+                                    backgroundColor={getEditBtnBackground()}
+                                >
+                                    <Button
+                                        {...getButtonProps()}
+                                        buttonPress={onEditPress}
+                                        disabled={locked}
+                                        font={theme.font['--text-sm-medium']}
+                                        Icon={locked && <EditLockIcon/>}
+                                    />
 
-                            </EditButtonContainer>
-                        </EditButtonWrapper>
-                    ) : (
-                        <DisabledEditContainer>
-                            <DisabledText>Edit</DisabledText>
-                        </DisabledEditContainer>
-                    )}
-            </HeaderContainer>
-        </HeaderWrapper>
+                                </EditButtonContainer>
+                            </EditButtonWrapper>
+                        ) : (
+                            <DisabledEditContainer>
+                                <DisabledText>Edit</DisabledText>
+                            </DisabledEditContainer>
+                        )}
+                </HeaderContainer>
+            </HeaderWrapper>
+            
+        </MultipleShadowsContainer>
     );
 }
 

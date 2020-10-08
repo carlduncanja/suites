@@ -71,8 +71,14 @@ const SectionText = styled.Text( ({theme}) => ({
     marginBottom : 24,
 }));  
 
+const TRANSFER_STATE = {
+    PENDING: 'pending',
+    CANCELLED: 'cancelled',
+    COMPLETED: 'completed',
+    ERROR: 'error'
+};
 
-function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateItem}) {
+function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateItem, actionsTitle = 'SUPPLIERS ACTIONS'}) {
 
     const theme = useTheme();
     const modal = useModal();
@@ -81,252 +87,255 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
     const [isFloatingDisabled, setFloatingAction] = useState(false);
 
     const pendingItems = transferItems.filter(item => item?.state === 'pending');
-    const completedItems = transferItems.filter( item => item?.state === 'completed');
+    const completedItems = transferItems.filter(item => item?.state === 'completed');
 
-    const onItemCheckbox = (item) => {
+    const onItemCheckbox = item => {
         const {_id} = item;
-        const updatedCheckedList = checkboxItemPress(item, _id, pendingCheckedItems);
+        const updatedCheckedList = checkboxItemPress(_id, pendingCheckedItems);
         setPendingCheckedItems(updatedCheckedList);
-    }
+    };
 
-    const toggleHeaderCheckbox = () =>{
-        let updatedCheckedList = selectAll(transferItems, pendingCheckedItems);
+    const toggleHeaderCheckbox = () => {
+        const updatedCheckedList = selectAll(transferItems, pendingCheckedItems);
         setPendingCheckedItems(updatedCheckedList);
-    }
+    };
 
     const toggleActionButton = () => {
-        setFloatingAction(true)
+        setFloatingAction(true);
 
-        modal.openModal("ActionContainerModal",
+        modal.openModal('ActionContainerModal',
             {
                 actions: floatingActions(),
-                title: "SUPPLIER ACTIONS",
+                title: {actionsTitle},
                 onClose: () => {
-                    setFloatingAction(false)
+                    setFloatingAction(false);
                 },
-            })
-    }
+            });
+    };
 
-    const floatingActions = () =>{
-        let isDisabled = pendingCheckedItems.length === 0 ? true : false;
-        let isDisabledColor = pendingCheckedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
+    const floatingActions = () => {
+        const isDisabled = pendingCheckedItems.length === 0 ? true : false;
+        const isDisabledColor = pendingCheckedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
         
-        const acceptTransfer = 
+        const acceptTransfer = (
             <ActionItem
-                title={"Accept Transfer"}
-                icon={<AddIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600'] } />}
+                title="Accept Transfer"
+                icon={<AddIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']} />}
                 onPress={handleAcceptTransfer}
-                disabled = {isDisabled}
-                touchable = {true}
+                disabled={isDisabled}
+                touchable={true}
             />
-
-        const deleteItem =
+        );
+        const deleteItem = (
             <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
                 onLongPress={onCancelItems}
-                isDisabled = {isDisabled}
+                isDisabled={isDisabled}
             >
                 <ActionItem
-                    title={"Hold to Cancel"}
-                    icon={<WasteIcon strokeColor = {isDisabledColor}/>}
-                    onPress={()=>{}}
-                    disabled = {isDisabled}
+                    title="Hold to Cancel"
+                    icon={<WasteIcon strokeColor={isDisabledColor}/>}
+                    onPress={() => {}}
+                    disabled={isDisabled}
                     touchable={false}
                 />
-            </LongPressWithFeedback>;
-
+            </LongPressWithFeedback>
+        );
+            
         return <ActionContainer
             floatingActions={[
                 deleteItem,
                 acceptTransfer
             ]}
-            title={"SUPPLIER ACTIONS"}
-        />
-    }
+            title={actionsTitle}
+        />;
+    };
 
-    const handleAcceptTransfer = () =>{
-        console.log("Pending: ", pendingCheckedItems.length);
-        if(pendingCheckedItems.length === 1) {
+    const updateTransferStatus = transferId => {
+        const newState = { state: 'completed'};
+        updateTransferState(groupId, variantId, transferId, newState)
+            .then(_ => {
+                modal.closeAllModals();
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={false}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                setPendingCheckedItems([]);
+                            }}
+                        />,
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    }
+                );
+            })
+            .catch(_ => {
+                modal.closeAllModals();
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => { modal.closeAllModals(); }}
+                            onAction={() => { modal.closeAllModals(); }}
+                            message="There was an issue performing this action"
+                        />,
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    }
+                );
+            })
+            .finally(_ => onUpdateItem());
+    };
+
+    const handleAcceptTransfer = () => {
+        if (pendingCheckedItems.length === 1) {
             // console.log("Hello");
             modal.closeAllModals();
-            setTimeout(()=>{
-                modal.openModal('ConfirmationModal',{
+            setTimeout(() => {
+                modal.openModal('ConfirmationModal', {
 
                     content: <ConfirmationComponent
-                        isEditUpdate = {true}
-                        isError = {false}
-                        onCancel = {()=> modal.closeAllModals()}
-                        onAction = {()=> {
+                        isEditUpdate={true}
+                        isError={false}
+                        onCancel={() => modal.closeAllModals()}
+                        onAction={() => {
                             modal.closeAllModals();
-                            updateTransferStatus(pendingCheckedItems[0])
+                            updateTransferStatus(pendingCheckedItems[0]);
                         }}
-                        message = "Do you want to save your changes ?"
-                    />
-                    ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')} 
-                })
-            },200)
+                        message="Do you want to save your changes ?"
+                    />,
+                    onClose: () => { modal.closeModals('ConfirmationModal'); } 
+                });
+            }, 200);
         }
-    }
+    };
 
-    const updateTransferStatus = (transferId) =>{
-        const newState = { state : 'completed'};
-        updateTransferState(groupId, variantId, transferId, newState)
-            .then(_=>{
+    const removeItems = transferId => {
+        // console.log("Transfer id: ", transferId);
+        // console.log("Group id: ", groupId);
+        // console.log("Variant:", variantId);
+        removeTransferItem(groupId, variantId, transferId)
+            .then(_ => {
                 modal.closeAllModals();
                 modal.openModal(
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {false}
-                            onCancel = {()=> modal.closeAllModals()}
-                            onAction = {()=> {
+                            isEditUpdate={false}
+                            isError={false}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => {
                                 modal.closeAllModals();
                                 setPendingCheckedItems([]);
+                                onUpdateItem();
                             }}
-                        />
-                        ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
-                    })
+                        />,
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    }
+                );
             })
-            .catch(_=>{
+            .catch(_ => {
                 modal.closeAllModals();
                 modal.openModal(
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {true}
-                            onCancel = {()=> {modal.closeAllModals(); }}
-                            onAction = {()=> {modal.closeAllModals(); }}
-                            message = "There was an issue performing this action"
-                        />
-                        ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
-                    })
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => { modal.closeAllModals(); }}
+                            onAction={() => { modal.closeAllModals(); }}
+                            message="There was an issue performing this action"
+                        />,
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    }
+                );
             })
-            .finally(_=> onUpdateItem())
-    }
+            .finally(_ => {
+                // onUpdateItem();
+            });
+    };
 
-    const onCancelItems = () =>{
-        if(pendingCheckedItems.length === 1){
+    const onCancelItems = () => {
+        if (pendingCheckedItems.length === 1) {
             modal.closeAllModals();
-            modal.openModal('ConfirmationModal',{
+            modal.openModal('ConfirmationModal', {
 
                 content: <ConfirmationComponent
-                    isEditUpdate = {true}
-                    isError = {false}
-                    onCancel = {()=> modal.closeAllModals()}
-                    onAction = {()=> {
+                    isEditUpdate={true}
+                    isError={false}
+                    onCancel={() => modal.closeAllModals()}
+                    onAction={() => {
                         modal.closeAllModals();
-                        removeItems(pendingCheckedItems[0])
+                        removeItems(pendingCheckedItems[0]);
                     }}
-                    message = "Do you wish to delete these item(s)?"
-                />
-                ,
-                onClose: () => {modal.closeModals('ConfirmationModal')} 
-            })
+                    message="Do you wish to delete these item(s)?"
+                />,
+                onClose: () => { modal.closeModals('ConfirmationModal'); }
+            });
         }
         // console.log("Checked items: ", pendingCheckedItems);
-    }
+    };
 
-    const removeItems = (transferId) => {
-        console.log("Transfer id: ", transferId);
-        console.log("Group id: ", groupId);
-        console.log("Variant:", variantId);
-        removeTransferItem(groupId, variantId, transferId)
-            .then(_=>{
-                modal.closeAllModals();
-                modal.openModal(
-                    'ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {false}
-                            onCancel = {()=> modal.closeAllModals()}
-                            onAction = {()=> {
-                                modal.closeAllModals();
-                                setPendingCheckedItems([]);
-                            }}
-                        />
-                        ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
-                    })
-            })
-            .catch(_=>{
-                modal.closeAllModals();
-                modal.openModal(
-                    'ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {true}
-                            onCancel = {()=> {modal.closeAllModals(); }}
-                            onAction = {()=> {modal.closeAllModals(); }}
-                            message = "There was an issue performing this action"
-                        />
-                        ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
-                    })
-            })
-            .finally(_=>{
-                onUpdateItem()
-            })
-    }
-
-    const completedTransferListItem = ({from, to, product, amount, dateCompleted = "", updatedAt = ""}) => {
-        const { inventoryName = "", locationName = "" } = from
+    const completedTransferListItem = ({from, to, product, amount, dateCompleted = '', updatedAt = ''}) => {
+        const { inventoryName = '', locationName = '""' } = from;
         return (
-        <>
-            <ContentDataItem
-                flex = {2}
-                content = {
-                    <View style={{flexDirection : 'row', justifyContent: 'space-between',}}>
-                        <View style={[styles.highlighted,{paddingRight:50 }]}><Text style={[styles.itemText, styles.linkText]}>{locationName}</Text></View>
-                        <ArrowRightIcon/>
-                        <View style={[styles.highlighted,{paddingLeft:20}]}><Text style={[styles.itemText, styles.linkText]}>{to?.locationName}</Text></View>
-                    </View>
-                }
-            />
+            <>
+                <ContentDataItem
+                    flex={2}
+                    content={(
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <View style={[styles.highlighted, {paddingRight: 50, width: 150, }]}>
+                                <Text style={[styles.itemText, styles.linkText]} numberOfLines={1}>{locationName}</Text>
+                            </View>
+                            <ArrowRightIcon/>
+                            <View style={[styles.highlighted, {paddingLeft: 20, }]}>
+                                <Text style={[styles.itemText, styles.linkText]}>{to?.locationName}</Text>
+                            </View>
+                        </View>
+                    )}
+                />
 
-            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {formatDate(updatedAt, "DD/MM/YYYY")}/>
-            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {`${inventoryName} (${amount})`}/>
-        </>)
+                <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={formatDate(updatedAt, 'DD/MM/YYYY')}/>
+                <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={`${inventoryName} (${amount})`}/>
+            </>
+        );
     };
 
-    const pendingTransferListItem = ({from, to , product, amount, dateGenerated, inventoryLocation}) => {
-        const { inventoryName = "", locationName = "" } = from;
+    const pendingTransferListItem = ({from, to, product, amount, dateGenerated, inventoryLocation}) => {
+        const { inventoryName = '', locationName = '' } = from;
         return (
-        <>
-            <DataItem  flex = {1.5} fontStyle = "--text-base-medium" color = "--color-blue-600" text = {to?.locationName}/>
-            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {inventoryName}/>
-            <DataItem  fontStyle = "--text-base-regular" color = "--color-gray-800" text = {formatDate(dateGenerated, "DD/MM/YYYY")}/>
-            <DataItem align = "center" fontStyle = "--text-base-medium" color = "--color-green-600" text = {`+ ${amount}`}/>
-        </>)
+            <>
+                <DataItem flex={1.5} fontStyle="--text-base-medium" color="--color-blue-600" text={to?.locationName}/>
+                <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={inventoryName}/>
+                <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={formatDate(dateGenerated, 'DD/MM/YYYY')}/>
+                <DataItem align="center" fontStyle="--text-base-medium" color="--color-green-600" text={`+ ${amount}`}/>
+            </>
+        );
     };
 
-    const renderCompleteItem = (item) => {
+    const renderCompleteItem = item => {
         return <Item
-            itemView = {completedTransferListItem(item)}
-            hasCheckBox = {false}
-            onItemPress = {()=>{}}
-        />
-        
+            itemView={completedTransferListItem(item)}
+            hasCheckBox={false}
+            onItemPress={() => {}}
+        />;
     };
 
-    const renderPendingItem = (item) => {
-        const { _id = "" } = item
+    const renderPendingItem = item => {
+        const { _id = '' } = item;
+        // console.log("Transfer pending: ", item, groupId, variantId);
         return <Item
-            itemView = {pendingTransferListItem(item)}
-            hasCheckBox = {true}
-            isChecked = {pendingCheckedItems.includes(_id)}
-            onCheckBoxPress = {()=>onItemCheckbox(item)}
-            onItemPress = {()=>{}}
-        />
-        
+            itemView={pendingTransferListItem(item)}
+            hasCheckBox={true}
+            isChecked={pendingCheckedItems.includes(_id)}
+            onCheckBoxPress={() => onItemCheckbox(item)}
+            onItemPress={() => {}}
+        />;
     };
-
 
     return (
         <>
@@ -336,14 +345,14 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
                     data={pendingItems}
                     listItemFormat={renderPendingItem}
                     headers={PendingTransferHeadings}
-                    isCheckbox={true}      
-                    toggleHeaderCheckbox = {toggleHeaderCheckbox}   
-                    itemSelected = {pendingCheckedItems}           
+                    isCheckbox={true}
+                    toggleHeaderCheckbox={toggleHeaderCheckbox}
+                    itemSelected={pendingCheckedItems}
                 />
             </SectionContainer>
 
             <SectionContainer
-                style = {css`margin-bottom : 0;`}
+                style={css`margin-bottom : 0;`}
             >
                 <SectionText>Completed</SectionText>
                 <Table
@@ -355,41 +364,41 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
             </SectionContainer>
 
             <Footer
-                hasPaginator = {false}
-                hasActionButton = {true}
-                hasActions = {true}
-                toggleActionButton = {toggleActionButton}
+                hasPaginator={false}
+                hasActionButton={true}
+                hasActions={true}
+                toggleActionButton={toggleActionButton}
             />
         </>
 
-        // <View style={styles.container}>
-        //     {/*PENDING*/}
-        //     <View style={styles.sectionContainer}>
-        //         <Text style={styles.sectionHeading}>Pending</Text>
+    // <View style={styles.container}>
+    //     {/*PENDING*/}
+    //     <View style={styles.sectionContainer}>
+    //         <Text style={styles.sectionHeading}>Pending</Text>
 
-        //         <Table
-        //             data={transferItems}
-        //             listItemFormat={renderPendingItem}
-        //             headers={PendingTransferHeadings}
-        //             isCheckbox={false}
-        //         />
+    //         <Table
+    //             data={transferItems}
+    //             listItemFormat={renderPendingItem}
+    //             headers={PendingTransferHeadings}
+    //             isCheckbox={false}
+    //         />
 
-        //     </View>
+    //     </View>
 
-        //     {/*COMPLETED*/}
-        //     <View style={styles.sectionContainer}>
-        //         <Text style={styles.sectionHeading}>Completed</Text>
+    //     {/*COMPLETED*/}
+    //     <View style={styles.sectionContainer}>
+    //         <Text style={styles.sectionHeading}>Completed</Text>
 
-        //         <Table
-        //             data={transferItems}
-        //             listItemFormat={renderCompleteItem}
-        //             headers={CompletedTransferHeadings}
-        //             isCheckbox={false}
-        //         />
+    //         <Table
+    //             data={transferItems}
+    //             listItemFormat={renderCompleteItem}
+    //             headers={CompletedTransferHeadings}
+    //             isCheckbox={false}
+    //         />
 
-        //     </View>
+    //     </View>
 
-        // </View>
+    // </View>
     
     );
 }

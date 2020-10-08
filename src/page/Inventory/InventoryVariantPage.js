@@ -1,27 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
+import {useModal} from 'react-native-modalfy';
 import { PageContext } from '../../contexts/PageContext';
 import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainerComponent from '../../components/common/Tabs/TabsContainerComponent';
-import { connect } from 'react-redux';
-import { getInventoryVariantByGroup, updateInventoryGroupCall, updateInventoryVariantCall, getVariantSupplierProducts } from '../../api/network';
+import { getInventoryVariantByGroup } from '../../api/network';
 import InventoryGroupGeneral from '../../components/OverlayTabs/InventoryGroupGeneral';
 import InventoryVariantGeneral from '../../components/OverlayTabs/InventoryVariantGeneral';
 import TransfersOverlayTab from '../../components/OverlayTabs/TransfersOverlayTab';
 import InventoryStorageLocationsTab from '../../components/OverlayTabs/InventoryStorageLocationsTab';
-import ConfirmationComponent from "../../components/ConfirmationComponent";
-import {useModal} from "react-native-modalfy";
 import InventorySuppliersTab from '../../components/OverlayTabs/InventorySuppliersTab';
+ 
+function InventoryVariantPage({ route, navigation }) {
 
-function InventoryVariantPage({ route, navigation }){
-
-    const { data = {}, isEdit = false} = route.params;
+    const { data = {} } = route.params;
     const modal = useModal();
     // console.log("Data: ", data)
-    const { name = "", _id = "", groupName = "", groupId = "" } = data
-    const tabs = ["Details","Storage Locations", "Transfers", "Suppliers"];
+    const { name = '', _id = '', groupName = '', groupId = '' } = data;
+    const tabs = ['Details','Storage Locations', 'Transfers', 'Suppliers'];
 
-    const [currentTab, setCurrentTab] = useState(tabs[0])
+    const [currentTab, setCurrentTab] = useState(tabs[0]);
     const [pageState, setPageState] = useState({});
     const [selectedVariant, setSelectedVariant] = useState({});
     const [variantSuppliers, setVariantSuppliers] = useState([]);
@@ -34,8 +32,43 @@ function InventoryVariantPage({ route, navigation }){
 
     const {isEditMode} = pageState;
 
+    const setPageLoading = value => {
+        setPageState({
+            ...pageState,
+            isLoading: value,
+            isEdit: false
+        });
+    };
+
+    const fetchVariant = (parentId, variantId) => {
+        // console.log("Group: ", parentId, variantId)
+        setPageLoading(true);
+        getInventoryVariantByGroup(variantId, parentId)
+            .then(variantData => {
+                setSelectedVariant(variantData);
+                console.log('Fetch variant data: ', variantData);
+            })
+            .catch(error => {
+                console.log('Failed to get variant', error);
+                //TODO handle error cases.
+            })
+            .finally(_ => {
+                setPageLoading(false);
+            });
+        // getVariantSupplierProducts(variantId)
+        //     .then(results => {
+        //         const { data = [] } = results;
+        //         setVariantSuppliers([...data]);
+        //         console.log("Suppliers: ", data);
+        //     })
+        //     .catch(error => {
+        //         console.log("Failed to get variant suppliers", error)
+        //         //TODO handle error cases.
+        //     })
+    };
+
     useEffect(() => {
-        fetchVariant(groupId,_id)
+        fetchVariant(groupId, _id);
     }, []);
 
     // useEffect(() => {
@@ -43,34 +76,6 @@ function InventoryVariantPage({ route, navigation }){
     //         onFinishEdit();
     //     }
     // }, [isEditMode])
-
-
-    const fetchVariant = (parentId,variantId) => {
-        // console.log("Group: ", parentId, variantId)
-        setPageLoading(true)
-        getInventoryVariantByGroup(variantId, parentId)
-            .then(data => {
-                setSelectedVariant(data)
-                console.log("Fetch variant data: ", data)
-            })
-            .catch(error => {
-                console.log("Failed to get variant", error)
-                //TODO handle error cases.
-            })
-            .finally(_ => {
-                setPageLoading(false)
-            })
-        getVariantSupplierProducts(variantId)
-            .then(results => {
-                const { data = [] } = results;
-                setVariantSuppliers([...data]);
-                console.log("Suppliers: ", data);
-            })
-            .catch(error => {
-                console.log("Failed to get variant suppliers", error)
-                //TODO handle error cases.
-            })
-    };
 
     // const onFinishEdit = () =>{
     //     let isValid = validateUpdate();
@@ -113,50 +118,42 @@ function InventoryVariantPage({ route, navigation }){
 
     // ###### HELPER FUNCTIONS
 
-    const setPageLoading = (value) => {
-        setPageState({
-            ...pageState,
-            isLoading : value,
-            isEdit : false
-        })
-    };
-
-    const onTabPress = (selectedTab) => {
+    const onTabPress = selectedTab => {
         if (!pageState.isEditMode) setCurrentTab(selectedTab);
     };
 
-    const getContentData = (selectedTab) => {
-        
+    const getContentData = selectedTab => {
         switch (selectedTab) {
-            case "Details":
+            case 'Details':
                 return <InventoryVariantGeneral
-                    inventoryVariant = {selectedVariant}
-                    selectedData = {data}
-                    onUpdateItem = {()=>fetchVariant(groupId,_id)}
+                    inventoryVariant={selectedVariant}
+                    selectedData={data}
+                    onUpdateItem={() => fetchVariant(groupId, _id)}
                     // isEditMode={isEditMode}
                     // fields = {fields}
                     // errorFields = {errorFields} 
                     // onFieldChange = {onFieldChange}
-                />; 
-
-            case "Storage Locations" :
+                />;
+            case 'Storage Locations':
                 return <InventoryStorageLocationsTab
-                    selectedVariant = {selectedVariant}
-                    groupId = {groupId}
-                    onUpdateItem = {()=>fetchVariant(groupId,_id)}
-                /> 
-            case "Transfers" :
+                    selectedVariant={selectedVariant}
+                    groupId={groupId}
+                    onUpdateItem={() => fetchVariant(groupId, _id)}
+                />;
+            case 'Transfers':
                 // console.log("Variant: ", selectedVariant);
-                return <TransfersOverlayTab 
-                    transferItems = {selectedVariant.transfers}
-                    groupId = {selectedVariant?.inventoryGroup?._id}
-                    variantId = {selectedVariant?._id}
-                    onUpdateItem = {()=>fetchVariant(groupId,_id)}
-                />
-            case "Suppliers" :
+                return <TransfersOverlayTab
+                    transferItems={selectedVariant?.transfers}
+                    groupId={selectedVariant?.inventoryGroup?._id}
+                    variantId={selectedVariant?._id}
+                    onUpdateItem={() => fetchVariant(groupId, _id)}
+                    actionsTitle="INVENTORY ACTIONS"
+                />;
+            case 'Suppliers':
                 return <InventorySuppliersTab
-                    suppliers = {variantSuppliers}
-                    variantId = {selectedVariant?._id}
+                    suppliers={variantSuppliers}
+                    variantId={selectedVariant?._id}
+                    parentId={groupId}
                 />
             default:
                 break;

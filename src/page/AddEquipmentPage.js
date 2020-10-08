@@ -10,6 +10,8 @@ import CreatePageHeader from '../components/common/DetailsPage/CreatePageHeader'
 import TabsContainer from "../components/common/Tabs/TabsContainerComponent"
 import Footer from '../components/common/Page/Footer';
 import { Divider, Modal } from 'react-native-paper';
+import CreatePageDoneFooter from "../components/common/DetailsPage/CreatePageDoneFooter";
+
 
 
 const AddEquipmentPageWrapper = styled.View`
@@ -31,7 +33,7 @@ const HeaderContainer = styled.View`
 
 const HeaderText = styled.Text`
     font:${({ theme }) => theme.font["--text-xl-medium"]};
-    color:${({ theme }) => theme.colors["--company"]}
+    color:${({ theme }) => theme.colors["--company"]};
     `;
 
 const CloseButtonWrapper = styled.View`
@@ -45,11 +47,11 @@ const CloseButtonContainer = styled.TouchableOpacity`
     padding:4px 14px;
     border-radius:6px;
     justify-content:center;
-    `;
+`;
 const CloseText = styled.Text`
     color:${({ theme }) => theme.colors["--color-gray-600"]};
-    font:${({ theme }) => theme.font["--text-sm-bold"]}
-    `;
+    font:${({ theme }) => theme.font["--text-sm-bold"]};
+`;
 
 const AddEquipmentPageContentWrapper = styled.View`
         flex:1;
@@ -62,10 +64,27 @@ const AddEquipmentPageContentWrapper = styled.View`
 const AddEquipmentPageContentContainer = styled.View`
         display: flex;
         flex:1;
+        border-bottom-width : 1px;
+        border-bottom-color : ${ ({theme}) => theme.colors['--color-gray-300']};
 `
 
 const TabsViewContainer = styled.View`
     height: 54px;
+`;
+
+const FooterWrapper = styled.View`
+     width : 100%;
+    /* position : absolute;
+    bottom : 0; */
+    margin-bottom : ${({theme}) => theme.space['--space-24']};
+    /* margin-top : ${({theme}) => theme.space['--space-24']}; */
+    padding-left : ${({theme}) => theme.space['--space-24']};
+    padding-right :${({theme}) => theme.space['--space-24']};
+`;
+
+
+const FooterContainer = styled.View`
+    display : flex;
 `;
 
 const testData = {
@@ -193,12 +212,12 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
             })
     };
 
-
+ 
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
                 return <AddEquipmentDetailsTab
-                    onDonePress={onDonePress}
+                    // onDonePress={onDonePress}
                     equipmentDetails={equipment}
                     data={equipmentData}
                     locations={locations[selectedIndex]}
@@ -227,12 +246,18 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
                 </TabsViewContainer>
 
                 <AddEquipmentPageContentWrapper>
-                    <AddEquipmentPageContentContainer>
+                    <AddEquipmentPageContentContainer theme = {theme}>
                         {getTabContent(currentTab)}
 
 
                     </AddEquipmentPageContentContainer>
                 </AddEquipmentPageContentWrapper>
+
+                <FooterWrapper theme = {theme}>
+                    {/* <FooterContainer> */}
+                        <CreatePageDoneFooter onFooterPress={onDonePress}/>
+                    {/* </FooterContainer> */}
+                </FooterWrapper>
 
             </AddEquipmentPageContainer>
         </AddEquipmentPageWrapper>

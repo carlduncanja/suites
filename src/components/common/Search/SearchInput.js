@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, TextInput, CheckBox } from 'react-native';
 import InputText from '../InputText';
 import SvgIcon from '../../../../assets/SvgIcon';
-
+import MultipleShadowsContainer from '../MultipleShadowContainer';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -28,6 +28,7 @@ const SearchInputWrapper = styled.View`
     height: 60px;
     padding:${({ theme }) => theme.space['--space-14']};
     background-color: ${({ theme }) => theme.colors['--color-neutral-gray-200']};
+
 `;
 const SearchInputContainer = styled.View`
     height: 100%;
@@ -35,7 +36,8 @@ const SearchInputContainer = styled.View`
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
+    /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06); */
+
 `
 
 const PopUp = styled.View`
@@ -78,6 +80,21 @@ const OptionContainer = styled.View`
     align-items:center;
     justify-content:center;
 `;
+
+const shadows = [
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: 2, height: 0 },
+        shadowOpacity: 0.06,
+        shadowRadius: 4
+      },
+      {
+        shadowColor: 'black',
+        shadowOffset: { width: 4, height: 0 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6
+      },
+]
 
 function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, onPressPreviousResult, onPressNewSerch, onPressSubmit }) {
     const theme = useTheme();
@@ -146,25 +163,27 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
 
 
     return (
-        <SearchInputWrapper theme={theme}>
-            <SearchInputContainer>
+        <MultipleShadowsContainer shadows = {shadows}>
+            <SearchInputWrapper theme={theme}>
+                <SearchInputContainer>
 
-                <SearchBox
-                    onChangeText={changeText}
-                    inputText={inputText}
-                    matchesFound={matchesFound}
-                    onPressNewSerch={onPressNewSerch}
-                />
+                    <SearchBox
+                        onChangeText={changeText}
+                        inputText={inputText}
+                        matchesFound={matchesFound}
+                        onPressNewSerch={onPressNewSerch}
+                    />
 
-                <SearchControls
-                    onPressNextResult={onPressNextResult}
-                    onPressPreviousResult={onPressPreviousResult}
-                />
+                    <SearchControls
+                        onPressNextResult={onPressNextResult}
+                        onPressPreviousResult={onPressPreviousResult}
+                    />
 
-                <SearchComplete onSubmit={onPressSubmit}/>
+                    <SearchComplete onSubmit={onPressSubmit}/>
 
-            </SearchInputContainer>
-        </SearchInputWrapper>
+                </SearchInputContainer>
+            </SearchInputWrapper>
+        </MultipleShadowsContainer>
     )
 }
 export default SearchInput

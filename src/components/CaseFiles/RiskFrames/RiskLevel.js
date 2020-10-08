@@ -1,24 +1,117 @@
-import React,{useContext} from 'react';
+import React, {useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+
 import FrameItem from '../../common/Frames/FrameItems/FrameItem';
 import RiskIcon from '../../../../assets/svg/riskLevel';
+import LineDivider from '../../common/LineDivider';
+import TextArea from '../../common/Input Fields/TextArea';
 import TextEditor from '../../common/Input Fields/TextEditor';
 
-const RiskLevel = (props) => {
-    const {
-        titleBackground = "#EBF8FF",
-        borderColor="#90CDF4",
-        levelColor="#4299E1",
-        cardColor="#3182CE", 
-        riskLevel='low',
-        itemContent = [],
-        isEditMode = false,
-        fields = {},
-        onFieldChange = ()=>{},
-        onRiskChange = () =>{}
-    } = props
 
-    // console.log("Fields: ", fields.risks)
+const RiskLevelWrapper = styled.View`
+    width : 100%;
+    border-radius : 8px;
+    /* background-color : ${ ({theme}) => theme.colors['--color-gray-100']}; */
+`;
+
+const HeaderWrapper = styled.View`
+    width : 100%;
+    height : 40px;
+    padding : ${ ({theme}) => theme.space['--space-10']};
+    padding-top : 0;
+    padding-bottom : 0;
+    border-top-left-radius : 8px;
+    border-top-right-radius : 8px;
+    border-color : ${ ({borderColor}) => borderColor };
+    background-color : ${ ({backgroundColor}) => backgroundColor };
+    border-width : 1px;
+`;
+const HeaderContainer = styled.View`
+    height : 100%;
+    display : flex;
+    flex-direction : row;
+    align-items : center;
+`;
+
+const Title = styled.Text(({titleColor, theme}) => ({
+    ...theme.font['--text-base-medium'],
+    color: titleColor,
+    marginLeft: 8,
+}));
+
+const ContentWrapper = styled.View`
+    width : 100%;
+    /* height : 100%; */
+    padding : ${ ({theme}) => theme.space['--space-16']};
+    border-bottom-left-radius : 8px;
+    border-bottom-right-radius : 8px;
+    border-color : ${ ({theme}) => theme.colors['--color-gray-400'] };
+    border-width : 1px;
+    border-top-width : 0;
+    background-color :  ${ ({theme}) => theme.colors['--color-gray-100'] };
+`;
+const ContentContainer = styled.View`
+    flex : 1;
+`;
+
+const LevelsContainer = styled.View`
+    width : 100%;
+    height : 34px;
+    flex-direction : row;
+    border-width : 1px;
+    border-right-width : 0;
+    border-color : ${ ({theme}) => theme.colors['--color-gray-400'] };
+    align-items : center;
+`;
+
+const LevelWrapper = styled.TouchableOpacity`
+    height : 100%;
+    flex :1;
+`;
+
+const LevelContainer = styled.View`
+    flex : 1;
+    border-right-width : 1px;
+    border-color : ${ ({theme}) => theme.colors['--color-gray-400'] };
+    justify-content : center;
+    align-items : center;
+    background-color : ${ ({backgroundColor}) => backgroundColor};
+`;
+
+const LevelText = styled.Text(({color, theme}) => ({
+    ...theme.font['--text-base-medium'],
+    color,
+}));
+
+const DividerContainer = styled.View`
+    padding-top : ${ ({theme}) => theme.space['--space-24']};
+    padding-bottom : ${ ({theme}) => theme.space['--space-24']};
+`;
+
+const NotesContainer = styled.View``;
+
+const NotesText = styled.Text(({theme}) => ({
+    ...theme.font['--text-base-medium'],
+    color: theme.colors['--color-gray-500'],
+    marginBottom: 6
+}));
+
+
+function RiskLevel({
+    titleBackground = theme.colors['--color-gray-200'],
+    borderColor = theme.colors['--color-gray-400'],
+    levelColor = theme.colors['--color-gray-500'],
+    cardColor = theme.colors['--color-gray-600'],
+    riskLevel='default',
+    itemContent = [],
+    isEditMode = false,
+    onFieldChange = ()=>{},
+    onRiskChange = () =>{}
+}) {
+    const theme = useTheme();
+
 
     const levels = [
         {
@@ -37,25 +130,72 @@ const RiskLevel = (props) => {
             "level":"veryHigh",
             "name":"Very High",
         },
-    ]
+    ];
 
-    const Level = (name,backgroundColor,textColor) => {
-        return(
-            <View style={[styles.level,{backgroundColor:backgroundColor}]}>
-                <Text style={[styles.levelTitle,{color:textColor}]}>{name}</Text>
-            </View>
-        )
-    }
+    const Level = (name, backgroundColor, textColor) => {
+        const background = riskLevel === 'default' ? null : backgroundColor;
+        return (
+            <LevelContainer backgroundColor={background}>
+                <LevelText color={textColor}>{name}</LevelText>
+            </LevelContainer>
+        );
+    };
 
     return (
-        <View style={styles.container}>
+        <RiskLevelWrapper theme={theme}>
 
-            <View style={[styles.titleContainer,{backgroundColor:titleBackground, borderColor:borderColor, borderWidth:1}]}>
+            <HeaderWrapper theme={theme} borderColor={borderColor} backgroundColor={titleBackground}>
+                <HeaderContainer theme={theme}>
+                    <RiskIcon fillColor={levelColor}/>
+                    <Title titleColor={cardColor}>Risk Level</Title>
+                </HeaderContainer>
+            </HeaderWrapper>
+
+            <ContentWrapper theme={theme}>
+                <ContentContainer>
+
+                    <LevelsContainer>
+                        {
+                            levels.map((level, index) => { return (
+                                <LevelWrapper
+                                    activeOpacity={1}
+                                    key={index}
+                                    onPress={() => { onRiskChange(level.level); }}
+                                >
+                                    {Level(
+                                        level.name,
+                                        level.level === riskLevel ? levelColor : theme.colors['--default-shade-white'],
+                                        level.level === riskLevel ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-700']
+                                    )}
+                                </LevelWrapper>
+
+                            ); })
+                        }
+                    </LevelsContainer>
+                    
+                    <DividerContainer theme={theme}>
+                        <LineDivider/>
+                    </DividerContainer>
+                    
+                    <>
+                        <NotesText>Notes</NotesText>
+                        {
+                            isEditMode ?
+                                <TextArea/> :
+                                <FrameItem itemContent={itemContent}/>
+                        }
+                    </>
+
+                </ContentContainer>
+            </ContentWrapper>
+
+
+            {/* <View style={[styles.titleContainer,{backgroundColor:titleBackground, borderColor:borderColor, borderWidth:1}]}>
                 <RiskIcon fillColor={levelColor}/>
                 <Text style={{color:cardColor, marginLeft:5}}>Risk Level</Text>
-            </View>
+            </View> */}
             
-            <View style={styles.contentContainer}>
+            {/* <View style={styles.contentContainer}>
                 <View style={styles.levelsContainer}>
                     {
                         levels.map((level,index)=>{
@@ -101,9 +241,9 @@ const RiskLevel = (props) => {
                             </View>
                     }
                 </View>
-            </View>
+            </View> */}
 
-        </View>
+        </RiskLevelWrapper>
     );
 }
 

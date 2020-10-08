@@ -160,7 +160,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 }}
             />
 
-
+ 
             <SuitesNavigator.Screen
                 name="Procedures List"
                 component={ProcedureNavigationStack}

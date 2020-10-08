@@ -27,6 +27,7 @@ import {getPhysicians, removePhysicians} from '../api/network';
 import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
 import {LONG_PRESS_TIMER} from '../const';
 import ConfirmationComponent from '../components/ConfirmationComponent';
+import DataItem from '../components/common/List/DataItem';
 
 const Physicians = props => {
     // ############# Const data
@@ -38,15 +39,15 @@ const Physicians = props => {
             alignment: 'flex-start'
         },
         {
-            name: 'Type',
+            name: 'Specialisation',
+            alignment: 'flex-start'
+        },
+        {
+            name: 'Cases',
             alignment: 'center'
         },
         {
             name: 'Status',
-            alignment: 'center'
-        },
-        {
-            name: 'Actions',
             alignment: 'center'
         }
     ];
@@ -231,7 +232,7 @@ const Physicians = props => {
     const statusColor = status => (status === 'Active' ? '#4E5664' : '#E53E3E');
 
     const physiciansItem = item => {
-        const {_id = '', surname = '', type = 'Neurosurgeon', status = 'Active'} = item;
+        const {_id = '', surname = '', type = 'Neurosurgeon', status = 'Active', casesCount = 0} = item;
         return (
             <>
                 <View style={[styles.item, {}]}>
@@ -244,7 +245,7 @@ const Physicians = props => {
                         }]}
                     >Dr. {surname}</Text>
                 </View>
-                <View style={[styles.item, {alignItems: 'center'}]}>
+                <View style={[styles.item, {alignItems: 'flex-start'}]}>
                     <Text
                         numberOfLines={1}
                         style={[styles.itemText, {
@@ -253,6 +254,10 @@ const Physicians = props => {
                         }]}
                     >{type}</Text>
                 </View>
+                {/*<View style={[styles.item, {alignItems: 'center'}]}>*/}
+                {/*    <PhysicianActionIcon/>*/}
+                {/*</View>*/}
+                <DataItem flex={1} text={casesCount} color="--color-blue-600" fontStyle="--text-sm-medium" align="center"/>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text
                         numberOfLines={1}
@@ -261,9 +266,6 @@ const Physicians = props => {
                             color: statusColor(status)
                         }]}
                     >{status}</Text>
-                </View>
-                <View style={[styles.item, {alignItems: 'center'}]}>
-                    <PhysicianActionIcon/>
                 </View>
             </>
         );

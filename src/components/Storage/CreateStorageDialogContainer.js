@@ -236,6 +236,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                                 onChangeText={onFieldChange('name')}
                                 value={fields['name']}
                                 onClear={() => onFieldChange('name')('')}
+                                // labelWidth = {98}
                             />
                         </FieldContainer>
 

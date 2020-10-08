@@ -277,7 +277,7 @@ function Theatres(props) {
                     modal.closeModals('ConfirmationModal');
                 }
             }
-        );
+        ); 
     };
 
     const removeTheatresCall = data => {
@@ -325,7 +325,8 @@ function Theatres(props) {
             modal.openModal('OverlayModal', {
                 content: (
                     <CreateTheatreDialogContainer
-                        onCreated={onItemPress}
+                        // onCreated={()=>onItemPress()}
+                        onCreated={() => { onRefresh(); setFloatingAction(false); }}
                         onCancel={() => setFloatingAction(false)}
                     />
                 ),

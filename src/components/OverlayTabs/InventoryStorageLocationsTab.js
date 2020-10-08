@@ -40,7 +40,7 @@ const storageHeader = [
     }
 ];
 
-function InventoryStorageLocationsTab({
+function InventoryStorageLocationsTab({ 
         selectedVariant = {},
         groupId = "",
         onUpdateItem
@@ -78,7 +78,7 @@ function InventoryStorageLocationsTab({
                             variant = {selectedVariant}
                             selectedLocation = {selectedItems[0]}
                             groupId = {groupId}
-                            onCreated = {()=>{setFloatingAction(false)}}
+                            onCreated = {()=>{setFloatingAction(false); onUpdateItem(); setSelectedItems([])}}
                             onCancel={() => setFloatingAction(false)}
                         />,
                         onClose: () => setFloatingAction(false)

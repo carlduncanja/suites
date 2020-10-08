@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Text, Switch, Picker, Alert } from "react-native";
-import OverlayDialog from "../common/Dialog/OverlayDialog";
-import { useModal } from "react-native-modalfy";
-import DialogTabs from "../common/Dialog/DialogTabs";
-import InputField from "../common/Input Fields/InputField";
-import InputField2 from "../common/Input Fields/InputField2";
-import { createStorageLocation, createTheatre } from "../../api/network";
+import { View, StyleSheet, Text, Switch, Picker, Alert } from 'react-native';
+import OverlayDialog from '../common/Dialog/OverlayDialog';
+import { useModal } from 'react-native-modalfy';
+import DialogTabs from '../common/Dialog/DialogTabs';
+import InputField from '../common/Input Fields/InputField';
+import InputField2 from '../common/Input Fields/InputField2';
+import { createStorageLocation, createTheatre } from '../../api/network';
 // import NumberInputField from "../common/Input Fields/NumberInputField";
-import { addStorageLocation } from "../../redux/actions/storageActions";
-import { connect } from "react-redux";
+import { addStorageLocation } from '../../redux/actions/storageActions';
+import { connect } from 'react-redux';
 import {
     Menu,
     MenuOptions,
     MenuOption,
     MenuTrigger,
 } from 'react-native-popup-menu';
-import DropDownIcon from "../../../assets/svg/dropDown";
-import OptionsField from "../common/Input Fields/OptionsField";
-import TheatresPage from "../../page/Theatres/TheatresPage";
+import DropDownIcon from '../../../assets/svg/dropDown';
+import OptionsField from '../common/Input Fields/OptionsField';
+import TheatresPage from '../../page/Theatres/TheatresPage';
+import OverlayDialogContent from '../common/Dialog/OverlayContent';
+import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent';
+import ConfirmationComponent from '../ConfirmationComponent';
 
 /**
  * Component to handle the create storage process.
@@ -54,19 +58,19 @@ function CreateTheatreDialogContainer({ onCancel, onCreated, addTheatre }) {
     };
 
     const onPositiveClick = () => {
-        let nameBool = errorFields['name']
-        fields['name'] === '' || null ? nameBool = true : nameBool = false
+        let nameBool = errorFields.name
+        fields.name === '' || null ? nameBool = true : nameBool = false
         setErrorFields({
             ...errorFields,
             name: nameBool
         })
 
         if (nameBool === false) {
-            console.log("Success")
+            console.log('Success')
             createTheatreCall()
         }
     };
-
+ 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
             ...fields,
@@ -78,12 +82,57 @@ function CreateTheatreDialogContainer({ onCancel, onCreated, addTheatre }) {
         createTheatre(fields)
             .then(data => {
                 modal.closeAllModals();
-                Alert.alert("Success", `New theatre, ${fields['name']} successfully created.`)
-                setTimeout(() => { onCreated(data) }, 200);
+                setTimeout(() => {
+                    modal.openModal('ConfirmationModal', {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCreated(data);
+                                }, 200);
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCreated(data);
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    });
+                });
+                // Alert.alert("Success", `New theatre, ${fields['name']} successfully created.`)
+                // setTimeout(() => { onCreated(data) }, 200);
             })
             .catch(error => {
-                console.log("failed to create theatre", error);
-                Alert.alert("Failed", "Theatre failed to be created.")
+                modal.closeAllModals();
+                setTimeout(() => {
+                    modal.openModal('ConfirmationModal', {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCancel();
+                                }, 200);
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCancel();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        },
+                    });
+                });
+                // console.log('failed to create theatre', error);
+                // Alert.alert('Failed', 'Theatre failed to be created.')
                 // TODO handle error
             })
             .finally(_ => {
@@ -91,18 +140,56 @@ function CreateTheatreDialogContainer({ onCancel, onCreated, addTheatre }) {
     };
 
     const recoveryText = {
-        true: "Yes",
-        false: "No"
+        true: 'Yes',
+        false: 'No'
     };
 
     return (
         <OverlayDialog
-            title={"New Location"}
+            title="Create Theatre"
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
-            positiveText={"DONE"}
+            positiveText="DONE"
         >
 
+            <>
+                <DialogTabs
+                    tabs={dialogTabs}
+                    tab={selectedIndex}
+                />
+
+                <OverlayDialogContent height = {208}>
+                    <>
+                        <Row>
+                            <FieldContainer>
+                                <InputField2
+                                    label="Room"
+                                    onChangeText={onFieldChange('name')}
+                                    value={fields.name}
+                                    onClear={() => onFieldChange('name')('')}
+                                    hasError={errorFields.name}
+                                    errorMessage="Name must be filled."
+                                />
+                            </FieldContainer>
+
+                            <FieldContainer>
+                                <OptionsField
+                                    label="Recovery"
+                                    text={recoveryText[fields.isRecovery]}
+                                    oneOptionsSelected={onFieldChange('isRecovery')}
+                                    menuOption={(
+                                        <MenuOptions>
+                                            <MenuOption value={true} text="Yes" />
+                                            <MenuOption value={false} text="No" />
+                                        </MenuOptions>
+                                    )}
+                                />
+                            </FieldContainer>
+                        </Row>
+                    </>
+                </OverlayDialogContent>
+            </>
+            {/*
             <View style={styles.container}>
                 <DialogTabs
                     tabs={dialogTabs}
@@ -135,10 +222,9 @@ function CreateTheatreDialogContainer({ onCancel, onCreated, addTheatre }) {
                         />
                     </View>
 
-
                 </View>
             </View>
-
+ */}
 
         </OverlayDialog>
     );
@@ -193,4 +279,4 @@ const styles = StyleSheet.create({
 const mapDispatcherToProps = {};
 
 export default
-    connect(null, mapDispatcherToProps)(CreateTheatreDialogContainer);
+connect(null, mapDispatcherToProps)(CreateTheatreDialogContainer);

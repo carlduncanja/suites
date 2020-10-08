@@ -1,7 +1,7 @@
 import React, {useReducer, useMemo} from 'react';
 import {connect, Provider} from 'react-redux';
 import { ThemeProvider } from 'emotion-theming';
-
+ 
 import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
 import {initialState, SuitesContext} from './src/SuitesContext';
 

@@ -88,7 +88,7 @@ function StoragePage({route, navigation}) {
                 const storageLocationDetails = {
                     description: storageItem.description,
                     name: storageItem.name,
-                };
+                }; 
 
                 return <StorageDetailsTab
                     {...storageLocationDetails}

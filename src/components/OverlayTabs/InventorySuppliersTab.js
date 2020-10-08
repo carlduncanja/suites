@@ -42,13 +42,28 @@ const SectionText = styled.Text( ({theme}) => ({
     ...theme.font['--text-xl-medium'],
     color : theme.colors['--color-gray-800'],
     marginBottom : 24,
-}));  
+}));   
 
 
-function InventorySuppliersTab({suppliers = []}) {
+function InventorySuppliersTab({variantId = "", parentId}) {
 
     const theme = useTheme();
     const modal = useModal();
+
+    const [suppliers, setSuppliers] = useState([]);
+
+    useEffect(()=>{
+        getVariantSupplierProducts(variantId)
+            .then(results => {
+                const { data = [] } = results;
+                setSuppliers(data);
+                console.log("Suppliers: ", data);
+            })
+            .catch(error => {
+                console.log("Failed to get variant suppliers", error)
+                //TODO handle error cases.
+            })
+    },[])
 
     const suppliersListItem = ({name, phone , email, product,}) => {
         return (

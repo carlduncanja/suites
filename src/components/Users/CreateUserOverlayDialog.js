@@ -12,6 +12,8 @@ import {getRolesCall, registrationCall} from "../../api/network";
 import ConfirmationComponent from "../ConfirmationComponent";
 import {useModal} from "react-native-modalfy";
 import jwtDecode from "jwt-decode";
+import OverlayDialogContent from '../common/Dialog/OverlayContent';
+import FieldContainer from '../common/FieldContainerComponent';
 
 
 const DialogContent = styled.View`
@@ -104,6 +106,14 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
 
         for (const requiredField of requiredFields) {
             if (!createUserFields[requiredField]) {
+                errors = {
+                    ...errors,
+                    [requiredField]: "Value is Required"
+                }
+                isValid = false;
+            }
+            else if(requiredField === 'role' && Object.keys(createUserFields[requiredField]).length === 0){
+                console.log("Role error");
                 errors = {
                     ...errors,
                     [requiredField]: "Value is Required"
@@ -215,16 +225,123 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
 
     return (
         <OverlayDialog
-            title={"New Location"}
+            title={"New User"}
             onPositiveButtonPress={onDonePress}
             onClose={onCancel}
             positiveText={"DONE"}
         >
-            <DialogContent>
+            <>
                 <DialogTabs
                     tabs={dialogTabs}
                     tab={selectedIndex}
                 />
+
+                <OverlayDialogContent height = {256}>
+
+                    <>
+                        <Row>
+                            
+                            <FieldContainer>
+                                <InputField2
+                                    label={'First Name'}
+                                    labelWidth={120}
+                                    value={createUserFields['first_name']}
+                                    onChangeText={onFieldChange('first_name')}
+                                    onClear={onFieldChange('first_name')}
+                                    hasError={!!fieldErrors['first_name']}
+                                    errorMessage={fieldErrors['first_name']}
+                                />
+                            </FieldContainer>
+                            <FieldContainer>
+                                <InputField2
+                                    label={'Last Name'}
+                                    labelWidth={120}
+                                    value={createUserFields['last_name']}
+                                    onChangeText={onFieldChange('last_name')}
+                                    onClear={onFieldChange('last_name')}
+                                    hasError={!!fieldErrors['last_name']}
+                                    errorMessage={fieldErrors['last_name']}
+                                />
+                            </FieldContainer>
+
+                        </Row>
+
+                        <Row>
+
+                            <FieldContainer>
+                                <InputField2
+                                    label={'Email'}
+                                    labelWidth={120}
+                                    value={createUserFields['email']}
+                                    onChangeText={onFieldChange('email')}
+                                    onClear={onFieldChange('email')}
+                                    hasError={!!fieldErrors['email']}
+                                    errorMessage={fieldErrors['email']}
+                                />
+                            </FieldContainer>
+                            <FieldContainer>
+                                <OptionsField
+                                    label={'Role'}
+                                    labelWidth={120}
+                                    text={createUserFields['role'].name}
+                                    hasError={!!fieldErrors['role']}
+                                    errorMessage={fieldErrors['role']}
+                                    oneOptionsSelected={onFieldChange('role')}
+                                    menuOption={(
+                                        <MenuOptions>
+                                            {
+                                                roles?.map(item => <MenuOption key={item._id} value={item}
+                                                                               text={item.name}/>)
+                                            }
+                                        </MenuOptions>
+                                    )}
+                                />
+                            </FieldContainer>
+
+                        </Row>
+
+                        <Row>
+
+                            <FieldContainer>
+                                <InputField2
+                                    label={'Password'}
+                                    labelWidth={120}
+                                    value={createUserFields['password']}
+                                    secureTextEntry={true}
+                                    keyboardType={'password'}
+                                    onClear={onFieldChange('password')}
+                                    onChangeText={onFieldChange('password')}
+                                    hasError={!!fieldErrors['password']}
+                                    errorMessage={fieldErrors['password']}
+                                />
+                            </FieldContainer>
+                            <FieldContainer>
+                                <InputField2
+                                    label={'Confirm Password'}
+                                    labelWidth={120}
+                                    value={createUserFields['confirm_password']}
+                                    secureTextEntry={true}
+                                    keyboardType={'confirm_password'}
+                                    onClear={onFieldChange('confirm_password')}
+                                    onChangeText={onFieldChange('confirm_password')}
+                                    hasError={!!fieldErrors['confirm_password']}
+                                    errorMessage={fieldErrors['confirm_password']}
+                                />
+                            </FieldContainer>
+
+                        </Row>
+
+                    </>
+
+                </OverlayDialogContent>
+            </>
+
+            {/* <DialogContent>
+                <DialogTabs
+                    tabs={dialogTabs}
+                    tab={selectedIndex}
+                />
+
                 <FormWrapper theme={theme}>
                     <FormContent theme={theme}>
                         <Row>
@@ -318,6 +435,7 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                     </FormContent>
                 </FormWrapper>
             </DialogContent>
+         */}
         </OverlayDialog>
     );
 }
