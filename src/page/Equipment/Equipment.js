@@ -304,7 +304,7 @@ const Equipment = (props) => {
     };
 
     const onRemoveGroups = () => {
-        openConfirmationScreen(() => removeEquipmentGroup(selectedTypesIds))
+        openConfirmationScreen(() => removeEquipmentGroup({ids: [...selectedTypesIds]}) )
     }
 
     const onRemoveItems = () => {

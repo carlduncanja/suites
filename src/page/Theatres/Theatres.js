@@ -277,7 +277,7 @@ function Theatres(props) {
                     modal.closeModals('ConfirmationModal');
                 }
             }
-        );
+        ); 
     };
 
     const removeTheatresCall = data => {
