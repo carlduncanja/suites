@@ -1,27 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity} from "react-native";
-import OverlayDialog from "../common/Dialog/OverlayDialog";
-import {useModal} from "react-native-modalfy";
-import DialogTabs from "../common/Dialog/DialogTabs";
-import InputField2 from "../common/Input Fields/InputField2";
-import InputUnitField from "../common/Input Fields/InputUnitFields";
-import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
-import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
-import OptionsField from "../common/Input Fields/OptionsField";
-import {connect} from "react-redux";
-import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import { getStorage, getTheatres, createTransfer} from "../../api/network";
+import {View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity} from 'react-native';
+import {useModal} from 'react-native-modalfy';
+import _ from 'lodash';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
-import _ from "lodash";
+import OverlayDialog from '../common/Dialog/OverlayDialog';
+import DialogTabs from '../common/Dialog/DialogTabs';
+import InputField2 from '../common/Input Fields/InputField2';
+import InputUnitField from '../common/Input Fields/InputUnitFields';
+import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
+import OptionsField from '../common/Input Fields/OptionsField';
+import ArrowRightIcon from '../../../assets/svg/arrowRightIcon';
+import { getStorage, getTheatres, createTransfer} from '../../api/network';
 import { currencyFormatter } from '../../utils/formatter';
 import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 import AutoFillField from '../common/Input Fields/AutoFillField';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
 import ConfirmationComponent from '../ConfirmationComponent';
-
-
 
 /**
  * Component to handle the create storage process.
@@ -30,39 +27,35 @@ import ConfirmationComponent from '../ConfirmationComponent';
  * @param onCreated
  * @param addTheatre
  * @returns {*}
- * @constructor 
+ * @constructor
  */
 function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
-
     // ########## CONST
     const modal = useModal();
-    const { name = "", storageLocations = [], inventoryGroup = {} } = variant;
+    const { name = '', storageLocations = [], inventoryGroup = {} } = variant;
     const storageLocationObj = storageLocations.filter( location => location?._id === selectedLocation)[0] || {} ;
-    const { locationName = "", levels = {}, stock, location = "" } = storageLocationObj;
+    const { locationName = '', levels = {}, stock, location = '' } = storageLocationObj;
     const { low = 0} = levels;
     const available = parseInt(stock - low) < 0 ? 0 : parseInt(stock - low);
-  
 
-    console.log("Variant:", variant);
+    console.log('Variant:', variant);
 
     const dialogTabs = ['Details', 'Configuration'];
 
     // ########## STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
-    const [fields, setFields] = useState({ priority : 'Not Urgent'});
+    const [fields, setFields] = useState({ priority: 'Not Urgent'});
     const [errorFields, setErrorFields] = useState({});
    
     // Storage Search
-    const [storageSearchValue, setStorageSearchValue] = useState("");
+    const [storageSearchValue, setStorageSearchValue] = useState('');
     const [storageSearchResults, setStorageSearchResult] = useState([]);
     const [storageSearchQuery, setStorageSearchQuery] = useState({});
 
     // Theatre Search
-    const [theatreSearchValue, setTheatreSearchValue] = useState("");
+    const [theatreSearchValue, setTheatreSearchValue] = useState('');
     const [theatreSearchResults, setTheatreSearchResult] = useState([]);
     const [theatreSearchQuery, setTheatreSearchQuery] = useState({});
-
-    
 
     // ########## LIFECYCLE METHODS
 
@@ -86,7 +79,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
             return search;
         });
 
-        search()
+        search();
     }, [storageSearchValue]);
 
     // Handle theatre search
@@ -110,50 +103,46 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
             return search;
         });
 
-        search()
+        search();
     }, [theatreSearchValue]);
-
 
     const fetchStorage = () => {
         getStorage(storageSearchValue, 5)
             .then((storageResults = {}) => {
-                const { data = [], pages = 0 } = storageResults
+                const { data = [], pages = 0 } = storageResults;
                 // console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));
 
                 setStorageSearchResult(results || []);
-
             })
             .catch(error => {
                 // TODO handle error
-                console.log("failed to get inventories", error);
+                console.log('failed to get inventories', error);
                 setStorageSearchResult([]);
-            })
+            });
     };
 
     const fetchTheatres = () => {
         getTheatres(theatreSearchValue, 5)
-            .then((theatreResults ) => {
-                const { data = [], pages = 0} = theatreResults
+            .then(theatreResults => {
+                const { data = [], pages = 0} = theatreResults;
                 // console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));
 
                 setTheatreSearchResult(results || []);
-
             })
             .catch(error => {
                 // TODO handle error
-                console.log("failed to get suppliers", error);
+                console.log('failed to get suppliers', error);
                 setTheatreSearchResult([]);
-            })
+            });
     };
 
     // ########## EVENT LISTENERS
-    
 
     const handleCloseDialog = () => {
         onCancel();
@@ -161,22 +150,21 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
     };
 
     const onPositiveClick = () => {
-        
-        let isValid = validateTransfer()
+        let isValid = validateTransfer();
 
-        if(!isValid){ return }
+        if (!isValid) { return; }
         
         if (selectedIndex < dialogTabs.length - 1) {
-            setSelectedTabIndex(selectedIndex + 1)
+            setSelectedTabIndex(selectedIndex + 1);
         } else {
             // const referenceId = fields['product']
             const updatedFields = {
-                from : storageLocationObj?.location,
-                amount : (parseInt(fields['amount']).toString()),
-                to : fields['to']?._id,
-                priority : fields['priority']
-            }
-            console.log("CREAT TRANSFER:", updatedFields);
+                from: storageLocationObj?.location,
+                amount: (parseInt(fields.amount).toString()),
+                to: fields.to?._id,
+                priority: fields.priority
+            };
+            console.log('CREAT TRANSFER:', updatedFields);
             
             createTransferCall(updatedFields);
             // onCreated(fields)
@@ -184,24 +172,23 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
         }
     };
 
-    const onTabChange = (tab) => {
-        console.log("Tab: ", tab);
+    const onTabChange = tab => {
+        console.log('Tab: ', tab);
         let isValid = validateTransfer();
-        if(!isValid) {return}
-        setSelectedTabIndex(dialogTabs.indexOf(tab))
+        if (!isValid) {return;}
+        setSelectedTabIndex(dialogTabs.indexOf(tab));
     };
 
-    const onFieldChange = (fieldName) => (value) => {
-        const updatedFields = {...fields}
+    const onFieldChange = fieldName => value => {
+        const updatedFields = {...fields};
         setFields({
             ...updatedFields,
             [fieldName]: value
-        })
-        console.log("Fieldname: ", fieldName, value);
+        });
+        console.log('Fieldname: ', fieldName, value);
         const updatedErrors = {...errorFields};
         delete updatedErrors[fieldName];
         setErrorFields(updatedErrors);
-
     };
 
     const validateTransfer = () => {
@@ -212,30 +199,30 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
         let configurationRequiredFields = ['amount'];
         selectedIndex === 0 
             ? requiredFields = detailsRequiredFields 
-            : requiredFields = configurationRequiredFields
+            : requiredFields = configurationRequiredFields;
     
-        let errorObj = {...errorFields} || {}
+        let errorObj = {...errorFields} || {};
 
         for (const requiredField of requiredFields) {
-            if(!fields[requiredField]){
+            if (!fields[requiredField]) {
                 // console.log(`${requiredField} is required`)
-                isValid = false
-                errorObj[requiredField] = "Value is required.";
-            }else{
-                delete errorObj[requiredField]
+                isValid = false;
+                errorObj[requiredField] = 'Value is required.';
+            }else {
+                delete errorObj[requiredField];
             }
         }
 
-        setErrorFields(errorObj)
-        console.log("Error obj: ", errorObj)
+        setErrorFields(errorObj);
+        console.log('Error obj: ', errorObj);
 
-        return isValid
-    }
+        return isValid;
+    };
 
-    const createTransferCall = (transferToCreate) => {
-        console.log("Group id: ",inventoryGroup?._id);
-        console.log("Variant id: ",variant?._id);
-        console.log("Dta: ", transferToCreate);
+    const createTransferCall = transferToCreate => {
+        // console.log('Group id: ',inventoryGroup?._id);
+        // console.log('Variant id: ',variant?._id);
+        // console.log('Dta: ', transferToCreate);
 
         createTransfer(inventoryGroup?._id, variant?._id, transferToCreate)
             .then(data => {
@@ -244,57 +231,55 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {false}
-                            onCancel = {()=> modal.closeAllModals()}
-                            onAction = {()=> modal.closeAllModals()}
-                        />
-                        ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
-                    })
+                            isEditUpdate={false}
+                            isError={false}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => { modal.closeAllModals(); onCreated(); }}
+                        />,                        
+                        onClose: () => { modal.closeModals('ConfirmationModal'); } 
+                    }
+                );
                 // Alert.alert("Success","The transfer is successful.")
-                setTimeout(() => {
-                    onCreated(data);
-                }, 400);
+                // setTimeout(() => {
+                //     onCreated(data);
+                // }, 400);
             })
             .catch(error => {
                 // todo handle error
-                console.log("failed to create transfer", error);
+                console.log('failed to create transfer', error);
                 modal.openModal(
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {true}
-                            onCancel = {()=> {modal.closeAllModals()}}
-                            onAction = {()=> modal.closeAllModals()}
-                            message = "There was an issue performing this action"
-                        />
-                        ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
-                    })
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={()=> {modal.closeAllModals();}}
+                            onAction={()=> modal.closeAllModals()}
+                            message="There was an issue performing this action"
+                        />,                        
+                        onClose: () => {modal.closeModals('ConfirmationModal');} 
+                    });
                 // Alert.alert("Failed", "Failed to create a transfer")
             })
-            .finally()
-    
+            .finally();
         };
 
     const getTabContent = () => {
         switch (dialogTabs[selectedIndex]) {
-            case "Details":
+            case 'Details':
                 return detailsTab;
-            case "Configuration":
+            case 'Configuration':
                 return configTab;
             default:
-                return <View/>
+                return <View/>;
         }
     };
 
-    const onDestinationSelected = (item) => {
-        console.log("Destination Selected: ", item);
+    const onDestinationSelected = item => {
+        console.log('Destination Selected: ', item);
         
         if (item === undefined || null) {
-            delete fields['to'];
+            delete fields.to;
         } else {
             onFieldChange('to')(item);
             setStorageSearchValue(item.name);
@@ -302,34 +287,34 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
        
         setStorageSearchResult([]);
         setStorageSearchQuery(false);
-    }
+    };
     
     const detailsTab = (
         <>
             <Row>
                 <FieldContainer>
                     <AutoFillField
-                        label = "Item Name"
-                        value = {name}
+                        label="Item Name"
+                        value={name}
                     />
                 </FieldContainer>
 
                 <FieldContainer>
                     <AutoFillField
-                        label = "Location"
-                        value = {locationName}
+                        label="Location"
+                        value={locationName}
                     />
                 </FieldContainer>
             </Row>
 
-            <Row zIndex = {-1}>
+            <Row zIndex={-1}>
 
                 <FieldContainer>
                     <SearchableOptionsField
-                        label={"Destination"}
+                        label={'Destination'}
                         text={storageSearchValue}
-                        value = {fields['to']}
-                        oneOptionsSelected={(item)=>{onDestinationSelected(item); console.log("Item : ", item)}}
+                        value={fields.to}
+                        oneOptionsSelected={item=>{onDestinationSelected(item); console.log('Item : ', item);}}
                         onChangeText={value => {setStorageSearchValue(value); }}
                         onClear={
                             onDestinationSelected
@@ -338,10 +323,10 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                             // setStorageSearchValue('');
                         }
                         options={storageSearchResults}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {storageSearchQuery}
-                        errorMessage = "Destination must be given."
-                        hasError = {errorFields['to']}
+                        handlePopovers={()=>{}}
+                        isPopoverOpen={storageSearchQuery}
+                        errorMessage="Destination must be given."
+                        hasError={errorFields.to}
                     />  
                 </FieldContainer>
                 {/* <FieldContainer>
@@ -370,7 +355,6 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 
             </Row>
 
-
         </>
     );
 
@@ -381,21 +365,21 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                     {
                         available === 0 ?
                             <AutoFillField
-                                label = "Requested"
-                                value = {'0'}
+                                label="Requested"
+                                value={'0'}
                             />
 
                             :
 
                             <InputField2
-                                label={"Requested"}
-                                onChangeText={ (value) => {
+                                label={'Requested'}
+                                onChangeText={ value => {
                                     if ((/^\d/g.test(value) || !value) && value <= available) {
-                                        onFieldChange('amount')(value)
+                                        onFieldChange('amount')(value);
                                     }
                                 }}
-                                keyboardType = "number-pad"
-                                value={fields['amount']}
+                                keyboardType="number-pad"
+                                value={fields.amount}
                                 onClear={() => onFieldChange('amount')('')}
                             />
 
@@ -403,8 +387,8 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 </FieldContainer>
                 <FieldContainer>
                     <AutoFillField
-                        label = "Available"
-                        value = {available|| 0}
+                        label="Available"
+                        value={available|| 0}
                     />
                 </FieldContainer>
             </Row>
@@ -412,14 +396,14 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
             <Row>
                 <FieldContainer>
                     <AutoFillField
-                        label = "Reserved"
-                        value = {low || 0}
+                        label="Reserved"
+                        value={low || 0}
                     />
                 </FieldContainer>
                 <FieldContainer>
                     <OptionsField
-                        label={"Priority"}
-                        text={fields['priority']}
+                        label={'Priority'}
+                        text={fields.priority}
                         oneOptionsSelected={onFieldChange('priority')}
                         menuOption={
                             <MenuOptions>
@@ -438,10 +422,10 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
 
     return (
         <OverlayDialog
-            title={"Item Transfer"}
+            title={'Item Transfer'}
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
-            positiveText={selectedIndex === (dialogTabs.length - 1) ? "DONE" : "NEXT"}
+            positiveText={selectedIndex === (dialogTabs.length - 1) ? 'DONE' : 'NEXT'}
             // handlePopovers = {handlePopovers}
             // buttonIcon={<ArrowRightIcon/>}
         >
@@ -479,7 +463,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     sectionContainer: {
-        height:240,
+        height: 240,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         padding: 24,
@@ -499,6 +483,5 @@ const styles = StyleSheet.create({
     },
 
 });
-
 
 export default TransferItemDialog;

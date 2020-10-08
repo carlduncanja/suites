@@ -78,7 +78,7 @@ function InventoryStorageLocationsTab({
                             variant = {selectedVariant}
                             selectedLocation = {selectedItems[0]}
                             groupId = {groupId}
-                            onCreated = {()=>{setFloatingAction(false); onUpdateItem()}}
+                            onCreated = {()=>{setFloatingAction(false); onUpdateItem(); setSelectedItems([])}}
                             onCancel={() => setFloatingAction(false)}
                         />,
                         onClose: () => setFloatingAction(false)

@@ -264,7 +264,7 @@ function ConfirmationComponent({
                 <>
                     <IconMessageContainer>
                         <IconContainer theme={theme}><TickIcon/></IconContainer>
-                        <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message">{message}</ModalText>
+                        <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message">Completed Successfully!</ModalText>
                         {/* <AlertText theme={theme}>Completed Successfully!</AlertText> */}
                     </IconMessageContainer>
                     

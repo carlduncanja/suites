@@ -231,10 +231,12 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
                             onAction={() => {
                                 modal.closeAllModals();
                                 setPendingCheckedItems([]);
+                                onUpdateItem();
                             }}
                         />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); } 
-                    });
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    }
+                );
             })
             .catch(_ => {
                 modal.closeAllModals();
@@ -248,11 +250,12 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
                             onAction={() => { modal.closeAllModals(); }}
                             message="There was an issue performing this action"
                         />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); } 
-                    })
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    }
+                );
             })
             .finally(_ => {
-                onUpdateItem();
+                // onUpdateItem();
             });
     };
 
