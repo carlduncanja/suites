@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
 import * as FileSystem from 'expo-file-system';
@@ -107,6 +107,7 @@ const initialSelectedTab = initialCurrentTabs[0];
 function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const modal = useModal();
     const theme = useTheme();
+    const chargeSheetRef = useRef();
 
     const {userToken} = auth;
     let authInfo = {};
@@ -122,11 +123,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [updateInfo, setUpdateInfo] = useState([]);
     const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
     const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
-    const [selectedEquipments, setSelectedEquipments] = useState([]);
-    const [variantsEquipments, setVariantsEquipments] = useState([]);
-    const [selectedConsumables, setSelectedConsumables] = useState([]);
-    const [variantsConsumables, setVariantsConsumables] = useState([]);
-    const [isConsumablesRemoved, setIsConsumablesRemoved] = useState(false);
+    // const [selectedEquipments, setSelectedEquipments] = useState([]);
+    // const [variantsEquipments, setVariantsEquipments] = useState([]);
+
 
     const [selectedConsumableCaseProcedureIds, setSelectedConsumableCaseProcedureIds] = useState([]);
 
@@ -150,75 +149,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         if (pageState.isEdit === false) {
             setSelectedTab(tab);
         }
-    };
-
-    const handleAcceptChargeSheetChange = () => {
-        modal.openModal('ConfirmationModal', {
-            content: (
-                <ConfirmationComponent
-                    error={false}//boolean to show whether an error icon or success icon
-                    isEditUpdate={true}
-                    onCancel={() => {
-                        modal.closeAllModals();
-                    }}
-                    onAction={() => {
-                        modal.closeAllModals();
-                        chargeSheetApproval({approve: true});
-                    }}
-                    message="Do you want to accept changes submitted?"//general message you can send to be displayed
-                    action="Yes"
-                />
-            ),
-            onClose: () => {
-                console.log('Modal closed');
-            },
-        });
-    };
-
-    const handleRevertChargeSheetChanges = () => {
-        modal.openModal('ConfirmationModal', {
-            content: (
-                <ConfirmationComponent
-                    error={false}//boolean to show whether an error icon or success icon
-                    isEditUpdate={true}
-                    onCancel={() => {
-                        modal.closeAllModals();
-                    }}
-                    onAction={() => {
-                        modal.closeAllModals();
-                        chargeSheetApproval({approve: false});
-                    }}
-                    message="Are you sure you want to revert changes submitted?"//general message you can send to be displayed
-                    action="Yes"
-                />
-            ),
-            onClose: () => {
-                console.log('Modal closed');
-            },
-        });
-    };
-
-    const handleWithdrawChargeSheetChanges = () => {
-        modal.openModal('ConfirmationModal', {
-            content: (
-                <ConfirmationComponent
-                    error={false}//boolean to show whether an error icon or success icon
-                    isEditUpdate={true}
-                    onCancel={() => {
-                        modal.closeAllModals();
-                    }}
-                    onAction={() => {
-                        modal.closeAllModals();
-                        chargeSheetWithdrawChanges({approve: false});
-                    }}
-                    message="Are you sure you want to withdraw changes submitted?"//general message you can send to be displayed
-                    action="Yes"
-                />
-            ),
-            onClose: () => {
-                console.log('Modal closed');
-            },
-        });
     };
 
     const handleOverlayMenuPress = selectedItem => {
@@ -655,10 +585,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         setSelectedCase(updatedCase);
     };
 
-    const onConsumableCaseProcedureSelected = (caseProcedureIds) => {
-        setSelectedConsumableCaseProcedureIds(caseProcedureIds);
-    }
-
     const openAddItem = itemToAdd => {
         const {chargeSheet = {}} = selectedCase;
         const {proceduresBillableItems = []} = chargeSheet;
@@ -716,7 +642,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
 
         setSelectedCase(updatedCase)
-
 
 
         // updateCaseChargeSheet(updatedCase);
@@ -823,7 +748,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
      */
     const getFabActions = () => {
         let title = 'Actions';
-        const floatingAction = [];
+        let floatingAction = [];
 
         console.log('getFabActions: selected tab', selectedTab);
         console.log('Selected menu: ', selectedMenuItem);
@@ -831,134 +756,144 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         if (selectedMenuItem === 'Charge Sheet') {
             switch (selectedTab) {
                 case 'Consumables': {
-                    const {chargeSheet} = selectedCase;
-                    const {status} = chargeSheet;
-                    const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
+                    // const {chargeSheet} = selectedCase;
 
-                    if (isPending) {
-                        const isAdmin = authInfo.role_name === ROLES.ADMIN;
-                        const isOwner = chargeSheet.updatedBy?._id === authInfo.user_id;
+                    // const {status} = chargeSheet;
+                    // const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
+                    //
+                    // if (isPending) {
+                    //     const isAdmin = authInfo.role_name === ROLES.ADMIN;
+                    //     const isOwner = chargeSheet.updatedBy?._id === authInfo.user_id;
+                    //
+                    //     if (isAdmin) {
+                    //         const RevertChanges = (
+                    //             <ActionItem
+                    //                 title="Revert Changes"
+                    //                 icon={<WasteIcon/>}
+                    //                 onPress={handleRevertChargeSheetChanges}
+                    //             />
+                    //         );
+                    //
+                    //         const AcceptChanges = (
+                    //             <ActionItem
+                    //                 title="Accept Changes"
+                    //                 icon={<AcceptIcon/>}
+                    //                 onPress={handleAcceptChargeSheetChange}
+                    //             />
+                    //         );
+                    //         floatingAction.push(RevertChanges, AcceptChanges);
+                    //     }
+                    //
+                    //     if (isOwner) {
+                    //         const WithdrawChanges = (
+                    //             <LongPressWithFeedback
+                    //                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    //                 onLongPress={handleWithdrawChargeSheetChanges}
+                    //             >
+                    //                 <ActionItem
+                    //                     title="Hold to Withdraw"
+                    //                     icon={<WasteIcon/>}
+                    //                     onPress={() => {
+                    //                     }}
+                    //                     touchable={false}
+                    //                 />
+                    //             </LongPressWithFeedback>
+                    //         );
+                    //         floatingAction.push(WithdrawChanges);
+                    //     }
+                    // }
+                    // else {
+                    //     const isDisabled = !selectedConsumableCaseProcedureIds.length
+                    //
+                    //     const addNewItem = (
+                    //         <ActionItem
+                    //             title="Add Consumable"
+                    //             icon={(
+                    //                 <AddIcon
+                    //                     strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                    //                 />
+                    //             )}
+                    //             disabled={isDisabled}
+                    //             touchable={!isDisabled}
+                    //             onPress={() => openAddItem('Consumables')}
+                    //         />
+                    //     );
+                    //     const removeLineItemAction = (
+                    //         <LongPressWithFeedback
+                    //             pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    //             onLongPress={() => handleRemoveConsumableItems('Consumables')}
+                    //             isDisabled={selectedConsumables.length === 0}
+                    //
+                    //         >
+                    //             <ActionItem
+                    //                 title="Hold to Delete"
+                    //                 icon={(
+                    //                     <WasteIcon
+                    //                         strokeColor={selectedConsumables.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                    //                     />
+                    //                 )}
+                    //                 onPress={() => {
+                    //                 }}
+                    //                 touchable={false}
+                    //                 disabled={selectedConsumables.length === 0}
+                    //             />
+                    //
+                    //         </LongPressWithFeedback>
+                    //     );
+                    //     floatingAction.push(/*addNewLineItemAction,*/ removeLineItemAction, addNewItem,);
+                    // }
+                    // title = 'CONSUMABLE\'S ACTIONS';
+                    // break;
 
-                        if (isAdmin) {
-                            const RevertChanges = (
-                                <ActionItem
-                                    title="Revert Changes"
-                                    icon={<WasteIcon/>}
-                                    onPress={handleRevertChargeSheetChanges}
-                                />
-                            );
+                    [floatingAction, title] = chargeSheetRef.current?.getActions() || []
 
-                            const AcceptChanges = (
-                                <ActionItem
-                                    title="Accept Changes"
-                                    icon={<AcceptIcon/>}
-                                    onPress={handleAcceptChargeSheetChange}
-                                />
-                            );
-                            floatingAction.push(RevertChanges, AcceptChanges);
-                        }
-
-                        if (isOwner) {
-                            const WithdrawChanges = (
-                                <LongPressWithFeedback
-                                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                                    onLongPress={handleWithdrawChargeSheetChanges}
-                                >
-                                    <ActionItem
-                                        title="Hold to Withdraw"
-                                        icon={<WasteIcon/>}
-                                        onPress={() => {
-                                        }}
-                                        touchable={false}
-                                    />
-                                </LongPressWithFeedback>
-                            );
-                            floatingAction.push(WithdrawChanges);
-                        }
-                    } else {
-                        const isDisabled = !selectedConsumableCaseProcedureIds.length
-
-                        const addNewItem = (
-                            <ActionItem
-                                title="Add Consumable"
-                                icon={(
-                                    <AddIcon
-                                        strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
-                                    />
-                                )}
-                                disabled={isDisabled}
-                                touchable={!isDisabled}
-                                onPress={() => openAddItem('Consumables')}
-                            />
-                        );
-                        const removeLineItemAction = (
-                            <LongPressWithFeedback
-                                pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                                onLongPress={() => handleRemoveConsumableItems('Consumables')}
-                                isDisabled={selectedConsumables.length === 0}
-
-                            >
-                                <ActionItem
-                                    title="Hold to Delete"
-                                    icon={(
-                                        <WasteIcon
-                                            strokeColor={selectedConsumables.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
-                                        />
-                                    )}
-                                    onPress={() => {
-                                    }}
-                                    touchable={false}
-                                    disabled={selectedConsumables.length === 0}
-                                />
-
-                            </LongPressWithFeedback>
-                        );
-                        floatingAction.push(/*addNewLineItemAction,*/ removeLineItemAction, addNewItem,);
-                    }
-                    title = 'CONSUMABLE\'S ACTIONS';
+                    console.log("chargeSheetRef: ", chargeSheetRef)
 
                     break;
                 }
                 case 'Equipment': {
-                    const isDisabled = selectedEquipments.length !== 1;
+                    // const isDisabled = selectedEquipments.length !== 1;
+                    //
+                    // const addNewLineItemAction = (
+                    //     <ActionItem
+                    //         title="Add Equipment"
+                    //         icon={(
+                    //             <AddIcon
+                    //                 strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                    //             />
+                    //         )}
+                    //         disabled={isDisabled}
+                    //         touchable={!isDisabled}
+                    //         onPress={() => openAddItem('Equipment')}
+                    //     />
+                    // );
+                    // const removeLineItemAction = (
+                    //     <LongPressWithFeedback
+                    //         pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    //         onLongPress={() => handleRemoveConsumableItems('Equipment')}
+                    //         isDisabled={selectedEquipments.length === 0}
+                    //
+                    //     >
+                    //         <ActionItem
+                    //             title="Hold to Delete"
+                    //             icon={(
+                    //                 <WasteIcon
+                    //                     strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                    //                 />
+                    //             )}
+                    //             onPress={() => {
+                    //             }}
+                    //             touchable={false}
+                    //             disabled={selectedEquipments.length === 0}
+                    //         />
+                    //
+                    //     </LongPressWithFeedback>
+                    // );
+                    // floatingAction.push(removeLineItemAction, addNewLineItemAction);
+                    // title = 'EQUIPMENT ACTIONS';
 
-                    const addNewLineItemAction = (
-                        <ActionItem
-                            title="Add Equipment"
-                            icon={(
-                                <AddIcon
-                                    strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
-                                />
-                            )}
-                            disabled={isDisabled}
-                            touchable={!isDisabled}
-                            onPress={() => openAddItem('Equipment')}
-                        />
-                    );
-                    const removeLineItemAction = (
-                        <LongPressWithFeedback
-                            pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                            onLongPress={() => handleRemoveConsumableItems('Equipment')}
-                            isDisabled={selectedEquipments.length === 0}
+                    [floatingAction, title] = chargeSheetRef.current?.getActions() || []
 
-                        >
-                            <ActionItem
-                                title="Hold to Delete"
-                                icon={(
-                                    <WasteIcon
-                                        strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
-                                    />
-                                )}
-                                onPress={() => {
-                                }}
-                                touchable={false}
-                                disabled={selectedEquipments.length === 0}
-                            />
-
-                        </LongPressWithFeedback>
-                    );
-                    floatingAction.push(removeLineItemAction, addNewLineItemAction);
-                    title = 'EQUIPMENT ACTIONS';
                     break;
                 }
                 case 'Quotation': {
@@ -1650,6 +1585,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 />;
             case 'Charge Sheet':
                 return <ChargeSheet
+                    ref={chargeSheetRef}
                     chargeSheet={chargeSheet}
                     procedures={caseProcedures}
                     selectedTab={selectedTab}
@@ -1659,25 +1595,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     handleEditDone={handleEditDone}
                     handleQuotes={handleQuotes}
                     handleInvoices={handleInvoices}
-                    onSelectEquipments={equipments => {
-                        setSelectedEquipments(equipments);
-                    }}
-                    onSelectConsumables={consumables => {
-                        setSelectedConsumables(consumables);
-                    }}
-                    onSelectVariants={variants => {
-                        setVariantsConsumables(variants);
-                    }}
-                    onSelectEquipmenntsVariants={variants => {
-                        setVariantsEquipments(variants);
-                    }}
-                    selectedConsumables={selectedConsumables}
-                    variantsConsumables={variantsConsumables}
-                    selectedEquipments={selectedEquipments}
-                    variantsEquipments={variantsEquipments}
-
-                    selectedConsumableCaseProcedureIds = {selectedConsumableCaseProcedureIds}
-                    onConsumableCaseProcedureSelected = {onConsumableCaseProcedureSelected}
                 />;
             default:
                 return <View/>;

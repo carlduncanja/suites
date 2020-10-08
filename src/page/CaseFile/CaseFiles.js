@@ -38,6 +38,7 @@ import Data from '../../components/common/Table/Data';
 import DataItem from '../../components/common/List/DataItem';
 import MultipleTextDataItem from '../../components/common/List/MultipleTextDataItem';
 import patient from '../../../assets/svg/newCasePatient';
+import {emptyFn} from "../../const";
 
 const listHeaders = [
     {
@@ -72,7 +73,7 @@ function CaseFiles(props) {
         // Redux props
         caseFiles = [],
         setCaseFiles,
-        draft = [],
+        drafts = [],
 
         // React Navigation Props
         navigation,
@@ -261,7 +262,7 @@ function CaseFiles(props) {
                 isChecked={selectedCaseIds.includes(item._id)}
                 onCheckBoxPress={handleOnCheckBoxPress(item)}
                 onItemPress={handleOnItemPress(item, false)}
-                itemView={isEmpty(patient?.medicalInfo) && !isEmpty(draft) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
+                itemView={isEmpty(patient?.medicalInfo) && !isEmpty(drafts) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
                 //items passed here should be deciphered whether it is a draft or not
             />
             {/* */}
@@ -339,8 +340,7 @@ function CaseFiles(props) {
             <ActionItem
                 title="Archive Case"
                 icon={<ArchiveIcon/>}
-                onPress={() => {
-                }}
+                onPress={emptyFn}
             />
         );
         const createNewCase = <ActionItem title="New Case" icon={<AddIcon/>} onPress={openCreateCaseFile}/>;
@@ -368,7 +368,6 @@ function CaseFiles(props) {
 
     return (
         <>
-
             <NavPage
                 isFetchingData={isFetchingCaseFiles}
                 onRefresh={handleDataRefresh}
@@ -395,50 +394,19 @@ function CaseFiles(props) {
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
             />
-
         </>
-        // <CaseFilesWrapper>
-        //     <CaseFilesContainer>
-        //         <Page
-        //             isFetchingData={isFetchingCaseFiles}
-        //             onRefresh={handleDataRefresh}
-        //             placeholderText={"Search by any heading or entry below"}
-        //             changeText={changeText}
-        //             inputText={searchValue}
-        //             routeName={routeName}
-        //             listData={caseFilesToDisplay}
-        //             listHeaders={listHeaders}
-        //             itemsSelected={selectedCaseIds}
-        //             onSelectAll={handleOnSelectAll}
-        //             listItemFormat={renderFn}
-        //         />
-        //         <Footer
-        //             totalPages={totalPages}
-        //             currentPage={currentPagePosition}
-        //             goToNextPage={goToNextPage}
-        //             goToPreviousPage={goToPreviousPage}
-        //             isDisabled={isFloatingActionDisabled}
-        //             toggleActionButton={toggleActionButton}
-        //             hasPaginator = {true}
-        //             hasActionButton = {true}
-        //             hasActions = {true}
-        //             isNextDisabled = {isNextDisabled}
-        //             isPreviousDisabled = {isPreviousDisabled}
-        //         />
-        //     </CaseFilesContainer>
-        // </CaseFilesWrapper>
     );
 }
 
 const mapStateToProps = state => {
     let {caseFiles} = state;
-    const {draft} = state;
+    const {drafts} = state;
 
-    if (draft && draft.length) caseFiles = [...draft, ...caseFiles];
+    if (drafts && drafts.length) caseFiles = [...drafts, ...caseFiles];
 
     return {
         caseFiles,
-        draft
+        drafts
     };
 };
 
