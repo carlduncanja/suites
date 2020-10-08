@@ -108,28 +108,24 @@ export const POST_EDIT_MODE = {
 
 function PostEditView({
                           headers,
-                          consumables = [],
-                          caseProceduresFilters = [],
                           caseProcedures = [],
                           lastEdited = new Date(),
                           caseProcedureChanges = [],
                           bannerText = "Find your change submission below",
-                          role = "Nurse",
                           isEditMode = false,
-                          onProcedureUpdate,
+                          selectedLineItems = [],
+                          selectedCaseProcedureIds = [],
                           onCaseProcedureItemUpdated = emptyFn,
+                          onLineItemSelected = emptyFn,
+                          onSelectCaseProcedureId = emptyFn,
                           mode = POST_EDIT_MODE.CONSUMABLES,
                       }) {
 
-    console.log("caseProcedureChanges: ", caseProcedureChanges)
     const theme = useTheme();
 
-    const [selectedCaseProcedureIds, setSelectedCaseProcedureIds] = useState([]);
-    const [variantsCheckboxList, setVariantsCheckBoxList] = useState([]);
+    console.log("helllooo??? selectedCaseProcedureIds", selectedCaseProcedureIds);
 
     const [searchText, setSearchText] = useState('')
-    const [selectedOption, setSelectedOption] = useState(caseProceduresFilters[0])
-    const [selectedIndex, setSelectedIndex] = useState(0)
 
     const onSearchInputChange = (input) => {
         setSearchText(input)
@@ -137,30 +133,43 @@ function PostEditView({
 
     const toggleCheckbox = (item) => () => {
         const updatedIds = checkboxItemPress(item.caseProcedureId, selectedCaseProcedureIds)
-        setSelectedCaseProcedureIds(updatedIds);
+        onSelectCaseProcedureId(updatedIds);
+    }
+
+    const toggleChildCheckbox = (item, parentId) => () => {
+        const {_id: variantId} = item;
+
+        let variantsToUpdate = [...selectedLineItems];
+        const parentIds = variantsToUpdate.map(variantObjects => variantObjects._parentId);
+        const selectedVariantGroupIndex = parentIds.indexOf(parentId);
+
+        // find the variant object to include.
+        if (selectedVariantGroupIndex >= 0) {
+
+            // add or remove equipment from group from
+            let equipmentVariants = variantsToUpdate[selectedVariantGroupIndex].variants
+            equipmentVariants = checkboxItemPress(variantId, equipmentVariants)
+            variantsToUpdate[selectedVariantGroupIndex].variants = equipmentVariants
+
+            onLineItemSelected([...variantsToUpdate]);
+        } else {
+            onLineItemSelected([...variantsToUpdate, {
+                _parentId: parentId,
+                variants: [variantId]
+            }])
+        }
     }
 
     const onQuantityChangePress = (item, index, caseProcedureId) => (action) => {
-
-        //     amount: action === 'add' ? item.amount + 1 : item.amount - 1
-        // const selectedData = caseProcedures[sectionIndex].inventories;
-
         const updatedObj = {
             ...item,
             amount: action === 'add' ? item.amount + 1 : item.amount - 1
         };
-        //
-        // const updatedData = selectedData.map(item => {
-        //     return item._id === updatedObj._id
-        //         ? {...updatedObj}
-        //         : {...item}
-        // })
 
         onCaseProcedureItemUpdated(updatedObj, caseProcedureId);
     }
 
     const listItem = ({name}, onActionPress, isCollapsed, index) => <>
-
         <DataItem text={name} flex={10} color="--color-gray-800" fontStyle="--text-base-regular"/>
 
         <IconButton
@@ -182,7 +191,6 @@ function PostEditView({
         </IconButtonContainer>
 
     </>
-
 
     const childViewItem = (item, index) => {
         const {amount = 0, cost = 0, name = "", type = ""} = item
@@ -210,6 +218,9 @@ function PostEditView({
 
     const changeChildViewItem = (item, index, caseProcedureId) => {
         const {amount = 0, cost = 0, name = "", initialAmount = 0, type} = item
+
+
+
         return (
             <>
                 <ContentDataItem
@@ -252,31 +263,27 @@ function PostEditView({
         )
     }
 
-    const renderChildItemView = (item, index) => {
-        let {_id} = item
-
+    const renderChildItemView = (item, index, caseProcedureId) => {
         return (
             <Item
                 itemView={childViewItem(item, index)}
                 hasCheckBox={true}
-                isChecked={variantsCheckboxList.includes(_id)}
-                onCheckBoxPress={() => {
-                }}
-                onItemPress={() => {
-                }}
             />
         )
     };
 
     const renderChangeChildItemView = (item, index, caseProcedureId) => {
         let {_id} = item
+        let selectedGroup = selectedLineItems?.find(obj => obj._parentId === caseProcedureId);
+        const variants = selectedGroup?.variants || [];
+        const isChecked = variants.includes(_id)
+
         return (
             <Item
                 itemView={changeChildViewItem(item, index, caseProcedureId)}
                 hasCheckBox={true}
-                isChecked={variantsCheckboxList.includes(_id)}
-                onCheckBoxPress={() => {
-                }}
+                isChecked={isChecked}
+                onCheckBoxPress={toggleChildCheckbox(item, caseProcedureId)}
                 onItemPress={() => {
                 }}
             />
@@ -285,7 +292,7 @@ function PostEditView({
 
     const renderCollapsible = (item, index) => {
 
-        const {procedure, inventories, equipments} = item
+        const {caseProcedureId, procedure, inventories, equipments} = item
         let procedureItem = {
             name: procedure?.name
         };
@@ -295,14 +302,13 @@ function PostEditView({
 
         return (
             <CollapsibleListItem
-                isChecked={selectedCaseProcedureIds.includes(item._id)}
                 hasCheckBox={true}
                 render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, index)}
             >
                 <FlatList
                     data={data}
                     renderItem={({item, index}) => {
-                        return renderChildItemView(item, index)
+                        return renderChildItemView(item, index, caseProcedureId)
                     }}
                     keyExtractor={(item, index) => "" + index}
                     ItemSeparatorComponent={() =>
@@ -328,7 +334,7 @@ function PostEditView({
 
         return (
             <CollapsibleListItem
-                isChecked={selectedCaseProcedureIds.includes(item.caseProcedureId)}
+                isChecked={selectedCaseProcedureIds.includes(caseProcedureId)}
                 onCheckBoxPress={toggleCheckbox(item)}
                 hasCheckBox={true}
                 onItemPress={(collapse) => {

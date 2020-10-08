@@ -7,7 +7,7 @@ import {PageContext} from '../../../../contexts/PageContext';
 import PostEditView, {POST_EDIT_MODE} from '../../OverlayPages/ChargeSheet/PostEditView';
 import moment from "moment";
 import jwtDecode from 'jwt-decode'
-import {emptyFn, LONG_PRESS_TIMER, ROLES} from "../../../../const";
+import {LONG_PRESS_TIMER, ROLES} from "../../../../const";
 import ActionItem from "../../../common/ActionItem";
 import WasteIcon from "../../../../../assets/svg/wasteIcon";
 import AcceptIcon from "../../../../../assets/svg/acceptIcon";
@@ -99,8 +99,13 @@ const ChargeSheet = React.forwardRef(({
         proceduresBillableItems = [],
         proceduresBillableItemsChanges = [],
         total = 0,
-        caseId
+        state,
+        caseId,
+        status, updatedBy = {}, updatedAt
     } = chargeSheet;
+
+    const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
+
 
     const theme = useTheme();
     const navigation = useNavigation();
@@ -164,7 +169,11 @@ const ChargeSheet = React.forwardRef(({
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {
-            onUpdateChargeSheet(caseProcedures);
+
+            const isPendingState = (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES)
+            const update = isPendingState ? caseProcedureChanges : caseProcedures
+            onUpdateChargeSheet(update);
+
             setUpdated(false);
         }
     }, [isEditMode]);
@@ -177,7 +186,7 @@ const ChargeSheet = React.forwardRef(({
         setCaseProcedure(billing.procedures)
 
         const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
-        const caseProcedureChanges = calculateChangesProcedureChanges(caseProcedures, billingUpdates.procedures)
+        setCaseProcedureChanges(billingUpdates.procedures)
 
     }, [chargeSheet])
 
@@ -236,31 +245,38 @@ const ChargeSheet = React.forwardRef(({
         }
     };
 
+    const handlePostEditConsumableUpdate = (updatedObj, caseProcedureId) => {
+        console.log('onConsumablesUpdate', updatedObj, caseProcedureId);
+        const updatedCaseProcedures = [...caseProcedures];
+        if (updatedCaseProcedures[index]) {
+            updatedCaseProcedures[index].inventories = procedureInventories;
+            setCaseProcedure(updatedCaseProcedures);
+            setUpdated(true);
+        }
+    };
+
     const handleCaseProcedureChangeUpdate = (updatedItem, caseProcedureId) => {
 
-        const updatedBillablesItems = [...proceduresBillableItemsChanges]
-
-        // const procedureToUpdate = proceduresBillableItemsChanges.find(billableItem =>
-        //     billableItem.caseProcedureId === caseProcedureId
-        // );
-        // if (!procedureToUpdate) return;
+        const updatedBillablesItems = [...caseProcedureChanges]
 
         for (const index in updatedBillablesItems) {
 
-            const isProcedureForUpdate = proceduresBillableItems[index]['caseProcedureId'] === caseProcedureId
+            const isProcedureForUpdate = updatedBillablesItems[index]['caseProcedureId'] === caseProcedureId
             if (!isProcedureForUpdate) continue;
 
-            const updatedInventory = updatedBillablesItems[i].inventories.map(item => {
-
-            })
-
+            updatedBillablesItems[index].inventories = updatedBillablesItems[index].inventories.map(item => {
+                return item._id === updatedItem._id
+                    ? {...item, amount: updatedItem.amount}
+                    : {...item};
+            });
+            break;
         }
+
+        setUpdated(true)
+        setCaseProcedureChanges(updatedBillablesItems)
     }
 
     const handleEquipmentUpdate = (index, procedureEquipments) => {
-
-        console.log("hellooooo??? ", index, procedureEquipments)
-
         const updatedCaseProcedures = [...caseProcedures];
         if (updatedCaseProcedures[index]) {
             updatedCaseProcedures[index].equipments = procedureEquipments;
@@ -382,21 +398,23 @@ const ChargeSheet = React.forwardRef(({
 
     const onAddItem = itemToAdd => data => {
 
+        const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
+
         const dataToAdd = data.map(item => ({
             _id: item._id,
             amount: item.amount,
             inventory: item.inventory?._id,
             equipment: item.equipment?._id,
             name: item.name,
-            cost: itemToAdd === 'Consumables' ? item.unitCost: item.equipment?.unitPrice,
+            cost: itemToAdd === 'Consumables' ? item.unitCost : item.equipment?.unitPrice,
             type: item.inventory?.inventoryGroup?.name || ""
         }))
 
-        const proceduresToUpdate = [...caseProcedures];
+        const proceduresToUpdate = !isPending ? [...caseProcedures] : [...caseProcedureChanges];
 
         const selectedProcedureIds = itemToAdd === 'Consumables' ? selectedCaseProcedureIds : selectedEquipments;
 
-        const procedureToUpdate = proceduresToUpdate.find(item => item?.caseProcedureId === selectedProcedureIds[0] || '');
+        let procedureToUpdate = proceduresToUpdate.find(item => item?.caseProcedureId === selectedProcedureIds[0] || '');
 
         const updatedObj = itemToAdd === 'Consumables' ?
             {
@@ -408,7 +426,7 @@ const ChargeSheet = React.forwardRef(({
                 equipments: [...procedureToUpdate?.equipments, ...dataToAdd]
             };
 
-        const updatedBillableItems = proceduresToUpdate.map(procedure => (procedure?.caseProcedureId === selectedProcedureIds[0] ?
+        procedureToUpdate = proceduresToUpdate.map(procedure => (procedure?.caseProcedureId === selectedProcedureIds[0] ?
             {...procedure, ...updatedObj} :
             {...procedure}));
 
@@ -421,14 +439,18 @@ const ChargeSheet = React.forwardRef(({
             setVariantsEquipments([]);
         }
 
-        setCaseProcedure(updatedBillableItems)
+        if (isPending) {
+            setCaseProcedureChanges(procedureToUpdate)
+        } else {
+            setCaseProcedure(procedureToUpdate)
+        }
         setUpdated(true);
     };
 
     const handleRemoveConsumableItems = () => {
         const updatedCaseProcedures = [...caseProcedures];
 
-        for (const variantsConsumable of variantsConsumables) {
+        for (const variantsConsumable of selectedConsumables) {
             const {_parentId, variants} = variantsConsumable;
 
             // find the procedure
@@ -441,6 +463,31 @@ const ChargeSheet = React.forwardRef(({
 
                     let inventories = [...caseProcedureToUpdate.inventories]
                     inventories = inventories.filter(item => !variants.includes(item.inventory))
+
+                    caseProcedureToUpdate.inventories = inventories;
+                    updatedCaseProcedures[i] = caseProcedureToUpdate;
+                }
+            }
+        }
+        onUpdateChargeSheet(updatedCaseProcedures)
+    };
+
+    const handleRemovePendingConsumableItems = () => {
+        const updatedCaseProcedures = [...caseProcedureChanges];
+
+        for (const variantsConsumable of selectedConsumables) {
+            const {_parentId, variants} = variantsConsumable;
+
+            // find the procedure
+            for (const i in updatedCaseProcedures) {
+
+                const isSelectedParent = updatedCaseProcedures[i].caseProcedureId === _parentId
+                if (isSelectedParent) {
+                    // find and remove the variants
+                    const caseProcedureToUpdate = {...updatedCaseProcedures[i]}
+
+                    let inventories = [...caseProcedureToUpdate.inventories]
+                    inventories = inventories.filter(item => !variants.includes(item._id))
 
                     caseProcedureToUpdate.inventories = inventories;
                     updatedCaseProcedures[i] = caseProcedureToUpdate;
@@ -528,6 +575,49 @@ const ChargeSheet = React.forwardRef(({
                 );
                 floatingAction.push(WithdrawChanges);
             }
+
+            if (isOwner || isAdmin) {
+                console.log("selectedCaseProcedureIds", selectedCaseProcedureIds)
+                const isDisabled = !(selectedCaseProcedureIds.length === 1 && isEditMode)
+                const addNewItem = (
+                    <ActionItem
+                        title="Add Consumable"
+                        icon={(
+                            <AddIcon
+                                strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                            />
+                        )}
+                        disabled={isDisabled}
+                        touchable={!isDisabled}
+                        onPress={() => openAddItem('Consumables')}
+                    />
+                );
+
+                const isDisabledConsumables = selectedConsumables.length === 0;
+                const removeLineItemAction = (
+                    <LongPressWithFeedback
+                        pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                        onLongPress={handleRemovePendingConsumableItems}
+                        isDisabled={isDisabledConsumables}
+                    >
+                        <ActionItem
+                            title="Hold to Delete"
+                            icon={(
+                                <WasteIcon
+                                    strokeColor={isDisabledConsumables ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                                />
+                            )}
+                            touchable={false}
+                            disabled={isDisabledConsumables}
+                        />
+
+                    </LongPressWithFeedback>
+                );
+
+                floatingAction.push(removeLineItemAction, addNewItem);
+
+            }
+
         } else {
             const isDisabled = !(selectedCaseProcedureIds.length === 1 && isEditMode)
 
@@ -551,7 +641,6 @@ const ChargeSheet = React.forwardRef(({
                     pressTimer={LONG_PRESS_TIMER.MEDIUM}
                     onLongPress={handleRemoveConsumableItems}
                     isDisabled={isDisabledConsumables}
-
                 >
                     <ActionItem
                         title="Hold to Delete"
@@ -638,7 +727,6 @@ const ChargeSheet = React.forwardRef(({
     const procedureEquipments = [groupedEquipments, ...equipments];
     const consumableProcedures = ['All', ...caseProcedures.map(item => item?.procedure?.name)];
 
-    const {status, updatedBy = {}, updatedAt} = chargeSheet;
 
     const isAdmin = authInfo['role_name'] === ROLES.ADMIN
     const isOwner = updatedBy?._id === authInfo['user_id'];
@@ -652,8 +740,8 @@ const ChargeSheet = React.forwardRef(({
 
                 const bannerText = isAdmin ? `${firstName[0]}.${lastName} changes require your attention` : undefined
 
-                const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
-                const caseProcedureChanges = calculateChangesProcedureChanges(caseProcedures, billingUpdates.procedures)
+                //const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
+                const procedureChangeList = calculateChangesProcedureChanges(caseProcedures, caseProcedureChanges, isEditMode)
 
                 return <PostEditView
                     headers={headers}
@@ -662,7 +750,15 @@ const ChargeSheet = React.forwardRef(({
                     consumables={consumables}
                     caseProceduresFilters={consumableProcedures}
                     caseProcedures={caseProcedures}
-                    caseProcedureChanges={caseProcedureChanges}
+                    caseProcedureChanges={procedureChangeList}
+                    selectedCaseProcedureIds={selectedCaseProcedureIds}
+                    onSelectCaseProcedureId={procedureIds => {
+                        setSelectedCaseProcedureIds(procedureIds)
+                    }}
+                    selectedLineItems={selectedConsumables}
+                    onLineItemSelected={lineItems => {
+                        setSelectedConsumables(lineItems);
+                    }}
                     onConsumablesUpdate={handleConsumableUpdate}
                     onCaseProcedureItemUpdated={handleCaseProcedureChangeUpdate}
                     mode={POST_EDIT_MODE.CONSUMABLES}
@@ -684,10 +780,6 @@ const ChargeSheet = React.forwardRef(({
                         setSelectedConsumables(consumables);
                     }}
                     selectedConsumables={selectedConsumables}
-                    variantsConsumables={variantsConsumables}
-                    onSelectVariants={variants => {
-                        setVariantsConsumables(variants);
-                    }}
                     selectedCaseProcedureIds={selectedCaseProcedureIds}
                     onCaseProcedureSelected={onConsumableCaseProcedureSelected}
                 />
@@ -701,7 +793,7 @@ const ChargeSheet = React.forwardRef(({
                 const bannerText = isAdmin ? `${firstName[0]}.${lastName} changes require your attention` : undefined
 
                 const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
-                const caseProcedureChanges = calculateChangesProcedureChanges(caseProcedures, billingUpdates.procedures)
+                const caseProcedureChanges = calculateChangesProcedureChanges(caseProcedures, billingUpdates.procedures, isEditMode)
 
                 return <PostEditView
                     headers={headers}
@@ -844,11 +936,11 @@ const configureBillableItems = (lastModified, total, updatedBy = {}, procedures 
     return billing;
 }
 
-const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []) => {
+const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = [], isEditMode = false) => {
     const updatedProcedures = [];
 
-    console.log('calculateChangesProcedureChanges: prv ', prvProcedures);
-    console.log('calculateChangesProcedureChanges: new ', newProcedures);
+    // console.log('calculateChangesProcedureChanges: prv ', prvProcedures);
+    // console.log('calculateChangesProcedureChanges: new ', newProcedures);
 
     for (const newBillableItems of newProcedures) {
         const inventoryChanges = []
@@ -860,13 +952,11 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
         const prvBillableItems = prvProcedures.find(item => item.caseProcedureId === caseProcedureId) || {};
         const {inventories: prvInventories = [], equipments: prvEquipments = []} = prvBillableItems;
 
-        // TODO check if prv and new amount diff
-        // TODO only insert procedures that has changes.
         for (const newInventoryItem of newInventories) {
             const prvItem = prvInventories.find(item => item.inventory === newInventoryItem.inventory)
             let initialAmount = prvItem?.amount || 0;
 
-            if (initialAmount === newInventoryItem?.amount) continue;
+            if (initialAmount === newInventoryItem?.amount && !isEditMode) continue;
 
             const update = {
                 ...newInventoryItem,
@@ -880,7 +970,7 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
             const prvItem = prvEquipments.find(item => item.equipment === newEquipment.equipment)
             let initialAmount = prvItem?.amount || 0;
 
-            if (initialAmount === newEquipment?.amount) continue;
+            if (initialAmount === newEquipment?.amount && !isEditMode) continue;
 
             const update = {
                 ...newEquipment,
@@ -899,7 +989,7 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
     }
 
 
-    console.log('calculateChangesProcedureChanges: updates ', updatedProcedures);
+    // console.log('calculateChangesProcedureChanges: updates ', updatedProcedures);
 
     return updatedProcedures;
 }
