@@ -56,7 +56,7 @@ function EquipmentItemPage({ route, navigation, modal }) {
         sku: sku,
         description: info.description,
         status: info.status,
-        assigned: equipment?.assignments[0]?.theatre
+        // assigned: equipment?.assignments[0]?.theatre || "",
     })
 
     // ##### Lifecycle Methods

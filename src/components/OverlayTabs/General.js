@@ -41,11 +41,10 @@ const General = ({ equipment = {}, updatedInfo, modal, navigation, groupInfo, na
 
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
 
-
-
     const assignedRecord = <ResponsiveRecord
         recordTitle={"Assigned"}
-        recordValue={equipment?.assignments[0]?.theatre}
+        recordValue = ""
+        // recordValue={equipment?.assignments[0]?.theatre || ""}
         handleRecordPress={() => { navigation.navigate('AssignmentManagmentPage', { assignments: equipment.assignments, group: groupInfo, name: name }) }}
     />
 

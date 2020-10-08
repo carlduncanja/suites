@@ -254,7 +254,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                     })
                 // Alert.alert("Success","The transfer is successful.")
                 setTimeout(() => {
-                    onCreated(data)
+                    onCreated(data);
                 }, 400);
             })
             .catch(error => {
