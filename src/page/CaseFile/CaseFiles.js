@@ -73,7 +73,7 @@ function CaseFiles(props) {
         // Redux props
         caseFiles = [],
         setCaseFiles,
-        draft = [],
+        drafts = [],
 
         // React Navigation Props
         navigation,
@@ -262,7 +262,7 @@ function CaseFiles(props) {
                 isChecked={selectedCaseIds.includes(item._id)}
                 onCheckBoxPress={handleOnCheckBoxPress(item)}
                 onItemPress={handleOnItemPress(item, false)}
-                itemView={isEmpty(patient?.medicalInfo) && !isEmpty(draft) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
+                itemView={isEmpty(patient?.medicalInfo) && !isEmpty(drafts) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
                 //items passed here should be deciphered whether it is a draft or not
             />
             {/* */}
@@ -400,13 +400,13 @@ function CaseFiles(props) {
 
 const mapStateToProps = state => {
     let {caseFiles} = state;
-    const {draft} = state;
+    const {drafts} = state;
 
-    if (draft && draft.length) caseFiles = [...draft, ...caseFiles];
+    if (drafts && drafts.length) caseFiles = [...drafts, ...caseFiles];
 
     return {
         caseFiles,
-        draft
+        drafts
     };
 };
 

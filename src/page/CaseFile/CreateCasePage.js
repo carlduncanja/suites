@@ -846,7 +846,9 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 CreateCasePage.propTypes = {};
 CreateCasePage.defaultProps = {};
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+
+});
 
 const mapDispatchToProp = {
     addCaseFile,
