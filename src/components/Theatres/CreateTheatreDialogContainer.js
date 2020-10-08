@@ -69,7 +69,7 @@ function CreateTheatreDialogContainer({ onCancel, onCreated, addTheatre }) {
             createTheatreCall()
         }
     };
-
+ 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
             ...fields,
