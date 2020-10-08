@@ -12,6 +12,9 @@ import { formatDate } from '../../utils/formatter';
 import { createEquipmentType, getEquipmentTypes } from '../../api/network';
 import { addEquipmentType } from '../../redux/actions/equipmentTypesActions';
 import ConfirmationComponent from '../ConfirmationComponent';
+import OverlayDialogContent from '../common/Dialog/OverlayContent';
+import Row from '../common/Row';
+import FieldContainer from '../common/FieldContainerComponent';
 
 /**
  * Component to handle the create storage process.
@@ -94,39 +97,69 @@ const CreateEquipmentTypeDialogContainer = ({
         setUnitPriceText(price);
     };
 
-    const getDialogContent = () => {
-        return (
-            <View style={styles.sectionContainer}>
-                <View style={styles.row}>
-                    <View style={styles.inputWrapper}>
-                        <InputField2
-                            label={'Group Name'}
-                            onChangeText={onFieldChange('name')}
-                            value={fields.name}
-                            onClear={() => onFieldChange('name')('')}
-                            hasError={errorFields.name}
-                            errorMessage="Name must be filled."
-                            labelWidth = {98}
-                        />
-                    </View>
+    const getDialogContent = () => (
+        <>
+            <Row>
+                <FieldContainer>
+                    <InputField2
+                        label="Equipment"
+                        onChangeText={onFieldChange('name')}
+                        value={fields.name}
+                        onClear={() => onFieldChange('name')('')}
+                        hasError={errorFields.name}
+                        errorMessage="Name must be filled."
+                    />
+                </FieldContainer>
+                <FieldContainer>
+                    <InputField2
+                        label="Unit Price"
+                        onChangeText={value => {
+                            handleUnitPrice(value);
+                        }}
+                        value={unitPriceText}
+                        keyboardType="number-pad"
+                        onClear={() => handleUnitPrice('')}
+                        hasError={errorFields.unitPrice}
+                        errorMessage="Price must be provided."
+                    />
+                </FieldContainer>
+            </Row>
+        </>
+    );
+        
+    // {
+    //     return (
+    //         <View style={styles.sectionContainer}>
+    //             <View style={styles.row}>
+    //                 <View style={styles.inputWrapper}>
+    //                     <InputField2
+    //                         label={'Group Name'}
+    //                         onChangeText={onFieldChange('name')}
+    //                         value={fields.name}
+    //                         onClear={() => onFieldChange('name')('')}
+    //                         hasError={errorFields.name}
+    //                         errorMessage="Name must be filled."
+    //                         labelWidth = {98}
+    //                     />
+    //                 </View>
 
-                    <View style={styles.inputWrapper}>
-                        <InputField2
-                            label={'Unit Price'}
-                            onChangeText={value => {
-                                handleUnitPrice(value);
-                            }}
-                            value={unitPriceText}
-                            keyboardType={'number-pad'}
-                            onClear={() => handleUnitPrice('')}
-                            hasError={errorFields.unitPrice}
-                            errorMessage="Price must be provided."
-                        />
-                    </View>
-                </View>
-            </View>
-        );
-    };
+    //                 <View style={styles.inputWrapper}>
+    //                     <InputField2
+    //                         label={'Unit Price'}
+    //                         onChangeText={value => {
+    //                             handleUnitPrice(value);
+    //                         }}
+    //                         value={unitPriceText}
+    //                         keyboardType={'number-pad'}
+    //                         onClear={() => handleUnitPrice('')}
+    //                         hasError={errorFields.unitPrice}
+    //                         errorMessage="Price must be provided."
+    //                     />
+    //                 </View>
+    //             </View>
+    //         </View>
+    //     );
+    // };
 
     const createEquipmentTypeCall = () => {
         createEquipmentType(fields)
@@ -157,37 +190,59 @@ const CreateEquipmentTypeDialogContainer = ({
                         },
                     });
                 });
-               
-                // Alert.alert('Success', 'New Equipment Added');
-                // console.log("new data that's added in equipment :", data);
-
-                // setTimeout(() => {
-                //     onCreated(data);
-                // }, 200);
             })
             .catch(error => {
+                modal.closeAllModals();
+                setTimeout(() => {
+                    modal.openModal('ConfirmationModal', {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCancel();
+                                }, 200);
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCancel();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        },
+                    });
+                });
                 // todo handle error
-                Alert.alert('Failed','Failed to create a new item.')
-                console.log('failed to create equipment type', error);
+                // Alert.alert('Failed','Failed to create a new item.')
+                // console.log('failed to create equipment type', error);
             })
-            .finally((_) => {
+            .finally(_ => {
                 modal.closeAllModals();
             });
     };
 
     return (
         <OverlayDialog
-            title={'Add Equipment Group'}
+            title="Create Equipment Group"
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
         >
-            <View style={styles.container}>
-                <DialogTabs tabs={dialogTabs} tab={selectedIndex} />
-                <TouchableOpacity activeOpacity={1}>
+            <>
+                <DialogTabs
+                    tabs={dialogTabs}
+                    tab={selectedIndex}
+                />
+
+                <OverlayDialogContent height={210}>
                     {getDialogContent()}
-                </TouchableOpacity>
-            </View>
+                </OverlayDialogContent>
+            </>
+
         </OverlayDialog>
     );
 };
