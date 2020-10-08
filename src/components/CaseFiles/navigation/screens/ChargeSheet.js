@@ -255,7 +255,7 @@ const ChargeSheet = React.forwardRef(({
         }
     };
 
-    const handleCaseProcedureChangeUpdate = (updatedItem, caseProcedureId) => {
+    const handleCaseProcedureChangeUpdate = (updatedItem, caseProcedureId, viewMode) => {
 
         const updatedBillablesItems = [...caseProcedureChanges]
 
@@ -264,11 +264,20 @@ const ChargeSheet = React.forwardRef(({
             const isProcedureForUpdate = updatedBillablesItems[index]['caseProcedureId'] === caseProcedureId
             if (!isProcedureForUpdate) continue;
 
-            updatedBillablesItems[index].inventories = updatedBillablesItems[index].inventories.map(item => {
-                return item._id === updatedItem._id
-                    ? {...item, amount: updatedItem.amount}
-                    : {...item};
-            });
+            if (POST_EDIT_MODE.CONSUMABLES === viewMode) {
+                updatedBillablesItems[index].inventories = updatedBillablesItems[index].inventories.map(item => {
+                    return item._id === updatedItem._id
+                        ? {...item, amount: updatedItem.amount}
+                        : {...item};
+                });
+            } else {
+                updatedBillablesItems[index].equipments = updatedBillablesItems[index].equipments.map(item => {
+                    return item.equipment === updatedItem.equipment
+                        ? {...item, amount: updatedItem.amount}
+                        : {...item};
+                });
+            }
+
             break;
         }
 
@@ -740,7 +749,6 @@ const ChargeSheet = React.forwardRef(({
 
                 const bannerText = isAdmin ? `${firstName[0]}.${lastName} changes require your attention` : undefined
 
-                //const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
                 const procedureChangeList = calculateChangesProcedureChanges(caseProcedures, caseProcedureChanges, isEditMode)
 
                 return <PostEditView
@@ -791,9 +799,7 @@ const ChargeSheet = React.forwardRef(({
                 const lastName = updatedBy['last_name'];
 
                 const bannerText = isAdmin ? `${firstName[0]}.${lastName} changes require your attention` : undefined
-
-                const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
-                const caseProcedureChanges = calculateChangesProcedureChanges(caseProcedures, billingUpdates.procedures, isEditMode)
+                const procedureChangeList = calculateChangesProcedureChanges(caseProcedures, caseProcedureChanges, isEditMode)
 
                 return <PostEditView
                     headers={headers}
@@ -802,12 +808,13 @@ const ChargeSheet = React.forwardRef(({
                     consumables={procedureEquipments}
                     caseProceduresFilters={consumableProcedures}
                     caseProcedures={caseProcedures}
-                    caseProcedureChanges={caseProcedureChanges}
+                    caseProcedureChanges={procedureChangeList}
                     onConsumablesUpdate={handleConsumableUpdate}
                     isEditMode={isEditMode}
                     mode={POST_EDIT_MODE.EQUIPMENTS}
                     bannerText={bannerText}
                     handleEditDone={handleEditDone}
+                    onCaseProcedureItemUpdated={handleCaseProcedureChangeUpdate}
                 />
 
             } else {

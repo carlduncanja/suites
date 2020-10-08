@@ -123,8 +123,6 @@ function PostEditView({
 
     const theme = useTheme();
 
-    console.log("helllooo??? selectedCaseProcedureIds", selectedCaseProcedureIds);
-
     const [searchText, setSearchText] = useState('')
 
     const onSearchInputChange = (input) => {
@@ -166,7 +164,7 @@ function PostEditView({
             amount: action === 'add' ? item.amount + 1 : item.amount - 1
         };
 
-        onCaseProcedureItemUpdated(updatedObj, caseProcedureId);
+        onCaseProcedureItemUpdated(updatedObj, caseProcedureId, mode);
     }
 
     const listItem = ({name}, onActionPress, isCollapsed, index) => <>
