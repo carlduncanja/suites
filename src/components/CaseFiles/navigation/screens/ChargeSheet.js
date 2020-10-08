@@ -17,6 +17,7 @@ import ConfirmationComponent from "../../../ConfirmationComponent";
 import {useNavigation} from '@react-navigation/native'
 import {useTheme} from "emotion-theming";
 import {useModal} from "react-native-modalfy";
+import {removeEquipment} from "../../../../api/network";
 
 const LINE_ITEM_TYPES = {
     DISCOUNT: 'discount',
@@ -506,6 +507,31 @@ const ChargeSheet = React.forwardRef(({
         onUpdateChargeSheet(updatedCaseProcedures)
     };
 
+    const handleRemovePendingEquipmentItems = () => {
+        const updatedCaseProcedures = [...caseProcedureChanges];
+
+        for (const variantsEquipment of variantsEquipments) {
+            const {_parentId, variants} = variantsEquipment;
+
+            // find the procedure
+            for (const i in updatedCaseProcedures) {
+
+                const isSelectedParent = updatedCaseProcedures[i].caseProcedureId === _parentId
+                if (isSelectedParent) {
+                    // find and remove the variants
+                    const caseProcedureToUpdate = {...updatedCaseProcedures[i]}
+
+                    let equipments = [...caseProcedureToUpdate.equipments]
+                    equipments = equipments.filter(item => !variants.includes(item.equipment))
+
+                    caseProcedureToUpdate.equipments = equipments;
+                    updatedCaseProcedures[i] = caseProcedureToUpdate;
+                }
+            }
+        }
+        onUpdateChargeSheet(updatedCaseProcedures)
+    };
+
 
     const handleRemoveEquipmentItems = () => {
         const updatedCaseProcedures = [...caseProcedures];
@@ -586,7 +612,6 @@ const ChargeSheet = React.forwardRef(({
             }
 
             if (isOwner || isAdmin) {
-                console.log("selectedCaseProcedureIds", selectedCaseProcedureIds)
                 const isDisabled = !(selectedCaseProcedureIds.length === 1 && isEditMode)
                 const addNewItem = (
                     <ActionItem
@@ -674,46 +699,132 @@ const ChargeSheet = React.forwardRef(({
 
         let title;
         let floatingAction = [];
-        const isDisabled = selectedEquipments.length !== 1;
 
-        const addNewLineItemAction = (
-            <ActionItem
-                title="Add Equipment"
-                icon={(
-                    <AddIcon
-                        strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+        if (isPending) {
+
+
+            if (isAdmin) {
+                const RevertChanges = (
+                    <ActionItem
+                        title="Revert Changes"
+                        icon={<WasteIcon/>}
+                        onPress={handleRevertChargeSheetChanges}
                     />
-                )}
-                disabled={isDisabled}
-                touchable={!isDisabled}
-                onPress={() => openAddItem('Equipment')}
-            />
-        );
+                );
 
-        const isRemoveEquipmentsDisabled = !variantsEquipments.length
-        const removeLineItemAction = (
-            <LongPressWithFeedback
-                pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                onLongPress={handleRemoveEquipmentItems}
-                isDisabled={isRemoveEquipmentsDisabled}
-            >
+                const AcceptChanges = (
+                    <ActionItem
+                        title="Accept Changes"
+                        icon={<AcceptIcon/>}
+                        onPress={handleAcceptChargeSheetChange}
+                    />
+                );
+                floatingAction.push(RevertChanges, AcceptChanges);
+            }
+
+            if (isOwner) {
+                const WithdrawChanges = (
+                    <LongPressWithFeedback
+                        pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                        onLongPress={handleWithdrawChargeSheetChanges}
+                    >
+                        <ActionItem
+                            title="Hold to Withdraw"
+                            icon={<WasteIcon/>}
+                            onPress={() => {
+                            }}
+                            touchable={false}
+                        />
+                    </LongPressWithFeedback>
+                );
+                floatingAction.push(WithdrawChanges);
+            }
+
+            if (isOwner || isAdmin) {
+
+                const isDisabled = selectedEquipments.length !== 1;
+                const addNewLineItemAction = (
+                    <ActionItem
+                        title="Add Equipment"
+                        icon={(
+                            <AddIcon
+                                strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                            />
+                        )}
+                        disabled={isDisabled}
+                        touchable={!isDisabled}
+                        onPress={() => openAddItem('Equipment')}
+                    />
+                );
+
+                const isRemoveEquipmentsDisabled = !variantsEquipments.length
+                const removeLineItemAction = (
+                    <LongPressWithFeedback
+                        pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                        onLongPress={handleRemovePendingEquipmentItems}
+                        isDisabled={isRemoveEquipmentsDisabled}
+                    >
+                        <ActionItem
+                            title="Hold to Delete"
+                            icon={(
+                                <WasteIcon
+                                    strokeColor={isRemoveEquipmentsDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                                />
+                            )}
+                            onPress={() => {
+                            }}
+                            touchable={false}
+                            disabled={isRemoveEquipmentsDisabled}
+                        />
+
+                    </LongPressWithFeedback>
+                );
+                floatingAction.push(removeLineItemAction, addNewLineItemAction);
+            }
+        } else {
+            const isDisabled = selectedEquipments.length !== 1;
+            const addNewLineItemAction = (
                 <ActionItem
-                    title="Hold to Delete"
+                    title="Add Equipment"
                     icon={(
-                        <WasteIcon
-                            strokeColor={isRemoveEquipmentsDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                        <AddIcon
+                            strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
                         />
                     )}
-                    onPress={() => {
-                    }}
-                    touchable={false}
-                    disabled={isRemoveEquipmentsDisabled}
+                    disabled={isDisabled}
+                    touchable={!isDisabled}
+                    onPress={() => openAddItem('Equipment')}
                 />
+            );
 
-            </LongPressWithFeedback>
-        );
-        floatingAction.push(removeLineItemAction, addNewLineItemAction);
-        title = 'EQUIPMENT ACTIONS';
+            const isRemoveEquipmentsDisabled = !variantsEquipments.length
+            const removeLineItemAction = (
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    onLongPress={handleRemoveEquipmentItems}
+                    isDisabled={isRemoveEquipmentsDisabled}
+                >
+                    <ActionItem
+                        title="Hold to Delete"
+                        icon={(
+                            <WasteIcon
+                                strokeColor={isRemoveEquipmentsDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            />
+                        )}
+                        onPress={() => {
+                        }}
+                        touchable={false}
+                        disabled={isRemoveEquipmentsDisabled}
+                    />
+
+                </LongPressWithFeedback>
+            );
+
+            floatingAction.push(removeLineItemAction, addNewLineItemAction);
+        }
+
+
+        title = 'EQUIPMENTS ACTIONS';
 
         return [floatingAction, title]
     }
@@ -810,6 +921,14 @@ const ChargeSheet = React.forwardRef(({
                     caseProcedures={caseProcedures}
                     caseProcedureChanges={procedureChangeList}
                     onConsumablesUpdate={handleConsumableUpdate}
+                    selectedCaseProcedureIds={selectedEquipments}
+                    onSelectCaseProcedureId={procedureIds => {
+                        setSelectedEquipments(procedureIds)
+                    }}
+                    selectedLineItems={variantsEquipments}
+                    onLineItemSelected={lineItems => {
+                        setVariantsEquipments(lineItems);
+                    }}
                     isEditMode={isEditMode}
                     mode={POST_EDIT_MODE.EQUIPMENTS}
                     bannerText={bannerText}

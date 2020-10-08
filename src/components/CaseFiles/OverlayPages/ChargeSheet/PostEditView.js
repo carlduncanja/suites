@@ -134,8 +134,7 @@ function PostEditView({
         onSelectCaseProcedureId(updatedIds);
     }
 
-    const toggleChildCheckbox = (item, parentId) => () => {
-        const {_id: variantId} = item;
+    const toggleChildCheckbox = (variantId, parentId) => () => {
 
         let variantsToUpdate = [...selectedLineItems];
         const parentIds = variantsToUpdate.map(variantObjects => variantObjects._parentId);
@@ -271,17 +270,18 @@ function PostEditView({
     };
 
     const renderChangeChildItemView = (item, index, caseProcedureId) => {
-        let {_id} = item
         let selectedGroup = selectedLineItems?.find(obj => obj._parentId === caseProcedureId);
         const variants = selectedGroup?.variants || [];
-        const isChecked = variants.includes(_id)
+
+        const variantId = mode === POST_EDIT_MODE.CONSUMABLES ?  item._id : item.equipment;
+        const isChecked = variants.includes(variantId)
 
         return (
             <Item
                 itemView={changeChildViewItem(item, index, caseProcedureId)}
                 hasCheckBox={true}
                 isChecked={isChecked}
-                onCheckBoxPress={toggleChildCheckbox(item, caseProcedureId)}
+                onCheckBoxPress={toggleChildCheckbox(variantId, caseProcedureId)}
                 onItemPress={() => {
                 }}
             />
