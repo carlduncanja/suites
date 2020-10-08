@@ -6,7 +6,7 @@ import EquipmentItemPage from "../../Equipment/EquipmentItemPage";
 import EquipmentGroupDetailsPage from "../../../page/Equipment/EquipmentGroupDetailsPage";
 import AddEquipmentPage from "../../../page/AddEquipmentPage";
 import AssignEquipmentPage from "../../../page/AssignEquipmentPage";
-import AssignmentManagmentPage from "../../../page/AssignmentManagementPage";
+import AssignmentManagementPage from "../../../page/AssignmentManagementPage";
 import NotFound from "../../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 
@@ -68,8 +68,8 @@ export default () => {
                 }}
             />
             <Stack.Screen
-                name="AssignmentManagmentPage"
-                component={AssignmentManagmentPage}
+                name="AssignmentManagementPage"
+                component={AssignmentManagementPage}
                 options={{
                     headerShown: false
                 }}

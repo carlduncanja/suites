@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, DatePickerIOS } from 'react-native';
-import styled, { css } from '@emotion/native';
-import { withModal } from "react-native-modalfy";
+import React, {useState, useEffect} from 'react';
+import {View, Text, DatePickerIOS} from 'react-native';
+import styled, {css} from '@emotion/native';
+import {withModal} from 'react-native-modalfy';
+import {MenuOptions, MenuOption} from 'react-native-popup-menu';
+import _, {isEmpty} from 'lodash';
+import {Divider} from 'react-native-paper';
+import moment from 'moment';
 import Record from '../common/Information Record/Record';
 import ListTextRecord from '../common/Information Record/ListTextRecord';
 import Row from '../common/Row';
@@ -9,16 +13,12 @@ import InputField2 from '../common/Input Fields/InputField2';
 import DropdownField from '../common/Input Fields/DropdownField';
 import DropdownInputField from '../common/Input Fields/DropdownInputField';
 import OptionsField from '../common/Input Fields/OptionsField';
-import { MenuOptions, MenuOption } from 'react-native-popup-menu';
-import { getTheatres } from "../../api/network";
-import { getPhysicians } from "../../api/network";
+import {getTheatres, getPhysicians, getStorage} from '../../api/network';
+
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
-import { isEmpty } from 'lodash';
-import { Divider } from 'react-native-paper';
-import _ from "lodash";
+
 import InputUnitField from '../common/Input Fields/InputUnitFields';
 import DateInputField from '../common/Input Fields/DateInputField';
-import moment from 'moment';
 import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
 
 const InputWrapper = styled.View`
@@ -26,20 +26,20 @@ height:30px;
 width:260px;
 margin-right:30px;
 
-`
+`;
 const DateWrapper = styled.View`
 height:30px;
 width:260px;
 margin-top:5px;
 
-`
+`;
 
 const ViewBreaker = styled.View`
 flex-direction:row;
 align-items:center;
 justify-content:space-between;
 margin-top:25px;
-`
+`;
 const DoneButtonWrapper = styled.TouchableOpacity`
 width:616px;
 border-radius:8px;
@@ -49,27 +49,31 @@ align-self:center;
 align-items:center;
 justify-self:flex-end;
 justify-content:center;
-background-color:${({ theme }) => theme.colors["--color-blue-500"]};
+background-color:${({theme}) => theme.colors['--color-blue-500']};
 `;
 
 const DoneButtonText = styled.Text`
-font:${({ theme }) => theme.font["--text-base-bold"]};
-color:${({ theme }) => theme.colors["--default-shade-white"]};
-`
+font:${({theme}) => theme.font['--text-base-bold']};
+color:${({theme}) => theme.colors['--default-shade-white']};
+`;
 
-
-function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locations, physcians, onPhysicianUpdate, equipmentDetails, onDonePress }) {
-
+function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, theatres, onLocationUpdate, onTheatreUpdate, onPhysicianUpdate, equipmentDetails, onDonePress}) {
     const [searchValue, setSearchValue] = useState('');
-    const [searchResult, setSearchResults] = useState([]);
+    const [searchResults, setSearchResults] = useState([]);
     const [searchQuery, setSearchQuery] = useState();
 
     const today = new Date();
 
     useEffect(() => {
-
         if (!isEmpty(searchValue)) {
-            const searchFunction = data['Assignment'] === "Location" ? fetchTheatres : fetchPhysicians;
+            const evalSearchFunction = assignment => {
+                if (assignment === 'Location') return fetchStorageLocations;
+                if (assignment === 'Theatre') return fetchTheatres;
+                if (assignment === 'Person') return fetchPhysicians;
+                return () => console.log('search.function.missing');
+            };
+
+            const searchFunction = evalSearchFunction(data.assignment);
 
             const search = _.debounce(searchFunction, 300);
 
@@ -80,65 +84,69 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                 return search;
             });
             search();
-        } else setSearchResults([])
+        } else setSearchResults([]);
+    }, [searchValue]);
 
-
-
-
-    }, [searchValue])
-
-
-    const fetchTheatres = () => {
-        getTheatres(searchValue, 5)
-            .then((theatreResult = []) => {
-                const { data = [], pages = 0 } = theatreResult
+    const fetchStorageLocations = () => {
+        getStorage(searchValue, 5)
+            .then((storageLocationResult = []) => {
+                const {data = [], pages = 0} = storageLocationResult;
                 const results = data.map(item => ({
                     name: item.name,
                     ...item
                 }));
                 setSearchResults(results || []);
-
             })
             .catch(error => {
                 // TODO handle error
-                console.log("failed to get Theatres");
+                console.error('failed to get storage locations');
                 setSearchResults([]);
+            });
+    };
+
+    const fetchTheatres = () => {
+        getTheatres(searchValue, 5)
+            .then((theatreResult = []) => {
+                const {data = [], pages = 0} = theatreResult;
+                const results = data.map(item => ({
+                    name: item.name,
+                    ...item
+                }));
+                setSearchResults(results || []);
             })
-    }
+            .catch(error => {
+                // TODO handle error
+                console.error('failed to get theatres');
+                setSearchResults([]);
+            });
+    };
 
     const fetchPhysicians = () => {
         getPhysicians(searchValue, 5)
             .then((physicianResult = []) => {
-                const { data = [], pages = 0 } = physicianResult
+                const {data = [], pages = 0} = physicianResult;
                 const results = data.map(item => ({
                     name: `Dr. ${item.surname}`,
                     ...item
                 }));
                 setSearchResults(results || []);
-
             })
             .catch(error => {
                 // TODO handle error
-
-                console.log("failed to get physicians", error);
+                console.error('failed to get physicians', error);
                 setSearchResults([]);
-            })
-    }
+            });
+    };
 
-    const onDateChange = (date) => {
-
-        onFieldChange('date')(date)
-
-    }
-
-
-
+    const onDateChange = date => {
+        onFieldChange('date')(date);
+    };
 
     return (
         <>
-            <View style={{ padding: 32, flexDirection: "column", height: "88%", width: "100%", alignItems: "center", justifyContent: "flex-start" }}>
+            <View style={{padding: 32, flexDirection: 'column', height: '88%', width: '100%', alignItems: 'center', justifyContent: 'flex-start'}}>
 
-                <Row style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <Row style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <InputWrapper>
                         <InputField2
                             value=""
@@ -153,9 +161,10 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                         <MultipleSelectionsField
                             disabled={true}
                             labelWidth={80}
-                            onOptionsSelected={() => { }}
-                            label={"Category"}
-                            value={!equipmentDetails?.categories ? "--" : equipmentDetails.categories}
+                            onOptionsSelected={() => {
+                            }}
+                            label="Category"
+                            value={!equipmentDetails?.categories ? '--' : equipmentDetails.categories}
 
                         />
                     </InputWrapper>
@@ -163,15 +172,18 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                 <Row zIndex={2}>
                     <InputWrapper>
                         <OptionsField
-                            key={data['Assignment']}
+                            key={data.assignment}
                             labelWidth={80}
                             label="Assignment"
-                            text={data['Assignment']}
-                            oneOptionsSelected={onFieldChange('Assignment')}
-                            menuOption={<MenuOptions>
-                                <MenuOption value={"Location"} text='Location' />
-                                <MenuOption value={"Person"} text='Person' />
-                            </MenuOptions>}
+                            text={data.assignment}
+                            oneOptionsSelected={onFieldChange('assignment')}
+                            menuOption={(
+                                <MenuOptions>
+                                    <MenuOption value="Location" text="Location"/>
+                                    <MenuOption value="Theatre" text="Theatre"/>
+                                    <MenuOption value="Person" text="Person"/>
+                                </MenuOptions>
+                            )}
 
                         />
                     </InputWrapper>
@@ -180,81 +192,82 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                         <SearchableOptionsField
                             label="Assigned"
                             labelWidth={80}
-                            value={data['Assignment'] === "Location" ? locations : physcians}
+                            value={data.assignment === 'Location' ? locations : data.assignment === 'Theatre' ? theatres : physicians}
                             text={searchValue}
-                            oneOptionsSelected={(value) => {
+                            oneOptionsSelected={value => {
                                 const location = {
                                     _id: value._id,
                                     name: value.name,
+                                };
 
-                                }
                                 const physician = {
                                     _id: value._id,
                                     name: value.name
-                                }
+                                };
 
+                                const theatre = {
+                                    _id: value._id,
+                                    name: value.name
+                                };
 
-                                data['Assignment'] === "Location" ? onLocationUpdate(location) : onPhysicianUpdate(physician)
-
+                                data.assignment === 'Location' ? onLocationUpdate(location) :
+                                    data.assignment === 'Theatre' ? onTheatreUpdate(theatre) :
+                                        onPhysicianUpdate(physician);
                             }}
-                            onChangeText={(value) => setSearchValue(value)}
+                            onChangeText={value => setSearchValue(value)}
                             onClear={() => setSearchValue('')}
-                            options={searchResult}
+                            options={searchResults}
                         />
                     </InputWrapper>
-
 
                 </Row>
                 <Row>
-                    <InputWrapper>
-                        <DateInputField
-                            label={"From"}
-                            labelWidth={80}
-                            value={data['date']}
-                            onClear={() => onFieldChange('date')('')}
-                            mode={'date'}
-                            format={"YYYY-MM-DD"}
-                            keyboardType="number-pad"
-                            placeholder="YYYY/MM/DD"
-                            minDate={new Date(moment().add(1, 'days'))}
-                            maxDate={null}
-                            onDateChange={onDateChange}
-                        // hasError={errors['dob']}
-                        // errorMessage={errors['dob']}
-                        />
-                    </InputWrapper>
+                    {
+                        data.assignment !== 'Location' && <InputWrapper>
+                            <DateInputField
+                                label="From"
+                                labelWidth={80}
+                                value={data.date}
+                                onClear={() => onFieldChange('date')('')}
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                keyboardType="number-pad"
+                                placeholder="YYYY/MM/DD"
+                                minDate={moment().add(1, 'days').toDate()}
+                                maxDate={null}
+                                onDateChange={onDateChange}
+                                // hasError={errors['dob']}
+                                // errorMessage={errors['dob']}
+                            />
+                        </InputWrapper>
+                    }
 
-                    <InputWrapper>
-                        <InputUnitField
-                            label={"Duration"}
-                            labelWidth={70}
-                            onChangeText={(value) => {
-                                if (/^\d+$/g.test(value) || !value) {
-                                    onFieldChange('Usage')(value)
-                                }
-                            }}
-                            value={data['Usage']}
-                            units={['hrs']}
-                            keyboardType="number-pad"
-                        />
-                    </InputWrapper>
-
-
-
-
+                    {
+                        data.assignment !== 'Location' && <InputWrapper>
+                            <InputUnitField
+                                label="Duration"
+                                labelWidth={70}
+                                onChangeText={value => {
+                                    if (/^\d+$/g.test(value) || !value) {
+                                        onFieldChange('duration')(value);
+                                    }
+                                }}
+                                value={data.duration}
+                                units={['hrs']}
+                                keyboardType="number-pad"
+                            />
+                        </InputWrapper>
+                    }
 
                 </Row>
 
-
-
-
-            </View >
-            <Divider />
+            </View>
+            <Divider/>
             <DoneButtonWrapper onPress={onDonePress}>
                 <DoneButtonText>DONE</DoneButtonText>
             </DoneButtonWrapper>
         </>
-    )
+    );
 }
 
-export default withModal(AddEquipmentDetailsTab)
+export default withModal(AssignEquipmentDetailsTab);

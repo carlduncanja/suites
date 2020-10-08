@@ -23,11 +23,13 @@ import ActionIcon from "../../../../../assets/svg/dropdownIcon";
 
 import {currencyFormatter} from '../../../../utils/formatter';
 import styled, {css} from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import {useTheme} from 'emotion-theming';
 
-import { PageContext } from '../../../../contexts/PageContext';
+import {PageContext} from '../../../../contexts/PageContext';
 import Data from '../../../common/Table/Data';
 import moment from "moment";
+import {checkboxItemPress} from "../../../../helpers/caseFilesHelpers";
+import {emptyFn} from "../../../../const";
 
 
 const headers = [
@@ -58,17 +60,17 @@ const ConsumablesContainer = styled.View`
 `;
 
 const TableContainer = styled.View`
-    margin-top : ${ ({theme}) => theme.space['--space-12']};
+    margin-top : ${({theme}) => theme.space['--space-12']};
 `;
 
 const ConsumableTextContainer = styled.View`
     flex-direction : row;
     justify-content : center;
 `;
-const ConsumableText = styled.Text( ({theme}) => ({
+const ConsumableText = styled.Text(({theme}) => ({
     ...theme.font['--text-sm-medium'],
-    color : theme.colors['--color-blue-600'],
-    paddingLeft : 14,
+    color: theme.colors['--color-blue-600'],
+    paddingLeft: 14,
 }));
 
 const IconButtonContainer = styled.View`
@@ -76,26 +78,26 @@ const IconButtonContainer = styled.View`
 `;
 
 const DividerContainer = styled.View`
-    margin-bottom : ${ ({theme}) => theme.space['--space-20']};
+    margin-bottom : ${({theme}) => theme.space['--space-20']};
 `;
 
 const TableBannerContainer = styled.View`
     width : 100%;
     height : 38px;
-    background-color : ${ ({theme}) => theme.colors['--accent-button']};
+    background-color : ${({theme}) => theme.colors['--accent-button']};
     justify-content : center;
     align-items : center;
-    margin-bottom : ${ ({theme}) => theme.space['--space-8']};
+    margin-bottom : ${({theme}) => theme.space['--space-8']};
     border-radius : 8px;
 `;
 
-const BannerText = styled.Text( ({theme}) => ({
+const BannerText = styled.Text(({theme}) => ({
     ...theme.font['--text-sm-medium'],
-    color : theme.colors['--default-shade-white'],
+    color: theme.colors['--default-shade-white'],
 }));
 
 const ChangesDataContainer = styled.View`
-    margin-bottom : ${ ({theme}) => theme.space['--space-12']};
+    margin-bottom : ${({theme}) => theme.space['--space-12']};
 `
 
 export const POST_EDIT_MODE = {
@@ -104,62 +106,68 @@ export const POST_EDIT_MODE = {
 }
 
 
-function PostEditView ({
-    headers,
-    consumables = [],
-    caseProceduresFilters = [],
-    caseProcedures = [],
-    lastEdited = new Date(),
-    caseProcedureChanges = [],
-    bannerText = "Find your change submission below",
-    role = "Nurse",
-    mode = POST_EDIT_MODE.CONSUMABLES
-}) {
+function PostEditView({
+                          headers,
+                          caseProcedures = [],
+                          lastEdited = new Date(),
+                          caseProcedureChanges = [],
+                          bannerText = "Find your change submission below",
+                          isEditMode = false,
+                          selectedLineItems = [],
+                          selectedCaseProcedureIds = [],
+                          onCaseProcedureItemUpdated = emptyFn,
+                          onLineItemSelected = emptyFn,
+                          onSelectCaseProcedureId = emptyFn,
+                          mode = POST_EDIT_MODE.CONSUMABLES,
+                      }) {
 
-    // console.log("Cae: ", caseProcedures)
     const theme = useTheme();
-    const { pageState } = useContext(PageContext);
-    const { isEditMode } = pageState
-
-
-    const [checkBoxList, setCheckBoxList] = useState([]);
-    const [variantsCheckboxList, setVariantsCheckBoxList] = useState([]);
 
     const [searchText, setSearchText] = useState('')
-    const [selectedOption, setSelectedOption] = useState(caseProceduresFilters[0])
-    const [selectedIndex, setSelectedIndex] = useState(0)
 
     const onSearchInputChange = (input) => {
         setSearchText(input)
     }
 
     const toggleCheckbox = (item) => () => {
-        let updatedInventories = [...checkBoxList];
-
-        if (updatedInventories.includes(item)) {
-            updatedInventories = updatedInventories.filter(caseItem => caseItem !== item)
-        } else {
-            updatedInventories.push(item);
-        }
-        setCheckBoxList(updatedInventories);
+        const updatedIds = checkboxItemPress(item.caseProcedureId, selectedCaseProcedureIds)
+        onSelectCaseProcedureId(updatedIds);
     }
 
-    const toggleHeaderCheckbox = () => {
-        const selectedData = consumables[selectedIndex];
-        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== selectedData.length;
+    const toggleChildCheckbox = (variantId, parentId) => () => {
 
-        if (indeterminate) {
-            const selectedAllIds = [...selectedData.map(item => item)]
-            setCheckBoxList(selectedAllIds)
+        let variantsToUpdate = [...selectedLineItems];
+        const parentIds = variantsToUpdate.map(variantObjects => variantObjects._parentId);
+        const selectedVariantGroupIndex = parentIds.indexOf(parentId);
+
+        // find the variant object to include.
+        if (selectedVariantGroupIndex >= 0) {
+
+            // add or remove equipment from group from
+            let equipmentVariants = variantsToUpdate[selectedVariantGroupIndex].variants
+            equipmentVariants = checkboxItemPress(variantId, equipmentVariants)
+            variantsToUpdate[selectedVariantGroupIndex].variants = equipmentVariants
+
+            onLineItemSelected([...variantsToUpdate]);
         } else {
-            setCheckBoxList([])
+            onLineItemSelected([...variantsToUpdate, {
+                _parentId: parentId,
+                variants: [variantId]
+            }])
         }
     }
 
+    const onQuantityChangePress = (item, index, caseProcedureId) => (action) => {
+        const updatedObj = {
+            ...item,
+            amount: action === 'add' ? item.amount + 1 : item.amount - 1
+        };
 
-    const listItem = ({ name }, onActionPress, isCollapsed, index) => <>
+        onCaseProcedureItemUpdated(updatedObj, caseProcedureId, mode);
+    }
 
-        <DataItem text = {name} flex = {10} color="--color-gray-800" fontStyle = "--text-base-regular"/>
+    const listItem = ({name}, onActionPress, isCollapsed, index) => <>
+        <DataItem text={name} flex={10} color="--color-gray-800" fontStyle="--text-base-regular"/>
 
         <IconButton
             Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
@@ -167,10 +175,11 @@ function PostEditView ({
         />
     </>
 
-    const changeListItem = ({ name }, onActionPress, isCollapsed, index, timeUpdated) => <>
+    const changeListItem = ({name}, onActionPress, isCollapsed, index, timeUpdated) => <>
 
-        <DataItem text = {name} flex = {1} color="--color-blue-900" fontStyle = "--text-base-medium"/>
-        <DataItem text ={`Last Edited: ${timeUpdated}`} flex = {1} color="--color-blue-900" fontStyle = "--text-xs-regular" align="flex-end"/>
+        <DataItem text={name} flex={1} color="--color-blue-900" fontStyle="--text-base-medium"/>
+        <DataItem text={`Last Edited: ${timeUpdated}`} flex={1} color="--color-blue-900" fontStyle="--text-xs-regular"
+                  align="flex-end"/>
         <IconButtonContainer>
             <IconButton
                 Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
@@ -180,105 +189,110 @@ function PostEditView ({
 
     </>
 
-
     const childViewItem = (item, index) => {
-        const { amount = 0, cost = 0, name = "" , type = ""} = item
+        const {amount = 0, cost = 0, name = "", type = ""} = item
         return (
             <>
                 <ContentDataItem
-                    flex = {1}
-                    content = {
+                    flex={1}
+                    content={
                         <ConsumableTextContainer>
-                            <ItemArrow strokeColor = { theme.colors['--color-gray-600']}/>
+                            <ItemArrow strokeColor={theme.colors['--color-gray-600']}/>
                             <ConsumableText>{name}</ConsumableText>
                         </ConsumableTextContainer>
                     }
                 />
-                <DataItem text ={type} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                <DataItem text={type} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
                 {
-                    <DataItem text = {amount} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                    <DataItem text={amount} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
                 }
-                <DataItem text = {`$ ${currencyFormatter(cost)}`} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                <DataItem text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
+                          color="--color-gray-700"/>
 
             </>
         )
     }
 
-    const changeChildViewItem = (item, index) => {
-        const { amount = 0, cost = 0, name = "" , initialAmount = 0, type} = item
+    const changeChildViewItem = (item, index, caseProcedureId) => {
+        const {amount = 0, cost = 0, name = "", initialAmount = 0, type} = item
+
+
+
         return (
             <>
                 <ContentDataItem
-                    flex = {1}
-                    content = {
+                    flex={1}
+                    content={
                         <ConsumableTextContainer>
-                            <ItemArrow strokeColor = { theme.colors['--color-gray-600']}/>
+                            <ItemArrow strokeColor={theme.colors['--color-gray-600']}/>
                             <ConsumableText>{name}</ConsumableText>
                         </ConsumableTextContainer>
                     }
                 />
 
-                <DataItem text ={type} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                <DataItem text={type} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
                 {
-                    isEditMode === true && role === 'Admin'?
+                    isEditMode ?
                         <ContentDataItem
-                            align = "center"
-                            content = {
+                            align="center"
+                            content={
                                 <NumberChangeField
-                                    backgroundColor = "#48BB78"
-                                    onChangePress={()=>{}}
-                                    // onAmountChange={onAmountChange(item, index)}
+                                    onChangePress={onQuantityChangePress(item, index, caseProcedureId)}
                                     value={amount === 0 ? "" : amount.toString()}
+                                    borderColor='--color-green-500'
+                                    backgroundColor='--color-green-100'
                                 />
                             }
                         />
-                    : <ComparisonDataItem
-                        prevValue = {initialAmount}
-                        nextValue = {amount}
-                        align = "center"
-                        fontStyle = {'--text-base-regular'}
-                        color = "--color-gray-700"
-                    />
+                        : <ComparisonDataItem
+                            prevValue={initialAmount}
+                            nextValue={amount}
+                            align="center"
+                            fontStyle={'--text-base-regular'}
+                            color="--color-gray-700"
+                        />
                 }
 
-                <DataItem text = {`$ ${currencyFormatter(cost)}`} align = "center" fontStyle = {'--text-base-regular'} color = "--color-gray-700"/>
+                <DataItem text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
+                          color="--color-gray-700"/>
 
             </>
         )
     }
 
-    const renderChildItemView = (item, index) => {
-        let { _id } = item
-
+    const renderChildItemView = (item, index, caseProcedureId) => {
         return (
             <Item
-                itemView = {childViewItem(item, index)}
-                hasCheckBox = {true}
-                isChecked = {variantsCheckboxList.includes(_id)}
-                onCheckBoxPress = {()=>{}}
-                onItemPress = {()=>{}}
+                itemView={childViewItem(item, index)}
+                hasCheckBox={true}
             />
         )
     };
 
-    const renderChangeChildItemView = (item, index) => {
-        let { _id } = item
+    const renderChangeChildItemView = (item, index, caseProcedureId) => {
+        let selectedGroup = selectedLineItems?.find(obj => obj._parentId === caseProcedureId);
+        const variants = selectedGroup?.variants || [];
+
+        const variantId = mode === POST_EDIT_MODE.CONSUMABLES ?  item._id : item.equipment;
+        const isChecked = variants.includes(variantId)
+
         return (
             <Item
-                itemView = {changeChildViewItem(item, index)}
-                hasCheckBox = {false}
-                isChecked = {variantsCheckboxList.includes(_id)}
-                onCheckBoxPress = {()=>{}}
-                onItemPress = {()=>{}}
+                itemView={changeChildViewItem(item, index, caseProcedureId)}
+                hasCheckBox={true}
+                isChecked={isChecked}
+                onCheckBoxPress={toggleChildCheckbox(variantId, caseProcedureId)}
+                onItemPress={() => {
+                }}
             />
         )
     };
 
     const renderCollapsible = (item, index) => {
 
-        const { procedure, inventories, equipments} = item
+        const {caseProcedureId, procedure, inventories, equipments} = item
         let procedureItem = {
-            name : procedure?.name
+            name: procedure?.name
         };
 
         //  chose data depending on the mode.
@@ -286,31 +300,28 @@ function PostEditView ({
 
         return (
             <CollapsibleListItem
-                isChecked={checkBoxList.includes(item._id)}
-                onCheckBoxPress={ (collapse)=> {collapse()}}
                 hasCheckBox={true}
-                onItemPress={()=> {}}
                 render={(collapse, isCollapsed) => listItem(procedureItem, collapse, isCollapsed, index)}
             >
-            <FlatList
-                data={data}
-                renderItem={({item, index}) => {
-                    return renderChildItemView(item, index)
-                }}
-                keyExtractor={(item, index) => "" + index}
-                ItemSeparatorComponent={() =>
-                    <View style={{flex: 1, margin: 5, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
-                }
-            />
+                <FlatList
+                    data={data}
+                    renderItem={({item, index}) => {
+                        return renderChildItemView(item, index, caseProcedureId)
+                    }}
+                    keyExtractor={(item, index) => "" + index}
+                    ItemSeparatorComponent={() =>
+                        <View style={{flex: 1, margin: 5, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
+                    }
+                />
 
-        </CollapsibleListItem>
+            </CollapsibleListItem>
         )
     }
 
     const renderChangeCollapsible = (item, index) => {
 
-        const { procedure, inventories, equipments} = item
-        let procedureItem = {name : procedure?.name};
+        const {procedure, inventories, equipments, caseProcedureId} = item
+        let procedureItem = {name: procedure?.name};
 
         //  chose data depending on the mode.
         const data = mode === POST_EDIT_MODE.EQUIPMENTS ? equipments : inventories;
@@ -321,25 +332,27 @@ function PostEditView ({
 
         return (
             <CollapsibleListItem
-                isChecked={checkBoxList.includes(item._id)}
-                onCheckBoxPress={ ()=> {}}
+                isChecked={selectedCaseProcedureIds.includes(caseProcedureId)}
+                onCheckBoxPress={toggleCheckbox(item)}
                 hasCheckBox={true}
-                onItemPress={(collapse)=> { collapse()}}
-                render={(collapse, isCollapsed) => changeListItem(procedureItem, collapse, isCollapsed, index, timeUpdated)}
-                backgroundColor = "--color-gray-200"
-            >
-            <FlatList
-                data={data}
-                renderItem={({item, index}) => {
-                    return renderChangeChildItemView(item, index)
+                onItemPress={(collapse) => {
+                    collapse()
                 }}
-                keyExtractor={(item, index) => "" + index}
-                ItemSeparatorComponent={() =>
-                    <View style={{flex: 1, margin: 5, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
-                }
-            />
+                render={(collapse, isCollapsed) => changeListItem(procedureItem, collapse, isCollapsed, index, timeUpdated)}
+                backgroundColor="--color-gray-200"
+            >
+                <FlatList
+                    data={data}
+                    renderItem={({item, index}) => {
+                        return renderChangeChildItemView(item, index, caseProcedureId)
+                    }}
+                    keyExtractor={(item, index) => "" + index}
+                    ItemSeparatorComponent={() =>
+                        <View style={{flex: 1, margin: 5, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
+                    }
+                />
 
-        </CollapsibleListItem>
+            </CollapsibleListItem>
         )
     }
 
@@ -357,33 +370,34 @@ function PostEditView ({
 
                 <TableContainer>
                     <Header
-                        headers = {headers}
-                        toggleHeaderCheckbox = {()=>{}}
-                        isCheckbox = {true}
+                        headers={headers}
+                        toggleHeaderCheckbox={() => {
+                        }}
+                        isCheckbox={true}
                     />
 
-                    <DividerContainer theme = {theme}>
+                    <DividerContainer theme={theme}>
                         <LineDivider/>
                     </DividerContainer>
 
-                    <TableBannerContainer theme = {theme}>
-                        <BannerText theme = {theme}>{bannerText}</BannerText>
+                    <TableBannerContainer theme={theme}>
+                        <BannerText theme={theme}>{bannerText}</BannerText>
                     </TableBannerContainer>
 
-                    <ChangesDataContainer theme = {theme}>
+                    <ChangesDataContainer theme={theme}>
                         <Data
-                            listItemFormat = {renderChangeCollapsible}
-                            data = {caseProcedureChanges}
+                            listItemFormat={renderChangeCollapsible}
+                            data={caseProcedureChanges}
                         />
                     </ChangesDataContainer>
 
-                    <DividerContainer theme = {theme}>
+                    <DividerContainer theme={theme}>
                         <BrokenLineDivider/>
                     </DividerContainer>
 
                     <Data
-                        listItemFormat = {renderCollapsible}
-                        data = {caseProcedures}
+                        listItemFormat={renderCollapsible}
+                        data={caseProcedures}
                     />
 
                 </TableContainer>

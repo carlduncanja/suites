@@ -1,57 +1,57 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect} from 'react';
 import {
     View,
     Text,
     StyleSheet,
     FlatList,
     TouchableOpacity,
-} from "react-native";
+} from 'react-native';
 
-import Page from "../../components/common/Page/Page";
-import RoundedPaginator from "../../components/common/Paginators/RoundedPaginator";
-import FloatingActionButton from "../../components/common/FloatingAction/FloatingActionButton";
-import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
-import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import ActionItem from "../../components/common/ActionItem";
-import CreateEquipmentDialog from "../../components/Equipment/CreateEquipmentDialogContainer";
-import Item from "../../components/common/Table/Item";
-import NavPage from "../../components/common/Page/NavPage";
-import _, {isEmpty, concat} from "lodash";
-import DataItem from "../../components/common/List/DataItem";
-import WasteIcon from "../../../assets/svg/wasteIcon";
-import AddIcon from "../../../assets/svg/addIcon";
-import AssignIcon from "../../../assets/svg/assignIcon";
-import EditIcon from "../../../assets/svg/editIcon";
+import _, {isEmpty, concat} from 'lodash';
+import {connect} from 'react-redux';
+import {withModal} from 'react-native-modalfy';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import moment from 'moment';
+import Page from '../../components/common/Page/Page';
+import RoundedPaginator from '../../components/common/Paginators/RoundedPaginator';
+import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
+import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
+import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
+import ActionItem from '../../components/common/ActionItem';
+import CreateEquipmentDialog from '../../components/Equipment/CreateEquipmentDialogContainer';
+import Item from '../../components/common/Table/Item';
+import NavPage from '../../components/common/Page/NavPage';
+import DataItem from '../../components/common/List/DataItem';
+import WasteIcon from '../../../assets/svg/wasteIcon';
+import AddIcon from '../../../assets/svg/addIcon';
+import AssignIcon from '../../../assets/svg/assignIcon';
+import EditIcon from '../../../assets/svg/editIcon';
 import MultipleShadowsContainer from '../../components/common/MultipleShadowContainer';
-import ContentDataItem from "../../components/common/List/ContentDataItem";
-import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
-import CollapsedIcon from "../../../assets/svg/closeArrow";
-import ActionIcon from "../../../assets/svg/dropdownIcon";
+import ContentDataItem from '../../components/common/List/ContentDataItem';
+import RightBorderDataItem from '../../components/common/List/RightBorderDataItem';
+import CollapsedIcon from '../../../assets/svg/closeArrow';
+import ActionIcon from '../../../assets/svg/dropdownIcon';
 import {
     useNextPaginator,
     usePreviousPaginator,
     checkboxItemPress,
     selectAll,
-} from "../../helpers/caseFilesHelpers";
+} from '../../helpers/caseFilesHelpers';
 
-import {connect} from "react-redux";
-import {setEquipment} from "../../redux/actions/equipmentActions";
-import {getEquipment, getEquipmentTypes, removeEquipment, removeEquipmentTypes} from "../../api/network";
+import {setEquipment} from '../../redux/actions/equipmentActions';
+import {getEquipment, getEquipmentTypes, removeEquipment, removeEquipmentTypes} from '../../api/network';
 
-import {withModal} from "react-native-modalfy";
-import {formatDate} from "../../utils/formatter";
-import {numberFormatter} from "../../utils/formatter";
-import CollapsibleListItem from "../../components/common/List/CollapsibleListItem";
-import IconButton from "../../components/common/Buttons/IconButton";
-import ActionCollapseIcon from "../../../assets/svg/actionCollapseIcon";
-import SvgIcon from "../../../assets/SvgIcon";
-import CreateEquipmentTypeDialogContainer from "../../components/Equipment/CreateEquipmentTypeDialogContainer";
-import ListItem from "../../components/common/List/ListItem";
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import {formatDate, numberFormatter} from '../../utils/formatter';
+
+import CollapsibleListItem from '../../components/common/List/CollapsibleListItem';
+import IconButton from '../../components/common/Buttons/IconButton';
+import ActionCollapseIcon from '../../../assets/svg/actionCollapseIcon';
+import SvgIcon from '../../../assets/SvgIcon';
+import CreateEquipmentTypeDialogContainer from '../../components/Equipment/CreateEquipmentTypeDialogContainer';
+import ListItem from '../../components/common/List/ListItem';
 import {LONG_PRESS_TIMER} from '../../const';
-import ConfirmationComponent from "../../components/ConfirmationComponent";
-
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 const QuantityWrapper = styled.View`
     flex:1;
@@ -61,7 +61,7 @@ const QuantityWrapper = styled.View`
 const QuantityContainer = styled.View`
     height : 24px;
     width : 28px;
-    background-color : ${({theme, isCollapsed}) => isCollapsed === false ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
+    background-color : ${({theme, isCollapsed}) => (isCollapsed === false ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white'])};
     border-radius : 4px;
     align-items: center;
     justify-content: center;
@@ -73,7 +73,6 @@ const GroupEquipmentView = styled.TouchableOpacity`
   align-items : center;
 
 `;
-
 
 const QuantityText = styled.Text(({theme, isCollapsed}) => ({
     ...theme.font['--text-base-regular'],
@@ -92,32 +91,32 @@ const shadows = [
         shadowOpacity: 0.1,
         shadowRadius: 3
     },
-]
-const Equipment = (props) => {
+];
+const Equipment = props => {
     const theme = useTheme();
     // ############# Const data
     const recordsPerPage = 10;
     const listHeaders = [
 
         {
-            name: "Item ID",
-            alignment: "center",
-            flex: .5,
+            name: 'Item ID',
+            alignment: 'center',
+            flex: 0.5,
         },
         {
-            name: "Status",
-            alignment: "center",
+            name: 'Status',
+            alignment: 'center',
             flex: 1.3,
         },
         {
-            name: "In Stock",
-            alignment: "center",
+            name: 'In Stock',
+            alignment: 'center',
             flex: 1,
         },
 
         {
-            name: "Assigned",
-            alignment: "center",
+            name: 'Assigned',
+            alignment: 'center',
             flex: 2,
         },
     ];
@@ -138,10 +137,9 @@ const Equipment = (props) => {
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [groupNameSelected, setGroupNameSelected] = useState({});
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
-    let groupNameChoice = {};
     const [assignments, setAssignments] = useState([]);
 
     const [selectedEquipments, setSelectedEquipments] = useState([]);
@@ -150,8 +148,7 @@ const Equipment = (props) => {
 
     const [equipmentTypes, setEquipmentTypes] = useState([]);
 
-    const [expandedItems, setExpandedItems] = useState([])
-
+    const [expandedItems, setExpandedItems] = useState([]);
 
     // ############# Lifecycle methods
 
@@ -175,7 +172,7 @@ const Equipment = (props) => {
 
         const search = _.debounce(fetchEquipmentData, 300);
 
-        setSearchQuery((prevSearch) => {
+        setSearchQuery(prevSearch => {
             if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
@@ -187,7 +184,7 @@ const Equipment = (props) => {
     }, [searchValue]);
     // ############# Event Handlers
 
-    const onSearchInputChange = (input) => {
+    const onSearchInputChange = input => {
         setSearchValue(input);
     };
 
@@ -196,8 +193,8 @@ const Equipment = (props) => {
     };
 
     const handleOnSelectAll = () => {
-        console.log("Equipment Types: ", equipmentTypes);
-        let updatedEquipmentList = selectAll(equipmentTypes, selectedTypesIds);
+        console.log('Equipment Types: ', equipmentTypes);
+        const updatedEquipmentList = selectAll(equipmentTypes, selectedTypesIds);
         setSelectedTypesIds(updatedEquipmentList);
 
         // const indeterminate = selectedTypesIds.length >= 0 && selectedTypesIds.length !== equipmentTypes.length;
@@ -209,9 +206,9 @@ const Equipment = (props) => {
         // }
     };
 
-    const handleOnCheckBoxPress = (item) => () => {
+    const handleOnCheckBoxPress = item => () => {
         const {_id} = item;
-        let updatedEquipmentList = checkboxItemPress(_id, selectedTypesIds);
+        const updatedEquipmentList = checkboxItemPress(_id, selectedTypesIds);
 
         setGroupSelected(item);
         setSelectedTypesIds(updatedEquipmentList);
@@ -221,7 +218,7 @@ const Equipment = (props) => {
         setSelectedChildEquipment(removeChildren);
     };
 
-    const handleOnItemCheckboxPress = (equipmentItem) => {
+    const handleOnItemCheckboxPress = equipmentItem => {
         setSelectedChildEquipment(equipmentItem);
         const {_id, type} = equipmentItem;
         //  let updatedEquipments = [...selectedEquipmentIds];
@@ -235,28 +232,26 @@ const Equipment = (props) => {
             _id,
             groupId: type,
             ...equipmentItem
-        }))
+        }));
         setSelectedEquipments(updatedSelectedVariants);
 
         //  remove group
-        setSelectedTypesIds(selectedTypesIds.filter(id => id !== type))
+        setSelectedTypesIds(selectedTypesIds.filter(id => id !== type));
     };
 
-    const onCollapseView = (key) => {
+    const onCollapseView = key => {
         if (expandedItems.includes(key)) {
-            setExpandedItems(expandedItems.filter(item => item !== key))
+            setExpandedItems(expandedItems.filter(item => item !== key));
         } else {
-            setExpandedItems([...expandedItems, key])
+            setExpandedItems([...expandedItems, key]);
         }
-    }
+    };
 
-    const handleOnItemPress = (item, addedInfo, isOpenEditable, type) => {
-
-        props.navigation.navigate("EquipmentItemPage", {
+    const handleOnItemPress = (item, isOpenEditable, type) => {
+        props.navigation.navigate('EquipmentItemPage', {
             initial: false,
             equipment: item,
-            info: addedInfo,
-            isOpenEditable: isOpenEditable,
+            isOpenEditable,
             group: type,
             onCreated: handleDataRefresh
         });
@@ -264,7 +259,7 @@ const Equipment = (props) => {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(
+            const {currentPage, currentListMin, currentListMax} = useNextPaginator(
                 currentPagePosition,
                 recordsPerPage,
                 currentPageListMin,
@@ -280,7 +275,7 @@ const Equipment = (props) => {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(
+        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(
             currentPagePosition,
             recordsPerPage,
             currentPageListMin,
@@ -294,9 +289,9 @@ const Equipment = (props) => {
 
     const toggleActionButton = () => {
         setFloatingAction(true);
-        modal.openModal("ActionContainerModal", {
+        modal.openModal('ActionContainerModal', {
             actions: getFabActions(),
-            title: "EQUIPMENT ACTIONS",
+            title: 'EQUIPMENT ACTIONS',
             onClose: () => {
                 setFloatingAction(false);
             },
@@ -304,26 +299,25 @@ const Equipment = (props) => {
     };
 
     const onRemoveGroups = () => {
-        openConfirmationScreen(() => removeEquipmentGroup({ids: [...selectedTypesIds]}) )
-    }
+        openConfirmationScreen(() => removeEquipmentGroup({ids: [...selectedTypesIds]}) );
+    };
 
     const onRemoveItems = () => {
-        openConfirmationScreen(() => removeEquipmentItems(selectedChildEquipment))
-    }
+        openConfirmationScreen(() => removeEquipmentItems(selectedChildEquipment));
+    };
 
     const onRefresh = () => {
         fetchEquipmentData(currentPagePosition);
-    }
+    };
 
     // ############# Helper functions
-    const fetchEquipmentData = (pagePosition) => {
-
-        let currentPosition = pagePosition ? pagePosition : 1;
-        setCurrentPagePosition(currentPosition)
+    const fetchEquipmentData = pagePosition => {
+        const currentPosition = pagePosition || 1;
+        setCurrentPagePosition(currentPosition);
 
         setFetchingData(true);
         getEquipmentTypes(searchValue, recordsPerPage, currentPosition)
-            .then((equipmentTypesInfo) => {
+            .then(equipmentTypesInfo => {
                 const {data = [], pages = 0} = equipmentTypesInfo;
 
                 if (pages === 1) {
@@ -346,48 +340,44 @@ const Equipment = (props) => {
                 setEquipmentTypes(data);
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
-            .catch((error) => {
-                console.log("Failed to get equipment types", error);
-                setTotalPages(1)
-                setPreviousDisabled(true)
-                setNextDisabled(true)
+            .catch(error => {
+                console.log('Failed to get equipment types', error);
+                setTotalPages(1);
+                setPreviousDisabled(true);
+                setNextDisabled(true);
             });
 
         getEquipment()
-            .then((data) => {
+            .then(data => {
                 setEquipment(data);
             })
-            .catch((error) => {
-                console.log("failed to get equipment", error);
+            .catch(error => {
+                console.error('failed to get equipment', error);
             })
-            .finally((_) => {
+            .finally(_ => {
                 setFetchingData(false);
             });
     };
 
-    const renderEquipmentFn = (item) => {
+    const renderEquipmentFn = item => {
         const equipments = item.equipments || [];
         let assignments;
 
-        assignments = equipments?.map(x => {
-            return x?.assignments?.map(assigned => assigned)
-        })
+        assignments = equipments?.map(x => x?.assignments?.map(assigned => assigned));
 
-        let asArray = [];
+        const asArray = [];
         const concatAssignments = [].concat.apply([], assignments);
 
-
         const viewItem = {
-            name: item.name,
+            equipments,
             _id: item._id,
-            equipments: equipments,
+            name: item.name,
             suppliers: item.suppliers,
             description: item.description,
             quantity: item.equipments.length,
             nextAvailable: new Date(2020, 12, 12),
         };
-        const isIndeterminate = selectedEquipments.some(variant => variant.groupId === item._id)
-
+        const isIndeterminate = selectedEquipments.some(variant => variant.groupId === item._id);
 
         return (
             <CollapsibleListItem
@@ -398,121 +388,95 @@ const Equipment = (props) => {
                 onItemPress={() => gotoGroupDetails(item)}
                 collapsed={!expandedItems.includes(item.name)}
                 onCollapsedEnd={() => onCollapseView(item.name)}
-                render={(collapse, isCollapsed) =>
-                    equipmentGroupView(viewItem, collapse, isCollapsed)
+                render={(collapse, isCollapsed) => equipmentGroupView(viewItem, collapse, isCollapsed)
                 }
             >
                 <FlatList
                     data={getEquipmentData(equipments)}
-                    keyExtractor={(item, index) => "" + index}
+                    keyExtractor={(item, index) => `${index}`}
                     ItemSeparatorComponent={() => (
                         <View
                             style={{
                                 flex: 1,
                                 marginLeft: 10,
-                                borderColor: "#E3E8EF",
+                                borderColor: '#E3E8EF',
                                 borderWidth: 0.5,
                             }}
                         />
                     )}
                     renderItem={({item}) => {
-                        const equipmentGroup = item.items || [];
+                        const evalRecentAssignment = assignments => {
+                            let assignmentName = null;
+                            let status = null;
+                            let mostRecent = null;
 
+                            for (const assignment of assignments) {
+                                if (assignment.type !== 'location') {
+                                    if (!mostRecent || moment(assignment.startTime).isAfter(mostRecent)) {
+                                        mostRecent = moment(assignment.startTime);
 
-                        groupNameChoice = viewItem;
+                                        assignmentName = assignment.referenceName;
 
+                                        const futureTime = mostRecent.clone().add(assignment.duration || 0, 'hours');
+                                        status = moment().isBetween(mostRecent, futureTime) ? 'Unavailable' : 'Available';
+                                    }
+                                }
+                            }
 
-                        const childAssignments = item.items[0].assignments;
+                            return {assignmentName, status};
+                        };
 
+                        const {assignmentName: assignment, status} = evalRecentAssignment(item.assignments);
+                        const {_id, name: equipmentName, description} = item;
 
                         const equipmentItem = {
-                            assigmentName: item.id,
-                            description: viewItem.description,
-                            quantity: equipmentGroup.length,
-                            assignment: isEmpty(childAssignments) ? "Not currently assigned" : childAssignments,
-                            status:
-                                isEmpty(childAssignments) || childAssignments.length <= 1
-                                    ? "Available"
-                                    : childAssignments.length >= 2 && childAssignments.length <= 5
-                                    ? "Multiple"
-                                    : "Unavailable",
-                            dateAvailable: viewItem.nextAvailable,
+                            ...item,
+                            _id,
+                            equipmentName,
+                            description,
+                            quantity: 1,
+                            group: viewItem,
+                            assignment: assignment || 'Unassigned',
+                            status: status || 'Available',
                         };
 
-                        const onActionPress = () => {
-                            console.log("Clicked group")
-                        };
+                        const onActionPress = () => console.info('Clicked group');
 
-                        let pressItem = item.items[0];
-                        let addedInfo = equipmentItem;
-                        //setGroupNameSelected(viewItem);
-
-                        return renderItemView(equipmentItem, addedInfo, pressItem, onActionPress);
+                        return renderItemView(equipmentItem, onActionPress);
                     }}
                 />
             </CollapsibleListItem>
         );
     };
 
-    const getEquipmentData = (equipments = []) => {
-        const assignmentGroupedEquipments = {};
+    const getEquipmentData = (equipments = []) => equipments;
 
-        // console.log("render children equipments", equipments);
-
-        // group equipment by assignment
-        equipments.forEach((item) => {
-            // console.log("EEq Item: ", item)
-            const assignmentName = item.assignment && !item.assignment.name;
-            if (!assignmentName) {
-                return (assignmentGroupedEquipments[item.name] = [item]);
-            }
-            if (assignmentGroupedEquipments[assignmentName]) {
-                assignmentGroupedEquipments[assignmentName].push(item);
-            } else {
-                assignmentGroupedEquipments[assignmentName] = [item];
-            }
-        });
-
-        // console.log("render children groups", assignmentGroupedEquipments);
-
-        const data = Object.keys(assignmentGroupedEquipments).map((item) => ({
-            id: item,
-            items: assignmentGroupedEquipments[item] || [],
-        }));
-        return data;
-    };
-
-    const renderItemView = (item, addedInfo, actionItem, onActionPress) => {
-        let {_id} = actionItem;
+    const renderItemView = (item, onActionPress) => {
+        const {_id, group} = item;
         const ids = selectedEquipments.map(item => item._id);
         return (
             <Item
                 itemView={equipmentItemView(item, onActionPress)}
                 hasCheckBox={true}
                 isChecked={ids.includes(_id)}
-                onCheckBoxPress={() => handleOnItemCheckboxPress(actionItem)}
-                onItemPress={() => handleOnItemPress(actionItem, addedInfo, false, groupNameChoice)}
+                onCheckBoxPress={() => handleOnItemCheckboxPress(item)}
+                onItemPress={() => handleOnItemPress(item, false, group)}
             />
         );
     };
 
-    const equipmentItemView = ({assigmentName, quantity, status, dateAvailable, assignment}, onActionPress) => (
+    const equipmentItemView = ({equipmentName, quantity, status, assignment}, onActionPress) => (
         <>
-            <DataItem text={assigmentName} flex={.2} color="--color-blue-600" fontStyle="--text-sm-medium"/>
-            <DataItem text={status} flex={.25} color="--color-gray-800" fontStyle="--text-sm-regular"/>
-            <DataItem text={quantity} flex={.2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
-            {Array.isArray(assignment) ? assignment?.map(item =>
-                <DataItem text={item.type === "physician" ? item.physician : item.theatre} flex={.1} align="center"
-                          color="--color-gray-800" fontStyle="--text-sm-regular"/>
-            ) : <DataItem text={assignment} flex={.3} align="center" color="--color-gray-800"
-                          fontStyle="--text-sm-regular"/>
-            }
+            <DataItem text={equipmentName} flex={0.2} color="--color-blue-600" fontStyle="--text-sm-medium"/>
+            <DataItem text={status} flex={0.25} color="--color-gray-800" fontStyle="--text-sm-regular"/>
+            <DataItem text={quantity} flex={0.2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
+            <DataItem text={assignment} flex={0.3} color="--color-gray-800" fontStyle="--text-sm-regular"/>
         </>
     );
 
-    const gotoGroupDetails = (item) => {
-        props.navigation.navigate("EquipmentGroupDetailsPage", {data: item, onCreated: handleDataRefresh})
-    }
+    const gotoGroupDetails = item => {
+        props.navigation.navigate('EquipmentGroupDetailsPage', {data: item, onCreated: handleDataRefresh});
+    };
 
     const equipmentGroupView = (item, onActionPress, isCollapsed) => (
         <>
@@ -528,46 +492,56 @@ const Equipment = (props) => {
             <View style={{flex: 1.7}}/>
             <ContentDataItem
                 align="center"
-                flex={.5}
-                content={
+                flex={0.5}
+                content={(
                     <IconButton
                         Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
                         onPress={onActionPress}
                     />
-                }
+                )}
             />
         </>
     );
 
     const gotoAddEquipment = () => {
         modal.closeAllModals();
-        navigation.navigate("AddEquipmentPage", {equipment: groupSelected, onCreated: ()=>{handleDataRefresh; setFloatingAction(false)}})
-    }
+        navigation.navigate('AddEquipmentPage', {
+            equipment: groupSelected,
+            onCreated: () => {
+                handleDataRefresh();
+                setFloatingAction(false);
+            }
+        });
+    };
 
     const gotoAssignEquipment = () => {
         modal.closeAllModals();
         const equipment = selectedEquipments[0];
-        navigation.navigate("AssignEquipmentPage", {equipment, onCreated: handleDataRefresh});
-    }
+        navigation.navigate('AssignEquipmentPage', {equipment, onCreated: handleDataRefresh});
+    };
 
     const getFabActions = () => {
-
-
-        const isGroupDeleteDisabled = !selectedTypesIds.length
+        const isGroupDeleteDisabled = !selectedTypesIds.length;
 
         const deleteAction = (
             <View style={{
                 borderRadius: 6,
                 flex: 1,
                 overflow: 'hidden'
-            }}>
-                <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} isDisabled={isGroupDeleteDisabled}
-                                       onLongPress={onRemoveGroups}>
+            }}
+            >
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    isDisabled={isGroupDeleteDisabled}
+                    onLongPress={onRemoveGroups}
+                >
                     <ActionItem
-                        title={"Hold to Delete Group"}
-                        icon={<WasteIcon
-                            strokeColor={isGroupDeleteDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
-                        />}
+                        title="Hold to Delete Group"
+                        icon={(
+                            <WasteIcon
+                                strokeColor={isGroupDeleteDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            />
+                        )}
                         onPress={onRemoveGroups}
                         touchable={false}
                         disabled={isGroupDeleteDisabled}
@@ -576,20 +550,26 @@ const Equipment = (props) => {
             </View>
         );
 
-        const isEquipmentItemDeleteDisabled = !selectedEquipments.length
+        const isEquipmentItemDeleteDisabled = !selectedEquipments.length;
         const deleteEquipmentItemAction = (
             <View style={{
                 borderRadius: 6,
                 flex: 1,
                 overflow: 'hidden'
-            }}>
-                <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} isDisabled={isEquipmentItemDeleteDisabled}
-                                       onLongPress={onRemoveGroups}>
+            }}
+            >
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    isDisabled={isEquipmentItemDeleteDisabled}
+                    onLongPress={onRemoveGroups}
+                >
                     <ActionItem
-                        title={"Hold to Delete Equipment"}
-                        icon={<WasteIcon
-                            strokeColor={isEquipmentItemDeleteDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
-                        />}
+                        title="Hold to Delete Equipment"
+                        icon={(
+                            <WasteIcon
+                                strokeColor={isEquipmentItemDeleteDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            />
+                        )}
                         onPress={onRemoveItems}
                         touchable={false}
                         disabled={isEquipmentItemDeleteDisabled}
@@ -603,17 +583,19 @@ const Equipment = (props) => {
             <ActionItem
                 disabled={isAssignDisabled}
                 touchable={true}
-                title={"Assign Equipment"}
-                icon={<AssignIcon
-                    strokeColor={isAssignDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-blue-700']}
-                />}
+                title="Assign Equipment"
+                icon={(
+                    <AssignIcon
+                        strokeColor={isAssignDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-blue-700']}
+                    />
+                )}
                 onPress={gotoAssignEquipment}
             />
         );
 
         const createEquipmentType = (
             <ActionItem
-                title={"Create Equipment Type"}
+                title="Create Equipment Type"
                 icon={<AddIcon/>}
                 onPress={openEquipmentTypeDialog}
             />
@@ -621,12 +603,12 @@ const Equipment = (props) => {
 
         const createEquipment = (
             <ActionItem
-                title={"Add Equipment"}
+                title="Add Equipment"
                 icon={<AddIcon/>}
-                touchable={selectedTypesIds.length === 1 ? true : false}
-                disabled={selectedTypesIds.length === 1 ? false : true}
+                touchable={selectedTypesIds.length === 1}
+                disabled={selectedTypesIds.length !== 1}
                 onPress={selectedTypesIds.length === 1 ? gotoAddEquipment : () => {
-                    console.log(selectedTypesIds.length)
+                    console.log(selectedTypesIds.length);
                 }}
             />
         );
@@ -640,12 +622,12 @@ const Equipment = (props) => {
                     createEquipmentType,
                     createEquipment,
                 ]}
-                title={"EQUIPMENT ACTIONS"}
+                title="EQUIPMENT ACTIONS"
             />
         );
     };
 
-    const openConfirmationScreen = (callbackFn) => {
+    const openConfirmationScreen = callbackFn => {
         modal
             .openModal(
                 'ConfirmationModal',
@@ -656,7 +638,7 @@ const Equipment = (props) => {
                         onCancel={() => modal.closeModals('ConfirmationModal')}
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                            callbackFn()
+                            callbackFn();
                         }}
                         // onAction = { () => confirmAction()}
                         message="Do you want to delete these item(s)?"
@@ -669,11 +651,11 @@ const Equipment = (props) => {
     };
 
     const openEquipmentTypeDialog = () => {
-        modal.closeModals("ActionContainerModal");
+        modal.closeModals('ActionContainerModal');
 
         // For some reason there has to be a delay between closing a modal and opening another.
         setTimeout(() => {
-            modal.openModal("OverlayModal", {
+            modal.openModal('OverlayModal', {
                 content: (
                     <CreateEquipmentTypeDialogContainer
                         onCancel={() => setFloatingAction(false)}
@@ -689,11 +671,11 @@ const Equipment = (props) => {
     };
     // ############# Prepare list data
 
-    let equipmentToDisplay = [...equipmentTypes];
- 
+    const equipmentToDisplay = [...equipmentTypes];
+
     const removeEquipmentGroup = ids => {
         removeEquipmentTypes(ids)
-            .then(data=> {
+            .then(data => {
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
                         isError={false}
@@ -711,15 +693,15 @@ const Equipment = (props) => {
                     }
                 });
                 setSelectedEquipments([]);
-                console.log("Data: ", data);
+                console.log('Data: ', data);
             })
             .catch(_ => {
                 openErrorConfirmation();
                 setTimeout(() => {
                     modal.closeModals('ActionContainerModal');
                 }, 200);
-            })
-    }
+            });
+    };
 
     const removeEquipmentItems = ids => {
         removeEquipment(ids)
@@ -747,8 +729,8 @@ const Equipment = (props) => {
                 setTimeout(() => {
                     modal.closeModals('ActionContainerModal');
                 }, 200);
-            })
-    }
+            });
+    };
 
     const openErrorConfirmation = () => {
         modal.openModal(
@@ -770,10 +752,10 @@ const Equipment = (props) => {
         <NavPage
             isFetchingData={isFetchingData}
             onRefresh={handleDataRefresh}
-            placeholderText={"Search by Assignment, Status, Parent Name"}
+            placeholderText="Search by Assignment, Status, Parent Name"
             changeText={onSearchInputChange}
             inputText={searchValue}
-            routeName={"Equipment"}
+            routeName="Equipment"
             listData={equipmentToDisplay}
             listHeaders={listHeaders}
             itemsSelected={selectedTypesIds}
@@ -804,9 +786,7 @@ const Equipment = (props) => {
 //     return {equipment}
 // };
 
-const mapStateToProps = (state) => ({
-    equipmentTypes: state.equipmentTypes,
-});
+const mapStateToProps = state => ({equipmentTypes: state.equipmentTypes,});
 
 const mapDispatcherToProp = {
     // setEquipmentTypes,
@@ -821,16 +801,16 @@ export default connect(
 const styles = StyleSheet.create({
     footer: {
         flex: 1,
-        alignSelf: "flex-end",
-        flexDirection: "row",
-        position: "absolute",
+        alignSelf: 'flex-end',
+        flexDirection: 'row',
+        position: 'absolute',
         bottom: 0,
         marginBottom: 20,
         right: 0,
         marginRight: 30,
     },
     rowBorderRight: {
-        borderRightColor: "#E3E8EF",
+        borderRightColor: '#E3E8EF',
         borderRightWidth: 1,
 
         // marginRight: 20,
