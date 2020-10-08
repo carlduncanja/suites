@@ -434,6 +434,22 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         }
     };
 
+    const getIsEditable = () => {
+        switch (currentTab) {
+            case 'Configuration':
+                return false;
+            case 'Consumables':
+                return false;
+            case 'Equipment':
+                return false;
+            case 'Notes':
+                return false;
+            case 'Theatres':
+                return true;
+            default:
+                return false;
+        }
+    };
     const physicianName = `Dr. ${physician?.firstName && physician?.surname ? `${physician?.firstName[0]}. ${physician?.surname}` : physician?.firstName || (physician?.surname || '')}`;
 
     return (
@@ -447,6 +463,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                 onBackPress={() => {
                     navigation.navigate('Procedures');
                 }}
+                isArchive={getIsEditable}
                 pageTabs={(
                     <TabsContainer
                         tabs={currentTabs}

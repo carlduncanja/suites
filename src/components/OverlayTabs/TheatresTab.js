@@ -15,6 +15,9 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
 import { withModal } from "react-native-modalfy";
 import {LONG_PRESS_TIMER} from '../../const';
+import DataItem from "../common/List/DataItem";
+import TouchableDataItem from "../common/List/TouchableDataItem";
+import Item from "../common/Table/Item";
 
 
 const headers = [
@@ -84,11 +87,18 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
         setCurrentPageListMax(currentListMax);
     };
 
-    const listItemFormat = (item) => {
-        const { name = "", isRecovery = false, availability = 0, status = "Test_Status" } = item
+    const listItemFormat = item => {
+        console.log("Theatre: ", item);
+        const { name = "", isRecovery = false, availability = 0, status = "n/a" } = item;
+        const recoveryColor = isRecovery ? '--color-green-600' : '--color-red-600';
         return (
             <>
-                <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
+                <TouchableDataItem flex={2} fontStyle="--text-base-medium" text={name} isDisabled={true}/>
+                <DataItem flex={1} fontStyle="--text-sm-medium" align="center" color="--color-orange-600" text={status}/>
+                <DataItem flex={1} fontStyle="--text-sm-medium" align="center" color={recoveryColor} text={isRecovery ? 'Yes' : 'No'}/>
+                <DataItem flex={1} fontStyle="--text-sm-regular" align="flex-end" color="--color-gray-800" text={`${availability} slots`}/>
+                
+                {/* <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
                     <View style={{flex:2}}>
                         <Text style={{fontSize:16, color:'#3182CE'}}>{name}</Text>
                     </View>
@@ -101,10 +111,20 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
                     <View style={{flex:1, alignItems:'flex-end'}}>
                         <Text style={{fontSize:14, color:'#323843'}}>{availability} slots</Text>
                     </View>
-                </View>
+                </View> */}
             </>
         )
-    }
+    };
+
+    const renderTheatreItem = item => {
+        return (
+            <Item
+                itemView={listItemFormat(item)}
+                hasCheckBox={false}
+                onItemPress={() => {}}
+            />
+        );
+    };
 
     const toggleActionButton = () => {
         setFloatingAction(true)
@@ -178,7 +198,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
         <>
             <Table
                 data = {dataToDisplay}
-                listItemFormat = {listItemFormat}
+                listItemFormat = {renderTheatreItem}
                 headers = {headers}
                 isCheckbox = {false}
             />
