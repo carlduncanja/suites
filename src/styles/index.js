@@ -214,6 +214,18 @@ export const root = {
         },
 
         // BASE
+        '--confirm-title': {
+            fontSize: 16,
+            fontWeight: '600',
+            fontStyle: 'normal',
+            lineHeight: 16,
+        },
+        '--confirm-message': {
+            fontSize: 17,
+            fontWeight: '500',
+            fontStyle: 'normal',
+            lineHeight: 16,
+        },
         '--text-base-regular': {
             fontSize: 16,
             fontWeight: 'normal',

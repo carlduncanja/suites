@@ -19,12 +19,10 @@ const IconButtonContainer = styled.View`
 
 
 function IconButton({
-                        Icon = () => {
-                        },
-                        onPress = () => {
-                        },
-                        disabled = false
-                    }) {
+    Icon = () => {},
+    onPress = () => {},
+    disabled = false
+}) {
     const theme = useTheme();
 
     return (

@@ -40,11 +40,11 @@ function NotFound({ addNotification, signOut, route = {} }) {
     openModal("ConfirmationModal", {
       content: (
         <ConfirmationComponent
-          isError={true}//boolean to show whether an error icon or success icon
+          isError={false}//boolean to show whether an error icon or success icon
           isEditUpdate={true}//use this specification to either get the confirm an edit or update
           onCancel={cancelClicked}
           onAction={actionClicked}
-          message="Do you want to save your changes? "//general message you can send to be displayed
+          message="You will need to manually move these items from the system once the have been removed from records. "//general message you can send to be displayed
           action="Save"
         />
       ),
@@ -80,7 +80,7 @@ function NotFound({ addNotification, signOut, route = {} }) {
 
         {/* <Notif notifications={notifs} /> */}
 
-        {/* <Button onPress={toggleConfirmation} title="Toggle Confirmation" /> */}
+        <Button onPress={toggleConfirmation} title="Toggle Confirmation" />
 
         <Button onPress={handleOnLogout} title="LOGOUT" />
       </View>
