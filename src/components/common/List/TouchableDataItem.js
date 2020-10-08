@@ -6,7 +6,6 @@ import { Text } from 'react-native';
 const DataItemWrapper = styled.TouchableOpacity` 
     flex: ${ ({flex}) => flex.toString()};
     height: 100%;
-    margin-right: ${ ({theme}) => theme.space['--space-4']};
 `;
 const DataItemContainer = styled.View` 
     display: flex;
