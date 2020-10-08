@@ -193,7 +193,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 
     let dataToDisplay = [...theatresData];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
-
+ 
     return (
         <>
             <Table

@@ -6,17 +6,16 @@ import {Text} from 'react-native';
 const DataItemWrapper = styled.View` 
     flex: ${({flex}) => flex.toString()};
     height: 100%;
-    margin-right: ${({theme}) => theme.space['--space-4']};
     padding-top: ${({theme}) => theme.space['--space-12']};
     padding-bottom: ${({theme}) => theme.space['--space-12']};
 `;
 const DataItemContainer = styled.View` 
     display: flex;
+    width:95%;
     height: 100%; 
-    /* margin-right: ${({theme}) => theme.space['--space-2']}; */
     justify-content: center;
     align-items: ${({align}) => align};
-    border-right-width : 1px;
+    border-right-width : 1px; 
     border-right-color : ${({theme}) => theme.colors['--color-gray-300']};
 
 `;
@@ -24,6 +23,7 @@ const DataItemContainer = styled.View`
 const DataText = styled.Text(({theme, fontStyle, color}) => ({
     ...theme.font[fontStyle],
     color: theme.colors[color],
+    paddingTop: 2,
 }));
 
 function RightBorderDataItem({text = '', flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-gray-700',}) {

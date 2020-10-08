@@ -1,11 +1,9 @@
 import React, {Component, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import DownArrow from '../../../../assets/svg/downArraow';  
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SortFilter from './SortFilterIcon';
-
 
 const HeaderGoupWrapper = styled.View`
     height: 100%;
@@ -23,30 +21,30 @@ const HeaderGroupContainer = styled.View`
     justify-content: center;
 `;
  
-const HeaderText = styled.Text( ({theme}) =>({
+const HeaderText = styled.Text( ({theme, isSelected, hasSort}) =>({
     ...theme.font['--text-sm-medium'],
-    color : theme.colors['--color-gray-600'],
-    paddingRight: 12,
-}))
+    color: theme.colors['--color-gray-600'],
+    paddingRight: (isSelected && hasSort) ? 12 : 0,
+    paddingTop: 2,
+}));
 
-function HeaderFilterGroup({name = "", isSelected = false, hasSort = false}){
-
-    const theme = useTheme()
+function HeaderFilterGroup({name = '', isSelected = false, hasSort = false}) {
+    const theme = useTheme();
     // console.log("Name: ", name, isSelected)
 
     return (
-       name !=="" &&
+        name !== '' &&
         <HeaderGoupWrapper>
-            <HeaderGroupContainer theme = {theme} isSelected = {isSelected} hasSort = {hasSort}>
-                <HeaderText theme = {theme}>{name}</HeaderText>
+            <HeaderGroupContainer theme={theme} isSelected={isSelected} hasSort={hasSort}>
+                <HeaderText theme={theme}>{name}</HeaderText>
                 {
-                    hasSort && <SortFilter isSelected = {isSelected}/>
+                    hasSort && <SortFilter isSelected={isSelected}/>
                 }
                 
             </HeaderGroupContainer>
         </HeaderGoupWrapper>
     
-    )
+    );
 }
 
-export default HeaderFilterGroup
+export default HeaderFilterGroup;

@@ -1,31 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, View, TouchableOpacity} from "react-native";
-import Svg, {Path} from "react-native-svg";
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import Svg, {Path} from 'react-native-svg';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
+const tickSVG = (
+    <Svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <Path
+            d="M9.4001 1.99998L8.0001 0.599976L4.0001 4.59998L2.0001 2.59998L0.600098 3.99998L4.0001 7.39998L9.4001 1.99998Z"
+            fill="#48BB78"/>
+    </Svg>
+);
 
-const tickSVG = (<Svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <Path
-        d="M9.4001 1.99998L8.0001 0.599976L4.0001 4.59998L2.0001 2.59998L0.600098 3.99998L4.0001 7.39998L9.4001 1.99998Z"
-        fill="#48BB78"/>
-</Svg>);
-
-const indeterminateSvg = <Svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <Path d="M8 2H0V0H8V2Z" fill="#718096"/>
-</Svg>; 
-
+const indeterminateSvg = (
+    <Svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <Path d="M8 2H0V0H8V2Z" fill="#718096"/>
+    </Svg>
+);
 
 const CheckboxWrapper = styled.TouchableOpacity`
     padding-left: ${ ({theme}) => theme.space['--space-16']};
     padding-right: ${ ({theme}) => theme.space['--space-16']};
-    padding-top: ${ ({theme}) => theme.space['--space-20']};
-    padding-bottom: ${ ({theme}) => theme.space['--space-20']};
+    padding-top: ${ ({theme}) => theme.space['--space-18']};
+    padding-bottom: ${ ({theme}) => theme.space['--space-18']};
     justify-content: center;
     align-items: center;
 
-`
+`;
 const CheckboxContainer = styled.View`
     background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
     border-color: ${ ({theme}) => theme.colors['--color-gray-400']};
@@ -35,16 +37,15 @@ const CheckboxContainer = styled.View`
     width: ${ ({theme}) => theme.space['--space-16']};
     align-items: center;
     justify-content: center;
-`
+`;
 
-function CheckBoxComponent({isCheck, isIndeterminate, onPress}) { 
-
-    const theme = useTheme()
+function CheckBoxComponent({isCheck, isIndeterminate, onPress}) {
+    const theme = useTheme();
      
     return (
 
-        <CheckboxWrapper onPress = {onPress} activeOpacity = {0.8} theme = {theme}>
-            <CheckboxContainer theme = {theme}>
+        <CheckboxWrapper onPress={onPress} activeOpacity={0.8} theme={theme}>
+            <CheckboxContainer theme={theme}>
                 {
                     isIndeterminate
                         ? indeterminateSvg
