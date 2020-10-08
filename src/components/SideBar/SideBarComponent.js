@@ -3,10 +3,26 @@ import PropTypes from 'prop-types';
 import {ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert} from "react-native";
 import SvgIcon from "../../../assets/SvgIcon";
 import NavigationTab from "./SideBarTabComponent";
+import MultipleShadowsContainer from '../common/MultipleShadowContainer';
 import jwtDecode from 'jwt-decode';
 import {connect} from 'react-redux'
 import QuickMenu from "../../../assets/svg/QuickMenu";
 import {useModal} from "react-native-modalfy";
+
+const shadows = [
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: -2, height: 0 },
+        shadowOpacity: 0.06,
+        shadowRadius: 4
+    },
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: -4, height: 0 },
+        shadowOpacity: 0.1,
+        shadowRadius: -6
+    },
+];
 
 function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed, onLogout, auth = {}}) {
 
@@ -63,7 +79,6 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                 ]}>
                     <SvgIcon iconName="logo"/>
                 </View>
-
 
                 <ScrollView
                     stickyHeaderIndices={[selectedIndex + 1]}
@@ -126,16 +141,20 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                                 </Text>
                             </View>
 
-                            <View style={styles.userNameBadge}>
-                                <Text style={{
-                                    ...styles.textStyle,
-                                    fontSize: 10,
-                                }}>
-                                    {
-                                        `${authInfo.first_name.toString()[0]}. ${authInfo.last_name}`
-                                    }
-                                </Text>
-                            </View>
+                            <MultipleShadowsContainer shadows={shadows}>
+                                <View style={styles.userNameBadge}>
+                                    <Text style={{
+                                        ...styles.textStyle,
+                                        fontSize: 10,
+                                    }}>
+                                        {
+                                            `${authInfo.first_name.toString()[0]}. ${authInfo.last_name}`
+                                        }
+                                    </Text>
+
+                                </View>
+                            </MultipleShadowsContainer>
+                            
                         </View>
                     </TouchableOpacity>
                 }
@@ -183,18 +202,19 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
     },
     userNameBadge: {
-        flex: 1,
+        // flex: 1,
         height: 25,
+        // height: '100%',
         backgroundColor: '#2168C3',
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: -3,
-        },
-        shadowOpacity: 0.23,
-        shadowRadius: 5,
+        // shadowColor: "#000",
+        // shadowOffset: {
+        //     width: 0,
+        //     height: -3,
+        // },
+        // shadowOpacity: 0.23,
+        // shadowRadius: 5,
         elevation: 5,
     }
 });
