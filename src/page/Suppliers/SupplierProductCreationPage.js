@@ -4,14 +4,14 @@ import styled from '@emotion/native'
 import {useTheme} from "emotion-theming";
 import {useNavigation} from "@react-navigation/native"
 import PropTypes from 'prop-types';
-import DefaultPage from "../common/Page/DefaultPage";
-import Button from "../common/Buttons/Button";
-import PageButton from "../common/Page/PageButton";
-import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
-import Table from "../common/Table/Table";
-import Paginator from "../common/Paginators/Paginator";
-import LineDivider from "../common/LineDivider";
-import CreatePageDoneFooter from "../common/DetailsPage/CreatePageDoneFooter";
+import DefaultPage from "../../components/common/Page/DefaultPage";
+import Button from "../../components/common/Buttons/Button";
+import PageButton from "../../components/common/Page/PageButton";
+import SearchableOptionsField from "../../components/common/Input Fields/SearchableOptionsField";
+import Table from "../../components/common/Table/Table";
+import Paginator from "../../components/common/Paginators/Paginator";
+import LineDivider from "../../components/common/LineDivider";
+import CreatePageDoneFooter from "../../components/common/DetailsPage/CreatePageDoneFooter";
 import {
     createNewProcedure,
     createSupplierProductsCall,
@@ -19,14 +19,14 @@ import {
     getInventoryVariantByGroup
 } from "../../api/network";
 import _ from "lodash";
-import InputField2 from "../common/Input Fields/InputField2";
-import IconButton from "../common/Buttons/IconButton";
+import InputField2 from "../../components/common/Input Fields/InputField2";
+import IconButton from "../../components/common/Buttons/IconButton";
 import DeleteIcon from "../../../assets/svg/deleteIcon";
 import CancelIcon from "../../../assets/svg/CancelIcon";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import InfoIcon from "../../../assets/svg/InfoIcon";
-import LoadingComponent from "../LoadingComponent";
-import ConfirmationComponent from "../ConfirmationComponent";
+import LoadingComponent from "../../components/LoadingComponent";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
 import {useModal} from "react-native-modalfy";
 
 
@@ -131,7 +131,7 @@ const Divider = styled.View`
     margin-top : ${({theme}) => theme.space['--space-24']};
     margin-bottom : ${({theme}) => theme.space['--space-24']};
 `
- 
+
 const FooterWrapper = styled.View`
     width : 100%;
     position : absolute;

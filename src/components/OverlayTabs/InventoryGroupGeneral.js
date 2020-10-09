@@ -21,10 +21,10 @@ const FieldWrapper = styled.View`
     flex: 0.5;
     margin-bottom : ${ ({isEditMode}) => isEditMode ? `32px` : 0 };
 `;
-function InventoryGroupGeneral({ 
-    inventoryGroup = {}, 
-    onUpdate = () => {},  
-    fields = {}, 
+function InventoryGroupGeneral({
+    inventoryGroup = {},
+    onUpdate = () => {},
+    fields = {},
     errorFields = {},
     onFieldChange = ()=>{},
     groupCategories = [],
@@ -103,11 +103,11 @@ function InventoryGroupGeneral({
             })
             .catch(error => {
                 // TODO handle error
-                console.log("failed to get suppliers", error);
+                console.log("failed to get Suppliers", error);
                 setCategorySearchResult([]);
             })
     };
- 
+
 
     // const onFieldChange = (fieldName) => (value) => {
     //     const updatedFields = {...fields}
@@ -138,7 +138,7 @@ function InventoryGroupGeneral({
     // const validateUpdate = () => {
     //     let isValid = true
     //     let requiredFields = ['name']
-    
+
     //     let errorObj = {...errorFields} || {}
 
     //     for (const requiredField of requiredFields) {
@@ -234,7 +234,7 @@ function InventoryGroupGeneral({
             updatedCategories = updatedCategories.filter( category => category !== item)
             :
             updatedCategories = [...groupCategories, item]
-        
+
         // onFieldChange('category')(updatedCategories);
         console.log("Updated categores: ", updatedCategories);
         handleCategories(updatedCategories);
@@ -255,11 +255,11 @@ function InventoryGroupGeneral({
                     />
                 {/* </FieldWrapper> */}
 
-                
+
             </Row>
 
             <Row>
-                
+
                 <Record
                     recordTitle = "Description"
                     recordValue = {fields['description']}
@@ -273,7 +273,7 @@ function InventoryGroupGeneral({
 
             </Row>
 
-    
+
             <Row>
                 {/* <ListTextRecord
                     recordTitle = "Category"
@@ -317,10 +317,10 @@ function InventoryGroupGeneral({
                         values = {categories}
                     />
                 } */}
-                
+
             </Row>
 
-            
+
         </>
     )
 }

@@ -46,7 +46,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
     const [selectedIndex, setSelectedTabIndex] = useState(0);
     const [fields, setFields] = useState({ priority: 'Not Urgent'});
     const [errorFields, setErrorFields] = useState({});
-   
+
     // Storage Search
     const [storageSearchValue, setStorageSearchValue] = useState('');
     const [storageSearchResults, setStorageSearchResult] = useState([]);
@@ -137,7 +137,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
             })
             .catch(error => {
                 // TODO handle error
-                console.log('failed to get suppliers', error);
+                console.log('failed to get Suppliers', error);
                 setTheatreSearchResult([]);
             });
     };
@@ -153,7 +153,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
         let isValid = validateTransfer();
 
         if (!isValid) { return; }
-        
+
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1);
         } else {
@@ -165,7 +165,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 priority: fields.priority
             };
             console.log('CREAT TRANSFER:', updatedFields);
-            
+
             createTransferCall(updatedFields);
             // onCreated(fields)
             // createInventoryCall(referenceId,fields)
@@ -197,10 +197,10 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
         let detailsRequiredFields = ['to'];
         // let destinationRequiredFields = ['to'];
         let configurationRequiredFields = ['amount'];
-        selectedIndex === 0 
-            ? requiredFields = detailsRequiredFields 
+        selectedIndex === 0
+            ? requiredFields = detailsRequiredFields
             : requiredFields = configurationRequiredFields;
-    
+
         let errorObj = {...errorFields} || {};
 
         for (const requiredField of requiredFields) {
@@ -235,8 +235,8 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                             isError={false}
                             onCancel={() => modal.closeAllModals()}
                             onAction={() => { modal.closeAllModals(); onCreated(); }}
-                        />,                        
-                        onClose: () => { modal.closeModals('ConfirmationModal'); } 
+                        />,
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
                     }
                 );
                 // Alert.alert("Success","The transfer is successful.")
@@ -256,8 +256,8 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                             onCancel={()=> {modal.closeAllModals();}}
                             onAction={()=> modal.closeAllModals()}
                             message="There was an issue performing this action"
-                        />,                        
-                        onClose: () => {modal.closeModals('ConfirmationModal');} 
+                        />,
+                        onClose: () => {modal.closeModals('ConfirmationModal');}
                     });
                 // Alert.alert("Failed", "Failed to create a transfer")
             })
@@ -277,18 +277,18 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
 
     const onDestinationSelected = item => {
         console.log('Destination Selected: ', item);
-        
+
         if (item === undefined || null) {
             delete fields.to;
         } else {
             onFieldChange('to')(item);
             setStorageSearchValue(item.name);
         }
-       
+
         setStorageSearchResult([]);
         setStorageSearchQuery(false);
     };
-    
+
     const detailsTab = (
         <>
             <Row>
@@ -327,7 +327,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                         isPopoverOpen={storageSearchQuery}
                         errorMessage="Destination must be given."
                         hasError={errorFields.to}
-                    />  
+                    />
                 </FieldContainer>
                 {/* <FieldContainer>
                     {
@@ -350,9 +350,9 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                                 }
                             />
                     }
-                    
+
                 </FieldContainer> */}
-                
+
             </Row>
 
         </>
@@ -392,7 +392,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                     />
                 </FieldContainer>
             </Row>
-            
+
             <Row>
                 <FieldContainer>
                     <AutoFillField
@@ -417,7 +417,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 </FieldContainer>
             </Row>
         </>
-       
+
     );
 
     return (
@@ -440,7 +440,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 <OverlayDialogContent>
                     {getTabContent()}
                 </OverlayDialogContent>
-                
+
                 {/* <TouchableOpacity
                     onPress = {()=>handlePopovers(false)()}
                     activeOpacity = {1}
@@ -477,8 +477,8 @@ const styles = StyleSheet.create({
 
     inputWrapper: {
         // flex: 1,
-        width: 260, 
-        flexDirection: 'row', 
+        width: 260,
+        flexDirection: 'row',
         // backgroundColor: 'blue'
     },
 

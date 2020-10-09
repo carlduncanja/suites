@@ -148,7 +148,7 @@ function ArchivedSuppliersPage(props) {
         getArchivedSuppliers()
             .then(suppliersInfo => {
                 const { data = [] } = suppliersInfo
-                console.log("Archived suppliers received is:", data);
+                console.log("Archived Suppliers received is:", data);
                 setTotalPages(1);
 
                 // if (pages === 1) {
@@ -173,7 +173,7 @@ function ArchivedSuppliersPage(props) {
 
             })
             .catch(error => {
-                console.log("failed to get archived suppliers", error);
+                console.log("failed to get archived Suppliers", error);
                 modal.openModal("ConfirmationModal", {
                     content: (
                         <ConfirmationComponent

@@ -1,21 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity} from "react-native";
-import SlideOverlay from "../common/SlideOverlay/SlideOverlay";
-import SupplierDetailsTab from '../OverlayTabs/SupplierDetailsTab';
-import SupplierProductsTab from '../OverlayTabs/SupplierProductsTab';
-import SupplierPurshaseOrders from '../OverlayTabs/SupplierPurchaseOrders';
-import BottomSheetContainer from '../common/BottomSheetContainer';
+import SlideOverlay from "../../components/common/SlideOverlay/SlideOverlay";
+import SupplierDetailsTab from '../../components/OverlayTabs/SupplierDetailsTab';
+import SupplierProductsTab from '../../components/OverlayTabs/SupplierProductsTab';
+import SupplierPurshaseOrders from '../../components/OverlayTabs/SupplierPurchaseOrders';
+import BottomSheetContainer from '../../components/common/BottomSheetContainer';
 import {PageContext} from "../../contexts/PageContext";
-import DetailsPage from "../common/DetailsPage/DetailsPage";
-import TabsContainer from "../common/Tabs/TabsContainerComponent";
-import ConfirmationComponent from '../ConfirmationComponent';
+import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
+import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 
 import {getSupplierById, createPurchaseOrder, getSupplierProducts} from "../../api/network";
 import {colors} from "../../styles";
 import {useModal} from 'react-native-modalfy';
 import {set} from 'numeral';
-import SupplierProductsDetailsTab from "../OverlayTabs/SupplierProductsDetailsTab";
+import SupplierProductsDetailsTab from "../../components/OverlayTabs/SupplierProductsDetailsTab";
 
 
 function SupplierProductPage({route, navigation}) {
