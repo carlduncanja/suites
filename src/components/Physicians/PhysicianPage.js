@@ -211,6 +211,15 @@ function PhysicianPage({route, navigation}) {
         }
     };
 
+    const getIsEditable = () => {
+        switch (currentTab) {
+            case 'Case Files':
+                return true;
+            default:
+                return false;
+        }
+    };
+
     const fetchPhysician = id => {
         setPageLoading(true);
         getPhysicianById(id)
@@ -271,6 +280,7 @@ function PhysicianPage({route, navigation}) {
                     subTitle=""
                     headerChildren={[name]}
                     onBackPress={backTapped}
+                    isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}

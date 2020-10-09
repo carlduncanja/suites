@@ -269,6 +269,23 @@ function TheatresPage({route, navigation}) {
         }
     };
 
+    const getIsEditable = () => {
+        switch (currentTab) {
+            case 'Details':
+                return false;
+            case 'History':
+                return false;
+            case 'Storage':
+                return false;
+            case 'Equipment':
+                return false;
+            case 'Schedule':
+                return true;
+            default:
+                return false;
+        }
+    };
+
     const fetchTheatre = id => {
         setPageLoading(true);
         getTheatreById(id)
@@ -296,6 +313,7 @@ function TheatresPage({route, navigation}) {
                 <DetailsPage
                     headerChildren={[name, `${theatreNumber}`]}
                     onBackPress={onBackTapped}
+                    isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}

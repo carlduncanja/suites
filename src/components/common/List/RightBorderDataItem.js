@@ -24,6 +24,7 @@ const DataText = styled.Text(({theme, fontStyle, color}) => ({
     ...theme.font[fontStyle],
     color: theme.colors[color],
     paddingTop: 2,
+    paddingRight: 4,
 }));
 
 function RightBorderDataItem({text = '', flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-gray-700',}) {

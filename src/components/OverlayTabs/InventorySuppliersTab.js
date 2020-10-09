@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {View, StyleSheet, Text} from "react-native";
+import {View, StyleSheet, Text} from 'react-native';
 import PropTypes from 'prop-types';
-import Table from "../common/Table/Table";
 import styled, {css} from '@emotion/native';
+import Table from '../common/Table/Table';
 import { useTheme } from 'emotion-theming';
 import Footer from '../common/Page/Footer';
 import Item from '../common/Table/Item';
@@ -10,7 +10,6 @@ import DataItem from '../common/List/DataItem';
 import TouchableDataItem from '../common/List/TouchableDataItem';
 import { useModal } from 'react-native-modalfy';
 import { getVariantSupplierProducts } from '../../api/network';
-
 
 const Headings = [
     {
@@ -45,7 +44,7 @@ const SectionText = styled.Text( ({theme}) => ({
 }));   
 
 
-function InventorySuppliersTab({variantId = "", parentId}) {
+function InventorySuppliersTab({variantId = '', parentId}) {
 
     const theme = useTheme();
     const modal = useModal();
@@ -57,15 +56,17 @@ function InventorySuppliersTab({variantId = "", parentId}) {
             .then(results => {
                 const { data = [] } = results;
                 setSuppliers(data);
-                console.log("Suppliers: ", data);
+                console.log('Suppliers: ', data);
             })
             .catch(error => {
-                console.log("Failed to get variant suppliers", error)
+                console.log('Failed to get variant suppliers', error)
                 //TODO handle error cases.
             })
     },[])
 
-    const suppliersListItem = ({name, phone , email, product,}) => {
+    const suppliersListItem = ({supplier, inventoryVariant}) => {
+        const { name = '', email = '', phone = ''} = supplier;
+        const { product = '' } = inventoryVariant;
         return (
         <>
             <DataItem fontStyle = "--text-base-regular" color = "--color-gray-800" text = {name}/>
