@@ -54,7 +54,7 @@ import {LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 const QuantityWrapper = styled.View`
-    flex:1;
+    flex:1.5;
     align-items: center; 
    
 `;
@@ -100,23 +100,23 @@ const Equipment = props => {
 
         {
             name: 'Item ID',
-            alignment: 'center',
-            flex: 0.5,
+            alignment: 'flex-start',
+            flex: 2,
         },
         {
             name: 'Status',
-            alignment: 'center',
-            flex: 1.3,
+            alignment: 'flex-start',
+            flex: 1.2,
         },
         {
             name: 'In Stock',
             alignment: 'center',
-            flex: 1,
+            flex: 1.5,
         },
 
         {
             name: 'Assigned',
-            alignment: 'center',
+            alignment: 'flex-start',
             flex: 2,
         },
     ];
@@ -467,10 +467,10 @@ const Equipment = props => {
 
     const equipmentItemView = ({equipmentName, quantity, status, assignment}, onActionPress) => (
         <>
-            <DataItem text={equipmentName} flex={0.2} color="--color-blue-600" fontStyle="--text-sm-medium"/>
-            <DataItem text={status} flex={0.25} color="--color-gray-800" fontStyle="--text-sm-regular"/>
-            <DataItem text={quantity} flex={0.2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
-            <DataItem text={assignment} flex={0.3} color="--color-gray-800" fontStyle="--text-sm-regular"/>
+            <DataItem text={equipmentName} flex={2} color="--color-blue-600" fontStyle="--text-sm-medium"/>
+            <DataItem text={status} flex={1.2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
+            <DataItem text={quantity} flex={1.5} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
+            <DataItem text={assignment} flex={2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
         </>
     );
 
@@ -480,7 +480,8 @@ const Equipment = props => {
 
     const equipmentGroupView = (item, onActionPress, isCollapsed) => (
         <>
-            <DataItem text={item.name} flex={1.8} color="--color-gray-800" fontStyle="--text-base-regular"/>
+            <DataItem text={item.name} flex={2} color="--color-gray-800" fontStyle="--text-base-regular"/>
+            <DataItem flex={1.2}/>
             <QuantityWrapper>
                 <MultipleShadowsContainer shadows={shadows}>
                     <QuantityContainer theme={theme} isCollapsed={isCollapsed}>
@@ -488,8 +489,9 @@ const Equipment = props => {
                     </QuantityContainer>
                 </MultipleShadowsContainer>
             </QuantityWrapper>
+            <DataItem flex={1.5}/>
             {/*<View style={{flex: .9}}/>*/}
-            <View style={{flex: 1.7}}/>
+            {/* <View style={{flex: 1.7}}/> */}
             <ContentDataItem
                 align="center"
                 flex={0.5}

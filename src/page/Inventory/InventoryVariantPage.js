@@ -158,7 +158,23 @@ function InventoryVariantPage({ route, navigation }) {
             default:
                 break;
         }
-    }
+    };
+
+    const getIsEditable = () => {
+        console.log("Current: ", currentTab);
+        switch (currentTab) {
+            case 'Details':
+                return false;
+            case 'Storage Locations':
+                return true;
+            case 'Transfers':
+                return true;
+            case 'Suppliers':
+                return true;
+            default:
+                return false;
+        }
+    };
 
     // const validateUpdate = () => {
     //     let isValid = true
@@ -235,6 +251,7 @@ function InventoryVariantPage({ route, navigation }) {
             <DetailsPage
                 headerChildren={[groupName, selectedVariant?.name]}
                 onBackPress = { () => navigation.navigate("Inventory")}
+                isArchive = {getIsEditable()}
                 pageTabs = {
                     <TabsContainerComponent
                         tabs = {tabs}

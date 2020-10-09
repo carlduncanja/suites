@@ -463,7 +463,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                 onBackPress={() => {
                     navigation.navigate('Procedures');
                 }}
-                isArchive={getIsEditable}
+                isArchive={getIsEditable()}
                 pageTabs={(
                     <TabsContainer
                         tabs={currentTabs}
