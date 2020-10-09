@@ -286,19 +286,24 @@ function ChargesheetEquipment({
                     backgroundColor={theme.colors['--color-neutral-gray-100']}
                 />
 
-                <TableContainer theme={theme}>
+                <ScrollView
+                    nestedScrollEnabled={true}
+                    contentContainerStyle={{paddingBottom: 100}}
+                >
+                    <TableContainer theme={theme}>
 
-                    <Table
-                        isCheckbox={true}
-                        data={caseProcedures}
-                        listItemFormat={renderCollapsible}
-                        // listItemFormat = {()=>{}}
-                        headers={headers}
-                        toggleHeaderCheckbox={toggleHeaderCheckbox}
-                        itemSelected={selectedEquipments}
-                    />
+                        <Table
+                            isCheckbox={true}
+                            data={caseProcedures}
+                            listItemFormat={renderCollapsible}
+                            // listItemFormat = {()=>{}}
+                            headers={headers}
+                            toggleHeaderCheckbox={toggleHeaderCheckbox}
+                            itemSelected={selectedEquipments}
+                        />
 
-                </TableContainer>
+                    </TableContainer>
+                </ScrollView>
 
             </EquipmentsContainer>
         </EquipmentsWrapper>
