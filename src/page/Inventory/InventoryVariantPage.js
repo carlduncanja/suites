@@ -161,7 +161,6 @@ function InventoryVariantPage({ route, navigation }) {
     };
 
     const getIsEditable = () => {
-        console.log("Current: ", currentTab);
         switch (currentTab) {
             case 'Details':
                 return false;
