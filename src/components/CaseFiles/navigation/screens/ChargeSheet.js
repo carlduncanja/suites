@@ -18,6 +18,7 @@ import {useNavigation} from '@react-navigation/native'
 import {useTheme} from "emotion-theming";
 import {useModal} from "react-native-modalfy";
 import {removeEquipment} from "../../../../api/network";
+import EmptyChargeSheetComponent from "../../EmptyChargeSheetComponent";
 
 const LINE_ITEM_TYPES = {
     DISCOUNT: 'discount',
@@ -850,9 +851,11 @@ const ChargeSheet = React.forwardRef(({
 
     const isAdmin = authInfo['role_name'] === ROLES.ADMIN
     const isOwner = updatedBy?._id === authInfo['user_id'];
+    const isClosed = status === CHARGE_SHEET_STATUSES.CLOSED;
 
     switch (selectedTab) {
         case 'Consumables':
+            if (isClosed) return <EmptyChargeSheetComponent/>
             if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
 
                 const firstName = updatedBy['first_name'] || "";
@@ -904,6 +907,7 @@ const ChargeSheet = React.forwardRef(({
                 />
             }
         case 'Equipment':
+            if (isClosed) return <EmptyChargeSheetComponent/>
             if (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES && (isAdmin || isOwner)) {
 
                 const firstName = updatedBy['first_name'] || "";
@@ -966,6 +970,7 @@ const ChargeSheet = React.forwardRef(({
                 handleQuotes={handleQuotes}
             />;
         case 'Billing':
+            if (isClosed) return <EmptyChargeSheetComponent/>
             return <BillingCaseCard
                 tabDetails={billing}
                 caseProcedures={caseProcedures}
@@ -976,8 +981,9 @@ const ChargeSheet = React.forwardRef(({
             />;
         default:
             return null;
-
     }
+
+
 });
 
 const mapStateToProps = state => ({
