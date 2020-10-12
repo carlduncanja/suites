@@ -65,8 +65,25 @@ function Page(props) {
         onSelectAll,
         itemsSelected,
         onClear,
-        TopButton
+        TopButton,
+        hasList = true,
+        hasSearch = true,
+        pageContent
     } = props;
+
+    const content = hasList ? (
+        <List
+            listData={listData}
+            listHeaders={listHeaders}
+            itemsSelected={itemsSelected}
+            onRefresh={onRefresh}
+            isCheckbox={true}
+            onSelectAll={onSelectAll}
+            listItemFormat={listItemFormat}
+            refreshing={isFetchingData}
+        />
+    ) :
+        pageContent;
 
     return (
         <PageWrapper theme={theme}>
@@ -78,32 +95,24 @@ function Page(props) {
 
                 </PageHeader>
 
-                <PageSearchWrapper theme={theme}>
-                    <Search
-                        placeholderText={placeholderText}
-                        changeText={changeText}
-                        inputText={inputText}
-                        onClear={() => {
-                            changeText("")
-                        }}
-                    />
-                </PageSearchWrapper>
-
-
+                {
+                    hasSearch &&
+                    <PageSearchWrapper theme={theme}>
+                        <Search
+                            placeholderText={placeholderText}
+                            changeText={changeText}
+                            inputText={inputText}
+                            onClear={() => {
+                                changeText('');
+                            }}
+                        />
+                    </PageSearchWrapper>
+                }
+                
                 {
                     isFetchingData ?
-                        <LoadingIndicator />
-                        :
-                        <List
-                            listData={listData}
-                            listHeaders={listHeaders}
-                            itemsSelected={itemsSelected}
-                            onRefresh={onRefresh}
-                            isCheckbox={true}
-                            onSelectAll={onSelectAll}
-                            listItemFormat={listItemFormat}
-                            refreshing={isFetchingData}
-                        />
+                        <LoadingIndicator /> :
+                        content
                 }
             </PageContainer>
         </PageWrapper>
