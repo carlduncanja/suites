@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import InputText from './InputText';
 import InputField2 from './Input Fields/InputField2';
+import SearchIcon from '../../../assets/svg/search';
 
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
@@ -20,19 +21,23 @@ function Search({
         changeText = () => {}, 
         inputText, 
         onClear,
-        backgroundColor
+        backgroundColor,
+        hasIcon = false,
+        hasBorder,
+        Icon
 }) { 
 
     const theme = useTheme();
 
-    const [isFocussed, setIsFocussed] = useState(false)
+    const [isFocussed, setIsFocussed] = useState(false);
 
     const onFocus = () => {
-        setIsFocussed(true)
+        setIsFocussed(true);
     }
     const onEndEditing = () => {
-        setIsFocussed(false)
+        setIsFocussed(false);
     }
+
 
     return (
         <SearchWrapper>
@@ -47,6 +52,8 @@ function Search({
                     onFocus={onFocus}
                     onEndEditing={onEndEditing}
                     onClear={onClear}
+                    hasBorder={hasBorder}
+                    Icon={Icon}
 
                 />
             </SearchContainer>

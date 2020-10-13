@@ -48,12 +48,15 @@ const TextInputContainer = styled.View`
     position: relative;
     height : 100%;
     width : 100%;
-    border-width: 1px;
+    border-width: ${ ({hasBorder}) => hasBorder ? `1px` : 0};
     border-color: ${({theme, hasError}) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
     //background-color : ${({theme, backgroundColor}) => (backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white'])};
     background-color : ${({theme, enabled, backgroundColor}) => (backgroundColor ? theme.colors[backgroundColor] : !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white'])};
     border-radius: 4px;
     box-shadow : ${({isFocussed, theme}) => (isFocussed ? theme.shadow['--shadow-lg'] : null)};
+    flex-direction : row;
+    align-items:center;
+    padding-left : ${ ({hasIcon, theme}) => hasIcon ? theme.space['--space-4'] : 0};
 `;
 
 const Input = styled.TextInput`
@@ -99,7 +102,9 @@ function InputField2({
     onEndEditing = () => {
     },
     isFocussed = false,
-    autoCapitalize = 'sentences' // default from docs
+    autoCapitalize = 'sentences', // default from docs
+    hasBorder = true,
+    Icon
 }) {
     const theme = useTheme();
     const inputRef = useRef();
@@ -120,8 +125,10 @@ function InputField2({
                     enabled={enabled}
                     theme={theme}
                     style={isFocussed ? styles.shadow : null}
+                    hasBorder={hasBorder}
+                    hasIcon={Icon ? true : false}
                 >
-
+                    {Icon}
                     <Input
                         theme={theme}
                         onChangeText={onChangeText}
