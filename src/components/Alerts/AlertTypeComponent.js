@@ -106,7 +106,9 @@ function AlertTypeComponent({
     currentPage,
     totalPages,
     goToNextPage,
-    goToPreviousPage
+    goToPreviousPage,
+    searchValue,
+    onChangeText
 }) {
     const theme = useTheme();
 
@@ -156,6 +158,9 @@ function AlertTypeComponent({
                                     hasIcon={true}
                                     placeholderText="Search"
                                     Icon={<SearchIcon strokeColor={theme.colors['--color-gray-500']}/>}
+                                    inputText={searchValue}
+                                    changeText={value => onChangeText(value)}
+                                    onClear={() => onChangeText('')}
                                 />
                             </SearchContainer>
 

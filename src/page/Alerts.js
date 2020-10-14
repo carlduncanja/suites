@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styled, {css} from '@emotion/native';
 import {Text} from 'react-native';
+import _ from 'lodash';
 import {useTheme} from 'emotion-theming';
 import {useNextPaginator, usePreviousPaginator} from '../helpers/caseFilesHelpers';
 import Page from '../components/common/Page/Page';
@@ -57,6 +58,14 @@ function Alerts() {
 
     const [closedPagePosition, setClosedPagePosition] = useState(1);
     const [recentPagePosition, setRecentPagePosition] = useState(1);
+
+    const [searchValue, setSearchValue] = useState('');
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
+    const [recentSearchValue, setRecentSearchValue] = useState('');
+    const [recentSearchResults, setRecentSearchResult] = useState([]);
+    const [recentSearchQuery, setRecentSearchQuery] = useState({});
 
     const recentHeader = () => (
         <>
@@ -122,12 +131,12 @@ function Alerts() {
                 setClosedPagePosition(currentPage);
                 setClosedPageListMin(currentListMin);
                 setClosedPageListMax(currentListMax);
-                fetchAlert('closed', recordsPerPage, currentPage);
+                fetchClosedAlert(currentPage);
             } else {
                 setRecentPagePosition(currentPage);
                 setRecentPageListMin(currentListMin);
                 setRecentPageListMax(currentListMax);
-                fetchAlert('open', recordsPerPage, currentPage);
+                fetchOpenAlert(currentPage);
             }
         }
     };
@@ -144,12 +153,12 @@ function Alerts() {
                 setClosedPagePosition(currentPage);
                 setClosedPageListMin(currentListMin);
                 setClosedPageListMax(currentListMax);
-                fetchAlert('closed', recordsPerPage, currentPage);
+                fetchClosedAlert(currentPage);
             } else {
                 setRecentPagePosition(currentPage);
                 setRecentPageListMin(currentListMin);
                 setRecentPageListMax(currentListMax);
-                fetchAlert('open', recordsPerPage, currentPage);
+                fetchOpenAlert(currentPage);
             }
         }
     };
@@ -179,6 +188,8 @@ function Alerts() {
                 totalPages={closedTotalPages}
                 goToNextPage={goToNextPage('done')}
                 goToPreviousPage={goToPreviousPage('done')}
+                searchValue={searchValue}
+                onChangeText={ value => setSearchValue(value)}
                 content={(
                     <DoneAlertsList
                         data={closedAlerts}
@@ -189,54 +200,90 @@ function Alerts() {
         </>
     );
 
-    useEffect(() => {
-        setFetchingData(true);
-        fetchAlert('closed', recordsPerPage, closedPagePosition);
-        fetchAlert('open', recordsPerPage, recentPagePosition);
-
-        // getAlerts('closed', recordsPerPage)
-        //     .then(results => {
-        //         const {data = [], totalPages = 0} = results;
-        //         setClosedAlerts(data);
-        //         setClosedTotalPages(totalPages);
-        //         setClosedCount(data.length);
-        //     })
-        //     .catch(error => {
-        //         console.log("Error fetching alerts: ", error);
-        //     });
-        // getAlerts('open', recordsPerPage)
-        //     .then(results => {
-        //         const {data = [], totalPages = 0} = results;
-        //         setRecentAlerts(data);
-        //         setRecentTotalPages(totalPages);
-        //     })
-        //     .catch(error => {
-        //         console.log("Error fetching alerts: ", error);
-        //     })
-        //     .finally(_ => setFetchingData(false));
-    }, []);
-
-    const fetchAlert = (status, max, page) => {
-        getAlerts(status, max, page)
+    const fetchClosedAlert = (page = 1) => {
+        getAlerts('closed', recordsPerPage, page, searchValue)
             .then(results => {
                 const {data = [], totalPages = 0} = results;
-                if (status === 'closed') {
-                    setClosedAlerts(data);
-                    setClosedTotalPages(totalPages);
-                    setClosedCount(data.length);
-                    console.log("Page:", page, data);
-                } else {
-                    setRecentAlerts(data);
-                    setRecentTotalPages(totalPages);
-                }
+                setClosedAlerts(data);
+                setClosedTotalPages(totalPages);
+                setClosedCount(data.length);
+            })
+            .catch(error => {
+                console.log("Error fetching alerts: ", error);
+            });
+    };
+
+    const fetchOpenAlert = (page = 1) => {
+        getAlerts('open', recordsPerPage, page, recentSearchValue)
+            .then(results => {
+                const {data = [], totalPages = 0} = results;
+                setRecentAlerts(data);
+                setRecentTotalPages(totalPages);
+                
             })
             .catch(error => {
                 console.log("Error fetching alerts: ", error);
             })
             .finally(_ => {
-                status === 'open' && setFetchingData(false);
+                setFetchingData(false);
             });
     };
+
+    useEffect(() => {
+        setFetchingData(true);
+        fetchClosedAlert(closedPagePosition);
+        fetchOpenAlert(recentPagePosition);
+    }, []);
+
+    useEffect(() => {
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            
+            setSearchResult([]);
+            fetchClosedAlert(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchClosedAlert, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setClosedPagePosition(1);
+    }, [searchValue]);
+
+    useEffect(() => {
+        if (!recentSearchValue) {
+            // empty search values and cancel any out going request.
+            
+            setRecentSearchResult([]);
+            fetchOpenAlert(1);
+            if (recentSearchQuery.cancel) recentSearchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchOpenAlert, 300);
+
+        setRecentSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setRecentPagePosition(1);
+    }, [recentSearchValue]);
 
     return (
         <Page
