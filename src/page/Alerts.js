@@ -170,6 +170,12 @@ function Alerts() {
                 header={recentHeader}
                 onItemPress={onCollapse('recent')}
                 isCollapsed={isCollapsed.includes('recent')}
+                currentPage={recentPagePosition}
+                totalPages={recentTotalPages}
+                goToNextPage={goToNextPage('recent')}
+                goToPreviousPage={goToPreviousPage('recent')}
+                searchValue={recentSearchValue}
+                onChangeText={value => setRecentSearchValue(value)}
                 content={(
                     <RecentAlertsList
                         data={recentAlerts}
@@ -189,7 +195,7 @@ function Alerts() {
                 goToNextPage={goToNextPage('done')}
                 goToPreviousPage={goToPreviousPage('done')}
                 searchValue={searchValue}
-                onChangeText={ value => setSearchValue(value)}
+                onChangeText={value => setSearchValue(value)}
                 content={(
                     <DoneAlertsList
                         data={closedAlerts}
