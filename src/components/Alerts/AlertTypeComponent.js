@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
+import PropTypes from 'prop-types';
 
 import CollapsibleListItem from '../common/List/CollapsibleListItem';
 import Search from '../common/Search';
@@ -104,6 +105,8 @@ function AlertTypeComponent({
     backgroundColor,
     currentPage,
     totalPages,
+    goToNextPage,
+    goToPreviousPage
 }) {
     const theme = useTheme();
 
@@ -167,8 +170,8 @@ function AlertTypeComponent({
                                 currentPage={currentPage}
                                 totalPages={totalPages}
                                 hasNumberBorder={false}
-                                goToNextPage={() => {}}
-                                goToPreviousPage={() => {}}
+                                goToNextPage={goToNextPage}
+                                goToPreviousPage={goToPreviousPage}
                             />
                         </FooterContainer>
 
@@ -179,5 +182,8 @@ function AlertTypeComponent({
         </AlertWrapper>
     );
 }
+
+AlertTypeComponent.propTypes = {};
+AlertTypeComponent.defaultProps = {};
 
 export default AlertTypeComponent;

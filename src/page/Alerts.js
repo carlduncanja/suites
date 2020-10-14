@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import styled, {css} from '@emotion/native';
 import {Text} from 'react-native';
 import {useTheme} from 'emotion-theming';
+import {useNextPaginator, usePreviousPaginator} from '../helpers/caseFilesHelpers';
 import Page from '../components/common/Page/Page';
 import AlertTypeComponent from '../components/Alerts/AlertTypeComponent';
 import DataItem from '../components/common/List/DataItem';
@@ -11,6 +12,7 @@ import CollapsedIcon from '../../assets/svg/closeArrow';
 import ActionIcon from '../../assets/svg/dropdownIcon';
 import DoneAlertsList from '../components/Alerts/DoneAlertsList';
 import { getAlerts } from '../api/network';
+import RecentAlertsList from '../components/Alerts/RecentAlertsList';
 
 const NumberContainer = styled.View`
     height: 20px;
@@ -45,9 +47,16 @@ function Alerts() {
 
     const [closedCount, setClosedCount] = useState(0);
     const [closedTotalPages, setClosedTotalPages] = useState(1);
+    const [recentTotalPages, setRecentTotalPages] = useState(1);
+
     const [closedPageListMin, setClosedPageListMin] = useState(0);
     const [closedPageListMax, setClosedPageListMax] = useState(recordsPerPage);
+
+    const [recentPageListMin, setRecentPageListMin] = useState(0);
+    const [recentPageListMax, setRecentPageListMax] = useState(recordsPerPage);
+
     const [closedPagePosition, setClosedPagePosition] = useState(1);
+    const [recentPagePosition, setRecentPagePosition] = useState(1);
 
     const recentHeader = () => (
         <>
@@ -100,6 +109,50 @@ function Alerts() {
         setIsCollapsed(newList);
     };
 
+    const goToNextPage = type => () => {
+        console.log("Page: ", type);
+        const pages = type === 'done' ? closedTotalPages : recentTotalPages;
+        const pagePosition = type === 'done' ? closedPagePosition : recentPagePosition;
+        const pageMin = type === 'done' ? closedPageListMin : recentPageListMin;
+        const pageMax = type === 'done' ? closedPageListMax : recentPageListMax;
+
+        if (pagePosition < pages) {
+            let {currentPage, currentListMin, currentListMax} = useNextPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
+            if (type === 'done') {
+                setClosedPagePosition(currentPage);
+                setClosedPageListMin(currentListMin);
+                setClosedPageListMax(currentListMax);
+                fetchAlert('closed', recordsPerPage, currentPage);
+            } else {
+                setRecentPagePosition(currentPage);
+                setRecentPageListMin(currentListMin);
+                setRecentPageListMax(currentListMax);
+                fetchAlert('open', recordsPerPage, currentPage);
+            }
+        }
+    };
+
+    const goToPreviousPage = type => () => {
+        const pages = type === 'done' ? closedTotalPages : recentTotalPages;
+        const pagePosition = type === 'done' ? closedPagePosition : recentPagePosition;
+        const pageMin = type === 'done' ? closedPageListMin : recentPageListMin;
+        const pageMax = type === 'done' ? closedPageListMax : recentPageListMax;
+
+        if (pagePosition > 1) {
+            let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
+            if (type === 'done') {
+                setClosedPagePosition(currentPage);
+                setClosedPageListMin(currentListMin);
+                setClosedPageListMax(currentListMax);
+                fetchAlert('closed', recordsPerPage, currentPage);
+            } else {
+                setRecentPagePosition(currentPage);
+                setRecentPageListMin(currentListMin);
+                setRecentPageListMax(currentListMax);
+                fetchAlert('open', recordsPerPage, currentPage);
+            }
+        }
+    };
     const pageContent = (
 
         <>
@@ -108,7 +161,11 @@ function Alerts() {
                 header={recentHeader}
                 onItemPress={onCollapse('recent')}
                 isCollapsed={isCollapsed.includes('recent')}
-                content={<Text>Recent</Text>}
+                content={(
+                    <RecentAlertsList
+                        data={recentAlerts}
+                    />
+                )}
             />
 
             <Space/>
@@ -120,6 +177,8 @@ function Alerts() {
                 isCollapsed={isCollapsed.includes('done')}
                 currentPage={closedPagePosition}
                 totalPages={closedTotalPages}
+                goToNextPage={goToNextPage('done')}
+                goToPreviousPage={goToPreviousPage('done')}
                 content={(
                     <DoneAlertsList
                         data={closedAlerts}
@@ -132,22 +191,52 @@ function Alerts() {
 
     useEffect(() => {
         setFetchingData(true);
-        getAlerts()
+        fetchAlert('closed', recordsPerPage, closedPagePosition);
+        fetchAlert('open', recordsPerPage, recentPagePosition);
+
+        // getAlerts('closed', recordsPerPage)
+        //     .then(results => {
+        //         const {data = [], totalPages = 0} = results;
+        //         setClosedAlerts(data);
+        //         setClosedTotalPages(totalPages);
+        //         setClosedCount(data.length);
+        //     })
+        //     .catch(error => {
+        //         console.log("Error fetching alerts: ", error);
+        //     });
+        // getAlerts('open', recordsPerPage)
+        //     .then(results => {
+        //         const {data = [], totalPages = 0} = results;
+        //         setRecentAlerts(data);
+        //         setRecentTotalPages(totalPages);
+        //     })
+        //     .catch(error => {
+        //         console.log("Error fetching alerts: ", error);
+        //     })
+        //     .finally(_ => setFetchingData(false));
+    }, []);
+
+    const fetchAlert = (status, max, page) => {
+        getAlerts(status, max, page)
             .then(results => {
-                const {data = [], pages = 0} = results;
-                const closedAlerts = [...data.filter(alert => alert.status === 'closed')];
-                const recentAlerts = [...data.filter(alert => alert.status === 'open')];
-                setClosedAlerts(closedAlerts);
-                setRecentAlerts(recentAlerts);
-                setClosedTotalPages(Math.ceil(closedAlerts.length / recordsPerPage));
-                setClosedCount(closedAlerts.length);
-                // console.log("Alerts: ", data);
+                const {data = [], totalPages = 0} = results;
+                if (status === 'closed') {
+                    setClosedAlerts(data);
+                    setClosedTotalPages(totalPages);
+                    setClosedCount(data.length);
+                    console.log("Page:", page, data);
+                } else {
+                    setRecentAlerts(data);
+                    setRecentTotalPages(totalPages);
+                }
             })
             .catch(error => {
                 console.log("Error fetching alerts: ", error);
             })
-            .finally(_ => setFetchingData(false));
-    }, []);
+            .finally(_ => {
+                status === 'open' && setFetchingData(false);
+            });
+    };
 
     return (
         <Page

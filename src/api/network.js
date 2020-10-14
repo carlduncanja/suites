@@ -618,7 +618,7 @@ export const generateDocumentLink = async data => documentGenerationInstance.pos
 
 // ################# Alerts Endpoints
 
-export const getAlerts = async query => suitesAxiosInstance
-    .get(alertsEndpoint, {params: {query}})
+export const getAlerts = async (status, max, page) => suitesAxiosInstance
+    .get(alertsEndpoint, {params: {status, max, page}})
     .then(handleResponse)
     .catch(handleError);
