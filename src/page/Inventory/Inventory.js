@@ -457,7 +457,7 @@ function Inventory(props) {
         });
 
         return levelsTotal;
-    };
+    }; 
 
     const getStock = locations => locations.reduce((acc, curr) => acc + curr.stock, 0);
 
@@ -538,7 +538,7 @@ function Inventory(props) {
             />
 
             <DataItem text={locations} color="--color-blue-600" fontStyle="--text-base-regular" align="center"/>
-            <DataItem flex={0.4}/>
+            <DataItem flex={0.5}/>
         </>
     );
 
