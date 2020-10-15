@@ -14,6 +14,8 @@ import ActionIcon from '../../assets/svg/dropdownIcon';
 import DoneAlertsList from '../components/Alerts/DoneAlertsList';
 import { getAlerts } from '../api/network';
 import RecentAlertsList from '../components/Alerts/RecentAlertsList';
+import { useModal } from 'react-native-modalfy';
+import CustomDateRangePicker from '../components/Alerts/CustomDateRangePicker';
 
 const NumberContainer = styled.View`
     height: 20px;
@@ -39,6 +41,7 @@ const Space = styled.View`
 
 function Alerts() {
     const theme = useTheme();
+    const modal = useModal();
     const recordsPerPage = 4;
 
     const [isCollapsed, setIsCollapsed] = useState([]);
@@ -66,6 +69,12 @@ function Alerts() {
     const [recentSearchValue, setRecentSearchValue] = useState('');
     const [recentSearchResults, setRecentSearchResult] = useState([]);
     const [recentSearchQuery, setRecentSearchQuery] = useState({});
+
+    const [closedStartDate, setClosedStartDate] = useState(new Date());
+    const [closedEndDate, setClosedEndDate] = useState(new Date());
+
+    const [recentStartDate, setRecentStartDate] = useState(new Date());
+    const [recentEndDate, setRecentEndDate] = useState(new Date());
 
     const recentHeader = () => (
         <>
@@ -162,6 +171,34 @@ function Alerts() {
             }
         }
     };
+
+    const setDates = type => (start, end) => {
+        if (type === 'recent') {
+            setRecentEndDate(end);
+            setRecentStartDate(start);
+        } else {
+            setClosedEndDate(end);
+            setClosedStartDate(start);
+        }
+    };
+
+    const onChangeDate = type => () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <CustomDateRangePicker
+                    getDates={(startDate, endDate) => {
+                        setDates(type)(startDate, endDate);
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                />
+            ),
+            onClose: () => {
+                modal.closeAllModals();
+                console.log('Modal closed');
+            },
+        });
+    };
+
     const pageContent = (
 
         <>
@@ -176,6 +213,9 @@ function Alerts() {
                 goToPreviousPage={goToPreviousPage('recent')}
                 searchValue={recentSearchValue}
                 onChangeText={value => setRecentSearchValue(value)}
+                onChangeDate={onChangeDate('recent')}
+                startDate={recentStartDate}
+                endDate={recentEndDate}
                 content={(
                     <RecentAlertsList
                         data={recentAlerts}
