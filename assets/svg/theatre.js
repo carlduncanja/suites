@@ -2,7 +2,7 @@ import React from 'react';
 import Svg, {Path, Rect} from "react-native-svg";
 import {View} from "react-native";
 
-const threatre = ({strokeColor}) => (<View>
+const theatre = ({strokeColor}) => (<View>
         <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <Rect x="4" y="21.5" width="16" height="2" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square" stroke-linejoin="round"/>
             <Rect x="10" y="17" width="4" height="4.5" stroke={strokeColor} stroke-miterlimit="10" stroke-linecap="square" stroke-linejoin="round"/>
@@ -13,7 +13,7 @@ const threatre = ({strokeColor}) => (<View>
     </View>
 );
 
-threatre.propTypes = {};
-threatre.defaultProps = {};
+theatre.propTypes = {};
+theatre.defaultProps = {};
 
-export default threatre;
+export default theatre;
