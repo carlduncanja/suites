@@ -43,17 +43,22 @@ function ListItem({
     hasCheckBox = true,
     isChecked = false,
     onCheckBoxPress = () => { },
-    onItemPress = () => { }
+    onItemPress = () => { },
+    isDisabled=false
 }) {
     const theme = useTheme();
 
     return (
-        <ListItemWrapper onPress={onItemPress} theme={theme}>
+        <ListItemWrapper onPress={onItemPress} theme={theme} disabled={isDisabled}>
             <ListItemContainer theme={theme} isArchive={isArchive}>
-                <CheckBoxComponent
-                    isCheck={isChecked}
-                    onPress={onCheckBoxPress}
-                />
+                {
+                    hasCheckBox &&
+                    <CheckBoxComponent
+                        isCheck={isChecked}
+                        onPress={onCheckBoxPress}
+                    />
+                }
+                
                 <ItemView >
                     {itemView}
                 </ItemView>

@@ -590,7 +590,7 @@ function Inventory(props) {
         });
  
         const isIndeterminate = selectedVariants.some(variant => variant.groupId === item._id)
-
+ 
         return <CollapsibleListItem
             isChecked={selectedIds.includes(item._id)}
             onCheckBoxPress={onCheckBoxPress(item)}

@@ -94,3 +94,6 @@ export const createCategoryEndpoint = '/categories/items';
 
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;
+
+// ##### ALERTS
+export const alertsEndpoint = '/alerts';

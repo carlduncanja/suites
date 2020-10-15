@@ -66,7 +66,9 @@ import {
     updatePurchaseOrderDetailsEndpoint,
     user,
     roles,
-    patientEndpoint
+    patientEndpoint,
+    alertsEndpoint
+
 } from '../const/suitesEndpoints';
 import {createDocumentLink} from '../const/documentGenerationEndpoints';
 
@@ -611,5 +613,12 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
 
 // ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
+    .then(handleResponse)
+    .catch(handleError);
+
+// ################# Alerts Endpoints
+
+export const getAlerts = async (status, max, page, query) => suitesAxiosInstance
+    .get(alertsEndpoint, {params: {status, max, page, query}})
     .then(handleResponse)
     .catch(handleError);

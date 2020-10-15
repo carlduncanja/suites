@@ -162,7 +162,7 @@ export const root = {
             fontStyle: 'normal',
             lineHeight: 10,
         },
-        '--actions-title':{
+        '--actions-title': {
             fontSize: 10,
             fontWeight: '500',
             fontStyle: 'normal',
