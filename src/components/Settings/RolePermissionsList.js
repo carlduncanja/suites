@@ -32,9 +32,6 @@ const ROLE_GROUPS = [
             {
                 key: 'create',
                 title: 'New Case'
-            }, {
-                key: 'create',
-                title: 'Add New Item'
             },
             {
                 key: 'update',
@@ -54,10 +51,13 @@ const ROLE_GROUPS = [
     }
 ];
 
-function RolePermissionsList({data = []}) {
+function RolePermissionsList({
+    permissions = {},
+    onUpdatePermission = () => {
+    }
+}) {
     const theme = useTheme();
     const [isCollapsed, setIsCollapsed] = useState([]);
-    const [permissions, setPermissions] = useState(data);
 
     const roleHeader = name => (
         <>
@@ -84,6 +84,11 @@ function RolePermissionsList({data = []}) {
         setIsCollapsed(newList);
     };
 
+    const checkIfPermissionEnabled = (group, key) => {
+        if (!permissions[group]) return false;
+        return permissions[group][key];
+    };
+
     const pageContent = () => (
         <>
             {
@@ -100,7 +105,10 @@ function RolePermissionsList({data = []}) {
                             content={actions.map(action => (
                                 <ActionRow theme={theme}>
                                     <ActionTitle theme={theme}>{action.title}</ActionTitle>
-                                    <CustomSwitch isChecked={true}/>
+                                    <CustomSwitch
+                                        isChecked={checkIfPermissionEnabled(group, action.key)}
+                                        onChange={checked => onUpdatePermission({group, key: action.key, value: checked})}
+                                    />
                                 </ActionRow>
                             ))}
                         />

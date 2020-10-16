@@ -6,8 +6,10 @@ export const guestLoginEndpoint = '/auth/login/guest';
 
 // ##### Users
 export const users = '/users';
+export const user = userId => `/users/${userId}`;
+
 export const roles = '/users/roles';
-export const user = (userId) => `/users/${userId}`;
+export const role = roleId => `/users/roles/${roleId}`;
 
 // ##### Appointments
 export const appointmentsEndpoint = '/appointments/';
@@ -26,7 +28,7 @@ export const inventoryGroups = '/inventory_groups';
 export const inventoryGroup = groupId => `/inventory_groups/${groupId}`;
 export const inventoryGroupVariants = groupId => `/inventory_groups/${groupId}/variants`;
 export const inventoryGroupVariant = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}`;
-export const inventoryLocationEndpint = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}/storage`;
+export const inventoryLocationEndpoint = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}/storage`;
 
 // ##### INVENTORY TRANSFERS
 export const inventoryGroupVariantTransfers = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}/transfers`;
