@@ -270,7 +270,6 @@ function Settings() {
             hasList={false}
             pageContent={pageContent}
             isFetchingData={isFetchingData}
-            onRefresh={() => console.log('hello world')}
         />
     );
 }
