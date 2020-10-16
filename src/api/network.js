@@ -12,7 +12,7 @@ import {
     inventoryGroupVariantTransfers,
     inventoryGroupVariantTransfer,
     inventoryGroupVariantTransferState,
-    inventoryLocationEndpint,
+    inventoryLocationEndpoint,
     theatresEndpoint,
     theatreEndpoint,
     physiciansEndpoint,
@@ -66,6 +66,7 @@ import {
     updatePurchaseOrderDetailsEndpoint,
     user,
     roles,
+    role,
     patientEndpoint,
     alertsEndpoint
 
@@ -102,13 +103,28 @@ export const updateUserCall = async (userId, updateData) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const deleteUserCall = async userIds => suitesAxiosInstance
+    .delete(users, {data: {ids: userIds}})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const createRoleCall = async data => suitesAxiosInstance
+    .post(roles, data)
+    .then(handleResponse)
+    .catch(handleError);
+
 export const getRolesCall = async (query, page, max) => suitesAxiosInstance
     .get(roles, {params: {query, page, max}})
     .then(handleResponse)
     .catch(handleError);
 
-export const deleteUserCall = async userIds => suitesAxiosInstance
-    .delete(users, {data: {ids: userIds}})
+export const updateRoleCall = async (roleId, updateData) => suitesAxiosInstance
+    .put(role(roleId), updateData)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const deleteRoleCall = async roleIds => suitesAxiosInstance
+    .delete(roles, {data: {ids: roleIds}})
     .then(handleResponse)
     .catch(handleError);
 
@@ -241,16 +257,16 @@ export const createTransfer = async (groupId, variantId, transferData) => suites
     .catch(handleError);
 
 export const createInventoryLocation = async (groupId, variantId, data) => suitesAxiosInstance
-    .post(inventoryLocationEndpint(groupId, variantId), data)
+    .post(inventoryLocationEndpoint(groupId, variantId), data)
     .then(handleResponse)
     .catch(handleError);
 
-export const removeTransferItem = async(groupId, variantId, transferId) => suitesAxiosInstance
+export const removeTransferItem = async (groupId, variantId, transferId) => suitesAxiosInstance
     .delete(inventoryGroupVariantTransfer(groupId, variantId, transferId))
     .then(handleResponse)
     .catch(handleError);
 
-export const updateTransferState = async(groupId, variantId, transferId, data) => suitesAxiosInstance
+export const updateTransferState = async (groupId, variantId, transferId, data) => suitesAxiosInstance
     .put(inventoryGroupVariantTransferState(groupId, variantId, transferId), data)
     .then(handleResponse)
     .catch(handleError);
@@ -478,7 +494,7 @@ export const removeEquipmentTypes = async data => suitesAxiosInstance
     .delete(equipmentTypesEndpoint, {data})
     .then(handleResponse)
     .catch(handleError);
-    
+
 export const getEquipmentTypeById = async id => suitesAxiosInstance
     .get(equipmentTypeEndpoint(id))
     .then(handleResponse)
