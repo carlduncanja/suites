@@ -46,7 +46,7 @@ import HelpIcon from '../../../../assets/svg/helpIcon';
 import NotificationIcon from '../../../../assets/svg/notificationIcon';
 import Invoices from '../../CaseFiles/OverlayPages/ChargeSheet/Invoices';
 import {ROLES} from '../../../const';
-import PersonIcon from '../../../../assets/svg/personIcon';
+import UserPageIcon from '../../../../assets/svg/UserPageIcon';
 import UsersPage from '../../../page/Users/UsersPage';
 import UsersNavigationStack from './UsersNavigationStack';
 
@@ -167,7 +167,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                     name="Users"
                     component={UsersNavigationStack}
                     initialParams={{
-                        icon: PersonIcon,
+                        icon: UserPageIcon,
                         tabName: 'Users',
                     }}
                 />
