@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 import {useModal} from 'react-native-modalfy';
+import {RefreshControl, ScrollView} from 'react-native';
 import Page from '../components/common/Page/Page';
 import RoleTypeComponent from '../components/Settings/RoleTypeComponent';
 import DataItem from '../components/common/List/DataItem';
@@ -14,7 +15,6 @@ import RolePermissionsList from '../components/Settings/RolePermissionsList';
 import {checkboxItemPress} from '../helpers/caseFilesHelpers';
 import ConfirmationComponent from '../components/ConfirmationComponent';
 import CreateUserOverlayDialog from '../components/Roles/CreateRoleOverlayDialog';
-import {RefreshControl, ScrollView} from 'react-native';
 
 const SectionHeader = styled.View`
   display: flex;
@@ -65,7 +65,10 @@ function Settings() {
 
     const fetchRoles = () => {
         getRolesCall()
-            .then(results => setRoles(results))
+            .then(results => {
+                setRoles(results);
+                setSelectedRoles([]);
+            })
             .catch(error => console.error('Error fetching roles: ', error))
             .finally(_ => setFetchingData(false));
     };
@@ -231,13 +234,12 @@ function Settings() {
             <Space/>
 
             <ScrollView
-                // refreshControl={
-                //     <RefreshControl
-                //         refreshing={isFetchingData}
-                //         onRefresh={() => {
-                //         }}
-                //     />
-                // }
+                refreshControl={(
+                    <RefreshControl
+                        refreshing={isFetchingData}
+                        onRefresh={() => fetchRoles()}
+                    />
+                )}
             >
                 {
                     roles.map(item => (
