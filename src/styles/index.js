@@ -168,6 +168,12 @@ export const root = {
             fontStyle: 'normal',
             lineHeight: 10,
         },
+        '--calenday-weekday': {
+            fontSize: 12,
+            fontWeight: '750',
+            fontStyle: 'normal',
+            lineHeight: 12,
+        },
         // XS - SMALL
         '--text-xs-regular': {
             fontSize: 12,

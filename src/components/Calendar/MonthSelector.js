@@ -52,7 +52,7 @@ function MonthSelector ({selectedMonth = new Date(), onMonthUpdated = ()=>{}}){
         height:100%;
     `;
 
-
+ 
     return (
         <MonthSelectorWrapper>
             <MonthSelectorContainer>

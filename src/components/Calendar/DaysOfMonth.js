@@ -99,7 +99,7 @@ function DaysOfMonth({month, appointments = [], selectedDay, onDayPress}) {
         align-self: center;
         flex-direction : row;
     `
-
+ 
     return (
         <DaysOfMonthWrapper>
             <DaysOfMonthContainer>

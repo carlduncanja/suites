@@ -45,13 +45,13 @@ const listHeaders = [
         name: 'Item Name',
         alignment: 'flex-start',
         flex: 1.5,
-        hasSort: true
+        hasSort: false
     },
     {
         name: 'In Stock',
         alignment: 'center',
         flex: 1,
-        hasSort: true
+        hasSort: false
     },
     {
         name: 'Capacity',
