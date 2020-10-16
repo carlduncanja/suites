@@ -15,6 +15,7 @@ import RolePermissionsList from '../components/Settings/RolePermissionsList';
 import {checkboxItemPress} from '../helpers/caseFilesHelpers';
 import ConfirmationComponent from '../components/ConfirmationComponent';
 import CreateUserOverlayDialog from '../components/Roles/CreateRoleOverlayDialog';
+import RefreshableScrollView from '../components/common/RefreshableScrollView';
 
 const SectionHeader = styled.View`
   display: flex;
@@ -59,11 +60,11 @@ function Settings() {
     const [selectedRoles, setSelectedRoles] = useState([]);
 
     useEffect(() => {
-        setFetchingData(true);
         fetchRoles();
     }, []);
 
     const fetchRoles = () => {
+        setFetchingData(true);
         getRolesCall()
             .then(results => {
                 setRoles(results);
@@ -233,33 +234,32 @@ function Settings() {
 
             <Space/>
 
-            <ScrollView
-                refreshControl={(
-                    <RefreshControl
-                        refreshing={isFetchingData}
-                        onRefresh={() => fetchRoles()}
-                    />
+            <RefreshableScrollView
+                refreshing={isFetchingData}
+                onRefresh={() => fetchRoles()}
+                content={(
+                    <>
+                        {
+                            roles.map(item => (
+                                <>
+                                    <RoleTypeComponent
+                                        key={`SettingsRoleSection_${item._id}`}
+                                        header={() => roleHeader(item.name)}
+                                        onItemPress={onCollapse(item.name?.toLowerCase())}
+                                        isCollapsed={isCollapsed.includes(item.name?.toLowerCase())}
+                                        isChecked={selectedRoles.includes(item._id)}
+                                        onCheckBoxPress={handleOnCheckBoxPress(item)}
+                                        content={(
+                                            <RolePermissionsList permissions={item.permissions} onUpdatePermission={permission => onUpdatePermission(item._id, permission)}/>
+                                        )}
+                                    />
+                                    <Space/>
+                                </>
+                            ))
+                        }
+                    </>
                 )}
-            >
-                {
-                    roles.map(item => (
-                        <>
-                            <RoleTypeComponent
-                                key={`SettingsRoleSection_${item._id}`}
-                                header={() => roleHeader(item.name)}
-                                onItemPress={onCollapse(item.name?.toLowerCase())}
-                                isCollapsed={isCollapsed.includes(item.name?.toLowerCase())}
-                                isChecked={selectedRoles.includes(item._id)}
-                                onCheckBoxPress={handleOnCheckBoxPress(item)}
-                                content={(
-                                    <RolePermissionsList permissions={item.permissions} onUpdatePermission={permission => onUpdatePermission(item._id, permission)}/>
-                                )}
-                            />
-                            <Space/>
-                        </>
-                    ))
-                }
-            </ScrollView>
+            />
         </>
     );
 
