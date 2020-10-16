@@ -1,67 +1,61 @@
-import { createAppContainer } from 'react-navigation';
-import { createSuitesSidebarNavigator } from '../SuiteNavigator';
-
-import React from "react";
-
+import {createAppContainer} from 'react-navigation';
+import React from 'react';
+import {connect} from 'react-redux';
+import {createSuitesSidebarNavigator} from '../SuiteNavigator';
 
 /* Screens */
 import Schedule from '../../../page/Schedule';
-import Theatres from "../../../page/Theatres/Theatres";
-import Inventory from "../../../page/Inventory/Inventory";
-import Storage from "../../../page/Storage";
+import Theatres from '../../../page/Theatres/Theatres';
+import Inventory from '../../../page/Inventory/Inventory';
+import Storage from '../../../page/Storage';
 import Procedures from '../../../page/Procedures';
 import Physicians from '../../../page/Physicians';
 import Suppliers from '../../../page/Suppliers';
 import Equipment from '../../../page/Equipment/Equipment';
 import Orders from '../../../page/PurchaseOrders/Orders';
 import Alerts from '../../../page/Alerts';
+import Settings from '../../../page/Settings';
 
-import ProcedureNavigationStack from "./ProcedureNavigationStack";
-import CaseFileNavigationStack from "./CaseFileNavigationStack";
-import TheatreNavigationStack from "./TheatreNavigationStack";
-import OrderNavigationStack from "./OrderNavigationStack";
-import SupplierNavigationStack from "./SupplierNavigationStack";
-import StorageNavigationStack from "./StorageNavigationStack";
-import PhysicianNavigationStack from "./PhysiciansNavigationStack";
-import EquipmentNavigationStack from "./EquipmentNavigationStack";
-import InventoryNavigationStack from "./InventoryNavigationStack";
+import ProcedureNavigationStack from './ProcedureNavigationStack';
+import CaseFileNavigationStack from './CaseFileNavigationStack';
+import TheatreNavigationStack from './TheatreNavigationStack';
+import OrderNavigationStack from './OrderNavigationStack';
+import SupplierNavigationStack from './SupplierNavigationStack';
+import StorageNavigationStack from './StorageNavigationStack';
+import PhysicianNavigationStack from './PhysiciansNavigationStack';
+import EquipmentNavigationStack from './EquipmentNavigationStack';
+import InventoryNavigationStack from './InventoryNavigationStack';
 
 /* Providers*/
-import NotFound from "../../../page/NotFound";
-
+import NotFound from '../../../page/NotFound';
 
 /* Icons */
-import ScheduleIcon from "../../../../assets/svg/schedule"
-import CaseFileIcon from "../../../../assets/svg/caseFile"
-import TheathreIcon from "../../../../assets/svg/threatre"
-import InventoryIcon from "../../../../assets/svg/inventory"
-import EquipmentIcon from "../../../../assets/svg/equipment"
-import OrdersIcon from "../../../../assets/svg/orders"
-import DeliveryIcon from "../../../../assets/svg/delivery"
-import InvoiceIcon from "../../../../assets/svg/invoices"
-import StorageIcon from "../../../../assets/svg/storage"
-import PhysiciansIcon from "../../../../assets/svg/physicians"
-import ProcedureIcon from "../../../../assets/svg/procedures"
-import SettingsIcon from "../../../../assets/svg/settingsIcon";
-import HelpIcon from "../../../../assets/svg/helpIcon";
-import NotificationIcon from "../../../../assets/svg/notificationIcon";
-import Invoices from "../../CaseFiles/OverlayPages/ChargeSheet/Invoices";
-import {connect} from "react-redux";
-import {ROLES} from "../../../const";
-import PersonIcon from "../../../../assets/svg/personIcon";
-import UsersPage from "../../../page/Users/UsersPage";
-import UsersNavigationStack from "./UsersNavigationStack";
-
-
+import ScheduleIcon from '../../../../assets/svg/schedule';
+import CaseFileIcon from '../../../../assets/svg/caseFile';
+import TheatreIcon from '../../../../assets/svg/theatre';
+import InventoryIcon from '../../../../assets/svg/inventory';
+import EquipmentIcon from '../../../../assets/svg/equipment';
+import OrdersIcon from '../../../../assets/svg/orders';
+import DeliveryIcon from '../../../../assets/svg/delivery';
+import InvoiceIcon from '../../../../assets/svg/invoices';
+import StorageIcon from '../../../../assets/svg/storage';
+import PhysiciansIcon from '../../../../assets/svg/physicians';
+import ProcedureIcon from '../../../../assets/svg/procedures';
+import SettingsIcon from '../../../../assets/svg/settingsIcon';
+import HelpIcon from '../../../../assets/svg/helpIcon';
+import NotificationIcon from '../../../../assets/svg/notificationIcon';
+import Invoices from '../../CaseFiles/OverlayPages/ChargeSheet/Invoices';
+import {ROLES} from '../../../const';
+import PersonIcon from '../../../../assets/svg/personIcon';
+import UsersPage from '../../../page/Users/UsersPage';
+import UsersNavigationStack from './UsersNavigationStack';
 
 const SuitesNavigator = createSuitesSidebarNavigator();
 
-
 export const SuitesNavigationStack = ({auth = {}}) => {
+    const isAdmin = auth.user.role_name === ROLES.ADMIN;
 
-    const isAdmin =  auth.user['role_name'] === ROLES.ADMIN
-
-    console.log("auth suites navigator", auth);
+    console.log('auth suites navigator', auth);
 
     return (
         <SuitesNavigator.Navigator
@@ -83,17 +77,17 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: CaseFileIcon,
                     tabName: 'Case Files',
-                }} />
-
+                }}
+            />
 
             <SuitesNavigator.Screen
                 name="Theatres"
                 component={TheatreNavigationStack}
                 initialParams={{
-                    icon: TheathreIcon,
+                    icon: TheatreIcon,
                     tabName: 'Theatres',
-                }} />
-
+                }}
+            />
 
             <SuitesNavigator.Screen
                 name="Inventory"
@@ -101,8 +95,8 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: InventoryIcon,
                     tabName: 'Inventory',
-                }} />
-
+                }}
+            />
 
             <SuitesNavigator.Screen
                 name="Equipment"
@@ -110,8 +104,8 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: EquipmentIcon,
                     tabName: 'Equipment',
-                }} />
-
+                }}
+            />
 
             <SuitesNavigator.Screen
                 name="Orders"
@@ -122,7 +116,6 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 }}
             />
 
-
             <SuitesNavigator.Screen
                 name="Suppliers"
                 component={SupplierNavigationStack}
@@ -131,7 +124,6 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                     tabName: 'Suppliers',
                 }}
             />
-
 
             {/* <SuitesNavigator.Screen
                 name="Invoices"
@@ -151,7 +143,6 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 }}
             />
 
-
             <SuitesNavigator.Screen
                 name="Physicians"
                 component={PhysicianNavigationStack}
@@ -161,7 +152,6 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 }}
             />
 
- 
             <SuitesNavigator.Screen
                 name="Procedures List"
                 component={ProcedureNavigationStack}
@@ -183,10 +173,6 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 />
             }
 
-
-
-
-
             <SuitesNavigator.Screen
                 name="Alerts"
                 component={Alerts}
@@ -196,37 +182,28 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 }}
             />
 
-
-
             <SuitesNavigator.Screen
                 name="Help"
-                component={Procedures}
+                component={NotFound}
                 initialParams={{
                     icon: HelpIcon,
                     tabName: 'Help',
                 }}
             />
 
-
-
             <SuitesNavigator.Screen
                 name="Settings"
-                component={NotFound}
+                component={Settings}
                 initialParams={{
                     icon: SettingsIcon,
                     tabName: 'Settings',
                 }}
             />
 
-
         </SuitesNavigator.Navigator>
     );
-}
+};
 
-const mapStateToProps = (state) => {
-    return {
-        auth: state.auth
-    }
-}
+const mapStateToProps = state => ({auth: state.auth});
 
-export default connect(mapStateToProps)(SuitesNavigationStack)
+export default connect(mapStateToProps)(SuitesNavigationStack);

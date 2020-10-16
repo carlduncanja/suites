@@ -108,7 +108,8 @@ function AlertTypeComponent({
     goToNextPage,
     goToPreviousPage,
     searchValue,
-    onChangeText
+    onChangeText,
+    onChangeDate
 }) {
     const theme = useTheme();
 
@@ -139,7 +140,7 @@ function AlertTypeComponent({
 
                             <DateContainer
                                 theme={theme}
-                                onPress={() => {}}
+                                onPress={() => onChangeDate()}
                             >
                                 <CalendarIcon/>
                                 {
