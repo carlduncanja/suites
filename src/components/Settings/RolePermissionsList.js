@@ -35,7 +35,15 @@ const ROLE_GROUPS = [
             },
             {
                 key: 'update',
-                title: 'Edit Price'
+                title: 'Edit Case'
+            },
+            {
+                key: 'read',
+                title: 'View Case'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Case'
             }
         ]
     },
@@ -46,6 +54,10 @@ const ROLE_GROUPS = [
             {
                 key: 'create',
                 title: 'New Theatre'
+            },
+            {
+                key: 'update',
+                title: 'Edit Theatre'
             }
         ]
     }

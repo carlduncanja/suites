@@ -182,14 +182,23 @@ function Alerts() {
         }
     };
 
+    const fetchData = type => {
+        console.log("GET DATES");
+        type === 'recent' ?
+            fetchOpenAlert(1) :
+            fetchClosedAlert(1);
+    };
+
     const onChangeDate = type => () => {
         modal.openModal('ConfirmationModal', {
             content: (
                 <CustomDateRangePicker
                     getDates={(startDate, endDate) => {
                         setDates(type)(startDate, endDate);
+                        fetchData();
                         modal.closeModals('ConfirmationModal');
                     }}
+                    onSelectDates={() => modal.closeAllModals()}
                 />
             ),
             onClose: () => {
@@ -236,6 +245,9 @@ function Alerts() {
                 goToPreviousPage={goToPreviousPage('done')}
                 searchValue={searchValue}
                 onChangeText={value => setSearchValue(value)}
+                onChangeDate={onChangeDate('done')}
+                startDate={closedStartDate}
+                endDate={closedEndDate}
                 content={(
                     <DoneAlertsList
                         data={closedAlerts}
@@ -247,7 +259,7 @@ function Alerts() {
     );
 
     const fetchClosedAlert = (page = 1) => {
-        getAlerts('closed', recordsPerPage, page, searchValue)
+        getAlerts('closed', recordsPerPage, page, searchValue, "", "")
             .then(results => {
                 const {data = [], totalPages = 0} = results;
                 setClosedAlerts(data);
@@ -260,7 +272,8 @@ function Alerts() {
     };
 
     const fetchOpenAlert = (page = 1) => {
-        getAlerts('open', recordsPerPage, page, recentSearchValue)
+        console.log("Recent dat: ", recentStartDate);
+        getAlerts('open', recordsPerPage, page, recentSearchValue, "", "")
             .then(results => {
                 const {data = [], totalPages = 0} = results;
                 setRecentAlerts(data);

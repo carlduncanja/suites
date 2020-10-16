@@ -20,7 +20,7 @@ import WeekdaysComponent from './WeekdaysComponent';
  * 
  */
 function Calendar ({screenDimensions, appointments, selectedDay, month, onDayPress}) {
-    const theme = useTheme();
+    const theme = useTheme(); 
 
     const CalendarWrapper = styled.View`
         margin : 0;
