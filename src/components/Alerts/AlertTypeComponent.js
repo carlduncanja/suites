@@ -9,9 +9,9 @@ import SearchIcon from '../../../assets/svg/search';
 import CalendarIcon from '../../../assets/svg/calendar';
 import ClearIcon from '../../../assets/svg/clearIcon';
 import { formatDate } from '../../utils/formatter';
-import { View } from 'react-native';
 import Footer from '../common/Page/Footer';
 import Paginator from '../common/Paginators/Paginator';
+import IconButton from '../common/Buttons/IconButton';
 
 const AlertWrapper = styled.View`
     display: flex;
@@ -94,6 +94,15 @@ const TextItem = styled.Text(({theme, color = '--color-gray-800', font = '--text
     paddingTop: 2
 }));
 
+const ClearContainer = styled.TouchableOpacity`
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding-right: 5px;
+    padding-left: 5px;
+
+`;
+
 function AlertTypeComponent({
     header = () => {},
     isCollapsed = true,
@@ -109,9 +118,11 @@ function AlertTypeComponent({
     goToPreviousPage,
     searchValue,
     onChangeText,
-    onChangeDate
+    onChangeDate,
+    onClearCalendarDates
 }) {
     const theme = useTheme();
+    const date = `${formatDate(startDate, 'DD/MM/YYYY')} - ${formatDate(endDate, 'DD/MM/YYYY')}`;
 
     return (
         <AlertWrapper theme={theme}>
@@ -146,8 +157,16 @@ function AlertTypeComponent({
                                 {
                                     dateSelected &&
                                     <>
-                                        <TextItem>{formatDate(startDate, 'DD/MM/YYYY')} - {formatDate(endDate, 'DD/MM/YYYY')}</TextItem>
-                                        <ClearIcon/>
+                                        <TextItem>{formatDate(startDate, 'DD/MM/YYYY')} {(startDate !== '' || endDate !== '') && '-'} {formatDate(endDate, 'DD/MM/YYYY')}</TextItem>
+                                        {
+                                            (startDate !== '' || endDate !== '') &&
+                                                <ClearContainer onPress={() => onClearCalendarDates()}>
+                                                    <ClearIcon/>
+                                                    {/* <IconButton Icon={<ClearIcon/>} onPress={onClearCalendarDates} /> */}
+                                                </ClearContainer>
+                                            
+                                        }
+                                        
                                     </>
                                 }
                                 

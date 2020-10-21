@@ -70,11 +70,11 @@ function Alerts() {
     const [recentSearchResults, setRecentSearchResult] = useState([]);
     const [recentSearchQuery, setRecentSearchQuery] = useState({});
 
-    const [closedStartDate, setClosedStartDate] = useState(new Date());
-    const [closedEndDate, setClosedEndDate] = useState(new Date());
+    const [closedStartDate, setClosedStartDate] = useState('');
+    const [closedEndDate, setClosedEndDate] = useState('');
 
-    const [recentStartDate, setRecentStartDate] = useState(new Date());
-    const [recentEndDate, setRecentEndDate] = useState(new Date());
+    const [recentStartDate, setRecentStartDate] = useState('');
+    const [recentEndDate, setRecentEndDate] = useState('');
 
     const recentHeader = () => (
         <>
@@ -128,7 +128,7 @@ function Alerts() {
     };
 
     const goToNextPage = type => () => {
-        console.log("Page: ", type);
+        console.log('Page: ', type);
         const pages = type === 'done' ? closedTotalPages : recentTotalPages;
         const pagePosition = type === 'done' ? closedPagePosition : recentPagePosition;
         const pageMin = type === 'done' ? closedPageListMin : recentPageListMin;
@@ -183,7 +183,6 @@ function Alerts() {
     };
 
     const fetchData = type => {
-        console.log("GET DATES");
         type === 'recent' ?
             fetchOpenAlert(1) :
             fetchClosedAlert(1);
@@ -225,6 +224,7 @@ function Alerts() {
                 onChangeDate={onChangeDate('recent')}
                 startDate={recentStartDate}
                 endDate={recentEndDate}
+                onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); }}
                 content={(
                     <RecentAlertsList
                         data={recentAlerts}
@@ -248,6 +248,7 @@ function Alerts() {
                 onChangeDate={onChangeDate('done')}
                 startDate={closedStartDate}
                 endDate={closedEndDate}
+                onClearCalendarDates={() => { setClosedEndDate(''); setClosedStartDate(''); }}
                 content={(
                     <DoneAlertsList
                         data={closedAlerts}
@@ -259,7 +260,7 @@ function Alerts() {
     );
 
     const fetchClosedAlert = (page = 1) => {
-        getAlerts('closed', recordsPerPage, page, searchValue, "", "")
+        getAlerts('closed', recordsPerPage, page, searchValue, closedStartDate, closedEndDate)
             .then(results => {
                 const {data = [], totalPages = 0} = results;
                 setClosedAlerts(data);
@@ -267,13 +268,13 @@ function Alerts() {
                 setClosedCount(data.length);
             })
             .catch(error => {
-                console.log("Error fetching alerts: ", error);
+                console.log('Error fetching alerts: ', error);
             });
     };
 
     const fetchOpenAlert = (page = 1) => {
-        console.log("Recent dat: ", recentStartDate);
-        getAlerts('open', recordsPerPage, page, recentSearchValue, "", "")
+        console.log('Recent dat: ', recentStartDate);
+        getAlerts('open', recordsPerPage, page, recentSearchValue, recentStartDate, recentEndDate)
             .then(results => {
                 const {data = [], totalPages = 0} = results;
                 setRecentAlerts(data);
@@ -281,7 +282,7 @@ function Alerts() {
                 
             })
             .catch(error => {
-                console.log("Error fetching alerts: ", error);
+                console.log('Error fetching alerts: ', error);
             })
             .finally(_ => {
                 setFetchingData(false);
