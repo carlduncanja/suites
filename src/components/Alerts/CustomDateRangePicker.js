@@ -270,7 +270,7 @@ const BUTTONTYPES = [
     },
     {
         name: 'Custom',
-        type: 'custo'
+        type: 'custom'
     },
 ];
 
@@ -349,7 +349,6 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
             end = endCurrent;
             days = monthDays.filter(item => moment(item).isSame(startCurrent) || moment(item).isSame(endCurrent) || moment(item).isBetween(startCurrent, endCurrent));
 
-           
             // start = moment(startCurrent).subtract(7, 'days');
             // end = moment(endCurrent).subtract(7, 'days');
 
@@ -440,6 +439,7 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
         }
         setIsCustom(true);
         setCanApply(true);
+        setTypeSelected('custom');
     };
 
     return (
@@ -497,6 +497,7 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
                                     <Button
                                         key={index}
                                         onPress={() => onDateActionPressed(button.type)}
+                                        disabled={button.type === 'custom'}
                                         backgroundColor={isSelected ? '--color-blue-100' : '--default-shade-white'}
                                         borderColor={isSelected ? '--color-blue-400' : '--color-gray-500'}
                                     >
