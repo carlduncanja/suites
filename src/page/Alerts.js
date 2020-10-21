@@ -254,11 +254,10 @@ function Alerts() {
     );
 
     const fetchClosedAlert = (page = 1, start = closedStartDate, end = closedEndDate) => {
-        console.log("Fetch: ", closedStartDate);
-        getAlerts('closed', recordsPerPage, page, searchValue, start, end)
+        getAlerts('closed', recordsPerPage, page, searchValue, start.toString(), end.toString())
             .then(results => {
                 const {data = [], totalPages = 0} = results;
-                
+                console.log("Closed data: ", data);
                 setClosedAlerts(data);
                 setClosedTotalPages(totalPages);
                 setClosedCount(data.length);

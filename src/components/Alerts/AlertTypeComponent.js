@@ -88,6 +88,10 @@ const FooterContainer = styled.View`
     background-color: ${ ({theme}) => theme.colors['--default-shade-white'] };
 `;
 
+const TextItemContainer = styled.View`
+    flex:1;
+    padding-left: ${ ({theme}) => theme.space['--space-6']};
+`;
 const TextItem = styled.Text(({theme, color = '--color-gray-800', font = '--text-sm-regular'}) => ({
     ...theme.font[font],
     color: theme.colors[color],
@@ -122,7 +126,8 @@ function AlertTypeComponent({
     onClearCalendarDates
 }) {
     const theme = useTheme();
-    const date = `${formatDate(startDate, 'DD/MM/YYYY')} - ${formatDate(endDate, 'DD/MM/YYYY')}`;
+    const date = `${(!startDate && !endDate) ? 'Select date' : `${formatDate(startDate, 'DD/MM/YYYY')} ${(startDate !== '' || endDate !== '') && '-'} ${formatDate(endDate, 'DD/MM/YYYY')}` } `;
+    // `${formatDate(startDate, 'DD/MM/YYYY')} - ${formatDate(endDate, 'DD/MM/YYYY')}`;
 
     return (
         <AlertWrapper theme={theme}>
@@ -157,7 +162,15 @@ function AlertTypeComponent({
                                 {
                                     dateSelected &&
                                     <>
-                                        <TextItem>{formatDate(startDate, 'DD/MM/YYYY')} {(startDate !== '' || endDate !== '') && '-'} {formatDate(endDate, 'DD/MM/YYYY')}</TextItem>
+                                        <TextItemContainer theme={theme}>
+                                            <TextItem
+                                                color={startDate ? '--color-gray-800' : '--color-gray-400'}
+                                            >
+                                                {date}
+                                            </TextItem>
+                                        </TextItemContainer>
+                                        
+                                        {/* <TextItem>{formatDate(startDate, 'DD/MM/YYYY')} {(startDate !== '' || endDate !== '') && '-'} {formatDate(endDate, 'DD/MM/YYYY')}</TextItem> */}
                                         {
                                             (startDate !== '' || endDate !== '') &&
                                                 <ClearContainer onPress={() => onClearCalendarDates()}>

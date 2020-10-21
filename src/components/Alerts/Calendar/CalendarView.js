@@ -195,8 +195,6 @@ const testData = [
 function CalendarView({days=[...testData], onDayPress, month, selectedStartDay, selectedEndDay, selectedDays}) {
 
     const theme = useTheme();
-    console.log("Start: ", selectedStartDay);
-    console.log("End: ", selectedEndDay);
 
     const getColor = day => {
         if (day === selectedStartDay || day === selectedEndDay || selectedDays.includes(day)) {
