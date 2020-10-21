@@ -182,26 +182,20 @@ function Alerts() {
         }
     };
 
-    const fetchData = type => {
-        type === 'recent' ?
-            fetchOpenAlert(1) :
-            fetchClosedAlert(1);
-    };
-
     const onChangeDate = type => () => {
         modal.openModal('ConfirmationModal', {
             content: (
                 <CustomDateRangePicker
                     getDates={(startDate, endDate) => {
                         setDates(type)(startDate, endDate);
-                        fetchData();
+                        type === 'recent' ? fetchOpenAlert(1, startDate, endDate) : fetchClosedAlert(1, startDate, endDate);
                         modal.closeModals('ConfirmationModal');
                     }}
                     onSelectDates={() => modal.closeAllModals()}
                 />
             ),
             onClose: () => {
-                modal.closeAllModals();
+                // modal.closeAllModals();
                 console.log('Modal closed');
             },
         });
@@ -259,10 +253,12 @@ function Alerts() {
         </>
     );
 
-    const fetchClosedAlert = (page = 1) => {
-        getAlerts('closed', recordsPerPage, page, searchValue, closedStartDate, closedEndDate)
+    const fetchClosedAlert = (page = 1, start = closedStartDate, end = closedEndDate) => {
+        console.log("Fetch: ", closedStartDate);
+        getAlerts('closed', recordsPerPage, page, searchValue, start, end)
             .then(results => {
                 const {data = [], totalPages = 0} = results;
+                
                 setClosedAlerts(data);
                 setClosedTotalPages(totalPages);
                 setClosedCount(data.length);
@@ -272,9 +268,9 @@ function Alerts() {
             });
     };
 
-    const fetchOpenAlert = (page = 1) => {
-        console.log('Recent dat: ', recentStartDate);
-        getAlerts('open', recordsPerPage, page, recentSearchValue, recentStartDate, recentEndDate)
+    const fetchOpenAlert = (page = 1, start = recentStartDate, end = recentEndDate) => {
+        // console.log('Recent dat: ', recentStartDate);
+        getAlerts('open', recordsPerPage, page, recentSearchValue, start, end)
             .then(results => {
                 const {data = [], totalPages = 0} = results;
                 setRecentAlerts(data);

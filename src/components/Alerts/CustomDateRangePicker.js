@@ -253,6 +253,25 @@ const STARTYEARS = [
     },
 ];
 
+const BUTTONTYPES = [
+    {
+        name: 'Today',
+        type: 'today'
+    },
+    {
+        name: 'Last Week',
+        type: 'week'
+    },
+    {
+        name: 'This Month',
+        type: 'month'
+    },
+    {
+        name: 'Custom',
+        type: 'custo'
+    },
+];
+
 function CustomDateRangePicker({ getDates, onSelectDates }) {
     const theme = useTheme();
     
@@ -265,6 +284,7 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
     const [selectedEndtDay, setSelectedEndDay] = useState('');
     const [isCustom, setIsCustom] = useState(false);
     const [canApply, setCanApply] = useState(false);
+    const [typeSelected, setTypeSelected] = useState();
 
     useEffect(() => {
         const monthNum = moment().format('M');
@@ -305,10 +325,12 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
     const onDateActionPressed = action => {
         let start = '';
         let end = '';
+        let type = ''
 
         if (action === 'today') {
             start = new Date();
             end = new Date();
+            type = 'today';
         } else if (action === 'month') {
             const date = new Date();
             start = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -322,13 +344,19 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
             end = moment(endCurrent).subtract(7, 'days');
             console.log(' S Week: ', start, end);
         }
-        // setSelectedDays([]);
-        // setSelectedStartDay('');
-        // setSelectedEndDay('');
+
+        start = formatDate(start, 'YYYY-MM-D');
+        end = formatDate(end, 'YYYY-MM-D');
+
+        setSelectedStartDay(start);
+        setSelectedEndDay(end);
+
+        setTypeSelected(type);
         setStartDate(start);
         setEndDate(end);
-        onSelectDates();
-        getDates(start, end);
+        setCanApply(true);
+        // onSelectDates();
+        // getDates(start, end);
     };
 
     const onMonthDecrement = () => {
@@ -447,7 +475,27 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
 
                     <ActionsContainer theme={theme}>
 
-                        <Button
+                        {
+                            BUTTONTYPES.map((button, index) => {
+                                const isSelected = typeSelected === button.type;
+                                return (
+                                    <Button
+                                        key={index}
+                                        onPress={() => onDateActionPressed(button.type)}
+                                        backgroundColor={isSelected ? '--color-blue-100' : '--default-shade-white'}
+                                        borderColor={isSelected ? '--color-blue-400' : '--color-gray-500'}
+                                    >
+                                        <TextItem
+                                            color={isSelected ? '--color-blue-600' : '--color-gray-600'}
+                                        >
+                                            {button.name}
+                                        </TextItem>
+                                    </Button>
+                                );
+                            })
+                        }
+
+                        {/* <Button
                             onPress={() => { onDateActionPressed('today'); }}
                         >
                             <TextItem>Today</TextItem>
@@ -476,7 +524,7 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
                             >
                                 Custom
                             </TextItem>
-                        </Button>
+                        </Button> */}
 
                         <Button
                             disabled={!canApply}
