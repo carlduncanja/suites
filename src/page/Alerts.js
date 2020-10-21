@@ -218,7 +218,7 @@ function Alerts() {
                 onChangeDate={onChangeDate('recent')}
                 startDate={recentStartDate}
                 endDate={recentEndDate}
-                onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); }}
+                onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); fetchOpenAlert(1, '', ''); }}
                 content={(
                     <RecentAlertsList
                         data={recentAlerts}
@@ -242,7 +242,7 @@ function Alerts() {
                 onChangeDate={onChangeDate('done')}
                 startDate={closedStartDate}
                 endDate={closedEndDate}
-                onClearCalendarDates={() => { setClosedEndDate(''); setClosedStartDate(''); }}
+                onClearCalendarDates={() => { setClosedEndDate(''); setClosedStartDate(''); fetchClosedAlert(1, '', ''); }}
                 content={(
                     <DoneAlertsList
                         data={closedAlerts}

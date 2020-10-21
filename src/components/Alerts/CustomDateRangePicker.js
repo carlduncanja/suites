@@ -9,6 +9,8 @@ import CalendarView from './Calendar/CalendarView';
 import { getDaysForMonth } from '../../utils';
 import { set } from 'numeral';
 import { formatDate } from '../../utils/formatter';
+import { useCurrentDays } from '../../hooks/useScheduleService';
+import _ from 'lodash';
 
 const PickerWrapper = styled.View`
     width: 392px;
@@ -259,7 +261,7 @@ const BUTTONTYPES = [
         type: 'today'
     },
     {
-        name: 'Last Week',
+        name: 'This Week',
         type: 'week'
     },
     {
@@ -325,31 +327,44 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
     const onDateActionPressed = action => {
         let start = '';
         let end = '';
-        let type = ''
+        let type = '';
+        let days = [];
+        const selectedMonth = moment().startOf('month');
 
         if (action === 'today') {
             start = new Date();
             end = new Date();
             type = 'today';
         } else if (action === 'month') {
+            type = 'month';
             const date = new Date();
             start = new Date(date.getFullYear(), date.getMonth(), 1);
             end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-            // start = moment().startOf('month');
-            // end = moment().endOf('month');
+            days = useCurrentDays(selectedMonth.month() + 1, selectedMonth.year());
+
         } else if (action === 'week') {
             const startCurrent = moment().startOf('week');
             const endCurrent = moment().endOf('week');
-            start = moment(startCurrent).subtract(7, 'days');
-            end = moment(endCurrent).subtract(7, 'days');
-            console.log(' S Week: ', start, end);
+            start = startCurrent;
+            end = endCurrent;
+            days = monthDays.filter(item => moment(item).isSame(startCurrent) || moment(item).isSame(endCurrent) || moment(item).isBetween(startCurrent, endCurrent));
+
+           
+            // start = moment(startCurrent).subtract(7, 'days');
+            // end = moment(endCurrent).subtract(7, 'days');
+
+            type = 'week';
         }
 
-        start = formatDate(start, 'YYYY-MM-D');
-        end = formatDate(end, 'YYYY-MM-D');
+        start = formatDate(start, 'YYYY-MM-DD');
+        end = formatDate(end, 'YYYY-MM-DD');
+
+        // console.log("Start month: ", start);
+        // console.log("End month: ", end);
 
         setSelectedStartDay(start);
         setSelectedEndDay(end);
+        setSelectedDays(days);
 
         setTypeSelected(type);
         setStartDate(start);
