@@ -13,7 +13,7 @@ import TextEditor from '../../common/Input Fields/TextEditor';
 const RiskLevelWrapper = styled.View`
     width : 100%;
     border-radius : 8px;
-    /* background-color : ${ ({theme}) => theme.colors['--color-gray-100']}; */
+
 `;
 
 const HeaderWrapper = styled.View`
@@ -98,12 +98,15 @@ const NotesText = styled.Text(({theme}) => ({
     marginBottom: 6
 }));
 
-
 function RiskLevel({
-    titleBackground = theme.colors['--color-gray-200'],
-    borderColor = theme.colors['--color-gray-400'],
-    levelColor = theme.colors['--color-gray-500'],
-    cardColor = theme.colors['--color-gray-600'],
+    // titleBackground = theme.colors['--color-gray-200'],
+    // borderColor = theme.colors['--color-gray-400'],
+    // levelColor = theme.colors['--color-gray-500'],
+    // cardColor = theme.colors['--color-gray-600'],
+    titleBackground='--color-gray-200',
+    borderColor='--color-gray-400',
+    levelColor='--color-gray-500',
+    cardColor='--color-gray-600',
     riskLevel='default',
     itemContent = [],
     isEditMode = false,
@@ -111,8 +114,6 @@ function RiskLevel({
     onRiskChange = () =>{}
 }) {
     const theme = useTheme();
-
-
     const levels = [
         {
             "level":"low",
@@ -144,10 +145,10 @@ function RiskLevel({
     return (
         <RiskLevelWrapper theme={theme}>
 
-            <HeaderWrapper theme={theme} borderColor={borderColor} backgroundColor={titleBackground}>
+            <HeaderWrapper theme={theme} borderColor={theme.colors[borderColor]} backgroundColor={theme.colors[titleBackground]}>
                 <HeaderContainer theme={theme}>
-                    <RiskIcon fillColor={levelColor}/>
-                    <Title titleColor={cardColor}>Risk Level</Title>
+                    <RiskIcon fillColor={theme.colors[levelColor]}/>
+                    <Title titleColor={theme.colors[cardColor]} theme={theme}>Risk Level</Title>
                 </HeaderContainer>
             </HeaderWrapper>
 
@@ -164,7 +165,7 @@ function RiskLevel({
                                 >
                                     {Level(
                                         level.name,
-                                        level.level === riskLevel ? levelColor : theme.colors['--default-shade-white'],
+                                        level.level === riskLevel ? theme.colors[levelColor] : theme.colors['--default-shade-white'],
                                         level.level === riskLevel ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-700']
                                     )}
                                 </LevelWrapper>
@@ -178,7 +179,7 @@ function RiskLevel({
                     </DividerContainer>
                     
                     <>
-                        <NotesText>Notes</NotesText>
+                        <NotesText theme={theme}>Notes</NotesText>
                         {
                             isEditMode ?
                                 <TextArea/> :
