@@ -192,19 +192,6 @@ const TextItem = styled.Text(({theme, color = '--color-gray-800', font = '--text
 function Controls({ onMonthPress, onYearPress, selectedMonth, selectedYear, years, months, onMonthIncrement, onMonthDecrement}) {
     const theme = useTheme();
 
-    // const [years, setYears] = useState(STARTYEARS);
-    // const [selectedMonth, setSelectedMonth] = useState(MONTHS[0]);
-    // const [selectedYear, setSelectedYear] = useState(years[0]);
-
-    // const onMonthPress = value => {
-    //     console.log("Month: ", value);
-    //     setSelectedMonth(value);
-    // };
-
-    // const onYearPress = value => {
-    //     setSelectedYear(value);
-    // };
-
     const fetchMoreYears = () => {
 
     };

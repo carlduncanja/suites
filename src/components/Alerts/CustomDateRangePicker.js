@@ -274,13 +274,24 @@ const BUTTONTYPES = [
     },
 ];
 
-function CustomDateRangePicker({ getDates, onSelectDates }) {
+function CustomDateRangePicker({
+    getDates,
+    onSelectDates,
+    startDate,
+    endDate
+    // selectedMonth,
+    // selectedYear,
+
+ }) {
     const theme = useTheme();
+    const date = startDate || moment();
+    const selectedMonthDays = startDate ? getDaysForMonth(startDate) : [];
     
     const [years, setYears] = useState(STARTYEARS);
     const [selectedMonth, setSelectedMonth] = useState(MONTHS[0]);
     const [selectedYear, setSelectedYear] = useState(years[0]);
-    const [monthDays, setMonthDays] = useState([]);
+    const [monthDays, setMonthDays] = useState(selectedMonthDays);
+    const [currentCalendarDate, setCurrentCalendarDate] = useState(date);
     const [selectedDays, setSelectedDays] = useState([]);
     const [selectedStartDay, setSelectedStartDay] = useState('');
     const [selectedEndtDay, setSelectedEndDay] = useState('');
@@ -288,30 +299,63 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
     const [canApply, setCanApply] = useState(false);
     const [typeSelected, setTypeSelected] = useState();
 
+    const getStartDate = date => {
+        return moment(date).startOf('month');
+    };
+
+    const getCalendarValues = date => {
+        const monthNum = moment(date).format('M');
+        const currentDays = getDaysForMonth(date);
+        const currentYear = years.filter(year => year.text === moment(date).format('YYYY'))[0];
+        const monthObj = MONTHS[monthNum - 1];
+
+        return { currentDays, monthObj, currentYear };
+    };
+
+    const getMonth = date => {
+        const { currentDays, monthObj, currentYear } = getCalendarValues(date);
+
+        setSelectedMonth(monthObj);
+        setMonthDays([...currentDays]);
+        setSelectedYear(currentYear);
+    };
+
+    const getSelectedDays = (start, end) => {
+        const startIndex = monthDays.indexOf(start);
+        const endIndex = monthDays.indexOf(end);
+        const slicedDays = monthDays.slice(startIndex, endIndex + 1);
+        return slicedDays;
+    };
+
     useEffect(() => {
-        const monthNum = moment().format('M');
-        const startOfMonth = moment().startOf('month');
-        const days = getDaysForMonth(startOfMonth);
-        const filterYear = years.filter(year => year.text === moment().format('YYYY'));
-        setSelectedMonth(MONTHS[monthNum - 1]);
-        setMonthDays([...days]);
-        setSelectedYear(filterYear[0]);
+        if (startDate) {
+            const start = moment(startDate).format('YYYY-MM-DD');
+            const end = moment(endDate).format('YYYY-MM-DD');
+
+            getMonth(getStartDate(moment(startDate)));
+            // setCurrentCalendarDate(moment(startDate));
+            setSelectedStartDay(start);
+            setSelectedEndDay(end);
+            setSelectedDays(getSelectedDays(start, end));
+        } else {
+            getMonth(getStartDate(currentCalendarDate));
+        }
     }, []);
 
     const onMonthPress = value => {
-        setSelectedMonth(value);
-        const startOfMonth = moment(moment().month(value.value)).startOf('month');
+        const startOfMonth = getStartDate(moment().month(value.value));
         const days = getDaysForMonth(startOfMonth);
+        setCurrentCalendarDate(startOfMonth);
+        setSelectedMonth(value);
         setMonthDays([...days]);
-        // console.log("Days: ", days);
-        // console.log(" Start Month: ", startOfMonth);
     };
 
     const onYearPress = value => {
-        const month = moment().month(selectedMonth.value);
-        const startOfMonth = moment(month).startOf('month');
-        const year = moment(startOfMonth).year(value.value);
-        const days = getDaysForMonth(year);
+        // const month = getDateForMonth(selectedMonth.value);
+        // const startOfMonth = getStartDate(month);
+        // const year = moment(startOfMonth).year(value.value);
+        const newYearDate = currentCalendarDate.year(value.value);
+        const days = getDaysForMonth(newYearDate);
         setSelectedYear(value);
         setMonthDays([...days]);
     };
@@ -319,20 +363,7 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
     const applyDates = () => {
         const start = selectedStartDay ? moment(selectedStartDay) : '';
         const end = selectedEndtDay ? moment(selectedEndtDay) : '';
-        // console.log("Satrt: ", moment(selectedStartDay), moment(selectedEndtDay));
         getDates(start, end);
-    };
-
-    const getMonth = () => {
-        const currentDate = moment();
-        const monthNum = currentDate.month();
-        const monthObj = MONTHS[monthNum];
-        const currentYear = years.filter(year => year.text === currentDate.format('YYYY'))[0];
-        const days = getDaysForMonth(currentDate);
-
-        setSelectedMonth(monthObj);
-        setMonthDays([...days]);
-        setSelectedYear(currentYear);
     };
 
     const onDateActionPressed = action => {
@@ -368,7 +399,9 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
         // console.log("Start month: ", start);
 
         if (selectedMonth.value !== currentMonth.month()) {
-            getMonth();
+            console.log("Got");
+            getMonth(moment());
+            setCurrentCalendarDate(moment());
         }
 
         setSelectedStartDay(start);
@@ -382,61 +415,73 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
     };
 
     const onMonthDecrement = () => {
-        if ((selectedYear.value !== 2020) || (selectedMonth.value !== 0)) {
-            let newYear = selectedYear;
-            const newMonth = moment(moment().month(selectedMonth.value)).subtract(1, 'month');
-            const days = getDaysForMonth(newMonth);
-            const newMonthObj = selectedMonth.value === 0 ? 11 : selectedMonth.value - 1;
-            const currentYear = newMonth.format('YYYY');
-            if (currentYear !== selectedYear.text) {
-                const filterYear = years.filter(item => item.text === currentYear);
-                newYear = filterYear[0] || selectedYear;
-            }
-            setSelectedMonth(MONTHS[newMonthObj]);
-            setMonthDays([...days]);
-            setSelectedYear(newYear);
+        if ( parseInt(currentCalendarDate.format('YYYY')) !== 2020 || parseInt(currentCalendarDate.format('M')) !== 1) {
+            const newDate = getStartDate(moment(currentCalendarDate).subtract(1, 'month'));
+            getMonth(newDate);
+            setCurrentCalendarDate(newDate);
         }
+        // if ((selectedYear.value !== 2020) || (selectedMonth.value !== 0)) {
+        //     let newYear = selectedYear;
+        //     const newMonth = moment(moment().month(selectedMonth.value)).subtract(1, 'month');
+        //     const days = getDaysForMonth(newMonth);
+        //     const newMonthObj = selectedMonth.value === 0 ? 11 : selectedMonth.value - 1;
+        //     const currentYear = newMonth.format('YYYY');
+        //     if (currentYear !== selectedYear.text) {
+        //         const filterYear = years.filter(item => item.text === currentYear);
+        //         newYear = filterYear[0] || selectedYear;
+        //     }
+        //     setSelectedMonth(MONTHS[newMonthObj]);
+        //     setMonthDays([...days]);
+        //     setSelectedYear(newYear);
+        // }
     };
 
     const onMonthIncrement = () => {
-        let newYear = selectedYear;
-        const newMonth = moment(moment().month(selectedMonth.value)).add(1, 'month');
-        const days = getDaysForMonth(newMonth);
-        const newMonthObj = selectedMonth.value === 11 ? 0 : selectedMonth.value + 1;
-        const currentYear = newMonth.format('YYYY');
-        if (currentYear !== selectedYear.text) {
-            const filterYear = years.filter(item => item.text === currentYear);
-            newYear = filterYear[0] || selectedYear;
-        }
-        setSelectedMonth(MONTHS[newMonthObj]);
-        setMonthDays([...days]);
-        setSelectedYear(newYear);
-    };
 
-    const getSelectedDays = (start, end) => {
-        const startIndex = monthDays.indexOf(start);
-        const endIndex = monthDays.indexOf(end);
-        const slicedDays = monthDays.slice(startIndex, endIndex + 1);
-        return slicedDays;
+        const newDate = getStartDate(moment(currentCalendarDate).add(1, 'month'));
+
+        getMonth(newDate);
+        setCurrentCalendarDate(newDate);
+        
+        // let newYear = selectedYear;
+        // const newMonth = moment(moment().month(selectedMonth.value)).add(1, 'month');
+        // const days = getDaysForMonth(newMonth);
+        // const newMonthObj = newMonth.month();
+        // const currentYear = newMonth.format('YYYY');
+        
+        // if (currentYear !== selectedYear.text) {
+        //     const filterYear = years.filter(item => item.text === currentYear);
+        //     newYear = filterYear[0] || selectedYear;
+        // }
+        // setSelectedMonth(MONTHS[newMonthObj]);
+        // setMonthDays([...days]);
+        // setSelectedYear(newYear);
     };
 
     const onDayPress = day => {
-        if (selectedDays.length >= 2) {
-            let newSelectedDays = selectedDays;
-            if (moment(day).isBefore(moment(selectedStartDay))) {
-                setSelectedStartDay(day);
-                newSelectedDays = getSelectedDays(day, selectedEndtDay);
-            } else if (moment(day).isBefore(moment(selectedEndtDay)) && day !== selectedStartDay && moment(day).isAfter(moment(selectedStartDay))) {
-                setSelectedStartDay(day);
-                newSelectedDays = getSelectedDays(day, selectedEndtDay);
-            } else if (moment(day).isAfter(moment(selectedEndtDay))) {
-                // setSelectedStartDay(selectedEndtDay);
-                setSelectedEndDay(day);
-                newSelectedDays = getSelectedDays(selectedStartDay, day);
-            }
 
-            setSelectedDays([...newSelectedDays]);
+        setIsCustom(true);
+        setCanApply(true);
+        setTypeSelected('custom');
+
+        if (moment(day).format('M') !== moment(selectedStartDay).format('M')) {
+            setSelectedDays([day]);
+            setSelectedStartDay(day);
+            setSelectedEndDay(day);
+            return;
         }
+
+        if (moment(day).isSame(moment(selectedStartDay))) {
+            setSelectedEndDay(day);
+            setSelectedDays([day]);
+            return;
+        }
+        if (moment(day).isSame(moment(selectedEndtDay))) {
+            setSelectedStartDay(day);
+            setSelectedDays([day]);
+            return;
+        }
+
         if (selectedDays.length === 0) {
             if (selectedStartDay) {
                 let days = [];
@@ -454,15 +499,45 @@ function CustomDateRangePicker({ getDates, onSelectDates }) {
                 setSelectedStartDay(day);
                 setSelectedDays([day]);
             }
-        } else if (moment(selectedStartDay).isBefore(moment(day)) && selectedDays.length === 1) {
-            setSelectedEndDay(day);
-            const slicedDays = getSelectedDays(selectedStartDay, day);
-            setSelectedDays([...slicedDays]);
+            return;
+        }
+        
+        if (selectedDays.length === 1) {
+            const selectedDay = selectedDays[0];
+
+            if (moment(day).isBefore(moment(selectedDay))) {
+                const slicedDays = getSelectedDays(day, selectedDay);
+                setSelectedDays([...slicedDays]);
+                setSelectedStartDay(day);
+                setSelectedEndDay(selectedDay);
+            } else if (moment(day).isAfter(moment(selectedDay))) {
+                const slicedDays = getSelectedDays(selectedDay, day);
+                setSelectedDays([...slicedDays]);
+                setSelectedStartDay(selectedDay);
+                setSelectedEndDay(day);
+            }
+            return;
         }
 
-        setIsCustom(true);
-        setCanApply(true);
-        setTypeSelected('custom');
+        if (selectedDays.length >= 2) {
+            let newSelectedDays = selectedDays;
+            if (moment(day).isBefore(moment(selectedStartDay))) {
+                setSelectedStartDay(day);
+                newSelectedDays = getSelectedDays(day, selectedEndtDay);
+            } else if (moment(day).isBefore(moment(selectedEndtDay)) && day !== selectedStartDay && moment(day).isAfter(moment(selectedStartDay))) {
+                setSelectedStartDay(day);
+                newSelectedDays = getSelectedDays(day, selectedEndtDay);
+            } else if (moment(day).isAfter(moment(selectedEndtDay))) {
+                // setSelectedStartDay(selectedEndtDay);
+                setSelectedEndDay(day);
+                newSelectedDays = getSelectedDays(selectedStartDay, day);
+            }
+
+            setSelectedDays([...newSelectedDays]);
+            return;
+        }
+        console.log("Doing");
+
     };
 
     return (

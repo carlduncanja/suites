@@ -93,7 +93,18 @@ const FrameInsurerContent = ({
 
                 <RowWrapper theme = {theme}>
 
-                    <FieldContainer theme = {theme} flex = {0.5}>
+                    <InputField2
+                        enabled = {false}
+                        value = {`$ ${currencyFormatter(fields.coverageLimit)}`}
+                        label = "Coverage"
+                        onChangeText = {() => {}}
+                        onClear = {()=>{}}
+                        backgroundColor = '--default-shade-white'
+
+                    />
+                    
+                    <FieldContainer/>
+                    {/* <FieldContainer theme = {theme} flex = {1}>
                         <InputField2
                             enabled = {false}
                             value = {`$ ${currencyFormatter(fields.coverageLimit)}`}
@@ -104,7 +115,7 @@ const FrameInsurerContent = ({
                         />
                     </FieldContainer>
 
-                    <FieldContainer style = {css`margin-right : 0;`}/>
+                    <FieldContainer /> */}
 
                 </RowWrapper>
 

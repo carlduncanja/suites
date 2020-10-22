@@ -76,6 +76,9 @@ function Alerts() {
     const [recentStartDate, setRecentStartDate] = useState('');
     const [recentEndDate, setRecentEndDate] = useState('');
 
+    const [selectedMonth, setSelectedMonth] = useState();
+    const [selectedYear, setSelectedYear] = useState();
+
     const recentHeader = () => (
         <>
             <DataItem color="--color-gray-600" fontStyle="--text-base-regular" flex={1} text="Recent"/>
@@ -85,7 +88,7 @@ function Alerts() {
                 content={(
                     <IconButton
                         // Icon={<ActionIcon/>}
-                        Icon={isCollapsed.includes('recent') ? <ActionIcon/> : <CollapsedIcon/>}
+                        Icon={isCollapsed.includes('recent') ?  <CollapsedIcon/> : <ActionIcon/> }
                         disabled={true}
                     />
                 )}
@@ -100,7 +103,7 @@ function Alerts() {
                 content={(
                     <IconButton
                         // Icon={<ActionIcon/>}
-                        Icon={isCollapsed.includes('done') ? <ActionIcon/> : <CollapsedIcon/>}
+                        Icon={isCollapsed.includes('done') ? <CollapsedIcon/> : <ActionIcon/>}
                         disabled={true}
                     />
                 )}
@@ -192,6 +195,8 @@ function Alerts() {
                         modal.closeModals('ConfirmationModal');
                     }}
                     onSelectDates={() => modal.closeAllModals()}
+                    startDate={type === 'recent' ? recentStartDate : closedStartDate}
+                    endDate={type === 'recent' ? recentEndDate : closedEndDate}
                 />
             ),
             onClose: () => {
