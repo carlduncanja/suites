@@ -289,19 +289,24 @@ function Consumables({
                     backgroundColor={theme.colors['--color-neutral-gray-100']}
                 />
 
-                <TableContainer theme={theme}>
+                <ScrollView
+                    nestedScrollEnabled={true}
+                    contentContainerStyle={{paddingBottom: 100}}
+                >
+                    <TableContainer theme={theme}>
 
-                    <Table
-                        isCheckbox={true}
-                        data={caseProcedures}
-                        listItemFormat={renderCollapsible}
-                        headers={headers}
-                        toggleHeaderCheckbox={toggleHeaderCheckbox}
-                        // itemSelected={checkBoxList}
-                        itemSelected={selectedConsumables}
-                    />
+                        <Table
+                            isCheckbox={true}
+                            data={caseProcedures}
+                            listItemFormat={renderCollapsible}
+                            headers={headers}
+                            toggleHeaderCheckbox={toggleHeaderCheckbox}
+                            // itemSelected={checkBoxList}
+                            itemSelected={selectedConsumables}
+                        />
 
-                </TableContainer>
+                    </TableContainer>
+                </ScrollView>
 
             </ConsumablesContainer>
         </ConsumablesWrapper>

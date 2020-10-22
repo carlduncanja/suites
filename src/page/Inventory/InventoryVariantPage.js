@@ -10,7 +10,7 @@ import InventoryVariantGeneral from '../../components/OverlayTabs/InventoryVaria
 import TransfersOverlayTab from '../../components/OverlayTabs/TransfersOverlayTab';
 import InventoryStorageLocationsTab from '../../components/OverlayTabs/InventoryStorageLocationsTab';
 import InventorySuppliersTab from '../../components/OverlayTabs/InventorySuppliersTab';
- 
+
 function InventoryVariantPage({ route, navigation }) {
 
     const { data = {} } = route.params;
@@ -62,7 +62,7 @@ function InventoryVariantPage({ route, navigation }) {
         //         console.log("Suppliers: ", data);
         //     })
         //     .catch(error => {
-        //         console.log("Failed to get variant suppliers", error)
+        //         console.log("Failed to get variant Suppliers", error)
         //         //TODO handle error cases.
         //     })
     };
@@ -131,7 +131,7 @@ function InventoryVariantPage({ route, navigation }) {
                     onUpdateItem={() => fetchVariant(groupId, _id)}
                     // isEditMode={isEditMode}
                     // fields = {fields}
-                    // errorFields = {errorFields} 
+                    // errorFields = {errorFields}
                     // onFieldChange = {onFieldChange}
                 />;
             case 'Storage Locations':
@@ -178,7 +178,7 @@ function InventoryVariantPage({ route, navigation }) {
     // const validateUpdate = () => {
     //     let isValid = true
     //     let requiredFields = ['name','unitCost']
-    
+
     //     let errorObj = {...errorFields} || {}
 
     //     for (const requiredField of requiredFields) {

@@ -110,7 +110,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
-    
+
 
     // ########## LIFECYCLE METHODS
 
@@ -138,7 +138,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
         search()
     }, [inventorySearchValue]);
 
-    // Handle suppliers search
+    // Handle Suppliers search
     useEffect(() => {
         // console.log("Search: ", supplierSearchValue)
         if (!supplierSearchValue) {
@@ -220,7 +220,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
             })
             .catch(error => {
                 // TODO handle error
-                console.log("failed to get suppliers", error);
+                console.log("failed to get Suppliers", error);
                 setSupplierSearchResult([]);
             })
     };
@@ -236,13 +236,13 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
             })
             .catch(error => {
                 // TODO handle error
-                console.log("failed to get suppliers", error);
+                console.log("failed to get Suppliers", error);
                 setCategorySearchResult([]);
             })
     };
 
     // ########## EVENT LISTENERS
-    
+
     const handlePopovers = (popoverValue) => (popoverItem) =>{
 
         if(!popoverItem){
@@ -271,17 +271,17 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
     };
 
     const onPositiveClick = () => {
-        
+
         let isValid = validateInventory()
 
         if(!isValid){ return }
-        
+
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
             const referenceId = fields['product']
             console.log("Success:", fields, referenceId)
-            
+
             // onCreated(fields)
             goToConfirmationScreen();
             // createInventoryCall(referenceId,fields)
@@ -317,7 +317,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
         let isValid = true
         let requiredFields = ['name','product','supplier']
         selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unitCost','markup']
-    
+
         let errorObj = {...errorFields} || {}
 
         for (const requiredField of requiredFields) {
@@ -344,7 +344,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
         if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price){
             setUnitPriceText(price)
         }
-        
+
     }
 
     const onCategorySelect = (item) => {
@@ -353,7 +353,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
             updatedCategories = updatedCategories.filter( category => category !== item)
             :
             updatedCategories = [...categories, item]
-        
+
         onFieldChange('category')(updatedCategories);
         console.log("Updated: ", updatedCategories)
         setCategories(updatedCategories)
@@ -366,7 +366,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
         setCategories(updatedCategories);
         console.log("Categories: ", updatedCategories);
     }
-    
+
     const handleCustomPrice = (value) => {
         let price = value.replace(/[^0-9.]/g, "")
         if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
@@ -375,7 +375,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
         if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price){
             setCustomPriceText(price)
         }
-        
+
     }
 
     const goToConfirmationScreen = () =>{
@@ -392,7 +392,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
                             message = "Do you want to save your changes?"
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                        onClose: () => {modal.closeModals('ConfirmationModal')}
                     })
         }, 200)
     };
@@ -427,7 +427,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
                         onClose: () => {
                             modal.closeModals('ConfirmationModal');
                             navigation.goBack();
-                        } 
+                        }
                     })
                 // navigation.goBack();
                 // Alert.alert("Success","The inventory item has been successfully created.")
@@ -454,7 +454,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
                         onClose: () => {
                             modal.closeModals('ConfirmationModal');
                             navigation.goBack();
-                        } 
+                        }
                     })
                 // Alert.alert("Failed", "Failed to create an inventory item")
             })
@@ -475,7 +475,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
     let refPop = popoverList.filter( item => item.name === 'product')
     let supplierPop = popoverList.filter( item => item.name === 'supplier')
 
-    let markupPrice = currencyFormatter(fields['unitCost']*((100 + parseFloat(fields['markup']))/100) || 0) 
+    let markupPrice = currencyFormatter(fields['unitCost']*((100 + parseFloat(fields['markup']))/100) || 0)
 
     const detailsTab = (
         <>
@@ -553,7 +553,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
                         hasError = {errorFields['supplier']}
                         errorMessage = "Select the supplier for item."
                     />
-                
+
                 </FieldContainer>
 
             </Row>
@@ -579,7 +579,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
             </Row>
 
             <Divider/>
-           
+
             <Row>
 
                 <FieldContainer>
@@ -617,14 +617,14 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
                 </FieldContainer>
 
             </Row>
-        
+
         </>
     );
 
     return (
 
         <PageWrapper theme = {theme}>
-            
+
             <CreatePageHeader
                 title = "Create Inventory Item"
                 onClose = {onCancel}
@@ -644,7 +644,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
                 </ContentContainer>
             </ContentWrapper>
 
-        
+
             <FooterWrapper>
                 <CreatePreviousDoneFooter
                     onFooterPress = {onPositiveClick}
@@ -655,7 +655,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
             </FooterWrapper>
 
 
-        </PageWrapper>  
+        </PageWrapper>
         // <OverlayDialog
         //     title={"Create Inventory Item"}
         //     onPositiveButtonPress={onPositiveClick}
@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
 
     inputWrapper: {
         // flex: 1,
-        width: 260, 
+        width: 260,
         flexDirection: 'row',
         // backgroundColor: 'blue'
     },

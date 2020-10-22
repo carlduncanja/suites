@@ -217,7 +217,6 @@ function PostEditView({
         const {amount = 0, cost = 0, name = "", initialAmount = 0, type} = item
 
 
-
         return (
             <>
                 <ContentDataItem
@@ -273,7 +272,7 @@ function PostEditView({
         let selectedGroup = selectedLineItems?.find(obj => obj._parentId === caseProcedureId);
         const variants = selectedGroup?.variants || [];
 
-        const variantId = mode === POST_EDIT_MODE.CONSUMABLES ?  item._id : item.equipment;
+        const variantId = mode === POST_EDIT_MODE.CONSUMABLES ? item._id : item.equipment;
         const isChecked = variants.includes(variantId)
 
         return (
@@ -367,40 +366,44 @@ function PostEditView({
                     changeText={onSearchInputChange}
                     backgroundColor="#FAFAFA"
                 />
-
-                <TableContainer>
-                    <Header
-                        headers={headers}
-                        toggleHeaderCheckbox={() => {
-                        }}
-                        isCheckbox={true}
-                    />
-
-                    <DividerContainer theme={theme}>
-                        <LineDivider/>
-                    </DividerContainer>
-
-                    <TableBannerContainer theme={theme}>
-                        <BannerText theme={theme}>{bannerText}</BannerText>
-                    </TableBannerContainer>
-
-                    <ChangesDataContainer theme={theme}>
-                        <Data
-                            listItemFormat={renderChangeCollapsible}
-                            data={caseProcedureChanges}
+                <ScrollView
+                    nestedScrollEnabled={true}
+                    contentContainerStyle={{paddingBottom: 100}}
+                >
+                    <TableContainer>
+                        <Header
+                            headers={headers}
+                            toggleHeaderCheckbox={() => {
+                            }}
+                            isCheckbox={true}
                         />
-                    </ChangesDataContainer>
 
-                    <DividerContainer theme={theme}>
-                        <BrokenLineDivider/>
-                    </DividerContainer>
+                        <DividerContainer theme={theme}>
+                            <LineDivider/>
+                        </DividerContainer>
 
-                    <Data
-                        listItemFormat={renderCollapsible}
-                        data={caseProcedures}
-                    />
+                        <TableBannerContainer theme={theme}>
+                            <BannerText theme={theme}>{bannerText}</BannerText>
+                        </TableBannerContainer>
 
-                </TableContainer>
+                        <ChangesDataContainer theme={theme}>
+                            <Data
+                                listItemFormat={renderChangeCollapsible}
+                                data={caseProcedureChanges}
+                            />
+                        </ChangesDataContainer>
+
+                        <DividerContainer theme={theme}>
+                            <BrokenLineDivider/>
+                        </DividerContainer>
+
+                        <Data
+                            listItemFormat={renderCollapsible}
+                            data={caseProcedures}
+                        />
+
+                    </TableContainer>
+                </ScrollView>
 
             </ConsumablesContainer>
         </ConsumablesWrapper>

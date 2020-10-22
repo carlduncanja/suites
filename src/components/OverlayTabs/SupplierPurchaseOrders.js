@@ -101,7 +101,7 @@ const SupplierPurchaseOrders = ({
     ];
 
     useEffect(() => {
-        // if (!suppliers.length) fetchSuppliersData()
+        // if (!Suppliers.length) fetchSuppliersData()
         setTotalPages(Math.ceil(data.length / recordsPerPage));
     }, []);
 

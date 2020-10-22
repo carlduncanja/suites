@@ -28,7 +28,7 @@ import {setSuppliers} from '../redux/actions/suppliersActions';
 import {getSuppliers, archiveSupplier} from '../api/network';
 
 import suppliersTest from '../../data/Suppliers';
-import SuppliersBottomSheet from '../components/Suppliers/SupplierPage';
+import SuppliersBottomSheet from './Suppliers/SupplierPage';
 import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplierDialogContainer';
 import Button from '../components/common/OverlayButtons/OverlayButton';
 import TouchableDataItem from '../components/common/List/TouchableDataItem';
@@ -224,7 +224,7 @@ const Suppliers = props => {
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
-                console.log('failed to get suppliers', error);
+                console.log('failed to get Suppliers', error);
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -316,7 +316,7 @@ const Suppliers = props => {
                     fetchSuppliersData(currentPagePosition);
                 })
                 .catch(error => {
-                    console.log('failed to archive suppliers', error);
+                    console.log('failed to archive Suppliers', error);
                     modal.openModal('ConfirmationModal', {
                         content: (
                             <ConfirmationComponent

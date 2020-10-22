@@ -73,13 +73,13 @@ export const storageLocationsEndpoint = '/storage-locations';
 export const storageLocationEndpoint = id => `/storage-locations/${id}`;
 
 // ##### SUPPLIERS
-export const suppliersEndpoint = '/suppliers';
+export const suppliersEndpoint = '/Suppliers';
 export const supplierEndpoint = id => `/suppliers/${id}`;
 export const supplierProductsEndpoint = id => `/suppliers/${id}/products`;
-export const variantSuppliersEndpoint = '/suppliers/products';
+export const variantSuppliersEndpoint = '/Suppliers/products';
 export const updateProductsEndpoint = id => productId => `/suppliers/${id}/products/${productId}`;
 export const archiveSupplierEndpoint = id => `/suppliers/${id}/archive`;
-export const getArchivedSuppliersEndPoint = '/suppliers/archived';
+export const getArchivedSuppliersEndPoint = '/Suppliers/archived';
 
 // ##### PURCHASE ORDERS
 export const purchaseOrdersEndpoint = '/purchase_orders';

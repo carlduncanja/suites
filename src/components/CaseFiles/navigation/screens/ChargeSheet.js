@@ -19,6 +19,7 @@ import {useTheme} from "emotion-theming";
 import {useModal} from "react-native-modalfy";
 import {removeEquipment} from "../../../../api/network";
 import EmptyChargeSheetComponent from "../../EmptyChargeSheetComponent";
+import {FlatList, ScrollView} from "react-native";
 
 const LINE_ITEM_TYPES = {
     DISCOUNT: 'discount',
@@ -889,7 +890,7 @@ const ChargeSheet = React.forwardRef(({
                     handleEditDone={handleEditDone}
                 />
             } else {
-                return <Consumables
+                return<Consumables
                     headers={headers}
                     allItems={equipmentList}
                     equipments={procedureEquipments}

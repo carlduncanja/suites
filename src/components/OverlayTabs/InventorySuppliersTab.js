@@ -41,7 +41,7 @@ const SectionText = styled.Text( ({theme}) => ({
     ...theme.font['--text-xl-medium'],
     color : theme.colors['--color-gray-800'],
     marginBottom : 24,
-}));   
+}));
 
 
 function InventorySuppliersTab({variantId = '', parentId}) {
@@ -82,19 +82,19 @@ function InventorySuppliersTab({variantId = '', parentId}) {
             hasCheckBox = {false}
             onItemPress = {()=>{}}
         />
-        
+
     };
 
     return (
         <>
-       
+
             <Table
                 data={suppliers}
                 listItemFormat={renderSupplierItem}
                 headers={Headings}
                 isCheckbox={false}
             />
-       
+
 
             <Footer
                 hasPaginator = {false}
