@@ -12,7 +12,7 @@ import IconButton from '../components/common/Buttons/IconButton';
 import CollapsedIcon from '../../assets/svg/closeArrow';
 import ActionIcon from '../../assets/svg/dropdownIcon';
 import DoneAlertsList from '../components/Alerts/DoneAlertsList';
-import { getAlerts } from '../api/network';
+import { getAlerts, closeAlert } from '../api/network';
 import RecentAlertsList from '../components/Alerts/RecentAlertsList';
 import { useModal } from 'react-native-modalfy';
 import CustomDateRangePicker from '../components/Alerts/CustomDateRangePicker';
@@ -227,6 +227,7 @@ function Alerts() {
                 content={(
                     <RecentAlertsList
                         data={recentAlerts}
+                        updateAlerts={() => { setFetchingData(true); fetchOpenAlert(1); }}
                     />
                 )}
             />
