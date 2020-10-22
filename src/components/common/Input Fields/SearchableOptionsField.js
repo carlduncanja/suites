@@ -140,22 +140,23 @@ const TextInputContainer = styled.View`
 `;
 
 function SearchableOptionsField({
-    text,
-    label,
-    options,
-    oneOptionsSelected,
-    onChangeText,
-    placeholder = '',
-    onClear,
-    enabled = true,
-    value,
-    isPopoverOpen = () => {
-    },
-    handlePopovers = () => {
-    },
-    hasError = false,
-    errorMessage = ''
-}) {
+                                    text,
+                                    label,
+                                    labelWidth,
+                                    options,
+                                    oneOptionsSelected,
+                                    onChangeText,
+                                    placeholder = '',
+                                    onClear,
+                                    enabled = true,
+                                    value,
+                                    isPopoverOpen = () => {
+                                    },
+                                    handlePopovers = () => {
+                                    },
+                                    hasError = false,
+                                    errorMessage = ''
+                                }) {
     const textInputRef = useRef();
 
     const theme = useTheme();
@@ -199,10 +200,7 @@ function SearchableOptionsField({
     return (
         <InputContainerComponent>
             {
-                label &&
-                <LabelContainer>
-                    <InputLabelComponent label={label}/>
-                </LabelContainer>
+                label && <InputLabelComponent label={label} width={labelWidth}/>
             }
 
             <TextInputWrapper theme={theme} enabled={enabled}>
