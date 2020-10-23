@@ -76,7 +76,7 @@ const TRANSFER_STATE = {
     CANCELLED: 'cancelled',
     COMPLETED: 'completed',
     ERROR: 'error'
-};
+}; 
 
 function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateItem, actionsTitle = 'SUPPLIERS ACTIONS'}) {
 
@@ -89,6 +89,7 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
     const pendingItems = transferItems.filter(item => item?.state === 'pending');
     const completedItems = transferItems.filter(item => item?.state === 'completed');
 
+    console.log("Pending: ", pendingItems);
     const onItemCheckbox = item => {
         const {_id} = item;
         const updatedCheckedList = checkboxItemPress(_id, pendingCheckedItems);

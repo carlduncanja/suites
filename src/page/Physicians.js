@@ -428,7 +428,7 @@ const Physicians = props => {
                     {
                         content: <CreatePhysicianDialogContainer
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={item => handleOnItemPress(item, true)}
+                            onCreated={item => {handleOnItemPress(item, true); console.log("Phys item: ", item)}}
                         />,
                         onClose: () => setFloatingAction(false)
                     }

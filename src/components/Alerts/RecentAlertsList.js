@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 import {useTheme} from 'emotion-theming';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import styled, {css} from '@emotion/native';
+import { useModal } from 'react-native-modalfy';
+import { closeAlert } from '../../api/network';
 import {formatDate, transformToSentence} from '../../utils/formatter';
 
 import ListItem from '../common/List/ListItem';
 import DataItem from '../common/List/DataItem';
 import ResolveIcon from '../../../assets/svg/resolveIcon';
+import ConfirmationComponent from '../ConfirmationComponent';
 
 const RenderListItemWrapper = styled.View`
     width: 100%;
@@ -66,8 +69,57 @@ const TextItem = styled.Text(({theme, flex = 1, color = '--color-gray-800', font
     flex
 }));
 
-function RecentAlertsList({ data=[] }) {
+function RecentAlertsList({ data=[], updateAlerts=() => {} }) {
     const theme = useTheme();
+    const modal = useModal();
+
+    const onResolveItem = alertItem => {
+        console.log('Alert: ', alertItem);
+        const { _id } = alertItem;
+        closeAlert(_id)
+            .then(_ => {
+                // show modal success then update
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                updateAlerts();
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .catch(_ => {
+                // show modal fail
+                console.log("Error");
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            });
+    };
 
     const listItem = item => {
         const { body = '', priority = '', createdOn = '', title = ''} = item;
@@ -115,7 +167,7 @@ function RecentAlertsList({ data=[] }) {
             </RenderListItemContainer>
         </RenderListItemWrapper>
     );
-    const renderHiddenItem = () => (
+    const renderHiddenItem = item => (
 
         <RenderHiddenItemWrapper theme={theme}>
             <RenderHiddenItemContainer theme={theme}>
@@ -129,6 +181,7 @@ function RecentAlertsList({ data=[] }) {
                         alignItems: 'center',
                         justifyContent: 'flex-end',
                     }}
+                    onPress={() => onResolveItem(item?.item)}
                 >
                     <ResolveIcon/>
                     <TextItem

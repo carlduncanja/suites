@@ -111,7 +111,7 @@ function StoragePage({route, navigation}) {
                     };
                 });
 
-                return <StorageConsumablesTab consumables={storageItem?.inventoryLocations}/>;
+                return <StorageConsumablesTab consumables={storageItem?.inventoryLocations} storageLocation={storageItem}/>;
             }
             case 'Equipment':
                 return <StorageEquipmentTab equipments = {[]}/>;

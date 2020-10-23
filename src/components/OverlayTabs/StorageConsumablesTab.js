@@ -15,6 +15,7 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import TransferIcon from "../../../assets/svg/transferIcon";
 import Item from '../common/Table/Item';
 import DataItem from '../common/List/DataItem';
+import TransferItemDialog from '../Inventory/TransferItemDialog';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 
 
@@ -41,7 +42,7 @@ const headers = [
 ];
 
 
-const StorageConsumablesTab = ({consumables = []}) => {
+const StorageConsumablesTab = ({consumables = [], storageLocation}) => {
 
     const theme = useTheme();
     const modal = useModal();
@@ -86,7 +87,7 @@ const StorageConsumablesTab = ({consumables = []}) => {
     const onItemCheck = (item) =>{
         const { _id } = item;
         let updatedItems = checkboxItemPress(_id, checkedItems);
-        setCheckedItems(updatedItems)
+        setCheckedItems(updatedItems);
 
     }
 
@@ -104,8 +105,8 @@ const StorageConsumablesTab = ({consumables = []}) => {
     }
 
     const floatingActions = () =>{
-        let isDisabled = checkedItems.length === 0 ? true : false;
-        let isDisabledColor = checkedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
+        let isDisabled = checkedItems.length !== 1 ? true : false;
+        let isDisabledColor = checkedItems.length !== 1 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
         // const deleteItem =
         //     <LongPressWithFeedback
         //         pressTimer={LONG_PRESS_TIMER.MEDIUM}
@@ -139,7 +140,43 @@ const StorageConsumablesTab = ({consumables = []}) => {
     }
 
     const handleTransferItems = () => {
+        const { _id = "" } = storageLocation;
+        const filterVariant = consumables.filter(item => item?._id === checkedItems[0])[0] || {};
+       
+        
+        console.log("Storage location (Selected Location):", storageLocation, storageLocation._id);
+        console.log("Checked Items (Variant):", filterVariant);
 
+        const variant = {
+            _id: filterVariant?.inventory?._id || '',
+            name: filterVariant?.inventoryName || '',
+            groupId: filterVariant?.inventory?.inventoryGroup?._id,
+        };
+
+        // const fromLocation = {
+        //     location: selectedLocation?.location || '',
+        //     levels: selectedLocation?.levels || {},
+        //     locationName: selectedLocation?.locationName || '',
+        //     stock: selectedLocation?.stock || 0
+        // };
+
+        // modal.closeModals('ActionContainerModal');
+        // setTimeout(() => {
+        //     modal.openModal(
+        //         'OverlayModal',
+        //         {
+        //             content: <TransferItemDialog
+        //                 // onCreated={(item) => onItemPress(item)()}
+        //                 variant={selectedVariant}
+        //                 selectedLocation={selectedItems[0]}
+        //                 // groupId = {groupId}
+        //                 onCreated={() => { setFloatingAction(false); onUpdateItem(); setSelectedItems([]); }}
+        //                 onCancel={() => setFloatingAction(false)}
+        //             />,
+        //             onClose: () => setFloatingAction(false)
+        //         }
+        //     );
+        // }, 200);
     }
 
     return (

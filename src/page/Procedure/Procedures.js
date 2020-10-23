@@ -129,7 +129,7 @@ const Procedures = props => {
     };
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
-        // console.log("Open")
+        console.log("Open");
         navigation.navigate('Procedures List', {
             screen: 'Procedure',
             initial: false,
@@ -409,10 +409,13 @@ const Procedures = props => {
                 navigation.goBack();
                 setFloatingAction(false);
             },
-            onCreated: () => {
+            onCreated: (createdItem) => {
                 navigation.goBack();
                 setFloatingAction(false);
                 handleDataRefresh();
+                setTimeout(() => {
+                    handleOnItemPress(createdItem, false)();
+                }, 300);
             },
         });
     };
@@ -439,10 +442,13 @@ const Procedures = props => {
                 navigation.goBack();
                 setFloatingAction(false);
             },
-            onCreated: () => {
+            onCreated: createdItem => {
                 navigation.goBack();
                 setFloatingAction(false);
                 handleDataRefresh();
+                setTimeout(() => {
+                    handleOnItemPress(createdItem, false)();
+                }, 300);
             },
         });
 
