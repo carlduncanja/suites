@@ -1,22 +1,21 @@
 import React, {useEffect, useRef, useState, useContext} from 'react';
-import { View } from 'react-native';
+import {View} from 'react-native';
 
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import {useModal} from 'react-native-modalfy';
 import Record from '../common/Information Record/Record';
 import ComponentRecord from '../common/Information Record/ComponentRecord';
 import ListTextRecord from '../common/Information Record/ListTextRecord';
 import Row from '../common/Row';
 
-import LevelIndicator from "../common/LevelIndicator/LevelIndicator";
+import LevelIndicator from '../common/LevelIndicator/LevelIndicator';
 
-
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
-import { currencyFormatter } from '../../utils/formatter';
+import {currencyFormatter} from '../../utils/formatter';
 import Footer from '../common/Page/Footer';
-import {useModal} from "react-native-modalfy";
-import { PageContext } from '../../contexts/PageContext';
-import {updateInventoryGroupCall, updateInventoryVariantCall} from "../../api/network";
-import ConfirmationComponent from "../ConfirmationComponent";
+import {PageContext} from '../../contexts/PageContext';
+import {updateInventoryVariantCall} from '../../api/network';
+import ConfirmationComponent from '../ConfirmationComponent';
 
 const VariantGeneralWrapper = styled.View`
     flex:1;
@@ -26,26 +25,28 @@ const VariantGeneralContainer = styled.View`
     width : 100%;
 `;
 
-function InventoryVariantGeneral({ 
-    inventoryVariant = {}, 
-    selectedData = {} , 
-    onUpdateItem = ()=>{}
-    // isEditMode, 
-    // fields = {}, 
-    // errorFields={}, 
+function InventoryVariantGeneral({
+    inventoryVariant = {},
+    selectedData = {},
+    onUpdateItem = () => {
+    }
+    // isEditMode,
+    // fields = {},
+    // errorFields={},
     // onFieldChange = ()=>{}
-}){
+}) {
+    console.log('let me see the variant', inventoryVariant);
 
     const baseStateRef = useRef();
     const modal = useModal();
 
-    const { pageState, setPageState } = useContext(PageContext);
-    const { isEditMode } = pageState;
+    const {pageState, setPageState} = useContext(PageContext);
+    const {isEditMode} = pageState;
 
-    const { name = "", inventoryGroup = {}, unitCost = 0, storageLocations = [], sku = "",_id } = inventoryVariant;
-    const { description = "", category = [], unitOfMeasurement = "", } = inventoryGroup;
-    const { stock = 0, levels = {} } = selectedData;
-    let suppliers = []; 
+    const {name = '', inventoryGroup = {}, unitCost = 0, storageLocations = [], sku = '', _id} = inventoryVariant;
+    const {description = '', category = [], unitOfMeasurement = '',} = inventoryGroup;
+    const {stock = 0, levels = {}} = selectedData;
+    const suppliers = [];
 
     const [fields, setFields] = useState({
         description,
@@ -57,16 +58,15 @@ function InventoryVariantGeneral({
     const [isUpdated, setUpdated] = useState(false);
     const [unitPriceText, setUnitPriceText] = useState(unitCost);
 
-
-    const onFieldChange = (fieldName) => (value) => {
+    const onFieldChange = fieldName => value => {
         setFields({
             ...fields,
             [fieldName]: value
-        })
+        });
         setUpdated(true);
-        const updatedErrors = {...errorFields}
-        delete updatedErrors[fieldName]
-        setErrorFields(updatedErrors)
+        const updatedErrors = {...errorFields};
+        delete updatedErrors[fieldName];
+        setErrorFields(updatedErrors);
     };
 
     useEffect(() => {
@@ -75,22 +75,24 @@ function InventoryVariantGeneral({
             unitCost,
             unitOfMeasurement,
             description,
-        }
+        };
         return () => {
-            baseStateRef.current = {}
-        }
-    }, [])
+            baseStateRef.current = {};
+        };
+    }, []);
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {
             onFinishEdit();
         }
-    }, [isEditMode])
+    }, [isEditMode]);
 
-    const onFinishEdit = () =>{
-        let isValid = validateUpdate();
+    const onFinishEdit = () => {
+        const isValid = validateUpdate();
 
-        if(!isValid){ return }
+        if (!isValid) {
+            return;
+        }
 
         modal.openModal('ConfirmationModal', {
             content: (
@@ -99,7 +101,7 @@ function InventoryVariantGeneral({
                     isEditUpdate={true}
                     onCancel={() => {
                         modal.closeAllModals();
-                        resetState()
+                        resetState();
                     }}
                     onAction={() => {
                         modal.closeAllModals();
@@ -113,37 +115,37 @@ function InventoryVariantGeneral({
                 console.log('Modal closed');
             },
         });
-    }
+    };
     const resetState = () => {
         setFields(baseStateRef.current);
         setUpdated(false);
-    }
+    };
 
     const validateUpdate = () => {
-        let isValid = true
-        let requiredFields = ['name','unitCost']
-    
-        let errorObj = {...errorFields} || {}
+        let isValid = true;
+        const requiredFields = ['name', 'unitCost'];
+
+        const errorObj = {...errorFields} || {};
 
         for (const requiredField of requiredFields) {
-            if(!fields[requiredField]){
+            if (!fields[requiredField]) {
                 // console.log(`${requiredField} is required`)
-                isValid = false
-                errorObj[requiredField] = "Value is required.";
-            }else{
-                delete errorObj[requiredField]
+                isValid = false;
+                errorObj[requiredField] = 'Value is required.';
+            } else {
+                delete errorObj[requiredField];
             }
         }
 
-        setErrorFields(errorObj)
-        return isValid
-    }
+        setErrorFields(errorObj);
+        return isValid;
+    };
 
     const updateVariant = () => {
-        let groupId = inventoryGroup?._id;
-        
-        updateInventoryVariantCall(_id, groupId,fields)
-            .then( _ => {
+        const groupId = inventoryGroup?._id;
+
+        updateInventoryVariantCall(_id, groupId, fields)
+            .then(_ => {
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -165,7 +167,7 @@ function InventoryVariantGeneral({
                 });
             })
             .catch(error => {
-                console.log("Failed to update theatre", error)
+                console.log('Failed to update theatre', error);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -176,106 +178,107 @@ function InventoryVariantGeneral({
                             }}
                             onAction={() => {
                                 modal.closeAllModals();
-                                resetState()
+                                resetState();
                             }}
                             message="Something went wrong when applying changes."//general message you can send to be displayed
                             action="Yes"
                         />
-                    ), 
+                    ),
                     onClose: () => {
                         console.log('Modal closed');
                     },
                 });
             })
-            .finally(_=>onUpdateItem())
-    }
+            .finally(_ => onUpdateItem());
+    };
 
-    const handleUnitPrice = (value) => {
-        let price = value.replace(/[^0-9.]/g, "")
+    const handleUnitPrice = value => {
+        const price = value.replace(/[^0-9.]/g, '');
         if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
-            onFieldChange('unitCost')(parseFloat(price))
+            onFieldChange('unitCost')(parseFloat(price));
         }
-        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price){
-            setUnitPriceText(price)
+        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price) {
+            setUnitPriceText(price);
         }
-    }
+    };
 
-
-    return(
+    return (
         <VariantGeneralWrapper>
             <VariantGeneralContainer>
 
                 <>
                     <Row>
                         <Record
-                            recordTitle = "Item Name"
-                            recordValue = {
+                            recordTitle="Item Name"
+                            recordValue={
                                 isEditMode ?
-                                    fields['name']
-                                    :
+                                    fields.name :
                                     name
                             }
-                            editMode = {isEditMode}
-                            editable = {true}
-                            onRecordUpdate = {onFieldChange('name')}
-                            onClearValue = {()=>{onFieldChange('name')('')}}
+                            editMode={isEditMode}
+                            editable={true}
+                            onRecordUpdate={onFieldChange('name')}
+                            onClearValue={() => {
+                                onFieldChange('name')('');
+                            }}
                         />
 
                         <Record
-                            recordTitle = "SKU"
-                            recordValue = {sku}
+                            recordTitle="SKU"
+                            recordValue={sku}
                         />
 
                         <Record
-                            recordTitle = "Last Received"
-                            recordValue = {"n/a"}
+                            recordTitle="Last Received"
+                            recordValue="n/a"
                         />
 
                     </Row>
 
                     <Row>
-                        
+
                         <Record
-                            recordTitle = "Unit"
-                            recordValue = {
+                            recordTitle="Unit"
+                            recordValue={
                                 isEditMode ?
-                                    fields['unitOfMeasurement']
-                                    :
+                                    fields.unitOfMeasurement :
                                     unitOfMeasurement
                             }
-                            editable = {true}
-                            editMode = {isEditMode}
-                            onRecordUpdate = {onFieldChange('unitOfMeasurement')}
-                            onClearValue = {()=>{onFieldChange('unitOfMeasurement')('')}}
+                            editable={true}
+                            editMode={isEditMode}
+                            onRecordUpdate={onFieldChange('unitOfMeasurement')}
+                            onClearValue={() => {
+                                onFieldChange('unitOfMeasurement')('');
+                            }}
                         />
 
                         <Record
-                            recordTitle = "Unit Price"
-                            recordValue = {
+                            recordTitle="Unit Price"
+                            recordValue={
                                 isEditMode ?
-                                    `$ ${unitPriceText.toString()}`
-                                    :
-                                    `$ ${unitPriceText.toString()}`
+                                    `$ ${unitPriceText.toString()}` :
+                                    `$ ${currencyFormatter(unitCost)}`
+                                // `$ ${unitPriceText.toString()}`
                             }
-                            editMode = {isEditMode}
-                            editable = {true}
-                            onRecordUpdate = {(value)=>handleUnitPrice(value)}
-                            onClearValue = {()=>handleUnitPrice('')}
+                            editMode={isEditMode}
+                            editable={true}
+                            onRecordUpdate={value => handleUnitPrice(value)}
+                            onClearValue={() => handleUnitPrice('')}
                         />
 
                         <Record
-                            recordTitle = "In-stock"
-                            recordValue = {stock}
+                            recordTitle="In-stock"
+                            recordValue={stock}
                         />
 
                     </Row>
 
                     <Row>
-                        
+
                         <ComponentRecord
-                            recordTitle = "Capacity"
-                            flex = {0.5}
-                            content = {
+                            recordTitle="Capacity"
+                            flex={0.5}
+                            content={(
                                 <LevelIndicator
                                     max={levels.max}
                                     min={0}
@@ -284,13 +287,13 @@ function InventoryVariantGeneral({
                                     critical={levels.critical}
 
                                 />
-                            }
+                            )}
                         />
 
                         <ListTextRecord
-                           
-                            recordTitle = "Suppliers"
-                            values = {suppliers}
+
+                            recordTitle="Suppliers"
+                            values={suppliers}
                         />
 
                     </Row>
@@ -298,13 +301,13 @@ function InventoryVariantGeneral({
                 </>
 
                 <Footer
-                    hasActions = {false}
-                    hasPaginator = {false}
-                    hasActionButton = {true}
+                    hasActions={false}
+                    hasPaginator={false}
+                    hasActionButton={true}
                 />
             </VariantGeneralContainer>
         </VariantGeneralWrapper>
-    )
+    );
 }
 
-export default InventoryVariantGeneral
+export default InventoryVariantGeneral;
