@@ -140,15 +140,14 @@ function OrderItemPage({route, navigation}) {
                         content: <ConfirmationComponent
                             isError={false}
                             isEditUpdate={false}
+                            message={"Changes have been saved. \n You can now resend request to vendor."}
                             onAction={() => {
                                 modal.closeModals('ConfirmationModal')
                             }}
-
                             onCancel={() => {
                                 modal.closeModals('ConfirmationModal')
 
                             }}
-
                         />
                         ,
                         onClose: () => {

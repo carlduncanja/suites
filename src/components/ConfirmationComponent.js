@@ -217,23 +217,20 @@ function ConfirmationComponent({
     action = 'Save',
 }) {
     const theme = useTheme();
-    
+
     const typeDecipher = () => {
         if (isEditUpdate) {
             return (<>
                 <MessageWrapper>
                     <MessageContainer theme={theme}>
                         <ModalText theme={theme} color="--color-gray-700" font="--confirm-message">{message}</ModalText>
-                        {/* <MessageText theme={theme}>{message}</MessageText> */}
                     </MessageContainer>
                 </MessageWrapper>
-                
+
                 <ButtonView theme={theme}>
                     <ButtonContainer onPress={onCancel} theme={theme} background='--color-gray-300'>
                         <ModalText theme={theme} textColor="--color-gray-500" font="--text-base-bold">CANCEL</ModalText>
-                        {/* <GeneralText style={{color: theme.colors['--color-gray-500']}}>
-                            Cancel
-                        </GeneralText> */}
+
                     </ButtonContainer>
                     <ButtonContainer
                         onPress={onAction}
@@ -242,20 +239,6 @@ function ConfirmationComponent({
                     >
                         <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">SAVE</ModalText>
                     </ButtonContainer>
-                    {/* <CancelButtonContainer onPress={onCancel} theme={theme}>
-                        <GeneralText style={{color: theme.colors['--color-gray-500']}}>
-                            Cancel
-                        </GeneralText>
-                    </CancelButtonContainer> */}
-                    {/* <ActionButtonContainer>
-                        <ActionButton onPress={onAction} theme={theme}>
-                            <GeneralText
-                                style={{color: theme.colors['--default-shade-white']}}
-                            >
-                                {action}
-                            </GeneralText>
-                        </ActionButton>
-                    </ActionButtonContainer> */}
                 </ButtonView>
             </>);
         }
@@ -264,28 +247,14 @@ function ConfirmationComponent({
                 <>
                     <IconMessageContainer>
                         <IconContainer theme={theme}><TickIcon/></IconContainer>
-                        <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message">Completed Successfully!</ModalText>
-                        {/* <AlertText theme={theme}>Completed Successfully!</AlertText> */}
+                        <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message"> {message || 'Completed Successfully!'} </ModalText>
                     </IconMessageContainer>
-                    
+
                     <ButtonView>
                         <ButtonContainer onPress={onAction} theme={theme} background='--color-blue-500' fullWidth={true}>
                             <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">CONTINUE</ModalText>
                         </ButtonContainer>
                     </ButtonView>
-                    {/* <DeciderButtonContainer onPress={onAction}>
-                        <DeciderButton theme={theme}>
-                            <GeneralText style={{
-                                color: theme.colors['--default-shade-white'],
-                                alignSelf: 'center'
-                            }}
-                            >
-                                CONTINUE
-                            </GeneralText>
-
-                        </DeciderButton>
-                    </DeciderButtonContainer> */}
-
                 </>
             );
         }
@@ -295,27 +264,12 @@ function ConfirmationComponent({
                     <IconMessageContainer>
                         <IconContainer theme={theme}><ErrorIcon/></IconContainer>
                         <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message">{message}</ModalText>
-                        {/* <AlertText theme={theme}>{message}</AlertText> */}
                     </IconMessageContainer>
                     <ButtonView>
                         <ButtonContainer onPress={onCancel} theme={theme} background="--color-blue-500" fullWidth={true}>
                             <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">CLOSE</ModalText>
                         </ButtonContainer>
                     </ButtonView>
-                    
-                    {/* <DeciderButtonContainer onPress={onCancel}>
-                        <DeciderButton theme={theme}>
-                            <GeneralText style={{
-                                color: theme.colors['--default-shade-white'],
-                                alignSelf: 'center'
-                            }}
-                            >
-                                CLOSE
-                            </GeneralText>
-
-                        </DeciderButton>
-                    </DeciderButtonContainer> */}
-
                 </>
             );
         }
@@ -330,19 +284,16 @@ function ConfirmationComponent({
                     <HeaderWrapper theme={theme}>
                         <HeadingContainer theme={theme}>
                             <ModalText theme={theme}>Confirm Action</ModalText>
-                            {/* <TextHeaderContainer theme={theme}>Confirm Action</TextHeaderContainer> */}
                             <ClearIconContainer>
                                 <IconButton Icon={<ClearIcon/>} onPress={onCancel}/>
                             </ClearIconContainer>
                         </HeadingContainer>
                     </HeaderWrapper>
-
                     {typeDecipher()}
-
                 </ModalContainer>
             </ModalWrapper>
         </MultipleShadowsContainer>
-        
+
     );
 }
 
