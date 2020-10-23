@@ -233,6 +233,26 @@ const Orders = (props) => {
         }, 100);
     }
 
+    const showSuccessModal = () => {
+        setTimeout(() => {
+            modal.openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        message={'Completed Successfully!'}
+                        onCancel={modal.closeAllModals}
+                        onAction={modal.closeAllModals}
+                    />
+                    ,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal')
+                    }
+                })
+        }, 100);
+    }
+
     const onCancelErrorScreen = () => {
         modal.closeAllModals();
         setTimeout(() => {
@@ -444,17 +464,20 @@ const Orders = (props) => {
     };
 
     const updateStatus = (purchaseOrderId, status) => {
+        modal.closeAllModals();
+        setFetchingData(true)
         updatePurchaseOrderStatus(purchaseOrderId, status)
             .then((data) => {
                 console.log("Purchase Order Record:", data);
-                // todo update purchase order in state.
-
                 updatePurchaseOrder(purchaseOrderId, {status});
-                modal.closeAllModals();
+                showSuccessModal()
             })
             .catch((error) => {
                 console.log("Failed to update status", error);
-                Alert.alert("Sorry", "Failed to open quotation, please try again.");
+                errorScreen()
+            })
+            .finally(_ => {
+                setFetchingData(false)
             });
     };
 
