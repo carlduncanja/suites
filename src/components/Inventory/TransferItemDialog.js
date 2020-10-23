@@ -20,7 +20,7 @@ import AutoFillField from '../common/Input Fields/AutoFillField';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
 import ConfirmationComponent from '../ConfirmationComponent';
 
-/**
+/** 
  * Component to handle the create storage process.
  *
  * @param onCancel
@@ -32,13 +32,16 @@ import ConfirmationComponent from '../ConfirmationComponent';
 function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
     // ########## CONST
     const modal = useModal();
-    const { name = '', storageLocations = [], inventoryGroup = {} } = variant;
-    const storageLocationObj = storageLocations.filter( location => location?._id === selectedLocation)[0] || {} ;
-    const { locationName = '', levels = {}, stock, location = '' } = storageLocationObj;
+    const { name = '', _id = '', groupId = '' } = variant;
+    const { levels = {}, location = '', locationName = '', stock = 0 } = selectedLocation;
+
+    // const { name = '', storageLocations = [], inventoryGroup = {} } = variant;
+    // const storageLocationObj = storageLocations.filter( location => location?._id === selectedLocation)[0] || {} ;
+    // const { locationName = '', levels = {}, stock, location = '' } = storageLocationObj;
     const { low = 0} = levels;
     const available = parseInt(stock - low) < 0 ? 0 : parseInt(stock - low);
 
-    console.log('Variant:', variant);
+    // console.log('Variant:', variant);
 
     const dialogTabs = ['Details', 'Configuration'];
 
@@ -159,7 +162,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
         } else {
             // const referenceId = fields['product']
             const updatedFields = {
-                from: storageLocationObj?.location,
+                from: location,
                 amount: (parseInt(fields.amount).toString()),
                 to: fields.to?._id,
                 priority: fields.priority
@@ -224,7 +227,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
         // console.log('Variant id: ',variant?._id);
         // console.log('Dta: ', transferToCreate);
 
-        createTransfer(inventoryGroup?._id, variant?._id, transferToCreate)
+        createTransfer(groupId, variant?._id, transferToCreate)
             .then(data => {
                 modal.closeAllModals();
                 modal.openModal(

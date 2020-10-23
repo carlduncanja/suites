@@ -381,8 +381,9 @@ function CreateProcedure({addProcedure, navigation, route}) {
 
     const createProcedureCall = updatedFields => {
         createNewProcedure(updatedFields)
-            .then(data => {
-                addProcedure(data);
+            .then(procedureData => {
+                console.log("Data procedure: ", procedureData);
+                addProcedure(procedureData);
                 modal.openModal('ConfirmationModal',
                     {
                         content: <ConfirmationComponent
@@ -394,7 +395,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
                             }}
                             onAction={() => {
                                 modal.closeAllModals();
-                                onCreated();
+                                onCreated(procedureData);
                             }}
                             // onAction = { () => confirmAction()}
                         />,

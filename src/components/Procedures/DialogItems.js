@@ -316,7 +316,7 @@ function DialogItems({
     const listConsumblesEquipmentItem = item => {
         const {name = '', unitCost = 0, unitPrice = 0, amount = 1} = item;
         const price = itemType === 'Consumables' ? unitCost : unitPrice;
-        console.log('Item: ', item);
+        // console.log('Item: ', item);
         return (
             <ItemWrapper theme={theme} style={css`margin-right : 0;`}>
                 <DataItem text={name} flex={1} fontStyle="--text-base-medium" color="--color-blue-600"/>

@@ -151,7 +151,7 @@ const CreatePhysicianDialogContainer = ({onCancel, onCreated}) => {
         createPhysician(updatedFields)
             .then(data => {
                 modal.closeAllModals();
-                Alert.alert("Success",`New physician ${fields['name']} has been created.`)
+                Alert.alert("Success",`New physician has been created.`)
                 setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
