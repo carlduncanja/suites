@@ -17,7 +17,6 @@ function StoragePage({route, navigation}) {
 
     const {storage, reloadStorageLocations} = route.params;
 
-    // console.log("Storage: ", storage);
     // ##### States
 
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
@@ -88,7 +87,7 @@ function StoragePage({route, navigation}) {
                 const storageLocationDetails = {
                     description: storageItem.description,
                     name: storageItem.name,
-                }; 
+                };
 
                 return <StorageDetailsTab
                     {...storageLocationDetails}
@@ -98,11 +97,9 @@ function StoragePage({route, navigation}) {
                 />;
             case 'Transfers':
                 return <TransfersOverlayTab
-                    transferItems = {storage?.transfers || []}
+                    transferItems = {storageItem?.transfers || []}
                 />;
             case 'Consumables': {
-                // Get Consumables
-                // console.log("Consumbales: ", storageItem);
                 const consumables = storageItem.inventoryLocations.map(item => {
                     console.log(item);
 
@@ -117,7 +114,6 @@ function StoragePage({route, navigation}) {
                 return <StorageConsumablesTab consumables={storageItem?.inventoryLocations}/>;
             }
             case 'Equipment':
-                // console.log("Storage item: ", storageItem);
                 return <StorageEquipmentTab equipments = {[]}/>;
             default:
                 return <View/>;
@@ -133,17 +129,6 @@ function StoragePage({route, navigation}) {
     const {_id, name} = storageItem;
 
     return (
-        // <BottomSheetContainer
-        //     isFetching={isFetching}
-        //     overlayId={_id}
-        //     overlayTitle={name}
-        //     onTabPressChange={onTabPress}
-        //     currentTabs={currentTabs}
-        //     selectedTab={currentTab}
-        //     isEditMode={isEditMode}
-        //     onEditPress={onEditPress}
-        //     overlayContent={getTabContent(currentTab)}
-        // />
         <>
             <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
