@@ -31,7 +31,7 @@ import {
 import {
     getPurchaseOrders,
     createInvoiceViaOrders,
-    updatePurchaseOrderStatus,
+    updatePurchaseOrderStatus, removePurchaseOrderCall,
 } from "../../api/network";
 import _ from "lodash";
 
@@ -145,7 +145,21 @@ const Orders = (props) => {
     };
 
     const onRemovePurchaseOrder = () => {
-        // todo remove PO
+        setFetchingData(true);
+        removePurchaseOrderCall(selectedOrders)
+            .then(_ => {
+                console.log('purchase order items removed');
+                showSuccessModal()
+                fetchOrdersData(currentPagePosition);
+            })
+            .catch(error => {
+                console.log('failed to remove purchase orders', error)
+                errorScreen()
+                setFetchingData(false);
+            })
+            .finally(_ => {
+                setSelectedOrders([])
+            })
     }
 
     const handleOnCheckBoxPress = (item) => () => {
@@ -349,7 +363,7 @@ const Orders = (props) => {
         let actions = [];
 
         const isOneSelected = selectedOrders.length === 1;
-        const isDeleteDisabled = selectedOrders.length !== 1;
+        const isDeleteDisabled = !selectedOrders.length;
         const deleteAction = (
             <View style={{
                 borderRadius: 6,
@@ -369,7 +383,6 @@ const Orders = (props) => {
                                 strokeColor={isDeleteDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
                             />
                         )}
-                        onPress={onRemovePurchaseOrder}
                         touchable={false}
                         disabled={isDeleteDisabled}
                     />
