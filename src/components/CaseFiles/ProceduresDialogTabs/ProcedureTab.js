@@ -275,6 +275,7 @@ const ProcedureTab = ({
                 <InputWrapper style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Procedure"}
+                        labelWidth={92}
                         value={procedure}
                         text={searchProcedureValue}
                         oneOptionsSelected={handleProcedure}
@@ -293,6 +294,7 @@ const ProcedureTab = ({
                 <InputWrapper style={styles.inputWrapper}>
                     <SearchableOptionsField
                         label={"Location"}
+                        labelWidth={92}
                         value={location}
                         text={searchLocationValue}
                         oneOptionsSelected={handleLocationChange}
@@ -312,7 +314,7 @@ const ProcedureTab = ({
                 <InputWrapper style={[styles.inputWrapper]}>
                     <InputUnitField
                         label={"Duration"}
-                        labelWidth={70}
+                        labelWidth={92}
                         onChangeText={handleInfoChange("duration")}
                         value={duration}
                         onClear={() => handleInfoChange("duration")("")}
@@ -327,6 +329,7 @@ const ProcedureTab = ({
                 <InputWrapper style={styles.inputWrapper}>
                     <InputField2
                         label={"Category"}
+                        labelWidth={92}
                         onChangeText={handleInfoChange("category")}
                         value={category}
                         onClear={handleInfoChange("category")}
@@ -342,6 +345,7 @@ const ProcedureTab = ({
                 <InputWrapper style={styles.inputWrapper}>
                     <DateInputField
                         label={"Date"}
+                        labelWidth={92}
                         onDateChange={onDateUpdate}
                         value={date}
                         onClear={onDateClear}
