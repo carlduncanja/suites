@@ -144,10 +144,9 @@ const Orders = (props) => {
 
   const handleOnCheckBoxPress = (item) => () => {
     const { _id } = item;
-    let updatedOrders = checkboxItemPress(item, _id, selectedOrders);
+    let updatedOrders = checkboxItemPress(_id, selectedOrders);
 
     setSelectedOrders(updatedOrders);
-    console.log("List: ", updatedOrders);
   };
 
   const handleOnItemPress = (item, isOpenEditable) => {
@@ -221,7 +220,7 @@ const Orders = (props) => {
     }, 100);
 }
 
-const onCancelErrorScreen = () =>{
+  const onCancelErrorScreen = () =>{
     modal.closeAllModals();
     setTimeout(()=>{
       handleDataRefresh();
@@ -423,10 +422,6 @@ const onCancelErrorScreen = () =>{
   // ############# Prepare list data
 
   let ordersToDisplay = [...purchaseOrders];
-  // ordersToDisplay = ordersToDisplay.slice(
-  //   currentPageListMin,
-  //   currentPageListMax
-  // );
 
   return (
     <NavPage
