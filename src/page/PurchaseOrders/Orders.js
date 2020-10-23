@@ -388,7 +388,7 @@ const Orders = (props) => {
             <ActionItem
                 title={"Accept Purchase Order"}
                 icon={<AddIcon
-                    strokeColor={isAcceptDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                    strokeColor={isAcceptDisabled ? theme.colors['--color-gray-600'] : undefined}
                 />}
                 disabled={isAcceptDisabled}
                 touchable={!isAcceptDisabled}
@@ -403,7 +403,7 @@ const Orders = (props) => {
             <ActionItem
                 title={"Create Invoice"}
                 icon={<AddIcon
-                    strokeColor={isInvoiceDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                    strokeColor={isInvoiceDisabled ? theme.colors['--color-gray-600'] : undefined}
                 />}
                 touchable={!isInvoiceDisabled}
                 disabled={isInvoiceDisabled}
@@ -416,7 +416,7 @@ const Orders = (props) => {
             <ActionItem
                 title={"Purchase Order Received"}
                 icon={<EditIcon
-                    strokeColor={isReceivedDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                    strokeColor={isReceivedDisabled ? theme.colors['--color-gray-600'] : undefined}
                 />}
                 disabled={isReceivedDisabled}
                 touchable={!isReceivedDisabled}
