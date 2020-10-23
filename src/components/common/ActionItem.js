@@ -54,7 +54,7 @@ function ActionItem({ icon, title, disabled, touchable = true, onPress }) {
     return (
         <ActionItemWrapper
             onPress={onPress}
-            disabled={!touchable}
+            disabled={!touchable || disabled}
             activeOpacity={disabled ? .3 : 1}
         >
             <ActionItemContainer theme={theme}>
