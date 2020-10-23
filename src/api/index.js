@@ -16,6 +16,6 @@ export const documentGenerationInstance = axios.create({
 export const setBearerToken = (token) => {
     console.log('setting token', token);
     baseInstance.defaults.headers.common = { 'Authorization': `bearer ${token}` }
-}
+};
 
-export default baseInstance
+export default baseInstance;

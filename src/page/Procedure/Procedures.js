@@ -412,12 +412,10 @@ const Procedures = props => {
             onCreated: (createdItem) => {
                 navigation.goBack();
                 setFloatingAction(false);
-                handleOnItemPress(createdItem, false);
-                // handleDataRefresh();
+                handleDataRefresh();
                 setTimeout(() => {
-                    console.log("Created item: ", createdItem);
-                    
-                }, 200);
+                    handleOnItemPress(createdItem, false)();
+                }, 300);
             },
         });
     };
@@ -448,12 +446,9 @@ const Procedures = props => {
                 navigation.goBack();
                 setFloatingAction(false);
                 handleDataRefresh();
-                handleOnItemPress(createdItem, false);
-
                 setTimeout(() => {
-                    console.log("Fields: ", createdItem);
-                    
-                }, 200);
+                    handleOnItemPress(createdItem, false)();
+                }, 300);
             },
         });
 

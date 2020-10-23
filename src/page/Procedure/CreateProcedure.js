@@ -397,6 +397,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
                                 modal.closeAllModals();
                                 onCreated(procedureData);
                             }}
+                            message="Completed Successfully!"
                             // onAction = { () => confirmAction()}
                         />,
                         onClose: () => {
