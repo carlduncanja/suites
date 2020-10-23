@@ -166,7 +166,7 @@ const TextInputContainer = styled.View`
     /* box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null}; */
 `;
 
- 
+
 function MultipleSearchableOptionsField({
             text,
             label,
@@ -215,9 +215,9 @@ function MultipleSearchableOptionsField({
 
     const renderOptions = ({item}) => {
         return <OptionContainer onPress={() => onOptionPress(item)} theme={theme}>
-            <InputText 
-                numberOfLines={1} 
-                theme={theme} 
+            <InputText
+                numberOfLines={1}
+                theme={theme}
                 textColor="--color-gray-800"
                 fontStyle="--text-sm-regular"
             >
@@ -232,17 +232,17 @@ function MultipleSearchableOptionsField({
                 key = {index}
                 onPress = {()=>{onSelectShownIten(item); }}
             >
-                <InputText 
-                    numberOfLines={1} 
+                <InputText
+                    numberOfLines={1}
                     fontStyle="--text-sm-regular"
-                    textColor="--color-gray-700"  
+                    textColor="--color-gray-700"
                     style = {css`padding-right: 8px;`}>
                         {item || ""}
                 </InputText>
                 <RemoveIcon strokeColor = {theme.colors['--color-green-500']}/>
             </ValueContainer>
 
-        )                              
+        )
     }
 
     return (
@@ -258,19 +258,19 @@ function MultipleSearchableOptionsField({
                 <TextInputContainer enabled={enabled}>
 
                     {
-                        
+
                         selectedItems.length > 0 &&
                             <DisplayContainer>
                                 {
                                     selectedItems.map((item,index)=>{
                                         return(
-                                           
+
                                             renderValueBox(item, index)
                                         )
                                     })
                                 }
                             </DisplayContainer>
-                             
+
                     }
 
                         <>
@@ -296,7 +296,7 @@ function MultipleSearchableOptionsField({
 
                             {
                                 hasError &&
-                                <View style={{position: 'absolute'}}>
+                                <View style={{position: 'absolute', top: 1}}>
                                     <InputErrorComponent errorMessage={errorMessage}/>
                                 </View>
                             }

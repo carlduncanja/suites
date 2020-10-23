@@ -102,7 +102,7 @@ function InputUnitField({label, labelWidth, onChangeText, value,enabled = true, 
 
                     {
                         hasError &&
-                        <View style={{position: "absolute"}}>
+                        <View style={{position: "absolute", top: 1}}>
                             <InputErrorComponent errorMessage={errorMessage}/>
                         </View>
                     }

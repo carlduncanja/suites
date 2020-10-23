@@ -146,7 +146,7 @@ function InputField2({
 
                     {
                         hasError &&
-                        <View style={{position: 'absolute'}}>
+                        <View style={{position: 'absolute', top: 1}}>
                             <InputErrorComponent errorMessage={errorMessage}/>
                         </View>
                     }

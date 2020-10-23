@@ -240,7 +240,7 @@ function SearchableOptionsField({
 
                                     {
                                         hasError &&
-                                        <View style={{position: 'absolute'}}>
+                                        <View style={{position: 'absolute', top: 1}}>
                                             <InputErrorComponent errorMessage={errorMessage}/>
                                         </View>
                                     }

@@ -107,17 +107,8 @@ function DateInputField({
                 />
 
                 {
-                    // hasError && <View style={{
-                    //     position: "absolute",
-                    //     top: 35,
-                    //     paddingTop: 3,
-                    //     paddingLeft: 15
-                    // }}>
-                    //     <Text style={{fontSize: 10, color: 'red'}}>{errorMessage}</Text>
-                    // </View>
-
                     hasError &&
-                    <View style={{position: 'absolute'}}>
+                    <View style={{position: 'absolute', top: 1}}>
                         <InputErrorComponent errorMessage={errorMessage}/>
                     </View>
                 }

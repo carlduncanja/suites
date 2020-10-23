@@ -43,7 +43,7 @@ const Input = styled.View`
 
 const Error = styled.View`
     position : absolute;
-`;
+ `;
 
 
 function OptionsField({oneOptionsSelected, labelWidth, enabled = true, text, label, menuOption, hasError = false, errorMessage = ""}) {
