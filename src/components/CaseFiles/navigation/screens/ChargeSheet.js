@@ -659,7 +659,7 @@ const ChargeSheet = React.forwardRef(({
 
             const addNewItem = (
                 <ActionItem
-                    title="Add Consumable Hello"
+                    title="Add Consumables"
                     icon={(
                         <AddIcon
                             strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}

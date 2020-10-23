@@ -157,14 +157,14 @@ const Assignment = ({value, type, onStaffChange, errors = {}, onErrorUpdate}) =>
                 </View>
 
                 <RowWrapper theme={theme} >
-                    <InputWrapper style={styles.inputWrapper}>
+                    <InputWrapper>
                         <SearchableOptionsField
                             label="Select"
                             labelWidth={30}
                             value={value}
                             text={searchValue}
                             oneOptionsSelected={(value) => {
-            
+
                                 const staff = {
                                     _id : value?._id,
                                     name : value?.name,
