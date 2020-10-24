@@ -63,7 +63,7 @@ function PhysicianPage({route, navigation}) {
     // ##### Lifecycle Methods
     useEffect(() => {
         fetchPhysician(_id);
-        console.log('and mek yuh touch yuh tonsil')
+        console.log('and mek yuh touch yuh tonsil');
     }, []);
 
     useEffect(() => {
@@ -101,7 +101,7 @@ function PhysicianPage({route, navigation}) {
                     isEditUpdate={true}
                     onCancel={onConfirmCancel}
                     onAction={onConfirmSave}
-                    message={"Would you like to finish editing and save the change?"}
+                    message="Would you like to finish editing and save the change?"
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
