@@ -12,4 +12,4 @@ export function handleError(error) {
     // eslint-disable-next-line no-console
     console.log("API call failed. " + error);
     throw error;
-}
+};

@@ -12,7 +12,7 @@ import _ from "lodash";
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-import { withModal } from "react-native-modalfy";
+import {useModal} from "react-native-modalfy";
 import DataItem from "../common/List/DataItem";
 import ContentDataItem from "../common/List/ContentDataItem";
 
@@ -24,10 +24,34 @@ const Row = styled.View`
 
 `
 
-function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, orders = [], onCancel = () => {}}){
+const headers = [
+    {
+        name : 'Item',
+        alignment : "flex-start",
+        flex : 1,
+    },
+    {
+        name : 'Quantity',
+        alignment : "center",
+        flex:1
+    },
+    {
+        name : 'Unit',
+        alignment : "center",
+        flex:1
+    },
+    {
+        name : "Actions",
+        alignment : "flex-end",
+        flex:1
+    }
+]
 
-    const { closeModals } = modal;
+function AddItemContainer({supplierId = "", onAddProductItems = ()=>{}, orders = [], onCancel = () => {}}){
+
     const theme = useTheme();
+    const modal = useModal();
+    const { closeModals } = modal;
 
     const [itemstoAdd, setItems] = useState([])
 
@@ -35,28 +59,6 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
     const [searchInventoryResults, setSearchInventoryResults] = useState([])
     const [searchInventoryQuery, setSearchInventoryQuery] = useState({});
 
-    const headers = [
-        {
-            name : 'Item',
-            alignment : "flex-start",
-            flex : 1,
-        },
-        {
-            name : 'Quantity',
-            alignment : "center",
-            flex:1
-        },
-        {
-            name : 'Unit',
-            alignment : "center",
-            flex:1
-        },
-        {
-            name : "Actions",
-            alignment : "flex-end",
-            flex:1
-        }
-    ]
 
     useEffect(() => {
         if (!searchInventoryValue) {
@@ -78,17 +80,12 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
         });
 
         search()
-    }, [searchInventoryValue]); 
- 
+    }, [searchInventoryValue]);
+
     const fetchProducts = () => {
         getSupplierProducts(supplierId,searchInventoryValue, 5)
             .then((productsInfo = {}) => {
-                // console.log("Data: ", productsInfo)
-                // const results = data.map(item => ({
-                //     ...item
-                // }));
                 setSearchInventoryResults(productsInfo?.data || []);
-
             })
             .catch(error => {
                 // TODO handle error
@@ -107,8 +104,8 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
 
         let filterOrder = orders.filter( order => {
             const { productId = {} } = order
-            const {inventoryId = ""} = productId
-            return inventoryId === item.inventoryId
+            const {inventoryVariant = ""} = productId
+            return inventoryVariant === item?.inventoryVariant._id
         })
 
         if(filterOrder.length > 0){
@@ -116,16 +113,8 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
             return
         }
 
-        updatedData.filter( productItem => item?.inventoryId === productItem?.inventoryId).length > 0 ? 
-            updatedData = updatedData.map( dataItem => {
-                if(dataItem._id === item?._id || ""){
-                    Alert.alert('Sorry',"Item is currently in the list, please add another product")
-                    return {...dataItem}
-                }
-            })
-            :
-            updatedData = [...updatedData,item]
-            
+        updatedData = [...updatedData,item]
+
         setItems(updatedData)
     }
 
@@ -180,7 +169,7 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
                         message = {"Do you want to delete this item ?"}
                     />
                     ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    onClose: () => {modal.closeModals('ConfirmationModal')}
                 })
     };
 
@@ -201,7 +190,7 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
                         message = {"Do you want to delete these item(s) ?"}
                     />
                     ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    onClose: () => {modal.closeModals('ConfirmationModal')}
                 })
     }
 
@@ -228,13 +217,13 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
                                 modal.closeModals('ConfirmationModal')
                             }, 100);
                             onFooterPress();
-                            
+
                         }}
                         // onAction = { () => confirmAction()}
                         message = {"Do you want to save your changes ? "}
                     />
                     ,
-                    onClose: () => {modal.closeModals('ConfirmationModal')} 
+                    onClose: () => {modal.closeModals('ConfirmationModal')}
                 })
     }
 
@@ -250,9 +239,9 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
         onCancel();
     }
 
-    const listItemFormat = (item) => { 
+    const listItemFormat = (item) => {
         const { _id = "", name = "", amount = 0, unit = "n/a" } = item
-        return ( 
+        return (
             <Row theme = {theme}>
                 <DataItem text = {name} flex = {1} fontStyle = "--text-base-medium" color = "--color-blue-600" />
                 <NumberChangeField
@@ -271,64 +260,31 @@ function AddItemContainer({modal, supplierId = "", onAddProductItems = ()=>{}, o
                     }
                 />
             </Row>
-
-            // <View style={[styles.listDataContainer,{marginBottom:10}]}>
-
-            //     <View style={{flex:2,justifyContent:"flex-start", justifyContent:'center'}}>
-            //         <Text style={[styles.dataText,{color:"#3182CE"}]}>{name}</Text>
-            //     </View>
-            //     <View style={{flex:1,alignItems:'center'}}>
-            //         <NumberChangeField
-            //             onChangePress = {onQuantityChange(item)}
-            //             onAmountChange = {onAmountChange(item)}
-            //             value = {amount.toString()}
-            //         />
-            //     </View>
-            //     <View style={{flex:1,alignItems:'flex-end'}}>
-            //         <IconButton
-            //             Icon = {<DeleteIcon/>}
-            //             onPress = {()=>onDeletePress(item)}
-            //         />
-                    
-            //     </View>
-            // </View>
         )
-        
+
     }
 
     return (
         <View>
             <AddOverlayDialog
-                title = "Add Items"   
+                title = "Add Items"
                 closeModal = {onCloseModal}
                 listItemFormat = {listItemFormat}
                 headers = {headers}
                 isCheckBox = {false}
                 data = {itemstoAdd}
                 tabs = {["Add Item"]}
-                // hasFooter = {true}
                 selectedTab = {0}
-                // footerTitle = "DONE"
                 onFooterPress = {handlePositiveButtonPress}
                 onClearPress = {handleClearList}
                 searchText = {searchInventoryValue}
                 searchResults = {searchInventoryResults}
-                onSearchChange = {onSearchChange}  
+                onSearchChange = {onSearchChange}
                 searchQuery = {searchInventoryQuery}
-                onSelectItem = {onSelectItem} 
-
-            /> 
-        </View> 
+                onSelectItem = {onSelectItem}
+            />
+        </View>
     )
 }
 
-export default withModal(AddItemContainer) 
-
-const styles = StyleSheet.create({
-    listDataContainer:{
-        
-        flexDirection:'row',
-        justifyContent:'space-between'
-    }
-    
-})
+export default AddItemContainer
