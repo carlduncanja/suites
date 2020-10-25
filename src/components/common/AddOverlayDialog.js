@@ -87,17 +87,17 @@ const ClearListText = styled.Text( ({theme}) =>({
     color : theme.colors['--color-gray-600'],
 }))
 
-function AddOverlayDialog(props){ 
+function AddOverlayDialog(props){
 
-    const { 
-        title = "", 
+    const {
+        title = "",
         onClearPress = () => {},
-        closeModal = () => {}, 
-        data = [], 
-        selectedTab = 0, 
+        closeModal = () => {},
+        data = [],
+        selectedTab = 0,
         listItemFormat = () => {},
         tabs,
-        headers = [], 
+        headers = [],
         isCheckBox = false,
         onPressTab = () => {},
         hasFooter = false,
@@ -109,7 +109,7 @@ function AddOverlayDialog(props){
         onSearchChange = () => {},
         onSelectItem = () => {},
         handleCloseDialog = () => {},
-        hasSearch = true, 
+        hasSearch = true,
     } = props
 
     const theme = useTheme();
@@ -143,7 +143,8 @@ function AddOverlayDialog(props){
     };
 
     const onItemSelected = (item) => {
-        setSelectedItem(item)
+        setSelectedItem(false)
+        onSearchChange('')
         onSelectItem(item)
     }
 
@@ -173,13 +174,13 @@ function AddOverlayDialog(props){
                                 tab = {selectedTab}
                             />
                         </TabsContainer>
-                        
+
                     }
-                    
+
 
                     <ContentWrapper theme = {theme}>
                         <ContentContainer>
-                            { 
+                            {
                                 hasSearch &&
                                 <SearchableFieldContainer>
                                     <SearchableOptionsField
@@ -197,8 +198,8 @@ function AddOverlayDialog(props){
                                     />
                                 </SearchableFieldContainer>
                             }
-                            
-                            
+
+
                             <ListContainerWrapper theme = {theme}>
                                 <ListContentContainer>
 
@@ -212,7 +213,7 @@ function AddOverlayDialog(props){
                                             isCheckbox = {isCheckBox}
                                         />
                                     </List>
-                               
+
 
 
                                     <FooterContainer>
@@ -226,14 +227,14 @@ function AddOverlayDialog(props){
                                                 hasNumberBorder = {false}
                                             />
                                         </PaginatorContainer>
-                                        
+
                                         <ClearListContainer onPress = {onClearPress}>
                                             <ClearListText theme = {theme}>Clear List</ClearListText>
                                             <ClearList/>
                                         </ClearListContainer>
 
                                     </FooterContainer>
-                            
+
 
                                 </ListContentContainer>
                             </ListContainerWrapper>
@@ -246,7 +247,7 @@ function AddOverlayDialog(props){
 
             </OverlayContainer>
         </Overlayrapper>
-        
+
         // <View style={styles.container}>
         //     <View style={styles.headerContainer}>
         //         <Text>{title}</Text>
@@ -272,7 +273,7 @@ function AddOverlayDialog(props){
         //                 })
         //             }
         //         </View>
-            
+
         //     }
 
         //     <View style={{margin: 20}}>
@@ -313,7 +314,7 @@ function AddOverlayDialog(props){
         //                     goToPreviousPage = {goToPreviousPage}
         //                 />
         //             </View>
-        //             <TouchableOpacity 
+        //             <TouchableOpacity
         //                 style={styles.clearListStyle}
         //                 onPress = {onClearPress}
         //             >
@@ -322,7 +323,7 @@ function AddOverlayDialog(props){
         //             </TouchableOpacity>
 
         //         </View>
-            
+
         //     </View>
 
         //     {
@@ -336,9 +337,9 @@ function AddOverlayDialog(props){
         //             />
         //         </View>
         //     }
-        
+
         // </View>
-    
+
     )
 }
 
