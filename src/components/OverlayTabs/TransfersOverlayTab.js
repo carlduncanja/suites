@@ -76,9 +76,9 @@ const TRANSFER_STATE = {
     CANCELLED: 'cancelled',
     COMPLETED: 'completed',
     ERROR: 'error'
-}; 
+};  
 
-function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateItem, actionsTitle = 'SUPPLIERS ACTIONS'}) {
+function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantId, onUpdateItem, actionsTitle = 'SUPPLIERS ACTIONS'}) {
 
     const theme = useTheme();
     const modal = useModal();
@@ -89,7 +89,17 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
     const pendingItems = transferItems.filter(item => item?.state === 'pending');
     const completedItems = transferItems.filter(item => item?.state === 'completed');
 
-    console.log("Pending: ", pendingItems);
+    const getInventoryIds = () => {
+        const inventoryObj = pendingItems.filter(item => item._id === pendingCheckedItems[0])[0] || {};
+        const inventoryId = inventoryObj?.inventoryVariantId || '';
+
+        const locations = transferObj?.inventoryLocations || [];
+        const filterLocation = locations.filter(location => location.inventory._id === inventoryId)[0] || {};
+        const groupId = filterLocation.inventory.inventoryGroup._id || '';
+
+        return { inventoryId, groupId };
+    }
+
     const onItemCheckbox = item => {
         const {_id} = item;
         const updatedCheckedList = checkboxItemPress(_id, pendingCheckedItems);
@@ -152,9 +162,12 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
         />;
     };
 
-    const updateTransferStatus = transferId => {
+    const updateTransferStatus = (transferId, inventoryId = variantId, inventoryGroupId = groupId) => {
+        console.log("Variant id: ", inventoryId);
+        console.log("Group id: ", inventoryGroupId);
+        console.log("Transfer id: ", transferId);
         const newState = { state: 'completed'};
-        updateTransferState(groupId, variantId, transferId, newState)
+        updateTransferState(inventoryGroupId, inventoryId, transferId, newState)
             .then(_ => {
                 modal.closeAllModals();
                 modal.openModal(
@@ -205,7 +218,11 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
                         onCancel={() => modal.closeAllModals()}
                         onAction={() => {
                             modal.closeAllModals();
-                            updateTransferStatus(pendingCheckedItems[0]);
+                            if (transferObj) {
+                                updateTransferStatus(pendingCheckedItems[0], getInventoryIds().inventoryId, getInventoryIds().groupId);
+                            } else {
+                                updateTransferStatus(pendingCheckedItems[0]);
+                            }
                         }}
                         message="Do you want to save your changes ?"
                     />,
@@ -215,11 +232,8 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
         }
     };
 
-    const removeItems = transferId => {
-        // console.log("Transfer id: ", transferId);
-        // console.log("Group id: ", groupId);
-        // console.log("Variant:", variantId);
-        removeTransferItem(groupId, variantId, transferId)
+    const removeItems = (transferId, inventoryId = variantId, inventoryGroupId = groupId) => {
+        removeTransferItem(inventoryGroupId, inventoryId, transferId)
             .then(_ => {
                 modal.closeAllModals();
                 modal.openModal(
@@ -271,7 +285,11 @@ function TransfersOverlayTab({transferItems = [], groupId, variantId, onUpdateIt
                     onCancel={() => modal.closeAllModals()}
                     onAction={() => {
                         modal.closeAllModals();
-                        removeItems(pendingCheckedItems[0]);
+                        if (transferObj) {
+                            removeItems(pendingCheckedItems[0], getInventoryIds().inventoryId, getInventoryIds().groupId);
+                        } else {
+                            removeItems(pendingCheckedItems[0]);
+                        }
                     }}
                     message="Do you wish to delete these item(s)?"
                 />,

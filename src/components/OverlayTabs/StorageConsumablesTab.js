@@ -42,7 +42,7 @@ const headers = [
 ];
 
 
-const StorageConsumablesTab = ({consumables = [], storageLocation}) => {
+const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem}) => {
 
     const theme = useTheme();
     const modal = useModal();
@@ -52,7 +52,7 @@ const StorageConsumablesTab = ({consumables = [], storageLocation}) => {
 
 
     const listItem = (item) => {
-        console.log("Item: ", item);
+        // console.log("Item: ", item);
         const { stock = 0, inventory = {} } = item;
         const { inventoryGroup = "", name = "", unitCost = 0 } = inventory
         return (
@@ -143,9 +143,8 @@ const StorageConsumablesTab = ({consumables = [], storageLocation}) => {
         const { _id = "" } = storageLocation;
         const filterVariant = consumables.filter(item => item?._id === checkedItems[0])[0] || {};
        
-        
-        console.log("Storage location (Selected Location):", storageLocation, storageLocation._id);
-        console.log("Checked Items (Variant):", filterVariant);
+        // console.log("Storage location (Selected Location):", storageLocation, storageLocation._id);
+        // console.log("Checked Items (Variant):", filterVariant);
 
         const variant = {
             _id: filterVariant?.inventory?._id || '',
@@ -153,30 +152,37 @@ const StorageConsumablesTab = ({consumables = [], storageLocation}) => {
             groupId: filterVariant?.inventory?.inventoryGroup?._id,
         };
 
-        // const fromLocation = {
-        //     location: selectedLocation?.location || '',
-        //     levels: selectedLocation?.levels || {},
-        //     locationName: selectedLocation?.locationName || '',
-        //     stock: selectedLocation?.stock || 0
-        // };
+        const fromLocation = {
+            location: filterVariant?.location || '',
+            levels: filterVariant?.levels || {},
+            locationName: filterVariant?.locationName || '',
+            stock: filterVariant?.stock || 0
+        };
 
-        // modal.closeModals('ActionContainerModal');
-        // setTimeout(() => {
-        //     modal.openModal(
-        //         'OverlayModal',
-        //         {
-        //             content: <TransferItemDialog
-        //                 // onCreated={(item) => onItemPress(item)()}
-        //                 variant={selectedVariant}
-        //                 selectedLocation={selectedItems[0]}
-        //                 // groupId = {groupId}
-        //                 onCreated={() => { setFloatingAction(false); onUpdateItem(); setSelectedItems([]); }}
-        //                 onCancel={() => setFloatingAction(false)}
-        //             />,
-        //             onClose: () => setFloatingAction(false)
-        //         }
-        //     );
-        // }, 200);
+        console.log("Variant: ", variant);
+        console.log("Current location: ", fromLocation);
+
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal(
+                'OverlayModal',
+                {
+                    content: <TransferItemDialog
+                        // onCreated={(item) => onItemPress(item)()}
+                        variant={variant}
+                        selectedLocation={fromLocation}
+                        // groupId = {groupId}
+                        onCreated={() => {
+                            setFloatingAction(false);
+                            onUpdateItem();
+                            setCheckedItems([]);
+                        }}
+                        onCancel={() => setFloatingAction(false)}
+                    />,
+                    onClose: () => setFloatingAction(false)
+                }
+            );
+        }, 200);
     }
 
     return (

@@ -61,6 +61,7 @@ function StoragePage({route, navigation}) {
         setPageLoading(true);
         getStorageById(id)
             .then(data => {
+                // console.log("Details: ", data);
                 setStorageItem(data);
             })
             .catch(error => {
@@ -97,7 +98,9 @@ function StoragePage({route, navigation}) {
                 />;
             case 'Transfers':
                 return <TransfersOverlayTab
-                    transferItems = {storageItem?.transfers || []}
+                    transferItems={storageItem?.transfers || []}
+                    transferObj={storageItem}
+                    onUpdateItem={() => { fetchStorageItem(storage._id); }}
                 />;
             case 'Consumables': {
                 const consumables = storageItem.inventoryLocations.map(item => {
@@ -111,10 +114,14 @@ function StoragePage({route, navigation}) {
                     };
                 });
 
-                return <StorageConsumablesTab consumables={storageItem?.inventoryLocations} storageLocation={storageItem}/>;
+                return <StorageConsumablesTab
+                    consumables={storageItem?.inventoryLocations}
+                    storageLocation={storageItem}
+                    onUpdateItem={() => { fetchStorageItem(storage._id); }}
+                />;
             }
             case 'Equipment':
-                return <StorageEquipmentTab equipments = {[]}/>;
+                return <StorageEquipmentTab equipments={[]}/>;
             default:
                 return <View/>;
         }
@@ -127,7 +134,6 @@ function StoragePage({route, navigation}) {
     );
 
     const {_id, name} = storageItem;
-
     return (
         <>
             <PageContext.Provider value={{pageState, setPageState}}>

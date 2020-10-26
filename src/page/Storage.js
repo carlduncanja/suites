@@ -253,7 +253,7 @@ function Storage(props) {
     };
 
     const renderItem = item => {
-        console.log("Storage item: ", item);
+        // console.log("Storage item: ", item);
         const totalStock = item.inventoryLocations?.reduce((acc, item) => acc + item.stock, 0) || 0;
         const totalProducts = item?.inventoryLocations?.length || 0;
         const totalTransfers = item?.transfers?.length || 0;;

@@ -140,7 +140,7 @@ function InventoryVariantPage({route, navigation}) {
                     onUpdateItem={() => fetchVariant(groupId, _id)}
                 />;
             case 'Transfers':
-                // console.log("Variant: ", selectedVariant);
+                // console.log("Selected Variant: ", selectedVariant);
                 return <TransfersOverlayTab
                     transferItems={selectedVariant?.transfers}
                     groupId={selectedVariant?.inventoryGroup?._id}
