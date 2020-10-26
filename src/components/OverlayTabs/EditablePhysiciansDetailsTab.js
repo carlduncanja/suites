@@ -422,12 +422,12 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
 
                 <View style={styles.fieldWrapper}>
                     <View style={{marginBottom: 5}}>
-                        <Text style={styles.title}>DOB</Text>
+                        <Text style={styles.title}>Date Of Birth</Text>
                     </View>
 
                     <View style={styles.inputWrapper}>
                         <DateInputField
-                            value={fields.dob}
+                            value={formatDate(fields.dob || new Date(), 'DD/MM/YYYY')}
                             onClear={() => onFieldChange('dob')('')}
                             keyboardType="number-pad"
                             mode="date"
@@ -689,7 +689,8 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                         backgroundColor: '#83AED1',
                         alignSelf: 'center',
                         alignItems: 'center'
-                    }}>
+                    }}
+                    >
                         <Button
                             title="Add Emergency Contact"
                             backgroundColor="#83AED1"

@@ -291,12 +291,12 @@ function Inventory(props) {
         const updatedChildIds = checkboxItemPress(_id, variantIds);
 
         // set selected variant
-        const updatedSelectedVariants = updatedChildIds.map(_id => ({_id, groupId: inventoryGroup._id}))
+        const updatedSelectedVariants = updatedChildIds.map(_id => ({_id, groupId: inventoryGroup._id}));
         setSelectedVariants(updatedSelectedVariants);
 
         // unselect group when child is selected
-        const updatedIds = selectedIds.filter(id => id !== groupId)
-        setSelectedIds(updatedIds)
+        const updatedIds = selectedIds.filter(id => id !== groupId);
+        setSelectedIds(updatedIds);
     };
 
     const onCollapseView = key => {
@@ -316,7 +316,8 @@ function Inventory(props) {
                 borderRadius: 6,
                 flex: 1,
                 overflow: 'hidden'
-            }}>
+            }}
+            >
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeGroups}
@@ -342,7 +343,8 @@ function Inventory(props) {
                 borderRadius: 6,
                 flex: 1,
                 overflow: 'hidden'
-            }}>
+            }}
+            >
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeVariants}
@@ -361,7 +363,6 @@ function Inventory(props) {
                 </LongPressWithFeedback>
             </View>
         );
-
 
         const createAction = <ActionItem title="Add Item" icon={<AddIcon/>} onPress={openCreateInventoryModel}/>;
         const createGroup = <ActionItem title="Create Item Group" icon={<AddIcon/>} onPress={openCreateGroupDialog}/>;
@@ -395,11 +396,10 @@ function Inventory(props) {
 
     const removeGroups = () => {
         openConfirmationScreen(() => removeGroupsCall(selectedIds));
-
     };
 
     const removeVariants = () => {
-        const variantIds = selectedVariants.map(variant => variant._id)
+        const variantIds = selectedVariants.map(variant => variant._id);
         openConfirmationScreen(() => removeVariantsCall(variantIds));
     };
 
@@ -457,7 +457,7 @@ function Inventory(props) {
         });
 
         return levelsTotal;
-    }; 
+    };
 
     const getStock = locations => locations.reduce((acc, curr) => acc + curr.stock, 0);
 
@@ -588,9 +588,9 @@ function Inventory(props) {
                 }
             );
         });
- 
-        const isIndeterminate = selectedVariants.some(variant => variant.groupId === item._id)
- 
+
+        const isIndeterminate = selectedVariants.some(variant => variant.groupId === item._id);
+
         return <CollapsibleListItem
             isChecked={selectedIds.includes(item._id)}
             onCheckBoxPress={onCheckBoxPress(item)}
@@ -624,7 +624,7 @@ function Inventory(props) {
         </CollapsibleListItem>;
     };
 
-    const openConfirmationScreen = (callbackFn) => {
+    const openConfirmationScreen = callbackFn => {
         modal
             .openModal(
                 'ConfirmationModal',
@@ -635,7 +635,7 @@ function Inventory(props) {
                         onCancel={() => modal.closeModals('ConfirmationModal')}
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                            callbackFn()
+                            callbackFn();
                         }}
                         // onAction = { () => confirmAction()}
                         message="Do you want to delete these item(s)?"
@@ -711,6 +711,7 @@ function Inventory(props) {
                     content: <ConfirmationComponent
                         isError={false}
                         isEditUpdate={false}
+                        message="Item Group(s) successfully removed."
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
                             setTimeout(() => {
@@ -746,6 +747,7 @@ function Inventory(props) {
                         content: <ConfirmationComponent
                             isError={false}
                             isEditUpdate={false}
+                            message="Item(s) successfully removed."
                             onAction={() => {
                                 modal.closeModals('ConfirmationModal');
                                 setTimeout(() => {

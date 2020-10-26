@@ -380,9 +380,20 @@ function CreateProcedure({addProcedure, navigation, route}) {
     };
 
     const createProcedureCall = updatedFields => {
-        createNewProcedure(updatedFields)
+        const data = {
+            name: updatedFields.name,
+            duration: updatedFields.duration,
+            physician: updatedFields.physician,
+            serviceFee: updatedFields.serviceFee,
+            hasRecovery: updatedFields.hasRecovery,
+            supportedRooms: updatedFields.supportedRooms,
+            inventories: updatedFields.inventories,
+            equipments: updatedFields.equipments,
+            procedureReference: updatedFields.procedureReference
+        };
+
+        createNewProcedure(data)
             .then(procedureData => {
-                console.log("Data procedure: ", procedureData);
                 addProcedure(procedureData);
                 modal.openModal('ConfirmationModal',
                     {

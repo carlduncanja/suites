@@ -276,8 +276,7 @@ const OrderItemTab = ({
     }
 
     const onAddItem = () =>{
-        modal.closeModals('ActionContainerModal')
-
+        modal.closeAllModals()
         setTimeout(()=>{
             modal.openModal('OverlayInfoModal',
                 {
@@ -336,30 +335,3 @@ const OrderItemTab = ({
 }
 
 export default OrderItemTab
-
-const styles = StyleSheet.create({
-    row: {
-        // borderBottomColor : '#E3E8EF',
-        // borderBottomWidth : 1,
-        paddingBottom:8,
-        paddingLeft:10,
-        marginBottom:10
-    },
-    item: {
-        flex: 1,
-    },
-    itemText: {
-        fontSize: 16,
-        color: "#4A5568",
-    },
-    footer: {
-        flex: 1,
-        alignSelf: 'flex-end',
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: 0,
-        marginBottom: 0,
-        right: 0,
-        marginRight: 30,
-    },
-})

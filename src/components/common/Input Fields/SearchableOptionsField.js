@@ -170,10 +170,10 @@ function SearchableOptionsField({
     // console.log("selected value", value);
 
     const onOptionPress = option => {
-        setSelectedValue(option);
-        if (textInputRef) {
-            textInputRef.current.clear();
-        }
+        // setSelectedValue(option);
+        // if (textInputRef) {
+        //     textInputRef.current.clear();
+        // }
 
         oneOptionsSelected(option);
 

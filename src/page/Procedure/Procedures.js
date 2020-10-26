@@ -28,7 +28,6 @@ import DataItem from '../../components/common/List/DataItem';
 import RightBorderDataItem from '../../components/common/List/RightBorderDataItem';
 import TouchableDataItem from '../../components/common/List/TouchableDataItem';
 
-
 const Procedures = props => {
     // ############# Const data
     const recordsPerPage = 10;
@@ -129,7 +128,7 @@ const Procedures = props => {
     };
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
-        console.log("Open");
+        console.log('Open');
         navigation.navigate('Procedures List', {
             screen: 'Procedure',
             initial: false,
@@ -234,7 +233,7 @@ const Procedures = props => {
     const procedureItem = item => {
         const {physician = {}} = item;
         const {firstName = '', surname = ''} = physician;
-        const physicianName = firstName && surname ? `${firstName} ${surname}` : firstName || (surname || '')
+        const physicianName = firstName && surname ? `${firstName} ${surname}` : firstName || (surname || '');
         return (
             <>
                 <RightBorderDataItem flex={1.5} fontStyle="--text-base-regular" color="--color-gray-800" text={item?.name}/>
@@ -409,7 +408,7 @@ const Procedures = props => {
                 navigation.goBack();
                 setFloatingAction(false);
             },
-            onCreated: (createdItem) => {
+            onCreated: createdItem => {
                 navigation.goBack();
                 setFloatingAction(false);
                 handleDataRefresh();
