@@ -22,13 +22,13 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 import { forEach } from 'lodash';
 import ContentDataItem from '../common/List/ContentDataItem';
 
- 
+
 const PendingTransferHeadings = [
     {
         name: 'Transfer',
         alignment: 'flex-start',
         flex : 1.5,
-        
+
     },
     {
         name: 'Product',
@@ -69,14 +69,14 @@ const SectionText = styled.Text( ({theme}) => ({
     ...theme.font['--text-xl-medium'],
     color : theme.colors['--color-gray-800'],
     marginBottom : 24,
-}));  
+}));
 
 const TRANSFER_STATE = {
     PENDING: 'pending',
     CANCELLED: 'cancelled',
     COMPLETED: 'completed',
     ERROR: 'error'
-};  
+};
 
 function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantId, onUpdateItem, actionsTitle = 'SUPPLIERS ACTIONS'}) {
 
@@ -127,7 +127,7 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
     const floatingActions = () => {
         const isDisabled = pendingCheckedItems.length === 0 ? true : false;
         const isDisabledColor = pendingCheckedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
-        
+
         const acceptTransfer = (
             <ActionItem
                 title="Accept Transfer"
@@ -152,7 +152,7 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
                 />
             </LongPressWithFeedback>
         );
-            
+
         return <ActionContainer
             floatingActions={[
                 deleteItem,
@@ -226,7 +226,7 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
                         }}
                         message="Do you want to save your changes ?"
                     />,
-                    onClose: () => { modal.closeModals('ConfirmationModal'); } 
+                    onClose: () => { modal.closeModals('ConfirmationModal'); }
                 });
             }, 200);
         }
@@ -299,7 +299,7 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
         // console.log("Checked items: ", pendingCheckedItems);
     };
 
-    const completedTransferListItem = ({from, to, product, amount, dateCompleted = '', updatedAt = ''}) => {
+    const completedTransferListItem = ({from = {}, to = {}, product, amount, dateCompleted = '', updatedAt = ''}) => {
         const { inventoryName = '', locationName = '""' } = from;
         return (
             <>
@@ -418,7 +418,7 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
     //     </View>
 
     // </View>
-    
+
     );
 }
 
