@@ -66,7 +66,7 @@ import WasteIcon from '../../../assets/svg/wasteIcon';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
 import AcceptIcon from '../../../assets/svg/acceptIcon';
 import {CHARGE_SHEET_STATUSES} from '../../components/CaseFiles/navigation/screens/ChargeSheet';
- 
+
 const overlayMenu = [
     {
         name: 'Patient',
@@ -1588,6 +1588,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     ref={chargeSheetRef}
                     chargeSheet={chargeSheet}
                     procedures={caseProcedures}
+                    chargeSheetApproval={chargeSheetApproval}
                     selectedTab={selectedTab}
                     quotations={quotations}
                     invoices={invoices}

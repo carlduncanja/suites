@@ -84,6 +84,8 @@ const ChargeSheet = React.forwardRef(({
                                           handleEditDone,
                                           handleQuotes,
                                           handleInvoices,
+                                          chargeSheetApproval
+
 
                                           // onSelectEquipments,
                                           // onSelectEquipmenntsVariants,
