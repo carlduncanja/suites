@@ -213,7 +213,7 @@ function ConfirmationComponent({
     isError,
     onCancel = () => {},
     onAction = () => {},
-    message = 'There was an issue performing this action.',
+    message = '',
     action = 'Save',
 }) {
     const theme = useTheme();
@@ -263,7 +263,7 @@ function ConfirmationComponent({
                 <>
                     <IconMessageContainer>
                         <IconContainer theme={theme}><ErrorIcon/></IconContainer>
-                        <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message">{message}</ModalText>
+                        <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message">{message || 'There was an issue performing this action.'}</ModalText>
                     </IconMessageContainer>
                     <ButtonView>
                         <ButtonContainer onPress={onCancel} theme={theme} background="--color-blue-500" fullWidth={true}>
