@@ -168,13 +168,10 @@ function CaseFiles(props) {
                     initial: false,
                     draftItem: item
                 }) :
-                navigation.navigate('Case Files', {
-                    screen: 'Case',
+                navigation.navigate('Case', {
                     initial: false,
-                    params: {
-                        caseId: item._id,
-                        isEdit: isOpenEditable
-                    }
+                    caseId: item._id,
+                    isEdit: isOpenEditable
                 });
         } else return;
     };
@@ -290,7 +287,8 @@ function CaseFiles(props) {
         if (item !== null) {
             const {patient = {}} = item || {};
 
-            return (<DraftItem text={`${patient?.firstName ? `${patient?.firstName || ''} ${patient?.surname || ''}` : 'N/A'} `}/>);
+            return (<DraftItem
+                text={`${patient?.firstName ? `${patient?.firstName || ''} ${patient?.surname || ''}` : 'N/A'} `}/>);
         }
     };
 

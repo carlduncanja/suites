@@ -72,7 +72,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
             />
 
             <SuitesNavigator.Screen
-                name="Case Files"
+                name="CaseFiles"
                 component={CaseFileNavigationStack}
                 initialParams={{
                     icon: CaseFileIcon,
