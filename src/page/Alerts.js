@@ -227,7 +227,7 @@ function Alerts() {
                 content={(
                     <RecentAlertsList
                         data={recentAlerts}
-                        updateAlerts={() => { setFetchingData(true); fetchOpenAlert(1); }}
+                        updateAlerts={() => { setFetchingData(true); fetchClosedAlert(1); fetchOpenAlert(1); }}
                     />
                 )}
             />
