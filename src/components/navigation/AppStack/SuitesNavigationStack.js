@@ -28,6 +28,7 @@ import InventoryNavigationStack from './InventoryNavigationStack';
 
 /* Providers*/
 import NotFound from '../../../page/NotFound';
+import LostConnectionPage from '../../../components/common/Page/LostConnectionPage';
 
 /* Icons */
 import ScheduleIcon from '../../../../assets/svg/schedule';
@@ -184,7 +185,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
 
             <SuitesNavigator.Screen
                 name="Help"
-                component={NotFound}
+                component={LostConnectionPage}
                 initialParams={{
                     icon: HelpIcon,
                     tabName: 'Help',

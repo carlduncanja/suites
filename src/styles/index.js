@@ -252,6 +252,13 @@ export const root = {
         },
 
         //  - LARGE
+        '--text-lg-bold': {
+            fontSize: 18,
+            fontWeight: '700',
+            fontStyle: 'normal',
+            lineHeight: 18,
+        },
+
         '--text-lg-regular': {
             fontSize: 18,
             fontWeight: 'normal',
