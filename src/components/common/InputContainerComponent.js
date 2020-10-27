@@ -19,6 +19,7 @@ import styled, { css } from '@emotion/native';
 const InputFieldWrapper = styled.View`
     flex:1;
     position: relative;
+    min-height: 32px;
 `;
 
 const InputFieldContainer = styled.View`
