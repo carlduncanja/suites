@@ -7,43 +7,52 @@ import SvgIcon from '../../../../assets/SvgIcon';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
+const TabWrapper = styled.TouchableOpacity`
+    height:100%;
+`;
+
+const TabContainer = styled.View`
+    height: 100%;
+    flex-direction : row;
+`;
+
+const TabCorner = styled.View`
+    align-self: flex-end;
+`;
+
+const TabNameWrapper = styled.View`
+    height: 100%;
+`;
+const TabNameContainer = styled.View`
+    height:100%;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding-top:5px;
+    padding-left:8px;
+    padding-right:8px;
+    background-color:${ ({backgroundColor}) => backgroundColor ? backgroundColor : null};
+`;
+
+const TabText = styled.Text(({theme, font = '--text-base-medium', color}) => ({
+    ...theme.font[font],
+    color,
+}));
+
 function Tab({backgroundColor, textColor = "", tabName = "", onTabPress = ()=>{}}) {
 
     const theme = useTheme();
 
-    const TabWrapper = styled.TouchableOpacity`
-        height:100%;
-    `;
-    const TabContainer = styled.View`
-        height: 100%;
-        flex-direction : row;
-    `
-    const TabCorner = styled.View`
-        align-self: flex-end;
-    `
-    const TabNameWrapper = styled.View`
-        height: 100%;
-    `
-    const TabNameContainer = styled.View`
-        height:100%;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-        padding-top:5px;
-        padding-left:8px;
-        padding-right:8px;
-        backgroundColor:${backgroundColor ? backgroundColor : null}
-    `
-
     return (
-        <TabWrapper onPress = {onTabPress} activeOpacity={1}>
+        <TabWrapper onPress={onTabPress} activeOpacity={1}>
             <TabContainer>
                 <TabCorner>
                     <TabLeftCorner fillColor={backgroundColor ? backgroundColor : null}/>
                 </TabCorner>
                 
                 <TabNameWrapper>
-                    <TabNameContainer>
-                        <Text style={[styles.text,{color:textColor}]}>{tabName}</Text>
+                    <TabNameContainer backgroundColor={backgroundColor}>
+                        <TabText theme={theme} color={textColor}>{tabName}</TabText>
+                        {/* <Text style={[styles.text,{color:textColor}]}>{tabName}</Text> */}
                     </TabNameContainer>
                 </TabNameWrapper>
 

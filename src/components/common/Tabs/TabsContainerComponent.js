@@ -8,18 +8,20 @@ import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 
 const TabsWrapper = styled.View`
-background-color: blue;
-        width:100%;
-        height: 100%;
-    `
+    background-color: blue;
+    width:100%;
+    height: 100%;
+`;
 const TabsContainer = styled.View`
-        height: 100%;
-        align-items: flex-end;
-        flex-direction: row;
-        padding-top: ${({paddingTop}) => `${paddingTop}px`};
-        background-color: ${({theme}) => theme.colors['--color-gray-200']};
-        justify-content: ${({justify}) => justify};
-    `;
+    height: 100%;
+    align-items: flex-end;
+    flex-direction: row;
+    padding-left: ${({theme}) => theme.space['--space-12']};
+    padding-top: ${({paddingTop}) => `${paddingTop}px`};
+    background-color: ${({theme}) => theme.colors['--color-gray-200']};
+    justify-content: ${({justify}) => justify};
+    /* background-color: yellow; */
+`;
 
 function TabsContainerComponent({tabs, onPressChange, selectedTab, completedTabs, paddingTop = 25, justify = 'flex-start', onAddTab, tabName}) {
 
