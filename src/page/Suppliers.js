@@ -262,15 +262,6 @@ const Suppliers = props => {
                 }}
                 flex={2}
             />
-            {/* <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
-                    <Text numberOfLines={1} style={[styles.itemText, { color: "#323843" }]}>{item.name}</Text>
-                </View>
-                <View style={[styles.item, { flex: 1, alignItems: 'center' }]}>
-                    <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.phone}</Text>
-                </View>
-                <View style={[styles.item, { flex: 2, alignItems: 'center' }]}>
-                    <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.email}</Text>
-                </View> */}
         </>
     );
 
