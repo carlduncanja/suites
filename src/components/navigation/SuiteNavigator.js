@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {View, StyleSheet, Dimensions, SafeAreaView} from "react-native";
+import {View, StyleSheet, Dimensions, SafeAreaView, Text} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as Notifications from "expo-notifications";
 
@@ -38,6 +38,7 @@ import NotificationRegistry from "../notifications/NotficationRegistry";
 import ConfirmationModal from "../../modals/ConfirmationModal";
 import {logout} from "../../api/network";
 import jwtDecode from "jwt-decode";
+import CustomSnackbarProvider from "../CustomSnackbarProvider";
 
 /**
  * Custom navigator wrapper for application.
@@ -138,7 +139,10 @@ const SuitesCustomNavigator = ({
                             <View style={styles.pageContent} onLayout={getPageMeasure}>
                                 {/*    ACTIVE SCREEN    */}
 
-                                {descriptors[state.routes[state.index].key].render()}
+                                <CustomSnackbarProvider>
+                                    {descriptors[state.routes[state.index].key].render()}
+                                </CustomSnackbarProvider>
+
                             </View>
 
                             <Notifier/>
