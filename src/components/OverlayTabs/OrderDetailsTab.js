@@ -1,50 +1,54 @@
-import React,{ useRef, useContext, useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, {useRef, useContext, useState, useEffect} from "react";
+import {View, Text, StyleSheet} from "react-native";
 import Record from "../common/Information Record/Record";
 import Row from "../common/Row";
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
-import { formatDate } from "../../utils/formatter";
-import { formatAmount } from "../../helpers/caseFilesHelpers";
-import { transformToSentence } from "../../hooks/useTextEditHook";
+import {formatDate} from "../../utils/formatter";
+import {formatAmount} from "../../helpers/caseFilesHelpers";
+import {transformToSentence} from "../../hooks/useTextEditHook";
 import DateInputField from '../common/Input Fields/DateInputField';
 import LineDivider from "../common/LineDivider";
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
-import { PageContext } from "../../contexts/PageContext";
+import {PageContext} from "../../contexts/PageContext";
 import ConfirmationComponent from '../ConfirmationComponent';
-import { updatePurchaseOrder } from '../../api/network';
+import {getStorage, updatePurchaseOrder, updatePurchaseOrderDetails} from '../../api/network';
 import {useModal} from "react-native-modalfy";
 import FieldContainer from "../common/FieldContainerComponent";
+import InputWrapper from "../common/Input Fields/InputWrapper";
+import InputLabelComponent from "../common/InputLablel";
+import InputField2 from "../common/Input Fields/InputField2";
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import _ from "lodash";
 
 
 const LineDividerContainer = styled.View`
-    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+    margin-bottom : ${({theme}) => theme.space['--space-32']};
 `;
 
 
-
-
-const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=>{} }) =>{
+const OrderDetailsTab = ({
+                             order = {},
+                             onUpdate,
+                         }) => {
 
     const theme = useTheme();
     const modal = useModal();
     const baseStateRef = useRef();
-    const { pageState, setPageState } = useContext(PageContext);
-    const { isEditMode } = pageState;
+    const {pageState, setPageState} = useContext(PageContext);
+    const {isEditMode} = pageState;
 
     const {
-        orderDate = "",
+        _id,
         deliveryDate = "",
-        customRepeatingFrequency = "",
         nextOrderDate = "",
         repeating = false,
         repeatingType = "",
-        status  = "",
+        status = "",
         total = 0,
         supplier = {},
         invoice = "",
         storageLocation = {},
-        type = "",
         configStatus = "",
         approvedBy = {},
         receivedBy = {},
@@ -53,195 +57,289 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
 
     // console.log("Order: ",deliveryDate)
 
-    const { description = "", representatives = [] } = supplier;
-    const { name = "" } = storageLocation;
+    const {description = "", representatives = []} = supplier;
+    const {name = ""} = storageLocation;
 
+    const [fields, setFields] = useState({
+        description,
+        deliveryDate,
+        storageLocation,
+    });
     const [isUpdated, setUpdated] = useState(false)
+    const [locationSearchText, setLocationSearchText] = useState('');
 
-    // const onFieldChange = (fieldName) => (value) => {
-    //     setFields({
-    //         ...fields,
-    //         [fieldName]: value
-    //     })
-    //     setUpdated(true)
-    //     console.log("Field name and value: ", fieldName, value);
-    // };
+    const [locationSearchResults, setLocationSearchResults] = useState('');
+    const [searchLocationQuery, setSearchLocationQuery] = useState('');
 
     useEffect(() => {
         baseStateRef.current = {
             description,
-            deliveryDate
+            deliveryDate,
+            storageLocation,
         }
         return () => {
             baseStateRef.current = {}
         }
     }, []);
 
-    // useEffect(() => {
-    //     if (isUpdated && !isEditMode) {
-    //         modal.openModal('ConfirmationModal', {
-    //             content: (
-    //                 <ConfirmationComponent
-    //                     error={false}//boolean to show whether an error icon or success icon
-    //                     isEditUpdate={true}
-    //                     onCancel={() => {
-    //                         // resetState()
-    //                         setPageState({...pageState, isEditMode: true})
-    //                         modal.closeAllModals();
-    //                     }}
-    //                     onAction={() => {
-    //                         modal.closeAllModals();
-    //                         updatePO();
-    //                     }}
-    //                     message="Do you want to save changes?"//general message you can send to be displayed
-    //                     action="Yes"
-    //                 />
-    //             ),
-    //             onClose: () => {
-    //                 console.log('Modal closed');
-    //             },
-    //         });
-    //     }
-    // },[isEditMode])
+    useEffect(() => {
+        setFields({
+            description,
+            deliveryDate,
+            storageLocation,
+        })
+    }, [order])
+
+    useEffect(() => {
+
+        if (pageState.isEditMode) {
+            baseStateRef.current = fields // save the base state for as we enter edit mode.
+        }
+
+        if (pageState.isEditMode === false && isUpdated) {
+            handleDetailsUpdate();
+            setUpdated(false);
+        }
+    }, [pageState.isEditMode])
+
+    useEffect(() => {
+        if (!locationSearchResults) {
+            // empty search values and cancel any out going request.
+            setLocationSearchResults([]);
+            if (searchLocationQuery.cancel) searchLocationQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchStorageLocation, 300);
+
+        setSearchLocationQuery((prevSearch) => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+    }, [locationSearchText]);
 
     const resetState = () => {
         setFields(baseStateRef.current);
         setUpdated(false);
     };
 
-    // const updatePO = () =>{
-    //     const data = {
-    //         ...order,
-    //         description : fields['description'],
-    //         deliveryDate : fields['deliveryDate'],
-    //     };
+    const onFieldChange = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName]: value
+        });
+        setUpdated(true);
+    };
 
-    //     console.log("Data: ", order?._id, data);
+    const handleDetailsUpdate = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setUpdated(false);
+                        resetState()
+                        // setPageState({...pageState, isEditMode: true})
+                    }}
+                    onAction={() => {
+                        updateDetails();
+                        modal.closeAllModals();
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message={"Do you want to save your changes ?"}
+                />
+                ,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal')
+                }
+            })
+    }
 
-    //     // updatePurchaseOrder(order?._id, data)
-    //     //     .then( _ => {
-    //     //         console.log("Updated: ")
-    //     //         onUpdate()
-    //     //         modal.openModal('ConfirmationModal', {
-    //     //             content: (
-    //     //                 <ConfirmationComponent
-    //     //                     error={false}//boolean to show whether an error icon or success icon
-    //     //                     isEditUpdate={false}
-    //     //                     onCancel={() => {
-    //     //                         modal.closeAllModals();
-    //     //                     }}
-    //     //                     onAction={() => {
-    //     //                         modal.closeAllModals();
-    //     //                     }}
-    //     //                     message="Changes were successful."//general message you can send to be displayed
-    //     //                     action="Yes"
-    //     //                 />
-    //     //             ),
-    //     //             onClose: () => {
-    //     //                 console.log('Modal closed');
-    //     //             },
-    //     //         });
-    //     //     })
-    //     //     .catch(error => {
-    //     //         console.log("Failed to update order", error)
-    //     //         modal.openModal('ConfirmationModal', {
-    //     //             content: (
-    //     //                 <ConfirmationComponent
-    //     //                     error={true}//boolean to show whether an error icon or success icon
-    //     //                     isEditUpdate={false}
-    //     //                     onCancel={() => {
-    //     //                         modal.closeAllModals();
-    //     //                     }}
-    //     //                     onAction={() => {
-    //     //                         modal.closeAllModals();
-    //     //                         resetState()
-    //     //                     }}
-    //     //                     message="Something went wrong when applying changes."//general message you can send to be displayed
-    //     //                     action="Yes"
-    //     //                 />
-    //     //             ),
-    //     //             onClose: () => {
-    //     //                 console.log('Modal closed');
-    //     //             },
-    //     //         });
-    //     //     })
-    //     //     .finally(_ => {
-    //     //         // setLoading(false)
-    //     //     })
-    // }
+    const fetchStorageLocation = () => {
+        getStorage(locationSearchText, 5)
+            .then((locationsInfo) => {
+                const {data = [], pages} = locationsInfo;
+                setLocationSearchResults(data || []);
+            })
+            .catch((error) => {
+                console.log("failed to get procedures");
+                setLocationSearchResults([]);
+            });
+    }
+
+    const onLocationSearchTextUpdated = (value) => {
+        setLocationSearchText(value)
+    }
+
+    const updateDetails = () => {
+        let updatedFields = {
+            ...fields,
+            deliveryDate: fields['deliveryDate'].toString(),
+            description: fields['description'],
+            storageLocation: fields.storageLocation._id,
+        }
+        updatePurchaseOrderDetails(_id, updatedFields)
+            .then(_ => {
+                console.log("Success")
+                modal.openModal('ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                        />
+                        , onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
+            })
+            .catch(error => {
+                console.log("Update PO details error: ", error);
+                modal.openModal('ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={isError}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+
+                            onCancel={() => {
+                                setPageState({
+                                    ...pageState,
+                                    isEditMode: true
+                                });
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
+            })
+            .finally(_ => {
+                onUpdate()
+            })
+    }
 
     return (
         <>
 
             <Row>
                 <Record
-                    recordTitle = "Description"
-                    recordValue  = {fields['description']}
-                    editMode = {isEditMode}
-                    editable = {true}
-                    useTextArea = {true}
-                    onRecordUpdate = {onFieldChange('description')}
-                    onClearValue = {()=>{onFieldChange('description')('')}}
+                    recordTitle="Description"
+                    recordValue={fields['description']}
+                    editMode={isEditMode}
+                    editable={true}
+                    useTextArea={true}
+                    onRecordUpdate={onFieldChange('description')}
+                    onClearValue={() => {
+                        onFieldChange('description')('')
+                    }}
                 />
             </Row>
 
             <Row>
                 <ResponsiveRecord
-                    recordTitle = "Invoice"
-                    recordValue = {invoice || ""}
+                    recordTitle="Invoice"
+                    recordValue={invoice || ""}
                 />
 
                 <Record
-                    recordTitle = "Order Total"
-                    recordValue = {formatAmount(total) || 0}
+                    recordTitle="Order Total"
+                    recordValue={formatAmount(total) || 0}
                 />
 
                 <Record
-                    recordTitle = "Status"
-                    recordValue = {transformToSentence(status) || ""}
+                    recordTitle="Status"
+                    recordValue={transformToSentence(status) || ""}
                 />
             </Row>
 
-            <Row>
+            <Row zIndex={3}>
                 <Record
-                    recordTitle = "Ordered On"
-                    recordValue = {formatDate(nextOrderDate, "DD/MM/YYYY") || "--"}
+                    recordTitle="Ordered On"
+                    recordValue={formatDate(nextOrderDate, "DD/MM/YYYY") || "--"}
                 />
 
 
                 <Record
-                    recordTitle = "Delivered On"
-                    recordValue = {isEditMode ? fields['deliveryDate'] : formatDate(deliveryDate,'DD/MM/YYYY') }
-                    editMode = {isEditMode}
-                    editable = {true}
-                    useDateField = {true}
+                    recordTitle="Delivered On"
+                    recordValue={isEditMode ? fields['deliveryDate'] : formatDate(deliveryDate, 'DD/MM/YYYY')}
+                    editMode={isEditMode}
+                    editable={true}
+                    useDateField={true}
                     minDate={new Date()}
-                    onClearValue = {()=>{onFieldChange('deliveryDate')('')}}
-                    onRecordUpdate = {(date)=>{onFieldChange('deliveryDate')(date) }}
-               />
-
-                <ResponsiveRecord
-                    recordTitle = "Storage Location"
-                    recordValue = {name || "--"}
+                    onClearValue={() => {
+                        onFieldChange('deliveryDate')('')
+                    }}
+                    onRecordUpdate={(date) => {
+                        onFieldChange('deliveryDate')(date)
+                    }}
                 />
+
+                {
+                    isEditMode
+                        ? <InputWrapper zIndex={3}>
+                            <InputLabelComponent label={'Storage Location'}/>
+                            <SearchableOptionsField
+                                value={fields.storageLocation}
+                                text={locationSearchText}
+                                options={locationSearchResults}
+                                oneOptionsSelected={(value) => {
+                                    setLocationSearchResults([]);
+                                    setLocationSearchText('');
+                                    onFieldChange('storageLocation')(value)
+                                }}
+                                onClear={() => {
+                                    setLocationSearchResults([]);
+                                    setLocationSearchText('');
+                                    // onFieldChange('storageLocation')(value)
+                                    onFieldChange('storageLocation')()
+                                }}
+                                onChangeText={onLocationSearchTextUpdated}
+                            />
+                        </InputWrapper>
+                        : <ResponsiveRecord
+                            recordTitle="Storage Location"
+                            recordValue={fields?.storageLocation?.name || '--'}
+                        />
+                }
+
+
             </Row>
 
             <Row>
                 <ResponsiveRecord
-                    recordTitle = "Requested by"
-                    recordValue = {`${requestedBy['first_name'] || '--'} ${requestedBy['last_name'] || ''} `}
+                    recordTitle="Requested by"
+                    recordValue={`${requestedBy['first_name'] || '--'} ${requestedBy['last_name'] || ''} `}
                 />
 
                 <ResponsiveRecord
-                    recordTitle = "Approved by"
-                    recordValue = {`${approvedBy['first_name'] || '--'} ${approvedBy['last_name'] || ''}`}
+                    recordTitle="Approved by"
+                    recordValue={`${approvedBy['first_name'] || '--'} ${approvedBy['last_name'] || ''}`}
                 />
 
                 <ResponsiveRecord
-                    recordTitle = "Received by"
-                    recordValue = {`${receivedBy['first_name'] || '--'} ${receivedBy['last_name'] || ''}`}
+                    recordTitle="Received by"
+                    recordValue={`${receivedBy['first_name'] || '--'} ${receivedBy['last_name'] || ''}`}
                 />
-           </Row>
+            </Row>
 
             <LineDividerContainer theme={theme}>
                 <LineDivider/>
@@ -250,117 +348,20 @@ const OrderDetailsTab = ({order = {}, onUpdate, fields = {}, onFieldChange = ()=
 
             <Row>
                 <Record
-                    recordTitle = "Type"
-                    recordValue = {repeating ? "Repeating" : "Non Repeating"}
+                    recordTitle="Type"
+                    recordValue={repeating ? "Repeating" : "Non Repeating"}
                 />
                 <Record
-                    recordTitle = "Repeats"
-                    recordValue = {repeatingType}
+                    recordTitle="Repeats"
+                    recordValue={repeatingType}
                 />
                 <Record
-                    recordTitle = "Configuration Status"
-                    recordValue = {configStatus}
-                    valueColor = "#38A169"
+                    recordTitle="Configuration Status"
+                    recordValue={configStatus}
+                    valueColor="#38A169"
                 />
 
             </Row>
-
-            {/* <View style={styles.row}>
-                <View style={{flex:1}}>
-                    <Record
-                        recordTitle = "Description"
-                        recordValue  = {decscription}
-                    />
-                </View>
-            </View>
-
-           <View style={styles.row}>
-               <View style={styles.inputWrapper}>
-                   <ResponsiveRecord
-                        recordTitle = "Invoice"
-                        recordValue = {invoice}
-                   />
-               </View>
-
-               <View style={styles.inputWrapper}>
-                   <Record
-                        recordTitle = "Order Total"
-                        recordValue = {formatAmount(total)}
-                   />
-               </View>
-
-               <View style={styles.inputWrapper}>
-                   <Record
-                        recordTitle = "Status"
-                        recordValue = {transformToSentence(status)}
-                   />
-               </View>
-           </View>
-
-           <View style={styles.row}>
-               <View style={styles.inputWrapper}>
-                   <Record
-                        recordTitle = "Ordered On"
-                        recordValue = {formatDate(orderDate, "DD/MM/YYYY")}
-                   />
-               </View>
-
-               <View style={styles.inputWrapper}>
-                   <Record
-                        recordTitle = "Delivered On"
-                        recordValue = {formatDate(deliveryDate, "DD/MM/YYYY")}
-                   />
-               </View>
-
-               <View style={styles.inputWrapper}>
-                   <ResponsiveRecord
-                        recordTitle = "Storage Location"
-                        recordValue = {name}
-                   />
-               </View>
-           </View>
-
-           <View style={styles.row}>
-               <View style={styles.inputWrapper}>
-                   <ResponsiveRecord
-                        recordTitle = "Requested by"
-                        recordValue = {requestedBy}
-                   />
-               </View>
-
-               <View style={styles.inputWrapper}>
-                   <ResponsiveRecord
-                        recordTitle = "Approved by"
-                        recordValue = {approvedBy}
-                   />
-               </View>
-
-               <View style={styles.inputWrapper}>
-                   <ResponsiveRecord
-                        recordTitle = "Received by"
-                        recordValue = {receivedBy}
-                   />
-               </View>
-           </View> */}
-
-
-            {/* <View style={[styles.row,{justifyContent:"flex-start"}]}>
-               <View style={[styles.inputWrapper,{flex:0, width:'33%'}]}>
-                   <Record
-                        recordTitle = "Type"
-                        recordValue = {type}
-                   />
-               </View>
-
-               <View style={[styles.inputWrapper,{flex:0}]}>
-                   <Record
-                        recordTitle = "Configuration Status"
-                        recordValue = {configStatus}
-                        valueColor = "#38A169"
-                   />
-               </View>
-           </View>
- */}
 
         </>
     )
@@ -373,10 +374,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         marginBottom: 30,
-        alignItems:"flex-start"
+        alignItems: "flex-start"
     },
     inputWrapper: {
-        flex:1,
-        paddingRight:15,
+        flex: 1,
+        paddingRight: 15,
     }
 })
