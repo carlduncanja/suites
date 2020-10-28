@@ -1,58 +1,60 @@
-import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React,{ useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 import List from '../common/List/List';
-import ListItem from '../common/List/ListItem'
-import LongPressWithFeedback from "../common/LongPressWithFeedback";
-import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../common/FloatingAction/ActionContainer";
-import ActionItem from "../common/ActionItem";
-import RoundedPaginator from "../common/Paginators/RoundedPaginator";
+import ListItem from '../common/List/ListItem';
+import DataItem from '../common/List/DataItem';
+import LongPressWithFeedback from '../common/LongPressWithFeedback';
+import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
+import ActionContainer from '../common/FloatingAction/ActionContainer';
+import ActionItem from '../common/ActionItem';
+import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 
-import WasteIcon from "../../../assets/svg/wasteIcon";
-import AddIcon from "../../../assets/svg/addIcon";
-import AssignIcon from "../../../assets/svg/assignIcon";
+import WasteIcon from '../../../assets/svg/wasteIcon';
+import AddIcon from '../../../assets/svg/addIcon';
+import AssignIcon from '../../../assets/svg/assignIcon';
 
-import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
-import { withModal } from "react-native-modalfy";
-import moment from "moment";
-import { formatDate } from '../../utils/formatter';
+import {useNextPaginator, usePreviousPaginator} from '../../helpers/caseFilesHelpers';
+import { withModal } from 'react-native-modalfy';
+import moment from 'moment';
+import { formatDate, currencyFormatter } from '../../utils/formatter';
 
 
 
 const headers = [
     {
-        name : "Patient",
-        alignment: "flex-start"
+        name: 'Patient',
+        alignment: 'flex-start',
+        flex: 2,
     },
     {
-        name : "Balance",
-        alignment: "flex-start"
+        name: 'Balance',
+        alignment: 'flex-start'
     },
     {
-        name : "Status",
-        alignment: "flex-start"
+        name: 'Status',
+        alignment: 'flex-start'
     },
     {
-        name : "Next Visit",
-        alignment: "flex-start"
+        name: 'Next Visit',
+        alignment: 'flex-start'
     }
 ]
 
 const testData = [
     {
-        patientId : '#3502193850',
-        patientName : 'Alexis Scott',
+        patientId: '#3502193850',
+        patientName: 'Alexis Scott',
         balance: '340000.67',
-        status : 'Closed',
-        nextVisit : new Date(2019, 10, 21)
+        status: 'Closed',
+        nextVisit: new Date(2019, 10, 21)
     }
 ]
 
 const CaseFilesTab = ({cases}) => {
 
     const recordsPerPage = 10;
-    console.log("Cases: ", cases)
+    console.log('Cases: ', cases);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
@@ -64,11 +66,11 @@ const CaseFilesTab = ({cases}) => {
 
     const data = cases.map( item =>{
         return {
-            id : item.patient,
-            name : item.name,
-            balance : 2560.90,
-            status : "Closed",
-            nextVisit : new Date(2019, 10, 21)
+            id: item.patient,
+            name: item.name,
+            balance: 2560.90,
+            status: 'Closed',
+            nextVisit: new Date(2019, 10, 21)
         }
     })
 
@@ -128,27 +130,34 @@ const CaseFilesTab = ({cases}) => {
         />
     }
 
-    const listItemFormat = (item) => <>
-        <View style={{flex:1}}>
-            <Text style={{color: "#718096", fontSize: 12}}>{item.id}</Text>
-            <Text style={{color: "#3182CE", fontSize: 16}}>{item.name}</Text>
+    const listItemFormat = item => (
+        <>
+            <DataItem flex={2} font="--text-sm-regular" color="--color-gray-700" text={`#${item?.id}`}/>
+            <DataItem flex={1} font="--text-sm-medium" color="--color-gray-700" text={`$${currencyFormatter(item?.balance)}`}/>
+            <DataItem flex={1} font="--text-sm-regular" color={item.status === 'Closed' ? '--color-orange-600' : '--color-blue-600'} text={item?.status}/>
+            <DataItem flex={1} font="--text-sm-regular" color="--color-gray-700" text={formatDate(item?.nextVisit, 'MMM DD, YYYY')}/>
+        
+            {/* <View style={{flex: 1}}>
+            <Text style={{color: '#718096', fontSize: 12}}>{item.id}</Text>
+            {/* <Text style={{color: '#3182CE', fontSize: 16}}>{item.name}</Text> 
         </View>
-        <View style={{flex:1}}>
-            <Text style={{fontSize:14, color:'#4E5664'}}>{item.balance}</Text>
+        <View style={{flex: 1}}>
+            <Text style={{fontSize: 14, color: '#4E5664'}}>{item.balance}</Text>
         </View>
-        <View style={{flex:1}}>
-            <Text style={{fontSize:14, color: item.status === 'Closed'? '#DD6B20' : '#3182CE'}}>{item.status}</Text>
+        <View style={{flex: 1}}>
+            <Text style={{fontSize: 14, color: item.status === 'Closed'? '#DD6B20' : '#3182CE'}}>{item.status}</Text>
         </View>
-        <View style={{flex:1}}>
-            <Text style={{fontSize:14, color:'#4E5664'}}>{formatDate(item.nextVisit,"MMM DD, YYYY")}</Text>
-        </View>
-    </>
+        <View style={{flex: 1}}>
+            <Text style={{fontSize: 14, color: '#4E5664'}}>{formatDate(item.nextVisit,'MMM DD, YYYY')}</Text>
+        </View> */}
+        </>
+    );
 
     let dataToDisplay = [...data];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <View style={{ flex:1}}>
+        <View style={{ flex: 1}}>
             <List
                 listData={dataToDisplay}
                 listHeaders={headers}
@@ -158,7 +167,7 @@ const CaseFilesTab = ({cases}) => {
                 listItemFormat={renderListFn}
             />
             <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
+                <View style={{alignSelf: 'center', marginRight: 10}}>
                     <RoundedPaginator
                         totalPages={totalPages}
                         currentPage={currentPagePosition}
@@ -175,7 +184,7 @@ const CaseFilesTab = ({cases}) => {
 export default withModal(CaseFilesTab) 
 
 const styles = StyleSheet.create({
-    footer:{
+    footer: {
         flex: 1,
         flexDirection: 'row',
         position: 'absolute',
