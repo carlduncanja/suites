@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import NotFoundIcon from '../../../../assets/svg/notFoundIcon';
+import ToastComponent from '../ToastComponent';
 
 const PageWrapper = styled.View`
     height: 100%;
@@ -67,9 +68,10 @@ const NotFoundPage = ({navigation}) => {
                     </BodyContainer>
                     
                 </ContentContainer>
+
             </PageContainer>
         </PageWrapper>
     );
 };
 
-export default NotFoundPage
+export default NotFoundPage;
