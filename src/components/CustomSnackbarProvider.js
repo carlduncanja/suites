@@ -12,6 +12,19 @@ import {useTheme} from "emotion-theming";
 const SnackbarContext = createContext({state: {}, actions: {}});
 
 
+export function useSnackbar() {
+    const {handleSnackbarUpdate} = useContext(SnackbarContext);
+
+    const setSnackbar = (message, duration = Snackbar.DURATION_SHORT, variant) => {
+        handleSnackbarUpdate(message, duration = Snackbar.DURATION_SHORT, variant)
+    }
+
+    return {
+        setSnackbar
+    }
+}
+
+
 /**
  *
  * @param props
@@ -30,8 +43,8 @@ function CustomSnackbarProvider(props) {
         setSnackBar(null)
     }
 
-    const setSnack = (message, duration = Snackbar.DURATION_SHORT,  variant) => {
-        setSnack({
+    const handleSnackbarUpdate = (message, duration = Snackbar.DURATION_SHORT, variant) => {
+        setSnackBar({
             message,
             duration: duration,
             visible: true,
@@ -41,12 +54,11 @@ function CustomSnackbarProvider(props) {
 
     const contextValue = {
         state: {snackbar},
-        actions: {setSnack}
+        actions: {handleSnackbarUpdate}
     }
 
     return (
         <SnackbarContext.Provider value={contextValue}>
-
             <SafeAreaView style={{
                 flex: 1,
                 zIndex: 100
@@ -76,18 +88,8 @@ function CustomSnackbarProvider(props) {
                     {snackbar?.message || 'Something went wrong'}
                 </Snackbar>
             </SafeAreaView>
-
         </SnackbarContext.Provider>
     );
-}
-
-
-export function useSnackbar() {
-    const {setSnack} = useContext(SnackbarContext);
-
-    return {
-        setSnack
-    }
 }
 
 
@@ -95,3 +97,6 @@ CustomSnackbarProvider.propTypes = {};
 CustomSnackbarProvider.defaultProps = {};
 
 export default CustomSnackbarProvider;
+
+
+
