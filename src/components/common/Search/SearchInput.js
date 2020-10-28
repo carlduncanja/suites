@@ -38,7 +38,7 @@ const SearchInputContainer = styled.View`
     justify-content: space-between;
     /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06); */
 
-`
+`;
 
 const PopUp = styled.View`
     width:180px;
@@ -53,14 +53,14 @@ const PopUp = styled.View`
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     border-radius:3.6px;
 
-`
+`;
 
 const PopupContainer = styled.View`
     align-items:center;
     flex-direction:row;
     margin:2px;
 
-`
+`;
 
 const RadioContainer = styled.View`
     background-color:${({ checkedButton, name, theme }) => checkedButton === name ? theme.colors["--color-blue-600"] : "white"};
@@ -87,14 +87,14 @@ const shadows = [
         shadowOffset: { width: 2, height: 0 },
         shadowOpacity: 0.06,
         shadowRadius: 4
-      },
-      {
+    },
+    {
         shadowColor: 'black',
         shadowOffset: { width: 4, height: 0 },
         shadowOpacity: 0.1,
         shadowRadius: 6
-      },
-]
+    },
+];
 
 function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, onPressPreviousResult, onPressNewSerch, onPressSubmit }) {
     const theme = useTheme();
@@ -122,13 +122,13 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
             color: "#C53030"
         }
 
-    ]
+    ];
 
 
 
 
     const renderDropDown = () => {
-        console.log(checkedRadioButton)
+        console.log(checkedRadioButton);
 
         const options = [...optionList];
         return (
@@ -154,13 +154,12 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
 
 
 
-                    )
+                    );
 
                 })}</PopUp>
 
-        )
-    }
-
+        );
+    };
 
     return (
         <MultipleShadowsContainer shadows = {shadows}>
@@ -184,6 +183,6 @@ function SearchInput({ changeText, inputText, matchesFound, onPressNextResult, o
                 </SearchInputContainer>
             </SearchInputWrapper>
         </MultipleShadowsContainer>
-    )
+    );
 }
-export default SearchInput
+export default SearchInput;

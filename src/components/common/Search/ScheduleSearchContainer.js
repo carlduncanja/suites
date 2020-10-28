@@ -1,11 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
-import _ from "lodash";
-import {searchSchedule} from "../../../api/network";
-import {StyleSheet, View, TouchableWithoutFeedback} from "react-native";
-import SearchBar from "./SearchBar";
-import {formatDate} from "../../../utils/formatter";
-import * as Animatable from "react-native-animatable";
+import _ from 'lodash';
+import {searchSchedule} from '../../../api/network';
+import {StyleSheet, View, TouchableWithoutFeedback} from 'react-native';
+import SearchBar from './SearchBar';
+import {formatDate} from '../../../utils/formatter';
+import * as Animatable from 'react-native-animatable';
 
 
 import styled, {css} from '@emotion/native';
@@ -42,16 +42,16 @@ const SearchContainer = styled.View`
 function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}) {
 
     const matchesFound = [
-        "Coronary Bypass Graft",
-        "Cardioplastic Surgery",
-        "Colon Screening",
+        'Coronary Bypass Graft',
+        'Cardioplastic Surgery',
+        'Colon Screening',
         new Date(2020, 2, 11, 9),
-        "Restock Cotton Swabs",
-        "MRI Machine #3",
-        "Restock Surgical Masks",
+        'Restock Cotton Swabs',
+        'MRI Machine #3',
+        'Restock Surgical Masks',
         new Date(2020, 2, 20, 9),
         new Date(2020, 3, 8, 10),
-        "Restock Gauze"
+        'Restock Gauze'
     ];
 
     const theme = useTheme();
@@ -59,7 +59,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
 
     //#######  States
     const [currentSearchPosition, setCurrentSearchPosition] = useState(0);
-    const [searchInput, setSearchInput] = useState("");
+    const [searchInput, setSearchInput] = useState('');
     const [searchQuery, setSearchQuery] = useState({});
     const [searchResults, setSearchResult] = useState([]);
 
@@ -122,7 +122,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
     };
 
     const pressNewSearch = () => {
-        setSearchInput("");
+        setSearchInput('');
     };
 
     const pressSubmit = () => {
@@ -156,9 +156,9 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
     const formatResult = (result) => {
         return result.map(item => {
             const title = item.title;
-            const date = formatDate(item.startTime, "MMM D")
-            const startTime = formatDate(item.startTime, "h : mm a")
-            const endTime = formatDate(item.endTime, "h : mm a")
+            const date = formatDate(item.startTime, 'MMM D')
+            const startTime = formatDate(item.startTime, 'h : mm a')
+            const endTime = formatDate(item.endTime, 'h : mm a')
 
             return `${title}\t\t ${date}\t (${startTime} - ${endTime})`
         });
@@ -174,13 +174,13 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
     const closeSearchComponent = () => {
         onSearchClose();
         // reset states
-        setSearchInput("");
+        setSearchInput('');
         setSearchResult([])
     }
 
 
     return (
-        isOpen ?
+        isOpen ? (
             <ScheduleSearchWrapper>
                 <SearchContainer>
                     {/* Background Shadow View*/}
@@ -189,11 +189,11 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
                     <Animatable.View
                         ref={animateViewRef}
                         style={{marginBottom: 10}}
-                        pointerEvents={"auto"}
+                        pointerEvents="auto"
                         onAnimationEnd={(endState) =>
                             handleAnimationEnd(showSearchBar, endState)
                         }
-                        animation={showSearchBar ? "slideInDown" : "slideOutUp"}
+                        animation={showSearchBar ? 'slideInDown' : 'slideOutUp'}
                         duration={400}
                     >
                         <SearchBar
@@ -213,6 +213,7 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
                     {/* </View> */}
                 </SearchContainer>
             </ScheduleSearchWrapper>
+          )
 
             :
             <View/>
@@ -255,6 +256,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: "#FFFFFF"
+        backgroundColor: '#FFFFFF'
     }
 });

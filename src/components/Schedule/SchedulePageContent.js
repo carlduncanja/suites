@@ -57,16 +57,15 @@ function SchedulePageContent({
             />
             {
                 isFetchingAppointment ?
-                    <LoadingIndicator />
-                    :
-                    <SchedulesList
-                        appointments={appointments}
-                        selectedIndex={selectedIndex}
-                        onAppointmentPress={onAppointmentPress}
-                        selectedDay={selectedDay}
-                        month={month}
-                    />
-            }
+                    <LoadingIndicator /> : (
+                        <SchedulesList
+                            appointments={appointments}
+                            selectedIndex={selectedIndex}
+                            onAppointmentPress={onAppointmentPress}
+                            selectedDay={selectedDay}
+                            month={month}
+                        />
+                    )}
         </View>
         // </ContentContainer>
         // </ContentWrapper>
