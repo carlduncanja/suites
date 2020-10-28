@@ -19,7 +19,7 @@ const criticalColor = "#ED8936";
  * @returns {*}
  * @constructor
  */
-function LevelIndicator({max = 100, min, ideal, critical, level}) {
+function LevelIndicator({max = 100, min = 0, ideal, critical, level}) {
     const calculateProgress = (max, level) => {
         const progress = level / max * 100;
         return Math.floor(progress)

@@ -61,17 +61,22 @@ const headers = [
     {
         name: 'Location',
         alignment: 'flex-start',
-        styles: {flex: 2}
+        flex: 2,
     },
     {
         name: 'Levels',
         alignment: 'center',
-        styles: {flex: 1}
+        flex: 1,
     },
     {
         name: 'Products',
         alignment: 'center',
-        styles: {flex: 1}
+        flex: 1,
+    },
+    {
+        name: '',
+        alignment: 'center',
+        flex: 0.4,
     }
 ];
 
@@ -120,7 +125,7 @@ function StorageLocationsTab({storageLocations = []}) {
 
     const storageItemView = ({locationName, stock, levels}, onActionPress, isCollapsed) => (
         <>
-            {
+            {/* {
                 isCollapsed ? (
                     <DataItem
                         text={locationName}
@@ -135,7 +140,13 @@ function StorageLocationsTab({storageLocations = []}) {
                         color="--color-gray-800"
                         fontStyle="--text-base-regular"
                     />
-                )}
+                )} */}
+            <RightBorderDataItem
+                text={locationName}
+                flex={2}
+                color="--color-gray-800"
+                fontStyle="--text-base-regular"
+            />
 
             <ContentDataItem
                 align="center"
@@ -176,7 +187,7 @@ function StorageLocationsTab({storageLocations = []}) {
         <>
             <RightBorderDataItem
                 text={inventoryName}
-                flex={1.5}
+                flex={2}
                 color="--color-blue-600"
                 fontStyle="--text-base-medium"
             />
@@ -195,7 +206,7 @@ function StorageLocationsTab({storageLocations = []}) {
             />
 
             <DataItem flex={1} text={stock} color="--color-blue-600" fontStyle="--text-base-medium" align="center"/>
-            <DataItem flex={0.5}/>
+            <DataItem flex={0.4}/>
         </>
     );
 
