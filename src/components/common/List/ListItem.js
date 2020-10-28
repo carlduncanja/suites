@@ -30,6 +30,7 @@ const ListItemContainer = styled.View`
     background-color: ${ ({ theme, isArchive }) => isArchive ? theme.colors['--color-gray-200'] : theme.colors['--default-shade-white']};
     border : 1px solid ${ ({ theme }) => theme.colors['--color-gray-300']};
     border-radius: 8px;
+    padding-left : ${({hasCheckBox, theme}) => hasCheckBox === false && theme.space['--space-12']};
 `;
 
 const ItemView = styled.View`
@@ -50,7 +51,7 @@ function ListItem({
 
     return (
         <ListItemWrapper onPress={onItemPress} theme={theme} disabled={isDisabled}>
-            <ListItemContainer theme={theme} isArchive={isArchive}>
+            <ListItemContainer theme={theme} isArchive={isArchive} hasCheckBox={hasCheckBox}>
                 {
                     hasCheckBox &&
                     <CheckBoxComponent

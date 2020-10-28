@@ -15,6 +15,35 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SectionListHeader from './SectionListHeader';
 
+const ListWrapper = styled.View`
+    margin : 0;
+    flex-direction: column;
+    align-self: flex-start;
+    padding: 32px;
+    paddingTop: 24px;
+    backgroundColor:red;
+`;
+
+const ListContainer = styled.View({
+    flexDirection: 'column',
+    backgroundColor: "green",
+    borderWidth: 1,
+    borderColor: '#E9E9E9',
+    borderRadius: 16,
+    paddingRight: 24,
+    paddingLeft: 24,
+});
+
+const TextView = styled.View({
+
+});
+
+const Seperator = styled.View`
+    border-bottom-color: #CBD5E0;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    border-bottom-width: 1px;
+`;
 
 /**
  *
@@ -105,36 +134,6 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, s
                 setRefreshing(false)
             })
     };
-
-    const ListWrapper = styled.View`
-        margin : 0;
-        flex-direction: column;
-        align-self: flex-start;
-        padding: 32px;
-        paddingTop: 24px;
-        backgroundColor:red;
-    `
-    const ListContainer = styled.View({
-        flexDirection: 'column',
-        backgroundColor: "green",
-        borderWidth: 1,
-        borderColor: '#E9E9E9',
-        borderRadius: 16,
-        paddingRight: 24,
-        paddingLeft: 24,
-    })
-
-    const TextView = styled.View({
-
-    })
-
-    const Seperator = styled.View`
-        border-bottom-color: #CBD5E0;
-        margin-top: 12px;
-        margin-bottom: 12px;
-        border-bottom-width: 1px;
-    `
-
 
     return (
         // <ListWrapper>

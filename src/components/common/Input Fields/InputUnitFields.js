@@ -59,7 +59,7 @@ const Unit = styled.Text( ({theme}) => ({
     color : theme.colors['--color-black']
 }));
 
-function InputUnitField({label, labelWidth, onChangeText, value,enabled = true, placeholder, keyboardType, units, hasError = false, errorMessage = "" }) {
+function InputUnitField({label, labelWidth, labelFont, labelColor, onChangeText, value,enabled = true, placeholder, keyboardType, units, hasError = false, errorMessage = "" }) {
 
     const theme = useTheme();
     const [selectedIndex, setSelectedIndex] = useState(0)
@@ -80,7 +80,7 @@ function InputUnitField({label, labelWidth, onChangeText, value,enabled = true, 
         <InputContainerComponent>
 
             {
-                label && <InputLabelComponent width={labelWidth} label = {label}/>
+                label && <InputLabelComponent width={labelWidth} label={label} labelFont={labelFont} labelColor={labelColor}/>
             }
 
             <TextInputWrapper>

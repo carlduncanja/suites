@@ -33,17 +33,19 @@ const InputLabelContainer = styled.View`
     justify-content : center;
 `;
 
-const InputLabel = styled.Text(({theme, minWidth, label}) => ({
-    ...theme.font['--text-xs-medium'],
+const InputLabel = styled.Text(({theme, minWidth, labelFont = '--text-xs-medium', labelColor = '--color-gray-600'}) => ({
+    ...theme.font[labelFont],
     minWidth: minWidth || 70,
-    color: theme.colors['--color-gray-600'],
+    color: theme.colors[labelColor],
 }));
 
 
 function InputLabelComponent({
-                                 label,
-                                 width
-                             }) {
+    label,
+    width,
+    labelFont,
+    labelColor,
+}) {
 
     const theme = useTheme();
 
@@ -52,7 +54,7 @@ function InputLabelComponent({
     return (
         <InputLabelWrapper>
             <InputLabelContainer>
-                <InputLabel minWidth={minWidth} theme={theme} numberOfLines={1}>{label}</InputLabel>
+                <InputLabel minWidth={minWidth} theme={theme} numberOfLines={1} labelColor={labelColor} labelFont={labelFont}>{label}</InputLabel>
             </InputLabelContainer>
         </InputLabelWrapper>
 

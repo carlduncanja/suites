@@ -61,7 +61,7 @@ const LostConnectionPage = () => {
                 </ContentContainer>
             </PageContainer>
         </PageWrapper>
-    )
-}
+    );
+};
 
 export default LostConnectionPage

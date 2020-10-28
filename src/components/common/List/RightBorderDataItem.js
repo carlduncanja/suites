@@ -11,7 +11,7 @@ const DataItemWrapper = styled.View`
 `;
 const DataItemContainer = styled.View` 
     display: flex;
-    width:95%;
+    width:90%;
     height: 100%; 
     justify-content: center;
     align-items: ${({align}) => align};

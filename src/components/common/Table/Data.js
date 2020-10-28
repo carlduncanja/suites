@@ -11,6 +11,7 @@ const Data = ({data = [], listItemFormat = () => {}}) =>
     (
         <ScrollView
             bounces={false}
+            contentContainerStyle={{}}
         >
 
             {/* {data.slice(sliceMin,sliceMax).map((item,index)=>{ */}

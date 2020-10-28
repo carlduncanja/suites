@@ -10,6 +10,22 @@ import LeftSelector from '../../../assets/svg/leftSelector';
 import IconButton from '../common/Buttons/IconButton';
 import MonthTitleContainer from './MonthTitleContainer';
 
+const MonthSelectorWrapper = styled.View`
+    margin: 0px;
+`;
+
+const MonthSelectorContainer = styled.View`
+    display: flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items: center;
+`;
+
+const SelectorContainer = styled.View`
+    display:flex;
+    height:100%;
+`;
+
 /**
  *
  * @param selectedMonth
@@ -18,8 +34,7 @@ import MonthTitleContainer from './MonthTitleContainer';
  * @constructor
  */
 
-function MonthSelector ({selectedMonth = new Date(), onMonthUpdated = ()=>{}}){
-
+function MonthSelector({selectedMonth = new Date(), onMonthUpdated = ()=>{}}) {
     const theme = useTheme();
 
     const handleOnMonthIncrement = () => {
@@ -37,22 +52,6 @@ function MonthSelector ({selectedMonth = new Date(), onMonthUpdated = ()=>{}}){
 
     // ###### STYLED COMPONENTS
 
-    const MonthSelectorWrapper = styled.View`
-        margin: 0px;
-    `
-    const MonthSelectorContainer = styled.View`
-        display: flex;
-        flex-direction:row;
-        justify-content:center;
-        align-items: center;
-    `
-
-    const SelectorContainer = styled.View`
-        display:flex;
-        height:100%;
-    `;
-
- 
     return (
         <MonthSelectorWrapper>
             <MonthSelectorContainer>

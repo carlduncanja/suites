@@ -1,0 +1,26 @@
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import Settings from '../../../page/Settings';
+import AppointmentBufferPage from '../../Settings/AppointmentBuffer/AppointmentBufferPage';
+
+const Stack = createStackNavigator();
+
+export default () => (
+    <Stack.Navigator
+        initialRouteName="Settings"
+    >
+        <Stack.Screen
+            name="Settings"
+            component={Settings}
+            options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+            name="AppointmentsPage"
+            component={AppointmentBufferPage}
+            options={{headerShown: false,}}
+        />
+
+    </Stack.Navigator>
+);

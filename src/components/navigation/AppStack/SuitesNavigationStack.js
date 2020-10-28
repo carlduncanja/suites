@@ -25,10 +25,12 @@ import StorageNavigationStack from './StorageNavigationStack';
 import PhysicianNavigationStack from './PhysiciansNavigationStack';
 import EquipmentNavigationStack from './EquipmentNavigationStack';
 import InventoryNavigationStack from './InventoryNavigationStack';
+import SettingsNavigationStack from './SettingsNavigationStack';
 
 /* Providers*/
 import NotFound from '../../../page/NotFound';
-import LostConnectionPage from '../../../components/common/Page/LostConnectionPage';
+import LostConnectionPage from "../../common/Page/LostConnectionPage";
+import NotFoundPage from "../../common/Page/NotFoundPage";
 
 /* Icons */
 import ScheduleIcon from '../../../../assets/svg/schedule';
@@ -185,7 +187,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
 
             <SuitesNavigator.Screen
                 name="Help"
-                component={LostConnectionPage}
+                component={NotFoundPage}
                 initialParams={{
                     icon: HelpIcon,
                     tabName: 'Help',
@@ -194,7 +196,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
 
             <SuitesNavigator.Screen
                 name="Settings"
-                component={Settings}
+                component={SettingsNavigationStack}
                 initialParams={{
                     icon: SettingsIcon,
                     tabName: 'Settings',
