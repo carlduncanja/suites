@@ -133,9 +133,9 @@ const FrameProcedureCard = ({
                     const responseData = error.response?.data || []
 
                     const errors = responseData.map(item => {
-                        return " - " + item.msg
+                        return " - " + item.message
                     }).join('\n')
-                    Alert.alert('Failed to create procedure', `${errors}`)
+                    Alert.alert('Failed to Update procedure', `${errors}`)
                 }
             })
             .finally(_ => {
