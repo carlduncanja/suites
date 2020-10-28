@@ -78,6 +78,7 @@ const EditButtonContainer = styled.View`
   padding: 4px;
   
   background-color : ${({backgroundColor}) => backgroundColor};
+    border : ${({theme, hasBorder}) => hasBorder && `1px solid ${theme.colors['--color-gray-300']}`};
   align-items : center;
   justify-content : center;
 `;
@@ -180,6 +181,12 @@ function PageHeader({
             title: 'Edit',
         };
 
+        const editDisabled = {
+            backgroundColor: theme.colors['--default-shade-white'],
+            color: theme.colors['--color-gray-500'],
+            title: 'Edit',
+        };
+
         console.log('is locked', locked);
 
         if (locked) {
@@ -188,6 +195,9 @@ function PageHeader({
         if (isEditMode) {
             return editModeProps;
         }
+        if (isEditDisabled) {
+            return editDisabled;
+        }
         return defaultProps;
     };
 
@@ -195,12 +205,16 @@ function PageHeader({
         const defaultColor = theme.colors['--accent-button'];
         const editMode = theme.colors['--default-shade-white'];
         const lockedBackground = theme.colors['--color-gray-400'];
+        const disabled = theme.colors['--default-shade-white'];
 
         if (locked) {
             return lockedBackground;
         }
         if (isEditMode) {
             return editMode;
+        }
+        if (isEditDisabled) {
+            return disabled;
         }
         return defaultColor;
     };
@@ -247,7 +261,24 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                    {
+                    <EditButtonWrapper theme={theme}>
+                        <EditButtonContainer
+                            theme={theme}
+                            backgroundColor={getEditBtnBackground()}
+                            hasBorder={isEditDisabled}
+                        >
+                            <Button
+                                {...getButtonProps()}
+                                buttonPress={onEditPress}
+                                disabled={!isEditDisabled ? locked : true}
+                                font={theme.font['--text-sm-medium']}
+                                Icon={locked && <EditLockIcon/>}
+                            />
+
+                        </EditButtonContainer>
+                    </EditButtonWrapper>
+
+                    {/* {
                         !isEditDisabled ? (
                             <EditButtonWrapper theme={theme}>
                                 <EditButtonContainer
@@ -268,7 +299,8 @@ function PageHeader({
                             <DisabledEditContainer>
                                 <DisabledText>Edit</DisabledText>
                             </DisabledEditContainer>
-                        )}
+                           
+                        )} */}
                 </HeaderContainer>
             </HeaderWrapper>
             

@@ -9,6 +9,39 @@ import {parse} from 'qs';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
+const RowCalendarDayWrapper = styled.TouchableOpacity`
+    width: 90px;
+    height: 98px;
+    margin : 0;
+    padding-top:3px;
+    padding-bottom:3px;
+    padding-right:3px;
+    padding-left:3px;
+    align-items:center;
+
+`;
+
+const RowCalendarDayContainer = styled.View`
+    width: ${({isSelected}) => (isSelected ? '90px' : '90px')};
+    height: 100%;
+    align-items: center;
+    padding:3px;
+    background-color: ${({theme}) => theme.colors['--default-shade-white']};
+    border-color: ${({theme}) => theme.colors['--color-gray-300']};
+    border-right-width: 0.5px;
+    border-bottom-width: 0.5px;
+    border-top-width: 0.5px;
+    box-shadow: ${({isSelected}) => (isSelected ? '0px 2px 4px rgba(0, 0, 0, 0.06)' : null)};
+    z-index: 3;
+`;
+
+const AppointmentIndicator = styled.View`
+    height: 2px;
+    width: 26px;
+    background-color: ${({theme}) => theme.colors['--color-gray-400']};
+    border-radius: 2px;
+`;
+
 /**
  *
  * @param day : A date object
@@ -20,8 +53,7 @@ import { useTheme } from 'emotion-theming';
  * @constructor
  */
 
-function RowCalendarDay({day, isSelected, hasAppointment, onDayPress, isInSelectMonth}){
-
+function RowCalendarDay({day, isSelected, hasAppointment, onDayPress, isInSelectMonth}) {
     const theme = useTheme();
     const defaultColor = '#718096';
     const selectedColor = '#323843';
@@ -30,44 +62,10 @@ function RowCalendarDay({day, isSelected, hasAppointment, onDayPress, isInSelect
     const color = isSelected ? selectedColor : defaultColor;
     const marginTop = 13;
     const fontWeight = isSelected ? 'bold' : 'normal';
-    
-
-    const RowCalendarDayWrapper = styled.TouchableOpacity`
-        width: 90px;
-        height: 98px;
-        margin : 0;
-        padding-top:3px;
-        padding-bottom:3px;
-        padding-right:3px;
-        padding-left:3px;
-        align-items:center;
-
-    `;
-
-    const RowCalendarDayContainer = styled.View`
-        width: ${isSelected ? '90px' : '90px'};
-        height: 100%;
-        align-items: center;
-        padding:3px;
-        backgroundColor: ${theme.colors['--default-shade-white']};
-        border-color: ${theme.colors['--color-gray-300']};
-        border-right-width: 0.5px;
-        border-bottom-width: 0.5px;
-        border-top-width: 0.5px;
-        box-shadow: ${isSelected ? '0px 2px 4px rgba(0, 0, 0, 0.06)' : null};
-        z-index: 3;
-    `;
-
-    const AppointmentIndicator = styled.View`
-        height: 2px;
-        width: 26px;
-        backgroundColor: ${theme.colors['--color-gray-400']};
-        border-radius: 2px;
-    `;
 
     return (
         <RowCalendarDayWrapper onPress={onDayPress}>
-            <RowCalendarDayContainer>
+            <RowCalendarDayContainer theme={theme} isSelected={isSelected}>
 
                 { isSelected && <DayIdentifier/> }
                 
@@ -77,15 +75,15 @@ function RowCalendarDay({day, isSelected, hasAppointment, onDayPress, isInSelect
                     isInSelectMonth = {isInSelectMonth}
                 />
 
-                    {/* <Text style={[styles.day, {color: color, opacity,marginTop: marginTop}]}>
+                {/* <Text style={[styles.day, {color: color, opacity,marginTop: marginTop}]}>
                         {formatDate(day,"D")}
                     </Text> */}
-                    {/* <Text style={{color: defaultColor, opacity,fontWeight: fontWeight}}>
+                {/* <Text style={{color: defaultColor, opacity,fontWeight: fontWeight}}>
                         {formatDate(day,"ddd").toUpperCase()}
                     </Text> */}
 
-                    {
-                        hasAppointment && <AppointmentIndicator/>
+                {
+                        hasAppointment && <AppointmentIndicator theme={theme}/>
                         // <View
                         //     style={{
                         //         height: 2,
@@ -100,10 +98,10 @@ function RowCalendarDay({day, isSelected, hasAppointment, onDayPress, isInSelect
                 {/* </View> */}
             </RowCalendarDayContainer>
         </RowCalendarDayWrapper>
-    )
+    );
 };
 
-export default RowCalendarDay
+export default RowCalendarDay;
 
 const styles = StyleSheet.create({
     container: {
