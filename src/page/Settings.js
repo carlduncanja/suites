@@ -16,6 +16,7 @@ import {checkboxItemPress} from '../helpers/caseFilesHelpers';
 import ConfirmationComponent from '../components/ConfirmationComponent';
 import CreateUserOverlayDialog from '../components/Roles/CreateRoleOverlayDialog';
 import RefreshableScrollView from '../components/common/RefreshableScrollView';
+import CustomTypes from '../components/Settings/CustomTypes';
 
 const SectionHeader = styled.View`
   display: flex;
@@ -49,7 +50,7 @@ const Space = styled.View`
     height: 16px;
 `;
 
-function Settings() {
+function Settings({navigation}) {
     const theme = useTheme();
     const modal = useModal();
 
@@ -218,6 +219,18 @@ function Settings() {
 
     const pageContent = (
         <>
+            <Space/>
+
+            <SectionHeader theme={theme}>
+                <SectionTitle>Custom Types</SectionTitle>
+            </SectionHeader>
+
+            <Space/>
+
+            <CustomTypes
+                navigation={navigation}
+            />
+      
             <Space/>
 
             <SectionHeader theme={theme}>

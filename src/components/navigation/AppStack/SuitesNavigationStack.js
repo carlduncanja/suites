@@ -25,6 +25,7 @@ import StorageNavigationStack from './StorageNavigationStack';
 import PhysicianNavigationStack from './PhysiciansNavigationStack';
 import EquipmentNavigationStack from './EquipmentNavigationStack';
 import InventoryNavigationStack from './InventoryNavigationStack';
+import SettingsNavigationStack from './SettingsNavigationStack';
 
 /* Providers*/
 import NotFound from '../../../page/NotFound';
@@ -195,7 +196,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
 
             <SuitesNavigator.Screen
                 name="Settings"
-                component={Settings}
+                component={SettingsNavigationStack}
                 initialParams={{
                     icon: SettingsIcon,
                     tabName: 'Settings',
