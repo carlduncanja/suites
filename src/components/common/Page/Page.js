@@ -38,11 +38,10 @@ const PageSearchWrapper = styled.View`
 `;
 
 const PageHeader = styled.View`
-flex-direction:row;
-width:100%;
+    flex-direction:row;
+    width:100%;
+    justify-content: space-between;
 `
-
-
 
 /** 
  * @returns {*}
@@ -91,7 +90,7 @@ function Page(props) {
                 <PageHeader>
                     <PageTitle pageTitle={routeName} />
 
-                    {TopButton ? <TopButton /> : <View />}
+                    {TopButton && <TopButton /> }
 
                 </PageHeader>
 
