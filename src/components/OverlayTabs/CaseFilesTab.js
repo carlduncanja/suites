@@ -132,10 +132,10 @@ const CaseFilesTab = ({cases}) => {
 
     const listItemFormat = item => (
         <>
-            <DataItem flex={2} font="--text-sm-regular" color="--color-gray-700" text={`#${item?.id}`}/>
-            <DataItem flex={1} font="--text-sm-medium" color="--color-gray-700" text={`$${currencyFormatter(item?.balance)}`}/>
-            <DataItem flex={1} font="--text-sm-regular" color={item.status === 'Closed' ? '--color-orange-600' : '--color-blue-600'} text={item?.status}/>
-            <DataItem flex={1} font="--text-sm-regular" color="--color-gray-700" text={formatDate(item?.nextVisit, 'MMM DD, YYYY')}/>
+            <DataItem flex={2} fontStyle="--text-sm-regular" color="--color-gray-700" text={`#${item?.id}`}/>
+            <DataItem flex={1} fontStyle="--text-sm-medium" color="--color-gray-700" text={`$${currencyFormatter(item?.balance)}`}/>
+            <DataItem flex={1} fontStyle="--text-sm-regular" color={item.status === 'Closed' ? '--color-orange-600' : '--color-blue-600'} text={item?.status}/>
+            <DataItem flex={1} fontStyle="--text-sm-regular" color="--color-gray-700" text={formatDate(item?.nextVisit, 'MMM DD, YYYY')}/>
         
             {/* <View style={{flex: 1}}>
             <Text style={{color: '#718096', fontSize: 12}}>{item.id}</Text>
