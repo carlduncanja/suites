@@ -31,19 +31,19 @@ const ROLE_GROUPS = [
         actions: [
             {
                 key: 'create',
-                title: 'New Case'
-            },
-            {
-                key: 'update',
-                title: 'Edit Case'
+                title: 'New Case File'
             },
             {
                 key: 'read',
-                title: 'View Case'
+                title: 'View Case File'
+            },
+            {
+                key: 'update',
+                title: 'Edit Case File'
             },
             {
                 key: 'delete',
-                title: 'Remove Case'
+                title: 'Remove Case File'
             }
         ]
     },
@@ -56,8 +56,16 @@ const ROLE_GROUPS = [
                 title: 'New Theatre'
             },
             {
+                key: 'read',
+                title: 'View Theatre'
+            },
+            {
                 key: 'update',
                 title: 'Edit Theatre'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Theatre'
             }
         ]
     }

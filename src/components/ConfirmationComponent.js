@@ -17,7 +17,7 @@ const ModalWrapper = styled.View`
     background-color: white;
     border-radius: 8px;
     /* padding-bottom: 100px; */
-    /* box-shadow: ${ ({theme}) => theme.shadow['--shadow-lg']}; */
+    /* box-shadow: ${({theme}) => theme.shadow['--shadow-lg']}; */
 `;
 
 const ModalContainer = styled.View`
@@ -29,7 +29,7 @@ const HeaderWrapper = styled.View`
     height: 40px;
     width: 100%;
     border-bottom-width: 0.25px;
-    border-bottom-color: ${ ({theme}) => theme.colors['--color-gray-1000']};
+    border-bottom-color: ${({theme}) => theme.colors['--color-gray-1000']};
 `;
 
 const HeadingContainer = styled.View`
@@ -48,27 +48,26 @@ const ModalText = styled.Text(({textColor = '--color-gray-600', theme, font = '-
     ...theme.font[font],
     color: theme.colors[textColor],
     paddingTop: 2,
-    textAlign:'center',
+    textAlign: 'center',
 }));
 
 const ClearIconContainer = styled.View`
     align-items:flex-end;
 `;
 
-
 const TextHeaderContainer = styled.Text`
     font-size:16px;
     font-weight:600;
     line-height: 16px;
-    color: ${ ({theme}) => theme.colors['--color-gray-600']};
+    color: ${({theme}) => theme.colors['--color-gray-600']};
   
   `;
 
 const MessageWrapper = styled.View`
     height: 108px;
     width: 100%;
-    margin-top : ${ ({theme}) => theme.space['--space-32']};
-    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+    margin-top : ${({theme}) => theme.space['--space-32']};
+    margin-bottom : ${({theme}) => theme.space['--space-32']};
     align-items: center;
 `;
 const MessageContainer = styled.View`
@@ -77,7 +76,7 @@ const MessageContainer = styled.View`
     width: 318px;
     justify-content:center;
     align-items: center;
-    background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
+    background-color: ${({theme}) => theme.colors['--default-shade-white']};
 
     /* border-bottom-left-radius :8px;
     border-bottom-right-radius :8px; */
@@ -88,9 +87,9 @@ const IconMessageContainer = styled.View`
     width: 100%;
     justify-content:space-between;
     align-items: center;
-    background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
-    margin-top : ${ ({theme}) => theme.space['--space-20']};
-    margin-bottom : ${ ({theme}) => theme.space['--space-20']};
+    background-color: ${({theme}) => theme.colors['--default-shade-white']};
+    margin-top : ${({theme}) => theme.space['--space-20']};
+    margin-bottom : ${({theme}) => theme.space['--space-20']};
     padding-top:8px;
     padding-bottom:8px;
 `;
@@ -100,7 +99,7 @@ const MessageText = styled.Text`
     line-height: 20px;
     font-size: 17px;
     font-weight: normal;
-    color: ${ ({theme}) => theme.colors['--color-gray-700']};
+    color: ${({theme}) => theme.colors['--color-gray-700']};
 `;
 
 const ButtonView = styled.View`
@@ -109,7 +108,7 @@ const ButtonView = styled.View`
     left:0;
     right:0;
     height:40px;
-    margin: ${ ({theme}) => theme.space['--space-16']};
+    margin: ${({theme}) => theme.space['--space-16']};
     margin-top: 0;
     flex-direction: row;
     justify-content:space-between;
@@ -117,14 +116,14 @@ const ButtonView = styled.View`
 
 const ButtonContainer = styled.TouchableOpacity`
     height : 40px;
-    width : ${ ({fullWidth}) => fullWidth === true ? '100%' : null};
+    width : ${({fullWidth}) => fullWidth === true ? '100%' : null};
     display:flex;
     align-items: center;
     justify-content: center;
-    padding: ${ ({theme}) => `0 ${theme.space['--space-16']}`};
+    padding: ${({theme}) => `0 ${theme.space['--space-16']}`};
     border-radius: 8px;
     background-color: ${({background, theme}) => theme.colors[background]};
-    border: ${ ({theme, borderColor}) => borderColor ? `1px solid ${theme.colors[borderColor]}` : null};
+    border: ${({theme, borderColor}) => borderColor ? `1px solid ${theme.colors[borderColor]}` : null};
 
 `;
 
@@ -134,16 +133,16 @@ const CancelButtonContainer = styled.TouchableOpacity`
     padding-top : 12px;
     border-radius: 10px;
     border-width: 1px;
-    background-color: ${ ({theme}) => theme.colors['--color-gray-300']};
+    background-color: ${({theme}) => theme.colors['--color-gray-300']};
     width: 99px;
     height: 40px;
-    border-color: ${ ({theme}) => theme.colors['--default-shade-white']};
+    border-color: ${({theme}) => theme.colors['--default-shade-white']};
     /* margin-left:5px; */
 `;
 
 const ActionButton = styled.TouchableOpacity`
-    background-color: ${ ({theme}) => theme.colors['--color-blue-600']};
-    color: ${ ({theme}) => theme.colors['--default-shade-white']};
+    background-color: ${({theme}) => theme.colors['--color-blue-600']};
+    color: ${({theme}) => theme.colors['--default-shade-white']};
     width: 76px;
     height: 40px;
     padding: 5px;
@@ -151,7 +150,7 @@ const ActionButton = styled.TouchableOpacity`
     justify-content:center;
     border-radius: 10px;
     border-width: 1px;
-    border-color: ${ ({theme}) => theme.colors['--default-shade-white']};
+    border-color: ${({theme}) => theme.colors['--default-shade-white']};
 `;
 
 const ActionButtonContainer = styled.View`
@@ -179,8 +178,8 @@ const DeciderButton = styled.View`
     align-self:center;
     border-radius: 10px;
     padding:15px;
-    background-color:${ ({theme}) => theme.colors['--color-blue-600']};
-    color:${ ({theme}) => theme.colors['--default-shade-white']};
+    background-color:${({theme}) => theme.colors['--color-blue-600']};
+    color:${({theme}) => theme.colors['--default-shade-white']};
     width:409px;
     height:46px;
 `;
@@ -190,19 +189,19 @@ const AlertText = styled.Text`
     justify-content:center;
     font-size:18px;
     font-weight:bold;
-    color:${ ({theme}) => theme.colors['--color-gray-800']};
+    color:${({theme}) => theme.colors['--color-gray-800']};
 `;
 
 const shadows = [
     {
         shadowColor: 'black',
-        shadowOffset: { width: 10, height: 0 },
+        shadowOffset: {width: 10, height: 0},
         shadowOpacity: 0.1,
         shadowRadius: 15
     },
     {
         shadowColor: 'black',
-        shadowOffset: { width: 4, height: 0 },
+        shadowOffset: {width: 4, height: 0},
         shadowOpacity: 0.05,
         shadowRadius: 6
     },
@@ -211,8 +210,11 @@ const shadows = [
 function ConfirmationComponent({
     isEditUpdate,
     isError,
-    onCancel = () => {},
-    onAction = () => {},
+    onCancel = () => {
+    },
+    onAction = () => {
+    },
+    titleText = 'Confirm Action',
     message = '',
     action = 'Save',
 }) {
@@ -283,7 +285,7 @@ function ConfirmationComponent({
                 <ModalContainer>
                     <HeaderWrapper theme={theme}>
                         <HeadingContainer theme={theme}>
-                            <ModalText theme={theme}>Confirm Action</ModalText>
+                            <ModalText theme={theme}>{titleText}</ModalText>
                             <ClearIconContainer>
                                 <IconButton Icon={<ClearIcon/>} onPress={onCancel}/>
                             </ClearIconContainer>

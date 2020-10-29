@@ -34,6 +34,7 @@ import Footer from '../../components/common/Page/Footer';
 import NavPage from '../../components/common/Page/NavPage';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import {LONG_PRESS_TIMER} from '../../const';
+import useAuthHandler from '../../hooks/useAuthHandler';
 
 const listHeaders = [
     {
@@ -277,7 +278,7 @@ function Theatres(props) {
                     modal.closeModals('ConfirmationModal');
                 }
             }
-        ); 
+        );
     };
 
     const removeTheatresCall = data => {
@@ -326,7 +327,10 @@ function Theatres(props) {
                 content: (
                     <CreateTheatreDialogContainer
                         // onCreated={()=>onItemPress()}
-                        onCreated={() => { onRefresh(); setFloatingAction(false); }}
+                        onCreated={() => {
+                            onRefresh();
+                            setFloatingAction(false);
+                        }}
                         onCancel={() => setFloatingAction(false)}
                     />
                 ),
@@ -415,8 +419,10 @@ function Theatres(props) {
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
-                // TODO handle error
+                // handle error
                 console.log('failed to fetch theatres', error);
+                // if (error?.response && error?.response?.status === 401) setTheatres([]);
+                // showAuthReadBlocked(error, () => setTheatres([]));
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -426,24 +432,36 @@ function Theatres(props) {
             });
     };
 
-    const theatreToDisplay = [...theatres];
+    // const showAuthReadBlocked = (
+    //     error,
+    //     callback = () => {
+    //     }
+    // ) => {
+    //     if (error?.response && error?.response?.status === 401) {
+    //         callback();
+    //         modal.openModal('ConfirmationModal', {
+    //             content: (
+    //                 <ConfirmationComponent
+    //                     isError
+    //                     isEditUpdate={false}
+    //                     onCancel={() => modal.closeAllModals()}
+    //                     onAction={() => modal.closeAllModals()}
+    //                     titleText="Unauthorized"
+    //                     message="Unauthorized User. Cannot Process Request"
+    //                 />
+    //             ),
+    //             onClose: () => console.info('modal.closed'),
+    //         });
+    //     }
+    // };
 
-    // ###### STYLED COMPONENTS
-    const TheatresWrapper = styled.View`
-    height: 100%;
-    width: 100%;
-    background-color: green;
-`;
-    const TheatresContainer = styled.View`
-    display: flex;
-    height: 100%;
-  `;
+    const theatresToDisplay = [...theatres];
 
     return (
         <NavPage
             placeholderText="Search by theatre name or status."
             routeName={pageTitle}
-            listData={theatreToDisplay}
+            listData={theatresToDisplay}
             listItemFormat={renderItem}
             inputText={searchValue}
             itemsSelected={selectedIds}

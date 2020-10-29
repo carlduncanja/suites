@@ -393,7 +393,6 @@ export const createNewProcedure = async procedureToCreate => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-
 export const updateProcedure = async (id, data) => suitesAxiosInstance
     .put(procedureEndpoint(id), data)
     .then(handleResponse)
@@ -586,7 +585,7 @@ export const getPurchaseOrders = async (query, max, page) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-export const removePurchaseOrderCall = async (ids) => suitesAxiosInstance
+export const removePurchaseOrderCall = async ids => suitesAxiosInstance
     .delete(purchaseOrdersEndpoint, {data: {ids}})
     .then(handleResponse)
     .catch(handleError);
@@ -595,7 +594,6 @@ export const updatePurchaseOrderStatus = async (purchaseOrderId, status) => suit
     .put(updatePurchaseOrderStatusEndpoint(purchaseOrderId), {status})
     .then(handleResponse)
     .catch(handleError);
-
 
 export const createPurchaseOrder = async orderToCreate => suitesAxiosInstance
     .post(purchaseOrdersEndpoint, orderToCreate)

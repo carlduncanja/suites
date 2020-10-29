@@ -1,45 +1,45 @@
-import React, {useContext} from "react";
-import {View, StyleSheet, Dimensions, SafeAreaView, Text} from "react-native";
-import AsyncStorage from "@react-native-community/async-storage";
-import * as Notifications from "expo-notifications";
+import React, {useContext} from 'react';
+import {View, StyleSheet, Dimensions, SafeAreaView, Text} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import * as Notifications from 'expo-notifications';
 
-import {
-    SuitesContext,
-    SuitesContextProvider,
-} from "../../contexts/SuitesContext";
 import {
     ModalProvider,
     createModalStack,
     useModal,
-} from "react-native-modalfy";
+} from 'react-native-modalfy';
 import {
     NavigationHelpersContext,
     useNavigationBuilder,
     createNavigatorFactory,
     TabRouter,
     TabActions,
-} from "@react-navigation/native";
-import {connect} from "react-redux";
+} from '@react-navigation/native';
+import {connect} from 'react-redux';
+import {MenuProvider} from 'react-native-popup-menu';
+import jwtDecode from 'jwt-decode';
+import {
+    SuitesContext,
+    SuitesContextProvider,
+} from '../../contexts/SuitesContext';
 
-import SideBarComponent from "../SideBar/SideBarComponent";
+import SideBarComponent from '../SideBar/SideBarComponent';
 
-import OverlaySlidePanelModal from "../../modals/OverlaySlidePanelModal";
-import OverlayModal from "../../modals/OverlayModal";
-import ActionContainerModal from "../../modals/ActionContainerModal";
-import ReportPreviewModal from "../../modals/ReportPreviewModal";
-import OverlayInfoModal from "../../modals/OverlayInfoModal";
-import BottomSheetModal from "../../modals/BottomSheetModal";
-import {MenuProvider} from "react-native-popup-menu";
-import {appActions} from "../../redux/reducers/suitesAppReducer";
-import {signOut} from "../../redux/actions/authActions";
-import QuickActionsModal from "../../modals/QuickActionsModal";
-import Notifier from "../notifications/Notifier";
-import NotificationRegistry from "../notifications/NotficationRegistry";
-import ConfirmationModal from "../../modals/ConfirmationModal";
-import {logout} from "../../api/network";
-import jwtDecode from "jwt-decode";
-import CustomSnackbarProvider from "../Snackbar/CustomSnackbarProvider";
-import UnAuthorizedSubscription from "../../UnAuthorizedSubscription";
+import OverlaySlidePanelModal from '../../modals/OverlaySlidePanelModal';
+import OverlayModal from '../../modals/OverlayModal';
+import ActionContainerModal from '../../modals/ActionContainerModal';
+import ReportPreviewModal from '../../modals/ReportPreviewModal';
+import OverlayInfoModal from '../../modals/OverlayInfoModal';
+import BottomSheetModal from '../../modals/BottomSheetModal';
+import {appActions} from '../../redux/reducers/suitesAppReducer';
+import {signOut} from '../../redux/actions/authActions';
+import QuickActionsModal from '../../modals/QuickActionsModal';
+import Notifier from '../notifications/Notifier';
+import NotificationRegistry from '../notifications/NotficationRegistry';
+import ConfirmationModal from '../../modals/ConfirmationModal';
+import {logout} from '../../api/network';
+import CustomSnackbarProvider from '../Snackbar/CustomSnackbarProvider';
+import UnauthorizedSubscription from '../../UnauthorizedSubscription';
 
 /**
  * Custom navigator wrapper for application.
@@ -47,13 +47,13 @@ import UnAuthorizedSubscription from "../../UnAuthorizedSubscription";
  * https://reactnavigation.org/docs/custom-navigators
  */
 const SuitesCustomNavigator = ({
-                                   initialRouteName,
-                                   children,
-                                   screenOptions,
-                                   signOut,
-                                   auth,
-                               }) => {
-    const screenDimensions = Dimensions.get("window");
+    initialRouteName,
+    children,
+    screenOptions,
+    signOut,
+    auth,
+}) => {
+    const screenDimensions = Dimensions.get('window');
     const [suitesContext, dispatch] = useContext(SuitesContext);
 
     const {state, navigation, descriptors} = useNavigationBuilder(TabRouter, {
@@ -65,23 +65,23 @@ const SuitesCustomNavigator = ({
     console.log(`initialRouteName ${initialRouteName} state`, state);
 
     const modalConfig = {
-        OverlaySlidePanelModal: OverlaySlidePanelModal,
-        OverlayModal: OverlayModal,
-        ActionContainerModal: ActionContainerModal,
-        ReportPreviewModal: ReportPreviewModal,
-        OverlayInfoModal: OverlayInfoModal,
-        BottomSheetModal: BottomSheetModal,
-        QuickActionsModal: QuickActionsModal,
-        ConfirmationModal: ConfirmationModal,
+        OverlaySlidePanelModal,
+        OverlayModal,
+        ActionContainerModal,
+        ReportPreviewModal,
+        OverlayInfoModal,
+        BottomSheetModal,
+        QuickActionsModal,
+        ConfirmationModal,
     };
 
     const defaultOptions = {
         backdropOpacity: 0,
-        position: "bottom",
+        position: 'bottom',
         containerStyle: {
             flex: 1,
             // ...StyleSheet.absoluteFillObject,
-            alignItems: "flex-end",
+            alignItems: 'flex-end',
         },
     };
 
@@ -89,32 +89,31 @@ const SuitesCustomNavigator = ({
 
     // event handlers;
     const handleOnTabPress = (e, routeName) => {
-        console.log("tab pressed", e, routeName);
+        console.log('tab pressed', e, routeName);
         navigation.navigate(routeName);
     };
 
     const handleOnLogout = () => {
-
         const {expoPushToken, userToken} = auth;
         const authInfo = jwtDecode(userToken);
 
-        console.log('authInfo: ', authInfo)
+        console.log('authInfo: ', authInfo);
 
-        logout(authInfo['user_id'], expoPushToken).catch(error => {
-            console.log('logout call failed', error)
-        })
+        logout(authInfo.user_id, expoPushToken).catch(error => {
+            console.log('logout call failed', error);
+        });
 
         AsyncStorage.clear()
-            .catch((error) => {
-                console.log("failed to sign out", error);
+            .catch(error => {
+                console.log('failed to sign out', error);
             })
-            .finally((_) => {
+            .finally(_ => {
                 signOut();
             });
         // navigation.navigate('Auth')
     };
 
-    const getPageMeasure = (event) => {
+    const getPageMeasure = event => {
         dispatch({
             type: appActions.SETPAGEMEASURES,
             newState: event.nativeEvent.layout,
@@ -123,7 +122,7 @@ const SuitesCustomNavigator = ({
 
     return (
         <NavigationHelpersContext.Provider value={navigation}>
-            <SafeAreaView style={{flex: 1, backgroundColor: "#fff"}}>
+            <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
                 <MenuProvider>
                     <ModalProvider stack={stack}>
                         <View style={styles.container}>
@@ -144,7 +143,7 @@ const SuitesCustomNavigator = ({
 
                                     {descriptors[state.routes[state.index].key].render()}
 
-                                    <UnAuthorizedSubscription/>
+                                    <UnauthorizedSubscription/>
 
                                 </CustomSnackbarProvider>
 
@@ -162,15 +161,11 @@ const SuitesCustomNavigator = ({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: "100%",
-        flexDirection: "row",
+        width: '100%',
+        flexDirection: 'row',
     },
-    navBar: {
-        backgroundColor: "blue",
-    },
-    pageContent: {
-        flex: 1,
-    },
+    navBar: {backgroundColor: 'blue'},
+    pageContent: {flex: 1},
 });
 
 // export const createSidebarNavigator = (routeConfigMap, sidebarNavigatorConfig) => {
@@ -179,15 +174,9 @@ const styles = StyleSheet.create({
 //     return createNavigator(SuiteNavigator, customTabRouter, {});
 // };
 
-const mapDispatchToProps = {
-    signOut,
-};
+const mapDispatchToProps = {signOut};
 
-const mapStateToProps = (state) => {
-    return {
-        auth: state.auth
-    }
-}
+const mapStateToProps = state => ({auth: state.auth});
 
 export const createSuitesSidebarNavigator = createNavigatorFactory(
     connect(mapStateToProps, mapDispatchToProps)(SuitesCustomNavigator)

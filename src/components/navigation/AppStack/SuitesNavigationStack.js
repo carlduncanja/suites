@@ -29,8 +29,8 @@ import SettingsNavigationStack from './SettingsNavigationStack';
 
 /* Providers*/
 import NotFound from '../../../page/NotFound';
-import LostConnectionPage from "../../common/Page/LostConnectionPage";
-import NotFoundPage from "../../common/Page/NotFoundPage";
+import LostConnectionPage from '../../common/Page/LostConnectionPage';
+import NotFoundPage from '../../common/Page/NotFoundPage';
 
 /* Icons */
 import ScheduleIcon from '../../../../assets/svg/schedule';
@@ -58,7 +58,7 @@ const SuitesNavigator = createSuitesSidebarNavigator();
 export const SuitesNavigationStack = ({auth = {}}) => {
     const isAdmin = auth.user.role_name === ROLES.ADMIN;
 
-    console.log('auth suites navigator', auth);
+    // console.log('auth suites navigator', auth);
 
     return (
         <SuitesNavigator.Navigator
