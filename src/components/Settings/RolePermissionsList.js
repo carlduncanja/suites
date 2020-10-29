@@ -26,7 +26,7 @@ const ActionTitle = styled.Text(({theme, color = '--color-gray-700', font = '--t
 
 const ROLE_GROUPS = [
     {
-        group: 'casefiles',
+        group: 'cases',
         name: 'Case Files',
         actions: [
             {

@@ -18,9 +18,9 @@ export function handleError(error) {
         switch (STATUS_CODE) {
             case 401:
                 EventEmitter.dispatch(EVENTS.UNAUTHORIZED, error);
-                return error; // return the error to be used if needed
+                break; // return the error to be used if needed
             default:
-                return;
+                break;
         }
     } catch (e) {
         console.log('Failed to dispatch event');
