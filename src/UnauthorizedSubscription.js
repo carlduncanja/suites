@@ -6,7 +6,7 @@ import {EventEmitter, EVENTS} from './api/apiUtils';
 import {useSnackbar} from './components/Snackbar/CustomSnackbarProvider';
 
 /**
- * Subscribes and listen to event emitted by
+ * Subscribes and listen to network event emitted requests.
  * @param props
  * @return {null}
  * @constructor
