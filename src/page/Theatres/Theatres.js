@@ -284,6 +284,7 @@ function Theatres(props) {
     const removeTheatresCall = data => {
         removeTheatres(data)
             .then(_ => {
+                console.log('inside the then')
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -307,6 +308,7 @@ function Theatres(props) {
                 setSelectedIds([]);
             })
             .catch(error => {
+                console.log('hello from the catch')
                 openErrorConfirmation();
                 setTimeout(() => {
                     modal.closeModals('ActionContainerModal');
