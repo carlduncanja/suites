@@ -38,7 +38,8 @@ import NotificationRegistry from "../notifications/NotficationRegistry";
 import ConfirmationModal from "../../modals/ConfirmationModal";
 import {logout} from "../../api/network";
 import jwtDecode from "jwt-decode";
-import CustomSnackbarProvider from "../CustomSnackbarProvider";
+import CustomSnackbarProvider from "../Snackbar/CustomSnackbarProvider";
+import UnAuthorizedSubscription from "../../UnAuthorizedSubscription";
 
 /**
  * Custom navigator wrapper for application.
@@ -140,7 +141,11 @@ const SuitesCustomNavigator = ({
                                 {/*    ACTIVE SCREEN    */}
 
                                 <CustomSnackbarProvider>
+
                                     {descriptors[state.routes[state.index].key].render()}
+
+                                    <UnAuthorizedSubscription/>
+
                                 </CustomSnackbarProvider>
 
                             </View>
