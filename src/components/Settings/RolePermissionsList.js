@@ -92,7 +92,7 @@ const ROLE_GROUPS = [
         ]
     },
     {
-        group: 'equipment_types',
+        group: 'equipment_type',
         name: 'Equipment',
         actions: [
             {
