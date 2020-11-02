@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = "http://0285f6fa1870.ngrok.io"; //process.env.SUITES_BASE_URL;
-// const BASE_URL = "https://suites-api.azurewebsites.net"; //process.env.SUITES_BASE_URL;
+// const BASE_URL = "http://f4c584ac36ea.ngrok.io"; //process.env.SUITES_BASE_URL;
+const BASE_URL = "https://suites-api.azurewebsites.net"; //process.env.SUITES_BASE_URL;
 const DOCUMENT_GENERATION_BASE_URL = 'https://sms-document-generation-service.azurewebsites.net';
 
 const baseInstance = axios.create({
