@@ -26,7 +26,7 @@ import {
     useNextPaginator,
     usePreviousPaginator,
     selectAll,
-    checkboxItemPress,
+    checkboxItemPress, handleUnauthorizedError,
 } from '../../helpers/caseFilesHelpers';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
 import {SuitesContext} from '../../contexts/SuitesContext';
@@ -239,6 +239,8 @@ function CaseFiles(props) {
             })
             .catch(error => {
                 console.log('failed to get case files', error);
+
+                handleUnauthorizedError(error?.response?.status, setCaseFiles);
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);

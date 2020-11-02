@@ -102,3 +102,7 @@ export const calcBillingValues = (subTotal, tax, discountPercent) => {
         total
     };
 };
+
+export const handleUnauthorizedError = (status, setData) => {
+    if (status === 401) setData([]);
+};

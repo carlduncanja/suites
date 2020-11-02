@@ -20,8 +20,8 @@ import {
     useNextPaginator,
     usePreviousPaginator,
     checkboxItemPress,
-    selectAll,
-} from "../../helpers/caseFilesHelpers";
+    selectAll, handleUnauthorizedError,
+} from '../../helpers/caseFilesHelpers';
 
 import {connect} from "react-redux";
 import {
@@ -308,6 +308,8 @@ const Orders = (props) => {
             })
             .catch((error) => {
                 console.log("failed to get orders", error);
+
+                handleUnauthorizedError(error?.response?.status, setPurchaseOrders);
                 setTotalPages(1)
                 setPreviousDisabled(true)
                 setNextDisabled(true)
