@@ -12,7 +12,7 @@ import {getStorage, removeStorageLocations} from '../api/network';
 import {setStorage} from '../redux/actions/storageActions';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
-import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from '../helpers/caseFilesHelpers';
+import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError} from '../helpers/caseFilesHelpers';
 import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 import ActionItem from '../components/common/ActionItem';
 import WasteIcon from '../../assets/svg/wasteIcon';
@@ -246,6 +246,8 @@ function Storage(props) {
             })
             .catch(error => {
                 console.log('failed to get storage', error);
+
+                handleUnauthorizedError(error?.response?.status, setStorage);
             })
             .finally(_ => {
                 setFetchingData(false);

@@ -36,7 +36,7 @@ import {
     useNextPaginator,
     usePreviousPaginator,
     checkboxItemPress,
-    selectAll,
+    selectAll, handleUnauthorizedError,
 } from '../../helpers/caseFilesHelpers';
 
 import {setEquipment} from '../../redux/actions/equipmentActions';
@@ -342,6 +342,8 @@ const Equipment = props => {
             })
             .catch(error => {
                 console.log('Failed to get equipment types', error);
+
+                handleUnauthorizedError(error?.response?.status, setEquipmentTypes);
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);

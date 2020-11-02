@@ -22,7 +22,7 @@ import AddIcon from '../../assets/svg/addIcon';
 import RightBorderDataItem from '../components/common/List/RightBorderDataItem';
 import DataItem from '../components/common/List/DataItem';
 
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../helpers/caseFilesHelpers';
 
 import {setSuppliers} from '../redux/actions/suppliersActions';
 import {getSuppliers, archiveSupplier} from '../api/network';
@@ -225,6 +225,8 @@ const Suppliers = props => {
             })
             .catch(error => {
                 console.log('failed to get Suppliers', error);
+
+                handleUnauthorizedError(error?.response?.status, setSuppliers);
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -390,7 +392,7 @@ const Suppliers = props => {
         <NavPage
             isFetchingData={isFetchingData}
             onRefresh={handleDataRefresh}
-            placeholderText="Search by Supplier"
+            placeholderText="Search by Supplxier"
             changeText={onSearchInputChange}
             inputText={searchValue}
             routeName="Suppliers"

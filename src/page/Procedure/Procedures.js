@@ -17,7 +17,7 @@ import NavPage from '../../components/common/Page/NavPage';
 import WasteIcon from '../../../assets/svg/wasteIcon';
 import AddIcon from '../../../assets/svg/addIcon';
 
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../../helpers/caseFilesHelpers';
 
 import {setProcedures} from '../../redux/actions/proceduresActions';
 import {getProcedures, removeProcedures} from '../../api/network';
@@ -211,6 +211,8 @@ const Procedures = props => {
             })
             .catch(error => {
                 console.log('failed to get procedures', error);
+
+                handleUnauthorizedError(error?.response?.status, setProcedures);
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);

@@ -20,7 +20,7 @@ import {
     useNextPaginator,
     usePreviousPaginator,
     selectAll,
-    checkboxItemPress,
+    checkboxItemPress, handleUnauthorizedError,
 } from '../../helpers/caseFilesHelpers';
 import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
 import ActionItem from '../../components/common/ActionItem';
@@ -421,6 +421,8 @@ function Theatres(props) {
             .catch(error => {
                 // handle error
                 console.log('failed to fetch theatres', error);
+
+                handleUnauthorizedError(error?.response?.status, setTheatres);
                 // if (error?.response && error?.response?.status === 401) setTheatres([]);
                 // showAuthReadBlocked(error, () => setTheatres([]));
                 setTotalPages(1);

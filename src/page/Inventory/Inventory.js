@@ -37,7 +37,7 @@ import {
     removeInventoryGroups,
     removeInventoryVariants
 } from '../../api/network';
-import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress} from '../../helpers/caseFilesHelpers';
+import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError} from '../../helpers/caseFilesHelpers';
 import {LONG_PRESS_TIMER} from '../../const';
 
 const listHeaders = [
@@ -693,8 +693,10 @@ function Inventory(props) {
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
-                // todo handle error
+                // handle error
                 console.log('Failed to fetch inventory', error);
+
+                handleUnauthorizedError(error?.response?.status, setInventory);
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);

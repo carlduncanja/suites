@@ -35,15 +35,15 @@ const ROLE_GROUPS = [
             },
             {
                 key: 'read',
-                title: 'View Case File'
+                title: 'View Case Files'
             },
             {
                 key: 'update',
-                title: 'Edit Case File'
+                title: 'Edit Case Files'
             },
             {
                 key: 'delete',
-                title: 'Remove Case File'
+                title: 'Remove Case Files'
             }
         ]
     },
@@ -57,18 +57,172 @@ const ROLE_GROUPS = [
             },
             {
                 key: 'read',
-                title: 'View Theatre'
+                title: 'View Theatres'
             },
             {
                 key: 'update',
-                title: 'Edit Theatre'
+                title: 'Edit Theatres'
             },
             {
                 key: 'delete',
-                title: 'Remove Theatre'
+                title: 'Remove Theatres'
             }
         ]
-    }
+    },
+    {
+        group: 'inventory_groups',
+        name: 'Inventory',
+        actions: [
+            {
+                key: 'create',
+                title: 'Create Inventory'
+            },
+            {
+                key: 'read',
+                title: 'View Inventory'
+            },
+            {
+                key: 'update',
+                title: 'Update Inventory'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Inventory'
+            }
+        ]
+    },
+    {
+        group: 'equipment_types',
+        name: 'Equipment',
+        actions: [
+            {
+                key: 'create',
+                title: 'Create Equipment'
+            },
+            {
+                key: 'read',
+                title: 'View Equipment'
+            },
+            {
+                key: 'update',
+                title: 'Update Equipment'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Equipment'
+            }
+        ]
+    },
+    {
+        group: 'purchase_orders',
+        name: 'Purchase Orders',
+        actions: [
+            {
+                key: 'create',
+                title: 'Create Purchase Order'
+            },
+            {
+                key: 'read',
+                title: 'View Purchase Orders'
+            },
+            {
+                key: 'update',
+                title: 'Update Purchase Orders'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Purchase Orders'
+            }
+        ]
+    },
+    {
+        group: 'suppliers',
+        name: 'Suppliers',
+        actions: [
+            {
+                key: 'create',
+                title: 'Create Supplier'
+            },
+            {
+                key: 'read',
+                title: 'View Suppliers'
+            },
+            {
+                key: 'update',
+                title: 'Update Suppliers'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Suppliers'
+            }
+        ]
+    },
+    {
+        group: 'storage_locations',
+        name: 'Storage Locations',
+        actions: [
+            {
+                key: 'create',
+                title: 'Create Storage Location'
+            },
+            {
+                key: 'read',
+                title: 'View Storage Locations'
+            },
+            {
+                key: 'update',
+                title: 'Update Storage Locations'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Storage Locations'
+            }
+        ]
+    },
+    {
+        group: 'physicians',
+        name: 'Physicians',
+        actions: [
+            {
+                key: 'create',
+                title: 'Create Physician'
+            },
+            {
+                key: 'read',
+                title: 'View Physicians'
+            },
+            {
+                key: 'update',
+                title: 'Update Physicians'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Physicians'
+            }
+        ]
+    },
+    {
+        group: 'procedures',
+        name: 'Procedures',
+        actions: [
+            {
+                key: 'create',
+                title: 'Create Procedure'
+            },
+            {
+                key: 'read',
+                title: 'View Procedures'
+            },
+            {
+                key: 'update',
+                title: 'Update Procedures'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Procedures'
+            }
+        ]
+    },
 ];
 
 function RolePermissionsList({

@@ -19,7 +19,7 @@ import WasteIcon from '../../assets/svg/wasteIcon';
 import AddIcon from '../../assets/svg/addIcon';
 import AssignIcon from '../../assets/svg/assignIcon';
 
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../helpers/caseFilesHelpers';
+import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../helpers/caseFilesHelpers';
 
 import {setPhysicians} from '../redux/actions/physiciansActions';
 import {getPhysicians, removePhysicians} from '../api/network';
@@ -210,6 +210,8 @@ const Physicians = props => {
             })
             .catch(error => {
                 console.log('failed to get physicians', error);
+
+                handleUnauthorizedError(error?.response?.status, setPhysicians);
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
