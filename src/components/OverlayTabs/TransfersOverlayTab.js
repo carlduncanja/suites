@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import {View, StyleSheet, Text} from "react-native";
+import React, {useState} from 'react';
+import {View, StyleSheet, Text, ScrollView} from "react-native";
 import PropTypes from 'prop-types';
 import Table from "../common/Table/Table";
 import {formatDate} from "../../utils/formatter";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 import styled, {css} from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import {useTheme} from 'emotion-theming';
 import Footer from '../common/Page/Footer';
 import Item from '../common/Table/Item';
 import DataItem from '../common/List/DataItem';
@@ -13,13 +13,13 @@ import LongPressWithFeedback from "../common/LongPressWithFeedback";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
 import ActionItem from "../common/ActionItem";
 import {LONG_PRESS_TIMER} from '../../const';
-import { useModal } from 'react-native-modalfy';
+import {useModal} from 'react-native-modalfy';
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 import ConfirmationComponent from '../ConfirmationComponent';
-import { removeTransferItem, updateTransferState } from '../../api/network';
+import {removeTransferItem, updateTransferState} from '../../api/network';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
-import { forEach } from 'lodash';
+import {forEach} from 'lodash';
 import ContentDataItem from '../common/List/ContentDataItem';
 
 
@@ -27,7 +27,7 @@ const PendingTransferHeadings = [
     {
         name: 'Transfer',
         alignment: 'flex-start',
-        flex : 1.5,
+        flex: 1.5,
 
     },
     {
@@ -48,7 +48,7 @@ const CompletedTransferHeadings = [
     {
         name: 'Transfer',
         alignment: 'flex-start',
-        flex:2,
+        flex: 2,
     },
     {
         name: 'Date',
@@ -62,13 +62,13 @@ const CompletedTransferHeadings = [
 
 const SectionContainer = styled.View`
     display : flex;
-    margin-bottom : ${ ({theme}) => theme.space['--space-40']};
+    margin-bottom : ${({theme}) => theme.space['--space-40']};
 `;
 
-const SectionText = styled.Text( ({theme}) => ({
+const SectionText = styled.Text(({theme}) => ({
     ...theme.font['--text-xl-medium'],
-    color : theme.colors['--color-gray-800'],
-    marginBottom : 24,
+    color: theme.colors['--color-gray-800'],
+    marginBottom: 24,
 }));
 
 const TRANSFER_STATE = {
@@ -97,7 +97,7 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
         const filterLocation = locations.filter(location => location.inventory._id === inventoryId)[0] || {};
         const groupId = filterLocation.inventory.inventoryGroup._id || '';
 
-        return { inventoryId, groupId };
+        return {inventoryId, groupId};
     }
 
     const onItemCheckbox = item => {
@@ -131,7 +131,8 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
         const acceptTransfer = (
             <ActionItem
                 title="Accept Transfer"
-                icon={<AddIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']} />}
+                icon={<AddIcon
+                    strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>}
                 onPress={handleAcceptTransfer}
                 disabled={isDisabled}
                 touchable={true}
@@ -146,7 +147,8 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
                 <ActionItem
                     title="Hold to Cancel"
                     icon={<WasteIcon strokeColor={isDisabledColor}/>}
-                    onPress={() => {}}
+                    onPress={() => {
+                    }}
                     disabled={isDisabled}
                     touchable={false}
                 />
@@ -166,7 +168,7 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
         console.log("Variant id: ", inventoryId);
         console.log("Group id: ", inventoryGroupId);
         console.log("Transfer id: ", transferId);
-        const newState = { state: 'completed'};
+        const newState = {state: 'completed'};
         updateTransferState(inventoryGroupId, inventoryId, transferId, newState)
             .then(_ => {
                 modal.closeAllModals();
@@ -182,7 +184,9 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
                                 setPendingCheckedItems([]);
                             }}
                         />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
                     }
                 );
             })
@@ -194,11 +198,17 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
                         content: <ConfirmationComponent
                             isEditUpdate={false}
                             isError={true}
-                            onCancel={() => { modal.closeAllModals(); }}
-                            onAction={() => { modal.closeAllModals(); }}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
                             message="There was an issue performing this action"
                         />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
                     }
                 );
             })
@@ -226,7 +236,9 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
                         }}
                         message="Do you want to save your changes ?"
                     />,
-                    onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
                 });
             }, 200);
         }
@@ -249,7 +261,9 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
                                 onUpdateItem();
                             }}
                         />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
                     }
                 );
             })
@@ -261,11 +275,17 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
                         content: <ConfirmationComponent
                             isEditUpdate={false}
                             isError={true}
-                            onCancel={() => { modal.closeAllModals(); }}
-                            onAction={() => { modal.closeAllModals(); }}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
                             message="There was an issue performing this action"
                         />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
                     }
                 );
             })
@@ -293,44 +313,49 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
                     }}
                     message="Do you wish to delete these item(s)?"
                 />,
-                onClose: () => { modal.closeModals('ConfirmationModal'); }
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
             });
         }
         // console.log("Checked items: ", pendingCheckedItems);
     };
 
     const completedTransferListItem = ({from = {}, to = {}, product, amount, dateCompleted = '', updatedAt = ''}) => {
-        const { inventoryName = '', locationName = '""' } = from;
+        const {inventoryName = '', locationName = '""'} = from;
         return (
             <>
                 <ContentDataItem
                     flex={2}
                     content={(
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <View style={[styles.highlighted, {paddingRight: 50, width: 150, }]}>
+                            <View style={[styles.highlighted, {paddingRight: 50, width: 150,}]}>
                                 <Text style={[styles.itemText, styles.linkText]} numberOfLines={1}>{locationName}</Text>
                             </View>
                             <ArrowRightIcon/>
-                            <View style={[styles.highlighted, {paddingLeft: 20, }]}>
+                            <View style={[styles.highlighted, {paddingLeft: 20,}]}>
                                 <Text style={[styles.itemText, styles.linkText]}>{to?.locationName}</Text>
                             </View>
                         </View>
                     )}
                 />
 
-                <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={formatDate(updatedAt, 'DD/MM/YYYY')}/>
-                <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={`${inventoryName} (${amount})`}/>
+                <DataItem fontStyle="--text-base-regular" color="--color-gray-800"
+                          text={formatDate(updatedAt, 'DD/MM/YYYY')}/>
+                <DataItem fontStyle="--text-base-regular" color="--color-gray-800"
+                          text={`${inventoryName} (${amount})`}/>
             </>
         );
     };
 
     const pendingTransferListItem = ({from, to, product, amount, dateGenerated, inventoryLocation}) => {
-        const { inventoryName = '', locationName = '' } = from;
+        const {inventoryName = '', locationName = ''} = from;
         return (
             <>
                 <DataItem flex={1.5} fontStyle="--text-base-medium" color="--color-blue-600" text={to?.locationName}/>
                 <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={inventoryName}/>
-                <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={formatDate(dateGenerated, 'DD/MM/YYYY')}/>
+                <DataItem fontStyle="--text-base-regular" color="--color-gray-800"
+                          text={formatDate(dateGenerated, 'DD/MM/YYYY')}/>
                 <DataItem align="center" fontStyle="--text-base-medium" color="--color-green-600" text={`+ ${amount}`}/>
             </>
         );
@@ -340,47 +365,52 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
         return <Item
             itemView={completedTransferListItem(item)}
             hasCheckBox={false}
-            onItemPress={() => {}}
+            onItemPress={() => {
+            }}
         />;
     };
 
     const renderPendingItem = item => {
-        const { _id = '' } = item;
+        const {_id = ''} = item;
         // console.log("Transfer pending: ", item, groupId, variantId);
         return <Item
             itemView={pendingTransferListItem(item)}
             hasCheckBox={true}
             isChecked={pendingCheckedItems.includes(_id)}
             onCheckBoxPress={() => onItemCheckbox(item)}
-            onItemPress={() => {}}
+            onItemPress={() => {
+            }}
         />;
     };
 
     return (
         <>
-            <SectionContainer>
-                <SectionText>Pending</SectionText>
-                <Table
-                    data={pendingItems}
-                    listItemFormat={renderPendingItem}
-                    headers={PendingTransferHeadings}
-                    isCheckbox={true}
-                    toggleHeaderCheckbox={toggleHeaderCheckbox}
-                    itemSelected={pendingCheckedItems}
-                />
-            </SectionContainer>
+            <ScrollView>
+                <SectionContainer>
+                    <SectionText>Pending</SectionText>
+                    <Table
+                        data={pendingItems}
+                        listItemFormat={renderPendingItem}
+                        headers={PendingTransferHeadings}
+                        isCheckbox={true}
+                        toggleHeaderCheckbox={toggleHeaderCheckbox}
+                        itemSelected={pendingCheckedItems}
+                    />
+                </SectionContainer>
 
-            <SectionContainer
-                style={css`margin-bottom : 0;`}
-            >
-                <SectionText>Completed</SectionText>
-                <Table
-                    data={completedItems}
-                    listItemFormat={renderCompleteItem}
-                    headers={CompletedTransferHeadings}
-                    isCheckbox={false}
-                />
-            </SectionContainer>
+                <SectionContainer
+                    style={css`margin-bottom : 0;`}
+                >
+                    <SectionText>Completed</SectionText>
+                    <Table
+                        data={completedItems}
+                        listItemFormat={renderCompleteItem}
+                        headers={CompletedTransferHeadings}
+                        isCheckbox={false}
+                    />
+                </SectionContainer>
+
+            </ScrollView>
 
             <Footer
                 hasPaginator={false}
@@ -390,34 +420,34 @@ function TransfersOverlayTab({transferItems = [], transferObj, groupId, variantI
             />
         </>
 
-    // <View style={styles.container}>
-    //     {/*PENDING*/}
-    //     <View style={styles.sectionContainer}>
-    //         <Text style={styles.sectionHeading}>Pending</Text>
+        // <View style={styles.container}>
+        //     {/*PENDING*/}
+        //     <View style={styles.sectionContainer}>
+        //         <Text style={styles.sectionHeading}>Pending</Text>
 
-    //         <Table
-    //             data={transferItems}
-    //             listItemFormat={renderPendingItem}
-    //             headers={PendingTransferHeadings}
-    //             isCheckbox={false}
-    //         />
+        //         <Table
+        //             data={transferItems}
+        //             listItemFormat={renderPendingItem}
+        //             headers={PendingTransferHeadings}
+        //             isCheckbox={false}
+        //         />
 
-    //     </View>
+        //     </View>
 
-    //     {/*COMPLETED*/}
-    //     <View style={styles.sectionContainer}>
-    //         <Text style={styles.sectionHeading}>Completed</Text>
+        //     {/*COMPLETED*/}
+        //     <View style={styles.sectionContainer}>
+        //         <Text style={styles.sectionHeading}>Completed</Text>
 
-    //         <Table
-    //             data={transferItems}
-    //             listItemFormat={renderCompleteItem}
-    //             headers={CompletedTransferHeadings}
-    //             isCheckbox={false}
-    //         />
+        //         <Table
+        //             data={transferItems}
+        //             listItemFormat={renderCompleteItem}
+        //             headers={CompletedTransferHeadings}
+        //             isCheckbox={false}
+        //         />
 
-    //     </View>
+        //     </View>
 
-    // </View>
+        // </View>
 
     );
 }

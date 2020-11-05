@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
-import {withModal} from 'react-native-modalfy';
+import {useModal, withModal} from 'react-native-modalfy';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 import styled, {css} from '@emotion/native';
@@ -28,7 +28,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 import {getSupplierProducts, createPurchaseOrder} from '../../api/network';
 import {addCartItem} from '../../redux/actions/cartActions';
 import LoadingIndicator from '../common/LoadingIndicator';
-import { PageContext } from '../../contexts/PageContext';
+import {PageContext} from '../../contexts/PageContext';
 
 const SearchContainer = styled.View`
     margin-bottom : ${({theme}) => theme.space['--space-20']};
@@ -54,9 +54,38 @@ const PaginatorActionsContainer = styled.View`
     flex-direction : row;
 `;
 
-function SupplierProductsTab({modal, supplierId, addCartItem, cart, products = [], onAddProducts, onProductsCreated, isProductsLoading}) {
+const headers = [
+    {
+        name: 'Product',
+        alignment: 'flex-start',
+        flex: 2
+    },
+    {
+        name: 'Reference',
+        alignment: 'flex-start'
+    },
+    {
+        name: 'SKU',
+        alignment: 'center'
+    },
+    {
+        name: 'Price',
+        alignment: 'flex-end'
+    }
+];
+
+function SupplierProductsTab({
+                                 supplierId,
+                                 addCartItem,
+                                 cart,
+                                 products = [],
+                                 onAddProducts,
+                                 onProductsCreated,
+                                 isProductsLoading
+                             }) {
     // ######## STATES
     const theme = useTheme();
+    const modal = useModal();
     const navigation = useNavigation();
 
     const [isLoading, setLoading] = useState(false);
@@ -74,31 +103,12 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products = [
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [cartTotal, setCartTotal] = useState(cart.reduce((acc, curr) => acc + (curr.amount || 1), 0));
     const [cartItems, setCartItems] = useState([]);
-    const { pageState } = useContext(PageContext);
+    const {pageState} = useContext(PageContext);
 
     // console.log("Products: ", products);
 
     // ######## CONST
 
-    const headers = [
-        {
-            name: 'Product',
-            alignment: 'flex-start',
-            flex: 2
-        },
-        {
-            name: 'Reference',
-            alignment: 'flex-start'
-        },
-        {
-            name: 'SKU',
-            alignment: 'center'
-        },
-        {
-            name: 'Price',
-            alignment: 'flex-end'
-        }
-    ];
 
     // ######## LIFECYCLE METHODS
 
@@ -515,7 +525,7 @@ const mapStateToProps = state => ({cart: state.cart});
 
 const mapDispatchToProp = {addCartItem};
 
-export default connect(mapStateToProps, mapDispatchToProp)(withModal(SupplierProductsTab));
+export default connect(mapStateToProps, mapDispatchToProp)(SupplierProductsTab);
 
 const styles = StyleSheet.create({
     item: {flex: 1},

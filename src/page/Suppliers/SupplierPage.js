@@ -47,7 +47,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
     useEffect(() => {
         setTimeout(() => {
             if (!products.length) {
-                fetchProducts();
+                // fetchProducts();
                 fetchSupplier(_id);
             }
         }, 200);
@@ -129,7 +129,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
     };
 
     const fetchProducts = () => {
-        
+
         setPageLoading(true);
 
         getSupplierProducts(_id, '')
@@ -152,11 +152,12 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
     };
 
     const fetchSupplier = id => {
-        // setFetching(true);
+        setFetching(true);
         getSupplierById(id)
             .then(data => {
                 console.log('Data: ', data);
                 setSelectedSupplier(data);
+                setProducts(data?.products || [])
             })
             .catch(error => {
                 console.log('Failed to get supplier', error);
@@ -198,7 +199,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                         <SupplierProductsTab
                             products={products}
                             onAddProducts={onAddProducts}
-                            onProductsCreated={() => fetchProducts()}
+                            onProductsCreated={() => fetchSupplier(_id)}
                             supplierId={_id}
                         />
                     );
