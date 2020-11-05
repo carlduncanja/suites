@@ -124,8 +124,10 @@ const AddItemDialog = ({onCancel = ()=>{}, onCreated = ()=>{}, itemType = "", })
                     {
                         content: <ConfirmationComponent
                             isEditUpdate = {true}
+                            isError={false}
                             onCancel = {onConfirmCancel}
                             onAction = {onConfirmSave}
+                            message="Do you want to save your changes?"
                         />
                         ,
                         onClose: () => {modal.closeModals('ConfirmationModal')} 
