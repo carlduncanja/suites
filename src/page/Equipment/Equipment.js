@@ -354,7 +354,7 @@ const Equipment = props => {
                 setEquipment(data);
             })
             .catch(error => {
-                console.error('failed to get equipment', error);
+                console.log('failed to get equipment', error);
             })
             .finally(_ => {
                 setFetchingData(false);

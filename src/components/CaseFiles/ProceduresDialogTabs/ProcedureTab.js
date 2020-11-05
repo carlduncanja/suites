@@ -59,7 +59,7 @@ const ProcedureTab = ({
         if (!searchProcedureValue) {
             // empty search values and cancel any out going request.
             setSearchProcedureResult([]);
-            if (searchProcedureQuery.cancel) searchProcedureQuery.cancel();
+            if (searchProcedureQuery?.cancel) searchProcedureQuery?.cancel();
             return;
         }
 
@@ -68,8 +68,8 @@ const ProcedureTab = ({
         const search = _.debounce(fetchProcedures, 300);
 
         setSearchProcedureQuery((prevSearch) => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
+            if (prevSearch && prevSearch?.cancel) {
+                prevSearch?.cancel();
             }
             return search;
         });
@@ -81,7 +81,7 @@ const ProcedureTab = ({
         if (!searchLocationValue) {
             // empty search values and cancel any out going request.
             setSearchLocationResult([]);
-            if (searchLocationQuery.cancel) searchLocationQuery.cancel();
+            if (searchLocationQuery?.cancel) searchLocationQuery.cancel();
             return;
         }
 
@@ -90,8 +90,8 @@ const ProcedureTab = ({
         const search = _.debounce(fetchLocations, 300);
 
         setSearchLocationQuery((prevSearch) => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
+            if (prevSearch && prevSearch?.cancel) {
+                prevSearch?.cancel();
             }
             return search;
         });
@@ -151,6 +151,7 @@ const ProcedureTab = ({
 
         updateErrorField("procedure")(false);
 
+        setSearchProcedureValue('')
         setSearchProcedureResult([]);
         setSearchProcedureQuery(undefined);
     };
@@ -167,6 +168,7 @@ const ProcedureTab = ({
 
         updateErrorField("location")(false);
 
+        setSearchLocationValue('')
         setSearchLocationResult([]);
         setSearchLocationQuery(undefined);
     };
@@ -358,10 +360,10 @@ const ProcedureTab = ({
                 </InputWrapper>
                 <Space/>
                 <InputWrapper style={[
-                    styles.inputWrapper,
+                    // styles.inputWrapper,
                     {
                         flexDirection: "column",
-                        justifyContent: "flex-end",
+                        // justifyContent: "flex-end",
                     },
                 ]}>
                     <DateInputField
@@ -376,7 +378,7 @@ const ProcedureTab = ({
                         hasError={errors["startTime"]}
                     />
 
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1.7}}>
                         {
                             // duration procedure location date
                             !(!procedure || !location || !duration || !date) && (
@@ -394,8 +396,6 @@ const ProcedureTab = ({
                         }
                     </View>
                 </InputWrapper>
-
-
             </RowWrapper>
         </View>
     );

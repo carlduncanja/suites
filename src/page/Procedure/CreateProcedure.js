@@ -165,7 +165,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
                 setEquipments([...equipments]);
             })
             .catch(error => {
-                console.error('fail.procedure.copy.fetch', error);
+                console.log('fail.procedure.copy.fetch', error);
                 //TODO handle error cases.
             })
             .finally(_ => {

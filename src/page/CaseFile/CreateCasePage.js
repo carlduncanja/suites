@@ -24,6 +24,7 @@ import PageButton from '../../components/common/Page/PageButton';
 import ChevronRight from '../../../assets/svg/ChevronRight';
 import ChevronLeft from '../../../assets/svg/ChevronLeft';
 import Divider from '../../components/common/Divider';
+import LoadingComponent from "../../components/LoadingComponent";
 
 const PATIENT_TABS = {
     DETAILS: 'Details',
@@ -239,6 +240,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     const [procedureErrors, setProcedureErrors] = useState([]);
 
     const [positiveText, setPositiveText] = useState('NEXT');
+    const [isLoading, setLoading] = useState(false);
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -630,6 +632,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         // remove draft from redux state
         if (draftItem?.id) removeDraft(draftItem?.id);
 
+        setLoading(true);
         createCaseFile(caseFileData)
             .then(data => {
                 addCaseFile(data);
@@ -640,7 +643,14 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             })
             .catch(error => {
                 console.log('failed to create case file', error.message);
+                console.log('failed to create case file', error.response);
+
+
+
                 Alert.alert('Sorry', 'Something went wrong when creating case.');
+            })
+            .finally( _ => {
+                setLoading(false)
             });
     };
 
@@ -809,7 +819,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                         <PageButton
                             backgroundColor={theme.colors['--color-blue-500']}
                             fontColor={theme.colors['--default-shade-white']}
-                            text="NEXT"
+                            text={positiveText}
                             onPress={onPositiveButtonPress}
                             IconRight={<ChevronRight strokeColor={theme.colors['--default-shade-white']}/>}
                         />
@@ -838,6 +848,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             >
                 {snackbar?.message || 'Something went wrong'}
             </Snackbar>
+
+            {
+                isLoading &&
+                <LoadingComponent />
+            }
 
         </PageWrapper>
     );
