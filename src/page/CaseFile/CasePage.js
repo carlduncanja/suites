@@ -518,7 +518,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         generateInvoiceCall(caseId)
             .then(invoice => {
                 console.log('invoice created', invoice);
-                addInvoiceToCaseState(invoice);
+                // addInvoiceToCaseState(invoice);
+                fetchCase(caseId);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
