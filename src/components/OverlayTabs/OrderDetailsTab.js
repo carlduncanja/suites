@@ -48,7 +48,7 @@ const OrderDetailsTab = ({
         total = 0,
         supplier = {},
         invoice = "",
-        storageLocation = {},
+        storageLocation,
         configStatus = "",
         approvedBy = {},
         receivedBy = {},
@@ -58,7 +58,7 @@ const OrderDetailsTab = ({
     // console.log("Order: ",deliveryDate)
 
     const {description = "", representatives = []} = supplier;
-    const {name = ""} = storageLocation;
+    const {name = ""} = storageLocation || {};
 
     const [fields, setFields] = useState({
         description,
