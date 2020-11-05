@@ -17,6 +17,7 @@ import ConfirmationComponent from '../components/ConfirmationComponent';
 import CreateUserOverlayDialog from '../components/Roles/CreateRoleOverlayDialog';
 import RefreshableScrollView from '../components/common/RefreshableScrollView';
 import CustomTypes from '../components/Settings/CustomTypes';
+import NotFoundPage from '../components/common/Page/NotFoundPage';
 
 const SectionHeader = styled.View`
   display: flex;
@@ -71,7 +72,9 @@ function Settings({navigation}) {
                 setRoles(results);
                 setSelectedRoles([]);
             })
-            .catch(error => console.error('Error fetching roles: ', error))
+            .catch(
+                // error => console.error('Error fetching roles: ', error)
+            )
             .finally(_ => setFetchingData(false));
     };
 

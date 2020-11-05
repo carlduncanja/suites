@@ -28,8 +28,6 @@ import InventoryNavigationStack from './InventoryNavigationStack';
 import SettingsNavigationStack from './SettingsNavigationStack';
 
 /* Providers*/
-import NotFound from '../../../page/NotFound';
-import LostConnectionPage from '../../common/Page/LostConnectionPage';
 import NotFoundPage from '../../common/Page/NotFoundPage';
 
 /* Icons */
