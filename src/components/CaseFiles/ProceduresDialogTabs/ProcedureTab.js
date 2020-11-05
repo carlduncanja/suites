@@ -360,10 +360,10 @@ const ProcedureTab = ({
                 </InputWrapper>
                 <Space/>
                 <InputWrapper style={[
-                    styles.inputWrapper,
+                    // styles.inputWrapper,
                     {
                         flexDirection: "column",
-                        justifyContent: "flex-end",
+                        // justifyContent: "flex-end",
                     },
                 ]}>
                     <DateInputField
@@ -378,7 +378,7 @@ const ProcedureTab = ({
                         hasError={errors["startTime"]}
                     />
 
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1.7}}>
                         {
                             // duration procedure location date
                             !(!procedure || !location || !duration || !date) && (
@@ -396,8 +396,6 @@ const ProcedureTab = ({
                         }
                     </View>
                 </InputWrapper>
-
-
             </RowWrapper>
         </View>
     );
