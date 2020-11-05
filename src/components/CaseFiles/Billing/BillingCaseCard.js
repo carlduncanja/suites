@@ -147,7 +147,12 @@ const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleE
     }
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={{
+                paddingBottom: 100
+            }}
+        >
 
             <View style={styles.headerContainer}>
 
@@ -265,7 +270,7 @@ const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleE
 
                                 </View>
                             )
-                        })} 
+                        })}
 
             </View>
 
@@ -273,7 +278,7 @@ const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleE
     );
 }
 
-export default withModal(BillingCaseCard);  
+export default withModal(BillingCaseCard);
 
 const styles = StyleSheet.create({
     container: {},
