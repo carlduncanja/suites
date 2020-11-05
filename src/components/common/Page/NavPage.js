@@ -38,9 +38,10 @@ function NavPage({
     hasActions = true,
     isNextDisabled = () => { },
     isPreviousDisabled = () => { },
-    onClear = () => { }
+    onClear = () => { },
+    navigation
 }) {
-    const theme = useTheme()
+    const theme = useTheme();
 
 
     return (
@@ -60,6 +61,7 @@ function NavPage({
                     itemsSelected={itemsSelected}
                     onSelectAll={onSelectAll}
                     listItemFormat={listItemFormat}
+                    navigation={navigation}
                 // onClear = {onClear}
                 />
 

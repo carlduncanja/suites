@@ -39,6 +39,7 @@ import DataItem from '../../components/common/List/DataItem';
 import MultipleTextDataItem from '../../components/common/List/MultipleTextDataItem';
 import patient from '../../../assets/svg/newCasePatient';
 import {emptyFn} from "../../const";
+import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 
 const listHeaders = [
     {
@@ -89,6 +90,8 @@ function CaseFiles(props) {
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [hasDraft, setHasDraft] = useState(true);
+    const [pageSettingState, setPageSettingState] = useState({});
+    const { isDisabled } = pageSettingState;
 
     const routeName = route.name;
 
@@ -241,6 +244,7 @@ function CaseFiles(props) {
                 console.log('failed to get case files', error);
 
                 handleUnauthorizedError(error?.response?.status, setCaseFiles);
+                setPageSettingState({...pageSettingState, isDisabled: true});
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -369,7 +373,11 @@ function CaseFiles(props) {
     const caseFilesToDisplay = [...caseFiles];
 
     return (
-        <>
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
             <NavPage
                 isFetchingData={isFetchingCaseFiles}
                 onRefresh={handleDataRefresh}
@@ -395,8 +403,9 @@ function CaseFiles(props) {
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
+                navigation={navigation}
             />
-        </>
+        </PageSettingsContext.Provider>
     );
 }
 

@@ -3,12 +3,14 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import PageTitle from './PageTitle';
 import Search from '../Search';
 import List from '../List/List';
+import DisabledSectionComponent from '../../DisabledSectionComponent';
 
 import Wrapper from '../Wrapper';
 import LoadingIndicator from '../LoadingIndicator';
 import { SuitesContext } from '../../../contexts/SuitesContext';
+import { PageSettingsContext } from '../../../contexts/PageSettingsContext';
 import { appActions } from '../../../redux/reducers/suitesAppReducer';
-import { colors } from '../../../styles'
+import { colors } from '../../../styles';
 import PropTypes from 'prop-types';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -50,7 +52,9 @@ const PageHeader = styled.View`
 function Page(props) {
 
     // const [state, dispatch] = useContext(SuitesContext);
-    const theme = useTheme()
+    const theme = useTheme();
+    const { pageSettingState } = useContext(PageSettingsContext);
+    const { isDisabled } = pageSettingState;
     const {
         placeholderText,
         changeText,
@@ -67,7 +71,8 @@ function Page(props) {
         TopButton,
         hasList = true,
         hasSearch = true,
-        pageContent
+        pageContent,
+        navigation
     } = props;
 
     const content = hasList ? (
@@ -111,7 +116,9 @@ function Page(props) {
                 {
                     isFetchingData ?
                         <LoadingIndicator /> :
-                        content
+                        isDisabled ?
+                            <DisabledSectionComponent navigation={navigation}/> :
+                            content
                 }
             </PageContainer>
         </PageWrapper>
