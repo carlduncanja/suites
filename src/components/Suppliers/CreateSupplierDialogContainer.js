@@ -59,7 +59,9 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
         phone : "8768458743",
     })
     const [errorFields, setErrorFields] = useState({})
-
+    const [number, setNumber] = useState(fields.phone);
+    const [fax, setFax] = useState(fields.fax);
+    const [repTele, setRepTele] = useState(representative.phone);
     // ######### EVENT HANDLERS
 
     const handleCloseDialog = () => {
@@ -181,7 +183,21 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
             ...updatedFields,
             [fieldName]: value
         })
-    }
+    };
+
+    const handlePhonNumber = value => {
+        setNumber(value);
+        if (value === '') {
+            onFieldChange('phone')(value);
+        } else if (/^\d{10}$/g.test(value))(onFieldChange('phone')(value));
+    };
+
+    const handleFax = value => {
+        setFax(value);
+        if (value === '') {
+            onFieldChange('fax')(value);
+        } else if (/^\d{10}$/g.test(value))(onFieldChange('fax')(value));
+    };
 
     const getTabContent = () => {
         switch (dialogTabs[selectedIndex]) {
@@ -212,15 +228,18 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
 
                 <FieldContainer>
                     <InputField2
-                        label={"Phone"}
-                        onChangeText={(value)=>{
-                            if(/^\d{10}$/g.test(value))(onFieldChange('phone')(value))
+                        label="Phone"
+                        onChangeText={value => {
+                            handlePhonNumber(value);
+                            // onFieldChange('phone')(value);
+                            // if(/^\d{10}$/g.test(value))(onFieldChange('phone')(value))
                         }}
-                        value={fields['phone']}
-                        onClear={() => onFieldChange('phone')('')}
-                        keyboardType = {'number-pad'}
-                        hasError = {errorFields['phone']}
-                        errorMessage = "Phone must be filled."
+                        value={number}
+                        onClear={() => handlePhonNumber('')}
+                        keyboardType="number-pad"
+                        hasError={errorFields.phone}
+                        errorMessage="Phone must be filled."
+                        maxLength={10}
                     />
                 </FieldContainer>
 
@@ -232,13 +251,15 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
                     <InputField2
                         label={"Fax"}
                         onChangeText={(value)=>{
-                            if(/^\d{10}$/g.test(value))(onFieldChange('fax')(value))
+                            handleFax(value);
+                            // if(/^\d{10}$/g.test(value))(onFieldChange('fax')(value))
                         }}
-                        value={fields['fax']}
-                        onClear={() => onFieldChange('fax')('')}
+                        value={fax}
+                        onClear={() => handleFax("")}
                         keyboardType = {'number-pad'}
                         hasError = {errorFields['fax']}
                         errorMessage = "Fax must be filled."
+                        maxLength={10}
                     />
                 </FieldContainer>
 
@@ -272,13 +293,15 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
 
                 <FieldContainer>
                     <InputField2
-                        label={"Rep. TelePhone"}
-                        onChangeText={(value)=>{
-                            if(/^\d{10}$/g.test(value))(handleRepresentative('phone')(value))
+                        label="Rep.TelePhone"
+                        onChangeText={ value => {
+                            setRepTele(value);
+                            if (/^\d{10}$/g.test(value))(handleRepresentative('phone')(value));
                         }}
-                        value={representative['phone']}
-                        onClear={() => handleRepresentative('phone')('')}
+                        value={repTele}
+                        onClear={() => { setRepTele(''); handleRepresentative('phone')(''); }}
                         keyboardType={'number-pad'}
+                        maxLength={10}
                     />
                 </FieldContainer>
 
