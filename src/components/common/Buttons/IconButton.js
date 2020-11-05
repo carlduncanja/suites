@@ -6,8 +6,8 @@ import {useTheme} from "emotion-theming";
 
 const IconButtonWrapper = styled.TouchableOpacity`
     flex:1;
-    height: 100%;
-    width:100%;
+    //height: 100%;
+    //width:100%;
     padding-right: 10px;
     padding-left: 10px;
   `;

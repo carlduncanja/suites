@@ -71,7 +71,7 @@ function Settings({navigation}) {
                 setRoles(results);
                 setSelectedRoles([]);
             })
-            .catch(error => console.error('Error fetching roles: ', error))
+            .catch(error => console.log('Error fetching roles: ', error))
             .finally(_ => setFetchingData(false));
     };
 
@@ -95,7 +95,9 @@ function Settings({navigation}) {
     const updateRole = (id, data) => {
         updateRoleCall(id, data)
             .then(result => console.log(`role.${id}.updated`, data, result))
-            .catch(error => console.error('Error fetching roles: ', error))
+            .catch(error => {
+                console.log('Error fetching roles: ', error)
+            })
             .finally(_ => setFetchingData(false));
     };
 
@@ -120,7 +122,7 @@ function Settings({navigation}) {
                 );
             })
             .catch(error => {
-                console.error('roles.remove.error', error);
+                console.log('roles.remove.error', error);
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -230,7 +232,7 @@ function Settings({navigation}) {
             <CustomTypes
                 navigation={navigation}
             />
-      
+
             <Space/>
 
             <SectionHeader theme={theme}>
