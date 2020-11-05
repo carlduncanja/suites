@@ -76,7 +76,6 @@ const surgeryAppointment = {
  * @constructor
  */
 function ScheduleOverlayContainer({appointment = {}}) {
-
     const [appointmentDetails, setAppointmentDetails] = useState(undefined);
     const [isFetchingDetails, setFetchingDetails] = useState(false);
 
@@ -124,7 +123,7 @@ function ScheduleOverlayContainer({appointment = {}}) {
 
                 // todo prepare procedure data.
                 const caseFile = appointment.item.case;
-
+          
                 const physicians = caseFile.staff && caseFile.staff.physicians.map( item => ({
                     _id: item._id,
                     firstName: item.firstName,
@@ -132,11 +131,11 @@ function ScheduleOverlayContainer({appointment = {}}) {
                     position: "",
                     isLead: caseFile.staff.leadPhysician === item._id
                 }));
-                
+
                 const nurses = [];
 
                 // console.log("procedure", physicians);
-                console.log("caseFile", caseFile.staff);
+                console.log("caseFile", appointment);
 
 
                 return <ProcedureScheduleContent
