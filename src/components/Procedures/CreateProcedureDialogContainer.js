@@ -141,7 +141,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
 
     const validateProcedure = () =>{
         let isValid = true
-        const requiredFields = ['name', 'duration', 'physician', 'serviceFee']
+        const requiredFields = ['name', 'duration', 'physician']
 
         let errorObj = {...errors} || {}
 

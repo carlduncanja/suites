@@ -245,7 +245,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
 
     const validateProcedure = () => {
         let isValid = true;
-        const requiredFields = ['name', 'duration', 'physician', 'serviceFee'];
+        const requiredFields = ['name', 'duration', 'physician'];
 
         const errorObj = {...errors} || {};
 
