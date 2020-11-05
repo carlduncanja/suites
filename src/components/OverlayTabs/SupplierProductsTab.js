@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
 import {withModal} from 'react-native-modalfy';
 import {connect} from 'react-redux';
@@ -28,6 +28,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} fr
 import {getSupplierProducts, createPurchaseOrder} from '../../api/network';
 import {addCartItem} from '../../redux/actions/cartActions';
 import LoadingIndicator from '../common/LoadingIndicator';
+import { PageContext } from '../../contexts/PageContext';
 
 const SearchContainer = styled.View`
     margin-bottom : ${({theme}) => theme.space['--space-20']};
@@ -53,7 +54,7 @@ const PaginatorActionsContainer = styled.View`
     flex-direction : row;
 `;
 
-function SupplierProductsTab({modal, supplierId, addCartItem, cart, products = [], onAddProducts, onProductsCreated}) {
+function SupplierProductsTab({modal, supplierId, addCartItem, cart, products = [], onAddProducts, onProductsCreated, isProductsLoading}) {
     // ######## STATES
     const theme = useTheme();
     const navigation = useNavigation();
@@ -73,6 +74,9 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products = [
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [cartTotal, setCartTotal] = useState(cart.reduce((acc, curr) => acc + (curr.amount || 1), 0));
     const [cartItems, setCartItems] = useState([]);
+    const { pageState } = useContext(PageContext);
+
+    // console.log("Products: ", products);
 
     // ######## CONST
 
@@ -104,6 +108,7 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products = [
             setTotalPages(Math.ceil(productsState.length / recordsPerPage));
         }, 200);
     }, []);
+
 
     // ######## EVENT HANDLERS
 
@@ -409,11 +414,18 @@ function SupplierProductsTab({modal, supplierId, addCartItem, cart, products = [
 
     };
 
+    const onProductsCreation = data => {
+        setProducts([...productsState, ...data]);
+        setTimeout(() => {
+            onProductsCreated();
+        }, 200);
+    };
+
     const addProductAction = () => {
         modal.closeModals('ActionContainerModal');
         navigation.navigate('SupplierProductCreation', {
             supplierId,
-            onProductsCreated
+            onProductsCreation
         });
     };
 

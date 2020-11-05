@@ -16,6 +16,7 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 import {getSupplierById, createPurchaseOrder, getSupplierProducts} from '../../api/network';
 import {colors} from '../../styles';
 import {updateSupplierAction} from '../../redux/actions/suppliersActions';
+import LoadingIndicator from '../../components/common/LoadingIndicator';
 
 function SupplierPage({route, navigation, updateSupplierAction}) {
     const {supplier, isOpenEditable, floatingActions} = route.params;
@@ -128,11 +129,13 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
     };
 
     const fetchProducts = () => {
+        
         setPageLoading(true);
 
         getSupplierProducts(_id, '')
             .then(productsData => {
                 const {data = [], pages = 0} = productsData;
+                console.log("Fetch: ", _id);
                 setProducts(data);
                 setHasFetchProducts(true);
             })
@@ -144,6 +147,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
             })
             .finally(_ => {
                 setPageLoading(false);
+                console.log("Finished")
             });
     };
 
@@ -179,6 +183,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
 
     // const supplierDetails = { supplier, status: '' }
     const getTabContent = selectedTab => {
+        console.log("Page State: ", pageState.isLoading);
         switch (selectedTab) {
             case 'Details':
                 return <SupplierDetailsTab
@@ -188,12 +193,15 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                     isEditMode={isEditMode}
                 />;
             case 'Products':
-                return <SupplierProductsTab
-                    products={products}
-                    onAddProducts={onAddProducts}
-                    onProductsCreated={() => fetchProducts()}
-                    supplierId={_id}
-                />;
+                return pageState.isLoading ?
+                    <LoadingIndicator/> : (
+                        <SupplierProductsTab
+                            products={products}
+                            onAddProducts={onAddProducts}
+                            onProductsCreated={() => fetchProducts()}
+                            supplierId={_id}
+                        />
+                    );
             case 'Purchase Orders':
                 return <SupplierPurshaseOrders
                     floatingActions={floatingActions}

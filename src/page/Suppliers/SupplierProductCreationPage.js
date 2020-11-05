@@ -181,7 +181,7 @@ const headers = [
 ]
 
 function SupplierProductCreationPage({route}) {
-    const { onProductsCreated = () => {}, supplierId} = route.params;
+    const { onProductsCreation = () => {}, supplierId} = route.params;
     const theme = useTheme();
     const modal = useModal()
     const navigation = useNavigation();
@@ -350,7 +350,7 @@ function SupplierProductCreationPage({route}) {
         })
 
         createSupplierProductsCall(supplierId, createProductsData)
-            .then( _ => {
+            .then(_ => {
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -360,8 +360,8 @@ function SupplierProductCreationPage({route}) {
                             onCancel = {() => {}}
                             onAction = {() => {
                                 modal.closeAllModals();
-                                onProductsCreated()
-                                navigation.goBack()
+                                onProductsCreation(data);
+                                navigation.goBack();
                             }}
                         />
                         ,
