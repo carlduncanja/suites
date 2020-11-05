@@ -23,7 +23,7 @@ const headers = [
     {
         name: 'Procedure',
         alignment: 'flex-start',
-        flex: 1.5
+        flex: 2
     },
     {
         name: 'Theatre',
@@ -105,7 +105,7 @@ const CustomProceduresTab = ({modal,procedures}) => {
 
     const listItemFormat = item => (
         <>
-            <DataItem flex={1.5} align="flex-start" text={item?.procedure} color="--color-blue-600" fontStyle="--text-base-medium"/>
+            <DataItem flex={2} align="flex-start" text={item?.procedure} color="--color-blue-600" fontStyle="--text-base-medium"/>
             <DataItem flex={1.5} align="flex-start" text={item?.theatre} color="--color-blue-600" fontStyle="--text-base-medium"/>
             <DataItem flex={1} align="center" text={item.recovery} color={RECOVERY_COLORS[item.recovery]} fontStyle="--text-base-medium"/>
             <DataItem flex={1} align="flex-end" text={`${item.duration} hrs`} color="--color-gray-800" fontStyle="--text-base-regular"/>

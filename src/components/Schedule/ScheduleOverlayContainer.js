@@ -132,17 +132,18 @@ function ScheduleOverlayContainer({appointment = {}}) {
                     position: "",
                     isLead: caseFile.staff.leadPhysician === item._id
                 }));
+                
+                const nurses = [];
 
-                console.log("procedure", physicians);
+                // console.log("procedure", physicians);
+                console.log("caseFile", caseFile.staff);
+
 
                 return <ProcedureScheduleContent
                     appointmentDetails={appointment}
                     physicians={physicians}
                     leadPhysicianId={caseFile.staff.leadPhysician}
-                    nurses={[
-                        {_id: "20", firstName: "Jason", lastName: "Morris"},
-                        {_id: "21", firstName: "Ashley", lastName: "Gaynor"}
-                    ]}
+                    nurses={nurses}
                 />
             }
             case scheduleTypes.DELIVERY: {
