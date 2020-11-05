@@ -99,7 +99,7 @@ function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, 
             })
             .catch(error => {
                 // TODO handle error
-                console.error('failed to get storage locations');
+                console.log('failed to get storage locations');
                 setSearchResults([]);
             });
     };
@@ -116,7 +116,7 @@ function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, 
             })
             .catch(error => {
                 // TODO handle error
-                console.error('failed to get theatres');
+                console.log('failed to get theatres');
                 setSearchResults([]);
             });
     };
@@ -133,7 +133,7 @@ function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, 
             })
             .catch(error => {
                 // TODO handle error
-                console.error('failed to get physicians', error);
+                console.log('failed to get physicians', error);
                 setSearchResults([]);
             });
     };

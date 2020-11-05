@@ -1339,17 +1339,17 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
                     Sharing.shareAsync(uri, {UTI: 'pdf'})
                         .then(result => console.info('sharing.success', result))
-                        .catch(error => console.error('sharing.error', error));
+                        .catch(error => console.log('sharing.error', error));
                 })
                 .catch(error => {
-                    console.error(error);
+                    console.log(error);
                 })
                 .finally(_ => {
                     setPageLoading(false);
                     modal.closeAllModals();
                 });
         } catch (error) {
-            console.error(error); // todo: show error message
+            console.log(error); // todo: show error message
             setPageLoading(false);
             modal.closeAllModals();
         }
@@ -1536,17 +1536,17 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
                     Sharing.shareAsync(uri, {UTI: 'pdf'})
                         .then(result => console.info('sharing.success', result))
-                        .catch(error => console.error('sharing.error', error));
+                        .catch(error => console.log('sharing.error', error));
                 })
                 .catch(error => {
-                    console.error(error);
+                    console.log(error);
                 })
                 .finally(_ => {
                     setPageLoading(false);
                     modal.closeAllModals();
                 });
         } catch (error) {
-            console.error(error); // todo: show error message
+            console.log(error); // todo: show error message
             setPageLoading(false);
             modal.closeAllModals();
         }
