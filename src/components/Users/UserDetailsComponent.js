@@ -4,6 +4,7 @@ import {View} from 'react-native';
 import styled from '@emotion/native';
 import Row from "../common/Row";
 import Record from "../common/Information Record/Record";
+import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
 import {PageContext} from "../../contexts/PageContext";
 import InputLabelComponent from "../common/InputLablel";
 import {MenuOption, MenuOptions} from "react-native-popup-menu";
@@ -209,10 +210,15 @@ function UserDetailsComponent({user, onUserUpdated = () => {}}) {
             </Row>
 
             <Row>
-                <Record
+                <ResponsiveRecord
+                    recordTitle="Password"
+                    recordValue="Reset Password"
+                    handleRecordPress={() => {}}
+                />
+                {/* <Record
                     recordValue={userFields['password']}
                     recordTitle='Password'
-                />
+                /> */}
             </Row>
 
             {
