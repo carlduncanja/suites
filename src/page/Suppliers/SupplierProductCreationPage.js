@@ -146,7 +146,7 @@ const FooterContainer = styled.View`
     flex:1;
 `;
 
-const RowCellWrapper = styled.View( ({flex, justifyContent}) => ({
+const RowCellWrapper = styled.View(({flex, justifyContent}) => ({
     display: 'flex',
     flex: flex || 1,
     flexDirection: 'row',
@@ -154,7 +154,6 @@ const RowCellWrapper = styled.View( ({flex, justifyContent}) => ({
     alignItems: 'center',
     marginRight: 8
 }))
-
 
 
 const headers = [
@@ -181,7 +180,10 @@ const headers = [
 ]
 
 function SupplierProductCreationPage({route}) {
-    const { onProductsCreation = () => {}, supplierId} = route.params;
+    const {
+        onProductsCreation = () => {
+        }, supplierId
+    } = route.params;
     const theme = useTheme();
     const modal = useModal()
     const navigation = useNavigation();
@@ -269,12 +271,14 @@ function SupplierProductCreationPage({route}) {
             ...data
         ])
 
+        setSearchValue('')
+        setSearchResults([])
     }
 
     const onUpdateValue = (field, selectedIndex) => value => {
         const updatedData = data.map((item, index) => {
             return selectedIndex === index
-                ? {...item, [field] : value}
+                ? {...item, [field]: value}
                 : {...item}
         })
 
@@ -298,20 +302,25 @@ function SupplierProductCreationPage({route}) {
                 <RowCellWrapper>
                     <InputField2
                         value={name}
-                        onChangeText={onUpdateValue('name',index)}
+                        onChangeText={onUpdateValue('name', index)}
                     />
                 </RowCellWrapper>
 
                 <RowCellWrapper>
-                <InputField2
-                    value={inventoryVariant?.name}
-                />
+                    <InputField2
+                        value={inventoryVariant?.name}
+                    />
                 </RowCellWrapper>
 
                 <RowCellWrapper>
-                <InputField2
-                    value={unitPrice}
-                />
+                    <InputField2
+                        value={unitPrice}
+                        onClear={onUpdateValue('unitPrice', index)}
+                        onChangeText={(value) => {
+                            if (!isNaN(value))
+                                onUpdateValue('unitPrice', index)(value)
+                        }}
+                    />
                 </RowCellWrapper>
 
                 <RowCellWrapper flex={.4}>
@@ -355,40 +364,45 @@ function SupplierProductCreationPage({route}) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {false}
+                            isEditUpdate={false}
                             message="Products Created"
-                            onCancel = {() => {}}
-                            onAction = {() => {
+                            onCancel={() => {
+                            }}
+                            onAction={() => {
                                 modal.closeAllModals();
                                 onProductsCreation(data);
                                 navigation.goBack();
                             }}
                         />
                         ,
-                        onClose: () => {modal.closeModals("ConfirmationModal")}
+                        onClose: () => {
+                            modal.closeModals("ConfirmationModal")
+                        }
                     })
             })
-            .catch( error => {
+            .catch(error => {
                 console.log("failed to create products", error.response?.body)
                 modal.openModal(
-                        'ConfirmationModal',
-                        {
-                            content: <ConfirmationComponent
-                                isError={true}
-                                isEditUpdate = {false}
-                                message='Failed to create products.'
-                                onCancel = {() => {
-                                    modal.closeAllModals();
-                                }}
-                                onAction = {() => {
-                                    modal.closeAllModals();
-                                }}
-                            />
-                            ,
-                            onClose: () => {modal.closeModals("ConfirmationModal")}
-                        })
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            message='Failed to create products.'
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals("ConfirmationModal")
+                        }
+                    })
             })
-            .finally( _ => {
+            .finally(_ => {
                 setLoading(false);
             })
     }
@@ -426,7 +440,7 @@ function SupplierProductCreationPage({route}) {
                                         <SearchableOptionsField
                                             value={null}
                                             text={searchValue}
-                                            oneOptionsSelected={(item) => onItemSelected(item)}
+                                            oneOptionsSelected={onItemSelected}
                                             onChangeText={(value) => {
                                                 setSearchValue(value)
                                             }}
@@ -438,13 +452,6 @@ function SupplierProductCreationPage({route}) {
                                             isPopoverOpen={searchQuery}
                                             borderColor={theme.colors['--color-gray-400']}
                                         />
-
-                                        {/*<RowCellWrapper flex={0.15}>*/}
-                                        {/*    <IconButton*/}
-                                        {/*        Icon={<InfoIcon/>}*/}
-                                        {/*    />*/}
-                                        {/*</RowCellWrapper>*/}
-
                                     </SearchableFieldContainer>
 
                                     <ListContainer>
