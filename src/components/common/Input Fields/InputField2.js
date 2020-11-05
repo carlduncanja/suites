@@ -104,7 +104,8 @@ function InputField2({
     isFocussed = false,
     autoCapitalize = 'sentences', // default from docs
     hasBorder = true,
-    Icon
+    Icon,
+    maxLength
 }) {
     const theme = useTheme();
     const inputRef = useRef();
@@ -142,6 +143,7 @@ function InputField2({
                         onEndEditing={onEndEditing}
                         autoCapitalize={autoCapitalize}
                         ref={inputRef}
+                        maxLength={maxLength}
                     />
 
                     {
