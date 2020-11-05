@@ -327,12 +327,49 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                 onUpdate();
                 fetchProcdure(_id);
                 console.log('Success: ', data);
+
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Changes were successfully made."//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+
                 // modal.closeAllModals();
                 // setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
                 // todo handle error
                 console.log('failed to update procedure', error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                // resetState();
+                            }}
+                            message="Something went wrong when applying changes."//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => console.log('Modal closed'),
+                });
             });
     };
 

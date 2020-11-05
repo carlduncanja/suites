@@ -1,7 +1,7 @@
 import React from 'react';
-import FrameTitle from '../FrameTitle'
-import styled  from '@emotion/native';
+import styled from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import FrameTitle from '../FrameTitle';
 import FrameNoteContent from '../FrameContents/FrameNoteContent';
 
 /**
@@ -26,7 +26,7 @@ const FrameNoteCardContainer = styled.View`
     width: 100%; 
 `;
 
-function FrameNoteCard(props){
+function FrameNoteCard(props) {
     const {
         frameColor,
         frameBorderColor,
@@ -34,37 +34,32 @@ function FrameNoteCard(props){
         icon,
         frameTitle,
         cardInformation,
-        handleUpdate = ()=>{},
-        onClear = ()=>{},
+        handleUpdate = () => {},
+        onClear = () => {},
         isEditMode = false,
-        handleEdit = ()=>{},
+        handleEdit = () => {},
         isAddNew = true,
-        handleAddNew = () =>{}
-    } = props
+        handleAddNew = () => {}
+    } = props;
 
     const theme = useTheme();
 
-
     return (
-        <FrameNoteCardWrapper theme = {theme}>
+        <FrameNoteCardWrapper theme={theme}>
             <FrameNoteCardContainer>
                 <FrameTitle
                     color={frameColor}
-                    borderColor = {frameBorderColor}
+                    borderColor={frameBorderColor}
                     backgroundColor={titleBackgroundColor}
                     icon={icon}
                     frameTitle={frameTitle}
                 />
                 <FrameNoteContent
-                    cardInformation = {cardInformation}
-                    handleUpdate = {handleUpdate}
-
+                    cardInformation={cardInformation}
+                    handleUpdate={handleUpdate}
                 />
-
-
             </FrameNoteCardContainer>
         </FrameNoteCardWrapper>
-    )
+    );
 }
-export default FrameNoteCard
-
+export default FrameNoteCard;
