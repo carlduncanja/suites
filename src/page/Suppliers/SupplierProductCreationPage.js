@@ -322,6 +322,7 @@ function SupplierProductCreationPage({route}) {
                             if (!isNaN(value))
                                 onUpdateValue('unitPrice', index)(value)
                         }}
+                        keyboardType="numeric"
                     />
                 </RowCellWrapper>
 
