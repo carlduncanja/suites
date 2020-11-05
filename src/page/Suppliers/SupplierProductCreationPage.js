@@ -302,12 +302,14 @@ function SupplierProductCreationPage({route}) {
                 <RowCellWrapper>
                     <InputField2
                         value={name}
+                        onClear={onUpdateValue('name', index)}
                         onChangeText={onUpdateValue('name', index)}
                     />
                 </RowCellWrapper>
 
                 <RowCellWrapper>
                     <InputField2
+                        enabled={false}
                         value={inventoryVariant?.name}
                     />
                 </RowCellWrapper>
