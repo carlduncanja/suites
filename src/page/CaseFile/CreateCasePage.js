@@ -47,7 +47,7 @@ const testData = {
         middleName: '',
         surname: 'Doe',
         gender: 'Male',
-        trn: '429915360',
+        trn: '',
         dob: '2000-06-02',
         contactInfo: {
             phones: [
