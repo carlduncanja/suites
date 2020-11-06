@@ -85,7 +85,8 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
         createUser(data);
     }
 
-    const onFieldChange = field => value => {
+    const onFieldChange = ( field = '') => ( value = '') => {
+        console.log(field, value);
         setCreateUserFields({
             ...createUserFields,
             [field]: value
@@ -111,8 +112,7 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                     [requiredField]: "Value is Required"
                 }
                 isValid = false;
-            }
-            else if(requiredField === 'role' && Object.keys(createUserFields[requiredField]).length === 0){
+            } else if (requiredField === 'role' && Object.keys(createUserFields[requiredField]).length === 0) {
                 console.log("Role error");
                 errors = {
                     ...errors,
@@ -236,11 +236,11 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
                     tab={selectedIndex}
                 />
 
-                <OverlayDialogContent height = {256}>
+                <OverlayDialogContent height={256}>
 
                     <>
                         <Row>
-                            
+
                             <FieldContainer>
                                 <InputField2
                                     label={'First Name'}

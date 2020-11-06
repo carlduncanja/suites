@@ -27,7 +27,7 @@ function IconButton({
     const theme = useTheme();
 
     return (
-        <IconButtonWrapper theme={theme} onPress={onPress} disabled={disabled}>
+        <IconButtonWrapper theme={theme} onPress={() => onPress()} disabled={disabled}>
             <IconButtonContainer theme={theme}>{Icon}</IconButtonContainer>
         </IconButtonWrapper>
     );
