@@ -293,6 +293,7 @@ const OrderItemTab = ({
                 toggleHeaderCheckbox = {handleOnSelectAll}
                 itemSelected = {selectedItems}
             />
+
             <Footer
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
@@ -300,8 +301,8 @@ const OrderItemTab = ({
                 goToPreviousPage={goToPreviousPage}
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
-                isNextDisabled = {true}
-                isPreviousDisabled = {true}
+                isNextDisabled = {currentPagePosition >= totalPages}
+                isPreviousDisabled = {(currentPagePosition === 1)}
             />
 
         </>
