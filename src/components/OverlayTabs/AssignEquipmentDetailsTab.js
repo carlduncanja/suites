@@ -57,7 +57,19 @@ font:${({theme}) => theme.font['--text-base-bold']};
 color:${({theme}) => theme.colors['--default-shade-white']};
 `;
 
-function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, theatres, onLocationUpdate, onTheatreUpdate, onPhysicianUpdate, equipmentDetails, onDonePress}) {
+function AssignEquipmentDetailsTab({
+                                       data,
+                                       errors = {},
+                                       onFieldChange,
+                                       locations,
+                                       physicians,
+                                       theatres,
+                                       onLocationUpdate,
+                                       onTheatreUpdate,
+                                       onPhysicianUpdate,
+                                       equipmentDetails,
+                                       onDonePress
+                                   }) {
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [searchQuery, setSearchQuery] = useState();
@@ -144,7 +156,14 @@ function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, 
 
     return (
         <>
-            <View style={{padding: 32, flexDirection: 'column', height: '88%', width: '100%', alignItems: 'center', justifyContent: 'flex-start'}}>
+            <View style={{
+                padding: 32,
+                flexDirection: 'column',
+                height: '88%',
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'flex-start'
+            }}>
 
                 <Row style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <InputWrapper>
@@ -194,6 +213,8 @@ function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, 
                             labelWidth={80}
                             value={data.assignment === 'Location' ? locations : data.assignment === 'Theatre' ? theatres : physicians}
                             text={searchValue}
+                            hasError={errors.assignment}
+                            errorMessage={'Assignment Needed'}
                             oneOptionsSelected={value => {
                                 const location = {
                                     _id: value._id,
@@ -228,6 +249,8 @@ function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, 
                                 label="From"
                                 labelWidth={80}
                                 value={data.date}
+                                errorMessage={'Date and Time Required'}
+                                hasError={errors.data}
                                 onClear={() => onFieldChange('date')('')}
                                 mode="date"
                                 format="YYYY-MM-DD"
@@ -236,8 +259,6 @@ function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, 
                                 minDate={moment().add(1, 'days').toDate()}
                                 maxDate={null}
                                 onDateChange={onDateChange}
-                                // hasError={errors['dob']}
-                                // errorMessage={errors['dob']}
                             />
                         </InputWrapper>
                     }
@@ -247,6 +268,8 @@ function AssignEquipmentDetailsTab({data, onFieldChange, locations, physicians, 
                             <InputUnitField
                                 label="Duration"
                                 labelWidth={70}
+                                errorMessage={'Duration Required'}
+                                hasError={errors.duration}
                                 onChangeText={value => {
                                     if (/^\d+$/g.test(value) || !value) {
                                         onFieldChange('duration')(value);

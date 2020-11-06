@@ -477,7 +477,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             onAction={() => {
                                 modal.closeAllModals();
                             }}
-                            message="Failed to Generate Quotation?"
                             action="Ok"
                         />
                     ),

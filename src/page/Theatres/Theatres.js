@@ -282,6 +282,7 @@ function Theatres(props) {
     };
 
     const removeTheatresCall = data => {
+        setFetchingData(true);
         removeTheatres(data)
             .then(_ => {
                 modal.openModal(
@@ -315,6 +316,7 @@ function Theatres(props) {
             })
             .finally(_ => {
                 setFloatingAction(false);
+                setFetchingData(false);
             });
     };
 
