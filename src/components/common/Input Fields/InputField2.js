@@ -63,6 +63,7 @@ const Input = styled.TextInput`
     flex:1;
     width : 85%;
     padding-left : ${({theme}) => theme.space['--space-10']};
+    padding-right : ${({theme}) => theme.space['--space-32']};
 `;
 
 const ErrorContainer = styled.View`
@@ -79,7 +80,8 @@ const ErrorText = styled.Text(({theme}) => ({
 const IconContainer = styled.View`
     position: absolute;
     height: 100%;
-    right : 0;
+    right : -2px;
+    
 `;
 
 function InputField2({
@@ -88,7 +90,7 @@ function InputField2({
     secureTextEntry = false,
     onChangeText = () => {
     },
-    value,
+    value = '',
     enabled = true,
     placeholder = '',
     keyboardType,
@@ -113,6 +115,7 @@ function InputField2({
     return (
         <InputContainerComponent>
 
+
             {
                 label &&
                 <LabelWrapper>
@@ -134,6 +137,7 @@ function InputField2({
                         theme={theme}
                         onChangeText={onChangeText}
                         value={value}
+
                         editable={enabled}
                         keyboardType={keyboardType}
                         placeholder={placeholder}
