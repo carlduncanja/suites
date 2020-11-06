@@ -1,28 +1,29 @@
-import React, {useState, useEffect, useContext, useRef} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import { View, Text, StyleSheet } from "react-native";
 import Record from '../common/Information Record/Record';
 import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
 import Row from '../common/Row';
 import LineDivider from '../common/LineDivider';
 
-import {transformToSentence} from "../../utils/formatter";
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import {PageContext} from "../../contexts/PageContext";
+import { transformToSentence } from "../../utils/formatter";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { PageContext } from "../../contexts/PageContext";
 import edit from "../../../assets/svg/edit";
 import InputField2 from "../common/Input Fields/InputField2";
 import InputLabelComponent from "../common/InputLablel";
 import TextArea from "../common/Input Fields/TextArea";
 import ConfirmationComponent from "../ConfirmationComponent";
-import {updateSupplierCall} from "../../api/network";
+import { updateSupplierCall } from "../../api/network";
 import LoadingIndicator from "../common/LoadingIndicator";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
 import OptionsField from "../common/Input Fields/OptionsField";
-import {MenuOption, MenuOptions} from "react-native-popup-menu";
+import { MenuOption, MenuOptions } from "react-native-popup-menu";
+import { set } from "numeral";
 
 const LineDividerContainer = styled.View`
-    margin-bottom : ${({theme}) => theme.space['--space-32']};
-    margin-top : ${({theme}) => theme.space['--space-32']};
+    margin-bottom : ${({ theme }) => theme.space['--space-32']};
+    margin-top : ${({ theme }) => theme.space['--space-32']};
 `;
 
 const TextAreaWrapper = styled.View`
@@ -36,29 +37,29 @@ const InputWrapper = styled.View`
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-    z-index: ${({zIndex}) => zIndex};
+    z-index: ${({ zIndex }) => zIndex};
     margin-right: 8px;
 `
 
 const RowWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;
-    margin-top: ${({theme}) => theme.space['--space-20']};
-    margin-bottom: ${({theme}) => theme.space['--space-20']};
-    z-index: ${({zIndex}) => zIndex};
+    margin-top: ${({ theme }) => theme.space['--space-20']};
+    margin-bottom: ${({ theme }) => theme.space['--space-20']};
+    z-index: ${({ zIndex }) => zIndex};
 `
 
-const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
+const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
 
     const fieldsBaseStateRef = useRef();
     const modal = useModal();
     const theme = useTheme();
 
-    const {supplier = {}} = order;
-    const {pageState, setPageState} = useContext(PageContext);
+    const { supplier = {} } = order;
+    const { pageState, setPageState } = useContext(PageContext);
     const [isUpdated, setUpdated] = useState(false);
     const [isLoading, setLoading] = useState(false)
-    const {isEditMode} = pageState;
+    const { isEditMode } = pageState;
 
     const {
         description = "",
@@ -75,7 +76,6 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
     const [fields, setFields] = useState({});
 
     useEffect(() => {
-        console.log("isEditMode", isEditMode)
 
         if (isUpdated && !isEditMode) {
             modal.openModal('ConfirmationModal', {
@@ -85,12 +85,13 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
                         isEditUpdate={true}
                         onCancel={() => {
                             // resetState()
-                            setPageState({...pageState, isEditMode: true})
+                            setPageState({ ...pageState, isEditMode: true })
                             modal.closeAllModals();
                         }}
                         onAction={() => {
                             modal.closeAllModals();
                             updatedSupplier()
+                            setUpdated(!isUpdated)
                         }}
                         message="Would you like to finish edit and save changes?"//general message you can send to be displayed
                         action="Yes"
@@ -118,7 +119,7 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
     }, [supplier])
 
     const onFieldUpdated = (field) => (value) => {
-        setUpdated(true);
+        setUpdated(!isUpdated)
         setFields({
             ...fields,
             [field]: value
@@ -197,14 +198,14 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
                 {
                     isEditMode
                         ? <InputWrapper>
-                            <InputLabelComponent label={'Description'}/>
+                            <InputLabelComponent label={'Description'} />
                             <TextAreaWrapper>
                                 <TextArea
                                     onChangeText={onFieldUpdated('description')}
                                     value={fields['description']}
                                     multiline={true}
                                     numberOfLines={4}
-                                    onClear={onFieldUpdated('description')}
+                                    onClear={() => { onFieldUpdated('description')('') }}
                                 />
                             </TextAreaWrapper>
                         </InputWrapper>
@@ -222,11 +223,12 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
                 {
                     isEditMode
                         ? <InputWrapper>
-                            <InputLabelComponent label={'Supplier ID'}/>
+                            <InputLabelComponent label={'Supplier ID'} />
                             <InputField2
                                 value={fields.supplierNumber}
                                 onChangeText={onFieldUpdated('supplierNumber')}
                                 enabled={false}
+                                onClear={() => { onFieldUpdated('supplierNumber')('') }}
                             />
                         </InputWrapper>
                         : <Record
@@ -239,11 +241,12 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
                 {
                     isEditMode
                         ? <InputWrapper>
-                            <InputLabelComponent label={'Supplier Name'}/>
+                            <InputLabelComponent label={'Supplier Name'} />
                             <InputField2
                                 value={fields['name']}
                                 onChangeText={onFieldUpdated('name')}
                                 enabled={true}
+                                onClear={() => { onFieldUpdated('name')('') }}
                             />
                         </InputWrapper>
                         : <Record
@@ -255,14 +258,14 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
                 {
                     isEditMode
                         ? <InputWrapper>
-                            <InputLabelComponent label={'Status'}/>
+                            <InputLabelComponent label={'Status'} />
                             <OptionsField
                                 text={transformToSentence(fields['status'] || 'active')}
                                 oneOptionsSelected={onFieldUpdated('status')}
                                 menuOption={(
                                     <MenuOptions>
-                                        <MenuOption value="active" text="Active"/>
-                                        <MenuOption value="disengaged" text="Disengaged"/>
+                                        <MenuOption value="active" text="Active" />
+                                        <MenuOption value="disengaged" text="Disengaged" />
                                     </MenuOptions>
                                 )}
                             />
@@ -291,11 +294,12 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
                         />
 
                         : <InputWrapper>
-                            <InputLabelComponent label={'Telephone'}/>
+                            <InputLabelComponent label={'Telephone'} />
                             <InputField2
                                 value={fields['phone']}
                                 onChangeText={onFieldUpdated('phone')}
                                 enabled={true}
+                                onClear={() => { onFieldUpdated('phone')('') }}
                             />
                         </InputWrapper>
 
@@ -309,11 +313,12 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
                             recordValue={fields['fax']}
                         />
                         : <InputWrapper>
-                            <InputLabelComponent label={'Fax'}/>
+                            <InputLabelComponent label={'Fax'} />
                             <InputField2
                                 value={fields['fax']}
                                 onChangeText={onFieldUpdated('fax')}
                                 enabled={true}
+                                onClear={() => { onFieldUpdated('fax')('') }}
                             />
                         </InputWrapper>
                 }
@@ -328,18 +333,19 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
                             editMode={isEditMode}
                         />
                         : <InputWrapper>
-                            <InputLabelComponent label={'Email'}/>
+                            <InputLabelComponent label={'Email'} />
                             <InputField2
                                 value={fields['email']}
                                 onChangeText={onFieldUpdated('email')}
                                 enabled={true}
+                                onClear={() => onFieldUpdated('email')('')}
                             />
                         </InputWrapper>
                 }
             </RowWrapper>
 
             <LineDividerContainer theme={theme}>
-                <LineDivider/>
+                <LineDivider />
             </LineDividerContainer>
 
             {
@@ -370,7 +376,7 @@ const SupplierDetailsTab = ({supplierId, onUpdated, order}) => {
 
             {
                 isLoading &&
-                <LoadingIndicator/>
+                <LoadingIndicator />
             }
         </>
     )

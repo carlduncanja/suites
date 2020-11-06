@@ -1323,6 +1323,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
         // build args to pass to document generation endpoint; pass result of that endpoint to downloadAsync
         try {
+            modal.closeModals('ActionContainerModal');
             setPageLoading(true);
             const response = await generateDocumentLink(data);
 
@@ -1336,7 +1337,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             )
                 .then(({uri}) => {
                     console.info(`download.path::${uri}`);
-
+                    
                     Sharing.shareAsync(uri, {UTI: 'pdf'})
                         .then(result => console.info('sharing.success', result))
                         .catch(error => console.log('sharing.error', error));

@@ -463,7 +463,7 @@ function Theatres(props) {
 
     return (
         <NavPage
-            placeholderText="Search by theatre name or status."
+            placeholderText="Search by theatre name"
             routeName={pageTitle}
             listData={theatresToDisplay}
             listItemFormat={renderItem}

@@ -2,11 +2,11 @@ import initialState from './initialState';
 import { SET_CART_ITEMS, ADD_CART_ITEM } from '../actions/cartActions';
 
 export default (state = initialState.cart, action) => {
-    const {type, payload} = action;
+    const { type, payload } = action;
 
     switch (type) {
         case SET_CART_ITEMS: {
-            const {data} = payload;
+            const { data } = payload;
             return [...data];
         }
         case ADD_CART_ITEM: {

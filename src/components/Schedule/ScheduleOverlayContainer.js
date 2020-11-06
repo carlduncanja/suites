@@ -131,8 +131,13 @@ function ScheduleOverlayContainer({appointment = {}}) {
                     position: "",
                     isLead: caseFile.staff.leadPhysician === item._id
                 }));
-
-                const nurses = [];
+                
+                const nurses = caseFile.staff.nurses.map(item => ({
+                    _id: item._Id,
+                    firstName: item.first_name,
+                    lastName: item.last_name
+                }));
+                
 
                 // console.log("procedure", physicians);
                 console.log("caseFile", appointment);

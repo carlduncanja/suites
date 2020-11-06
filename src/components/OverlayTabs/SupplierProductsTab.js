@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
-import {useModal, withModal} from 'react-native-modalfy';
-import {connect} from 'react-redux';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { useModal, withModal } from 'react-native-modalfy';
+import { connect } from 'react-redux';
 import _ from 'lodash';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import {useNavigation} from '@react-navigation/native';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { useNavigation } from '@react-navigation/native';
 import Table from '../common/Table/Table';
 import Search from '../common/Search';
 import Item from '../common/Table/Item';
@@ -23,15 +23,15 @@ import Cart from '../../../assets/svg/cart';
 import ActionItem from '../common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
 
-import {currencyFormatter} from '../../utils/formatter';
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
-import {getSupplierProducts, createPurchaseOrder} from '../../api/network';
-import {addCartItem} from '../../redux/actions/cartActions';
+import { currencyFormatter } from '../../utils/formatter';
+import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
+import { getSupplierProducts, createPurchaseOrder } from '../../api/network';
+import { addCartItem } from '../../redux/actions/cartActions';
 import LoadingIndicator from '../common/LoadingIndicator';
-import {PageContext} from '../../contexts/PageContext';
+import { PageContext } from '../../contexts/PageContext';
 
 const SearchContainer = styled.View`
-    margin-bottom : ${({theme}) => theme.space['--space-20']};
+    margin-bottom : ${({ theme }) => theme.space['--space-20']};
 `;
 
 const FooterWrapper = styled.View`
@@ -75,14 +75,14 @@ const headers = [
 ];
 
 function SupplierProductsTab({
-                                 supplierId,
-                                 addCartItem,
-                                 cart,
-                                 products = [],
-                                 onAddProducts,
-                                 onProductsCreated,
-                                 isProductsLoading
-                             }) {
+    supplierId,
+    addCartItem,
+    cart,
+    products = [],
+    onAddProducts,
+    onProductsCreated,
+    isProductsLoading
+}) {
     // ######## STATES
     const theme = useTheme();
     const modal = useModal();
@@ -103,9 +103,9 @@ function SupplierProductsTab({
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [cartTotal, setCartTotal] = useState(cart.reduce((acc, curr) => acc + (curr.amount || 1), 0));
     const [cartItems, setCartItems] = useState([]);
-    const {pageState} = useContext(PageContext);
+    const { pageState } = useContext(PageContext);
 
-    // console.log("Products: ", products);
+
 
     // ######## CONST
 
@@ -126,12 +126,12 @@ function SupplierProductsTab({
         // open product page.
         modal.closeModals('ActionContainerModal');
         setFloatingAction(true);
-        navigation.navigate('SupplierProductPage', {product: productItem, onUpdated: onProductUpdate});
+        navigation.navigate('SupplierProductPage', { product: productItem, onUpdated: onProductUpdate });
     };
 
     const onProductUpdate = (value) => {
         const updated = productsState.map(item => {
-            return item._id === value._id ? {...value} : {...item}
+            return item._id === value._id ? { ...value } : { ...item }
         })
         setProducts(updated)
     }
@@ -142,7 +142,7 @@ function SupplierProductsTab({
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            const { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -152,7 +152,7 @@ function SupplierProductsTab({
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        const { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -204,7 +204,7 @@ function SupplierProductsTab({
         setLoading(true);
 
         // console.log("List: ", data)
-        const {purchaseOrders = [], deliveryDate = ''} = data;
+        const { purchaseOrders = [], deliveryDate = '' } = data;
         addCartItem(purchaseOrders);
         // updateCartItems(data)
         setCartItems(purchaseOrders);
@@ -212,7 +212,7 @@ function SupplierProductsTab({
     };
 
     const onCompleteOrder = data => {
-        const {purchaseOrders = [], deliveryDate = ''} = data;
+        const { purchaseOrders = [], deliveryDate = '' } = data;
         const orderToCreate = {
             deliveryDate,
             orders: purchaseOrders,
@@ -317,7 +317,7 @@ function SupplierProductsTab({
         modal.closeModals('OverlayModal');
 
         setTimeout(() => {
-            const {name = '', storageLocation = {}} = fields;
+            const { name = '', storageLocation = {} } = fields;
             const updatedOrders = data
                 .filter(item => {
                     if (item.amount || item.amount !== 0) {
@@ -358,13 +358,13 @@ function SupplierProductsTab({
             <ActionItem
                 title="Add to Cart"
                 icon={<AddIcon
-                    strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']}/>}
+                    strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']} />}
                 disabled={isDisabled}
                 touchable={!isDisabled}
                 onPress={addToCartAction}
             />
         );
-        const addProduct = <ActionItem title="Add Product" icon={<AddIcon/>} onPress={addProductAction}/>;
+        const addProduct = <ActionItem title="Add Product" icon={<AddIcon />} onPress={addProductAction} />;
         return <ActionContainer
             floatingActions={[
                 addCart,
@@ -378,7 +378,7 @@ function SupplierProductsTab({
         setTimeout(() => {
             modal.openModal('OverlayInfoModal', {
                 overlayContent: <SuppliersPurchaseOrder
-                    details={cartItems}
+                    details={cart}
                     onUpdateItems={onUpdateItems}
                     onClearPress={onClearPress}
                     onListFooterPress={onConfirmChanges}
@@ -391,6 +391,8 @@ function SupplierProductsTab({
         let cartQuantity;
         let updatedCheckboxList = [...checkboxList];
         const updatedCartItems = [...cartItems];
+
+
 
         if (!updatedCartItems.length) { // add all the checked items since none exist currently in cart
             updatedCheckboxList = updatedCheckboxList.map(item => ({
@@ -417,9 +419,12 @@ function SupplierProductsTab({
 
         modal.closeModals('ActionContainerModal');
 
+        console.log("updated cart items", updatedCartItems)
+
         setFloatingAction(false);
         setCartItems(updatedCartItems);
         setCartTotal(cartQuantity);
+        addCartItem(updatedCartItems)
         setCheckboxList([]); // clear checked items
 
     };
@@ -441,10 +446,10 @@ function SupplierProductsTab({
 
     const listItemFormat = item => (
         <>
-            <DataItem text={item?.name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600"/>
-            <DataItem text={item?.inventoryVariant?.name}/>
-            <DataItem text={item?.sku || 'n/a'} align="center"/>
-            <DataItem text={`$ ${currencyFormatter(item.unitPrice)}`} align="flex-end"/>
+            <DataItem text={item?.name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600" />
+            <DataItem text={item?.inventoryVariant?.name} />
+            <DataItem text={item?.sku || 'n/a'} align="center" />
+            <DataItem text={`$ ${currencyFormatter(item.unitPrice)}`} align="flex-end" />
         </>
     );
 
@@ -512,7 +517,7 @@ function SupplierProductsTab({
 
             {
                 isLoading &&
-                <LoadingIndicator backgroundColor="white"/>
+                <LoadingIndicator backgroundColor="white" />
             }
         </>
     );
@@ -521,14 +526,14 @@ function SupplierProductsTab({
 SupplierProductsTab.propTypes = {};
 SupplierProductsTab.defaultProps = {};
 
-const mapStateToProps = state => ({cart: state.cart});
+const mapStateToProps = state => ({ cart: state.cart });
 
-const mapDispatchToProp = {addCartItem};
+const mapDispatchToProp = { addCartItem };
 
 export default connect(mapStateToProps, mapDispatchToProp)(SupplierProductsTab);
 
 const styles = StyleSheet.create({
-    item: {flex: 1},
+    item: { flex: 1 },
     itemText: {
         fontSize: 16,
         color: '#4A5568',

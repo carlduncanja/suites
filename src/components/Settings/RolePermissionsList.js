@@ -44,7 +44,11 @@ const ROLE_GROUPS = [
             {
                 key: 'delete',
                 title: 'Remove Case Files'
-            }
+            },
+            // {
+            //     key: 'read_medical_history',
+            //     title: 'View Patient Medical History'
+            // }
         ]
     },
     {

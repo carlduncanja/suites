@@ -6,7 +6,7 @@ import Contact from '../common/Contact';
 import ColumnSectionsList from '../common/ColumnsSectionsList';
 import Record from '../common/Information Record/Record';
 import ColumnSection from '../common/ColumnSection';
-import {transformToSentence, formatDate, calcAge} from '../../utils/formatter';
+import {transformToSentence, formatDate, calcAge, formatTrn} from '../../utils/formatter';
 import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
 import InputField2 from '../common/Input Fields/InputField2';
 
@@ -86,7 +86,7 @@ const PhysiciansDetailsTab = ({physician}) => {
         />,
         <Record
             recordTitle="TRN"
-            recordValue={trn}
+            recordValue={formatTrn(trn)}
         />
     ];
 
