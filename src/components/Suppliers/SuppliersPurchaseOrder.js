@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { withModal } from 'react-native-modalfy';
+import {useModal, withModal} from 'react-native-modalfy';
 import { TextInput } from 'react-native-gesture-handler';
 import { useTheme } from 'emotion-theming';
 import styled, { css } from '@emotion/native';
@@ -21,38 +21,39 @@ const Row = styled.View`
     height : 20px;
     flex-direction : row;
     margin-bottom : ${({ theme }) => theme.space['--space-24']};
-
 `;
 
-const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFooterPress, modal }) => {
-    const { closeModals } = modal;
+const headers = [
+    {
+        name: 'Product',
+        alignment: 'flex-start',
+        flex: 2,
+    },
+    {
+        name: 'Quantity',
+        alignment: 'center',
+        flex: 1
+    },
+    {
+        name: 'Unit',
+        alignment: 'center',
+        flex: 1
+    },
+    {
+        name: 'Actions',
+        alignment: 'flex-end',
+        flex: 1
+    }
+];
+
+const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFooterPress }) => {
+    const modal = useModal();
     const theme = useTheme();
+    const { closeModals } = modal;
     const [purchaseOrders, setPurchaseOrders] = useState(details);
     const [fields, setFields] = useState({});
     const [errorFields, setErrorFields] = useState({});
 
-    const headers = [
-        {
-            name: 'Product',
-            alignment: 'flex-start',
-            flex: 2,
-        },
-        {
-            name: 'Quantity',
-            alignment: 'center',
-            flex: 1
-        },
-        {
-            name: 'Unit',
-            alignment: 'center',
-            flex: 1
-        },
-        {
-            name: 'Actions',
-            alignment: 'flex-end',
-            flex: 1
-        }
-    ];
 
     const onNumberArrowChange = id => operation => {
         console.log("what's in id?", id)
@@ -225,7 +226,6 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
     };
 
     return (
-
         <CartCard
             title="Cart"
             closeModal={() => closeModals('OverlayInfoModal')}
@@ -245,7 +245,7 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
     );
 };
 
-export default withModal(SuppliersPurchaseOrder);
+export default SuppliersPurchaseOrder;
 
 const styles = StyleSheet.create({
     listDataContainer: {

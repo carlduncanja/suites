@@ -129,9 +129,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
     };
 
     const fetchProducts = () => {
-
         setPageLoading(true);
-
         getSupplierProducts(_id, '')
             .then(productsData => {
                 const {data = [], pages = 0} = productsData;

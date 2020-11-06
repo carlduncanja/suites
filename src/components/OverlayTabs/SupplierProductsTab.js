@@ -392,8 +392,6 @@ function SupplierProductsTab({
         let updatedCheckboxList = [...checkboxList];
         const updatedCartItems = [...cartItems];
 
-
-
         if (!updatedCartItems.length) { // add all the checked items since none exist currently in cart
             updatedCheckboxList = updatedCheckboxList.map(item => ({
                 ...item,
@@ -426,7 +424,6 @@ function SupplierProductsTab({
         setCartTotal(cartQuantity);
         addCartItem(updatedCartItems)
         setCheckboxList([]); // clear checked items
-
     };
 
     const onProductsCreation = data => {
@@ -531,24 +528,3 @@ const mapStateToProps = state => ({ cart: state.cart });
 const mapDispatchToProp = { addCartItem };
 
 export default connect(mapStateToProps, mapDispatchToProp)(SupplierProductsTab);
-
-const styles = StyleSheet.create({
-    item: { flex: 1 },
-    itemText: {
-        fontSize: 16,
-        color: '#4A5568',
-    },
-    footer: {
-        flex: 1,
-        width: '100%',
-        alignSelf: 'flex-end',
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: 0,
-        // marginBottom: -10,
-        right: 0,
-        // marginRight: 30,
-        // backgroundColor:'red',
-        justifyContent: 'space-between'
-    },
-});
