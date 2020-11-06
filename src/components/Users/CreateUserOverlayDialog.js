@@ -86,7 +86,6 @@ function CreateUserOverlayDialog({onCancel, onCreated}) {
     }
 
     const onFieldChange = ( field = '') => ( value = '') => {
-        console.log(field, value);
         setCreateUserFields({
             ...createUserFields,
             [field]: value
