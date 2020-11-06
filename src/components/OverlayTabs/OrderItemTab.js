@@ -192,34 +192,6 @@ const OrderItemTab = ({
                 <DataItem text = {unit} align = "center" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
                 <DataItem text = {`$ ${currencyFormatter(unitPrice)}`} align = "flex-end" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
 
-                {/* <View style={styles.item}>
-                    <Text style={[styles.itemText,{color:'#3182CE'}]}>{name}</Text>
-                </View>
-
-                <View style={[styles.item,{alignItems:'center'}]}>
-                    <Text style={styles.itemText}>{sku === "" ? `n/a` : sku}</Text>
-                </View> */}
-
-                {/* {
-                    isEditMode ?
-                        <NumberChangeField
-                            onChangePress = {onQuantityChange(item)}
-                            onAmountChange = {onAmountChange(item)}
-                            value = {amount.toString()}
-                        />
-                    :
-                        <View style={[styles.item,{alignItems:'center'}]}>
-                            <Text style={styles.itemText}>{amount}</Text>
-                        </View>
-                }
-                 */}
-                {/* <View style={[styles.item,{alignItems:'flex-start'}]}>
-                    <Text style={styles.itemText}>{unit}</Text>
-                </View>
-
-                <View style={styles.item}>
-                    <Text style={styles.itemText}>$ {currencyFormatter(unitPrice)}</Text>
-                </View> */}
             </>
         )
     }
@@ -311,6 +283,7 @@ const OrderItemTab = ({
                 inputText = {""}
                 onClear = {()=>{}}
             />
+
 
             <Table
                 data = {itemsToDisplay}
