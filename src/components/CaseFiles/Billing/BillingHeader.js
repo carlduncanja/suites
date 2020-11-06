@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { transformToSentence } from '../../../hooks/useTextEditHook'
 
 const BillingHeader = (props) => {
-    return ( 
+    return (
         <View style={styles.container}>
             {
                  Object.keys(props.header).map((key,index)=>{
@@ -13,25 +13,25 @@ const BillingHeader = (props) => {
                             <Text style={styles.title}>{transformToSentence(key)}</Text>
                             {key === 'total' ?
                                 <View style={{flexDirection:'row'}}>
-                                    {props.header[key].discount === true && <Text style={styles.discount}>(discount applied)</Text>} 
+                                    {/*{props.header[key].discount === true && <Text style={styles.discount}>(discount applied)</Text>} */}
                                     <Text style={[styles.text,{fontSize:14}]}>{props.header[key].value}</Text>
                                 </View>
                                 :
                                 <Text style={[styles.text,{fontSize:14}]}>{props.header[key]}</Text>
                             }
 
-                            
-                            
+
+
                         </View>
                     )
                 })
             }
 
         </View>
-       
+
     );
 }
- 
+
 export default BillingHeader;
 
 const styles = StyleSheet.create({

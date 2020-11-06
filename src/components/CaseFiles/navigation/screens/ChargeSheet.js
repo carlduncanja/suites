@@ -979,6 +979,7 @@ const ChargeSheet = React.forwardRef(({
                 caseProcedures={caseProcedures}
                 isEditMode={isEditMode}
                 caseId={caseId}
+
                 onCaseProcedureBillablesChange={handleCaseProcedureUpdate}
                 handleEditDone={handleEditDone}
             />;

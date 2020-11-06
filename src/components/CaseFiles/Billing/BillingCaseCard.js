@@ -6,11 +6,12 @@ import moment from 'moment';
 import SvgIcon from '../../../../assets/SvgIcon';
 import {formatAmount} from '../../../helpers/caseFilesHelpers';
 import {formatDate, currencyFormatter} from "../../../utils/formatter";
-import {withModal} from 'react-native-modalfy';
+import {useModal, withModal} from 'react-native-modalfy';
 import {updateChargeSheet} from "../../../api/network";
 
-const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleEditDone, onCaseProcedureBillablesChange}) => {
+const BillingCaseCard = ({tabDetails, caseProcedures, isEditMode, handleEditDone, onCaseProcedureBillablesChange}) => {
     console.log("EDIT mode: ", isEditMode)
+    const modal = useModal();
     const {
         lastModified = "",
         total = 0,
@@ -164,7 +165,7 @@ const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleE
                 <View style={[styles.headerItem, {alignItems: 'flex-end'}]}>
                     <Text style={styles.headerTitle}>Total</Text>
                     <View style={{flexDirection: 'row'}}>
-                        {hasDiscount && <Text style={{color: '#0CB0E7', fontSize: 14}}>(discount applied)</Text>}
+                        {/*{hasDiscount && <Text style={{color: '#0CB0E7', fontSize: 14}}>(discount applied)</Text>}*/}
                         <Text style={styles.headerValue}>{`$ ${currencyFormatter(totalAmount)}`}</Text>
                     </View>
                 </View>
@@ -278,7 +279,7 @@ const BillingCaseCard = ({modal, tabDetails, caseProcedures, isEditMode, handleE
     );
 }
 
-export default withModal(BillingCaseCard);
+export default BillingCaseCard;
 
 const styles = StyleSheet.create({
     container: {},
