@@ -170,7 +170,7 @@ const Assignment = ({value, type, onStaffChange, errors = {}, onErrorUpdate}) =>
                                     name : value?.name,
                                     type : selectedType
                                 }
-
+                                setSearchValue('')
                                 onStaffChange(staff)
                                 onErrorUpdate({})
                             }}
