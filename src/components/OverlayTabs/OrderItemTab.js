@@ -129,6 +129,7 @@ const OrderItemTab = ({
 
     const onQuantityChange = (item) => (action) =>{
         const { amount = 0, productId = {} } = item
+        console.log('item', action)
         const { _id = "" } = productId
 
         const updatedObj = {
@@ -151,7 +152,7 @@ const OrderItemTab = ({
         console.log('hello', item, value);
 
         const { productId = {} } = item
-        const { inventoryId = "" } = productId
+        const { _id = "" } = productId
 
         const updatedObj = {
             ...item,
@@ -159,7 +160,7 @@ const OrderItemTab = ({
         };
 
         const updatedData = orders.map(item => {
-            return item.productId?.inventoryId === inventoryId
+            return item.productId?._id === _id
                 ? {...updatedObj}
                 : {...item}
         })
