@@ -180,7 +180,8 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadP
 
                         <View style={styles.cardDoctors}>
                             {renderPhysicians(physicians, leadPhysicianId)}
-                            {renderNurses(nurses)}
+                            
+                            { nurses.length > 0 && renderNurses(nurses)}
                         </View>
 
                     </View>

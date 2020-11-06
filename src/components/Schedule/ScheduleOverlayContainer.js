@@ -140,7 +140,7 @@ function ScheduleOverlayContainer({appointment = {}}) {
                 
 
                 // console.log("procedure", physicians);
-                console.log("caseFile", appointment);
+                // console.log("caseFile", appointment);
 
 
                 return <ProcedureScheduleContent
