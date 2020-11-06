@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// const BASE_URL = "http://f4c584ac36ea.ngrok.io"; //process.env.SUITES_BASE_URL;
+//const BASE_URL = "http://f4c584ac36ea.ngrok.io"; //process.env.SUITES_BASE_URL;
 const BASE_URL = "https://suites-api.azurewebsites.net"; //process.env.SUITES_BASE_URL;
 const DOCUMENT_GENERATION_BASE_URL = 'https://sms-document-generation-service.azurewebsites.net';
 
@@ -9,11 +9,11 @@ const baseInstance = axios.create({
     // timeout: 15000,
 });
 
-export const documentGenerationInstance = axios.create({baseURL: `${DOCUMENT_GENERATION_BASE_URL}/api`});
+export const documentGenerationInstance = axios.create({ baseURL: `${DOCUMENT_GENERATION_BASE_URL}/api` });
 
 export const setBearerToken = token => {
     console.info('set.bearer.token', token);
-    baseInstance.defaults.headers.common = {Authorization: `bearer ${token}`};
+    baseInstance.defaults.headers.common = { Authorization: `bearer ${token}` };
 };
 
 export default baseInstance
