@@ -91,7 +91,7 @@ function SupplierProductsTab({
     const [isLoading, setLoading] = useState(false);
     const [checkboxList, setCheckboxList] = useState([]);
 
-    const recordsPerPage = 10;
+    const recordsPerPage = 20;
     const [totalPages, setTotalPages] = useState(0);
     const [productsState, setProducts] = useState(products);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
