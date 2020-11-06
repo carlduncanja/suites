@@ -40,7 +40,7 @@ const HeaderContainer = styled.View`
 
 const HeaderText = styled.Text`
     font:${({theme}) => theme.font['--text-xl-medium']};
-    color:${({theme}) => theme.colors['--company']}
+    color:${({theme}) => theme.colors['--company']};
     `;
 
 const CloseButtonWrapper = styled.View`
@@ -57,7 +57,7 @@ const CloseButtonContainer = styled.TouchableOpacity`
     `;
 const CloseText = styled.Text`
     color:${({theme}) => theme.colors['--color-gray-600']};
-    font:${({theme}) => theme.font['--text-sm-bold']}
+    font:${({theme}) => theme.font['--text-sm-bold']};
     `;
 
 const AssignEquipmentPageContentWrapper = styled.View`
@@ -103,7 +103,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
     const onLocationUpdate = value => {
         const updatedLocations = [...locations];
 
-        // check if value is at index
+        /* check if value is at index */
         updatedLocations[selectedIndex] = value;
         console.log('Updated Locations:', updatedLocations);
         setLocations(updatedLocations);
@@ -189,7 +189,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
                             isEditUpdate={false}//use this specification to either get the confirm an edit or update
                             onCancel={onCancel}
                             onAction={createdSuccessfully}
-                            message="Please choose a supplier "//general message you can send to be displayed
+                            message="Completed Successfully"//general message you can send to be displayed
                             action="Archive"
                         />
                     ),
