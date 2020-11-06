@@ -1,26 +1,26 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
-import Animated from 'react-native-reanimated'
-import Button from '../components/common/Buttons/Button';
+import Animated from 'react-native-reanimated';
 import moment from 'moment';
-import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
-import MonthSelector from "../components/Calendar/MonthSelector";
-import SchedulesList from "../components/Schedule/SchedulesList";
-import {ScheduleContext} from '../contexts/ScheduleContext';
-import {getAppointments} from "../api/network";
-import {getDaysForMonth} from "../utils";
-import {formatDate} from "../utils/formatter";
-import {connect} from 'react-redux'
-import {setAppointments} from "../redux/actions/appointmentActions"
-import {colors} from '../styles'
-import ScheduleSearchContainer from "../components/common/Search/ScheduleSearchContainer";
-import ScheduleOverlayContainer from "../components/Schedule/ScheduleOverlayContainer";
-import {useModal} from "react-native-modalfy";
+import {connect} from 'react-redux';
+import {useModal} from 'react-native-modalfy';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
+import {isEmpty} from 'lodash';
+import Button from '../components/common/Buttons/Button';
+import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
+import MonthSelector from '../components/Calendar/MonthSelector';
+import SchedulesList from '../components/Schedule/SchedulesList';
+import {ScheduleContext} from '../contexts/ScheduleContext';
+import {getAppointments} from '../api/network';
+import {getDaysForMonth} from '../utils';
+import {formatDate} from '../utils/formatter';
+import {setAppointments} from '../redux/actions/appointmentActions';
+import {colors} from '../styles';
+import ScheduleSearchContainer from '../components/common/Search/ScheduleSearchContainer';
+import ScheduleOverlayContainer from '../components/Schedule/ScheduleOverlayContainer';
 import SchedulePageHeader from '../components/Schedule/SchedulePageHeader';
 import SchedulePageContent from '../components/Schedule/SchedulePageContent';
-import {isEmpty} from 'lodash';
 
 const ScheduleWrapper = styled.View`
     flex:1;
@@ -29,7 +29,7 @@ const ScheduleWrapper = styled.View`
 
 const BodyContainer = styled.View`
     flex:1;
-`
+`;
 
 const ScheduleContainer = styled.View`
     display: flex;
@@ -37,33 +37,32 @@ const ScheduleContainer = styled.View`
     width: 100%;
     height: 100%;
     justify-content: flex-start;
-`
+`;
 
 const SchedulePageWrapper = styled.View`
     flex:1;
     margin:0px;
-`
+`;
 const SchedulePageContainer = styled.View`
     display: flex;
     width: 100%;
     height: 100%;
-`
+`;
 
-
-const Schedule = (props) => {
+const Schedule = props => {
     const {
         // Redux Props
         appointments,
         setAppointments
     } = props;
     const modal = useModal();
-    const screenDimensions = Dimensions.get('window')
+    const screenDimensions = Dimensions.get('window');
     const theme = useTheme();
 
     const currentDate = new Date();
     const getSelectedIndex = (day, days = []) => days.indexOf(day);
     const initialDaysList = getDaysForMonth(currentDate);
-    const initialIndex = getSelectedIndex(formatDate(currentDate, "YYYY-MM-DD").toString(), initialDaysList);
+    const initialIndex = getSelectedIndex(formatDate(currentDate, 'YYYY-MM-DD').toString(), initialDaysList);
 
     //########### States
     // const [dimensions, setDimensions] = useState(Dimensions.get('window'));
@@ -80,7 +79,7 @@ const Schedule = (props) => {
     const [filteredAppointments, setFilteredAppointments] = useState([]);
 
     //filter state
-    const [checkedRadioButton, setcheckedButton] = useState("");
+    const [checkedRadioButton, setcheckedButton] = useState('');
     const [showDropDown, setShowDropDown] = useState(false);
 
     // const [type, setType] = useState(0);
@@ -95,13 +94,12 @@ const Schedule = (props) => {
 
     const showFilterMenu = () => {
         setShowDropDown(!showDropDown);
-    }
+    };
 
-    const radioClicked = (item = "") => {
-        item.valueOf() === checkedRadioButton.valueOf() ? setcheckedButton("") :
+    const radioClicked = (item = '') => {
+        item.valueOf() === checkedRadioButton.valueOf() ? setcheckedButton('') :
             setcheckedButton(item);
-
-    }
+    };
 
     // const filterBy = (category) => {
     //     if (category === "Procedure") {
@@ -116,7 +114,6 @@ const Schedule = (props) => {
     //         setType(5);
     //     }
 
-
     // }
 
     const fetchAppointments = () => {
@@ -127,24 +124,19 @@ const Schedule = (props) => {
                 //console.log("appointments", data);
 
                 setAppointments(data);
-
             })
             .catch(error => {
-                console.log("failed to get appointments", error);
+                console.log('failed to get appointments', error);
             })
             .finally(_ => {
                 setFetchingAppointments(false);
-            })
+            });
         // console.log("what is in filtered is", filterd);
-
-
-    }
+    };
 
     const filter = (appointmentArray = []) => {
         setFilteredAppointments([...appointmentArray.filter(item => item.type.name === checkedRadioButton)]);
-
-    }
-
+    };
 
     // animated states
 
@@ -157,10 +149,9 @@ const Schedule = (props) => {
     // });
 
     useEffect(() => {
-        console.log("filtered appointments state has:", filteredAppointments);
+        console.log('filtered appointments state has:', filteredAppointments);
         // console.log("Checked filter button: ", checkedRadioButton);
-        checkedRadioButton === "" ? fetchAppointments() : filter(appointments);
-
+        checkedRadioButton === '' ? fetchAppointments() : filter(appointments);
     }, [checkedRadioButton]);
 
     // useEffect(() => {
@@ -177,7 +168,7 @@ const Schedule = (props) => {
     /*
      * @param date string "YYYY-MM-DD" for the selected day.
      */
-    const handleOnDaySelected = (date) => {
+    const handleOnDaySelected = date => {
         setSelectedDay(date);
         const indexOfSelected = getSelectedIndex(date, daysList);
         setSectionListIndex(indexOfSelected);
@@ -185,8 +176,8 @@ const Schedule = (props) => {
 
     const handleOnGoToToday = () => {
         const currentDate = new Date();
-        let date = formatDate(currentDate, "YYYY-MM-DD").toString();
-        let currentDaysList = getDaysForMonth(currentDate);
+        const date = formatDate(currentDate, 'YYYY-MM-DD').toString();
+        const currentDaysList = getDaysForMonth(currentDate);
 
         setDaysList(getDaysForMonth(currentDate));
         setSelectedMonth(currentDate);
@@ -195,27 +186,26 @@ const Schedule = (props) => {
         setSectionListIndex(getSelectedIndex(date, currentDaysList));
     };
 
-    const handleOnMonthUpdated = (date) => {
+    const handleOnMonthUpdated = date => {
         setSelectedMonth(date);
         setDaysList(getDaysForMonth(date));
     };
 
-    const handleAppointmentPress = (appointment) => {
+    const handleAppointmentPress = appointment => {
         modal.openModal('BottomSheetModal', {
             // content: <ScheduleOverlayContainer appointment={appointment}/>,
             content: <ScheduleOverlayContainer appointment={appointment}/>,
             initialSnap: 2,
             snapPoints: [600, 500, 0]
-        })
+        });
     };
 
-
     const searchPress = () => {
-        setSearchOpen(true)
+        setSearchOpen(true);
     };
 
     const closeSearch = () => {
-        setSearchOpen(false)
+        setSearchOpen(false);
     };
 
     // ###### STYLED COMPONENTS
@@ -228,9 +218,9 @@ const Schedule = (props) => {
                     searchOpen &&
                     <ScheduleSearchContainer
                         isOpen={searchOpen}
-                        onSearchResultSelected={(appointment) => {
+                        onSearchResultSelected={appointment => {
                             closeSearch();
-                            handleAppointmentPress(appointment)
+                            handleAppointmentPress(appointment);
                         }}
                         onSearchClose={closeSearch}
                     />
@@ -255,7 +245,7 @@ const Schedule = (props) => {
                         Expanded={isExpanded}
                         isFetchingAppointment={isFetchingAppointment}
                         onDaySelected={handleOnDaySelected}
-                        appointments={checkedRadioButton === "" ? appointments : filteredAppointments}
+                        appointments={checkedRadioButton === '' ? appointments : filteredAppointments}
                         month={selectedMonth}
                         days={daysList}
                         selectedDate={selectedDay}
@@ -268,18 +258,14 @@ const Schedule = (props) => {
             </Animated.View>
         </ScheduleWrapper>
 
-    )
+    );
 };
 
-const mapStateToProps = (state) => ({
-    appointments: state.appointments
-});
+const mapStateToProps = state => ({appointments: state.appointments});
 
-const mapDispatcherToProp = {
-    setAppointments
-};
+const mapDispatcherToProp = {setAppointments};
 
-export default connect(mapStateToProps, mapDispatcherToProp)(Schedule)
+export default connect(mapStateToProps, mapDispatcherToProp)(Schedule);
 
 const styles = StyleSheet.create({
     container: {
@@ -298,7 +284,7 @@ const styles = StyleSheet.create({
         marginTop: 32,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: "center"
+        alignItems: 'center'
     },
     scheduleCalendar: {
         flex: 1,
@@ -354,9 +340,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 16,
         borderBottomLeftRadius: 16,
     },
-    mask: {
-        backgroundColor: '#E5E5E5',
-    },
+    mask: {backgroundColor: '#E5E5E5'},
     buttonContainer: {
         height: 24,
         width: 91,
@@ -365,6 +349,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: "#FFFFFF"
+        backgroundColor: '#FFFFFF'
     }
 });

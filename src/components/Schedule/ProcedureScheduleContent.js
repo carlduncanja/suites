@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import moment from "moment";
-import SvgIcon from "../../../assets/SvgIcon";
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import moment from 'moment';
+import SvgIcon from '../../../assets/SvgIcon';
 
 /**
  * Visual component for rendering procedure appointments.
@@ -9,32 +9,35 @@ import SvgIcon from "../../../assets/SvgIcon";
  * @returns {*}
  * @constructor
  */
-function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadPhysicianId}) {
+function ProcedureScheduleContent({appointmentDetails, physicians, nurses = [], leadPhysicianId}) {
     const {
-        _id = "",
-        responseEntity = "",
-        title = "",
-        subject = "",
-        location = "",
+        _id = '',
+        item = {},
+        responseEntity = '',
+        title = '',
+        subject = '',
+        location = '',
         surgeons = {},
         doctors = {},
-        progressStatus = "",
+        progressStatus = '',
         startTime = new Date(),
         endTime = new Date()
     } = appointmentDetails;
 
+    const {case: caseItem} = item;
+    const {caseNumber} = caseItem;
 
     /**
      * @param scheduleDate - date object
      */
-    const getTime = (scheduleDate) => {
-        let date = moment(scheduleDate);
-        return date.format("h:mm a");
+    const getTime = scheduleDate => {
+        const date = moment(scheduleDate);
+        return date.format('h:mm a');
     };
 
-    const formatDate = (scheduleDate) => {
-        let date = moment(scheduleDate);
-        return date.format("D/M/YYYY")
+    const formatDate = scheduleDate => {
+        const date = moment(scheduleDate);
+        return date.format('D/M/YYYY');
     };
 
     const getProgressStatus = (startTime, endTime) => {
@@ -43,40 +46,42 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadP
         const end = moment(endTime);
 
         if (now.isBefore(start)) {
-            return "Not Yet Started"
-        } else if (now.isBefore(end)) {
-            return "In Progress"
-        } else {
-            return "Ended"
+            return 'Not Yet Started';
         }
+        if (now.isBefore(end)) {
+            return 'In Progress';
+        }
+        return 'Ended';
     };
 
-    const staffItem = (key, name, position, isBold, isSupporting) => <View
-        style={[styles.doctorContainer,]}
-        key={key}
-    >
-        {
-            isSupporting
-                ? <View style={{marginRight: 10}}><SvgIcon iconName="doctorArrow" strokeColor="#718096"/></View>
-                : null
-        }
-        <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
-            <Text
-                style={
-                    [
-                        styles.detailText,
-                        {
-                            color: '#3182CE',
-                            marginRight: 16,
-                            fontWeight: isBold ? 'bold' : 'normal'
-                        }
-                    ]
-                }
-            > {name} </Text>
+    const staffItem = (key, name, position, isBold, isSupporting) => (
+        <View
+            style={[styles.doctorContainer]}
+            key={key}
+        >
+            {
+                isSupporting ?
+                    <View style={{marginRight: 10}}><SvgIcon iconName="doctorArrow" strokeColor="#718096"/></View> :
+                    null
+            }
+            <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
+                <Text
+                    style={
+                        [
+                            styles.detailText,
+                            {
+                                color: '#3182CE',
+                                marginRight: 16,
+                                fontWeight: isBold ? 'bold' : 'normal'
+                            }
+                        ]
+                    }
+                > {name} </Text>
 
-            <Text style={[styles.detailText, {color: '#718096'}]}>{position}</Text>
+                <Text style={[styles.detailText, {color: '#718096'}]}>{position}</Text>
+            </View>
         </View>
-    </View>;
+    );
 
     const renderPhysicians = (physicians, leadPhysicianId) => {
         const leadPhysician = physicians.find(item => item._id === leadPhysicianId);
@@ -86,31 +91,31 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadP
             <View style={styles.box}>
                 {
                     leadPhysician &&
-                    staffItem("lead", `Dr ${leadPhysician.firstName} ${leadPhysician.surname}`, leadPhysician.position, true, false)
+                    staffItem('lead', `Dr ${leadPhysician.firstName} ${leadPhysician.surname}`, leadPhysician.position, true, false)
                 }
                 {
                     supportingPhysicians.map((item, index) => {
                         const name = `Dr ${item.firstName} ${item.surname}`;
-                        const position = item.position;
+                        const {position} = item;
 
                         return staffItem(index, name, position, false, leadPhysician !== null);
                     })
                 }
             </View>
-        )
+        );
     };
 
-    const renderNurses = (nurses) => {
-        return <View style={styles.box}>
+    const renderNurses = nurses => (
+        <View style={styles.box}>
             {
                 nurses.map((item, index) => {
                     const name = `${item.firstName} ${item.lastName}`;
                     const position = `Nurse ${index + 1}`;
-                    return staffItem(index, name, position, false, false)
+                    return staffItem(index, name, position, false, false);
                 })
             }
         </View>
-    };
+    );
 
     return (
         <TouchableOpacity style={{flex: 1}} activeOpacity={1}>
@@ -121,13 +126,14 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadP
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
                             <Text style={styles.idText}>
-                                #{_id}
+                                #{caseNumber}
                             </Text>
                             <View style={styles.statusWrapper}>
                                 <Text style={{
-                                    color: "#A0AEC0",
+                                    color: '#A0AEC0',
                                     fontSize: 12
-                                }}>
+                                }}
+                                >
                                     {getProgressStatus(startTime, endTime)}
                                 </Text>
                             </View>
@@ -141,7 +147,8 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadP
                                 fontSize: 20,
                                 color: '#104587',
                                 paddingBottom: 5
-                            }}>{title}</Text>
+                            }}
+                            >{title}</Text>
                         </View>
                     </View>
 
@@ -180,16 +187,14 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses, leadP
 
                         <View style={styles.cardDoctors}>
                             {renderPhysicians(physicians, leadPhysicianId)}
-                            
-                            { nurses.length > 0 && renderNurses(nurses)}
+                            {nurses.length > 0 && renderNurses(nurses)}
                         </View>
 
                     </View>
                 </View>
             </ScrollView>
         </TouchableOpacity>
-
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -228,9 +233,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E2E8F0',
         borderBottomWidth: 1
     },
-    doctors: {
-        flexDirection: 'column',
-    },
+    doctors: {flexDirection: 'column'},
 
     footerContainer: {
         flexDirection: 'row',
@@ -261,7 +264,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     box: {
-        borderColor: "#E2E8F0",
+        borderColor: '#E2E8F0',
         borderRadius: 8,
         paddingTop: 16,
         paddingLeft: 16,
@@ -296,7 +299,7 @@ const styles = StyleSheet.create({
         borderRadius: 40 / 2,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 2,
