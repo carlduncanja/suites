@@ -117,7 +117,10 @@ function Page(props) {
                     isFetchingData ?
                         <LoadingIndicator /> :
                         isDisabled ?
-                            <DisabledSectionComponent navigation={navigation}/> :
+                            <DisabledSectionComponent 
+                                navigation={navigation}
+                                subMessage="Viewing this list has been disabled."
+                            /> :
                             content
                 }
             </PageContainer>
