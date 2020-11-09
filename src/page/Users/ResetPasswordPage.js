@@ -4,6 +4,7 @@ import {useTheme} from 'emotion-theming';
 import {
     View,
     ActivityIndicator,
+    Dimensions
 } from 'react-native';
 
 import LoginBackground from '../../components/Onboarding/LoginBackground';
@@ -12,7 +13,11 @@ import Button from '../../components/common/Buttons/Button';
 import InputFieldWithIcon from '../../components/common/Input Fields/InputFieldWithIcon';
 import PasswordIcon from '../../../assets/svg/lockIcon';
 
-const PageWrapper = styled.View`
+const { width } = Dimensions.get('screen');
+
+console.log("Screen Width: ", width);
+
+const PageWrapper = styled.View`    
     flex: 1;
     height: 100%;
     width: 100%;
@@ -112,15 +117,25 @@ const LoginButtonWrapper = styled.View`
 
 const ButtonWrapper = styled.View`
     height: 40px;
-    margin-top: 16px;
+    margin-top: 32px;
     width: 100%;
+
+    border-radius: 6px;
+    background-color: #F8FAFB;
+    padding-top: 2px;
+    /* padding-bottom: 8px; */
+    border-color: #00A9CE;
+    border-width: 1px;
 `;
 
-const ResetPasswordPage = () => {
+const ResetPasswordPage = ({ route }) => {
+    const { params } = route;
+    const { onCancelReset} = params;
+
     const theme = useTheme();
     const passRef = useRef();
-    const [isLoading, setIsLoading] = useState(false);
 
+    const [isLoading, setIsLoading] = useState(false);
     const [fields, setFields] = useState({});
     const [errors, setErrors] = useState({});
 
@@ -235,6 +250,15 @@ const ResetPasswordPage = () => {
                                 )}
                             </LoginButtonWrapper>
 
+                            <ButtonWrapper>
+                                <Button
+                                    backgroundColor="#F8FAFB"
+                                    buttonPress={() => { onCancelReset(); }}
+                                    title="Cancel"
+                                    color="#00A9CE"
+                                />
+                            </ButtonWrapper>
+
                         </FormContainer>
 
                     </FormWrapper>
@@ -248,6 +272,7 @@ const ResetPasswordPage = () => {
                 </CopyRightContainer>
 
             </PageWrapper>
+        
         </PageWrapper>
     );
 };

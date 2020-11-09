@@ -48,7 +48,9 @@ function UserPage({route, ...props}) {
         // On success, show confirmation screen and go back to user page.
         // On failure, show confirmation (failure) screen and go back to user page.
         console.log("Navigate");
-        navigation.navigate('ResetPasswordPage');
+        navigation.navigate('ResetPasswordPage', {
+            onCancelReset: () => { console.log('Cancel'); navigation.goBack(); },
+        });
 
     };
 
