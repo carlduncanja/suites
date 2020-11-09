@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
-import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
-import IconButton from "../common/Buttons/IconButton";
+import IconButton from '../common/Buttons/IconButton';
 
 const CaseFileOverlayMenuWrapper = styled.View`
         flex:1;
@@ -58,14 +58,26 @@ const SelectedIconText = styled.Text(({theme}) => ({
     ...theme.font['--text-base-regular'],
     color: theme.colors['--color-gray-800'],
     marginLeft: 20
-}))
+}));
 
-
-const CaseFileOverlayMenu = ({selectedMenuItem, overlayMenu, handleTabPress}) => {
-
+const CaseFileOverlayMenu = ({selectedMenuItem, overlayMenu, permissions = {}, handleTabPress}) => {
     // const [currentTabName, setCurrentTabName] = useState(selectedMenuItem) ;
     const theme = useTheme();
 
+    const processPermissions = (permissions = {}, key = '') => {
+        const keyParts = key.split('.');
+
+        // can safely assume key parts is always 2 parts;
+        if (keyParts.length === 2) {
+            const part1 = keyParts[0];
+            const part2 = keyParts[1];
+
+            if (!permissions[part1]) return false;
+
+            return permissions[part1][part2];
+        }
+        return false;
+    };
 
     return (
         <CaseFileOverlayMenuWrapper theme={theme}>
@@ -74,23 +86,24 @@ const CaseFileOverlayMenu = ({selectedMenuItem, overlayMenu, handleTabPress}) =>
                 <IconGroupWrapper theme={theme}>
                     <IconGroupContainer theme={theme}>
                         {
-                            overlayMenu.map((item, index) => {
-                                const {selectedIcon, disabledIcon, name} = item || {};
-                                const icon = selectedMenuItem === name ? selectedIcon : disabledIcon;
+                            overlayMenu.filter(item => (item.authenticationRequired ? processPermissions(permissions, item.authenticationRequired) : true))
+                                .map((item, index) => {
+                                    const {selectedIcon, disabledIcon, name} = item || {};
+                                    const icon = selectedMenuItem === name ? selectedIcon : disabledIcon;
 
-                                return (
-                                    <IconWrapper theme={theme}>
-                                        <IconContainer theme={theme}>
-                                            <IconButton
-                                                Icon={icon}
-                                                onPress={() => {
-                                                    handleTabPress(name)
-                                                }}
-                                            />
-                                        </IconContainer>
-                                    </IconWrapper>
-                                )
-                            })
+                                    return (
+                                        <IconWrapper theme={theme}>
+                                            <IconContainer theme={theme}>
+                                                <IconButton
+                                                    Icon={icon}
+                                                    onPress={() => {
+                                                        handleTabPress(name);
+                                                    }}
+                                                />
+                                            </IconContainer>
+                                        </IconWrapper>
+                                    );
+                                })
                         }
 
                         <Divider/>
@@ -103,21 +116,20 @@ const CaseFileOverlayMenu = ({selectedMenuItem, overlayMenu, handleTabPress}) =>
             </CaseFileOverlayMenuContainer>
         </CaseFileOverlayMenuWrapper>
 
-
-    )
-}
+    );
+};
 
 CaseFileOverlayMenu.propTypes = {};
 CaseFileOverlayMenu.defaultProps = {};
 
-export default CaseFileOverlayMenu
+export default CaseFileOverlayMenu;
 
 const styles = StyleSheet.create({
     menuBar: {
-        flexDirection: "row",
+        flexDirection: 'row',
         backgroundColor: '#FFFFFF',
         borderRadius: 32,
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 2,
@@ -125,7 +137,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-        alignSelf: "flex-end",
+        alignSelf: 'flex-end',
         paddingTop: 10,
         paddingBottom: 10,
         paddingLeft: 20,
@@ -133,20 +145,18 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     iconContainer: {
-        flexDirection: "row",
+        flexDirection: 'row',
         borderRightWidth: 1,
-        borderRightColor: "#CCD6E0"
+        borderRightColor: '#CCD6E0'
     },
-    icon: {
-        paddingRight: 20,
-    },
+    icon: {paddingRight: 20},
     selectedIconContainer: {
         paddingLeft: 15,
-        justifyContent: "center",
+        justifyContent: 'center',
         marginRight: '10%'
     },
     selectedText: {
         fontSize: 16,
         color: '#323843'
     },
-})
+});
