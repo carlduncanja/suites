@@ -99,6 +99,11 @@ export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const getUserCall = async userId => suitesAxiosInstance
+    .get(user(userId))
+    .then(handleResponse)
+    .catch(handleError);
+
 export const updateUserCall = async (userId, updateData) => suitesAxiosInstance
     .put(user(userId), updateData)
     .then(handleResponse)
@@ -116,6 +121,11 @@ export const createRoleCall = async data => suitesAxiosInstance
 
 export const getRolesCall = async (query, page, max) => suitesAxiosInstance
     .get(roles, {params: {query, page, max}})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const getRole = async roleId => suitesAxiosInstance
+    .get(role(roleId))
     .then(handleResponse)
     .catch(handleError);
 
