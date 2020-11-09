@@ -39,6 +39,7 @@ import {
 } from '../../api/network';
 import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError} from '../../helpers/caseFilesHelpers';
 import {LONG_PRESS_TIMER} from '../../const';
+import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 
 const listHeaders = [
     {
@@ -145,6 +146,8 @@ function Inventory(props) {
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
+
+    const [pageSettingState, setPageSettingState] = useState({});
 
     // ##### Lifecycle Methods
 
@@ -697,6 +700,7 @@ function Inventory(props) {
                 console.log('Failed to fetch inventory', error);
 
                 handleUnauthorizedError(error?.response?.status, setInventory);
+                setPageSettingState({...pageSettingState, isDisabled: true});
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -802,30 +806,37 @@ function Inventory(props) {
     const inventoryToDisplay = [...inventory];
 
     return (
-        <NavPage
-            placeholderText="Search by item name."
-            routeName={pageTitle}
-            listData={inventoryToDisplay}
-            listItemFormat={renderItem}
-            inputText={searchValue}
-            itemsSelected={selectedIds}
-            listHeaders={listHeaders}
-            changeText={onSearchChange}
-            onRefresh={onRefresh}
-            isFetchingData={isFetchingData}
-            onSelectAll={onSelectAll}
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
+            <NavPage
+                placeholderText="Search by item name."
+                routeName={pageTitle}
+                listData={inventoryToDisplay}
+                listItemFormat={renderItem}
+                inputText={searchValue}
+                itemsSelected={selectedIds}
+                listHeaders={listHeaders}
+                changeText={onSearchChange}
+                onRefresh={onRefresh}
+                isFetchingData={isFetchingData}
+                onSelectAll={onSelectAll}
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+            />
+
+        </PageSettingsContext.Provider>
     );
 }
 
