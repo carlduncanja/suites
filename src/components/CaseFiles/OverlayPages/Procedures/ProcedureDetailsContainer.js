@@ -36,7 +36,7 @@ const ProcedureDetailsContainer = ({tabDetails, caseId, proceduresBillableItems}
     // ############# Event Handlers
 
     const onOpenPickList = (details) => {
-        console.log("Details: ", details);
+        // console.log("Details: ", details);
         
         const filterProcedures = proceduresBillableItems.filter( item => item?.caseProcedureId === details?._id);
         

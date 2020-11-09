@@ -3,9 +3,12 @@ import ProcedureDetailsContainer from '../../OverlayPages/Procedures/ProcedureDe
 
 const Procedures = ({procedures, caseId, proceduresBillableItems}) => {
     return (
-        <ProcedureDetailsContainer tabDetails={procedures} caseId={caseId} proceduresBillableItems={proceduresBillableItems}/>
+        <ProcedureDetailsContainer
+            tabDetails={procedures}
+            caseId={caseId}
+            proceduresBillableItems={proceduresBillableItems}
+        />
     );
-} 
+};
 
 export default Procedures;
-

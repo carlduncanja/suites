@@ -87,61 +87,43 @@ const PickListCard = (props) =>{
         footerTitle = ""
     } = props
 
-    const testData = [
-        {
-            name : "Agents",
-            amount : 5
-        },
-        {
-            name : "Agents",
-            amount : 6
-        },
-        {
-            name : "Agents",
-            amount : 7
-        },
-        {
-            name : "Agents",
-            amount : 8
-        },
-        {
-            name : "Agents",
-            amount : 9
-        },
-        {
-            name : "Agents",
-            amount : 10
-        },
-    ]
+
     const theme = useTheme();
     const recordsPerPage = 5
     const dataLength = data.length
-    const totalPages = Math.ceil(dataLength/recordsPerPage)
+    const totalPages = Math.ceil(dataLength/recordsPerPage);
 
-    const [currentPagePosition, setCurrentPagePosition] = useState(1)
-    const [currentPageListMin, setCurrentPageListMin] = useState(0)
-    const [currentPageListMax, setCurrentPageListMax] = useState(5)
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(5);
 
     const goToNextPage = () => {
-        if (currentPagePosition < totalPages){
+        if (currentPagePosition < totalPages) {
             let {currentPage,currentListMin,currentListMax} = useNextPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
-            setCurrentPageListMax(currentListMax)
+            setCurrentPageListMax(currentListMax);
         }
     };
 
     const goToPreviousPage = () => {
-        if (currentPagePosition > 1){
+        if (currentPagePosition > 1) {
             let {currentPage,currentListMin,currentListMax} = usePreviousPaginator(currentPagePosition,recordsPerPage,currentPageListMin,currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
-            setCurrentPageListMax(currentListMax)
+            setCurrentPageListMax(currentListMax);
         }
     };
 
-    let dataToDisplay = [...data]
-    dataToDisplay = dataToDisplay.slice(currentPageListMin,currentPageListMax)
+    const onTabPress = tab => {
+        onPressTab(tab);
+        setCurrentPagePosition(1);
+        setCurrentPageListMin(0);
+        setCurrentPageListMax(5);
+    };
+
+    let dataToDisplay = [...data];
+    dataToDisplay = dataToDisplay.slice(currentPageListMin,currentPageListMax);
 
     return(
 
@@ -174,7 +156,7 @@ const PickListCard = (props) =>{
                         <DialogTabs
                             tabs = {tabs}
                             tab = {selectedTab}
-                            onTabPress = {onPressTab}
+                            onTabPress = {onTabPress}
                         />
                     </TabsContainer>
                     
