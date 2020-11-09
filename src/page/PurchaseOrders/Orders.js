@@ -467,7 +467,7 @@ const Orders = (props) => {
 
                 const errorMessage = error?.response?.data?.msg || error?.response?.data?.message
                 Alert.alert(
-                    "Unsuccessful creation",
+                    "Failed To Invoice PO.",
                     errorMessage,
                     [
                         {
