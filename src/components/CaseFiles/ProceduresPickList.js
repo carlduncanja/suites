@@ -6,7 +6,7 @@ import { withModal } from "react-native-modalfy";
 const ProceduresPickList = ({details, tabs, modal, pickListData}) => {
     const { closeModals } = modal
 
-    const {inventories = [], equipments = [] } = pickListData
+    const {inventories = [], equipments = [] } = pickListData;
 
     const [selectedTab, setSelectedTab] = useState(0);
 
