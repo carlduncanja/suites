@@ -32,16 +32,25 @@ function UserPage({route, ...props}) {
     const handleUserUpdate = (updatedUser) => {
         setUser({...selectedUser, ...updatedUser});
         if (onUserUpdate) onUserUpdate({...selectedUser, ...updatedUser})
-    }
+    };
 
     const getOverlayScreen = (currentTab) => {
         switch (currentTab) {
             case 'Details':
-                return <UserDetailsComponent user={selectedUser} onUserUpdated={handleUserUpdate}/>
+                return <UserDetailsComponent user={selectedUser} onUserUpdated={handleUserUpdate} onResetPassword={onResetPassword}/>
             default:
                 return <View/>
         }
-    }
+    };
+
+    const onResetPassword = () => {
+        // Navigate to rest password page
+        // On success, show confirmation screen and go back to user page.
+        // On failure, show confirmation (failure) screen and go back to user page.
+        console.log("Navigate");
+        navigation.navigate('ResetPasswordPage');
+
+    };
 
     return (
         <PageContext.Provider value={{pageState, setPageState}}>

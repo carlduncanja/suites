@@ -25,7 +25,7 @@ const InputWrapper = styled.View`
 `
 
 
-function UserDetailsComponent({user, onUserUpdated = () => {}}) {
+function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword = () => {} }) {
 
     const {pageState, setPageState} = useContext(PageContext)
     const modal = useModal();
@@ -213,7 +213,7 @@ function UserDetailsComponent({user, onUserUpdated = () => {}}) {
                 <ResponsiveRecord
                     recordTitle="Password"
                     recordValue="Reset Password"
-                    handleRecordPress={() => {}}
+                    handleRecordPress={() => { onResetPassword(); }}
                 />
                 {/* <Record
                     recordValue={userFields['password']}
