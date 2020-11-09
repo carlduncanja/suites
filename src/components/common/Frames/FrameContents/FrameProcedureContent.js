@@ -114,7 +114,7 @@ const FrameProcedureContent = ({
                 <View style={{padding: 8, height: 30}}>
                     <TextButton
                         title="View Picklist"
-                        buttonPress={() => onOpenPickList(procedure)}
+                        buttonPress={() => onOpenPickList()}
                     />
                 </View>
 
