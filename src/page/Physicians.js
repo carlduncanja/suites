@@ -29,6 +29,9 @@ import {LONG_PRESS_TIMER} from '../const';
 import ConfirmationComponent from '../components/ConfirmationComponent';
 import DataItem from '../components/common/List/DataItem';
 
+import { PageSettingsContext } from '../contexts/PageSettingsContext';
+
+
 const Physicians = props => {
     // ############# Const data
 
@@ -74,6 +77,9 @@ const Physicians = props => {
     const [searchQuery, setSearchQuery] = useState({});
 
     const [selectedPhysiciansId, setSelectedPhysiciansId] = useState([]);
+
+    const [pageSettingState, setPageSettingState] = useState({});
+
 
     // ############# Lifecycle methods
 
@@ -212,6 +218,8 @@ const Physicians = props => {
                 console.log('failed to get physicians', error);
 
                 handleUnauthorizedError(error?.response?.status, setPhysicians);
+                setPageSettingState({...pageSettingState, isDisabled: true});
+
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -444,30 +452,38 @@ const Physicians = props => {
     // physiciansToDisplay = physiciansToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <NavPage
-            isFetchingData={isFetchingData}
-            onRefresh={handleDataRefresh}
-            placeholderText="Search by Physician"
-            changeText={onSearchInputChange}
-            inputText={searchValue}
-            routeName="Physicians"
-            listData={physiciansToDisplay}
-            listHeaders={listHeaders}
-            itemsSelected={selectedPhysiciansId}
-            onSelectAll={handleOnSelectAll}
-            listItemFormat={renderPhysiciansFn}
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
+            <NavPage
+                isFetchingData={isFetchingData}
+                onRefresh={handleDataRefresh}
+                placeholderText="Search by Physician"
+                changeText={onSearchInputChange}
+                inputText={searchValue}
+                routeName="Physicians"
+                listData={physiciansToDisplay}
+                listHeaders={listHeaders}
+                itemsSelected={selectedPhysiciansId}
+                onSelectAll={handleOnSelectAll}
+                listItemFormat={renderPhysiciansFn}
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+                navigation={navigation}
+            />
+        </PageSettingsContext.Provider>
+        
     );
 };
 

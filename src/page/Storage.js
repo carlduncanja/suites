@@ -27,6 +27,9 @@ import {LONG_PRESS_TIMER} from '../const';
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
+import { PageSettingsContext } from '../contexts/PageSettingsContext';
+
+
 const listHeaders = [
     {
         name: 'Room Name',
@@ -73,6 +76,9 @@ function Storage(props) {
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
+
+    const [pageSettingState, setPageSettingState] = useState({});
+
 
     // ############# Life Cycle Methods
 
@@ -248,6 +254,8 @@ function Storage(props) {
                 console.log('failed to get storage', error);
 
                 handleUnauthorizedError(error?.response?.status, setStorage);
+                setPageSettingState({...pageSettingState, isDisabled: true});
+
             })
             .finally(_ => {
                 setFetchingData(false);
@@ -427,30 +435,38 @@ function Storage(props) {
     // storageToDisplay = storageToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <NavPage
-            placeholderText="Search by room name."
-            routeName={pageTitle}
-            listData={storageToDisplay}
-            inputText={searchValue}
-            itemsSelected={selectedIds}
-            listItemFormat={renderItem}
-            listHeaders={listHeaders}
-            changeText={onSearchChange}
-            onRefresh={onRefresh}
-            isFetchingData={isFetchingData}
-            onSelectAll={onSelectAll}
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
+            <NavPage
+                placeholderText="Search by room name."
+                routeName={pageTitle}
+                listData={storageToDisplay}
+                inputText={searchValue}
+                itemsSelected={selectedIds}
+                listItemFormat={renderItem}
+                listHeaders={listHeaders}
+                changeText={onSearchChange}
+                onRefresh={onRefresh}
+                isFetchingData={isFetchingData}
+                onSelectAll={onSelectAll}
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+                navigation={props.navigation}
+            />
+        </PageSettingsContext.Provider>
+        
     );
 }
 

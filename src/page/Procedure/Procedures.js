@@ -28,6 +28,9 @@ import DataItem from '../../components/common/List/DataItem';
 import RightBorderDataItem from '../../components/common/List/RightBorderDataItem';
 import TouchableDataItem from '../../components/common/List/TouchableDataItem';
 
+import { PageSettingsContext } from '../../contexts/PageSettingsContext';
+
+
 const Procedures = props => {
     // ############# Const data
     const recordsPerPage = 10;
@@ -72,6 +75,9 @@ const Procedures = props => {
     const [searchQuery, setSearchQuery] = useState({});
 
     const [selectedProcedures, setSelectedProcedures] = useState([]);
+
+    const [pageSettingState, setPageSettingState] = useState({});
+
 
     // const routeName = route.name;
     // ############# Lifecycle methods
@@ -213,6 +219,8 @@ const Procedures = props => {
                 console.log('failed to get procedures', error);
 
                 handleUnauthorizedError(error?.response?.status, setProcedures);
+                setPageSettingState({...pageSettingState, isDisabled: true});
+
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -477,30 +485,38 @@ const Procedures = props => {
     // proceduresToDisplay = proceduresToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <NavPage
-            isFetchingData={isFetchingData}
-            onRefresh={handleDataRefresh}
-            placeholderText="Search by Procedure, or Physician"
-            changeText={onSearchInputChange}
-            inputText={searchValue}
-            routeName="Procedures"
-            listData={proceduresToDisplay}
-            listHeaders={listHeaders}
-            itemsSelected={selectedProcedures}
-            onSelectAll={handleOnSelectAll}
-            listItemFormat={renderProcedureFn}
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
+            <NavPage
+                isFetchingData={isFetchingData}
+                onRefresh={handleDataRefresh}
+                placeholderText="Search by Procedure, or Physician"
+                changeText={onSearchInputChange}
+                inputText={searchValue}
+                routeName="Procedures"
+                listData={proceduresToDisplay}
+                listHeaders={listHeaders}
+                itemsSelected={selectedProcedures}
+                onSelectAll={handleOnSelectAll}
+                listItemFormat={renderProcedureFn}
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+                navigation={navigation}
+            />
+        </PageSettingsContext.Provider>
+        
     );
 };
 

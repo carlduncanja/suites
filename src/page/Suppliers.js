@@ -33,6 +33,9 @@ import CreateSupplierDialogContainer from '../components/Suppliers/CreateSupplie
 import Button from '../components/common/OverlayButtons/OverlayButton';
 import TouchableDataItem from '../components/common/List/TouchableDataItem';
 
+import { PageSettingsContext } from '../contexts/PageSettingsContext';
+
+
 const ArchiveButton = styled.TouchableOpacity`
     align-items:center;
     border-width:1px;
@@ -97,6 +100,9 @@ const Suppliers = props => {
     const [searchQuery, setSearchQuery] = useState({});
 
     const [selectedSuppliers, setSelectedSuppliers] = useState([]);
+
+    const [pageSettingState, setPageSettingState] = useState({});
+
 
     // ############# Lifecycle methods
 
@@ -227,6 +233,8 @@ const Suppliers = props => {
                 console.log('failed to get Suppliers', error);
 
                 handleUnauthorizedError(error?.response?.status, setSuppliers);
+                setPageSettingState({...pageSettingState, isDisabled: true});
+
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -388,39 +396,47 @@ const Suppliers = props => {
     `;
 
     return (
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
+            <NavPage
+                isFetchingData={isFetchingData}
+                onRefresh={handleDataRefresh}
+                placeholderText="Search by Supplxier"
+                changeText={onSearchInputChange}
+                inputText={searchValue}
+                routeName="Suppliers"
+                listData={suppliersToDisplay}
+                TopButton={() => (
+                    <ButtonContainer>
+                        <ArchiveButton onPress={goToArchives} theme={theme}>
+                            <ArchiveButtonText>View Archive</ArchiveButtonText>
+                        </ArchiveButton>
+                    </ButtonContainer>
+                )}
 
-        <NavPage
-            isFetchingData={isFetchingData}
-            onRefresh={handleDataRefresh}
-            placeholderText="Search by Supplxier"
-            changeText={onSearchInputChange}
-            inputText={searchValue}
-            routeName="Suppliers"
-            listData={suppliersToDisplay}
-            TopButton={() => (
-                <ButtonContainer>
-                    <ArchiveButton onPress={goToArchives} theme={theme}>
-                        <ArchiveButtonText>View Archive</ArchiveButtonText>
-                    </ArchiveButton>
-                </ButtonContainer>
-            )}
+                listHeaders={listHeaders}
+                itemsSelected={selectedSuppliers}
+                onSelectAll={handleOnSelectAll}
+                listItemFormat={renderSupplierFn}
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+                navigation={props.navigation}
+            />
 
-            listHeaders={listHeaders}
-            itemsSelected={selectedSuppliers}
-            onSelectAll={handleOnSelectAll}
-            listItemFormat={renderSupplierFn}
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+        </PageSettingsContext.Provider>
+        
 
     );
 };
