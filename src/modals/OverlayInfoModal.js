@@ -9,7 +9,7 @@ const OverlayInfoModal = (props) => {
     const { modal: {closeModal, closeModals, currentModal, closeAllModals, params }} = props
 
     const closePickListModal = () =>{
-        closeModals(currentModal)
+        closeModals(currentModal);
     }
 
     const renderShadow = () => {
@@ -17,7 +17,7 @@ const OverlayInfoModal = (props) => {
             <TouchableWithoutFeedback
                 onPress={() => {
                     closePickListModal();
-                    setIsPickListVisible(false)
+                    setIsPickListVisible(false);
                 }}
             >
                 <View
