@@ -7,6 +7,7 @@ export const guestLoginEndpoint = '/auth/login/guest';
 // ##### Users
 export const users = '/users';
 export const user = userId => `/users/${userId}`;
+export const userPassword = userId => `/users/${userId}/changePassword`;
 
 export const roles = '/users/roles';
 export const role = roleId => `/users/roles/${roleId}`;

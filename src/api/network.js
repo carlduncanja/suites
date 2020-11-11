@@ -69,7 +69,8 @@ import {
     role,
     patientEndpoint,
     alertsEndpoint,
-    closeAlertEndpoint
+    closeAlertEndpoint,
+    userPassword
 
 } from '../const/suitesEndpoints';
 import {createDocumentLink} from '../const/documentGenerationEndpoints';
@@ -141,6 +142,11 @@ export const deleteRoleCall = async roleIds => suitesAxiosInstance
 
 export const registrationCall = async params => suitesAxiosInstance
     .post(registrationEndpoint, params)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const resetUserPassword = async (userId, updateData) => suitesAxiosInstance
+    .put(userPassword(userId), updateData)
     .then(handleResponse)
     .catch(handleError);
 
