@@ -227,6 +227,28 @@ const ROLE_GROUPS = [
             }
         ]
     },
+    {
+        group: 'users',
+        name: 'Users',
+        actions: [
+            {
+                key: 'create',
+                title: 'Create User'
+            },
+            {
+                key: 'read',
+                title: 'View Users'
+            },
+            {
+                key: 'update',
+                title: 'Update Users'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Users'
+            }
+        ]
+    },
 ];
 
 function RolePermissionsList({
