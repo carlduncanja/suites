@@ -100,3 +100,7 @@ export const patientEndpoint = id => `/patients/${id}`;
 // ##### ALERTS
 export const alertsEndpoint = '/alerts';
 export const closeAlertEndpoint = id => `/alerts/${id}/close`;
+
+// ##### CONFIGURATIONS
+export const configEndpoint = '/configurations';
+export const updateBufferEndpoint = '/configurations/buffer';

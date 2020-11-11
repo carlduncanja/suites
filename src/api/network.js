@@ -69,7 +69,9 @@ import {
     role,
     patientEndpoint,
     alertsEndpoint,
-    closeAlertEndpoint
+    closeAlertEndpoint,
+    configEndpoint,
+    updateBufferEndpoint
 
 } from '../const/suitesEndpoints';
 import {createDocumentLink} from '../const/documentGenerationEndpoints';
@@ -657,5 +659,17 @@ export const getAlerts = async (status, max, page, query, from, to) => suitesAxi
 
 export const closeAlert = async id => suitesAxiosInstance
     .put(closeAlertEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
+
+// ################# Configurations Endpoints
+
+export const getConfigurations = async () => suitesAxiosInstance
+    .get(configEndpoint)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const updateBuffer = async time => suitesAxiosInstance
+    .put(updateBufferEndpoint, time)
     .then(handleResponse)
     .catch(handleError);
