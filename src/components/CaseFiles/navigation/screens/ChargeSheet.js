@@ -868,7 +868,7 @@ const ChargeSheet = React.forwardRef(({
 
                 const procedureChangeList = calculateChangesProcedureChanges(caseProcedures, caseProcedureChanges, isEditMode)
 
-                return <PostEditView
+                return<PostEditView
                     headers={headers}
                     lastEdited={updatedAt}
                     allItems={inventoryList}
@@ -887,7 +887,7 @@ const ChargeSheet = React.forwardRef(({
                     onConsumablesUpdate={handleConsumableUpdate}
                     onCaseProcedureItemUpdated={handleCaseProcedureChangeUpdate}
                     mode={POST_EDIT_MODE.CONSUMABLES}
-                    isEditMode={isEditMode && (isOwner || isOwner)}
+                    isEditMode={isEditMode && (isOwner || isAdmin)}
                     bannerText={bannerText}
                     handleEditDone={handleEditDone}
                 />
@@ -919,7 +919,7 @@ const ChargeSheet = React.forwardRef(({
                 const bannerText = isAdmin ? `${firstName[0]}.${lastName} changes require your attention` : undefined
                 const procedureChangeList = calculateChangesProcedureChanges(caseProcedures, caseProcedureChanges, isEditMode)
 
-                return <PostEditView
+                return<PostEditView
                     headers={headers}
                     lastEdited={updatedAt}
                     allItems={equipmentList}
@@ -936,7 +936,7 @@ const ChargeSheet = React.forwardRef(({
                     onLineItemSelected={lineItems => {
                         setVariantsEquipments(lineItems);
                     }}
-                    isEditMode={isEditMode}
+                    isEditMode={isEditMode && (isOwner || isAdmin)}
                     mode={POST_EDIT_MODE.EQUIPMENTS}
                     bannerText={bannerText}
                     handleEditDone={handleEditDone}
@@ -979,6 +979,7 @@ const ChargeSheet = React.forwardRef(({
                 caseProcedures={caseProcedures}
                 isEditMode={isEditMode}
                 caseId={caseId}
+
                 onCaseProcedureBillablesChange={handleCaseProcedureUpdate}
                 handleEditDone={handleEditDone}
             />;

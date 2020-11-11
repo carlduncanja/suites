@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, Alert, TouchableOpacity} from "react-native";
+import { View, StyleSheet, Text, Alert, TouchableOpacity } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import OverlayDialogContent from "../common/Dialog/OverlayContent";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
@@ -12,7 +12,7 @@ import OptionsField from "../common/Input Fields/OptionsField";
 import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent'
 import ConfirmationComponent from '../ConfirmationComponent';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
 import { createSupplier } from "../../api/network";
 import { addSupplier } from "../../redux/actions/suppliersActions";
@@ -35,10 +35,10 @@ import { ThemeColors } from 'react-navigation';
  */
 
 const DividerContainer = styled.View`
-    padding-bottom : ${ ({theme}) => theme.space['--space-24']};
+    padding-bottom : ${({ theme }) => theme.space['--space-24']};
 `
 
-function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpdate}) {
+function CreateSupplierDialogContainer({ onCancel, onCreated, addSupplier, onUpdate }) {
 
     // ######### CONST
     const modal = useModal();
@@ -48,18 +48,20 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
     // ######### STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
     const [fields, setFields] = useState({
-        name : 'Medical Supplies Inc.',
-        email : "infoMed@supplies.com",
-        phone : "8763687566",
-        fax : "8769973765",
+        name: 'Medical Supplies Inc.',
+        email: "infoMed@supplies.com",
+        phone: "8763687566",
+        fax: "8769973765",
     });
     const [representative, setRepresentative] = useState({
-        name : 'John Doe',
-        email : "doe@supplies.com",
-        phone : "8768458743",
+        name: 'John Doe',
+        email: "doe@supplies.com",
+        phone: "8768458743",
     })
     const [errorFields, setErrorFields] = useState({})
-
+    const [number, setNumber] = useState(fields.phone);
+    const [fax, setFax] = useState(fields.fax);
+    const [repTele, setRepTele] = useState(representative.phone);
     // ######### EVENT HANDLERS
 
     const handleCloseDialog = () => {
@@ -67,21 +69,37 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
         modal.closeAllModals();
     };
 
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
     const onPositiveClick = () => {
 
         let isValid = validateSupplier()
         let supplierToAdd = {}
 
-        if(!isValid){ return }
+        if (!isValid) { return }
 
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
         } else {
 
-            if(Object.keys(representative).length !== 0 ){
-                supplierToAdd = {...fields,representatives : {...representative} }
-            }else{
-                supplierToAdd = {...fields}
+            if (Object.keys(representative).length !== 0) {
+                supplierToAdd = { ...fields, representatives: { ...representative } }
+            } else {
+                supplierToAdd = { ...fields }
             }
 
             console.log("Success:", supplierToAdd);
@@ -92,18 +110,18 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
 
     const onTabChange = (tab) => {
         let isValid = validateSupplier()
-        if(!isValid) {return}
+        if (!isValid) { return }
         setSelectedTabIndex(dialogTabs.indexOf(tab))
     };
 
     const onFieldChange = (fieldName) => (value) => {
-        const updatedFields = {...fields}
+        const updatedFields = { ...fields }
         setFields({
             ...updatedFields,
             [fieldName]: value
         })
 
-        const updatedErrors = {...errorFields}
+        const updatedErrors = { ...errorFields }
         delete updatedErrors[fieldName]
         setErrorFields(updatedErrors)
 
@@ -111,18 +129,18 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
 
     const validateSupplier = () => {
         let isValid = true
-        let requiredFields = ['name','phone','fax']
+        let requiredFields = ['name', 'phone', 'fax']
         // selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unitPrice']
         // const requiredFields = ['name', 'unitPrice']
 
-        let errorObj = {...errorFields} || {}
+        let errorObj = { ...errorFields } || {}
 
         for (const requiredField of requiredFields) {
-            if(!fields[requiredField]){
+            if (!fields[requiredField]) {
                 // console.log(`${requiredField} is required`)
                 isValid = false
                 errorObj[requiredField] = "Value is required.";
-            }else{
+            } else {
                 delete errorObj[requiredField]
             }
         }
@@ -141,47 +159,61 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
                 modal.closeAllModals();
 
                 modal.openModal('ConfirmationModal',
-                {
-                    content: <ConfirmationComponent
-                        isEditUpdate = {false}
-                        isError = {false}
-                        onCancel = {()=> {
-                            modal.closeAllModals();
-                            setTimeout(()=>{
-                                onCreated(data);
-                            },200)
-                            // navigation.goBack();
-                        }}
-                        onAction = {()=>{
-                            modal.closeAllModals();
-                            setTimeout(()=>{
-                                onCreated(data);
-                            },200)
-                            // navigation.goBack();
-                        }}
-                    />
-                    ,
-                    onClose: () => {
-                        modal.closeModals('ConfirmationModal');
-                        navigation.goBack();
-                    } 
-                })
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCreated(data);
+                                }, 200)
+                                // navigation.goBack();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCreated(data);
+                                }, 200)
+                                // navigation.goBack();
+                            }}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                            navigation.goBack();
+                        }
+                    })
             })
             .catch(error => {
                 // todo handle error
                 console.log("failed to create supplier", error);
-                Alert.alert("Failed", "failed to create supplier")
+                openErrorConfirmation()
             })
-            .finally(_=>onUpdate())
+            .finally(_ => onUpdate())
     };
 
-    const handleRepresentative = (fieldName) => (value) =>{
-        const updatedFields = {...representative}
+    const handleRepresentative = (fieldName) => (value) => {
+        const updatedFields = { ...representative }
         setRepresentative({
             ...updatedFields,
             [fieldName]: value
         })
-    }
+    };
+
+    const handlePhonNumber = value => {
+        setNumber(value);
+        if (value === '') {
+            onFieldChange('phone')(value);
+        } else if (/^\d{10}$/g.test(value)) (onFieldChange('phone')(value));
+    };
+
+    const handleFax = value => {
+        setFax(value);
+        if (value === '') {
+            onFieldChange('fax')(value);
+        } else if (/^\d{10}$/g.test(value)) (onFieldChange('fax')(value));
+    };
 
     const getTabContent = () => {
         switch (dialogTabs[selectedIndex]) {
@@ -190,9 +222,11 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
             case "Representative":
                 return representativeTab;
             default:
-                return <View/>
+                return <View />
         }
     };
+
+
 
     const detailsTab = (
 
@@ -205,22 +239,25 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
-                        hasError = {errorFields['name']}
-                        errorMessage = "Name must be filled."
+                        hasError={errorFields['name']}
+                        errorMessage="Name must be filled."
                     />
                 </FieldContainer>
 
                 <FieldContainer>
                     <InputField2
-                        label={"Phone"}
-                        onChangeText={(value)=>{
-                            if(/^\d{10}$/g.test(value))(onFieldChange('phone')(value))
+                        label="Phone"
+                        onChangeText={value => {
+                            handlePhonNumber(value);
+                            // onFieldChange('phone')(value);
+                            // if(/^\d{10}$/g.test(value))(onFieldChange('phone')(value))
                         }}
-                        value={fields['phone']}
-                        onClear={() => onFieldChange('phone')('')}
-                        keyboardType = {'number-pad'}
-                        hasError = {errorFields['phone']}
-                        errorMessage = "Phone must be filled."
+                        value={number}
+                        onClear={() => handlePhonNumber('')}
+                        keyboardType="number-pad"
+                        hasError={errorFields.phone}
+                        errorMessage="Phone must be filled."
+                        maxLength={10}
                     />
                 </FieldContainer>
 
@@ -231,33 +268,38 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
                 <FieldContainer>
                     <InputField2
                         label={"Fax"}
-                        onChangeText={(value)=>{
-                            if(/^\d{10}$/g.test(value))(onFieldChange('fax')(value))
+                        onChangeText={(value) => {
+                            handleFax(value);
+                            // if(/^\d{10}$/g.test(value))(onFieldChange('fax')(value))
                         }}
-                        value={fields['fax']}
-                        onClear={() => onFieldChange('fax')('')}
-                        keyboardType = {'number-pad'}
-                        hasError = {errorFields['fax']}
-                        errorMessage = "Fax must be filled."
+                        value={fax}
+                        onClear={() => handleFax("")}
+                        keyboardType={'number-pad'}
+                        hasError={errorFields['fax']}
+                        errorMessage="Fax must be filled."
+                        maxLength={10}
                     />
                 </FieldContainer>
 
-                <FieldContainer>
+
+                <FieldContainer >
                     <InputField2
                         label={"Email"}
+                        maxLength={10}
+                        labelWidth={98}
                         onChangeText={onFieldChange('email')}
                         value={fields['email']}
-                        keyboardType = {'email-address'}
+                        keyboardType={'email-address'}
                         onClear={() => onFieldChange('email')('')}
                     />
                 </FieldContainer>
 
             </Row>
-            
-            <DividerContainer theme = {theme}>
-                <LineDivider/>
+
+            <DividerContainer theme={theme}>
+                <LineDivider />
             </DividerContainer>
-            
+
 
             <Row>
 
@@ -272,13 +314,15 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
 
                 <FieldContainer>
                     <InputField2
-                        label={"Rep. TelePhone"}
-                        onChangeText={(value)=>{
-                            if(/^\d{10}$/g.test(value))(handleRepresentative('phone')(value))
+                        label="Rep.TelePhone"
+                        onChangeText={value => {
+                            setRepTele(value);
+                            if (/^\d{10}$/g.test(value)) (handleRepresentative('phone')(value));
                         }}
-                        value={representative['phone']}
-                        onClear={() => handleRepresentative('phone')('')}
+                        value={repTele}
+                        onClear={() => { setRepTele(''); handleRepresentative('phone')(''); }}
                         keyboardType={'number-pad'}
+                        maxLength={10}
                     />
                 </FieldContainer>
 
@@ -373,7 +417,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
         //     </View>
 
         // </View>
-    
+
     );
 
     // const representativeTab = (
@@ -415,7 +459,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
     //             </View>
     //         </View>
     //     </View>
-    
+
     // );
 
     return (
@@ -424,8 +468,8 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={selectedIndex === (dialogTabs.length - 1) ? "DONE" : "NEXT"}
-            // handlePopovers = {handlePopovers}
-            // buttonIcon={<ArrowRightIcon/>}
+        // handlePopovers = {handlePopovers}
+        // buttonIcon={<ArrowRightIcon/>}
         >
             <>
                 <DialogTabs
@@ -434,7 +478,7 @@ function CreateSupplierDialogContainer({onCancel, onCreated, addSupplier, onUpda
                     onTabPress={onTabChange}
                 />
 
-                <OverlayDialogContent height = {320}>
+                <OverlayDialogContent height={320}>
                     {getTabContent()}
                 </OverlayDialogContent>
             </>
@@ -470,7 +514,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     sectionContainer: {
-        height:280,
+        height: 280,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         padding: 24,

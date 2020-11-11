@@ -71,7 +71,7 @@ function Settings({navigation}) {
                 setRoles(results);
                 setSelectedRoles([]);
             })
-            .catch(error => console.error('Error fetching roles: ', error))
+            .catch(error => console.log('Error fetching roles: ', error))
             .finally(_ => setFetchingData(false));
     };
 
@@ -95,7 +95,9 @@ function Settings({navigation}) {
     const updateRole = (id, data) => {
         updateRoleCall(id, data)
             .then(result => console.log(`role.${id}.updated`, data, result))
-            .catch(error => console.error('Error fetching roles: ', error))
+            .catch(error => {
+                console.log('Error fetching roles: ', error);
+            })
             .finally(_ => setFetchingData(false));
     };
 
@@ -120,7 +122,8 @@ function Settings({navigation}) {
                 );
             })
             .catch(error => {
-                console.error('roles.remove.error', error);
+                // console.log('roles.remove.error', error, error.response?.data?.msg.includes('Guest'));
+                const errorMessage = error.response?.data?.msg.includes('Guest') ? 'Unable to remove \'Guest\' Role.' : 'Failed to remove Role(s)';
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -129,7 +132,7 @@ function Settings({navigation}) {
                             isEditUpdate={false}
                             onCancel={modal.closeAllModals}
                             onAction={modal.closeAllModals}
-                            message="Failed to remove role(s)."
+                            message={errorMessage}
                         />,
                         onClose: () => {
                             modal.closeModals('ConfirmationModal');
@@ -230,7 +233,7 @@ function Settings({navigation}) {
             <CustomTypes
                 navigation={navigation}
             />
-      
+
             <Space/>
 
             <SectionHeader theme={theme}>

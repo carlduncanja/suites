@@ -450,6 +450,9 @@ const Orders = (props) => {
     };
 
     const onCreateInvoice = (purchaseOrderId) => {
+        modal.closeAllModals()
+        setSelectedOrders([])
+        setFetchingData(true);
         createInvoiceViaOrders(purchaseOrderId)
             .then((data) => {
                 console.log("Invoice Record:", data);
@@ -461,9 +464,11 @@ const Orders = (props) => {
                 );
             })
             .catch((error) => {
+
+                const errorMessage = error?.response?.data?.msg || error?.response?.data?.message
                 Alert.alert(
-                    "Unsuccessful creation",
-                    "Invoice can only be generated for purchase orders in `ORDER RECEIVED` status.",
+                    "Failed To Invoice PO.",
+                    errorMessage,
                     [
                         {
                             text: "Ok",
@@ -475,7 +480,11 @@ const Orders = (props) => {
                     }
                 );
                 console.log("Failed to create invoice", error);
+            })
+            .finally(_ => {
+                setFetchingData(false);
             });
+
     };
 
     const updateStatus = (purchaseOrderId, status) => {

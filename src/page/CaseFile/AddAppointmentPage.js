@@ -409,7 +409,7 @@ function AppointmentPage({ navigation, route }) {
                 setSelectedProcedure(Procedure);
             })
             .catch(error => {
-                console.error("Failed to fetch procedure info", error);
+                console.log("Failed to fetch procedure info", error);
                 setSnackbar({ visible: true, message: "Failed to fetch consumable & equipments data." })
             })
     }

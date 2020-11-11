@@ -13,6 +13,7 @@ import {reload} from "expo/build/Updates/Updates";
 
 const ProcedureDetailsContainer = ({tabDetails, caseId, proceduresBillableItems}) => {
 
+
     const modal = useModal();
     const {pageState, setPageState, fetchCase} = useContext(PageContext);
     const {isEditMode} = pageState;
@@ -35,8 +36,9 @@ const ProcedureDetailsContainer = ({tabDetails, caseId, proceduresBillableItems}
     // ############# Event Handlers
 
     const onOpenPickList = (details) => {
+        // console.log("Details: ", details);
         
-        const filterProcedures = proceduresBillableItems.filter( item => item?.procedureId._id === details._id);
+        const filterProcedures = proceduresBillableItems.filter( item => item?.caseProcedureId === details?._id);
         
         modal.openModal('OverlayInfoModal', {
             overlayContent: <ProceduresPickList

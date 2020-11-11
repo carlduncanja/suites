@@ -93,7 +93,7 @@ function CreateRoleOverlayDialog({
 
             setTimeout(() => onCreated(role), 200);
         }).catch(error => {
-            console.error('create.role.error', error);
+            console.log('create.role.error', error);
             modal.openModal(
                 'ConfirmationModal',
                 {

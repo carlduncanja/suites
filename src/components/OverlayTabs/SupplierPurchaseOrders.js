@@ -66,14 +66,14 @@ const SupplierPurchaseOrders = ({
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
     const [tabDetails, setTabDetails] = useState([]);
-
+    console.log("PO Data: ", data);
     const recordsPerPage = 15;
 
     const headers = [
         {
             name: 'Purchase Orders',
             alignment: 'flex-start',
-            flex: 1
+            flex: 1.2
         },
         {
             name: 'Invoice No.',
@@ -306,6 +306,7 @@ const SupplierPurchaseOrders = ({
                     onPress={() => {
                     }}
                     fontStyle="--text-base-medium"
+                    flex={1.2}
                 />
                 <DataItemWithIcon
                     text={invoice}
@@ -321,7 +322,7 @@ const SupplierPurchaseOrders = ({
                     color={statusColor}
                     fontStyle="--text-sm-medium"
                 />
-                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY')}/>
+                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY') || 'n/a'}/>
                 <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')}/>
 
                 {/* <View style={[styles.item,{flex:1}]}>

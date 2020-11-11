@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {withModal} from 'react-native-modalfy';
-import {TextInput} from 'react-native-gesture-handler';
-import {useTheme} from 'emotion-theming';
-import styled, {css} from '@emotion/native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import {useModal, withModal} from 'react-native-modalfy';
+import { TextInput } from 'react-native-gesture-handler';
+import { useTheme } from 'emotion-theming';
+import styled, { css } from '@emotion/native';
 import PickListCard from '../CaseFiles/PickList/PickListCard';
 import DeleteIcon from '../../../assets/svg/wasteIcon';
 import RightArrow from '../../../assets/svg/rightArrow';
@@ -20,43 +20,45 @@ const Row = styled.View`
     /* width : 100%; */
     height : 20px;
     flex-direction : row;
-    margin-bottom : ${({theme}) => theme.space['--space-24']};
-
+    margin-bottom : ${({ theme }) => theme.space['--space-24']};
 `;
 
-const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFooterPress, modal}) => {
-    const {closeModals} = modal;
+const headers = [
+    {
+        name: 'Product',
+        alignment: 'flex-start',
+        flex: 2,
+    },
+    {
+        name: 'Quantity',
+        alignment: 'center',
+        flex: 1
+    },
+    {
+        name: 'Unit',
+        alignment: 'center',
+        flex: 1
+    },
+    {
+        name: 'Actions',
+        alignment: 'flex-end',
+        flex: 1
+    }
+];
+
+const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFooterPress }) => {
+    const modal = useModal();
     const theme = useTheme();
+    const { closeModals } = modal;
     const [purchaseOrders, setPurchaseOrders] = useState(details);
     const [fields, setFields] = useState({});
     const [errorFields, setErrorFields] = useState({});
 
-    const headers = [
-        {
-            name: 'Product',
-            alignment: 'flex-start',
-            flex: 2,
-        },
-        {
-            name: 'Quantity',
-            alignment: 'center',
-            flex: 1
-        },
-        {
-            name: 'Unit',
-            alignment: 'center',
-            flex: 1
-        },
-        {
-            name: 'Actions',
-            alignment: 'flex-end',
-            flex: 1
-        }
-    ];
 
     const onNumberArrowChange = id => operation => {
+        console.log("what's in id?", id)
         const findIndex = purchaseOrders.findIndex(obj => obj._id === id);
-        const objQuantity = purchaseOrders[findIndex].amount || 1;
+        const objQuantity = Object.assign(...purchaseOrders).amount || 1;
 
         const updatedObj = {
             ...purchaseOrders[findIndex],
@@ -78,7 +80,7 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
         const objQuantity = purchaseOrders[findIndex].amount || 1;
         const updatedObj = {
             ...purchaseOrders[findIndex],
-            amount: value === 0 ? 1 : parseInt(value) || ''
+            amount: value === 0 ? 1 : parseInt(value) || '1'
         };
         const updatedArray = [
             ...purchaseOrders.slice(0, findIndex),
@@ -123,7 +125,7 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
         let isValid = true;
         const requiredFields = ['deliveryDate'];
 
-        const errorObj = {...errorFields} || {};
+        const errorObj = { ...errorFields } || {};
 
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
@@ -143,37 +145,38 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
 
     const onFieldChange = fieldName => value => {
         console.log('Field:', fieldName, value);
-        const updatedFields = {...fields};
+        const updatedFields = { ...fields };
         setFields({
             ...updatedFields,
             [fieldName]: value
         });
 
-        const updatedErrors = {...errorFields};
+        const updatedErrors = { ...errorFields };
         delete updatedErrors[fieldName];
         setErrorFields(updatedErrors);
     };
 
     const listItemFormat = item => {
-        const {_id = '', name = '', amount = 1, unit = 'n/a'} = item;
+        //const { _id = '', name = '', amount = 1, unit = 'n/a' } = item;
+        console.log("item has", item)
         return (
 
             <Row theme={theme}>
                 <DataItem
-                    text={name}
+                    text={item?.name}
                     fontStyle="--text-base-medium"
                     color="--color-gray-800"
                     flex={2}
                 />
                 <NumberChangeField
-                    onChangePress={onNumberArrowChange(_id)}
-                    onAmountChange={onChangeField(_id)}
-                    value={amount.toString()}
+                    onChangePress={onNumberArrowChange(item?._id)}
+                    onAmountChange={onChangeField(item?._id)}
+                    value={item.amount.toString()}
                     align="center"
                 />
 
                 <DataItem
-                    text={unit}
+                    text={item?.unit}
                     fontStyle="--text-sm-regular"
                     color="--color-gray-800"
                     align="center"
@@ -183,8 +186,8 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
                     align="flex-end"
                     content={(
                         <IconButton
-                            Icon={<DeleteIcon/>}
-                            onPress={() => onDeletePress(_id)}
+                            Icon={<DeleteIcon />}
+                            onPress={() => onDeletePress(item?._id)}
                         />
                     )}
                 />
@@ -223,7 +226,6 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
     };
 
     return (
-
         <CartCard
             title="Cart"
             closeModal={() => closeModals('OverlayInfoModal')}
@@ -243,7 +245,7 @@ const SuppliersPurchaseOrder = ({details, onUpdateItems, onClearPress, onListFoo
     );
 };
 
-export default withModal(SuppliersPurchaseOrder);
+export default SuppliersPurchaseOrder;
 
 const styles = StyleSheet.create({
     listDataContainer: {

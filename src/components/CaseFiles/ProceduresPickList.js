@@ -6,14 +6,14 @@ import { withModal } from "react-native-modalfy";
 const ProceduresPickList = ({details, tabs, modal, pickListData}) => {
     const { closeModals } = modal
 
-    const {inventories = [], equipments = [] } = pickListData
+    const {inventories = [], equipments = [] } = pickListData;
 
     const [selectedTab, setSelectedTab] = useState(0);
 
     const handleOnPressTab = (tab) => {
-        setSelectedTab(tabs.indexOf(tab)) 
+        setSelectedTab(tabs.indexOf(tab));
         // setSelectedTab(tab)
-    }
+    };
 
     // Format data
     const inventoriesArray = inventories.map( item => {
@@ -80,7 +80,7 @@ const ProceduresPickList = ({details, tabs, modal, pickListData}) => {
     )
 }
 
-export default withModal(ProceduresPickList) 
+export default withModal(ProceduresPickList);
 
 const styles = StyleSheet.create({
     listDataContainer:{

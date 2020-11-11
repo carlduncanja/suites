@@ -6,7 +6,7 @@ import InputField2 from '../common/Input Fields/InputField2';
 import DateInputField from '../common/Input Fields/DateInputField';
 import OptionsField from '../common/Input Fields/OptionsField';
 import Button from '../common/Buttons/Button';
-import {formatDate, transformToSentence, calcAge, isValidEmail} from '../../utils/formatter';
+import {formatDate, transformToSentence, calcAge, isValidEmail, handleNumberValidation} from '../../utils/formatter';
 
 const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
     const handlePhones = () => {
@@ -447,13 +447,27 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                     <View style={{marginBottom: 5}}>
                         <Text style={styles.title}>TRN</Text>
                     </View>
+
                     <View style={styles.inputWrapper}>
-                        <Text>{formatTrn(fields.trn)}</Text>
+                        <InputField2
+                            onChangeText={value => {
+                                const val = handleNumberValidation(value, 9);
+                                if (val || val === '') onFieldChange('trn')(val);
+                            }}
+                            value={fields.trn}
+                            onClear={() => onFieldChange('trn')('')}
+                        />
                     </View>
+
+                    {/*<View style={styles.inputWrapper}>*/}
+                    {/*    <Text>{formatTrn(fields.trn)}</Text>*/}
+                    {/*</View>*/}
                 </View>
 
-            </View>
+                <View style={styles.fieldWrapper}/>
 
+                <View style={styles.fieldWrapper}/>
+            </View>
         </>
     );
 
@@ -742,7 +756,7 @@ export default EditablePhysiciansDetailsTab;
 
 const styles = StyleSheet.create({
     section: {},
-    row: {flexDirection: 'row',},
+    row: {flexDirection: 'row'},
     fieldWrapper: {
         flex: 1,
         marginRight: 35,
