@@ -13,7 +13,7 @@ import DialogTabs from "../../common/Dialog/DialogTabs";
  
 
 const CardWrapper = styled.View`
-    flex : 1;
+    /* flex : 1; */
     width : 624px;
 `;
 const CardContainer = styled.View`

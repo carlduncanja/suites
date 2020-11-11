@@ -31,7 +31,7 @@ const FeedbackModal = (props) => {
     );
 };
 
-export default ConfirmationModal;
+export default FeedbackModal;
 
 const styles = StyleSheet.create({
     modalContainer: {

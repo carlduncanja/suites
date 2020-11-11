@@ -263,7 +263,6 @@ function Alerts() {
         getAlerts('closed', recordsPerPage, page, searchValue, start.toString(), end.toString())
             .then(results => {
                 const {data = [], totalPages = 0} = results;
-                console.log("Closed data: ", data);
                 setClosedAlerts(data);
                 setClosedTotalPages(totalPages);
                 setClosedCount(data.length);
@@ -274,10 +273,11 @@ function Alerts() {
     };
 
     const fetchOpenAlert = (page = 1, start = recentStartDate, end = recentEndDate) => {
-        // console.log('Recent dat: ', recentStartDate);
-        getAlerts('open', recordsPerPage, page, recentSearchValue, start, end)
+        console.log("RECENT ALERTS");
+        getAlerts('open', recordsPerPage, page, recentSearchValue, start.toString(), end.toString())
             .then(results => {
                 const {data = [], totalPages = 0} = results;
+                console.log("Recent data: ", data);
                 setRecentAlerts(data);
                 setRecentTotalPages(totalPages);
                 
