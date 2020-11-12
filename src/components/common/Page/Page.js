@@ -14,6 +14,7 @@ import { colors } from '../../../styles';
 import PropTypes from 'prop-types';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import { useNavigation, useRoute, } from '@react-navigation/native';
 
 const PageWrapper = styled.View`
         display : flex;
@@ -72,9 +73,14 @@ function Page(props) {
         hasList = true,
         hasSearch = true,
         pageContent,
-        navigation
+        // navigation
     } = props;
 
+    const navigation = useNavigation();
+    const route = useRoute();
+
+    const isAdmin = route?.params?.isAdmin || false;
+    
     const content = hasList ? (
         <List
             listData={listData}
@@ -116,11 +122,12 @@ function Page(props) {
                 {
                     isFetchingData ?
                         <LoadingIndicator /> :
-                        isDisabled ?
-                            <DisabledSectionComponent 
+                        isDisabled ? (
+                            <DisabledSectionComponent
                                 navigation={navigation}
-                                subMessage="Viewing this list has been disabled."
-                            /> :
+                                isAdmin={isAdmin}
+                            />
+                          ) :
                             content
                 }
             </PageContainer>

@@ -463,7 +463,6 @@ function Storage(props) {
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
-                navigation={props.navigation}
             />
         </PageSettingsContext.Provider>
         

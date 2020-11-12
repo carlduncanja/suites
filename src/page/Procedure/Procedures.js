@@ -513,7 +513,6 @@ const Procedures = props => {
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
-                navigation={navigation}
             />
         </PageSettingsContext.Provider>
         

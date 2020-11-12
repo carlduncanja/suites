@@ -36,7 +36,7 @@ const SubMessageWrapper = styled.Text(({theme, color = '--color-black'}) => ({
 }));
 
 
-function DisabledSectionComponent({headerMessage = 'Nothing Yet.', subMessage = 'Some sections have been disabled. ', navigation}) {
+function DisabledSectionComponent({headerMessage = 'Nothing Yet.', subMessage = 'There seems to be nothing here at the moment. ', navigation, isAdmin = false}) {
     const theme = useTheme();
 
     return (
@@ -55,9 +55,13 @@ function DisabledSectionComponent({headerMessage = 'Nothing Yet.', subMessage = 
                 <SubMessageWrapper theme={theme}>
                     {subMessage}
                     
-                    <SubMessageWrapper theme={theme} color="--accent-button" onPress={() => navigation.navigate("Settings")}>
-                        Click here to configure
-                    </SubMessageWrapper>
+                    {
+                        isAdmin &&
+                        <SubMessageWrapper theme={theme} color="--accent-button" onPress={() => navigation.navigate("Settings")}>
+                            Click here to configure
+                        </SubMessageWrapper>
+                    }
+                    
                    
                 </SubMessageWrapper>
 
