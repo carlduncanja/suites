@@ -1,22 +1,22 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, TouchableOpacity, Alert} from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputUnitFields from "../common/Input Fields/InputUnitFields";
 import InputField2 from "../common/Input Fields/InputField2";
-import {createStorageLocation, getTheatres} from "../../api/network";
+import { createStorageLocation, getTheatres } from "../../api/network";
 // import NumberInputField from "../common/Input Fields/NumberInputField";
 
-import {addStorageLocation} from "../../redux/actions/storageActions";
-import {connect} from "react-redux";
+import { addStorageLocation } from "../../redux/actions/storageActions";
+import { connect } from "react-redux";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import _ from "lodash";
 import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 
-import styled, {css} from '@emotion/native';
+import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
 import ConfirmationComponent from '../ConfirmationComponent';
@@ -35,13 +35,13 @@ const DialogContent = styled.View`
     flex:1;
     width : 100%;
     height : 160px;
-    padding-top : ${ ({theme}) => theme.space['--space-40']};
-    padding-bottom : ${ ({theme}) => theme.space['--space-40']};
-    padding-right : ${ ({theme}) => theme.space['--space-24']};
-    padding-left : ${ ({theme}) => theme.space['--space-24']};
+    padding-top : ${({ theme }) => theme.space['--space-40']};
+    padding-bottom : ${({ theme }) => theme.space['--space-40']};
+    padding-right : ${({ theme }) => theme.space['--space-24']};
+    padding-left : ${({ theme }) => theme.space['--space-24']};
 `;
 
-function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation}) {
+function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation }) {
 
     const modal = useModal();
     const theme = useTheme();
@@ -53,8 +53,8 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     });
     const [popoverList, setPopoverList] = useState([
         {
-            name : "assigned",
-            status : false
+            name: "assigned",
+            status: false
         }
     ])
     const [isPopoverOpen, setIsPopoverOpen] = useState(true)
@@ -93,19 +93,21 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
         search()
     }, [theatresSearchValue]);
 
-    const handlePopovers = (popoverValue) => (popoverItem) =>{
+    const handlePopovers = (popoverValue) => (popoverItem) => {
 
-        if(!popoverItem){
+        if (!popoverItem) {
             setIsPopoverOpen(popoverValue)
-            let updatedPopovers = popoverList.map( item => {return {
-                ...item,
-                status : false
-            }})
+            let updatedPopovers = popoverList.map(item => {
+                return {
+                    ...item,
+                    status: false
+                }
+            })
 
             setPopoverList(updatedPopovers)
-        }else{
+        } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -119,7 +121,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
 
     const fetchTheatres = () => {
         getTheatres(theatresSearchValue, 5)
-            .then((theatresResult = {} ) => {
+            .then((theatresResult = {}) => {
                 const { data = [], pages = 0 } = theatresResult
                 console.log("theatres search", data);
                 setTheatreSearchResult(data || []);
@@ -138,8 +140,32 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
     };
 
     const onPositiveClick = () => {
-        
-        createStorageCall();
+
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    message={`Do you want to add this new location? "${fields?.name}"`}
+                    titleText={'Add new location'}
+                    action={'Add'}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        setTimeout(() => {
+                            modal.closeModals('ConfirmationModal');
+                            createStorageCall();
+
+                        }, 200);
+                    }}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+
+
     };
 
 
@@ -158,12 +184,12 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
             .then(data => {
                 console.log("Data: ", data);
                 modal.closeAllModals();
-                modal.openModal('ConfirmationModal',{
-                    content : (
+                modal.openModal('ConfirmationModal', {
+                    content: (
                         <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {false}
-                            onAction = {()=>{
+                            isEditUpdate={false}
+                            isError={false}
+                            onAction={() => {
                                 onCreated(data);
                                 // addStorageLocation(data);
                                 modal.closeAllModals();
@@ -175,7 +201,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                         console.log('Modal closed');
                     },
                 })
-                
+
                 // Alert.alert("Success", `New storage location ${fields['name']}, has been created.`)
                 // setTimeout(() => {
                 //     onCreated(data)
@@ -184,27 +210,27 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
             })
             .catch(error => {
                 // todo handle error
-                modal.openModal('ConfirmationModal',{
-                    content : (
+                modal.openModal('ConfirmationModal', {
+                    content: (
                         <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {true}
-                            onAction = {()=>{
+                            isEditUpdate={false}
+                            isError={true}
+                            onAction={() => {
                                 modal.closeModals();
                                 onCancel();
                             }}
-                            onCancel = {()=>{
+                            onCancel={() => {
                                 modal.closeAllModals();
                                 onCancel();
                             }}
                         />
                     ),
-                    onClose : () =>{
+                    onClose: () => {
                         modal.closeModals();
                         onCancel();
                     }
                 })
-                
+
                 console.log("failed to create storage location", error)
                 // Alert.alert("Failed", `Failed to create new storage location ${fields['name']}.`)
             })
@@ -212,7 +238,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
             });
     };
 
-    let assignedPop = popoverList.filter( item => item.name === 'assigned')
+    let assignedPop = popoverList.filter(item => item.name === 'assigned')
 
     return (
         <OverlayDialog
@@ -220,23 +246,23 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={"DONE"}
-            // handlePopovers = {handlePopovers}
+        // handlePopovers = {handlePopovers}
         >
- 
+
             <>
                 <DialogTabs
                     tabs={dialogTabs}
                     tab={selectedIndex}
                 />
-                <DialogContent theme = {theme}>
+                <DialogContent theme={theme}>
                     <Row>
                         <FieldContainer>
-                            <InputField2 
+                            <InputField2
                                 label={"Location Name"}
                                 onChangeText={onFieldChange('name')}
                                 value={fields['name']}
                                 onClear={() => onFieldChange('name')('')}
-                                // labelWidth = {98}
+                            // labelWidth = {98}
                             />
                         </FieldContainer>
 
@@ -251,7 +277,7 @@ function CreateStorageDialogContainer({onCancel, onCreated, addStorageLocation})
                                 value={fields['capacity']}
                                 keyboardType={'number-pad'}
                                 onClear={() => onFieldChange('name')('')}
-                                units = {['units']}
+                                units={['units']}
                             />
                         </FieldContainer>
                     </Row>
@@ -347,7 +373,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapDispatcherToProps = { 
+const mapDispatcherToProps = {
     addStorageLocation
 };
 
