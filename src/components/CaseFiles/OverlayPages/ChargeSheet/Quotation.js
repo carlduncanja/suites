@@ -77,7 +77,7 @@ const reportTestData = {
             }
         ]
     }
-}; 
+};
 
 const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     const modal = useModal();
@@ -91,6 +91,10 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
         },
         {
             name: 'Date',
+            alignment: 'flex-start'
+        },
+        {
+            name: 'Status',
             alignment: 'flex-start'
         },
         {
@@ -111,8 +115,8 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     };
 
     const listItem = item => {
-        
-        const {quotationNumber = '', amountDue = 0, createdAt = ''} = item;
+
+        const {quotationNumber = '', amountDue = 0, createdAt = '', status} = item;
         return (
             <>
                 <View style={styles.item}>
@@ -120,6 +124,9 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
                 </View>
                 <View style={[styles.item, {alignItems: 'flex-start'}]}>
                     <Text style={styles.itemText}>{formatDate(createdAt, 'DD/MM/YYYY')}</Text>
+                </View>
+                 <View style={[styles.item, {alignItems: 'flex-start'}]}>
+                    <Text style={styles.itemText}>{status}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>
