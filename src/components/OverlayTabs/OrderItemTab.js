@@ -1,68 +1,69 @@
-import React,{ useEffect, useState, useContext } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Table from "../common/Table/Table";
+import React, {useEffect, useState, useContext} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import {useModal} from 'react-native-modalfy';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
-import LongPressWithFeedback from "../common/LongPressWithFeedback";
-import ActionContainer from "../common/FloatingAction/ActionContainer";
-import ActionItem from "../common/ActionItem";
-import NumberChangeField from "../common/Input Fields/NumberChangeField";
+import LongPressWithFeedback from '../common/LongPressWithFeedback';
+import ActionContainer from '../common/FloatingAction/ActionContainer';
+import ActionItem from '../common/ActionItem';
+import NumberChangeField from '../common/Input Fields/NumberChangeField';
 import AddItemContainer from '../PurchaseOrders/AddItemContainer';
 
-import WasteIcon from "../../../assets/svg/wasteIcon";
-import AddIcon from "../../../assets/svg/addIcon";
+import WasteIcon from '../../../assets/svg/wasteIcon';
+import AddIcon from '../../../assets/svg/addIcon';
 
-import { currencyFormatter } from "../../utils/formatter";
+import {currencyFormatter} from '../../utils/formatter';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
-import {useModal} from "react-native-modalfy";
 import {PageContext} from '../../contexts/PageContext';
-import Footer from "../common/Page/Footer";
-import Search from "../common/Search";
+import Footer from '../common/Page/Footer';
+import Search from '../common/Search';
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
-import DataItem from "../common/List/DataItem";
+import DataItem from '../common/List/DataItem';
 import {LONG_PRESS_TIMER} from '../../const';
-
 
 const headers = [
     {
-        name : 'Item Name',
-        alignment : 'flex-start',
-        flex : 2,
+        name: 'Item Name',
+        alignment: 'flex-start',
+        flex: 2,
     },
     {
-        name : 'SKU',
-        alignment : 'center',
-        flex : 1,
+        name: 'SKU',
+        alignment: 'center',
+        flex: 1,
     },
     {
-        name : 'Quantity',
-        alignment : 'center',
-        flex : 1,
+        name: 'Quantity',
+        alignment: 'center',
+        flex: 1,
     },
     {
-        name : 'Unit',
-        alignment : 'center',
-        flex : 1,
+        name: 'Unit',
+        alignment: 'center',
+        flex: 1,
     },
     {
-        name : 'Unit Price',
-        alignment : 'flex-end',
-        flex : 1,
+        name: 'Unit Price',
+        alignment: 'flex-end',
+        flex: 1,
     },
-]
+];
 
 const OrderItemTab = ({
     orders = [],
     // isEditMode = false,
-    onItemChange = ()=>{},
-    supplierId = "",
-    onAddProductItems = ()=>{},
-    onRemoveProductItems = ()=>{},
-}) =>{
-
+    onItemChange = () => {
+    },
+    supplierId = '',
+    onAddProductItems = () => {
+    },
+    onRemoveProductItems = () => {
+    },
+}) => {
     const modal = useModal();
     const theme = useTheme();
     const {pageState, setPageState} = useContext(PageContext);
@@ -70,23 +71,23 @@ const OrderItemTab = ({
 
     const recordsPerPage = 15;
 
-
-    const [isFloatingActionDisabled, setFloatingAction] = useState(false)
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [totalPages, setTotalPages] = useState(0);
-    const [currentPageListMin, setCurrentPageListMin] = useState(0)
-    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
-    const [currentPagePosition, setCurrentPagePosition] = useState(1)
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
-    const [selectedItems, setSelectedItems] = useState([])
+    const [searchValue, setSearchValue] = useState('');
+    const [selectedItems, setSelectedItems] = useState([]);
 
     useEffect(() => {
-        setTotalPages(Math.ceil(orders.length / recordsPerPage))
+        setTotalPages(Math.ceil(orders.length / recordsPerPage));
     }, []);
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -96,202 +97,205 @@ const OrderItemTab = ({
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
     };
 
     const handleOnSelectAll = () => {
-        let updatedItemsList = selectAll(orders, selectedItems)
-        setSelectedItems(updatedItemsList)
-    }
+        const updatedItemsList = selectAll(orders, selectedItems);
+        setSelectedItems(updatedItemsList);
+    };
 
-    const handleOnCheckBoxPress = (item) => () => {
+    const handleOnCheckBoxPress = item => () => {
         const {_id} = item;
-        let updatedItems = checkboxItemPress(_id, selectedItems)
+        const updatedItems = checkboxItemPress(_id, selectedItems);
 
-        setSelectedItems(updatedItems)
-    }
+        setSelectedItems(updatedItems);
+    };
 
     const toggleActionButton = () => {
-        setFloatingAction(true)
+        setFloatingAction(true);
 
-        modal.openModal("ActionContainerModal",
+        modal.openModal('ActionContainerModal',
             {
                 actions: floatingActions(),
-                title: "ORDER ACTIONS",
+                title: 'ORDER ACTIONS',
                 onClose: () => {
-                    setFloatingAction(false)
+                    setFloatingAction(false);
                 },
-            })
-    }
+            });
+    };
 
-    const onQuantityChange = (item) => (action) =>{
-        const { amount = 0, productId = {} } = item
-        console.log('item', action)
-        const { _id = "" } = productId
+    const onQuantityChange = item => action => {
+        const {amount = 0, productId = {}} = item;
+        // console.log('item', action);
+        const {_id = ''} = productId;
 
         const updatedObj = {
             ...item,
             amount: action === 'add' ? amount + 1 : amount === 0 ? amount : amount - 1
         };
 
+        const updatedData = orders.map(item => (item.productId?._id === _id ? {...updatedObj} : {...item}));
 
-        const updatedData = orders.map(item => {
-            // console.log("Order: ", item.p)
-            return item.productId?._id === _id
-                ? {...updatedObj}
-                : {...item}
-        })
+        onItemChange(updatedData);
+    };
 
-        onItemChange(updatedData)
-    }
+    const onAmountChange = item => value => {
+        // console.log('hello', item, value);
 
-    const onAmountChange = (item) => (value) => {
-        console.log('hello', item, value);
-
-        const { productId = {} } = item
-        const { _id = "" } = productId
+        const {productId = {}} = item;
+        const {_id = ''} = productId;
 
         const updatedObj = {
             ...item,
-            amount: value === '' ? "" : parseFloat(value) < 0 ? 0 : parseInt(value)
+            amount: value === '' ? '' : parseFloat(value) < 0 ? 0 : parseInt(value)
         };
 
-        const updatedData = orders.map(item => {
-            return item.productId?._id === _id
-                ? {...updatedObj}
-                : {...item}
-        })
+        const updatedData = orders.map(item => (item.productId?._id === _id ?
+            {...updatedObj} :
+            {...item}));
 
-        onItemChange(updatedData)
-    }
+        onItemChange(updatedData);
+    };
 
-    const listItemFormat = (item,index) => {
-        const { amount = 0, productId = {} } = item
-        const { name = "", sku = "", unitPrice = 0, unit = "" } = productId
+    const listItemFormat = (item, index) => {
+        const {amount = 0, productId = {}} = item;
+        const {name = '', sku = '', unitPrice = 0, unit = ''} = productId;
 
         return (
             <>
-                <DataItem text = {name} flex = {2} fontStyle = "--text-base-medium" color = "--color-blue-600" />
-                <DataItem text = {sku === "" ? `n/a` : sku} align = "center" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
+                <DataItem text={name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600"/>
+                <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 {
-                    isEditMode ?
+                    isEditMode ? (
                         <NumberChangeField
                             onChangePress={onQuantityChange(item)}
-                            onAmountChange = {onAmountChange(item)}
-                            value={amount === 0 ? "0" : amount.toString()}
-                            borderColor = '--color-gray-400'
-                            backgroundColor = '--color-gray-100'
+                            onAmountChange={onAmountChange(item)}
+                            value={amount === 0 ? '0' : amount.toString()}
+                            borderColor="--color-gray-400"
+                            backgroundColor="--color-gray-100"
                         />
-                        :
-                        <DataItem text = {amount} align = "center" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
+                    ) : <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
                 }
-                <DataItem text = {unit} align = "center" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
-                <DataItem text = {`$ ${currencyFormatter(unitPrice)}`} align = "flex-end" flex = {1} fontStyle = "--text-base-medium" color = "--color-gray-800"/>
+                <DataItem text={unit} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                <DataItem text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
             </>
-        )
-    }
+        );
+    };
 
-    const renderItemFn = (item,index) => {
-        return <Item
+    const renderItemFn = (item, index) => (
+        <Item
             hasCheckBox={true}
             isChecked={selectedItems.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => {}}
+            onItemPress={() => {
+            }}
             itemView={listItemFormat(item, index)}
         />
-    }
+    );
 
-    const floatingActions = () =>{
-        let isDisabled = selectedItems.length === 0 ? true : false;
-        let isDisabledColor = selectedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
-        const addItem =
+    const floatingActions = () => {
+        const isDisabled = selectedItems.length === 0;
+        const isDisabledColor = selectedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
+        const addItem = (
             <ActionItem
-                title={"Add Item"}
-                icon={<AddIcon strokeColor = {isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']}/>}
+                title="Add Item"
+                icon={<AddIcon strokeColor={isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']}/>}
                 onPress={onAddItem}
-                disabled = {isEditMode ? false : true}
-                touchable = {isEditMode ? true : false}
-        />;
+                disabled={!isEditMode}
+                touchable={!!isEditMode}
+            />
+        );
 
-        const deleteItem =
+        const deleteItem = (
             <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
                 onLongPress={handleRemoveItem}
-                isDisabled = {isDisabled}
+                isDisabled={isDisabled}
             >
                 <ActionItem
-                    title={"Hold to Delete"}
-                    icon={<WasteIcon strokeColor = {isDisabledColor}/>}
-                    onPress={() => {}}
-                    disabled = {isDisabled}
+                    title="Hold to Delete"
+                    icon={<WasteIcon strokeColor={isDisabledColor}/>}
+                    onPress={() => {
+                    }}
+                    disabled={isDisabled}
                     touchable={false}
                 />
-            </LongPressWithFeedback>;
+            </LongPressWithFeedback>
+        );
 
         return <ActionContainer
             floatingActions={[
                 deleteItem,
                 addItem,
             ]}
-            title={"ORDERS ACTIONS"}
-        />
-    }
+            title="ORDERS ACTIONS"
+        />;
+    };
 
-    const onAddItemsToList = (items) => {
+    const onAddItemsToList = items => {
         // modal.closeModals('OverlayInfoModal');
-        setFloatingAction(false)
-        onAddProductItems(items)
-    }
+        setFloatingAction(false);
+        onAddProductItems(items);
+    };
 
-    const onAddItem = () =>{
-        modal.closeAllModals()
-        setTimeout(()=>{
+    const onAddItem = () => {
+        modal.closeAllModals();
+        setTimeout(() => {
             modal.openModal('OverlayInfoModal',
                 {
-                    overlayContent : <AddItemContainer
-                        supplierId = {supplierId}
-                        orders = {orders}
-                        onAddProductItems = {onAddItemsToList}
-                        onCancel = {()=> setFloatingAction(false)}
+                    overlayContent: <AddItemContainer
+                        supplierId={supplierId}
+                        orders={orders}
+                        onAddProductItems={onAddItemsToList}
+                        onCancel={() => setFloatingAction(false)}
                     />,
                     onClose: () => setFloatingAction(false)
-                })
-        },200)
-    }
+                });
+        }, 200);
+    };
 
     const handleRemoveItem = () => {
-        let updatedOrders = orders
-        selectedItems.map( item => {
-            updatedOrders = updatedOrders.filter(order => order?._id !== item)
-        })
+        let updatedOrders = orders;
+        selectedItems.map(item => {
+            updatedOrders = updatedOrders.filter(order => order?._id !== item);
+        });
         onRemoveProductItems(updatedOrders);
-    }
+    };
 
-    let itemsToDisplay = [...orders];
+    const onChangeText = value => setSearchValue(value);
+
+    let itemsToDisplay;
+    if (searchValue) {
+        itemsToDisplay = orders.filter(order => order.productId.name.toLowerCase()
+            .includes(searchValue.toLowerCase() || order.productId.sku.toLowerCase()
+                .includes(searchValue.toLowerCase())
+            ));
+    } else itemsToDisplay = [...orders];
+
     itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
         <>
             <Search
-                placeholderText = "Search by Item Name or SKU"
-                changeText = {()=>{}}
-                inputText = {""}
-                onClear = {()=>{}}
+                placeholderText="Search by Item Name or SKU"
+                changeText={value => onChangeText(value)}
+                inputText={searchValue}
+                onClear={() => onChangeText('')}
             />
 
-
             <Table
-                data = {itemsToDisplay}
-                listItemFormat = {renderItemFn}
-                headers = {headers}
-                isCheckbox = {true}
-                toggleHeaderCheckbox = {handleOnSelectAll}
-                itemSelected = {selectedItems}
+                data={itemsToDisplay}
+                listItemFormat={renderItemFn}
+                headers={headers}
+                isCheckbox={true}
+                toggleHeaderCheckbox={handleOnSelectAll}
+                itemSelected={selectedItems}
             />
 
             <Footer
@@ -301,12 +305,12 @@ const OrderItemTab = ({
                 goToPreviousPage={goToPreviousPage}
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
-                isNextDisabled = {currentPagePosition >= totalPages}
-                isPreviousDisabled = {(currentPagePosition === 1)}
+                isNextDisabled={currentPagePosition >= totalPages}
+                isPreviousDisabled={(currentPagePosition === 1)}
             />
 
         </>
-    )
-}
+    );
+};
 
-export default OrderItemTab
+export default OrderItemTab;
