@@ -23,10 +23,10 @@ const SuggestionsMatchesComponentContainer = styled.View`
 `;
 
 function SuggestionsMatchesComponent({
-                                         matchesToDisplay = [],
-                                         onSuggestionPress = () => {
-                                         }
-                                     }) {
+    matchesToDisplay = [],
+    onSuggestionPress = () => {
+    }
+}) {
 
 
     const theme = useTheme();

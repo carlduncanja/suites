@@ -23,7 +23,7 @@ const SearchIconContainer = styled.View`
 const InputTextContainer = styled.View`
     display: flex;
     flex:1;
-`
+`;
 
 function SearchInputContainer({onChangeText = ()=>{}, inputText}){
 

@@ -20,6 +20,7 @@ const SuggestionWrapper = styled.TouchableOpacity`
 const SuggestionContainer = styled.View`
     display: flex;
     width: 100%;
+    flex-direction: row;
 `;
 
 const SuggestionText = styled.Text( ({theme}) => ({
@@ -35,13 +36,19 @@ function Suggestion({
 
     const theme = useTheme();
 
+    const { date = '', title = '', startTime = '', endTime = '' } = suggestion;
+
     return (
-        <SuggestionWrapper onPress={onPress} theme = {theme}>
+        <SuggestionWrapper onPress={onPress} theme={theme}>
             <SuggestionContainer>
-                <SuggestionText theme = {theme}>
-                    {(suggestion) instanceof Date ?
+                <SuggestionText theme={theme} numberOfLines={1} style={css` width: 200px;`}>
+                    {title}
+                    {/* {(suggestion) instanceof Date ?
                         formatDate(suggestion, "MMMM D, YYYY") : suggestion
-                    }
+                    } */}
+                </SuggestionText>
+                <SuggestionText>
+                    {date} ({startTime} - {endTime})
                 </SuggestionText>
             </SuggestionContainer>
         </SuggestionWrapper>

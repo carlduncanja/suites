@@ -42,15 +42,12 @@ function SuggestionsComponent({
     getNextResults = () => { }
 }) {
 
-
     const theme = useTheme();
     // STYLED COMPONENTS
 
-    console.log(matchesToDisplay);
-
+    // console.log('Matches:', matchesToDisplay);
 
     return (
-
 
         isSuggestionsOpen &&
         <SuggestionsComponentWrapper theme = {theme}>
