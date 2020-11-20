@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text} from 'react-native';
-import {useModal} from 'react-native-modalfy';
-import {connect} from 'react-redux';
+import { View, StyleSheet, Text } from 'react-native';
+import { useModal } from 'react-native-modalfy';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
 import LevelIndicator from '../components/common/LevelIndicator/LevelIndicator';
-import {numberFormatter} from '../utils/formatter';
-import {getStorage, removeStorageLocations} from '../api/network';
-import {setStorage} from '../redux/actions/storageActions';
+import { numberFormatter } from '../utils/formatter';
+import { getStorage, removeStorageLocations } from '../api/network';
+import { setStorage } from '../redux/actions/storageActions';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../components/common/FloatingAction/FloatingActionButton';
-import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError} from '../helpers/caseFilesHelpers';
+import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError } from '../helpers/caseFilesHelpers';
 import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 import ActionItem from '../components/common/ActionItem';
 import WasteIcon from '../../assets/svg/wasteIcon';
@@ -23,8 +23,8 @@ import NavPage from '../components/common/Page/NavPage';
 import ConfirmationComponent from '../components/ConfirmationComponent';
 import DataItem from '../components/common/List/DataItem';
 import RightBorderDataItem from '../components/common/List/RightBorderDataItem';
-import {LONG_PRESS_TIMER} from '../const';
-import styled, {css} from '@emotion/native';
+import { LONG_PRESS_TIMER } from '../const';
+import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
 const listHeaders = [
@@ -117,7 +117,7 @@ function Storage(props) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            const { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -128,7 +128,7 @@ function Storage(props) {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        const { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -141,7 +141,7 @@ function Storage(props) {
     };
 
     const onCheckBoxPress = item => () => {
-        const {_id} = item;
+        const { _id } = item;
         const updatedStorage = checkboxItemPress(_id, selectedIds);
         setSelectedIds(updatedStorage);
     };
@@ -170,7 +170,7 @@ function Storage(props) {
     };
 
     // ##### Helper functions
-    const storageItem = ({name, stock, levels, products, transfers}) => (
+    const storageItem = ({ name, stock, levels, products, transfers }) => (
         <>
 
             {/* <View style={[styles.item, {flex: 1.5, justifyContent: 'space-between', ...styles.rowBorderRight}]}>
@@ -179,23 +179,23 @@ function Storage(props) {
                 </Text>
             </View> */}
             <RightBorderDataItem
-                fontStyle = {'--text-base-regular'}
-                color = {'--color-gray-800'}
+                fontStyle={'--text-base-regular'}
+                color={'--color-gray-800'}
 
-                text = {name}
-                flex = {1.2}
+                text={name}
+                flex={1.2}
             />
             <DataItem
-                fontStyle = {'--text-base-medium'}
-                color = {'--color-gray-800'}
-                align = "center"
-                text = {`${products} ${ products === 1 ? 'Product' : 'Products'}`}
+                fontStyle={'--text-base-medium'}
+                color={'--color-gray-800'}
+                align="center"
+                text={`${products} ${products === 1 ? 'Product' : 'Products'}`}
             />
             <DataItem
-                fontStyle = {'--text-base-medium'}
-                color = {'--color-blue-600'}
-                align = "center"
-                text = {`${transfers} ${ transfers === 1 ? 'Transfer' : 'Transfers'}`}
+                fontStyle={'--text-base-medium'}
+                color={'--color-blue-600'}
+                align="center"
+                text={`${transfers} ${transfers === 1 ? 'Transfer' : 'Transfers'}`}
             />
 
             {/* <View style={[
@@ -221,7 +221,7 @@ function Storage(props) {
         setFetchingData(true);
         getStorage(searchValue, recordsPerPage, currentPosition)
             .then(storageResult => {
-                const {data = [], pages = 0} = storageResult;
+                const { data = [], pages = 0 } = storageResult;
                 console.log("Dta: ", data);
 
                 if (pages === 1) {
@@ -264,7 +264,7 @@ function Storage(props) {
             name: item.name,
             stock: totalStock,
             products: totalProducts,
-            transfers : totalTransfers,
+            transfers: totalTransfers,
             levels: {
                 min: 0,
                 max: item.capacity
@@ -286,7 +286,7 @@ function Storage(props) {
     const getFabActions = () => {
         const isDisabled = selectedIds.length === 0;
         const deleteAction = (
-            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+            <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeStorageLocationsLongPress}
@@ -294,11 +294,11 @@ function Storage(props) {
                 >
                     <ActionItem
                         title="Hold to Delete"
-                        icon={<WasteIcon strokeColor = {isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'] }/>}
+                        icon={<WasteIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']} />}
                         onPress={() => {
                         }}
                         touchable={false}
-                        disabled = {isDisabled}
+                        disabled={isDisabled}
                     />
                 </LongPressWithFeedback>
             </View>
@@ -307,7 +307,7 @@ function Storage(props) {
         const createAction = (
             <ActionItem
                 title="New Location"
-                icon={<AddIcon/>}
+                icon={<AddIcon />}
                 onPress={
                     openCreateStorageModel
                 }
@@ -325,7 +325,7 @@ function Storage(props) {
 
     const removeStorageLocationsLongPress = () => {
         // Done with one or more ids selected
-        if (selectedIds.length > 0) openDeletionConfirm({ids: [...selectedIds]});
+        if (selectedIds.length > 0) openDeletionConfirm({ ids: [...selectedIds] });
         else openErrorConfirmation();
     };
 
@@ -414,7 +414,7 @@ function Storage(props) {
                     'OverlayModal',
                     {
                         content: <CreateStorageDialogContainer
-                            onCreated={item => {onItemPress(item)(); setFloatingAction(false)}}
+                            onCreated={item => { onItemPress(item)(); setFloatingAction(false) }}
                             onCancel={() => setFloatingAction(false)}
                         />,
                         onClose: () => setFloatingAction(false)
@@ -484,8 +484,8 @@ const styles = StyleSheet.create({
         borderRightWidth: 1,
     }
 });
-const mapStateToProps = state => ({storageLocations: state.storage});
+const mapStateToProps = state => ({ storageLocations: state.storage });
 
-const mapDispatcherToProp = {setStorage};
+const mapDispatcherToProp = { setStorage };
 
 export default connect(mapStateToProps, mapDispatcherToProp)(Storage);

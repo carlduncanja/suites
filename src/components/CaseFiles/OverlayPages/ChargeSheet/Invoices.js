@@ -1,18 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {View, StyleSheet, Text, ScrollView, TouchableOpacity} from 'react-native';
 import {useModal, withModal} from 'react-native-modalfy';
 import moment from 'moment';
 import Table from '../../../common/Table/Table';
 import SvgIcon from '../../../../../assets/SvgIcon';
 import Checkbox from '../../../common/Checkbox/Checkbox';
-import { useCheckBox, formatAmount, calcBillingValues } from '../../../../helpers/caseFilesHelpers';
-import { CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
-import { caseActions } from '../../../../redux/reducers/caseFilesReducer';
-import { CaseFileContext } from '../../../../contexts/CaseFileContext';
+import {useCheckBox, formatAmount, calcBillingValues} from '../../../../helpers/caseFilesHelpers';
+import {CheckedBox, PartialCheckbox} from '../../../common/Checkbox/Checkboxes';
+import {caseActions} from '../../../../redux/reducers/caseFilesReducer';
+import {CaseFileContext} from '../../../../contexts/CaseFileContext';
 import ReportPreview from '../../Reports/ReportPreview';
 import Item from '../../../common/Table/Item';
 
-import { formatDate, currencyFormatter, transformToSentence } from '../../../../utils/formatter';
+import {formatDate, currencyFormatter, transformToSentence} from '../../../../utils/formatter';
 import ListItem from '../../../common/List/ListItem';
 
 const reportTestData = {
@@ -90,7 +90,7 @@ const reportTestData = {
 const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
     const modal = useModal();
 
-    console.log('Invoices: ', tabDetails); 
+    console.log('Invoices: ', tabDetails);
     const [checkBoxList, setCheckBoxList] = useState([]);
 
     const headers = [
@@ -108,6 +108,10 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
         },
         {
             name: 'Value',
+            alignment: 'center'
+        },
+        {
+            name: 'Balance',
             alignment: 'center'
         }
     ];
@@ -132,8 +136,9 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
     };
 
     const listItem = item => {
-        const { invoiceNumber = '', status = '', billingDetails = {}, createdAt = '', amountDue = 0 } = item;
-        // const { subTotal = 0 } = billingDetails;
+        const {invoiceNumber = '', status = '', billingDetails = {}, createdAt = '', amountDue = 0, amountPaid} = item;
+        const balance = amountDue - amountPaid;
+        const balanceColor = balance <= 0 ? '#319795' : '#DD6B20'
 
         return (
             <>
@@ -145,13 +150,17 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
                     <Text style={[styles.itemText, {color: '#3182CE'}]}>{invoiceNumber}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
-                    <Text style={[styles.itemText, {color: item.status === 'Complete' ? '#319795' : '#DD6B20'}]}>{transformToSentence(status)}</Text>
+                    <Text
+                        style={[styles.itemText, {color: item.status === 'Complete' ? '#319795' : '#DD6B20'}]}>{transformToSentence(status)}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
-                    <Text style={styles.itemText}>{formatDate(createdAt, 'DD/MM/YYYY') }</Text>
+                    <Text style={styles.itemText}>{formatDate(createdAt, 'DD/MM/YYYY')}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>
+                </View>
+                <View style={[styles.item, {alignItems: 'center'}]}>
+                    <Text style={[styles.itemText, {color: balanceColor}]}>{`$ ${currencyFormatter(balance)}`}</Text>
                 </View>
                 {/* </View> */}
             </>
