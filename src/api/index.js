@@ -1,9 +1,8 @@
 import axios from 'axios';
 import * as config from '../config';
 
-// const BASE_URL = "http://26ef92ce9036.ngrok.io"; //process.env.SUITES_BASE_URL;
-const BASE_URL = "https://suites-api.azurewebsites.net"; //process.env.SUITES_BASE_URL;
-const DOCUMENT_GENERATION_BASE_URL = 'https://sms-document-generation-service.azurewebsites.net';
+const BASE_URL = config.suites.baseUrl;
+const DOCUMENT_GENERATION_BASE_URL = config.documentGeneration.baseUrl;
 
 const baseInstance = axios.create({
     baseURL: `${BASE_URL}/api`,
