@@ -20,8 +20,7 @@ import OverlayDialogFooter from "./OverlayDialogFooter";
 
 const OverlayDialogWrapper = styled.View`
     flex : 1;
-    width : 636px;
-    backgound-color: red;
+    max-width : 636px;
 `;
 const OverlayDialogContainer = styled.View`
     display : flex;
