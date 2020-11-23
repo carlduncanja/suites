@@ -19,7 +19,13 @@ import WasteIcon from '../../assets/svg/wasteIcon';
 import AddIcon from '../../assets/svg/addIcon';
 import AssignIcon from '../../assets/svg/assignIcon';
 
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../helpers/caseFilesHelpers';
+import {
+    useNextPaginator,
+    usePreviousPaginator,
+    checkboxItemPress,
+    selectAll,
+    handleUnauthorizedError
+} from '../helpers/caseFilesHelpers';
 
 import {setPhysicians} from '../redux/actions/physiciansActions';
 import {getPhysicians, removePhysicians} from '../api/network';
@@ -29,7 +35,7 @@ import {LONG_PRESS_TIMER} from '../const';
 import ConfirmationComponent from '../components/ConfirmationComponent';
 import DataItem from '../components/common/List/DataItem';
 
-import { PageSettingsContext } from '../contexts/PageSettingsContext';
+import {PageSettingsContext} from '../contexts/PageSettingsContext';
 
 
 const Physicians = props => {
@@ -267,7 +273,8 @@ const Physicians = props => {
                 {/*<View style={[styles.item, {alignItems: 'center'}]}>*/}
                 {/*    <PhysicianActionIcon/>*/}
                 {/*</View>*/}
-                <DataItem flex={1} text={casesCount} color="--color-blue-600" fontStyle="--text-sm-medium" align="center"/>
+                <DataItem flex={1} text={casesCount} color="--color-blue-600" fontStyle="--text-sm-medium"
+                          align="center"/>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text
                         numberOfLines={1}
@@ -438,7 +445,10 @@ const Physicians = props => {
                     {
                         content: <CreatePhysicianDialogContainer
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={item => {handleOnItemPress(item, true); console.log("Phys item: ", item)}}
+                            onCreated={item => {
+                                handleOnItemPress(item, true);
+                                console.log("Phys item: ", item)
+                            }}
                         />,
                         onClose: () => setFloatingAction(false)
                     }
@@ -482,7 +492,7 @@ const Physicians = props => {
                 isPreviousDisabled={isPreviousDisabled}
             />
         </PageSettingsContext.Provider>
-        
+
     );
 };
 
