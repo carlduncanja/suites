@@ -1,29 +1,29 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {withModal} from 'react-native-modalfy';
-import {isEmpty} from 'lodash';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { withModal } from 'react-native-modalfy';
+import { isEmpty } from 'lodash';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
-import {formatDate} from '../../utils/formatter';
+import { formatDate } from '../../utils/formatter';
 import ImageIcon from '../../../assets/svg/imageIcon';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import Footer from '../common/Page/Footer';
 
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
 import DataItem from '../common/List/DataItem';
 import TouchableDataItem from '../common/List/TouchableDataItem';
 import DataItemWithIcon from '../common/List/DataItemWithIcon';
-import {transformToSentence} from '../../hooks/useTextEditHook';
+import { transformToSentence } from '../../hooks/useTextEditHook';
 import ActionItem from '../common/ActionItem';
 import ArchiveIcon from '../../../assets/svg/archiveIcon';
 import AddIcon from '../../../assets/svg/addIcon';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
 import LongPressWithFeedback from '../common/LongPressWithFeedback';
-import {LONG_PRESS_TIMER} from '../../const';
+import { LONG_PRESS_TIMER } from '../../const';
 import WasteIcon from '../../../assets/svg/wasteIcon';
 import ConfirmationComponent from '../ConfirmationComponent';
-import {removePurchaseOrders, archivePurchaseOrders} from '../../api/network';
+import { removePurchaseOrders, archivePurchaseOrders } from '../../api/network';
 
 const testData = [
     {
@@ -105,9 +105,11 @@ const SupplierPurchaseOrders = ({
         setTotalPages(Math.ceil(data.length / recordsPerPage));
     }, []);
 
+
+
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            const { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -117,19 +119,23 @@ const SupplierPurchaseOrders = ({
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        const { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
     };
 
     const getFabActions = () => {
-        const isDisabled = checkBoxList.length === 0;
+        const isDisabled = checkBoxList.length === 0 ? true : false;
+
+        console.log('disabled is?', isDisabled);
         const archiveAction = (
             <ActionItem
                 title="Archive Purchase Order"
-                icon={<ArchiveIcon/>}
+                icon={<ArchiveIcon />}
                 onPress={archiveSupplierPurchaseOrders}
+                touchable={isDisabled}
+                disabled={isDisabled}
             />
         );
 
@@ -147,9 +153,10 @@ const SupplierPurchaseOrders = ({
                 >
                     <ActionItem
                         title="Hold to Delete"
-                        icon={<WasteIcon/>}
+                        icon={<WasteIcon />}
                         onPress={() => {
                         }}
+                        disabled={isDisabled}
                         touchable={false}
                     />
                 </LongPressWithFeedback>
@@ -181,7 +188,7 @@ const SupplierPurchaseOrders = ({
         // Done with one or more ids selected
         const selectedIds = checkBoxList.map(item => item._id);
 
-        if (checkBoxList.length > 0) openDeletionConfirm({ids: [...selectedIds]});
+        if (checkBoxList.length > 0) openDeletionConfirm({ ids: [...selectedIds] });
         else openErrorConfirmation();
     };
 
@@ -189,7 +196,7 @@ const SupplierPurchaseOrders = ({
         // Done with one or more ids selected
         const selectedIds = checkBoxList.map(item => item._id);
 
-        if (checkBoxList.length > 0) openDeletionConfirm({ids: [...selectedIds]}, true);
+        if (checkBoxList.length > 0) openDeletionConfirm({ ids: [...selectedIds] }, true);
         else openErrorConfirmation();
     };
 
@@ -277,6 +284,7 @@ const SupplierPurchaseOrders = ({
             updatedCases.push(item);
         }
         setCheckBoxList(updatedCases);
+
     };
 
     const toggleHeaderCheckbox = () => {
@@ -295,7 +303,7 @@ const SupplierPurchaseOrders = ({
     };
 
     const listItemFormat = item => {
-        const {invoiceNumber = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = ''} = item;
+        const { invoiceNumber = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '' } = item;
         const invoice = invoiceNumber === '' ? 'n/a' : invoiceNumber;
         const invoiceColor = invoiceNumber === '' ? '--color-gray-500' : '--color-blue-600';
         const statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700';
@@ -313,7 +321,7 @@ const SupplierPurchaseOrders = ({
                     onPress={() => {
                     }}
                     fontStyle="--text-base-medium"
-                    icon={invoiceNumber !== '' ? <ImageIcon/> : null}
+                    icon={invoiceNumber !== '' ? <ImageIcon /> : null}
                     color={invoiceColor}
                     flex={1.2}
                 />
@@ -322,8 +330,8 @@ const SupplierPurchaseOrders = ({
                     color={statusColor}
                     fontStyle="--text-sm-medium"
                 />
-                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY') || 'n/a'}/>
-                <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')}/>
+                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY') || 'n/a'} />
+                <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} />
 
                 {/* <View style={[styles.item,{flex:1}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{order}</Text>
@@ -369,6 +377,7 @@ const SupplierPurchaseOrders = ({
 
             <Footer
                 hasActionButton={hasActionButton}
+                hasPaginator={false}
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
@@ -401,7 +410,7 @@ SupplierPurchaseOrders.defaultProps = {};
 export default withModal(SupplierPurchaseOrders);
 
 const styles = StyleSheet.create({
-    item: {flex: 1},
+    item: { flex: 1 },
     itemText: {
         fontSize: 16,
         color: '#4A5568',
