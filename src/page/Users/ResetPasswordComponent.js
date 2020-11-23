@@ -15,7 +15,6 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 const DialogContainer = styled.View`
     display: flex;
     height: 400px;
-    background-color: orange;
 `;
 
 const ContentContainer = styled.View`
