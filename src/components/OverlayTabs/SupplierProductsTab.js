@@ -17,11 +17,15 @@ import CreatePurchaseOrderDialog from '../Suppliers/CreatePurchaseOrderDialog';
 import CreateInventoryDialogContainer from '../Inventory/CreateInventoryDialogContainer';
 import DataItem from '../common/List/DataItem';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
+import LongPressWithFeedback from '../common/LongPressWithFeedback';
+import { LONG_PRESS_TIMER } from '../../const';
+
 import ConfirmationComponent from '../ConfirmationComponent';
 
 import Cart from '../../../assets/svg/cart';
 import ActionItem from '../common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
+import WasteIcon from '../../../assets/svg/wasteIcon';
 
 import { currencyFormatter } from '../../utils/formatter';
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
@@ -358,9 +362,28 @@ function SupplierProductsTab({
 
     const actions = () => {
         const isDisabled = checkboxList.length === 0;
+        const isDisabledColor = isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
+
+
+        const deleteProduct = (
+            <LongPressWithFeedback
+                pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                onLongPress={() => {}}
+                isDisabled={isDisabled}
+            >
+                <ActionItem
+                    title="Hold to Delete"
+                    icon={<WasteIcon strokeColor={isDisabledColor}/>}
+                    onPress={() => {
+                    }}
+                    touchable={false}
+                    disabled={isDisabled}
+                />
+            </LongPressWithFeedback>
+        );
         const addCart = (
             <ActionItem
-                title="Add to Cart"
+                title="Add Item to Cart"
                 icon={<AddIcon
                     strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']} />}
                 disabled={isDisabled}
@@ -368,9 +391,10 @@ function SupplierProductsTab({
                 onPress={addToCartAction}
             />
         );
-        const addProduct = <ActionItem title="Add Product" icon={<AddIcon />} onPress={addProductAction} />;
+        const addProduct = <ActionItem title="Create Product" icon={<AddIcon />} onPress={addProductAction} />;
         return <ActionContainer
             floatingActions={[
+                deleteProduct,
                 addCart,
                 addProduct
             ]}
