@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import styled from '@emotion/native'
 import {useTheme} from 'emotion-theming';
 import {useNavigation} from '@react-navigation/native'
@@ -28,6 +28,7 @@ import InfoIcon from '../../../assets/svg/InfoIcon';
 import LoadingComponent from '../../components/LoadingComponent';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import {useModal} from 'react-native-modalfy';
+import TabsContainerComponent from '../../components/common/Tabs/TabsContainerComponent';
 
 
 const PageWrapper = styled.View`
@@ -45,10 +46,13 @@ const PageHeaderWrapper = styled.View`
 
 
 const PageHeaderButtonWrapper = styled.View`
- width: 103px;
- height: 23px;
- //align-items: center;
- //justify-content: center;
+    width: 100%;
+    height: 100%;
+ /* width: 103px; */
+ /* height: 23px; */
+ background-color:yellow;
+ /* align-items: center; */
+ /* justify-content: center; */
 `
 
 
@@ -418,16 +422,22 @@ function SupplierProductCreationPage({route}) {
                 pageTitle={'Create Products'}
                 onClosePress={onClosePress}
             >
+            
                 <PageHeaderWrapper theme={theme}>
                     <PageHeaderButtonWrapper>
-                        <PageButton
+                        
+                        <TabsContainerComponent
+                            tabs={['Consumables']}
+                            selectedTab="Consumables"
+                        />
+                        {/* <PageButton
                             backgroundColor={theme.colors['--default-shade-white']}
                             fontColor={theme.colors['--color-blue-600']}
                             fontStyle={theme.font['--text-xs-bold']}
                             text={'Consumables'}
-                        />
+                        />  */}
                     </PageHeaderButtonWrapper>
-                </PageHeaderWrapper>
+                </PageHeaderWrapper> 
 
 
                 <PageContent>
