@@ -8,6 +8,7 @@ import {MenuOption, MenuOptions} from 'react-native-popup-menu';
 import BMIConverter from '../../BMIConverter';
 import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../common/Information Record/RecordStyles';
 import ResponsiveRecord from '../../../common/Information Record/ResponsiveRecord';
+import ContentResponsiveRecord from '../../../common/Information Record/ContentResponsiveRecord';
 import PatientBMIChart from '../../PatientBMIChart';
 import {
     formatDate,
@@ -488,17 +489,30 @@ const Details = ({
                         keyboardType="decimal-pad"
                     />
 
-                    <TouchableOpacity
+                    <ContentResponsiveRecord
+                        recordTitle="BMI"
+                        content={(
+                            <BMIConverter
+                                recordTitle='BMI'
+                                bmiValue={bmi}
+                                bmiScale={bmiScale}
+                            />
+                        )}
+                        handleRecordPress={() => handleBMIPress(bmi)}
+                    />
+
+                    {/* <TouchableOpacity
                         style={styles.rowItem}
                         activeOpactiy={1}
                         onPress={() => handleBMIPress(bmi)}
                     >
-                        {/*<BMIConverter*/}
-                        {/*    recordTitle={"BMI"}*/}
-                        {/*    bmiValue={bmi}*/}
-                        {/*    bmiScale = {bmiScale}*/}
-                        {/*/>*/}
-                    </TouchableOpacity>
+                    
+                        <BMIConverter
+                            recordTitle='BMI'
+                            bmiValue={bmi}
+                            bmiScale={bmiScale}
+                        />
+                    </TouchableOpacity> */}
                 </Row>
 
                 <Row>

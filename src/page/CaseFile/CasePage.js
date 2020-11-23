@@ -31,7 +31,7 @@ import {
     getCaseFileById,
     removeQuotationCall,
     updateCaseQuotationStatus,
-    updateChargeSheet, approveChargeSheetCall, withdrawChargeSheetChangesCall
+    updateChargeSheet, approveChargeSheetCall, withdrawChargeSheetChangesCall, getUserCall
 } from '../../api/network';
 import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
@@ -82,6 +82,7 @@ const overlayMenu = [
     },
     {
         name: 'Medical History',
+        authenticationRequired: 'cases.read_medical_history',
         overlayTabs: ['Details', 'Family History', 'Lifestyle', 'Other'],
         selectedIcon: <MedicalSelectedIcon/>,
         disabledIcon: <MedicalDisabledIcon/>
@@ -126,9 +127,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     // const [selectedEquipments, setSelectedEquipments] = useState([]);
     // const [variantsEquipments, setVariantsEquipments] = useState([]);
 
-
     const [selectedConsumableCaseProcedureIds, setSelectedConsumableCaseProcedureIds] = useState([]);
-
 
     // ############### State
 
@@ -138,10 +137,12 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     const [pageState, setPageState] = useState({});
     const [selectedCase, setSelectedCase] = useState({});
+    const [userPermissions, setUserPermissions] = useState({});
 
     // ############### Lifecycle Methods
     useEffect(() => {
         fetchCase(caseId);
+        fetchUser(authInfo?.user_id);
     }, []);
 
     // ############### Event Handlers
@@ -354,7 +355,6 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         getCaseFileById(id)
             .then(data => {
                 setSelectedCase(data);
-
             })
             .catch(error => {
                 console.log('Failed to get case', error);
@@ -363,6 +363,19 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             .finally(_ => {
                 setPageLoading(false);
             });
+    };
+
+    const fetchUser = id => {
+        console.log('fetching user info');
+        setPageLoading(true);
+        getUserCall(id)
+            .then(data => {
+                setUserPermissions(data.role?.permissions || {});
+            })
+            .catch(error => {
+                console.error('fetch.user.failed', error);
+            })
+            .finally(_ => setPageLoading(false));
     };
 
     const chargeSheetApproval = params => {
@@ -640,9 +653,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         };
         // console.log("selected case", updatedBillableItems);
 
-
-        setSelectedCase(updatedCase)
-
+        setSelectedCase(updatedCase);
 
         // updateCaseChargeSheet(updatedCase);
     };
@@ -845,9 +856,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     // title = 'CONSUMABLE\'S ACTIONS';
                     // break;
 
-                    [floatingAction, title] = chargeSheetRef.current?.getActions() || []
+                    [floatingAction, title] = chargeSheetRef.current?.getActions() || [];
 
-                    console.log("chargeSheetRef: ", chargeSheetRef)
+                    console.log('chargeSheetRef: ', chargeSheetRef);
 
                     break;
                 }
@@ -892,7 +903,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     // floatingAction.push(removeLineItemAction, addNewLineItemAction);
                     // title = 'EQUIPMENT ACTIONS';
 
-                    [floatingAction, title] = chargeSheetRef.current?.getActions() || []
+                    [floatingAction, title] = chargeSheetRef.current?.getActions() || [];
 
                     break;
                 }
@@ -1337,7 +1348,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             )
                 .then(({uri}) => {
                     console.info(`download.path::${uri}`);
-                    
+
                     Sharing.shareAsync(uri, {UTI: 'pdf'})
                         .then(result => console.info('sharing.success', result))
                         .catch(error => console.log('sharing.error', error));
@@ -1631,6 +1642,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     <CasePageContent
                         overlayContent={getOverlayContent()}
                         overlayMenu={overlayMenu}
+                        userPermissions={userPermissions}
                         toggleActionButton={toggleActionButton}
                         actionDisabled={false}
                         selectedMenuItem={selectedMenuItem}
@@ -1656,13 +1668,14 @@ const mapStateToProps = state => ({auth: state.auth});
 export default connect(mapStateToProps, mapDispatchTopProp)(CasePage);
 
 function CasePageContent({
-                             overlayContent,
-                             overlayMenu,
-                             selectedMenuItem,
-                             onOverlayTabPress,
-                             toggleActionButton,
-                             actionDisabled
-                         }) {
+    overlayContent,
+    overlayMenu,
+    userPermissions,
+    selectedMenuItem,
+    onOverlayTabPress,
+    toggleActionButton,
+    actionDisabled
+}) {
     useEffect(() => {
         console.log('Case Page Create');
     }, []);
@@ -1697,6 +1710,7 @@ function CasePageContent({
                     <CaseFileOverlayMenu
                         selectedMenuItem={selectedMenuItem}
                         overlayMenu={overlayMenu}
+                        permissions={userPermissions}
                         handleTabPress={onOverlayTabPress}
                     />
                     <FloatingActionButton

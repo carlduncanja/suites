@@ -45,10 +45,10 @@ const ROLE_GROUPS = [
                 key: 'delete',
                 title: 'Remove Case Files'
             },
-            // {
-            //     key: 'read_medical_history',
-            //     title: 'View Patient Medical History'
-            // }
+            {
+                key: 'read_medical_history',
+                title: 'View Patient Medical History'
+            }
         ]
     },
     {
@@ -224,6 +224,28 @@ const ROLE_GROUPS = [
             {
                 key: 'delete',
                 title: 'Remove Procedures'
+            }
+        ]
+    },
+    {
+        group: 'users',
+        name: 'Users',
+        actions: [
+            {
+                key: 'create',
+                title: 'Create User'
+            },
+            {
+                key: 'read',
+                title: 'View Users'
+            },
+            {
+                key: 'update',
+                title: 'Update Users'
+            },
+            {
+                key: 'delete',
+                title: 'Remove Users'
             }
         ]
     },

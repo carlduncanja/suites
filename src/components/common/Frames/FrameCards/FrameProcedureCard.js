@@ -13,11 +13,11 @@ import LoadingComponent from "../../../LoadingComponent";
 import {useTheme} from "emotion-theming";
 
 const ProcedureCardWrapper = styled.View`
-   flex: 1
+   flex: 1;
 `
 
 const ProcedureCardContainer = styled.View`
-   flex: 1
+   flex: 1;
 `
 const ProcedureCardHeader = styled.View`
   height: 41px;
@@ -26,7 +26,7 @@ const ProcedureCardHeader = styled.View`
 
 const ProcedureCardContent = styled.View`
   // background-color: ${({theme}) => {
-    theme.colors['--color-default-white']
+    theme.colors['--color-default-white'];
 }};
 `
 
@@ -58,7 +58,7 @@ const FrameProcedureCard = ({
     const recoveryAppointment = recovery?.appointment || false
 
     const [hasRecovery, setRecovery] = useState(!!recoveryAppointment);
-
+    
 
     // STATES
     const [appointmentFields, setAppointmentFields] = useState(getAppointmentFields(appointment));
@@ -172,7 +172,7 @@ const FrameProcedureCard = ({
                         procedure={procedure}
                         appointmentFields={appointmentFields}
                         recoveryAppointment={recoveryAppointmentFields}
-                        onOpenPickList={onOpenPickList}
+                        onOpenPickList={() => onOpenPickList(procedureData)}
                         onAppointmentFieldsUpdate={onAppointmentFieldsUpdate}
                         onRecoveryFieldUpdate={onRecoveryAppointmentFieldsUpdate}
                         onSavePress={handleSaveProcedure}

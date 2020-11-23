@@ -69,7 +69,8 @@ import {
     role,
     patientEndpoint,
     alertsEndpoint,
-    closeAlertEndpoint
+    closeAlertEndpoint,
+    userPassword
 
 } from '../const/suitesEndpoints';
 import {createDocumentLink} from '../const/documentGenerationEndpoints';
@@ -99,6 +100,11 @@ export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const getUserCall = async userId => suitesAxiosInstance
+    .get(user(userId))
+    .then(handleResponse)
+    .catch(handleError);
+
 export const updateUserCall = async (userId, updateData) => suitesAxiosInstance
     .put(user(userId), updateData)
     .then(handleResponse)
@@ -119,6 +125,11 @@ export const getRolesCall = async (query, page, max) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const getRole = async roleId => suitesAxiosInstance
+    .get(role(roleId))
+    .then(handleResponse)
+    .catch(handleError);
+
 export const updateRoleCall = async (roleId, updateData) => suitesAxiosInstance
     .put(role(roleId), updateData)
     .then(handleResponse)
@@ -131,6 +142,11 @@ export const deleteRoleCall = async roleIds => suitesAxiosInstance
 
 export const registrationCall = async params => suitesAxiosInstance
     .post(registrationEndpoint, params)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const resetUserPassword = async (userId, updateData) => suitesAxiosInstance
+    .put(userPassword(userId), updateData)
     .then(handleResponse)
     .catch(handleError);
 
