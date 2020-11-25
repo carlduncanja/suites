@@ -1,16 +1,14 @@
 {
   "expo": {
-    "name": "Suites Test",
-    "slug": "SuitesTest",
+    "name": "Suites",
+    "slug": "smsja-suites",
     "privacy": "public",
     "platforms": [
-      "ios",
-      "android",
-      "web"
+      "ios"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/TheSuitesLogo2.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -23,7 +21,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.smsja.suites",
+      "buildNumber": "1.0.0"
     }
   }
 }
