@@ -28,7 +28,7 @@ const App = () => {
     }), [state, dispatch]);
 
     // TODO REMOVE IN PROD [JUST FOR DEMO PURPOSES]
-    // console.disableYellowBox = true;
+    console.disableYellowBox = true;
 
     const _cacheResourcesAsync = async () => {
         const images = [
