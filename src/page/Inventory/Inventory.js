@@ -391,7 +391,6 @@ function Inventory(props) {
                 deleteInventoryItemAction,
                 createAction,
                 createGroup,
-                itemTransfer
             ]}
             title="INVENTORY ACTIONS"
         />;
