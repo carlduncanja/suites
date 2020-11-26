@@ -1,8 +1,9 @@
-import React, {Component} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, { Component } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import _ from 'lodash'
 
 const ButtonWrapper = styled.TouchableOpacity`
         display: flex;
@@ -27,9 +28,9 @@ const ButtonContainer = styled.View`
         align-items: center;
 `;
 
-const ButtonTitle = styled.Text(({theme, font, color}) => ({
+const ButtonTitle = styled.Text(({ theme, font, color }) => ({
     ...theme.font[font],
-    color: color ? color : theme.colors['--accent-button'],
+    color: !_.isEmpty(color) ? color : theme.colors['--accent-button'],
     textAlign: 'center',
 }))
 
@@ -40,7 +41,7 @@ const IconWrapper = styled.View`
 `
 
 
-const Button = ({backgroundColor, buttonPress, disabled, color, title, font = '--text-sm-medium', Icon}) => {
+const Button = ({ backgroundColor, buttonPress, disabled, color, title, font = '--text-sm-medium', Icon }) => {
     const theme = useTheme();
 
     return (
