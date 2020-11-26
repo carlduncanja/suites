@@ -14,6 +14,7 @@ import MultipleShadowsContainer from '../common/MultipleShadowContainer';
 import IconButton from '../common/Buttons/IconButton';
 import ActionIcon from '../../../assets/svg/dropdownIcon';
 import CollapsedIcon from '../../../assets/svg/closeArrow';
+import Footer from '../common/Page/Footer';
 
 const headers = [
     {
@@ -201,16 +202,23 @@ const EquipmentsTab = ({equipments = []}) => {
     };
 
     return (
-        <ScrollView>
-            <Table
-                isCheckbox={true}
-                data={equipments}
-                listItemFormat={renderListFn}
-                headers={headers}
-                itemSelected={selectedIds}
-                toggleHeaderCheckbox={toggleHeaderCheckbox}
+        <>
+            <ScrollView>
+                <Table
+                    isCheckbox={true}
+                    data={equipments}
+                    listItemFormat={renderListFn}
+                    headers={headers}
+                    itemSelected={selectedIds}
+                    toggleHeaderCheckbox={toggleHeaderCheckbox}
+                />
+            </ScrollView>
+
+            <Footer
+                hasActions={false}
+                hasPaginator={false}
             />
-        </ScrollView>
+        </>
     );
 };
 
