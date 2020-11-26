@@ -63,7 +63,7 @@ const HistoryTabs = ({ cases = testData, selectedItems = [], onCheckboxPress = (
     const theme = useTheme();
 
     const listItem = ({name, isRecovery, duration, date}) => {
-        let recoveryColor = isRecovery ? '--color-green-600' : '--color-orange-500'
+        let recoveryColor = isRecovery ? '--color-green-600' : '--color-orange-500';
         return (
             <ItemWrapper theme={theme}>
                 <DataItem flex={2} color="--color-blue-600" text={name} fontStyle="--text-base-medium"/>
