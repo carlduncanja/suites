@@ -23,7 +23,7 @@ const DialogTabsContainer = styled.View`
 `;
 
 
-function DialogTabs({tabs, tab, onTabPress, onAddTab, tabName}) {
+function DialogTabs({tabs, tab, onTabPress, onAddTab, tabName, tabPlacement="center"}) {
 
     const theme = useTheme();
     return (
@@ -34,7 +34,7 @@ function DialogTabs({tabs, tab, onTabPress, onAddTab, tabName}) {
                     onPressChange={onTabPress}
                     selectedTab={tabs[tab]}
                     paddingTop = {12}
-                    justify = "center"
+                    justify = {tabPlacement}
                     onAddTab = {onAddTab}
                     tabName = {tabName}
                 />
