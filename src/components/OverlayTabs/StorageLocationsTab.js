@@ -16,6 +16,7 @@ import IconButton from '../common/Buttons/IconButton';
 import ActionIcon from '../../../assets/svg/dropdownIcon';
 import CollapsedIcon from '../../../assets/svg/closeArrow';
 import {checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import Footer from '../common/Page/Footer';
 
 const StockWrapper = styled.View`
     flex: 1;
@@ -267,7 +268,7 @@ function StorageLocationsTab({storageLocations = []}) {
     };
 
     return (
-        <View style={styles.container}>
+        <>
             <Table
                 data={storageLocations}
                 listItemFormat={renderListFn}
@@ -276,7 +277,13 @@ function StorageLocationsTab({storageLocations = []}) {
                 itemSelected={selectedIds}
                 toggleHeaderCheckbox={toggleHeaderCheckbox}
             />
-        </View>
+
+            <Footer
+                hasActions={false}
+                hasPaginator={false}
+            />
+
+        </>
     );
 }
 
