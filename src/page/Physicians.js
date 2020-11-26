@@ -19,7 +19,13 @@ import WasteIcon from '../../assets/svg/wasteIcon';
 import AddIcon from '../../assets/svg/addIcon';
 import AssignIcon from '../../assets/svg/assignIcon';
 
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../helpers/caseFilesHelpers';
+import {
+    useNextPaginator,
+    usePreviousPaginator,
+    checkboxItemPress,
+    selectAll,
+    handleUnauthorizedError
+} from '../helpers/caseFilesHelpers';
 
 import {setPhysicians} from '../redux/actions/physiciansActions';
 import {getPhysicians, removePhysicians} from '../api/network';
@@ -28,6 +34,9 @@ import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhysc
 import {LONG_PRESS_TIMER} from '../const';
 import ConfirmationComponent from '../components/ConfirmationComponent';
 import DataItem from '../components/common/List/DataItem';
+
+import {PageSettingsContext} from '../contexts/PageSettingsContext';
+
 
 const Physicians = props => {
     // ############# Const data
@@ -74,6 +83,9 @@ const Physicians = props => {
     const [searchQuery, setSearchQuery] = useState({});
 
     const [selectedPhysiciansId, setSelectedPhysiciansId] = useState([]);
+
+    const [pageSettingState, setPageSettingState] = useState({});
+
 
     // ############# Lifecycle methods
 
@@ -212,6 +224,8 @@ const Physicians = props => {
                 console.log('failed to get physicians', error);
 
                 handleUnauthorizedError(error?.response?.status, setPhysicians);
+                setPageSettingState({...pageSettingState, isDisabled: true});
+
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -259,7 +273,8 @@ const Physicians = props => {
                 {/*<View style={[styles.item, {alignItems: 'center'}]}>*/}
                 {/*    <PhysicianActionIcon/>*/}
                 {/*</View>*/}
-                <DataItem flex={1} text={casesCount} color="--color-blue-600" fontStyle="--text-sm-medium" align="center"/>
+                <DataItem flex={1} text={casesCount} color="--color-blue-600" fontStyle="--text-sm-medium"
+                          align="center"/>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text
                         numberOfLines={1}
@@ -430,7 +445,10 @@ const Physicians = props => {
                     {
                         content: <CreatePhysicianDialogContainer
                             onCancel={() => setFloatingAction(false)}
-                            onCreated={item => {handleOnItemPress(item, true); console.log("Phys item: ", item)}}
+                            onCreated={item => {
+                                handleOnItemPress(item, true);
+                                console.log("Phys item: ", item)
+                            }}
                         />,
                         onClose: () => setFloatingAction(false)
                     }
@@ -444,30 +462,37 @@ const Physicians = props => {
     // physiciansToDisplay = physiciansToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <NavPage
-            isFetchingData={isFetchingData}
-            onRefresh={handleDataRefresh}
-            placeholderText="Search by Physician"
-            changeText={onSearchInputChange}
-            inputText={searchValue}
-            routeName="Physicians"
-            listData={physiciansToDisplay}
-            listHeaders={listHeaders}
-            itemsSelected={selectedPhysiciansId}
-            onSelectAll={handleOnSelectAll}
-            listItemFormat={renderPhysiciansFn}
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
+            <NavPage
+                isFetchingData={isFetchingData}
+                onRefresh={handleDataRefresh}
+                placeholderText="Search by Physician"
+                changeText={onSearchInputChange}
+                inputText={searchValue}
+                routeName="Physicians"
+                listData={physiciansToDisplay}
+                listHeaders={listHeaders}
+                itemsSelected={selectedPhysiciansId}
+                onSelectAll={handleOnSelectAll}
+                listItemFormat={renderPhysiciansFn}
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+            />
+        </PageSettingsContext.Provider>
+
     );
 };
 

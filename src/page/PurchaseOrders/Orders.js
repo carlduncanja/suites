@@ -12,6 +12,8 @@ import Notifier from "../../components/NotificationComponent";
 import NavPage from '../../components/common/Page/NavPage';
 import DataItem from '../../components/common/List/DataItem';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
+import { PageSettingsContext } from '../../contexts/PageSettingsContext';
+
 
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
@@ -97,6 +99,9 @@ const Orders = (props) => {
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
     const [selectedOrders, setSelectedOrders] = useState([]);
+
+    const [pageSettingState, setPageSettingState] = useState({});
+
 
     // ############# Lifecycle methods
 
@@ -310,9 +315,11 @@ const Orders = (props) => {
                 console.log("failed to get orders", error);
 
                 handleUnauthorizedError(error?.response?.status, setPurchaseOrders);
-                setTotalPages(1)
-                setPreviousDisabled(true)
-                setNextDisabled(true)
+                setPageSettingState({...pageSettingState, isDisabled: true});
+
+                setTotalPages(1);
+                setPreviousDisabled(true);
+                setNextDisabled(true);
                 // errorScreen();
             })
             .finally((_) => {
@@ -510,30 +517,38 @@ const Orders = (props) => {
     let ordersToDisplay = [...purchaseOrders];
 
     return (
-        <NavPage
-            isFetchingData={isFetchingData}
-            onRefresh={handleDataRefresh}
-            placeholderText={"Search by Purchase Order or Supplier"}
-            changeText={onSearchInputChange}
-            inputText={searchValue}
-            routeName={"Purchase Orders"}
-            listData={ordersToDisplay}
-            listHeaders={listHeaders}
-            itemsSelected={selectedOrders}
-            onSelectAll={handleOnSelectAll}
-            listItemFormat={renderOrderFn}
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
+            <NavPage
+                isFetchingData={isFetchingData}
+                onRefresh={handleDataRefresh}
+                placeholderText={"Search by Purchase Order or Supplier"}
+                changeText={onSearchInputChange}
+                inputText={searchValue}
+                routeName={"Purchase Orders"}
+                listData={ordersToDisplay}
+                listHeaders={listHeaders}
+                itemsSelected={selectedOrders}
+                onSelectAll={handleOnSelectAll}
+                listItemFormat={renderOrderFn}
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+            />
+
+        </PageSettingsContext.Provider>
+        
         // <View style={{ flex: 1 }}>
         //   <Page
         //     isFetchingData={isFetchingData}
