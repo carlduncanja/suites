@@ -499,7 +499,7 @@ function SupplierProductsTab({
     };
 
     const removeProducts = data => {
-        console.log("IDL DATA:", supplierId, data);
+        // console.log("IDL DATA:", supplierId, data);
         removeSupplierProducts(supplierId, data)
             .then(_ => {
                 modal.openModal(
@@ -534,8 +534,8 @@ function SupplierProductsTab({
                     }
                 );
             })
-            .finally(_ => onRefresh());
-    }
+            .finally(_ => onRefresh() );
+    };
 
     const listItemFormat = item => (
         <>
