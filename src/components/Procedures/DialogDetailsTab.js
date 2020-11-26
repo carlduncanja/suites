@@ -298,8 +298,8 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                         value={`$ ${fee.toString()}`}
                         keyboardType="number-pad"
                         onClear={() => handlePrice('')}
-                        hasError={errors.serviceFee}
-                        errorMessage="Cost is required."
+                        // hasError={errors.serviceFee}
+                        // errorMessage="Cost is required."
                     />
                 </FieldContainer>
             </Row>

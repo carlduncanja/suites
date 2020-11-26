@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     View,
@@ -7,7 +7,7 @@ import {
     Text,
     Animated
 } from "react-native";
-import {LONG_PRESS_TIMER} from '../../const';
+import { LONG_PRESS_TIMER } from '../../const';
 // import Animated from "react-native-reanimated";
 
 const COLORS = ['rgba(255,255,255,1)', 'rgba(227, 232, 239, 1)'];
@@ -20,7 +20,7 @@ const COLORS = ['rgba(255,255,255,1)', 'rgba(227, 232, 239, 1)'];
  */
 function LongPressWithFeedback(props) {
 
-    const {pressTimer, isDisabled, onLongPress} = props;
+    const { pressTimer, isDisabled, onLongPress } = props;
 
     const _valueRef = useRef(0);
     const ACTION_TIMER = pressTimer || LONG_PRESS_TIMER.MEDIUM;
@@ -83,9 +83,10 @@ function LongPressWithFeedback(props) {
         <TouchableWithoutFeedback
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
+            disabled={isDisabled}
         >
             <View style={styles.container} onLayout={getButtonWidthLayout}>
-                <Animated.View style={[styles.bgFill, getProgressStyles()]}/>
+                <Animated.View style={[styles.bgFill, getProgressStyles()]} />
                 {props.children}
             </View>
         </TouchableWithoutFeedback>
@@ -98,7 +99,7 @@ LongPressWithFeedback.propTypes = {
     onLongPress: PropTypes.func.isRequired
 };
 LongPressWithFeedback.defaultProps = {
-    icon: <View/>,
+    icon: <View />,
     pressTimer: LONG_PRESS_TIMER.MEDIUM,
     isDisabled: false,
     onLongPress: () => {

@@ -2,6 +2,7 @@ import React, { useContext} from 'react';
 import {View, ScrollView} from 'react-native';
 import { CaseFileContext } from '../../../contexts/CaseFileContext';
 import Item from './Item';
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 const Data = ({data = [], listItemFormat = () => {}}) =>
 
@@ -9,9 +10,12 @@ const Data = ({data = [], listItemFormat = () => {}}) =>
 // const sliceMax = currentListMax ? currentListMax : data.length
 
     (
-        <ScrollView
+        <KeyboardAwareScrollView
             bounces={false}
-            contentContainerStyle={{}}
+            extraScrollHeight={100}
+            contentContainerStyle={{
+                paddingBottom: 100
+            }}
         >
 
             {/* {data.slice(sliceMin,sliceMax).map((item,index)=>{ */}
@@ -21,7 +25,7 @@ const Data = ({data = [], listItemFormat = () => {}}) =>
                 </View>
             ))
             }
-        </ScrollView>
+        </KeyboardAwareScrollView>
     );
 
 export default Data;

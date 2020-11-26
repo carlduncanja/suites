@@ -47,7 +47,7 @@ function SearchBar(props) {
     const [currentListMax, setCurrentListMax] = useState(5);
 
     useEffect(() => {
-        if (matchesFound.length > 0) setSuggestionsOpen(true)
+        if (matchesFound.length > 0) setSuggestionsOpen(true);
     }, [matchesFoundLength]);
 
     const handleOnResultPress = (selectedIndex) => {
@@ -76,7 +76,7 @@ function SearchBar(props) {
         }
     };
 
-    let matchesToDisplay = matchesFound.slice(currentListMin, currentListMax)
+    const matchesToDisplay = matchesFound.slice(currentListMin, currentListMax);
     // STYLED COMPONENTS
 
 

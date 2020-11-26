@@ -1,19 +1,19 @@
-import React, {useRef, useContext, useState, useEffect} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import React, { useRef, useContext, useState, useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
 import Record from "../common/Information Record/Record";
 import Row from "../common/Row";
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
-import {formatDate} from "../../utils/formatter";
-import {formatAmount} from "../../helpers/caseFilesHelpers";
-import {transformToSentence} from "../../hooks/useTextEditHook";
+import { formatDate } from "../../utils/formatter";
+import { formatAmount } from "../../helpers/caseFilesHelpers";
+import { transformToSentence } from "../../hooks/useTextEditHook";
 import DateInputField from '../common/Input Fields/DateInputField';
 import LineDivider from "../common/LineDivider";
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import {PageContext} from "../../contexts/PageContext";
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { PageContext } from "../../contexts/PageContext";
 import ConfirmationComponent from '../ConfirmationComponent';
-import {getStorage, updatePurchaseOrder, updatePurchaseOrderDetails} from '../../api/network';
-import {useModal} from "react-native-modalfy";
+import { getStorage, updatePurchaseOrder, updatePurchaseOrderDetails } from '../../api/network';
+import { useModal } from "react-native-modalfy";
 import FieldContainer from "../common/FieldContainerComponent";
 import InputWrapper from "../common/Input Fields/InputWrapper";
 import InputLabelComponent from "../common/InputLablel";
@@ -23,20 +23,20 @@ import _ from "lodash";
 
 
 const LineDividerContainer = styled.View`
-    margin-bottom : ${({theme}) => theme.space['--space-32']};
+    margin-bottom : ${({ theme }) => theme.space['--space-32']};
 `;
 
 
 const OrderDetailsTab = ({
-                             order = {},
-                             onUpdate,
-                         }) => {
+    order = {},
+    onUpdate,
+}) => {
 
     const theme = useTheme();
     const modal = useModal();
     const baseStateRef = useRef();
-    const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode} = pageState;
+    const { pageState, setPageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
 
     const {
         _id,
@@ -48,7 +48,7 @@ const OrderDetailsTab = ({
         total = 0,
         supplier = {},
         invoice = "",
-        storageLocation = {},
+        storageLocation,
         configStatus = "",
         approvedBy = {},
         receivedBy = {},
@@ -57,8 +57,8 @@ const OrderDetailsTab = ({
 
     // console.log("Order: ",deliveryDate)
 
-    const {description = "", representatives = []} = supplier;
-    const {name = ""} = storageLocation;
+    const { description = "", representatives = [] } = supplier;
+    const { name = "" } = storageLocation || {};
 
     const [fields, setFields] = useState({
         description,
@@ -167,7 +167,7 @@ const OrderDetailsTab = ({
     const fetchStorageLocation = () => {
         getStorage(locationSearchText, 5)
             .then((locationsInfo) => {
-                const {data = [], pages} = locationsInfo;
+                const { data = [], pages } = locationsInfo;
                 setLocationSearchResults(data || []);
             })
             .catch((error) => {
@@ -245,6 +245,7 @@ const OrderDetailsTab = ({
                     recordTitle="Description"
                     recordValue={fields['description']}
                     editMode={isEditMode}
+                    recordPlaceholder={'No description available'}
                     editable={true}
                     useTextArea={true}
                     onRecordUpdate={onFieldChange('description')}
@@ -296,7 +297,7 @@ const OrderDetailsTab = ({
                 {
                     isEditMode
                         ? <InputWrapper zIndex={3}>
-                            <InputLabelComponent label={'Storage Location'}/>
+                            <InputLabelComponent label={'Storage Location'} />
                             <SearchableOptionsField
                                 value={fields.storageLocation}
                                 text={locationSearchText}
@@ -327,22 +328,22 @@ const OrderDetailsTab = ({
             <Row>
                 <ResponsiveRecord
                     recordTitle="Requested by"
-                    recordValue={`${requestedBy['first_name'] || '--'} ${requestedBy['last_name'] || ''} `}
+                    recordValue={`${requestedBy?.first_name || '--'} ${requestedBy?.last_name || ''} `}
                 />
 
                 <ResponsiveRecord
                     recordTitle="Approved by"
-                    recordValue={`${approvedBy['first_name'] || '--'} ${approvedBy['last_name'] || ''}`}
+                    recordValue={`${approvedBy?.first_name || '--'} ${approvedBy?.last_name || ''}`}
                 />
 
                 <ResponsiveRecord
                     recordTitle="Received by"
-                    recordValue={`${receivedBy['first_name'] || '--'} ${receivedBy['last_name'] || ''}`}
+                    recordValue={`${receivedBy?.first_name || '--'} ${receivedBy?.last_name || ''}`}
                 />
             </Row>
 
             <LineDividerContainer theme={theme}>
-                <LineDivider/>
+                <LineDivider />
             </LineDividerContainer>
 
 

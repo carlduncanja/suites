@@ -51,13 +51,13 @@ const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem}
     const [isFloatingDisabled, setFloatingAction] = useState(false);
 
 
-    const listItem = (item) => {
+    const listItem = (item = {}) => {
         // console.log("Item: ", item);
-        const { stock = 0, inventory = {} } = item;
+        const { stock = 0, inventory = {}, inventoryName } = item;
         const { inventoryGroup = "", name = "", unitCost = 0 } = inventory
         return (
             <>
-                <DataItem flex = {2} color = "--color-blue-600" fontStyle = "--text-base-medium" text = {name}/>
+                <DataItem flex = {2} color = "--color-blue-600" fontStyle = "--text-base-medium" text = {inventoryName}/>
                 <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {inventoryGroup?.name}/>
                 <DataItem align = "center" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {stock}/>
                 <DataItem align = "flex-end" color = "--color-gray-600" fontStyle = "--text-base-regular" text = {`$ ${currencyFormatter(unitCost)}`}/>
@@ -142,7 +142,7 @@ const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem}
     const handleTransferItems = () => {
         const { _id = "" } = storageLocation;
         const filterVariant = consumables.filter(item => item?._id === checkedItems[0])[0] || {};
-       
+
         // console.log("Storage location (Selected Location):", storageLocation, storageLocation._id);
         // console.log("Checked Items (Variant):", filterVariant);
 

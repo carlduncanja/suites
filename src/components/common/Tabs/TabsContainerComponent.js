@@ -26,10 +26,10 @@ const TabsContainer = styled.View`
 function TabsContainerComponent({tabs, onPressChange, selectedTab, completedTabs, paddingTop = 25, justify = 'flex-start', onAddTab, tabName}) {
 
     const theme = useTheme();
- 
+
     return (
         <TabsWrapper>
-            <TabsContainer theme={theme} paddingTop = {paddingTop} justify = {justify}>
+            <TabsContainer theme={theme} paddingTop={paddingTop} justify={justify}>
                 {tabs.map((tab, index) => {
                     return (
                         <Tab
@@ -45,9 +45,14 @@ function TabsContainerComponent({tabs, onPressChange, selectedTab, completedTabs
                     )
                 })}
                 {
-                    onAddTab && <AddedTab onAddTab = {onAddTab} tabName = {tabName} tabsLength= {tabs?.length || 0}/>
+                    onAddTab &&
+                    <AddedTab
+                        onAddTab={onAddTab}
+                        tabName={tabName}
+                        tabsLength={tabs?.length || 0}
+                    />
                 }
-                
+
             </TabsContainer>
         </TabsWrapper>
     );

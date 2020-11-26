@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, SafeAreaView, Text} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Notifications from 'expo-notifications';
@@ -32,7 +32,7 @@ import ReportPreviewModal from '../../modals/ReportPreviewModal';
 import OverlayInfoModal from '../../modals/OverlayInfoModal';
 import BottomSheetModal from '../../modals/BottomSheetModal';
 import {appActions} from '../../redux/reducers/suitesAppReducer';
-import {signOut} from '../../redux/actions/authActions';
+import {signIn, signOut} from '../../redux/actions/authActions';
 import QuickActionsModal from '../../modals/QuickActionsModal';
 import Notifier from '../notifications/Notifier';
 import NotificationRegistry from '../notifications/NotficationRegistry';
@@ -40,6 +40,7 @@ import ConfirmationModal from '../../modals/ConfirmationModal';
 import {logout} from '../../api/network';
 import CustomSnackbarProvider from '../Snackbar/CustomSnackbarProvider';
 import UnauthorizedSubscription from '../../UnauthorizedSubscription';
+import {setBearerToken} from "../../api";
 
 /**
  * Custom navigator wrapper for application.
@@ -47,12 +48,12 @@ import UnauthorizedSubscription from '../../UnauthorizedSubscription';
  * https://reactnavigation.org/docs/custom-navigators
  */
 const SuitesCustomNavigator = ({
-    initialRouteName,
-    children,
-    screenOptions,
-    signOut,
-    auth,
-}) => {
+                                   initialRouteName,
+                                   children,
+                                   screenOptions,
+                                   signOut,
+                                   auth,
+                               }) => {
     const screenDimensions = Dimensions.get('window');
     const [suitesContext, dispatch] = useContext(SuitesContext);
 
@@ -62,7 +63,20 @@ const SuitesCustomNavigator = ({
         initialRouteName,
     });
 
-    console.log(`initialRouteName ${initialRouteName} state`, state);
+    useEffect(() => {
+        // get user token from state,
+        AsyncStorage.getItem('userToken')
+            .then(token => {
+                // navigation.navigate("App")
+                if (token) {
+                    setBearerToken(token);
+                }
+                signIn(token);
+            })
+            .catch(error => {
+                console.log('failed to get user token', error);
+            });
+    }, [])
 
     const modalConfig = {
         OverlaySlidePanelModal,
@@ -174,7 +188,7 @@ const styles = StyleSheet.create({
 //     return createNavigator(SuiteNavigator, customTabRouter, {});
 // };
 
-const mapDispatchToProps = {signOut};
+const mapDispatchToProps = {signOut, signIn};
 
 const mapStateToProps = state => ({auth: state.auth});
 

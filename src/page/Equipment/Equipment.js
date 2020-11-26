@@ -144,7 +144,6 @@ const Equipment = props => {
     const [assignments, setAssignments] = useState([]);
 
     const [selectedEquipments, setSelectedEquipments] = useState([]);
-    const [selectedChildEquipment, setSelectedChildEquipment] = useState({});
     const [selectedTypesIds, setSelectedTypesIds] = useState([]);
 
     const [equipmentTypes, setEquipmentTypes] = useState([]);
@@ -219,28 +218,30 @@ const Equipment = props => {
 
         // remove selected child items
         const removeChildren = selectedEquipments.filter(obj => obj.groupId !== _id);
-        setSelectedChildEquipment(removeChildren);
+        setSelectedEquipments(removeChildren);
     };
 
     const handleOnItemCheckboxPress = equipmentItem => {
-        setSelectedChildEquipment(equipmentItem);
         const {_id, type} = equipmentItem;
         //  let updatedEquipments = [...selectedEquipmentIds];
 
         //  get equipment ids
-        const equipmentIds = selectedEquipments.map(variantObj => variantObj._id);
-        const updatedEquipmentIds = checkboxItemPress(_id, equipmentIds);
+        const equipmentIds = selectedEquipments.map(equipmentObj => equipmentObj._id);
+        const updatedChildIds = checkboxItemPress(_id, equipmentIds);
 
         //  set selected equipments
-        const updatedSelectedVariants = updatedEquipmentIds.map(_id => ({
+        const updatedSelectedEquipments = updatedChildIds.map(_id => ({
+            ...equipmentItem,
             _id,
-            groupId: type,
-            ...equipmentItem
+            groupId: type
         }));
-        setSelectedEquipments(updatedSelectedVariants);
+        setSelectedEquipments(updatedSelectedEquipments);
 
-        //  remove group
-        setSelectedTypesIds(selectedTypesIds.filter(id => id !== type));
+        // unselect group when child is selected
+        const updatedIds = selectedTypesIds.filter(id => id !== type);
+        setSelectedTypesIds(updatedIds);
+
+        // setSelectedTypesIds(selectedTypesIds.filter(id => id !== type));
     };
 
     const onCollapseView = key => {
@@ -303,11 +304,12 @@ const Equipment = props => {
     };
 
     const onRemoveGroups = () => {
-        openConfirmationScreen(() => removeEquipmentGroup({ids: [...selectedTypesIds]}) );
+        openConfirmationScreen(() => removeEquipmentGroup({ids: [...selectedTypesIds]}));
     };
 
     const onRemoveItems = () => {
-        openConfirmationScreen(() => removeEquipmentItems(selectedChildEquipment));
+        const selectedEquipmentIds = selectedEquipments.map(equipment => equipment._id);
+        openConfirmationScreen(() => removeEquipmentItems({ids: [...selectedEquipmentIds]}));
     };
 
     const onRefresh = () => {
@@ -360,7 +362,7 @@ const Equipment = props => {
                 setEquipment(data);
             })
             .catch(error => {
-                console.error('failed to get equipment', error);
+                console.log('failed to get equipment', error);
             })
             .finally(_ => {
                 setFetchingData(false);
@@ -369,12 +371,6 @@ const Equipment = props => {
 
     const renderEquipmentFn = item => {
         const equipments = item.equipments || [];
-        let assignments;
-
-        assignments = equipments?.map(x => x?.assignments?.map(assigned => assigned));
-
-        const asArray = [];
-        const concatAssignments = [].concat.apply([], assignments);
 
         const viewItem = {
             equipments,
@@ -462,6 +458,7 @@ const Equipment = props => {
     const renderItemView = (item, onActionPress) => {
         const {_id, group} = item;
         const ids = selectedEquipments.map(item => item._id);
+
         return (
             <Item
                 itemView={equipmentItemView(item, onActionPress)}
@@ -571,7 +568,7 @@ const Equipment = props => {
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.MEDIUM}
                     isDisabled={isEquipmentItemDeleteDisabled}
-                    onLongPress={onRemoveGroups}
+                    onLongPress={onRemoveItems}
                 >
                     <ActionItem
                         title="Hold to Delete Equipment"

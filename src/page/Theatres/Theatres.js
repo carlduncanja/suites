@@ -285,6 +285,7 @@ function Theatres(props) {
     };
 
     const removeTheatresCall = data => {
+        setFetchingData(true);
         removeTheatres(data)
             .then(_ => {
                 modal.openModal(
@@ -318,6 +319,7 @@ function Theatres(props) {
             })
             .finally(_ => {
                 setFloatingAction(false);
+                setFetchingData(false);
             });
     };
 
@@ -470,7 +472,7 @@ function Theatres(props) {
         }}
         >
             <NavPage
-                placeholderText="Search by theatre name or status."
+                placeholderText="Search by theatre name"
                 routeName={pageTitle}
                 listData={theatresToDisplay}
                 listItemFormat={renderItem}

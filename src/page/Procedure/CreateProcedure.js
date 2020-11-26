@@ -165,7 +165,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
                 setEquipments([...equipments]);
             })
             .catch(error => {
-                console.error('fail.procedure.copy.fetch', error);
+                console.log('fail.procedure.copy.fetch', error);
                 //TODO handle error cases.
             })
             .finally(_ => {
@@ -245,7 +245,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
 
     const validateProcedure = () => {
         let isValid = true;
-        const requiredFields = ['name', 'duration', 'physician', 'serviceFee'];
+        const requiredFields = ['name', 'duration', 'physician'];
 
         const errorObj = {...errors} || {};
 
@@ -465,6 +465,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
                     tabs={dialogTabs}
                     tab={tabIndex}
                     onTabPress={onTabPress}
+                    tabPlacement="flex-start"
                 />
             </TabsContainer>
 

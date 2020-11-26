@@ -1,33 +1,34 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import styled from '@emotion/native'
-import {useTheme} from "emotion-theming";
-import {useNavigation} from "@react-navigation/native"
+import {useTheme} from 'emotion-theming';
+import {useNavigation} from '@react-navigation/native'
 import PropTypes from 'prop-types';
-import DefaultPage from "../../components/common/Page/DefaultPage";
-import Button from "../../components/common/Buttons/Button";
-import PageButton from "../../components/common/Page/PageButton";
-import SearchableOptionsField from "../../components/common/Input Fields/SearchableOptionsField";
-import Table from "../../components/common/Table/Table";
-import Paginator from "../../components/common/Paginators/Paginator";
-import LineDivider from "../../components/common/LineDivider";
-import CreatePageDoneFooter from "../../components/common/DetailsPage/CreatePageDoneFooter";
+import DefaultPage from '../../components/common/Page/DefaultPage';
+import Button from '../../components/common/Buttons/Button';
+import PageButton from '../../components/common/Page/PageButton';
+import SearchableOptionsField from '../../components/common/Input Fields/SearchableOptionsField';
+import Table from '../../components/common/Table/Table';
+import Paginator from '../../components/common/Paginators/Paginator';
+import LineDivider from '../../components/common/LineDivider';
+import CreatePageDoneFooter from '../../components/common/DetailsPage/CreatePageDoneFooter';
 import {
     createNewProcedure,
     createSupplierProductsCall,
     getInventories,
     getInventoryVariantByGroup
-} from "../../api/network";
-import _ from "lodash";
-import InputField2 from "../../components/common/Input Fields/InputField2";
-import IconButton from "../../components/common/Buttons/IconButton";
-import DeleteIcon from "../../../assets/svg/deleteIcon";
-import CancelIcon from "../../../assets/svg/CancelIcon";
-import WasteIcon from "../../../assets/svg/wasteIcon";
-import InfoIcon from "../../../assets/svg/InfoIcon";
-import LoadingComponent from "../../components/LoadingComponent";
-import ConfirmationComponent from "../../components/ConfirmationComponent";
-import {useModal} from "react-native-modalfy";
+} from '../../api/network';
+import _ from 'lodash';
+import InputField2 from '../../components/common/Input Fields/InputField2';
+import IconButton from '../../components/common/Buttons/IconButton';
+import DeleteIcon from '../../../assets/svg/deleteIcon';
+import CancelIcon from '../../../assets/svg/CancelIcon';
+import WasteIcon from '../../../assets/svg/wasteIcon';
+import InfoIcon from '../../../assets/svg/InfoIcon';
+import LoadingComponent from '../../components/LoadingComponent';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
+import {useModal} from 'react-native-modalfy';
+import TabsContainerComponent from '../../components/common/Tabs/TabsContainerComponent';
 
 
 const PageWrapper = styled.View`
@@ -45,10 +46,13 @@ const PageHeaderWrapper = styled.View`
 
 
 const PageHeaderButtonWrapper = styled.View`
- width: 103px;
- height: 23px;
- //align-items: center;
- //justify-content: center;
+    width: 100%;
+    height: 100%;
+ /* width: 103px; */
+ /* height: 23px; */
+ background-color:yellow;
+ /* align-items: center; */
+ /* justify-content: center; */
 `
 
 
@@ -146,7 +150,7 @@ const FooterContainer = styled.View`
     flex:1;
 `;
 
-const RowCellWrapper = styled.View( ({flex, justifyContent}) => ({
+const RowCellWrapper = styled.View(({flex, justifyContent}) => ({
     display: 'flex',
     flex: flex || 1,
     flexDirection: 'row',
@@ -156,32 +160,34 @@ const RowCellWrapper = styled.View( ({flex, justifyContent}) => ({
 }))
 
 
-
 const headers = [
     {
         name: 'Product Name',
-        alignment: "flex-start",
+        alignment: 'flex-start',
         flex: 1,
     },
     {
         name: 'Item Reference',
-        alignment: "flex-start",
+        alignment: 'flex-start',
         flex: 1
     },
     {
         name: 'Unit Price',
-        alignment: "flex-start",
+        alignment: 'flex-start',
         flex: 1
     },
     {
         name: 'Action',
-        alignment: "center",
+        alignment: 'center',
         flex: .4
     },
 ]
 
 function SupplierProductCreationPage({route}) {
-    const { onProductsCreated = () => {}, supplierId} = route.params;
+    const {
+        onProductsCreation = () => {
+        }, supplierId
+    } = route.params;
     const theme = useTheme();
     const modal = useModal()
     const navigation = useNavigation();
@@ -199,7 +205,7 @@ function SupplierProductCreationPage({route}) {
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
-    const [searchValue, setSearchValue] = useState("")
+    const [searchValue, setSearchValue] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [searchQuery, setSearchQuery] = useState({});
 
@@ -269,12 +275,14 @@ function SupplierProductCreationPage({route}) {
             ...data
         ])
 
+        setSearchValue('')
+        setSearchResults([])
     }
 
     const onUpdateValue = (field, selectedIndex) => value => {
         const updatedData = data.map((item, index) => {
             return selectedIndex === index
-                ? {...item, [field] : value}
+                ? {...item, [field]: value}
                 : {...item}
         })
 
@@ -291,27 +299,35 @@ function SupplierProductCreationPage({route}) {
 
     // region helper functions
     const listItemFormat = (item, index) => {
-        const {_id = "", name = "", unitPrice, inventoryVariant = {}} = item
+        const {_id = '', name = '', unitPrice, inventoryVariant = {}} = item
         return (
             <Row theme={theme}>
 
                 <RowCellWrapper>
                     <InputField2
                         value={name}
-                        onChangeText={onUpdateValue('name',index)}
+                        onClear={onUpdateValue('name', index)}
+                        onChangeText={onUpdateValue('name', index)}
                     />
                 </RowCellWrapper>
 
                 <RowCellWrapper>
-                <InputField2
-                    value={inventoryVariant?.name}
-                />
+                    <InputField2
+                        enabled={false}
+                        value={inventoryVariant?.name}
+                    />
                 </RowCellWrapper>
 
                 <RowCellWrapper>
-                <InputField2
-                    value={unitPrice}
-                />
+                    <InputField2
+                        value={unitPrice}
+                        onClear={onUpdateValue('unitPrice', index)}
+                        onChangeText={(value) => {
+                            if (!isNaN(value))
+                                onUpdateValue('unitPrice', index)(value)
+                        }}
+                        keyboardType="numeric"
+                    />
                 </RowCellWrapper>
 
                 <RowCellWrapper flex={.4}>
@@ -330,65 +346,69 @@ function SupplierProductCreationPage({route}) {
                 setSearchResults(results?.data || [])
             })
             .catch(error => {
-                console.log("Failed to find inventory data")
+                console.log('Failed to find inventory data')
             })
     }
 
     const creatProducts = () => {
         setLoading(true);
-
-        console.log("create products", data);
-
         const createProductsData = data.map(item => {
             return {
-                "name": item.name,
-                "type": "inventory",
-                "sku": "",
-                "unitPrice": item.unitPrice,
-                "inventoryVariant": item.inventoryVariant?._id
-            }
-        })
+                name: item.name,
+                type: 'inventory',
+                sku: '',
+                unitPrice: item.unitPrice,
+                inventoryVariant: item.inventoryVariant?._id
+            };
+        });
+
+        // console.log('create products', supplierId, createProductsData);
 
         createSupplierProductsCall(supplierId, createProductsData)
-            .then( _ => {
+            .then(_ => {
                 modal.openModal(
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {false}
+                            isEditUpdate={false}
                             message="Products Created"
-                            onCancel = {() => {}}
-                            onAction = {() => {
+                            onCancel={() => {
+                            }}
+                            onAction={() => {
                                 modal.closeAllModals();
-                                onProductsCreated()
-                                navigation.goBack()
+                                onProductsCreation(data);
+                                navigation.goBack();
                             }}
                         />
                         ,
-                        onClose: () => {modal.closeModals("ConfirmationModal")}
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
                     })
             })
-            .catch( error => {
-                console.log("failed to create products", error.response?.body)
+            .catch(error => {
+                console.log('failed to create products', error.response?.body)
                 modal.openModal(
-                        'ConfirmationModal',
-                        {
-                            content: <ConfirmationComponent
-                                isError={true}
-                                isEditUpdate = {false}
-                                message='Failed to create products.'
-                                onCancel = {() => {
-                                    modal.closeAllModals();
-                                }}
-                                onAction = {() => {
-                                    modal.closeAllModals();
-                                }}
-                            />
-                            ,
-                            onClose: () => {modal.closeModals("ConfirmationModal")}
-                        })
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            message='Failed to create products.'
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
             })
-            .finally( _ => {
+            .finally(_ => {
                 setLoading(false);
             })
     }
@@ -399,19 +419,25 @@ function SupplierProductCreationPage({route}) {
     return (
         <PageWrapper>
             <DefaultPage
-                pageTitle={"Create Products"}
+                pageTitle={'Create Products'}
                 onClosePress={onClosePress}
             >
+            
                 <PageHeaderWrapper theme={theme}>
                     <PageHeaderButtonWrapper>
-                        <PageButton
+                        
+                        <TabsContainerComponent
+                            tabs={['Consumables']}
+                            selectedTab="Consumables"
+                        />
+                        {/* <PageButton
                             backgroundColor={theme.colors['--default-shade-white']}
                             fontColor={theme.colors['--color-blue-600']}
                             fontStyle={theme.font['--text-xs-bold']}
-                            text={"Consumables"}
-                        />
+                            text={'Consumables'}
+                        />  */}
                     </PageHeaderButtonWrapper>
-                </PageHeaderWrapper>
+                </PageHeaderWrapper> 
 
 
                 <PageContent>
@@ -426,7 +452,7 @@ function SupplierProductCreationPage({route}) {
                                         <SearchableOptionsField
                                             value={null}
                                             text={searchValue}
-                                            oneOptionsSelected={(item) => onItemSelected(item)}
+                                            oneOptionsSelected={onItemSelected}
                                             onChangeText={(value) => {
                                                 setSearchValue(value)
                                             }}
@@ -438,13 +464,6 @@ function SupplierProductCreationPage({route}) {
                                             isPopoverOpen={searchQuery}
                                             borderColor={theme.colors['--color-gray-400']}
                                         />
-
-                                        {/*<RowCellWrapper flex={0.15}>*/}
-                                        {/*    <IconButton*/}
-                                        {/*        Icon={<InfoIcon/>}*/}
-                                        {/*    />*/}
-                                        {/*</RowCellWrapper>*/}
-
                                     </SearchableFieldContainer>
 
                                     <ListContainer>

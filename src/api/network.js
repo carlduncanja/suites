@@ -69,7 +69,11 @@ import {
     role,
     patientEndpoint,
     alertsEndpoint,
-    closeAlertEndpoint
+    closeAlertEndpoint,
+    configEndpoint,
+    updateBufferEndpoint,
+    userPassword
+
 
 } from '../const/suitesEndpoints';
 import {createDocumentLink} from '../const/documentGenerationEndpoints';
@@ -99,6 +103,11 @@ export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const getUserCall = async userId => suitesAxiosInstance
+    .get(user(userId))
+    .then(handleResponse)
+    .catch(handleError);
+
 export const updateUserCall = async (userId, updateData) => suitesAxiosInstance
     .put(user(userId), updateData)
     .then(handleResponse)
@@ -119,6 +128,11 @@ export const getRolesCall = async (query, page, max) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const getRole = async roleId => suitesAxiosInstance
+    .get(role(roleId))
+    .then(handleResponse)
+    .catch(handleError);
+
 export const updateRoleCall = async (roleId, updateData) => suitesAxiosInstance
     .put(role(roleId), updateData)
     .then(handleResponse)
@@ -131,6 +145,11 @@ export const deleteRoleCall = async roleIds => suitesAxiosInstance
 
 export const registrationCall = async params => suitesAxiosInstance
     .post(registrationEndpoint, params)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const resetUserPassword = async (userId, updateData) => suitesAxiosInstance
+    .put(userPassword(userId), updateData)
     .then(handleResponse)
     .catch(handleError);
 
@@ -647,5 +666,17 @@ export const getAlerts = async (status, max, page, query, from, to) => suitesAxi
 
 export const closeAlert = async id => suitesAxiosInstance
     .put(closeAlertEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
+
+// ################# Configurations Endpoints
+
+export const getConfigurations = async () => suitesAxiosInstance
+    .get(configEndpoint)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const updateBuffer = async time => suitesAxiosInstance
+    .put(updateBufferEndpoint, time)
     .then(handleResponse)
     .catch(handleError);

@@ -142,41 +142,41 @@ const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
         <AdditemWrapper theme = {theme}>
             <AdditemContainer theme = {theme}>
 
-            <Row>
-                <FieldContainer>
-                    <SearchableOptionsField
-                        label={"Item Name"} 
-                        value = {fields['inventory']}
-                        text={searchValue}
-                        oneOptionsSelected={(item) => {handleItem(item)}}
-                        onChangeText={value => setSearchValue(value)}
-                        onClear={handleItem}
-                        options={searchResults}
-                        // handlePopovers = {(value)=>handlePopovers(value)('item')}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {searchQuery}
-                        hasError = {errors['item']}
-                        errorMessage = "Item must be selected"
-                    />
-                </FieldContainer>
+                <Row>
+                    <FieldContainer>
+                        <SearchableOptionsField
+                            label={"Item Name"} 
+                            value = {fields['item']}
+                            text={searchValue}
+                            oneOptionsSelected={(item) => {handleItem(item)}}
+                            onChangeText={value => setSearchValue(value)}
+                            onClear={handleItem}
+                            options={searchResults}
+                            // handlePopovers = {(value)=>handlePopovers(value)('item')}
+                            handlePopovers = {()=>{}}
+                            isPopoverOpen = {searchQuery}
+                            hasError = {errors['item']}
+                            errorMessage = "Item must be selected"
+                        />
+                    </FieldContainer>
 
-                <FieldContainer>
-                    <AutoFillField
-                        label={"Category"}
-                        value={category}
-                    />
-                </FieldContainer>
-            </Row>
+                    <FieldContainer>
+                        <AutoFillField
+                            label={"Category"}
+                            value={category}
+                        />
+                    </FieldContainer>
+                </Row>
 
-            <Row zIndex = {-1}>
-                <FieldContainer>
-                    <AutoFillField
-                        label={"Type"}
-                        value={'n/a'}
-                    />
-                </FieldContainer>
-                {
-                    category === 'Consumables' &&
+                <Row zIndex = {-1}>
+                    <FieldContainer>
+                        <AutoFillField
+                            label={"Type"}
+                            value={'n/a'}
+                        />
+                    </FieldContainer>
+                    {
+                        category === 'Consumables' &&
                         <FieldContainer>
                             <InputField2
                                 label={"Quantity"}
@@ -188,9 +188,9 @@ const AddItem = ({fields, errors, onFieldChange, category = ""}) => {
                                 errorMessage = "Quantity is required."
                             />
                         </FieldContainer>
-                }
+                    }
                 
-            </Row>
+                </Row>
            
             </AdditemContainer>
         </AdditemWrapper>

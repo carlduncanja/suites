@@ -9,7 +9,7 @@ const OverlayInfoModal = (props) => {
     const { modal: {closeModal, closeModals, currentModal, closeAllModals, params }} = props
 
     const closePickListModal = () =>{
-        closeModals(currentModal)
+        closeModals(currentModal);
     }
 
     const renderShadow = () => {
@@ -17,7 +17,7 @@ const OverlayInfoModal = (props) => {
             <TouchableWithoutFeedback
                 onPress={() => {
                     closePickListModal();
-                    setIsPickListVisible(false)
+                    setIsPickListVisible(false);
                 }}
             >
                 <View
@@ -37,8 +37,9 @@ const OverlayInfoModal = (props) => {
         <View style={[styles.container,{width:state.pageMeasure.width, height: state.pageMeasure.height}]}>
             {renderShadow()}
             <View style={{
-                height:600, 
-                width:600, 
+                display: 'flex',
+                // height:600, 
+                // width:600, 
                 alignItems:'center',
                 justifyContent:'center', 
                 }}

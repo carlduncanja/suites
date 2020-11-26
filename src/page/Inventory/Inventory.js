@@ -650,13 +650,14 @@ function Inventory(props) {
             );
     };
 
-    const openErrorConfirmation = () => {
+    const openErrorConfirmation = message => {
         modal.openModal(
             'ConfirmationModal',
             {
                 content: <ConfirmationComponent
                     isError={true}
                     isEditUpdate={false}
+                    message={message}
                     onCancel={() => modal.closeModals('ConfirmationModal')}
                 />,
                 onClose: () => {
@@ -733,7 +734,8 @@ function Inventory(props) {
                 setSelectedIds([]);
             })
             .catch(error => {
-                openErrorConfirmation();
+                const errorMessage = error.response?.data?.msg.includes('Ungrouped') ? 'Unable to remove \'Ungrouped\' Inventory Group.' : '';
+                openErrorConfirmation(errorMessage);
                 setTimeout(() => {
                     modal.closeModals('ActionContainerModal');
                 }, 200);

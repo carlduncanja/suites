@@ -44,8 +44,13 @@ const ActionItemContainer = styled.View`
 const ActionTitle = styled.Text(({ theme, disabled }) => ({
     font: theme.font['--text-base-regular'],
     color: disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-gray-800'],
-    marginLeft: 13
+    marginLeft: 13,
+    // paddingBottom: 1
 }));
+
+const IconContainer = styled.View`
+
+`;
 
 function ActionItem({ icon, title, disabled, touchable = true, onPress }) {
 
@@ -58,7 +63,10 @@ function ActionItem({ icon, title, disabled, touchable = true, onPress }) {
             activeOpacity={disabled ? .3 : 1}
         >
             <ActionItemContainer theme={theme}>
-                {icon}
+                <IconContainer>
+                    {icon}
+                </IconContainer>
+                
                 <ActionTitle theme={theme} disabled={disabled}>{title}</ActionTitle>
             </ActionItemContainer>
         </ActionItemWrapper>

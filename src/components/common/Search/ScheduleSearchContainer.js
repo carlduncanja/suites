@@ -160,7 +160,13 @@ function ScheduleSearchContainer({isOpen, onSearchResultSelected, onSearchClose}
             const startTime = formatDate(item.startTime, 'h : mm a')
             const endTime = formatDate(item.endTime, 'h : mm a')
 
-            return `${title}\t\t ${date}\t (${startTime} - ${endTime})`
+            return {
+                title,
+                date,
+                startTime,
+                endTime
+            };
+            // return `${title}\t\t ${date}\t (${startTime} - ${endTime})`
         });
     };
 

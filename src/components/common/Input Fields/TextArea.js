@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, TextInput, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Keyboard } from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 
 /**
@@ -15,7 +15,7 @@ import ClearIcon from "../../../../assets/svg/clearIcon";
  * @returns {*}
  * @constructor
  */
-function TextArea({ label, enabled = true, onChangeText, value, placeholder, keyboardType, onClear, hasError = false, errorMessage = "Error", numberOfLines = 4 }) {
+function TextArea({ label, enabled = true, editable = true, onChangeText, value, placeholder = '', keyboardType, onClear, hasError = false, errorMessage = "Error", numberOfLines = 4 }) {
     return (
         <View style={styles.container}>
             {
@@ -36,13 +36,15 @@ function TextArea({ label, enabled = true, onChangeText, value, placeholder, key
                 // height:200
             }]}>
                 <TextInput
-                    style={[styles.inputField, { borderColor: hasError ? 'red' : '#E3E8EF' }, { backgroundColor: enabled ? "white" : "#EDF0F2" }]}
+                    style={[placeholder === '' ? styles.inputField : styles.inputWithPlaceholder, { borderColor: hasError ? 'red' : '#E3E8EF' }, { backgroundColor: enabled ? "white" : "#EDF0F2" }]}
                     onChangeText={onChangeText}
                     value={value}
                     keyboardType={keyboardType}
+                    focusable={editable}
                     placeholder={placeholder}
                     multiline={true}
                     numberOfLines={numberOfLines}
+                    editable={editable}
                 />
                 {
                     hasError && <View style={styles.errorView}>
@@ -83,6 +85,15 @@ const styles = StyleSheet.create({
     inputWrapper: {
         flex: 1,
         // height: 32,
+    },
+    inputWithPlaceholder:
+    {
+        padding: 10,
+        paddingTop: 2,
+        paddingBottom: 2,
+        borderWidth: 0,
+        borderRadius: 4,
+        height: '100%'
     },
     inputField: {
         // flex:1,

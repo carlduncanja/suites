@@ -23,17 +23,19 @@ const ActionButtonContainer = styled.View`
 const ValueContainer = styled.View`
     position : absolute;
     height : 20px;
-    width : 30px;
-
+    width : 34px;
+    padding: ${ ({theme}) => theme.space['--space-4']};
     border-radius: 4px;
     background-color : ${ ({theme}) => theme.colors['--color-red-500']};
     left : 35;
     bottom: 30;
     align-items : center;
     justify-content : center;
+
     box-shadow : 0px 1px 4px rgba(245, 101, 101, 0.45);
 `;
 const ValueText = styled.Text( ({theme}) => ({
+    paddingTop: 2,
     ...theme.font['--cart-text'],
     color : theme.colors['--default-shade-white']
 }));
@@ -80,7 +82,7 @@ function FloatingActionAnnotated ({toggleActionButton, icon, value, showValue = 
             { 
                 showValue &&
                 <ValueContainer>
-                    <ValueText>{value}</ValueText>
+                    <ValueText numberOfLines={1}>{value}</ValueText>
                 </ValueContainer>
                 // <View style={styles.valueBox}>
                 //     <Text style={styles.textStyle}>{value}</Text>

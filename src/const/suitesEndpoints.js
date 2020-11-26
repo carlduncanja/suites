@@ -7,6 +7,7 @@ export const guestLoginEndpoint = '/auth/login/guest';
 // ##### Users
 export const users = '/users';
 export const user = userId => `/users/${userId}`;
+export const userPassword = userId => `/users/${userId}/changePassword`;
 
 export const roles = '/users/roles';
 export const role = roleId => `/users/roles/${roleId}`;
@@ -100,3 +101,7 @@ export const patientEndpoint = id => `/patients/${id}`;
 // ##### ALERTS
 export const alertsEndpoint = '/alerts';
 export const closeAlertEndpoint = id => `/alerts/${id}/close`;
+
+// ##### CONFIGURATIONS
+export const configEndpoint = '/configurations';
+export const updateBufferEndpoint = '/configurations/buffer';

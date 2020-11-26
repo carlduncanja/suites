@@ -3,6 +3,8 @@ import {View} from 'react-native';
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
+import { getConfigurations, updateBuffer } from '../../../api/network';
+
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
 import Table from '../../common/Table/Table';
@@ -57,6 +59,17 @@ function AppointmentBufferPage({navigation}) {
     const { isEditMode = false } = pageState;
 
     useEffect(() => {
+        getConfigurations()
+            .then(data => {
+                const { bufferTime = 0 } = data;
+                setBufferTime(bufferTime);
+            })
+            .catch(error => {
+                console.log('Unable to retrieve buffer time: ', error);
+            });
+    }, []);
+
+    useEffect(() => {
         if (isUpdated && isEditMode === false) {
             onFinishEdit();
         }
@@ -70,7 +83,7 @@ function AppointmentBufferPage({navigation}) {
         }
         
         goToConfirmationScreen();
-        console.log("Buffer time: ", bufferTime);
+        console.log('Buffer time: ', bufferTime);
     };
 
     const onBufferTimeChange = time => {
@@ -91,8 +104,8 @@ function AppointmentBufferPage({navigation}) {
         modal.openModal('ConfirmationModal',
             {
                 content: <ConfirmationComponent
-                    isEditUpdate = {true}
-                    onCancel = {()=> {
+                    isEditUpdate={true}
+                    onCancel= {() => {
                         modal.closeModals('ConfirmationModal');
                         setPageState({
                             ...pageState,
@@ -108,11 +121,39 @@ function AppointmentBufferPage({navigation}) {
 
     const updateBufferTime = () => {
         modal.closeAllModals();
-    }
+        const buffer = { bufferTime };
+        
+        updateBuffer(buffer)
+            .then(_ => {
+                modal.openModal('ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={false}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => modal.closeAllModals()}
+                        />,
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    });
+            })
+            .catch(_ => {
+                modal.openModal('ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => modal.closeAllModals()}
+                        />,
+                        onClose: () => { modal.closeModals('ConfirmationModal'); }
+                    });
+            });
+    };
 
     const itemFormat = () => (
         
         <ContentContainer>
+            {/* <DataItem color="--color-gray-800" fontStyle="--text-base-medium" flex={2.5} text={`Buffer time (appr. ${Math.ceil(bufferTime / 60)} hrs)`}/> */}
             <DataItem color="--color-gray-800" fontStyle="--text-base-medium" flex={2.5} text="Buffer time"/>
            
             <ContentDataItem
@@ -120,7 +161,7 @@ function AppointmentBufferPage({navigation}) {
                 content={(
                     <InputUnitFields
                         value={bufferTime}
-                        units={['hrs']}
+                        units={['mins']}
                         enabled={isEditMode}
                         onChangeText={value => {
                             if (/^\d+$/g.test(value) || !value) {

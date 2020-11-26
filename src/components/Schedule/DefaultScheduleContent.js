@@ -1,6 +1,6 @@
 import React from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import moment from "moment";
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import moment from 'moment';
 
 /**
  * Default View for Appointments.
@@ -10,9 +10,9 @@ import moment from "moment";
  */
 function DefaultScheduleContent({scheduleDetails = {}}) {
     const {
-        id = "",
-        title = "",
-        subject = "",
+        id = '',
+        title = '',
+        subject = '',
         location = {},
         startTime = new Date(),
         endTime = new Date()
@@ -21,14 +21,14 @@ function DefaultScheduleContent({scheduleDetails = {}}) {
     /**
      * @param scheduleDate - date object
      */
-    const getTime = (scheduleDate) => {
-        let date = moment(scheduleDate);
-        return date.format("h:mm a");
+    const getTime = scheduleDate => {
+        const date = moment(scheduleDate);
+        return date.format('h:mm a');
     };
 
-    const formatDate = (scheduleDate) => {
-        let date = moment(scheduleDate);
-        return date.format("D/M/YYYY")
+    const formatDate = scheduleDate => {
+        const date = moment(scheduleDate);
+        return date.format('D/M/YYYY');
     };
 
     const getProgressStatus = (startTime, endTime) => {
@@ -37,12 +37,12 @@ function DefaultScheduleContent({scheduleDetails = {}}) {
         const end = moment(endTime);
 
         if (now.isBefore(start)) {
-            return "Not Yet Started"
-        } else if (now.isBefore(end)) {
-            return "In Progress"
-        } else {
-            return "Ended"
+            return 'Not Yet Started';
         }
+        if (now.isBefore(end)) {
+            return 'In Progress';
+        }
+        return 'Ended';
     };
 
     return (
@@ -52,13 +52,14 @@ function DefaultScheduleContent({scheduleDetails = {}}) {
                     <View style={styles.cardTitle}>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
                             <Text style={styles.idText}>
-                                #{id}
+                                {id ? `#${id}` : ''}
                             </Text>
                             <View style={styles.statusWrapper}>
                                 <Text style={{
-                                    color: "#A0AEC0",
+                                    color: '#A0AEC0',
                                     fontSize: 12
-                                }}>
+                                }}
+                                >
                                     {getProgressStatus(startTime, endTime)}
                                 </Text>
                             </View>
@@ -72,7 +73,8 @@ function DefaultScheduleContent({scheduleDetails = {}}) {
                                 fontSize: 20,
                                 color: '#104587',
                                 paddingBottom: 5
-                            }}>{title}</Text>
+                            }}
+                            >{title}</Text>
                         </View>
                     </View>
 
@@ -108,7 +110,7 @@ function DefaultScheduleContent({scheduleDetails = {}}) {
             </ScrollView>
         </TouchableOpacity>
 
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -147,9 +149,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E2E8F0',
         borderBottomWidth: 1
     },
-    doctors: {
-        flexDirection: 'column',
-    },
+    doctors: {flexDirection: 'column'},
 
     footerContainer: {
         flexDirection: 'row',
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     box: {
-        borderColor: "#E2E8F0",
+        borderColor: '#E2E8F0',
         borderRadius: 8,
         paddingTop: 16,
         paddingLeft: 16,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
         borderRadius: 40 / 2,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 2,

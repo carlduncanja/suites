@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import styled, {css} from '@emotion/native';
-import {withModal} from 'react-native-modalfy';
+import {useModal, withModal} from 'react-native-modalfy';
 import {useTheme} from 'emotion-theming';
 import {Text, View, TouchableOpacity} from 'react-native';
 import {Divider, Modal} from 'react-native-paper';
@@ -40,7 +40,7 @@ const HeaderContainer = styled.View`
 
 const HeaderText = styled.Text`
     font:${({theme}) => theme.font['--text-xl-medium']};
-    color:${({theme}) => theme.colors['--company']}
+    color:${({theme}) => theme.colors['--company']};
     `;
 
 const CloseButtonWrapper = styled.View`
@@ -57,7 +57,7 @@ const CloseButtonContainer = styled.TouchableOpacity`
     `;
 const CloseText = styled.Text`
     color:${({theme}) => theme.colors['--color-gray-600']};
-    font:${({theme}) => theme.font['--text-sm-bold']}
+    font:${({theme}) => theme.font['--text-sm-bold']};
     `;
 
 const AssignEquipmentPageContentWrapper = styled.View`
@@ -77,8 +77,9 @@ const TabsViewContainer = styled.View`
     height: 54px;
 `;
 
-const AssignEquipmentPage = ({navigation, route, modal}) => {
+const AssignEquipmentPage = ({navigation, route}) => {
     const {equipment, onCreated} = route.params;
+    const modal = useModal();
     const currentTabs = ['Details'];
     const theme = useTheme();
 
@@ -102,7 +103,7 @@ const AssignEquipmentPage = ({navigation, route, modal}) => {
     const onLocationUpdate = value => {
         const updatedLocations = [...locations];
 
-        // check if value is at index
+        /* check if value is at index */
         updatedLocations[selectedIndex] = value;
         console.log('Updated Locations:', updatedLocations);
         setLocations(updatedLocations);
@@ -140,9 +141,15 @@ const AssignEquipmentPage = ({navigation, route, modal}) => {
         // console.log('the equipment data', equipmentData);
 
         const evalAssignmentValues = assignment => {
-            if (assignment === 'Location') return {type: 'location', referenceId: locations[0]._id};
-            if (assignment === 'Theatre') return {type: 'theatre', referenceId: theatres[0]._id};
-            if (assignment === 'Person') return {type: 'physician', referenceId: physicians[0]._id};
+            if (assignment === 'Location' && locations) {
+                return {type: 'location', referenceId: locations[0]._id};
+            }
+            if (assignment === 'Theatre' && theatres) {
+                return {type: 'theatre', referenceId:  theatres[0]._id};
+            }
+            if (assignment === 'Person' && physicians) {
+                return {type: 'physician', referenceId: physicians[0]._id};
+            }
         };
 
         const {type, referenceId} = evalAssignmentValues(equipmentData.assignment);
@@ -182,7 +189,7 @@ const AssignEquipmentPage = ({navigation, route, modal}) => {
                             isEditUpdate={false}//use this specification to either get the confirm an edit or update
                             onCancel={onCancel}
                             onAction={createdSuccessfully}
-                            message="Please choose a supplier "//general message you can send to be displayed
+                            message="Completed Successfully"//general message you can send to be displayed
                             action="Archive"
                         />
                     ),
@@ -202,7 +209,7 @@ const AssignEquipmentPage = ({navigation, route, modal}) => {
                             isEditUpdate={false}//use this specification to either get the confirm an edit or update
                             onCancel={onCancel}
                             onAction={createdSuccessfully}
-                            message="There was an error performing this task "//general message you can send to be displayed
+                            message="Successfully Assigned Equipment."//general message you can send to be displayed
                             action="Archive"
                         />
                     ),
