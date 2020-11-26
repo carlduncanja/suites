@@ -145,11 +145,12 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
             })
             .finally(_ => {
                 setPageLoading(false);
-                console.log("Finished")
+                console.log("Finished");
             });
     };
 
     const fetchSupplier = id => {
+        console.log("Fetch Supplier");
         setFetching(true);
         getSupplierById(id)
             .then(data => {
@@ -199,6 +200,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                             onAddProducts={onAddProducts}
                             onProductsCreated={() => fetchSupplier(_id)}
                             supplierId={_id}
+                            onRefresh={() => fetchSupplier(_id)}
                         />
                     );
             case 'Purchase Orders':

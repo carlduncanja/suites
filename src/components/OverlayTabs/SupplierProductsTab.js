@@ -29,7 +29,7 @@ import WasteIcon from '../../../assets/svg/wasteIcon';
 
 import { currencyFormatter } from '../../utils/formatter';
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
-import { getSupplierProducts, createPurchaseOrder } from '../../api/network';
+import { getSupplierProducts, createPurchaseOrder, removeSupplierProducts } from '../../api/network';
 import { addCartItem } from '../../redux/actions/cartActions';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { PageContext } from '../../contexts/PageContext';
@@ -85,7 +85,8 @@ function SupplierProductsTab({
     products = [],
     onAddProducts,
     onProductsCreated,
-    isProductsLoading
+    isProductsLoading,
+    onRefresh
 }) {
     // ######## STATES
     const theme = useTheme();
@@ -134,9 +135,7 @@ function SupplierProductsTab({
     };
 
     const onProductUpdate = (value) => {
-        const updated = productsState.map(item => {
-            return item._id === value._id ? { ...value } : { ...item }
-        })
+        const updated = productsState.map(item => item._id === value._id ? { ...value } : { ...item })
         setProducts(updated)
     }
 
@@ -368,7 +367,7 @@ function SupplierProductsTab({
         const deleteProduct = (
             <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                onLongPress={() => {}}
+                onLongPress={onRemoveProducts}
                 isDisabled={isDisabled}
             >
                 <ActionItem
@@ -468,6 +467,75 @@ function SupplierProductsTab({
             onProductsCreation
         });
     };
+
+    const onRemoveProducts = () => {
+        console.log("Checked prod: ", checkboxList);
+        const ids = checkboxList.map(item => item._id);
+        modal.closeAllModals();
+        setTimeout(() => {
+            modal.openModal('ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={true}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            setTimeout(() => {
+                                removeProducts(ids);
+                            }, 200);
+                        }}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        message="Do you want to save your changes ?"
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                }
+            );
+        }, 200);
+        // console.log("Checked list: ", ids);
+    };
+
+    const removeProducts = data => {
+        console.log("IDL DATA:", supplierId, data);
+        removeSupplierProducts(supplierId, data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => { modal.closeModals('ConfirmationModal'); }}
+                            onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+            })
+            .catch(error => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => { modal.closeModals('ConfirmationModal'); }}
+                            onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+                            message="Failed to remove products"
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+            })
+            .finally(_ => onRefresh());
+    }
 
     const listItemFormat = item => (
         <>
