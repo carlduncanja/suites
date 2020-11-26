@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from "react-native";
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
-import {currencyFormatter, formatDate} from "../../utils/formatter";
+import {currencyFormatter, formatDate} from '../../utils/formatter';
 import DataItem from '../common/List/DataItem';
 import { useTheme } from 'emotion-theming';
 import styled, {css} from '@emotion/native';
@@ -28,23 +28,23 @@ const testData = [
 
 const headers = [
     {
-        name: "Procedure",
-        alignment: "flex-start",
+        name: 'Procedure',
+        alignment: 'flex-start',
         flex:2,
     },
     {
-        name: "Recovery",
-        alignment: "center",
+        name: 'Recovery',
+        alignment: 'center',
         flex:1,
     },
     {
-        name: "Duration",
-        alignment: "center",
+        name: 'Duration',
+        alignment: 'center',
         flex:1,
     },
     {
-        name: "Date",
-        alignment: "flex-end",
+        name: 'Date',
+        alignment: 'flex-end',
         flex:1
     }, 
 ];
@@ -63,13 +63,13 @@ const HistoryTabs = ({ cases = testData, selectedItems = [], onCheckboxPress = (
     const theme = useTheme();
 
     const listItem = ({name, isRecovery, duration, date}) => {
-        let recoveryColor = isRecovery ? "--color-green-600" : "--color-orange-500"
+        let recoveryColor = isRecovery ? '--color-green-600' : '--color-orange-500'
         return (
-            <ItemWrapper theme = {theme}>
-                <DataItem flex={2} color = "--color-blue-600" text = {name}/>
-                <DataItem align = 'center' color = {recoveryColor} text = {isRecovery ? "Yes" : "No"}/>
-                <DataItem align = 'center' color = "--color-gray-800" text = {`${duration} hrs`}/>
-                <DataItem align = 'flex-end' color = "--color-gray-800" text = {formatDate(date, "MM/DD/YYYY")}/>
+            <ItemWrapper theme={theme}>
+                <DataItem flex={2} color="--color-blue-600" text={name} fontStyle="--text-base-medium"/>
+                <DataItem align="center" color={recoveryColor} text={isRecovery ? 'Yes' : 'No'} fontStyle="--text-base-medium"/>
+                <DataItem align="center" color="--color-gray-800" text={`${duration} hrs`} fontStyle="--text-base-regular"/>
+                <DataItem align="flex-end" color="--color-gray-800" text={formatDate(date, 'MM/DD/YYYY')} fontStyle="--text-base-regular"/>
                 {/* <View style={[styles.item, {alignItems: 'flex-start', flex:2, backgroundColor:'red'}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{name}</Text>
                 </View>
@@ -130,15 +130,15 @@ const styles = StyleSheet.create({
     dataContainer: {
         flex: 1,
         flexDirection: 'row',
-        alignItems: "flex-start",
-        justifyContent: "space-between"
+        alignItems: 'flex-start',
+        justifyContent: 'space-between'
     },
     item: {
         flex: 1,
     },
     itemText: {
         fontSize: 16,
-        color: "#4A5568",
+        color: '#4A5568',
     },
     headersContainer: {
         //flex:1,
