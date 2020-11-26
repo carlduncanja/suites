@@ -45,15 +45,16 @@ const headers = [
         flex: 1
     }
 ];
-
+    
 const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFooterPress }) => {
     const modal = useModal();
     const theme = useTheme();
     const { closeModals } = modal;
     const [purchaseOrders, setPurchaseOrders] = useState(details);
-    const [fields, setFields] = useState({});
+    const [fields, setFields] = useState({ orderFrequency: 'biweekly'});
     const [errorFields, setErrorFields] = useState({});
-
+    const [orderFrequency, setOrderFrequency] = useState('Bi-Weekly');
+    const [isFrequency, setIsFrequency] = useState(true);
 
     const onNumberArrowChange = id => operation => {
         console.log("what's in id?", id)
@@ -113,10 +114,16 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
             ...order,
             productId: order?._id
         }));
-        console.log('UpdatedPurchase order: ', updatedPurchaseOrders);
+
+        const repeating = isFrequency;
+        const repeatingType = fields.orderFrequency;
+
+        // console.log('UpdatedPurchase REPEATING: ', repeatingType);
         onListFooterPress({
             purchaseOrders: updatedPurchaseOrders,
-            deliveryDate: fields.deliveryDate
+            deliveryDate: fields.deliveryDate,
+            repeating,
+            repeatingType
         });
         // onUpdateItems(purchaseOrders)
     };
@@ -240,6 +247,9 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
             onDateChange={onFieldChange}
             errors={errorFields}
             fields={fields}
+            onFieldChange={onFieldChange}
+            isFrequency={isFrequency}
+            setIsFrequency={setIsFrequency}
         />
 
     );

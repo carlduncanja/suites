@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import Svg, {Path} from 'react-native-svg';
 import SvgIcon from '../../../assets/SvgIcon';
 import ClearList from '../../../assets/svg/clearList';
 import CalendarIcon from '../../../assets/svg/calendar';
@@ -13,10 +15,19 @@ import CreationDialogTabs from './Dialog/CreationDialogTabs';
 import DateInputField from './Input Fields/DateInputField';
 import {useNextPaginator, usePreviousPaginator} from '../../helpers/caseFilesHelpers';
 import OverlayDialog from './Dialog/OverlayDialog';
+import OptionsField from './Input Fields/OptionsField';
 import DialogTabs from './Dialog/DialogTabs';
+import CheckBoxComponent from './Checkbox';
 
-const Overlayrapper = styled.View`
-    height : 558px;
+const OverlayWrapper = styled.View`
+    display: flex;
+    width: 500px;
+    min-height: 500px;
+    max-height: 530px;
+    /* max-height: 600px; */
+    /* height : 558px;
+    width: 500px; */
+    background-color:yellowgreen;
     /* width : px; */
 `;
 const OverlayContainer = styled.View`
@@ -24,7 +35,8 @@ const OverlayContainer = styled.View`
     width : 100%;
 `;
 const ContentWrapper = styled.View`
-    height : 435px;
+    display: flex;
+    /* height : 435px; */
     padding : ${ ({theme}) => theme.space['--space-32']} ${ ({theme}) => theme.space['--space-24']};
 `;
 const ContentContainer = styled.View`
@@ -101,6 +113,58 @@ const DateContainer = styled.View`
     padding-right : ${ ({theme}) => theme.space['--space-8']};
 `;
 
+const CardText = styled.Text(({theme}) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-gray-600'],
+}));
+
+const FrequencyContainer = styled.View`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: ${({theme}) => theme.space['--space-24']};
+    padding-bottom: ${({theme}) => theme.space['--space-16']};
+`;
+
+const FrequencyCheckboxContainer = styled.TouchableOpacity`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 178px;
+    /* background-color: yellow; */
+`;
+
+const tickSVG = (
+    <Svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <Path
+            d="M9.4001 1.99998L8.0001 0.599976L4.0001 4.59998L2.0001 2.59998L0.600098 3.99998L4.0001 7.39998L9.4001 1.99998Z"
+            fill="#48BB78"/>
+    </Svg>
+);
+
+const Checkbox = styled.View`
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+    border: 1px solid ${({theme}) => theme.colors['--color-gray-400']};
+    border-radius: 4px;
+    margin-right: ${({theme}) => theme.space['--space-12']};
+`;
+
+const FrequencyDropdownContainer = styled.View`
+    width: 170px;
+`;
+
+
+const TYPES = {
+    weekly: 'Weekly',
+    biweekly: 'Bi-Weekly',
+    monthly: 'Monthly'
+};
+
 function CartCard(props) {
     const {
         title = '',
@@ -125,7 +189,11 @@ function CartCard(props) {
         hasSearch = true,
         onDateChange = () => {},
         errors = {errors},
-        fields
+        fields,
+        // orderFrequency,
+        isFrequency,
+        setIsFrequency,
+        onFieldChange
     } = props;
 
     const theme = useTheme();
@@ -173,7 +241,7 @@ function CartCard(props) {
 
     return (
 
-        <Overlayrapper>
+        <OverlayWrapper>
             <OverlayContainer>
 
                 <OverlayDialog
@@ -247,106 +315,44 @@ function CartCard(props) {
                                 </ListContentContainer>
                             </ListContainerWrapper>
 
+                            <FrequencyContainer theme={theme}>
+
+                                <FrequencyCheckboxContainer onPress={() => setIsFrequency(!isFrequency)} activeOpacity={0.8}>
+                                    <Checkbox theme={theme}>
+                                        {isFrequency && tickSVG}
+                                    </Checkbox>
+                                    <CardText theme={theme}>This order repeats</CardText>
+                                </FrequencyCheckboxContainer>
+                               
+                                {
+                                    isFrequency &&
+                                    <FrequencyDropdownContainer>
+                                        <OptionsField
+                                            text={TYPES[fields.orderFrequency]}
+                                            oneOptionsSelected={value => {
+                                                onFieldChange('orderFrequency')(value);
+                                            }}
+                                            menuOption={(
+                                                <MenuOptions>
+                                                    <MenuOption value="weekly" text="Weekly"/>
+                                                    <MenuOption value="biweekly" text="Bi-Weekly"/>
+                                                    <MenuOption value="monthly" text="Monthly"/>
+                                                </MenuOptions>
+                                            )}
+                                        />
+                                    </FrequencyDropdownContainer>
+                                    
+                                }
+                                
+                            </FrequencyContainer>
+
                         </ContentContainer>
                     </ContentWrapper>
 
                 </OverlayDialog>
 
             </OverlayContainer>
-        </Overlayrapper>
-
-    // <View style={styles.container}>
-    //     <View style={styles.headerContainer}>
-    //         <Text>{title}</Text>
-    //         <TouchableOpacity onPress={()=>closeModal()} style={{alignItems:'flex-end'}}>
-    //             <SvgIcon iconName = "searchExit" strokeColor="#718096"/>
-    //         </TouchableOpacity>
-    //     </View>
-
-    //     {
-    //         tabs && <View style={styles.tabContainer}>
-    //             {
-    //                 tabs.map((tab,index)=>{
-    //                     return (
-    //                         <View style={[styles.tab,{marginRight:10, backgroundColor: tab === selectedTab ? "#FFFFFF" : null}]} key={index}>
-    //                             <Button
-    //                                 backgroundColor = {tab === selectedTab ? "#FFFFFF" : null}
-    //                                 color = {tab === selectedTab ? "#3182CE" : "#A0AEC0" }
-    //                                 buttonPress = {()=>{onPressTab(tab)}}
-    //                                 title = {tab}
-    //                             />
-    //                         </View>
-    //                     )
-    //                 })
-    //             }
-    //         </View>
-
-    //     }
-
-    //     <View style={{margin: 20}}>
-
-    //         <View style={[styles.search, {zIndex:1}]}>
-    //             <SearchableOptionsField
-    //                 value={selectedItem}
-    //                 text={searchText}
-    //                 oneOptionsSelected={(item)=> onItemSelected(item)}
-    //                 onChangeText={(value) => {onSearchChange(value)}}
-    //                 onClear={()=>{onClearItem()}}
-    //                 options={searchResults}
-    //                 handlePopovers={() => {
-    //                     // console.log("handle popovers");
-    //                 }}
-    //                 isPopoverOpen={searchQuery}
-    //             />
-    //         </View>
-
-    //         <View style={styles.list}>
-    //             <Table
-    //                 data = {dataToDisplay}
-    //                 currentListMin = {currentPageListMin}
-    //                 currentListMax = {currentPageListMax}
-    //                 listItemFormat = {listItemFormat}
-    //                 headers = {headers}
-    //                 isCheckbox = {isCheckBox}
-    //             />
-    //         </View>
-
-    //         <View style={{justifyContent:'space-between', flexDirection:'row'}}>
-
-    //             <View style={[styles.paginationContainer,{alignSelf:'flex-start'}]}>
-    //                 <Paginator
-    //                     currentPage = {currentPagePosition}
-    //                     totalPages = {totalPages}
-    //                     goToNextPage = {goToNextPage}
-    //                     goToPreviousPage = {goToPreviousPage}
-    //                 />
-    //             </View>
-    //             <TouchableOpacity
-    //                 style={styles.clearListStyle}
-    //                 onPress = {onClearPress}
-    //             >
-    //                 <Text style={{color:'#718096', fontSize:12}}>Clear List</Text>
-    //                 <ClearList/>
-    //             </TouchableOpacity>
-
-    //         </View>
-
-    //     </View>
-
-    //     {
-    //         hasFooter &&
-    //         <View style={[styles.footer,{zIndex:-1}]}>
-    //             <Button
-    //                 backgroundColor = "#FFFFFF"
-    //                 title = {footerTitle}
-    //                 buttonPress = {onFooterPress}
-    //                 color = "#4299E1"
-    //             />
-    //         </View>
-    //     }
-
-    // </View>
-
+        </OverlayWrapper>
     );
 }
 

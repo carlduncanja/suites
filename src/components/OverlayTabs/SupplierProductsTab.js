@@ -212,14 +212,17 @@ function SupplierProductsTab({
     };
 
     const onCompleteOrder = data => {
-        const { purchaseOrders = [], deliveryDate = '' } = data;
+        // console.log("Oder data: ", data);
+        const { purchaseOrders = [], deliveryDate = '', repeating, repeatingType } = data;
         const orderToCreate = {
             deliveryDate,
             orders: purchaseOrders,
             supplier: supplierId,
+            repeating,
+            repeatingType
         };
 
-        console.log('Data: ', orderToCreate);
+        console.log('Order: ', orderToCreate);
 
         createPurchaseOrder(orderToCreate)
             .then(_ => {
@@ -263,6 +266,7 @@ function SupplierProductsTab({
                 //TODO handle error cases.
             })
             .finally(_ => setLoading(false));
+    
     };
 
     const onConfirmChanges = data => {
