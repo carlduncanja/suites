@@ -6,6 +6,8 @@ import {currencyFormatter, formatDate} from "../../utils/formatter";
 import DataItem from '../common/List/DataItem';
 import { useTheme } from 'emotion-theming';
 import styled, {css} from '@emotion/native';
+import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
+import Footer from '../common/Page/Footer';
 
 
 const testData = [
@@ -94,16 +96,23 @@ const HistoryTabs = ({ cases = testData, selectedItems = [], onCheckboxPress = (
     };
 
     return (
-        <ScrollView>
-            <Table
-                isCheckbox={false}
-                data={cases}
-                listItemFormat={listItem}
-                headers={headers}
-                toggleHeaderCheckbox={onSelectAll}
-                itemSelected={selectedItems}
+        <>
+            <ScrollView>
+                <Table
+                    isCheckbox={false}
+                    data={cases}
+                    listItemFormat={listItem}
+                    headers={headers}
+                    toggleHeaderCheckbox={onSelectAll}
+                    itemSelected={selectedItems}
+                />
+            </ScrollView>
+
+            <Footer
+                hasPaginator={false}
+                hasActions={false}
             />
-        </ScrollView>
+        </>
     );
 };
 
