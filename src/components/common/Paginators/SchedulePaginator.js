@@ -41,11 +41,12 @@ const NumberContainer = styled.View`
   background-color:${({ theme }) => theme.colors['--color-neutral-gray-100']};
   border:1px solid ${({ theme }) => theme.colors['--color-gray-400']};
   border-radius:4px;
-  padding:6px 12px;
+  /* padding:6px 12px; */
   margin: 10px 0;
-  width: 270px;
+  width: 240px;
   height:35px;
   align-items:center;
+  justify-content: center;
 
 `;
 
@@ -53,6 +54,12 @@ const ArrowContainer = styled.TouchableOpacity`
     /* background-color: yellow; */
     padding: 18px 16px;
 `;
+
+const DateText = styled.Text(({theme}) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-ui-charcoal'],
+    paddingTop: 2,
+}));
 
 const shadows = [
     {
@@ -89,12 +96,12 @@ const SchedulePaginator = ({
                         </ArrowContainer>
 
                         <NumberContainer>
-                            <Text style={styles.numbers}>{date} </Text>
+                            <DateText>{date}</DateText>
                         </NumberContainer>
 
                         <ArrowContainer onPress={goToNextDay}>
                             <SvgIcon iconName="paginationNext" strokeColor="#104587" />
-                        </ArrowContainer> 
+                        </ArrowContainer>
                     </PaginatorView>
                 </PaginatorContainer>
     
