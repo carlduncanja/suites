@@ -28,8 +28,6 @@ import InventoryNavigationStack from './InventoryNavigationStack';
 import SettingsNavigationStack from './SettingsNavigationStack';
 
 /* Providers*/
-import NotFound from '../../../page/NotFound';
-import LostConnectionPage from '../../common/Page/LostConnectionPage';
 import NotFoundPage from '../../common/Page/NotFoundPage';
 
 /* Icons */
@@ -80,6 +78,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: CaseFileIcon,
                     tabName: 'Case Files',
+                    isAdmin
                 }}
             />
 
@@ -89,6 +88,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: TheatreIcon,
                     tabName: 'Theatres',
+                    isAdmin
                 }}
             />
 
@@ -98,6 +98,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: InventoryIcon,
                     tabName: 'Inventory',
+                    isAdmin
                 }}
             />
 
@@ -107,6 +108,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: EquipmentIcon,
                     tabName: 'Equipment',
+                    isAdmin
                 }}
             />
 
@@ -116,6 +118,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: OrdersIcon,
                     tabName: 'Orders',
+                    isAdmin
                 }}
             />
 
@@ -125,6 +128,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: DeliveryIcon,
                     tabName: 'Suppliers',
+                    isAdmin
                 }}
             />
 
@@ -143,6 +147,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: StorageIcon,
                     tabName: 'Storage',
+                    isAdmin
                 }}
             />
 
@@ -152,6 +157,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: PhysiciansIcon,
                     tabName: 'Physicians',
+                    isAdmin
                 }}
             />
 
@@ -161,6 +167,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: ProcedureIcon,
                     tabName: 'Procedures',
+                    isAdmin
                 }}
             />
 
@@ -182,6 +189,7 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: NotificationIcon,
                     tabName: 'Alerts',
+                    isAdmin
                 }}
             />
 

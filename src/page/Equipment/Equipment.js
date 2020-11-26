@@ -52,6 +52,7 @@ import CreateEquipmentTypeDialogContainer from '../../components/Equipment/Creat
 import ListItem from '../../components/common/List/ListItem';
 import {LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
+import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 
 const QuantityWrapper = styled.View`
     flex:1.5;
@@ -148,6 +149,9 @@ const Equipment = props => {
     const [equipmentTypes, setEquipmentTypes] = useState([]);
 
     const [expandedItems, setExpandedItems] = useState([]);
+
+    const [pageSettingState, setPageSettingState] = useState({});
+
 
     // ############# Lifecycle methods
 
@@ -346,6 +350,8 @@ const Equipment = props => {
                 console.log('Failed to get equipment types', error);
 
                 handleUnauthorizedError(error?.response?.status, setEquipmentTypes);
+                setPageSettingState({...pageSettingState, isDisabled: true});
+
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -750,30 +756,37 @@ const Equipment = props => {
     };
 
     return (
-        <NavPage
-            isFetchingData={isFetchingData}
-            onRefresh={handleDataRefresh}
-            placeholderText="Search by Assignment, Status, Parent Name"
-            changeText={onSearchInputChange}
-            inputText={searchValue}
-            routeName="Equipment"
-            listData={equipmentToDisplay}
-            listHeaders={listHeaders}
-            itemsSelected={selectedTypesIds}
-            onSelectAll={handleOnSelectAll}
-            listItemFormat={renderEquipmentFn}
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
+            <NavPage
+                isFetchingData={isFetchingData}
+                onRefresh={handleDataRefresh}
+                placeholderText="Search by Assignment, Status, Parent Name"
+                changeText={onSearchInputChange}
+                inputText={searchValue}
+                routeName="Equipment"
+                listData={equipmentToDisplay}
+                listHeaders={listHeaders}
+                itemsSelected={selectedTypesIds}
+                onSelectAll={handleOnSelectAll}
+                listItemFormat={renderEquipmentFn}
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+            />
+
+        </PageSettingsContext.Provider>
     );
 };
 

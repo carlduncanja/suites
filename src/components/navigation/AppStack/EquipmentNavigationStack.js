@@ -14,7 +14,8 @@ import HeaderBackComponent from "../components/HeaderBackComponent";
 const Stack = createStackNavigator();
 
 
-export default () => {
+export default (props) => {
+    const isAdmin = props.route.params.isAdmin || false;
 
     return (
         <Stack.Navigator
@@ -26,6 +27,7 @@ export default () => {
                 options={{
                     headerShown: false
                 }}
+                initialParams={{ isAdmin }}
             />
 
 

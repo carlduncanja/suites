@@ -252,6 +252,7 @@ function AddItems({ addProcedure, navigation, route}){
                    tabs={dialogTabs}
                    tab={tabIndex}
                     onTabPress={onTabPress}
+                    tabPlacement="flex-start"
                 />
             </TabsContainer>
 

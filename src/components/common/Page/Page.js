@@ -3,15 +3,18 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import PageTitle from './PageTitle';
 import Search from '../Search';
 import List from '../List/List';
+import DisabledSectionComponent from '../../DisabledSectionComponent';
 
 import Wrapper from '../Wrapper';
 import LoadingIndicator from '../LoadingIndicator';
 import { SuitesContext } from '../../../contexts/SuitesContext';
+import { PageSettingsContext } from '../../../contexts/PageSettingsContext';
 import { appActions } from '../../../redux/reducers/suitesAppReducer';
-import { colors } from '../../../styles'
+import { colors } from '../../../styles';
 import PropTypes from 'prop-types';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import { useNavigation, useRoute, } from '@react-navigation/native';
 
 const PageWrapper = styled.View`
         display : flex;
@@ -50,7 +53,9 @@ const PageHeader = styled.View`
 function Page(props) {
 
     // const [state, dispatch] = useContext(SuitesContext);
-    const theme = useTheme()
+    const theme = useTheme();
+    const { pageSettingState } = useContext(PageSettingsContext);
+    const { isDisabled } = pageSettingState;
     const {
         placeholderText,
         changeText,
@@ -67,9 +72,15 @@ function Page(props) {
         TopButton,
         hasList = true,
         hasSearch = true,
-        pageContent
+        pageContent,
+        // navigation
     } = props;
 
+    const navigation = useNavigation();
+    const route = useRoute();
+
+    const isAdmin = route?.params?.isAdmin || false;
+    
     const content = hasList ? (
         <List
             listData={listData}
@@ -111,7 +122,13 @@ function Page(props) {
                 {
                     isFetchingData ?
                         <LoadingIndicator /> :
-                        content
+                        isDisabled ? (
+                            <DisabledSectionComponent
+                                navigation={navigation}
+                                isAdmin={isAdmin}
+                            />
+                          ) :
+                            content
                 }
             </PageContainer>
         </PageWrapper>
