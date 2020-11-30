@@ -499,7 +499,8 @@ function SupplierProductsTab({
     };
 
     const removeProducts = data => {
-        // console.log("IDL DATA:", supplierId, data);
+        console.log("ID:", supplierId);
+        console.log("Data:", data);
         removeSupplierProducts(supplierId, data)
             .then(_ => {
                 modal.openModal(
@@ -518,11 +519,12 @@ function SupplierProductsTab({
                 );
             })
             .catch(error => {
+                console.log("Error:", error);
                 modal.openModal(
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isError={false}
+                            isError={true}
                             isEditUpdate={false}
                             onAction={() => { modal.closeModals('ConfirmationModal'); }}
                             onCancel={() => { modal.closeModals('ConfirmationModal'); }}
@@ -534,8 +536,9 @@ function SupplierProductsTab({
                     }
                 );
             })
-            .finally(_ => onRefresh() );
-    };
+            .finally(_ => onRefresh());
+    
+        };
 
     const listItemFormat = item => (
         <>
