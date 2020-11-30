@@ -1,7 +1,78 @@
 import React, {useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View, Button} from "react-native";
-import moment from "moment";
-import SvgIcon from "../../../assets/SvgIcon";
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View, Button} from 'react-native';
+import moment from 'moment';
+import {useTheme} from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import SvgIcon from '../../../assets/SvgIcon';
+import { formatDate, currencyFormatter } from '../../utils/formatter';
+
+const DeliveryCardContainer = styled.View`
+    flex: 1;
+`;
+
+const CardTitleContainer = styled.View`
+    flex-direction: column;
+    padding-bottom: ${({theme}) => theme.space['--space-20']};
+    border-bottom-width: 1px;
+    border-bottom-color: ${({theme}) => theme.colors['--color-gray-200']};
+`;
+
+const TotalStatusContainer = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: ${({theme}) => theme.space['--space-8']};
+`;
+
+const StatusPill = styled.View`
+    background-color: ${({theme}) => theme.colors['--color-gray-200']};
+    padding: ${({theme}) => `${theme.space['--space-4']} ${theme.space['--space-8']}`};
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+`;
+
+const DropoffTimeContainer = styled.View`
+    padding: ${({theme}) => `${theme.space['--space-14']} 0`};
+    flex-direction: row;
+    justify-content: space-evenly;
+    border-bottom-width: 1px;
+    border-bottom-color: ${({theme}) => theme.colors['--color-gray-200']};
+    margin-bottom: ${({theme}) => theme.space['--space-48']};
+`;
+
+const TimeContainer = styled.View`
+    flex: 1;
+    flex-direction: row;
+    justify-content: flex-end;
+`;
+
+const StackedRecord = styled.View`
+    flex-direction: column;
+`;
+
+const AppointmentInformation = styled.View`
+    background-color: ${({theme}) => theme.colors['--color-gray-100']};
+    border-color: ${({theme}) => theme.colors['--color-gray-300']};
+    border-width: 1px;
+    border-radius: 8px;
+    padding: ${({theme}) => `${theme.space['--space-16']} ${theme.space['--space-12']}`};
+`;
+
+const ReviewButtonContainer = styled.View`
+    background-color: ${({theme}) => theme.colors['--color-blue-500']};
+    position: absolute;
+    bottom: 20;
+    right:0;
+    border-radius: 8px;
+`;
+
+const CardText = styled.Text(({theme, font = '--text-base-regular', color = '--color-gray-300'}) => ({
+    ...theme.font[font],
+    color: theme.colors[color],
+    paddingTop: 1,
+}));
+
 
 /**
  * Visual component for rendering details of a delivery appointments.
@@ -11,11 +82,12 @@ import SvgIcon from "../../../assets/SvgIcon";
  */
 function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerson, notes}) {
     const {
-        id = "",
-        title = "",
-        location = "",
+        id = '',
+        title = '',
+        location = 'Warehouse 1',
         startTime = new Date(),
-        endTime = new Date()
+        endTime = new Date(),
+        item = {},
     } = appointmentDetails;
 
     const {
@@ -23,35 +95,54 @@ function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerso
         cost
     } = purchaseOrder;
 
+    const { delivery = {} } = item;
+    const {
+        total = 0,
+        requestedBy = {},
+        deliveryDate = "",
+        createdAt = "",
+    } = delivery;
+
+    const {
+        first_name="",
+        last_name=""
+    } = requestedBy
+    // console.log("Pichup :", pickupPerson);
+    // console.log("Appointment Details: ", appointmentDetails);
+
+    const theme = useTheme();
 
     /**
      * @param scheduleDate - date object
      */
-    const getTime = (scheduleDate) => {
-        let date = moment(scheduleDate);
-        return date.format("h:mm a");
+    const getTime = scheduleDate => {
+        const date = moment(scheduleDate);
+        return date.format('h:mm a');
     };
 
-    const formatDate = (scheduleDate) => {
-        let date = moment(scheduleDate);
-        return date.format("D/M/YYYY")
-    };
+    // const formatDate = scheduleDate => {
+    //     const date = moment(scheduleDate);
+    //     return date.format('D/M/YYYY');
+    // };
 
-    const getProgressStatus = (startTime, endTime) => {
+    const getProgressStatus = (deliveryTime) => {
         const now = moment();
+        const delivery = moment(deliveryTime);
         const start = moment(startTime);
         const end = moment(endTime);
 
-        if (now.isBefore(start)) {
-            return "Not Yet Started"
-        } else if (now.isBefore(end)) {
-            return "In Progress"
-        } else {
-            return "Ended"
+        if (now.isBefore(delivery)) {
+            return 'Not Yet Delivered';
         }
+        
+        // if (now.isBefore(end)) {
+        //     return 'In Progress';
+        // }
+
+        return 'Ended';
     };
 
-    const lineItem = (title, subject, isBold) => <View>
+    const lineItem = (title, subject, isBold) => (<View>
         <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
             <Text
                 style={
@@ -68,123 +159,196 @@ function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerso
 
             <Text style={[styles.detailText, {color: '#718096'}]}>{subject}</Text>
         </View>
-    </View>;
-
+    </View>);
 
     return (
-        <TouchableOpacity style={{flex: 1}} activeOpacity={1}>
-            <ScrollView style={styles.container}>
 
-                <View>
-                    <View style={styles.cardTitle}>
+        <DeliveryCardContainer>
 
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
-                            <Text style={styles.idText}>
-                                ${cost}
-                            </Text>
-                            <View style={styles.statusWrapper}>
-                                <Text style={{
-                                    color: "#A0AEC0",
-                                    fontSize: 12
-                                }}>
-                                    {getProgressStatus(startTime, endTime)}
-                                </Text>
-                            </View>
-                        </View>
+            <CardTitleContainer>
+                <TotalStatusContainer theme={theme}>
+                    <CardText theme={theme} color="--company" font="--text-base-medium">${currencyFormatter(total)}</CardText>
+                    <StatusPill theme={theme}>
+                        <CardText theme={theme} color="--color-gray-500" font="--text-xs-medium">{getProgressStatus(deliveryDate)}</CardText>
+                    </StatusPill>
+                </TotalStatusContainer>
 
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <Text style={styles.subjectText}>
-                                {title}
-                            </Text>
-                            <Text style={{
-                                fontSize: 20,
-                                color: '#104587',
-                                paddingBottom: 5
-                            }}> Reschedule Delivery </Text>
-                        </View>
-                    </View>
+                <TotalStatusContainer style={css`padding-bottom: 0;`}>
+                    <CardText font="--text-xl-medium" color="--accent-button">{title}</CardText>
+                    <CardText font="--text-xl-medium" color="--company">Delivery</CardText>
+                </TotalStatusContainer>
+            </CardTitleContainer>
 
-                    <View style={[styles.doctors]}>
+            <DropoffTimeContainer theme={theme}>
 
-                        <View style={styles.cardDescription}>
-                            <View style={{flexDirection: 'column'}}>
-                                <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Drop-Off Point</Text>
-                                <Text style={[styles.detailText]}>{location}</Text>
-                            </View>
+                <StackedRecord>
+                    <CardText theme={theme} color="--color-gray-600" font="--text-sm-regular" style={css`padding-bottom: 10px;`}>Drop-Off Point</CardText>
+                    <CardText theme={theme} color="--color-gray-800" font="--text-base-regular">{location}</CardText>
+                </StackedRecord>
 
-                            <View style={{flexDirection: 'row'}}>
+                <TimeContainer theme={theme}>
 
-                                <View style={{flexDirection: 'column', marginRight: 15}}>
-                                    <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>
-                                        Date
-                                    </Text>
-                                    <Text style={[styles.detailText]}>
-                                        {formatDate(startTime)}
-                                    </Text>
-                                </View>
+                    <StackedRecord style={css`padding-right: ${theme.space['--space-32']};`}>
+                        <CardText theme={theme} color="--color-gray-600" font="--text-sm-regular" style={css`padding-bottom: 10px;`}>Created Date</CardText>
+                        <CardText theme={theme} color="--color-gray-800" font="--text-base-regular">{formatDate(startTime, 'DD/MM/YYYY')}</CardText>
+                    </StackedRecord>
 
-                                <View style={{flexDirection: 'column'}}>
-                                    <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>
-                                        Time
-                                    </Text>
-                                    <Text style={[styles.detailText]}>
-                                        {getTime(startTime)} - {getTime(endTime)}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
+                    {/* <StackedRecord>
+                        <CardText theme={theme} color="--color-gray-600" font="--text-sm-regular" style={css`padding-bottom: 10px;`}>Time</CardText>
+                        <CardText theme={theme} color="--color-gray-800" font="--text-base-regular">{formatDate(startTime, 'h:mm a')} - {formatDate(endTime, 'h:mm a')}</CardText>
+                    </StackedRecord> */}
 
-                        {/* Additional Information */}
-                        <View style={styles.infoSection}>
+                </TimeContainer>
 
-                            <View style={styles.box}>
-                                {lineItem(pickupPerson, "Pickup Person")}
-                                <View style={{marginTop: 20}}/>
-                                {lineItem(purchaseOrderId, "Purchase Order")}
-                            </View>
+            </DropoffTimeContainer>
 
 
-                            <View style={styles.deliveryNotes}>
-                                <Text>
-                                    {notes}
-                                </Text>
-                            </View>
+            <AppointmentInformation>
+                <TotalStatusContainer style={css`padding-bottom: 14px;`}>
+                    <CardText font="--text-base-medium" color="--color-blue-600">{title}</CardText>
+                    <CardText font="--text-base-medium" color="--company">Purchase Order No.</CardText>
+                </TotalStatusContainer>
 
-                            <View style={{
-                                marginTop: 20,
-                                alignSelf: 'flex-end',
-                                backgroundColor: '#4299E1',
-                                borderRadius: 8
-                            }}>
-                                <Button
-                                    color={'white'}
-                                    title={"Review Order"}
-                                    backgroundColor={"#4299E1"}
-                                    onPress={() => {
-                                    }}
-                                />
-                            </View>
+                <TotalStatusContainer style={css`padding-bottom: 14px;`}>
+                    <CardText font="--text-base-medium" color="--color-blue-600">{first_name} {last_name}</CardText>
+                    <CardText font="--text-base-medium" color="--company">Requested By</CardText>
+                </TotalStatusContainer>
+
+                <TotalStatusContainer style={css`padding-bottom: 0;`}>
+                    <CardText font="--text-base-medium" color="--color-blue-600">{formatDate(deliveryDate, 'ddd MMM D, YYYY')}</CardText>
+                    <CardText font="--text-base-medium" color="--company">Est. Delivery Date</CardText>
+                </TotalStatusContainer>
+
+            </AppointmentInformation>
+
+            <ReviewButtonContainer theme={theme}>
+                <Button
+                    color={theme.colors['--color-white']}
+                    title="Review Order"
+                    backgroundColor={theme.colors['--color-blue-500']}
+                    onPress={() => {}}
+                />
+            </ReviewButtonContainer>
+
+        </DeliveryCardContainer>
 
 
-                        </View>
+        // <TouchableOpacity style={{flex: 1,}} activeOpacity={0.5}>
+        //     <ScrollView style={styles.container}>
+                
+        //             <View style={styles.cardTitle}>
+
+        //                 <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
+        //                     <Text style={styles.idText}>
+        //                         ${cost}
+        //                     </Text>
+        //                     <View style={styles.statusWrapper}>
+        //                         <Text style={{
+        //                             color: "#A0AEC0",
+        //                             fontSize: 12
+        //                         }}>
+        //                             {getProgressStatus(startTime, endTime)}
+        //                         </Text>
+        //                     </View>
+        //                 </View>
+
+        //                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        //                     <Text style={styles.subjectText}>
+        //                         {title}
+        //                     </Text>
+        //                     <Text style={{
+        //                         fontSize: 20,
+        //                         color: '#104587',
+        //                         paddingBottom: 5
+        //                     }}>Delivery</Text>
+        //                 </View>
+        //             </View>
+
+        //             <View style={[styles.doctors]}>
+
+        //                 <View style={styles.cardDescription}>
+        //                     <View style={{flexDirection: 'column'}}>
+        //                         <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Drop-Off Point</Text>
+        //                         <Text style={[styles.detailText]}>{location}</Text>
+        //                     </View>
+
+        //                     <View style={{flexDirection: 'row'}}>
+
+        //                         <View style={{flexDirection: 'column', marginRight: 15}}>
+        //                             <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>
+        //                                 Date
+        //                             </Text>
+        //                             <Text style={[styles.detailText]}>
+        //                                 {formatDate(startTime)}
+        //                             </Text>
+        //                         </View>
+
+        //                         <View style={{flexDirection: 'column'}}>
+        //                             <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>
+        //                                 Time
+        //                             </Text>
+        //                             <Text style={[styles.detailText]}>
+        //                                 {getTime(startTime)} - {getTime(endTime)}
+        //                             </Text>
+        //                         </View>
+        //                     </View>
+        //                 </View>
+
+        //                 {/* Additional Information   */}
+        //                 <View style={styles.infoSection}>
+
+        //                     <View style={styles.box}>
+        //                         {lineItem(pickupPerson, "Pickup Person")}
+        //                         <View style={{marginTop: 20}}/>
+        //                         {lineItem(purchaseOrderId, "Purchase Order")}
+        //                     </View>
 
 
-                    </View>
-                </View>
-            </ScrollView>
-        </TouchableOpacity>
+        //                     <View style={styles.deliveryNotes}>
+        //                         <Text>
+        //                             {notes}
+        //                         </Text>
+        //                     </View> 
+        //                 </View>
 
-    )
+        //             </View> 
+
+        //             <View style={{
+        //                 position:'absolute',
+        //                 right: 0,
+        //                 bottom: 0,
+        //                 // marginTop: 20,
+        //                 // alignSelf: 'flex-end',
+        //                 backgroundColor: '#4299E1',
+        //                 borderRadius: 8
+        //             }}>
+        //                 <Button
+        //                     color={'white'}
+        //                     title={"Review Order"}
+        //                     backgroundColor={"#4299E1"}
+        //                     onPress={() => {
+        //                     }}
+        //                 />
+        //             </View> 
+
+                
+        //     </ScrollView>
+        // </TouchableOpacity>
+
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+
+        position: 'relative',
         padding: 20,
         backgroundColor: 'white',
         paddingRight: '4%',
         paddingLeft: '4%',
         flexDirection: 'column',
+        backgroundColor:'yellowgreen'
     },
     idText: {
         fontSize: 16,
@@ -237,6 +401,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     infoSection: {
+        flex: 1,
+        // height: 100,
         flexDirection: 'column',
         marginTop: 20,
     },
@@ -248,7 +414,7 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     box: {
-        borderColor: "#E2E8F0",
+        borderColor: '#E2E8F0',
         borderRadius: 8,
         padding: 16,
         borderWidth: 1,
