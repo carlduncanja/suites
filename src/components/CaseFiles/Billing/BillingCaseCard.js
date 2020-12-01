@@ -100,31 +100,13 @@ const BillingCaseCard = ({tabDetails, caseProcedures, isEditMode, handleEditDone
     // console.log("TabDetails: ", tabDetails)
 
     const totalAmount = total - (total * discount);
-    const outstandingBalance = 6826.89;
+    const outstandingBalance = 0;
 
     // const [selectedProcedure, setSelectedProcedure] = useState(0);
     // const [updatedBilling, setUpdatedBilling] = useState([]);
     const [billingProcedures, setBillingProcedures] = useState(caseProcedures);
-    const [payments, setPayments] = useState([
-        {
-            transactionNum: 'T009871',
-            value: 43000.25
-        },
-        {
-            transactionNum: 'T981045',
-            value: 55472.00
-        },
-    ]);
-    const [discounts, setDiscounts] = useState([
-        {
-            discountType: 'Sagicor Insurance',
-            discountValue: 23000.65
-        },
-        {
-            discountType: 'Staff Discount',
-            discountValue: 3000.65
-        },
-    ]);
+    const [payments, setPayments] = useState([]);
+    const [discounts, setDiscounts] = useState([]);
 
     const totalDiscount = discounts.reduce((acc, curr) => acc + (curr.discountValue || 0), 0);
 
