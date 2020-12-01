@@ -1004,8 +1004,16 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             />
                         );
 
+                        const payBalanceAction = (
+                            <ActionItem
+                                title="Pay Balance"
+                                icon={<AcceptIcon/>}
+                                onPress={() => onPayBalance()}
+                            />
+                        );
+
                         // floatingAction.push(removeInvoices);
-                        floatingAction.push(downloadInvoice);
+                        floatingAction.push(downloadInvoice, payBalanceAction);
                     } else if (selectedInvoiceIds.length > 1) {
                         // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
                         //                                   onPress={onCreateInvoice}/>
@@ -1048,7 +1056,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     const payBalanceAction = (
                         <ActionItem
                             title="Pay Balance"
-                            icon={<AddIcon/>}
+                            icon={<AcceptIcon/>}
                             onPress={() => onPayBalance()}
                         />
                     )
