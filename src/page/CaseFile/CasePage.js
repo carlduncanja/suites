@@ -68,6 +68,7 @@ import {currencyFormatter, formatDate} from '../../utils/formatter';
 import AcceptIcon from '../../../assets/svg/acceptIcon';
 import {CHARGE_SHEET_STATUSES} from '../../components/CaseFiles/navigation/screens/ChargeSheet';
 import ApplyDiscountItem from './ApplyDiscountItem';
+import PayBalanceItem from './PayBalanceItem';
 
 const overlayMenu = [
     {
@@ -353,10 +354,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 content: (
                     <PayBalanceItem
                         onAddPay={() => {}}
-                        onCancel={() => {setFloatingAction(false); modal.closeAllModals();}}
+                        onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
                     />
                 ),
-                onClose: () => {setFloatingAction(false); modal.closeAllModals();},
+                onClose: () => { setFloatingAction(false); modal.closeAllModals(); },
             });
         }, 200);
     };
