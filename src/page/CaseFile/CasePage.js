@@ -59,6 +59,7 @@ import {PageContext} from '../../contexts/PageContext';
 import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
 import ReportPreview from '../../components/CaseFiles/Reports/ReportPreview';
 import GenerateIcon from '../../../assets/svg/generateIcon';
+import DiscountIcon from '../../../assets/svg/discountIcon';
 import PreviewIcon from '../../../assets/svg/previewIcon';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
@@ -66,6 +67,7 @@ import WasteIcon from '../../../assets/svg/wasteIcon';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
 import AcceptIcon from '../../../assets/svg/acceptIcon';
 import {CHARGE_SHEET_STATUSES} from '../../components/CaseFiles/navigation/screens/ChargeSheet';
+import ApplyDiscountItem from './ApplyDiscountItem';
 
 const overlayMenu = [
     {
@@ -327,6 +329,36 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 modal.closeModals('ActionContainerModal');
             }
         });
+    };
+
+    const onApplyDiscount = () => {
+        modal.closeAllModals();
+        setTimeout(() => {
+            modal.openModal('OverlayModal', {
+                content: (
+                    <ApplyDiscountItem
+                        onCreateDiscount={() => {}}
+                        onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
+                    />
+                ),
+                onClose: () => { setFloatingAction(false); modal.closeAllModals(); },
+            });
+        }, 200);
+    };
+
+    const onPayBalance = () => {
+        modal.closeAllModals();
+        setTimeout(() => {
+            modal.openModal('OverlayModal', {
+                content: (
+                    <PayBalanceItem
+                        onAddPay={() => {}}
+                        onCancel={() => {setFloatingAction(false); modal.closeAllModals();}}
+                    />
+                ),
+                onClose: () => {setFloatingAction(false); modal.closeAllModals();},
+            });
+        }, 200);
     };
 
     const onAppointmentCreated = value => fetchCase(caseId);
@@ -982,6 +1014,13 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     break;
                 }
                 case 'Billing': {
+                    const applyDiscountAction = (
+                        <ActionItem
+                            title="Apply Discount"
+                            icon={<DiscountIcon/>}
+                            onPress={() => onApplyDiscount()}
+                        />
+                    );
                     const generateQuotationAction = (
                         <ActionItem
                             title="Generate Quotation"
@@ -1005,7 +1044,15 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         />
                     );
 
-                    floatingAction.push(generateQuotationAction, generateInvoiceAction, previewInvoice);
+                    const payBalanceAction = (
+                        <ActionItem
+                            title="Pay Balance"
+                            icon={<AddIcon/>}
+                            onPress={() => onPayBalance()}
+                        />
+                    )
+
+                    floatingAction.push(applyDiscountAction,generateQuotationAction, generateInvoiceAction, previewInvoice,payBalanceAction);
 
                     title = 'BILLING ACTIONS';
                     break;
