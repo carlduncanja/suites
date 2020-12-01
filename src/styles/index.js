@@ -260,6 +260,13 @@ export const root = {
             lineHeight: 18,
         },
 
+        '--text-lg-medium': {
+            fontSize: 18,
+            fontWeight: '500',
+            fontStyle: 'normal',
+            lineHeight: 18,
+        },
+
         '--text-lg-regular': {
             fontSize: 18,
             fontWeight: 'normal',
