@@ -59,8 +59,9 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
     const onNumberArrowChange = id => operation => {
         console.log("what's in id?", id)
         const findIndex = purchaseOrders.findIndex(obj => obj._id === id);
-        const objQuantity = Object.assign(...purchaseOrders).amount || 1;
-
+        // const objQuantity = Object.assign(...purchaseOrders).amount || 1;
+        const objQuantity = purchaseOrders[findIndex].amount || 1;
+        // console.log("Quantity: ", typeof objQuantity, objQuantity);
         const updatedObj = {
             ...purchaseOrders[findIndex],
             amount: operation === 'sub' ? objQuantity === 1 ? objQuantity : objQuantity - 1 : objQuantity + 1
@@ -76,7 +77,7 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
     };
 
     const onChangeField = id => value => {
-        console.log('Change');
+        console.log('Change:', id);
         const findIndex = purchaseOrders.findIndex(obj => obj._id === id);
         const objQuantity = purchaseOrders[findIndex].amount || 1;
         const updatedObj = {
@@ -165,7 +166,7 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
 
     const listItemFormat = item => {
         //const { _id = '', name = '', amount = 1, unit = 'n/a' } = item;
-        console.log("item has", item)
+        // console.log("item has", item)
         return (
 
             <Row theme={theme}>
