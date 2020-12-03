@@ -150,13 +150,12 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
     };
 
     const fetchSupplier = id => {
-        console.log("Fetch Supplier");
         setFetching(true);
         getSupplierById(id)
             .then(data => {
-                console.log('Data: ', data);
+                console.log('Supplier Products: ', data.products);
                 setSelectedSupplier(data);
-                setProducts(data?.products || [])
+                setProducts(data?.products || []);
             })
             .catch(error => {
                 console.log('Failed to get supplier', error);
