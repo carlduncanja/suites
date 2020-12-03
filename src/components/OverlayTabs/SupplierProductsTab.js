@@ -160,9 +160,10 @@ function SupplierProductsTab({
 
     const toggleCheckbox = item => () => {
         const itemChecked = checkboxList.some(checkedItem => checkedItem?.inventoryVariant._id === item?.inventoryVariant._id);
+        console.log("Item Checked: ", itemChecked);
         if (itemChecked) {
             // remove it from checkboxList
-            const filteredCheckboxList = checkboxList.filter(checkedItem => checkedItem._id !== item._id);
+            const filteredCheckboxList = checkboxList.filter(checkedItem => checkedItem.inventoryVariant._id !== item.inventoryVariant._id);
             setCheckboxList([...filteredCheckboxList]);
         } else setCheckboxList([...checkboxList, item]);
     };
