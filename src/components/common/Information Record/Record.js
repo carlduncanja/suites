@@ -112,12 +112,7 @@ function Record({
                 </TitleWrapper>
 
                 {
-                    !editMode && _.isEmpty(recordValue) ?
-
-                        <PlaceHolderText theme={theme}>
-                            {recordPlaceholder}
-                        </PlaceHolderText>
-                        :
+                    !editMode &&
                         <ValueText
                             theme={theme}
                             valueColor={valueColor}
@@ -126,10 +121,6 @@ function Record({
                             {recordValue}
                         </ValueText>
                 }
-                {/* {
-                    !editMode && useTextArea &&
-                   
-                } */}
 
                 {
                     editMode && useTextArea &&

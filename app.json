@@ -10,9 +10,9 @@
     "orientation": "portrait",
     "icon": "./assets/TheSuitesLogo2.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splashPortrait.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1866C8"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
