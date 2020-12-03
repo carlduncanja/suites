@@ -215,7 +215,7 @@ function InventoryVariantGeneral({
                                     fields.name :
                                     name
                             }
-                            editMode={isEditMode}
+                            editMode={true}
                             editable={true}
                             onRecordUpdate={onFieldChange('name')}
                             onClearValue={() => {
