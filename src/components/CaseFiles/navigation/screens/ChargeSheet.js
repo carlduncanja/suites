@@ -973,13 +973,16 @@ const ChargeSheet = React.forwardRef(({
                 handleQuotes={handleQuotes}
             />;
         case 'Billing':
-            if (isClosed) return <EmptyChargeSheetComponent/>
+            const { amountPaid=0, total=0, lineItems=[], amountDue } = chargeSheet;
+            const paymentDetails = { amountPaid, total, lineItems, amountDue };
+
+            if (isClosed) return <EmptyChargeSheetComponent/>;
             return <BillingCaseCard
                 tabDetails={billing}
                 caseProcedures={caseProcedures}
                 isEditMode={isEditMode}
                 caseId={caseId}
-
+                paymentDetails={paymentDetails}
                 onCaseProcedureBillablesChange={handleCaseProcedureUpdate}
                 handleEditDone={handleEditDone}
             />;

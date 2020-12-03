@@ -28,8 +28,8 @@ const PayBalanceItem = ({onAddPay, onCancel}) => {
 
     const onValidateBalance = () => {
         let isValid = true;
-        const requiredFields = ['transactionNum', 'transactionValue'];
-        let errorObj = { ...errors } || {};
+        const requiredFields = ['name', 'amount'];
+        const errorObj = { ...errors } || {};
 
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
@@ -49,7 +49,7 @@ const PayBalanceItem = ({onAddPay, onCancel}) => {
         const updatedPay = value.replace(/[^0-9.]/g, '');
         
         if (/^\d+(\.\d{1,2})?$/g.test(updatedPay) || /^\d+$/g.test(updatedPay) || !updatedPay) {
-            onFieldChange('discountValue')(parseFloat(updatedPay));
+            onFieldChange('amount')(parseFloat(updatedPay));
         }
         if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(updatedPay) || !updatedPay) {
             setCost(updatedPay);
@@ -60,8 +60,11 @@ const PayBalanceItem = ({onAddPay, onCancel}) => {
         const valid = onValidateBalance();
 
         if (!valid) return;
-
-        onAddPay();
+        const dataToSend = {
+            ...fields,
+            type: 'payment'
+        };
+        onAddPay(dataToSend);
     };
 
     const handleDialogClose = () => {
@@ -86,10 +89,10 @@ const PayBalanceItem = ({onAddPay, onCancel}) => {
                     <FieldContainer>
                         <InputField2
                             label="Transaction #"
-                            onChangeText={onFieldChange('transactionNum')}
-                            value={fields.transactionNum}
-                            onClear={() => { onFieldChange('transactionNum')(''); }}
-                            hasError={errors.transactionNum}
+                            onChangeText={onFieldChange('name')}
+                            value={fields.name}
+                            onClear={() => { onFieldChange('name')(''); }}
+                            hasError={errors.name}
                             errorMessage="Number must be filled."
                         />
                     </FieldContainer>
@@ -101,7 +104,7 @@ const PayBalanceItem = ({onAddPay, onCancel}) => {
                             value={`$ ${cost.toString()}`}
                             onClear={() => { handleBalanceCost(''); }}
                             keyboardType="number-pad"
-                            hasError={errors.transactionValue}
+                            hasError={errors.amount}
                             errorMessage="Value must be filled."
                         />
                     </FieldContainer>

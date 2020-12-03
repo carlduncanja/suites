@@ -15,7 +15,7 @@ const ApplyDiscountItem = ({onCreateDiscount, onCancel}) => {
     const [cost, setCost] = useState(0);
 
     const onFieldChange = fieldName => value => {
-        const updatedFields = { ...fields }
+        const updatedFields = { ...fields };
         setFields({
             ...updatedFields,
             [fieldName]: value
@@ -28,8 +28,8 @@ const ApplyDiscountItem = ({onCreateDiscount, onCancel}) => {
 
     const onValidateDiscount = () => {
         let isValid = true;
-        const requiredFields = ['discountType', 'discountValue'];
-        let errorObj = { ...errors } || {};
+        const requiredFields = ['name', 'amount'];
+        const errorObj = { ...errors } || {};
 
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
@@ -49,7 +49,7 @@ const ApplyDiscountItem = ({onCreateDiscount, onCancel}) => {
         const updatedCost = value.replace(/[^0-9.]/g, '');
         
         if (/^\d+(\.\d{1,2})?$/g.test(updatedCost) || /^\d+$/g.test(updatedCost) || !updatedCost) {
-            onFieldChange('discountValue')(parseFloat(updatedCost));
+            onFieldChange('amount')(parseFloat(updatedCost));
         }
         if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(updatedCost) || !updatedCost) {
             setCost(updatedCost);
@@ -58,10 +58,13 @@ const ApplyDiscountItem = ({onCreateDiscount, onCancel}) => {
 
     const handleCreateDiscount = () => {
         const valid = onValidateDiscount();
-
+        const dataToSend = {
+            ...fields,
+            type: 'discount'
+        };
         if (!valid) return;
 
-        onCreateDiscount();
+        onCreateDiscount(dataToSend);
     };
 
     const handleDialogClose = () => {
@@ -86,10 +89,10 @@ const ApplyDiscountItem = ({onCreateDiscount, onCancel}) => {
                     <FieldContainer>
                         <InputField2
                             label="Discount Type"
-                            onChangeText={onFieldChange('discountType')}
-                            value={fields.discountType}
-                            onClear={() => { onFieldChange('discountType')(''); }}
-                            hasError={errors.discountType}
+                            onChangeText={onFieldChange('name')}
+                            value={fields.name}
+                            onClear={() => { onFieldChange('name')(''); }}
+                            hasError={errors.name}
                             errorMessage="Type must be filled."
                         />
                     </FieldContainer>
@@ -101,7 +104,7 @@ const ApplyDiscountItem = ({onCreateDiscount, onCancel}) => {
                             value={`$ ${cost.toString()}`}
                             onClear={() => { handleDiscountCost(''); }}
                             keyboardType="number-pad"
-                            hasError={errors.discountValue}
+                            hasError={errors.amount}
                             errorMessage="Value must be filled."
                         />
                     </FieldContainer>

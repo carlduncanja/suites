@@ -56,7 +56,7 @@ const ProcedureHeaderContainer = styled.TouchableOpacity`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: ${({theme}) => theme.colors['--space-12']};
+    margin-bottom: ${({theme}) => theme.space['--space-12']};
 `;
 
 const ProcedureNameContainer = styled.View`
@@ -70,6 +70,7 @@ const ProcedureIconContainer = styled.View`
 
 const ProcedureDetailsContainer = styled.View`
     margin-left: ${({theme}) => theme.space['--space-24']};
+    margin-bottom: ${({theme}) => theme.space['--space-18']};
 `;
 
 const EditButtonItem = styled.TouchableOpacity`
@@ -86,29 +87,33 @@ const BillingText = styled.Text(({theme, font = '--text-base-regular', color = '
     paddingTop: 1,
 }));
 
-const BillingCaseCard = ({tabDetails, caseProcedures, isEditMode, handleEditDone, onCaseProcedureBillablesChange}) => {
-    // console.log('EDIT mode: ', isEditMode);
+const BillingCaseCard = ({tabDetails, caseProcedures, paymentDetails,isEditMode, handleEditDone, onCaseProcedureBillablesChange}) => {
+    // console.log('Billing Case: ', caseProcedures);
     const modal = useModal();
     const theme = useTheme();
     const {
         lastModified = '',
-        total = 0,
-        hasDiscount = false,
-        discount = 0,
         procedures = []
     } = tabDetails;
-    // console.log("TabDetails: ", tabDetails)
 
-    const totalAmount = total - (total * discount);
-    const outstandingBalance = 0;
+    const {
+        amountPaid = 0,
+        total = 0,
+        lineItems = [],
+        amountDue
+    } = paymentDetails;
+
+    const outstandingBalance = amountDue;
+    const payments = lineItems.filter(lineItem => lineItem.type === 'payment');
+    const discounts = lineItems.filter(lineItem => lineItem.type === 'discount');
 
     // const [selectedProcedure, setSelectedProcedure] = useState(0);
     // const [updatedBilling, setUpdatedBilling] = useState([]);
     const [billingProcedures, setBillingProcedures] = useState(caseProcedures);
-    const [payments, setPayments] = useState([]);
-    const [discounts, setDiscounts] = useState([]);
+    // const [payments, setPayments] = useState([]);
+    // const [discounts, setDiscounts] = useState([]);
 
-    const totalDiscount = discounts.reduce((acc, curr) => acc + (curr.discountValue || 0), 0);
+    const totalDiscount = discounts.reduce((acc, curr) => acc + (curr.unitPrice || 0), 0);
 
     const getProcedureStatusArray = () => {
         const statusArray = procedures.map((procedure, index) => ({
@@ -313,8 +318,8 @@ const BillingCaseCard = ({tabDetails, caseProcedures, isEditMode, handleEditDone
                             payments.map((payment, index) => {
                                 return (
                                     <RowItem style={css`margin-left: ${theme.space['--space-24']}; padding-bottom: ${ index !== payments.length - 1 && theme.space['--space-18']};`} key={index}>
-                                        <BillingText theme={theme} color="--color-gray-700" >{payment.transactionNum}</BillingText>
-                                        <BillingText theme={theme} color="--color-gray-700" font="--text-lg-regular">- $ {currencyFormatter(payment.value)}</BillingText>
+                                        <BillingText theme={theme} color="--color-gray-700" >{payment.name}</BillingText>
+                                        <BillingText theme={theme} color="--color-gray-700" font="--text-lg-regular">- $ {currencyFormatter(payment.unitPrice)}</BillingText>
                                     </RowItem>
                                 );
                             })
@@ -332,8 +337,8 @@ const BillingCaseCard = ({tabDetails, caseProcedures, isEditMode, handleEditDone
                             discounts.map((discount, index) => {
                                 return (
                                     <RowItem style={css`margin-left: ${theme.space['--space-24']}; padding-bottom: ${ index !== discounts.length - 1 && theme.space['--space-18']};`} key={index}>
-                                        <BillingText theme={theme} color="--color-gray-700" >{discount.discountType}</BillingText>
-                                        <BillingText theme={theme} color="--color-gray-700" font="--text-lg-regular">- $ {currencyFormatter(discount.discountValue)}</BillingText>
+                                        <BillingText theme={theme} color="--color-gray-700" >{discount.name}</BillingText>
+                                        <BillingText theme={theme} color="--color-gray-700" font="--text-lg-regular">- $ {currencyFormatter(discount.unitPrice)}</BillingText>
                                     </RowItem>
                                 );
                             })

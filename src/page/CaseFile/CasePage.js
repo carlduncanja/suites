@@ -31,7 +31,7 @@ import {
     getCaseFileById,
     removeQuotationCall,
     updateCaseQuotationStatus,
-    updateChargeSheet, approveChargeSheetCall, withdrawChargeSheetChangesCall, getUserCall
+    updateChargeSheet, approveChargeSheetCall, withdrawChargeSheetChangesCall, getUserCall, applyPaymentsChargeSheetCall
 } from '../../api/network';
 import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
@@ -338,7 +338,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             modal.openModal('OverlayModal', {
                 content: (
                     <ApplyDiscountItem
-                        onCreateDiscount={() => {}}
+                        onCreateDiscount={handlePayment}
                         onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
                     />
                 ),
@@ -353,13 +353,36 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             modal.openModal('OverlayModal', {
                 content: (
                     <PayBalanceItem
-                        onAddPay={() => {}}
+                        onAddPay={handlePayment}
                         onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
                     />
                 ),
                 onClose: () => { setFloatingAction(false); modal.closeAllModals(); },
             });
         }, 200);
+    };
+
+    const handlePayment = data => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isError={false}
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        console.log("Payment data: ", data);
+                        applyPayment(caseId, data);
+                    }}
+                    message="Do you want to save your changes?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => modal.closeModals('ConfirmationModal'),
+        });
     };
 
     const onAppointmentCreated = value => fetchCase(caseId);
@@ -603,6 +626,52 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     onClose: () => {
                         console.log('Modal closed');
                     },
+                });
+            })
+            .finally(_ => {
+                setPageLoading(false);
+            });
+    };
+
+    const applyPayment = (id, data) => {
+        setPageLoading(true);
+        applyPaymentsChargeSheetCall(id, data)
+            .then(_ => {
+                fetchCase(id);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => { modal.closeAllModals(); },
+                });
+            })
+            .catch(error => {
+                console.log('failed to apply appointment', error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Failed to Apply Payment."
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => { modal.closeAllModals(); },
                 });
             })
             .finally(_ => {
