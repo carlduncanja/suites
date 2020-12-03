@@ -159,7 +159,7 @@ function SupplierProductsTab({
     };
 
     const toggleCheckbox = item => () => {
-        const itemChecked = checkboxList.some(checkedItem => checkedItem._id === item._id);
+        const itemChecked = checkboxList.some(checkedItem => checkedItem?.inventoryVariant._id === item?.inventoryVariant._id);
         if (itemChecked) {
             // remove it from checkboxList
             const filteredCheckboxList = checkboxList.filter(checkedItem => checkedItem._id !== item._id);
