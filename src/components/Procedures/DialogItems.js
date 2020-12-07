@@ -26,51 +26,51 @@ import DataItem from '../common/List/DataItem';
 // import SearchableMultipleOptionField from "../common/InputFields/SearchableMultipleOptionField";
 
 const ContentWrapper = styled.View`
-    flex:1;
-    flex-direction : column;
-    position : relative;
+  flex: 1;
+  flex-direction: column;
+  position: relative;
 `;
 
 const SearchableFieldContainer = styled.View`
-    margin-bottom : ${({theme}) => theme.space['--space-32']};
+  margin-bottom: ${({theme}) => theme.space['--space-32']};
 `;
 
 const TableContainer = styled.View`
-    margin-top : ${({theme}) => theme.space['--space-32']};
-    height : 260px;
-    z-index : -1;
+  margin-top: ${({theme}) => theme.space['--space-32']};
+  height: 260px;
+  z-index: -1;
 `;
 
 const ItemWrapper = styled.View`
-    flex-direction : row;
-    height : 20px;
-    margin-bottom : ${({theme}) => theme.space['--space-24']};
-    margin-right : ${({theme}) => theme.space['--space-24']};
+  flex-direction: row;
+  height: 20px;
+  margin-bottom: ${({theme}) => theme.space['--space-24']};
+  margin-right: ${({theme}) => theme.space['--space-24']};
 `;
 
 const FooterWrapper = styled.View`
-    position : absolute;
-    flex-direction : row;
-    width : 100%;
-    justify-content : space-between;
-    align-items : center;
-    bottom: 0;
-    height : 32px;
+  position: absolute;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  bottom: 0;
+  height: 32px;
 `;
 
 const PaginatorContainer = styled.View`
-    height : 100%;
-    width : 122px;
-    border : 1px solid ${({theme}) => theme.colors['--color-gray-400']};
-    border-radius : 4px;
+  height: 100%;
+  width: 122px;
+  border: 1px solid ${({theme}) => theme.colors['--color-gray-400']};
+  border-radius: 4px;
 `;
 
 const ClearListContainer = styled.TouchableOpacity`
-    height : 100%;
-    flex-direction : row; 
-    width : 80px;
-    align-items : center;
-    justify-content : space-between;
+  height: 100%;
+  flex-direction: row;
+  width: 80px;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const ClearListText = styled.Text(({theme}) => ({
@@ -318,7 +318,7 @@ function DialogItems({
         const price = itemType === 'Consumables' ? unitCost : unitPrice;
         // console.log('Item: ', item);
         return (
-            <ItemWrapper theme={theme} style={css`margin-right : 0;`}>
+            <ItemWrapper theme={theme} style={css`margin-right: 0;`}>
                 <DataItem text={name} flex={1} fontStyle="--text-base-medium" color="--color-blue-600"/>
                 <NumberChangeField
                     onChangePress={onQuantityChange(item)}
@@ -350,7 +350,10 @@ function DialogItems({
                 <SearchableOptionsField
                     value={selectedItem}
                     text={searchValue}
-                    oneOptionsSelected={item => onItemSelected(item)}
+                    oneOptionsSelected={item => {
+                        onItemSelected(item);
+                        onClearItem();
+                    }}
                     onChangeText={value => setSearchValue(value)}
                     onClear={() => onClearItem()}
                     options={searchResults}
