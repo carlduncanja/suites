@@ -23,6 +23,7 @@ import Record from '../../../common/Information Record/Record';
 import {PageContext} from '../../../../contexts/PageContext';
 import ConfirmationComponent from '../../../ConfirmationComponent';
 import {updatePatient} from '../../../../api/network';
+import {calculateBmi} from '../../../../helpers/calculations';
 
 const bmiScale = [
     {
@@ -55,25 +56,39 @@ const bmiScale = [
 const itemWidth = `${100 / 3}%`;
 
 const Details = ({
-                     tabDetails,
-                     onUpdated = () => {
-                     }
-                 }) => {
+    tabDetails,
+    onUpdated = () => {
+    }
+}) => {
     const theme = useTheme();
     const modal = useModal();
 
     const Divider = styled.View`
-        height : 1px;
-        width : 100%;
-        background-color: ${theme.colors['--color-gray-400']};
-        border-radius : 2px;
-        margin-bottom : ${theme.space['--space-20']};
+      height: 1px;
+      width: 100%;
+      background-color: ${theme.colors['--color-gray-400']};
+      border-radius: 2px;
+      margin-bottom: ${theme.space['--space-20']};
     `;
-
 
     const baseStateRef = useRef();
 
-    const {_id: patientId, firstName, middleName, surname, height, weight, dob, trn, gender, ethnicity, bloodType, nextVisit, contactInfo = {}, address: addresses = []} = tabDetails;
+    const {
+        _id: patientId,
+        firstName,
+        middleName,
+        surname,
+        height,
+        weight,
+        dob,
+        trn,
+        gender,
+        ethnicity,
+        bloodType,
+        nextVisit,
+        contactInfo = {},
+        address: addresses = []
+    } = tabDetails;
     const {phones = [], emails = [], emergencyContact: emergencyContacts = []} = contactInfo;
 
     const [fields, setFields] = useState({
@@ -107,8 +122,8 @@ const Details = ({
 
     const age = calcAge(fields.dob || dob);
     const dateOfBirth = `${formatDate(fields.dob || dob, 'DD/MM/YYYY')} (${age})`;
-    const metreHeight = Math.pow((height / 100), 2) || 0;
-    const bmiMeasure = Math.ceil(weight / metreHeight) || 0;
+
+    const bmiMeasure = calculateBmi(height, weight);
     const bmi = bmiMeasure > 100 ? 100 : bmiMeasure;
 
     const onTabUpdated = updatedFields => setFields({...fields, ...updatedFields});
@@ -470,7 +485,7 @@ const Details = ({
                 <Row>
 
                     <Record
-                        recordTitle="Height"
+                        recordTitle="Height (cm)"
                         recordValue={defaultRecordValue(fields, 'height', height)}
                         onClearValue={() => onFieldChange('height')('')}
                         onRecordUpdate={onFieldChange('height')}
@@ -480,7 +495,7 @@ const Details = ({
                     />
 
                     <Record
-                        recordTitle="Weight"
+                        recordTitle="Weight (kg)"
                         recordValue={defaultRecordValue(fields, 'weight', weight)}
                         onClearValue={() => onFieldChange('weight')('')}
                         onRecordUpdate={onFieldChange('weight')}
@@ -493,7 +508,7 @@ const Details = ({
                         recordTitle="BMI"
                         content={(
                             <BMIConverter
-                                recordTitle='BMI'
+                                recordTitle="BMI"
                                 bmiValue={bmi}
                                 bmiScale={bmiScale}
                             />
@@ -506,7 +521,7 @@ const Details = ({
                         activeOpactiy={1}
                         onPress={() => handleBMIPress(bmi)}
                     >
-                    
+
                         <BMIConverter
                             recordTitle='BMI'
                             bmiValue={bmi}
