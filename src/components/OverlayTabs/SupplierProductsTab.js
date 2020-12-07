@@ -110,10 +110,7 @@ function SupplierProductsTab({
     const [cartItems, setCartItems] = useState([]);
     const { pageState } = useContext(PageContext);
 
-
-
     // ######## CONST
-
 
     // ######## LIFECYCLE METHODS
 
@@ -124,7 +121,6 @@ function SupplierProductsTab({
         }, 200);
     }, []);
 
-
     // ######## EVENT HANDLERS
 
     const onProductsPress = productItem => () => {
@@ -134,9 +130,9 @@ function SupplierProductsTab({
         navigation.navigate('SupplierProductPage', { product: productItem, onUpdated: onProductUpdate });
     };
 
-    const onProductUpdate = (value) => {
+    const onProductUpdate = value => {
         const updated = productsState.map(item => item._id === value._id ? { ...value } : { ...item })
-        setProducts(updated)
+        setProducts(updated);
     }
 
     const onSearchChange = input => {
@@ -469,7 +465,6 @@ function SupplierProductsTab({
     };
 
     const onRemoveProducts = () => {
-        console.log("Checked prod: ", checkboxList);
         const ids = checkboxList.map(item => item._id);
         modal.closeAllModals();
         setTimeout(() => {
@@ -481,6 +476,7 @@ function SupplierProductsTab({
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
                             setTimeout(() => {
+                                console.log("Ids: ",ids);
                                 removeProducts(ids);
                             }, 200);
                         }}
@@ -499,8 +495,6 @@ function SupplierProductsTab({
     };
 
     const removeProducts = data => {
-        console.log("ID:", supplierId);
-        console.log("Data:", data);
         removeSupplierProducts(supplierId, data)
             .then(_ => {
                 modal.openModal(
