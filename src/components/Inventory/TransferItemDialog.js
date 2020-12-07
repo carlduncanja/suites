@@ -381,6 +381,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                                         onFieldChange('amount')(value);
                                     }
                                 }}
+                                placeholder="number"
                                 keyboardType="number-pad"
                                 value={fields.amount}
                                 onClear={() => onFieldChange('amount')('')}
