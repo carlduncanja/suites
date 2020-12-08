@@ -1,8 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Text, TextInput, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import {View, StyleSheet, Text, TextInput, FlatList, TouchableOpacity, SafeAreaView} from 'react-native';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import IconButton from '../Buttons/IconButton';
 import RemoveIcon from '../../../../assets/svg/removeIcon';
 import ClearIcon from '../../../../assets/svg/clearIcon';
@@ -12,9 +12,9 @@ import InputErrorComponent from '../InputErrorComponent';
 
 import MultipleShadowsContainer from '../MultipleShadowContainer';
 
-import { shadow } from '../../../styles';
+import {shadow} from '../../../styles';
 
-const optionsStyles = { optionsContainer: { backgroundColor: 'rgba(255, 255, 255, 0)' } };
+const optionsStyles = {optionsContainer: {backgroundColor: 'rgba(255, 255, 255, 0)'}};
 
 const shadows = [
     {
@@ -54,7 +54,7 @@ const InputContainer = styled.View`
     align-items : center;
 `;
 
-const Label = styled.Text(({ theme, label }) => ({
+const Label = styled.Text(({theme, label}) => ({
     ...theme.font['--text-xs-medium'],
     color: theme.colors['--color-gray-600'],
     marginRight: label ? 20 : 0,
@@ -62,11 +62,11 @@ const Label = styled.Text(({ theme, label }) => ({
 
 const Input = styled.TextInput`
     /* flex:1; */
-    padding: ${({ theme }) => theme.space['--space-4']};
+    padding: ${({theme}) => theme.space['--space-4']};
     /* paddingLeft: 12, */
-    padding-right: ${({ theme }) => theme.space['--space-12']};
+    padding-right: ${({theme}) => theme.space['--space-12']};
     /* width : 85%; */
-    padding-left : ${({ theme }) => theme.space['--space-12']};
+    padding-left : ${({theme}) => theme.space['--space-12']};
 `;
 
 const SuggestionsContainer = styled.View`
@@ -75,16 +75,16 @@ const SuggestionsContainer = styled.View`
     position: absolute;
     top: 5px;
     border-radius : 8px;
-    border : 1px solid ${({ theme }) => theme.colors['--color-gray-400']};
-    background-color : ${({ theme }) => theme.colors['--default-shade-white']};
+    border : 1px solid ${({theme}) => theme.colors['--color-gray-400']};
+    background-color : ${({theme}) => theme.colors['--default-shade-white']};
     z-index : 2;
 `;
 
 const NoSuggestionsContainer = styled.View`
-    margin : ${({ theme }) => theme.space['--space-10']} ${({ theme }) => theme.space['--space-6']} ;
+    margin : ${({theme}) => theme.space['--space-10']} ${({theme}) => theme.space['--space-6']} ;
 `;
 
-const InputText = styled.Text(({ theme, fontStyle, textColor }) => ({
+const InputText = styled.Text(({theme, fontStyle, textColor}) => ({
     ...theme.font[fontStyle],
     color: theme.colors[textColor]
 }));
@@ -92,9 +92,9 @@ const InputText = styled.Text(({ theme, fontStyle, textColor }) => ({
 const OptionContainer = styled.TouchableOpacity`
     width : 100%;
     height : 32px;
-    padding-left: ${({ theme }) => theme.space['--space-12']};
-    padding-right: ${({ theme }) => theme.space['--space-12']};
-    background-color : ${({ theme, backgroundColor }) => theme.colors[backgroundColor]};
+    padding-left: ${({theme}) => theme.space['--space-12']};
+    padding-right: ${({theme}) => theme.space['--space-12']};
+    background-color : ${({theme, backgroundColor}) => theme.colors[backgroundColor]};
     justify-content: center;
 
 `;
@@ -109,14 +109,14 @@ const ValueContainer = styled.View`
     margin-left : 10px;
     /* alignSelf: 'center', */
     align-items: center;
-    padding-right: ${({ theme }) => theme.space['space-4']};
+    padding-right: ${({theme}) => theme.space['space-4']};
     width : 80%;
 `;
 /* border : 1px solid ${ ({theme}) => theme.colors['--color-red-300']};
    background-color : ${ ({theme}) => theme.colors['--color-red-100']};
    border-radius: 2px; */
 
-const LabelContainer = styled.View(({ theme, label }) => ({
+const LabelContainer = styled.View(({theme, label}) => ({
     // ...theme.font['--text-xs-medium'],
     // color: theme.colors['--color-gray-600'],
     minWidth: 70,
@@ -132,45 +132,40 @@ const TextInputContainer = styled.View`
     height : 100%; 
     width : 100%;
     border-width: 1px;
-    border-color: ${({ theme, hasError }) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
-    background-color : ${({ theme, enabled }) => (enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'])};
+    border-color: ${({theme, hasError}) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
+    background-color : ${({theme, enabled}) => (enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'])};
     border-radius: 4px;
     justify-content : center;
-    /* box-shadow : ${({ isFocussed, theme }) => (isFocussed ? theme.shadow['--shadow-lg'] : null)}; */
+    /* box-shadow : ${({isFocussed, theme}) => (isFocussed ? theme.shadow['--shadow-lg'] : null)}; */
 `;
 
 function SearchableOptionsField({
-    text,
-    label,
-    labelWidth,
-    options,
-    oneOptionsSelected,
-    onChangeText,
-    placeholder = '',
-    onClear,
-    enabled = true,
-    value,
-    isPopoverOpen = false,
-    handlePopovers = () => {
-    },
-    hasError = false,
-    errorMessage = ''
-}) {
+                                    text,
+                                    label,
+                                    labelWidth,
+                                    options,
+                                    oneOptionsSelected,
+                                    onChangeText,
+                                    placeholder = '',
+                                    onClear,
+                                    enabled = true,
+                                    value,
+                                    isPopoverOpen = () => {
+                                    },
+                                    handlePopovers = () => {
+                                    },
+                                    hasError = false,
+                                    errorMessage = ''
+                                }) {
     const textInputRef = useRef();
 
     const theme = useTheme();
-
-    const [isOpen, setisOpen] = useState(isPopoverOpen)
 
     const [selectedValue, setSelectedValue] = useState(value);
 
     useEffect(() => {
         setSelectedValue(value);
     }, [value]);
-
-    useEffect(() => {
-        console.log('Should the menu be open?', isOpen)
-    }, [isOpen])
 
     // console.log("selected value", value);
 
@@ -191,7 +186,7 @@ function SearchableOptionsField({
         onClear();
     };
 
-    const renderOptions = ({ item }) => (
+    const renderOptions = ({item}) => (
         <OptionContainer onPress={() => onOptionPress(item)} theme={theme}>
             <InputText
                 numberOfLines={1}
@@ -205,7 +200,7 @@ function SearchableOptionsField({
     return (
         <InputContainerComponent>
             {
-                label && <InputLabelComponent label={label} width={labelWidth} />
+                label && <InputLabelComponent label={label} width={labelWidth}/>
             }
 
             <TextInputWrapper theme={theme} enabled={enabled}>
@@ -224,7 +219,7 @@ function SearchableOptionsField({
 
                                     <IconContainer>
                                         <IconButton
-                                            Icon={<ClearIcon />}
+                                            Icon={<ClearIcon/>}
                                             onPress={onClearPress}
                                         />
                                     </IconContainer>
@@ -245,8 +240,8 @@ function SearchableOptionsField({
 
                                     {
                                         hasError &&
-                                        <View style={{ position: 'absolute', top: 1 }}>
-                                            <InputErrorComponent errorMessage={errorMessage} />
+                                        <View style={{position: 'absolute', top: 1}}>
+                                            <InputErrorComponent errorMessage={errorMessage}/>
                                         </View>
                                     }
 
@@ -268,12 +263,12 @@ function SearchableOptionsField({
                                                 >No Suggestions Found</InputText>
                                             </NoSuggestionsContainer>
                                         ) : (
-                                                <FlatList
-                                                    keyExtractor={(item, index) => `${index}`}
-                                                    data={options}
-                                                    renderItem={renderOptions}
-                                                />
-                                            )
+                                            <FlatList
+                                                keyExtractor={(item, index) => `${index}`}
+                                                data={options}
+                                                renderItem={renderOptions}
+                                            />
+                                        )
                                     }
                                 </SuggestionsContainer>
                             </MultipleShadowsContainer>

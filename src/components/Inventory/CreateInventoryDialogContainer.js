@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity } from "react-native";
+import {View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
-import { useModal } from "react-native-modalfy";
+import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
@@ -13,17 +13,17 @@ import MultipleSearchableOptionsField from "../common/Input Fields/MultipleSearc
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import ConfirmationComponent from '../ConfirmationComponent';
 import OptionsField from "../common/Input Fields/OptionsField";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import { createInventoryVariant, getInventoriesGroup, getCategories, getSuppliers, } from "../../api/network";
+import {createInventoryVariant, getInventoriesGroup, getCategories, getSuppliers,} from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import CreatePageHeader from '../common/DetailsPage/CreatePageHeader';
 import CreatePreviousDoneFooter from '../common/DetailsPage/CreatePreviousDoneFooter';
 import _ from "lodash";
 import { currencyFormatter } from '../../utils/formatter';
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import LineDivider from '../common/LineDivider';
 
 /**
@@ -39,17 +39,17 @@ import LineDivider from '../common/LineDivider';
 const PageWrapper = styled.View`
     height : 100%;
     width : 100%;
-    background-color : ${({ theme }) => theme.colors['--default-shade-white']}; 
+    background-color : ${ ({theme}) => theme.colors['--default-shade-white']}; 
 `;
 const TabsContainer = styled.View`
     height : 58px;
     justify-content : flex-end;
-    background-color: ${({ theme }) => theme.colors['--color-gray-200']};
+    background-color: ${ ({theme}) => theme.colors['--color-gray-200']};
 `;
 
 const ContentWrapper = styled.View`
     height : 800px;
-    padding : ${({ theme }) => theme.space['--space-28']};
+    padding : ${ ({theme}) => theme.space['--space-28']};
 `;
 const ContentContainer = styled.View`
     height : 100%;
@@ -65,17 +65,17 @@ const FooterWrapper = styled.View`
 
 const Divider = styled.View`
     border-width : 1px;
-    border-color : ${({ theme }) => theme.colors['--color-gray-300']};
-    margin-top : ${({ theme }) => theme.space['--space-20']};
-    margin-bottom : ${({ theme }) => theme.space['--space-32']};
+    border-color : ${ ({theme}) => theme.colors['--color-gray-300']};
+    margin-top : ${ ({theme}) => theme.space['--space-20']};
+    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
 `;
 
-function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
+function CreateInventoryDialogContainer({navigation, route, addInventory}) {
 
     // ########## CONST
     const modal = useModal();
     const theme = useTheme();
-    const { onCancel, onCreated, } = route.params
+    const  { onCancel, onCreated, } = route.params
     const dialogTabs = ['Details', 'Configuration'];
 
     // ########## STATE
@@ -87,12 +87,12 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
     const [errorFields, setErrorFields] = useState({})
     const [popoverList, setPopoverList] = useState([
         {
-            name: "product",
-            status: false
+            name : "product",
+            status : false
         },
         {
-            name: "supplier",
-            status: false
+            name : "supplier",
+            status : false
         }
     ])
 
@@ -100,7 +100,6 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
     const [inventorySearchValue, setInventorySearchValue] = useState();
     const [inventorySearchResults, setInventorySearchResult] = useState([]);
     const [inventorySearchQuery, setInventorySearchQuery] = useState({});
-    const [optionSelected, setOptionSelected] = useState(false);
 
     // Suppliers Search
     const [supplierSearchValue, setSupplierSearchValue] = useState();
@@ -127,22 +126,17 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
         // wait 300ms before search. cancel any prev request before executing current.
 
-        if (optionSelected === false) {
-            const search = _.debounce(fetchInventories, 300);
+        const search = _.debounce(fetchInventories, 300);
 
-            setInventorySearchQuery(prevSearch => {
-                if (prevSearch && prevSearch.cancel) {
-                    prevSearch.cancel();
-                }
-                return search;
-            });
+        setInventorySearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
 
-            search()
-        }
-
-
-
-    }, [inventorySearchValue, optionSelected]);
+        search()
+    }, [inventorySearchValue]);
 
     // Handle Suppliers search
     useEffect(() => {
@@ -197,7 +191,7 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
         getInventoriesGroup(inventorySearchValue, 5)
             .then((inventoryResults = {}) => {
                 const { data = [], pages = 0 } = inventoryResults
-
+                console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));
@@ -214,8 +208,9 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
     const fetchSuppliers = () => {
         getSuppliers(supplierSearchValue, 5)
-            .then((supplierData) => {
-                const { data = [], pages = 0 } = supplierData
+            .then((supplierData ) => {
+                const { data = [], pages = 0} = supplierData
+                console.log("Data: ", data)
                 const results = data.map(item => ({
                     ...item
                 }));
@@ -232,7 +227,7 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
     const fetchCategories = () => {
         getCategories(categorySearchValue, 5)
-            .then((categoryData = []) => {
+            .then((categoryData = [] ) => {
 
                 // console.log("Data: ", data)
 
@@ -248,20 +243,18 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
     // ########## EVENT LISTENERS
 
-    const handlePopovers = (popoverValue) => (popoverItem) => {
+    const handlePopovers = (popoverValue) => (popoverItem) =>{
 
-        if (!popoverItem) {
-            let updatedPopovers = popoverList.map(item => {
-                return {
-                    ...item,
-                    status: false
-                }
-            })
+        if(!popoverItem){
+            let updatedPopovers = popoverList.map( item => {return {
+                ...item,
+                status : false
+            }})
 
             setPopoverList(updatedPopovers)
-        } else {
+        }else{
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -281,7 +274,7 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
         let isValid = validateInventory()
 
-        if (!isValid) { return }
+        if(!isValid){ return }
 
         if (selectedIndex < dialogTabs.length - 1) {
             setSelectedTabIndex(selectedIndex + 1)
@@ -297,24 +290,24 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
     const onTabChange = (tab) => {
         let isValid = validateInventory()
-        if (!isValid) { return }
+        if(!isValid) {return}
         setSelectedTabIndex(dialogTabs.indexOf(tab))
     };
 
-    const onFooterPreviousPress = () => {
+    const onFooterPreviousPress = () =>{
         let isValid = validateInventory()
-        if (!isValid) { return }
-        setSelectedTabIndex(selectedIndex - 1)
+        if(!isValid) {return}
+        setSelectedTabIndex(selectedIndex-1)
     }
 
     const onFieldChange = (fieldName) => (value) => {
-        const updatedFields = { ...fields }
+        const updatedFields = {...fields}
         setFields({
             ...updatedFields,
             [fieldName]: value
         })
 
-        const updatedErrors = { ...errorFields }
+        const updatedErrors = {...errorFields}
         delete updatedErrors[fieldName]
         setErrorFields(updatedErrors)
 
@@ -322,17 +315,17 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
     const validateInventory = () => {
         let isValid = true
-        let requiredFields = ['name', 'product', 'supplier']
-        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields, 'unitCost', 'markup']
+        let requiredFields = ['name','product','supplier']
+        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields,'unitCost','markup']
 
-        let errorObj = { ...errorFields } || {}
+        let errorObj = {...errorFields} || {}
 
         for (const requiredField of requiredFields) {
-            if (!fields[requiredField]) {
+            if(!fields[requiredField]){
                 // console.log(`${requiredField} is required`)
                 isValid = false
                 errorObj[requiredField] = "Value is required.";
-            } else {
+            }else{
                 delete errorObj[requiredField]
             }
         }
@@ -348,7 +341,7 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
         if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
             onFieldChange('unitCost')(parseFloat(price))
         }
-        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price) {
+        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price){
             setUnitPriceText(price)
         }
 
@@ -356,8 +349,8 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
     const onCategorySelect = (item) => {
         let updatedCategories = []
-        categories.includes(item) ?
-            updatedCategories = updatedCategories.filter(category => category !== item)
+        categories.includes(item)?
+            updatedCategories = updatedCategories.filter( category => category !== item)
             :
             updatedCategories = [...categories, item]
 
@@ -379,13 +372,13 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
         if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
             onFieldChange('customPrice')(parseFloat(price))
         }
-        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price) {
+        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price){
             setCustomPriceText(price)
         }
 
     }
 
-    const goToConfirmationScreen = () => {
+    const goToConfirmationScreen = () =>{
         setTimeout(() => {
 
             modal
@@ -393,13 +386,13 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate={true}
-                            onCancel={() => modal.closeModals('ConfirmationModal')}
-                            onAction={createInventoryCall}
-                            message="Do you want to save your changes?"
+                            isEditUpdate = {true}
+                            onCancel = {()=> modal.closeModals('ConfirmationModal')}
+                            onAction = {createInventoryCall}
+                            message = "Do you want to save your changes?"
                         />
                         ,
-                        onClose: () => { modal.closeModals('ConfirmationModal') }
+                        onClose: () => {modal.closeModals('ConfirmationModal')}
                     })
         }, 200)
     };
@@ -409,7 +402,7 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
         const id = fields['product'];
         let updatedFields = {
             ...fields,
-            category: categories
+            category : categories
         }
         createInventoryVariant(id, updatedFields)
             .then(data => {
@@ -419,13 +412,13 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate={false}
-                            isError={false}
-                            onCancel={() => {
+                            isEditUpdate = {false}
+                            isError = {false}
+                            onCancel = {()=> {
                                 modal.closeAllModals();
                                 navigation.goBack();
                             }}
-                            onAction={() => {
+                            onAction = {()=>{
                                 modal.closeAllModals();
                                 navigation.goBack();
                             }}
@@ -449,13 +442,13 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate={false}
-                            isError={true}
-                            onCancel={() => {
+                            isEditUpdate = {false}
+                            isError = {true}
+                            onCancel = {()=> {
                                 modal.closeAllModals();
                                 navigation.goBack();
                             }}
-                            message="There was an issue performing this action"
+                            message = "There was an issue performing this action"
                         />
                         ,
                         onClose: () => {
@@ -475,14 +468,14 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
             case "Details":
                 return detailsTab;
             default:
-                return <View />
+                return <View/>
         }
     };
 
-    let refPop = popoverList.filter(item => item.name === 'product')
-    let supplierPop = popoverList.filter(item => item.name === 'supplier')
+    let refPop = popoverList.filter( item => item.name === 'product')
+    let supplierPop = popoverList.filter( item => item.name === 'supplier')
 
-    let markupPrice = currencyFormatter(fields['unitCost'] * ((100 + parseFloat(fields['markup'])) / 100) || 0)
+    let markupPrice = currencyFormatter(fields['unitCost']*((100 + parseFloat(fields['markup']))/100) || 0)
 
     const detailsTab = (
         <>
@@ -496,18 +489,17 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                         oneOptionsSelected={(item) => {
                             onFieldChange('product')(item._id);
                             setInventorySearchValue(item.name)
-                            setOptionSelected(!optionSelected)
                         }}
-                        onChangeText={value => { if (inventorySearchValue === '') { setOptionSelected(false) } setInventorySearchValue(value); }}
+                        onChangeText={value => {setInventorySearchValue(value); console.log("Value:", value)}}
                         onClear={() => {
                             onFieldChange('product')('');
                             setInventorySearchValue('');
                         }}
                         options={inventorySearchResults}
-                        handlePopovers={(value) => handlePopovers(value)('product')}
-                        isPopoverOpen={optionSelected ? false : true}
-                        errorMessage="Reference must be given."
-                        hasError={errorFields['product']}
+                        handlePopovers = {(value)=>handlePopovers(value)('product')}
+                        isPopoverOpen = {inventorySearchQuery}
+                        errorMessage = "Reference must be given."
+                        hasError = {errorFields['product']}
                     />
                 </FieldContainer>
 
@@ -517,28 +509,28 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
-                        hasError={errorFields['name']}
-                        errorMessage="Name must be filled."
+                        hasError = {errorFields['name']}
+                        errorMessage = "Name must be filled."
                     />
                 </FieldContainer>
             </Row>
 
-            <Row zIndex={-1}>
+            <Row zIndex = {-1}>
 
                 <FieldContainer>
                     <MultipleSearchableOptionsField
                         label={"Category"}
                         text={categorySearchValue}
-                        oneOptionsSelected={(item) => { onCategorySelect(item); }}
-                        onChangeText={value => { setCategorySearchValue(value) }}
+                        oneOptionsSelected={(item) => {onCategorySelect(item);}}
+                        onChangeText={value => {setCategorySearchValue(value)}}
                         onClear={() => {
                             setCategorySearchValue('');
                         }}
-                        onSelectShownIten={onSelectShownIten}
-                        selectedItems={categories}
+                        onSelectShownIten = {onSelectShownIten}
+                        selectedItems = {categories}
                         options={categorySearchResults}
-                        handlePopovers={() => { }}
-                        isPopoverOpen={categorySearchQuery}
+                        handlePopovers = {()=>{}}
+                        isPopoverOpen = {categorySearchQuery}
                     />
                 </FieldContainer>
 
@@ -550,16 +542,16 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                             onFieldChange('supplier')(item._id);
                             setSupplierSearchValue(item.name)
                         }}
-                        onChangeText={value => { setSupplierSearchValue(value); console.log("Value:", value) }}
+                        onChangeText={value => {setSupplierSearchValue(value); console.log("Value:", value)}}
                         onClear={() => {
                             onFieldChange('supplier')('');
                             setSupplierSearchValue('');
                         }}
                         options={supplierSearchResults}
-                        handlePopovers={(value) => handlePopovers(value)('supplier')}
-                        isPopoverOpen={supplierSearchQuery}
-                        hasError={errorFields['supplier']}
-                        errorMessage="Select the supplier for item."
+                        handlePopovers = {(value)=>handlePopovers(value)('supplier')}
+                        isPopoverOpen = {supplierSearchQuery}
+                        hasError = {errorFields['supplier']}
+                        errorMessage = "Select the supplier for item."
                     />
 
                 </FieldContainer>
@@ -576,24 +568,24 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                 <FieldContainer>
                     <InputField2
                         label={"Unit Price"}
-                        onChangeText={(value) => { handleUnitPrice(value) }}
+                        onChangeText={(value) => { handleUnitPrice(value )}}
                         value={`$ ${unitPriceText.toString()}`}
                         keyboardType={'number-pad'}
                         onClear={() => handleUnitPrice('')}
-                        hasError={errorFields['unitCost']}
-                        errorMessage="Price must be provided."
+                        hasError = {errorFields['unitCost']}
+                        errorMessage = "Price must be provided."
                     />
                 </FieldContainer>
             </Row>
 
-            <Divider />
+            <Divider/>
 
             <Row>
 
                 <FieldContainer>
                     <InputUnitField
                         label={"Markup"}
-                        onChangeText={(value) => {
+                        onChangeText={(value)=>{
                             if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
                                 onFieldChange('markup')(value)
                             }
@@ -601,13 +593,13 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                         value={fields['markup']}
                         units={['%']}
                         keyboardType="number-pad"
-                        hasError={errorFields['markup']}
-                        errorMessage="Add markup value"
+                        hasError = {errorFields['markup']}
+                        errorMessage = "Add markup value"
                     />
                 </FieldContainer>
 
                 <FieldContainer>
-                    <Text style={{ color: '#A0AEC0', fontSize: 14, alignSelf: 'center' }}>@{fields['markup']}:{markupPrice}</Text>
+                    <Text style={{color:'#A0AEC0', fontSize:14, alignSelf : 'center'}}>@{fields['markup']}:{markupPrice}</Text>
                 </FieldContainer>
 
             </Row>
@@ -617,7 +609,7 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                 <FieldContainer>
                     <InputField2
                         label={"Custom Cost"}
-                        onChangeText={(value) => { handleCustomPrice(value) }}
+                        onChangeText={(value) => { handleCustomPrice(value )}}
                         value={`$ ${customPriceText.toString()}`}
                         keyboardType={'number-pad'}
                         onClear={() => handleCustomPrice('')}
@@ -631,14 +623,14 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
     return (
 
-        <PageWrapper theme={theme}>
+        <PageWrapper theme = {theme}>
 
             <CreatePageHeader
-                title="Create Inventory Item"
-                onClose={onCancel}
+                title = "Create Inventory Item"
+                onClose = {onCancel}
             />
 
-            <TabsContainer theme={theme}>
+            <TabsContainer theme = {theme}>
                 <DialogTabs
                     tabs={dialogTabs}
                     tab={selectedIndex}
@@ -646,7 +638,7 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
                 />
             </TabsContainer>
 
-            <ContentWrapper theme={theme}>
+            <ContentWrapper theme = {theme}>
                 <ContentContainer>
                     {getTabContent()}
                 </ContentContainer>
@@ -655,10 +647,10 @@ function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
 
             <FooterWrapper>
                 <CreatePreviousDoneFooter
-                    onFooterPress={onPositiveClick}
-                    isFinished={selectedIndex === dialogTabs.length - 1 ? true : false}
-                    onFooterPreviousPress={onFooterPreviousPress}
-                    isPreviousDisabled={selectedIndex === 0 ? true : false}
+                    onFooterPress = {onPositiveClick}
+                    isFinished = {selectedIndex === dialogTabs.length-1 ? true : false}
+                    onFooterPreviousPress = {onFooterPreviousPress}
+                    isPreviousDisabled = {selectedIndex === 0 ? true : false}
                 />
             </FooterWrapper>
 
@@ -704,7 +696,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     sectionContainer: {
-        height: 240,
+        height:240,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         padding: 24,
