@@ -38,20 +38,20 @@ const shadows = [
 ];
 
 const IconContainer = styled.View`
-    position: absolute;
-    height: 100%;
-    right : 0;
+  position: absolute;
+  height: 100%;
+  right: 0;
 `;
 
 const InputWrapper = styled.View`
-    flex: 1;
-    position : relative;
-    height: 32px;
+  flex: 1;
+  position: relative;
+  height: 32px;
 `;
 const InputContainer = styled.View`
-    height : 100%;
-    flex-direction : row;
-    align-items : center;
+  height: 100%;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const Label = styled.Text(({theme, label}) => ({
@@ -61,27 +61,27 @@ const Label = styled.Text(({theme, label}) => ({
 }));
 
 const Input = styled.TextInput`
-    /* flex:1; */
-    padding: ${({theme}) => theme.space['--space-4']};
-    /* paddingLeft: 12, */
-    padding-right: ${({theme}) => theme.space['--space-12']};
-    /* width : 85%; */
-    padding-left : ${({theme}) => theme.space['--space-12']};
+  /* flex:1; */
+  padding: ${({theme}) => theme.space['--space-4']};
+  /* paddingLeft: 12, */
+  padding-right: ${({theme}) => theme.space['--space-12']};
+  /* width : 85%; */
+  padding-left: ${({theme}) => theme.space['--space-12']};
 `;
 
 const SuggestionsContainer = styled.View`
-    width : 100%;
-    max-height: 300px;
-    position: absolute;
-    top: 5px;
-    border-radius : 8px;
-    border : 1px solid ${({theme}) => theme.colors['--color-gray-400']};
-    background-color : ${({theme}) => theme.colors['--default-shade-white']};
-    z-index : 2;
+  width: 100%;
+  max-height: 300px;
+  position: absolute;
+  top: 5px;
+  border-radius: 8px;
+  border: 1px solid ${({theme}) => theme.colors['--color-gray-400']};
+  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+  z-index: 2;
 `;
 
 const NoSuggestionsContainer = styled.View`
-    margin : ${({theme}) => theme.space['--space-10']} ${({theme}) => theme.space['--space-6']} ;
+  margin: ${({theme}) => theme.space['--space-10']} ${({theme}) => theme.space['--space-6']};
 `;
 
 const InputText = styled.Text(({theme, fontStyle, textColor}) => ({
@@ -90,27 +90,27 @@ const InputText = styled.Text(({theme, fontStyle, textColor}) => ({
 }));
 
 const OptionContainer = styled.TouchableOpacity`
-    width : 100%;
-    height : 32px;
-    padding-left: ${({theme}) => theme.space['--space-12']};
-    padding-right: ${({theme}) => theme.space['--space-12']};
-    background-color : ${({theme, backgroundColor}) => theme.colors[backgroundColor]};
-    justify-content: center;
+  width: 100%;
+  height: 32px;
+  padding-left: ${({theme}) => theme.space['--space-12']};
+  padding-right: ${({theme}) => theme.space['--space-12']};
+  background-color: ${({theme, backgroundColor}) => theme.colors[backgroundColor]};
+  justify-content: center;
 
 `;
 
 const ValueContainer = styled.View`
-    flex: 1;
-    display : flex;
-    position : absolute;
-    top : 3;
-    bottom : 3;
-    flex-direction : row;
-    margin-left : 10px;
-    /* alignSelf: 'center', */
-    align-items: center;
-    padding-right: ${({theme}) => theme.space['space-4']};
-    width : 80%;
+  flex: 1;
+  display: flex;
+  position: absolute;
+  top: 3;
+  bottom: 3;
+  flex-direction: row;
+  margin-left: 10px;
+  /* alignSelf: 'center', */
+  align-items: center;
+  padding-right: ${({theme}) => theme.space['space-4']};
+  width: 80%;
 `;
 /* border : 1px solid ${ ({theme}) => theme.colors['--color-red-300']};
    background-color : ${ ({theme}) => theme.colors['--color-red-100']};
@@ -124,21 +124,47 @@ const LabelContainer = styled.View(({theme, label}) => ({
 }));
 
 const TextInputWrapper = styled.View`
-    flex:1;
-    height : 32px;
+  flex: 1;
+  height: 32px;
 `;
 const TextInputContainer = styled.View`
-    position: relative;
-    height : 100%; 
-    width : 100%;
-    border-width: 1px;
-    border-color: ${({theme, hasError}) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
-    background-color : ${({theme, enabled}) => (enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'])};
-    border-radius: 4px;
-    justify-content : center;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border-width: 1px;
+  border-color: ${({
+                     theme,
+                     hasError
+                   }) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
+  background-color: ${({
+                         theme,
+                         enabled
+                       }) => (enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'])};
+  border-radius: 4px;
+  justify-content: center;
     /* box-shadow : ${({isFocussed, theme}) => (isFocussed ? theme.shadow['--shadow-lg'] : null)}; */
 `;
 
+/**
+ *
+ * @param text - search text to be shown
+ * @param label
+ * @param labelWidth
+ * @param options
+ * @param oneOptionsSelected
+ * @param onChangeText
+ * @param placeholder
+ * @param onClear
+ * @param enabled
+ * @param value {object} - Currently selected value for the component that can be cleared.
+ * @param isPopoverOpen {boolean} -
+ * @param handlePopovers {function} -
+ * @param hasError {boolean} -
+ * @param errorMessage {string} -
+ * @param shouldShowValue {boolean} - when set to false the value state is ignored
+ * @return {JSX.Element}
+ * @constructor
+ */
 function SearchableOptionsField({
                                     text,
                                     label,
@@ -155,30 +181,28 @@ function SearchableOptionsField({
                                     handlePopovers = () => {
                                     },
                                     hasError = false,
-                                    errorMessage = ''
+                                    errorMessage = '',
+                                    shouldShowValue = true,
                                 }) {
     const textInputRef = useRef();
 
     const theme = useTheme();
 
     const [selectedValue, setSelectedValue] = useState(value);
+    const [optionsSate, setOptionsState] = useState(options);
 
     useEffect(() => {
-        setSelectedValue(value);
+        if (shouldShowValue) setSelectedValue(value);
     }, [value]);
 
-    // console.log("selected value", value);
+    useEffect(() => {
+        setOptionsState(options)
+    }, [options]);
 
     const onOptionPress = option => {
-        // setSelectedValue(option);
-        // if (textInputRef) {
-        //     textInputRef.current.clear();
-        // }
-
+        if (shouldShowValue) setSelectedValue(option);
         oneOptionsSelected(option);
-
-        // to clear the search field after selecting an item
-        // onClearPress();
+        setOptionsState([])
     };
 
     const onClearPress = () => {
@@ -250,11 +274,12 @@ function SearchableOptionsField({
                     }
 
                     {
-                        (!selectedValue && text && isPopoverOpen) ? (
+                        (!selectedValue && !!text && isPopoverOpen) &&
+                        (
                             <MultipleShadowsContainer shadows={shadows}>
                                 <SuggestionsContainer theme={theme}>
                                     {
-                                        options.length === 0 ? (
+                                        optionsSate.length === 0 ? (
                                             <NoSuggestionsContainer theme={theme}>
                                                 <InputText
                                                     theme={theme}
@@ -265,14 +290,14 @@ function SearchableOptionsField({
                                         ) : (
                                             <FlatList
                                                 keyExtractor={(item, index) => `${index}`}
-                                                data={options}
+                                                data={optionsSate}
                                                 renderItem={renderOptions}
                                             />
                                         )
                                     }
                                 </SuggestionsContainer>
                             </MultipleShadowsContainer>
-                        ) : null
+                        )
                     }
                 </TextInputContainer>
             </TextInputWrapper>
