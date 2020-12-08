@@ -9,6 +9,7 @@ import ColumnSection from '../common/ColumnSection';
 import {transformToSentence, formatDate, calcAge, formatTrn} from '../../utils/formatter';
 import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
 import InputField2 from '../common/Input Fields/InputField2';
+import Footer from '../common/Page/Footer';
 
 const PhysiciansDetailsTab = ({physician}) => {
     const {
@@ -196,6 +197,10 @@ const PhysiciansDetailsTab = ({physician}) => {
         <>
             <ColumnSectionsList
                 sections={sections}
+            />
+            <Footer
+                hasActions={false}
+                hasPaginator={false}
             />
         </>
     );

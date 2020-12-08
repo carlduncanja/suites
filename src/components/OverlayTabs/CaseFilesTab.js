@@ -18,6 +18,7 @@ import {useNextPaginator, usePreviousPaginator} from '../../helpers/caseFilesHel
 import { withModal } from 'react-native-modalfy';
 import moment from 'moment';
 import { formatDate, currencyFormatter } from '../../utils/formatter';
+import Footer from '../common/Page/Footer';
 
 
 
@@ -157,7 +158,7 @@ const CaseFilesTab = ({cases}) => {
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <View style={{ flex: 1}}>
+        <>
             <List
                 listData={dataToDisplay}
                 listHeaders={headers}
@@ -166,7 +167,11 @@ const CaseFilesTab = ({cases}) => {
                 onSelectAll={onSelectAll}
                 listItemFormat={renderListFn}
             />
-            <View style={styles.footer}>
+            <Footer
+                hasActions={false}
+                hasPaginator={false}
+            />
+            {/* <View style={styles.footer}>
                 <View style={{alignSelf: 'center', marginRight: 10}}>
                     <RoundedPaginator
                         totalPages={totalPages}
@@ -175,9 +180,9 @@ const CaseFilesTab = ({cases}) => {
                         goToPreviousPage={goToPreviousPage}
                     />
                 </View>
-            </View>
+            </View> */}
          
-        </View>
+        </>
     )
 }
 
