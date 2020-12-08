@@ -622,7 +622,6 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
     );
 
     return (
-
         <PageWrapper theme = {theme}>
 
             <CreatePageHeader
@@ -656,32 +655,6 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
 
 
         </PageWrapper>
-        // <OverlayDialog
-        //     title={"Create Inventory Item"}
-        //     onPositiveButtonPress={onPositiveClick}
-        //     onClose={handleCloseDialog}
-        //     positiveText={selectedIndex === (dialogTabs.length - 1) ? "DONE" : "NEXT"}
-        //     // handlePopovers = {handlePopovers}
-        //     // buttonIcon={<ArrowRightIcon/>}
-        // >
-
-        //     <View style={styles.container}>
-        //         <DialogTabs
-        //             tabs={dialogTabs}
-        //             tab={selectedIndex}
-        //             onTabPress={onTabChange}
-        //         />
-        //         <TouchableOpacity
-        //             onPress = {()=>handlePopovers(false)()}
-        //             activeOpacity = {1}
-        //         >
-        //             {getTabContent()}
-        //         </TouchableOpacity>
-
-        //     </View>
-
-
-        // </OverlayDialog>
     );
 }
 
