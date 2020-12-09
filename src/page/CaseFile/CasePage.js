@@ -363,6 +363,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const onPayInvoiceBalance = invoiceId => {
+        console.log("Invoice ID: ", invoiceId);
         modal.closeAllModals();
         setTimeout(() => {
             modal.openModal('OverlayModal', {
@@ -1161,7 +1162,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             <ActionItem
                                 title="Pay Balance"
                                 icon={<AcceptIcon/>}
-                                onPress={() => onPayInvoiceBalance(invoice)}
+                                onPress={() => onPayInvoiceBalance(invoice?._id)}
                             />
                         );
 
