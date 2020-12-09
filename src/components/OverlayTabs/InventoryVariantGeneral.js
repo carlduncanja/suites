@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState, useContext} from 'react';
-import {View} from 'react-native';
+import React, { useEffect, useRef, useState, useContext } from 'react';
+import { View } from 'react-native';
 
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import {useModal} from 'react-native-modalfy';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { useModal } from 'react-native-modalfy';
 import Record from '../common/Information Record/Record';
 import ComponentRecord from '../common/Information Record/ComponentRecord';
 import ListTextRecord from '../common/Information Record/ListTextRecord';
@@ -11,11 +11,13 @@ import Row from '../common/Row';
 
 import LevelIndicator from '../common/LevelIndicator/LevelIndicator';
 
-import {currencyFormatter} from '../../utils/formatter';
+import { currencyFormatter } from '../../utils/formatter';
 import Footer from '../common/Page/Footer';
-import {PageContext} from '../../contexts/PageContext';
-import {updateInventoryVariantCall} from '../../api/network';
+import { PageContext } from '../../contexts/PageContext';
+import { getInventoriesGroup, updateInventoryVariantCall } from '../../api/network';
 import ConfirmationComponent from '../ConfirmationComponent';
+import { setInventory } from '../../redux/actions/InventorActions';
+import { connect, useDispatch } from 'react-redux';
 
 const VariantGeneralWrapper = styled.View`
     flex:1;
@@ -29,23 +31,22 @@ function InventoryVariantGeneral({
     inventoryVariant = {},
     selectedData = {},
     onUpdateItem = () => {
-    }
+    },
     // isEditMode,
     // fields = {},
     // errorFields={},
     // onFieldChange = ()=>{}
 }) {
-    console.log('let me see the variant', inventoryVariant);
 
     const baseStateRef = useRef();
     const modal = useModal();
 
-    const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode} = pageState;
-
-    const {name = '', inventoryGroup = {}, unitCost = 0, storageLocations = [], sku = '', _id} = inventoryVariant;
-    const {description = '', category = [], unitOfMeasurement = '',} = inventoryGroup;
-    const {stock = 0, levels = {}} = selectedData;
+    const { pageState, setPageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
+    const dispatch = useDispatch();
+    const { name = '', inventoryGroup = {}, unitCost = 0, storageLocations = [], sku = '', _id } = inventoryVariant;
+    const { description = '', category = [], unitOfMeasurement = '', } = inventoryGroup;
+    const { stock = 0, levels = {} } = selectedData;
     const suppliers = [];
 
     const [fields, setFields] = useState({
@@ -64,7 +65,7 @@ function InventoryVariantGeneral({
             [fieldName]: value
         });
         setUpdated(true);
-        const updatedErrors = {...errorFields};
+        const updatedErrors = { ...errorFields };
         delete updatedErrors[fieldName];
         setErrorFields(updatedErrors);
     };
@@ -125,7 +126,7 @@ function InventoryVariantGeneral({
         let isValid = true;
         const requiredFields = ['name', 'unitCost'];
 
-        const errorObj = {...errorFields} || {};
+        const errorObj = { ...errorFields } || {};
 
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
@@ -141,6 +142,21 @@ function InventoryVariantGeneral({
         return isValid;
     };
 
+
+    const fetchInventory = () => {
+        getInventoriesGroup()
+            .then(inventoryResult => {
+                const { data = [], pages = 0 } = inventoryResult;
+                dispatch(setInventory(data));
+            })
+            .catch(error => {
+                // handle error
+                console.log('Failed to fetch inventory', error);
+            })
+            .finally(_ => {
+
+            });
+    };
     const updateVariant = () => {
         const groupId = inventoryGroup?._id;
 
@@ -155,6 +171,9 @@ function InventoryVariantGeneral({
                                 modal.closeAllModals();
                             }}
                             onAction={() => {
+                                setTimeout(() => {
+                                    fetchInventory()
+                                }, 100)
                                 modal.closeAllModals();
                             }}
                             message="Changes were successful."//general message you can send to be displayed
@@ -189,7 +208,10 @@ function InventoryVariantGeneral({
                     },
                 });
             })
-            .finally(_ => onUpdateItem());
+            .finally(_ => {
+                onUpdateItem()
+
+            });
     };
 
     const handleUnitPrice = value => {

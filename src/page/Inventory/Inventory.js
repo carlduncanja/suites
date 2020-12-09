@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, FlatList, ScrollView} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Text, FlatList, ScrollView } from 'react-native';
 
-import {connect} from 'react-redux';
-import {useModal} from 'react-native-modalfy';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import { connect } from 'react-redux';
+import { useModal } from 'react-native-modalfy';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 import _ from 'lodash';
 import IconButton from '../../components/common/Buttons/IconButton';
 import LevelIndicator from '../../components/common/LevelIndicator/LevelIndicator';
@@ -29,16 +29,16 @@ import WasteIcon from '../../../assets/svg/wasteIcon';
 import TransferIcon from '../../../assets/svg/transferIcon';
 import AddIcon from '../../../assets/svg/addIcon';
 
-import {numberFormatter} from '../../utils/formatter';
-import {setInventory} from '../../redux/actions/InventorActions';
+import { numberFormatter } from '../../utils/formatter';
+import { setInventory } from '../../redux/actions/InventorActions';
 import {
     getInventoriesGroup,
     removeInventoryGroup,
     removeInventoryGroups,
     removeInventoryVariants
 } from '../../api/network';
-import {useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError} from '../../helpers/caseFilesHelpers';
-import {LONG_PRESS_TIMER} from '../../const';
+import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError } from '../../helpers/caseFilesHelpers';
+import { LONG_PRESS_TIMER } from '../../const';
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 
 const listHeaders = [
@@ -80,13 +80,13 @@ const LocationsWrapper = styled.View`
 const LocationsContainer = styled.View`
     height : 24px;
     width : 28px;
-    background-color : ${({theme, isCollapsed}) => (isCollapsed === false ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white'])};
+    background-color : ${({ theme, isCollapsed }) => (isCollapsed === false ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white'])};
     border-radius : 4px;
     align-items: center;
     justify-content: center;
 `;
 
-const LocationText = styled.Text(({theme, isCollapsed}) => ({
+const LocationText = styled.Text(({ theme, isCollapsed }) => ({
     ...theme.font['--text-base-regular'],
     color: isCollapsed === false ? theme.colors['--color-gray-500'] : theme.colors['--color-gray-700'],
 }));
@@ -228,7 +228,7 @@ function Inventory(props) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            const { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -239,7 +239,7 @@ function Inventory(props) {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        const { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -259,7 +259,7 @@ function Inventory(props) {
     // ####### PARENT CHECKBOXPRESS
 
     const onCheckBoxPress = item => () => {
-        const {_id, variants = []} = item;
+        const { _id, variants = [] } = item;
         // const variantIds = [];
 
         const updatedInventory = checkboxItemPress(_id, selectedIds);
@@ -286,15 +286,15 @@ function Inventory(props) {
     // ####### CHILD CHECK BOX PRESS
 
     const onChildCheckBoxPress = (inventoryVariant, inventoryGroup) => () => {
-        const {_id} = inventoryVariant;
-        const {_id: groupId} = inventoryGroup;
+        const { _id } = inventoryVariant;
+        const { _id: groupId } = inventoryGroup;
 
         // get ids for variants
         const variantIds = selectedVariants.map(variantObj => variantObj._id);
         const updatedChildIds = checkboxItemPress(_id, variantIds);
 
         // set selected variant
-        const updatedSelectedVariants = updatedChildIds.map(_id => ({_id, groupId: inventoryGroup._id}));
+        const updatedSelectedVariants = updatedChildIds.map(_id => ({ _id, groupId: inventoryGroup._id }));
         setSelectedVariants(updatedSelectedVariants);
 
         // unselect group when child is selected
@@ -367,8 +367,8 @@ function Inventory(props) {
             </View>
         );
 
-        const createAction = <ActionItem title="Add Item" icon={<AddIcon/>} onPress={openCreateInventoryModel}/>;
-        const createGroup = <ActionItem title="Create Item Group" icon={<AddIcon/>} onPress={openCreateGroupDialog}/>;
+        const createAction = <ActionItem title="Add Item" icon={<AddIcon />} onPress={openCreateInventoryModel} />;
+        const createGroup = <ActionItem title="Create Item Group" icon={<AddIcon />} onPress={openCreateGroupDialog} />;
         const itemTransfer = (
             <ActionItem
                 title="Item Transfer"
@@ -450,7 +450,7 @@ function Inventory(props) {
         };
 
         locations.forEach(location => {
-            const {levels = {}} = location;
+            const { levels = {} } = location;
 
             levelsTotal.max += levels.max || 0;
             levelsTotal.min += levels.min || 0;
@@ -463,11 +463,11 @@ function Inventory(props) {
 
     const getStock = locations => locations.reduce((acc, curr) => acc + curr.stock, 0);
 
-    const inventoryItemView = ({name, stock, locations, levels}, onActionPress, isCollapsed) => (
+    const inventoryItemView = ({ name, stock, locations, levels }, onActionPress, isCollapsed) => (
         <>
             {
                 isCollapsed ?
-                    <DataItem text={name} flex={1.5} color="--color-gray-800" fontStyle="--text-base-regular"/> : (
+                    <DataItem text={name} flex={1.5} color="--color-gray-800" fontStyle="--text-base-regular" /> : (
                         <RightBorderDataItem
                             text={name}
                             flex={1.5}
@@ -506,7 +506,7 @@ function Inventory(props) {
                 flex={0.5}
                 content={(
                     <IconButton
-                        Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
+                        Icon={isCollapsed ? <ActionIcon /> : <CollapsedIcon />}
                         onPress={onActionPress}
                     />
                 )}
@@ -515,10 +515,10 @@ function Inventory(props) {
         </>
     );
 
-    const inventoryVariantItem = ({itemName, stock, levels, locations}, onActionPress) => (
+    const inventoryVariantItem = ({ itemName, stock, levels, locations }, onActionPress) => (
         <>
 
-            <RightBorderDataItem text={itemName} flex={1.5} color="--color-blue-600" fontStyle="--text-sm-medium"/>
+            <RightBorderDataItem text={itemName} flex={1.5} color="--color-blue-600" fontStyle="--text-sm-medium" />
             <DataItem
                 text={numberFormatter(stock)}
                 color="--color-gray-700"
@@ -539,13 +539,13 @@ function Inventory(props) {
                 )}
             />
 
-            <DataItem text={locations} color="--color-blue-600" fontStyle="--text-base-regular" align="center"/>
-            <DataItem flex={0.5}/>
+            <DataItem text={locations} color="--color-blue-600" fontStyle="--text-base-regular" align="center" />
+            <DataItem flex={0.5} />
         </>
     );
 
     const renderChildItemView = (item, parentItem, onActionPress) => {
-        const {_id} = item;
+        const { _id } = item;
         const variantIds = selectedVariants.map(obj => obj._id);
 
         return (
@@ -571,11 +571,11 @@ function Inventory(props) {
 
         // console.log("Item: ", formattedItem);
 
-        let {variants = []} = item;
+        let { variants = [] } = item;
 
         variants = variants.map(item => {
             // console.log("Variant item: ", item);
-            const {storageLocations = []} = item;
+            const { storageLocations = [] } = item;
             const levels = getLevels(storageLocations);
             const stock = getStock(storageLocations) || 0;
 
@@ -608,7 +608,7 @@ function Inventory(props) {
             <FlatList
                 data={variants}
                 // nestedScrollEnabled={true}
-                renderItem={({item}) => renderChildItemView(item, formattedItem, () => {
+                renderItem={({ item }) => renderChildItemView(item, formattedItem, () => {
                 })}
                 keyExtractor={(item, index) => `${index}`}
                 backgroundColor={item.name.toLowerCase().includes('ungrouped') ? '#EEF2F6' : ''}
@@ -673,7 +673,7 @@ function Inventory(props) {
         setFetchingData(true);
         getInventoriesGroup(searchValue, recordsPerPage, currentPosition)
             .then(inventoryResult => {
-                const {data = [], pages = 0} = inventoryResult;
+                const { data = [], pages = 0 } = inventoryResult;
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
@@ -700,7 +700,7 @@ function Inventory(props) {
                 console.log('Failed to fetch inventory', error);
 
                 handleUnauthorizedError(error?.response?.status, setInventory);
-                setPageSettingState({...pageSettingState, isDisabled: true});
+                setPageSettingState({ ...pageSettingState, isDisabled: true });
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -854,9 +854,9 @@ const mapStateToProps = state => {
         };
 
         variants.forEach(variant => {
-            const {storageLocations = []} = variant;
+            const { storageLocations = [] } = variant;
             storageLocations.map(location => {
-                const {levels = {}} = location;
+                const { levels = {} } = location;
 
                 levelsTotal.max += levels.max || 0;
                 levelsTotal.min += levels.min || 0;
@@ -890,7 +890,7 @@ const mapStateToProps = state => {
 
     // REMAPPING INVENTORY ITEMS
     const inventory = state.inventory.map(item => {
-        const {variants = []} = item;
+        const { variants = [] } = item;
 
         const stock = getStock(variants);
         const locations = getLocations(variants);
@@ -906,8 +906,8 @@ const mapStateToProps = state => {
         };
     });
 
-    return {inventory};
+    return { inventory };
 };
-const mapDispatchToProps = {setInventory};
+const mapDispatchToProps = { setInventory };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Inventory);
