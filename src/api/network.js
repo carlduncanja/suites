@@ -72,7 +72,9 @@ import {
     closeAlertEndpoint,
     configEndpoint,
     updateBufferEndpoint,
-    userPassword
+    userPassword,
+    chargeSheetApplyPaymentEndpoint,
+    chargeSheetInvoiceApplyPaymentEndpoint
 
 
 } from '../const/suitesEndpoints';
@@ -348,6 +350,16 @@ export const approveChargeSheetCall = async (id, params) => suitesAxiosInstance
 
 export const withdrawChargeSheetChangesCall = async id => suitesAxiosInstance
     .put(chargeSheetWithdrawChangesEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const applyPaymentsChargeSheetCall = async (id, data) => suitesAxiosInstance
+    .put(chargeSheetApplyPaymentEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const applyPaymentsChargeSheetInvoiceCall = async (caseId, invoiceId, data) => suitesAxiosInstance
+    .put(chargeSheetInvoiceApplyPaymentEndpoint(caseId, invoiceId), data)
     .then(handleResponse)
     .catch(handleError);
 
