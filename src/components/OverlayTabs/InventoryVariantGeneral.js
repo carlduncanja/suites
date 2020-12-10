@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
-import { View } from 'react-native';
+import React, {useEffect, useRef, useState, useContext} from 'react';
+import {View} from 'react-native';
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
-import { useModal } from 'react-native-modalfy';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import {useModal} from 'react-native-modalfy';
 import Record from '../common/Information Record/Record';
 import ComponentRecord from '../common/Information Record/ComponentRecord';
 import ListTextRecord from '../common/Information Record/ListTextRecord';
@@ -11,42 +11,42 @@ import Row from '../common/Row';
 
 import LevelIndicator from '../common/LevelIndicator/LevelIndicator';
 
-import { currencyFormatter } from '../../utils/formatter';
+import {currencyFormatter} from '../../utils/formatter';
 import Footer from '../common/Page/Footer';
-import { PageContext } from '../../contexts/PageContext';
-import { getInventoriesGroup, updateInventoryVariantCall } from '../../api/network';
+import {PageContext} from '../../contexts/PageContext';
+import {getInventoriesGroup, updateInventoryVariantCall} from '../../api/network';
 import ConfirmationComponent from '../ConfirmationComponent';
-import { setInventory } from '../../redux/actions/InventorActions';
-import { connect, useDispatch } from 'react-redux';
+import {setInventory} from '../../redux/actions/InventorActions';
+import {connect, useDispatch} from 'react-redux';
 
 const VariantGeneralWrapper = styled.View`
-    flex:1;
+  flex: 1;
 `;
 const VariantGeneralContainer = styled.View`
-    height : 100%;
-    width : 100%;
+  height: 100%;
+  width: 100%;
 `;
 
 function InventoryVariantGeneral({
-    inventoryVariant = {},
-    selectedData = {},
-    onUpdateItem = () => {
-    },
-    // isEditMode,
-    // fields = {},
-    // errorFields={},
-    // onFieldChange = ()=>{}
-}) {
+                                     inventoryVariant = {},
+                                     selectedData = {},
+                                     onUpdateItem = () => {
+                                     },
+                                     // isEditMode,
+                                     // fields = {},
+                                     // errorFields={},
+                                     // onFieldChange = ()=>{}
+                                 }) {
 
     const baseStateRef = useRef();
     const modal = useModal();
 
-    const { pageState, setPageState } = useContext(PageContext);
-    const { isEditMode } = pageState;
+    const {pageState, setPageState} = useContext(PageContext);
+    const {isEditMode} = pageState;
     const dispatch = useDispatch();
-    const { name = '', inventoryGroup = {}, unitCost = 0, storageLocations = [], sku = '', _id } = inventoryVariant;
-    const { description = '', category = [], unitOfMeasurement = '', } = inventoryGroup;
-    const { stock = 0, levels = {} } = selectedData;
+    const {name = '', inventoryGroup = {}, unitCost = 0, storageLocations = [], sku = '', _id} = inventoryVariant;
+    const {description = '', category = [], unitOfMeasurement = '',} = inventoryGroup;
+    const {stock = 0, levels = {}} = selectedData;
     const suppliers = [];
 
     const [fields, setFields] = useState({
@@ -65,7 +65,7 @@ function InventoryVariantGeneral({
             [fieldName]: value
         });
         setUpdated(true);
-        const updatedErrors = { ...errorFields };
+        const updatedErrors = {...errorFields};
         delete updatedErrors[fieldName];
         setErrorFields(updatedErrors);
     };
@@ -126,7 +126,7 @@ function InventoryVariantGeneral({
         let isValid = true;
         const requiredFields = ['name', 'unitCost'];
 
-        const errorObj = { ...errorFields } || {};
+        const errorObj = {...errorFields} || {};
 
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
@@ -146,7 +146,7 @@ function InventoryVariantGeneral({
     const fetchInventory = () => {
         getInventoriesGroup()
             .then(inventoryResult => {
-                const { data = [], pages = 0 } = inventoryResult;
+                const {data = [], pages = 0} = inventoryResult;
                 dispatch(setInventory(data));
             })
             .catch(error => {
@@ -214,15 +214,21 @@ function InventoryVariantGeneral({
             });
     };
 
-    const handleUnitPrice = value => {
-        const price = value.replace(/[^0-9.]/g, '');
-        if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
+    const onUnitPriceChange = value => {
+        const price = value.replace(/[^0-9.]/g, ''); // strip on non-numeric values
+
+        if (!isNaN(price)) {
             onFieldChange('unitCost')(parseFloat(price));
         }
-        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price) {
-            setUnitPriceText(price);
-        }
+        // if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
+        //     onFieldChange('unitCost')(parseFloat(price));
+        // }
+
+        // if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price) {
+        //     setUnitPriceText(price);
+        // }
     };
+
 
     return (
         <VariantGeneralWrapper>
@@ -232,11 +238,7 @@ function InventoryVariantGeneral({
                     <Row>
                         <Record
                             recordTitle="Item Name"
-                            recordValue={
-                                isEditMode ?
-                                    fields.name :
-                                    name
-                            }
+                            recordValue={fields.name}
                             editMode={isEditMode}
                             editable={true}
                             onRecordUpdate={onFieldChange('name')}
@@ -261,11 +263,7 @@ function InventoryVariantGeneral({
 
                         <Record
                             recordTitle="Unit"
-                            recordValue={
-                                isEditMode ?
-                                    fields.unitOfMeasurement :
-                                    unitOfMeasurement
-                            }
+                            recordValue={fields.unitOfMeasurement}
                             editable={true}
                             editMode={isEditMode}
                             onRecordUpdate={onFieldChange('unitOfMeasurement')}
@@ -276,16 +274,14 @@ function InventoryVariantGeneral({
 
                         <Record
                             recordTitle="Unit Price"
-                            recordValue={
-                                isEditMode ?
-                                    `$ ${unitPriceText.toString()}` :
-                                    `$ ${currencyFormatter(unitCost)}`
-                                // `$ ${unitPriceText.toString()}`
+                            recordValue={ isEditMode
+                                ? fields.unitCost.toString()
+                                : `$ ${currencyFormatter(fields.unitCost)}`
                             }
                             editMode={isEditMode}
                             editable={true}
-                            onRecordUpdate={value => handleUnitPrice(value)}
-                            onClearValue={() => handleUnitPrice('')}
+                            onRecordUpdate={value => onUnitPriceChange(value)}
+                            onClearValue={() => onUnitPriceChange('')}
                         />
 
                         <Record
