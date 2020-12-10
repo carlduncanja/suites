@@ -110,6 +110,8 @@ function SupplierProductsTab({
     const [cartItems, setCartItems] = useState([]);
     const { pageState } = useContext(PageContext);
 
+    console.log("Products: ", products);
+
     // ######## CONST
 
     // ######## LIFECYCLE METHODS
@@ -476,7 +478,6 @@ function SupplierProductsTab({
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
                             setTimeout(() => {
-                                console.log("Ids: ",ids);
                                 removeProducts(ids);
                             }, 200);
                         }}
@@ -491,10 +492,11 @@ function SupplierProductsTab({
                 }
             );
         }, 200);
-        // console.log("Checked list: ", ids);
     };
 
     const removeProducts = data => {
+        console.log("Data: ", data);
+        console.log("Supplier id: ", supplierId);
         removeSupplierProducts(supplierId, data)
             .then(_ => {
                 modal.openModal(
@@ -505,6 +507,7 @@ function SupplierProductsTab({
                             isEditUpdate={false}
                             onAction={() => { modal.closeModals('ConfirmationModal'); }}
                             onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+                            message="Products successfully deleted"
                         />,
                         onClose: () => {
                             modal.closeModals('ConfirmationModal');

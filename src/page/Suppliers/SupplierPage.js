@@ -153,7 +153,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         setFetching(true);
         getSupplierById(id)
             .then(data => {
-                console.log('Supplier Products: ', data.products);
+                // console.log('Supplier Products: ', data.products);
                 setSelectedSupplier(data);
                 setProducts(data?.products || []);
             })
