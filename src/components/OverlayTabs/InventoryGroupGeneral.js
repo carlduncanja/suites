@@ -13,6 +13,7 @@ import { PageContext } from '../../contexts/PageContext';
 import { updateInventoryGroupById, getCategories } from '../../api/network';
 import TextArea from '../common/Input Fields/TextArea';
 import ConfirmationComponent from '../ConfirmationComponent';
+import Footer from '../common/Page/Footer';
 import { useModal } from 'react-native-modalfy';
 import MultipleSearchableOptionsField from '../common/Input Fields/MultipleSearchableOptionsField';
 import _ from "lodash";
@@ -21,16 +22,16 @@ const FieldWrapper = styled.View`
     flex: 0.5;
     margin-bottom : ${ ({isEditMode}) => isEditMode ? `32px` : 0 };
 `;
+
 function InventoryGroupGeneral({
     inventoryGroup = {},
     onUpdate = () => {},
     fields = {},
     errorFields = {},
-    onFieldChange = ()=>{},
+    onFieldChange = () => {},
     groupCategories = [],
-    handleCategories = ()=>{}
- }){
-
+    handleCategories = () => {}
+}) {
     const baseStateRef = useRef();
 
     const { description = "", categories = [], name = ""} = inventoryGroup;
@@ -43,31 +44,18 @@ function InventoryGroupGeneral({
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
-   console.log("Categories: ", inventoryGroup);
-
-    // const [isUpdated, setIsUpdated] = useState(false);
-    // const [fields, setFields] = useState({
-    //     description,
-    //     name
-    // });
-    // const [errorFields, setErrorFields] = useState({});
-
-    // useEffect(()=>{
-    //     if(isUpdated && isEditMode === false){
-    //         onFinishEdit();
-    //     }
-    // },[isEditMode])
+    console.log("Categories: ", inventoryGroup);
 
     useEffect(() => {
         baseStateRef.current = {
             description,
             categories,
             name
-        }
+        };
         return () => {
-            baseStateRef.current = {}
-        }
-    }, [])
+            baseStateRef.current = {};
+        };
+    }, []);
 
     useEffect(() => {
         // console.log("Search: ", supplierSearchValue)
@@ -105,122 +93,11 @@ function InventoryGroupGeneral({
                 // TODO handle error
                 console.log("failed to get Suppliers", error);
                 setCategorySearchResult([]);
-            })
+            });
     };
 
 
-    // const onFieldChange = (fieldName) => (value) => {
-    //     const updatedFields = {...fields}
-    //     setFields({
-    //         ...updatedFields,
-    //         [fieldName]: value
-    //     })
-    //     setIsUpdated(true);
-    //     const updatedErrors = {...errorFields}
-    //     delete updatedErrors[fieldName]
-    //     setErrorFields(updatedErrors)
-
-    // };
-
-    // const resetState = () => {
-    //     setFields(baseStateRef.current);
-    //     setIsUpdated(false);
-    // }
-
-    // const onFinishEdit = () =>{
-    //     let isValid = validateUpdate();
-
-    //     if(!isValid){ return }
-
-    //     goToConfirmationScreen();
-    // }
-
-    // const validateUpdate = () => {
-    //     let isValid = true
-    //     let requiredFields = ['name']
-
-    //     let errorObj = {...errorFields} || {}
-
-    //     for (const requiredField of requiredFields) {
-    //         if(!fields[requiredField]){
-    //             // console.log(`${requiredField} is required`)
-    //             isValid = false
-    //             errorObj[requiredField] = "Value is required.";
-    //         }else{
-    //             delete errorObj[requiredField]
-    //         }
-    //     }
-
-    //     setErrorFields(errorObj)
-    //     return isValid
-    // }
-
-    // const goToConfirmationScreen = () => {
-    //     modal.openModal('ConfirmationModal',
-    //         {
-    //             content: <ConfirmationComponent
-    //                 isEditUpdate = {true}
-    //                 onCancel = {()=> {
-    //                     modal.closeModals('ConfirmationModal');
-    //                     setPageState({
-    //                         ...pageState,
-    //                         isEditMode : true
-    //                     });
-    //                 }}
-    //                 onAction = {()=>updateInventoryGroup()}
-    //                 message = "Do you want to save your changes?"
-    //             />
-    //             ,
-    //             onClose: () => {modal.closeModals('ConfirmationModal')}
-    //         })
-    // }
-
-    // const updateInventoryGroup = () => {
-    //     let updatedGroup = {
-    //         ...inventoryGroup,
-    //         description : fields['description'],
-    //         name : fields['name'],
-    //     }
-    //     updateInventoryGroupById(inventoryGroup?._id, updatedGroup)
-    //         .then(data => {
-    //             // addInventory(data)
-    //             modal.closeAllModals();
-    //             modal.openModal('ConfirmationModal',
-    //             {
-    //                 content: <ConfirmationComponent
-    //                     isEditUpdate = {false}
-    //                     isError = {false}
-    //                     onCancel = {()=> modal.closeModals('ConfirmationModal')}
-    //                     onAction = {()=> modal.closeModals('ConfirmationModal')}
-    //                 />
-    //                 ,
-    //                 onClose: () => {modal.closeModals('ConfirmationModal')}
-    //             })
-    //         })
-    //         .catch(error => {
-    //             // todo handle error
-    //             console.log("failed to update inventory group", error);
-    //             modal.openModal('ConfirmationModal',
-    //             {
-    //                 content: <ConfirmationComponent
-    //                     isEditUpdate = {false}
-    //                     isError = {true}
-    //                     onCancel = {()=> modal.closeModals('ConfirmationModal')}
-    //                     onAction = {()=>modal.closeModals('ConfirmationModal')}
-    //                 />
-    //                 ,
-    //                 onClose: () => {modal.closeModals('ConfirmationModal')}
-    //             })
-    //             // Alert.alert("Failed", "failed to create inventory group")
-    //         })
-    //         .finally(_=>{
-    //             onUpdate();
-    //         })
-    //         // console.log("Save data: ", updatedGroup);
-    //     // console.log("Group: ", inventoryGroup);
-    // }
-
-    const onSelectShownIten = (item) =>{
+    const onSelectShownIten = (item) => {
         let updatedCategories = [...groupCategories];
         updatedCategories = updatedCategories.filter(category => category !== item);
         // updatedCategories.pop();
@@ -228,7 +105,7 @@ function InventoryGroupGeneral({
         console.log("Categories: ", updatedCategories);
     }
 
-    const onCategorySelect = (item) =>{
+    const onCategorySelect = (item) => {
         let updatedCategories = []
         groupCategories.includes(item)?
             updatedCategories = updatedCategories.filter( category => category !== item)
@@ -238,91 +115,47 @@ function InventoryGroupGeneral({
         // onFieldChange('category')(updatedCategories);
         console.log("Updated categores: ", updatedCategories);
         handleCategories(updatedCategories);
-    }
+    };
 
-    return(
+    return (
         <>
-            <Row>
-                {/* <FieldWrapper isEditMode> */}
+            <>
+                <Row>
                     <Record
-                        recordTitle = "Group Name"
-                        recordValue = {fields['name']}
-                        editMode = {isEditMode}
-                        editable = {true}
-                        onRecordUpdate = {onFieldChange('name')}
-                        onClearValue = {()=>{onFieldChange('name')(''); console.log("Clear")}}
-                        flex = {0.5}
+                        recordTitle="Group Name"
+                        recordValue={fields.name}
+                        editMode={isEditMode}
+                        editable={true}
+                        onRecordUpdate={onFieldChange('name')}
+                        onClearValue={() => { onFieldChange('name')(''); console.log("Clear") }}
+                        flex={0.5}
                     />
-                {/* </FieldWrapper> */}
 
+                </Row>
 
-            </Row>
+                <Row>
 
-            <Row>
-
-                <Record
-                    recordTitle = "Description"
-                    recordValue = {fields['description']}
-                    onClearValue = {()=>onFieldChange('description')('')}
-                    onRecordUpdate = {onFieldChange('description')}
-                    useTextArea = {true}
-                    editMode = {isEditMode}
-                    editable = {true}
-                    flex = {0.8}
-                />
-
-            </Row>
-
-
-            <Row>
-                {/* <ListTextRecord
-                    recordTitle = "Category"
-                    values = {categories}
-                    editMode = {isEditMode}
-                    text={categorySearchValue}
-                    oneOptionsSelected={(item) => {onCategorySelect(item);}}
-                    onChangeText={value => {setCategorySearchValue(value)}}
-                    onClear={() => {
-                        setCategorySearchValue('');
-                    }}
-                    onSelectShownIten = {onSelectShownIten}
-                    selectedItems = {groupCategories}
-                    options={categorySearchResults}
-                    handlePopovers = {()=>{}}
-                    isPopoverOpen = {categorySearchQuery}
-                    maxNumItemsShown = {4}
-
-                /> */}
-                {/* {
-                    isEditMode ?
-
-                    <MultipleSearchableOptionsField
-                        text={categorySearchValue}
-                        oneOptionsSelected={(item) => {onCategorySelect(item);}}
-                        onChangeText={value => {setCategorySearchValue(value)}}
-                        onClear={() => {
-                            setCategorySearchValue('');
-                        }}
-                        onSelectShownIten = {onSelectShownIten}
-                        selectedItems = {groupCategories}
-                        options={categorySearchResults}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {categorySearchQuery}
-                        maxNumItemsShown = {4}
+                    <Record
+                        recordTitle="Description"
+                        recordValue={fields.description}
+                        onClearValue={() => onFieldChange('description')('')}
+                        onRecordUpdate={onFieldChange('description')}
+                        useTextArea={true}
+                        editMode={isEditMode}
+                        editable={true}
+                        flex={0.8}
                     />
-                    :
 
-                    <ListTextRecord
-                        recordTitle = "Category"
-                        values = {categories}
-                    />
-                } */}
+                </Row>
 
-            </Row>
+            </>
 
-
+            <Footer
+                hasPaginator={false}
+                hasActions={false}
+            />
         </>
-    )
+    );
 }
 
-export default InventoryGroupGeneral
+export default InventoryGroupGeneral;

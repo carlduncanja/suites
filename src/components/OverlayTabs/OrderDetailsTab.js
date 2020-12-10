@@ -20,6 +20,7 @@ import InputLabelComponent from "../common/InputLablel";
 import InputField2 from "../common/Input Fields/InputField2";
 import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
 import _ from "lodash";
+import Footer from "../common/Page/Footer";
 
 
 const LineDividerContainer = styled.View`
@@ -239,131 +240,137 @@ const OrderDetailsTab = ({
 
     return (
         <>
+            <>
 
-            <Row>
-                <Record
-                    recordTitle="Description"
-                    recordValue={fields['description']}
-                    editMode={isEditMode}
-                    recordPlaceholder={'No description available'}
-                    editable={true}
-                    useTextArea={true}
-                    onRecordUpdate={onFieldChange('description')}
-                    onClearValue={() => {
-                        onFieldChange('description')('')
-                    }}
-                />
-            </Row>
+                <Row>
+                    <Record
+                        recordTitle="Description"
+                        recordValue={fields['description']}
+                        editMode={isEditMode}
+                        recordPlaceholder={'No description available'}
+                        editable={true}
+                        useTextArea={true}
+                        onRecordUpdate={onFieldChange('description')}
+                        onClearValue={() => {
+                            onFieldChange('description')('')
+                        }}
+                    />
+                </Row>
 
-            <Row>
-                <ResponsiveRecord
-                    recordTitle="Invoice"
-                    recordValue={invoice || ""}
-                />
+                <Row>
+                    <ResponsiveRecord
+                        recordTitle="Invoice"
+                        recordValue={invoice || ""}
+                    />
 
-                <Record
-                    recordTitle="Order Total"
-                    recordValue={formatAmount(total) || 0}
-                />
+                    <Record
+                        recordTitle="Order Total"
+                        recordValue={formatAmount(total) || 0}
+                    />
 
-                <Record
-                    recordTitle="Status"
-                    recordValue={transformToSentence(status) || ""}
-                />
-            </Row>
+                    <Record
+                        recordTitle="Status"
+                        recordValue={transformToSentence(status) || ""}
+                    />
+                </Row>
 
-            <Row zIndex={3}>
-                <Record
-                    recordTitle="Ordered On"
-                    recordValue={formatDate(nextOrderDate, "DD/MM/YYYY") || "--"}
-                />
+                <Row zIndex={3}>
+                    <Record
+                        recordTitle="Ordered On"
+                        recordValue={formatDate(nextOrderDate, "DD/MM/YYYY") || "--"}
+                    />
 
 
-                <Record
-                    recordTitle="Delivered On"
-                    recordValue={isEditMode ? fields['deliveryDate'] : formatDate(deliveryDate, 'DD/MM/YYYY')}
-                    editMode={isEditMode}
-                    editable={true}
-                    useDateField={true}
-                    minDate={new Date()}
-                    onClearValue={() => {
-                        onFieldChange('deliveryDate')('')
-                    }}
-                    onRecordUpdate={(date) => {
-                        onFieldChange('deliveryDate')(date)
-                    }}
-                />
+                    <Record
+                        recordTitle="Delivered On"
+                        recordValue={isEditMode ? fields['deliveryDate'] : formatDate(deliveryDate, 'DD/MM/YYYY')}
+                        editMode={isEditMode}
+                        editable={true}
+                        useDateField={true}
+                        minDate={new Date()}
+                        onClearValue={() => {
+                            onFieldChange('deliveryDate')('')
+                        }}
+                        onRecordUpdate={(date) => {
+                            onFieldChange('deliveryDate')(date)
+                        }}
+                    />
 
-                {
-                    isEditMode
-                        ? <InputWrapper zIndex={3}>
-                            <InputLabelComponent label={'Storage Location'} />
-                            <SearchableOptionsField
-                                value={fields.storageLocation}
-                                text={locationSearchText}
-                                options={locationSearchResults}
-                                oneOptionsSelected={(value) => {
-                                    setLocationSearchResults([]);
-                                    setLocationSearchText('');
-                                    onFieldChange('storageLocation')(value)
-                                }}
-                                onClear={() => {
-                                    setLocationSearchResults([]);
-                                    setLocationSearchText('');
-                                    // onFieldChange('storageLocation')(value)
-                                    onFieldChange('storageLocation')()
-                                }}
-                                onChangeText={onLocationSearchTextUpdated}
+                    {
+                        isEditMode
+                            ? <InputWrapper zIndex={3}>
+                                <InputLabelComponent label={'Storage Location'} />
+                                <SearchableOptionsField
+                                    value={fields.storageLocation}
+                                    text={locationSearchText}
+                                    options={locationSearchResults}
+                                    oneOptionsSelected={(value) => {
+                                        setLocationSearchResults([]);
+                                        setLocationSearchText('');
+                                        onFieldChange('storageLocation')(value)
+                                    }}
+                                    onClear={() => {
+                                        setLocationSearchResults([]);
+                                        setLocationSearchText('');
+                                        // onFieldChange('storageLocation')(value)
+                                        onFieldChange('storageLocation')()
+                                    }}
+                                    onChangeText={onLocationSearchTextUpdated}
+                                />
+                            </InputWrapper>
+                            : <ResponsiveRecord
+                                recordTitle="Storage Location"
+                                recordValue={fields?.storageLocation?.name || '--'}
                             />
-                        </InputWrapper>
-                        : <ResponsiveRecord
-                            recordTitle="Storage Location"
-                            recordValue={fields?.storageLocation?.name || '--'}
-                        />
-                }
+                    }
 
 
-            </Row>
+                </Row>
 
-            <Row>
-                <ResponsiveRecord
-                    recordTitle="Requested by"
-                    recordValue={`${requestedBy?.first_name || '--'} ${requestedBy?.last_name || ''} `}
-                />
+                <Row>
+                    <ResponsiveRecord
+                        recordTitle="Requested by"
+                        recordValue={`${requestedBy?.first_name || '--'} ${requestedBy?.last_name || ''} `}
+                    />
 
-                <ResponsiveRecord
-                    recordTitle="Approved by"
-                    recordValue={`${approvedBy?.first_name || '--'} ${approvedBy?.last_name || ''}`}
-                />
+                    <ResponsiveRecord
+                        recordTitle="Approved by"
+                        recordValue={`${approvedBy?.first_name || '--'} ${approvedBy?.last_name || ''}`}
+                    />
 
-                <ResponsiveRecord
-                    recordTitle="Received by"
-                    recordValue={`${receivedBy?.first_name || '--'} ${receivedBy?.last_name || ''}`}
-                />
-            </Row>
+                    <ResponsiveRecord
+                        recordTitle="Received by"
+                        recordValue={`${receivedBy?.first_name || '--'} ${receivedBy?.last_name || ''}`}
+                    />
+                </Row>
 
-            <LineDividerContainer theme={theme}>
-                <LineDivider />
-            </LineDividerContainer>
+                <LineDividerContainer theme={theme}>
+                    <LineDivider />
+                </LineDividerContainer>
 
+                <Row>
+                    <Record
+                        recordTitle="Type"
+                        recordValue={repeating ? "Repeating" : "Non Repeating"}
+                    />
+                    <Record
+                        recordTitle="Repeats"
+                        recordValue={repeatingType}
+                    />
+                    <Record
+                        recordTitle="Configuration Status"
+                        recordValue={configStatus}
+                        valueColor="#38A169"
+                    />
 
-            <Row>
-                <Record
-                    recordTitle="Type"
-                    recordValue={repeating ? "Repeating" : "Non Repeating"}
-                />
-                <Record
-                    recordTitle="Repeats"
-                    recordValue={repeatingType}
-                />
-                <Record
-                    recordTitle="Configuration Status"
-                    recordValue={configStatus}
-                    valueColor="#38A169"
-                />
+                </Row>
 
-            </Row>
+            </>
 
+            <Footer
+                hasActions={false}
+                hasPaginator={false}
+            />
         </>
     )
 }

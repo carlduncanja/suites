@@ -20,6 +20,7 @@ import { useModal } from "react-native-modalfy";
 import OptionsField from "../common/Input Fields/OptionsField";
 import { MenuOption, MenuOptions } from "react-native-popup-menu";
 import { set } from "numeral";
+import Footer from "../common/Page/Footer";
 
 const LineDividerContainer = styled.View`
     margin-bottom : ${({ theme }) => theme.space['--space-32']};
@@ -194,190 +195,196 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
 
     return (
         <>
-            <RowWrapper theme={theme}>
-                {
-                    isEditMode
-                        ? <InputWrapper>
-                            <InputLabelComponent label={'Description'} />
-                            <TextAreaWrapper>
-                                <TextArea
-                                    onChangeText={onFieldUpdated('description')}
-                                    value={fields['description']}
-                                    multiline={true}
-                                    numberOfLines={4}
-                                    onClear={() => { onFieldUpdated('description')('') }}
+            <>
+                <RowWrapper theme={theme}>
+                    {
+                        isEditMode
+                            ? <InputWrapper>
+                                <InputLabelComponent label={'Description'} />
+                                <TextAreaWrapper>
+                                    <TextArea
+                                        onChangeText={onFieldUpdated('description')}
+                                        value={fields['description']}
+                                        multiline={true}
+                                        numberOfLines={4}
+                                        onClear={() => { onFieldUpdated('description')('') }}
+                                    />
+                                </TextAreaWrapper>
+                            </InputWrapper>
+                            : <Record
+                                recordTitle="Description"
+                                recordValue={fields['description'] || "--"}
+                                flex={1}
+                                editMode={isEditMode}
+                                useTextArea={true}
+                            />
+                    }
+                </RowWrapper>
+
+                <RowWrapper theme={theme}>
+                    {
+                        isEditMode
+                            ? <InputWrapper>
+                                <InputLabelComponent label={'Supplier ID'} />
+                                <InputField2
+                                    value={fields.supplierNumber}
+                                    onChangeText={onFieldUpdated('supplierNumber')}
+                                    enabled={false}
+                                    onClear={() => { onFieldUpdated('supplierNumber')('') }}
                                 />
-                            </TextAreaWrapper>
-                        </InputWrapper>
-                        : <Record
-                            recordTitle="Description"
-                            recordValue={fields['description'] || "--"}
-                            flex={1}
-                            editMode={isEditMode}
-                            useTextArea={true}
-                        />
-                }
-            </RowWrapper>
-
-            <RowWrapper theme={theme}>
-                {
-                    isEditMode
-                        ? <InputWrapper>
-                            <InputLabelComponent label={'Supplier ID'} />
-                            <InputField2
-                                value={fields.supplierNumber}
-                                onChangeText={onFieldUpdated('supplierNumber')}
-                                enabled={false}
-                                onClear={() => { onFieldUpdated('supplierNumber')('') }}
+                            </InputWrapper>
+                            : <Record
+                                recordTitle="Supplier ID"
+                                recordValue={fields['supplierNumber'] || "--"}
+                                editMode={isEditMode}
+                                editable={false}
                             />
-                        </InputWrapper>
-                        : <Record
-                            recordTitle="Supplier ID"
-                            recordValue={fields['supplierNumber'] || "--"}
-                            editMode={isEditMode}
-                            editable={false}
-                        />
-                }
-                {
-                    isEditMode
-                        ? <InputWrapper>
-                            <InputLabelComponent label={'Supplier Name'} />
-                            <InputField2
-                                value={fields['name']}
-                                onChangeText={onFieldUpdated('name')}
-                                enabled={true}
-                                onClear={() => { onFieldUpdated('name')('') }}
+                    }
+                    {
+                        isEditMode
+                            ? <InputWrapper>
+                                <InputLabelComponent label={'Supplier Name'} />
+                                <InputField2
+                                    value={fields['name']}
+                                    onChangeText={onFieldUpdated('name')}
+                                    enabled={true}
+                                    onClear={() => { onFieldUpdated('name')('') }}
+                                />
+                            </InputWrapper>
+                            : <Record
+                                recordTitle="Supplier Name"
+                                recordValue={fields['name'] || "--"}
+                                editMode={isEditMode}
                             />
-                        </InputWrapper>
-                        : <Record
-                            recordTitle="Supplier Name"
-                            recordValue={fields['name'] || "--"}
-                            editMode={isEditMode}
-                        />
-                }
-                {
-                    isEditMode
-                        ? <InputWrapper>
-                            <InputLabelComponent label={'Status'} />
-                            <OptionsField
-                                text={transformToSentence(fields['status'] || 'active')}
-                                oneOptionsSelected={onFieldUpdated('status')}
-                                menuOption={(
-                                    <MenuOptions>
-                                        <MenuOption value="active" text="Active" />
-                                        <MenuOption value="disengaged" text="Disengaged" />
-                                    </MenuOptions>
-                                )}
+                    }
+                    {
+                        isEditMode
+                            ? <InputWrapper>
+                                <InputLabelComponent label={'Status'} />
+                                <OptionsField
+                                    text={transformToSentence(fields['status'] || 'active')}
+                                    oneOptionsSelected={onFieldUpdated('status')}
+                                    menuOption={(
+                                        <MenuOptions>
+                                            <MenuOption value="active" text="Active" />
+                                            <MenuOption value="disengaged" text="Disengaged" />
+                                        </MenuOptions>
+                                    )}
+                                />
+
+
+                            </InputWrapper>
+                            : <Record
+                                recordTitle="Status"
+                                recordValue={transformToSentence(fields['status'] || "") || "Active"}
+                                editMode={isEditMode}
+                                editable={false}
                             />
+                    }
+                </RowWrapper>
 
+                <RowWrapper theme={theme}>
+                    {
 
-                        </InputWrapper>
-                        : <Record
-                            recordTitle="Status"
-                            recordValue={transformToSentence(fields['status'] || "") || "Active"}
-                            editMode={isEditMode}
-                            editable={false}
-                        />
-                }
-            </RowWrapper>
-
-            <RowWrapper theme={theme}>
-                {
-
-                    !isEditMode
-                        ? <ResponsiveRecord
-                            recordTitle="Telephone"
-                            recordValue={fields['phone']}
-                            handleRecordPress={() => {
-                            }}
-                            editMode={isEditMode}
-                        />
-
-                        : <InputWrapper>
-                            <InputLabelComponent label={'Telephone'} />
-                            <InputField2
-                                value={fields['phone']}
-                                onChangeText={onFieldUpdated('phone')}
-                                enabled={true}
-                                onClear={() => { onFieldUpdated('phone')('') }}
-                            />
-                        </InputWrapper>
-
-                }
-
-
-                {
-                    !isEditMode
-                        ? <Record
-                            recordTitle="Fax"
-                            recordValue={fields['fax']}
-                        />
-                        : <InputWrapper>
-                            <InputLabelComponent label={'Fax'} />
-                            <InputField2
-                                value={fields['fax']}
-                                onChangeText={onFieldUpdated('fax')}
-                                enabled={true}
-                                onClear={() => { onFieldUpdated('fax')('') }}
-                            />
-                        </InputWrapper>
-                }
-
-                {
-                    !isEditMode
-                        ? <ResponsiveRecord
-                            recordTitle="Email"
-                            recordValue={fields['email']}
-                            handleRecordPress={() => {
-                            }}
-                            editMode={isEditMode}
-                        />
-                        : <InputWrapper>
-                            <InputLabelComponent label={'Email'} />
-                            <InputField2
-                                value={fields['email']}
-                                onChangeText={onFieldUpdated('email')}
-                                enabled={true}
-                                onClear={() => onFieldUpdated('email')('')}
-                            />
-                        </InputWrapper>
-                }
-            </RowWrapper>
-
-            <LineDividerContainer theme={theme}>
-                <LineDivider />
-            </LineDividerContainer>
-
-            {
-                representatives.map((item, index) => {
-
-                    return (
-                        <RowWrapper theme={theme} key={index}>
-                            <Record
-                                recordTitle="Representative"
-                                recordValue={item.name}
-                            />
-                            <ResponsiveRecord
-                                recordTitle="Rep. Telephone"
-                                recordValue={item.phone}
+                        !isEditMode
+                            ? <ResponsiveRecord
+                                recordTitle="Telephone"
+                                recordValue={fields['phone']}
                                 handleRecordPress={() => {
                                 }}
+                                editMode={isEditMode}
                             />
-                            <ResponsiveRecord
-                                recordTitle="Rep. Email"
-                                recordValue={item.email}
+
+                            : <InputWrapper>
+                                <InputLabelComponent label={'Telephone'} />
+                                <InputField2
+                                    value={fields['phone']}
+                                    onChangeText={onFieldUpdated('phone')}
+                                    enabled={true}
+                                    onClear={() => { onFieldUpdated('phone')('') }}
+                                />
+                            </InputWrapper>
+
+                    }
+
+
+                    {
+                        !isEditMode
+                            ? <Record
+                                recordTitle="Fax"
+                                recordValue={fields['fax']}
+                            />
+                            : <InputWrapper>
+                                <InputLabelComponent label={'Fax'} />
+                                <InputField2
+                                    value={fields['fax']}
+                                    onChangeText={onFieldUpdated('fax')}
+                                    enabled={true}
+                                    onClear={() => { onFieldUpdated('fax')('') }}
+                                />
+                            </InputWrapper>
+                    }
+
+                    {
+                        !isEditMode
+                            ? <ResponsiveRecord
+                                recordTitle="Email"
+                                recordValue={fields['email']}
                                 handleRecordPress={() => {
                                 }}
+                                editMode={isEditMode}
                             />
-                        </RowWrapper>
-                    )
-                })
-            }
+                            : <InputWrapper>
+                                <InputLabelComponent label={'Email'} />
+                                <InputField2
+                                    value={fields['email']}
+                                    onChangeText={onFieldUpdated('email')}
+                                    enabled={true}
+                                    onClear={() => onFieldUpdated('email')('')}
+                                />
+                            </InputWrapper>
+                    }
+                </RowWrapper>
 
-            {
-                isLoading &&
-                <LoadingIndicator />
-            }
+                <LineDividerContainer theme={theme}>
+                    <LineDivider />
+                </LineDividerContainer>
+
+                {
+                    representatives.map((item, index) => {
+
+                        return (
+                            <RowWrapper theme={theme} key={index}>
+                                <Record
+                                    recordTitle="Representative"
+                                    recordValue={item.name}
+                                />
+                                <ResponsiveRecord
+                                    recordTitle="Rep. Telephone"
+                                    recordValue={item.phone}
+                                    handleRecordPress={() => {
+                                    }}
+                                />
+                                <ResponsiveRecord
+                                    recordTitle="Rep. Email"
+                                    recordValue={item.email}
+                                    handleRecordPress={() => {
+                                    }}
+                                />
+                            </RowWrapper>
+                        )
+                    })
+                }
+
+                {
+                    isLoading &&
+                    <LoadingIndicator />
+                }
+            </>
+            <Footer
+                hasActions={false}
+                hasPaginator={false}
+            />
         </>
     )
 }
