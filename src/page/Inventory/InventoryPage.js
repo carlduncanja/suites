@@ -103,7 +103,6 @@ function InventoryPage({ route, navigation }) {
 
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
-                // console.log(`${requiredField} is required`)
                 isValid = false;
                 errorObj[requiredField] = "Value is required.";
             } else {
@@ -167,7 +166,6 @@ function InventoryPage({ route, navigation }) {
                     />,
                     onClose: () => { modal.closeModals('ConfirmationModal'); }
                 });
-                // Alert.alert("Failed", "failed to create inventory group")
             })
             .finally(_ => {
                 fetchInventory(_id);
@@ -179,7 +177,6 @@ function InventoryPage({ route, navigation }) {
             case 'Details':
                 return <InventoryGroupGeneral
                     inventoryGroup={selectedInventory}
-                    // onUpdate = {()=>fetchInventory(_id)}
                     fields={fields}
                     errorFields={errorFields}
                     onFieldChange={onFieldChange}
@@ -210,10 +207,6 @@ function InventoryPage({ route, navigation }) {
         </PageContext.Provider>
     );
 }
-
-// const mapDispatchToProps = dispatch => bindActionCreators({
-//     setInventoryEdit
-// }, dispatch)
 
 InventoryPage.propTypes = {};
 InventoryPage.defaultProps = {};
