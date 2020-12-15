@@ -27,13 +27,14 @@ function InventoryPage({ route, navigation }) {
     const [selectedInventory, setSelectedInventory] = useState({});
     const [fields, setFields] = useState({
         description,
-        name
+        name,
+        categories
     });
     const [errorFields, setErrorFields] = useState({});
     const [isUpdated, setIsUpdated] = useState(false);
     const [groupCategories, setCategories] = useState([]);
 
-    const {isEditMode} = pageState;
+    const { isEditMode } = pageState;
 
     const setPageLoading = value => {
         setPageState({
@@ -47,6 +48,8 @@ function InventoryPage({ route, navigation }) {
         setPageLoading(true);
         getInventoryGroupById(id)
             .then(groupData => {
+
+                console.log('group received is', groupData)
                 setSelectedInventory(groupData);
                 // console.log("Fetch data: ", data)
             })
@@ -59,7 +62,7 @@ function InventoryPage({ route, navigation }) {
             });
     };
 
-    const onFinishEdit = () =>{
+    const onFinishEdit = () => {
         const isValid = validateUpdate();
 
         if (!isValid) { return; }
@@ -78,13 +81,13 @@ function InventoryPage({ route, navigation }) {
     }, [isEditMode]);
 
     const onFieldChange = fieldName => value => {
-        const updatedFields = {...fields};
+        const updatedFields = { ...fields };
         setFields({
             ...updatedFields,
             [fieldName]: value
         });
         setIsUpdated(true);
-        const updatedErrors = {...errorFields};
+        const updatedErrors = { ...errorFields };
         delete updatedErrors[fieldName];
         setErrorFields(updatedErrors);
 
@@ -96,14 +99,13 @@ function InventoryPage({ route, navigation }) {
         let isValid = true;
         const requiredFields = ['name'];
 
-        const errorObj = {...errorFields} || {};
+        const errorObj = { ...errorFields } || {};
 
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
-                // console.log(`${requiredField} is required`)
                 isValid = false;
                 errorObj[requiredField] = "Value is required.";
-            }else{
+            } else {
                 delete errorObj[requiredField];
             }
         }
@@ -116,8 +118,8 @@ function InventoryPage({ route, navigation }) {
         modal.openModal('ConfirmationModal',
             {
                 content: <ConfirmationComponent
-                    isEditUpdate = {true}
-                    onCancel = {()=> {
+                    isEditUpdate={true}
+                    onCancel={() => {
                         modal.closeModals('ConfirmationModal');
                         setPageState({
                             ...pageState,
@@ -164,7 +166,6 @@ function InventoryPage({ route, navigation }) {
                     />,
                     onClose: () => { modal.closeModals('ConfirmationModal'); }
                 });
-                // Alert.alert("Failed", "failed to create inventory group")
             })
             .finally(_ => {
                 fetchInventory(_id);
@@ -176,12 +177,10 @@ function InventoryPage({ route, navigation }) {
             case 'Details':
                 return <InventoryGroupGeneral
                     inventoryGroup={selectedInventory}
-                    // onUpdate = {()=>fetchInventory(_id)}
                     fields={fields}
                     errorFields={errorFields}
                     onFieldChange={onFieldChange}
-                    groupCategories={groupCategories}
-                    handleCategories={categoriesList => { setCategories(categoriesList); setIsUpdated(true); }}
+
                 />;
             default:
                 break;
@@ -198,20 +197,16 @@ function InventoryPage({ route, navigation }) {
                     <TabsContainerComponent
                         tabs={tabs}
                         selectedTab={currentTab}
-                        onPressChange={() => {}}
+                        onPressChange={() => { }}
                     />
                 )}
             >
-                { getContentData(currentTab)}
+                {getContentData(currentTab)}
             </DetailsPage>
 
         </PageContext.Provider>
     );
 }
-
-// const mapDispatchToProps = dispatch => bindActionCreators({
-//     setInventoryEdit
-// }, dispatch)
 
 InventoryPage.propTypes = {};
 InventoryPage.defaultProps = {};

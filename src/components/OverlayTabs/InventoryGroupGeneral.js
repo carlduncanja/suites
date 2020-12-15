@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect, useRef} from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { View } from 'react-native';
 
 import Record from '../common/Information Record/Record';
@@ -20,21 +20,22 @@ import _ from "lodash";
 
 const FieldWrapper = styled.View`
     flex: 0.5;
-    margin-bottom : ${ ({isEditMode}) => isEditMode ? `32px` : 0 };
+    margin-bottom : ${({ isEditMode }) => isEditMode ? `32px` : 0};
 `;
 
 function InventoryGroupGeneral({
     inventoryGroup = {},
-    onUpdate = () => {},
+    onUpdate = () => { },
     fields = {},
     errorFields = {},
-    onFieldChange = () => {},
+    onFieldChange = () => { },
     groupCategories = [],
-    handleCategories = () => {}
+    handleCategories = () => { }
 }) {
+
     const baseStateRef = useRef();
 
-    const { description = "", categories = [], name = ""} = inventoryGroup;
+    const { description = "", categories = [], name = "" } = inventoryGroup;
     const theme = useTheme();
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
@@ -42,9 +43,9 @@ function InventoryGroupGeneral({
 
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
+    const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
-    console.log("Categories: ", inventoryGroup);
 
     useEffect(() => {
         baseStateRef.current = {
@@ -58,7 +59,6 @@ function InventoryGroupGeneral({
     }, []);
 
     useEffect(() => {
-        // console.log("Search: ", supplierSearchValue)
         if (!categorySearchValue) {
             // empty search values and cancel any out going request.
             setCategorySearchResult([]);
@@ -67,7 +67,6 @@ function InventoryGroupGeneral({
         }
 
         // wait 300ms before search. cancel any prev request before executing current.
-
         const search = _.debounce(fetchCategories, 300);
 
         setCategorySearchQuery(prevSearch => {
@@ -82,7 +81,7 @@ function InventoryGroupGeneral({
 
     const fetchCategories = () => {
         getCategories(categorySearchValue, 5)
-            .then((categoryData = [] ) => {
+            .then((categoryData = []) => {
 
                 // console.log("Data: ", data)
 
@@ -96,19 +95,17 @@ function InventoryGroupGeneral({
             });
     };
 
-
-    const onSelectShownIten = (item) => {
+    const onSelectShownItem = (item) => {
         let updatedCategories = [...groupCategories];
         updatedCategories = updatedCategories.filter(category => category !== item);
-        // updatedCategories.pop();
         handleCategories(updatedCategories);
         console.log("Categories: ", updatedCategories);
     }
 
     const onCategorySelect = (item) => {
         let updatedCategories = []
-        groupCategories.includes(item)?
-            updatedCategories = updatedCategories.filter( category => category !== item)
+        groupCategories.includes(item) ?
+            updatedCategories = updatedCategories.filter(category => category !== item)
             :
             updatedCategories = [...groupCategories, item]
 
@@ -119,41 +116,67 @@ function InventoryGroupGeneral({
 
     return (
         <>
-            <>
-                <Row>
-                    <Record
-                        recordTitle="Group Name"
-                        recordValue={fields.name}
-                        editMode={isEditMode}
-                        editable={true}
-                        onRecordUpdate={onFieldChange('name')}
-                        onClearValue={() => { onFieldChange('name')(''); console.log("Clear") }}
-                        flex={0.5}
-                    />
+            <Row>
 
-                </Row>
+                <Record
+                    recordTitle="Group Name"
+                    recordValue={fields['name']}
+                    editMode={isEditMode}
+                    editable={true}
+                    onRecordUpdate={onFieldChange('name')}
+                    onClearValue={() => { onFieldChange('name')(''); console.log("Clear") }}
+                    flex={0.5}
+                />
 
-                <Row>
 
-                    <Record
-                        recordTitle="Description"
-                        recordValue={fields.description}
-                        onClearValue={() => onFieldChange('description')('')}
-                        onRecordUpdate={onFieldChange('description')}
-                        useTextArea={true}
-                        editMode={isEditMode}
-                        editable={true}
-                        flex={0.8}
-                    />
 
-                </Row>
+            </Row>
 
-            </>
+            <Row>
+
+                <Record
+                    recordTitle="Description"
+                    recordValue={fields['description']}
+                    onClearValue={() => onFieldChange('description')('')}
+                    onRecordUpdate={onFieldChange('description')}
+                    useTextArea={true}
+                    editMode={isEditMode}
+                    editable={true}
+                    flex={0.8}
+                />
+
+            </Row>
+
+            <Row>
+
+                <ListTextRecord
+                    recordTitle="Category"
+                    titleStyle={'--text-xs-medium'}
+                    values={initialCategories}
+                    editMode={isEditMode}
+                    text={categorySearchValue}
+                    oneOptionsSelected={(item) => { onCategorySelect(item); }}
+                    onChangeText={value => { setCategorySearchValue(value) }}
+                    onClear={() => {
+                        setCategorySearchValue('');
+                    }}
+                    onSelectShownIten={onSelectShownItem}
+                    selectedItems={groupCategories}
+                    options={categorySearchResults}
+                    handlePopovers={() => { }}
+                    isPopoverOpen={categorySearchQuery}
+                    maxNumItemsShown={4}
+
+                />
+            </Row>
 
             <Footer
-                hasPaginator={false}
                 hasActions={false}
+                hasPaginator={false}
+                hasActionButton={true}
             />
+
+
         </>
     );
 }
