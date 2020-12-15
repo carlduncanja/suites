@@ -1,21 +1,21 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text} from 'react-native';
-import {useModal} from 'react-native-modalfy';
-import {PageContext} from '../../contexts/PageContext';
+import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
+import { useModal } from 'react-native-modalfy';
+import { PageContext } from '../../contexts/PageContext';
 import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainerComponent from '../../components/common/Tabs/TabsContainerComponent';
-import {getInventoryVariantByGroup} from '../../api/network';
+import { getInventoryVariantByGroup } from '../../api/network';
 import InventoryGroupGeneral from '../../components/OverlayTabs/InventoryGroupGeneral';
 import InventoryVariantGeneral from '../../components/OverlayTabs/InventoryVariantGeneral';
 import TransfersOverlayTab from '../../components/OverlayTabs/TransfersOverlayTab';
 import InventoryStorageLocationsTab from '../../components/OverlayTabs/InventoryStorageLocationsTab';
 import InventorySuppliersTab from '../../components/OverlayTabs/InventorySuppliersTab';
 
-function InventoryVariantPage({route, navigation}) {
-    const {data = {}} = route.params;
+function InventoryVariantPage({ route, navigation }) {
+    const { data = {} } = route.params;
     const modal = useModal();
     // console.log("Data: ", data)
-    const {name = '', _id = '', groupName = '', groupId = ''} = data;
+    const { name = '', _id = '', groupName = '', groupId = '' } = data;
     const tabs = ['Details', 'Storage Locations', 'Transfers', 'Suppliers'];
 
     const [currentTab, setCurrentTab] = useState(tabs[0]);
@@ -29,7 +29,7 @@ function InventoryVariantPage({route, navigation}) {
     // const [errorFields, setErrorFields] = useState({});
     // const [isUpdated, setUpdated] = useState(false);
 
-    const {isEditMode} = pageState;
+    const { isEditMode } = pageState;
 
     const setPageLoading = value => {
         setPageState({
@@ -128,10 +128,10 @@ function InventoryVariantPage({route, navigation}) {
                     inventoryVariant={selectedVariant}
                     selectedData={data}
                     onUpdateItem={() => fetchVariant(groupId, _id)}
-                    // isEditMode={isEditMode}
-                    // fields = {fields}
-                    // errorFields = {errorFields}
-                    // onFieldChange = {onFieldChange}
+                // isEditMode={isEditMode}
+                // fields = {fields}
+                // errorFields = {errorFields}
+                // onFieldChange = {onFieldChange}
                 />;
             case 'Storage Locations':
                 return <InventoryStorageLocationsTab
@@ -245,7 +245,7 @@ function InventoryVariantPage({route, navigation}) {
 
     return (
 
-        <PageContext.Provider value={{pageState, setPageState}}>
+        <PageContext.Provider value={{ pageState, setPageState }}>
             <DetailsPage
                 headerChildren={[groupName, selectedVariant?.name]}
                 onBackPress={() => navigation.navigate('Inventory')}

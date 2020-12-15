@@ -13,15 +13,16 @@ import { PageContext } from '../../contexts/PageContext';
 import { updateInventoryGroupById, getCategories } from '../../api/network';
 import TextArea from '../common/Input Fields/TextArea';
 import ConfirmationComponent from '../ConfirmationComponent';
+import Footer from '../common/Page/Footer';
 import { useModal } from 'react-native-modalfy';
 import MultipleSearchableOptionsField from '../common/Input Fields/MultipleSearchableOptionsField';
 import _ from "lodash";
-import Footer from '../common/Page/Footer';
 
 const FieldWrapper = styled.View`
     flex: 0.5;
     margin-bottom : ${({ isEditMode }) => isEditMode ? `32px` : 0};
 `;
+
 function InventoryGroupGeneral({
     inventoryGroup = {},
     onUpdate = () => { },
@@ -45,31 +46,17 @@ function InventoryGroupGeneral({
     const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
-    console.log('categories are', categories)
-
-    // const [isUpdated, setIsUpdated] = useState(false);
-    // const [fields, setFields] = useState({
-    //     description,
-    //     name
-    // });
-    // const [errorFields, setErrorFields] = useState({});
-
-    // useEffect(()=>{
-    //     if(isUpdated && isEditMode === false){
-    //         onFinishEdit();
-    //     }
-    // },[isEditMode])
 
     useEffect(() => {
         baseStateRef.current = {
             description,
             categories,
             name
-        }
+        };
         return () => {
-            baseStateRef.current = {}
-        }
-    }, [])
+            baseStateRef.current = {};
+        };
+    }, []);
 
     useEffect(() => {
         // console.log("Search: ", supplierSearchValue)
@@ -107,7 +94,7 @@ function InventoryGroupGeneral({
                 // TODO handle error
                 console.log("failed to get Suppliers", error);
                 setCategorySearchResult([]);
-            })
+            });
     };
 
 
@@ -240,12 +227,12 @@ function InventoryGroupGeneral({
         // onFieldChange('category')(updatedCategories);
         console.log("Updated categores: ", updatedCategories);
         handleCategories(updatedCategories);
-    }
+    };
 
     return (
         <>
             <Row>
-                {/* <FieldWrapper isEditMode> */}
+
                 <Record
                     recordTitle="Group Name"
                     recordValue={fields['name']}
@@ -255,7 +242,7 @@ function InventoryGroupGeneral({
                     onClearValue={() => { onFieldChange('name')(''); console.log("Clear") }}
                     flex={0.5}
                 />
-                {/* </FieldWrapper> */}
+
 
 
             </Row>
@@ -296,8 +283,9 @@ function InventoryGroupGeneral({
                     maxNumItemsShown={4}
 
                 />
+            </Row>
 
-                {/* <Record
+            {/* <Record
                     recordTitle="Category"
                     recordValue={fields['categories']}
                     onClearValue={() => onFieldChange('categories')('')}
@@ -310,9 +298,7 @@ function InventoryGroupGeneral({
             </Row> */}
 
 
-            </Row>
-
-            {/* {
+            {/*</Row> {
                     isEditMode ?
 
                     <MultipleSearchableOptionsField
@@ -335,17 +321,17 @@ function InventoryGroupGeneral({
                         recordTitle = "Category"
                         values = {categories}
                     />
-                } */}
 
-
+                    */}
             <Footer
                 hasActions={false}
                 hasPaginator={false}
                 hasActionButton={true}
             />
 
+
         </>
-    )
+    );
 }
 
-export default InventoryGroupGeneral
+export default InventoryGroupGeneral;
