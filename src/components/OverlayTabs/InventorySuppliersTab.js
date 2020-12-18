@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
-import styled, {css} from '@emotion/native';
+import styled, { css } from '@emotion/native';
 import Table from '../common/Table/Table';
 import { useTheme } from 'emotion-theming';
 import Footer from '../common/Page/Footer';
@@ -23,7 +23,7 @@ const Headings = [
     {
         name: 'Email',
         alignment: 'flex-start',
-        flex : 1.5
+        flex: 1.5
     },
     {
         name: 'Product',
@@ -34,24 +34,24 @@ const Headings = [
 
 const SectionContainer = styled.View`
     display : flex;
-    margin-bottom : ${ ({theme}) => theme.space['--space-40']};
+    margin-bottom : ${({ theme }) => theme.space['--space-40']};
 `;
 
-const SectionText = styled.Text( ({theme}) => ({
+const SectionText = styled.Text(({ theme }) => ({
     ...theme.font['--text-xl-medium'],
-    color : theme.colors['--color-gray-800'],
-    marginBottom : 24,
+    color: theme.colors['--color-gray-800'],
+    marginBottom: 24,
 }));
 
 
-function InventorySuppliersTab({variantId = '', parentId}) {
+function InventorySuppliersTab({ variantId = '', parentId }) {
 
     const theme = useTheme();
     const modal = useModal();
 
     const [suppliers, setSuppliers] = useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         getVariantSupplierProducts(variantId)
             .then(results => {
                 const { data = [] } = results;
@@ -62,25 +62,25 @@ function InventorySuppliersTab({variantId = '', parentId}) {
                 console.log('Failed to get variant suppliers', error)
                 //TODO handle error cases.
             })
-    },[])
+    }, [])
 
-    const suppliersListItem = ({supplier, inventoryVariant}) => {
-        const { name = '', email = '', phone = ''} = supplier;
+    const suppliersListItem = ({ supplier, inventoryVariant }) => {
+        const { name = '', email = '', phone = '' } = supplier;
         const { product = '' } = inventoryVariant;
         return (
-        <>
-            <DataItem fontStyle = "--text-base-regular" color = "--color-gray-800" text = {name}/>
-            <TouchableDataItem fontStyle = "--text-base-regular" text = {phone}/>
-            <TouchableDataItem flex = {1.5} fontStyle = "--text-base-regular" text = {email}/>
-            <TouchableDataItem fontStyle = "--text-base-regular" text = {product}/>
-        </>)
+            <>
+                <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={name} />
+                <TouchableDataItem fontStyle="--text-base-regular" text={phone} isPhone={true} />
+                <TouchableDataItem flex={1.5} fontStyle="--text-base-regular" text={email} isEmail={true} />
+                <TouchableDataItem fontStyle="--text-base-regular" text={product} />
+            </>)
     };
 
     const renderSupplierItem = (item) => {
         return <Item
-            itemView = {suppliersListItem(item)}
-            hasCheckBox = {false}
-            onItemPress = {()=>{}}
+            itemView={suppliersListItem(item)}
+            hasCheckBox={false}
+            onItemPress={() => { }}
         />
 
     };
@@ -97,9 +97,9 @@ function InventorySuppliersTab({variantId = '', parentId}) {
 
 
             <Footer
-                hasPaginator = {false}
-                hasActionButton = {true}
-                hasActions = {false}
+                hasPaginator={false}
+                hasActionButton={true}
+                hasActions={false}
             />
 
         </>
