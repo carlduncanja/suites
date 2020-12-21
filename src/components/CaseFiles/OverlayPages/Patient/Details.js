@@ -877,6 +877,7 @@ const Details = ({
                                             recordValue={formatPhoneNumber(phone)}
                                             handleRecordPress={() => {
                                             }}
+                                            isPhone={true}
                                         />
 
                                         <ResponsiveRecord
@@ -884,6 +885,7 @@ const Details = ({
                                             recordValue={email}
                                             handleRecordPress={() => {
                                             }}
+                                            isEmail={true}
                                         />
                                     </Row>
                                 );

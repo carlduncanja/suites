@@ -328,17 +328,17 @@ const OrderDetailsTab = ({
                 </Row>
 
                 <Row>
-                    <ResponsiveRecord
+                    <Record
                         recordTitle="Requested by"
                         recordValue={`${requestedBy?.first_name || '--'} ${requestedBy?.last_name || ''} `}
                     />
 
-                    <ResponsiveRecord
+                    <Record
                         recordTitle="Approved by"
                         recordValue={`${approvedBy?.first_name || '--'} ${approvedBy?.last_name || ''}`}
                     />
 
-                    <ResponsiveRecord
+                    <Record
                         recordTitle="Received by"
                         recordValue={`${receivedBy?.first_name || '--'} ${receivedBy?.last_name || ''}`}
                     />

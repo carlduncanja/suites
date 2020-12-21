@@ -76,7 +76,7 @@ function ResponsiveRecord({
         Linking.openURL(`tel://${phoneNumber}`)
             .then(supported => {
                 if (!supported) {
-                    console.log('Cant handle url')
+                    console.log('Cant handle request')
                 } else {
                     return Linking.openURL('message:')
                 }
@@ -89,14 +89,12 @@ function ResponsiveRecord({
         Linking.openURL(`mailto:${emailAddress}`)
             .then(supported => {
                 if (!supported) {
-                    console.log('Cant handle url')
+                    console.log('Cant handle request')
                 } else {
                     return Linking.openURL('message:')
                 }
             })
-            .catch(err => {
-                toggleError()
-            })
+            .catch(err => toggleError())
     }
 
     return (

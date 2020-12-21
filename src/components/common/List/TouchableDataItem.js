@@ -53,7 +53,7 @@ function TouchableDataItem({ text = "", flex = 1, align = 'flex-start', fontStyl
         Linking.openURL(`tel://${phoneNumber}`)
             .then(supported => {
                 if (!supported) {
-                    console.log('Cant handle url')
+                    console.log('Cant handle request')
                 } else {
                     return Linking.openURL('message:')
                 }
@@ -66,14 +66,12 @@ function TouchableDataItem({ text = "", flex = 1, align = 'flex-start', fontStyl
         Linking.openURL(`mailto:${emailAddress}`)
             .then(supported => {
                 if (!supported) {
-                    console.log('Cant handle url')
+                    console.log('Cant handle request')
                 } else {
                     return Linking.openURL('message:')
                 }
             })
-            .catch(err => {
-                toggleError()
-            })
+            .catch(err => toggleError())
     }
     return (
         <DataItemWrapper flex={flex} theme={theme} onPress={() => { isPhone ? togglePhoneCall(text) : isEmail ? toggleEmail(text) : onPress }} disabled={isDisabled}>
