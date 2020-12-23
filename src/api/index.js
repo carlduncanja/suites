@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as config from '../config';
 
-const BASE_URL = config.suites.baseUrl;
+const BASE_URL = config.suites.baseUrl || 'https://suites-api.azurewebsites.net';
 const DOCUMENT_GENERATION_BASE_URL = config.documentGeneration.baseUrl;
 
 console.log('Base url is:', BASE_URL);
