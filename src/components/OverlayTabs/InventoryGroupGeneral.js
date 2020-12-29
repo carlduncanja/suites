@@ -127,9 +127,6 @@ function InventoryGroupGeneral({
                     onClearValue={() => { onFieldChange('name')(''); console.log("Clear") }}
                     flex={0.5}
                 />
-
-
-
             </Row>
 
             <Row>

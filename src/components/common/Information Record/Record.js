@@ -122,7 +122,7 @@ function Record({
                 }
 
                 {
-                    !editMode && useTextArea &&
+                    !editMode && useTextArea && recordValue === '' &&
                     <PlaceHolderText theme={theme}>
                         {recordPlaceholder}
                     </PlaceHolderText>
