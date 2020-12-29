@@ -1,17 +1,18 @@
-import React, {useEffect} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import moment from 'moment';
 import EmergencyContact from '../common/EmergencyContact';
 import Contact from '../common/Contact';
 import ColumnSectionsList from '../common/ColumnsSectionsList';
 import Record from '../common/Information Record/Record';
 import ColumnSection from '../common/ColumnSection';
-import {transformToSentence, formatDate, calcAge, formatTrn} from '../../utils/formatter';
+import { transformToSentence, formatDate, calcAge, formatTrn } from '../../utils/formatter';
 import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
 import InputField2 from '../common/Input Fields/InputField2';
 import Footer from '../common/Page/Footer';
+import Row from '../common/Row';
 
-const PhysiciansDetailsTab = ({physician}) => {
+const PhysiciansDetailsTab = ({ physician }) => {
     const {
         firstName,
         middleName,
@@ -31,11 +32,11 @@ const PhysiciansDetailsTab = ({physician}) => {
 
     phones.map(phone => {
         if (phone.type === 'cell') {
-            Object.assign(phoneObject, {cell: phone.phone});
+            Object.assign(phoneObject, { cell: phone.phone });
         } else if (phone.type === 'work') {
-            Object.assign(phoneObject, {work: phone.phone});
+            Object.assign(phoneObject, { work: phone.phone });
         } else if (phone.type === 'home') {
-            Object.assign(phoneObject, {home: phone.phone});
+            Object.assign(phoneObject, { home: phone.phone });
         } else {
             Object.assign(phoneObject, {});
         }
@@ -43,11 +44,11 @@ const PhysiciansDetailsTab = ({physician}) => {
 
     emails.map(email => {
         if (email.type === 'primary') {
-            Object.assign(emailObject, {primary: email.email});
+            Object.assign(emailObject, { primary: email.email });
         } else if (email.type === 'work') {
-            Object.assign(emailObject, {work: email.email});
+            Object.assign(emailObject, { work: email.email });
         } else if (email.type === 'other') {
-            Object.assign(emailObject, {other: email.email});
+            Object.assign(emailObject, { other: email.email });
         } else {
             Object.assign(emailObject, {});
         }
@@ -93,38 +94,23 @@ const PhysiciansDetailsTab = ({physician}) => {
 
     const contactData = [
         <ResponsiveRecord
-            recordTitle="Cell Phone Number"
-            recordValue={phoneObject.cell}
-            handleRecordPress={() => {
-            }}
-        />,
-        <ResponsiveRecord
-            recordTitle="Home Phone Number"
-            recordValue={phoneObject.home}
-            handleRecordPress={() => {
-            }}
-        />,
-        <ResponsiveRecord
-            recordTitle="Work Phone Number"
-            recordValue={phoneObject.work}
-            handleRecordPress={() => {
-            }}
-        />,
-        <ResponsiveRecord
             recordTitle="Primary Email"
             recordValue={emailObject.primary}
             handleRecordPress={() => {
             }}
+            isEmail={true}
         />,
         <ResponsiveRecord
             recordTitle="Alternate Email"
             recordValue={emailObject.other}
             handleRecordPress={() => {
             }}
+            isEmail={true}
         />,
-        <Record
+        <ResponsiveRecord
             recordTitle="Work Email"
             recordValue={emailObject.work}
+            isEmail={true}
         />,
         <Record
             recordTitle="Address 1"
@@ -146,11 +132,13 @@ const PhysiciansDetailsTab = ({physician}) => {
                     recordTitle="Emergency Number 1"
                     handleRecordPress={() => {
                     }}
+                    isPhone={true}
                 />,
                 <ResponsiveRecord
                     recordTitle="Emergency Email 1"
                     handleRecordPress={() => {
                     }}
+                    isPhone={true}
                 />
             ]}
             numOfColumns={3}
@@ -168,12 +156,14 @@ const PhysiciansDetailsTab = ({physician}) => {
                         recordValue={contact.phone}
                         handleRecordPress={() => {
                         }}
+                        isPhone={true}
                     />,
                     <ResponsiveRecord
                         recordTitle={`Emergency Email ${index + 1}`}
                         recordValue={contact.email}
                         handleRecordPress={() => {
                         }}
+                        isEmail={true}
                     />
                 ]}
                 numOfColumns={3}
@@ -186,6 +176,30 @@ const PhysiciansDetailsTab = ({physician}) => {
             data={personalData}
             numOfColumns={3}
         />,
+        <Row>
+            <ResponsiveRecord
+                recordTitle="Cell Phone Number"
+                recordValue={phoneObject.cell}
+                handleRecordPress={() => {
+                }}
+                isPhone={true}
+
+            />
+            <ResponsiveRecord
+                recordTitle="Home Phone Number"
+                recordValue={phoneObject.home}
+                handleRecordPress={() => {
+                }}
+                isPhone={true}
+            />
+            <ResponsiveRecord
+                recordTitle="Work Phone Number"
+                recordValue={phoneObject.work}
+                handleRecordPress={() => {
+                }}
+                isPhone={true}
+            />
+        </Row>,
         <ColumnSection
             data={contactData}
             numOfColumns={3}

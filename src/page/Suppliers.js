@@ -1,12 +1,12 @@
-import React, {useEffect, useContext, useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, { useEffect, useContext, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-import {connect} from 'react-redux';
-import _, {isEmpty} from 'lodash';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import {withModal, useModal} from 'react-native-modalfy';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
+import _, { isEmpty } from 'lodash';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { withModal, useModal } from 'react-native-modalfy';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
@@ -22,10 +22,10 @@ import AddIcon from '../../assets/svg/addIcon';
 import RightBorderDataItem from '../components/common/List/RightBorderDataItem';
 import DataItem from '../components/common/List/DataItem';
 
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../helpers/caseFilesHelpers';
+import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError } from '../helpers/caseFilesHelpers';
 
-import {setSuppliers} from '../redux/actions/suppliersActions';
-import {getSuppliers, archiveSupplier} from '../api/network';
+import { setSuppliers } from '../redux/actions/suppliersActions';
+import { getSuppliers, archiveSupplier } from '../api/network';
 
 import suppliersTest from '../../data/Suppliers';
 import SuppliersBottomSheet from './Suppliers/SupplierPage';
@@ -41,7 +41,7 @@ const ArchiveButton = styled.TouchableOpacity`
     border-width:1px;
     margin-right:5px;
     justify-content:center;
-    border-color: ${({theme}) => theme.colors['--color-gray-500']};
+    border-color: ${({ theme }) => theme.colors['--color-gray-500']};
     width:100px;
     height:30px;
     border-radius:6px;
@@ -81,7 +81,7 @@ const Suppliers = props => {
     ];
 
     //  ############ Props
-    const {suppliers = [], setSuppliers} = props;
+    const { suppliers = [], setSuppliers } = props;
     const modal = useModal();
 
     //  ############ State
@@ -151,7 +151,7 @@ const Suppliers = props => {
     };
 
     const handleOnCheckBoxPress = item => () => {
-        const {_id} = item;
+        const { _id } = item;
         const updatedSuppliersList = checkboxItemPress(_id, selectedSuppliers);
 
         setSelectedSuppliers(updatedSuppliersList);
@@ -168,7 +168,7 @@ const Suppliers = props => {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            const { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -179,7 +179,7 @@ const Suppliers = props => {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        const { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -207,7 +207,7 @@ const Suppliers = props => {
         setFetchingData(true);
         getSuppliers(searchValue, recordsPerPage, currentPosition)
             .then(suppliersInfo => {
-                const {data = [], pages = 0} = suppliersInfo;
+                const { data = [], pages = 0 } = suppliersInfo;
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
@@ -233,7 +233,7 @@ const Suppliers = props => {
                 console.log('failed to get Suppliers', error);
 
                 handleUnauthorizedError(error?.response?.status, setSuppliers);
-                setPageSettingState({...pageSettingState, isDisabled: true});
+                setPageSettingState({ ...pageSettingState, isDisabled: true });
 
                 setTotalPages(1);
                 setPreviousDisabled(true);
@@ -265,12 +265,14 @@ const Suppliers = props => {
                 text={item.phone}
                 onPress={() => {
                 }}
+                isPhone={true}
             />
             <TouchableDataItem
                 text={item.email}
                 onPress={() => {
                 }}
                 flex={2}
+                isEmail={true}
             />
         </>
     );
@@ -343,12 +345,12 @@ const Suppliers = props => {
                 title="Archive Supplier"
                 touchable={!isEmpty(selectedSuppliers)}
                 disabled={!!isEmpty(selectedSuppliers)}
-                icon={!isEmpty(selectedSuppliers) ? <ArchiveIcon/> : <ArchiveIcon strokeColor="#A0AEC0"/>}
+                icon={!isEmpty(selectedSuppliers) ? <ArchiveIcon /> : <ArchiveIcon strokeColor="#A0AEC0" />}
                 onPress={!isEmpty(selectedSuppliers) ? toggleConfirmArchive : () => {
                 }}
             />
         );
-        const createNewSupplier = <ActionItem title="Add Supplier" icon={<AddIcon/>} onPress={onOpenCreateSupplier}/>;
+        const createNewSupplier = <ActionItem title="Add Supplier" icon={<AddIcon />} onPress={onOpenCreateSupplier} />;
 
         return <ActionContainer
             floatingActions={[
@@ -371,7 +373,7 @@ const Suppliers = props => {
                     content: <CreateSupplierDialogContainer
                         onCancel={() => setFloatingAction(false)}
                         onCreated={item => handleOnItemPress(item, true)}
-                        onUpdate = {()=>handleDataRefresh()}
+                        onUpdate={() => handleDataRefresh()}
                     />,
                     onClose: () => setFloatingAction(false)
                 });
@@ -435,14 +437,14 @@ const Suppliers = props => {
             />
 
         </PageSettingsContext.Provider>
-        
+
 
     );
 };
 
-const mapStateToProps = state => ({suppliers: state.suppliers});
+const mapStateToProps = state => ({ suppliers: state.suppliers });
 
-const mapDispatcherToProp = {setSuppliers};
+const mapDispatcherToProp = { setSuppliers };
 
 export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Suppliers));
 
@@ -450,7 +452,7 @@ const styles = StyleSheet.create({
     item: {
         // flex:1
     },
-    itemText: {fontSize: 16},
+    itemText: { fontSize: 16 },
     footer: {
         flex: 1,
         alignSelf: 'flex-end',
