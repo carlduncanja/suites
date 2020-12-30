@@ -1,5 +1,8 @@
 import React,{ useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useModal } from 'react-native-modalfy';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 import Equipment from '../CaseFiles/OverlayPages/ChargeSheet/Equipment';
 import Table from '../common/Table/Table';
 import Footer from '../common/Page/Footer';
@@ -8,9 +11,6 @@ import LongPressWithFeedback from '../common/LongPressWithFeedback';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
 import ActionItem from '../common/ActionItem';
 import {LONG_PRESS_TIMER} from '../../const';
-import { useModal } from 'react-native-modalfy';
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
 import WasteIcon from '../../../assets/svg/wasteIcon';
 import TransferIcon from '../../../assets/svg/transferIcon';
 import Item from '../common/Table/Item';
