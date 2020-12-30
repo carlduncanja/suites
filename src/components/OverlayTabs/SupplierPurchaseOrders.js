@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { withModal } from 'react-native-modalfy';
 import { isEmpty } from 'lodash';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import { formatDate } from '../../utils/formatter';
@@ -23,7 +25,17 @@ import LongPressWithFeedback from '../common/LongPressWithFeedback';
 import { LONG_PRESS_TIMER } from '../../const';
 import WasteIcon from '../../../assets/svg/wasteIcon';
 import ConfirmationComponent from '../ConfirmationComponent';
-import { removePurchaseOrders, archivePurchaseOrders } from '../../api/network';
+import { removePurchaseOrders, updatePurchaseOrderDetails, archivePurchaseOrders } from '../../api/network';
+import DateInputField from '../common/Input Fields/DateInputField';
+import { PageContext } from '../../contexts/PageContext';
+
+const EditDateRecord = styled.View`
+    flex: 1.2;
+    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-300']}` };
+    border-radius: 6px;
+    flex-direction: row;
+    justify-content: space-between;
+`;
 
 const testData = [
     {
@@ -54,8 +66,8 @@ const SupplierPurchaseOrders = ({
     modal,
     isArchive = false,
     data = [],
-    onRefresh = () => {
-    }
+    onRefresh = () => {},
+    isEditMode
 }) => {
     const [checkBoxList, setCheckBoxList] = useState([]);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
@@ -95,7 +107,7 @@ const SupplierPurchaseOrders = ({
         {
             name: 'Delivery Date',
             alignment: 'flex-start',
-            flex: 1
+            flex: 1.2
 
         }
     ];
@@ -104,8 +116,6 @@ const SupplierPurchaseOrders = ({
         // if (!Suppliers.length) fetchSuppliersData()
         setTotalPages(Math.ceil(data.length / recordsPerPage));
     }, []);
-
-
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
@@ -302,6 +312,55 @@ const SupplierPurchaseOrders = ({
         //     setCheckBoxList(tabDetails)
     };
 
+    const onUpdateDate = value => dataItem => {
+        // update value for specific item
+        console.log('Value:', value);
+        const updateItemId = dataItem?._id;
+        const newDeliveryDate = {...dataItem, deliveryDate: value || dataItem.deliveryDate };
+        
+        const updatedData = data.map(item => (item._id === dataItem._id ?
+            {...newDeliveryDate} :
+            {...item}));
+
+        // const updatedData = {
+        //     ...dataItem,
+        //     deliveryDate: value || dataItem.deliveryDate
+        // };
+        console.log('Updated: ', updatedData);
+
+        // updatePurchaseOrderDetails(updateItemId, newDeliveryDate)
+        //     .then(data => {
+        //         console.log("DB data: ", data);
+        //         modal.openModal('ConfirmationModal',
+        //             {
+        //                 content: <ConfirmationComponent
+        //                     isError={false}
+        //                     isEditUpdate={false}
+        //                     onAction={() => { modal.closeModals('ConfirmationModal'); }}
+        //                     onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+        //                 />,
+        //                 onClose: () => { modal.closeModals('ConfirmationModal'); }
+        //             });
+        //     })
+        //     .catch(error => {
+        //         console.log("Failed to update order", error);
+        //         modal.openModal('ConfirmationModal',
+        //             {
+        //                 content: <ConfirmationComponent
+        //                     isError={true}
+        //                     isEditUpdate={false}
+        //                     onAction={() => { modal.closeModals('ConfirmationModal'); }}
+        //                     onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+        //                 />,
+        //                 onClose: () => { modal.closeModals('ConfirmationModal'); }
+        //             });
+        //     })
+        //     .finally(_ => {
+        //         setLoading(false);
+        //         onRefresh();
+        //     });
+    };
+
     const listItemFormat = item => {
         const { invoiceNumber = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '' } = item;
         const invoice = invoiceNumber === '' ? 'n/a' : invoiceNumber;
@@ -330,8 +389,24 @@ const SupplierPurchaseOrders = ({
                     color={statusColor}
                     fontStyle="--text-sm-medium"
                 />
-                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY') || 'n/a'} />
-                <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} />
+                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY') || 'n/a'}/>
+                {
+                    isEditMode ? (
+                        <EditDateRecord>
+                            <DateInputField
+                                onDateChange={value => onUpdateDate(value)(item)}
+                                value={deliveryDate}
+                                onClear={onUpdateDate}
+                                placeholder="DD/MM/YYYY"
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                minDate={new Date()}
+                            />
+                        </EditDateRecord>
+                    ) :
+                        <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} flex={1.2}/>
+                }
+                
 
                 {/* <View style={[styles.item,{flex:1}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{order}</Text>

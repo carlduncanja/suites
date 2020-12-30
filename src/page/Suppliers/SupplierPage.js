@@ -207,6 +207,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                     floatingActions={floatingActions}
                     data={selectedSupplier?.purchaseOrders}
                     onRefresh={() => fetchSupplier(_id)}
+                    isEditMode={isEditMode}
                 />;
             default:
                 return <View/>;

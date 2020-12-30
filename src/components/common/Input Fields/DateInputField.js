@@ -100,6 +100,7 @@ function DateInputField({
                             paddingLeft: 12,
                             paddingRight: 12,
                             marginBottom: 0,
+                            textOverflow: 'ellipsis'
                         },
                         disabled: {backgroundColor: theme.colors['--color-gray-100']}
                     }}
