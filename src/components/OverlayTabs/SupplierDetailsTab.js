@@ -14,13 +14,15 @@ import InputField2 from "../common/Input Fields/InputField2";
 import InputLabelComponent from "../common/InputLablel";
 import TextArea from "../common/Input Fields/TextArea";
 import ConfirmationComponent from "../ConfirmationComponent";
-import { updateSupplierCall } from "../../api/network";
+import { getPurchaseOrders, updateSupplierCall } from "../../api/network";
 import LoadingIndicator from "../common/LoadingIndicator";
 import { useModal } from "react-native-modalfy";
 import OptionsField from "../common/Input Fields/OptionsField";
 import { MenuOption, MenuOptions } from "react-native-popup-menu";
 import { set } from "numeral";
 import Footer from "../common/Page/Footer";
+import { useDispatch } from "react-redux";
+import { setPurchaseOrders } from "../../redux/actions/purchaseOrdersActions";
 
 const LineDividerContainer = styled.View`
     margin-bottom : ${({ theme }) => theme.space['--space-32']};
@@ -120,7 +122,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
     }, [supplier])
 
     const onFieldUpdated = (field) => (value) => {
-        setUpdated(!isUpdated)
+        setUpdated(true)
         setFields({
             ...fields,
             [field]: value
@@ -143,10 +145,13 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
         setLoading(true)
         updateSupplierCall(supplierId, data)
             .then(_ => {
-                onUpdated(fields);
+                console.log('Successfully updated')
+                setUpdated(false)
+                onUpdated(order._id)
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
+                            isError={false}
                             error={false}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
                             onCancel={() => {
