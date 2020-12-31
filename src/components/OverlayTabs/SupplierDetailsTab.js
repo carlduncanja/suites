@@ -298,6 +298,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                                 handleRecordPress={() => {
                                 }}
                                 editMode={isEditMode}
+                                isPhone={true}
                             />
 
                             : <InputWrapper>
@@ -338,6 +339,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                                 handleRecordPress={() => {
                                 }}
                                 editMode={isEditMode}
+                                isEmail={true}
                             />
                             : <InputWrapper>
                                 <InputLabelComponent label={'Email'} />
@@ -369,12 +371,14 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                                     recordValue={item.phone}
                                     handleRecordPress={() => {
                                     }}
+                                    isPhone={true}
                                 />
                                 <ResponsiveRecord
                                     recordTitle="Rep. Email"
                                     recordValue={item.email}
                                     handleRecordPress={() => {
                                     }}
+                                    isEmail={true}
                                 />
                             </RowWrapper>
                         )
