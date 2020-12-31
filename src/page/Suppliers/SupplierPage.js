@@ -151,9 +151,10 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
 
     const fetchSupplier = id => {
         setFetching(true);
+        setPageLoading(true);
         getSupplierById(id)
             .then(data => {
-                console.log('Data: ', data);
+                // console.log('Data: ', data);
                 setSelectedSupplier(data);
                 setProducts(data?.products || [])
             })
@@ -178,6 +179,13 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         const newState = {_id, ...selectedSupplier, ...updatedInfo};
         setSelectedSupplier(newState);
         updateSupplierAction(newState);
+    };
+
+    const onUpdatePurchaseOrders = data => {
+        setSelectedSupplier({
+            ...selectedSupplier,
+            purchaseOrders: [...data]
+        });
     };
 
     // const supplierDetails = { supplier, status: '' }
@@ -207,6 +215,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                     floatingActions={floatingActions}
                     data={selectedSupplier?.purchaseOrders}
                     onRefresh={() => fetchSupplier(_id)}
+                    onUpdatePurchaseOrders={onUpdatePurchaseOrders}
                     isEditMode={isEditMode}
                 />;
             default:
