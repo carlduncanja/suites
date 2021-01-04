@@ -1,29 +1,29 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert} from "react-native";
+import React, { useState, useEffect, useRef } from 'react';
+import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
 
 
-import {getPurchaseOrderById} from "../../api/network";
+import { getPurchaseOrderById } from "../../api/network";
 import OrderDetailsTab from '../../components/OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../../components/OverlayTabs/OrderItemTab';
 import SupplierDetailsTab from '../../components/OverlayTabs/SupplierDetailsTab';
-import {updatePurchaseOrder, updatePurchaseOrderDetails} from '../../api/network';
-import {PageContext} from "../../contexts/PageContext";
+import { updatePurchaseOrder, updatePurchaseOrderDetails } from '../../api/network';
+import { PageContext } from "../../contexts/PageContext";
 import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
 import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
 import ConfirmationComponent from '../../components/ConfirmationComponent';
-import {useModal} from 'react-native-modalfy';
+import { useModal } from 'react-native-modalfy';
 
-function OrderItemPage({route, navigation}) {
+function OrderItemPage({ route, navigation }) {
 
-    const {order, isOpenEditable, updateOrders} = route.params;
+    const { order, isOpenEditable, updateOrders } = route.params;
     const baseStateRef = useRef();
     const modal = useModal();
 
 
     const currentTabs = ["Details", "Items", "Suppliers"];
     // console.log("Order:", order);
-    const {_id, supplier = {}, purchaseOrderNumber, deliveryDate = "", description = ""} = order;
-    const {name = ""} = supplier
+    const { _id, supplier = {}, purchaseOrderNumber, deliveryDate = "", description = "" } = order;
+    const { name = "" } = supplier
 
 
     // ##### States
@@ -36,7 +36,7 @@ function OrderItemPage({route, navigation}) {
     const [isUpdateDone, setIsUpdateDone] = useState(false);
     const [isUpdateDetails, setIsUpdateDetails] = useState(false);
 
-    const {isEditMode} = pageState;
+    const { isEditMode } = pageState;
 
     // ##### Lifecycle Methods
     useEffect(() => {
@@ -62,7 +62,7 @@ function OrderItemPage({route, navigation}) {
 
     const handleSaveEdit = () => {
         let dataToSend = orderItems.map(item => {
-            const {amount = 0, productId = {}} = item
+            const { amount = 0, productId = {} } = item
             return {
                 amount,
                 productId: productId?._id || ""
@@ -244,7 +244,7 @@ function OrderItemPage({route, navigation}) {
         setPageLoading(true);
         getPurchaseOrderById(id)
             .then(data => {
-                const {orders = []} = data
+                const { orders = [] } = data
                 setSelectedOrder(data)
                 setOrderItems(orders)
             })
@@ -266,8 +266,8 @@ function OrderItemPage({route, navigation}) {
                 return <OrderDetailsTab
                     order={selectedOrder}
                     onUpdate={() => fetchOrder(_id)}
-                    // fields={fields}
-                    // onFieldChange={onFieldChange}
+                // fields={fields}
+                // onFieldChange={onFieldChange}
                 />
             case "Items":
                 return <OrderItemTab
@@ -279,15 +279,15 @@ function OrderItemPage({route, navigation}) {
                     onRemoveProductItems={onRemoveProductItems}
                 />
             case "Suppliers":
-                return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder}/>;
+                return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} onUpdated={fetchOrder} />;
             default:
-                return <View/>
+                return <View />
         }
     };
 
     return (
         <>
-            <PageContext.Provider value={{pageState, setPageState}}>
+            <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
                     headerChildren={[purchaseOrderNumber]}
                     onBackPress={BackTapped}
