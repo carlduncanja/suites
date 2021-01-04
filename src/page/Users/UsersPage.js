@@ -215,7 +215,10 @@ function UsersPage() {
                             onItemPress(user)();
                             setFloatingAction(false)
                         }}
-                        onCancel={() => setFloatingAction(false)}
+                        onCancel={() => {
+                            setFloatingAction(false);
+                            modal.closeAllModals();
+                        }}
                     />
                 ),
                 onClose: () => setFloatingAction(false),

@@ -39,7 +39,7 @@ const OverlayModal = (props) => {
             <View style={[{width: dimensions.width, height: state.pageMeasure.height}]}>
                 <TouchableOpacity
                     onPress={() => {
-                        closeModals(currentModal);
+                        // closeModals(currentModal);
                         onClose();
                     }}
                     activeOpacity={1}
