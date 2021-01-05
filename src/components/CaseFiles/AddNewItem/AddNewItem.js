@@ -99,9 +99,7 @@ const Description  = styled.Text( ({theme}) => ({
     color : theme.colors['--color-gray-700'],
 })); 
 
-
-function AddNewItem({itemToAdd}){
-
+function AddNewItem({itemToAdd}) {
     const theme = useTheme();
     const modal = useModal();
     const tabs = [itemToAdd];
