@@ -81,6 +81,7 @@ function SupplierProductsTab({
     products = [],
     onAddProducts,
     onProductsCreated,
+    onRefresh,
     isProductsLoading
 }) {
     // ######## STATES
@@ -159,10 +160,10 @@ function SupplierProductsTab({
     };
 
     const toggleCheckbox = item => () => {
-        const itemChecked = checkboxList.some(checkedItem => checkedItem._id === item._id);
+        const itemChecked = checkboxList.some(checkedItem => checkedItem?.inventoryVariant._id === item?.inventoryVariant._id);
         if (itemChecked) {
             // remove it from checkboxList
-            const filteredCheckboxList = checkboxList.filter(checkedItem => checkedItem._id !== item._id);
+            const filteredCheckboxList = checkboxList.filter(checkedItem => checkedItem.inventoryVariant._id !== item.inventoryVariant._id);
             setCheckboxList([...filteredCheckboxList]);
         } else setCheckboxList([...checkboxList, item]);
     };
@@ -234,6 +235,7 @@ function SupplierProductsTab({
                             isEditUpdate={false}
                             onAction={() => {
                                 modal.closeModals('ConfirmationModal');
+                                onRefresh();
                             }}
                         />,
                         onClose: () => {
@@ -433,7 +435,8 @@ function SupplierProductsTab({
     const onProductsCreation = data => {
         setProducts([...productsState, ...data]);
         setTimeout(() => {
-            onProductsCreated();
+            onRefresh()
+            // onProductsCreated();
         }, 200);
     };
 

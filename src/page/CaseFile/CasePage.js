@@ -31,7 +31,7 @@ import {
     getCaseFileById,
     removeQuotationCall,
     updateCaseQuotationStatus,
-    updateChargeSheet, approveChargeSheetCall, withdrawChargeSheetChangesCall, getUserCall
+    updateChargeSheet, approveChargeSheetCall, withdrawChargeSheetChangesCall, getUserCall, applyPaymentsChargeSheetCall, applyPaymentsChargeSheetInvoiceCall
 } from '../../api/network';
 import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
@@ -59,6 +59,7 @@ import {PageContext} from '../../contexts/PageContext';
 import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
 import ReportPreview from '../../components/CaseFiles/Reports/ReportPreview';
 import GenerateIcon from '../../../assets/svg/generateIcon';
+import DiscountIcon from '../../../assets/svg/discountIcon';
 import PreviewIcon from '../../../assets/svg/previewIcon';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
@@ -66,6 +67,8 @@ import WasteIcon from '../../../assets/svg/wasteIcon';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
 import AcceptIcon from '../../../assets/svg/acceptIcon';
 import {CHARGE_SHEET_STATUSES} from '../../components/CaseFiles/navigation/screens/ChargeSheet';
+import ApplyDiscountItem from './ApplyDiscountItem';
+import PayBalanceItem from './PayBalanceItem';
 
 const overlayMenu = [
     {
@@ -329,6 +332,98 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         });
     };
 
+    const onApplyDiscount = () => {
+        modal.closeAllModals();
+        setTimeout(() => {
+            modal.openModal('OverlayModal', {
+                content: (
+                    <ApplyDiscountItem
+                        onCreateDiscount={handlePayment}
+                        onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
+                    />
+                ),
+                onClose: () => { setFloatingAction(false); modal.closeAllModals(); },
+            });
+        }, 200);
+    };
+
+    const onPayBalance = () => {
+        modal.closeAllModals();
+        setTimeout(() => {
+            modal.openModal('OverlayModal', {
+                content: (
+                    <PayBalanceItem
+                        onAddPay={handlePayment}
+                        onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
+                    />
+                ),
+                onClose: () => { setFloatingAction(false); modal.closeAllModals(); },
+            });
+        }, 200);
+    };
+
+    const onPayInvoiceBalance = invoiceId => {
+        console.log("Invoice ID: ", invoiceId);
+        modal.closeAllModals();
+        setTimeout(() => {
+            modal.openModal('OverlayModal', {
+                content: (
+                    <PayBalanceItem
+                        onAddPay={(data) => handleInvoicePayment(invoiceId, data)}
+                        onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
+                    />
+                ),
+                onClose: () => { setFloatingAction(false); modal.closeAllModals(); },
+            });
+        }, 200);
+    };
+
+    const handleInvoicePayment = (invoiceId, data) => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isError={false}
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        console.log("Payment data: ", data);
+                        applyInvoicePayment(invoiceId, data);
+                    }}
+                    message="Do you want to save your changes?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => modal.closeModals('ConfirmationModal'),
+        });
+    };
+
+    const handlePayment = data => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isError={false}
+                    error={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        console.log("Payment data: ", data);
+                        applyPayment(caseId, data);
+                    }}
+                    message="Do you want to save your changes?"//general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () => modal.closeModals('ConfirmationModal'),
+        });
+    };
+
     const onAppointmentCreated = value => fetchCase(caseId);
 
     const onPatientUpdated = data => fetchCase(caseId);
@@ -570,6 +665,98 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     onClose: () => {
                         console.log('Modal closed');
                     },
+                });
+            })
+            .finally(_ => {
+                setPageLoading(false);
+            });
+    };
+
+    const applyPayment = (id, data) => {
+        setPageLoading(true);
+        applyPaymentsChargeSheetCall(id, data)
+            .then(_ => {
+                fetchCase(id);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => { modal.closeAllModals(); },
+                });
+            })
+            .catch(error => {
+                console.log('failed to apply appointment', error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Failed to Apply Payment."
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => { modal.closeAllModals(); },
+                });
+            })
+            .finally(_ => {
+                setPageLoading(false);
+            });
+    };
+
+    const applyInvoicePayment = (invoiceId, data) => {
+        setPageLoading(true);
+        applyPaymentsChargeSheetInvoiceCall(caseId, invoiceId, data)
+            .then(_ => {
+                fetchCase(caseId);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => { modal.closeAllModals(); },
+                });
+            })
+            .catch(error => {
+                console.log('failed to apply payment', error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Failed to Apply Payment."
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => { modal.closeAllModals(); },
                 });
             })
             .finally(_ => {
@@ -971,8 +1158,16 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             />
                         );
 
+                        const payBalanceAction = (
+                            <ActionItem
+                                title="Pay Balance"
+                                icon={<AcceptIcon/>}
+                                onPress={() => onPayInvoiceBalance(invoice?._id)}
+                            />
+                        );
+
                         // floatingAction.push(removeInvoices);
-                        floatingAction.push(downloadInvoice);
+                        floatingAction.push(downloadInvoice, payBalanceAction);
                     } else if (selectedInvoiceIds.length > 1) {
                         // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
                         //                                   onPress={onCreateInvoice}/>
@@ -982,6 +1177,13 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     break;
                 }
                 case 'Billing': {
+                    const applyDiscountAction = (
+                        <ActionItem
+                            title="Apply Discount"
+                            icon={<DiscountIcon/>}
+                            onPress={() => onApplyDiscount()}
+                        />
+                    );
                     const generateQuotationAction = (
                         <ActionItem
                             title="Generate Quotation"
@@ -1005,7 +1207,15 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         />
                     );
 
-                    floatingAction.push(generateQuotationAction, generateInvoiceAction, previewInvoice);
+                    const payBalanceAction = (
+                        <ActionItem
+                            title="Pay Balance"
+                            icon={<AcceptIcon/>}
+                            onPress={() => onPayBalance()}
+                        />
+                    )
+
+                    floatingAction.push(applyDiscountAction,generateQuotationAction, generateInvoiceAction, previewInvoice,payBalanceAction);
 
                     title = 'BILLING ACTIONS';
                     break;

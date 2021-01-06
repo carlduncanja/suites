@@ -10,6 +10,7 @@ import {updatedTheatreCall} from "../../api/network";
 import ConfirmationComponent from "../ConfirmationComponent";
 import {useModal} from "react-native-modalfy";
 import {PageContext} from "../../contexts/PageContext";
+import Footer from '../common/Page/Footer';
 
 const UiData = {
     description: "",
@@ -262,6 +263,11 @@ function TheatresDetailsTab({
 
                 <View style={styles.item}/>
             </View>
+
+            <Footer
+                hasPaginator={false}
+                hasActions={false}
+            />
         </View>
     );
 }

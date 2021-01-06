@@ -67,7 +67,7 @@ const listHeaders = [
 function Theatres(props) {
     const {theatres = [], setTheatres} = props;
     const theme = useTheme();
-    const pageTitle = 'Theatres';
+    const pageTitle = 'Theatre Rental';
     const modal = useModal();
     const recordsPerPage = 10;
 

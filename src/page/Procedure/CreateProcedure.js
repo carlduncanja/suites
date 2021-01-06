@@ -31,37 +31,37 @@ import DialogItems from '../../components/Procedures/DialogItems';
  */
 
 const PageWrapper = styled.View`
-    height : 100%;
-    width : 100%;
-    background-color : ${({theme}) => theme.colors['--default-shade-white']}; 
+  height: 100%;
+  width: 100%;
+  background-color: ${({theme}) => theme.colors['--default-shade-white']};
 `;
 const TabsContainer = styled.View`
-    height : 58px;
-    justify-content : flex-end;
-    background-color: ${({theme}) => theme.colors['--color-gray-200']};
+  height: 58px;
+  justify-content: flex-end;
+  background-color: ${({theme}) => theme.colors['--color-gray-200']};
 `;
 
 const ContentWrapper = styled.View`
-    height : 800px;
-    padding : ${({theme}) => theme.space['--space-28']};
+  height: 800px;
+  padding: ${({theme}) => theme.space['--space-28']};
 `;
 const ContentContainer = styled.View`
-    height : 100%;
-    width : 100%;
+  height: 100%;
+  width: 100%;
 `;
 
 const FooterWrapper = styled.View`
-    position : absolute;
-    bottom: 0; 
-    left : 0;
-    right : 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 `;
 
 const Divider = styled.View`
-    border-width : 1px;
-    border-color : ${({theme}) => theme.colors['--color-gray-300']};
-    margin-top : ${({theme}) => theme.space['--space-20']};
-    margin-bottom : ${({theme}) => theme.space['--space-32']};
+  border-width: 1px;
+  border-color: ${({theme}) => theme.colors['--color-gray-300']};
+  margin-top: ${({theme}) => theme.space['--space-20']};
+  margin-bottom: ${({theme}) => theme.space['--space-32']};
 `;
 
 function CreateProcedure({addProcedure, navigation, route}) {

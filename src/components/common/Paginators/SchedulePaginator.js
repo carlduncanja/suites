@@ -1,35 +1,48 @@
 import React, { Component, useState, useEffect, useContext } from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import Paginator from './Paginator';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import MultipleShadowsContainer from '../MultipleShadowContainer';
+import FloatingActionButton from '../../common/FloatingAction/FloatingActionButton';
 
 import SvgIcon from '../../../../assets/SvgIcon';
 
-const PaginatorWrapper = styled.View`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const FooterWrapper = styled.View`
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* justify-content: center; */
+  /* align-items: center; */
   position:absolute;
   width:100%;
-  height: 48px;
+  /* height: 48px; */
   bottom: 20;
-  padding-left:40px;
+  /* padding-left:40px; */
 `;
+
+const FooterContainer = styled.View`
+    display: flex;
+    flex:1;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    /* padding-left: 100px; */
+`;
+
 const PaginatorContainer = styled.View`
-  display: flex;
+    display: flex;
   /* padding: 10px 0; */
   /* min-width: 279px; */
   /* width:279px; */
   /* padding:10px 12px; */
-  background-color:${({ theme }) => theme.colors['--default-shade-white']};
+    background-color:${({ theme }) => theme.colors['--default-shade-white']};
   /* box-shadow:${({ theme }) => theme.shadow['--shadow-lg']}; */
-  border-radius:32px;
-
-  
+    border-radius:32px;
+    margin-right: 84px;
 `;
+
+
 
 const PaginatorView = styled.View`
   flex-direction:row;
@@ -84,29 +97,34 @@ const SchedulePaginator = ({
     const [state] = useContext(SuitesContext);
     const theme = useTheme();
 
-
     return (
-        <PaginatorWrapper>
-            <MultipleShadowsContainer shadows={shadows}>
+        <FooterWrapper>
+            <FooterContainer>
 
-                <PaginatorContainer theme={theme}>
-                    <PaginatorView>
-                        <ArrowContainer onPress={goToPreviousDay}>
-                            <SvgIcon iconName="paginationPrev" strokeColor="#104587" />
-                        </ArrowContainer>
+                <MultipleShadowsContainer shadows={shadows}>
+                    <PaginatorContainer theme={theme}>
+                        <PaginatorView>
+                            <ArrowContainer onPress={goToPreviousDay}>
+                                <SvgIcon iconName="paginationPrev" strokeColor="#104587" />
+                            </ArrowContainer>
 
-                        <NumberContainer>
-                            <DateText>{date}</DateText>
-                        </NumberContainer>
+                            <NumberContainer>
+                                <DateText>{date}</DateText>
+                            </NumberContainer>
 
-                        <ArrowContainer onPress={goToNextDay}>
-                            <SvgIcon iconName="paginationNext" strokeColor="#104587" />
-                        </ArrowContainer>
-                    </PaginatorView>
-                </PaginatorContainer>
-    
-            </MultipleShadowsContainer>
-        </PaginatorWrapper>
+                            <ArrowContainer onPress={goToNextDay}>
+                                <SvgIcon iconName="paginationNext" strokeColor="#104587" />
+                            </ArrowContainer>
+                        </PaginatorView>
+                    </PaginatorContainer>
+                </MultipleShadowsContainer>
+                 
+                <FloatingActionButton
+                    isDisabled={true}
+                    hasActions={false}
+                />
+            </FooterContainer>
+        </FooterWrapper>
     );
 };
 

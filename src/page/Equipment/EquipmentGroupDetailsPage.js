@@ -11,6 +11,7 @@ import EquipmentGroupItemsTab from "../../components/OverlayTabs/EquipmentGroupI
 import EditableEquipmentGroupTab from '../../components/OverlayTabs/EditableEquipmentGroupTab';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { updateEquipmentType } from "../../api/network"
+import EquipmentSuppliersTab from '../../components/OverlayTabs/EquipmentSuppliersTab';
 
 
 function EquipmentGroupDetailsPage(props) {
@@ -47,6 +48,7 @@ function EquipmentGroupDetailsPage(props) {
         setPageLoading(true)
         getEquipmentTypeById(id)
             .then(data => {
+                console.log("Dta: ", data);
                 setSelectedEquipment(data)
             })
             .catch(error => {
@@ -230,7 +232,7 @@ function EquipmentGroupDetailsPage(props) {
             case "Items":
                 return <EquipmentGroupItemsTab items={selectedEquipment.equipments}/>
             case "Suppliers":
-                return
+                return <EquipmentSuppliersTab suppliers={selectedEquipment?.suppliers || []}/>
             default:
                 break;
         }
