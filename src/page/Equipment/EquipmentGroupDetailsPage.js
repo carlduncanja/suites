@@ -22,7 +22,7 @@ function EquipmentGroupDetailsPage(props) {
         }
     } = props.route.params;
     const {name = "", _id = "", equipments = [], suppliers = [], description = '', categories = []} = data
-    const tabs = ["Details", "Items", "Suppliers"];
+    const tabs = ["Details", "Items"];
     const [currentTab, setCurrentTab] = useState(tabs[0]);
     const [pageState, setPageState] = useState({});
     const [selectedEquipment, setSelectedEquipment] = useState({});
@@ -231,8 +231,8 @@ function EquipmentGroupDetailsPage(props) {
                     />
             case "Items":
                 return <EquipmentGroupItemsTab items={selectedEquipment.equipments}/>
-            case "Suppliers":
-                return <EquipmentSuppliersTab suppliers={selectedEquipment?.suppliers || []}/>
+            // case "Suppliers":
+            //     return <EquipmentSuppliersTab suppliers={selectedEquipment?.suppliers || []}/>
             default:
                 break;
         }
