@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { withModal } from 'react-native-modalfy';
 import { isEmpty, isError, result } from 'lodash';
 import styled, {css} from '@emotion/native';
+import axios from 'axios';
 import {useTheme} from 'emotion-theming';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
@@ -350,19 +351,34 @@ const SupplierPurchaseOrders = ({
     };
 
     const handlePromise = async () => {
-        const requests = purchaseOrdersData.map(item => {
-            return new Promise((resolve, reject) => {
-                updatePurchaseOrderDetails(item._id, { ...item, deliveryDate: item.deliveryDate})
+        const promises = [];
+        purchaseOrdersData.forEach(item => {
+            const newPromise = new Promise((resolve, reject) => {
+                console.log('Item: ', item);
+                updatePurchaseOrderDetails(item._id, { ...item })
                     .then(data => {
                         resolve(data);
                     })
                     .catch(err => {
-                        reject(err);
+                        resolve(err);
+                        // reject(err);
                     });
             });
+            promises.push(newPromise);
         });
-
-        await Promise.all(requests)
+        // const requests = purchaseOrdersData.map(item => {
+        //     return new Promise((resolve, reject) => {
+        //         updatePurchaseOrderDetails(item._id, { ...item, deliveryDate: item.deliveryDate})
+        //             .then(data => {
+        //                 resolve(data);
+        //             })
+        //             .catch(err => {
+        //                 reject(err);
+        //             });
+        //     });
+        // });
+        console.log('Promises: ', promises);
+        Promise.all(promises)
             .then(result => {
                 //this gets called when all the promises have resolved/rejected.
                 result.forEach(res => console.log('Response: ', res));
