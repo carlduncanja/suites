@@ -351,16 +351,18 @@ const SupplierPurchaseOrders = ({
     };
 
     const handlePromise = async () => {
+        console.log('HANDLE PROMISE');
         const promises = [];
+        let hasError = false;
         purchaseOrdersData.forEach(item => {
             const newPromise = new Promise((resolve, reject) => {
-                console.log('Item: ', item);
                 updatePurchaseOrderDetails(item._id, { ...item })
                     .then(data => {
                         resolve(data);
                     })
                     .catch(err => {
                         resolve(err);
+                        hasError = true;
                         // reject(err);
                     });
             });
@@ -377,35 +379,41 @@ const SupplierPurchaseOrders = ({
         //             });
         //     });
         // });
-        console.log('Promises: ', promises);
+
         Promise.all(promises)
             .then(result => {
+                
                 //this gets called when all the promises have resolved/rejected.
                 result.forEach(res => console.log('Response: ', res));
-                modal.openModal('ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isError={false}
-                            isEditUpdate={false}
-                            onAction={() => { modal.closeModals('ConfirmationModal'); }}
-                            onCancel={() => { modal.closeModals('ConfirmationModal'); }}
-                        />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
-                    });
-                // console.log('Response: ', result);
+                if (hasError) {
+                    // show error state of confirmation screen
+                    // to convey either one or more responses have failed
+                    modal.openModal('ConfirmationModal',
+                        {
+                            content: <ConfirmationComponent
+                                isError={true}
+                                isEditUpdate={false}
+                                onAction={() => { modal.closeModals('ConfirmationModal'); }}
+                                onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+                                message="One or more of the dates were not updated"
+                            />,
+                            onClose: () => { modal.closeModals('ConfirmationModal'); }
+                        });
+                } else {
+                    // show success state of confirmation screen
+                    modal.openModal('ConfirmationModal',
+                        {
+                            content: <ConfirmationComponent
+                                isError={false}
+                                isEditUpdate={false}
+                                onAction={() => { modal.closeModals('ConfirmationModal'); }}
+                                onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+                            />,
+                            onClose: () => { modal.closeModals('ConfirmationModal'); }
+                        });
+                }
             })
             .catch(err => {
-                modal.openModal('ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isError={true}
-                            isEditUpdate={false}
-                            onAction={() => { modal.closeModals('ConfirmationModal'); }}
-                            onCancel={() => { modal.closeModals('ConfirmationModal'); }}
-                            message="One or more of the dates were not updated"
-                        />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
-                    });
                 console.log('Error reject:', err);
             })
             .finally(_ => onRefresh());
