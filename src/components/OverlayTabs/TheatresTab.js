@@ -1,5 +1,5 @@
-import React,{ useState, useEffect  } from "react";
-import { View, Text, StyleSheet} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 import Table from '../common/Table/Table';
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
@@ -12,9 +12,9 @@ import Footer from '../../components/common/Page/Footer';
 import LongPressWithFeedback from "../common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 
-import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
+import { useNextPaginator, usePreviousPaginator } from "../../helpers/caseFilesHelpers";
 import { withModal } from "react-native-modalfy";
-import {LONG_PRESS_TIMER} from '../../const';
+import { LONG_PRESS_TIMER } from '../../const';
 import DataItem from "../common/List/DataItem";
 import TouchableDataItem from "../common/List/TouchableDataItem";
 import Item from "../common/Table/Item";
@@ -22,40 +22,40 @@ import Item from "../common/Table/Item";
 
 const headers = [
     {
-        name : 'Theatre',
-        alignment : 'flex-start',
-        flex:2
+        name: 'Theatre',
+        alignment: 'flex-start',
+        flex: 2
     },
     {
-        name : 'Status',
-        alignment : 'center'
+        name: 'Status',
+        alignment: 'center'
     },
     {
-        name : 'Recovery',
-        alignment : 'center'
+        name: 'Recovery',
+        alignment: 'center'
     },
     {
-        name : 'Availability',
-        alignment : 'flex-end'
+        name: 'Availability',
+        alignment: 'flex-end'
     }
 ]
 
 const testData = [
     {
-        room : 'Operating Room 1',
-        status : 'In Use',
-        recovery : 'Yes',
-        availability : 2
+        room: 'Operating Room 1',
+        status: 'In Use',
+        recovery: 'Yes',
+        availability: 2
     },
     {
-        room : 'Operating Room 2',
-        status : 'In Use',
-        recovery : 'Yes',
-        availability : 2
+        room: 'Operating Room 2',
+        status: 'In Use',
+        recovery: 'Yes',
+        availability: 2
     }
 ]
 
-const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
+const TheatresTab = ({ modal, theatresData, onAddTheatre }) => {
 
     const recordsPerPage = 10;
     const [isFloatingActionDisabled, setFloatingAction] = useState(false)
@@ -65,13 +65,13 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
-    useEffect(()=>{
+    useEffect(() => {
         setTotalPages(Math.ceil(theatresData.length / recordsPerPage))
-    },[])
+    }, [])
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -81,7 +81,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -93,11 +93,11 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
         const recoveryColor = isRecovery ? '--color-green-600' : '--color-red-600';
         return (
             <>
-                <TouchableDataItem flex={2} fontStyle="--text-base-medium" text={name} isDisabled={true}/>
-                <DataItem flex={1} fontStyle="--text-sm-medium" align="center" color="--color-orange-600" text={status}/>
-                <DataItem flex={1} fontStyle="--text-sm-medium" align="center" color={recoveryColor} text={isRecovery ? 'Yes' : 'No'}/>
-                <DataItem flex={1} fontStyle="--text-sm-regular" align="flex-end" color="--color-gray-800" text={`${availability} slots`}/>
-                
+                <TouchableDataItem flex={2} fontStyle="--text-base-medium" text={name} isDisabled={true} />
+                <DataItem flex={1} fontStyle="--text-sm-medium" align="center" color="--color-orange-600" text={status} />
+                <DataItem flex={1} fontStyle="--text-sm-medium" align="center" color={recoveryColor} text={isRecovery ? 'Yes' : 'No'} />
+                <DataItem flex={1} fontStyle="--text-sm-regular" align="flex-end" color="--color-gray-800" text={`${availability} slots`} />
+
                 {/* <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
                     <View style={{flex:2}}>
                         <Text style={{fontSize:16, color:'#3182CE'}}>{name}</Text>
@@ -121,7 +121,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
             <Item
                 itemView={listItemFormat(item)}
                 hasCheckBox={false}
-                onItemPress={() => {}}
+                onItemPress={() => { }}
             />
         );
     };
@@ -140,10 +140,10 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 
     const getFabActions = () => {
         const deleteAction =
-        <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} onLongPress={()=>{}}>
-            <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
-        </LongPressWithFeedback>;
-        const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={ openAddItem }/>;
+            <LongPressWithFeedback pressTimer={LONG_PRESS_TIMER.MEDIUM} onLongPress={() => { }}>
+                <ActionItem title={"Hold to Delete"} icon={<WasteIcon />} onPress={() => { }} touchable={false} />
+            </LongPressWithFeedback>;
+        const addItem = <ActionItem title={"Add Item"} icon={<AddIcon />} onPress={openAddItem} />;
 
 
         return <ActionContainer
@@ -181,7 +181,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
                     'OverlayModal',
                     {
                         content: <AddItemDialog
-                            itemType = "Theatres"
+                            itemType="Theatres"
                             onCancel={() => setFloatingAction(false)}
                             onCreated={onAddTheatre}
                         />,
@@ -193,14 +193,14 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 
     let dataToDisplay = [...theatresData];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
- 
+
     return (
         <>
             <Table
-                data = {dataToDisplay}
-                listItemFormat = {renderTheatreItem}
-                headers = {headers}
-                isCheckbox = {false}
+                data={dataToDisplay}
+                listItemFormat={renderTheatreItem}
+                headers={headers}
+                isCheckbox={false}
             />
 
             <Footer
@@ -208,29 +208,13 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
                 goToPreviousPage={goToPreviousPage}
-                isDisabled = {isFloatingActionDisabled}
-                toggleActionButton = {toggleActionButton}
-                hasPaginator = {true}
-                hasActionButton = {true}
-                hasActions = {true}
-                isNextDisabled = {false}
-                isPreviousDisabled = {false}
-            />
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={false}
+                hasActionButton={false}
+                hasActions={false}
 
-            {/* <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-                <FloatingActionButton
-                    isDisabled = {isFloatingActionDisabled}
-                    toggleActionButton = {toggleActionButton}
-                />
-            </View> */}
+            />
         </>
 
     )
@@ -239,7 +223,7 @@ const TheatresTab = ({modal, theatresData, onAddTheatre}) => {
 export default withModal(TheatresTab)
 
 const styles = StyleSheet.create({
-    footer : {
+    footer: {
         flex: 1,
         flexDirection: 'row',
         position: 'absolute',
