@@ -17,15 +17,19 @@ import CreatePurchaseOrderDialog from '../Suppliers/CreatePurchaseOrderDialog';
 import CreateInventoryDialogContainer from '../Inventory/CreateInventoryDialogContainer';
 import DataItem from '../common/List/DataItem';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
+import LongPressWithFeedback from '../common/LongPressWithFeedback';
+import { LONG_PRESS_TIMER } from '../../const';
+
 import ConfirmationComponent from '../ConfirmationComponent';
 
 import Cart from '../../../assets/svg/cart';
 import ActionItem from '../common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
+import WasteIcon from '../../../assets/svg/wasteIcon';
 
 import { currencyFormatter } from '../../utils/formatter';
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
-import { getSupplierProducts, createPurchaseOrder } from '../../api/network';
+import { getSupplierProducts, createPurchaseOrder, removeSupplierProducts } from '../../api/network';
 import { addCartItem } from '../../redux/actions/cartActions';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { PageContext } from '../../contexts/PageContext';
@@ -106,10 +110,9 @@ function SupplierProductsTab({
     const [cartItems, setCartItems] = useState([]);
     const { pageState } = useContext(PageContext);
 
-
+    console.log("Products: ", products);
 
     // ######## CONST
-
 
     // ######## LIFECYCLE METHODS
 
@@ -120,7 +123,6 @@ function SupplierProductsTab({
         }, 200);
     }, []);
 
-
     // ######## EVENT HANDLERS
 
     const onProductsPress = productItem => () => {
@@ -130,11 +132,9 @@ function SupplierProductsTab({
         navigation.navigate('SupplierProductPage', { product: productItem, onUpdated: onProductUpdate });
     };
 
-    const onProductUpdate = (value) => {
-        const updated = productsState.map(item => {
-            return item._id === value._id ? { ...value } : { ...item }
-        })
-        setProducts(updated)
+    const onProductUpdate = value => {
+        const updated = productsState.map(item => item._id === value._id ? { ...value } : { ...item })
+        setProducts(updated);
     }
 
     const onSearchChange = input => {
@@ -360,9 +360,28 @@ function SupplierProductsTab({
 
     const actions = () => {
         const isDisabled = checkboxList.length === 0;
+        const isDisabledColor = isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
+
+
+        const deleteProduct = (
+            <LongPressWithFeedback
+                pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                onLongPress={onRemoveProducts}
+                isDisabled={isDisabled}
+            >
+                <ActionItem
+                    title="Hold to Delete"
+                    icon={<WasteIcon strokeColor={isDisabledColor}/>}
+                    onPress={() => {
+                    }}
+                    touchable={false}
+                    disabled={isDisabled}
+                />
+            </LongPressWithFeedback>
+        );
         const addCart = (
             <ActionItem
-                title="Add to Cart"
+                title="Add Item to Cart"
                 icon={<AddIcon
                     strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-600']} />}
                 disabled={isDisabled}
@@ -370,9 +389,10 @@ function SupplierProductsTab({
                 onPress={addToCartAction}
             />
         );
-        const addProduct = <ActionItem title="Add Product" icon={<AddIcon />} onPress={addProductAction} />;
+        const addProduct = <ActionItem title="Create Product" icon={<AddIcon />} onPress={addProductAction} />;
         return <ActionContainer
             floatingActions={[
+                deleteProduct,
                 addCart,
                 addProduct
             ]}
@@ -446,6 +466,77 @@ function SupplierProductsTab({
             supplierId,
             onProductsCreation
         });
+    };
+
+    const onRemoveProducts = () => {
+        const ids = checkboxList.map(item => item._id);
+        modal.closeAllModals();
+        setTimeout(() => {
+            modal.openModal('ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={true}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            setTimeout(() => {
+                                console.log('Supplier Id: ', supplierId);
+                                console.log('Remove Ids: ', ids);
+                                removeProducts(ids);
+                            }, 200);
+                        }}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        message="Do you want to save your changes ?"
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                }
+            );
+        }, 200);
+    };
+
+    const removeProducts = data => {
+        removeSupplierProducts(supplierId, data)
+            .then(_ => {
+                console.log('Success Remove Products');
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => { modal.closeModals('ConfirmationModal'); }}
+                            onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+                            message="Products successfully deleted"
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+            })
+            .catch(error => {
+                console.log("Error:", error);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            onAction={() => { modal.closeModals('ConfirmationModal'); }}
+                            onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+                            message="Failed to remove products"
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+            })
+            .finally(_ => onRefresh());
     };
 
     const listItemFormat = item => (

@@ -145,7 +145,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
             })
             .finally(_ => {
                 setPageLoading(false);
-                console.log("Finished")
+                console.log("Finished");
             });
     };
 
@@ -154,9 +154,9 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         setPageLoading(true);
         getSupplierById(id)
             .then(data => {
-                // console.log('Data: ', data);
+                // console.log('Supplier Products: ', data.products);
                 setSelectedSupplier(data);
-                setProducts(data?.products || [])
+                setProducts(data?.products || []);
             })
             .catch(error => {
                 console.log('Failed to get supplier', error);
@@ -208,6 +208,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                             onProductsCreated={() => fetchSupplier(_id)}
                             onRefresh={() => fetchSupplier(_id)}
                             supplierId={_id}
+                            onRefresh={() => { console.log("Refreshing"); setPageLoading(true); fetchSupplier(_id); }}
                         />
                     );
             case 'Purchase Orders':

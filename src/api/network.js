@@ -610,6 +610,11 @@ export const archiveSupplier = async supplierId => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const removeSupplierProducts = async (supplierId, data) => suitesAxiosInstance
+    .delete(supplierProductsEndpoint(supplierId), {data})
+    .then(handleResponse)
+    .catch(handleError);
+
 // ################# PurchaseOrders Endpoints
 export const getPurchaseOrders = async (query, max, page) => suitesAxiosInstance
     .get(purchaseOrdersEndpoint, {params: {query, max, page}})
