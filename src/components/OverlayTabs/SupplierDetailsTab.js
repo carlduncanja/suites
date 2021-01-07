@@ -56,7 +56,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
 
     const fieldsBaseStateRef = useRef();
     const modal = useModal();
-    const theme = useTheme();
+    const theme = useTheme(); 
 
     const { supplier = {} } = order;
     const { pageState, setPageState } = useContext(PageContext);
