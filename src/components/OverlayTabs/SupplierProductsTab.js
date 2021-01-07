@@ -478,6 +478,8 @@ function SupplierProductsTab({
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
                             setTimeout(() => {
+                                console.log('Supplier Id: ', supplierId);
+                                console.log('Remove Ids: ', ids);
                                 removeProducts(ids);
                             }, 200);
                         }}
@@ -495,10 +497,9 @@ function SupplierProductsTab({
     };
 
     const removeProducts = data => {
-        console.log("Data: ", data);
-        console.log("Supplier id: ", supplierId);
         removeSupplierProducts(supplierId, data)
             .then(_ => {
+                console.log('Success Remove Products');
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -534,8 +535,7 @@ function SupplierProductsTab({
                 );
             })
             .finally(_ => onRefresh());
-    
-        };
+    };
 
     const listItemFormat = item => (
         <>

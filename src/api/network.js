@@ -592,7 +592,7 @@ export const archiveSupplier = async supplierId => suitesAxiosInstance
     .catch(handleError);
 
 export const removeSupplierProducts = async (supplierId, data) => suitesAxiosInstance
-    .delete(supplierProductsEndpoint(supplierId), data)
+    .delete(supplierProductsEndpoint(supplierId), {data})
     .then(handleResponse)
     .catch(handleError);
 
