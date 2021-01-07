@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { withModal } from 'react-native-modalfy';
-import { isEmpty } from 'lodash';
+import { isEmpty, isError, result } from 'lodash';
+import styled, {css} from '@emotion/native';
+import axios from 'axios';
+import {useTheme} from 'emotion-theming';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import { formatDate } from '../../utils/formatter';
@@ -23,7 +26,17 @@ import LongPressWithFeedback from '../common/LongPressWithFeedback';
 import { LONG_PRESS_TIMER } from '../../const';
 import WasteIcon from '../../../assets/svg/wasteIcon';
 import ConfirmationComponent from '../ConfirmationComponent';
-import { removePurchaseOrders, archivePurchaseOrders } from '../../api/network';
+import { removePurchaseOrders, updatePurchaseOrderDetails, archivePurchaseOrders } from '../../api/network';
+import DateInputField from '../common/Input Fields/DateInputField';
+import { PageContext } from '../../contexts/PageContext';
+
+const EditDateRecord = styled.View`
+    flex: 1.2;
+    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-300']}` };
+    border-radius: 6px;
+    flex-direction: row;
+    justify-content: space-between;
+`;
 
 const testData = [
     {
@@ -54,9 +67,11 @@ const SupplierPurchaseOrders = ({
     modal,
     isArchive = false,
     data = [],
-    onRefresh = () => {
-    }
+    onRefresh = () => {},
+    onUpdatePurchaseOrders = () => {},
+    // isEditMode
 }) => {
+    const [purchaseOrdersData, setPurchaseOrdersData] = useState(data);
     const [checkBoxList, setCheckBoxList] = useState([]);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [hasActionButton, setHasActionButton] = useState(!isArchive);
@@ -66,7 +81,13 @@ const SupplierPurchaseOrders = ({
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
     const [tabDetails, setTabDetails] = useState([]);
-    console.log("PO Data: ", data);
+
+    const { pageState, setPageState } = useContext(PageContext);
+    const [isUpdated, setUpdated] = useState(false);
+    const [isLoading, setLoading] = useState(false);
+    const [hasFailed, setHasFailed] = useState(false);
+    const { isEditMode } = pageState;
+
     const recordsPerPage = 15;
 
     const headers = [
@@ -95,7 +116,7 @@ const SupplierPurchaseOrders = ({
         {
             name: 'Delivery Date',
             alignment: 'flex-start',
-            flex: 1
+            flex: 1.2
 
         }
     ];
@@ -105,7 +126,34 @@ const SupplierPurchaseOrders = ({
         setTotalPages(Math.ceil(data.length / recordsPerPage));
     }, []);
 
-
+    useEffect(() => {
+        if (isUpdated && !isEditMode) {
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={true}
+                        onCancel={() => {
+                            // resetState()
+                            setPageState({ ...pageState, isEditMode: true });
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            handlePromise();
+                            // handlePOCall();
+                            setUpdated(!isUpdated);
+                        }}
+                        message="Do you want to save these changes?"
+                        action="Yes"
+                    />
+                ),
+                onClose: () => {
+                    console.log('Modal closed');
+                },
+            });
+        }
+    }, [isEditMode]);
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
@@ -302,6 +350,123 @@ const SupplierPurchaseOrders = ({
         //     setCheckBoxList(tabDetails)
     };
 
+    const handlePromise = async () => {
+        console.log('HANDLE PROMISE');
+        const promises = [];
+        let hasError = false;
+        purchaseOrdersData.forEach(item => {
+            const newPromise = new Promise((resolve, reject) => {
+                updatePurchaseOrderDetails(item._id, { ...item })
+                    .then(data => {
+                        resolve(data);
+                    })
+                    .catch(err => {
+                        resolve(err);
+                        hasError = true;
+                        // reject(err);
+                    });
+            });
+            promises.push(newPromise);
+        });
+        // const requests = purchaseOrdersData.map(item => {
+        //     return new Promise((resolve, reject) => {
+        //         updatePurchaseOrderDetails(item._id, { ...item, deliveryDate: item.deliveryDate})
+        //             .then(data => {
+        //                 resolve(data);
+        //             })
+        //             .catch(err => {
+        //                 reject(err);
+        //             });
+        //     });
+        // });
+
+        Promise.all(promises)
+            .then(result => {
+                
+                //this gets called when all the promises have resolved/rejected.
+                result.forEach(res => console.log('Response: ', res));
+                if (hasError) {
+                    // show error state of confirmation screen
+                    // to convey either one or more responses have failed
+                    modal.openModal('ConfirmationModal',
+                        {
+                            content: <ConfirmationComponent
+                                isError={true}
+                                isEditUpdate={false}
+                                onAction={() => { modal.closeModals('ConfirmationModal'); }}
+                                onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+                                message="One or more of the dates were not updated"
+                            />,
+                            onClose: () => { modal.closeModals('ConfirmationModal'); }
+                        });
+                } else {
+                    // show success state of confirmation screen
+                    modal.openModal('ConfirmationModal',
+                        {
+                            content: <ConfirmationComponent
+                                isError={false}
+                                isEditUpdate={false}
+                                onAction={() => { modal.closeModals('ConfirmationModal'); }}
+                                onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+                            />,
+                            onClose: () => { modal.closeModals('ConfirmationModal'); }
+                        });
+                }
+            })
+            .catch(err => {
+                console.log('Error reject:', err);
+            })
+            .finally(_ => onRefresh());
+    };
+
+    // const handlePOCall = () => {
+    //     purchaseOrdersData.map(item => (
+    //         updatePurchaseOrderDetails(item._id, { ...item, deliveryDate: item.deliveryDate })
+    //             .then(_ => {
+    //                 console.log('Here');
+    //                 modal.openModal('ConfirmationModal',
+    //                     {
+    //                         content: <ConfirmationComponent
+    //                             isError={false}
+    //                             isEditUpdate={false}
+    //                             onAction={() => { modal.closeModals('ConfirmationModal'); }}
+    //                             onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+    //                         />,
+    //                         onClose: () => { modal.closeModals('ConfirmationModal'); }
+    //                     });
+    //             })
+    //             .catch(error => {
+    //                 console.log(' API Error: ', error, item._id);
+    //                 modal.openModal('ConfirmationModal',
+    //                     {
+    //                         content: <ConfirmationComponent
+    //                             isError={true}
+    //                             isEditUpdate={false}
+    //                             onAction={() => { modal.closeModals('ConfirmationModal'); }}
+    //                             onCancel={() => { modal.closeModals('ConfirmationModal'); }}
+    //                         />,
+    //                         onClose: () => { modal.closeModals('ConfirmationModal'); }
+    //                     });
+    //             })
+    //             .finally(_ => onRefresh())
+    //     ));
+    // };
+    
+    const onUpdateDate = value => dataItem => {
+        // update value for specific item
+        setUpdated(true);
+        console.log('Value:', value);
+        const updateItemId = dataItem?._id;
+        const newDataObj = {...dataItem, deliveryDate: value || dataItem.deliveryDate };
+
+        const updatedPOData = purchaseOrdersData.map(item => (item._id === dataItem._id ?
+            {...newDataObj} :
+            {...item}));
+        
+        setPurchaseOrdersData([...updatedPOData]);
+        onUpdatePurchaseOrders([...updatedPOData]);
+    };
+
     const listItemFormat = item => {
         const { invoiceNumber = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '' } = item;
         const invoice = invoiceNumber === '' ? 'n/a' : invoiceNumber;
@@ -330,9 +495,24 @@ const SupplierPurchaseOrders = ({
                     color={statusColor}
                     fontStyle="--text-sm-medium"
                 />
-                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY') || 'n/a'} />
-                <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} />
-
+                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY') || 'n/a'}/>
+                {
+                    isEditMode ? (
+                        <EditDateRecord>
+                            <DateInputField
+                                onDateChange={value => onUpdateDate(value)(item)}
+                                value={deliveryDate}
+                                onClear={onUpdateDate}
+                                placeholder="DD/MM/YYYY"
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                minDate={new Date()}
+                            />
+                        </EditDateRecord>
+                    ) :
+                        <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} flex={1.2}/>
+                }
+                
                 {/* <View style={[styles.item,{flex:1}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{order}</Text>
                 </View>
