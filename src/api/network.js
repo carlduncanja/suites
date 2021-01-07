@@ -71,7 +71,11 @@ import {
     alertsEndpoint,
     closeAlertEndpoint,
     configEndpoint,
-    updateBufferEndpoint
+    updateBufferEndpoint,
+    userPassword,
+    chargeSheetApplyPaymentEndpoint,
+    chargeSheetInvoiceApplyPaymentEndpoint
+
 
 } from '../const/suitesEndpoints';
 import {createDocumentLink} from '../const/documentGenerationEndpoints';
@@ -143,6 +147,11 @@ export const deleteRoleCall = async roleIds => suitesAxiosInstance
 
 export const registrationCall = async params => suitesAxiosInstance
     .post(registrationEndpoint, params)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const resetUserPassword = async (userId, updateData) => suitesAxiosInstance
+    .put(userPassword(userId), updateData)
     .then(handleResponse)
     .catch(handleError);
 
@@ -341,6 +350,16 @@ export const approveChargeSheetCall = async (id, params) => suitesAxiosInstance
 
 export const withdrawChargeSheetChangesCall = async id => suitesAxiosInstance
     .put(chargeSheetWithdrawChangesEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const applyPaymentsChargeSheetCall = async (id, data) => suitesAxiosInstance
+    .put(chargeSheetApplyPaymentEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const applyPaymentsChargeSheetInvoiceCall = async (caseId, invoiceId, data) => suitesAxiosInstance
+    .put(chargeSheetInvoiceApplyPaymentEndpoint(caseId, invoiceId), data)
     .then(handleResponse)
     .catch(handleError);
 

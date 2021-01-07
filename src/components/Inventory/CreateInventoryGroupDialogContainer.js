@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity} from "react-native";
+import { View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity } from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
 import InputUnitField from "../common/Input Fields/InputUnitFields";
@@ -12,10 +12,10 @@ import OptionsField from "../common/Input Fields/OptionsField";
 import AutoFillField from "../common/Input Fields/AutoFillField";
 import CreatePageHeader from '../common/DetailsPage/CreatePageHeader';
 import CreatePreviousDoneFooter from '../common/DetailsPage/CreatePreviousDoneFooter';
-
-import {connect} from "react-redux";
+import { addCategory } from '../../api/network'
+import { connect } from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import {createInventoryGroup, getInventories, getCategories, getSuppliers,} from "../../api/network";
+import { createInventoryGroup, getInventories, getCategories, getSuppliers, } from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import TextArea from '../common/Input Fields/TextArea';
@@ -24,8 +24,8 @@ import FieldContainer from '../common/FieldContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 import _ from "lodash";
 
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
 
 /**
@@ -40,17 +40,17 @@ import OverlayDialogContent from '../common/Dialog/OverlayContent';
 const PageWrapper = styled.View`
     height : 100%;
     width : 100%;
-    background-color : ${ ({theme}) => theme.colors['--default-shade-white']}; 
+    background-color : ${({ theme }) => theme.colors['--default-shade-white']}; 
 `;
 const TabsContainer = styled.View`
     height : 58px;
     justify-content : flex-end;
-    background-color: ${ ({theme}) => theme.colors['--color-gray-200']};
+    background-color: ${({ theme }) => theme.colors['--color-gray-200']};
 `;
 
 const ContentWrapper = styled.View`
     height : 800px;
-    padding : ${ ({theme}) => theme.space['--space-28']};
+    padding : ${({ theme }) => theme.space['--space-28']};
 `;
 const ContentContainer = styled.View`
     height : 100%;
@@ -63,15 +63,15 @@ const FooterWrapper = styled.View`
     left : 0;
     right : 0;
 `;
- 
+
 const Divider = styled.View`
     border-width : 1px;
-    border-color : ${ ({theme}) => theme.colors['--color-gray-300']};
-    margin-top : ${ ({theme}) => theme.space['--space-20']};
-    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+    border-color : ${({ theme }) => theme.colors['--color-gray-300']};
+    margin-top : ${({ theme }) => theme.space['--space-20']};
+    margin-bottom : ${({ theme }) => theme.space['--space-32']};
 `;
 
-function CreateInventoryGroupDialogContainer({navigation, route}) {
+function CreateInventoryGroupDialogContainer({ navigation, route }) {
 
     // ######### CONST
     const { onCancel, onCreated } = route.params;
@@ -82,12 +82,18 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
     // ######### STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
 
-    const [fields, setFields] = useState({});
+    const [fields, setFields] = useState({
+        category: '',
+        name: '',
+        unit: '',
+        unitOfMeasurement: '',
+        markup: ''
+    });
     const [errorFields, setErrorFields] = useState({})
     const [popoverList, setPopoverList] = useState([
         {
-            name : "category",
-            status : false
+            name: "category",
+            status: false
         }
     ])
 
@@ -104,7 +110,7 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
 
         if (!categorySearchValue) {
             // empty search values and cancel any out going request.
-            setCategorySearchResult([]);
+            fetchCategory()
             if (categorySearchQuery.cancel) categorySearchQuery.cancel();
             return;
         }
@@ -123,14 +129,11 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
         search()
     }, [categorySearchValue]);
 
+
     const fetchCategory = () => {
-        getCategories(categorySearchValue,5)
-            .then((data = [])=>{
-                const results = data.map(item => ({
-                    _id : item,
-                    name : item
-                }));
-                setCategorySearchResult(results || [])
+        getCategories(categorySearchValue, 5)
+            .then((data = []) => {
+                setCategorySearchResult(data || [])
             })
             .catch(error => {
                 console.log("failed to get categories: ", error)
@@ -141,18 +144,20 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
 
     // ######### EVENT HANDLERS
 
-    const handlePopovers = (popoverValue) => (popoverItem) =>{
+    const handlePopovers = (popoverValue) => (popoverItem) => {
 
-        if(!popoverItem){
-            let updatedPopovers = popoverList.map( item => {return {
-                ...item,
-                status : false
-            }})
+        if (!popoverItem) {
+            let updatedPopovers = popoverList.map(item => {
+                return {
+                    ...item,
+                    status: false
+                }
+            })
 
             setPopoverList(updatedPopovers)
-        }else{
+        } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -172,19 +177,20 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
         console.log("Clicked")
         let isValid = validateGroup()
 
-        if(!isValid){ return }
+        if (!isValid) { return }
 
         goToConfirmationScreen();
     };
 
     const onFieldChange = (fieldName) => (value) => {
-        const updatedFields = {...fields}
+        const updatedFields = { ...fields }
         setFields({
             ...updatedFields,
             [fieldName]: value
         })
 
-        const updatedErrors = {...errorFields}
+
+        const updatedErrors = { ...errorFields }
         delete updatedErrors[fieldName]
         setErrorFields(updatedErrors)
 
@@ -193,15 +199,15 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
     const validateGroup = () => {
         let isValid = true
         let requiredFields = ['name']
-    
-        let errorObj = {...errorFields} || {}
+
+        let errorObj = { ...errorFields } || {}
 
         for (const requiredField of requiredFields) {
-            if(!fields[requiredField]){
+            if (!fields[requiredField]) {
                 // console.log(`${requiredField} is required`)
                 isValid = false
                 errorObj[requiredField] = "Value is required.";
-            }else{
+            } else {
                 delete errorObj[requiredField]
             }
         }
@@ -212,7 +218,7 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
         return isValid
     }
 
-    const goToConfirmationScreen = () =>{
+    const goToConfirmationScreen = () => {
         setTimeout(() => {
 
             modal
@@ -220,13 +226,13 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {true}
-                            onCancel = {()=> modal.closeModals('ConfirmationModal')}
-                            onAction = {onActionSave}
-                            message = "Do you want to save your changes?"
+                            isEditUpdate={true}
+                            onCancel={() => modal.closeModals('ConfirmationModal')}
+                            onAction={onActionSave}
+                            message="Do you want to save your changes?"
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                        onClose: () => { modal.closeModals('ConfirmationModal') }
                     })
         }, 200)
     };
@@ -242,13 +248,13 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isEditUpdate = {false}
-                            isError = {true}
-                            onCancel = {()=> modal.closeAllModals()}
-                            message = "There was an issue performing this action"
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => modal.closeAllModals()}
+                            message="There was an issue performing this action"
                         />
                         ,
-                        onClose: () => {modal.closeModals('ConfirmationModal')} 
+                        onClose: () => { modal.closeModals('ConfirmationModal') }
                     })
         }, 200)
     }
@@ -257,7 +263,7 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
         // console.log("Fields: ", fields);
         const updatedFields = {
             ...fields,
-            unitOfMeasurement : null
+            unitOfMeasurement: null
         }
         createInventoryGroup(updatedFields)
             .then(data => {
@@ -275,16 +281,44 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
             })
             .finally()
     };
- 
+
+    const createCateory = () => {
+        const categoryToadd = []
+
+        categoryToadd.push(categorySearchValue)
+
+        addCategory(categoryToadd)
+            .then(cat => {
+                setTimeout(() => {
+                    modal
+                        .openModal(
+                            'ConfirmationModal',
+                            {
+                                content: <ConfirmationComponent
+                                    isEditUpdate={false}
+                                    isError={false}
+                                    onAction={() => modal.closeAllModals()}
+                                    onCancel={() => modal.closeAllModals()}
+                                    message={`Successfully Added "${categoryToadd[0]}" category `}
+                                />
+                                ,
+                                onClose: () => { modal.closeModals('ConfirmationModal') }
+                            })
+                    fetchCategory()
+                }, 200)
+            })
+            .catch(err => errorScreen())
+    }
+
     const detailsTab = (
 
-        <> 
+        <>
 
             <Row>
                 <FieldContainer>
                     <AutoFillField
-                        label = "Reference"
-                        value = "No Data"
+                        label="Reference"
+                        value="No Data"
                     />
                 </FieldContainer>
 
@@ -294,28 +328,29 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
                         onChangeText={onFieldChange('name')}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
-                        hasError = {errorFields['name']}
-                        errorMessage = "Name must be filled."
+                        hasError={errorFields['name']}
+                        errorMessage="Name must be filled."
                     />
                 </FieldContainer>
             </Row>
 
-            {/* <Row>
+            <Row>
                 <FieldContainer>
                     <MultipleSelectionsField
                         label={"Category"}
-                        onOptionsSelected={onFieldChange('category')}
-                        options = {categorySearchResults}
-                        searchText = {categorySearchValue}
-                        onSearchChangeText = {(value)=> setCategorySearchValue(value)}
-                        onClear={()=>{setCategorySearchValue('')}}
-                        handlePopovers = {(value)=>handlePopovers(value)('category')}
-                        isPopoverOpen = {categorySearchQuery}
+                        onOptionsSelected={(value) => onFieldChange('category')(value)}
+                        options={categorySearchResults}
+                        createNew={createCateory}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={(value) => handlePopovers(value)('category')}
+                        isPopoverOpen={categorySearchQuery}
                     />
                 </FieldContainer>
-            </Row> */}
+            </Row>
 
-            <Divider theme = {theme}/>
+            <Divider theme={theme} />
 
             <Row zIndex={-1}>
 
@@ -334,8 +369,8 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
                         text={fields['unitOfMeasurement']}
                         oneOptionsSelected={onFieldChange('unitOfMeasurement')}
                         menuOption={<MenuOptions>
-                            <MenuOption value={'Glove Boxes'} text='Glove Boxes'/>
-                            <MenuOption value={'Pack'} text='Pack'/>
+                            <MenuOption value={'Glove Boxes'} text='Glove Boxes' />
+                            <MenuOption value={'Pack'} text='Pack' />
                         </MenuOptions>}
                     />
                 </FieldContainer>
@@ -345,7 +380,7 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
                 <FieldContainer>
                     <InputUnitField
                         label={"Markup"}
-                        onChangeText={(value)=>{ 
+                        onChangeText={(value) => {
                             if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
                                 onFieldChange('markup')(value)
                             }
@@ -357,35 +392,35 @@ function CreateInventoryGroupDialogContainer({navigation, route}) {
                 </FieldContainer>
             </Row>
 
-        </> 
+        </>
     );
 
     return (
 
-        <PageWrapper theme = {theme}>
-            
+        <PageWrapper theme={theme}>
+
             <CreatePageHeader
-                title = "Create Item Group"
-                onClose = {onCancel}
+                title="Create Item Group"
+                onClose={onCancel}
             />
 
-            <TabsContainer theme = {theme}>
+            <TabsContainer theme={theme}>
                 <DialogTabs
                     tabs={['Details']}
                     tab={0}
                 />
             </TabsContainer>
 
-            <ContentWrapper theme = {theme}>
+            <ContentWrapper theme={theme}>
                 <ContentContainer>
                     {detailsTab}
                 </ContentContainer>
             </ContentWrapper>
 
-            
+
             <FooterWrapper>
-               <CreatePreviousDoneFooter
-                    onFooterPress = {onPositiveClick}
+                <CreatePreviousDoneFooter
+                    onFooterPress={onPositiveClick}
                 />
             </FooterWrapper>
 
@@ -430,7 +465,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     sectionContainer: {
-        height:200,
+        height: 200,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         // padding: 24,
@@ -444,7 +479,7 @@ const styles = StyleSheet.create({
 
     inputWrapper: {
         // flex: 1,
-        width: 260, 
+        width: 260,
         flexDirection: 'row',
         // backgroundColor: 'blue'
     },

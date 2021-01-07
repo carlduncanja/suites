@@ -227,6 +227,7 @@ function CreateTheatreDialogContainer({ onCancel, onCreated, addTheatre }) {
  */}
 
         </OverlayDialog>
+    
     );
 }
 

@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'white',
+
     },
     textLabel: {
         fontSize: 12,
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     inputField: {
         // flex:1,
         padding: 10,
-        paddingTop: 2,
+        paddingTop: 10,
         paddingBottom: 2,
         borderWidth: 1,
         borderColor: '#E3E8EF',

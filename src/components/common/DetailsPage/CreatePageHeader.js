@@ -46,9 +46,9 @@ function CreatePageHeader({ title = "", onClose = () => { } }) {
                     <Button
                         backgroundColor="--color-gray-300"
                         buttonPress={onClose}
-                        color="--color-gray-700"
+                        color={theme.colors["--color-gray-600"]}
                         title="Close"
-                        font="--text-sm-bold"
+                        font='--text-sm-bold'
                     />
                 </CloseButtonContainer>
             </HeaderContainer>

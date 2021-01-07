@@ -4,7 +4,7 @@ export const PageContext = createContext({
     pageState:
         {
             isEditMode: false,
-            isLoading: false
+            isLoading: false,
         },
     setPageState: () => {
     }

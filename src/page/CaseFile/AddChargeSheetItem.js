@@ -440,16 +440,17 @@ function AddChargeSheetItem({navigation, route}) {
                                 <SearchableOptionsField
                                     value={selectedItem}
                                     text={searchValue}
-                                    oneOptionsSelected={(item) => onItemSelected(item)}
+                                    oneOptionsSelected={(item) => {
+                                        onItemSelected(item)
+                                        setSearchResults([])
+                                        setSearchValue('')
+                                    }}
                                     onChangeText={(value) => {
                                         setSearchValue(value)
                                     }}
                                     onClear={onClearItem}
                                     options={searchResults}
-                                    handlePopovers={() => {
-                                        // console.log("handle popovers");
-                                    }}
-                                    isPopoverOpen={searchQuery}
+                                    shouldShowValue={false}
                                     borderColor={theme.colors['--color-gray-400']}
                                 />
                             </SearchableFieldContainer>

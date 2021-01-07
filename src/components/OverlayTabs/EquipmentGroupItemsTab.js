@@ -4,6 +4,7 @@ import {View} from 'react-native';
 import styled from '@emotion/native';
 import Table from "../common/Table/Table";
 import DataItem from "../common/List/DataItem";
+import Footer from '../common/Page/Footer';
 
 const TableHeaders = [
     {
@@ -67,14 +68,18 @@ function EquipmentGroupItemsTab({items, ...props}) {
     }
 
     return (
-        <PageWrapper>
+        <>
             <Table
                 headers={TableHeaders}
                 listItemFormat={renderItemView}
                 isCheckbox={false}
                 data={items}
             />
-        </PageWrapper>
+            <Footer
+                hasActions={false}
+                hasPaginator={false}
+            />
+        </>
     );
 }
 

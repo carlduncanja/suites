@@ -25,6 +25,8 @@ function StoragePage({route, navigation}) {
     const [isFetching, setFetching] = useState(false);
     const [pageState, setPageState] = useState({});
 
+    console.log('Storarge: ', storageItem);
+
     // ##### Life cycle methods
 
     useEffect(() => {
@@ -85,12 +87,14 @@ function StoragePage({route, navigation}) {
     const getTabContent = selectedTab => {
         switch (selectedTab) {
             case 'Details':
+                // eslint-disable-next-line no-case-declarations
                 const storageLocationDetails = {
                     description: storageItem.description,
                     name: storageItem.name,
                 };
 
                 return <StorageDetailsTab
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...storageLocationDetails}
                     storageLocationId={storageItem._id}
                     onUpdated={onDetailsUpdated}
@@ -121,7 +125,7 @@ function StoragePage({route, navigation}) {
                 />;
             }
             case 'Equipment':
-                return <StorageEquipmentTab equipments={[]}/>;
+                return <StorageEquipmentTab equipments={storageItem?.equipments || []}/>;
             default:
                 return <View/>;
         }

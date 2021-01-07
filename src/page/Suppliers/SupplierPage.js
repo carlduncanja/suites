@@ -198,6 +198,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                             products={products}
                             onAddProducts={onAddProducts}
                             onProductsCreated={() => fetchSupplier(_id)}
+                            onRefresh={() => fetchSupplier(_id)}
                             supplierId={_id}
                             onRefresh={() => { console.log("Refreshing"); setPageLoading(true); fetchSupplier(_id); }}
                         />

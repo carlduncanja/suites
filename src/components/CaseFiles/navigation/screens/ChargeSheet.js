@@ -174,11 +174,9 @@ const ChargeSheet = React.forwardRef(({
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {
-
             const isPendingState = (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES)
             const update = isPendingState ? caseProcedureChanges : caseProcedures
             onUpdateChargeSheet(update);
-
             setUpdated(false);
         }
     }, [isEditMode]);
@@ -483,6 +481,7 @@ const ChargeSheet = React.forwardRef(({
                 }
             }
         }
+
         onUpdateChargeSheet(updatedCaseProcedures)
     };
 
@@ -973,13 +972,16 @@ const ChargeSheet = React.forwardRef(({
                 handleQuotes={handleQuotes}
             />;
         case 'Billing':
-            if (isClosed) return <EmptyChargeSheetComponent/>
+            const { amountPaid=0, total=0, lineItems=[], amountDue } = chargeSheet;
+            const paymentDetails = { amountPaid, total, lineItems, amountDue };
+
+            if (isClosed) return <EmptyChargeSheetComponent/>;
             return <BillingCaseCard
                 tabDetails={billing}
                 caseProcedures={caseProcedures}
                 isEditMode={isEditMode}
                 caseId={caseId}
-
+                paymentDetails={paymentDetails}
                 onCaseProcedureBillablesChange={handleCaseProcedureUpdate}
                 handleEditDone={handleEditDone}
             />;
@@ -1002,8 +1004,8 @@ const configureBillableItems = (lastModified, total, updatedBy = {}, procedures 
     const billing = {
         total,
         lastModified: new moment(lastModified).toDate(),
-        hasDiscount: true,
-        discount: 0.15,
+        hasDiscount: false,
+        discount: 0,
         updatedBy,
         procedures: []
     };
@@ -1057,6 +1059,7 @@ const configureBillableItems = (lastModified, total, updatedBy = {}, procedures 
             cost: item.inventory?.unitCost || 0,
         }));
 
+        billingItem.lineItems = lineItems;
 
         billingItem.equipments = equipments.map(item => ({
             _id: item?._id,
@@ -1120,6 +1123,7 @@ const calculateChangesProcedureChanges = (prvProcedures = [], newProcedures = []
 
         updatedBillableItems.inventories = inventoryChanges;
         updatedBillableItems.equipments = equipmentChanges;
+        updatedBillableItems.lineItems = newlineItems
 
         updatedProcedures.push(updatedBillableItems)
     }

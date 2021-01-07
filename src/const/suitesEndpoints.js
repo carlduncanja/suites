@@ -7,6 +7,7 @@ export const guestLoginEndpoint = '/auth/login/guest';
 // ##### Users
 export const users = '/users';
 export const user = userId => `/users/${userId}`;
+export const userPassword = userId => `/users/${userId}/changePassword`;
 
 export const roles = '/users/roles';
 export const role = roleId => `/users/roles/${roleId}`;
@@ -58,6 +59,8 @@ export const caseFileEndpoint = id => `/cases/${id}`;
 export const updateChargeSheetEndpoint = id => `/cases/${id}/chargesheets`;
 export const chargeSheetApprovalEndpoint = caseId => `/cases/${caseId}/chargesheets/approval`;
 export const chargeSheetWithdrawChangesEndpoint = caseId => `/cases/${caseId}/chargesheets/withdraw`;
+export const chargeSheetApplyPaymentEndpoint = caseId => `/cases/${caseId}/chargesheets/payment`;
+export const chargeSheetInvoiceApplyPaymentEndpoint = (caseId, invoiceId) => `/cases/${caseId}/invoices/${invoiceId}/payment`;
 export const createInvoice = id => quotationId => `/cases/${id}/quotations/${quotationId}/invoices`;
 export const suggestedStartTimeEndpoint = '/cases/appointment/suggestions';
 export const validateCaseProcedureEndpoint = '/cases/appointment/isvalid';

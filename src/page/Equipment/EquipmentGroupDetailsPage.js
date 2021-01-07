@@ -11,6 +11,7 @@ import EquipmentGroupItemsTab from "../../components/OverlayTabs/EquipmentGroupI
 import EditableEquipmentGroupTab from '../../components/OverlayTabs/EditableEquipmentGroupTab';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { updateEquipmentType } from "../../api/network"
+import EquipmentSuppliersTab from '../../components/OverlayTabs/EquipmentSuppliersTab';
 
 
 function EquipmentGroupDetailsPage(props) {
@@ -21,7 +22,7 @@ function EquipmentGroupDetailsPage(props) {
         }
     } = props.route.params;
     const {name = "", _id = "", equipments = [], suppliers = [], description = '', categories = []} = data
-    const tabs = ["Details", "Items", "Suppliers"];
+    const tabs = ["Details", "Items"];
     const [currentTab, setCurrentTab] = useState(tabs[0]);
     const [pageState, setPageState] = useState({});
     const [selectedEquipment, setSelectedEquipment] = useState({});
@@ -47,6 +48,7 @@ function EquipmentGroupDetailsPage(props) {
         setPageLoading(true)
         getEquipmentTypeById(id)
             .then(data => {
+                console.log("Dta: ", data);
                 setSelectedEquipment(data)
             })
             .catch(error => {
@@ -229,8 +231,8 @@ function EquipmentGroupDetailsPage(props) {
                     />
             case "Items":
                 return <EquipmentGroupItemsTab items={selectedEquipment.equipments}/>
-            case "Suppliers":
-                return
+            // case "Suppliers":
+            //     return <EquipmentSuppliersTab suppliers={selectedEquipment?.suppliers || []}/>
             default:
                 break;
         }

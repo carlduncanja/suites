@@ -39,7 +39,8 @@ const SearchableContainer = ({ options, onCheckboxPress, checkedList, searchText
 
             <ScrollView
                 bounces={false}
-                style={styles.suggestionsContainer}
+                contentContainerStyle={{ flexDirection: "column", paddingBottom: 50 }}
+
             >
                 {options.map((option, index) => {
 
@@ -77,12 +78,12 @@ const styles = StyleSheet.create({
         paddingBottom: 2,
     },
     suggestionsContainer: {
-        // height:120,
+
     },
     optionWrapper: {
         flexDirection: 'row',
         // padding:10,
-        alignItems: 'center',
+        alignItems: 'center'
     },
     footer: {
         flex: 1,

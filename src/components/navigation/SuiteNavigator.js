@@ -152,7 +152,7 @@ const SuitesCustomNavigator = ({
 
                             <View style={styles.pageContent} onLayout={getPageMeasure}>
                                 {/*    ACTIVE SCREEN    */}
-
+                                
                                 <CustomSnackbarProvider>
 
                                     {descriptors[state.routes[state.index].key].render()}

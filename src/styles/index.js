@@ -147,6 +147,7 @@ export const root = {
         '--color-pink-900': '#702459',
         // ##### SUITES
         '--company': '#104587',
+        '--color-ui--charcoal': '#313539',
         '--company-pale': '#769AC7',
         '--accent-button': '#0CB0E7',
         '--accent-line': '#00A9CE',
@@ -255,6 +256,13 @@ export const root = {
         '--text-lg-bold': {
             fontSize: 18,
             fontWeight: '700',
+            fontStyle: 'normal',
+            lineHeight: 18,
+        },
+
+        '--text-lg-medium': {
+            fontSize: 18,
+            fontWeight: '500',
             fontStyle: 'normal',
             lineHeight: 18,
         },

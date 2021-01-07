@@ -4,6 +4,7 @@ import {View} from 'react-native';
 import styled from '@emotion/native';
 import Row from "../common/Row";
 import Record from "../common/Information Record/Record";
+import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
 import {PageContext} from "../../contexts/PageContext";
 import InputLabelComponent from "../common/InputLablel";
 import {MenuOption, MenuOptions} from "react-native-popup-menu";
@@ -12,6 +13,7 @@ import {getRolesCall, updateUserCall} from "../../api/network";
 import ConfirmationComponent from "../ConfirmationComponent";
 import {useModal} from "react-native-modalfy";
 import LoadingComponent from "../LoadingComponent";
+import Footer from '../common/Page/Footer';
 
 
 const InputWrapper = styled.View`
@@ -24,7 +26,7 @@ const InputWrapper = styled.View`
 `
 
 
-function UserDetailsComponent({user, onUserUpdated = () => {}}) {
+function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword = () => {} }) {
 
     const {pageState, setPageState} = useContext(PageContext)
     const modal = useModal();
@@ -142,8 +144,8 @@ function UserDetailsComponent({user, onUserUpdated = () => {}}) {
             })
             .finally(_ => {
                 setLoading(false);
-            })
-    }
+            });
+    };
 
     const convertUserFieldsToUpdateData = () => {
         return {
@@ -156,68 +158,79 @@ function UserDetailsComponent({user, onUserUpdated = () => {}}) {
 
     return (
         <>
-            <Row>
-                <Record
-                    recordValue={userFields['first_name']}
-                    recordTitle='First Name'
-                    editMode={isEditMode}
-                    onRecordUpdate={onFieldChange('first_name')}
-                    onClearValue={onFieldChange('first_name')}
-                />
+            <>
+                <Row>
+                    <Record
+                        recordValue={userFields['first_name']}
+                        recordTitle='First Name'
+                        editMode={isEditMode}
+                        onRecordUpdate={onFieldChange('first_name')}
+                        onClearValue={onFieldChange('first_name')}
+                    />
 
-                <Record
-                    recordValue={userFields['last_name']}
-                    recordTitle='Last Name'
-                    editMode={isEditMode}
-                    onRecordUpdate={onFieldChange('last_name')}
-                    onClearValue={onFieldChange('last_name')}
-                />
-            </Row>
+                    <Record
+                        recordValue={userFields['last_name']}
+                        recordTitle='Last Name'
+                        editMode={isEditMode}
+                        onRecordUpdate={onFieldChange('last_name')}
+                        onClearValue={onFieldChange('last_name')}
+                    />
+                </Row>
 
-            <Row>
-                <Record
-                    recordValue={userFields['email']}
-                    recordTitle='Email'
-                    editMode={isEditMode}
-                    onRecordUpdate={onFieldChange('email')}
-                    onClearValue={onFieldChange('email')}
-                />
+                <Row>
+                    <Record
+                        recordValue={userFields['email']}
+                        recordTitle='Email'
+                        editMode={isEditMode}
+                        onRecordUpdate={onFieldChange('email')}
+                        onClearValue={onFieldChange('email')}
+                    />
+
+                    {
+                        isEditMode
+                            ? <InputWrapper>
+                                <InputLabelComponent label={"Role"}/>
+                                <OptionsField
+                                    text={userFields['role'].name}
+                                    hasError={!!fieldErrors['role']}
+                                    errorMessage={fieldErrors['role']}
+                                    oneOptionsSelected={onFieldChange('role')}
+                                    menuOption={(
+                                        <MenuOptions>
+                                            {
+                                                roles?.map(item => <MenuOption key={item._id} value={item} text={item.name}/>)
+                                            }
+                                        </MenuOptions>
+                                    )}
+                                />
+                            </InputWrapper>
+                            : <Record
+                                recordValue={userFields['role'].name}
+                                recordTitle='Role'
+                            />
+                    }
+                </Row>
+
+                <Row>
+                    <ResponsiveRecord
+                        recordTitle="Password"
+                        recordValue="Reset Password"
+                        handleRecordPress={() => { onResetPassword(); }}
+                    />
+                    {/* <Record
+                        recordValue={userFields['password']}
+                        recordTitle='Password'
+                    /> */}
+                </Row>
 
                 {
-                    isEditMode
-                        ? <InputWrapper>
-                            <InputLabelComponent label={"Role"}/>
-                            <OptionsField
-                                text={userFields['role'].name}
-                                hasError={!!fieldErrors['role']}
-                                errorMessage={fieldErrors['role']}
-                                oneOptionsSelected={onFieldChange('role')}
-                                menuOption={(
-                                    <MenuOptions>
-                                        {
-                                            roles?.map(item => <MenuOption key={item._id} value={item} text={item.name}/>)
-                                        }
-                                    </MenuOptions>
-                                )}
-                            />
-                        </InputWrapper>
-                        : <Record
-                            recordValue={userFields['role'].name}
-                            recordTitle='Role'
-                        />
+                    isLoading && <LoadingComponent/>
                 }
-            </Row>
-
-            <Row>
-                <Record
-                    recordValue={userFields['password']}
-                    recordTitle='Password'
-                />
-            </Row>
-
-            {
-                isLoading && <LoadingComponent/>
-            }
+            </>
+            <Footer
+                hasActions={false}
+                hasPaginator={false}
+            />
         </>
     );
 }

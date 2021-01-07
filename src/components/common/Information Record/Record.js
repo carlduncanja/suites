@@ -39,7 +39,6 @@ const ValueText = styled.Text(({ theme, valueStyle, valueColor }) => ({
 }));
 
 const PlaceHolderText = styled.Text(({ theme }) => ({
-
     ...theme.font['--text-base-regular'],
     color: theme.colors['--color-gray-500']
 }))
@@ -112,24 +111,22 @@ function Record({
                 </TitleWrapper>
 
                 {
-                    !editMode && _.isEmpty(recordValue) ?
-
-                        <PlaceHolderText theme={theme}>
-                            {recordPlaceholder}
-                        </PlaceHolderText>
-                        :
-                        <ValueText
-                            theme={theme}
-                            valueColor={valueColor}
-                            valueStyle={valueStyle}
-                        >
-                            {recordValue}
-                        </ValueText>
+                    !editMode &&
+                    <ValueText
+                        theme={theme}
+                        valueColor={valueColor}
+                        valueStyle={valueStyle}
+                    >
+                        {recordValue}
+                    </ValueText>
                 }
-                {/* {
-                    !editMode && useTextArea &&
-                   
-                } */}
+
+                {
+                    !editMode && useTextArea && recordValue === '' &&
+                    <PlaceHolderText theme={theme}>
+                        {recordPlaceholder}
+                    </PlaceHolderText>
+                }
 
                 {
                     editMode && useTextArea &&

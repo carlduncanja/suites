@@ -35,6 +35,7 @@ import NavPage from '../../components/common/Page/NavPage';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import {LONG_PRESS_TIMER} from '../../const';
 import useAuthHandler from '../../hooks/useAuthHandler';
+import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 
 const listHeaders = [
     {
@@ -66,7 +67,7 @@ const listHeaders = [
 function Theatres(props) {
     const {theatres = [], setTheatres} = props;
     const theme = useTheme();
-    const pageTitle = 'Theatres';
+    const pageTitle = 'Theatre Rental';
     const modal = useModal();
     const recordsPerPage = 10;
 
@@ -87,6 +88,8 @@ function Theatres(props) {
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
+
+    const [pageSettingState, setPageSettingState] = useState({});
 
     // ##### Lifecycle Methods functions
 
@@ -427,6 +430,7 @@ function Theatres(props) {
                 handleUnauthorizedError(error?.response?.status, setTheatres);
                 // if (error?.response && error?.response?.status === 401) setTheatres([]);
                 // showAuthReadBlocked(error, () => setTheatres([]));
+                setPageSettingState({...pageSettingState, isDisabled: true});
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -462,32 +466,39 @@ function Theatres(props) {
     const theatresToDisplay = [...theatres];
 
     return (
-        <NavPage
-            placeholderText="Search by theatre name"
-            routeName={pageTitle}
-            listData={theatresToDisplay}
-            listItemFormat={renderItem}
-            inputText={searchValue}
-            itemsSelected={selectedIds}
-            listHeaders={listHeaders}
-            changeText={onSearchInputChange}
-            onRefresh={onRefresh}
-            isFetchingData={isFetchingData}
-            onSelectAll={onSelectAll}
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
+        >
+            <NavPage
+                placeholderText="Search by theatre name"
+                routeName={pageTitle}
+                listData={theatresToDisplay}
+                listItemFormat={renderItem}
+                inputText={searchValue}
+                itemsSelected={selectedIds}
+                listHeaders={listHeaders}
+                changeText={onSearchInputChange}
+                onRefresh={onRefresh}
+                isFetchingData={isFetchingData}
+                onSelectAll={onSelectAll}
 
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
 
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
-            hasActionButton={true}
-            hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
-        />
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                hasPaginator={true}
+                hasActionButton={true}
+                hasActions={true}
+                isNextDisabled={isNextDisabled}
+                isPreviousDisabled={isPreviousDisabled}
+            />
+
+        </PageSettingsContext.Provider>
     );
 }
 
