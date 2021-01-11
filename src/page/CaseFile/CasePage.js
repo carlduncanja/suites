@@ -1775,6 +1775,19 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
     // ############### Data
 
+    const getIsEditable = () => {
+        switch (selectedMenuItem) {
+            case 'Patient':
+                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
+            case 'Medical Staff':
+                return selectedTab === 'Details';
+            case 'Medical History':
+                return true;
+            default:
+                return false;
+        }
+    };
+
     const getOverlayContent = () => {
         const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase;
         const {medicalInfo = {}} = patient;
@@ -1840,6 +1853,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     onBackPress={() => {
                         navigation.navigate('CaseFiles');
                     }}
+                    isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}
