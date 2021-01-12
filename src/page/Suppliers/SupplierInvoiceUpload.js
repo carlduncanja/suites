@@ -3,6 +3,7 @@ import styled, {css} from '@emotion/native';
 import * as DocumentPicker from 'expo-document-picker';
 import {useTheme} from 'emotion-theming';
 import {useNavigation} from '@react-navigation/native';
+import { useModal } from 'react-native-modalfy';
 import {PageContext} from '../../contexts/PageContext';
 import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
@@ -11,8 +12,9 @@ import Footer from '../../components/common/Page/Footer';
 import ImageUpload from '../../../assets/svg/imageUpload';
 import ImageUploading from '../../../assets/svg/imageUploading';
 import DeleteIcon from '../../../assets/svg/wasteIcon';
-import { Image } from 'react-native';
+import { Image, View } from 'react-native';
 import TestImage from '../../../assets/test_image.png';
+import InvoiceFullPageView from './InvoiceFullPageView';
 
 const PageWrapper = styled.View`
     margin: 0;
@@ -86,6 +88,7 @@ const PageText = styled.Text(({ theme, textColor = '--color-gray-600', font = '-
 const SupplierInvoiceUpload = ({ route }) => {
     const navigation = useNavigation();
     const theme = useTheme();
+    const modal = useModal();
     const tabs = ['Details'];
     const { invoiceItem = {}, selectedSupplierName = '' } = route.params;
     const [pageState, setPageState] = useState({});
@@ -107,7 +110,11 @@ const SupplierInvoiceUpload = ({ route }) => {
     };
 
     const openFullView = () => {
-
+        modal.openModal('ReportPreviewModal', {
+            content: <InvoiceFullPageView
+                title={imageName}
+            />
+        });
     };
 
     const uploadContent = (
