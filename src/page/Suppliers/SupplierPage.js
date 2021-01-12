@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import SlideOverlay from '../../components/common/SlideOverlay/SlideOverlay';
 import SupplierDetailsTab from '../../components/OverlayTabs/SupplierDetailsTab';
 import SupplierProductsTab from '../../components/OverlayTabs/SupplierProductsTab';
+import SuppliersInvoicePage from '../../components/OverlayTabs/SuppliersInvoicePage';
 import SupplierPurshaseOrders from '../../components/OverlayTabs/SupplierPurchaseOrders';
 import BottomSheetContainer from '../../components/common/BottomSheetContainer';
 import {PageContext} from '../../contexts/PageContext';
@@ -21,7 +22,7 @@ import LoadingIndicator from '../../components/common/LoadingIndicator';
 function SupplierPage({route, navigation, updateSupplierAction}) {
     const {supplier, isOpenEditable, floatingActions} = route.params;
     const modal = useModal();
-    const currentTabs = ['Details', 'Products', 'Purchase Orders'];
+    const currentTabs = ['Details', 'Products', 'Purchase Orders', 'Invoices'];
     const {
         supplierNumber = '',
         name = '',
@@ -188,6 +189,17 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         });
     };
 
+    const getIsEditable = () => {
+        switch (currentTab) {
+            case 'Products':
+                return true;
+            case 'Invoices':
+                return true;
+            default:
+                return false;
+        }
+    };
+
     // const supplierDetails = { supplier, status: '' }
     const getTabContent = selectedTab => {
         console.log("Page State: ", pageState.isLoading);
@@ -219,6 +231,10 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                     onUpdatePurchaseOrders={onUpdatePurchaseOrders}
                     isEditMode={isEditMode}
                 />;
+            case 'Invoices':
+                return <SuppliersInvoicePage
+                    // data={[]}
+                />;
             default:
                 return <View/>;
         }
@@ -231,6 +247,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 <DetailsPage
                     headerChildren={[selectedSupplier.name]}
                     onBackPress={backTapped}
+                    isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}
