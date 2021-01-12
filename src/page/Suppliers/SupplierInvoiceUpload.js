@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import styled, {css} from '@emotion/native';
+import * as DocumentPicker from 'expo-document-picker';
 import {useTheme} from 'emotion-theming';
 import {useNavigation} from '@react-navigation/native';
 import {PageContext} from '../../contexts/PageContext';
 import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
-import { View, Text } from 'react-native';
 import Record from '../../components/common/Information Record/Record';
 import Footer from '../../components/common/Page/Footer';
 import ImageUpload from '../../../assets/svg/imageUpload';
 import ImageUploading from '../../../assets/svg/imageUploading';
+import DeleteIcon from '../../../assets/svg/wasteIcon';
+import { Image } from 'react-native';
+import TestImage from '../../../assets/test_image.png';
 
 const PageWrapper = styled.View`
     margin: 0;
@@ -37,6 +40,35 @@ const InvoiceUploadContainer = styled.TouchableOpacity`
     justify-content: center;
 `;
 
+const ImageContainer = styled.View`
+    width: 100%;
+    height: 356px;
+    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
+    background-color: ${({theme}) => theme.colors['--color-gray-300']};
+    border-radius: 4px;
+`;
+
+const ImageTitleContainer = styled.View`
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    background-color: ${({theme}) => theme.colors['--color-white']};
+    padding: ${({theme}) => theme.space['--space-12']};
+    border-color: ${({theme}) => theme.colors['--color-gray-400']};
+    border-style: solid;
+    border-width: 0 0 1px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+`;
+
+const UploadedImageContainer = styled.TouchableOpacity`
+    display: flex;
+    align-items: center;
+    margin: 60px;
+    margin-top: 0;
+    margin-bottom: 0;
+`;
+
 const UploadInstructions = styled.TouchableOpacity`
     background-color: yellow;
     display: flex;
@@ -60,15 +92,73 @@ const SupplierInvoiceUpload = ({ route }) => {
     const [isImageUploading, setIsImageUploading] = useState(false);
     const [invoiceImage, setInvoiceImage] = useState();
 
-    const {isEditMode} = pageState;
+    const {isEditMode = true} = pageState;
+    const hasImage = true;
+    const imageName = 'Img_231291231.jpg';
 
-    const onImageUpload = () => {
+    const onImageUpload = async () => {
         setIsImageUploading(true);
+        let result = await DocumentPicker.getDocumentAsync({});
+        console.log(result);
 
         setTimeout(() => {
             setIsImageUploading(false);
         }, 1500);
     };
+
+    const openFullView = () => {
+
+    };
+
+    const uploadContent = (
+        <InvoiceUploadContainer
+            theme={theme}
+            activeOpacity={0.7}
+            onPress={() => onImageUpload()}
+        >
+            {
+                isImageUploading ? <ImageUploading/> : <ImageUpload/>
+            }
+            <PageText
+                textColor="--color-blue-600"
+                font="--text-sm-regular"
+                style={css`padding-top: 10px;`}
+            >
+                {
+                    isImageUploading ? 'Please wait...' : 'Click to Upload Invoice'
+                }
+            </PageText>
+            <PageText
+                textColor="--color-gray-500"
+                font="--cart-text"
+            >
+                Supports JPG, PNG PDF
+            </PageText>
+        </InvoiceUploadContainer>
+    );
+
+    const imageContent = (
+        <ImageContainer theme={theme}>
+            <ImageTitleContainer theme={theme}>
+                <PageText
+                    theme={theme}
+                    font="--text-sm-medium"
+                    textColor="--color-blue-600"
+                >{imageName}</PageText>
+                {
+                    isEditMode && <DeleteIcon/>
+                }
+            </ImageTitleContainer>
+            <UploadedImageContainer
+                activeOpacity={0.6}
+                onPress={() => openFullView()}
+            >
+                <Image
+                    source={require('../../../assets/test_image.png')}
+                />
+            </UploadedImageContainer>
+        </ImageContainer>
+    );
 
     const content = (
         <PageWrapper>
@@ -79,30 +169,9 @@ const SupplierInvoiceUpload = ({ route }) => {
                 />
             </PurchaseOrderContainer>
             <InvoiceWrapper>
-                <InvoiceUploadContainer
-                    theme={theme}
-                    activeOpacity={0.7}
-                    onPress={() => onImageUpload()}
-                >
-                    {
-                        isImageUploading ? <ImageUploading/> : <ImageUpload/>
-                    }
-                    <PageText
-                        textColor="--color-blue-600"
-                        font="--text-sm-regular"
-                        style={css`padding-top: 10px;`}
-                    >
-                        {
-                            isImageUploading ? 'Please wait...' : 'Click to Upload Invoice'
-                        }
-                    </PageText>
-                    <PageText
-                        textColor="--color-gray-500"
-                        font="--cart-text"
-                    >
-                        Supports JPG, PNG PDF
-                    </PageText>
-                </InvoiceUploadContainer>
+                {
+                    hasImage ? imageContent : uploadContent
+                }
             </InvoiceWrapper>
             <Footer
                 hasActions={false}
