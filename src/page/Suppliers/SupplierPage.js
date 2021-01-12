@@ -233,6 +233,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 />;
             case 'Invoices':
                 return <SuppliersInvoicePage
+                    supplierName={name}
                     // data={[]}
                 />;
             default:

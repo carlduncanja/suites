@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { withModal } from 'react-native-modalfy';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
+import {useNavigation} from '@react-navigation/native';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import { formatDate } from '../../utils/formatter';
@@ -51,8 +52,9 @@ const testData = [
 
 ];
 
-const SupplierInvoicePage = ({ data = [...testData] }) => {
+const SupplierInvoicePage = ({ data = [...testData], supplierName }) => {
     console.log('Data: ', data);
+    const navigation = useNavigation();
     const [checkBoxList, setCheckBoxList] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
@@ -109,30 +111,12 @@ const SupplierInvoicePage = ({ data = [...testData] }) => {
         setCurrentPageListMax(currentListMax);
     };
 
-    const toggleCheckbox = item => () => {
-        let updatedCases = [...checkBoxList];
-
-        if (updatedCases.includes(item)) {
-            updatedCases = updatedCases.filter(caseItem => caseItem !== item);
-        } else {
-            updatedCases.push(item);
-        }
-        setCheckBoxList(updatedCases);
-    };
-
-    const toggleHeaderCheckbox = () => {
-        const indeterminate = checkBoxList.length >= 0 && checkBoxList.length !== tabDetails.length;
-
-        if (indeterminate) {
-            const selectedAllIds = [...tabDetails.map(item => item)];
-            setCheckBoxList(selectedAllIds);
-        } else {
-            setCheckBoxList([]);
-        }
-        // checkBoxList.length > 0 ?
-        //     setCheckBoxList([])
-        //     :
-        //     setCheckBoxList(tabDetails)
+    const goToDetailsTab = invoiceObj => {
+        navigation.navigate('SupplierInvoiceUpload', {
+            initial: false,
+            invoiceItem: invoiceObj,
+            selectedSupplierName: supplierName
+        });
     };
 
     const listItemFormat = item => {
@@ -185,7 +169,7 @@ const SupplierInvoicePage = ({ data = [...testData] }) => {
             hasCheckBox={false}
             // isChecked={checkBoxList.includes(item)}
             // onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={() => {}}
+            onItemPress={() => goToDetailsTab(item)}
             itemView={listItemFormat(item)}
         />
     );
