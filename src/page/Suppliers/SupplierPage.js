@@ -22,7 +22,7 @@ import LoadingIndicator from '../../components/common/LoadingIndicator';
 function SupplierPage({route, navigation, updateSupplierAction}) {
     const {supplier, isOpenEditable, floatingActions} = route.params;
     const modal = useModal();
-    const currentTabs = ['Details', 'Products', 'Purchase Orders', 'Invoices'];
+    const currentTabs = ['Details', 'Products', 'Purchase Orders'];
     const {
         supplierNumber = '',
         name = '',
@@ -230,12 +230,13 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                     onRefresh={() => fetchSupplier(_id)}
                     onUpdatePurchaseOrders={onUpdatePurchaseOrders}
                     isEditMode={isEditMode}
-                />;
-            case 'Invoices':
-                return <SuppliersInvoicePage
                     supplierName={name}
-                    // data={[]}
                 />;
+            // case 'Invoices':
+            //     return <SuppliersInvoicePage
+            //         supplierName={name}
+            //         // data={[]}
+            //     />;
             default:
                 return <View/>;
         }

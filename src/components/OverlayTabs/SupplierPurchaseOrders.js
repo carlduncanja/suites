@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { withModal } from 'react-native-modalfy';
+import {useNavigation} from '@react-navigation/native';
 import { isEmpty, isError, result } from 'lodash';
 import styled, {css} from '@emotion/native';
 import axios from 'axios';
@@ -69,6 +70,7 @@ const SupplierPurchaseOrders = ({
     data = [],
     onRefresh = () => {},
     onUpdatePurchaseOrders = () => {},
+    supplierName = ''
     // isEditMode
 }) => {
     const [purchaseOrdersData, setPurchaseOrdersData] = useState(data);
@@ -89,6 +91,7 @@ const SupplierPurchaseOrders = ({
     const { isEditMode } = pageState;
 
     const recordsPerPage = 15;
+    const navigation = useNavigation();
 
     const headers = [
         {
@@ -533,13 +536,20 @@ const SupplierPurchaseOrders = ({
         );
     };
 
+    const goToDetailsTab = invoiceObj => {
+        navigation.navigate('SupplierInvoiceUpload', {
+            initial: false,
+            invoiceItem: invoiceObj,
+            selectedSupplierName: supplierName
+        });
+    };
+
     const renderListFn = item => (
         <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={() => {
-            }}
+            onItemPress={() => goToDetailsTab(item)}
             itemView={listItemFormat(item)}
         />
     );

@@ -35,8 +35,8 @@ const InvoiceWrapper = styled.View`
 const InvoiceUploadContainer = styled.TouchableOpacity`
     width: 100%;
     height: 258px;
-    border: ${({theme}) => `2.3px dashed ${theme.colors['--color-blue-200']}`};
-    background-color: ${({theme}) => theme.colors['--color-blue-100']};
+    border: ${({theme}) => `2.3px dashed ${theme.colors['--color-gray-200']}`};
+    background-color: ${({theme}) => theme.colors['--color-gray-100']};
 
     align-items: center;
     justify-content: center;
@@ -95,24 +95,27 @@ const SupplierInvoiceUpload = ({ route }) => {
     const [isImageUploading, setIsImageUploading] = useState(false);
     const [invoiceImage, setInvoiceImage] = useState();
 
-    const {isEditMode = true} = pageState;
-    const hasImage = true;
-    const imageName = 'Img_231291231.jpg';
+    const {isEditMode = false} = pageState;
+    const hasImage = false;
+
+    console.log('Obj: ', invoiceItem);
 
     const onImageUpload = async () => {
+        let result = {};
         setIsImageUploading(true);
-        let result = await DocumentPicker.getDocumentAsync({});
-        console.log(result);
+        result = await DocumentPicker.getDocumentAsync({});
+        console.log(result.uri);
 
         setTimeout(() => {
             setIsImageUploading(false);
+            setInvoiceImage(result);
         }, 1500);
     };
 
     const openFullView = () => {
         modal.openModal('ReportPreviewModal', {
             content: <InvoiceFullPageView
-                title={imageName}
+                title={invoiceImage?.name || ''}
             />
         });
     };
@@ -121,13 +124,14 @@ const SupplierInvoiceUpload = ({ route }) => {
         <InvoiceUploadContainer
             theme={theme}
             activeOpacity={0.7}
+            disabled={!isEditMode}
             onPress={() => onImageUpload()}
         >
             {
-                isImageUploading ? <ImageUploading/> : <ImageUpload/>
+                isImageUploading ? <ImageUploading/> : <ImageUpload strokeColor={isEditMode ? theme.colors['--color-blue-600'] : theme.colors['--color-gray-600'] }/>
             }
             <PageText
-                textColor="--color-blue-600"
+                textColor={isEditMode ? '--color-blue-600' : '--color-gray-600'}
                 font="--text-sm-regular"
                 style={css`padding-top: 10px;`}
             >
@@ -151,7 +155,7 @@ const SupplierInvoiceUpload = ({ route }) => {
                     theme={theme}
                     font="--text-sm-medium"
                     textColor="--color-blue-600"
-                >{imageName}</PageText>
+                >{invoiceImage?.name || ''}</PageText>
                 {
                     isEditMode && <DeleteIcon/>
                 }
@@ -161,7 +165,8 @@ const SupplierInvoiceUpload = ({ route }) => {
                 onPress={() => openFullView()}
             >
                 <Image
-                    source={require('../../../assets/test_image.png')}
+                    // source={require('../../../assets/test_image.png')}
+                    source={{ uri: '/Containers/Data/Application/A78AFDDA-8ACD-4FDF-8A54-A841F2C85A8E/Library/Caches/ExponentExperienceData/%2540anonymous%252Fsmsja-suites-b6d632e9-39b6-4802-9e28-8ee5f8211016/DocumentPicker/75178AFB-139F-4FEF-9493-CFB6EF47F67F.jpg' }}
                 />
             </UploadedImageContainer>
         </ImageContainer>
@@ -172,12 +177,13 @@ const SupplierInvoiceUpload = ({ route }) => {
             <PurchaseOrderContainer theme={theme}>
                 <Record
                     recordTitle="Purchase Order ID"
-                    recordValue={invoiceItem.order}
+                    recordValue={invoiceItem.purchaseOrderNumber}
+                    valueColor="--color-blue-600"
                 />
             </PurchaseOrderContainer>
             <InvoiceWrapper>
                 {
-                    hasImage ? imageContent : uploadContent
+                    invoiceImage ? imageContent : uploadContent
                 }
             </InvoiceWrapper>
             <Footer
