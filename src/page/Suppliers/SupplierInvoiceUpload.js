@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled, {css} from '@emotion/native';
 import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 import {useTheme} from 'emotion-theming';
 import {useNavigation} from '@react-navigation/native';
 import { useModal } from 'react-native-modalfy';
+import { Image, View } from 'react-native';
 import {PageContext} from '../../contexts/PageContext';
 import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
@@ -12,9 +14,11 @@ import Footer from '../../components/common/Page/Footer';
 import ImageUpload from '../../../assets/svg/imageUpload';
 import ImageUploading from '../../../assets/svg/imageUploading';
 import DeleteIcon from '../../../assets/svg/wasteIcon';
-import { Image, View } from 'react-native';
 import TestImage from '../../../assets/test_image.png';
 import InvoiceFullPageView from './InvoiceFullPageView';
+import IconButton from '../../components/common/Buttons/IconButton';
+import InvoiceDetailsPage from './InvoiceDetailsPage';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 const PageWrapper = styled.View`
     margin: 0;
@@ -65,12 +69,29 @@ const ImageTitleContainer = styled.View`
 
 const UploadedImageContainer = styled.TouchableOpacity`
     display: flex;
+    flex:1;
     align-items: center;
     margin: 60px;
     margin-top: 0;
     margin-bottom: 0;
 `;
 
+const PreviewImage = styled.Image`
+    width: 100%;
+    height: 100%;
+`;
+
+const RejectedPreviewContainer = styled.View`
+    flex: 1;
+    align-items: center;
+    margin-top: 120px;
+`;
+
+const IconConatiner = styled.View`
+    flex: 1;
+    align-items: flex-end;
+    justify-content: flex-end;
+`;
 const UploadInstructions = styled.TouchableOpacity`
     background-color: yellow;
     display: flex;
@@ -94,104 +115,76 @@ const SupplierInvoiceUpload = ({ route }) => {
     const [pageState, setPageState] = useState({});
     const [isImageUploading, setIsImageUploading] = useState(false);
     const [invoiceImage, setInvoiceImage] = useState();
+    const [canPreview, setCanPreview] = useState(true);
 
     const {isEditMode = false} = pageState;
-    const hasImage = false;
 
     console.log('Obj: ', invoiceItem);
 
     const onImageUpload = async () => {
-        let result = {};
         setIsImageUploading(true);
-        result = await DocumentPicker.getDocumentAsync({});
-        console.log(result.uri);
+        await DocumentPicker.getDocumentAsync({})
+            .then(result => {
+                // const testUri = /[^.]*$/g.test(result?.uri);
+                const testUri = (result.uri).match(/[^.]*$/g)[0] || '';
+                const acceptedFormats = (testUri === 'jpg') || (testUri === 'JPG') || (testUri === 'png') || (testUri === 'PNG') || (testUri === 'pdf') || (testUri === 'PDF');
+                const rejectedPreviewFormats = (testUri === 'pdf') || (testUri === 'PDF');
 
-        setTimeout(() => {
-            setIsImageUploading(false);
-            setInvoiceImage(result);
-        }, 1500);
+                console.log('Test: ', testUri);
+                console.log('Accepted: ', acceptedFormats);
+                console.log('Rejected: ', rejectedPreviewFormats);
+                if (acceptedFormats) {
+                    if (rejectedPreviewFormats) {
+                        console.log('Rejected');
+                        setCanPreview(false);
+                    }
+                    // eslint-disable-next-line no-console
+                    console.log('Accepted file');
+                    // eslint-disable-next-line no-console
+                    console.log('Document obj:', result);
+                    // eslint-disable-next-line no-unused-expressions
+                    (result.type === 'success') && setInvoiceImage(result);
+                } else {
+                    modal.openModal('ConfirmationModal', {
+                        content: (
+                            <ConfirmationComponent
+                                isError={true}//boolean to show whether an error icon or success icon
+                                isEditUpdate={false}
+                                onCancel={() => { modal.closeAllModals(); }}
+                                onAction={() => { modal.closeAllModals(); }}
+                                message="Document format selected is not supported"
+                            />
+                        ),
+                        onClose: () => {
+                            console.log('Modal closed');
+                        },
+                    });
+                }
+            })
+            .catch(err => {
+                console.log('Document error: ', err);
+            })
+            .finally(_ => {
+                setIsImageUploading(false);
+            });
     };
 
     const openFullView = () => {
-        modal.openModal('ReportPreviewModal', {
-            content: <InvoiceFullPageView
-                title={invoiceImage?.name || ''}
-            />
-        });
+        const matchFormat = (invoiceImage?.uri).match(/[^.]*$/g)[0] || '';
+        if (!((matchFormat === 'pdf') || (matchFormat === 'PDF'))) {
+            modal.openModal('ReportPreviewModal', {
+                content: <InvoiceFullPageView
+                    title={invoiceImage?.name || ''}
+                    sourceImage={invoiceImage?.uri}
+                />
+            });
+        }
     };
 
-    const uploadContent = (
-        <InvoiceUploadContainer
-            theme={theme}
-            activeOpacity={0.7}
-            disabled={!isEditMode}
-            onPress={() => onImageUpload()}
-        >
-            {
-                isImageUploading ? <ImageUploading/> : <ImageUpload strokeColor={isEditMode ? theme.colors['--color-blue-600'] : theme.colors['--color-gray-600'] }/>
-            }
-            <PageText
-                textColor={isEditMode ? '--color-blue-600' : '--color-gray-600'}
-                font="--text-sm-regular"
-                style={css`padding-top: 10px;`}
-            >
-                {
-                    isImageUploading ? 'Please wait...' : 'Click to Upload Invoice'
-                }
-            </PageText>
-            <PageText
-                textColor="--color-gray-500"
-                font="--cart-text"
-            >
-                Supports JPG, PNG PDF
-            </PageText>
-        </InvoiceUploadContainer>
-    );
+    const removeInvoice = () => {
+        setInvoiceImage();
+    };
 
-    const imageContent = (
-        <ImageContainer theme={theme}>
-            <ImageTitleContainer theme={theme}>
-                <PageText
-                    theme={theme}
-                    font="--text-sm-medium"
-                    textColor="--color-blue-600"
-                >{invoiceImage?.name || ''}</PageText>
-                {
-                    isEditMode && <DeleteIcon/>
-                }
-            </ImageTitleContainer>
-            <UploadedImageContainer
-                activeOpacity={0.6}
-                onPress={() => openFullView()}
-            >
-                <Image
-                    // source={require('../../../assets/test_image.png')}
-                    source={{ uri: '/Containers/Data/Application/A78AFDDA-8ACD-4FDF-8A54-A841F2C85A8E/Library/Caches/ExponentExperienceData/%2540anonymous%252Fsmsja-suites-b6d632e9-39b6-4802-9e28-8ee5f8211016/DocumentPicker/75178AFB-139F-4FEF-9493-CFB6EF47F67F.jpg' }}
-                />
-            </UploadedImageContainer>
-        </ImageContainer>
-    );
-
-    const content = (
-        <PageWrapper>
-            <PurchaseOrderContainer theme={theme}>
-                <Record
-                    recordTitle="Purchase Order ID"
-                    recordValue={invoiceItem.purchaseOrderNumber}
-                    valueColor="--color-blue-600"
-                />
-            </PurchaseOrderContainer>
-            <InvoiceWrapper>
-                {
-                    invoiceImage ? imageContent : uploadContent
-                }
-            </InvoiceWrapper>
-            <Footer
-                hasActions={false}
-                hasPaginator={false}
-            />
-        </PageWrapper>
-    );
     return (
         <>
             <PageContext.Provider value={{pageState, setPageState}}>
@@ -206,7 +199,15 @@ const SupplierInvoiceUpload = ({ route }) => {
                         />
                     )}
                 >
-                    {content}
+                    <InvoiceDetailsPage
+                        onImageUpload={onImageUpload}
+                        removeInvoice={removeInvoice}
+                        openFullView={openFullView}
+                        isImageUploading={isImageUploading}
+                        invoiceImage={invoiceImage}
+                        canPreview={canPreview}
+                        purchaseOrderNumber={invoiceItem?.purchaseOrderNumber}
+                    />
                 </DetailsPage>
             </PageContext.Provider>
         </>

@@ -19,8 +19,14 @@ const TitleContainer = styled.View`
 
 const ImageContainer = styled.View`
     flex: 1;
+    margin: ${({theme}) => theme.space['--space-20']};
     align-items: center;
     justify-content: center;
+`;
+
+const FullImage = styled.Image`
+    height: 100%;
+    width: 100%;
 `;
 
 const TitleText = styled.Text(({ theme, textColor = '--color-blue-600', font = '--text-lg-medium'}) => ({
@@ -36,10 +42,10 @@ const InvoiceFullPageView = ({title = "", sourceImage=''}) => {
             <TitleContainer>
                 <TitleText>{title}</TitleText>
             </TitleContainer>
-            <ImageContainer>
-                <Image
+            <ImageContainer theme={theme}>
+                <FullImage
                     resizeMode="contain"
-                    source={require('../../../assets/test_image.png')}
+                    source={{uri: sourceImage}}
                 />
             </ImageContainer>
         </PageViewWrapper>
