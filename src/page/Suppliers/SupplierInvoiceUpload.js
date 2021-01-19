@@ -19,6 +19,9 @@ import InvoiceFullPageView from './InvoiceFullPageView';
 import IconButton from '../../components/common/Buttons/IconButton';
 import InvoiceDetailsPage from './InvoiceDetailsPage';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
+import { uploadDocument } from '../../api/network';
+import LoadingIndicator from '../../components/common/LoadingIndicator';
+import axios from 'axios';
 
 const PageWrapper = styled.View`
     margin: 0;
@@ -116,10 +119,28 @@ const SupplierInvoiceUpload = ({ route }) => {
     const [isImageUploading, setIsImageUploading] = useState(false);
     const [invoiceImage, setInvoiceImage] = useState();
     const [canPreview, setCanPreview] = useState(true);
+    const [isUploadingDoc, setIsUploadingDoc] = useState(false);
 
     const {isEditMode = false} = pageState;
 
-    console.log('Obj: ', invoiceItem);
+    const uploadImage = image => {
+        const { uri } = image;
+        console.log('URI: ', uri);
+        const formData = new FormData();
+        formData.append('file', uri);
+        setIsUploadingDoc(true);
+        
+        const config = {headers: {'Content-Type': 'multipart/form-data'}};
+        axios.post('https://sms-document-generation-service.azurewebsites.net/api/documents', formData, config)
+            .then(res => console.log('Res: ', res))
+            .catch(err => console.log('Upload Error: ', err))
+            .finally(_ => setIsUploadingDoc(false));
+
+        // uploadDocument({ ...image })
+        //     .then(res => console.log('Doc management Response: ', res))
+        //     .catch(err => console.log('Doc management Error doc: ', err))
+        //     .finally(_ => setIsUploadingDoc(false));
+    };
 
     const onImageUpload = async () => {
         setIsImageUploading(true);
@@ -129,21 +150,15 @@ const SupplierInvoiceUpload = ({ route }) => {
                 const testUri = (result.uri).match(/[^.]*$/g)[0] || '';
                 const acceptedFormats = (testUri === 'jpg') || (testUri === 'JPG') || (testUri === 'png') || (testUri === 'PNG') || (testUri === 'pdf') || (testUri === 'PDF');
                 const rejectedPreviewFormats = (testUri === 'pdf') || (testUri === 'PDF');
-
-                console.log('Test: ', testUri);
-                console.log('Accepted: ', acceptedFormats);
-                console.log('Rejected: ', rejectedPreviewFormats);
                 if (acceptedFormats) {
                     if (rejectedPreviewFormats) {
-                        console.log('Rejected');
+                        // console.log('Rejected');
                         setCanPreview(false);
                     }
-                    // eslint-disable-next-line no-console
-                    console.log('Accepted file');
-                    // eslint-disable-next-line no-console
-                    console.log('Document obj:', result);
-                    // eslint-disable-next-line no-unused-expressions
-                    (result.type === 'success') && setInvoiceImage(result);
+                    if (result.type === 'success') {
+                        setInvoiceImage(result);
+                        uploadImage(result);
+                    }
                 } else {
                     modal.openModal('ConfirmationModal', {
                         content: (
@@ -182,6 +197,23 @@ const SupplierInvoiceUpload = ({ route }) => {
     };
 
     const removeInvoice = () => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isError={false}//boolean to show whether an error icon or success icon
+                    isEditUpdate={true}
+                    onCancel={() => { modal.closeAllModals(); }}
+                    onAction={() => { modal.closeAllModals(); handleInvoiceUploadRemoval(); }}
+                    message="Do you wish to delete this item?"
+                />
+            ),
+            onClose: () => {
+                console.log('Modal closed');
+            },
+        });
+    };
+
+    const handleInvoiceUploadRemoval = () => {
         setInvoiceImage();
     };
 
@@ -199,15 +231,20 @@ const SupplierInvoiceUpload = ({ route }) => {
                         />
                     )}
                 >
-                    <InvoiceDetailsPage
-                        onImageUpload={onImageUpload}
-                        removeInvoice={removeInvoice}
-                        openFullView={openFullView}
-                        isImageUploading={isImageUploading}
-                        invoiceImage={invoiceImage}
-                        canPreview={canPreview}
-                        purchaseOrderNumber={invoiceItem?.purchaseOrderNumber}
-                    />
+                    {
+                        isUploadingDoc ? <LoadingIndicator/> : (
+                            <InvoiceDetailsPage
+                                onImageUpload={onImageUpload}
+                                removeInvoice={removeInvoice}
+                                openFullView={openFullView}
+                                isImageUploading={isImageUploading}
+                                invoiceImage={invoiceImage}
+                                canPreview={canPreview}
+                                purchaseOrderNumber={invoiceItem?.purchaseOrderNumber}
+                            />
+                        )
+                    }
+                    
                 </DetailsPage>
             </PageContext.Provider>
         </>

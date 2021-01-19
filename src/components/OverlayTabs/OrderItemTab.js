@@ -15,15 +15,18 @@ import AddItemContainer from '../PurchaseOrders/AddItemContainer';
 
 import WasteIcon from '../../../assets/svg/wasteIcon';
 import AddIcon from '../../../assets/svg/addIcon';
+import GenerateIcon from '../../../assets/svg/generateIcon';
 
 import {currencyFormatter} from '../../utils/formatter';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 import {PageContext} from '../../contexts/PageContext';
+import { updateInvoiceDocumnet } from '../../api/network';
 import Footer from '../common/Page/Footer';
 import Search from '../common/Search';
 
 import DataItem from '../common/List/DataItem';
 import {LONG_PRESS_TIMER} from '../../const';
+import ConfirmationComponent from '../ConfirmationComponent';
 
 const headers = [
     {
@@ -62,7 +65,8 @@ const OrderItemTab = ({
     onAddProductItems = () => {
     },
     onRemoveProductItems = () => {
-    },
+    }, 
+    handleGenerateInvoice = () => {}
 }) => {
     const modal = useModal();
     const theme = useTheme();
@@ -163,7 +167,7 @@ const OrderItemTab = ({
 
     const listItemFormat = (item, index) => {
         const {amount = 0, productId = {}} = item;
-        const {name = '', sku = '', unitPrice = 0, unit = ''} = productId;
+        const {name = '', sku = '', unitPrice = 0, unit = ''} = productId || {};
 
         return (
             <>
@@ -272,8 +276,8 @@ const OrderItemTab = ({
 
     let itemsToDisplay;
     if (searchValue) {
-        itemsToDisplay = orders.filter(order => order.productId.name.toLowerCase()
-            .includes(searchValue.toLowerCase() || order.productId.sku.toLowerCase()
+        itemsToDisplay = orders.filter(order => order?.productId?.name.toLowerCase() || ''
+            .includes(searchValue.toLowerCase() || order?.productId?.sku.toLowerCase() || ''
                 .includes(searchValue.toLowerCase())
             ));
     } else itemsToDisplay = [...orders];

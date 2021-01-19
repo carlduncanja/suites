@@ -471,9 +471,8 @@ const SupplierPurchaseOrders = ({
     };
 
     const listItemFormat = item => {
-        const { invoiceNumber = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '' } = item;
-        const invoice = invoiceNumber === '' ? 'n/a' : invoiceNumber;
-        const invoiceColor = invoiceNumber === '' ? '--color-gray-500' : '--color-blue-600';
+        const { invoice = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '' } = item;
+        const invoiceColor = invoice === '' ? '--color-gray-500' : '--color-blue-600';
         const statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700';
         return (
             <>
@@ -485,11 +484,11 @@ const SupplierPurchaseOrders = ({
                     flex={1.2}
                 />
                 <DataItemWithIcon
-                    text={invoice}
+                    text={invoice || 'n/a'}
                     onPress={() => {
                     }}
                     fontStyle="--text-base-medium"
-                    icon={invoiceNumber !== '' ? <ImageIcon /> : null}
+                    icon={invoice ? <ImageIcon /> : null}
                     color={invoiceColor}
                     flex={1.2}
                 />
@@ -549,7 +548,7 @@ const SupplierPurchaseOrders = ({
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={() => goToDetailsTab(item)}
+            onItemPress={() => (item?.status === 'billed' && goToDetailsTab(item))}
             itemView={listItemFormat(item)}
         />
     );

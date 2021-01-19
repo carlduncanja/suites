@@ -74,11 +74,13 @@ import {
     updateBufferEndpoint,
     userPassword,
     chargeSheetApplyPaymentEndpoint,
-    chargeSheetInvoiceApplyPaymentEndpoint
+    chargeSheetInvoiceApplyPaymentEndpoint,
+    updatePurchaseOrderDocument,
+    purchaseOrderInvoice
 
 
 } from '../const/suitesEndpoints';
-import {createDocumentLink} from '../const/documentGenerationEndpoints';
+import {createDocumentLink, documentUpload} from '../const/documentGenerationEndpoints';
 
 // ################# Mock Data
 import {appointments} from '../../data/Appointments';
@@ -663,6 +665,16 @@ export const archivePurchaseOrders = async data => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const updateInvoiceDocumnet = async (purchaseOrderId, docId) => suitesAxiosInstance
+    .put(updatePurchaseOrderDocument(purchaseOrderId), docId)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const generatePurchaseOrderInvoice = async (purchaseOrderId, status) => suitesAxiosInstance
+    .put(purchaseOrderInvoice(purchaseOrderId), status)
+    .then(handleResponse)
+    .catch(handleError);
+
 // ################# Patients Endpoints
 export const updatePatient = async (id, data) => suitesAxiosInstance
     .put(patientEndpoint(id), data)
@@ -671,6 +683,10 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
 
 // ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const uploadDocument = async data => documentGenerationInstance.post(documentUpload, data)
     .then(handleResponse)
     .catch(handleError);
 
