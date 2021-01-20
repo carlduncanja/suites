@@ -224,7 +224,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     const theme = useTheme();
     const steps = [...wizard.map(step => step.step)];
     const modal = useModal();
-    const {draftItem} = route.params;
+    const {draftItem} = route.params || {};
 
     //console.log("what's in route", route.params);
     // ########### STATES
