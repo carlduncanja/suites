@@ -125,15 +125,34 @@ const SupplierInvoiceUpload = ({ route }) => {
 
     const uploadImage = image => {
         const { uri } = image;
-        console.log('URI: ', uri);
+        console.log('URI: ', image);
         const formData = new FormData();
         formData.append('file', uri);
         setIsUploadingDoc(true);
         
         const config = {headers: {'Content-Type': 'multipart/form-data'}};
         axios.post('https://sms-document-generation-service.azurewebsites.net/api/documents', formData, config)
-            .then(res => console.log('Res: ', res))
-            .catch(err => console.log('Upload Error: ', err))
+            .then(res => {
+                console.log('Res: ', res);
+                setInvoiceImage(image);
+            })
+            .catch(err => {
+                console.log('Upload Error: ', err);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => { modal.closeAllModals(); }}
+                            onAction={() => { modal.closeAllModals(); }}
+                            message="Document could not be uploaded"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
             .finally(_ => setIsUploadingDoc(false));
 
         // uploadDocument({ ...image })
@@ -156,7 +175,7 @@ const SupplierInvoiceUpload = ({ route }) => {
                         setCanPreview(false);
                     }
                     if (result.type === 'success') {
-                        setInvoiceImage(result);
+                        // setInvoiceImage(result);
                         uploadImage(result);
                     }
                 } else {

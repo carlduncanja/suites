@@ -471,7 +471,7 @@ const SupplierPurchaseOrders = ({
     };
 
     const listItemFormat = item => {
-        const { invoice = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '' } = item;
+        const { invoice = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '', documentId = "" } = item;
         const invoiceColor = invoice === '' ? '--color-gray-500' : '--color-blue-600';
         const statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700';
         return (
@@ -488,7 +488,7 @@ const SupplierPurchaseOrders = ({
                     onPress={() => {
                     }}
                     fontStyle="--text-base-medium"
-                    icon={invoice ? <ImageIcon /> : null}
+                    icon={documentId ? <ImageIcon /> : null}
                     color={invoiceColor}
                     flex={1.2}
                 />
