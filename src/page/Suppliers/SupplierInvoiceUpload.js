@@ -123,42 +123,109 @@ const SupplierInvoiceUpload = ({ route }) => {
 
     const {isEditMode = false} = pageState;
 
-    const uploadImage = image => {
+    const blobCreationFromURL = (uri) => {
+        let binary = "";
+        let blobArray = [];
+        let uriMime = uri.split(',')[0].split(':')[1].split(';')[0]; 
+
+        if (uri.split(',')[0].indexOf('base64') >= 0) {
+            binary = atob(uri.split(',')[1]);
+        } else {
+            binary = unescape(uri.split(',')[1]); 
+        }
+
+        for (var index = 0; index < binary.length; index++) { 
+            blobArray.push(binary.charCodeAt(index)); 
+        } 
+  
+        return new Blob([blobArray], { 
+            type: uriMime 
+        }); 
+    }
+
+    const uploadImage = async image => {
         const { uri } = image;
         console.log('URI: ', image);
-        const formData = new FormData();
-        formData.append('file', uri);
-        setIsUploadingDoc(true);
+        const blobObj = blobCreationFromURL(uri);
+        // const response = await fetch(uri);
+        // const blob = await response.blob();
         
-        const config = {headers: {'Content-Type': 'multipart/form-data'}};
-        axios.post('https://sms-document-generation-service.azurewebsites.net/api/documents', formData, config)
-            .then(res => {
-                console.log('Res: ', res);
-                setInvoiceImage(image);
-            })
-            .catch(err => {
-                console.log('Upload Error: ', err);
-                modal.openModal('ConfirmationModal', {
-                    content: (
-                        <ConfirmationComponent
-                            isError={true}//boolean to show whether an error icon or success icon
-                            isEditUpdate={false}
-                            onCancel={() => { modal.closeAllModals(); }}
-                            onAction={() => { modal.closeAllModals(); }}
-                            message="Document could not be uploaded"
-                        />
-                    ),
-                    onClose: () => {
-                        console.log('Modal closed');
-                    },
-                });
-            })
-            .finally(_ => setIsUploadingDoc(false));
+        // const reader = new FileReader();
+        const formData = new FormData();
 
-        // uploadDocument({ ...image })
-        //     .then(res => console.log('Doc management Response: ', res))
-        //     .catch(err => console.log('Doc management Error doc: ', err))
+        formData.append('file', blobObj);
+
+        setIsUploadingDoc(true);
+    
+        const config = {headers: {'Content-Type': 'multipart/form-data'}};
+        console.log('Form data: ', formData);
+
+        axios.post('https://sms-document-management-service.azurewebsites.net/api/documents', formData, config)
+        .then(res => {
+            console.log('Res: ', res);
+            setInvoiceImage(image);
+        })
+        .catch(err => {
+            console.log('Upload Error: ', err);
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={true}//boolean to show whether an error icon or success icon
+                        isEditUpdate={false}
+                        onCancel={() => { modal.closeAllModals(); }}
+                        onAction={() => { modal.closeAllModals(); }}
+                        message="Document could not be uploaded"
+                    />
+                ),
+                onClose: () => {
+                    console.log('Modal closed');
+                },
+            });
+        })
+        .finally(_ => setIsUploadingDoc(false));
+
+
+
+        
+
+        // reader.readAsDataURL(blob);
+        // reader.onloadend = () => {
+        //     console.log('RESULT: ', reader.result);
+
+        //     formData.append('file', reader.result);
+
+        //     setIsUploadingDoc(true);
+        
+        //     const config = {headers: {'Content-Type': 'multipart/form-data'}};
+        //     console.log('Form data: ', formData);
+
+        //     axios.post('https://sms-document-management-service.azurewebsites.net/api/documents', formData, config)
+        //     .then(res => {
+        //         console.log('Res: ', res);
+        //         setInvoiceImage(image);
+        //     })
+        //     .catch(err => {
+        //         console.log('Upload Error: ', err);
+        //         modal.openModal('ConfirmationModal', {
+        //             content: (
+        //                 <ConfirmationComponent
+        //                     isError={true}//boolean to show whether an error icon or success icon
+        //                     isEditUpdate={false}
+        //                     onCancel={() => { modal.closeAllModals(); }}
+        //                     onAction={() => { modal.closeAllModals(); }}
+        //                     message="Document could not be uploaded"
+        //                 />
+        //             ),
+        //             onClose: () => {
+        //                 console.log('Modal closed');
+        //             },
+        //         });
+        //     })
         //     .finally(_ => setIsUploadingDoc(false));
+
+
+
+        // }
     };
 
     const onImageUpload = async () => {
