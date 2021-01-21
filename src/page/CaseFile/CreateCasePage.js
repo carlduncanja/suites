@@ -250,7 +250,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
     const [completedSteps, setCompletedSteps] = useState([]);
     const [completedTabs, setCompletedTabs] = useState([]);
-    const [caseCreated, setCaseCreated] = useState(true);
+    const [caseCreated, setCaseCreated] = useState(false);
 
     const [snackbar, setSnackbar] = useState({
         visible: false,
@@ -260,7 +260,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     useEffect(
         () =>
             navigation.addListener('beforeRemove', (e) => {
-                if (!caseCreated) {
+                if (caseCreated) {
                     // If we don't have unsaved changes, then we don't need to do anything
                     return;
                 }
