@@ -360,12 +360,9 @@ function CaseFiles(props) {
 
     const openCreateCaseFile = () => {
         modal.closeModals('ActionContainerModal');
-        props.navigation.navigate('CreateCase', {
-            // screen: 'CreateCase',
+        navigation.navigate('CreateCase', {
             initial: false,
             draftItem: null
-            // params: {
-            // }
         });
     };
 
