@@ -3,6 +3,7 @@ import * as config from '../config';
 
 const BASE_URL = config.suites.baseUrl || 'https://suites-api.azurewebsites.net';
 const DOCUMENT_GENERATION_BASE_URL = config.documentGeneration.baseUrl;
+const DOCUMENT_MANAGEMENT_BASE_URL = config.documentManagement.baseUrl;
 
 console.log('Base url is:', BASE_URL);
 const baseInstance = axios.create({
@@ -11,6 +12,8 @@ const baseInstance = axios.create({
 });
 
 export const documentGenerationInstance = axios.create({ baseURL: `${DOCUMENT_GENERATION_BASE_URL}/api` });
+
+export const documentManagementInstance = axios.create({ baseURL: `${DOCUMENT_MANAGEMENT_BASE_URL}/api` });
 
 export const setBearerToken = token => {
     // eslint-disable-next-line no-console

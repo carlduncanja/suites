@@ -1,4 +1,4 @@
-import suitesAxiosInstance, {documentGenerationInstance} from './index';
+import suitesAxiosInstance, {documentGenerationInstance, documentManagementInstance} from './index';
 import {handleError, handleResponse} from './apiUtils';
 
 import {
@@ -686,7 +686,7 @@ export const generateDocumentLink = async data => documentGenerationInstance.pos
     .then(handleResponse)
     .catch(handleError);
 
-export const uploadDocument = async data => documentGenerationInstance.post(documentUpload, data)
+export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, {headers: {'Content-Type': 'multipart/form-data'}})
     .then(handleResponse)
     .catch(handleError);
 

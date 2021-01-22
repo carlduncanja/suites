@@ -19,7 +19,7 @@ import InvoiceFullPageView from './InvoiceFullPageView';
 import IconButton from '../../components/common/Buttons/IconButton';
 import InvoiceDetailsPage from './InvoiceDetailsPage';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
-import { uploadDocument } from '../../api/network';
+import {generateDocumentLink, uploadDocument} from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import axios from 'axios';
 
@@ -126,67 +126,73 @@ const SupplierInvoiceUpload = ({ route }) => {
     const blobCreationFromURL = (uri) => {
         let binary = "";
         let blobArray = [];
-        let uriMime = uri.split(',')[0].split(':')[1].split(';')[0]; 
+        let uriMime = uri.split(',')[0].split(':')[1].split(';')[0];
 
         if (uri.split(',')[0].indexOf('base64') >= 0) {
             binary = atob(uri.split(',')[1]);
         } else {
-            binary = unescape(uri.split(',')[1]); 
+            binary = unescape(uri.split(',')[1]);
         }
 
-        for (var index = 0; index < binary.length; index++) { 
-            blobArray.push(binary.charCodeAt(index)); 
-        } 
-  
-        return new Blob([blobArray], { 
-            type: uriMime 
-        }); 
+        for (var index = 0; index < binary.length; index++) {
+            blobArray.push(binary.charCodeAt(index));
+        }
+
+        return new Blob([blobArray], {
+            type: uriMime
+        });
     }
 
     const uploadImage = async image => {
-        const { uri } = image;
         console.log('URI: ', image);
-        const blobObj = blobCreationFromURL(uri);
+        // const blobObj = blobCreationFromURL(uri);
         // const response = await fetch(uri);
         // const blob = await response.blob();
-        
-        // const reader = new FileReader();
+
         const formData = new FormData();
 
-        formData.append('file', blobObj);
-
+        formData.append('file', image);
         setIsUploadingDoc(true);
-    
-        const config = {headers: {'Content-Type': 'multipart/form-data'}};
-        console.log('Form data: ', formData);
 
-        axios.post('https://sms-document-management-service.azurewebsites.net/api/documents', formData, config)
-        .then(res => {
-            console.log('Res: ', res);
-            setInvoiceImage(image);
-        })
-        .catch(err => {
-            console.log('Upload Error: ', err);
-            modal.openModal('ConfirmationModal', {
-                content: (
-                    <ConfirmationComponent
-                        isError={true}//boolean to show whether an error icon or success icon
-                        isEditUpdate={false}
-                        onCancel={() => { modal.closeAllModals(); }}
-                        onAction={() => { modal.closeAllModals(); }}
-                        message="Document could not be uploaded"
-                    />
-                ),
-                onClose: () => {
-                    console.log('Modal closed');
-                },
-            });
-        })
-        .finally(_ => setIsUploadingDoc(false));
+        await uploadDocument(formData)
+            .then(res => {
+                console.log('Res: ', res);
+                setInvoiceImage(image);
+            })
+            .catch(err => {
+                console.log('Upload Error: ', err);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => { modal.closeAllModals(); }}
+                            onAction={() => { modal.closeAllModals(); }}
+                            message="Document could not be uploaded"
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            })
+            .finally(_ => setIsUploadingDoc(false));
+
+        // FileSystem.readAsStringAsync(uri)
+        //     .then(result => {
+        //
+        //         console.log('FileSystem result', result);
+        //         // do what you want here.
+        //
+        //
+        //     }).catch(error => {
+        //         console.log('FileSystem failed', )
+        // })
+
+        // const config = {headers: {'Content-Type': 'multipart/form-data'}};
+        // console.log('Form data: ', formData);
 
 
-
-        
 
         // reader.readAsDataURL(blob);
         // reader.onloadend = () => {
@@ -195,7 +201,7 @@ const SupplierInvoiceUpload = ({ route }) => {
         //     formData.append('file', reader.result);
 
         //     setIsUploadingDoc(true);
-        
+
         //     const config = {headers: {'Content-Type': 'multipart/form-data'}};
         //     console.log('Form data: ', formData);
 
@@ -230,7 +236,7 @@ const SupplierInvoiceUpload = ({ route }) => {
 
     const onImageUpload = async () => {
         setIsImageUploading(true);
-        await DocumentPicker.getDocumentAsync({})
+        DocumentPicker.getDocumentAsync({})
             .then(result => {
                 // const testUri = /[^.]*$/g.test(result?.uri);
                 const testUri = (result.uri).match(/[^.]*$/g)[0] || '';
@@ -330,7 +336,7 @@ const SupplierInvoiceUpload = ({ route }) => {
                             />
                         )
                     }
-                    
+
                 </DetailsPage>
             </PageContext.Provider>
         </>
