@@ -257,36 +257,33 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         message: ''
     });
 
-    useEffect(
-        () =>
-            navigation.addListener('beforeRemove', (e) => {
-                if (caseCreated) {
-                    // If we don't have unsaved changes, then we don't need to do anything
-                    return;
-                }
+    useEffect(() =>
+        navigation.addListener('beforeRemove', (e) => {
+            if (caseCreated) {
+                // If we don't have unsaved changes, then we don't need to do anything
+                return;
+            }
 
-                // Prevent default behavior of leaving the screen
-                e.preventDefault();
+            // Prevent default behavior of leaving the screen
+            e.preventDefault();
 
-                modal.openModal('ConfirmationModal', {
-                    content: (
-                        <ConfirmationComponent
-                            isError={false}
-                            isEditUpdate={true}
-                            onAction={createDraft}
-                            action="Save"
-                            titleText="Save Draft?"
-                            onCancel={() => {
-                                navigation.dispatch(e.data.action)
-                                modal.closeAllModals();
-                            }}
-                            message={`You haven't finished creating the Case File for "${patientFields?.firstName || 'Unknown'}". Do you wish to save your progress?`}
-                        />
-                    ),
-                });
-            }),
-        [navigation]
-    );
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={true}
+                        onAction={createDraft}
+                        action="Save"
+                        titleText="Save Draft?"
+                        onCancel={() => {
+                            navigation.dispatch(e.data.action)
+                            modal.closeAllModals();
+                        }}
+                        message={`You haven't finished creating the Case File for "${patientFields?.firstName || 'Unknown'}". Do you wish to save your progress?`}
+                    />
+                ),
+            });
+        }), [navigation, caseCreated]);
 
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
@@ -658,16 +655,14 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             duration: item.duration,
         }));
 
-        console.log('handleOnComplete: caseProcedure Info', caseFileData);
-
         // remove draft from redux state
         if (draftItem?.id) removeDraft(draftItem?.id);
 
         setLoading(true);
+        setCaseCreated(true);
         createCaseFile(caseFileData)
             .then(data => {
                 addCaseFile(data);
-                setCaseCreated(true);
                 navigation.replace('Case', {
                     caseId: data._id,
                     isEdit: true,
