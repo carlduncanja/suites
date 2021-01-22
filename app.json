@@ -2,6 +2,7 @@
   "expo": {
     "name": "Suites",
     "slug": "smsja-suites",
+    "owner": "smart-mobile-solutions",
     "privacy": "public",
     "platforms": [
       "ios"
@@ -23,7 +24,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.smsja.suites",
-      "buildNumber": "1.0.2"
+      "buildNumber": "1.0.3"
     }
   }
 }
