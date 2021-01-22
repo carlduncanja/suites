@@ -1,5 +1,5 @@
 import suitesAxiosInstance, {documentGenerationInstance, documentManagementInstance} from './index';
-import {handleError, handleResponse} from './apiUtils';
+import {handleError, handleRawResponse, handleResponse} from './apiUtils';
 
 import {
     inventoryGroups,

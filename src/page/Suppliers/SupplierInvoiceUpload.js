@@ -156,11 +156,11 @@ const SupplierInvoiceUpload = ({ route }) => {
 
         await uploadDocument(formData)
             .then(res => {
-                console.log('Res: ', res);
+                console.log('Response: ', res);
                 setInvoiceImage(image);
             })
             .catch(err => {
-                console.log('Upload Error: ', err);
+                console.log('Upload File Error: ', err);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
