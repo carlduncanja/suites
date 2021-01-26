@@ -103,8 +103,8 @@ const SuitesCustomNavigator = ({
 
     // event handlers;
     const handleOnTabPress = (e, routeName) => {
-        console.log('tab pressed', e, routeName);
-        navigation.navigate(routeName);
+        console.log('tab pressed', routeName);
+        navigation.navigate(routeName, {screen: routeName});
     };
 
     const handleOnLogout = () => {
@@ -152,7 +152,7 @@ const SuitesCustomNavigator = ({
 
                             <View style={styles.pageContent} onLayout={getPageMeasure}>
                                 {/*    ACTIVE SCREEN    */}
-                                
+
                                 <CustomSnackbarProvider>
 
                                     {descriptors[state.routes[state.index].key].render()}

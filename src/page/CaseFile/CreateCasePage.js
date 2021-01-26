@@ -99,15 +99,15 @@ const testData = {
 
 const PageWrapper = styled.View`
   flex: 1;
-  display: flex;  
-  margin:0;
+  display: flex;
+  margin: 0;
   background-color: ${({theme}) => theme.colors['--default-shade-white']};
 `;
 const PageContentWrapper = styled.View`
   flex: 1;
 
 `;
-  /* padding: ${({theme}) => theme.space['--space-32']} */
+/* padding: ${({theme}) => theme.space['--space-32']} */
 
 const HeaderWrapper = styled.View`
   display: flex;
@@ -116,7 +116,7 @@ const HeaderWrapper = styled.View`
   justify-content: center;
   padding-left: ${({theme}) => theme.space['--space-24']};
   padding-right: ${({theme}) => theme.space['--space-24']};
-  
+
 `;
 
 const HeaderContainer = styled.View`
@@ -137,10 +137,10 @@ const FooterWrapper = styled.View`
   border-bottom-width: 0;
   border-left-width: 0;
   border-right-width: 0;
-  padding-top: ${({theme}) => theme.space['--space-24']}; 
-  padding-bottom: ${({theme}) => theme.space['--space-24']}; 
-  margin-left: ${({theme}) => theme.space['--space-24']}; 
-  margin-right: ${({theme}) => theme.space['--space-24']}; 
+  padding-top: ${({theme}) => theme.space['--space-24']};
+  padding-bottom: ${({theme}) => theme.space['--space-24']};
+  margin-left: ${({theme}) => theme.space['--space-24']};
+  margin-right: ${({theme}) => theme.space['--space-24']};
 `;
 
 const FooterContainer = styled.View`
@@ -224,7 +224,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     const theme = useTheme();
     const steps = [...wizard.map(step => step.step)];
     const modal = useModal();
-    const {draftItem} = route.params;
+    const {draftItem} = route.params || {};
 
     //console.log("what's in route", route.params);
     // ########### STATES
@@ -250,12 +250,40 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
     const [completedSteps, setCompletedSteps] = useState([]);
     const [completedTabs, setCompletedTabs] = useState([]);
-    const [draft, setDraft] = useState([]);
+    const [caseCreated, setCaseCreated] = useState(false);
 
     const [snackbar, setSnackbar] = useState({
         visible: false,
         message: ''
     });
+
+    useEffect(() =>
+        navigation.addListener('beforeRemove', (e) => {
+            if (caseCreated) {
+                // If we don't have unsaved changes, then we don't need to do anything
+                return;
+            }
+
+            // Prevent default behavior of leaving the screen
+            e.preventDefault();
+
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={true}
+                        onAction={createDraft}
+                        action="Save"
+                        titleText="Save Draft?"
+                        onCancel={() => {
+                            navigation.dispatch(e.data.action)
+                            modal.closeAllModals();
+                        }}
+                        message={`You haven't finished creating the Case File for "${patientFields?.firstName || 'Unknown'}". Do you wish to save your progress?`}
+                    />
+                ),
+            });
+        }), [navigation, caseCreated]);
 
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
@@ -627,12 +655,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             duration: item.duration,
         }));
 
-        console.log('handleOnComplete: caseProcedure Info', caseFileData);
-
         // remove draft from redux state
         if (draftItem?.id) removeDraft(draftItem?.id);
 
         setLoading(true);
+        setCaseCreated(true);
         createCaseFile(caseFileData)
             .then(data => {
                 addCaseFile(data);
@@ -644,12 +671,9 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             .catch(error => {
                 console.log('failed to create case file', error.message);
                 console.log('failed to create case file', error.response);
-
-
-
                 Alert.alert('Sorry', 'Something went wrong when creating case.');
             })
-            .finally( _ => {
+            .finally(_ => {
                 setLoading(false)
             });
     };
@@ -667,21 +691,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     };
 
     const onClose = () => {
-        modal.openModal('ConfirmationModal', {
-            content: (
-                <ConfirmationComponent
-                    isError={false}
-                    isEditUpdate={true}
-                    onAction={createDraft}
-                    action="Save"
-                    onCancel={() => {
-                        navigation.navigate('CaseFiles');
-                        modal.closeAllModals();
-                    }}
-                    message={`You haven't finished creating the Case File for "${patientFields?.firstName || 'Unknown'}". Do you wish to save your progress?`}
-                />
-            ),
-        });
+        navigation.navigate('CaseFiles');
     };
 
     const getTabContent = () => {
@@ -851,7 +861,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
             {
                 isLoading &&
-                <LoadingComponent />
+                <LoadingComponent/>
             }
 
         </PageWrapper>
@@ -861,9 +871,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 CreateCasePage.propTypes = {};
 CreateCasePage.defaultProps = {};
 
-const mapStateToProps = state => ({
-
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProp = {
     addCaseFile,

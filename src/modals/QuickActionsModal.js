@@ -27,7 +27,12 @@ const QuickActionsModal = (props) => {
         caseFile: {
             key: 'create',
             title: 'Create Case File',
-            performAction: () => navigation.navigate('Case Files', {screen: 'CreateCase', initial: false})
+            performAction: () => {
+                navigation.navigate(
+                    'CaseFiles',
+                    {screen: 'CreateCase', initial: false},
+                );
+            }
         },
         theatre: {},
         inventory: {},

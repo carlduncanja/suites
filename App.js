@@ -2,7 +2,7 @@ import React, {useReducer, useMemo, useState} from 'react';
 import {connect, Provider} from 'react-redux';
 import {ThemeProvider} from 'emotion-theming';
 import {Asset} from 'expo-asset';
-import {AppLoading} from 'expo';
+import AppLoading from 'expo-app-loading';
 
 import {createStackNavigator} from '@react-navigation/stack';
 import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
