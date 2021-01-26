@@ -248,7 +248,7 @@ const SupplierInvoiceUpload = ({ route }) => {
             <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     title={selectedSupplierName}
-                    subTitle={invoiceItem.invoiceNumber}
+                    subTitle={invoiceItem?.invoice?.invoiceNumber}
                     onBackPress={() => navigation.goBack()}
                     pageTabs={(
                         <TabsContainer

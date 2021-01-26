@@ -31,6 +31,7 @@ import ConfirmationComponent from '../ConfirmationComponent';
 import { removePurchaseOrders, updatePurchaseOrderDetails, archivePurchaseOrders } from '../../api/network';
 import DateInputField from '../common/Input Fields/DateInputField';
 import { PageContext } from '../../contexts/PageContext';
+import LoadingIndicator from '../common/LoadingIndicator';
 
 const EditDateRecord = styled.View`
     flex: 1.2;
@@ -40,30 +41,6 @@ const EditDateRecord = styled.View`
     justify-content: space-between;
 `;
 
-const testData = [
-    {
-        order: 'PO-0000023',
-        invoiceNumber: 'IN-00009675',
-        status: 'Payment Due',
-        orderDate: new Date(2019, 11, 12),
-        deliveryDate: new Date(2019, 11, 16)
-    },
-    {
-        order: 'PO-0000024',
-        invoiceNumber: 'IN-00009685',
-        status: 'Payment Due',
-        orderDate: new Date(2019, 11, 12),
-        deliveryDate: new Date(2019, 11, 16)
-    },
-    {
-        order: 'PO-0000024',
-        invoiceNumber: '',
-        status: 'Request Sent',
-        orderDate: new Date(2019, 11, 12),
-        deliveryDate: new Date(2019, 11, 16)
-    },
-
-];
 
 const SupplierPurchaseOrders = ({
     modal,
@@ -75,7 +52,9 @@ const SupplierPurchaseOrders = ({
     supplierId = ''
     // isEditMode
 }) => {
+    const [isPageLoading, setIsPageLoading] = useState(false);
     const [purchaseOrdersData, setPurchaseOrdersData] = useState(data);
+    const [ordersData, setOrdersData] = useState();
     const [checkBoxList, setCheckBoxList] = useState([]);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [hasActionButton, setHasActionButton] = useState(!isArchive);
@@ -130,6 +109,19 @@ const SupplierPurchaseOrders = ({
         // if (!Suppliers.length) fetchSuppliersData()
         setTotalPages(Math.ceil(data.length / recordsPerPage));
     }, []);
+
+    useEffect(() => {
+        setIsPageLoading(true);
+        getPurchaseOrders("",10,1,supplierId)
+            .then(orders => {
+                setOrdersData(orders?.data || []);
+                console.log('Orders for supplier: ', orders)
+            })
+            .catch(err => {
+                console.log('Order error for suppliers: ', err)
+            })
+            .finally(_ => setIsPageLoading(false));
+    },[]);
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {
@@ -349,17 +341,13 @@ const SupplierPurchaseOrders = ({
         } else {
             setCheckBoxList([]);
         }
-        // checkBoxList.length > 0 ?
-        //     setCheckBoxList([])
-        //     :
-        //     setCheckBoxList(tabDetails)
     };
 
     const handlePromise = async () => {
         console.log('HANDLE PROMISE');
         const promises = [];
         let hasError = false;
-        purchaseOrdersData.forEach(item => {
+        ordersData.forEach(item => {
             const newPromise = new Promise((resolve, reject) => {
                 updatePurchaseOrderDetails(item._id, { ...item })
                     .then(data => {
@@ -373,17 +361,6 @@ const SupplierPurchaseOrders = ({
             });
             promises.push(newPromise);
         });
-        // const requests = purchaseOrdersData.map(item => {
-        //     return new Promise((resolve, reject) => {
-        //         updatePurchaseOrderDetails(item._id, { ...item, deliveryDate: item.deliveryDate})
-        //             .then(data => {
-        //                 resolve(data);
-        //             })
-        //             .catch(err => {
-        //                 reject(err);
-        //             });
-        //     });
-        // });
 
         Promise.all(promises)
             .then(result => {
@@ -424,39 +401,6 @@ const SupplierPurchaseOrders = ({
             .finally(_ => onRefresh());
     };
 
-    // const handlePOCall = () => {
-    //     purchaseOrdersData.map(item => (
-    //         updatePurchaseOrderDetails(item._id, { ...item, deliveryDate: item.deliveryDate })
-    //             .then(_ => {
-    //                 console.log('Here');
-    //                 modal.openModal('ConfirmationModal',
-    //                     {
-    //                         content: <ConfirmationComponent
-    //                             isError={false}
-    //                             isEditUpdate={false}
-    //                             onAction={() => { modal.closeModals('ConfirmationModal'); }}
-    //                             onCancel={() => { modal.closeModals('ConfirmationModal'); }}
-    //                         />,
-    //                         onClose: () => { modal.closeModals('ConfirmationModal'); }
-    //                     });
-    //             })
-    //             .catch(error => {
-    //                 console.log(' API Error: ', error, item._id);
-    //                 modal.openModal('ConfirmationModal',
-    //                     {
-    //                         content: <ConfirmationComponent
-    //                             isError={true}
-    //                             isEditUpdate={false}
-    //                             onAction={() => { modal.closeModals('ConfirmationModal'); }}
-    //                             onCancel={() => { modal.closeModals('ConfirmationModal'); }}
-    //                         />,
-    //                         onClose: () => { modal.closeModals('ConfirmationModal'); }
-    //                     });
-    //             })
-    //             .finally(_ => onRefresh())
-    //     ));
-    // };
-    
     const onUpdateDate = value => dataItem => {
         // update value for specific item
         setUpdated(true);
@@ -464,16 +408,17 @@ const SupplierPurchaseOrders = ({
         const updateItemId = dataItem?._id;
         const newDataObj = {...dataItem, deliveryDate: value || dataItem.deliveryDate };
 
-        const updatedPOData = purchaseOrdersData.map(item => (item._id === dataItem._id ?
+        const updatedPOData = ordersData.map(item => (item._id === dataItem._id ?
             {...newDataObj} :
             {...item}));
         
-        setPurchaseOrdersData([...updatedPOData]);
+        setOrdersData([...updatedPOData]);
+        // setPurchaseOrdersData([...updatedPOData]);
         onUpdatePurchaseOrders([...updatedPOData]);
     };
 
     const listItemFormat = item => {
-        const { invoice = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '', } = item;
+        const { invoice = {}, purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '', } = item;
         const invoiceColor = invoice === '' ? '--color-gray-500' : '--color-blue-600';
         const statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700';
         console.log('Doc id: ', invoice);
@@ -487,7 +432,7 @@ const SupplierPurchaseOrders = ({
                     flex={1.2}
                 />
                 <DataItemWithIcon
-                    text={invoice || 'n/a'}
+                    text={invoice?.invoiceNumber || 'n/a'}
                     onPress={() => {
                     }}
                     fontStyle="--text-base-medium"
@@ -518,22 +463,6 @@ const SupplierPurchaseOrders = ({
                         <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} flex={1.2}/>
                 }
                 
-                {/* <View style={[styles.item,{flex:1}]}>
-                    <Text style={[styles.itemText, {color: "#3182CE"}]}>{order}</Text>
-                </View>
-                <View style={[styles.item, {flexDirection:'row',alignItems: 'flex-start', flex:1, marginRight:15}]}>
-                    { invoiceNumber !== "" && <View style={{marginRight:4,alignSelf:'center'}}><ImageIcon/></View>}
-                    <Text style={[styles.itemText,{color: "#3182CE"}]}>{invoice}</Text>
-                </View>
-                <View style={[styles.item, {alignItems: 'flex-start', flex:1}]}>
-                    <Text style={[styles.itemText,{color : statusColor, fontSize:16}]}>{status}</Text>
-                </View>
-                <View style={[styles.item, {alignItems: 'flex-start', flex:1}]}>
-                    <Text style={styles.itemText}>{formatDate(orderDate,'DD/MM/YYYY')}</Text>
-                </View>
-                <View style={[styles.item, {alignItems: 'flex-start',flex:1}]}>
-                    <Text style={styles.itemText}>{formatDate(deliveryDate,'DD/MM/YYYY')}</Text>
-                </View> */}
             </>
         );
     };
@@ -557,42 +486,30 @@ const SupplierPurchaseOrders = ({
     );
 
     return (
-        <>
-            <Table
-                data={data}
-                listItemFormat={renderListFn}
-                headers={headers}
-                isCheckbox={true}
-                toggleHeaderCheckbox={toggleHeaderCheckbox}
-                itemSelected={checkBoxList}
-            />
+        isPageLoading ? <LoadingIndicator/> : (
+            <>
+                <Table
+                    data={ordersData}
+                    listItemFormat={renderListFn}
+                    headers={headers}
+                    isCheckbox={true}
+                    toggleHeaderCheckbox={toggleHeaderCheckbox}
+                    itemSelected={checkBoxList}
+                />
 
-            <Footer
-                hasActionButton={hasActionButton}
-                hasPaginator={false}
-                totalPages={totalPages}
-                currentPage={currentPagePosition}
-                goToNextPage={goToNextPage}
-                goToPreviousPage={goToPreviousPage}
-                isDisabled={isFloatingActionDisabled}
-                toggleActionButton={toggleActionButton}
-            />
-            {/* <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-
-                <FloatingActionButton
+                <Footer
+                    hasActionButton={hasActionButton}
+                    hasPaginator={false}
+                    totalPages={totalPages}
+                    currentPage={currentPagePosition}
+                    goToNextPage={goToNextPage}
+                    goToPreviousPage={goToPreviousPage}
                     isDisabled={isFloatingActionDisabled}
                     toggleActionButton={toggleActionButton}
                 />
-            </View>  */}
-        </>
+            </>
+        )
+        
     );
 };
 
