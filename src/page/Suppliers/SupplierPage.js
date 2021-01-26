@@ -14,7 +14,7 @@ import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 
-import {getSupplierById, createPurchaseOrder, getSupplierProducts} from '../../api/network';
+import {getSupplierById, createPurchaseOrder, getSupplierProducts, getPurchaseOrders} from '../../api/network';
 import {colors} from '../../styles';
 import {updateSupplierAction} from '../../redux/actions/suppliersActions';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
@@ -231,6 +231,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                     onUpdatePurchaseOrders={onUpdatePurchaseOrders}
                     isEditMode={isEditMode}
                     supplierName={name}
+                    supplierId={_id}
                 />;
             // case 'Invoices':
             //     return <SuppliersInvoicePage

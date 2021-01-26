@@ -48,7 +48,7 @@ const OrderDetailsTab = ({
         status = "",
         total = 0,
         supplier = {},
-        invoice = "",
+        invoice = {},
         storageLocation,
         configStatus = "",
         approvedBy = {},
@@ -260,7 +260,7 @@ const OrderDetailsTab = ({
                 <Row>
                     <ResponsiveRecord
                         recordTitle="Invoice"
-                        recordValue={invoice || ""}
+                        recordValue={invoice?.invoiceNumber || ""}
                     />
 
                     <Record

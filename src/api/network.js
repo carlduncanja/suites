@@ -618,8 +618,8 @@ export const removeSupplierProducts = async (supplierId, data) => suitesAxiosIns
     .catch(handleError);
 
 // ################# PurchaseOrders Endpoints
-export const getPurchaseOrders = async (query, max, page) => suitesAxiosInstance
-    .get(purchaseOrdersEndpoint, {params: {query, max, page}})
+export const getPurchaseOrders = async (query, max, page, supplierId) => suitesAxiosInstance
+    .get(purchaseOrdersEndpoint, {params: {query, max, page, supplierId}})
     .then(handleResponse)
     .catch(handleError);
 
@@ -665,8 +665,8 @@ export const archivePurchaseOrders = async data => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-export const updateInvoiceDocumnet = async (purchaseOrderId, docId) => suitesAxiosInstance
-    .put(updatePurchaseOrderDocument(purchaseOrderId), docId)
+export const updateInvoiceDocument = async (purchaseOrderId, data) => suitesAxiosInstance
+    .put(updatePurchaseOrderDocument(purchaseOrderId), data)
     .then(handleResponse)
     .catch(handleError);
 

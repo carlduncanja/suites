@@ -241,7 +241,7 @@ function OrderItemPage({ route, navigation }) {
         setPageLoading(true);
         getPurchaseOrderById(id)
             .then(data => {
-                const { orders = [] } = data
+                const { orders = [] } = data || {};
                 setSelectedOrder(data)
                 setOrderItems(orders)
             })

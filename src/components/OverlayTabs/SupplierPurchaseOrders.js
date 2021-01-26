@@ -4,6 +4,7 @@ import { withModal } from 'react-native-modalfy';
 import {useNavigation} from '@react-navigation/native';
 import { isEmpty, isError, result } from 'lodash';
 import styled, {css} from '@emotion/native';
+import {getPurchaseOrders} from '../../api/network';
 import axios from 'axios';
 import {useTheme} from 'emotion-theming';
 import Table from '../common/Table/Table';
@@ -70,7 +71,8 @@ const SupplierPurchaseOrders = ({
     data = [],
     onRefresh = () => {},
     onUpdatePurchaseOrders = () => {},
-    supplierName = ''
+    supplierName = '',
+    supplierId = ''
     // isEditMode
 }) => {
     const [purchaseOrdersData, setPurchaseOrdersData] = useState(data);
@@ -471,9 +473,10 @@ const SupplierPurchaseOrders = ({
     };
 
     const listItemFormat = item => {
-        const { invoice = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '', documentId = "" } = item;
+        const { invoice = '', purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '', } = item;
         const invoiceColor = invoice === '' ? '--color-gray-500' : '--color-blue-600';
         const statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700';
+        console.log('Doc id: ', invoice);
         return (
             <>
                 <TouchableDataItem
@@ -488,7 +491,7 @@ const SupplierPurchaseOrders = ({
                     onPress={() => {
                     }}
                     fontStyle="--text-base-medium"
-                    icon={documentId ? <ImageIcon /> : null}
+                    icon={invoice?.documentId ? <ImageIcon /> : null}
                     color={invoiceColor}
                     flex={1.2}
                 />

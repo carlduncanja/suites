@@ -19,7 +19,7 @@ import InvoiceFullPageView from './InvoiceFullPageView';
 import IconButton from '../../components/common/Buttons/IconButton';
 import InvoiceDetailsPage from './InvoiceDetailsPage';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
-import {generateDocumentLink, uploadDocument} from '../../api/network';
+import {generateDocumentLink, uploadDocument, updateInvoiceDocument } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import axios from 'axios';
 
@@ -123,32 +123,19 @@ const SupplierInvoiceUpload = ({ route }) => {
 
     const {isEditMode = false} = pageState;
 
-    const blobCreationFromURL = (uri) => {
-        let binary = "";
-        let blobArray = [];
-        let uriMime = uri.split(',')[0].split(':')[1].split(';')[0];
+    const updatePurchaseOrderWithDocument = (purchaseOrderId, docId) => {
+        const docObj = {
+            documentId : docId
+        };
 
-        if (uri.split(',')[0].indexOf('base64') >= 0) {
-            binary = atob(uri.split(',')[1]);
-        } else {
-            binary = unescape(uri.split(',')[1]);
-        }
-
-        for (var index = 0; index < binary.length; index++) {
-            blobArray.push(binary.charCodeAt(index));
-        }
-
-        return new Blob([blobArray], {
-            type: uriMime
-        });
-    }
+        updateInvoiceDocument(purchaseOrderId, docObj)
+            .then(res => console.log('Updated PO with document: ', res))
+            .catch(err => console.log('Error updating PO with document: ', err))
+    };
 
     const uploadImage = async image => {
         console.log('URI: ', image);
-        // const blobObj = blobCreationFromURL(uri);
-        // const response = await fetch(uri);
-        // const blob = await response.blob();
-
+    
         const formData = new FormData();
 
         formData.append('file', image);
@@ -157,7 +144,9 @@ const SupplierInvoiceUpload = ({ route }) => {
         await uploadDocument(formData)
             .then(res => {
                 console.log('Response: ', res);
+                console.log('Invoice item: ', invoiceItem);
                 setInvoiceImage(image);
+                updatePurchaseOrderWithDocument(invoiceItem?._id, res?.id)
             })
             .catch(err => {
                 console.log('Upload File Error: ', err);
@@ -177,61 +166,6 @@ const SupplierInvoiceUpload = ({ route }) => {
                 });
             })
             .finally(_ => setIsUploadingDoc(false));
-
-        // FileSystem.readAsStringAsync(uri)
-        //     .then(result => {
-        //
-        //         console.log('FileSystem result', result);
-        //         // do what you want here.
-        //
-        //
-        //     }).catch(error => {
-        //         console.log('FileSystem failed', )
-        // })
-
-        // const config = {headers: {'Content-Type': 'multipart/form-data'}};
-        // console.log('Form data: ', formData);
-
-
-
-        // reader.readAsDataURL(blob);
-        // reader.onloadend = () => {
-        //     console.log('RESULT: ', reader.result);
-
-        //     formData.append('file', reader.result);
-
-        //     setIsUploadingDoc(true);
-
-        //     const config = {headers: {'Content-Type': 'multipart/form-data'}};
-        //     console.log('Form data: ', formData);
-
-        //     axios.post('https://sms-document-management-service.azurewebsites.net/api/documents', formData, config)
-        //     .then(res => {
-        //         console.log('Res: ', res);
-        //         setInvoiceImage(image);
-        //     })
-        //     .catch(err => {
-        //         console.log('Upload Error: ', err);
-        //         modal.openModal('ConfirmationModal', {
-        //             content: (
-        //                 <ConfirmationComponent
-        //                     isError={true}//boolean to show whether an error icon or success icon
-        //                     isEditUpdate={false}
-        //                     onCancel={() => { modal.closeAllModals(); }}
-        //                     onAction={() => { modal.closeAllModals(); }}
-        //                     message="Document could not be uploaded"
-        //                 />
-        //             ),
-        //             onClose: () => {
-        //                 console.log('Modal closed');
-        //             },
-        //         });
-        //     })
-        //     .finally(_ => setIsUploadingDoc(false));
-
-
-
-        // }
     };
 
     const onImageUpload = async () => {
