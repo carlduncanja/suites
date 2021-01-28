@@ -40,63 +40,6 @@ const CASE_PROCEDURE_TABS = {
     FINAL: 3,
 };
 
-const testData = {
-    name: 'John Doe',
-    patient: {
-        firstName: 'John',
-        middleName: '',
-        surname: 'Doe',
-        gender: 'Male',
-        trn: '',
-        dob: '2000-06-02',
-        contactInfo: {
-            phones: [
-                {
-                    phone: '8764287313',
-                    type: 'cell',
-                },
-            ],
-            emails: [
-                {
-                    email: 'john.doe@gmail.com',
-                    type: 'work',
-                },
-            ],
-            emergencyContact: [
-                {
-                    name: 'Bob Brown',
-                    email: 'bob.brown@gmail.com',
-                    phone: '8765232141',
-                    relation: 'Father',
-                },
-            ],
-        },
-        addressInfo: {
-            line1: '23 Ruthven Road',
-            line2: '',
-            city: 'Kingston',
-            parish: 'Kingston 8',
-        },
-        insurance: {
-            name: 'Sagicor Life',
-            coverage: 45000.0,
-            policyNumber: '7311239-122',
-        },
-    },
-    staff: {
-        physicians: ['5ea05a51a5ba16247dac651d'],
-        leadPhysician: '5ea05a51a5ba16247dac651d',
-    },
-    caseProcedures: [
-        {
-            procedure: '5ea060219a60bdf9e4b15783',
-            startTime: '2020-04-10T09:00:00.000Z',
-            endTime: '2020-04-10T10:00:00.000Z',
-            location: '5ea05bd848a2d72ff86e5151',
-        },
-    ],
-};
-
 const PageWrapper = styled.View`
   flex: 1;
   display: flex;
@@ -229,7 +172,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     //console.log("what's in route", route.params);
     // ########### STATES
 
-    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : testData.patient);
+    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {});
     const [patientFieldErrors, setPatientErrors] = useState({});
 
     const [staffInfo, setStaffInfo] = useState(!isEmpty(draftItem) && draftItem.staff?.length ? draftItem.staff : []);
