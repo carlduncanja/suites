@@ -173,7 +173,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     // ########### STATES
 
     const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {});
-    const [patientFieldErrors, setPatientErrors] = useState({});
+    const [patientFieldErrors, setPatientErrors] = useState({firstName: 'hello?'});
 
     const [staffInfo, setStaffInfo] = useState(!isEmpty(draftItem) && draftItem.staff?.length ? draftItem.staff : []);
     const [staffErrors, setStaffErrors] = useState([]);
@@ -440,7 +440,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                 // check if trn field is 9
 
                 const trn = patientFields[requiredField];
-                if (trn.length !== 9) {
+                if (trn?.length !== 9) {
                     isValid = false;
 
                     updateErrors = {
@@ -463,7 +463,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                         [requiredField]: 'Invalid DOB',
                     };
                 }
-            } else if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo[requiredField])) {
+            } else if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo && patientFields.addressInfo[requiredField])) {
                 delete updateErrors[requiredField];
                 console.log(`${requiredField} is valid`);
             } else {
@@ -476,8 +476,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                         .replace(/([a-z0-9])([A-Z0-9])/g, '$1 $2')} is required`, // capitalize and separate camelcase named field
                     // [requiredField]: `${requiredField} is required`,
                 };
-
-                console.log(patientFields.addressInfo[requiredField]);
             }
         }
 
