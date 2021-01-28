@@ -193,14 +193,14 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 }}
             />
 
-            <SuitesNavigator.Screen
-                name="Help"
-                component={NotFoundPage}
-                initialParams={{
-                    icon: HelpIcon,
-                    tabName: 'Help',
-                }}
-            />
+            {/*<SuitesNavigator.Screen*/}
+            {/*    name="Help"*/}
+            {/*    component={NotFoundPage}*/}
+            {/*    initialParams={{*/}
+            {/*        icon: HelpIcon,*/}
+            {/*        tabName: 'Help',*/}
+            {/*    }}*/}
+            {/*/>*/}
 
             <SuitesNavigator.Screen
                 name="Settings"
