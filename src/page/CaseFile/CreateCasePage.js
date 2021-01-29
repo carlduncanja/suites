@@ -23,7 +23,7 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 import PageButton from '../../components/common/Page/PageButton';
 import ChevronRight from '../../../assets/svg/ChevronRight';
 import ChevronLeft from '../../../assets/svg/ChevronLeft';
-import Divider from '../../components/common/Divider';
+import _ from 'lodash';
 import LoadingComponent from "../../components/LoadingComponent";
 
 const PATIENT_TABS = {
@@ -202,7 +202,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
     useEffect(
         () => navigation.addListener('beforeRemove', (e) => {
-            if (caseCreated) {
+            if (caseCreated || _.isEmpty(patientFields)) {
                 // If we don't have unsaved changes, then we don't need to do anything
                 return;
             }
@@ -216,9 +216,9 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                         isError={false}
                         isEditUpdate={true}
                         onAction={() => {
-                            // modal.closeAllModals();
+                            modal.closeAllModals();
                             createDraft()
-                            // navigation.dispatch(e.data.action)
+                            navigation.dispatch(e.data.action)
                         }}
                         action="Save"
                         titleText="Save Draft?"
