@@ -207,15 +207,22 @@ function DialogItems({
     };
 
     const onItemSelected = item => {
+        const isItemInList = itemData.some(object => object._id === item._id);
+
+        // prevents duplicates from being added to list
+        if (isItemInList) return;
+
         let updatedData = [...itemData];
         const updatedItem = {
             ...item,
             amount: 1
         };
         setSelectedItem(updatedItem);
+
         updatedData.includes(updatedItem) ? updatedData = updatedData : updatedData = [...updatedData, updatedItem];
         handleData(updatedData);
-        console.log('New List:', updatedData);
+
+        console.info('New List:', updatedData);
     };
 
     const onClearItem = () => {
