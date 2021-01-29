@@ -357,6 +357,7 @@ function DialogItems({
                 <SearchableOptionsField
                     value={selectedItem}
                     text={searchValue}
+                    shouldShowValue={false}
                     oneOptionsSelected={item => {
                         onItemSelected(item);
                         onClearItem();
