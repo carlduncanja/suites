@@ -21,7 +21,7 @@ function EquipmentGroupDetailsPage(props) {
         data = {}, onCreated = () => {
         }
     } = props.route.params;
-    const {name = "", _id = "", equipments = [], suppliers = [], description = '', categories = []} = data
+    const {name = "", _id = "", equipments = [], suppliers = [], description = '', categories = [], unitPrice = 0} = data
     const tabs = ["Details", "Items"];
     const [currentTab, setCurrentTab] = useState(tabs[0]);
     const [pageState, setPageState] = useState({});
@@ -41,6 +41,7 @@ function EquipmentGroupDetailsPage(props) {
         name: name,
         description: description,
         categories: categories,
+        unitPrice: unitPrice
     })
 
 
@@ -231,8 +232,6 @@ function EquipmentGroupDetailsPage(props) {
                     />
             case "Items":
                 return <EquipmentGroupItemsTab items={selectedEquipment.equipments}/>
-            // case "Suppliers":
-            //     return <EquipmentSuppliersTab suppliers={selectedEquipment?.suppliers || []}/>
             default:
                 break;
         }

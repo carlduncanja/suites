@@ -1,43 +1,42 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
+import React, {useState, useEffect} from "react";
+import {View, Text, StyleSheet, KeyboardAvoidingView} from "react-native";
 import InputField2 from '../common/Input Fields/InputField2';
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 import OptionsField from '../common/Input Fields/OptionsField';
 import InputUnitField from '../common/Input Fields/InputUnitFields';
-import styled, { css } from '@emotion/native';
-import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import styled, {css} from '@emotion/native';
+import {MenuOptions, MenuOption} from 'react-native-popup-menu';
 import EditLocked from "../../../assets/svg/editLockedIcon";
-import { getPhysicians, getCategories, addCategory } from "../../api/network";
+import {getPhysicians, getCategories, addCategory} from "../../api/network";
 import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
 import Row from "../common/Row";
 import _ from "lodash";
 import Record from "../common/Information Record/Record";
-import { useTheme } from "emotion-theming";
+import {useTheme} from "emotion-theming";
 import TextEditor from "../common/Input Fields/TextEditor";
-import { forEach } from "lodash";
-import { set } from "numeral";
+import {forEach} from "lodash";
+import {set} from "numeral";
 import TextArea from "../common/Input Fields/TextArea";
 import InputFieldWithIcon from "../common/Input Fields/InputFieldWithIcon";
-import { withModal } from "react-native-modalfy";
-import { Divider } from "react-native-elements";
+import {withModal} from "react-native-modalfy";
+import {Divider} from "react-native-elements";
 import ConfirmationComponent from "../ConfirmationComponent";
 
 const LabelText = styled.Text`
-color:${({ theme }) => theme.colors["--color-gray-600"]};
-font:${({ theme }) => theme.font["--text-base-regular"]};
+  color: ${({theme}) => theme.colors["--color-gray-600"]};
+  font: ${({theme}) => theme.font["--text-base-regular"]};
 `
 const InputWrapper = styled.View`
-height:30px;
-width:250px;
-margin-top:10px;
+  height: 30px;
+  width: 250px;
+  margin-top: 10px;
 
 `
-const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popoverList, modal }) => {
+const EditableEquipmentGroupTab = ({onFieldChange, fields, handlePopovers, popoverList, modal}) => {
 
 
     const theme = useTheme();
     const enabled = true;
-
 
 
     // Category Search
@@ -48,7 +47,6 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
 
     //Description
     const [descriptionValue, setDescriptionValue] = useState('');
-
 
 
     useEffect(() => {
@@ -86,7 +84,6 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
     // }, [categorySearchValue])
 
 
-
     const fetchCategory = () => {
         getCategories(categorySearchValue)
             .then((data = []) => {
@@ -98,8 +95,8 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                 console.log("failed to get categories: ", error)
                 //setCategorySearchResult([])
             }).finally(_ => {
-                return
-            })
+            return
+        })
 
     }
 
@@ -155,16 +152,16 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
 
     return (
         <KeyboardAvoidingView
-            style={{ flex: 1 }}
+            style={{flex: 1}}
             enabled
             keyboardVerticalOffset={300}
             behavior={'padding'}
         >
-            <View style={{ width: 600, alignSelf: "center", }}>
-                <View style={{ width: "100%", flexDirection: "column", marginBottom: 30 }}>
+            <View style={{width: 600, alignSelf: "center",}}>
+                <View style={{width: "100%", flexDirection: "column", marginBottom: 30}}>
                     <>
 
-                        <View style={{ height: 220, width: 620, marginBottom: 20 }}>
+                        <View style={{height: 220, width: 620, marginBottom: 20}}>
                             <Row>
                                 <LabelText theme={theme}>Description</LabelText>
                             </Row>
@@ -182,10 +179,17 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
 
                             <InputWrapper>
                                 <InputField2
-                                    label="SKU"
-                                    value={fields['sku']}
+                                    label="Unit Price"
+                                    value={fields['unitPrice'].toString()}
                                     labelWidth={98}
-                                    onChangeText={onFieldChange('sku')}
+                                    onClear={() => onFieldChange('unitPrice')(0)}
+                                    onChangeText={(value) => {
+                                        console.log(value);
+                                        const intValue = parseInt(value);
+                                        if (!isNaN(value)) {
+                                            onFieldChange('unitPrice')(value)
+                                        }
+                                    }}
                                     enabled={true}
                                 />
                             </InputWrapper>
@@ -204,26 +208,22 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
 
                         <Row>
 
-                            <MultipleSelectionsField
-                                createNew={createCategory}
-                                label={"Category"}
-                                value={fields['categories']}
-                                onOptionsSelected={(value) => onFieldChange('categories')(value)}
-                                options={categorySearchResults}
-                                searchText={categorySearchValue}
-                                onSearchChangeText={(value) => setCategorySearchValue(value)}
-                                onClear={() => { setCategorySearchValue('') }}
-                                handlePopovers={(value) => handlePopovers(value)('category')}
-                                isPopoverOpen={catPop[0].status}
-                            />
+                            {/*<MultipleSelectionsField*/}
+                            {/*    createNew={createCategory}*/}
+                            {/*    label={"Category"}*/}
+                            {/*    value={fields['categories']}*/}
+                            {/*    onOptionsSelected={(value) => onFieldChange('categories')(value)}*/}
+                            {/*    options={categorySearchResults}*/}
+                            {/*    searchText={categorySearchValue}*/}
+                            {/*    onSearchChangeText={(value) => setCategorySearchValue(value)}*/}
+                            {/*    onClear={() => {*/}
+                            {/*        setCategorySearchValue('')*/}
+                            {/*    }}*/}
+                            {/*    handlePopovers={(value) => handlePopovers(value)('category')}*/}
+                            {/*    isPopoverOpen={catPop[0].status}*/}
+                            {/*/>*/}
 
                         </Row>
-
-
-
-
-
-
 
 
                     </>

@@ -73,7 +73,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
     const theme = useTheme();
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
-    const { description = "" } = equipmentGroup
+    const { description = "", unitPrice } = equipmentGroup
     const categories = equipmentGroup?.categories || [];
     let equipmentToDisplay = [...equipments]
     let supplierToDisplay = [...suppliers]
@@ -152,8 +152,8 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
             <View style={{ width: 250, flexDirection: "row" }}>
                 <Row>
                     <Record
-                        recordTitle="Category"
-                        recordValue={isEmpty(categories) ? "--" : `${categories.map(item => item._id)},`}
+                        recordTitle="Unit Price"
+                        recordValue={`$ ${unitPrice}`}
                         flex={0.8}
                     />
                 </Row>
