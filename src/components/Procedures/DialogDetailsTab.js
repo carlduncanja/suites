@@ -172,7 +172,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
         }
     };
 
-    const handlePhysician = value => { 
+    const handlePhysician = value => {
         const physician = value ? {
             _id: value._id,
             name: value.name
@@ -268,12 +268,12 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                     />
                 </FieldContainer>
                 <FieldContainer>
-                    <InputField2
-                        label="Category"
-                        onChangeText={onFieldChange('category')}
-                        value={fields.category}
-                        onClear={() => onFieldChange('category')('')}
-                    />
+                    {/*<InputField2*/}
+                    {/*    label="Category"*/}
+                    {/*    onChangeText={onFieldChange('category')}*/}
+                    {/*    value={fields.category}*/}
+                    {/*    onClear={() => onFieldChange('category')('')}*/}
+                    {/*/>*/}
                 </FieldContainer>
             </Row>
 
@@ -281,7 +281,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                 <FieldContainer>
                     <OptionsField
                         label="Recovery"
-                        text={templateText[fields.hasRecovery]}
+                        text={templateText[fields.hasRecovery] || 'No'}
                         oneOptionsSelected={onFieldChange('hasRecovery')}
                         menuOption={(
                             <MenuOptions>
