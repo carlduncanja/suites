@@ -51,7 +51,7 @@ function ScheduleCalendar({ Expanded, month, appointments, days, selectedDate, s
     `;
 
     const ScheduleCalendarContainer = styled.View` 
-        height: 100%:
+        height: 100%;
         width: 100%;
         flex-direction: column;
         margin-left : ${screenDimensions.width > screenDimensions.height ? '2%' : '0'};
@@ -105,15 +105,6 @@ function ScheduleCalendar({ Expanded, month, appointments, days, selectedDate, s
                     />
 
             }
-
-            {/* <ButtonContainer>
-                <Button
-                    buttonPress = {onExpandButtonPress}
-                    title = {isExpanded ? "Collapse" : "Expand"}
-                    color = {"#4E5664"}
-                    font = {'--text-xs-medium'}
-                />
-            </ButtonContainer> */}
 
         </View>
 
