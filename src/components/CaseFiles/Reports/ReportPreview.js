@@ -14,31 +14,31 @@ import {currencyFormatter} from '../../../utils/formatter';
 import DataItem from '../../common/List/DataItem';
 
 const ReportPreviewWrapper = styled.View`
-    margin : 0;
-    flex : 1;
+  margin: 0;
+  flex: 1;
 `;
 
 const ReportPreviewContainer = styled.ScrollView`
-    height : 100%;
-    width : 100%;
-    background-color : ${({theme}) => theme.colors['--default-shade-white']};
+  height: 100%;
+  width: 100%;
+  background-color: ${({theme}) => theme.colors['--default-shade-white']};
 `;
 const ContentWrapper = styled.ScrollView`
-    flex : 1;
-    padding : ${({theme}) => `${theme.space['--space-30']} ${theme.space['--space-32']}`};
+  flex: 1;
+  padding: ${({theme}) => `${theme.space['--space-30']} ${theme.space['--space-32']}`};
 `;
 
 const ContentContainer = styled.View`
-    height : 100%;
-    width : 100%;
+  height: 100%;
+  width: 100%;
 `;
 
 const ItemRow = styled.View`
-    flex-direction : row;
-    width  : 100%;
-    padding: 0px ${({theme}) => theme.space['--space-16']};
-    height : 48px;
-    align-items : center; 
+  flex-direction: row;
+  width: 100%;
+  padding: 0px ${({theme}) => theme.space['--space-16']};
+  height: 48px;
+  align-items: center;
 `;
 
 const Rectangle = () => (
@@ -52,24 +52,46 @@ const Rectangle = () => (
     />
 );
 
-const ReportPreview = ({type = '', details = {}, reportDetails}) => {
+const ReportPreview = ({
+    type = '',
+    details = {},
+    reportDetails
+}) => {
     // console.log(" quite details: ", details.quotationNumber);
     const theme = useTheme();
-    const {billingDetails = {}, customerDetails = {}, createdAt = '', amountDue = 0, quotationNumber = "", invoiceNumber = ""} = details;
-    const {address = {}, email = '', name = '', phone = ''} = customerDetails;
+    const {
+        billingDetails = {},
+        customerDetails = {},
+        createdAt = '',
+        amountDue = 0,
+        total = 0,
+        quotationNumber = '',
+        invoiceNumber = ''
+    } = details;
+    const {
+        address = {},
+        email = '',
+        name = '',
+        phone = ''
+    } = customerDetails;
 
     const reportNumber = type === 'Invoice' ? invoiceNumber : quotationNumber;
     const purchaseOrderNumber = details.purchaseOrderNumber || '';
-    const {procedures = [], discount = 0, hasDiscount = false, tax = 0} = reportDetails;
+    const {
+        procedures = [],
+        discount = 0,
+        hasDiscount = false,
+        tax = 0
+    } = reportDetails;
     // console.log("Procedures details: ", procedures);
-    let procedureNames = []
-    procedures.map( item => {
-        item?.procedures.map( procedure => {
+    const procedureNames = [];
+    procedures.map(item => {
+        item?.procedures.map(procedure => {
             procedureNames.push(procedure?.name);
-        })
-    })
-    let billedFor = [...new Set(procedureNames)];
-    const total = hasDiscount ? (amountDue - (amountDue * discount)) * (1 + tax) : (amountDue) * (1 + tax);
+        });
+    });
+    const billedFor = [...new Set(procedureNames)];
+    const reportTotal = hasDiscount ? (amountDue - (amountDue * discount)) * (1 + tax) : (amountDue) * (1 + tax);
     const formatDiscount = amountDue * discount;
 
     console.log('ReportDetails: ', reportDetails);
@@ -129,7 +151,7 @@ const ReportPreview = ({type = '', details = {}, reportDetails}) => {
                             address={address}
                             billedFor={billedFor}
                             reportNumber={reportNumber}
-                            total={amountDue}
+                            total={total}
                             type={type}
                             reportDate={createdAt}
                             purchaseOrderNo={purchaseOrderNumber}
@@ -145,7 +167,7 @@ const ReportPreview = ({type = '', details = {}, reportDetails}) => {
                             subtotal={amountDue}
                             discount={hasDiscount ? formatDiscount : 0}
                             tax={tax}
-                            total={total}
+                            total={reportTotal}
                         />
 
                     </ContentContainer>
@@ -159,7 +181,7 @@ const ReportPreview = ({type = '', details = {}, reportDetails}) => {
 export default ReportPreview;
 
 const styles = StyleSheet.create({
-    textContainer: {flex: 1,},
+    textContainer: {flex: 1},
     text: {
         color: '#4E5664',
         fontSize: 16
