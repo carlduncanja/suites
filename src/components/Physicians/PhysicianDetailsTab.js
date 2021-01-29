@@ -6,7 +6,7 @@ import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import DateInputField from "../common/Input Fields/DateInputField";
 import moment from 'moment';
 
- 
+
 
 const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
 
@@ -28,6 +28,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
     }
 
     const handleTrnValidation = (trnValue) => {
+        if (trnValue.toString().length > 9) return;
         if (/^\d{9}$/g.test(trnValue) || !trnValue) {
             onFieldChange('trn')(trnValue)
         }
