@@ -84,19 +84,19 @@ function ListTextRecord({
 
 
                 {
-                    editMode &&
-                    <MultipleSearchableOptionsField
-                        text={text}
-                        oneOptionsSelected={oneOptionsSelected}
-                        onChangeText={onChangeText}
-                        onClear={onClear}
-                        onSelectShownIten = {onSelectShownIten}
-                        selectedItems = {selectedItems}
-                        options={options}
-                        handlePopovers = {()=>{}}
-                        isPopoverOpen = {isPopoverOpen}
-                        maxNumItemsShown = {maxNumItemsShown}
-                    />
+                    // editMode &&
+                    // <MultipleSearchableOptionsField
+                    //     text={text}
+                    //     oneOptionsSelected={oneOptionsSelected}
+                    //     onChangeText={onChangeText}
+                    //     onClear={onClear}
+                    //     onSelectShownIten = {onSelectShownIten}
+                    //     selectedItems = {selectedItems}
+                    //     options={options}
+                    //     handlePopovers = {()=>{}}
+                    //     isPopoverOpen = {isPopoverOpen}
+                    //     maxNumItemsShown = {maxNumItemsShown}
+                    // />
                 }
 
 
