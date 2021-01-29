@@ -134,7 +134,7 @@ function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerso
         if (now.isBefore(delivery)) {
             return 'Not Yet Delivered';
         }
-        
+
         // if (now.isBefore(end)) {
         //     return 'In Progress';
         // }
@@ -235,7 +235,7 @@ function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerso
 
         // <TouchableOpacity style={{flex: 1,}} activeOpacity={0.5}>
         //     <ScrollView style={styles.container}>
-                
+
         //             <View style={styles.cardTitle}>
 
         //                 <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
@@ -308,10 +308,10 @@ function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerso
         //                         <Text>
         //                             {notes}
         //                         </Text>
-        //                     </View> 
+        //                     </View>
         //                 </View>
 
-        //             </View> 
+        //             </View>
 
         //             <View style={{
         //                 position:'absolute',
@@ -329,9 +329,9 @@ function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerso
         //                     onPress={() => {
         //                     }}
         //                 />
-        //             </View> 
+        //             </View>
 
-                
+
         //     </ScrollView>
         // </TouchableOpacity>
 
@@ -348,7 +348,6 @@ const styles = StyleSheet.create({
         paddingRight: '4%',
         paddingLeft: '4%',
         flexDirection: 'column',
-        backgroundColor:'yellowgreen'
     },
     idText: {
         fontSize: 16,
