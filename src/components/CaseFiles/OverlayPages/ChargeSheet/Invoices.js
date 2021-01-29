@@ -15,7 +15,11 @@ import Item from '../../../common/Table/Item';
 import {formatDate, currencyFormatter, transformToSentence} from '../../../../utils/formatter';
 import ListItem from '../../../common/List/ListItem';
 
-const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
+const Invoices = ({
+    tabDetails = [],
+    reportDetails,
+    handleInvoices
+}) => {
     const modal = useModal();
 
     console.log('Invoices: ', tabDetails);
@@ -53,7 +57,7 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
         //     billingDetails: customer,
         //     ...report
         // };
-        console.log("Report Item: ", item)
+        console.log('Report Item: ', item);
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Invoice"
@@ -64,9 +68,17 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
     };
 
     const listItem = item => {
-        const {invoiceNumber = '', status = '', billingDetails = {}, createdAt = '', amountDue = 0, total, amountPaid} = item;
+        const {
+            invoiceNumber = '',
+            status = '',
+            billingDetails = {},
+            createdAt = '',
+            amountDue = 0,
+            total,
+            amountPaid
+        } = item;
         const balance = total - amountPaid;
-        const balanceColor = balance <= 0 ? '#319795' : '#DD6B20'
+        const balanceColor = balance <= 0 ? '#319795' : '#DD6B20';
 
         return (
             <>
@@ -75,7 +87,8 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text
-                        style={[styles.itemText, {color: item.status === 'Complete' ? '#319795' : '#DD6B20'}]}>{transformToSentence(status)}</Text>
+                        style={[styles.itemText, {color: item.status === 'Complete' ? '#319795' : '#DD6B20'}]}
+                    >{transformToSentence(status)}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text style={styles.itemText}>{formatDate(createdAt, 'DD/MM/YYYY')}</Text>
