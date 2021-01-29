@@ -172,7 +172,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     //console.log("what's in route", route.params);
     // ########### STATES
 
-    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {firstName: 'hello??'});
+    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {});
     const [patientFieldErrors, setPatientErrors] = useState({});
 
     const [staffInfo, setStaffInfo] = useState(!isEmpty(draftItem) && draftItem.staff?.length ? draftItem.staff : []);
