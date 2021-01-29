@@ -42,6 +42,15 @@ export const transformToSentence = word => {
         .toUpperCase() + newWord.slice(1);
 };
 
+export const transformToTitleCase = (string, splitCharacter = ' ') => {
+    let sentence = string.toLowerCase().split(splitCharacter);
+    for (let i = 0; i < sentence.length; i++) {
+        sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+    }
+
+    return sentence.join(' ');
+};
+
 export const calcAge = dob => {
     const today = new Date();
     const dateObject = new Date(dob);

@@ -260,7 +260,7 @@ const OrderDetailsTab = ({
                 <Row>
                     <ResponsiveRecord
                         recordTitle="Invoice"
-                        recordValue={invoice || ""}
+                        recordValue={invoice.invoiceNumber || ""}
                     />
 
                     <Record
