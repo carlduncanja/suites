@@ -172,7 +172,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     //console.log("what's in route", route.params);
     // ########### STATES
 
-    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {});
+    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {firstName: 'hello??'});
     const [patientFieldErrors, setPatientErrors] = useState({});
 
     const [staffInfo, setStaffInfo] = useState(!isEmpty(draftItem) && draftItem.staff?.length ? draftItem.staff : []);
@@ -200,8 +200,8 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         message: ''
     });
 
-    useEffect(() =>
-        navigation.addListener('beforeRemove', (e) => {
+    useEffect(
+        () => navigation.addListener('beforeRemove', (e) => {
             if (caseCreated) {
                 // If we don't have unsaved changes, then we don't need to do anything
                 return;
@@ -216,9 +216,9 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                         isError={false}
                         isEditUpdate={true}
                         onAction={() => {
-                            modal.closeAllModals();
+                            // modal.closeAllModals();
                             createDraft()
-                            navigation.dispatch(e.data.action)
+                            // navigation.dispatch(e.data.action)
                         }}
                         action="Save"
                         titleText="Save Draft?"
@@ -230,8 +230,13 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                     />
                 ),
             });
-        }), [navigation, caseCreated]
+        }),
+        [navigation, caseCreated, patientFields, staffInfo, caseProceduresInfo]
     );
+
+    // useEffect( () => {
+    //     console.log('hello???', patientFields);
+    // }, [patientFields])
 
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
@@ -625,13 +630,14 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     };
 
     const createDraft = () => {
-        saveDraft([{
+        const draftData = {
             // pass back existing draft id to overwrite existing draft
             id: draftItem?.id || Math.floor(Math.random() * 10000),
             patient: patientFields,
             staff: staffInfo,
             procedures: caseProceduresInfo
-        }]);
+        };
+        saveDraft([draftData]);
     };
 
     const onClose = () => {
