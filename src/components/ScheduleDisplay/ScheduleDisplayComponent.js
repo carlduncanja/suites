@@ -6,27 +6,12 @@ function ScheduleDisplayComponent({
     appointments = [],
     date = new Date()
 }) {
-
-
-
-
-
-
     const timerRef = useRef(0); // using ref to keep track of timer.
 
     const startOfDate = moment(date).startOf('day') // set to 12:00 am
     const isToday = moment().isSame(date, 'day');
     const timelineDate = [];
     const [currentTime, setCurrentTime] = useState(moment);
-
-
-
-
-
-
-
-
-
     useEffect(() => {
         updateTime()
 
@@ -101,29 +86,9 @@ function ScheduleDisplayComponent({
 
                 {/* EVENTS */}
                 <View style={styles.eventsContainer}>
-
-
                     {
 
                         appointments.map((item, index) => {
-                            let today = new Date();
-                            // const mm = moment(item.startTime);
-                            const start = moment(item.startTime);
-                            const end = moment(item.endTime);
-
-                            const isActive = moment().isBetween(start, end);
-                            if (end < today) {
-                                console.log("appointment has passed");
-                                item.type = 3;
-
-                            } else isActive ? (item.type = 0) : (item.type = 1);
-
-
-                            // const mm = moment(item.startTime);
-                            // const start = moment(item.startTime);
-                            // const end = moment(item.endTime);
-                            // const isActive = moment().isBetween(start, end);
-
                             return (
                                 <View
                                     key={index}
@@ -132,22 +97,14 @@ function ScheduleDisplayComponent({
                                         position: "absolute"
                                     }}
                                 >
-                                    <Event
-                                        {...item}
-                                    />
+                                    <Event{...item}/>
                                 </View>
                             )
                         })
                     }
-
-
-
                 </View>
-
             </ScrollView>
         </View>
-
-
     );
 }
 
@@ -160,7 +117,6 @@ const styles = StyleSheet.create({
     container: {
         position: 'relative',
         flex: 1,
-
         flexDirection: 'row',
         // backgroundColor: '#E3E8EF',
         paddingStart: 10,
@@ -306,11 +262,9 @@ function Event({ startTime, endTime, type, title, subTitle }) {
     const duration = end.diff(start, 'hours');
     const height = duration * 75;
 
-
     let bgColor = EVENT_COLORS.DEFAULT;
     let textColor = EVENT_TEXT_COLORS.DEFAULT;
     let borderColor = EVENT_BORDER_COLORS.DEFAULT;
-
     switch (type) {
         case EVENT_TYPES.ACTIVE:
             bgColor = EVENT_COLORS.ACTIVE;
@@ -326,7 +280,6 @@ function Event({ startTime, endTime, type, title, subTitle }) {
             textColor = EVENT_TEXT_COLORS.GONE;
             borderColor = EVENT_BORDER_COLORS.GONE;
             break
-
     }
 
 

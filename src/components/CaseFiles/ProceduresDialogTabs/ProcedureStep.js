@@ -19,7 +19,6 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
         setCurrentProcedure(currentProcedure);
     }, [selectedTabIndex])
 
-
     useEffect(() => {
         updateValuesForScheduleAssistant().then(r => {
         })
@@ -109,13 +108,10 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
                     }
                 }
 
-
                 if (tempAppointment) {
                     appointments = [...appointments, tempAppointment];
                 }
             }
-
-
         }
         setAppointments(appointments)
     }
@@ -134,7 +130,6 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
             subTitle: patient,
             type: EVENT_TYPES.DEFAULT,
         }
-
     }
 
     console.log("procedure step", selectedTabIndex, procedures)
@@ -157,7 +152,6 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
             <View style={{flex: 1, paddingRight: 30}}>
                 <ScheduleDisplayComponent appointments={appointments} date={date}/>
             </View>
-
         </View>
     )
 }
