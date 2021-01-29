@@ -216,9 +216,9 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                         isError={false}
                         isEditUpdate={true}
                         onAction={() => {
+                            modal.closeAllModals();
                             createDraft()
                             navigation.dispatch(e.data.action)
-                            modal.closeAllModals();
                         }}
                         action="Save"
                         titleText="Save Draft?"
@@ -632,8 +632,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             staff: staffInfo,
             procedures: caseProceduresInfo
         }]);
-        navigation.navigate('CaseFiles');
-        modal.closeAllModals();
     };
 
     const onClose = () => {
