@@ -38,7 +38,7 @@ import {
 import _ from "lodash";
 
 import {withModal, useModal} from "react-native-modalfy";
-import {formatDate, transformToSentence} from "../../utils/formatter";
+import {formatDate, transformToSentence, transformToTitleCase} from '../../utils/formatter';
 import OrderItemPage from "./OrderItemPage";
 import {LONG_PRESS_TIMER, PURCHASE_ORDER_STATUSES} from "../../const";
 import EditIcon from "../../../assets/svg/editIcon";
@@ -361,7 +361,7 @@ const Orders = (props) => {
         return (
             <>
                 <RightBorderDataItem text={purchaseOrderNumber} fontStyle="--text-sm-medium" flex={1.5}/>
-                <DataItem text={transformToSentence(status)} fontStyle="--text-sm-medium" flex={1} color={statusColor}/>
+                <DataItem text={transformToTitleCase(status, '_')} fontStyle="--text-sm-medium" flex={1} color={statusColor}/>
                 <DataItem text={deliveryDate} fontStyle="--text-sm-medium" flex={1.5}/>
                 <DataItem text={name} fontStyle="--text-sm-medium" flex={1.5} color="--color-blue-600"/>
             </>
@@ -548,7 +548,7 @@ const Orders = (props) => {
             />
 
         </PageSettingsContext.Provider>
-        
+
         // <View style={{ flex: 1 }}>
         //   <Page
         //     isFetchingData={isFetchingData}
