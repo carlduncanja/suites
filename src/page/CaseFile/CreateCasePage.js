@@ -215,7 +215,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                     <ConfirmationComponent
                         isError={false}
                         isEditUpdate={true}
-                        onAction={createDraft}
+                        onAction={() => {
+                            createDraft()
+                            navigation.dispatch(e.data.action)
+                            modal.closeAllModals();
+                        }}
                         action="Save"
                         titleText="Save Draft?"
                         onCancel={() => {
@@ -226,7 +230,8 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                     />
                 ),
             });
-        }), [navigation, caseCreated]);
+        }), [navigation, caseCreated]
+    );
 
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
