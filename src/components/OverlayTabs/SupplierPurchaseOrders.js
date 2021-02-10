@@ -115,7 +115,7 @@ const SupplierPurchaseOrders = ({
         getPurchaseOrders("",10,1,supplierId)
             .then(orders => {
                 setOrdersData(orders?.data || []);
-                console.log('Orders for supplier: ', orders)
+                // console.log('Orders for supplier: ', orders)
             })
             .catch(err => {
                 console.log('Order error for suppliers: ', err)
@@ -421,7 +421,7 @@ const SupplierPurchaseOrders = ({
         const { invoice = {}, purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '', } = item;
         const invoiceColor = invoice === '' ? '--color-gray-500' : '--color-blue-600';
         const statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700';
-        console.log('Doc id: ', invoice);
+        // console.log('Doc id: ', invoice);
         return (
             <>
                 <TouchableDataItem

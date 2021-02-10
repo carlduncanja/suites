@@ -12,6 +12,9 @@ import IconButton from '../../components/common/Buttons/IconButton';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { getFiletData, getDocumentById } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
+import { View } from 'react-native';
+import { Image } from 'react-native';
+import * as FileSystem from 'expo-file-system';
 
 const PageWrapper = styled.View`
     margin: 0;
@@ -58,6 +61,15 @@ const ImageTitleContainer = styled.View`
     border-width: 0 0 1px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+`;
+
+const ViewImageContainer = styled.View`
+    display: flex;
+    flex:1;
+    align-items: center;
+    margin: 60px;
+    margin-top: 0;
+    margin-bottom: 0;
 `;
 
 const UploadedImageContainer = styled.TouchableOpacity`
@@ -112,20 +124,37 @@ const InvoiceDetailsPage = ({
     const {isEditMode} = pageState;
 
     const [isPageLoading, setIsPageLoading] = useState(false);
-    const [documentImage, setDocumentImage] = useState();
+    const [documentImage, setDocumentImage] = useState({});
 
-    const getDocumentData = () => {
+    const getDocumentData = async () => {
         setIsPageLoading(true);
-        getFiletData(invoice?.documentId)
+        console.log('Get image');
+        getDocumentById(invoice?.documentId)
             .then(res => {
-                setDocumentImage(res?.data || {});
-                console.log('Repsonse: ', res);
+                const stringifyJSON = JSON.stringify(res.data);
+                const blob = new Blob([stringifyJSON]);
+                // Blob url to pass to image uri
+                const blobURL = URL.createObjectURL(blob);
+                // Or convert blob to base64 to pass to uri
+                FileSystem.readAsStringAsync(blobURL, { encoding: FileSystem.EncodingType.Base64 })
+                    .then(result => console.log('Image 64: ', result))
+                    .catch(err => console.log('Image 64 error: ', err));
+                    
+                console.log('Stringify JSON: ', stringifyJSON);
+                console.log('Blob: ', blob);
+                console.log('New Blob url: ', blobURL );
+                // console.log('New Blob image: ', baseImg );
+                setDocumentImage(stringifyJSON);
             })
             .catch(err => {
                 console.log('Retrieve Document error: ', err);
             })
             .finally(_ => setIsPageLoading(false))
     }
+
+    // useEffect(() => {
+    //     console.log('Doc image: ', documentImage);
+    // }, [documentImage])
 
     useEffect(() => {
         if (invoice?.documentId) {
@@ -181,6 +210,13 @@ const InvoiceDetailsPage = ({
                 }
             </ImageTitleContainer>
             {
+                documentImage ? 
+                    <ViewImageContainer>
+                        <PreviewImage
+                            source={{uri: documentImage, scale: 1, width: 50, height: 50}}
+                        />
+                    </ViewImageContainer>
+                    :
                 canPreview ?
                     (
                         <UploadedImageContainer

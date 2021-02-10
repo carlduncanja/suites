@@ -694,7 +694,7 @@ export const getFiletData = async id => documentManagementInstance.get(documentD
     .then(handleResponse)
     .catch(handleError);
 
-export const getDocumentById = async id => documentManagementInstance.get(documentById(id))
+export const getDocumentById = async id => documentManagementInstance.get(documentById(id), { responseType: 'blob' })
     .then(handleResponse)
     .catch(handleError);
 
