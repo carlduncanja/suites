@@ -80,7 +80,7 @@ import {
 
 
 } from '../const/suitesEndpoints';
-import {createDocumentLink, documentUpload} from '../const/documentGenerationEndpoints';
+import {createDocumentLink, documentById, documentData, documentUpload} from '../const/documentGenerationEndpoints';
 
 // ################# Mock Data
 import {appointments} from '../../data/Appointments';
@@ -687,6 +687,14 @@ export const generateDocumentLink = async data => documentGenerationInstance.pos
     .catch(handleError);
 
 export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, {headers: {'Content-Type': 'multipart/form-data'}})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const getFiletData = async id => documentManagementInstance.get(documentData(id))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const getDocumentById = async id => documentManagementInstance.get(documentById(id))
     .then(handleResponse)
     .catch(handleError);
 

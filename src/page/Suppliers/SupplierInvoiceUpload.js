@@ -141,10 +141,12 @@ const SupplierInvoiceUpload = ({ route }) => {
         formData.append('file', image);
         setIsUploadingDoc(true);
 
+        console.log('Image form data: ', formData);
+
         await uploadDocument(formData)
             .then(res => {
-                console.log('Response: ', res);
-                console.log('Invoice item: ', invoiceItem);
+                console.log('Image Response: ', res);
+                // console.log('Invoice item: ', invoiceItem);
                 setInvoiceImage(image);
                 updatePurchaseOrderWithDocument(invoiceItem?._id, res?.id)
             })
@@ -267,6 +269,7 @@ const SupplierInvoiceUpload = ({ route }) => {
                                 invoiceImage={invoiceImage}
                                 canPreview={canPreview}
                                 purchaseOrderNumber={invoiceItem?.purchaseOrderNumber}
+                                invoice={invoiceItem?.invoice}
                             />
                         )
                     }

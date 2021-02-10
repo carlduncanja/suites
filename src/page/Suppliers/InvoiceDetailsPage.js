@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 import {PageContext} from '../../contexts/PageContext';
@@ -9,6 +9,9 @@ import ImageUploading from '../../../assets/svg/imageUploading';
 import DeleteIcon from '../../../assets/svg/wasteIcon';
 import TestImage from '../../../assets/test_image.png';
 import IconButton from '../../components/common/Buttons/IconButton';
+import { useSafeArea } from 'react-native-safe-area-context';
+import { getFiletData, getDocumentById } from '../../api/network';
+import LoadingIndicator from '../../components/common/LoadingIndicator';
 
 const PageWrapper = styled.View`
     margin: 0;
@@ -101,12 +104,34 @@ const InvoiceDetailsPage = ({
     isImageUploading = false,
     invoiceImage,
     canPreview = true,
-    purchaseOrderNumber = ''
+    purchaseOrderNumber = '',
+    invoice = {}
 }) => {
     const theme = useTheme();
-
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode} = pageState;
+
+    const [isPageLoading, setIsPageLoading] = useState(false);
+    const [documentImage, setDocumentImage] = useState();
+
+    const getDocumentData = () => {
+        setIsPageLoading(true);
+        getFiletData(invoice?.documentId)
+            .then(res => {
+                setDocumentImage(res?.data || {});
+                console.log('Repsonse: ', res);
+            })
+            .catch(err => {
+                console.log('Retrieve Document error: ', err);
+            })
+            .finally(_ => setIsPageLoading(false))
+    }
+
+    useEffect(() => {
+        if (invoice?.documentId) {
+            getDocumentData(invoice?.documentId)
+        }
+    }, []);
 
     const uploadContent = (
         <InvoiceUploadContainer
@@ -191,11 +216,15 @@ const InvoiceDetailsPage = ({
                     valueColor="--color-blue-600"
                 />
             </PurchaseOrderContainer>
-            <InvoiceWrapper>
-                {
-                    invoiceImage ? imageContent : uploadContent
-                }
-            </InvoiceWrapper>
+            {
+                isPageLoading ? <LoadingIndicator/> : (
+                    <InvoiceWrapper>
+                        {
+                            (invoiceImage || invoice?.documentId) ? imageContent : uploadContent
+                        }
+                    </InvoiceWrapper>
+                )
+            }
             <Footer
                 hasActions={false}
                 hasPaginator={false}
