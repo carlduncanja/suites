@@ -38,8 +38,11 @@ import Data from '../../components/common/Table/Data';
 import DataItem from '../../components/common/List/DataItem';
 import MultipleTextDataItem from '../../components/common/List/MultipleTextDataItem';
 import patient from '../../../assets/svg/newCasePatient';
-import {emptyFn} from "../../const";
-import { PageSettingsContext } from '../../contexts/PageSettingsContext';
+import {emptyFn, LONG_PRESS_TIMER} from "../../const";
+import {PageSettingsContext} from '../../contexts/PageSettingsContext';
+import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import {removeDraft} from "../../redux/actions/draftActions";
 
 const listHeaders = [
     {
@@ -75,6 +78,7 @@ function CaseFiles(props) {
         caseFiles = [],
         setCaseFiles,
         drafts = [],
+        removeDraft = emptyFn,
 
         // React Navigation Props
         navigation,
@@ -91,7 +95,7 @@ function CaseFiles(props) {
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [hasDraft, setHasDraft] = useState(true);
     const [pageSettingState, setPageSettingState] = useState({});
-    const { isDisabled } = pageSettingState;
+    const {isDisabled} = pageSettingState;
 
     const routeName = route.name;
 
@@ -144,7 +148,11 @@ function CaseFiles(props) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            const {
+                currentPage,
+                currentListMin,
+                currentListMax
+            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -157,7 +165,11 @@ function CaseFiles(props) {
         if (currentPagePosition === 1) {
             return;
         }
-        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        const {
+            currentPage,
+            currentListMin,
+            currentListMax
+        } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -180,8 +192,8 @@ function CaseFiles(props) {
     };
 
     const handleOnCheckBoxPress = caseItem => () => {
-        const {_id} = caseItem;
-        const updatedCases = checkboxItemPress(_id, selectedCaseIds);
+        const {_id, id} = caseItem; // account for both drafts and created cases.
+        const updatedCases = checkboxItemPress(_id || id, selectedCaseIds);
         setSelectedCaseIds(updatedCases);
     };
 
@@ -262,10 +274,10 @@ function CaseFiles(props) {
         return <>
             <ListItem
                 hasCheckBox={true}
-                isChecked={selectedCaseIds.includes(item._id)}
+                isChecked={selectedCaseIds.includes(item._id || item.id)}
                 onCheckBoxPress={handleOnCheckBoxPress(item)}
                 onItemPress={handleOnItemPress(item, false)}
-                itemView={isEmpty(patient?.medicalInfo) && !isEmpty(drafts) ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
+                itemView={8 ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
                 //items passed here should be deciphered whether it is a draft or not
             />
             {/* */}
@@ -335,9 +347,14 @@ function CaseFiles(props) {
                 <DataItem text={physicianName}/>
                 <DataItem text={formatDate(nextVisit, 'MMM DD, YYYY') || 'n/a'}/>
             </>
-
         );
     };
+
+    const handleRemoveDraft = (id) => {
+        modal.closeAllModals();
+        removeDraft(id);
+        setFloatingAction(false);
+    }
 
     const getFabActions = () => {
         const archiveCase = (
@@ -347,12 +364,38 @@ function CaseFiles(props) {
                 onPress={emptyFn}
             />
         );
+
+        const enabled = selectedCaseIds.length === 1 && drafts.some(item => item.id === selectedCaseIds[0])
+        const strokeColor = !enabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
+
+        const deleteDraftAction = (<View style={{
+                borderRadius: 6,
+                flex: 1,
+                overflow: 'hidden'
+            }}
+            >
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.LONG}
+                    onLongPress={() => {handleRemoveDraft(selectedCaseIds[0])}}
+                    isDisabled={!enabled}
+                >
+                    <ActionItem
+                        title="Hold to Delete Draft"
+                        icon={<WasteIcon strokeColor={strokeColor}/>}
+                        disabled={!enabled}
+                        touchable={false}
+                    />
+                </LongPressWithFeedback>
+            </View>
+        );
+
         const createNewCase = <ActionItem title="New Case" icon={<AddIcon/>} onPress={openCreateCaseFile}/>;
 
         return <ActionContainer
             floatingActions={[
                 archiveCase,
-                createNewCase
+                deleteDraftAction,
+                createNewCase,
             ]}
             title="CASE ACTIONS"
         />;
@@ -417,7 +460,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatcherToProp = {setCaseFiles};
+const mapDispatcherToProp = {setCaseFiles, removeDraft};
 
 export default connect(mapStateToProps, mapDispatcherToProp)(CaseFiles);
 
