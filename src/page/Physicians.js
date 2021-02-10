@@ -303,21 +303,21 @@ const Physicians = props => {
                 />
             </LongPressWithFeedback>
         );
-        const assignActionCase = (
-            <ActionItem
-                title="Assign Case"
-                icon={<AssignIcon/>}
-                onPress={() => {
-                }}
-            />
-        );
-        const createActionWorkItem = (
-            <ActionItem
-                title="Add Work Item"
-                icon={<AddIcon/>}
-                onPress={openCreateNewWorkItem}
-            />
-        );
+        // const assignActionCase = (
+        //     <ActionItem
+        //         title="Assign Case"
+        //         icon={<AssignIcon/>}
+        //         onPress={() => {
+        //         }}
+        //     />
+        // );
+        // const createActionWorkItem = (
+        //     <ActionItem
+        //         title="Add Work Item"
+        //         icon={<AddIcon/>}
+        //         onPress={openCreateNewWorkItem}
+        //     />
+        // );
         const createActionPhysician = (
             <ActionItem
                 title="Add Physician"
@@ -329,9 +329,9 @@ const Physicians = props => {
         return <ActionContainer
             floatingActions={[
                 deleteAction,
-                assignActionCase,
+                // assignActionCase,
                 createActionPhysician,
-                createActionWorkItem
+                // createActionWorkItem
             ]}
             title="PHYSICIAN ACTIONS"
         />;
