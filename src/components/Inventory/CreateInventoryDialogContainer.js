@@ -301,7 +301,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
     const validateInventory = () => {
         let isValid = true;
         let requiredFields = ['name', 'product', 'supplier'];
-        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields, 'unitCost', 'markup'];
+        selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields, 'unitCost'];
 
         const errorObj = {...errorFields} || {};
 
@@ -558,45 +558,45 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
                 </FieldContainer>
             </Row>
 
-            <Divider/>
+            {/*<Divider/>*/}
 
-            <Row>
+            {/*<Row>*/}
 
-                <FieldContainer>
-                    <InputUnitField
-                        label="Markup"
-                        onChangeText={value => {
-                            if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
-                                onFieldChange('markup')(value);
-                            }
-                        }}
-                        value={fields.markup}
-                        units={['%']}
-                        keyboardType="number-pad"
-                        hasError={errorFields.markup}
-                        errorMessage="Add markup value"
-                    />
-                </FieldContainer>
+            {/*    <FieldContainer>*/}
+            {/*        <InputUnitField*/}
+            {/*            label="Markup"*/}
+            {/*            onChangeText={value => {*/}
+            {/*                if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {*/}
+            {/*                    onFieldChange('markup')(value);*/}
+            {/*                }*/}
+            {/*            }}*/}
+            {/*            value={fields.markup}*/}
+            {/*            units={['%']}*/}
+            {/*            keyboardType="number-pad"*/}
+            {/*            hasError={errorFields.markup}*/}
+            {/*            errorMessage="Add markup value"*/}
+            {/*        />*/}
+            {/*    </FieldContainer>*/}
 
-                <FieldContainer>
-                    <Text style={{color: '#A0AEC0', fontSize: 14, alignSelf: 'center'}}>@{fields.markup}:{markupPrice}</Text>
-                </FieldContainer>
+            {/*    <FieldContainer>*/}
+            {/*        <Text style={{color: '#A0AEC0', fontSize: 14, alignSelf: 'center'}}>@{fields.markup}:{markupPrice}</Text>*/}
+            {/*    </FieldContainer>*/}
 
-            </Row>
+            {/*</Row>*/}
 
-            <Row>
+            {/*<Row>*/}
 
-                <FieldContainer>
-                    <InputField2
-                        label="Custom Cost"
-                        onChangeText={value => { handleCustomPrice(value); }}
-                        value={`$ ${customPriceText.toString()}`}
-                        keyboardType="number-pad"
-                        onClear={() => handleCustomPrice('')}
-                    />
-                </FieldContainer>
+            {/*    <FieldContainer>*/}
+            {/*        <InputField2*/}
+            {/*            label="Custom Cost"*/}
+            {/*            onChangeText={value => { handleCustomPrice(value); }}*/}
+            {/*            value={`$ ${customPriceText.toString()}`}*/}
+            {/*            keyboardType="number-pad"*/}
+            {/*            onClear={() => handleCustomPrice('')}*/}
+            {/*        />*/}
+            {/*    </FieldContainer>*/}
 
-            </Row>
+            {/*</Row>*/}
 
         </>
     );
