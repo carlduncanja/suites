@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView, Text} from 'react-native';
 import {useModal, withModal} from 'react-native-modalfy';
 import Table from '../../../common/Table/Table';
-import {formatDate, currencyFormatter} from '../../../../utils/formatter';
+import {formatDate, currencyFormatter, transformToTitleCase} from '../../../../utils/formatter';
 import ReportPreview from '../../Reports/ReportPreview';
 import ListItem from '../../../common/List/ListItem';
 import Button from '../../../common/Buttons/Button';
@@ -79,7 +79,11 @@ const reportTestData = {
     }
 };
 
-const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
+const Quotations = ({
+    tabDetails,
+    reportDetails,
+    handleQuotes
+}) => {
     const modal = useModal();
     console.log('Deta:', tabDetails);
     const [checkBoxList, setCheckBoxList] = useState([]);
@@ -115,8 +119,12 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
     };
 
     const listItem = item => {
-
-        const {quotationNumber = '', amountDue = 0, createdAt = '', status} = item;
+        const {
+            quotationNumber = '',
+            amountDue = 0,
+            createdAt = '',
+            status
+        } = item;
         return (
             <>
                 <View style={styles.item}>
@@ -125,8 +133,8 @@ const Quotations = ({tabDetails, reportDetails, handleQuotes}) => {
                 <View style={[styles.item, {alignItems: 'flex-start'}]}>
                     <Text style={styles.itemText}>{formatDate(createdAt, 'DD/MM/YYYY')}</Text>
                 </View>
-                 <View style={[styles.item, {alignItems: 'flex-start'}]}>
-                    <Text style={styles.itemText}>{status}</Text>
+                <View style={[styles.item, {alignItems: 'flex-start'}]}>
+                    <Text style={styles.itemText}>{transformToTitleCase(status)}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>

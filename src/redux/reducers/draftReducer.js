@@ -10,7 +10,9 @@ export default (state = initialState.draft, action) => {
 
             // data here is an array of a single object; that unnecessary, fix at some point
             const draft = data.length ? data[0] : {};
+            draft.isDraft = true;
             const draftId = draft.id;
+
 
             // check if draft id already exists in redux state, overwrite if so
             const exists = state.find(draft => draft.id === draftId);

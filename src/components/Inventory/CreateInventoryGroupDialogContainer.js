@@ -336,59 +336,59 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
 
             <Row>
                 <FieldContainer>
-                    <MultipleSelectionsField
-                        label={"Category"}
-                        onOptionsSelected={(value) => onFieldChange('category')(value)}
-                        options={categorySearchResults}
-                        createNew={createCateory}
-                        searchText={categorySearchValue}
-                        onSearchChangeText={(value) => setCategorySearchValue(value)}
-                        onClear={() => { setCategorySearchValue('') }}
-                        handlePopovers={(value) => handlePopovers(value)('category')}
-                        isPopoverOpen={categorySearchQuery}
-                    />
+                    {/*<MultipleSelectionsField*/}
+                    {/*    label={"Category"}*/}
+                    {/*    onOptionsSelected={(value) => onFieldChange('category')(value)}*/}
+                    {/*    options={categorySearchResults}*/}
+                    {/*    createNew={createCateory}*/}
+                    {/*    searchText={categorySearchValue}*/}
+                    {/*    onSearchChangeText={(value) => setCategorySearchValue(value)}*/}
+                    {/*    onClear={() => { setCategorySearchValue('') }}*/}
+                    {/*    handlePopovers={(value) => handlePopovers(value)('category')}*/}
+                    {/*    isPopoverOpen={categorySearchQuery}*/}
+                    {/*/>*/}
                 </FieldContainer>
             </Row>
 
-            <Divider theme={theme} />
+            {/*<Divider theme={theme} />*/}
 
             <Row zIndex={-1}>
 
                 <FieldContainer>
-                    <InputField2
-                        label={"Unit"}
-                        onChangeText={onFieldChange('unit')}
-                        value={fields['unit']}
-                        onClear={() => onFieldChange('unit')('')}
-                    />
+                    {/*<InputField2*/}
+                    {/*    label={"Unit"}*/}
+                    {/*    onChangeText={onFieldChange('unit')}*/}
+                    {/*    value={fields['unit']}*/}
+                    {/*    onClear={() => onFieldChange('unit')('')}*/}
+                    {/*/>*/}
                 </FieldContainer>
 
                 <FieldContainer>
-                    <OptionsField
-                        label={"Unit of Measure"}
-                        text={fields['unitOfMeasurement']}
-                        oneOptionsSelected={onFieldChange('unitOfMeasurement')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={'Glove Boxes'} text='Glove Boxes' />
-                            <MenuOption value={'Pack'} text='Pack' />
-                        </MenuOptions>}
-                    />
+                    {/*<OptionsField*/}
+                    {/*    label={"Unit of Measure"}*/}
+                    {/*    text={fields['unitOfMeasurement']}*/}
+                    {/*    oneOptionsSelected={onFieldChange('unitOfMeasurement')}*/}
+                    {/*    menuOption={<MenuOptions>*/}
+                    {/*        <MenuOption value={'Glove Boxes'} text='Glove Boxes' />*/}
+                    {/*        <MenuOption value={'Pack'} text='Pack' />*/}
+                    {/*    </MenuOptions>}*/}
+                    {/*/>*/}
                 </FieldContainer>
             </Row>
 
             <Row zIndex={-1}>
                 <FieldContainer>
-                    <InputUnitField
-                        label={"Markup"}
-                        onChangeText={(value) => {
-                            if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {
-                                onFieldChange('markup')(value)
-                            }
-                        }}
-                        value={fields['markup']}
-                        units={['%']}
-                        keyboardType="number-pad"
-                    />
+                    {/*<InputUnitField*/}
+                    {/*    label={"Markup"}*/}
+                    {/*    onChangeText={(value) => {*/}
+                    {/*        if (/^\d+\.?\d{0,2}$/g.test(value) || !value) {*/}
+                    {/*            onFieldChange('markup')(value)*/}
+                    {/*        }*/}
+                    {/*    }}*/}
+                    {/*    value={fields['markup']}*/}
+                    {/*    units={['%']}*/}
+                    {/*    keyboardType="number-pad"*/}
+                    {/*/>*/}
                 </FieldContainer>
             </Row>
 
@@ -417,40 +417,12 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                 </ContentContainer>
             </ContentWrapper>
 
-
             <FooterWrapper>
                 <CreatePreviousDoneFooter
                     onFooterPress={onPositiveClick}
                 />
             </FooterWrapper>
-
-
         </PageWrapper>
-        // <OverlayDialog
-        //     title={"Create Group"}
-        //     onPositiveButtonPress={onPositiveClick}
-        //     onClose={handleCloseDialog}
-        //     positiveText={"DONE"}
-        //     // handlePopovers = {handlePopovers}
-        //     // buttonIcon={<ArrowRightIcon/>}
-        // >
-
-        //     <>
-        //         <DialogTabs
-        //             tabs={dialogTabs}
-        //             tab={selectedIndex}
-        //         />
-        //         {/* <TouchableOpacity
-        //             onPress = {()=>handlePopovers(false)()}
-        //             activeOpacity = {1}
-        //         > */}
-        //             {detailsTab}
-        //         {/* </TouchableOpacity> */}
-
-        //     </>
-
-
-        // </OverlayDialog>
     );
 }
 

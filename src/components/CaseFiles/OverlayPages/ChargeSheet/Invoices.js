@@ -15,83 +15,19 @@ import Item from '../../../common/Table/Item';
 import {formatDate, currencyFormatter, transformToSentence} from '../../../../utils/formatter';
 import ListItem from '../../../common/List/ListItem';
 
-const reportTestData = {
-    billing: {
-        billedTo: {
-            name: 'Julie Melissa Brown',
-            address: {
-                line1: '23 Bedford Avenue',
-                line2: 'Kingston 8',
-                line3: 'JMKN08'
-            }
-        },
-        billedFor: 'Medical Services',
-        date: new Date(2019, 11, 12),
-        charges: {
-            subTotal: 178167.21,
-            discount: 30002.25,
-            tax: 0.2
-        }
-    },
-
-    billedItems: {
-        physicians: [
-            {
-                name: 'Dr. Mansingh',
-                cost: 64000.45
-            }
-        ],
-        procedures: [
-            {
-                name: 'Coronary Bypass Graft',
-                cost: 48000.00
-            },
-            {
-                name: 'Coronary Artery Graft',
-                cost: 48000.00
-            }
-        ],
-        equipments: [
-            {
-                name: 'Blood Glasses',
-                amount: 2,
-                unitPrice: 16000.45
-            },
-            {
-                name: 'Stethoscope 4',
-                amount: 3,
-                unitPrice: 15000.50
-            }
-        ],
-        inventories: [
-            {
-                name: 'Agents',
-                amount: 15,
-                unitPrice: 5000.62
-            },
-            {
-                name: 'Atracurium',
-                amount: 5,
-                unitPrice: 4128.45
-            },
-            {
-                name: 'GU Tower',
-                amount: 10,
-                unitPrice: 5055.20
-            },
-            {
-                name: 'Gauze',
-                amount: 20,
-                unitPrice: 500.00
-            }
-        ]
-    }
-};
-const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
+const Invoices = ({
+    tabDetails = [],
+    reportDetails,
+    handleInvoices
+}) => {
     const modal = useModal();
 
     console.log('Invoices: ', tabDetails);
     const [checkBoxList, setCheckBoxList] = useState([]);
+
+    useEffect(() => {
+        setCheckBoxList([])
+    }, [tabDetails])
 
     const headers = [
         {
@@ -125,7 +61,7 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
         //     billingDetails: customer,
         //     ...report
         // };
-        console.log("Report Item: ", item)
+        console.log('Report Item: ', item);
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Invoice"
@@ -136,33 +72,37 @@ const Invoices = ({tabDetails = [], reportDetails, handleInvoices}) => {
     };
 
     const listItem = item => {
-        const {invoiceNumber = '', status = '', billingDetails = {}, createdAt = '', amountDue = 0, amountPaid} = item;
-        const balance = amountDue - amountPaid;
-        const balanceColor = balance <= 0 ? '#319795' : '#DD6B20'
+        const {
+            invoiceNumber = '',
+            status = '',
+            billingDetails = {},
+            createdAt = '',
+            amountDue = 0,
+            total,
+            amountPaid
+        } = item;
+        const balance = total - amountPaid;
+        const balanceColor = balance <= 0 ? '#319795' : '#DD6B20';
 
         return (
             <>
-                {/* <TouchableOpacity style={{marginRight:20}} onPress={()=>toggleCheckbox(item)}>
-                    { checkBoxList.includes(item) ? <CheckedBox/> : <Checkbox/> }
-                </TouchableOpacity> */}
-                {/* <View style={styles.dataContainer}> */}
                 <View style={styles.item}>
                     <Text style={[styles.itemText, {color: '#3182CE'}]}>{invoiceNumber}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text
-                        style={[styles.itemText, {color: item.status === 'Complete' ? '#319795' : '#DD6B20'}]}>{transformToSentence(status)}</Text>
+                        style={[styles.itemText, {color: item.status === 'Complete' ? '#319795' : '#DD6B20'}]}
+                    >{transformToSentence(status)}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text style={styles.itemText}>{formatDate(createdAt, 'DD/MM/YYYY')}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
-                    <Text style={styles.itemText}>{`$ ${currencyFormatter(amountDue)}`}</Text>
+                    <Text style={styles.itemText}>{`$ ${currencyFormatter(total)}`}</Text>
                 </View>
                 <View style={[styles.item, {alignItems: 'center'}]}>
                     <Text style={[styles.itemText, {color: balanceColor}]}>{`$ ${currencyFormatter(balance)}`}</Text>
                 </View>
-                {/* </View> */}
             </>
         );
     };

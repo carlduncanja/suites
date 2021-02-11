@@ -203,8 +203,6 @@ function SupplierProductsTab({
 
     const onListFooterPress = data => {
         setLoading(true);
-
-        // console.log("List: ", data)
         const { purchaseOrders = [], deliveryDate = '' } = data;
         addCartItem(purchaseOrders);
         // updateCartItems(data)
@@ -268,7 +266,7 @@ function SupplierProductsTab({
                 //TODO handle error cases.
             })
             .finally(_ => setLoading(false));
-    
+
     };
 
     const onConfirmChanges = data => {
@@ -284,10 +282,6 @@ function SupplierProductsTab({
                             modal.closeModals('OverlayInfoModal');
                             onListFooterPress(data);
                         }, 200);
-
-                        // setTimeout(()=>{
-                        //     onShowSuccessScreen();
-                        // },200)
                     }}
                     onCancel={() => {
                         modal.closeModals('ConfirmationModal');
@@ -443,7 +437,7 @@ function SupplierProductsTab({
 
         modal.closeModals('ActionContainerModal');
 
-        console.log("updated cart items", updatedCartItems)
+        //console.log("updated cart items", updatedCartItems)
 
         setFloatingAction(false);
         setCartItems(updatedCartItems);

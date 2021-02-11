@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View} from 'react-native';
 import styled from '@emotion/native';
@@ -28,6 +28,7 @@ const InputWrapper = styled.View`
 
 function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword = () => {} }) {
 
+    const baseStateRef = useRef();
     const {pageState, setPageState} = useContext(PageContext)
     const modal = useModal();
 
@@ -51,6 +52,10 @@ function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword =
     }, [])
 
     useEffect(() => {
+        if (isEditMode) {
+            baseStateRef.current = userFields // save the base state for as we enter edit mode.
+        }
+
         if (isUpdated && !isEditMode) {
             confirmChanges()
         }
@@ -85,8 +90,8 @@ function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword =
                     error={false}//boolean to show whether an error icon or success icon
                     isEditUpdate={true}
                     onCancel={() => {
-                        // resetState()
-                        setPageState({...pageState, isEditMode: true})
+                        setPageState({...pageState, isEditMode: false})
+                        setUserFields(baseStateRef.current);
                         modal.closeAllModals();
                     }}
                     onAction={() => {

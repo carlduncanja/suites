@@ -49,6 +49,8 @@ function InventoryVariantGeneral({
     const {stock = 0, levels = {}} = selectedData;
     const suppliers = [];
 
+    console.log('inventoryVariant', inventoryVariant);
+
     const [fields, setFields] = useState({
         description,
         name,
@@ -81,6 +83,18 @@ function InventoryVariantGeneral({
             baseStateRef.current = {};
         };
     }, []);
+
+
+
+    useEffect(() => {
+        setFields({
+            description,
+            name,
+            unitCost,
+            unitOfMeasurement
+        })
+    }, [inventoryVariant]);
+
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {

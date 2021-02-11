@@ -23,7 +23,7 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 import PageButton from '../../components/common/Page/PageButton';
 import ChevronRight from '../../../assets/svg/ChevronRight';
 import ChevronLeft from '../../../assets/svg/ChevronLeft';
-import Divider from '../../components/common/Divider';
+import _ from 'lodash';
 import LoadingComponent from "../../components/LoadingComponent";
 
 const PATIENT_TABS = {
@@ -38,63 +38,6 @@ const CASE_PROCEDURE_TABS = {
     MEDICAL_STAFF: 1,
     PROCEDURES: 2,
     FINAL: 3,
-};
-
-const testData = {
-    name: 'John Doe',
-    patient: {
-        firstName: 'John',
-        middleName: '',
-        surname: 'Doe',
-        gender: 'Male',
-        trn: '',
-        dob: '2000-06-02',
-        contactInfo: {
-            phones: [
-                {
-                    phone: '8764287313',
-                    type: 'cell',
-                },
-            ],
-            emails: [
-                {
-                    email: 'john.doe@gmail.com',
-                    type: 'work',
-                },
-            ],
-            emergencyContact: [
-                {
-                    name: 'Bob Brown',
-                    email: 'bob.brown@gmail.com',
-                    phone: '8765232141',
-                    relation: 'Father',
-                },
-            ],
-        },
-        addressInfo: {
-            line1: '23 Ruthven Road',
-            line2: '',
-            city: 'Kingston',
-            parish: 'Kingston 8',
-        },
-        insurance: {
-            name: 'Sagicor Life',
-            coverage: 45000.0,
-            policyNumber: '7311239-122',
-        },
-    },
-    staff: {
-        physicians: ['5ea05a51a5ba16247dac651d'],
-        leadPhysician: '5ea05a51a5ba16247dac651d',
-    },
-    caseProcedures: [
-        {
-            procedure: '5ea060219a60bdf9e4b15783',
-            startTime: '2020-04-10T09:00:00.000Z',
-            endTime: '2020-04-10T10:00:00.000Z',
-            location: '5ea05bd848a2d72ff86e5151',
-        },
-    ],
 };
 
 const PageWrapper = styled.View`
@@ -229,7 +172,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     //console.log("what's in route", route.params);
     // ########### STATES
 
-    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : testData.patient);
+    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {});
     const [patientFieldErrors, setPatientErrors] = useState({});
 
     const [staffInfo, setStaffInfo] = useState(!isEmpty(draftItem) && draftItem.staff?.length ? draftItem.staff : []);
@@ -257,9 +200,9 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         message: ''
     });
 
-    useEffect(() =>
-        navigation.addListener('beforeRemove', (e) => {
-            if (caseCreated) {
+    useEffect(
+        () => navigation.addListener('beforeRemove', (e) => {
+            if (caseCreated || _.isEmpty(patientFields)) {
                 // If we don't have unsaved changes, then we don't need to do anything
                 return;
             }
@@ -272,7 +215,11 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                     <ConfirmationComponent
                         isError={false}
                         isEditUpdate={true}
-                        onAction={createDraft}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            createDraft()
+                            navigation.dispatch(e.data.action)
+                        }}
                         action="Save"
                         titleText="Save Draft?"
                         onCancel={() => {
@@ -283,7 +230,13 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                     />
                 ),
             });
-        }), [navigation, caseCreated]);
+        }),
+        [navigation, caseCreated, patientFields, staffInfo, caseProceduresInfo]
+    );
+
+    // useEffect( () => {
+    //     console.log('hello???', patientFields);
+    // }, [patientFields])
 
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
@@ -497,7 +450,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                 // check if trn field is 9
 
                 const trn = patientFields[requiredField];
-                if (trn.length !== 9) {
+                if (trn?.length !== 9) {
                     isValid = false;
 
                     updateErrors = {
@@ -520,7 +473,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                         [requiredField]: 'Invalid DOB',
                     };
                 }
-            } else if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo[requiredField])) {
+            } else if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo && patientFields.addressInfo[requiredField])) {
                 delete updateErrors[requiredField];
                 console.log(`${requiredField} is valid`);
             } else {
@@ -533,8 +486,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                         .replace(/([a-z0-9])([A-Z0-9])/g, '$1 $2')} is required`, // capitalize and separate camelcase named field
                     // [requiredField]: `${requiredField} is required`,
                 };
-
-                console.log(patientFields.addressInfo[requiredField]);
             }
         }
 
@@ -679,15 +630,14 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     };
 
     const createDraft = () => {
-        saveDraft([{
+        const draftData = {
             // pass back existing draft id to overwrite existing draft
             id: draftItem?.id || Math.floor(Math.random() * 10000),
             patient: patientFields,
             staff: staffInfo,
             procedures: caseProceduresInfo
-        }]);
-        navigation.navigate('CaseFiles');
-        modal.closeAllModals();
+        };
+        saveDraft([draftData]);
     };
 
     const onClose = () => {

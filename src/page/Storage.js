@@ -178,12 +178,6 @@ function Storage(props) {
     // ##### Helper functions
     const storageItem = ({ name, stock, levels, products, transfers }) => (
         <>
-
-            {/* <View style={[styles.item, {flex: 1.5, justifyContent: 'space-between', ...styles.rowBorderRight}]}>
-                <Text style={{color: '#3182CE', fontSize: 16}}>
-                    {name}
-                </Text>
-            </View> */}
             <RightBorderDataItem
                 fontStyle={'--text-base-regular'}
                 color={'--color-gray-800'}
@@ -203,20 +197,6 @@ function Storage(props) {
                 align="center"
                 text={`${transfers} ${transfers === 1 ? 'Transfer' : 'Transfers'}`}
             />
-
-            {/* <View style={[
-                styles.item, {justifyContent: 'center'}
-            ]}
-            >
-                {/*   LEVELS
-                <LevelIndicator
-                    max={levels.max}
-                    min={0}
-                    level={stock}
-                    ideal={levels.ideal}
-                    critical={levels.critical}
-                />
-            </View> */}
         </>
     );
 
@@ -465,7 +445,7 @@ function Storage(props) {
                 isPreviousDisabled={isPreviousDisabled}
             />
         </PageSettingsContext.Provider>
-        
+
     );
 }
 

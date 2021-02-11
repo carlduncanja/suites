@@ -23,7 +23,7 @@ const SectionHeader = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  
+
   height: 20px;
 `;
 
@@ -37,18 +37,26 @@ const ActionButton = styled.TouchableOpacity`
   padding-right: ${({theme}) => theme.space['--space-18']};
 `;
 
-const ActionButtonText = styled.Text(({theme, disabled, color}) => ({
+const ActionButtonText = styled.Text(({
+    theme,
+    disabled,
+    color
+}) => ({
     ...theme.font['--text-sm-medium'],
     color: disabled ? theme.colors['--color-gray-600'] : color ? theme.colors[color] : theme.colors['--color-blue-600']
 }));
 
-const SectionTitle = styled.Text(({theme, color = '--color-blue-600', font = '--text-base-medium'}) => ({
+const SectionTitle = styled.Text(({
+    theme,
+    color = '--color-blue-600',
+    font = '--text-base-medium'
+}) => ({
     ...theme.font[font],
     color: theme.colors[color]
 }));
 
 const Space = styled.View`
-    height: 16px;
+  height: 16px;
 `;
 
 function Settings({navigation}) {
@@ -124,7 +132,8 @@ function Settings({navigation}) {
             })
             .catch(error => {
                 // console.log('roles.remove.error', error, error.response?.data?.msg.includes('Guest'));
-                const errorMessage = error.response?.data?.msg.includes('Guest') ? 'Unable to remove \'Guest\' Role.' : 'Failed to remove Role(s)';
+                const errorMessage = error.response?.data?.msg.includes('Guest') ? 'Unable to remove \'Guest\' Role.' : error.response?.data?.msg.includes('Admin') ? 'Unable to remove \'Admin\' Role.' : 'Failed to remove Role(s)';
+
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -181,7 +190,11 @@ function Settings({navigation}) {
      * @param permission { group, key, value }
      */
     const onUpdatePermission = (id, permission) => {
-        const {group, key, value} = permission;
+        const {
+            group,
+            key,
+            value
+        } = permission;
 
         // find role with id
         const roleIndex = roles.findIndex(item => item._id === id);

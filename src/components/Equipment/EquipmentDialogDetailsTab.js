@@ -224,16 +224,16 @@ const EquipmentDialogDetailsTab = ({ onFieldChange, fields, handlePopovers, popo
                     />
                 </View>
                 <View style={styles.inputWrapper}>
-                    <MultipleSelectionsField
-                        label={"Category"}
-                        onOptionsSelected={onFieldChange('category')}
-                        options={categorySearchResults}
-                        searchText={categorySearchValue}
-                        onSearchChangeText={(value) => setCategorySearchValue(value)}
-                        onClear={() => { setCategorySearchValue('') }}
-                        handlePopovers={(value) => handlePopovers(value)('category')}
-                        isPopoverOpen={catPop[0].status}
-                    />
+                    {/*<MultipleSelectionsField*/}
+                    {/*    label={"Category"}*/}
+                    {/*    onOptionsSelected={onFieldChange('category')}*/}
+                    {/*    options={categorySearchResults}*/}
+                    {/*    searchText={categorySearchValue}*/}
+                    {/*    onSearchChangeText={(value) => setCategorySearchValue(value)}*/}
+                    {/*    onClear={() => { setCategorySearchValue('') }}*/}
+                    {/*    handlePopovers={(value) => handlePopovers(value)('category')}*/}
+                    {/*    isPopoverOpen={catPop[0].status}*/}
+                    {/*/>*/}
                 </View>
             </View>
 

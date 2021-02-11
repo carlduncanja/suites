@@ -1,12 +1,12 @@
-import React,{ useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
-import OverlayDialog from "../common/Dialog/OverlayDialog";
-import DialogTabs from "../common/Dialog/DialogTabs";
-import {createPhysician} from "../../api/network";
-import {useModal} from "react-native-modalfy";
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, Alert} from 'react-native';
+import {useModal} from 'react-native-modalfy';
+import moment from 'moment';
+import OverlayDialog from '../common/Dialog/OverlayDialog';
+import DialogTabs from '../common/Dialog/DialogTabs';
+import {createPhysician} from '../../api/network';
 import PhysicianDetailsTab from './PhysicianDetailsTab';
-import moment from "moment";
-
+import ConfirmationComponent from '../ConfirmationComponent';
 
 /**
  * Component to handle the create storage process.
@@ -17,13 +17,15 @@ import moment from "moment";
  * @constructor
  */
 
-const CreatePhysicianDialogContainer = ({onCancel, onCreated}) => {
-
+const CreatePhysicianDialogContainer = ({
+    onCancel,
+    onCreated
+}) => {
     const modal = useModal();
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
 
-    const [positiveText, setPositiveText] = useState("DONE")
+    const [positiveText, setPositiveText] = useState('DONE');
 
     const [fields, setFields] = useState({
         // firstName : '',
@@ -37,19 +39,18 @@ const CreatePhysicianDialogContainer = ({onCancel, onCreated}) => {
         // address:[]
     });
 
-    const [errorFields, setErrorFields] = useState({})
+    const [errorFields, setErrorFields] = useState({});
 
-    const onFieldChange = (fieldName) => (value) => {
-        const updatedFields = {...fields}
+    const onFieldChange = fieldName => value => {
+        const updatedFields = {...fields};
         setFields({
             ...updatedFields,
             [fieldName]: value
-        })
+        });
 
-        const updatedErrors = {...errorFields}
-        delete updatedErrors[fieldName]
-        setErrorFields(updatedErrors)
-
+        const updatedErrors = {...errorFields};
+        delete updatedErrors[fieldName];
+        setErrorFields(updatedErrors);
     };
 
     const handleCloseDialog = () => {
@@ -58,54 +59,54 @@ const CreatePhysicianDialogContainer = ({onCancel, onCreated}) => {
     };
 
     const validatePhysician = () => {
-        let isValid = true
-        const requiredFields = ['firstName', 'surname', 'trn', 'gender', 'dob']
+        let isValid = true;
+        const requiredFields = ['firstName', 'surname', 'trn', 'gender', 'dob'];
 
-        let errorObj = {...errorFields} || {}
+        const errorObj = {...errorFields} || {};
 
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
-                console.log(`${requiredField} is required`)
-                isValid = false
-                errorObj[requiredField] = "Value is required.";
+                console.info(`${requiredField} is required`);
+                isValid = false;
+                errorObj[requiredField] = 'Value is required.';
             } else {
-                delete errorObj[requiredField]
+                delete errorObj[requiredField];
             }
 
-            if (requiredField === "dob") {
+            if (requiredField === 'dob') {
                 // check if dob is valid
-                const validaDob = new moment().subtract(5, 'years')
+                const validaDob = moment()
+                    .subtract(5, 'years');
                 const dob = fields[requiredField];
-                const validDob = moment(dob).isBefore(validaDob);
+                const validDob = moment(dob)
+                    .isBefore(validaDob);
                 if (!validDob) {
                     isValid = false;
 
-                    errorObj[requiredField] = `Invalid DOB entered.`
+                    errorObj[requiredField] = 'Invalid DOB entered.';
                 }
             }
-
         }
 
-        setErrorFields(errorObj)
-        console.log("Error obj: ", errorObj)
+        setErrorFields(errorObj);
+        console.log('Error obj: ', errorObj);
 
-        return isValid
-    }
+        return isValid;
+    };
 
     const onPositiveButtonPress = () => {
-
-        let isValid = true
+        let isValid = true;
         const updatedFields = {
             ...fields,
             // trn : parseInt(fields['trn']) || ''
-        }
+        };
 
-        isValid = validatePhysician()
+        isValid = validatePhysician();
         if (!isValid) {
-            return
+            return;
         }
-        console.log("Success: ", updatedFields)
-        createPhysicianCall(updatedFields)
+        console.info('Success:', updatedFields);
+        createPhysicianCall(updatedFields);
 
         // let isFirstError = errorFields['firstName']
         // let isSurnameError = errorFields['surname']
@@ -125,47 +126,90 @@ const CreatePhysicianDialogContainer = ({onCancel, onCreated}) => {
         //     gender : isGenderError
         // })
 
-
         // if(isFirstError === false && isSurnameError === false && isTrnError === false && isGenderError === false){
         //     console.log("Success: ",updatedFields)
         //     // createPhysicianCall(updatedFields)
         // }
-
-
     };
 
-    const getDialogContent = (tab) => {
+    const getDialogContent = tab => {
         switch (tab) {
-            case "Details":
+            case 'Details':
                 return <PhysicianDetailsTab
                     onFieldChange={onFieldChange}
                     fields={fields}
                     errorFields={errorFields}
                 />;
-            default :
-                return <View/>
+            default:
+                return <View/>;
         }
     };
 
-    const createPhysicianCall = (updatedFields) => {
+    const createPhysicianCall = updatedFields => {
         createPhysician(updatedFields)
             .then(data => {
                 modal.closeAllModals();
-                Alert.alert("Success",`New physician has been created.`)
-                setTimeout(() => {onCreated(data)}, 200);
+                setTimeout(() => {
+                    modal.openModal('ConfirmationModal', {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCreated(data);
+                                }, 200);
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCreated(data);
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    });
+                });
+                // Alert.alert('Success', 'New physician has been created.');
+                // setTimeout(() => { onCreated(data); }, 200);
             })
             .catch(error => {
-                Alert.alert("Failed","Failed to create physician.")
-                console.log("failed to create physician", error);
-                // TODO handle error
+                modal.closeAllModals();
+                setTimeout(() => {
+                    modal.openModal('ConfirmationModal', {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCancel();
+                                }, 200);
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                setTimeout(() => {
+                                    onCancel();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        },
+                    });
+                });
+                // Alert.alert('Failed', 'Failed to create physician.');
+                // console.log('failed to create physician', error);
             })
             .finally(_ => {
-            })
+            });
     };
 
     return (
         <OverlayDialog
-            title={"Add Physician"}
+            title="Add Physician"
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
@@ -180,13 +224,13 @@ const CreatePhysicianDialogContainer = ({onCancel, onCreated}) => {
                 }
             </View>
         </OverlayDialog>
-    )
-}
+    );
+};
 
-CreatePhysicianDialogContainer.propTypes = {}
-CreatePhysicianDialogContainer.defaultProps = {}
+CreatePhysicianDialogContainer.propTypes = {};
+CreatePhysicianDialogContainer.defaultProps = {};
 
-export default CreatePhysicianDialogContainer
+export default CreatePhysicianDialogContainer;
 
 const styles = StyleSheet.create({
     container: {
@@ -195,4 +239,4 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: 'white',
     },
-})
+});

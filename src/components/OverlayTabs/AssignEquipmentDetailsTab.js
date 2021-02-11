@@ -177,15 +177,15 @@ function AssignEquipmentDetailsTab({
                     </InputWrapper>
 
                     <InputWrapper>
-                        <MultipleSelectionsField
-                            disabled={true}
-                            labelWidth={80}
-                            onOptionsSelected={() => {
-                            }}
-                            label="Category"
-                            value={!equipmentDetails?.categories ? '--' : equipmentDetails.categories}
+                        {/*<MultipleSelectionsField*/}
+                        {/*    disabled={true}*/}
+                        {/*    labelWidth={80}*/}
+                        {/*    onOptionsSelected={() => {*/}
+                        {/*    }}*/}
+                        {/*    label="Category"*/}
+                        {/*    value={!equipmentDetails?.categories ? '--' : equipmentDetails.categories}*/}
 
-                        />
+                        {/*/>*/}
                     </InputWrapper>
                 </Row>
                 <Row zIndex={2}>

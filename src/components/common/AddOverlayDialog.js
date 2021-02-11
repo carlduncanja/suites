@@ -193,6 +193,7 @@ function AddOverlayDialog(props){
                                         handlePopovers={() => {
                                             // console.log("handle popovers");
                                         }}
+                                        shouldShowValue={false}
                                         isPopoverOpen={searchQuery}
                                         borderColor = {theme.colors['--color-gray-400']}
                                     />

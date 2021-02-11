@@ -1,10 +1,11 @@
-import React, { Component, useState, useEffect } from 'react';
-import { getAppointments } from '../api/network';
+import React, {Component, useState, useEffect} from 'react';
+import {getAppointments} from '../api/network';
 import SchedulePaginator from './common/Paginators/SchedulePaginator';
 import ScheduleDisplayComponent from './ScheduleDisplay/ScheduleDisplayComponent';
-import { formatDate } from '../utils/formatter';
+import {formatDate} from '../utils/formatter';
+import moment from "moment";
 
-function PaginatedSchedule({ ID, isPhysician }) {
+function PaginatedSchedule({ID, isPhysician}) {
     const weekday = new Array(7);
     weekday[0] = 'Sunday';
     weekday[1] = 'Monday';
@@ -18,11 +19,11 @@ function PaginatedSchedule({ ID, isPhysician }) {
         const datetobePassed =
             `${weekday[item.getDay()]
             } ${
-            item.getFullYear()
+                item.getFullYear()
             }/${
-            item.getMonth() + 1
+                item.getMonth() + 1
             }/${
-            item.getDate()}`;
+                item.getDate()}`;
         // console.log("The new formatted date is:", datetobePassed);
         return datetobePassed;
     };
@@ -70,9 +71,23 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 console.log('The appointment data received is:', data);
                 relevantAppointment.length = 0;
 
-                setrelevantApppointments(relevantAppointment.concat(data));
+                const appointmentData = data.map(item => {
+                    let modifiedAppointment = {...item};
+                    let today = new Date();
+                    // const mm = moment(item.startTime);
+                    const start = moment(modifiedAppointment.startTime);
+                    const end = moment(modifiedAppointment.endTime);
 
-                //  console.log("Appointment array has:", relevantappointment);
+                    const isActive = moment().isBetween(start, end);
+                    if (end < today) {
+                        console.log("appointment has passed");
+                        modifiedAppointment.type = 3;
+                    } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
+
+                    return {...modifiedAppointment,}
+                })
+
+                setrelevantApppointments(relevantAppointment.concat(appointmentData));
             })
             .catch(error => {
                 console.log('Failed to get desired appointments', error);
@@ -84,9 +99,10 @@ function PaginatedSchedule({ ID, isPhysician }) {
 
     return (
         <>
-            <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate} />
+            <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate}/>
 
-            <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')} goToPreviousDay={goToPreviousDayApp} goToNextDay={goToNextDayApp} />
+            <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')} goToPreviousDay={goToPreviousDayApp}
+                               goToNextDay={goToNextDayApp}/>
 
         </>
     );

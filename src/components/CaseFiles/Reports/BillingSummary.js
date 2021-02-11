@@ -1,10 +1,10 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native"; 
-import { currencyFormatter } from "../../../utils/formatter";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import DataItem from "../../common/List/DataItem";
+import { currencyFormatter } from '../../../utils/formatter';
+import DataItem from '../../common/List/DataItem';
 
 const BillingDetailsWrapper = styled.View`
     width : 100%;
@@ -24,53 +24,45 @@ const DataRow = styled.View`
     justify-content : space-between;
 `;
 
-const BillingDetails = ({subtotal = 0, discount = 0, tax = 0, total = 0}) =>{
-
+const BillingDetails = ({subtotal = 0, discount = 0, tax = 0, total = 0}) => {
     const theme = useTheme();
 
     const billingDetails = [
         {
-            name: "Subtotal",
-            value : `$ ${currencyFormatter(subtotal)}`
+            name: 'Balance',
+            value: `$ ${currencyFormatter(subtotal)}`
         },
         {
-            name: "Discount",
-            value : `-$ ${currencyFormatter(discount)}`
+            name: 'Discount',
+            value: `-$ ${currencyFormatter(discount)}`
         },
         {
-            name: "Tax",
-            value : `${tax*100}%`
+            name: 'Tax',
+            value: `${tax * 100}%`
         },
         {
-            name: "Total",
-            value : `$ ${currencyFormatter(total)}`
+            name: 'Total Due',
+            value: `$ ${currencyFormatter(total)}`
         }
-    ] 
-    return(
+    ];
+    return (
         <BillingDetailsWrapper>
             <BillingDetailsContainer>
 
                 {
-                    billingDetails.map((detail, index)=>{
-                        return (
-                            <DataRow theme = {theme} key = {index}>
-                                <DataItem text = {detail.name} fontStyle = "--text-base-medium" color = "--color-blue-600"/>
-                                <DataItem text = {detail.value} align = "flex-end" fontStyle = "--text-lg-regular" color = "--color-gray-800"/>
-                            </DataRow>
-                        )
-                    })
+                    billingDetails.map((detail, index) => (
+                        <DataRow theme={theme} key={index}>
+                            <DataItem text={detail.name} fontStyle="--text-base-medium" color="--color-blue-600"/>
+                            <DataItem text={detail.value} align="flex-end" fontStyle="--text-lg-regular" color="--color-gray-800"/>
+                        </DataRow>
+                    ))
                 }
 
             </BillingDetailsContainer>
         </BillingDetailsWrapper>
-    )
-}
+    );
+};
 
-export default BillingDetails
+export default BillingDetails;
 
-const styles = StyleSheet.create({
-    container:{
-        marginRight:20
-    }
-})
-
+const styles = StyleSheet.create({container: {marginRight: 20}});

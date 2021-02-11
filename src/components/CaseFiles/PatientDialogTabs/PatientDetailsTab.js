@@ -157,7 +157,7 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         keyboardType="number-pad"
                         placeholder="YYYY/MM/DD"
                         minDate={null}
-                        maxDate={new Date(moment().subtract(1, 'days'))}
+                        maxDate={moment().subtract(5, 'years').toDate()}
                         onDateChange={onDateChange}
                         hasError={errors.dob}
                         errorMessage={errors.dob}
