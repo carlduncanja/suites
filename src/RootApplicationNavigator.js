@@ -28,6 +28,7 @@ function RootApplicationNavigator({auth}) {
 
     if (isLoading) {
         // We haven't finished checking for the token yet
+        // return <div/>;
         return <SplashScreen/>;
     }
 

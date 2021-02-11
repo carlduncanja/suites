@@ -417,36 +417,6 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
                 toggleActionButton={toggleActionButton}
             />
         </>
-
-        // <View style={styles.container}>
-        //     {/*PENDING*/}
-        //     <View style={styles.sectionContainer}>
-        //         <Text style={styles.sectionHeading}>Pending</Text>
-
-        //         <Table
-        //             data={transferItems}
-        //             listItemFormat={renderPendingItem}
-        //             headers={PendingTransferHeadings}
-        //             isCheckbox={false}
-        //         />
-
-        //     </View>
-
-        //     {/*COMPLETED*/}
-        //     <View style={styles.sectionContainer}>
-        //         <Text style={styles.sectionHeading}>Completed</Text>
-
-        //         <Table
-        //             data={transferItems}
-        //             listItemFormat={renderCompleteItem}
-        //             headers={CompletedTransferHeadings}
-        //             isCheckbox={false}
-        //         />
-
-        //     </View>
-
-        // </View>
-
     );
 }
 
