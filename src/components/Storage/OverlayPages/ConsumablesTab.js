@@ -4,42 +4,26 @@ import Consumables from '../../CaseFiles/OverlayPages/ChargeSheet/Consumables';
 import { currencyFormatter } from '../../../utils/formatter';
 
 
-const testData = [
+const headers = [
     {
-        itemName : 'Agents',
-        type : 'Anaesthesia',
-        onHand : 150,
-        unitPrice : 4120.76
+        name :"Item Name",
+        alignment: "flex-start"
     },
     {
-        itemName : 'Atracurium',
-        type : 'Anaesthesia',
-        onHand : 25,
-        unitPrice : 8924.09
+        name :"Type",
+        alignment: "center"
+    },
+    {
+        name :"On-Hand",
+        alignment: "center"
+    },
+    {
+        name :"Unit Price",
+        alignment: "flex-end"
     }
-
 ];
 
 const ConsumablesTab = () => {
-
-    const headers = [
-        {
-            name :"Item Name",
-            alignment: "flex-start"
-        },
-        {
-            name :"Type",
-            alignment: "center"
-        },
-        {
-            name :"On-Hand",
-            alignment: "center"
-        },
-        {
-            name :"Unit Price",
-            alignment: "flex-end"
-        }
-    ];
 
     const listItem = (item) => <>
         <View style={styles.item}>
