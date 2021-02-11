@@ -277,7 +277,7 @@ function CaseFiles(props) {
                 isChecked={selectedCaseIds.includes(item._id || item.id)}
                 onCheckBoxPress={handleOnCheckBoxPress(item)}
                 onItemPress={handleOnItemPress(item, false)}
-                itemView={8 ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
+                itemView={ item.isDraft  ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
                 //items passed here should be deciphered whether it is a draft or not
             />
             {/* */}
