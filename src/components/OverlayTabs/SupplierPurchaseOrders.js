@@ -145,7 +145,7 @@ const SupplierPurchaseOrders = ({
     }, [isEditMode]);
 
     const fetchPurchaseOrders = () => {
-        getPurchaseOrders("",10,1,supplierId)
+        getPurchaseOrders("",recordsPerPage,currentPagePosition,supplierId)
             .then(orders => {
                 setOrdersData(orders?.data || []);
                 // console.log('Orders for supplier: ', orders)
@@ -504,7 +504,7 @@ const SupplierPurchaseOrders = ({
 
                 <Footer
                     hasActionButton={hasActionButton}
-                    hasPaginator={false}
+                    hasPaginator={true}
                     totalPages={totalPages}
                     currentPage={currentPagePosition}
                     goToNextPage={goToNextPage}

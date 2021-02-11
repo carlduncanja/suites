@@ -19,7 +19,7 @@ import InvoiceFullPageView from './InvoiceFullPageView';
 import IconButton from '../../components/common/Buttons/IconButton';
 import InvoiceDetailsPage from './InvoiceDetailsPage';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
-import {generateDocumentLink, uploadDocument, updateInvoiceDocument, updatePurchaseOrderDetails } from '../../api/network';
+import {generateDocumentLink, uploadDocument, updateInvoiceDocument, updatePurchaseOrderDetails, getPurchaseOrderById } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import axios from 'axios';
 
@@ -115,6 +115,7 @@ const SupplierInvoiceUpload = ({ route }) => {
     const modal = useModal();
     const tabs = ['Details'];
     const { invoiceItem = {}, selectedSupplierName = '', updateSuppliers } = route.params;
+    const [invoiceObj, setInvoiceObj] = useState(invoiceItem?.invoice || {});
     const [pageState, setPageState] = useState({});
     const [isImageUploading, setIsImageUploading] = useState(false);
     const [invoiceImage, setInvoiceImage] = useState();
@@ -122,10 +123,9 @@ const SupplierInvoiceUpload = ({ route }) => {
     const [isUploadingDoc, setIsUploadingDoc] = useState(false);
     const [isDocSelected, setIsDocSelected] = useState(false);
     const [canUpdateDoc, setCanUpdateDoc] = useState(false);
+    const [isImageUpdating, setIsImageUpdating] = useState(false);
 
     const {isEditMode = false} = pageState;
-
-    // console.log('PageState: ', pageState);
 
     useEffect(() => {
         if (!isEditMode && isDocSelected) {
@@ -134,14 +134,28 @@ const SupplierInvoiceUpload = ({ route }) => {
         }
     }, [isEditMode])
 
-    const updatePurchaseOrderWithDocument = (purchaseOrderId, docId) => {
+    const fetchPurchaseOrder = () => {
+        getPurchaseOrderById(invoiceItem?._id)
+            .then(res => {
+                const {invoice} = res;
+                setInvoiceObj(invoice || {});
+            })
+            .catch(err => {
+                console.log('Unable to fetch purchase order')
+            })
+    }
+
+    useEffect(() => {
+        fetchPurchaseOrder();
+    }, []);
+
+    const handleDocument = (fetchFn, successMsg, errorMsg, docId, purchaseOrderId, finalFn = () => {}) => {
         const docObj = {
             documentId : docId
         };
 
-        updateInvoiceDocument(purchaseOrderId, docObj)
+        fetchFn(purchaseOrderId, docObj)
             .then(res =>{ 
-                console.log('Updated PO with document: ', res);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -149,6 +163,7 @@ const SupplierInvoiceUpload = ({ route }) => {
                             isEditUpdate={false}
                             onCancel={() => { modal.closeAllModals(); }}
                             onAction={() => { modal.closeAllModals(); }}
+                            message={successMsg}
                         />
                     ),
                     onClose: () => {
@@ -157,7 +172,6 @@ const SupplierInvoiceUpload = ({ route }) => {
                 });
             })
             .catch(err => {
-                console.log('Error updating PO with document: ', err);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -165,7 +179,7 @@ const SupplierInvoiceUpload = ({ route }) => {
                             isEditUpdate={false}
                             onCancel={() => { modal.closeAllModals(); }}
                             onAction={() => { modal.closeAllModals(); }}
-                            message="Document could not be added to order."
+                            message={errorMsg}
                         />
                     ),
                     onClose: () => {
@@ -173,53 +187,32 @@ const SupplierInvoiceUpload = ({ route }) => {
                     },
                 });
             })
-            .finally(_ => updateSuppliers())
+            .finally(_ => { updateSuppliers(), finalFn() })
+    }
+
+    const updatePurchaseOrderWithDocument = (purchaseOrderId, docId) => {
+
+        handleDocument(
+            updateInvoiceDocument, 
+            'Document added successfully', 
+            "Document could not be added to order.",
+            docId, 
+            purchaseOrderId
+        );
     };
 
     const updateDocumentId = (purchaseOrderId, docId) => {
-        console.log('Update the id of the document');
-        let updatedField = {
-            invoice: {
-                ...invoiceItem?.invoice,
-                documentId: docId
-            }
-        }
-        updatePurchaseOrderDetails(purchaseOrderId, updatedField)
-            .then(_ => {
-                modal.openModal('ConfirmationModal', {
-                    content: (
-                        <ConfirmationComponent
-                            isError={false}//boolean to show whether an error icon or success icon
-                            isEditUpdate={false}
-                            onCancel={() => { modal.closeAllModals(); }}
-                            onAction={() => { modal.closeAllModals(); }}
-                            message="Document has been updated"
-                        />
-                    ),
-                    onClose: () => {
-                        console.log('Modal closed');
-                    },
-                });
-            })
-            .catch(_ => {
-                modal.openModal('ConfirmationModal', {
-                    content: (
-                        <ConfirmationComponent
-                            isError={true}//boolean to show whether an error icon or success icon
-                            isEditUpdate={false}
-                            onCancel={() => { modal.closeAllModals(); }}
-                            onAction={() => { modal.closeAllModals(); }}
-                            message="Document format selected is not supported"
-                        />
-                    ),
-                    onClose: () => {
-                        console.log('Modal closed');
-                    },
-                });
-            })
-            .finally(_ => {
-
-            })
+        setIsImageUpdating(true);
+        setTimeout(() => {
+            handleDocument(
+                updateInvoiceDocument, 
+                "Document has been updated",
+                "Document could not be updated", 
+                docId, 
+                purchaseOrderId,
+                () => { fetchPurchaseOrder(); setInvoiceImage(); setIsImageUpdating(false); }
+            );
+        }, 200)
     }
 
     const uploadImage = async image => {
@@ -235,9 +228,9 @@ const SupplierInvoiceUpload = ({ route }) => {
                 console.log('Image Response: ', res);
                 // console.log('Invoice item: ', invoiceItem);
                 // setInvoiceImage(image);
-                if (invoiceItem?.invoice?.documentId) {
+                if (invoiceObj.documentId) {
                     console.log('Update response: ', res);
-                    // updateDocumentId(invoiceItem?._id, res?.id)
+                    updateDocumentId(invoiceItem?._id, res?.id)
                 } else {
                     updatePurchaseOrderWithDocument(invoiceItem?._id, res?.id)
                 }
@@ -272,7 +265,7 @@ const SupplierInvoiceUpload = ({ route }) => {
                 const rejectedPreviewFormats = (testUri === 'pdf') || (testUri === 'PDF');
                 if (acceptedFormats) {
                     if (rejectedPreviewFormats) {
-                        // console.log('Rejected');
+                        console.log('Rejected');
                         setCanPreview(false);
                     }
                     if (result.type === 'success') {
@@ -337,11 +330,12 @@ const SupplierInvoiceUpload = ({ route }) => {
     };
 
     const handleInvoiceUploadRemoval = () => {
-        setInvoiceImage();
-        if (invoiceItem?.invoice?.documentId) {
+         if (invoiceObj.documentId) {
             setCanUpdateDoc(true);
             onImageUpload();
         }
+        setInvoiceImage();
+       
     };
 
     return (
@@ -349,7 +343,7 @@ const SupplierInvoiceUpload = ({ route }) => {
             <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     title={selectedSupplierName}
-                    subTitle={invoiceItem?.invoice?.invoiceNumber}
+                    subTitle={invoiceObj.invoiceNumber}
                     onBackPress={() => navigation.goBack()}
                     pageTabs={(
                         <TabsContainer
@@ -365,10 +359,11 @@ const SupplierInvoiceUpload = ({ route }) => {
                                 removeInvoice={removeInvoice}
                                 openFullView={openFullView}
                                 isImageUploading={isImageUploading}
+                                isImageUpdating={isImageUpdating}
                                 invoiceImage={invoiceImage}
                                 canPreview={canPreview}
                                 purchaseOrderNumber={invoiceItem?.purchaseOrderNumber}
-                                invoice={invoiceItem?.invoice}
+                                invoice={invoiceObj}
                                 canUpdateDoc={canUpdateDoc}
                             />
                         )

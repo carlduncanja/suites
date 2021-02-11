@@ -114,6 +114,7 @@ const InvoiceDetailsPage = ({
     removeInvoice = () => {},
     openFullView = () => {},
     isImageUploading = false,
+    isImageUpdating = false,
     canUpdateDoc=false,
     invoiceImage,
     canPreview = true,
@@ -126,6 +127,8 @@ const InvoiceDetailsPage = ({
 
     const [isPageLoading, setIsPageLoading] = useState(false);
     const [documentImageData, setDocumentImageData] = useState();
+    const [uri, setUri] = useState('');
+    const [canDocumentPreview, setCanDocumentPreview] = useState(canPreview);
 
     const getDocumentData = async () => {
         setIsPageLoading(true);
@@ -133,6 +136,12 @@ const InvoiceDetailsPage = ({
             .then(res => {
                 console.log('Res: ', res);
                 setDocumentImageData(res.data);
+                if (res?.data?.metadata?.extension === 'pdf' || res?.data?.metadata?.extension === 'PDF') {
+                    setCanDocumentPreview(false);
+                } else {
+                    setCanDocumentPreview(true);
+                }
+
             })
             .catch(err => {
                 console.log('Retrieve Document error: ', err);
@@ -145,6 +154,25 @@ const InvoiceDetailsPage = ({
             getDocumentData(invoice?.documentId)
         }
     }, []);
+
+    useEffect(() => {
+        if (invoice?.documentId) {
+            setUri(`https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${invoice?.documentId}`);
+            getDocumentData();
+        }
+    }, [invoice?.documentId])
+
+    useEffect(() => {
+        if (invoiceImage) {
+            const testUri = (invoiceImage.uri).match(/[^.]*$/g)[0] || '';
+            const rejectedPreviewFormats = (testUri === 'pdf') || (testUri === 'PDF');
+            if (rejectedPreviewFormats) {
+                setCanDocumentPreview(false);
+            } else {
+                setCanDocumentPreview(true);
+            }
+        }
+    }, [invoiceImage])
 
     const uploadContent = (
         <InvoiceUploadContainer
@@ -183,6 +211,41 @@ const InvoiceDetailsPage = ({
         removeInvoice();
     }
 
+    const content = () => {
+       if (!canDocumentPreview) {
+           return (
+            <RejectedPreviewContainer theme={theme}>
+                <PageText
+                    font="--text-lg-bold"
+                    textColor="--color-blue-600"
+                >
+                    Document/Image format cannot be previewed/viewed in full screen
+                </PageText>
+            </RejectedPreviewContainer>
+           )
+        } else if (documentImageData) {
+            return (
+                <ViewImageContainer>
+                    <PreviewImage
+                        source={{uri: canUpdateDoc ? `` : uri}}
+                    />
+                </ViewImageContainer>
+            )
+        } else {
+            return (
+                <UploadedImageContainer
+                    activeOpacity={0.6}
+                    onPress={() => openFullView()}
+                >
+                    <PreviewImage
+                        source={{ uri: invoiceImage?.uri }}
+                    />
+                </UploadedImageContainer>
+                
+            )
+        }
+    }
+
     const imageContent = (
         <ImageContainer theme={theme}>
             <ImageTitleContainer theme={theme}>
@@ -203,10 +266,15 @@ const InvoiceDetailsPage = ({
                 }
             </ImageTitleContainer>
             {
+                isImageUpdating ? <LoadingIndicator/> : content()
+            }
+
+            {/* {
+                isImageUpdating ? <LoadingIndicator/> : 
                 documentImageData ? 
                     <ViewImageContainer>
                         <PreviewImage
-                            source={{uri: canUpdateDoc ? `` : `https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${invoice?.documentId}`}}
+                            source={{uri: canUpdateDoc ? `` : uri}}
                         />
                     </ViewImageContainer>
                     :
@@ -231,7 +299,7 @@ const InvoiceDetailsPage = ({
                             </PageText>
                         </RejectedPreviewContainer>
                     )
-            }
+            } */}
             
         </ImageContainer>
     );
@@ -249,7 +317,7 @@ const InvoiceDetailsPage = ({
                 isPageLoading ? <LoadingIndicator/> : (
                     <InvoiceWrapper>
                         {
-                            (invoiceImage || invoice?.documentId) ? imageContent : uploadContent
+                            (invoiceImage || documentImageData) ? imageContent : uploadContent
                         }
                     </InvoiceWrapper>
                 )
