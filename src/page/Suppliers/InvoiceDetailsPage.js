@@ -114,6 +114,7 @@ const InvoiceDetailsPage = ({
     removeInvoice = () => {},
     openFullView = () => {},
     isImageUploading = false,
+    canUpdateDoc=false,
     invoiceImage,
     canPreview = true,
     purchaseOrderNumber = '',
@@ -124,37 +125,20 @@ const InvoiceDetailsPage = ({
     const {isEditMode} = pageState;
 
     const [isPageLoading, setIsPageLoading] = useState(false);
-    const [documentImage, setDocumentImage] = useState({});
+    const [documentImageData, setDocumentImageData] = useState();
 
     const getDocumentData = async () => {
         setIsPageLoading(true);
-        console.log('Get image');
-        getDocumentById(invoice?.documentId)
+        getFiletData(invoice?.documentId)
             .then(res => {
-                const stringifyJSON = JSON.stringify(res.data);
-                const blob = new Blob([stringifyJSON]);
-                // Blob url to pass to image uri
-                const blobURL = URL.createObjectURL(blob);
-                // Or convert blob to base64 to pass to uri
-                FileSystem.readAsStringAsync(blobURL, { encoding: FileSystem.EncodingType.Base64 })
-                    .then(result => console.log('Image 64: ', result))
-                    .catch(err => console.log('Image 64 error: ', err));
-                    
-                console.log('Stringify JSON: ', stringifyJSON);
-                console.log('Blob: ', blob);
-                console.log('New Blob url: ', blobURL );
-                // console.log('New Blob image: ', baseImg );
-                setDocumentImage(stringifyJSON);
+                console.log('Res: ', res);
+                setDocumentImageData(res.data);
             })
             .catch(err => {
                 console.log('Retrieve Document error: ', err);
             })
             .finally(_ => setIsPageLoading(false))
     }
-
-    // useEffect(() => {
-    //     console.log('Doc image: ', documentImage);
-    // }, [documentImage])
 
     useEffect(() => {
         if (invoice?.documentId) {
@@ -190,6 +174,15 @@ const InvoiceDetailsPage = ({
         </InvoiceUploadContainer>
     );
 
+    const imageName = documentImageData ? documentImageData?.metadata?.originalname || '' : invoiceImage?.name || '';
+
+    const removeImage = () => {
+        if (invoice?.documentId) {
+            setDocumentImageData();
+        } 
+        removeInvoice();
+    }
+
     const imageContent = (
         <ImageContainer theme={theme}>
             <ImageTitleContainer theme={theme}>
@@ -197,23 +190,23 @@ const InvoiceDetailsPage = ({
                     theme={theme}
                     font="--text-sm-medium"
                     textColor="--color-blue-600"
-                >{invoiceImage?.name || ''}</PageText>
+                >{canUpdateDoc ? '' : imageName}</PageText>
                 {
                     isEditMode && (
                         <IconConatiner>
                             <IconButton
                                 Icon={<DeleteIcon/>}
-                                onPress={() => removeInvoice()}
+                                onPress={() => removeImage() }
                             />
                         </IconConatiner>
                     )
                 }
             </ImageTitleContainer>
             {
-                documentImage ? 
+                documentImageData ? 
                     <ViewImageContainer>
                         <PreviewImage
-                            source={{uri: documentImage, scale: 1, width: 50, height: 50}}
+                            source={{uri: canUpdateDoc ? `` : `https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${invoice?.documentId}`}}
                         />
                     </ViewImageContainer>
                     :

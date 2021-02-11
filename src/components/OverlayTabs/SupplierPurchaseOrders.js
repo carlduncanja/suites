@@ -112,15 +112,7 @@ const SupplierPurchaseOrders = ({
 
     useEffect(() => {
         setIsPageLoading(true);
-        getPurchaseOrders("",10,1,supplierId)
-            .then(orders => {
-                setOrdersData(orders?.data || []);
-                // console.log('Orders for supplier: ', orders)
-            })
-            .catch(err => {
-                console.log('Order error for suppliers: ', err)
-            })
-            .finally(_ => setIsPageLoading(false));
+        fetchPurchaseOrders();
     },[]);
 
     useEffect(() => {
@@ -151,6 +143,18 @@ const SupplierPurchaseOrders = ({
             });
         }
     }, [isEditMode]);
+
+    const fetchPurchaseOrders = () => {
+        getPurchaseOrders("",10,1,supplierId)
+            .then(orders => {
+                setOrdersData(orders?.data || []);
+                // console.log('Orders for supplier: ', orders)
+            })
+            .catch(err => {
+                console.log('Order error for suppliers: ', err)
+            })
+            .finally(_ => setIsPageLoading(false));
+    }
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
@@ -471,7 +475,8 @@ const SupplierPurchaseOrders = ({
         navigation.navigate('SupplierInvoiceUpload', {
             initial: false,
             invoiceItem: invoiceObj,
-            selectedSupplierName: supplierName
+            selectedSupplierName: supplierName,
+            updateSuppliers: () => { onRefresh(); fetchPurchaseOrders() }
         });
     };
 
