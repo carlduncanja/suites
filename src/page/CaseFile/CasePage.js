@@ -31,7 +31,12 @@ import {
     getCaseFileById,
     removeQuotationCall,
     updateCaseQuotationStatus,
-    updateChargeSheet, approveChargeSheetCall, withdrawChargeSheetChangesCall, getUserCall, applyPaymentsChargeSheetCall, applyPaymentsChargeSheetInvoiceCall
+    updateChargeSheet,
+    approveChargeSheetCall,
+    withdrawChargeSheetChangesCall,
+    getUserCall,
+    applyPaymentsChargeSheetCall,
+    applyPaymentsChargeSheetInvoiceCall
 } from '../../api/network';
 import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
@@ -339,10 +344,16 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 content: (
                     <ApplyDiscountItem
                         onCreateDiscount={handlePayment}
-                        onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
+                        onCancel={() => {
+                            setFloatingAction(false);
+                            modal.closeAllModals();
+                        }}
                     />
                 ),
-                onClose: () => { setFloatingAction(false); modal.closeAllModals(); },
+                onClose: () => {
+                    setFloatingAction(false);
+                    modal.closeAllModals();
+                },
             });
         }, 200);
     };
@@ -354,10 +365,16 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 content: (
                     <PayBalanceItem
                         onAddPay={handlePayment}
-                        onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
+                        onCancel={() => {
+                            setFloatingAction(false);
+                            modal.closeAllModals();
+                        }}
                     />
                 ),
-                onClose: () => { setFloatingAction(false); modal.closeAllModals(); },
+                onClose: () => {
+                    setFloatingAction(false);
+                    modal.closeAllModals();
+                },
             });
         }, 200);
     };
@@ -370,10 +387,16 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 content: (
                     <PayBalanceItem
                         onAddPay={(data) => handleInvoicePayment(invoiceId, data)}
-                        onCancel={() => { setFloatingAction(false); modal.closeAllModals(); }}
+                        onCancel={() => {
+                            setFloatingAction(false);
+                            modal.closeAllModals();
+                        }}
                     />
                 ),
-                onClose: () => { setFloatingAction(false); modal.closeAllModals(); },
+                onClose: () => {
+                    setFloatingAction(false);
+                    modal.closeAllModals();
+                },
             });
         }, 200);
     };
@@ -690,7 +713,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             action="Ok"
                         />
                     ),
-                    onClose: () => { modal.closeAllModals(); },
+                    onClose: () => {
+                        modal.closeAllModals();
+                    },
                 });
             })
             .catch(error => {
@@ -710,7 +735,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             action="Ok"
                         />
                     ),
-                    onClose: () => { modal.closeAllModals(); },
+                    onClose: () => {
+                        modal.closeAllModals();
+                    },
                 });
             })
             .finally(_ => {
@@ -736,7 +763,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             action="Ok"
                         />
                     ),
-                    onClose: () => { modal.closeAllModals(); },
+                    onClose: () => {
+                        modal.closeAllModals();
+                    },
                 });
             })
             .catch(error => {
@@ -756,7 +785,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             action="Ok"
                         />
                     ),
-                    onClose: () => { modal.closeAllModals(); },
+                    onClose: () => {
+                        modal.closeAllModals();
+                    },
                 });
             })
             .finally(_ => {
@@ -1134,48 +1165,31 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     break;
                 }
                 case 'Invoices': {
-                    if (selectedInvoiceIds.length === 1) {
-                        const invoice = selectedInvoiceIds[0];
-                        // const removeInvoices = (
-                        //     <LongPressWithFeedback
-                        //         pressTimer={LONG_PRESS_TIMER.MEDIUM}
-                        //         onLongPress={() => onRemoveInvoices(invoice)}
-                        //     >
-                        //         <ActionItem
-                        //             title="Hold to Delete"
-                        //             icon={<WasteIcon/>}
-                        //             onPress={() => {
-                        //             }}
-                        //             touchable={false}
-                        //         />
-                        //     </LongPressWithFeedback>
-                        // );
-                        const downloadInvoice = (
-                            <ActionItem
-                                title="Download Invoice"
-                                icon={<DownloadIcon/>}
-                                onPress={() => downloadInvoiceDocument(invoice)}
-                            />
-                        );
+                    setSelectedInvoiceIds([]);
+                    const invoice = selectedInvoiceIds[0];
+                    console.log('selected invoice ids', selectedInvoiceIds)
+                    const downloadInvoice = (
+                        <ActionItem
+                            title="Download Invoice"
+                            icon={<DownloadIcon/>}
+                            disabled={selectedInvoiceIds.length !== 1}
+                            onPress={() => downloadInvoiceDocument(invoice)}
+                        />
+                    );
 
-                        const payBalanceAction = (
-                            <ActionItem
-                                title="Pay Balance"
-                                icon={<AcceptIcon/>}
-                                onPress={() => onPayInvoiceBalance(invoice?._id)}
-                            />
-                        );
+                    const payBalanceAction = (
+                        <ActionItem
+                            title="Pay Balance"
+                            icon={<AcceptIcon/>}
+                            disabled={selectedInvoiceIds.length !== 1}
+                            onPress={() => onPayInvoiceBalance(invoice?._id)}
+                        />
+                    );
 
-                        // floatingAction.push(removeInvoices);
-                        floatingAction.push(downloadInvoice, payBalanceAction);
-                    } else if (selectedInvoiceIds.length > 1) {
-                        // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
-                        //                                   onPress={onCreateInvoice}/>
-                    }
-
-                    title = 'INVOICE ACTIONS';
-                    break;
+                    // floatingAction.push(removeInvoices);
+                    floatingAction.push(downloadInvoice, payBalanceAction);
                 }
+                    break
                 case 'Billing': {
                     const applyDiscountAction = (
                         <ActionItem
@@ -1215,7 +1229,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         />
                     )
 
-                    floatingAction.push(applyDiscountAction,generateQuotationAction, generateInvoiceAction, previewInvoice,payBalanceAction);
+                    floatingAction.push(applyDiscountAction, generateQuotationAction, generateInvoiceAction, previewInvoice, payBalanceAction);
 
                     title = 'BILLING ACTIONS';
                     break;
@@ -1789,7 +1803,14 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const getOverlayContent = () => {
-        const {patient = {}, staff = {}, chargeSheet = {}, caseProcedures = [], quotations = [], invoices = []} = selectedCase;
+        const {
+            patient = {},
+            staff = {},
+            chargeSheet = {},
+            caseProcedures = [],
+            quotations = [],
+            invoices = []
+        } = selectedCase;
         const {medicalInfo = {}} = patient;
         const {proceduresBillableItems} = chargeSheet;
 
@@ -1892,14 +1913,14 @@ const mapStateToProps = state => ({auth: state.auth});
 export default connect(mapStateToProps, mapDispatchTopProp)(CasePage);
 
 function CasePageContent({
-    overlayContent,
-    overlayMenu,
-    userPermissions,
-    selectedMenuItem,
-    onOverlayTabPress,
-    toggleActionButton,
-    actionDisabled
-}) {
+                             overlayContent,
+                             overlayMenu,
+                             userPermissions,
+                             selectedMenuItem,
+                             onOverlayTabPress,
+                             toggleActionButton,
+                             actionDisabled
+                         }) {
     useEffect(() => {
         console.log('Case Page Create');
     }, []);
@@ -1909,19 +1930,19 @@ function CasePageContent({
     });
 
     const FooterWrapper = styled.View`
-        width: 100%;
-        padding-right: 30px;
-        padding-left: 30px;
-        padding-bottom: 17px;
-        position : absolute;
-        bottom: 0;
-        height: 60px;
+      width: 100%;
+      padding-right: 30px;
+      padding-left: 30px;
+      padding-bottom: 17px;
+      position: absolute;
+      bottom: 0;
+      height: 60px;
     `;
 
     const FooterContainer = styled.View`
-        width: 100%;
-        height: 100%;
-        flex-direction : row;
+      width: 100%;
+      height: 100%;
+      flex-direction: row;
     `;
 
     return (

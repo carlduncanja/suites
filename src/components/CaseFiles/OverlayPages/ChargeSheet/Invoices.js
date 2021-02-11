@@ -25,6 +25,10 @@ const Invoices = ({
     console.log('Invoices: ', tabDetails);
     const [checkBoxList, setCheckBoxList] = useState([]);
 
+    useEffect(() => {
+        setCheckBoxList([])
+    }, [tabDetails])
+
     const headers = [
         {
             name: 'Invoice Number',
