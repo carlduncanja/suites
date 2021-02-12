@@ -43,6 +43,7 @@ import {PageSettingsContext} from '../../contexts/PageSettingsContext';
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import {removeDraft} from "../../redux/actions/draftActions";
+import Button from '../../components/common/Buttons/Button';
 
 const listHeaders = [
     {
@@ -62,6 +63,15 @@ const listHeaders = [
         alignment: 'flex-start',
     },
 ];
+
+const ButtonContainer = styled.View`
+    width: 105px;
+    height: 26px;
+    border: 1px solid #A0AEC0;
+    box-sizing: border-box;
+    border-radius: 6px;
+    padding-top: 2px;
+`;
 
 function CaseFiles(props) {
     //######## const
@@ -411,6 +421,13 @@ function CaseFiles(props) {
         });
     };
 
+    const openViewArchivedCases = () => {
+        console.log('View Archived Cases');
+        props.navigation.navigate('ArchiveCasesPage', {
+            archivedCaseItem: caseItem
+        });
+    }
+
     // prepare case files to display
     const caseFilesToDisplay = [...caseFiles];
 
@@ -428,6 +445,17 @@ function CaseFiles(props) {
                 inputText={searchValue}
                 routeName="Case Files"
                 listData={caseFilesToDisplay}
+                TopButton={() => (
+                    <ButtonContainer theme={theme}>
+                        <Button
+                            title="View Archive"
+                            color={theme.colors['--color-gray-500']}
+                            font="--text-sm-regular"
+                            buttonPress={openViewArchivedCases}
+                        />
+                    </ButtonContainer>
+                    
+                )}
 
                 listHeaders={listHeaders}
                 itemsSelected={selectedCaseIds}

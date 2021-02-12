@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import CaseFiles from "../../../page/CaseFile/CaseFiles";
 import AddAppointmentPage from "../../../page/CaseFile/AddAppointmentPage";
 import AddChargeSheetItem from "../../../page/CaseFile/AddChargeSheetItem";
+import ArchiveCasesPage from "../../../page/CaseFile/ArchiveCasesPage";
 import NotFound from "../../../page/NotFound";
 import CreateCasePage from "../../../page/CaseFile/CreateCasePage";
 import HeaderBackComponent from "../components/HeaderBackComponent";
@@ -82,6 +83,14 @@ export default (props) => {
             <Stack.Screen
                 name="AddChargeSheetItem"
                 component={AddChargeSheetItem}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen
+                name="ArchiveCasesPage"
+                component={ArchiveCasesPage}
                 options={{
                     headerShown: false,
                 }}

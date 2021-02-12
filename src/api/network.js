@@ -74,9 +74,8 @@ import {
     updateBufferEndpoint,
     userPassword,
     chargeSheetApplyPaymentEndpoint,
-    chargeSheetInvoiceApplyPaymentEndpoint
-
-
+    chargeSheetInvoiceApplyPaymentEndpoint,
+    archivedCaseFilesEndpoint
 } from '../const/suitesEndpoints';
 import {createDocumentLink} from '../const/documentGenerationEndpoints';
 
@@ -304,6 +303,11 @@ export const getCaseFileById = async id => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const getArchivedCaseFiles = async (query, max, page) => suitesAxiosInstance
+    .get(archivedCaseFilesEndpoint, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
+
 export const createCaseFile = async caseFileForCreation => suitesAxiosInstance
     .post(caseFilesEndpoint, caseFileForCreation)
     .then(handleResponse)
@@ -379,6 +383,11 @@ export const generateQuotationCall = async caseId => suitesAxiosInstance
 
 export const removeQuotationCall = async (caseId, quotationsId) => suitesAxiosInstance
     .delete(quotationEndpoint(caseId, quotationsId))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const removeArchivedCaseFiles = async (caseIds) => suitesAxiosInstance
+    .delete(archivedCaseFilesEndpoint, {caseIds})
     .then(handleResponse)
     .catch(handleError);
 

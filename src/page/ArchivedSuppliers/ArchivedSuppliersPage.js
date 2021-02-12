@@ -42,7 +42,7 @@ align-items:flex-end;
 const ArchiveButtonText = styled.Text`
 align-items: center; 
 color:${({ theme }) => theme.colors["--default-shade-white"]}; 
- font:${({ theme }) => theme.font["--text-sm-regular"]}
+ font:${({ theme }) => theme.font["--text-sm-regular"]};
 `
 
 
@@ -93,6 +93,7 @@ function ArchivedSuppliersPage(props) {
     const handleDataRefresh = () => {
         console.log("Data being refreshed");
     };
+    
     const onSearchInputChange = (input) => {
         setSearchValue(input)
     }

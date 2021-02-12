@@ -21,6 +21,7 @@ export default {
     },
     draft: [],
     archivedSuppliers: [],
+    archivedCases:[],
     casePage: {isEdit: false},
     procedurePage: {isEdit: false},
 };

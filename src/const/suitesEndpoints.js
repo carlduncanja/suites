@@ -55,6 +55,7 @@ export const assignEquipmentToLocation = (typeId, equipmentId) => `/equipment-ty
 
 // ##### CASE FILES
 export const caseFilesEndpoint = '/cases';
+export const archivedCaseFilesEndpoint = '/cases/archived';
 export const caseFileEndpoint = id => `/cases/${id}`;
 export const updateChargeSheetEndpoint = id => `/cases/${id}/chargesheets`;
 export const chargeSheetApprovalEndpoint = caseId => `/cases/${caseId}/chargesheets/approval`;

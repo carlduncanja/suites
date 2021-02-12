@@ -5,7 +5,8 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
 const HeaderContainer = styled.View`
-    margin-bottom : 24px;
+    /* margin-bottom : 24px; */
+    margin:0;
 `;
     
 const Title = styled.Text( ({theme}) =>({
