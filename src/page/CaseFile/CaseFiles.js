@@ -148,6 +148,7 @@ function CaseFiles(props) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
+            console.log('Next page');
             const {
                 currentPage,
                 currentListMin,
@@ -250,7 +251,8 @@ function CaseFiles(props) {
                     setPreviousDisabled(true);
                 }
                 setCaseFiles(data);
-                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
+                setTotalPages(pages);
+                // data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
                 console.log('failed to get case files', error);
