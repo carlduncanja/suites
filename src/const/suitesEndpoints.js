@@ -56,6 +56,8 @@ export const assignEquipmentToLocation = (typeId, equipmentId) => `/equipment-ty
 // ##### CASE FILES
 export const caseFilesEndpoint = '/cases';
 export const archivedCaseFilesEndpoint = '/cases/archived';
+export const removeCaseFilesEndpoint = '/cases/archive';
+export const restoreArchivedCasesEndpoint = '/cases/restore';
 export const caseFileEndpoint = id => `/cases/${id}`;
 export const updateChargeSheetEndpoint = id => `/cases/${id}/chargesheets`;
 export const chargeSheetApprovalEndpoint = caseId => `/cases/${caseId}/chargesheets/approval`;
@@ -84,6 +86,7 @@ export const variantSuppliersEndpoint = '/Suppliers/products';
 export const updateProductsEndpoint = id => productId => `/suppliers/${id}/products/${productId}`;
 export const archiveSupplierEndpoint = id => `/suppliers/${id}/archive`;
 export const getArchivedSuppliersEndPoint = '/Suppliers/archived';
+export const restoreArchivedSuppliersEndpoint = '/suppliers/restore';
 
 // ##### PURCHASE ORDERS
 export const purchaseOrdersEndpoint = '/purchase_orders';

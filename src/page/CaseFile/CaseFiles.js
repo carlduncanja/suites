@@ -20,7 +20,7 @@ import ArchiveIcon from '../../../assets/svg/archiveIcon';
 import DraftItem from '../../components/common/List/DraftItem';
 
 import {setCaseFiles} from '../../redux/actions/caseFilesActions';
-import {getCaseFiles} from '../../api/network';
+import {getCaseFiles, removeCaseFiles} from '../../api/network';
 
 import {
     useNextPaginator,
@@ -44,6 +44,7 @@ import LongPressWithFeedback from "../../components/common/LongPressWithFeedback
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import {removeDraft} from "../../redux/actions/draftActions";
 import Button from '../../components/common/Buttons/Button';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 const listHeaders = [
     {
@@ -368,12 +369,53 @@ function CaseFiles(props) {
         setFloatingAction(false);
     }
 
+    const handleArchiveCases = () => {
+        const caseIds = { ids: [...selectedCaseIds] };
+        modal.closeModals('ActionContainerModal');
+        console.log('Archive case/s: ', caseIds);
+
+            removeCaseFiles(caseIds)
+                .then(_ => {
+                    modal.openModal('ConfirmationModal', {
+                        content: (
+                            <ConfirmationComponent
+                                isError={false}//boolean to show whether an error icon or success icon
+                                isEditUpdate={true}
+                                onCancel={() => modal.closeAllModals() }
+                                onAction={() => {
+                                    modal.closeAllModals();
+                                    handleDataRefresh();
+                                    openViewArchivedCases();
+                                }}
+                                message="Do you want to archive these cases?"//general message you can send to be displayed
+                                action="Yes"
+                            />
+                        )
+                    })
+                })
+                .catch(_ => {
+                    modal.openModal('ConfirmationModal', {
+                        content: (
+                            <ConfirmationComponent
+                                isError={true}//boolean to show whether an error icon or success icon
+                                isEditUpdate={false}
+                                onCancel={() => modal.closeAllModals() }
+                                onAction={() => modal.closeAllModals() }
+                            />
+                        )
+                    })
+                })
+    };
+
     const getFabActions = () => {
+        const disabled = !!isEmpty(selectedCaseIds);
         const archiveCase = (
             <ActionItem
                 title="Archive Case"
-                icon={<ArchiveIcon/>}
-                onPress={emptyFn}
+                icon={<ArchiveIcon strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--company']}/>}
+                onPress={handleArchiveCases}
+                disabled={disabled}
+                touchable={!disabled}
             />
         );
 

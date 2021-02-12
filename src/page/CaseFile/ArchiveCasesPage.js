@@ -6,7 +6,7 @@ import { useModal } from 'react-native-modalfy';
 import { useTheme } from "emotion-theming";
 import styled, { css } from '@emotion/native';
 import { selectAll, checkboxItemPress, useNextPaginator, usePreviousPaginator, } from "../../helpers/caseFilesHelpers";
-import { getArchivedCaseFiles } from "../../api/network";
+import { getArchivedCaseFiles, restoreArchivedCaseFiles } from "../../api/network";
 import { withModal } from "react-native-modalfy";
 
 import NavPage from "../../components/common/Page/NavPage";
@@ -168,16 +168,6 @@ const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) 
         setSelectedArchivedCases(updatedCases);
     }
 
-    // const caseFileArchiveItem = (item) => {
-    //     const { caseNumber, patient = {}, chargeSheet = {}, staff = {}, caseProcedures = [],} = item;
-        
-
-    //     return (
-    //         <>
-    //         </>
-    //     )
-    // };
-
     const renderArchiveFn = (item) => {
         const { _id, } = item;
         return (
@@ -192,9 +182,49 @@ const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) 
         )
     }
 
+    const handleRestoreAllCases = () => {
+        handleRestoreCases([...archivedCases]);
+    }
+
+    const handleRestoreCases = (cases = selectedArchivedCases) => {
+        restoreArchivedCaseFiles({ids : [...cases]})
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={true}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => {
+                                modal.closeAllModals();
+                                fetchArchivedCases();
+                            }}
+                            message="Do you want to restore this case/s ?"//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    )
+                })
+            })
+            .catch(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => modal.closeAllModals() }
+                        />
+                    )
+                })
+            })
+            .finally(_ => {
+                console.log('Archived cases: ', archivedCases);
+            })
+    }
+
     const getFabActions = () => {
-        const restoreCase = <ActionItem title={"Restore Case"} icon={<RestoreIcon />} onPress={() => { }} />;
-        const restoreAllCases = <ActionItem title={"Restore all Cases"} icon={<RestoreIcon />} onPress={() => { }} />;
+        const restoreCase = <ActionItem title={"Restore Case"} icon={<RestoreIcon />} onPress={() => handleRestoreCases() } />;
+        const restoreAllCases = <ActionItem title={"Restore all Cases"} icon={<RestoreIcon />} onPress={() => handleRestoreAllCases() } />;
 
 
         return <ActionContainer
