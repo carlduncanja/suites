@@ -388,8 +388,8 @@ export const removeQuotationCall = async (caseId, quotationsId) => suitesAxiosIn
     .then(handleResponse)
     .catch(handleError);
 
-export const removeCaseFiles = async (caseIds) => suitesAxiosInstance
-    .delete(removeCaseFilesEndpoint, caseIds)
+export const removeCaseFiles = async (data) => suitesAxiosInstance
+    .delete(removeCaseFilesEndpoint, {data})
     .then(handleResponse)
     .catch(handleError);
 

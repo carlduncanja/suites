@@ -49,7 +49,7 @@ const ButtonContainer = styled.View`
 const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) => {
     const modal = useModal();
     const theme = useTheme();
-    const {archivedCaseItem} = route.params;
+    const {archivedCaseItem, refreshCases} = route.params;
     const recordsPerPage = 10;
 
     const [isFetchingData, setFetchingData] = useState(false);
@@ -218,6 +218,7 @@ const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) 
                 })
             })
             .finally(_ => {
+                refreshCases();
                 console.log('Archived cases: ', archivedCases);
             })
     }

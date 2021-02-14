@@ -374,37 +374,40 @@ function CaseFiles(props) {
         modal.closeModals('ActionContainerModal');
         console.log('Archive case/s: ', caseIds);
 
-            removeCaseFiles(caseIds)
-                .then(_ => {
-                    modal.openModal('ConfirmationModal', {
-                        content: (
-                            <ConfirmationComponent
-                                isError={false}//boolean to show whether an error icon or success icon
-                                isEditUpdate={true}
-                                onCancel={() => modal.closeAllModals() }
-                                onAction={() => {
-                                    modal.closeAllModals();
-                                    handleDataRefresh();
+        removeCaseFiles({ ids: [...selectedCaseIds] })
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={true}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => {
+                                modal.closeAllModals();
+                                handleDataRefresh();
+                                setTimeout(() => {
                                     openViewArchivedCases();
-                                }}
-                                message="Do you want to archive these cases?"//general message you can send to be displayed
-                                action="Yes"
-                            />
-                        )
-                    })
+                                }, 200)
+                                
+                            }}
+                            message="Do you want to archive these cases?"//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    )
                 })
-                .catch(_ => {
-                    modal.openModal('ConfirmationModal', {
-                        content: (
-                            <ConfirmationComponent
-                                isError={true}//boolean to show whether an error icon or success icon
-                                isEditUpdate={false}
-                                onCancel={() => modal.closeAllModals() }
-                                onAction={() => modal.closeAllModals() }
-                            />
-                        )
-                    })
+            })
+            .catch(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => modal.closeAllModals() }
+                        />
+                    )
                 })
+            })
     };
 
     const getFabActions = () => {
@@ -466,7 +469,8 @@ function CaseFiles(props) {
     const openViewArchivedCases = () => {
         console.log('View Archived Cases');
         props.navigation.navigate('ArchiveCasesPage', {
-            archivedCaseItem: caseItem
+            archivedCaseItem: caseItem,
+            refreshCases: handleDataRefresh,
         });
     }
 
