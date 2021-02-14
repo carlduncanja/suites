@@ -372,7 +372,9 @@ const Suppliers = props => {
     };
 
     const goToArchives = () => {
-        props.navigation.navigate('ArchivedSuppliers');
+        props.navigation.navigate('ArchivedSuppliers', {
+            refreshSuppliers: handleDataRefresh
+        });
     };
 
     const onOpenCreateSupplier = () => {

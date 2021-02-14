@@ -78,7 +78,8 @@ import {
     archivedCaseFilesEndpoint,
     removeCaseFilesEndpoint,
     restoreArchivedCasesEndpoint,
-    archiveSuppliersEndpoint
+    archiveSuppliersEndpoint,
+    restoreArchivedSuppliersEndpoint
 } from '../const/suitesEndpoints';
 import {createDocumentLink} from '../const/documentGenerationEndpoints';
 
@@ -633,7 +634,7 @@ export const archiveSuppliers = async data => suitesAxiosInstance
     .catch(handleError);
 
 export const restoreArchivedSuppliers = async (suppliersIds) => suitesAxiosInstance
-    .put(restoreArchivedSuppliers, {suppliersIds})
+    .put(restoreArchivedSuppliersEndpoint, suppliersIds)
     .then(handleResponse)
     .catch(handleError);
 
