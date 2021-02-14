@@ -77,7 +77,8 @@ import {
     chargeSheetInvoiceApplyPaymentEndpoint,
     archivedCaseFilesEndpoint,
     removeCaseFilesEndpoint,
-    restoreArchivedCasesEndpoint
+    restoreArchivedCasesEndpoint,
+    archiveSuppliersEndpoint
 } from '../const/suitesEndpoints';
 import {createDocumentLink} from '../const/documentGenerationEndpoints';
 
@@ -623,6 +624,11 @@ export const getArchivedSuppliers = async () => suitesAxiosInstance
 
 export const archiveSupplier = async supplierId => suitesAxiosInstance
     .delete(archiveSupplierEndpoint(supplierId))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const archiveSuppliers = async data => suitesAxiosInstance
+    .delete(archiveSuppliersEndpoint, {data})
     .then(handleResponse)
     .catch(handleError);
 

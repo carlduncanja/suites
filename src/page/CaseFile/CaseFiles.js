@@ -369,9 +369,30 @@ function CaseFiles(props) {
         setFloatingAction(false);
     }
 
+    const onArchivePress = () => {
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false}//boolean to show whether an error icon or success icon
+                        isEditUpdate={true}
+                        onCancel={() => modal.closeAllModals() }
+                        onAction={() => {
+                            modal.closeAllModals();
+                            handleArchiveCases();
+                        }}
+                        message="Do you want to archive these cases?"//general message you can send to be displayed
+                        action="Yes"
+                    />
+                )
+            })
+        }, 200);
+        
+    }
+
     const handleArchiveCases = () => {
         const caseIds = { ids: [...selectedCaseIds] };
-        modal.closeModals('ActionContainerModal');
         console.log('Archive case/s: ', caseIds);
 
         removeCaseFiles({ ids: [...selectedCaseIds] })
@@ -380,7 +401,7 @@ function CaseFiles(props) {
                     content: (
                         <ConfirmationComponent
                             isError={false}//boolean to show whether an error icon or success icon
-                            isEditUpdate={true}
+                            isEditUpdate={false}
                             onCancel={() => modal.closeAllModals() }
                             onAction={() => {
                                 modal.closeAllModals();
@@ -390,8 +411,6 @@ function CaseFiles(props) {
                                 }, 200)
                                 
                             }}
-                            message="Do you want to archive these cases?"//general message you can send to be displayed
-                            action="Yes"
                         />
                     )
                 })
@@ -416,7 +435,7 @@ function CaseFiles(props) {
             <ActionItem
                 title="Archive Case"
                 icon={<ArchiveIcon strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--company']}/>}
-                onPress={handleArchiveCases}
+                onPress={onArchivePress}
                 disabled={disabled}
                 touchable={!disabled}
             />

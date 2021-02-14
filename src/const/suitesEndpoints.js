@@ -85,6 +85,7 @@ export const supplierProductsEndpoint = id => `/suppliers/${id}/products`;
 export const variantSuppliersEndpoint = '/Suppliers/products';
 export const updateProductsEndpoint = id => productId => `/suppliers/${id}/products/${productId}`;
 export const archiveSupplierEndpoint = id => `/suppliers/${id}/archive`;
+export const archiveSuppliersEndpoint = '/suppliers/archive';
 export const getArchivedSuppliersEndPoint = '/Suppliers/archived';
 export const restoreArchivedSuppliersEndpoint = '/suppliers/restore';
 
