@@ -16,6 +16,7 @@ import ConfirmationComponent from "../../components/ConfirmationComponent";
 import ActionItem from "../../components/common/ActionItem";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import RestoreIcon from "../../../assets/svg/RestoreIcon";
+import { isEmpty } from "lodash";
 
 const listHeaders = [
     {
@@ -182,6 +183,28 @@ const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) 
         )
     }
 
+    const onRestorePress = (isMultiple = false) => {
+        modal.closeModals('ActionContainerModal');
+
+        setTimeout(() => {
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false}//boolean to show whether an error icon or success icon
+                        isEditUpdate={true}
+                        onCancel={() => modal.closeAllModals() }
+                        onAction={() => {
+                            modal.closeAllModals();
+                            isMultiple ? handleRestoreAllCases() : handleRestoreCases();
+                        }}
+                        message="Do you want to restore this case/s ?"//general message you can send to be displayed
+                        action="Yes"
+                    />
+                )
+            })
+        }, 200);
+    }
+
     const handleRestoreAllCases = () => {
         handleRestoreCases([...archivedCases]);
     }
@@ -193,13 +216,12 @@ const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) 
                     content: (
                         <ConfirmationComponent
                             isError={false}//boolean to show whether an error icon or success icon
-                            isEditUpdate={true}
+                            isEditUpdate={false}
                             onCancel={() => modal.closeAllModals() }
                             onAction={() => {
                                 modal.closeAllModals();
                                 fetchArchivedCases();
                             }}
-                            message="Do you want to restore this case/s ?"//general message you can send to be displayed
                             action="Yes"
                         />
                     )
@@ -224,8 +246,23 @@ const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) 
     }
 
     const getFabActions = () => {
-        const restoreCase = <ActionItem title={"Restore Case"} icon={<RestoreIcon />} onPress={() => handleRestoreCases() } />;
-        const restoreAllCases = <ActionItem title={"Restore all Cases"} icon={<RestoreIcon />} onPress={() => handleRestoreAllCases() } />;
+        const disabled = !!isEmpty(selectedArchivedCases);
+        const restoreCase = (
+            <ActionItem
+                title={"Restore Case"}
+                icon={<RestoreIcon />} 
+                onPress={() => onRestorePress() } 
+                disabled={disabled}
+                touchable={!disabled}
+            />
+        );
+        const restoreAllCases = (
+            <ActionItem
+                title={"Restore all Cases"}
+                icon={<RestoreIcon />}
+                onPress={() => onRestorePress(true) }
+            />
+        );
 
 
         return <ActionContainer
