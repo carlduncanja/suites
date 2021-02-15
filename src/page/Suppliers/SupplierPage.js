@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import SlideOverlay from '../../components/common/SlideOverlay/SlideOverlay';
 import SupplierDetailsTab from '../../components/OverlayTabs/SupplierDetailsTab';
 import SupplierProductsTab from '../../components/OverlayTabs/SupplierProductsTab';
+import SuppliersInvoicePage from '../../components/OverlayTabs/SuppliersInvoicePage';
 import SupplierPurshaseOrders from '../../components/OverlayTabs/SupplierPurchaseOrders';
 import BottomSheetContainer from '../../components/common/BottomSheetContainer';
 import {PageContext} from '../../contexts/PageContext';
@@ -13,7 +14,7 @@ import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 
-import {getSupplierById, createPurchaseOrder, getSupplierProducts} from '../../api/network';
+import {getSupplierById, createPurchaseOrder, getSupplierProducts, getPurchaseOrders} from '../../api/network';
 import {colors} from '../../styles';
 import {updateSupplierAction} from '../../redux/actions/suppliersActions';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
@@ -188,6 +189,17 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         });
     };
 
+    const getIsEditable = () => {
+        switch (currentTab) {
+            case 'Products':
+                return true;
+            case 'Invoices':
+                return true;
+            default:
+                return false;
+        }
+    };
+
     // const supplierDetails = { supplier, status: '' }
     const getTabContent = selectedTab => {
         console.log("Page State: ", pageState.isLoading);
@@ -218,7 +230,14 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                     onRefresh={() => fetchSupplier(_id)}
                     onUpdatePurchaseOrders={onUpdatePurchaseOrders}
                     isEditMode={isEditMode}
+                    supplierName={name}
+                    supplierId={_id}
                 />;
+            // case 'Invoices':
+            //     return <SuppliersInvoicePage
+            //         supplierName={name}
+            //         // data={[]}
+            //     />;
             default:
                 return <View/>;
         }
@@ -231,6 +250,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 <DetailsPage
                     headerChildren={[selectedSupplier.name]}
                     onBackPress={backTapped}
+                    isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}
