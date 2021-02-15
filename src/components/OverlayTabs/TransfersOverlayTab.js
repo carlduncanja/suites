@@ -71,6 +71,23 @@ const SectionText = styled.Text(({ theme }) => ({
     marginBottom: 24,
 }));
 
+const CompletedTransferContent = styled.View`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`;
+
+const ArrowContainer = styled.View`
+    padding-right: ${({theme}) => theme.space['--space-20']};
+`;
+
+const ContentText = styled.Text(({theme}) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-blue-600'],
+    flex: 1,
+}));
+
+
 const TRANSFER_STATE = {
     PENDING: 'pending',
     CANCELLED: 'cancelled',
@@ -327,15 +344,22 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
                 <ContentDataItem
                     flex={2}
                     content={(
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={[styles.highlighted, { paddingRight: 50, width: 150, }]}>
-                                <Text style={[styles.itemText, styles.linkText]} numberOfLines={1}>{from?.locationName}</Text>
-                            </View>
-                            <ArrowRightIcon />
-                            <View style={[styles.highlighted, { paddingLeft: 20, }]}>
-                                <Text style={[styles.itemText, styles.linkText]}>{to?.locationName}</Text>
-                            </View>
-                        </View>
+                        <CompletedTransferContent>
+                            <ContentText numberOfLines={1}>{from?.locationName || 'n/a'}</ContentText>
+                            <ArrowContainer theme={theme}>
+                                <ArrowRightIcon />
+                            </ArrowContainer>
+                            <ContentText numberOfLines={1}>{to?.locationName || 'n/a'}</ContentText>
+                        </CompletedTransferContent>
+                        // <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        //     <View style={[styles.highlighted, { paddingRight: 50, width: 150, }]}>
+                        //         <Text style={[styles.itemText, styles.linkText]} numberOfLines={1}>{from?.locationName}</Text>
+                        //     </View>
+                        //     <ArrowRightIcon />
+                        //     <View style={[styles.highlighted, { paddingLeft: 20, }]}>
+                        //         <Text style={[styles.itemText, styles.linkText]}>{to?.locationName}</Text>
+                        //     </View>
+                        // </View>
                     )}
                 />
 
@@ -382,6 +406,7 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
     };
 
     console.log('PENDING TRANSFER: ', pendingItems);
+    
     return (
         <>
             <ScrollView>
