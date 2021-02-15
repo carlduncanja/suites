@@ -349,14 +349,14 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
 
     const pendingTransferListItem = ({ from = {}, to = {}, product, amount, dateGenerated, inventoryLocation }) => {
 
-        return (from !== null && to !== null ?
+        return (from !== null && to !== null &&
             <>
                 <DataItem flex={1.5} fontStyle="--text-base-medium" color="--color-blue-600" text={to?.locationName} />
                 <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={from?.inventoryName} />
                 <DataItem fontStyle="--text-base-regular" color="--color-gray-800"
                     text={formatDate(dateGenerated, 'DD/MM/YYYY')} />
                 <DataItem align="center" fontStyle="--text-base-medium" color="--color-green-600" text={`+ ${amount}`} />
-            </> : <View />
+            </>
         );
     };
 
@@ -381,6 +381,7 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
         />;
     };
 
+    console.log('PENDING TRANSFER: ', pendingItems);
     return (
         <>
             <ScrollView>
