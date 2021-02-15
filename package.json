@@ -24,6 +24,7 @@
     "expo-app-loading": "^1.0.1",
     "expo-asset": "~8.2.1",
     "expo-constants": "~9.3.3",
+    "expo-document-picker": "~8.2.1",
     "expo-file-system": "~9.3.0",
     "expo-linking": "~2.0.1",
     "expo-notifications": "~0.8.2",

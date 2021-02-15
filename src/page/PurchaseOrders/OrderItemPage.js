@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
-
-
-import { getPurchaseOrderById } from "../../api/network";
+import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
+import { getPurchaseOrderById, updatePurchaseOrder, updatePurchaseOrderDetails, updateInvoiceDocumnet, updatePurchaseOrderStatus, generatePurchaseOrderInvoice } from '../../api/network';
 import OrderDetailsTab from '../../components/OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../../components/OverlayTabs/OrderItemTab';
 import SupplierDetailsTab from '../../components/OverlayTabs/SupplierDetailsTab';
-import { updatePurchaseOrder, updatePurchaseOrderDetails } from '../../api/network';
-import { PageContext } from "../../contexts/PageContext";
-import DetailsPage from "../../components/common/DetailsPage/DetailsPage";
-import TabsContainer from "../../components/common/Tabs/TabsContainerComponent";
+import { PageContext } from '../../contexts/PageContext';
+import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
+import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { useModal } from 'react-native-modalfy';
 
@@ -20,10 +17,10 @@ function OrderItemPage({ route, navigation }) {
     const modal = useModal();
 
 
-    const currentTabs = ["Details", "Items", "Suppliers"];
+    const currentTabs = ['Details', 'Items', 'Suppliers'];
     // console.log("Order:", order);
-    const { _id, supplier = {}, purchaseOrderNumber, deliveryDate = "", description = "" } = order;
-    const { name = "" } = supplier
+    const { _id, supplier = {}, purchaseOrderNumber, deliveryDate = '', description = '' } = order;
+    const { name = '' } = supplier
 
 
     // ##### States
@@ -65,7 +62,7 @@ function OrderItemPage({ route, navigation }) {
             const { amount = 0, productId = {} } = item
             return {
                 amount,
-                productId: productId?._id || ""
+                productId: productId?._id || ''
             }
         })
         modal.openModal(
@@ -85,26 +82,26 @@ function OrderItemPage({ route, navigation }) {
                         }, 100)
                     }}
                     // onAction = { () => confirmAction()}
-                    message={"Do you want to save your changes ?"}
+                    message={'Do you want to save your changes ?'}
                 />
                 ,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal')
                 }
             })
-    }
+    };
 
     const updatePurchaseOrderItems = (data, purchaseOrderId) => {
         updatePurchaseOrder(purchaseOrderId, data)
             .then(data => {
-                console.log("DB data: ", data)
+                console.log('DB data: ', data)
                 modal.openModal(
                     'ConfirmationModal',
                     {
                         content: <ConfirmationComponent
                             isError={false}
                             isEditUpdate={false}
-                            message={"Changes have been saved. \n You can now resend request to vendor."}
+                            message={'Changes have been saved. \n You can now resend request to vendor.'}
                             onAction={() => {
                                 modal.closeModals('ConfirmationModal')
                             }}
@@ -120,7 +117,7 @@ function OrderItemPage({ route, navigation }) {
                     })
             })
             .catch(error => {
-                console.log("Failed to update order", error);
+                console.log('Failed to update order', error);
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -149,16 +146,16 @@ function OrderItemPage({ route, navigation }) {
             .finally(_ => {
                 fetchOrder(_id);
             })
-    }
+    };
 
     const onItemChange = (data) => {
         setOrderItems(data)
         setIsUpdateDone(true)
-    }
+    };
 
     const BackTapped = () => {
-        navigation.goBack("Orders");
-    }
+        navigation.goBack('Orders');
+    };
 
     const onAddProductItems = (data) => {
 
@@ -175,10 +172,10 @@ function OrderItemPage({ route, navigation }) {
         setOrderItems(itemsList)
         setIsUpdateDone(true)
 
-    }
+    };
 
     const onRemoveProductItems = (data) => {
-        console.log("Current data list");
+        console.log('Current data list');
         modal.openModal('ConfirmationModal',
             {
                 content: <ConfirmationComponent
@@ -201,7 +198,7 @@ function OrderItemPage({ route, navigation }) {
                     modal.closeModals('ConfirmationModal')
                 }
             })
-    }
+    };
 
     // ##### Helper functions
 
@@ -244,12 +241,12 @@ function OrderItemPage({ route, navigation }) {
         setPageLoading(true);
         getPurchaseOrderById(id)
             .then(data => {
-                const { orders = [] } = data
+                const { orders = [] } = data || {};
                 setSelectedOrder(data)
                 setOrderItems(orders)
             })
             .catch(error => {
-                console.log("Failed to get order", error)
+                console.log('Failed to get order', error)
                 errorScreen();
 
                 // Add confirmation componenet
@@ -262,14 +259,14 @@ function OrderItemPage({ route, navigation }) {
 
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
-            case "Details":
+            case 'Details':
                 return <OrderDetailsTab
                     order={selectedOrder}
                     onUpdate={() => fetchOrder(_id)}
                 // fields={fields}
                 // onFieldChange={onFieldChange}
-                />
-            case "Items":
+                />;
+            case 'Items':
                 return <OrderItemTab
                     orders={orderItems}
                     isEditMode={isEditMode}
@@ -277,11 +274,11 @@ function OrderItemPage({ route, navigation }) {
                     supplierId={supplier?._id}
                     onAddProductItems={onAddProductItems}
                     onRemoveProductItems={onRemoveProductItems}
-                />
-            case "Suppliers":
+                />;
+            case 'Suppliers':
                 return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} onUpdated={fetchOrder} />;
             default:
-                return <View />
+                return <View />;
         }
     };
 
@@ -319,7 +316,7 @@ const styles = StyleSheet.create({
     },
     itemText: {
         fontSize: 16,
-        color: "#4A5568",
+        color: '#4A5568',
     },
 })
 

@@ -1,5 +1,5 @@
-import suitesAxiosInstance, {documentGenerationInstance} from './index';
-import {handleError, handleResponse} from './apiUtils';
+import suitesAxiosInstance, {documentGenerationInstance, documentManagementInstance} from './index';
+import {handleError, handleRawResponse, handleResponse} from './apiUtils';
 
 import {
     inventoryGroups,
@@ -79,9 +79,13 @@ import {
     removeCaseFilesEndpoint,
     restoreArchivedCasesEndpoint,
     archiveSuppliersEndpoint,
-    restoreArchivedSuppliersEndpoint
+    restoreArchivedSuppliersEndpoint,
+    updatePurchaseOrderDocument,
+    purchaseOrderInvoice
+
+
 } from '../const/suitesEndpoints';
-import {createDocumentLink} from '../const/documentGenerationEndpoints';
+import {createDocumentLink, documentById, documentData, documentUpload} from '../const/documentGenerationEndpoints';
 
 // ################# Mock Data
 import {appointments} from '../../data/Appointments';
@@ -644,8 +648,8 @@ export const removeSupplierProducts = async (supplierId, data) => suitesAxiosIns
     .catch(handleError);
 
 // ################# PurchaseOrders Endpoints
-export const getPurchaseOrders = async (query, max, page) => suitesAxiosInstance
-    .get(purchaseOrdersEndpoint, {params: {query, max, page}})
+export const getPurchaseOrders = async (query, max, page, supplierId) => suitesAxiosInstance
+    .get(purchaseOrdersEndpoint, {params: {query, max, page, supplierId}})
     .then(handleResponse)
     .catch(handleError);
 
@@ -691,6 +695,16 @@ export const archivePurchaseOrders = async data => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const updateInvoiceDocument = async (purchaseOrderId, data) => suitesAxiosInstance
+    .put(updatePurchaseOrderDocument(purchaseOrderId), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const generatePurchaseOrderInvoice = async (purchaseOrderId, status) => suitesAxiosInstance
+    .put(purchaseOrderInvoice(purchaseOrderId), status)
+    .then(handleResponse)
+    .catch(handleError);
+
 // ################# Patients Endpoints
 export const updatePatient = async (id, data) => suitesAxiosInstance
     .put(patientEndpoint(id), data)
@@ -699,6 +713,18 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
 
 // ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, {headers: {'Content-Type': 'multipart/form-data'}})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const getFiletData = async id => documentManagementInstance.get(documentData(id))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const getDocumentById = async id => documentManagementInstance.get(documentById(id), { responseType: 'blob' })
     .then(handleResponse)
     .catch(handleError);
 
