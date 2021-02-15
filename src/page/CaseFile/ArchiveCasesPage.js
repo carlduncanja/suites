@@ -247,10 +247,11 @@ const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) 
 
     const getFabActions = () => {
         const disabled = !!isEmpty(selectedArchivedCases);
+        const allDisabled = !!isEmpty(archivedCases);
         const restoreCase = (
             <ActionItem
                 title={"Restore Case"}
-                icon={<RestoreIcon />} 
+                icon={<RestoreIcon strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--accent-line']} />} 
                 onPress={() => onRestorePress() } 
                 disabled={disabled}
                 touchable={!disabled}
@@ -259,8 +260,10 @@ const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) 
         const restoreAllCases = (
             <ActionItem
                 title={"Restore all Cases"}
-                icon={<RestoreIcon />}
+                icon={<RestoreIcon strokeColor={allDisabled ? theme.colors['--color-gray-600'] : theme.colors['--accent-line']}/>}
                 onPress={() => onRestorePress(true) }
+                disabled={allDisabled}
+                touchable={!disabled}
             />
         );
 

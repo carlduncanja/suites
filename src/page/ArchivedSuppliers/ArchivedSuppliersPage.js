@@ -310,10 +310,12 @@ function ArchivedSuppliersPage(props) {
 
     const getFabActions = () => {
         const disabled = !!isEmpty(selectedSuppliers);
+        const allDisabled = !!isEmpty(archivedSuppliers);
+
         const restoreSupplier = (
             <ActionItem
                 title={"Restore Supplier"}
-                icon={<RestoreIcon />}
+                icon={<RestoreIcon strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--accent-line']} />}
                 onPress={() => { onRestoreSuppliers(); }} 
                 disabled={disabled}
                 touchable={!disabled}
@@ -322,7 +324,7 @@ function ArchivedSuppliersPage(props) {
         const restoreAllSuppliers= (
             <ActionItem
                 title={"Restore All Suppliers"}
-                icon={<RestoreIcon />}
+                icon={<RestoreIcon strokeColor={allDisabled ? theme.colors['--color-gray-600'] : theme.colors['--accent-line']} />}
                 onPress={() => { onRestoreSuppliers(true); }} 
             />
         );
