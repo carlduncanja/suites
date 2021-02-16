@@ -103,8 +103,9 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
     const [pendingCheckedItems, setPendingCheckedItems] = useState([]);
     const [isFloatingDisabled, setFloatingAction] = useState(false);
 
-    const pendingItems = transferItems.filter(item => item?.state === 'pending');
-    const completedItems = transferItems.filter(item => item?.state === 'completed');
+    // Filter transfer items based on status and from attributes.
+    const pendingItems = transferItems.filter(item => item?.state === 'pending' && item.from);
+    const completedItems = transferItems.filter(item => item?.state === 'completed' && item.from);
 
     const getInventoryIds = () => {
         const inventoryObj = pendingItems.filter(item => item._id === pendingCheckedItems[0])[0] || {};
@@ -339,7 +340,7 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
     };
 
     const completedTransferListItem = ({ from = {}, to = {}, product, amount, dateCompleted = '', updatedAt = '' }) => {
-        return (from !== null && to !== null ?
+        return (from !== null || to !== null ?
             <>
                 <ContentDataItem
                     flex={2}
@@ -405,7 +406,7 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
         />;
     };
 
-    console.log('PENDING TRANSFER: ', pendingItems);
+    console.log('COMPLETED TRANSFER: ', completedItems);
     
     return (
         <>
