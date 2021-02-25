@@ -92,6 +92,8 @@ export const createOrderInvoice = id => `/purchase_orders/${id}/invoice`;
 export const updatePurchaseOrderStatusEndpoint = id => `/purchase_orders/${id}/status`;
 export const updatePurchaseOrderEndpoint = id => `/purchase_orders/${id}/orders`;
 export const updatePurchaseOrderDetailsEndpoint = id => `/purchase_orders/${id}`;
+export const updatePurchaseOrderDocument = id => `/purchase_orders/${id}/document`;
+export const purchaseOrderInvoice = id => `/purchase_orders/${id}/generate-invoice`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/items';

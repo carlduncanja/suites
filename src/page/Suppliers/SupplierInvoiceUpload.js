@@ -237,7 +237,7 @@ const SupplierInvoiceUpload = ({ route }) => {
 
             })
             .catch(err => {
-                console.log('Upload File Error: ', err, err.body);
+                console.log('Upload File Error: ', err);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent

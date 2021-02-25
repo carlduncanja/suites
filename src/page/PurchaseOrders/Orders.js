@@ -472,7 +472,8 @@ const Orders = (props) => {
             })
             .catch((error) => {
 
-                const errorMessage = error?.response?.data?.msg || error?.response?.data?.message
+                const errorMessage = error?.response?.data?.msg || error?.response?.data?.message;
+                // change to modal
                 Alert.alert(
                     "Failed To Invoice PO.",
                     errorMessage,
