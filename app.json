@@ -24,7 +24,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.smsja.suites",
-      "buildNumber": "1.0.7",
+      "buildNumber": "1.0.8",
       "config": {
         "usesNonExemptEncryption": false
       }
