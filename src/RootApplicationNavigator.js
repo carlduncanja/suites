@@ -26,16 +26,12 @@ function RootApplicationNavigator({auth}) {
 
     }, [auth])
 
-    useEffect(() => {
-        ExpoSplashScreen.hideAsync().then(r => {
-            console.log('Splash Screen Hidden')
-        })
-    }, [])
-
 
     if (isLoading) {
         // We haven't finished checking for the token yet
         return <SplashScreen/>;
+    } else  {
+        ExpoSplashScreen.hideAsync().then(r => {});
     }
 
 
