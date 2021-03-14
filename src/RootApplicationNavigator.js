@@ -4,6 +4,7 @@ import {NavigationContainer} from "@react-navigation/native";
 
 import AuthStack from "../src/components/navigation/AuthStack/AuthStack";
 import SplashScreen from "../src/page/SplashScreen";
+import * as ExpoSplashScreen from 'expo-splash-screen';
 import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import LoginPage from "./page/Onboarding/LoginPage";
@@ -25,10 +26,15 @@ function RootApplicationNavigator({auth}) {
 
     }, [auth])
 
+    useEffect(() => {
+        ExpoSplashScreen.hideAsync().then(r => {
+            console.log('Splash Screen Hidden')
+        })
+    }, [])
+
 
     if (isLoading) {
         // We haven't finished checking for the token yet
-        // return <div/>;
         return <SplashScreen/>;
     }
 
