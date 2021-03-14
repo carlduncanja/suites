@@ -1845,6 +1845,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     chargeSheet={chargeSheet}
                     procedures={caseProcedures}
                     chargeSheetApproval={chargeSheetApproval}
+                    onWithdrawChanges={chargeSheetWithdrawChanges}
                     selectedTab={selectedTab}
                     quotations={quotations}
                     invoices={invoices}

@@ -84,7 +84,8 @@ const ChargeSheet = React.forwardRef(({
                                           handleEditDone,
                                           handleQuotes,
                                           handleInvoices,
-                                          chargeSheetApproval
+                                          chargeSheetApproval,
+                                          onWithdrawChanges
 
 
                                           // onSelectEquipments,
@@ -379,7 +380,7 @@ const ChargeSheet = React.forwardRef(({
                     }}
                     onAction={() => {
                         modal.closeAllModals();
-                        chargeSheetWithdrawChanges({approve: false});
+                        onWithdrawChanges();
                     }}
                     message="Are you sure you want to withdraw changes submitted?"//general message you can send to be displayed
                     action="Yes"
