@@ -20,7 +20,7 @@ import ArchiveIcon from '../../../assets/svg/archiveIcon';
 import DraftItem from '../../components/common/List/DraftItem';
 
 import {setCaseFiles} from '../../redux/actions/caseFilesActions';
-import {getCaseFiles} from '../../api/network';
+import {getCaseFiles, removeCaseFiles} from '../../api/network';
 
 import {
     useNextPaginator,
@@ -43,6 +43,8 @@ import {PageSettingsContext} from '../../contexts/PageSettingsContext';
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import {removeDraft} from "../../redux/actions/draftActions";
+import Button from '../../components/common/Buttons/Button';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 const listHeaders = [
     {
@@ -62,6 +64,15 @@ const listHeaders = [
         alignment: 'flex-start',
     },
 ];
+
+const ButtonContainer = styled.View`
+    width: 105px;
+    height: 26px;
+    border: 1px solid #A0AEC0;
+    box-sizing: border-box;
+    border-radius: 6px;
+    padding-top: 2px;
+`;
 
 function CaseFiles(props) {
     //######## const
@@ -148,6 +159,7 @@ function CaseFiles(props) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
+            console.log('Next page');
             const {
                 currentPage,
                 currentListMin,
@@ -250,7 +262,8 @@ function CaseFiles(props) {
                     setPreviousDisabled(true);
                 }
                 setCaseFiles(data);
-                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
+                setTotalPages(pages);
+                // data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
                 console.log('failed to get case files', error);
@@ -356,12 +369,75 @@ function CaseFiles(props) {
         setFloatingAction(false);
     }
 
+    const onArchivePress = () => {
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false}//boolean to show whether an error icon or success icon
+                        isEditUpdate={true}
+                        onCancel={() => modal.closeAllModals() }
+                        onAction={() => {
+                            modal.closeAllModals();
+                            handleArchiveCases();
+                        }}
+                        message="Do you want to archive these cases?"//general message you can send to be displayed
+                        action="Yes"
+                    />
+                )
+            })
+        }, 200);
+        
+    }
+
+    const handleArchiveCases = () => {
+        const caseIds = { ids: [...selectedCaseIds] };
+        console.log('Archive case/s: ', caseIds);
+
+        removeCaseFiles({ ids: [...selectedCaseIds] })
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => {
+                                modal.closeAllModals();
+                                handleDataRefresh();
+                                setTimeout(() => {
+                                    openViewArchivedCases();
+                                }, 200)
+                                
+                            }}
+                        />
+                    )
+                })
+            })
+            .catch(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => modal.closeAllModals() }
+                        />
+                    )
+                })
+            })
+    };
+
     const getFabActions = () => {
+        const disabled = !!isEmpty(selectedCaseIds);
         const archiveCase = (
             <ActionItem
                 title="Archive Case"
-                icon={<ArchiveIcon/>}
-                onPress={emptyFn}
+                icon={<ArchiveIcon strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--company']}/>}
+                onPress={onArchivePress}
+                disabled={disabled}
+                touchable={!disabled}
             />
         );
 
@@ -409,6 +485,14 @@ function CaseFiles(props) {
         });
     };
 
+    const openViewArchivedCases = () => {
+        console.log('View Archived Cases');
+        props.navigation.navigate('ArchiveCasesPage', {
+            archivedCaseItem: caseItem,
+            refreshCases: handleDataRefresh,
+        });
+    }
+
     // prepare case files to display
     const caseFilesToDisplay = [...caseFiles];
 
@@ -426,6 +510,17 @@ function CaseFiles(props) {
                 inputText={searchValue}
                 routeName="Case Files"
                 listData={caseFilesToDisplay}
+                TopButton={() => (
+                    <ButtonContainer theme={theme}>
+                        <Button
+                            title="View Archive"
+                            color={theme.colors['--color-gray-500']}
+                            font="--text-sm-regular"
+                            buttonPress={openViewArchivedCases}
+                        />
+                    </ButtonContainer>
+                    
+                )}
 
                 listHeaders={listHeaders}
                 itemsSelected={selectedCaseIds}

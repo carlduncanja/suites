@@ -75,6 +75,11 @@ import {
     userPassword,
     chargeSheetApplyPaymentEndpoint,
     chargeSheetInvoiceApplyPaymentEndpoint,
+    archivedCaseFilesEndpoint,
+    removeCaseFilesEndpoint,
+    restoreArchivedCasesEndpoint,
+    archiveSuppliersEndpoint,
+    restoreArchivedSuppliersEndpoint,
     updatePurchaseOrderDocument,
     purchaseOrderInvoice
 
@@ -306,6 +311,11 @@ export const getCaseFileById = async id => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const getArchivedCaseFiles = async (query, max, page) => suitesAxiosInstance
+    .get(archivedCaseFilesEndpoint, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
+
 export const createCaseFile = async caseFileForCreation => suitesAxiosInstance
     .post(caseFilesEndpoint, caseFileForCreation)
     .then(handleResponse)
@@ -381,6 +391,16 @@ export const generateQuotationCall = async caseId => suitesAxiosInstance
 
 export const removeQuotationCall = async (caseId, quotationsId) => suitesAxiosInstance
     .delete(quotationEndpoint(caseId, quotationsId))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const removeCaseFiles = async (data) => suitesAxiosInstance
+    .delete(removeCaseFilesEndpoint, {data})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const restoreArchivedCaseFiles = async (caseIds) => suitesAxiosInstance
+    .put(restoreArchivedCasesEndpoint, caseIds)
     .then(handleResponse)
     .catch(handleError);
 
@@ -609,6 +629,16 @@ export const getArchivedSuppliers = async () => suitesAxiosInstance
 
 export const archiveSupplier = async supplierId => suitesAxiosInstance
     .delete(archiveSupplierEndpoint(supplierId))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const archiveSuppliers = async data => suitesAxiosInstance
+    .delete(archiveSuppliersEndpoint, {data})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const restoreArchivedSuppliers = async (suppliersIds) => suitesAxiosInstance
+    .put(restoreArchivedSuppliersEndpoint, suppliersIds)
     .then(handleResponse)
     .catch(handleError);
 

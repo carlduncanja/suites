@@ -71,6 +71,23 @@ const SectionText = styled.Text(({ theme }) => ({
     marginBottom: 24,
 }));
 
+const CompletedTransferContent = styled.View`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`;
+
+const ArrowContainer = styled.View`
+    padding-right: ${({theme}) => theme.space['--space-20']};
+`;
+
+const ContentText = styled.Text(({theme}) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-blue-600'],
+    flex: 1,
+}));
+
+
 const TRANSFER_STATE = {
     PENDING: 'pending',
     CANCELLED: 'cancelled',
@@ -86,8 +103,9 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
     const [pendingCheckedItems, setPendingCheckedItems] = useState([]);
     const [isFloatingDisabled, setFloatingAction] = useState(false);
 
-    const pendingItems = transferItems.filter(item => item?.state === 'pending');
-    const completedItems = transferItems.filter(item => item?.state === 'completed');
+    // Filter transfer items based on status and from attributes.
+    const pendingItems = transferItems.filter(item => item?.state === 'pending' && item.from);
+    const completedItems = transferItems.filter(item => item?.state === 'completed' && item.from);
 
     const getInventoryIds = () => {
         const inventoryObj = pendingItems.filter(item => item._id === pendingCheckedItems[0])[0] || {};
@@ -322,20 +340,27 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
     };
 
     const completedTransferListItem = ({ from = {}, to = {}, product, amount, dateCompleted = '', updatedAt = '' }) => {
-        return (from !== null && to !== null ?
+        return (from !== null || to !== null ?
             <>
                 <ContentDataItem
                     flex={2}
                     content={(
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={[styles.highlighted, { paddingRight: 50, width: 150, }]}>
-                                <Text style={[styles.itemText, styles.linkText]} numberOfLines={1}>{from?.locationName}</Text>
-                            </View>
-                            <ArrowRightIcon />
-                            <View style={[styles.highlighted, { paddingLeft: 20, }]}>
-                                <Text style={[styles.itemText, styles.linkText]}>{to?.locationName}</Text>
-                            </View>
-                        </View>
+                        <CompletedTransferContent>
+                            <ContentText numberOfLines={1}>{from?.locationName || 'n/a'}</ContentText>
+                            <ArrowContainer theme={theme}>
+                                <ArrowRightIcon />
+                            </ArrowContainer>
+                            <ContentText numberOfLines={1}>{to?.locationName || 'n/a'}</ContentText>
+                        </CompletedTransferContent>
+                        // <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        //     <View style={[styles.highlighted, { paddingRight: 50, width: 150, }]}>
+                        //         <Text style={[styles.itemText, styles.linkText]} numberOfLines={1}>{from?.locationName}</Text>
+                        //     </View>
+                        //     <ArrowRightIcon />
+                        //     <View style={[styles.highlighted, { paddingLeft: 20, }]}>
+                        //         <Text style={[styles.itemText, styles.linkText]}>{to?.locationName}</Text>
+                        //     </View>
+                        // </View>
                     )}
                 />
 
@@ -349,14 +374,14 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
 
     const pendingTransferListItem = ({ from = {}, to = {}, product, amount, dateGenerated, inventoryLocation }) => {
 
-        return (from !== null && to !== null ?
+        return (from !== null && to !== null &&
             <>
                 <DataItem flex={1.5} fontStyle="--text-base-medium" color="--color-blue-600" text={to?.locationName} />
                 <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={from?.inventoryName} />
                 <DataItem fontStyle="--text-base-regular" color="--color-gray-800"
                     text={formatDate(dateGenerated, 'DD/MM/YYYY')} />
                 <DataItem align="center" fontStyle="--text-base-medium" color="--color-green-600" text={`+ ${amount}`} />
-            </> : <View />
+            </>
         );
     };
 
@@ -381,6 +406,8 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
         />;
     };
 
+    console.log('COMPLETED TRANSFER: ', completedItems);
+    
     return (
         <>
             <ScrollView>

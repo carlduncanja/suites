@@ -18,6 +18,7 @@ import drafts from "./draftReducer";
 import casePage from './casePageReducer';
 import procedurePage from './procedurePageReducer';
 import archivedSuppliers from './archivedSupplierReducer';
+import archivedCases from './archiveCaseReducer';
 
 // import app from "./appReducer"
 // import casesFiles from "./caseFilesReducer"
@@ -45,6 +46,7 @@ const appReducer = combineReducers({
   drafts,
   archivedSuppliers,
   procedurePage,
+  archivedCases
 });
 
 /**
