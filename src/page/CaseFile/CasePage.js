@@ -155,7 +155,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     // ############### Event Handlers
     const handleTabPressChange = tab => {
-        if (pageState.isEdit === false) {
+        if (pageState.isEditMode === false) {
             setSelectedTab(tab);
         }
     };
@@ -1845,6 +1845,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     chargeSheet={chargeSheet}
                     procedures={caseProcedures}
                     chargeSheetApproval={chargeSheetApproval}
+                    onWithdrawChanges={chargeSheetWithdrawChanges}
                     selectedTab={selectedTab}
                     quotations={quotations}
                     invoices={invoices}

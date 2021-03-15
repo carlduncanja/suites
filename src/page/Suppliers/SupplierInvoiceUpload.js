@@ -155,7 +155,7 @@ const SupplierInvoiceUpload = ({ route }) => {
         };
 
         fetchFn(purchaseOrderId, docObj)
-            .then(res =>{ 
+            .then(res =>{
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
@@ -193,10 +193,10 @@ const SupplierInvoiceUpload = ({ route }) => {
     const updatePurchaseOrderWithDocument = (purchaseOrderId, docId) => {
 
         handleDocument(
-            updateInvoiceDocument, 
-            'Document added successfully', 
+            updateInvoiceDocument,
+            'Document added successfully',
             "Document could not be added to order.",
-            docId, 
+            docId,
             purchaseOrderId
         );
     };
@@ -205,10 +205,10 @@ const SupplierInvoiceUpload = ({ route }) => {
         setIsImageUpdating(true);
         setTimeout(() => {
             handleDocument(
-                updateInvoiceDocument, 
+                updateInvoiceDocument,
                 "Document has been updated",
-                "Document could not be updated", 
-                docId, 
+                "Document could not be updated",
+                docId,
                 purchaseOrderId,
                 () => { fetchPurchaseOrder(); setInvoiceImage(); setIsImageUpdating(false); }
             );
@@ -217,7 +217,7 @@ const SupplierInvoiceUpload = ({ route }) => {
 
     const uploadImage = async image => {
         console.log('URI: ', image);
-    
+
         const formData = new FormData();
 
         formData.append('file', image);
@@ -234,7 +234,7 @@ const SupplierInvoiceUpload = ({ route }) => {
                 } else {
                     updatePurchaseOrderWithDocument(invoiceItem?._id, res?.id)
                 }
-                
+
             })
             .catch(err => {
                 console.log('Upload File Error: ', err);
@@ -335,7 +335,7 @@ const SupplierInvoiceUpload = ({ route }) => {
             onImageUpload();
         }
         setInvoiceImage();
-       
+
     };
 
     return (

@@ -14,7 +14,7 @@ npm install
 # expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD --non-interactive
 
 #### 3. Publish to Expo ####
-# Publish `production` release 
+# Publish `production` release
 # expo publish --release-channel production --non-interactive
 
 #### 4. Building Android Standalone App ####
@@ -26,7 +26,7 @@ npm install
 
 #### 5. Submit and publish standalone Android app to the Google Play Store ####
 # Use fastlane to upload your current standalone android build
-# Customize this to fit your needs. Take note of env variables. 
+# Customize this to fit your needs. Take note of env variables.
 # Check out https://docs.fastlane.tools for more info.
 # fastlane supply --track 'production' --json_key '<path/to/json_key.json>' --package_name "<your-package-name>" --apk "app.apk" --skip_upload_metadata --skip_upload_images --skip_upload_screenshots
 

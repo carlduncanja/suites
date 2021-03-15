@@ -11,7 +11,7 @@ export async function handleResponse(response) {
 
 export function handleError(error) {
     // eslint-disable-next-line no-console
-    console.log('API call failed. ', error.response.status);
+    console.log('API call failed. ', error);
 
     try {
         const STATUS_CODE = error?.response?.status;
