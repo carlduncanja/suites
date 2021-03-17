@@ -39,7 +39,10 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
     // const storageLocationObj = storageLocations.filter( location => location?._id === selectedLocation)[0] || {} ;
     // const { locationName = '', levels = {}, stock, location = '' } = storageLocationObj;
     const { low = 0} = levels;
-    const available = parseInt(stock - low) < 0 ? 0 : parseInt(stock - low);
+    const reserved = 5;
+    // const available = parseInt(stock - low) < 0 ? 0 : parseInt(stock - low);
+    const available = parseInt(stock) - reserved < 0 ? 0 : parseInt(stock) - reserved;
+    const canRequest = parseInt(stock) < 5;
 
     // console.log('Variant:', variant);
 
@@ -168,8 +171,8 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 priority: fields.priority
             };
             console.log('CREAT TRANSFER:', updatedFields);
-
-            createTransferCall(updatedFields);
+            handleTransfer(updatedFields);
+            // createTransferCall(updatedFields);
             // onCreated(fields)
             // createInventoryCall(referenceId,fields)
         }
@@ -222,6 +225,22 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
         return isValid;
     };
 
+    const handleTransfer = (transferToCreate) => {
+        modal.openModal('ConfirmationModal', {
+            content: <ConfirmationComponent
+                isEditUpdate={true}
+                isError={false}
+                onCancel={() => modal.closeAllModals()}
+                onAction={() => { 
+                    modal.closeAllModals(); 
+                    createTransferCall(transferToCreate);
+                }}
+                message="Do you want to save your changes ?"
+            />,
+            onClose: () => { modal.closeModals('ConfirmationModal'); }
+        })
+    }
+
     const createTransferCall = transferToCreate => {
         // console.log('Group id: ',inventoryGroup?._id);
         // console.log('Variant id: ',variant?._id);
@@ -238,6 +257,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                             isError={false}
                             onCancel={() => modal.closeAllModals()}
                             onAction={() => { modal.closeAllModals(); onCreated(); }}
+                            message="You will need to manually move these items from the system once the have been removed from records."
                         />,
                         onClose: () => { modal.closeModals('ConfirmationModal'); }
                     }
@@ -366,7 +386,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
             <Row>
                 <FieldContainer>
                     {
-                        available === 0 ?
+                        canRequest ?
                             <AutoFillField
                                 label="Requested"
                                 value={'0'}
@@ -401,7 +421,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 <FieldContainer>
                     <AutoFillField
                         label="Reserved"
-                        value={low || 0}
+                        value={reserved}
                     />
                 </FieldContainer>
                 <FieldContainer>

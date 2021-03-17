@@ -25,7 +25,7 @@ import DataItem from '../components/common/List/DataItem';
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError } from '../helpers/caseFilesHelpers';
 
 import { setSuppliers } from '../redux/actions/suppliersActions';
-import { getSuppliers, archiveSupplier } from '../api/network';
+import { getSuppliers, archiveSupplier, archiveSuppliers } from '../api/network';
 
 import suppliersTest from '../../data/Suppliers';
 import SuppliersBottomSheet from './Suppliers/SupplierPage';
@@ -310,33 +310,43 @@ const Suppliers = props => {
 
     const archiveSupplierClick = () => {
         //fetchSuppliersData(currentPagePosition);
-        const selected = [...selectedSuppliers];
+        const selected = {ids: [...selectedSuppliers]};
         modal.closeAllModals('ConfirmationModal');
-        selected.map((item, index) => {
-            archiveSupplier(item)
-                .then(() => {
-                    setSelectedSuppliers([]);
-                    fetchSuppliersData(currentPagePosition);
+
+        console.log('Archive suppliers: ', selected);
+
+        archiveSuppliers(selected)
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => {
+                                modal.closeAllModals();
+                                handleDataRefresh();
+                                setTimeout(() => {
+                                    goToArchives();
+                                }, 200)
+                                
+                            }}
+                        />
+                    )
                 })
-                .catch(error => {
-                    console.log('failed to archive Suppliers', error);
-                    modal.openModal('ConfirmationModal', {
-                        content: (
-                            <ConfirmationComponent
-                                isError={true}//boolean to show whether an error icon or success icon
-                                isEditUpdate={false}//use this specification to either get the confirm an edit or update
-                                onCancel={cancelClicked}
-                                onAction={archiveSupplierClick}
-                                message="Are you sure you want to Archive the supplier(s)"//general message you can send to be displayed
-                                action="Archive"
-                            />
-                        )
-                    });
+            })
+            .catch(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => modal.closeAllModals() }
+                        />
+                    )
                 })
-                .finally(_ => {
-                    setFetchingData(false);
-                });
-        });
+            })
     };
 
     const getFabActions = () => {
@@ -362,7 +372,9 @@ const Suppliers = props => {
     };
 
     const goToArchives = () => {
-        props.navigation.navigate('ArchivedSuppliers');
+        props.navigation.navigate('ArchivedSuppliers', {
+            refreshSuppliers: handleDataRefresh
+        });
     };
 
     const onOpenCreateSupplier = () => {

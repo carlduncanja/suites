@@ -10,13 +10,14 @@ import DataItem from '../../components/common/List/DataItem';
 import ActionItem from "../../components/common/ActionItem";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import { SetArchivedSuppliers } from "../../redux/actions/archivedSupplierActions"
-import { getArchivedSuppliers } from "../../api/network";
+import { archiveSuppliers, getArchivedSuppliers, restoreArchivedSuppliers } from "../../api/network";
 import { formatDate, transformToSentence } from "../../utils/formatter";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from "../../helpers/caseFilesHelpers";
 import Button from '../../components/common/OverlayButtons/OverlayButton';
 import { connect } from 'react-redux';
 import ConfirmationComponent from "../../components/ConfirmationComponent";
+import { isEmpty } from 'lodash';
 
 
 
@@ -42,12 +43,13 @@ align-items:flex-end;
 const ArchiveButtonText = styled.Text`
 align-items: center; 
 color:${({ theme }) => theme.colors["--default-shade-white"]}; 
- font:${({ theme }) => theme.font["--text-sm-regular"]}
+ font:${({ theme }) => theme.font["--text-sm-regular"]};
 `
 
 
 function ArchivedSuppliersPage(props) {
-    const { archivedSuppliers = [], SetArchivedSuppliers } = props;
+    const { archivedSuppliers = [], SetArchivedSuppliers, route } = props;
+    const {refreshSuppliers} = route.params;
     const theme = useTheme();
     const modal = useModal();
 
@@ -92,7 +94,9 @@ function ArchivedSuppliersPage(props) {
 
     const handleDataRefresh = () => {
         console.log("Data being refreshed");
+        fetchArchivedSuppliersData(currentPagePosition);
     };
+
     const onSearchInputChange = (input) => {
         setSearchValue(input)
     }
@@ -148,7 +152,6 @@ function ArchivedSuppliersPage(props) {
         getArchivedSuppliers()
             .then(suppliersInfo => {
                 const { data = [] } = suppliersInfo
-                console.log("Archived Suppliers received is:", data);
                 setTotalPages(1);
 
                 // if (pages === 1) {
@@ -242,16 +245,95 @@ function ArchivedSuppliersPage(props) {
         props.navigation.navigate("Suppliers");
     }
 
-    const getFabActions = () => {
+    const onRestoreSuppliers = (isMultiple = false) => {
+        modal.closeModals('ActionContainerModal');
 
-        const restoreCase = <ActionItem title={"Restore Supplier"} icon={<RestoreIcon />} onPress={() => { }} />;
-        const restoreAllCase = <ActionItem title={"Restore All Suppliers"} icon={<RestoreIcon />} onPress={() => { }} />;
+        setTimeout(() => {
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false}//boolean to show whether an error icon or success icon
+                        isEditUpdate={true}
+                        onCancel={() => modal.closeAllModals() }
+                        onAction={() => {
+                            modal.closeAllModals();
+                            isMultiple ? handleRestoreAllSuppliers() : handleRestoreSuppliers();
+                        }}
+                        message="Do you want to restore this supplier/s ?"//general message you can send to be displayed
+                        action="Yes"
+                    />
+                )
+            })
+        }, 200);
+    }
+
+    const handleRestoreAllSuppliers = () => {
+        console.log('Archived suppliers: ', archiveSuppliers);
+        handleRestoreSuppliers([...archivedSuppliers]);
+    };
+
+    const handleRestoreSuppliers = (suppliers = selectedSuppliers) => {
+        console.log('Selected suppliers:', selectedSuppliers);
+        restoreArchivedSuppliers({ids: [...suppliers]})
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => {
+                                modal.closeAllModals();
+                                handleDataRefresh();
+                            }}
+                            action="Yes"
+                        />
+                    )
+                })
+            })
+            .catch(_ => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => modal.closeAllModals() }
+                        />
+                    )
+                })
+            })
+            .finally(_ => {
+                refreshSuppliers();
+            })
+    };
+
+    const getFabActions = () => {
+        const disabled = !!isEmpty(selectedSuppliers);
+        const allDisabled = !!isEmpty(archivedSuppliers);
+
+        const restoreSupplier = (
+            <ActionItem
+                title={"Restore Supplier"}
+                icon={<RestoreIcon strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--accent-line']} />}
+                onPress={() => { onRestoreSuppliers(); }} 
+                disabled={disabled}
+                touchable={!disabled}
+            />
+        );
+        const restoreAllSuppliers= (
+            <ActionItem
+                title={"Restore All Suppliers"}
+                icon={<RestoreIcon strokeColor={allDisabled ? theme.colors['--color-gray-600'] : theme.colors['--accent-line']} />}
+                onPress={() => { onRestoreSuppliers(true); }} 
+            />
+        );
 
 
         return <ActionContainer
             floatingActions={[
-                restoreCase,
-                restoreAllCase
+                restoreSupplier,
+                restoreAllSuppliers
             ]}
             title={"SUPPLIER ACTIONS"}
         />

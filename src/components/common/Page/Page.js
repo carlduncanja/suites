@@ -43,7 +43,9 @@ const PageSearchWrapper = styled.View`
 const PageHeader = styled.View`
     flex-direction:row;
     width:100%;
+    align-items: center;
     justify-content: space-between;
+    margin-bottom: 24px;
 `
 
 /** 

@@ -20,7 +20,7 @@ const RecordWrapper = styled.View`
 `;
 const RecordContainer = styled.View`
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
 `;
 
 const TitleText = styled.Text(({ theme, titleColor, titleStyle }) => ({
