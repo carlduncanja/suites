@@ -15,6 +15,7 @@ import NotificationRegistry from './src/components/notifications/NotficationRegi
 
 import {root} from './src/styles';
 import Statusbar from './src/components/navigation/Statusbar';
+import {LogBox} from "react-native";
 
 const store = configureStore({});
 
@@ -28,46 +29,53 @@ const App = () => {
     }), [state, dispatch]);
 
     // TODO REMOVE IN PROD [JUST FOR DEMO PURPOSES]
-    console.disableYellowBox = true;
+    // LogBox.ignoreAllLogs(value)
 
     const _cacheResourcesAsync = async () => {
         const images = [
             require('./assets/TheSuitesLogo.png'),
-            require('./assets/TheSuitesLogo2.png')
+            // require('./assets/TheSuitesLogo2.png')
         ];
 
         const cacheImages = images.map(image => Asset.fromModule(image).downloadAsync());
         return Promise.all(cacheImages);
     };
 
+    console.log('isReady', isReady);
+
     return (
         <>
             {
-                !isReady ? (
-                    <AppLoading
-                        startAsync={_cacheResourcesAsync}
-                        onFinish={() => setIsReady(true)}
-                        onError={console.warn}
-                    />
-                ) : (
-                    <Provider store={store}>
-                        <SuitesContextProvider value={{
-                            state: contextValue.state,
-                            dispatch: contextValue.dispatch
-                        }}
-                        >
-                            <ThemeProvider theme={root}>
-                                <Statusbar/>
-                                {/*<RootApplicationContainer/>*/}
-                                <RootApplicationNavigator/>
-                                <NotificationRegistry/>
-                            </ThemeProvider>
-                        </SuitesContextProvider>
-                    </Provider>
-                )
+                // isReady === false
+                //     ? (
+                //         <AppLoading
+                //             startAsync={_cacheResourcesAsync}
+                //             onFinish={() => setIsReady(true)}
+                //             onError={(e) => {
+                //                 console.log('something went wrong: ', e);
+                //                 console.warn()
+                //             }}
+                //         />
+                //     )
+                //     : (
+                        <Provider store={store}>
+                            <SuitesContextProvider value={{
+                                state: contextValue.state,
+                                dispatch: contextValue.dispatch
+                            }}
+                            >
+                                <ThemeProvider theme={root}>
+                                    <Statusbar/>
+                                    {/*<RootApplicationContainer/>*/}
+                                    <RootApplicationNavigator/>
+                                    <NotificationRegistry/>
+                                </ThemeProvider>
+                            </SuitesContextProvider>
+                        </Provider>
+                    // )
             }
         </>
     );
-};
+}
 
 export default App;

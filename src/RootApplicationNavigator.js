@@ -1,14 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native'
 import {NavigationContainer} from "@react-navigation/native";
 
 import AuthStack from "../src/components/navigation/AuthStack/AuthStack";
-import SplashScreen from "../src/page/SplashScreen";
 import * as ExpoSplashScreen from 'expo-splash-screen';
 import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
-import LoginPage from "./page/Onboarding/LoginPage";
-import NotFound from "./page/NotFound";
 import SuitesNavigationStack from "./components/navigation/AppStack/SuitesNavigationStack";
 
 const Stack = createStackNavigator();
@@ -23,15 +20,23 @@ function RootApplicationNavigator({auth}) {
 
     useEffect(() => {
         console.log("auth updated", auth);
-
+        ExpoSplashScreen.hideAsync()
+            .then(r => {
+                console.log('splashscreen hidden', r);
+            })
+            .catch(e => {
+                console.log('failed to hide splash screen', e);
+            })
     }, [auth])
 
-    if (isLoading) {
-        // We haven't finished checking for the token yet
-        return <SplashScreen/>;
-    } else  {
-        ExpoSplashScreen.hideAsync().then(r => {});
-    }
+    console.log('isLoading', isLoading);
+
+    // if (isLoading) {
+    //     // We haven't finished checking for the token yet
+    //     return <SplashScreen/>;
+    // } else  {
+    //     ExpoSplashScreen.hideAsync().then(r => {});
+    // }
 
 
     return (
