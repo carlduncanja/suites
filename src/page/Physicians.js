@@ -159,7 +159,11 @@ const Physicians = props => {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            const {
+                currentPage,
+                currentListMin,
+                currentListMax
+            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -170,7 +174,11 @@ const Physicians = props => {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        const {
+            currentPage,
+            currentListMin,
+            currentListMax
+        } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -248,11 +256,10 @@ const Physicians = props => {
     const statusColor = status => (status === 'Active' ? '#4E5664' : '#E53E3E');
 
     const physiciansItem = item => {
-        const {_id = '', surname = '', type = 'Neurosurgeon', status = 'Active', casesCount = 0} = item;
+        const {_id = '', surname = '', field: type = 'Neurosurgeon', status = 'Active', casesCount = 0} = item;
         return (
             <>
                 <View style={[styles.item, {}]}>
-                    {/*<Text numberOfLines={1} style={[styles.itemText, { fontSize: 12, color: "#718096" }]}>#{_id}</Text>*/}
                     <Text
                         numberOfLines={1}
                         style={[styles.itemText, {
@@ -270,9 +277,6 @@ const Physicians = props => {
                         }]}
                     >{type}</Text>
                 </View>
-                {/*<View style={[styles.item, {alignItems: 'center'}]}>*/}
-                {/*    <PhysicianActionIcon/>*/}
-                {/*</View>*/}
                 <DataItem flex={1} text={casesCount} color="--color-blue-600" fontStyle="--text-sm-medium"
                           align="center"/>
                 <View style={[styles.item, {alignItems: 'center'}]}>
